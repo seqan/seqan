@@ -283,7 +283,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             
             windowSize = 1000000;
             windowBuff = 70;
-            minCoord = 3000000000;
+            minCoord = maxValue<unsigned>();
             maxCoord = 0;
             maxHitLength = 1;           
  
