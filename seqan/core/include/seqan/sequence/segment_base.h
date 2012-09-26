@@ -404,7 +404,7 @@ inline bool
 operationToSet(Segment<THost, TSpec> & target,
                 Segment<THost, TSpec2> & source)
 {
-    if (hasNoHost(target))
+    if (IsConst_<THost>::VALUE || hasNoHost(target))
         return SegmentSetImpl_<
             typename IsSameType<TSpec, TSpec2>::Type,
             typename IsSameType<TSpec, InfixSegment>::Type
@@ -416,31 +416,29 @@ inline bool
 operationToSet(Segment<THost const, TSpec> & target,
                 Segment<THost, TSpec2> & source)
 {
-    if (hasNoHost(target))
-        return SegmentSetImpl_<
-            typename IsSameType<TSpec, TSpec2>::Type,
-            typename IsSameType<TSpec, InfixSegment>::Type
-        >::operationToSet(target, source);
-    return false;
+    // TODO(weese): make the compiler break if this function returns false
+    return SegmentSetImpl_<
+        typename IsSameType<TSpec, TSpec2>::Type,
+        typename IsSameType<TSpec, InfixSegment>::Type
+    >::operationToSet(target, source);
 }
 template <typename THost, typename TSpec, typename TSpec2>
 inline bool
 operationToSet(Segment<THost const, TSpec> & target,
                 Segment<THost, TSpec2> const & source)
 {
-    if (hasNoHost(target))
-        return SegmentSetImpl_<
-            typename IsSameType<TSpec, TSpec2>::Type,
-            typename IsSameType<TSpec, InfixSegment>::Type
-        >::operationToSet(target, source);
-    return false;
+    // TODO(weese): make the compiler break if this function returns false
+    return SegmentSetImpl_<
+        typename IsSameType<TSpec, TSpec2>::Type,
+        typename IsSameType<TSpec, InfixSegment>::Type
+    >::operationToSet(target, source);
 }
 template <typename THost, typename TSpec, typename TSpec2>
 inline bool
 operationToSet(Segment<THost, TSpec> & target,
                 Segment<THost, TSpec2> const & source)
 {
-    if (hasNoHost(target))
+    if (IsConst_<THost>::VALUE || hasNoHost(target))
         return SegmentSetImpl_<
             typename IsSameType<TSpec, TSpec2>::Type,
             typename IsSameType<TSpec, InfixSegment>::Type
