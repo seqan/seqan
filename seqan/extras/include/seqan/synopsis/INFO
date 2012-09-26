@@ -1,0 +1,9 @@
+Name: seqan-synopsis
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2011, FU Berlin
+Status: new
+Description: Synopsis data structures.
+ This module contains synopsis data structures.  It contains implementations of
+ hot list types for iceberg or best-k queries as well as lists of histograms.

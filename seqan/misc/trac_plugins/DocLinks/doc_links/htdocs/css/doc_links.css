@@ -1,0 +1,6 @@
+@media screen {
+ a.doc-link .icon {
+  background: url(../doc-link.png) center center no-repeat;
+  padding-left: 14px;
+ }
+}

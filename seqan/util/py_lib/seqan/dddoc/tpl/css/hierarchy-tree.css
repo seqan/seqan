@@ -1,0 +1,32 @@
+div.hierarchy_entry {
+    font: 12px Arial;
+}
+
+div.hierarchy_entry div.Class,
+div.hierarchy_entry div.Spec {
+    background: rgb(255, 255, 204);
+    border: 1px solid #666;
+}
+
+div.hierarchy_entry div.Concept {
+    background: #DDF;
+    border: 1px dashed #666;
+}
+
+div.hierarchy_entry div {
+    white-space: nowrap;
+    padding: 4px;
+}
+
+div.hierarchy_entry .root {
+    font: bolder italic 14px Arial;
+}
+
+div.hierarchy_entry a {
+    color: #333;
+    text-decoration: none;
+}
+
+div.hierarchy_entry a:hover {
+    text-decoration: underline;
+}

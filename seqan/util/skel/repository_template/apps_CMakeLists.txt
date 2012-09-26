@@ -1,0 +1,6 @@
+cmake_minimum_required (VERSION 2.6)
+project (seqan_%(CMAKE_PROJECT_NAME)s)
+
+seqan_setup_apps(%(CMAKE_PROJECT_NAME)s)  # Add meta target and make executables depend on it.
+
+seqan_add_all_subdirectories()  # include_directory(*)

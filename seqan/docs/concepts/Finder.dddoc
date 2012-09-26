@@ -1,0 +1,12 @@
+.Concept.Finder:
+..summary:Object that stores information about the @glos:haystack@ of a search and the current search position.
+
+
+.Metafunction.Haystack.concept:Concept.Pattern
+
+.Function.haystack.concept:Concept.Pattern
+.Function.clear.concept:Concept.Pattern
+
+.Function.position.concept:Concept.Pattern
+.Function.setPosition.concept:Concept.Pattern
+

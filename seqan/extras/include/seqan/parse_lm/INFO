@@ -1,0 +1,10 @@
+Name: parse_lm
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2011, FU Berlin
+Status: under development
+Description: Routines for local matches I/O and storage.
+ This module contains code for storing, reading, and writing local match
+ file formats.

@@ -1,0 +1,9 @@
+=====================
+TextBoxes Trac Plugin
+=====================
+
+This trac wiki plugin allows you to insert boxes into your code.
+
+This is a nice feature for inserting boxes for shell or IDE output.
+
+Currently, it only supports the Processors #ShellBox and #IdeBox.

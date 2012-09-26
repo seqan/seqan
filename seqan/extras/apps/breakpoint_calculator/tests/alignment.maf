@@ -1,0 +1,66 @@
+##maf version=1
+a score=0 label=1 mult=5
+s TaxonA                0 10 + 100 AGCGATCTAA
+s TaxonB                0 10 + 100 AGCGATCTAA
+s TaxonD                0 10 + 100 AGCGATGTAA
+s TaxonE                26 10 + 100 AGCGATGTAA
+s TaxonF                51 10 + 100 AGCGATGTAA
+
+a score=0 label=2 mult=4
+s TaxonA                10 6 + 100 ----GTACGG
+s TaxonB                10 10 + 100 CGAGGTACGG
+s TaxonC                26 10 + 100 CGAGGTTCGG
+s TaxonD                10 10 + 100 CGAGGTTCGG
+s TaxonE                94 6 - 100 ----GTACGG
+s TaxonF                61 6 + 100 ----GTACGG
+
+a score=0 label=3 mult=4
+s TaxonA                16 26 + 100 GCAGTTGACCGATTTACGACGACCGA
+s TaxonB                58 26 - 100 GCAGTTGACCGATTTACGACGACCGA
+s TaxonC                0 26 + 100 GCAGTTGACCGATTTACGACGACCGA
+s TaxonD                36 14 - 100 ------------TTTACGACGACCGA
+s TaxonE                38 26 - 100 GCAGTTGACCGATTTACGACGACCGA
+s TaxonF                5 26 + 100 GCAGTTGACCGATTTACGACGACCGA
+
+a score=0 label=4 mult=4
+s TaxonA                42 20 + 100 CGACGTATTAGCTTTTAGAG
+s TaxonB                42 20 + 100 CGACGTATTAGCTTTTAGAG
+s TaxonC                36 20 + 100 CGAGGTATTAGCTTTTAGAG
+s TaxonD                50 20 - 100 CGAGGTATTAGCTTTTACCG
+s TaxonE                6 20 + 100 CGAGGTATTAGCTTTTACCG
+s TaxonF                31 20 + 100 CGAGGTATTAGCTTTTACCG
+
+a score=0 label=5 mult=4
+s TaxonA                62 10 + 100 AGAAGTCGAC
+s TaxonB                62 10 + 100 AGAAGTCGAC
+s TaxonC                56 10 + 100 AGAAGTCGAC
+s TaxonD                70 10 - 100 AGAAGTCGAC
+s TaxonF                0 5 + 100 -----TCGAC
+
+a score=0 label=6 mult=4
+s TaxonA                72 9 + 100 AGCCGA--AGG
+s TaxonC                66 11 + 100 AGCCGATAAGG
+s TaxonD                64 11 + 100 AGCCGATAAGG
+s TaxonE                89 11 + 100 AGCCGATAAGG
+s TaxonF                67 11 + 100 AGCCGATAAGG
+
+a score=0 label=7 mult=4
+s TaxonA                81 5 + 100 TTGAC------
+s TaxonB                17 11 - 100 TTGACGCTAGA
+s TaxonC                0 11 - 100 TTGACGCTAGA
+s TaxonD                75 11 + 100 TTGACGCTAGA
+s TaxonE                62 5 + 100 TTGAC------
+
+a score=0 label=8 mult=4
+s TaxonA                86 14 + 100 TAGACTAGACGATT
+s TaxonB                83 14 + 100 TAGACTAGACGATT
+s TaxonC                85 4 + 100 ----------GATT
+s TaxonD                86 14 + 100 TAGACTAGACGATT
+s TaxonE                11 14 - 100 TAGACTAGACGATT
+s TaxonF                78 14 + 100 TAGACTAGACGATT
+
+a score=0 label=9 mult=4
+s TaxonB                97 3 + 100 GAG-----
+s TaxonC                77 8 + 100 GAGTCCAG
+s TaxonE                67 8 + 100 GAGTCCAG
+s TaxonF                92 8 + 100 GAGTCCAG

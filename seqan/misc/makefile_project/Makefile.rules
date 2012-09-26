@@ -1,0 +1,17 @@
+SRC=../src
+CXXFLAGS+=-I../../../core/include
+CXXFLAGS+=-I../../../extras/include
+
+default: all
+all: main
+
+main: main.o
+	$(CXX) $(LDFLAGS) -o main main.o
+
+main.o: $(SRC)/main.cpp
+	$(CXX) $(CXXFLAGS) -c -o main.o $(SRC)/main.cpp
+
+clean:
+	rm -f main.o main
+
+.PHONY: default all clean

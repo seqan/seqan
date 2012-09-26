@@ -1,0 +1,37 @@
+Read Mapper Benchmark Apps -- README
+====================================
+
+General Notes: Intervals
+------------------------
+
+There are two kinds of intervals used in the read mapper benchmark:
+Half-open and closed intervals.
+
+The names of the borders of half open intervals are named begin and
+end.  The half-open integer interval [begin, end) contains all
+integers from, and including, begin up to, but excluding end.  This is
+mostly used for infixes, e.g. when specifying where a read maps to a
+contig.
+
+The borders of half open intervals are named first and last.  The
+closed interval [first, last] contains all integers from, and
+including first, up to, and including, last.
+
+
+General Notes: Logging, stdout, stderr
+--------------------------------------
+
+Generally, output is written to stdout.  Log messages are written to
+stderr.  In some cases, the log messages are meant for users and it is
+just printed in no special form.
+
+In some cases, the log output is meant for further analysis.  In this
+case, it consists of the prefix "log> " and is followed by a log
+record, formatted as a JSON object (see http://json.org).  JSON
+objects have the property to be easily parseable by programs (there
+are libraries for every conceivable programming language) but still
+readable by users.
+
+Log records always contain the "type" field which stores the type of
+the log message.  There can be an arbitrary number of other entries,
+depending on the log message type.

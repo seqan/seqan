@@ -1,0 +1,21 @@
+Name: %(NAME)s
+Author: %(AUTHOR)s
+Maintainer: %(AUTHOR)s
+License: BSD 3-clause
+Copyright: 2008-2012, FU Berlin
+Status: under development
+Description: One-line description for module %(NAME)s.
+ This is the long text description for the module.  You should wrap text to 78
+ characters and you have to wrap it to 80 characters.  The lines must have one
+ leading space.  Successive lines in this format will be word-wrapped when
+ displayed.  Leading space is stripped off.
+ .
+ Use empty lines with one dot to insert an empty line / break paragraphs.
+ .
+  Start lines with two spaces to make them display verbatim.  Lines that
+  cannot be displayed horizontally will be hard-wrapped (not at word bor-
+  ders), so maybe do your own hyphenation.
+ .
+ Do not use tab characters, their effect is not predictable.
+ .
+ The INFO file format is oriented after the Debian controfields format.

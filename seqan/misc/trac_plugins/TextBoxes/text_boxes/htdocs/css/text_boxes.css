@@ -1,0 +1,105 @@
+/* Center everything below the header to a width of 58em.
+ */
+
+html #ctxtnav.nav,
+html #content.wiki
+{
+    width: 58em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+html #footer,
+html #pagepath
+{
+    width: 75.4em;
+    padding-left: 28px;
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+}
+
+/* The teaser on the front page cannot have negative margin through style.
+ */
+
+table.teaser
+{
+    margin-left: -112px;
+}
+
+/* Gray out Attachments fold-out such that it is less confusing.
+ */
+
+#attachments.collapsed
+{
+    /* Source: http://css-tricks.com/css-transparency-settings-for-all-broswers/ */
+    zoom: 1;
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+}
+
+/* Making the wiki easier to read.
+ */
+
+html .wikipage h1, html .wikipage h2, html .wikipage h3 { margin-left: 0px }
+
+html .wikipage h1,
+html .wikipage h2,
+html .wikipage h3,
+html .wikipage h4,
+html .wikipage h5,
+html .wikipage h6 {
+    margin-left: 0;
+}
+
+html .wikipage h1 {
+    font-size: 2.5em;
+}
+
+html .wikipage h2 {
+    font-size: 2.1em;
+    margin-top: 1.5em;
+}
+
+html .wikipage h3 {
+    font-size: 1.9em;
+    font-weight: 500;
+    margin-top: 1.5em;
+}
+
+html .box {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #000;
+    margin: 1em 1em;
+    text-align: justify;
+    padding: 0.5em 1.5em 0.5em 70px;
+    min-height: 55px;
+    background-repeat: no-repeat;
+    background-position: 10px 10px;
+    webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    -webkit-box-shadow: 0px 1px 1px 0px #a3a3a3;
+    box-shadow: 0px 1px 1px 0px #a3a3a3;
+}
+
+html pre.wiki,
+html div.code {
+    background-color: rgba(235, 235, 235, 0.7);
+    border-color: rgba(120, 120, 120, 0.7);
+    background-image: none;
+    padding-left: 0.5em;
+    margin: 1em 1em;
+}
+
+html .box.shell {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-color: #000000;
+    background-image: none;
+    padding-left: 0.5em;
+    font-weight: 600;
+    margin: 1em 1em;
+}

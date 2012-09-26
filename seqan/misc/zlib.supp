@@ -1,0 +1,13 @@
+# Suppressions for zlib on Darwin
+
+{
+   supp_zlib_deflate
+   Memcheck:Cond
+   fun:deflateEnd
+   fun:deflateSetDictionary
+   fun:deflate
+   fun:gzerror
+   fun:gzclose
+   ...
+   fun:main
+}

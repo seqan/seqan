@@ -1,0 +1,17 @@
+
+                 SUBSTITUTION SCORE MATRIX TEST FILES
+
+The files were retrieved on 2010-03-09.
+
+There are the following kind of matrices in this directory:
+
+  BLOSUM<n>
+    BLOSUM amino acid substitution score matrices.
+    Source: ftp://ftp.ncbi.nih.gov/blast/matrices/
+
+  PAM<n>
+    PAM amino acid substitution score matrices with distance n.
+    Source: http://www.bioinformatics.nl/tools/pam.html
+
+  VTML200I
+    Source: http://www.drive5.com/pop/

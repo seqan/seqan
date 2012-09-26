@@ -1,0 +1,78 @@
+.Page.Glossary
+..summary:List of terms used in SeqAn
+..order:zzzz
+
+
+.Page.Glossary.glossary
+
+..SeqAn: The C++ library for sequence analysis.
+...text:You are just reading the documentation of this library. For more information see @http://www.seqan.de@.
+...see:Page
+
+
+..Metafunction: A C++ construct that is used to determine types and constants at compile time.
+...see:Metafunction
+...see:http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/Metafunctions|Introduction to Metafunctions
+
+
+..Concept:A kind of interface used in generic programmic that is not formulated in C++ but only a part of the documentation.
+...see:Concept
+
+
+..Template Subclassing:An alternative to inheritance for the refinement of classes that is based on class template specialization.
+...see:http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/TemplateSubclassing|Introduction to Template Subclassing
+
+..Specialization:A refinement of a class that was defined using @glos:Template Subclassing@.
+...see:Spec
+
+
+..Tag:A type that acts as a switch when applied as argument to functions or @glos:Metafunction|metafunctions@.
+...see:Tag
+
+
+..Adaption:Functionality that allows to access built-in type or data types from external libraries in the same way as SeqAn classes.
+...see:Adaption
+
+
+..Needle:The sequence that is searched in the @glos:Haystack|haystack@.
+...see:Concept.Pattern
+
+
+..Haystack:The sequence that is searched for @glos:Needle|needle@. 
+...see:Concept.Finder
+
+
+..Index:A data structure for faster searching in sequences.
+...see:Class.Index
+
+
+..Trie:A tree shaped automaton.
+...see:Spec.Trie
+
+
+..Alignment:An arrangement of two or more sequences: Each character is connected to at most one character for each other sequence,
+and that the characters in each sequence are ordered in the same way as the connected characters in other sequences.
+...see:Class.Align
+...see:Spec.Alignment Graph
+
+
+..Scoring Scheme:A rule for calculating the similarity between two values or between a value and a @glos:Blank|blank@.
+...text:@glos:Scoring Scheme|Scoring schemes@ are used for searching and aligning. In SeqAn, @glos:Scoring Scheme|scoring schemes@ are stored in @Class.Score|score objects@, 
+e.g. @Spec.Simple Score@ or @Shortcut.Pam120@.
+...see:Class.Score
+
+
+..Affine Gap Costs:A scoring scheme that defines the score for a gap of length $n$ as $gap_open + (n-1)* gap_extend$.
+...see:glos:Scoring Scheme
+...see:glos:Linear Gap Costs
+
+..Linear Gap Costs:A scoring scheme that defines the score for a gap to be proportional to the length of the gap.
+...see:glos:Scoring Scheme
+
+
+..Blank:One position within a @glos:Gap|gap@ area of an alignment. 
+...description:The typical printout of an alignment uses a dash sign (i.e. a "-") to visualize a blank.
+
+
+..Gap:A part of an @glos:Alignment|alignment@ in which characters of one sequence are not aligned to characters of the other sequence.
+...description:A gap consists out of one or more @glos:Blank|blank@.

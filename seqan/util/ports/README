@@ -1,0 +1,13 @@
+To test the SeqAn port do the following:
+
+cd seqan-trunk/util/ports
+portindex
+
+Then add the path to your port sources, i.e. by adding the following line to
+the end of the file /opt/local/etc/macports/sources.conf:
+
+file:///Users/YOURUSERNAME/seqan-trunk/util/ports
+
+Then install the SeqAn port by:
+
+sudo port install seqan

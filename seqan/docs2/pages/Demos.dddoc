@@ -1,0 +1,872 @@
+.Demo.String Basics:
+..cat:Sequences
+..summary:See our Wiki for Basic demos.
+.Demo.String Basics.String demo:
+..cat:Basics
+..summary:See our Wiki for demos.
+
+.Demo.Global Alignments:
+..cat:Basics
+..order:Alignments 1
+..summary:Computing an optimal global alignment between two sequences.
+..file:../core/demos/alignment.cpp
+..demofor:Function.globalAlignment
+..demofor:Class.Align
+..demofor:Spec.Alignment Graph
+..demofor:Class.Score
+.
+
+.Demo.Local Alignments:
+..cat:Basics
+..order:Alignments 2
+..summary:Computing local alignments between two sequences.
+..file:../core/demos/alignment_local.cpp
+..demofor:Function.localAlignment
+..demofor:Class.Align
+..demofor:Class.Score
+.
+
+.Demo.Allocators:
+..cat:Basics
+..summary:Examples for memory allocation.
+..file:../core/demos/allocator.cpp
+..see:Spec.Single Pool Allocator
+..see:Spec.Multi Pool Allocator
+..demofor:Function.allocate
+..demofor:Function.deallocate
+..demofor:Function.arrayConstruct
+..demofor:Function.arrayDestruct
+..demofor:Function.Allocator#clear
+..demofor:Class.Allocator
+..demofor:Function.arrayConstruct
+..demofor:Function.arrayDestruct
+.
+
+.Demo.Alphabets:
+..cat:Basics
+..summary:Examples for common alphabets.
+..description
+...text:SeqAn offers some common alphabets like @Spec.Dna@, @Spec.Iupac@, and @Spec.AminoAcid@, which are all @Concept.Simple Type.simple types@.
+..file:../core/demos/alphabet.cpp
+..demofor:Spec.Dna
+..demofor:Spec.Dna5
+..demofor:Spec.Iupac
+..demofor:Spec.AminoAcid
+.
+
+.Demo.Iterator Basics:
+..cat:Basics
+..summary:Simple iterator functions.
+..file:../core/demos/iterator.cpp
+..demofor:Metafunction.Iterator
+..demofor:Function.begin
+..demofor:Function.end
+..demofor:Function.getValue
+..demofor:Function.value
+..demofor:Function.setValue
+..demofor:Function.goBegin
+..demofor:Function.goEnd
+..demofor:Function.atBegin
+..demofor:Function.atEnd
+..demofor:Function.goNext
+..demofor:Function.goPrevious
+.
+
+.Demo.Rooted Iterators:
+..cat:Basics
+..summary:Example for some functions for handling (rooted) iterators.
+..file:../core/demos/rooted_iterator.cpp
+..demofor:Metafunction.Iterator
+..demofor:Function.container
+..demofor:Function.end
+..demofor:Function.position
+..demofor:Tag.Iterator Spec
+..see:Demo.Iterator Basics
+.
+
+.Demo.Exact Searching
+..order:Searching, 1
+..cat:Searching
+..summary:Exact string matching.
+..file:../core/demos/find_exact.cpp
+.
+
+.Demo.Approximate Searching
+..order:Searching, 2
+..cat:Searching
+..summary:Approximate string matching.
+..file:../core/demos/find_approx.cpp
+..output.code:
+3: -1
+4: -1
+8: -1
+9: 0
+10: -1
+end: 6
+begin: 0
+babyba matches with score -2
+end: 7
+begin: 2
+byban matches with score -2
+end: 8
+begin: 2
+bybana matches with score -1
+end: 9
+begin: 4
+banan matches with score -2
+begin: 2
+bybanan matches with score -2
+end: 10
+begin: 4
+banana matches with score -1
+..demofor:Function.find
+..demofor:Function.findBegin
+..demofor:Function.getScore
+..demofor:Function.getBeginScore
+.
+
+.Demo.Wildcard Searching
+..order:Searching, 3
+..cat:Searching
+..summary:String matching using wildcards.
+..file:../core/demos/find_wild.cpp
+..output:
+...code:
+22
+35
+49
+56
+93
+109
+116
+...text:Note that the printed positions are the positions of the last characters of the matches.
+..demofor:Spec.WildShiftAnd
+.
+
+.Demo.ModReverse:
+..cat:Modifier
+..summary:Modifier example for reverse strings.
+..file:../core/demos/modifier_modreverse.cpp
+..output:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make modifier_modreverse
+weese@tanne:~/seqan/demos$ ./modifier_modreverse
+A man, a plan, a canal-Panama
+amanaP-lanac a ,nalp a ,nam A
+A man, a master plan, a canal-Panama
+amanaP-lanac a ,nalp retsam a ,nam A
+weese@tanne:~/seqan/demos$
+..demofor:Class.String
+..demofor:Spec.ModReverse
+..demofor:Class.ModifiedString
+.
+
+.Demo.ModView:
+..cat:Modifier
+..summary:How to modify strings with a per-character functor.
+..file:../core/demos/modifier_modview.cpp
+..remarks:Take a look at the file seqan/modifier/modifier_functors.h to see what functors are already part of SeqAn.
+..output:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make modifier_modview
+weese@tanne:~/seqan/demos$ ./modifier_modview
+A man, a plan, a canal-Panama
+A MAN, A PLAN, A CANAL-PANAMA
+A man, a master plan, a canal-Panama
+A MAN, A MASTER PLAN, A CANAL-PANAMA
+weese@tanne:~/seqan/demos$
+..demofor:Class.String
+..demofor:Spec.ModView
+..demofor:Class.ModifiedString
+.
+
+.Demo.Nested Modifiers:
+..cat:Modifier
+..summary:How to combine modifiers.
+..file:../core/demos/modifier_nested.cpp
+..output:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make modifier_nested
+weese@tanne:~/seqan/demos$ ./modifier_nested
+ATTACGG
+CCGTAAT
+ACGTTTACGG
+CCGTAAACGT
+CCGTAAACGT
+weese@tanne:~/seqan/demos$
+..demofor:Class.String
+..demofor:Spec.ModView
+..demofor:Spec.ModReverse
+..demofor:Class.ModifiedString
+.
+
+.Demo.Suffix Array:
+..cat:Index
+..summary:Example for how to create a suffix array and use it as a dictionary.
+..description:
+...text:Given a sequence $s$, a suffix array is an array containing start positions of all suffices of $s$ in
+lexicographical order. A suffix array can simply be used to find all occurrences of an arbitrary substring $t$
+in $s$ in O(|t|*log(|s|)).
+...text:SeqAn contains various suffix array construction algorithms like the Skew algorithm
+(J. Karkkainen and P. Sanders, "Simple Linear Work Suffix Array Construction", 2003), a more efficient 
+modification of the Skew algorithm (difference cover of 7), external memory Skew algorithms, the prefix-doubling
+algorithm (U. Manber and G. Myers, "Suffix arrays: A new method for online string searching", 1993), the algorithm of
+Larsson and Sadakane (N.J. Larsson and K. Sadakane, "Faster Suffix Sorting", 1999), and a quicksort based algorithm.
+...text:The following example constructs a suffix array using the modified Skew algorithm and searches the interval of
+suffices beginning with $t="l"$. The start positions of these suffices are the occurences of $t$, which are outputted at last.
+This is only an example for @Function.createSuffixArray@ and similar functions. For an index based substring search better use
+the more generic @Class.Finder@ class (see @Demo.Index Finder@ demo).
+..file:../core/demos/index_sufarray.cpp
+..output:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_sufarray
+weese@tanne:~/seqan/demos$ ./index_sufarray
+9 2 3
+weese@tanne:~/seqan/demos$
+..demofor:Function.createSuffixArray
+.
+
+.Demo.Index Finder:
+..cat:Index
+..summary:Example for using a @Class.Finder@ of an @Class.Index@.
+..description:This example shows how to use the @Class.Finder@ class for an @Class.Index@ search.
+..file:../core/demos/index_find.cpp
+..output:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_find
+weese@tanne:~/seqan/demos$ ./index_find
+hit at 11 2 
+hit at 2 11
+weese@tanne:~/seqan/demos$
+..demofor:Class.Index
+..demofor:Class.Finder
+..demofor:Function.find
+.
+
+.Demo.Index countChildren:
+..cat:Index
+..summary:Example for using a @Function.countChildren@  and @Function.countOccurrences@ for indices.
+..description:This example shows how to iterate over a suffix tree and print the number of children and the number of occurrences of the node representatitves.
+..file:../core/demos/index_counting.cpp
+..output:
+...code:
+Representative  has 17 children  and 91 occurrences 
+Representative   has 5 children  and 16 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative a has 3 children  and 5 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative c has 3 children  and 12 occurrences 
+The node is a leaf 
+Representative chuck has 3 children  and 5 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative ck has 3 children  and 5 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative d has 3 children  and 7 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative huck has 3 children  and 5 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative k has 3 children  and 5 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative o has 4 children  and 13 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+Representative uck has 3 children  and 5 occurrences 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+The node is a leaf 
+..demofor:Class.Index
+..demofor:Function.countChildren
+..demofor:Function.countOccurrences
+..demofor:Function.isLeaf
+.
+
+
+
+.Demo.Index Finder StringSet:
+..cat:Index
+..summary:Example for using a @Class.Finder@ of an @Class.Index@ of a @Class.StringSet@.
+..description:This example shows how to use the @Class.Finder@ class for an @Class.Index@ search.
+The @Class.Index@ was build for a given @Class.StringSet@.
+..file:../core/demos/index_find_stringset.cpp
+..output:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_find_stringset
+weese@tanne:~/seqan/demos$ ./index_find_stringset
+hit at < 0 , 11 >  < 1 , 3 >  < 2 , 0 >  < 0 , 2 >
+weese@tanne:~/seqan/demos$
+..demofor:Class.Index
+..demofor:Class.Finder
+..demofor:Class.StringSet
+..demofor:Function.find
+.
+
+.Demo.Maximal Unique Matches:
+..cat:Index
+..summary:Example for using the @Spec.Mums Iterator@.
+..description
+...text:Given a set of sequences, a unique match is a match that occurs exactly once in each sequence.
+A maximal unique match (MUM) is a unique match that is not part of any longer unique match. The following
+example demonstrates how to iterate over all MUMs and output them.
+..file:../core/demos/index_mums.cpp
+..output
+...text:The only maximal matches that occur in all 3 sequences are $"SeqAn"$ and $"sequence"$.
+They occur exactly once and thus are maximal unique matches.
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_mums
+weese@tanne:~/seqan/demos$ ./index_mums
+0, 53, 33, 5    "SeqAn"
+23, 36, 3, 8    "sequence"
+weese@tanne:~/seqan/demos$
+..demofor:Class.Index
+..demofor:Class.StringSet
+..demofor:Spec.Mums Iterator
+..demofor:Function.representative
+..demofor:Function.repLength
+..demofor:Function.getOccurrences
+..demofor:Function.orderOccurrences
+..see:Demo.Mummy
+.
+
+.Demo.Supermaximal Repeats:
+..cat:Index
+..summary:Example for using the @Spec.SuperMaxRepeats Iterator@.
+..description
+...text:Given a sequences, a repeat is a substring that occurs at at least 2 different positions.
+A supermaximal repeat is a repeat that is not part of any longer repeat. The following
+example demonstrates how to iterate over all supermaximal repeats and output them.
+..file:../core/demos/index_supermaxrepeats.cpp
+..output
+...text:The only supermaximal repeats of $"How many wood would a woodchuck chuck."$ of length at least 3
+are $" wood"$ and $"chuck"$. There are repeats of $" wo"$ which are maximal (see @Demo.Maximal Repeats@),
+ ut not supermaximal, as $" wo"$ is part of the longer repeat $" wood"$.
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_supermaxrepeats
+weese@tanne:~/seqan/demos$ ./index_supermaxrepeats
+8, 21, 5        " wood"
+26, 32, 5       "chuck"
+weese@tanne:~/seqan/demos$
+..demofor:Class.Index
+..demofor:Spec.SuperMaxRepeats Iterator
+..demofor:Function.representative
+..demofor:Function.repLength
+..demofor:Function.getOccurrences
+..demofor:Function.countOccurrences
+.
+
+.Demo.Maximal Repeats:
+..cat:Index
+..summary:Example for using the @Spec.MaxRepeats Iterator@.
+..description
+...text:Given a sequences, a repeat is a substring that occurs at at least 2 different positions.
+A maximal repeat is a repeat that cannot be extended to the left or to right to a longer repeat. The following
+example demonstrates how to iterate over all maximal repeats and output them.
+..file:../core/demos/index_maxrepeats.cpp
+..output
+...text:As all supermaximal repeats (see @Demo.Supermaximal Repeats@) are also maximal repeats, 
+$" wood"$ and $"chuck"$ are outputted. In $"How many wood would a woodchuck chuck."$
+$" wo"$ is a repeat of length 3 that occurs at two pairs
+of positions which are maximal repeats ($" a wood", "od woul"$ and $"ny wood", "od woul"$).
+Beside these there are no other maximal repeats of length at least 3.
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_maxrepeats
+weese@tanne:~/seqan/demos$ ./index_maxrepeats
+< 8 , 21 >, 5           " wood"
+< 21 , 13 >, < 8 , 13 >, 3      " wo"
+< 26 , 32 >, 5          "chuck"
+weese@tanne:~/seqan/demos$
+..demofor:Class.Index
+..demofor:Spec.MaxRepeats Iterator
+..demofor:Function.representative
+..demofor:Function.orderOccurrences
+.
+
+.Demo.Mummy:
+..cat:Index
+..summary:Simple MUMmer clone.
+..description
+...text:MUMmer is a tool to search for multiple exact matches (MUMs) between 2 given sequences.
+MUMs can be used as a starting point for a multiple genome alignment algorithm.
+This example shows how to implement a simple version of MUMer to find multiple exact matches of n sequences (n\geq2) in SeqAn.
+..file:../core/demos/index_mummy.cpp
+..output
+...text:If you run the tool on 2 sequences it outputs exactly the same matches as MUMmer (called with $-mum$ option), it
+only differs in the order of outputted matches. To get matches with increasing positions at the first sequence we
+piped the output to $sort$.
+...text:As an example data set we used 3 strains of chlamydia bacterium 
+(@ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Chlamydia_muridarum/NC_002620.fna|NC_002620.fna@,
+@ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Chlamydia_trachomatis/NC_000117.fna|NC_000117.fna@,
+@ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Chlamydia_trachomatis_A_HAR-13/NC_007429.fna|NC_007429.fna@) and
+saved the Fasta files to the demos directory.
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_mummy
+weese@tanne:~/seqan/demos$ ./index_mummy -h
+***************************************
+***        Simple MUM finder        ***
+*** written by David Weese (c) 2007 ***
+***************************************
+
+Usage: mummy [OPTION]... <SEQUENCE FILE> ... <SEQUENCE FILE>
+
+Options:
+  -e, --extern                  use external memory (for large datasets)
+  -l, --minlen                  set minimum MUM length
+                                if not set, default value is 20
+  -h, --help                    print this help
+weese@tanne:~/seqan/demos$ ./index_mummy NC*.fna |sort > mums.txt
+3159928 bps sequence imported.
+weese@tanne:~/seqan/demos$ head mums.txt
+    1565    323805      2159        48
+    1646    323886      2240        27
+    1722    323962      2316        37
+    1774    324014      2368        26
+    1941    324181      2535        23
+    2061    324301      2655        35
+    2102    324342      2696        29
+    2132    324372      2726        20
+    2183    324423      2777        24
+weese@tanne:~/seqan/demos$
+..see:Demo.Maximal Unique Matches
+..demofor:Class.Index
+..demofor:Class.StringSet
+..demofor:Spec.Mums Iterator
+..demofor:Function.representative
+..demofor:Function.repLength
+..demofor:Function.getOccurrences
+..demofor:Function.orderOccurrences
+.
+
+.Demo.Constraint Iterator:
+..cat:Index
+..summary:Example for using node predicates on a deferred suffix tree.
+..description
+...text:Given a sequences, we want to find all substrings $s$ that fulfill certain constraints.
+The relative probabilty to see $s$ should be at least $p_min$. $s$ should also be not longer than
+$replen_max$.
+The latter constraint is a anti-monotonic pattern predicate and can be used in conjunction with the
+first constraint to cut of the trunk of a suffix tree. Only the top of the suffix tree contains candidates
+that might fulfill both predicates, so we can use an @Class.Index@ based on a deferred suffix tree (see @Spec.IndexWotd@).
+The following example demonstrates how to iterate over all suffix tree nodes fulfilling the constraints and output them.
+..file:../core/demos/index_node_predicate.cpp
+..output
+...text:
+...code:
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_node_predicate
+weese@tanne:~/seqan/demos$ ./index_node_predicate
+38x     ""
+6x      " "
+3x      " wo"
+2x      " wood"
+2x      "a"
+4x      "c"
+2x      "chuck"
+2x      "ck"
+3x      "d"
+2x      "d "
+2x      "huck"
+2x      "k"
+6x      "o"
+2x      "od"
+2x      "ood"
+3x      "u"
+2x      "uck"
+4x      "w"
+3x      "wo"
+2x      "wood"
+weese@tanne:~/seqan/demos$
+..demofor:Spec.IndexWotd
+..demofor:Spec.TopDownHistory Iterator
+..demofor:Function.nodePredicate
+..demofor:Function.nodeHullPredicate
+..demofor:Function.representative
+..demofor:Function.countOccurrences.
+.
+
+.Demo.Breadth-First Search
+..cat:Graph
+..order:Graph Algorithm Breadth-first search
+..summary:Breadth-first search through a graph.
+..file:../core/demos/graph_algo_bfs.cpp
+..demofor:Class.Graph
+..demofor:Function.breadthFirstSearch
+.
+
+.Demo.Depth-First Search
+..cat:Graph
+..order:Graph Algorithm Depth-first search
+..summary: Depth-first search through a graph.
+..file:../core/demos/graph_algo_dfs.cpp
+..demofor:Class.Graph
+..demofor:Function.depthFirstSearch
+.
+
+.Demo.Strongly Connected Components
+..cat:Graph
+..order:Graph Algorithm Strongly-connected-components
+..summary:Computing all strongly-connected-components of a graph.
+..file:../core/demos/graph_algo_scc.cpp
+..demofor:Class.Graph
+..demofor:Function.stronglyConnectedComponents
+.
+
+.Demo.Topological Sort
+..cat:Graph
+..order:Graph Algorithm Topological Sort
+..summary:Topological sort of a graph.
+..file:../core/demos/graph_algo_topsort.cpp
+..demofor:Class.Graph
+..demofor:Function.topologicalSort
+.
+
+.Demo.Prim's Algorithm
+..cat:Graph
+..order:Graph Minimum Spanning Tree Prim's algorithm
+..summary:Prim's algorithm for computing a minimum spanning tree.
+..file:../core/demos/graph_algo_tree_prim.cpp
+..demofor:Class.Graph
+..demofor:Function.primsAlgorithm
+.
+
+.Demo.Kruskal's Algorithm
+..cat:Graph
+..order:Graph Minimum Spanning Tree Kruskal's algorithm
+..summary:Kruskal's algorithm for computing a minimum spanning tree.
+..file:../core/demos/graph_algo_tree_kruskal.cpp
+..demofor:Class.Graph
+..demofor:Function.kruskalsAlgorithm
+.
+
+.Demo.Shortest Path in DAGs
+..cat:Graph
+..order:Graph Single Source Shortest Path DAG
+..summary:Computing single source shortest paths in a directed acyclic graph.
+..file:../core/demos/graph_algo_path_dag.cpp
+..demofor:Class.Graph
+..demofor:Function.dagShortestPath
+.
+
+.Demo.Bellman-Ford Algorithm
+..cat:Graph
+..order:Graph Single Source Shortest Path Bellman-Ford
+..summary:Computing single source shortest paths using Bellman-Ford algorithm.
+..file:../core/demos/graph_algo_path_bellmanford.cpp
+..demofor:Class.Graph
+..demofor:Function.bellmanFordAlgorithm
+.
+
+.Demo.Dijkstra's Algorithm
+..cat:Graph
+..order:Graph Single Source Shortest Path Dijkstra
+..summary:Computing single source shortest paths using Dijkstra algorithm.
+..file:../core/demos/graph_algo_path_dijkstra.cpp
+..demofor:Class.Graph
+..demofor:Function.dijkstra
+.
+
+.Demo.All Pairs Shortest Path
+..cat:Graph
+..order:Graph All Pairs Shortest Path
+..summary:Computing all-pairs shortest paths.
+..file:../core/demos/graph_algo_path_allpairs.cpp
+..demofor:Class.Graph
+..demofor:Function.allPairsShortestPath
+.
+
+.Demo.Floyd-Warshall Algorithm
+..cat:Graph
+..order:Graph All Pairs Shortest Path Floyd-Warshall
+..summary:Computing all-pairs shortest paths using Floyd-Warshall algorithm.
+..file:../core/demos/graph_algo_path_floydwarshall.cpp
+..demofor:Class.Graph
+..demofor:Function.floydWarshallAlgorithm
+.
+
+.Demo.Transitive Closure
+..cat:Graph
+..order:Graph Transitive closure
+..summary:Transitive closure code example
+..file:../core/demos/graph_algo_path_transitive.cpp
+..demofor:Class.Graph
+..demofor:Function.transitiveClosure
+. 
+
+.Demo.Maximum Flow
+..cat:Graph
+..order:Graph Maximum Flow
+..summary:Ford-Fulkerson maximum flow code example
+..file:../core/demos/graph_algo_flow_fordfulkerson.cpp
+..demofor:Class.Graph
+..demofor:Function.fordFulkersonAlgorithm
+.
+
+.Demo.HMM
+..cat:Graph
+..order:Graph Hidden Markov Model
+..summary:Hidden Markov Model code example
+..file:../core/demos/graph_hmm.cpp
+..demofor:Class.Graph
+.
+
+.Demo.HMM Silent States
+..cat:Graph
+..order:Graph Hidden Markov Model Silent States
+..summary:Hidden Markov Model with silent states code example
+..file:../core/demos/graph_hmm_silent.cpp
+..demofor:Class.Graph
+.
+
+.Demo.Longest Increasing Subsequence
+..cat:Graph
+..order:Graph Sequence 1 Longest Increasing Subsequence
+..summary:Longest increasing subsequence code example
+..file:../core/demos/graph_algo_lis.cpp
+..demofor:Class.Graph
+..demofor:Function.longestIncreasingSubsequence
+.
+
+.Demo.Heaviest Increasing Subsequence
+..cat:Graph
+..order:Graph Sequence 2 Heaviest Increasing Subsequence
+..summary:Heaviest increasing subsequence code example
+..file:../core/demos/graph_algo_his.cpp
+..demofor:Class.Graph
+..demofor:Function.heaviestIncreasingSubsequence
+.
+
+.Demo.Longest Common Subsequence
+..cat:Graph
+..order:Graph Sequence 3 Longest Common Subsequence
+..summary:Longest common subsequence code example
+..file:../core/demos/graph_algo_lcs.cpp
+..demofor:Class.Graph
+..demofor:Function.longestCommonSubsequence
+.
+
+.Demo.File Format I/O:
+..cat:System
+..summary:Accessing sequence data in files.
+..file:../core/demos/file_format.cpp
+..demofor:Function.write
+..demofor:Function.read
+..demofor:Function.readMeta
+..demofor:Spec.File Reader String
+.
+
+.Demo.Motif Finder:
+..cat:Motif Search
+..summary:Examples for how to start a motif search using SeqAn's Motif Finder.
+..file:../extras/demos/find_motif.cpp
+..output
+...code:
+[0]: AGCC
+
+[0]: AGCC
+
+[0]: AAGC 
+[1]: ACAG
+[2]: AGAC
+[3]: AGCC
+[4]: AGGA
+[5]: AGTA
+[6]: CAGA
+[7]: CAGG
+[8]: CCAG
+[9]: CGCA
+[10]: CGGC
+[11]: GCAG
+[12]: TCAG
+[13]: TGCA
+
+[0]: AAGC
+[1]: AAGT
+[2]: AATC
+[3]: ACAG
+[4]: ACGC
+[5]: ACTC
+[6]: AGAC
+[7]: AGCA
+[8]: AGCC
+[9]: AGGA
+[10]: AGGC
+[11]: AGGG
+[12]: AGGT
+[13]: AGTA
+[14]: AGTC
+[15]: AGTG
+[16]: AGTT
+[17]: ATGC
+[18]: ATTC
+[19]: CAAT
+[20]: CACT
+[21]: CAGA
+[22]: CAGC
+[23]: CAGG
+[24]: CATT
+[25]: CCAG
+[26]: CCGT
+[27]: CGCA
+[28]: CGGC
+[29]: CGGT
+[30]: CGTC
+[31]: CTGT
+[32]: GAAG
+[33]: GACA
+[34]: GAGT
+[35]: GCAA
+[36]: GCAC
+[37]: GCAG
+[38]: GCAT
+[39]: GCCA
+[40]: GCCG
+[41]: GCGG
+[42]: GCTG
+[43]: GGAA
+[44]: GGAG
+[45]: GGCC
+[46]: GGCG
+[47]: GGCT
+[48]: GGGA
+[49]: GGGC
+[50]: GGTA
+[51]: GGTC
+[52]: GTAG
+[53]: GTCA
+[54]: TAAG
+[55]: TAGT
+[56]: TCAA
+[57]: TCAC
+[58]: TCAG
+[59]: TCAT
+[60]: TCCG
+[61]: TCGG
+[62]: TCTG
+[63]: TGAG
+[64]: TGCA
+[65]: TGGC
+[66]: TGTC
+[67]: TTAG
+
+AGCC
+
+AGCC
+
+TCAG
+
+TCAG
+..demofor:Class.MotifFinder
+..demofor:Function.findMotif
+.
+
+.Demo.Blast Reports:
+..cat:Miscellaneous
+..summary:Parsing the output of BLAST call.
+..file:../extras/demos/blast_report.cpp
+..demofor:Class.BlastHsp
+..demofor:Class.BlastReport
+..demofor:Metafunction.Hit
+..demofor:Function.getBitScore
+..demofor:Function.getEValue
+..demofor:Function.getQueryName
+..demofor:Function.getDatabaseName
+.
+
+.Demo.Interval Tree:
+..cat:Miscellaneous
+..summary:Construction and usage demo for the interval tree.
+..file:../core/demos/interval_tree.cpp
+..demofor:Class.IntervalTree
+..demofor:Class.IntervalAndCargo
+..demofor:Function.createIntervalTree
+..demofor:Function.findIntervals
+..demofor:Function.addInterval
+..demofor:Function.removeInterval
+.
+

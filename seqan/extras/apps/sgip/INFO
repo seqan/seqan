@@ -1,0 +1,13 @@
+Name: sgip
+Author: Jialu Hu <jialu.hu@fu-berlin.de>
+Maintainer: Jialu Hu <jialu.hu@fu-berlin.de>
+License: GPL v3
+Copyright: 2012-2013, FU Berlin
+Status: under development
+Description: sgip solves graphs isomorphism  problem using heuristic approach.
+ This application gets canonical label of given graphs by heuristically 
+ searching resolving sets, which determines a fixed order of graph nodes.
+ .
+ It serves in two application, one is to determine whether two graphs are 
+ isomorphic, anther is to find canonical label(fingerprint) of one specific 
+ graph. 

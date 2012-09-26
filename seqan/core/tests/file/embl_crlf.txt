@@ -1,0 +1,63 @@
+ID   A1MVRNA2   standard; unassigned RNA; VRL; 2593 BP.
+XX
+AC   X01572; J02002; K02702;
+XX
+SV   X01572.1
+XX
+DT   07-NOV-1985 (Rel. 07, Created)
+DT   17-FEB-1997 (Rel. 50, Last updated, Version 6)
+XX
+DE   Alfalfa mosaic virus (A1M4) RNA 2
+XX
+KW   unidentified reading frame.
+XX
+OS   Alfalfa mosaic virus
+OC   Viruses; ssRNA positive-strand viruses, no DNA stage; Bromoviridae;
+OC   Alfamovirus.
+XX
+RN   [1]
+RP   1-2593
+RX   MEDLINE; 83220723.
+RX   PUBMED; 6304618.
+RA   Cornelissen B.J., Brederode F.T.M., Veeneman G.H., van Boom J.H., Bol J.F.;
+RT   "Complete nucleotide sequence of alfalfa mosaic virus RNA 2";
+RL   Nucleic Acids Res. 11(10):3019-3025(1983).
+XX
+DR   GOA; P03593.
+DR   SWISS-PROT; P03593; V90K_AMVLE.
+XX
+CC   Data kindly reviewed (30-JAN-1986) by J.F. Bol
+XX
+FH   Key             Location/Qualifiers
+FH
+FT   source          1..2593
+FT                   /db_xref="taxon:12321"
+FT                   /mol_type="unassigned RNA"
+FT                   /note="RNA2"
+FT                   /virion
+FT                   /organism="Alfalfa mosaic virus"
+FT   CDS             55..2427
+FT                   /db_xref="GOA:P03593"
+FT                   /db_xref="SWISS-PROT:P03593"
+FT                   /product="89.7 kd protein"
+FT                   /protein_id="CAA25728.1"
+FT                   /translation="MFTLLRCLGFGVNEPTNTSSSEYVPEYSVEEISNEVAELDSVDPL
+FT                   FQCYKHVFVSLMLVRKMTQAAEDFLESFGGEFDSPCCRVYRLYRHFVNEDDAPAWAIPN
+FT                   VVNEDSYDDYAYLREELDAIDSSFELLNEERELSEIT"
+FT   variation       1431..1431
+FT                   /note="c in pAL2-1; t in pAL2-[21,41]"
+XX
+SQ   Sequence 2593 BP; 736 A; 533 C; 547 G; 777 T; 0 other;
+     gtttttatct tttcgcgatt gaaaagataa gtttttcagt ttaatctttt caatatgttc        60
+     actcttttga gatgtctcgg attcggtgtt aatgaaccta ctaacacttc ctcatcagag       120
+     tatgttcccg agtattccgt tgaagagatt tccaacgaag tcgctgaact cgattcagtg       180
+     gatccattat tccaatgtta caaacatgtt tttgtatcat tgatgctcgt aagaaagatg       240
+     actcaagctg ccgaagactt cctcgagagt tttgggggag a                           281
+//
+ID   test record 2
+XX
+AC   ac of test record 2
+XX
+SQ   sq of test record 2
+     ACGT                                                                      4
+//

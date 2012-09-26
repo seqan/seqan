@@ -1,0 +1,4 @@
+bin/libiconv2.dll
+bin/libintl3.dll
+manifest/diffutils-2.8.7-1-dep.mft
+manifest/diffutils-2.8.7-1-dep.ver

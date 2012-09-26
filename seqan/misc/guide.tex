@@ -1,0 +1,269 @@
+\documentclass[a4paper,12pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[table]{xcolor}              % Farben
+\usepackage{xspace}                     % platzhalter
+
+
+\usepackage{tabularx}
+\usepackage{array} % für Tabellenerstellung
+\usepackage{booktabs} % für Tabellenerstellu
+
+\usepackage{listings}
+
+\newenvironment{packed_enum}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+% Title Page
+\title{Developer / User-Guide on new SeqAn IO}
+\author{Hannes Hauswedell}
+
+\usepackage{setspace} 
+\parindent0pt
+\parskip1.5ex
+ \setstretch{1.1}
+
+
+\newcommand{\todo}[1]{{\color{red}TODO:#1}\xspace}
+
+\begin{document}
+
+\section{General User and Developer Info}
+
+\subsection{Some notes}
+
+\begin{itemize}
+\item \verb#https://trac.mi.fu-berlin.de/seqan/wiki/IoRevision# is partly 
+outdated, do not rely on it!
+\item Currently all new IO-Code lives in SeqAn \emph{beside} the old code, you 
+do not need any \verb|#define|s to switch to the new code
+\item Currently only FastA and FastQ are supported in the new code base
+\item If you use only FastA and/or FastQ, you should definitely switch now, 
+since the new code is faster and more reliable
+\item switching is fairly easy, you only need to construct a \verb#RecordReader#
+object for reading and work on that (see below and dddoc for more details)
+\item the new calls are \verb#readRecord()#, \verb#read2()# (read entire document),
+\verb#writeRecord()# and \verb#write2()# (write entire document).
+\end{itemize}
+
+
+\subsection{Some examples}
+ \lstset
+{
+    language=C++,
+    basicstyle=\color{black}\footnotesize\tt,
+    backgroundcolor=\color{white},
+%     numbers=left,
+%     numberstyle=\tiny,
+%     numbersep=5pt,
+    captionpos=b,
+     stringstyle=\ttfamily,
+    frame=single,
+    showspaces=false,
+    breaklines=true,        % sets automatic line breaking
+    breakatwhitespace=true
+    % sets if automatic breaks should only happen at whitespace
+}
+
+Example code for reading a single record from a gzipped file (you will probably
+want to loop over \verb#readRecord()#):
+\begin{lstlisting}
+char filename[] = "/path/to/file.fasta.gz";
+gzFile file = gzopen(filename, "rb");
+if (gzdirect(file)) 
+{
+	// error handling
+}
+Stream<GZFile> stream(file);
+
+RecordReader<Stream<GZFile>, SinglePass<> > reader(stream);
+
+CharString meta;
+DnaString seq;
+
+res = readRecord(meta, seq, reader, Fasta());
+if (res != 0)
+{
+	// error handling
+}
+
+gzclose(file);
+\end{lstlisting}
+
+
+Example code for reading an entire file efficiently (using 
+memory-mapped strings as files and ConcatDirect-Strings as storage):
+\begin{lstlisting}
+typedef String<char, MMap<> > TMMapString;
+TMMapString stream;
+char filename[] = "/path/to/file.fasta";
+
+int res = open(stream, filename, OPEN_RDONLY));
+if (res != 0)
+{
+	// error handling
+}
+
+RecordReader<TMMapString, DoublePass<Mapped> > reader(stream);
+
+StringSet<CharString, Owner<ConcatDirect<> > > sequenceIds;
+StringSet<DnaString, Owner<ConcatDirect<> > > sequences;
+
+res = read2(sequenceIds, sequences, reader, Fasta());
+if (res != 0)
+{
+	// error handling
+}
+
+close(stream);
+\end{lstlisting}
+% 
+% // read one record
+% CharString meta;
+% DnaString seq;
+% readRecord(meta, seq, reader);
+% 
+% // read the entire file into optimized StringSets
+% 
+% \end{lstlisting}
+
+
+\section{Overview of new Stream Module}
+
+There is a new Stream module, which currently resides in extras. The module 
+is composed of these main components:
+\begin{itemize}
+\item Stream related (basic abstraction for IO)
+\begin{itemize}
+\item the stream concept [\verb#concept_stream.h#]
+\item Stream adaptations [\verb#adapt_fstream.h#, \verb#adapt_cstdio.h# ..]
+\item Stream class and specializations [\verb#stream_*.h#]
+\end{itemize}
+\item reading related
+\begin{itemize}
+\item core RecordReader classes (generic Buffer around Stream) [\verb#record_reader*.h#]
+\item tokenizing code (low level readUntil* , readWhile* calls etc) 
+[\verb#tokenizing.h# \verb#is.h#]
+\item Format related reading based on tokenizing and RecordReader [\verb#read*.h#]
+\item File format detection based on above code [\verb#guess_stream_format.h#]
+\end{itemize}
+\item Format related writing code [\verb#write*.h#]
+\item code for casting from string to numerical types [\verb#lexical_cast.h#]
+\end{itemize}
+
+
+
+\section{Notes on completing the IO-Revision}
+
+\subsection{General Information}
+
+\begin{itemize}
+\item different Stream backends are not yet implemented (e.g. char array, iostream)
+\item \verb#tokenizing.h# contains copies of all old parsing/tokenizing functions, please
+have a look there when switching to new IO (especially since in the old IO everyone
+confused 'blank' and 'whitespace', as well as other terms!). Please also add any 
+tokenizing functions to \verb#tokenizing.h# and not into your file format code. Do
+also check if you can use the helper-functions in \verb#tokenizing.h# for your task!
+\item once all code is ported read2() and write2() shall be renamed to read() and 
+write()
+\end{itemize}
+
+Throughout SeqAn, IO-related code is marked with \verb#//IOREV# and zero or more
+of the following tags:
+
+\begin{tabular}{ll}\toprule
+\textsc{Tag}	& \textsc{Description}		\\\midrule
+\verb#_nottested_#     &This code may not work at all \\
+\verb#_docnottested_#  &This code is documented but may behave different from doc\\
+\verb#_nodoc_#         &This code should be documented but isn't\\
+\verb#_duplicate_#     &This code reimplements functionality found elsewhere\\
+\verb#_delcandidate_#  &This code should probably just be deleted\\
+\verb#_notIO_#         &This code is falsely tagged as IO\\
+\verb#_noop_#          &This call doesnt do anything\\
+\verb#_stub_#          &This looks like its not done yet\\\bottomrule
+\end{tabular}
+
+I would recommend first following the advice in this document and \textbf{after}
+having
+implemented/ported the relevant code portions, to grep through seqan for IOREV
+and deal with the leftover code on an individual basis. Since tagging happened
+in the beginning of my work, some code comments might not by applicable anymore.
+
+
+\subsection{Open Issues in existing files}
+
+\begin{tabular}{ll}\toprule
+\textsc{File}	& \textsc{TODOs}		\\\midrule
+\verb#tokenizing.h#    &specialized comparison code for other alphabets beside Dna and Dna5\\
+\verb#read_fasta_fastq.h#     &Questions what kind of format behaviour is legal \\
+&(empty sequences? empty headers?) \\\bottomrule
+\end{tabular}
+
+
+
+
+
+\subsection{Sequence IO}
+
+The following previously supported file formats are still missing: embl, genbank, QSeq, raw, CGViz (write-only)
+
+Once they are implemented and all applications have changed to new IO, the following 
+files will be obsolete:
+\begin{packed_enum}
+\item \verb#seqan/file/cstream.h#
+\item \verb#seqan/file/stream.h#
+\item \verb#seqan/file/file_base.h#
+\item \verb#seqan/file/file_cstyle.h#
+\item \verb#seqan/file/file_filereaderiterator.h#
+\item \verb#seqan/file/file_filereader.h#
+\item \verb#seqan/file/file_format.h#
+\item \verb#seqan/file/stream_algorithms.h#
+\item \verb#seqan/file/file_format_raw.h#
+\item \verb#seqan/file/file_format_fasta.h#
+\item \verb#seqan/file/file_format_embl.h#
+\item \verb#seqan/file/file_format_genbank.h#
+\item \verb#seqan/file/file_format_cgviz.h#
+\item \verb#seqan/file/file_format_mmap.h#
+\item \verb#seqan/sequence/sequence_stream.h#
+\item \verb#seqan/misc/misc_parsing.h#
+\end{packed_enum}
+
+The following files shall not be removed, it needs to be decided where to put them in the future:
+
+\begin{packed_enum}
+\item \verb#seqan/file/chunk_collector.h#
+\item \verb#seqan/file/file_page.h#
+\item \verb#seqan/file/file_page_raid0.h#
+\item \verb#seqan/file/string_external.h#
+\item \verb#seqan/file/string_mmap.h#
+\item \verb#seqan/file/file_array.h#
+\item \verb#seqan/system/file_directory.h#
+\item \verb#seqan/system/file_async.h#
+\item \verb#seqan/system/file_sync.h#
+\end{packed_enum}
+
+
+\subsection{Store-IO}
+
+It was decided that store-io should be ported and moved to the new stream module,
+this covers \verb#seqan/store/store_io*#. Other than the beginning of a new 
+sam-implementation (\verb#seqan/stream/read_sam.h#) none of this has yet 
+happened.
+
+\subsection{Alignment and Alignment Graph formats}
+
+Includes TCoffeLib, BlastLib, MummerLib, NewickFormat (all in\\ 
+\verb#seqan/graph/graph_align_tcoffee_io.h#) and fasta-alignment format 
+(in\\ \verb#seqan/graph/graph_align_tcoffee_io.h# AND in 
+\verb#seqan/file/file_format_fasta_align.h#).
+
+These should probably be ported as well, but it was not yet decided whether 
+they should be moved to the stream-module or continue to reside in the 
+graph-module.
+
+
+
+\end{document}

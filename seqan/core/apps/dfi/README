@@ -1,0 +1,128 @@
+                 Fast String Mining of Multiple Databases
+                        under Frequency Constraints
+
+                   http://www.seqan.de/projects/dfi.html
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Output Format
+  5.   Example
+  6.   Contact
+  
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+The Deferred Frequency Index (DFI) is a tool for string mining under
+frequency constraints, i.e., predicates that evaluate solely the frequency
+of a pattern occurrence in the data. The frequency of a pattern is defined
+as the number of distinct sequences in a database that contain the pattern
+at least once. Currently the implementation contains 3 different predicates
+and can easily be extended by user-defined frequency predicates.
+The frequencies are calculated during the construction of a suffix tree
+over all databases, which enables to limit the index construction to a
+problem-specific minimum referred to as the optimal monotonic hull.
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+There are precompiled executables for various platforms:
+
+  dfi.exe  dfi for Windows
+  dfi32    dfi for GNU Linux x86
+  dfi      dfi for GNU Linux x86-64
+  dfiOSX   dfi for Mac OS X on Intel
+  
+DFI is distributed with SeqAn - The C++ Sequence Analysis Library (see 
+http://www.seqan.de). To compile DFI on your system do the following:
+
+  1)  Download the latest snapshot of SeqAn
+  2)  Unzip it to a directory of your choice (e.g. snapshot)
+  3)  cd snapshot/apps
+  4)  make dfi
+  5)  cd dfi
+  6)  ./dfi --help
+
+Alternatively you can check out the latest SVN version of DFI and SeqAn
+with:
+
+  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
+  2)  cd seqan
+  3)  make forwards
+  4)  cd projects/library/apps
+  5)  make dfi
+  6)  cd dfi
+  7)  ./dfi --help
+
+On success, an executable file dfi was build and a brief usage description
+was dumped.
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of DFI, you can execute dfi -h or 
+dfi --help.
+
+Usage: dfi [OPTION]... --minmax  <min_1> <max_1> <database 1> ...
+                       --minmax  <min_m> <max_m> <database m>
+       dfi [OPTION]... --growth  <rho_s> <rho_g> <database 1> <database 2>
+       dfi [OPTION]... --entropy <rho_s> <alpha> <database 1> <database 2>
+                       ... <database m>
+
+DFI implements 3 different frequency string mining problems:
+
+  1) Frequent Pattern Mining Problem (--minmax)
+  2) Emerging Substring Mining Problem (--growth)
+  3) Entropy Substring Mining Problem (--entropy)
+
+To choose between these problems the corresponding option must be given
+with associated parameters. For problem 1 the --minmax option must be given
+multiple times with the minimum and maximum frequency for each database.
+Problem 2 expects the minimum support in database 1 (rho_s) and the minimum
+growth rate from database 2 to database 1 (rho_g). Problem 3 expects the
+minimum support in at least one database (rho_s) and the maximum entropy
+(alpha).
+As arguments the names of the databases in Fasta format must be given.
+To speed up the suffix tree construction additional options can be used to
+specify the alphabet, e.g. DNA, AminoAcid or text (default).
+By default, DFI outputs every substring that satisfies the frequency
+predicate. If the -m option is given only maximal substrings are output,
+i.e. substrings that satisfy the predicate and are not part of a longer
+substring with the same frequencies.
+
+---------------------------------------------------------------------------
+4. Output Format
+---------------------------------------------------------------------------
+
+The solution set is printed to standard out, one string per line. By
+defining the DEBUG_ENTROPY symbol during compilation, the frequencies and
+entropy can also be printed.
+
+---------------------------------------------------------------------------
+5. Example
+---------------------------------------------------------------------------
+
+As an example run under Linux or Mac OS X:
+  ./dfi32  -g 1 2 example/fasta1.fa example/fasta2.fa
+  ./dfiOSX -g 1 2 example/fasta1.fa example/fasta2.fa
+
+or under Windows:
+  dfi.exe -g 1 2 example\fasta1.fa example\fasta2.fa
+
+The solution set of this example is:
+ba
+bab
+
+---------------------------------------------------------------------------
+6. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  David Weese <david.weese@fu-berlin.de>
+  Marcel H. Schulz <marcel.schulz@molgen.mpg.de>

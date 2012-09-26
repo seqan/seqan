@@ -1,0 +1,217 @@
+.Page.Sequences:
+..order:100
+..XXXcat:Tutorials
+..summary:Sequences in SeqAn.
+
+.Page.Sequences.description:
+..contents
+
+..image:sequences
+
+..text:Sequences are at the core of SeqAn.
+This tutorial gives an overview of the sequence types available in SeqAn. 
+Algorithms to process and manipulate sequences are briefly presented.
+
+
+..section:# Sequence Classes
+..subsection:#.# Strings
+..text:@Class.String.Strings@ are @Concept.Container.containers@ that store a sequence of values, for example 
+a sequence of $char$, @Spec.Dna.nucleotides@, or @Spec.AminoAcid.amino acids@. 
+The user of SeqAn can choose between several kinds of strings that are presented and discussed below.
+All strings support different value types (i.e. alphabets). It is important to note that the string type
+does not restrict the use of any value type.
+
+Typically, the value type is specified as the first template argument.
+..code:String<AminoAcid> myProteine;
+
+..text:SeqAn offers many functions and operators for initializing, converting, manipulating, and printing strings.
+..code:
+String<char> str = "this is ";
+str += "a test.";
+::std::cout << str;
+::std::cout << length(str);
+..text:
+More examples can be found in the @Demo.String Basics.String demo@.
+
+..text:The user can specify the kind of string that should be used in an optional second template argument of @Class.String@.
+There are the following specializations of @Class.String@ available.
+
+..tableheader:Specialization|Description|Applications|Limitations
+..table:@Spec.Alloc String@
+|Expandable string that is stored on the heap.
+|The default string implementation that can be used for general purposes.
+|Changing the @Function.capacity@ can be very costly since all values must be copied.
+..table:@Spec.Array String@
+|Fast but non-expandable string.
+|Fast storing of fixed-size sequences.
+|@Function.capacity|Capacity@ must already be known at runtime. Not suitable for storing large sequences.
+..table:@Spec.Block String@
+|String that stores its sequence characters in blocks
+|The @Function.capacity@ of the string can quickly be increased.
+Good choice for growing strings or stacks.
+|Iteration and random access to values is slightly slower than for @Spec.Alloc String|Alloc Strings@.
+..table:@Spec.Packed String@
+|A string that stores as many values in one machine word as possible.
+|Suitable for storing large strings in memory.
+|Slower than other in-memory strings.
+..table:@Spec.External String@
+|String that is stored in secondary memory.
+|Suitable for storing very large strings (>2GB).
+Parts of the string are automatically loaded from secondary memory on demand.
+|Slower than other string classes.
+..table:@Spec.CStyle String@
+|Allows adaption of strings to C-style strings.
+|Used for transforming other String classes into C-style strings (i.e. null terminated $char$ arrays).
+Could be useful for calling functions of C-libraries.
+|Only reasonable if value type is $char$ or $wchar_t$.
+
+..text:Examples.
+..code:
+//String with maximum length 100.
+String<char, Array<100> > myArrayString;
+//String that takes only 2 bits per nucleotide.
+String<Dna, Packed<> > myPackedString;
+
+
+..subsection:#.# Sequence Adaptions
+..text:SeqAn offers an interface for accessing @Adaption.std::basic_string|standard library strings@ and @Adaption.char array|c-style $char$ arrays@. Hence those built-in types can be handled in the same way as @Class.String|SeqAn strings@.
+..code:
+::std::string str1 = "a standard library string";
+::std::cout << length(str1);
+
+char str2[] = "this is a char array";
+::std::cout << length(str2);
+
+
+..subsection:#.# Segments
+..text: Segments are continuous subsequences that represent parts of other sequences.
+There are three kinds of segments in SeqAn: @Function.infix.infixes@, @Function.prefix.prefixes@, and @Function.suffix.suffixes@.
+The metafunctions @Metafunction.Infix@, @Metafunction.Prefix@, and @Metafunction.Suffix@, respectively, return for a given sequence type the appropriate segment data type.
+..code:
+String<AminoAcid> prot = "AAADDDEEE";
+Suffix<String<AminoAcid> >::Type suf = suffix(prot, 3);
+::std::cout << suf;
+
+..text: The segment is NOT a copy of the sequence segment. That is, changing the segment implies changing the host sequence.
+..code:
+String<char> str = "start_middle_end";
+//We overwrite "middle"
+infix(str, 6, 12) = "overwrite";
+::std::cout << str;
+
+..text: If this effect is undesirable, one has to explicitely make a copy of the string.
+
+..section:# Working with Sequences
+..subsection:#.# Iterators
+..text:@Concept.Iterator|Iterators@ are objects that can be used to iterate over @Concept.Container|containers@ such as @Class.String|strings@ or @Class.Segment|segments@.
+For a given container class, the metafunction @Metafunction.Iterator@ returns the appropriate iterator type.
+An iterator always points to one value of the container.
+The function @Function.value@, which is equivalent to the operator $*$, can be used to access this value.
+Functions like @Function.goNext@ or @Function.goPrevious@, which are equivalent to $++$ and $--$ respectively,
+can be used to move the iterator to other values within the container.
+..text:The functions @Function.begin@ and @Function.end@ applied to a container return iterators to the begin and to the end of the container.
+Note that similar to C++ standard library iterators, the iterator returned by @Function.end@ does not point to the last value of the container but to the value behind the last one.
+If $s$ is empty then $end(s) == begin(s)$.
+..text:
+The following code prints out a sequence and demonstrates how to iterate over a string.
+..code:
+String<char> str = "acgt";
+typedef Iterator<String<char> >::Type TIterator;
+for (TIterator it = begin(str); it != end(str); ++it)
+{
+    ::std::cout << value(it);
+}
+..text:
+More examples can be found in the @Demo.Iterator Basics.Iterator demo@.
+
+
+..subsection:#.# Comparisons
+..text:
+Two sequences can be lexicographically compared using standard operators such as $<$ or $>=$.
+..code:
+String<char> a      = "beta";
+String<char> b      = "alpha";
+
+::std::cout << (a != b);
+::std::cout << (a < b);
+::std::cout << (a > b);
+
+..text:
+Each comparison involves a scan of the two sequences for searching the first mismatch between the strings. This could be costly if the two sequences share a long common prefix.
+Suppose we want to branch in a program depending on whether $a < b$, $a == b$, or $a > b$.
+..code:
+if (a < b)      { /* code for case "a < b"  */ }
+else if (a > b) { /* code for case "a > b"  */ }
+else            { /* code for case "a == b" */ }
+..text:
+In this case, although only one scan would be enough to decide what case is to be applied, each operator $>$ and $<$ performs a new comparison.
+SeqAn offers @Class.Lexical.lexicals@ to avoid unnecessary sequence scans.
+Lexicals can store the result of a comparison, for example:
+..code:
+//Compare a and b and store the result in comp
+Lexical<> comp(a, b);   
+
+if (isLess(comp))           { /* code for case "a < b"  */ }
+else if (isGreater(comp))   { /* code for case "a > b"  */ }
+else                        { /* code for case "a == b" */ }
+
+..subsection:#.# Expansion
+..text:
+Each sequence object has a @Function.capacity@, i.e. the maximum @Function.length@ of a sequence that can be stored in this object.
+While some sequence types like @Spec.Array String@ or @Adaption.char array@ have a fixed capacity,
+the capacity of other sequence classes like @Spec.Alloc String@ or @Adaption.std::basic_string@ can be changed at runtime.
+The capacity can either be set explicitly by functions such as @Function.reserve@ or @Function.resize@ or implicitly by
+functions like @Function.append@ or @Function.replace@, if the operation's result exceeds the length of the target string.
+There are several @Tag.Overflow Strategy.overflow strategies@ that determine what actually happens when a string should be expanded beyond its capacity.
+If no @Tag.Overflow Strategy.overflow strategy@ is specified for a function call, a default overflow strategy is selected depending on the type of the sequence.
+..code:
+String<char> str;
+//Sets the capacity of str to 5.
+resize(str, 5, Exact());
+//Only "abcde" is assigned to str, since str is limited to 5.
+assign(str, "abcdefghijklmn", Limit());
+::std::cout << str << ::std::endl;
+//Use the default expansion strategy.
+append(str, "ABCDEFG");
+::std::cout << str;
+
+..subsection:#.# Conversion
+..text:
+A sequence of type $A$ values can be converted into a sequence of type $B$ values, if $A$ can be converted into $B$.
+SeqAn offers three different conversion alternatives.
+..text:
+1. Copy conversion. The source sequence is copied into the target sequence. This can be done by assignment (operator $=$) or using the function @Function.assign@.
+..code:
+String<Dna> source = "acgtgcat";
+String<char> target;
+assign(target, source);
+::std::cout << target;
+
+..text:
+2. Move conversion. If the source sequence is not needed any more after the conversion, it is always advisable to use @Function.move@ instead of @Function.assign@.
+@Function.move@ does not make a copy but can re-use the source sequence storage.
+In some cases, @Function.move@ can also perform an in-place conversion.
+..code:
+String<char> source = "acgtgcat";
+String<Dna> target;
+//The in-place move conversion.
+move(target, source);
+::std::cout << target;
+
+..text:
+3. Modifier conversion. Instead of creating an actual target sequence, use a @Page.Modifiers|modifier (see the tutorial)@ to 'emulate' a sequence with a different value type, 
+i.e. the modifier $target$ in the following example behaves exactly like a $char$ sequence:
+..code:
+String<char> source = "acgtXgcat";
+typedef ModifiedString<String<char>, ModView<FunctorConvert<char, Dna5> > > TCharToDna5Modifier;
+//Create a sequence of dna5 characters that contains "acgtngcat".
+TCharToDna5Modifier target(source);
+::std::cout << target;
+//Define a variable of type Dna5.
+Value<TCharToDna5Modifier>::Type c;
+
+..subsection:#.# Others
+..text:SeqAn offers several ways for loading and saving sequences in different formats.
+For more information, see @Page.Files|here@. SeqAn also contains a special class 
+@Class.Gaps@ for storing sequences that contain gaps, e.g. lines in sequence alignments. 
+See @Page.Alignments|here@ for more information. 

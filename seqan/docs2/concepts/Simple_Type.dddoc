@@ -1,0 +1,19 @@
+.Concept.Simple Type:
+..summary:Object that does not need constructors, destructors or copy assignment operators.
+..description:
+All POD ("plain old data") types are simple types, but some simple types are not POD types, e.g. the subclasses of @Class.SimpleType@.
+A simple type can have constructors, destructors or copy assignment operators,
+but it can be proper default constructed without using a default constructor, destructed without calling the destructor and copied without calling a copy constructor or a copy assignment operator.
+Hence, simple types can be handled by fast memory manipulation functions.
+This greatly speeds up functions like @Function.arrayCopy@.
+..remarks:
+...text:If you want specify a custom type $MyClass$ to be simple, then just specialize the @Metafunction.IsSimple.IsSimple metafunction@:
+...code:template <>
+struct IsSimple<MyClass>
+{
+    typedef True Type;
+};
+..see:Metafunction.IsSimple
+..see:Class.SimpleType
+
+

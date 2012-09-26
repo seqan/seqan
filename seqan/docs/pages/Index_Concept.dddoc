@@ -1,0 +1,9 @@
+.Indexpage.Concept:
+..description:
+@glos:Concepts@ are a sort of 'interfaces' in generic programming.
+They are not formulated as C++ constructs, but they are part of the documentation.
+A @glos:concept@ is defined by a set of functions and @glos:metafunctions@, and
+a class implements a @glos:concept@ if it implements the functions and @glos:metafunctions@ of this @glos:concept@.
+
+...note:The list of @glos:concepts@ is not complete yet. Completing it is ongoing work.
+

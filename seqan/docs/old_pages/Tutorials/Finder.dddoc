@@ -1,0 +1,109 @@
+.Page.Searching:
+..XXXcat:Tutorials
+..summary:Searching in SeqAn.
+
+.Page.Searching.description:
+..contents
+..image:searching
+
+..section:# Overview
+..text:
+This tutorial is about searching a known string (the @glos:needle@) in another string (the @glos:haystack@). 
+The searching can be exact or inexact. 
+SeqAn also offers methods for searching multiple @glos:needles@ at once.
+
+..text:
+In SeqAn, all searching is done by calling the function @Function.find@, which takes at least two arguments:
+\br 1: A @Concept.Finder|finder@ that stores all necessary information about the @glos:haystack@ 
+and the last found position of the @glos:needle@ within the @glos:haystack@.
+\br 2: A @Concept.Pattern|pattern@ that stores all information about the @glos:needle@.
+\br Some variants of @Function.find@ support further arguments.
+
+..text:
+
+Each call of @Function.find@ finds only one occurrence of the @glos:needle@ within the @glos:haystack@.
+The @Concept.Finder@ can be asked for the @Function.position@ of the last found occurrence.
+Subsequent calls of @Function.find@ can be used to find more occurrences of the @glos:needle@, 
+until no more occurrences can be found and @Function.find@ returns $false$.
+
+..text:
+Search algorithms like @Spec.Horspool|horspool@ or @Spec.ShiftAnd|shift-And@ scan the @glos:haystack@ itself 
+in order to find instances of the @glos:needle@.
+Many of these algorithms preprocess the @glos:needle@ in some way. 
+In this case, the preprocessing data is stored in the @Concept.Pattern|pattern object@.
+..text:Example:
+..code:
+String<char> my_haystack = "Mississippi";
+String<char> my_needle = "is";
+Finder<String<char> > finder(my_haystack);
+Pattern<String<char>, Horspool> pattern(my_needle);
+while (find(finder, pattern)) 
+{
+	::std::cout << position(finder) << ",";
+}
+..output:1,4
+
+..text:
+Other searching methods preprocess the @glos:haystack@ instead of the @glos:needle@.
+In this case, the @glos:haystack@ is a @glos:index@.
+\br Example: See @Demo.Index Finder@.
+
+
+..section:# Searching Algorithms
+..subsection:#.# Exact String Matching
+..text:Exact matching means to find all positions at which the @glos:haystack@ contains the complete @glos:needle@ without errors.
+SeqAn offers several algorithms for exact searching for different purposes. 
+The following table lists the @glos:specializations@ of @Class.Pattern@ that can be used for exact searching.
+
+..tableheader:Algorithm|Description
+..table:@Spec.Horspool@|A common and rather simple algorithm that uses a bad character rule to speed up the search.
+Works very nice in practice for most applications, though the worst case running time is $O(n\squared)$.
+Not optimal for small alphabets or very long patterns.
+..table:@Spec.Bfam@|The Backward Oracle Matching algorithm that uses a special automaton to scan through the @glos:haystack@.
+A good choice for long patterns.
+..table:@Spec.BndmAlgo@|The Backward Nondeterministic DAWG (Directed Acyclic Word Graph) Matching algorithm uses 
+another special automaton to scan through the @glos:haystack@. An alternative to @Spec.Bfam@ for long patterns.
+..table:@Spec.ShiftOr@|An algorithm that uses bit parallelism. 
+Should only be used for patterns that are not longer than a machine word, i.e. 32 or 64 characters.
+Even for small patterns, it is outperformed by @Spec.Horspool@ for alphabets larger than @Spec.Dna@.
+..table:@Spec.ShiftAnd@|An alternative to @Spec.ShiftOr@ with similar characteristics.
+
+ 
+..subsection:#.# Exact Multiple Pattern Matching
+..text:The following algorithms can be used to search several @glos:needles@ at once:
+..tableheader:Algorithm|Description
+..table:@Spec.SetHorspool@|An extension of the @Spec.Horspool@ algorithm that uses a @glos:trie@ to scan backwards through the @glos:haystack@.
+..table:@Spec.AhoCorasick@|A multiple pattern search algorithm that uses a @glos:trie@ to scan forwards through the @glos:haystack@.
+..table:@Spec.MultipleShiftAnd@|An extension of the @Spec.ShiftAnd@ algorithm for searching multiple @glos:needles@ at once.
+Should only be used for patterns that are not longer than a machine word, i.e. 32 or 64 characters.
+..XXXtable:@Spec.WuManber@|A string matching algorithm similar to @Spec.Horspool@ for multiple patterns.
+Less advisable if the minimum length of the patterns is very small.
+
+
+..subsection:#.# Approximative Searching
+..text:Approximative searching means to find all occurrences of the @glos:needle@ not below a given score limit.
+..tableheader:Algorithm|Description
+..table:@Spec.DPSearch@|A dynamic programming algorithm for approximate string-matching.
+Rather slow but can be applied to many kinds of @glos:scoring scheme@. 
+..table:@Shortcut.MyersUkkonen@|A fast bit-parallel approximate string matching algorithm for edit distance.
+..text:
+The scoring model can be accessed by @Function.scoringScheme@ and @Function.setScoringScheme@,
+the limit by @Function.scoreLimit@ and @Function.setScoreLimit@,
+and the score of the last found match by @Function.getScore@.
+All these functions are applied to the @Class.Pattern@ object that stores all information about the approximative search.
+..text:Note: The position stored in the @Class.Finder@ is the end position, not the start position, of the last found match.
+..text:Example: See @Demo.Approximate Searching@.
+  
+
+..subsection:#.# Wildcard Searching
+..text:Wildcard searching algorithms make it possible to determine a more complex @glos:needle@. 
+The used syntax depends on the algorithms used. 
+A typical wildcard pattern could be "$ab+c$" that matches to "$abc$", "$abbc$", "$abbbc$", \ldots.
+..tableheader:Algorithm|Description
+..table:@Spec.WildShiftAnd@|An extension of @Spec.ShiftAnd@ supports a subset of regular expressions, namely "$*$", "$+$", "$?$", braces to specify the number of repeated characters, 
+and character classes that are specified in square brackets.
+..text:Example: See @Demo.Wildcard Searching@.
+
+
+..section:# Index Searching
+..text:For more information about searching with indices, see @Page.Indices|this tutorial@.

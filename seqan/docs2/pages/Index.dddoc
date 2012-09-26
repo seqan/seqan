@@ -1,0 +1,30 @@
+.Indexpage.Page
+..title:SeqAn - The Library for Sequence Analysis
+.Indexpage.Page.description:
+..text:SeqAn is the open source C++ library of efficient algorithms and data structures for the analysis of sequences with the focus on biological data.
+..text:SeqAn applies a unique generic design that guarantees high performance, generality, extensibility, and integration with other libraries.
+..text:SeqAn is easy to use and simplifies the development of new software tools with a minimal loss of performance.
+..XXXimage:seqan_logo_large
+..contents
+
+..section:# Getting Started
+..text:Follow the @http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/GettingStarted|getting started instructions@ to install SeqAn on your system.
+..text:A good starting point for learning more about SeqAn is to read the @http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial|tutorial@ in our @http://trac.mi.fu-berlin.de/seqan/wiki|Wiki@.
+    This will introduce you into the basic concepts of the library and give you an overview about the content of the library.
+..text:Refer to the @Page.Glossary|glossary@ if you encounter questionable terminology.
+..text:The collection of @Demo|example programs@ in this documentation and the assignments in the @http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial|Tutorial@ demonstrate how to use the data structures and functions offered by SeqAn.
+
+..section:# Contents of this Documentation
+..table:Overview|An introduction to the basic techniques of SeqAn and tutorials to the parts of the library.
+..table:@Concept|Concepts@|The ontology of the generic interfaces used in SeqAn. 
+..table:@Class|Classes@|The data structures, most of them are class templates (some of these templates have @Spec|specializations@).
+..table:@Spec|Specializations@|Specializations of @Class|class templates@ using @glos:Template Subclassing@.
+..table:@Shortcut|Shortcuts@|Abreviations for often used types, i.e. @Class|classes@ and @Spec|specializations@.
+..table:@Function|Functions@|Global functions that work on data structures.
+..table:@Metafunction|Metafunctions@|@glos:Metafunction|Metafunctions@ that are used to determine depending types or constants depending on given types or constants at compile time.
+..table:@Tag|Tags@|Special types that are used as switches when passed to functions.
+..table:@Adaption|Adaption@|Built-in types and classes of other libraries that can be accessed the same way as SeqAn datastructures.
+..table:@Demo|Examples@|Small programs that demonstrates the application of SeqAn functionality.
+    
+..section:# Concepts and Tutorials
+

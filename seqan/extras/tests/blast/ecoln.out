@@ -1,0 +1,552 @@
+BLASTN 2.2.16 [Mar-25-2007]
+
+
+Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer, 
+Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), 
+"Gapped BLAST and PSI-BLAST: a new generation of protein database search
+programs",  Nucleic Acids Res. 25:3389-3402.
+
+Query= Test
+         (567 letters)
+
+Database: ecoli.nt 
+           400 sequences; 4,662,239 total letters
+
+Searching..................................................done
+
+
+
+                                                                 Score    E
+Sequences producing significant alignments:                      (bits) Value
+
+gb|AE000111.1|AE000111 Escherichia coli K-12 MG1655 section 1 of...   278   5e-75
+gb|AE000440.1|AE000440 Escherichia coli K-12 MG1655 section 330 ...    32   0.52 
+gb|AE000132.1|AE000132 Escherichia coli K-12 MG1655 section 22 o...    32   0.52 
+gb|AE000485.1|AE000485 Escherichia coli K-12 MG1655 section 375 ...    30   2.0  
+gb|AE000387.1|AE000387 Escherichia coli K-12 MG1655 section 277 ...    30   2.0  
+gb|AE000295.1|AE000295 Escherichia coli K-12 MG1655 section 185 ...    30   2.0  
+gb|AE000279.1|AE000279 Escherichia coli K-12 MG1655 section 169 ...    30   2.0  
+gb|AE000167.1|AE000167 Escherichia coli K-12 MG1655 section 57 o...    30   2.0  
+gb|AE000117.1|AE000117 Escherichia coli K-12 MG1655 section 7 of...    30   2.0  
+gb|AE000115.1|AE000115 Escherichia coli K-12 MG1655 section 5 of...    30   2.0  
+gb|AE000510.1|AE000510 Escherichia coli K-12 MG1655 section 400 ...    28   8.1  
+gb|AE000488.1|AE000488 Escherichia coli K-12 MG1655 section 378 ...    28   8.1  
+gb|AE000482.1|AE000482 Escherichia coli K-12 MG1655 section 372 ...    28   8.1  
+gb|AE000463.1|AE000463 Escherichia coli K-12 MG1655 section 353 ...    28   8.1  
+gb|AE000462.1|AE000462 Escherichia coli K-12 MG1655 section 352 ...    28   8.1  
+gb|AE000441.1|AE000441 Escherichia coli K-12 MG1655 section 331 ...    28   8.1  
+gb|AE000399.1|AE000399 Escherichia coli K-12 MG1655 section 289 ...    28   8.1  
+gb|AE000371.1|AE000371 Escherichia coli K-12 MG1655 section 261 ...    28   8.1  
+gb|AE000332.1|AE000332 Escherichia coli K-12 MG1655 section 222 ...    28   8.1  
+gb|AE000313.1|AE000313 Escherichia coli K-12 MG1655 section 203 ...    28   8.1  
+gb|AE000269.1|AE000269 Escherichia coli K-12 MG1655 section 159 ...    28   8.1  
+gb|AE000230.1|AE000230 Escherichia coli K-12 MG1655 section 120 ...    28   8.1  
+gb|AE000190.1|AE000190 Escherichia coli K-12 MG1655 section 80 o...    28   8.1  
+gb|AE000183.1|AE000183 Escherichia coli K-12 MG1655 section 73 o...    28   8.1  
+gb|AE000161.1|AE000161 Escherichia coli K-12 MG1655 section 51 o...    28   8.1  
+gb|AE000155.1|AE000155 Escherichia coli K-12 MG1655 section 45 o...    28   8.1  
+gb|AE000151.1|AE000151 Escherichia coli K-12 MG1655 section 41 o...    28   8.1  
+gb|AE000149.1|AE000149 Escherichia coli K-12 MG1655 section 39 o...    28   8.1  
+
+>gb|AE000111.1|AE000111 Escherichia coli K-12 MG1655 section 1 of 400 of the complete
+           genome
+          Length = 10596
+
+ Score =  278 bits (140), Expect = 5e-75
+ Identities = 140/140 (100%)
+ Strand = Plus / Plus
+
+                                                                       
+Query: 421 aggcaggggcaggtggccaccgtcctctctgcccccgccaaaatcaccaaccacctggtg 480
+           ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Sbjct: 421 aggcaggggcaggtggccaccgtcctctctgcccccgccaaaatcaccaaccacctggtg 480
+
+                                                                       
+Query: 481 gcgatgattgaaaaaaccattagcggccaggatgctttacccaatatcagcgatgccgaa 540
+           ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Sbjct: 481 gcgatgattgaaaaaaccattagcggccaggatgctttacccaatatcagcgatgccgaa 540
+
+                               
+Query: 541 cgtatttttgccgaactttt 560
+           ||||||||||||||||||||
+Sbjct: 541 cgtatttttgccgaactttt 560
+
+
+
+ Score =  182 bits (92), Expect = 2e-46
+ Identities = 92/92 (100%)
+ Strand = Plus / Plus
+
+                                                                       
+Query: 210 cattaccaccaccatcaccattaccacaggtaacggtgcgggctgacgcgtacaggaaac 269
+           ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+Sbjct: 210 cattaccaccaccatcaccattaccacaggtaacggtgcgggctgacgcgtacaggaaac 269
+
+                                           
+Query: 270 acagaaaaaagcccgcacctgacagtgcgggc 301
+           ||||||||||||||||||||||||||||||||
+Sbjct: 270 acagaaaaaagcccgcacctgacagtgcgggc 301
+
+
+
+ Score =  119 bits (60), Expect = 3e-27
+ Identities = 71/74 (95%), Gaps = 3/74 (4%)
+ Strand = Plus / Plus
+
+                                                                       
+Query: 94  tataggcatagcgcacagacagataaaaattacagagtaccttacaacatccatgaaacg 153
+           ||||||||||||||||||||||||||||||||||||||||   |||||||||||||||||
+Sbjct: 141 tataggcatagcgcacagacagataaaaattacagagtac---acaacatccatgaaacg 197
+
+                         
+Query: 154 cattagcaccacca 167
+           ||||||||||||||
+Sbjct: 198 cattagcaccacca 211
+
+
+
+ Score = 97.6 bits (49), Expect = 1e-20
+ Identities = 63/70 (90%)
+ Strand = Plus / Plus
+
+                                                                      
+Query: 1  agcttttcattctgactgcaacgggcaatatgtctctgtgtggattnnnnnnngagtgtc 60
+          ||||||||||||||||||||||||||||||||||||||||||||||       |||||||
+Sbjct: 1  agcttttcattctgactgcaacgggcaatatgtctctgtgtggattaaaaaaagagtgtc 60
+
+                    
+Query: 61 tgatagcagc 70
+          ||||||||||
+Sbjct: 61 tgatagcagc 70
+
+
+
+ Score = 56.0 bits (28), Expect = 4e-08
+ Identities = 28/28 (100%)
+ Strand = Plus / Plus
+
+                                       
+Query: 350 acgaggtaacaaccatgcgagtgttgaa 377
+           ||||||||||||||||||||||||||||
+Sbjct: 323 acgaggtaacaaccatgcgagtgttgaa 350
+
+
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                         
+Query: 274 aaaaaagcccgcac 287
+           ||||||||||||||
+Sbjct: 307 aaaaaagcccgcac 294
+
+
+>gb|AE000440.1|AE000440 Escherichia coli K-12 MG1655 section 330 of 400 of the complete
+            genome
+          Length = 15529
+
+ Score = 32.2 bits (16), Expect = 0.52
+ Identities = 16/16 (100%)
+ Strand = Plus / Minus
+
+                            
+Query: 496  accattagcggccagg 511
+            ||||||||||||||||
+Sbjct: 2689 accattagcggccagg 2674
+
+
+>gb|AE000132.1|AE000132 Escherichia coli K-12 MG1655 section 22 of 400 of the complete genome
+          Length = 10167
+
+ Score = 32.2 bits (16), Expect = 0.52
+ Identities = 16/16 (100%)
+ Strand = Plus / Plus
+
+                            
+Query: 529  agcgatgccgaacgta 544
+            ||||||||||||||||
+Sbjct: 3468 agcgatgccgaacgta 3483
+
+
+>gb|AE000485.1|AE000485 Escherichia coli K-12 MG1655 section 375 of 400 of the complete genome
+          Length = 13096
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 15/15 (100%)
+ Strand = Plus / Plus
+
+                            
+Query: 186   tttcgatcagtttta 200
+             |||||||||||||||
+Sbjct: 12887 tttcgatcagtttta 12901
+
+
+>gb|AE000387.1|AE000387 Escherichia coli K-12 MG1655 section 277 of 400 of the complete genome
+          Length = 11307
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 15/15 (100%)
+ Strand = Plus / Minus
+
+                            
+Query: 519   acccaatatcagcga 533
+             |||||||||||||||
+Sbjct: 10945 acccaatatcagcga 10931
+
+
+>gb|AE000295.1|AE000295 Escherichia coli K-12 MG1655 section 185 of 400 of the complete
+            genome
+          Length = 20254
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 18/19 (94%)
+ Strand = Plus / Minus
+
+                               
+Query: 489  tgaaaaaaccattagcggc 507
+            |||||||||||| ||||||
+Sbjct: 6930 tgaaaaaaccatcagcggc 6912
+
+
+>gb|AE000279.1|AE000279 Escherichia coli K-12 MG1655 section 169 of 400 of the complete
+            genome
+          Length = 10855
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 15/15 (100%)
+ Strand = Plus / Minus
+
+                           
+Query: 472  cacctggtggcgatg 486
+            |||||||||||||||
+Sbjct: 2905 cacctggtggcgatg 2891
+
+
+>gb|AE000167.1|AE000167 Escherichia coli K-12 MG1655 section 57 of 400 of the complete genome
+          Length = 10264
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 15/15 (100%)
+ Strand = Plus / Minus
+
+                           
+Query: 9    attctgactgcaacg 23
+            |||||||||||||||
+Sbjct: 7614 attctgactgcaacg 7600
+
+
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 273  gaaaaaagcccgca 286
+            ||||||||||||||
+Sbjct: 7686 gaaaaaagcccgca 7673
+
+
+>gb|AE000117.1|AE000117 Escherichia coli K-12 MG1655 section 7 of 400 of the complete genome
+          Length = 13416
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 15/15 (100%)
+ Strand = Plus / Plus
+
+                           
+Query: 456  cgccaaaatcaccaa 470
+            |||||||||||||||
+Sbjct: 2900 cgccaaaatcaccaa 2914
+
+
+>gb|AE000115.1|AE000115 Escherichia coli K-12 MG1655 section 5 of 400 of the complete genome
+          Length = 10102
+
+ Score = 30.2 bits (15), Expect = 2.0
+ Identities = 15/15 (100%)
+ Strand = Plus / Plus
+
+                           
+Query: 475  ctggtggcgatgatt 489
+            |||||||||||||||
+Sbjct: 1090 ctggtggcgatgatt 1104
+
+
+>gb|AE000510.1|AE000510 Escherichia coli K-12 MG1655 section 400 of 400 of the complete
+            genome
+          Length = 6309
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                          
+Query: 476  tggtggcgatgatt 489
+            ||||||||||||||
+Sbjct: 4291 tggtggcgatgatt 4304
+
+
+>gb|AE000488.1|AE000488 Escherichia coli K-12 MG1655 section 378 of 400 of the complete
+            genome
+          Length = 10003
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 216  caccaccatcacca 229
+            ||||||||||||||
+Sbjct: 4411 caccaccatcacca 4398
+
+
+>gb|AE000482.1|AE000482 Escherichia coli K-12 MG1655 section 372 of 400 of the complete genome
+          Length = 20906
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                           
+Query: 221   ccatcaccattacc 234
+             ||||||||||||||
+Sbjct: 10191 ccatcaccattacc 10204
+
+
+>gb|AE000463.1|AE000463 Escherichia coli K-12 MG1655 section 353 of 400 of the complete
+            genome
+          Length = 10159
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 270  acagaaaaaagccc 283
+            ||||||||||||||
+Sbjct: 2092 acagaaaaaagccc 2079
+
+
+>gb|AE000462.1|AE000462 Escherichia coli K-12 MG1655 section 352 of 400 of the complete
+           genome
+          Length = 10331
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                         
+Query: 154 cattagcaccacca 167
+           ||||||||||||||
+Sbjct: 351 cattagcaccacca 364
+
+
+>gb|AE000441.1|AE000441 Escherichia coli K-12 MG1655 section 331 of 400 of the complete genome
+          Length = 10562
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                           
+Query: 117   taaaaattacagag 130
+             ||||||||||||||
+Sbjct: 10457 taaaaattacagag 10470
+
+
+>gb|AE000399.1|AE000399 Escherichia coli K-12 MG1655 section 289 of 400 of the complete
+            genome
+          Length = 17801
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 335  tatcgatccgattg 348
+            ||||||||||||||
+Sbjct: 2290 tatcgatccgattg 2277
+
+
+>gb|AE000371.1|AE000371 Escherichia coli K-12 MG1655 section 261 of 400 of the complete
+            genome
+          Length = 11795
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                          
+Query: 20   aacgggcaatatgt 33
+            ||||||||||||||
+Sbjct: 1100 aacgggcaatatgt 1113
+
+
+>gb|AE000332.1|AE000332 Escherichia coli K-12 MG1655 section 222 of 400 of the complete
+            genome
+          Length = 12698
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 248  cgggctgacgcgta 261
+            ||||||||||||||
+Sbjct: 5994 cgggctgacgcgta 5981
+
+
+>gb|AE000313.1|AE000313 Escherichia coli K-12 MG1655 section 203 of 400 of the complete
+            genome
+          Length = 10144
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 205  cagatcattaccac 218
+            ||||||||||||||
+Sbjct: 1405 cagatcattaccac 1392
+
+
+>gb|AE000269.1|AE000269 Escherichia coli K-12 MG1655 section 159 of 400 of the complete genome
+          Length = 11007
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                           
+Query: 144   ccatgaaacgcatt 157
+             ||||||||||||||
+Sbjct: 10338 ccatgaaacgcatt 10351
+
+
+>gb|AE000230.1|AE000230 Escherichia coli K-12 MG1655 section 120 of 400 of the complete
+            genome
+          Length = 10118
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                          
+Query: 142  atccatgaaacgca 155
+            ||||||||||||||
+Sbjct: 4204 atccatgaaacgca 4217
+
+
+>gb|AE000190.1|AE000190 Escherichia coli K-12 MG1655 section 80 of 400 of the complete genome
+          Length = 10051
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Plus
+
+                          
+Query: 108  acagacagataaaa 121
+            ||||||||||||||
+Sbjct: 3526 acagacagataaaa 3539
+
+
+>gb|AE000183.1|AE000183 Escherichia coli K-12 MG1655 section 73 of 400 of the complete genome
+          Length = 11029
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 274  aaaaaagcccgcac 287
+            ||||||||||||||
+Sbjct: 3997 aaaaaagcccgcac 3984
+
+
+>gb|AE000161.1|AE000161 Escherichia coli K-12 MG1655 section 51 of 400 of the complete genome
+          Length = 16170
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                           
+Query: 16    ctgcaacgggcaat 29
+             ||||||||||||||
+Sbjct: 13270 ctgcaacgggcaat 13257
+
+
+>gb|AE000155.1|AE000155 Escherichia coli K-12 MG1655 section 45 of 400 of the complete genome
+          Length = 11593
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 352  gaggtaacaaccat 365
+            ||||||||||||||
+Sbjct: 9581 gaggtaacaaccat 9568
+
+
+>gb|AE000151.1|AE000151 Escherichia coli K-12 MG1655 section 41 of 400 of the complete genome
+          Length = 11095
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 14/14 (100%)
+ Strand = Plus / Minus
+
+                          
+Query: 223  atcaccattaccac 236
+            ||||||||||||||
+Sbjct: 5637 atcaccattaccac 5624
+
+
+>gb|AE000149.1|AE000149 Escherichia coli K-12 MG1655 section 39 of 400 of the complete genome
+          Length = 10429
+
+ Score = 28.2 bits (14), Expect = 8.1
+ Identities = 17/18 (94%)
+ Strand = Plus / Minus
+
+                              
+Query: 199  tacgatcagatcattacc 216
+            |||||||||||| |||||
+Sbjct: 5787 tacgatcagatctttacc 5770
+
+
+  Database: ecoli.nt
+    Posted date:  Jul 5, 2007 12:36 PM
+  Number of letters in database: 4,662,239
+  Number of sequences in database:  400
+  
+Lambda     K      H
+    1.37    0.711     1.31 
+
+Gapped
+Lambda     K      H
+    1.37    0.711     1.31 
+
+
+Matrix: blastn matrix:1 -3
+Gap Penalties: Existence: 5, Extension: 2
+Number of Sequences: 400
+Number of Hits to DB: 25,352
+Number of extensions: 1480
+Number of successful extensions: 37
+Number of sequences better than 10.0: 28
+Number of HSP's gapped: 35
+Number of HSP's successfully gapped: 35
+Length of query: 567
+Length of database: 4,662,239
+Length adjustment: 16
+Effective length of query: 551
+Effective length of database: 4,655,839
+Effective search space: 2565367289
+Effective search space used: 2565367289
+X1: 11 (21.8 bits)
+X2: 15 (29.7 bits)
+X3: 25 (49.6 bits)
+S1: 14 (28.2 bits)
+S2: 14 (28.2 bits)

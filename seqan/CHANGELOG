@@ -1,0 +1,83 @@
+= SeqAn Changelog =
+
+Add a new list item '''AT THE TOP''' for each change (excluding trivial things like changes to whitespace and comments).
+Link to changsets with `[CHANGESET-NUMBER]` and tickets with `#TICKET-NUMBER` whenever possible.
+You can use Trac wiki syntax.
+
+== Trunk ==
+
+ * ''config.h'' and generated forward files are now created in the build directory.
+ * Removing basic_definition.h, moving contents into basic_metaprogramming, basic_tag and new basic_math.h.
+ * Documentation of Simple Holder.
+ * Cleanup of Holder header, removing unused, undocumented, untested Tristate2 holder.
+ * Documentation for Hosted Object Concept.
+ * Documentation for metafunctions.
+ * Documentation for `SEQAN_ENABLE_PARALLELISM`.
+ * Adding support for documenting enums and macros to dddocs.
+ * Fixing wrong usage line displayed in Mason read simulator.
+ * Removing unused, undocumented `SinglePool2` and `ChunkPool2` allocators.
+ * Cleaning up allocator headers.
+ * Cleaned up iterator infrastructure a bit.
+ * Cleaned up various headers in basic module, added documentation for `ProfileType` class.
+ * Cleanup of ''basic_proxy.h'' header, making `Proxy` a `class` instead of a `struct`.
+ * Removing empty ''basic_operator.h''.
+ * Removing `VoidHolder<>`, in ''basic_holder_dynamic.h''.
+ * Documentation and cleanup of `LogValue<>`.
+ * Documentation for `VolatilePtr<>`.
+ * Removing ''basic_counted_ptr.h'' that contained only unused code.
+ * Did some renaming of debugging/testing assertion macros.
+  * `SEQAN_ASSERT_TRUE` is now called `SEQAN_ASSERT` (`SEQAN_ASSERT_TRUE_MSG` is now `SEQAN_ASSERT_MSG`).
+  * The old `SEQAN_ASSERT` macro from old testing/debugging system has been removed, along with the `SEQAN_CHECK*`, `SEQAN_REPORT`, `SEQAN_DO*` macros.
+  * The only remaining part from the old test system are the internal functions `_compareBinaryFiles()`, `_compareTextFilesReadChar()`, `_compareTextFiles()`.
+  * The assertion macros have been replaced in the library and SeqAn applications.
+ * Adding functions `isBitSet()`, `clearBit()`, `clearAllBits()`, `setBitTo()`, `setBit()` to misc header ''misc_bit_twiddling.h''.
+ * Adding Union-Find data structure in `misc/misc_union_find.d`.
+ * fixing `eraseBack()` with block strings.
+ * Using Union-Find data structure in Kruskal's algorithm to improve the running time to `O(m log m)`.
+ * Changed `resizeVertexMap` and `resizeEdgeMap`. The two-parameter versions have similar semantics as before and initialize the map with 0. The three-parameter versions expect an additional "prototype version" that is copied/assigned into the map. The old copy-from-arrayy versions are now called `assignVertexMap` and `assignEdgeMap`. Also updated the tutorial.
+ * Adding documentation of graph iterator constructors.
+ * Adding full segment support for journaled strings, including segment assignment, e.g. `infix(journaledString, 0, 10) = DnaString("CGAT")`.
+ * Adding `position()`, `operator-()`, `operator[]` with proxy functionality and relation operators to journaled string iterator.
+ * Adding metafunction `GetDefaultRng<T>::Type` and function `defaultRng()` for construction of global random number generators to be used by default in randomized data structures and algorithms.
+ * Adding specialization of Uniform probability density function for `bool`s and tests.
+ * Documented `getQuality`.
+
+== Release 1.2 ==
+
+ * Splitting file ''sequence_multiple.h'' into ''string_set*.h'', ''iter_concat_virtual.h'', and ''sequence_concatenator.h''.
+ * Bound check in `iter()`.
+ * Adding `SEQAN_IS_64_BIT` and `SEQAN_IS_64_BIT` macros, defined to either `0` or `1`, depending on the platform.
+ * Adjusting `MUM` and `MEM` to new naming schema. (#836)
+ * Adding `SEQAN_OMP_PRAGMA` to hide `#pragma omp` when not compiling with OpenMP to suppress warnings. (#353)
+ * The test system deletes all files with the same name as temporary file names generated during the tests. (#377)
+ * Adding documentation for the alphabets `Dna5Q` and `DnaQ` which allow to store 5/4 nucleotides along with the quality in one byte (`char`).
+ * Defining integer types (__int8, __uint8, ...) for MinGW, too.
+ * Making snp_store compile with LLVM.
+ * Removing type `Byte` since it clashes with zlib (#843).  Note that the types `Ascii` and `Unicode` are deprecated and will be removed soon (#849).
+ * Fixing a bug in `iter()` with iterator (#848).
+ * Adding module '''parallel''', bootstrapping with atomic primitives and atomic `min()`/`max()` functions, fully tested.
+ * Slightly optimized assign for strings when source and target are empty.
+ * Slightly optimized `empty()` for strings.
+ * Fixing problem with MaxValue<>, MinValue<> of RNG with multiple compilation units.
+ * Also defining `std::swap` for strings and string sets.
+ * Fixing bug in `windowFindNext()`.
+ * Setting flags for RelDebug build type correctly for apps.
+ * Removed unused and undocumented `string_value_expand.h` / `String<TValue, ValueExpand<...> >`
+ * Various comment / formatting / documentation changes and annotations in sequence module.
+ * Renaming `string_stack.h` to `string_block.h` and adding header field for author.
+ * Adding comment about value expand string, also see #839.
+ * Renaming `lexical.h` to `sequence_lexical.h` adding note on the location of `ordValue`, also see #838.
+ * Renaming `string_pointer.h` to `adapt_array_pointer.h` and adding some notes for issues to review, e.g. #837.
+ * Improving coding style compliance of Array String implementation.
+ * Making documentation about assigning to CStyle SeqAn strings more clear, adjusting comments.
+ * Documenting `reAlign()`, various small comment and whitespace fixes in consensus module.
+ * Comparison operator for tag selector.
+ * Experimental BAM reading/writing.
+ * Allowing the store elements of fragment stores to be comparable.
+ * Adding bundled version of ''samtools''.
+ * Fixing documentation for `resize()`, `reAlign()`, `reverse()`, and `score()`.
+ * Fixing `lowerBoundAlignedReads()` and `lowerBoundAlignedReads()` when searching by begin and end position.
+ * Properly documenting `lowerBoundAlignedReads()` and `upperBoundAlignedReads()`.
+ * Fixing documentation about include for ''misc/misc_cmdparser.h'', was ''seqan/misc.h'', corrected to ''seqan/misc/misc_cmdparser.h''.
+ * Assertion in semiglobal SWIFT finder that hits begin <= end.
+ * Initializing state.errors in Myers Ukkonen banded pattern initialization.

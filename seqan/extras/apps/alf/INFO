@@ -1,0 +1,19 @@
+Name: alf
+Author: Jonathan Göke <goeke@molgen.mpg.de>
+Maintainer: Jonathan Göke <goeke@molgen.mpg.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: GPL v3
+Copyright: 2012, FU Berlin
+Status: testing
+Description: Alignment free sequence comparison.
+ Alignment free sequence comparison.
+ .
+ This application can be used to calculate pairwise scores of DNA Sequences
+ without alignments.
+ .
+ The following scores are implemented: N2, D2, D2Star, D2z.
+ .
+ Please reference the following publication if you used ALF or the N2 method
+ for your analysis:
+ .
+ Jonathan Göke et al. To appear.

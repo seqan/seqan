@@ -1,0 +1,74 @@
+Notes
+=====
+
+This macro lets you include various things.
+
+Currently supported sources:
+
+* HTTP - ``http:`` and ``https:``
+* FTP - ``ftp:``
+* Wiki pages - ``wiki:``
+* Repository files - ``source:``
+
+The default source is ``wiki`` if only a source path is given.
+
+An optional second argument sets the output MIME type, though in most
+cases the default will be correct.
+
+Permissions
+===========
+
+The three remote sources (``http``, ``https``, and ``ftp``) require
+``INCLUDE_URL`` to be rendered.
+
+Anyone can add a call to these, however they will not be shown. This is
+**not** a replacement for ``render_unsafe_content``, see below.
+
+Configuration
+=============
+
+If ``[wiki] render_unsafe_content`` is off (the default), any produced
+HTML will be sanitized.
+
+.. caution::
+    This is a potential security risk! Please review the implications
+    ``render_unsafe_content`` before using this feature.
+
+To enable the plugin::
+
+    [components]
+    includemacro.* = enabled
+
+Example
+=======
+
+Include another wiki page::
+
+    [[Include(PageName)]]
+
+Include a reStructuredText__ file from the repository::
+
+    [[Include(source:trunk/docs/README, text/x-rst)]]
+
+__ http://docutils.sf.net/rst.html
+
+.. tip::
+    If you set the ``svn:mime-type`` property on the file, you can  
+    leave off the explicit MIME type.
+
+You can also specify a a fragment to be included::
+
+    [[Include(source:trunk/test.cpp, fragment=main]]
+
+If the file trunk/test.cpp looks like this:
+
+    // The lines that contain FRAGMENT(fragment-name) define a fragment
+    // from the line AFTER their occurence up to before the next line
+    // containing such a fragment marker.
+    // FRAGMENT(includes)
+    #include <cstdio>
+
+    // FRAGMENT(main)
+    int main(int argc, char **argv) {
+        return 0;
+    }

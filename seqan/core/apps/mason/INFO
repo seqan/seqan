@@ -1,0 +1,16 @@
+Name: Mason Read Simulator
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: GPL v3
+Homepage: http://www.seqan.de/projects/mason.html
+Copyright: 2008-2011, FU Berlin
+Status: mature
+Description: Mason is a read simualtor for NGS data.
+ Mason is a read simulator software for Illumina, 454 and Sanger reads. Its 
+ features include position specific error rates and base quality values.
+ For Illumina reads, it uses a comprehensive analysis with empirical data
+ for the error and quality model. For the other technologies, models from
+ the literature are used.
+ .
+ Mason has been written with performance in mind and can sample reads from
+ large genomes.

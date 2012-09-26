@@ -1,0 +1,5 @@
+py_lib
+======
+
+This directory should be added to your PYTHONPATH when executing Python
+scripts that depend on it, such as app tests.

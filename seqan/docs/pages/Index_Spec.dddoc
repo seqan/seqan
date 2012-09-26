@@ -1,0 +1,3 @@
+.Indexpage.Spec:
+..description:
+Specializations refine @Class|Class templates@ using @http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/TemplateSubclassing|Template Subclassing@.

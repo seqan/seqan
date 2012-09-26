@@ -1,0 +1,41 @@
+digraph G {
+
+/* Graph Attributes */
+graph [rankdir = LR];
+
+/* Node Attributes */
+node [shape = rectangle, fillcolor = white, style = filled, fontname = "Times-Italic"];
+
+/* Edge Attributes */
+edge [fontname = "Times-Italic", arrowsize = 0.75, fontsize = 16];
+
+/* Nodes */
+0 [label = "Bovine"];
+1 [label = "Mouse"];
+2 [label = "Gibbon"];
+3 [label = "Orang"];
+4 [label = "Gorilla"];
+5 [label = "Chimp"];
+6 [label = "Human"];
+7 [label = ""];
+8 [label = ""];
+9 [label = ""];
+10 [label = ""];
+11 [label = ""];
+12 [label = ""];
+
+/* Edges */
+7 -> 1 [label = "0.76891"];
+7 -> 0 [label = "0.91769"];
+8 -> 2 [label = "0.35793"];
+8 -> 7 [label = "0.42027"];
+9 -> 6 [label = "0.11753"];
+9 -> 5 [label = "0.15167"];
+10 -> 3 [label = "0.28469"];
+10 -> 8 [label = "0.046481"];
+11 -> 4 [label = "0.15393"];
+11 -> 10 [label = "0.026956"];
+12 -> 11 [label = "0.019909"];
+12 -> 9 [label = "0.019909"];
+
+}

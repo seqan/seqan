@@ -1,0 +1,11 @@
+@HD	VN:1.0
+@SQ	SN:01seq	LN:80
+@PG	ID:SeqAn
+01_reads.01	8	01seq	1	0	20M	*	0	0	CCCCCCCCCCCCCCCCCCCC	]]]]]]]]]]]]]]]]]]]]
+01_reads.02	24	01seq	1	0	20M	*	0	0	CCCCCCCCCCCCCCCCCCCC	]]]]]]]]]]]]]]]]]]]]
+01_reads.01	24	01seq	21	0	20M	*	0	0	GGGGGGGGGGGGGGGGGGGG	]]]]]]]]]]]]]]]]]]]]
+01_reads.02	8	01seq	21	0	20M	*	0	0	GGGGGGGGGGGGGGGGGGGG	]]]]]]]]]]]]]]]]]]]]
+01_reads.03	8	01seq	41	0	20M	*	0	0	AAAAAAAAAAAAAAAAAAAA	]]]]]]]]]]]]]]]]]]]]
+01_reads.04	24	01seq	41	0	20M	*	0	0	AAAAAAAAAAAAAAAAAAAA	]]]]]]]]]]]]]]]]]]]]
+01_reads.03	24	01seq	61	0	20M	*	0	0	TTTTTTTTTTTTTTTTTTTT	]]]]]]]]]]]]]]]]]]]]
+01_reads.04	8	01seq	61	0	20M	*	0	0	TTTTTTTTTTTTTTTTTTTT	]]]]]]]]]]]]]]]]]]]]

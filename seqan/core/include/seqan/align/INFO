@@ -1,0 +1,12 @@
+Name: seqan-align
+Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
+Author: Birte Kehr <birte.kehr@fu-berlin.de>
+Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Birte Kehr <birte.kehr@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2012, Knut Reinert, FU Berlin
+Status: mature
+Description: Alignment data structures.
+ Definition of alignment data structures and pairwise DP alignment
+ algorithms.

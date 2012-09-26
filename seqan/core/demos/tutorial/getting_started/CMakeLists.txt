@@ -1,0 +1,5 @@
+cmake_minimum_required (VERSION 2.6)
+project (seqan_core_demos_tutorials_getting_started)
+
+seqan_setup_apps(core_demos_tutorials_getting_started)
+seqan_add_all_executables(core_demos_tutorials_getting_started tutorial_)

@@ -1,0 +1,5 @@
+.Indexpage.Class:
+..description:
+This section lists the main classes provided by SeqAn.
+Many of these classes are templates that can be specialized using @glos:Template Subclassing@.
+See the section @Spec@ for a list of these specializations.

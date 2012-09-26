@@ -1,0 +1,4 @@
+.Indexpage.Demo:
+..description:
+This section contains small example programs that demonstrate the use of SeqAn.
+See @http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/GettingStarted|here@ for instructions how to compile these examples.

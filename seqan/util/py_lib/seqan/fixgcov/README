@@ -1,0 +1,22 @@
+gcov Output Fix Tool
+====================
+
+This tool can be used in nightly builds with CMake as follows.
+
+<code>
+export LD_LIBRARY_PATH=/group/agabi/software/x86_64/llvm-trunk/lib
+shift
+echo "pwd = `pwd`"
+echo /usr/bin/gcov $*
+/usr/bin/gcov $*
+ret=$?
+dir=$2
+echo find . -name '*.gcov' '>' /tmp/fixgcov.gcov.$$.txt
+find . -name '*.gcov' > /tmp/fixgcov.gcov.$$.txt
+echo grep '\.cpp' `dirname $3`/CXX.includecache
+src=$(grep '\.cpp' `dirname $3`/CXX.includecache)
+inc="-I $HOME/Nightly/`uname -m`/seqan-trunk/core/include -I $HOME/Nightly/`uname -m`/seqan-trunk/core/include"
+echo $HOME/Development/seqan-trunk/util/bin/fixgcov.py -s $src --gcov-files=/tmp/fixgcov.gcov.$$.txt -l /tmp/fixgcov.loc.$$.txt $inc
+$HOME/Development/seqan-trunk/util/bin/fixgcov.py -s $src --gcov-files /tmp/fixgcov.gcov.$$.txt -l /tmp/fixgcov.loc.$$.txt $inc
+exit $ret
+</code>

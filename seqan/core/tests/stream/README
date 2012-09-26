@@ -1,0 +1,4 @@
+Test Data
+
+curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR067/SRR067601/SRR067601_1.fastq.gz | zcat | head -4000 > SRR067601_1.1k.fastq
+bgzip -c SRR067601_1.1k.fastq > SRR067601_1.1k.fastq.gz

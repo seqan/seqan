@@ -1,0 +1,95 @@
+// ==========================================================================
+//                SeqAn - The Library for Sequence Analysis
+// ==========================================================================
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
+//       its contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+// DAMAGE.
+//
+// ==========================================================================
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// ==========================================================================
+// Concatenate multiple files from soft-masked FASTA (masked sequence is
+// lower case) to hard-masked FASTA (replaced by Ns) and write to stdout.
+//
+// USAGE: soft_to_hard_masking IN1.fa [IN2.fa ...] > out.fa
+// ==========================================================================
+
+#include <iostream>
+#include <cctype>
+
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/file.h>      // For printing SeqAn Strings.
+#include <seqan/stream.h>
+
+template <typename TStream>
+void convertToHardMasked(TStream & stream, char const * filename)
+{
+    using namespace seqan;
+
+    std::fstream in(filename, std::ios::binary | std::ios::in);
+    if (!in.good())
+    {
+        std::cerr << "ERROR: Could not open " << filename << '\n';
+        return;
+    }
+
+    RecordReader<std::fstream, SinglePass<> > reader(in);
+    CharString buffer;
+
+    while (!atEnd(reader))
+    {
+        clear(buffer);
+        int res = readLine(buffer, reader);
+        if (res != 0)
+        {
+            std::cerr << "ERROR: Could not read from " << filename << '\n';
+            return;
+        }
+
+        // Header lines are not touched.
+        if (front(buffer) != '>')
+        {
+            typedef typename Iterator<CharString, Rooted>::Type TIter;
+            for (TIter it = begin(buffer, Rooted()); !atEnd(it); goNext(it))
+                if (std::islower(*it))
+                    *it = 'N';
+        }
+
+        stream << buffer << '\n';
+    }
+}
+
+int main(int argc, char const ** argv)
+{
+    for (int i = 1; i < argc; ++i)
+    {
+        std::cerr << argv[i] << '\n';
+        convertToHardMasked(std::cout, argv[i]);
+    }
+
+    return 0;
+}

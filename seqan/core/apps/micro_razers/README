@@ -1,0 +1,241 @@
+*** MicroRazerS - Rapid Alignment of Small RNA Reads ***
+http://www.seqan.de/projects/microRazers.html
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Output Format
+  5.   Contact
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+MicroRazerS is a tool for mapping millions of short reads obtained from small 
+RNA sequencing onto a reference genome. MicroRazerS searches for the longest 
+perfect prefix match of each read where the minimum prefix match length (the 
+seed length) can currently be varied between 14 and 22. Optionally, one 
+mismatch can be tolerated in the seed. MicroRazerS guarantees to find all 
+matches and reports a configurable maximum number of equally-best matches. 
+Perfect matches are given preference over matches containing mismatches, even 
+if this means mapping a shorter prefix.
+Similar to RazerS, MicroRazerS uses a k-mer index of all reads and counts 
+common k-mers of reads and the reference genome in parallelograms. In 
+MicroRazerS, this index is built over the first seedlength many bases of each 
+read only. Each parallelogram with a k-mer count above a certain threshold 
+triggers a verification. On success, the genomic subsequence and the read 
+number are stored and later written to the output file.
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+MicroRazerS is distributed with SeqAn - The C++ Sequence Analysis Library 
+(see http://www.seqan.de). To build MicroRazerS do the following:
+
+  1)  Download the latest snapshot of SeqAn
+  2)  Unzip it to a directory of your choice (e.g. snapshot)
+  3)  cd snapshot/apps
+  4)  make micro_razers
+  5)  cd micro_razers
+  6)  ./micro_razers --help
+
+Alternatively you can check out the latest SVN version of MicroRazerS and SeqAn
+with:
+
+  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
+  2)  cd seqan
+  3)  make forwards
+  4)  cd projects/library/apps
+  5)  make micro_razers
+  6)  cd micro_razers
+  7)  ./micro_razers --help
+
+On success, an executable file micro_razers was built and a brief usage 
+description was dumped.
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of MicroRazerS, you can execute micro_razers -h or 
+micro_razers --help.
+
+Usage: micro_razers [OPTION]... <GENOME FILE> <READS FILE>
+
+MicroRazerS expects the names of two DNA (multi-)Fasta files. The first contains 
+a reference genome and the second contains the reads that should be 
+mapped against the reference. Without any additional parameters MicroRazerS 
+would map all reads against both strands of the reference genome requiring a perfect 
+prefix seed match of length >= 16. The up tp 100 equally best (longest) matches 
+would then be dumped in the default output file, the read file name extended by the 
+suffix ".result".
+The default behaviour can be modified by adding the following options to 
+the command line:
+
+---------------------------------------------------------------------------
+3.1. Main Options
+---------------------------------------------------------------------------
+
+  [ -sL NUM ],  [ --seed-length NUM ]
+  
+  Seed length parameter. Minimum length of prefix match.
+
+  [ -sE ],  [ --seed-error ]
+  
+  Allow for one mismatch in the prefix seed.
+
+  [ -f ],  [ --forward ]
+
+  Only map reads against the positive/forward strand of the genome. By
+  default, both strands are scanned.
+
+  [ -r ],  [ --reverse ]
+
+  Only map reads against the negative/reverse-complement strand of the
+  genome. By default, both strands are scanned.
+
+  [ -m NUM ],  [ --max-hits NUM ]
+  
+  Output at most NUM of the best matches.
+
+  [ -o FILE ],  [ --output FILE ]
+
+  Change the output filename to FILE. By default, this is the read file
+  name extended by the suffix ".result".
+
+  [ -mN ],  [ --match-N ]
+  
+  By default, 'N' characters in read or genome sequences equal to nothing, 
+  not even to another 'N'. They are considered as errors. By activating this 
+  option, 'N' equals to every other character and produces no mismatch in 
+  the verification process. The filtration is not affected by this option.
+
+  [ -pa ],  [ --purge-ambiguous ]
+  
+  Omit reads with more than #max-hits many equally-best matches.
+  
+  [ -v ],  [ --verbose ]
+  
+  Verbose. Print extra information and running times.
+
+  [ -vv ],  [ --vverbose ]
+
+  Very verbose. Like -v, but also print filtering statistics like true and
+  false positives (TP/FP).
+
+  [ -V ],  [ --version ]
+  
+  Print version information.
+
+  [ -h ],  [ --help ]
+
+  Print a brief usage summary.
+
+---------------------------------------------------------------------------
+3.2. Output Format Options
+---------------------------------------------------------------------------
+
+  [ -of NUM ],  [ --outputFormat ]
+  
+  Specify the desired output format: 
+  NUM = 0   => MicroRazerS default format
+  NUM = 1   => SAM format
+
+  [ -a ],  [ --alignment ]
+
+  Dump the alignment for each match in the ".result" file, only possible for
+  -of 0, i.e. MicroRazerS default output format. The alignment is written 
+  directly after the match and has the following format:
+  #Read:   CAGGAGATAAGCTGGATCTTT
+  #Genome: CAGGAGATAAGCTGGATCTTT
+
+  [ -gn NUM ],  [ --genome-naming NUM ]
+
+  Select how genomes are named in the output file. If NUM is 0, the Fasta
+  ids of the genome sequences are used (default). If NUM is 1, the genome
+  sequences are enumerated beginning with 1.
+
+  [ -rn NUM ],  [ --read-naming NUM ]
+  
+  Select how reads are named in the output file. If NUM is 0, the Fasta ids 
+  of the reads are used (default). If NUM is 1, the reads are enumerated
+  beginning with 1. If NUM is 2, the read sequence itself is used.
+
+  [ -so NUM ],  [ --sort-order NUM ]
+  
+  Select how matches are ordered in the output file. 
+  If NUM is 0, matches are sorted primarily by the read number and 
+  secondarily by their position in the genome sequence (default).
+  If NUM is 1, matches are sorted primarily by their position in the genome
+  sequence and secondarily by the read number.
+
+  [ -pf NUM ],  [ --position-format NUM ]
+  
+  Select how positions are stored in the output file (only relevant for 
+  MicroRazerS default output format, i.e. -of 0). 
+  If NUM is 0, the gap space is used, i.e. gaps around characters are 
+  enumerated beginning with 0 and the beginning and end position is the 
+  postion of the gap before and after a match (default).
+  If NUM is 1, the position space is used, i.e. characters are enumerated 
+  beginning with 1 and the beginning and end position is the postion of the 
+  first and last character involved in a match.
+  
+  Example: Consider the string CONCAT. The beginning and end positions 
+  of the substring CAT are (3,6) in gap space and (4,6) in position space.
+
+
+
+---------------------------------------------------------------------------
+4.1. Default Output Format
+---------------------------------------------------------------------------
+
+The default output file is a text file whose lines represent matches. A line 
+consists of different tab-separated match values. In the following format:
+
+RName 0 RLength GStrand GName GBegin GEnd PercID MatchLen
+
+Match value description:
+
+  RName        Name of the read sequence (see --read-naming)
+  RLength      Length of the read
+  GStrand      'F'=forward strand or 'R'=reverse strand
+  GName        Name of the genome sequence (see --genome-naming)
+  GBegin       Beginning position in the genome sequence
+  GEnd         End position in the genome sequence
+  PercID       Percent sequence identity within matched prefix
+  MatchLen     Length of prefix match
+
+For matches on the reverse strand, GBegin and GEnd are positions on the 
+related forward strand.
+
+
+---------------------------------------------------------------------------
+4.2. SAM Output Format
+---------------------------------------------------------------------------
+
+If -of 1 is specified, the resulting matches will be written out in SAM 
+format. For a full specification of the SAM format please see 
+http://samtools.sourceforge.net.
+
+MicroRazerS assigns each read with multiple best matches a mapping quality 
+of "0". If only one best match was found, it will receive a "255" in the 
+mapping quality column. Column 12 informs about the sequence identity in
+the matched part of the read, e.g. AS:i:100 means that the read match has
+100% sequence identity, i.e. does not contain any mismatches. Unmapped 
+read suffixes will be given as soft-clipped sequence in the Cigar string.
+For example, a 30bp read with a 22bp prefix match will have the Cigar string
+"22M8S", or "8S22M" if it matches the reverse strand.
+
+
+
+---------------------------------------------------------------------------
+5. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Anne-Katrin Emde <emde@inf.fu-berlin.de>
+

@@ -1,0 +1,88 @@
+                                    SeqAn
+                      The Library for Sequence Analysis
+                              http://www.seqan.de
+
+
+Table Of Contents
+
+  1. What is SeqAn?
+  2. License
+  3. Supported Platforms
+  4. Prerequisites
+  5. For The Impatient
+  6. Documentation Resources
+  7. Contact
+
+===========================================================================
+ 1. What Is SeqAn?
+===========================================================================
+
+SeqAn is an open source C++ library of efficient algorithms and data
+structures for the analysis of sequences with the focus on biological data.
+Our library applies a unique generic design that guarantees high performance,
+generality, extensibility, and integration with other libraries. SeqAn is
+easy to use and simplifies the development of new software tools with a
+minimal loss of performance.
+
+===========================================================================
+ 2. License
+===========================================================================
+
+The SeqAn library itself, the tests and demos are licensed under the very
+permissing 3-clause BSD License. The licenses for the applications themselves
+can be found in the LICENSE files.
+
+===========================================================================
+ 3. Supported Platforms
+===========================================================================
+
+  Visual C++ 8, 9, 10
+  MinGW
+  LLVM (current trunk)
+  GCC >= 4.1
+
+===========================================================================
+ 4. Prerequisites
+===========================================================================
+
+  Supported C++ compiler
+  CMake (http://cmake.org/)
+  Python (Except when using Visual C++)
+
+===========================================================================
+ 5. For the Impatient
+===========================================================================
+
+Assuming that you have checked out the repository already, all
+prerequisites are installed and you are on Linux or Mac Os X:
+
+  $ mkdir build/Debug
+  $ cd build/Debug
+  $ cmake ../..
+  $ make test_basic
+  $ ./core/tests/basic/test_basic
+  ... the tests for module basic will run ...
+
+===========================================================================
+ 6. Documentation Resources
+===========================================================================
+
+  Getting Started
+    https://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/GettingStarted
+  Tutorial
+    http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial
+  How Tos
+    http://trac.mi.fu-berlin.de/seqan/wiki/HowTo
+  Stable Documentation
+    http://www.seqan.de/dddoc/html/
+  Nightly Documentation (updated, more recent!)
+    http://www.seqan.de/dddoc/html_devel/
+
+===========================================================================
+ 7. Contact
+===========================================================================
+
+  Mailing List
+    https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe
+  Bug Tracker, Wiki
+    http://trac.mi.fu-berlin.de/seqan/

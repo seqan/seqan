@@ -1,0 +1,30 @@
+Intervals to find:              1028
+Intervals found:                987
+Intervals found [%]             96.0117
+Invalid alignments:             0
+Additional Hits:                0
+
+Number of reads:                990
+Number of reads with intervals: 990
+
+Mapped reads:                   951
+Mapped reads [% of total]:      96.0606
+Mapped reads [% of mappable]:   96.0606
+
+Normalized intervals found:     951
+Normalized intervals found [%]: 96.0606
+
+Found Intervals By Error Rate
+
+  ERR	    #max	  #found	  %found	norm max	norm found	norm found [%]
+------------------------------------------------------------------------------------------------------
+    0	     741	     741	  100.00	  721.00	    721.00	    100.00
+    1	       0	       0	    0.00	    0.00	      0.00	      0.00
+    2	       0	       0	    0.00	    0.00	      0.00	      0.00
+    3	     246	     246	  100.00	  230.00	    230.00	    100.00
+    4	       0	       0	    0.00	    0.00	      0.00	      0.00
+    5	       0	       0	    0.00	    0.00	      0.00	      0.00
+    6	      41	       0	    0.00	   39.00	      0.00	      0.00
+    7	       0	       0	    0.00	    0.00	      0.00	      0.00
+    8	       0	       0	    0.00	    0.00	      0.00	      0.00
+

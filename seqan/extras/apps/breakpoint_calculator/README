@@ -1,0 +1,191 @@
+                       *** Breakpoint Calculator ***
+          http://www.seqan.de/projects/breakpoint-calculator.html
+                                July, 2012
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Examples
+  5.   Reference and Contact
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+Given a genome alignment consisting of collinear blocks without
+duplications, this application calculates pairwise and three-way hidden
+breakpoint counts for each pair and triplet of genomes.
+The number of pairwise breakpoints corresponds to the classic breakpoint
+distance of two genomes. Hidden breakpoints of rearrangement are only
+detectable by comparison of three or more genomes, but exhibit no
+rearrangements in pairwise comparisons.
+The breakpoint calculator applies a similar approach to Tannier, Zheng, and
+Sankoff (2009) for computing a median genome. This approach is constructing
+a weighted graph from the adjacencies of the genomes in the alignment and
+computing a maximum weight perfect matching. Using the weight of the
+original graph and the matching weight, the breakpoint calculator
+determines the breakpoint counts. 
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+For precompiled executables (Windows, Linux 64, and Mac OS X) download the
+archive breakpoint_calculator_v1.x.zip from
+http://www.seqan.de/downloads/projects.html and extract it.
+On linux, for example:
+  1) wget http://www.seqan.de/uploads/media/breakpoint_calculator_v1.1.zip
+  2) unzip breakpoint_calculator_v1.1.zip
+  3) ./stellar
+
+
+The source code of the Breakpoint Calculator is distributed with SeqAn -
+The C++ Sequence Analysis Library (see http://www.seqan.de) and requires
+the LEMON library. You can get a copy of LEMON from
+
+    http://lemon.cs.elte.hu/trac/lemon
+
+To build the breakpoint calculator check out the latest SVN version of the
+Breakpoint Calculator and SeqAn with:
+
+  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
+  2)  cd seqan/build/
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  4)  make breakpoint_calculator
+  5)  ./extras/apps/breakpoint_calculator/breakpoint_calculator
+
+If you have installed LEMON in a "non-standard" location (i.e. not in 
+"/usr" on Unix or "C:\Program Files\LEMON" on Windows), but for example in
+$HOME/local/LEMON then you have to set LEMON_ROOT_DIR when calling CMake:
+
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release -DLEMON_ROOT_DIR=$HOME/local/LEMON
+
+On success, an executable file breakpoint_calculator was build and a brief
+usage description was dumped.
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of the Breakpoint Calculator, you can
+execute breakpoin_calculator -h or breakpoint_calculator --help.
+
+Usage: breakpoint_calculator [Options] <MAF|XMFA alignment file>
+
+The Breakpoint Calculator always expects the name of the input alignment
+file in XMFA or MAF format.
+
+Without any additional parameters the Breakpoint Calculator only tries to
+parse the given file, but does not calculate any breakpoint counts. This
+default behaviour can be modified by adding the following options to the
+command line:
+
+---------------------------------------------------------------------------
+3.1. Main Options
+---------------------------------------------------------------------------
+
+  [ -d2 ],  [ --pairwiseCount ]
+  
+  Compute pairwise breakpoint counts. The pairwise breakpoint count is
+  calculated for each pair of genomes separately and eventually added up
+  to a total pairwise breakpoint count of the alignment.
+  
+  [ -d3 ],  [ --threewayCount ]
+  
+  Compute three-way hidden breakpoint counts. The three-way breakpoint
+  count is calculated for each triplet of genomes separately and
+  eventually added up to a total three-way breakpoint count of the
+  alignment.
+  
+  [ -d ],  [ --detailed ]
+  
+  Print list of breakpoint counts for all pairs/triplets of genomes in
+  addition to the total breakpoint count.
+
+---------------------------------------------------------------------------
+3.2. Miscellaneous Options
+---------------------------------------------------------------------------
+
+  [ -f ], [ --inFormat ]
+  
+  Format of input file (xmfa or maf). If this option is not specified, the
+  Breakpoint Calculator tries to guess the format from the file extension.
+  If guessing is unsuccessful, XMFA format is assumed.
+  
+  [ -v ], [--verbose ]
+  
+  Turn on verbose output.
+
+---------------------------------------------------------------------------
+4. Examples
+---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+4.1. Pairwise breakpoint counts
+---------------------------------------------------------------------------
+
+In the folder seqan/extras/apps/breakpoint_calculator/tests/ you can find
+the file alignment.xmfa containing a example alignment of 6 toy genomes in
+xmfa format. To count pairwise breakpoints among all pairs of the 6 genomes
+do the following:
+
+  1)  cd seqan/build/extras/apps/breakpoint_calculator/
+  2)  ./breakpoint_calculator -d2 \
+      ../../../../extras/apps/breakpoint_calculator/tests/alignment.xmfa
+
+On success the Breakpoint Calculator prints:
+
+86 pairwise breakpoints
+
+---------------------------------------------------------------------------
+4.2. Hidden three-way breakpoint counts
+---------------------------------------------------------------------------
+
+The same alignment of 6 toy genomes as in the above example can be found
+in the same folder in MAF format (alignment.maf). We would like to use this
+file to demonstrates how to use the Breakpoint Calculator to display
+three-way breakpoint counts for all triplets of genomes:
+
+  1)  cd seqan/build/extras/apps/breakpoint_calculator/
+  2)  ./breakpoint_calculator -d3 -d \
+      ../../../../extras/apps/breakpoint_calculator/tests/alignment.maf
+      
+On success the Breakpoint Calculator prints the following list:
+
+# 3-way counts: seq1, seq2, seq3, count
+TaxonA  TaxonB  TaxonC  2
+TaxonA  TaxonB  TaxonD  1
+TaxonA  TaxonB  TaxonE  3
+TaxonA  TaxonB  TaxonF  1.5
+TaxonA  TaxonC  TaxonD  0.5
+TaxonA  TaxonC  TaxonE  2
+TaxonA  TaxonC  TaxonF  2
+TaxonA  TaxonD  TaxonE  1.5
+TaxonA  TaxonD  TaxonF  1
+TaxonA  TaxonE  TaxonF  2.5
+TaxonB  TaxonC  TaxonD  2.5
+TaxonB  TaxonC  TaxonE  3
+TaxonB  TaxonC  TaxonF  1.5
+TaxonB  TaxonD  TaxonE  3
+TaxonB  TaxonD  TaxonF  1.5
+TaxonB  TaxonE  TaxonF  2
+TaxonC  TaxonD  TaxonE  2.5
+TaxonC  TaxonD  TaxonF  2.5
+TaxonC  TaxonE  TaxonF  3.5
+TaxonD  TaxonE  TaxonF  2.5
+41.5 3-way breakpoints
+
+---------------------------------------------------------------------------
+5. Reference and Contact
+---------------------------------------------------------------------------
+
+Please cite:
+  Birte Kehr, Knut Reinert, Aaron Darling
+  Hidden breakpoints in genome alignments
+  WABI 2012
+
+For questions or comments contact:
+  Birte Kehr <birte.kehr@fu-berlin.de>

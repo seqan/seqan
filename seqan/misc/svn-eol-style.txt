@@ -1,0 +1,150 @@
+# Add this stuff at bottom of your local file ~/.subversion/config
+#Note: for Windows this is normally found at
+# C:\Documents and Settings\{username}\Application Data\Subversion\config
+
+[miscellany]
+enable-auto-props = yes
+
+# Note: you may wish to add svn:keywords as well, depending on your project requirements
+# E.g. svn:keywords=Date Author Id Revision HeadURL
+
+# Do not default any files to svn:executable=*.
+# This should only be done on an individual basis as required.
+
+[auto-props]
+# BEGIN SEQAN AUTO PROPS
+*.gff = svn:eol-style=native
+*.fasta = svn:eol-style=native
+*.fa = svn:eol-style=native
+*.fastq = svn:eol-style=native
+*.fq = svn:eol-style=native
+*.sam = svn:eol-style=native
+*.cmake = svn:eol-style=native
+COPYING = svn:eol-style=native
+# END SEQAN AUTO PROPS
+INSTALL = svn:eol-style=native
+KEYS = svn:eol-style=native
+Makefile = svn:eol-style=native
+LICENSE = svn:eol-style=native
+NOTICE = svn:eol-style=native
+README = svn:eol-style=native
+abs-linkmap = svn:eol-style=native
+abs-menulinks = svn:eol-style=native
+*.aart = svn:eol-style=native
+*.ac = svn:eol-style=native
+*.am = svn:eol-style=native
+*.apt = svn:eol-style=native
+*.bat = svn:eol-style=native
+*.bsh = svn:eol-style=native
+*.c = svn:eol-style=native
+*.cat = svn:eol-style=native
+*.cgi = svn:eol-style=native
+*.classpath = svn:eol-style=native
+*.cmd = svn:eol-style=native
+*.cnd = svn:eol-style=native
+*.conf = svn:eol-style=native
+*.config = svn:eol-style=native
+*.cpp = svn:eol-style=native
+*.css = svn:eol-style=native
+*.cwiki = svn:eol-style=native
+*.data = svn:eol-style=native
+*.dcl = svn:eol-style=native
+*.doc = svn:mime-type=application/msword
+*.dsp = svn:eol-style=CRLF
+*.dsw = svn:eol-style=CRLF
+*.dtd = svn:eol-style=native
+*.egrm = svn:eol-style=native
+*.ent = svn:eol-style=native
+*.ft = svn:eol-style=native
+*.fn = svn:eol-style=native
+*.fv = svn:eol-style=native
+*.g = svn:eol-style=native
+*.gif = svn:mime-type=image/gif
+*.grm = svn:eol-style=native
+*.gz = svn:mime-type=application/x-gzip
+*.h = svn:eol-style=native
+*.htc = svn:eol-style=native
+.htaccess = svn:eol-style=native
+*.handlers = svn:eol-style=native
+*.html = svn:eol-style=native
+*.ico = svn:mime-type=image/x-icon
+*.ihtml = svn:eol-style=native
+*.in = svn:eol-style=native
+*.java = svn:eol-style=native
+*.jmx = svn:eol-style=LF
+*.jpg = svn:mime-type=image/jpeg
+*.jsp = svn:eol-style=native
+*.js = svn:eol-style=native
+*.junit = svn:eol-style=native
+*.jx = svn:eol-style=native
+*.m = svn:eol-style=native
+*.m4 = svn:eol-style=native
+*.manifest = svn:eol-style=native
+*.mdo = svn:eol-style=native
+# markdown (CMS)
+*.mdtext = svn:eol-style=native
+*.meta = svn:eol-style=native
+*.mf = svn:eol-style=native
+*.MF = svn:eol-style=native
+*.mod = svn:eol-style=native
+*.ms = svn:eol-style=native
+*.n3 = svn:eol-style=native
+*.nroff = svn:eol-style=native
+*.patch = svn:eol-style=native
+*.pdf = svn:mime-type=application/pdf
+*.pen = svn:eol-style=native
+*.php = svn:eol-style=native
+*.pl = svn:eol-style=native
+*.pm = svn:eol-style=native
+*.png = svn:mime-type=image/png
+*.pod = svn:eol-style=native
+*.pom = svn:eol-style=native
+*.project = svn:eol-style=native
+*.properties = svn:eol-style=native
+*.py = svn:eol-style=native
+*.rb = svn:eol-style=native
+*.rdf = svn:eol-style=native
+*.rnc = svn:eol-style=native
+*.rng = svn:eol-style=native
+*.rnx = svn:eol-style=native
+*.roles = svn:eol-style=native
+*.rss = svn:eol-style=native
+# Restructured text (CMS)
+*.rst = svn:eol-style=native
+*.scala = svn:eol-style=native
+*.schemas = svn:eol-style=native
+*.sh = svn:eol-style=native
+*.sql = svn:eol-style=native
+*.svg = svn:eol-style=native
+*.tar = svn:mime-type=application/octet-stream
+*.tgz = svn:mime-type=application/octet-stream
+*.tif = svn:mime-type=image/tiff
+*.tiff = svn:mime-type=image/tiff
+*.tld = svn:eol-style=native
+*.txt = svn:eol-style=native
+*.types = svn:eol-style=native
+*.vm = svn:eol-style=native
+*.vsl = svn:eol-style=native
+*.wsdd = svn:eol-style=native
+*.wsdl = svn:eol-style=native
+*.xargs = svn:eol-style=native
+*.xcat = svn:eol-style=native
+*.xconf = svn:eol-style=native
+*.xegrm = svn:eol-style=native
+*.xgrm = svn:eol-style=native
+*.xhtml = svn:eol-style=native
+*.xhtml2 = svn:eol-style=native
+*.xlex = svn:eol-style=native
+*.xlog = svn:eol-style=native
+*.xmap = svn:eol-style=native
+*.xml = svn:eol-style=native
+*.xroles = svn:eol-style=native
+*.xsamples = svn:eol-style=native
+*.xsd = svn:eol-style=native
+*.xsl = svn:eol-style=native
+*.xslt = svn:eol-style=native
+*.xsp = svn:eol-style=native
+*.xtest = svn:eol-style=native
+*.xul = svn:eol-style=native
+*.xweb = svn:eol-style=native
+*.xwelcome = svn:eol-style=native

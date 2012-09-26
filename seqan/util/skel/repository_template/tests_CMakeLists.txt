@@ -1,0 +1,6 @@
+cmake_minimum_required (VERSION 2.6)
+project (seqan_%(CMAKE_PROJECT_NAME)s)
+
+seqan_setup_tests(%(CMAKE_PROJECT_NAME)s)  # Setup flags etc, add meta target.
+
+seqan_add_all_subdirectories()  # include_directory(*)

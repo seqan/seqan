@@ -1,0 +1,11 @@
+Name: seqan-file
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2011, FU Berlin
+Status: mature, known issues
+Description: Implementation file I/O and parsing.
+ This module contains code for reading and parsing files in different formats.
+ Also, it contains the external and memory mapped string specializations.
+ .
+ Eventually, it will be replaced by the module stream from extras.

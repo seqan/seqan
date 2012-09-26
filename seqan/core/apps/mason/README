@@ -1,0 +1,161 @@
+Mason - A Read Simulator
+========================
+
+Copyright: (c) 2010 by Manuel Holtgrewe
+License:   GPL v3.0
+Homepage:  http://www.seqan.de/projects/mason.html
+
+Mason is a read simulator for second-generation sequencing data.  At
+the moment, the simulation of Illumina, 454 and Sanger reads is
+supported.  You can embed detailed information about the sequencing
+process into the FASTA/FASTQ comments and also write out the resulting
+multi-read to reference alginment as a SAM file.
+
+How It Works
+------------
+
+Reads are sampled from a reference sequence.  The reference sequence
+is either read from a FASTA file or generated randomly given a
+background distribution for nucleotides.
+
+Then, modified copies of the reference sequence are generated to
+simulate haplotypes.
+
+Reads are then uniformly sampled from these haplotypes and sequencing
+technology specific errors are introduced.
+
+How To Install Mason
+--------------------
+
+The following steps perform a fresh checkout of SeqAn, so you might just want
+to update your checkout.
+
+    svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
+
+Now, we create a new build directory and create some Makefiles there using
+CMake.  We enable optimization by switching to the "Release" build mode.  Then,
+we build the prograph.
+
+    cd seqan-trunk/build
+    mkdir Release
+    cd Release
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+    make mason
+
+Finally, we can call mason and display the built-in help.
+
+    ./core/apps/mason/mason --help
+
+If you want to find out more about how to build applications in SeqAn then
+have a look at our "Getting Started" Tutorial:
+
+    http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/GettingStarted
+
+How To Call Mason
+-----------------
+
+The first argument specifies the sequencing technology to use.  To get
+a full list of options, use the argument --help.
+
+    mason illumina [OPTIONS] SEQUENCE --help
+    mason 454      [OPTIONS] SEQUENCE --help
+    mason sanger   [OPTIONS] SEQUENCE --help
+
+Important Global Options
+------------------------
+
+  -s --seed NUM            The seed for the random number generator.  Use this
+                           to simulate multiple different read sets with
+                           otherwise identical parameters or in parallel.
+
+  -N --num-reads NUM       Number of reads to generate.
+
+  -sq --simulate-qualities If given, qualities are simulated for the reads and
+                           the result is a FASTQ file, is FASTA otherwise.
+
+  -o --output-file FILE    Path to the resulting FASTA/FASTQ file.
+  
+  -i --include-read-information  Include additional read information in reads
+                                 file.  This is a very useful option that
+                                 causes Mason to embed information about the
+                                 simulation process into the FASTA/FASTQ
+                                 headers.
+
+Important Illumina Options
+--------------------------
+
+  -n --read-length NUM     Length of the reads to simulate.
+
+Important Sanger/454 Options
+----------------------------
+
+  -nm --read-length-mean   Mean length of the reads to simulate.
+
+  -ne --read-length-error  Error of the read length to simulate.  If normal
+                           distribution is used for read lengths (also see
+                           --read-length-uniform), this is the standard
+                           deviation.
+
+Sequence Header Fields (when using --include-read-information)
+--------------------------------------------------------------
+
+When using the --include-read-information option, Mason will embed detailed
+information about the simulation process into the FASTA/FASTQ headers.
+
+The meaning of the field names is as follows:
+
+  contig           The identifier of the source contig.
+  haplotype        The number of the haplotype this read was simulated from.
+  orig_begin       The begin position in the source contig from the input.
+  orig_end         The end position in the source contig from the input.
+  edit_string      A string describing the difference to the haplotype:
+                     E  the base was Edited
+                     I  an Insertion occured
+                     D  a Deletion occured
+                     M  the read base Matches the haplotype infix.
+  haplotype_infix  The infix of the haplotype (that possibly differs from
+                   the input reference sequence).
+  strand
+
+
+Example: Illumina Mate Pair Reads 
+---------------------------------
+
+Simulate 100'000 Illumina mate-pairs with qualities from drosophila
+genome without qualities to file myreads_1.fasta and myreads_2.fasta.
+
+    mason illumina -n 100000 -mp -o myreads.fasta drosophila.genome
+
+Example: 454 Reads 
+------------------
+
+Simulate 1'000 454 reads from diploid data with qualities to
+myreads.fastq:
+
+    mason 454 -n 1000 -sq -hn 2 -o myreads.fastq drosophila.genome
+
+Example: Illumina Reads With Error Profiles
+-------------------------------------------
+
+Simulate 1'000 Illumina reads with qualities and error profile file
+from SRR049254.1.1M.error_dist, scaled by 0.5 to myreads.fastq:
+
+    mason illumina -n 1000 -pmmf SRR049254.1.1M.error_dist -pmms 0.5 \
+        --read-length 100 -sq -o myreads.fastq drosophila.genome
+
+The error probablity distribution file is a text file with one entry for each
+base that is to be simulated.  Each entry is a number between 0 and 1.  You
+can find examples of such probability distributions in the folder
+"core/apps/mason/examples".
+
+These distributions have been obtained by aligning reads to the reference
+genome and then counting mismatches.  The read set accession ids are part of
+the name.  For example, the file SRR049254.1.1M.error_dist was obtained
+by aligning the first 1 million left-end reads from read set SRR049254 against
+the drosophila genome.
+
+Changes
+-------
+
+ * Making copy of journaled strings for simulation.  Greatly improves
+   performance of simulation (2012-02-07).

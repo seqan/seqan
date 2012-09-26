@@ -1,0 +1,188 @@
+SWIG use typemaps to convert C++ to python and vice verca.
+This howto shows you, with some example, how to use them. The
+conecept of this syntax is well explained in the SWIG documentation.
+http://www.swig.org/Doc1.3/Typemaps.html
+
+
+1. How to convert a list of integer from pyhton to C++?
+
+//python integer list -> int array
+	%typemap(in) (int len, int *value) //int len and int* value are the name of the arguments from the c++
+																		 //funciton, $1 refers to int len and $2 to *value
+	{
+		int i;
+		if (!PyList_Check($input))
+		{
+		  PyErr_SetString(PyExc_ValueError, "Expecting a list");
+		  return NULL;
+		}
+		$1 = PyList_Size($input); //get size of the list
+		$2 = (int*) malloc(($1+1)*sizeof(int)); //allocate memory with the correct size
+		for (i = 0; i < $1; i++)
+		{
+		  PyObject *s = PyList_GetItem($input,i);
+		  if (!PyInt_Check(s))
+			{
+		      free($2);
+		      PyErr_SetString(PyExc_ValueError, "List items must be integers");
+		      return NULL;
+		  }
+		  $2[i] = (int)PyInt_AS_LONG(s); //put the value into the array
+		}
+		$2[i] = 0;
+	}
+
+To avoid memory leaks, we have to release the allocate memory at the end of the C++ function
+	%typemap(freearg) (int len, int *value) 
+	{
+		 if ($2) free($2);
+	}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+2. String array or list of strings in python
+//same as above but with some small changes
+%typemap(in) (int amount, char **needles)
+	{
+  /* Check if is a list */
+
+  if (PyList_Check($input))
+	{
+    int i;
+    $1 = PyList_Size($input);
+    $2 = (char **) malloc(($1+1)*sizeof(char *));
+    for (i = 0; i < $1; i++) 
+		{
+      PyObject *o = PyList_GetItem($input,i);
+      if (PyString_Check(o))
+				$2[i] = PyString_AsString(PyList_GetItem($input,i));
+      else 
+			{
+				PyErr_SetString(PyExc_TypeError,"list must contain strings");
+				free($2);
+				return NULL;
+      }
+    }
+    $2[i] = 0;
+	}
+	else 
+	{
+    PyErr_SetString(PyExc_TypeError,"not a list");
+    return NULL;
+  }
+}
+
+%typemap(freearg) (int amount, char **needles) {
+   if ($2) free((char*)$2);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+3. How to set a default value for an argument?
+
+	%typemap(default) unsigned int dia2 
+	{
+		 $1 = 0;
+	}
+
+Be careful, if you set a default value for one argument you have to guaranty that the following arguments also have a default value. 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+4. How to return a value into an argument -> multiple results?
+This is done by using the Keyword argout. First initialise a dummy value which tells SWIG not to consider this argument to be filled in python.
+
+//(here for a int value)
+	%typemap(in,numinputs=0)int& scoreAlignment(int temp)
+	{
+		$1=&temp;
+	}
+//here for a list of strings
+	%typemap(in,numinputs=0) char** str1(char* temp) 
+	{
+		$1 = (char **) malloc((strlen(temp)+1)*sizeof(char *));
+	}
+//list of integer
+	%typemap(in,numinputs=0) int** scoreMatrix(int* temp)
+	{
+		  $1 = (int **) malloc((sizeof(temp)+1)*sizeof(int *));
+	}
+//for pointer to a struct
+	%typemap(in,numinputs=0)_Pattern<seqan::String<seqan::Dna5> >& pattern()
+	{
+		$1=new _Pattern<seqan::String<seqan::Dna5> >();
+	}
+
+We saved the result into one argument how we represent them now to python?
+
+//e.g by a tupel: if we have to report two solutions
+
+	%typemap(argout)int& scoreAlignment
+	{    
+		PyObject *o, *o2, *o3; 
+    o = PyInt_FromLong(*$1); //$1 -> value which has to be convert to python
+    if ((!$result) || ($result == Py_None))  //check if already exist a result if not set the actual result
+		{
+			$result = o;
+    }
+		else
+		{
+      if(!PyTuple_Check($result)) //build a tuple 
+			 {
+            PyObject *o2 = $result;
+            $result = PyTuple_New(1);
+            PyTuple_SetItem($result,0,o2);
+        }
+				o3 = PyTuple_New(1);
+        PyTuple_SetItem(o3,0,o);
+        o2 = $result;
+        $result = PySequence_Concat(o2,o3);
+        Py_DECREF(o2);
+        Py_DECREF(o3);
+    }
+	}
+
+//by returning a string list
+	%typemap(argout)char** str1
+	{
+		$result=SWIG_Python_AppendOutput($result, PyString_FromStringAndSize(*$1,strlen(*$1)));
+	}
+
+
+//by returning a integer list
+
+	%typemap(argout) (int** scoreMatrix, int& aSize)
+	{
+  	int i;
+  	$result = PyList_New(*$2); //build a list with the the size aSize
+  	for (i = 0; i < *$2; i++)
+	 {
+    	PyObject *o =PyInt_FromLong(*(*$1+i));
+    	PyList_SetItem($result,i,o);
+  	}
+	}
+
+//don't forget to release the pre allocated memory
+
+	%typemap(freearg) char ** 
+	{
+		free((char *) $1);
+	}
+
+	%typemap(freearg) int ** 
+	{
+		free((int *) $1);
+	}
+
+	%typemap(freearg) _Pattern<seqan::String<seqan::Dna5> >& 
+	{
+		delete $1;
+	}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+What about templates?
+
+SWIG does not wrapping any kind of template function, unless you have specified the type via %template command
+e.g %template(alignDna)seqan::alignSequence<seqan::Dna5>;. 
+This command tells SWIG to build a function alignDna with the specified type, after that the function can be called in python. 
+
+/////////////////////////////////////////////////////////////////////////////////////
+

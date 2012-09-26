@@ -1,0 +1,3 @@
+read_hitlen22_noerror	0	22	F	genome	5	27	100	22
+read_hitlen18_noerror	0	18	F	genome	74	92	100	18
+read_hitlen19_error	0	19	F	genome	73	92	94.737	19

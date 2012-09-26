@@ -1,0 +1,35 @@
+.Page.Scoring:
+..XXXcat:Tutorials
+..summary:Scoring schemes used for alignments and approximative search.
+
+.Page.Scoring.description:
+..contents
+
+..text:
+Scoring schemes define the score for aligning two characters of a given alphabet and the score for gaps within @glos:alignments@.
+Given an alignment between two sequences and a scoring scheme, 
+    the score of the alignment can be computed as the sum of the scores for aligned character pairs
+    plus the sum of the scores for all gaps.
+..text:
+An example for a scoring scheme is the levenshtein distance, for which each mismatch between two aligned characters costs 1 and
+each character that is aligned with a gap costs 1. 
+Translated into scores instead of costs, misalignments get a score of -1 and gaps a score of -1 per character.
+This scoring scheme is the default for @Spec.Simple Score@.
+
+..section:# Character Pair Scores
+..text:SeqAn offers two kinds of scoring scheme:
+..table:@Spec.Simple Score@|This scoring scheme differentiates only between "match" (the two aligned characters are the same) and "mismatch" (the two aligned characters are different).
+The functions @Function.scoreMatch@ and @Function.scoreMismatch@ access these two values.
+..table:Scoring matrices|These scoring schemes store a score value for each pair of characters. 
+This value can be accessed using @Function.score@.
+Examples for this kind of scoring scheme are @Shortcut.Pam120@ and @Shortcut.Blosum62@. 
+The class @Spec.Score Matrix@ can be used to store arbitrary scoring matrices.
+
+..section:# Gap Scores
+..text:SeqAn scoring schemes support @glos:affine gap costs@: The score for a gap of length $n$ is $gap_open + (n-1)*gap_extend$
+while $gap_open$ and $gap_extend$ are typical negative values that represent the costs for "opening a gap" and "extendig the gap".
+If $gap_open == gap_entend$ (which is the default), the scoring scheme uses @glos:linear gap costs@.
+
+
+..see:Page.Alignments
+..see:Page.Searching

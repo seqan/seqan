@@ -1,0 +1,43 @@
+I/O options:
+  database file   : 512_simSeq1_e-4.fa
+  query file      : 512_simSeq2_e-4.fa
+  alphabet        : dna5
+  output file     : e-4.gff
+  output format   : gff
+
+User specified parameters:
+  minimal match length             : 50
+  maximal error rate (epsilon)     : 0.0001
+  maximal x-drop                   : 10
+  k-mer (q-gram) length            : 7
+  search forward strand            : yes
+  search reverse complement        : no
+
+  verification strategy            : exact
+  maximal number of matches        : 5000
+  duplicate removal every          : 10000
+
+Calculated parameters:
+  s^min        : 50
+  threshold    : 44
+  distance cut : 50
+  delta        : 16
+  overlap      : 0
+
+Loaded 1 query sequence.
+Loaded 1 database sequence.
+
+All matches matches resulting from your search have an E-value of: 
+        4.90823e-15 or smaller  (match score = 1, error penalty = -2)
+
+Constructing index...
+
+Aligning all query sequences to database sequence...
+  seq1 length=1000000 numMatches=500 errorRate=0.0001 matchMinLength=50 matchMaxLength=200
+    # SWIFT hits      : 500
+    Longest hit       : 232
+    Avg hit length    : 127
+
+# Eps-matches     : 500
+Longest eps-match : 200
+Avg match length  : 125

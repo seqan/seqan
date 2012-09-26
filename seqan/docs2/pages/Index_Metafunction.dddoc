@@ -1,0 +1,8 @@
+.Indexpage.Metafunction:
+..description:
+...text:
+Metafunctions - also known as "traits" or "trait classes" - 
+return types, constants or functions for a set of given types or constants.
+They can be seen as part of a (meta-)program that is
+evaluated at compile time to produce a C++ program.
+...text:Read @http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/Metafunctions|here@ an introduction to metafunctions and how to use them.

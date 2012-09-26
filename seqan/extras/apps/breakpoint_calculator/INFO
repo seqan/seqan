@@ -1,0 +1,20 @@
+Name: breakpoint_calculator
+Author: bkehr
+Maintainer: bkehr
+License: GPL v3
+Copyright: 2012, Birte Kehr
+Status: stable
+Description: Calculates number of pairwise and triplet breakpoints.
+ Given a genome alignment consisting of collinear blocks without duplications,
+ this application calculates the number of pairwise and triplet hidden
+ breakpoints among each pair and triplet of genomes.
+ .
+ The method computes a median genome for each pair or triplet of genomes
+ using a similar approach to Tannier, Zheng, and Sankoff (2009). The approach
+ constructs a weighted graph from the order of collinear blocks forming the
+ genomes and computes a maximum weight perfect matching. The weight removed
+ from the graph to obtain the matching is used as breakpoint distance. From the
+ triplet breakpoint distances, the pairwise breakpoint counts are subtracted.
+ .
+ This application uses the Lemon graph library: 
+ http://lemon.cs.elte.hu/trac/lemon

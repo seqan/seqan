@@ -1,0 +1,693 @@
+This file summarizes changes in WinMerge releases.
+Numbers in parentheses refer to SourceForge.net tracker item numbers (#XXXXX) or
+to Subversion revision numbers (rXXXXX). To open the tracker item, go to URL:
+http://winmerge.org/tracker/[tracker-id]
+
+WinMerge 2.12.4 - 2009-06-09 (r6833)
+  Add more C/C++ types to syntax highlight (#2776705)
+  Create config log file to My Documents-folder (#2789839)
+  Bugfix: Reports had same left/right descriptions (#2772646)
+  Bugfix: When conflict file saved trailing line-ending was lost (#2550412)
+  Bugfix: File compare HTML reports use invald DOCTYPE (#2783477)
+  Bugfix: "##" in file filter pattern caused an infinite loop (#2789345)
+  Bugfix: Could select prediffer when plugins were disabled (#2787131)
+  Bugfix: Opening mixed-EOL file one side forced both files to be handled as
+    mixed-eol files (#2022312)
+  Bugfix: Didn't show correct EOL chars if whitespace chars were turned off
+    and again on (#2791402)
+  Bugfix: Generated patch had wrong file time for UTF-16 files (#2791506)
+  Bugfix: Did not export changed options values (#2799149)
+  Bugfix: Reset the compare method to original if it was changed (#2802427)
+
+WinMerge 2.12.2 - 2009-04-01 (r6625)
+  Disable folder compare tree-view by default (#2714968)
+  Bugfix: Filename extension column was empty for files (#2670046)
+  Bugfix: Crash when selecting backup folder (#2686382)
+  bugfix: Swapping panes did not update statusbar (#2661838)
+  Bugfix: Says files are identical after making files different in another
+    application and re-loading them (#2672737)
+  Bugfix: Files with missing last EOL weren't merged correctly (#2712120)
+  Translation updates:
+  - Polish (#2717382, #2720875)
+
+WinMerge 2.12.0 - 2009-03-05 (r6542)
+  Remember last target folder for Copy/Move to in folder compare (#2659228)
+  Detect Windows 7 and Windows 2008 in config log (#2599256)
+  Bugfix: Help window opened from WinMerge was modal (#2590079)
+  Bugfix: Crash in editor when undoing (#2590212)
+  Bugfix: Browse button in Option dialog reverted to previous settings
+    (#2606153)
+  Bugfix: Files without extension get backed up to name..bak (#2627752)
+  Bugfix: Must Show Different to Show L/R Unique (#2129561)
+  Translation updates:
+  - Chinese Traditional (#2608190)
+  - Croatian (#2596949)
+  - Czech (r6538)
+  - Danish (#2648183)
+  - Dutch (#2586422, #2590430)
+  - French (#2603591)
+  - Galician (#2632173)
+  - German (#2586497)
+  - Greek (#2615285)
+  - Japanese (r6456)
+  - Swedish (#2586274)
+  - Ukrainian (#2609242)
+
+WinMerge 2.11.2 - 2009-02-05 (r6428)
+  Update Python syntax highlight keywords for Python 2.6 (#2473375)
+  More accurate visible area rect in location pane (#2479804)
+  New options page for Shell Integration options (#2433648)
+  Remove Frhed hex editor from GUI (context menu) (r6376)
+  Register.bat should use Find with full path (#2536582)
+  Better Unicode file detection for full contents compare (2477657)
+  Bugfix: Could not open project file that contains an ampersand 
+    character in folder names (#2372000)
+  Bugfix: File compare method "Modified Date and Size" ignored file size
+    (#2455595)
+  BugFix: Quick compare didn't ignore EOL differences (#2433677)
+  Bugfix: Remove EOL characters from command line (#2458728)
+  Bugfix: Merging one line diff to empty other side didn't work (#2456399)
+  Bugfix: Location pane was empty for some files with diffs (#2459234)
+  Bugfix: Line filter editing didn't update edit box when editing was
+   canceled by ESC key (#2493935)
+  Bugfix: Wrong number shown for difference when using line filters (#2493980)
+  Bugfix: Crashed if compared file disappeared during file compare (#2493945)
+  Bugfix: Creating new files caused message about missing files (#2515875)
+  Bugfix: Could not hide folders in recursive compare (#2528749)
+  Bugfix: Folder Compare:Copy Right/Left don't create folder
+  Bugfix: Must Show Different to Show L/R Unique (#2129561)
+  Bugfix: Could not copy files from right to left (#2556904)
+  Bugfix: Don't show file name extension for folders (#2563314)
+  Translation updates:
+  - Brazilian (#2461443, #2524796)
+  - Chinese Traditional (#2540115)
+  - Czech (r6201)
+  - Dutch (#2481022, #2494378, #2499994)
+  - French (#2551043, #2551066)
+  - Greek (#2550911)
+  - Swedish (#2452467, #2465385, #2511043)
+
+WinMerge 2.12.x (R2_12) branch created (r6202)
+
+WinMerge 2.11.1.8 - 2008-12-19 (r6200)
+  Allow reloading the file if it has been changed on the disk
+    behind WinMerge (#2354125)
+  Add option to show Open-dialog on WinMerge startup (#2327424)
+  Add Git to Source Control filter and fix ignore file rules (#2329381)
+  Add build identifier for 64-bit builds to About-dialog (r6142)
+  Installer: Option to add WinMerge to system path (#2435175)
+  Add Unicode version of heksedit (#2036603)
+  Allow multiple file compare documents by default (#2445749)
+  Bugfix: Move confirmation dialog sometimes had wrong paths (#2327565, #2309190)
+  Bugfix: Use translated version of readme.txt for Chinese Simplified (#2391000)
+  Bugfix: Installer didn't install readme.txt for all translations (#2396437)
+  Bugfix: Could not give paths to commandline when started WinMerge
+    from Cygwin prompt (#2427946)
+  Bugfix: Infinite loop in heksedit's Replace-dialog (r6176)
+  Translation updates:
+  - Croatian (#2390558)
+  - German (r6130)
+  - Greek (#2379356)
+  - Japanese (r6154)
+  - Swedish (#2318778, #2374278)
+
+WinMerge 2.11.1.7 - 2008-11-20 (r6112)
+  Add shell context menu to folder compare context menu (#2189315)
+  Update PCRE to version 7.8 (#2209911)
+  Show missing lines in location pane for diffs having both different
+    and missing lines (#2119235)
+  Syntax highlighting for Verilog files (#2231145)
+  Tweak new "equal file" icon a little bit (#2312381)
+  Readme update (#2234689)
+  Translation updates:
+  - Brazilian (#2219568)
+  - Czech (r6034)
+  - Swedish (#2215167, #2236651)
+
+WinMerge 2.11.1.6 - 2008-10-23 (r6033)
+  General compare status for files (not known if text/binary) (#2175736)
+  Change icons for the new general compare status (#2185302)
+  Use 24bit icons for "Bookmarks" and "Delete" menu items (#2141184)
+  Installer: create backup of ClearCase config file (#2129095)
+  BugFix: Translatable strings having space before colon (#1971868)
+  BugFix: Wrong cursor position when disabling selection margin (#2138555)
+  BugFix: Showed a black line when disabling selection margin (#2068790)
+  BugFix: Fix manual URL in Readme.txt (#2181628)
+  BugFix: Long unique paths were mixed up in folder compare view (#2129634)
+  BugFix: Some calls made to plugins when plugins were disabled (#2182788)
+  BugFix: If messagebox was shown during file loading location pane
+    didn't show any differences (#2101780)
+
+WinMerge 2.11.1.5 - 2008-10-02 (r5995)
+  Use external editor to edit file filters (#2082774)
+  Improved command line handling (#2081779)
+  Change Manual url to http://winmerge.org/docs/manual/ (r5956)
+  Manual updates
+  Plugins: Show processing instructions in XML plugin (#1979321)
+  Add icon for "Compare" menu item (#2119843)
+  Change download URL to current URL (#2136765)
+  Installer: create backup of ClearCase config file (#2129095)
+  BugFix: ClearCase checkout/commit dialog translation error (#2051069)
+  BugFix: Table of Contents in manual (#2071625)
+  BugFix: Highlight ShowUnInstDetails keyword for NSIS files (#2084879)
+  BugFix: Displayed a blank time when file last modified time is 00:00:00
+   (#2098626)
+  BugFix: Customized colors weren't used in some areas (#2110218)
+  BugFix: Zip files were extracted into wrong folder (#2110350)
+  BugFix: Case-sensitive regexp search didn't work (#1991259)
+  BugFix: There were some installer regressions
+         (eg. Installer didn't create Quick Launch icon) (#1460517)
+  BugFix: Whitespace ignore options didn't work with quick compare (#2120174)
+  BugFix: Giving path to file and folder to command line
+   did not work (#2138560)
+  New translation: Galician (#2120685)
+  Translation updates:
+  - German (r5934)
+  - Russian (#2067785)
+  - Swedish (#2075513)
+  - Ukrainian (#2131753)
+
+WinMerge 2.11.1.4 - 2008-08-21 (r5846)
+  Binary file edit/compare (#2036603)
+  Add wait cursor for undo and redo (#2039228)
+  Add icon for "Open Conflict File" menu item (#2047054)
+  Include unique subfolder contents in recursive folder compare (#2034259)
+  Installer: Use -u switch in TortoiseSVN command line (#2060782)
+  Add icon for "Plugins->List" menu item (#2060771)
+  BugFix: External editor command line switches did not work (#2037862)
+  BugFix: Deleting/Moving file crashed WinMerge in debugger (#2025833)
+  Bugfix: Lost focus after folder compare operations (#2046002)
+  Bugfix: Some files had folder icons when aborting folder compare (#2018836)
+  BugFix: Didn't select word-diff cyclically by pressing F4 key (#1989858)
+  BugFix: Could not reset EOL ignore after selecting it from query
+   dialog (#2056741)
+  Translation updates:
+  - Brazilian (#2059836)
+  - German (#2045666)
+  - Greek (#2062442)
+  - Chinese Traditional (#2039929)
+  - Japanese (r5805)
+  - Swedish (#2062107)
+
+WinMerge 2.11.1.3 - 2008-08-04 (r5733)
+  Rename color scheme menu item "None" and add separator (#2027300)
+  Add -u commandline parameter as alternative to -ub (#2029275, #2030359)
+  Remove RCLocalizationHelper plugin (#2029457)
+  Clarify Supercopier caused hang in release notes (#2030040)
+  Improve tree mode in folder compare (#2018836)
+  Unlimited undo (#2033754)
+  BugFix: Could change syntax highlight mode when highlighting was
+    disabled from options (#2027325)
+  BugFix: Editing line filters updated wrong filter (#2025130)
+  BugFix: Boldfacing did work only for Courier font (#2000996)
+  BugFix: Shift+Backspace didn't work in editor (#1153696)
+
+WinMerge 2.11.1.2 - 2008-07-24 (r5673)
+  Refresh compare after changing filter (#2017426)
+  Add dialog listing available plugins (#2021722)
+  Hierarchical directory comparison result view (#2018836)
+  Add "Open Conflict" for file/folder compare menus (#2025472)
+  Enable hierarchial folder compare view by default (#2025478)
+  Confirmation dialog for move operations (#2026508)
+  Manual: New build system (#2015434)
+  Manual: Improve Opening Files and Folders (#2017901)
+  Manual: Improve folder compare documentation (#2024587)
+  BugFix: Failed to compare UTF-8 files plugins disabled (#2018287)
+  Bugfix: Don't warn about closing multiple windows when only one
+   window is open (#2010463)
+  BugFix: Moving was allowed for protected items (#2023734)
+  BugFix: Could change EOL style for protected file (#2025781)
+
+WinMerge 2.11.1.1 - 2008-07-11 (r5609)
+  Manual: Introduction update (#2011365)
+  Manual: Reorganize structure (#2011924)
+  Add ShellExtension menu for drive letters (root folders) (#2011602)
+  Remove buildall.bat (#2013576)
+  New option to enable plugins (disabled by default) (#2013845)
+  Plugins: Show processing instructions in XML plugin (#1979321)
+  BugFix: Use system codepage for paths (#1979429, #2008581)
+  BugFix: ANSI build crash in folder compare (#2010053)
+  BugFix: Add insert/overtype mode indicator to statusbar (#2015174)
+  BugFix: Detected UTF-8 encoding shown as 65001 (#2012377)
+
+WinMerge 2.10.x (R2_10) branch created (r5561)
+
+WinMerge 2.9.1.5 - 2008-07-04 (r5560)
+  Manual: Copy editing (#2000322, #2005418)
+  Manual: Clarify 64-bit support (#2002431)
+  Reduce executable sizes (#2003203)
+  Release Notes update (#2007673, r5557)
+  BugFix: Possible crash when enabling line filter (#2004160)
+  BugFix: Location Pane flickers when scrolling (#1938177, #2005031)
+  BugFix: Use system codepage for paths (#1979429, #2008581)
+  BugFix: Random crashes in folder compare (#2005308)
+  Translation updates:
+  - Chinese Traditional (#2007426)
+
+WinMerge 2.9.1.4 - 2008-06-24 (r5518)
+  Use PCRE regular expressions in the editor (#1991259)
+  Installer: install to all users (#1460517)
+  Update release notes (#1990886, #1995265, #1999880)
+  Manual: Use PNG files (#1988845, #1989744)
+  BugFix: Temp paths in Reports created from archive file (#1984346)
+  BugFix: ISL file syntax highlighting starts comment with { (#1981326)
+  BugFix: Crash when starting a second instance (#1993835)
+  BugFix: Crash when starting WinMerge with only one path (#1994402)
+  BugFix: Messages missing from installer translations (r5506)
+  BugFix: Always right side as origin side in copy confirmation dialog
+    when Copy To... (#2001237)
+  New translation: Slovenian (#1997236)
+  Translation updates:
+  - Brazilian (#1994578)
+  - Swedish (#2000307)
+
+WinMerge 2.9.1.3 - 2008-06-05 (r5438)
+  Update PCRE (regular expression library) to version 7.7 (#1941779)
+  Add VB.net keywords to Basic highlighter (#1970912)
+  Open conflict files by drag & dropping to main window (#1984884)
+  Possible improvement for WinMerge exit bug (#1602313)
+  BugFix: Location Pane flickers when resizing (#1740106)
+  BugFix: Command line description text starting with "/" confused
+    WinMerge (#1973225)
+  BugFix: Item count in statusbar not get cleared (#1976480)
+  New translation: Ukrainian (#1973149, #1974021)
+  Translation updates:
+  - Brazilian (#1978374)
+  - Korean (#1978362)
+  - Swedish (#1980970)
+
+WinMerge 2.9.1.2 - 2008-05-23 (r5362)
+  Optimize location pane (r5341, r5342, r5346, r5351, r5355, r5356)
+  BugFix: Version Control filter did not match all VSS files (#1881186)
+  BugFix: Fix showing differences in the end of the line (#1883409, #1962816)
+  BugFix: Fix command line paths in quotes ending with "\" (#1963523)
+  New translation: Greek (#1968429)
+  Translation updates:
+  - Bulgarian (#1957434)
+  - Croatian (#1958283)
+  - Swedish (#1950188, #1970074)
+
+WinMerge 2.9.1.1 - 2008-04-23 (r5324)
+  Release Notes update (#1933950)
+  Installer: Use correct way to create start menu web link (#1913919)
+  Installer: Simplify DeletePreviousStartMenu() function (#1913949)
+  Installer: Updated the side art of the installer application (#1915012)
+  Update URLs and switch to 2.8 manual (#1919965)
+  New splash screen (#1914869)
+  Tab icons at Filter dialog (#1926531)
+  Add VS2003/VS2005 project files (#1926346)
+  Create separate document for compiling WinMerge (#1927502)
+  Update InnoSetup translations (#1931492)
+  Make 'Yes' the default button in copy confirmation dialog (#1943647)
+  Allow drag & drop of paths to Open dialog (#1945254)
+  Enlarge 'Discard All' button in Save confirmation dialog (#1947216)
+  BugFix: Installer could create a registry access error (#1909967)
+  BugFix: The filter text box in Open-dialog sometimes displayed some garbage
+    data (#1915424)
+  BugFix: Print area was not clipped correctly. (#1915536)
+  BugFix: Undo after pane swapping (#1915536, #1923625)
+  BugFix: Quick compare for same folder didn't show differences (#1918599)
+  BugFix: Installer didn't have ChangeLog.txt included (r5255)
+  BugFix: Shortcuts given in command line were not expanded (#1942217)
+  New translation: Romanian (#1939729)
+  Translation updates:
+  - Brazilian (#1913723)
+  - Chinese Traditional (#1927605)
+  - French (#1920380)
+  - German (r5130, r5139, r5171, r5203, r5236, #1949068)
+  - Italian (#1939235)
+  - Japanese (r5152)
+  - Polish (#1934655)
+  - Russian (#1914466)
+  - Spanish (#1907152, r5250)
+  - Swedish (#1908289)
+
+WinMerge 2.8 RC - 2008-03-04 (r5125)
+  Update developers list in splash screen (#1891548)
+  Better error handling for Excel plugin (#1510293)
+  Add macros, bookmarks and document properties to Word plugin (#1510298)
+  Add *.dot (document template) extension to Word plugin (r5120)
+  BugFix: Copy&Paste from VB6 added binary chars (#1904355)
+  Translation updates:
+  - Chinese Traditional (#1905323)
+  - Swedish (#1905520)
+
+WinMerge 2.7.7.6 - 2008-02-28 (r5099)
+  Remove sintance.h/sintance.cpp as not compatible with GPL (#1886580)
+  Automatically switch to mixed-EOL mode when loading files with
+   two or more EOL styles (#1901547)
+  Indent "Explorer Context Menu" sub options (#1901763)
+  Replace 'DOS' in EOL style strings with 'Windows' (#1902583)
+  Show 'Mixed' as file compare EOL style instead of empty style (r5091)
+  Typo fixes and grammar improvements to several strings (#1898401)
+  BugFix: Ignore codepage specified on File Encoding dialog if file was 
+    detected as UTF-8 (#1900728)
+  BugFix: Recognize invalid UTF-8 sequence as UTF-8 (#1900733)
+  BugFix: Didn't highlight any difference between untitled documents (#1900257)
+  Translation updates:
+  - Czech (r5073)
+  - Japanese (r5076)
+  - Swedish (#1901784)
+
+WinMerge 2.7.7.5 - 2008-02-22 (r5069)
+  Cleaning up Help-menu (#1875111)
+  Right-align tab size number in editor options (r5037)
+  Move Time difference ignore -option to compare options (#1892283)
+  Add option to select temporary folder (#1893167)
+  Show file encoding in file compare statusbar (#1895629)
+  Unify EOL style strings in folder compare and file compare (#1896462)
+  Remove "DisplayBinaryFiles" and "EditBinaryFiles" plugin (#1899161)
+  BugFix: Potential lockup in folder compare (#1865131, #1889907)
+  BugFix: Line filter didn't filter non-ascii lines correctly (#1880628)
+  BugFix: GNU General Public License name in menu (#1868989)
+  BugFix: Didn't switch back to content compare once switched to quick 
+    compare in folder compare (#1770373)
+  BugFix: Quick compare didn't ignore EOL differences (#1884717)
+  Translation updates:
+  - Croatian (r5032)
+  - Czech (r5017)
+  - German (r5038)
+  - Slovak (#1895583)
+  - Swedish (#1891326)
+
+WinMerge 2.7.7.4 - 2008-02-07 (r5011)
+  Detect (and read/write) UTF-8 files without BOM (#1879271)
+  Tell user that file is not a conflict file (#1880423)
+  Allow opening conflict file from command line (#1880857)
+  Use radio symbol for current EOL menu item (#1869755)
+  Ask and create pair for unique folder and open them (#1881454)
+  Add publisher info to version resource (#1884920)
+  Move "Zoom In/Out" to own sub menu (#1879340)
+  Installer: Add more version resource info (#1885793)
+  Reset text zoom to default size with Ctrl + * (#1886664)
+  BugFix: Always return 0 to command line (#1854419)
+  BugFix: Merge/Delete deleted items from read-only sides (#1882019)
+  BugFix: Shellextension had no publisher info and wrong
+    description (#1878828)
+  BugFix: Lockup when showing binary files (#1880711)
+  Translation updates:
+  - Croatian (r4952)
+  - Japanese (r4962)
+  - Swedish (#1884918)
+
+WinMerge 2.7.7.3 - 2008-01-23 (r4951)
+  Resolve conflict files (cvs, svn...) (#1875129)
+  Save line filter when edit box loses focus (#1875853)
+  Add link to translations website at help menu (#1699883)
+  Manual: Add instructions for conflict file resolving (#1876770)
+  Manual: Document third path given to command line (#1877735)
+  BugFix: Fix Quick Compare regression in 2.7.7.2 (#1872165)
+  Bugfix: Clipped text in file saving error message (#1874854)
+
+WinMerge 2.7.7.2 - 2008-01-14 (r4915)
+  Syntax highlighting for PowerShell files (#1859657)
+  Syntax highlighting for PO(T) files (#1866221)
+  Change font size with Ctrl + MouseWheel (#1865795, #1869686)
+  Horizontal scrolling with Shift + MouseWheel (#1865795)
+  Installer: Add support for integration with latest version of TortoiseCVS and
+    TortoiseSVN x64 (#1865168)
+  Close compare tab with middle mouse button (#1865220)
+  Add index.html for documentation folders (#1866183)
+  Manual: Clarify file filters folder name matching (#1867212)
+  Improve file compare margin icons location (#1718699)
+  Enable file compare to open binary files (#1869647)
+  File encoding dialog for file compare (#1871079)
+  BugFix: Crash when using TrackPoint middle-button scrolling (#1864040)
+  BugFix: WinMerge didn't show the contents of the symbolic link target (#1864978)
+  BugFix: Unused registry key HKCU\Thingamahoochie\WinMerge was created 
+    (#1865202)
+  BugFix: Register.bat didn't work on Windows 98 and Vista (#1869821)
+  BugFix: Open-dialog was not displayed on Windows 98 (#1866442, #1869858)
+  BugFix: Right mouse button didn't move cursor to new place (#1814184)
+  Translation updates:
+  - Spanish (#1867234)
+  - Swedish (#1867765, #1867844)
+
+WinMerge 2.7.7.1 - 2007-12-20 (r4842)
+  New option to keep file's time when saving in file compare (#1851921)
+  Installer: Link to translated ReadMe in Start menu, if file exists (#1805818)
+  Add HTML-formatted release notes (#1851308, #1852534)
+  Installer: Install release notes file (#1852599)
+  Installer: Move manual to core files component and remove
+   User Guide component (#1853409)
+  Bugfix: VS2008 and VS2005 compile problems (#1847265)
+  Bugfix: More difference highlight code reverts (#1748940)
+  Translation updates:
+  - Spanish (#1655577)
+
+WinMerge 2.7.6 - 2007-11-29 (r4807)
+  Touchpad scrolling improvements (#1837457)
+  BugFix: Values with "," inside could break the CSV report (#1831512)
+  BugFix: Failed to create backup file in folder compare (#1835283)
+  BugFix: Revert difference highlight code to 2.6.12 version (#1811695)
+  BugFix: Backspace key didn't work when renaming items (#1738790)
+  Translation updates:
+  - Croatian (r4786)
+
+WinMerge 2.7.5.7 - 2007-11-19 (r4772)
+  Remove MFC dependency from ShellExtension (#1833521)
+  Update ShellExtension icon to new WinMerge icon (#1833616)
+  BugFix: Build script didn't update PO files correctly before copying (r4756)
+  BugFix: ShellExtension's icon was clipped if system font size was small
+    (#1833616)
+  BugFix: Merge controls were not enabled for missing lines (#1833714)
+
+WinMerge 2.7.5.6 - 2007-11-15 (r4752)
+  BugFix: Many translation-system related fixes and improvements (#1804762)
+  BugFix: When copying files to VCS system, destination file was
+    not checked out (#1828930)
+  BugFix: Visible area indicator on location pane shook when clicking
+    above or below the vertical scroll bar to scroll one screen (#1829572)
+  Translation updates:
+  - Croatian (#1829301)
+  - Japanese (r4730)
+
+WinMerge 2.7.5.5 - 2007-11-08 (r4722)
+  Bugfix: Don't enable merge GUI for ignored differences (#1826375)
+  BugFix: PgUp key caused the error message "An invalid argument was
+    encountered" when word-wrap mode was on (#1820631)
+  BugFix: Keep selected items visible in Folder Compare columns dialog (r4715)
+  BugFix: Disable Folder Compare column selection dialog's up/down buttons
+    when first/last items are selected (r4716)
+  BugFix: Many translation-system related fixes and improvements (#1804762)
+  Add Croatian translation (#1820308)
+  Translation updates:
+  - Chinese Traditional (#1824691)
+
+WinMerge 2.7.5.4 - 2007-11-01 (r4687)
+  New PO files based translation system (#1804762)
+  New folder compare column selection dialog (#1804555)
+  Install WinMerge.exe (ANSI version) only for Windows 95/98/ME (#1809140)
+  Better multi-monitor support, with option to lock panes (#1788168)
+  Installer: Install PO files and MergeLang.dll (#1820689)
+  BugFix: Ignored differences were merged when merging multiple
+    differences (#1811745)
+  Bugfix: Don't clear selection when right-clicking outside it (#1814184)
+  Bugfix: Configuration log labeled Vista as Longhorn (#1815859)
+  Bugfix: Customized text color for ignored differences didn't shown (#1807895)
+  Translation updates:
+  - Chinese Traditional (#1810192, #1810541)
+  - Italian (#1805044)
+
+WinMerge 2.7.5.3 - 2007-09-27 (r4572)
+  Use PO files for translations (generate RC-files from PO-files)
+  Add Portuguese translation (#1756364)
+ Change Up/Down button names in folder compare columns dialog(#1800064)
+  BugFix: Fix MakeResDll crash (#1795421)
+  BugFix: Full screen mode didn't work with multiple monitors (#1788168)
+  Bugfix: Revert multiple monitor patches (#1788168)
+  BugFix: PgUp key didn't do anything in beginning of the file (#1795680)
+  BugFix: The option 'Automatically scroll to first difference' didn't work
+    properly when word-wrap mode was on (#1795814)
+  Translation updates:
+  - French (#1800064, #1802363)
+  - Japanese (r4546)
+
+WinMerge 2.7.5.2 - 2007-09-11 (r4528)
+  Graphical improvements to location pane (#1770175)
+  Remove MFC dependency from resource compiler (#1783581)
+  Better multi-monitor support (split file view on monitor boundary) (#1788168)
+  BugFix: Renaming unique item (only other side) renamed parent folder (#1787816)
+  BugFix: Goto didn't change the active pane when selecting another pane (#1791351)
+  Translation updates:
+  - Traditional Chinese (r4473)
+
+WinMerge 2.7.5.1 - 2007-08-16 (r4440)
+  HTML reports for file compare (#1739209)
+  Ask confirmation when exiting with multiple windows open (#1757800)
+  Translation updates:
+  - Catalan (r4370)
+  - Simplified Chinese (r4369)
+  - Danish (r4360)
+  - French (r4383)
+  - Russian (r4421)
+  - Slovak (r4413)
+  - Swedish (r4412)
+
+WinMerge 2.7.4 - 2007-06-27 (r4352)
+  Batch-file syntax highlighting keywords cleanup (#1743504)
+  Bugfix: Archivesupport: Zip-->both didn't work correctly (#1734439)
+  Bugfix: Linediff didn't highlight whitespace differences (#1698781)
+  Bugfix: Copy confirmation dialog did show wrong To-path (#1740024)
+  Translation updates:
+  - Italian (#1737491)
+
+WinMerge 2.7.3.7 - 2007-06-14 (r4330)
+  New big toolbar (actual image instead of placeholder) (#1736520)
+  Bugfix: Fixes to folder compare copy/rename operations (#1730534)
+  Translation updates:
+  - Swedish (#1735635)
+
+WinMerge 2.7.3.6 - 2007-06-07 (r4321)
+  Recent project files in File-menu (#1731551)
+  Automatically import existing linefilters to new dialog (#1718040)
+  Bugfix: copy/delete of unique items failed in folder compare
+    in 2.7.3.5 (#1730534)
+  Bugfix: crashed when ESC was pressed while renaming item in
+    folder compare (#1705874)
+
+WinMerge 2.7.3.5 - 2007-05-31 (r4304)
+  Relax selecting parent folder restrictions (up arrow in folder compare) (#1727829)
+  Show a warning if item can't be found anymore in folder compare
+    and it is tried to access (copy/move/delete) (#1723778)
+  New Borland Delphi file filter (#1699783)
+  Gradient toolbar (#1717774)
+  Bugfix: could not create new file filters in 2.7.3.4 (#1719892)
+
+WinMerge 2.7.3.4 - 2007-05-15 (r4287)
+  Big (32x32) toolbar (image still placeholder) (#1698641)
+  Improve folder compare copy confirmation dialog (#1699585, #1700241)
+  New file filter for Symbian developers (#1694048)
+  Bugfix: several fixes to in-line difference highlight (#1694102, #1714088)
+  Bugfix: word wrap lose horizontal scrollbar (#1706476)
+  Bugfix: fixes to tabbed window control (#1718148)
+  Translation updates:
+  - German (#1701151)
+  - Japanese
+  - Korean (#1704904)
+  - Swedish (#1703350)
+
+WinMerge 2.7.3.3 - 2007-04-04 (r4234)
+  Tabbed interface (#1603292)
+  Enable shell integration for folder backgrounds (#1693113)
+  Allow selecting syntax highlighting (#1690346)
+  New C# development file filter (#1689854)
+  Icon updates (#1686279, #1692097)
+  Bugfix: compare by date and by size broken in 2.7.3.2 (#1693441)
+  Bugfix: Open-dialog file filter failed if modified (#1693275)
+  Translation updates:
+  - Swedish (#1689515)
+
+WinMerge 2.7.3.2 - 2007-03-27 (r4201)
+  Several fixes to line difference highlighting (#1491334, #1683061, #1639453)
+  Icon updates (#1684865)
+  Printing improvement (#1687430)
+  Language files size reduced (#1687661, #1687983, #1688012)
+  Bugfix: 2.7.3.1 binary file compare crash (#1687966)
+  Bugfix: long linefilters now restored correctly (#1680920)
+  Translation updates:
+  - Japanese
+
+WinMerge 2.7.3.1 - 2007-03-20 (r4179)
+  New copy confirmation dialog in folder compare (#1675087, #1683842)
+  Improved line filter dialog (#1682475)
+  Installer/uninstaller icons restored to default icons
+  Some icon updates (#1680209)
+  Bugfix: folder compare lost focus after confirmation dialog (#1670991)
+  Bugfix: crash comparing empty folders (#1675211)
+  Translation updates:
+  - Czech
+  - French (#1664689)
+  - Polish (#1673082)
+  - Swedish (#1673908, #1678676, #1683289)
+
+WinMerge 2.7.2 - 2007-02-27 (r4137)
+  Fix ShellExtension installation bug 
+  Translation updates:
+  - Czech
+  - German (#1667564)
+  - French (#1664689)
+
+WinMerge 2.7.1.7 - 2007-02-20 (r4120)
+  Folder compare threading improvement - should be faster in many
+    situations (#1662002)
+  New options for backup file location and naming (#1652696)
+  Syntax highlighting for CSS files (#1582537)
+  Allow to hide folder compare margins (View/View Margins) (#1663798)
+  Translation updates:
+  - Czech
+  - Polish (#1650831)
+  - Swedish (#1657664)
+
+WinMerge 2.7.1.6 - 2007-02-01 (r4094)
+  New post-compare line filters for folder compare (#1644820)
+  Optimization for word wrap code (#1640741)
+  Bugfix: 2.7.1.5 forgets selected filter (#1637433)
+  Bugfix: limiting to single file compare window now works more
+    logically (#1636314)
+  Bugfix: ANSI regular expressions didn't work (#1644668)
+  Translation updates:
+  - Bulgarian (#1639493)
+  - Catalan (#1646638)
+  - Swedish (#1634968)
+
+WinMerge 2.7.1.5 - 2007-01-10 (r4030)
+  New line filter implementation (please test and report bugs!) (#1593810)
+  Minimum height for location pane's visible area (#1489875)
+  Short label "Error" for error items in folder compare (#1567749)
+  Bugfix: rename edits wrong field in folder compare (#1597939)
+  Bugfix: too much scrolling in difference navigation
+  Bugfix: wrong text selection after pane switch in file compare (#1630630)
+  Bugfix: crash when editing space-char indented files (#1631613)
+  Manual updates
+
+WinMerge 2.7.1.4 - 2006-12-21 (r3991)
+  Match lines inside differences (#1447744)
+  Workaround-patch (locally included to the build) for
+     shutdown problems (#1602313)
+  New ASP.Net filefilter (#1619689)
+  Bugfix: folder compare speed regression in 2.7.1.3 (#1610442)
+  Bugfix: new fix for folder compare Copy Left/Right To.. (#1603061)
+  Bugfix: copyright info missing from about dialog when
+    translation selected (#1604115)
+  Bugfix: location pane problems with word-wrap (#1584068, #1611542)
+  Bugfix: invalid path added to project file -dialog (#1602219)
+  Swedish translation update (#1614442)
+  Manual updates
+
+WinMerge 2.7.1.3 - 2006-12-05 (r3919)
+  Now hides skipped items by default (#1604078)
+  Improved INI file syntax highlighting (#1607193)
+  Easier folder selection in Project File -dialog (#1603196)
+  New "Exclude Source Control files and directories filter" filefilter (#1557295)
+  Bugfix: project files weren't loaded correctly from command line
+    (using shell file association) (#1602214)
+  Bugfix: crash in syntax parser (#1556688)
+  Bugfix: wrong difference navigation when word-wrap enabled (#1597814)
+  Bugfix: ClearCase integration didn't install if "Program Files" -folder
+    was named differently (non-English Windows)
+  Manual updates
+  Slovak translation update (#1606496)
+
+WinMerge 2.7.1.2 - 2006-11-24 (r3844)
+  close WinMerge if Open-dialog is canceled when started
+    from command line (#1600714)
+  BugFix: project files didn't work (loaded right-side path
+    for both sides) (#1600000)
+  BugFix: location pane misdrawn when word-wrap enabled (#1584068)
+
+WinMerge 2.7.1.1 - 2006-11-16 (r3810)
+  Use expat + scew for XML handling (partially converted) (1587574)
+  Uses PCRE for regular expressions (partially converted) (#1591605)
+  New folder compare icons (#1586705)
+  New bookmarks icons (#1586689)
+  Manifest files in resource, no need for separate files (#1588212)
+  BugFix: WinMerge/Filters folder was always created (#1578419)
+  BugFix: modality problems in file selection dialogs (#1586869)
+  BugFix: crash if file modification time was missing (#1589563)
+  BugFix: /x parameter didn't work with some other parameters (#1564283)
+  BugFix: asked sometimes twice about saving modified files (#1596692)
+
+
+WinMerge 2.7.4 and earlier (also 2.6.x stable releases) have more detailed
+changelogs in Changes.txt files in /Src and other folders.

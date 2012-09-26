@@ -1,0 +1,17 @@
+# 2-way counts: seq1, seq2, count
+TaxonA	TaxonB	4
+TaxonA	TaxonC	6
+TaxonA	TaxonD	2
+TaxonA	TaxonE	7
+TaxonA	TaxonF	4
+TaxonB	TaxonC	7
+TaxonB	TaxonD	4
+TaxonB	TaxonE	7
+TaxonB	TaxonF	5
+TaxonC	TaxonD	7
+TaxonC	TaxonE	7
+TaxonC	TaxonF	8
+TaxonD	TaxonE	8
+TaxonD	TaxonF	4
+TaxonE	TaxonF	6
+86 pairwise breakpoints

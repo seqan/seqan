@@ -1,0 +1,224 @@
+=================================
+RABEMA - Read Alignment BEnchMArk
+=================================
+
+Rabema is a program that supports a new read mapper benchmark methodology. The
+methodology is based on a strict definition of the read mapping problem and
+allows the evaluation of arbitrary read mapping programs that create SAM
+output.
+
+The paper gives an explanation of the theory behind the benchmark methodology
+with an example evaluatio
+
+For installation instruction and online material, see the project website:
+
+  http://seqan.de/projects/rabema.html
+
+Simulated Vs. Real-World Data
+=============================
+
+For simulated data, the read sample positions are known.  Thus, the input
+for Rabema comes from the read simulator (e.g. SeqAn's Mason).  The distances
+of reads to the reference is set to 0 in the gold standard.  Intervals are
+extended to the left and right using the distance in the multi-read alignment
+as generated from the SAM file.  In this case, Rabema is ran in "oracle" mode:
+The SAM/WIT files (--oracle-sam/--oracle-wit) know the original position.
+
+For real-world data, the gold standard is generated for all match locations
+from the SAM file as described in the paper.
+
+Building Rabema
+===============
+
+We use CMake to build Rabema (and RazerS 2) from the command line (assuming
+you are on Linux or Mac Os X):
+
+  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan/ seqan-trunk
+  cd seqan-trunk/build
+  cmake .. -DCMAKE_BUILD_TYPE=Release
+  make rabema razers2
+
+Example 1:  Real-World Data
+===========================
+
+This example walks you through building a gold standard from real-world data
+and comparing the output of a read mapper agains the gold standard.
+
+First, we run RazerS 2 to generate the input for building the gold standard
+with indels (--indels) for an error rate of 8% (--percent-identity 92). We
+make sure to set the sensitivity to 100% (--recognition-rate 100), generate
+SAM output and allow a virtually unlimited number of alignments per read
+(--max-hits 10000000). The output is written to the file "out-gold.sam"
+(--output out-gold.sam).  Furthermore, we disable the shrinking of alignments
+in SAM output (--dont-shrink-alignments).  Latter is required for full
+sensitivity.
+
+  ./core/apps/razers2/razers2 --dont-shrink-alignments --vverbose \
+     --indels         \
+     --output-format 4    \
+     --recognition-rate 100 \
+     --percent-identity 92  \
+     --max-hits 10000000  \
+     --output out-gold.sam  \
+     rabema-data/data/saccharomyces/genome.fasta \
+     rabema-data/data/saccharomyces/reads_454/SRR000853.10k.fastq
+
+Then, we run Rabema to build the gold standard. We use the same error rate as
+when generating the gold standard (--max-error-rate 8), also use edit distance
+(--distance-function edit) and write the reuslts to gold-standard.wit.
+
+  ./core/apps/rabema/rabema build_standard \
+    --max-error-rate 8       \
+    --distance-function edit   \
+    --out-file gold-standard.wit \
+    rabema-data/data/saccharomyces/genome.fasta \
+    out-gold.sam
+
+Now, compare the results of another read mapper against the gold standard.
+Here, we use the RazerS with default parameters. First, run RazerS.
+
+  ./core/apps/razers2/razers2 -vv -id -of 4 -o out-default.sam \
+    rabema-data/data/saccharomyces/genome.fasta \
+    rabema-data/data/saccharomyces/reads_454/SRR000853.10k.fastq
+
+Then, compare the result with the gold standard. Note that the error rate used
+here is independent of the one built in the standard and only has to be less
+than or equal to the error rate used there.
+
+  ./core/apps/rabema/rabema compare   \
+    --max-error-rate 3        \
+    --distance-function edit    \
+    rabema-data/data/saccharomyces/genome.fasta \
+    out-default.sam         \
+    gold-standard.wit
+
+The final line of the output will look something like this:
+
+  {"total_intervals": 10839, "found_intervals": 10838,
+   "superflous_intervals": 2777, "additional_intervals": 0,
+   "total_reads": 7723, "normalized_intervals": 7722.94}
+
+The meaning of the number is:
+
+  total_intervals
+    Total number of intervals in the gold standard for the error rate
+    selected in the comparison.
+  found_intervals
+    Number of these intervals hit in the SAM file (found by the read 
+    mapper).
+  superflous_intervals
+    Read alignments in the SAM file that do not occur in the gold standard
+    for the error rate selected in the comparison. These are alignments
+    with a higher error rate.
+  additional_intervals
+    Number of feasible matches found by the read mapper that are not in
+    the gold standard. If this is >0, this indicates there is a bug in (1)
+    the read mapper used to build the gold standard (2) the gold standard
+    building tool of rabema or (3, most probable) the incorrect usage of
+    the tools, e.g. not allowing indels when building the gold standard
+    SAM file and comparing an output SAM file with gapped alignments in
+    edit-distance mode.
+  total_reads
+    Total number of reads.
+  normalized_intervals
+    Number of normalized intervals hits in the SAM file.
+         
+Example 2:  Simulated Data
+==========================
+
+This example walks you through the simulation of data, generation of the gold
+standard using Mason as well as evaluating the output of a read mapper against
+the standard.
+
+For simulated data, we use the SAM file that reflects the original alignments
+from the simulation (Mason can generate such a file, but any read simulator
+should be able to do so). The important parameter here is --oracle-sam which
+will interpret the SAM file as the gold standard, i.e. there only is the
+correct alignment for each read in the SAM file. All distances in the WIT file
+will be 0 but this value is subsequently ignored and, as described in the
+paper, the value of the alignment at the simulated position is used for the
+distance.
+
+  ./core/apps/rabema/rabema build_standard \
+    -d hamming                   \
+    -o out-gold.wit              \
+    --oracle-sam                 \
+    rabema-data/data/saccharomyces/genome.fasta \
+    rabema-data/data/saccharomyces/reads_illumina/SIM_SC0050MP00.10k_e00.sam
+
+Then, we run RazerS 2 and map the reads.
+
+  ./core/apps/razers2/razers2 -vv -id -of 4 -o out-default.sam \
+    rabema-data/data/saccharomyces/genome.fasta                \
+    rabema-data/data/saccharomyces/reads_illumina/SIM_SC0050MP00.10k_1.fastq \
+    rabema-data/data/saccharomyces/reads_illumina/SIM_SC0050MP00.10k_2.fastq
+
+Finally, we compare the RazerS results with the gold standard.
+
+  ./core/apps/rabema/rabema compare           \
+    --distance-function edit        \ # allow indels / edit distance
+    --oracle-wit-mode               \ # for simulated data
+    rabema-data/data/saccharomyces/genome.fasta \ # reference sequence
+    out-default.sam                 \ # output SAM file
+    gold-standard.wit                 # gold standard file
+
+Gold Standard File Format (WIT)
+===============================
+
+Version: 1.0
+
+The gold standard is built for either Hamming or Levenshtein distance, a given
+error rate (in percent), a reference sequence, a read set and the result of a
+fully sensitive read mapper (e.g. RazerS).
+
+The first 5 lines of a WIT file might look like this:
+
+    @WIT	VN:1.0
+    @MATES	SEP:/	TYPE:01
+    # QNAME	SCORE	RNAME	RDIR	SPOS	EPOS
+    SRR026674.2489878	3	2L	F	7344392	7344398	
+    SRR026674.2489878	3	2L	F	10948011	10948047	
+
+The format consists of (1) the header and (2) the intervals section with
+arbitrary comment lines interleaved.
+
+Comments
+--------
+
+Comment lines start with '#' and are ignored.
+
+Header
+------
+
+Header lines start with '@' and are similar to SAM headers. Each header line
+contains one record. Each record starts with '@', followed by the record
+identifier. Then, separated by tabs, record fields follow.
+
+There are the following records/fields.
+
+@WIT
+
+This records starts the header and must be the first record in the header,
+there can be only one such record. The only field is the version (VN) field
+that gives the version of the file format.
+
+@MATES
+
+This record must be present exactly once. It describes how mate pairs are
+stored. Its fields are the separator of mate order identifiers (SEP) and the
+type of mate order identifiers (TYPE). Valid values for the type are '01' and
+'12'.
+
+Read identifiers for mate-pairs generally look like the following:
+
+    <mate identifier> + <separator> + <mate order identifier>
+
+The mate identifier uniquely identifies a mate pair / fragment. The separator
+usually is '.', '_', or '/'. The mate order identifier gives the number of the
+read within the mate pair / fragment. Rabema uses this information to convert
+names of paired-end reads within the WIT file into their mate pair names.
+
+Examples for such mate pairs are:
+
+    SRR026674.2489878/0 and SRR026674.2489878/1
+    SRR026674.2489878_1 and SRR026674.2489878_2

@@ -1,0 +1,22 @@
+# 3-way counts: seq1, seq2, seq3, count
+TaxonA	TaxonB	TaxonC	2
+TaxonA	TaxonB	TaxonD	1
+TaxonA	TaxonB	TaxonE	3
+TaxonA	TaxonB	TaxonF	1.5
+TaxonA	TaxonC	TaxonD	0.5
+TaxonA	TaxonC	TaxonE	2
+TaxonA	TaxonC	TaxonF	2
+TaxonA	TaxonD	TaxonE	1.5
+TaxonA	TaxonD	TaxonF	1
+TaxonA	TaxonE	TaxonF	2.5
+TaxonB	TaxonC	TaxonD	2.5
+TaxonB	TaxonC	TaxonE	3
+TaxonB	TaxonC	TaxonF	1.5
+TaxonB	TaxonD	TaxonE	3
+TaxonB	TaxonD	TaxonF	1.5
+TaxonB	TaxonE	TaxonF	2
+TaxonC	TaxonD	TaxonE	2.5
+TaxonC	TaxonD	TaxonF	2.5
+TaxonC	TaxonE	TaxonF	3.5
+TaxonD	TaxonE	TaxonF	2.5
+41.5 3-way breakpoints

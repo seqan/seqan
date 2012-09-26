@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>layout</title>
+	<link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="../css/panel.css" type="text/css" media="screen" charset="utf-8" />
+	<script src="search_index.js" type="text/javascript" charset="utf-8"></script>
+	<script src="tree.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/seqan-dddoc.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/searchdoc.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+		//<![CDATA[
+	    function placeholder() {
+ 	       if (jQuery.browser.safari) return;
+           if (jQuery.browser.mozilla)
+           {
+               var version_array = jQuery.browser.version.split();
+               if (version_array.length < 1)
+                   return;  // Something went wrong, don't show label.
+               if (version_array[0] >= 5)
+                   return;  // Firefox >= 5.
+           }
+ 	       $('#search-label').click(function() {
+ 	           $('#search').focus();
+ 	           $('#search-label').hide();
+ 	       });
+
+ 	       $('#search').focus(function() {
+ 	           $('#search-label').hide();
+            });
+ 	       $('#search').blur(function() {
+ 	           this.value == '' && $('#search-label').show()
+ 	       });
+
+ 	       $('#search')[0].value == '' && $('#search-label').show();
+	    }
+	   $(function() {
+           placeholder();
+           var panel = new Searchdoc.Panel($('#panel'), search_data, tree, top.frames[1]);
+           $('#search').focus();
+
+           // Handle searches via top frame entry URL.
+           var s = window.parent.location.href.match(/\?q=([^&]+)/);
+           if (s) {
+               s = decodeURIComponent(s[1]).replace(/\+/g, ' ');
+               if (s.length > 0)
+               {
+                   $('#search').val(s);
+                   panel.search(s, true);
+               }
+           }
+
+           // Handle direct item access via top frame entry URL.
+           var i = window.parent.location.href.match(/[\?&]i=([^&]+)/);
+           if (i) {
+               i = decodeURIComponent(i[1]).replace(/\+/g, ' ');
+               if (i.length > 0)
+               {
+                   var arr = i.split('.');
+                   var path = seqan.doc.getPagePath(arr[0], arr[1], 'files');
+                   var a = window.parent.location.href.match(/[\?&]a=([^&]+)/);
+                   if (a)
+                       a = decodeURIComponent(a[1]).replace(/\+/g, ' ');
+                   panel.open(path + '#' + a);
+               }
+           }
+        })
+		//]]>
+	</script>
+</head>
+<body>
+    <div class="panel panel_tree" id="panel">
+        <div class="header">
+            <div>
+                <label for="search" id="search-label" style="display: none">Search</label>
+                <table>
+                <tr><td>
+                    <input type="Search" placeholder="Search" autosave="searchdoc" results="10" id="search" autocomplete="off"/>
+                </td></tr>
+            </table></div>
+        </div>
+        <div class="tree">
+            <ul>
+            </ul>
+        </div>
+        <div class="result">
+            <ul>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

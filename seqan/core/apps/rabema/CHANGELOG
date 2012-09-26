@@ -1,0 +1,27 @@
+== Trunk ==
+
+ * Changing distance metric to enum in Rabema.
+ * Lowering memory usage of rabema_build_gold_standard by not storing whole GSI in memory but dumping directly.
+ * GSI can now be written and read from compressed file.
+ * A detailed and updated manual is now available.
+ * Using new command line parser yields better documentation.
+ * WIT is replaced by GSI file format (gold standard intervals).
+ * Rabema can handle BAM now as well as SAM.
+ * Rabema has been split into two programs `rabema_build_gold_standard` and `rabema_evaluate`.
+ * Sort order of SAM files is now checked on the fly and not at the beginning any more.
+ * Oracle also works in Rabema 1.1.
+ * Major restructuring of the code, removing unused parts, debug comments etc.
+ * Reference sequences are now loaded using an FAI index on demand.
+   This reduces the memory requirement for reference sequences to storing the longest contig two times (forward and RC).
+ * Improved the output of Rabema to look nicer, progress displays are more exact.
+ * Adjusting Rabema to use `bam_io` module and stream through the SAM file.
+   The only thing to keep resident in memory is a few integers for each read (not alignment) and a mapping of read names to ids.
+   This greatly reduces the memory consumption, e.g. from X GB to Y GB on the example from the Rabema homepage.
+ * Added `prepare_sam` tool to prepare the updated RazerS 2 output to be used with new Rabema versions.
+   The updated fragment store does not output read sequences for secondary alignments.
+   However, this requires a global view and the read sequences to be always in memory.
+   The tool accepts a SAM file sorted by query name, copies over sequences from primary alignments to secondary alignments (it knows about paired-end reads).
+
+== Release 1.0 ==
+
+Initial realease for the published paper.

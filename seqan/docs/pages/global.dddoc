@@ -1,0 +1,156 @@
+.globals.categories:
+..Page:&nbsp;
+..Concept:Concept
+..Class:Class
+..Enum:Enum
+..Macro:Macro
+..Spec:Class Specialization
+..Shortcut:Shortcut
+..Function:Function
+..Memvar:Data Member
+..Memfunc:Member Function
+..Typedef:Typedef
+..Metafunction:Metafunction
+..Tag:Tag
+..Adaption:Adaption
+..Demo:Example Program
+.
+.globals.indexes:
+..Page:Overview
+..Concept:Concepts
+..Class:Classes
+..Enum:Enums
+..Macro:Macros
+..Spec:Specializations
+..Shortcut:Shortcuts
+..Function:Functions
+..Metafunction:Metafunctions
+..Tag:Tags
+..Adaption:Adaptions
+..Demo:Examples
+.
+.globals.sections:
+..Page:SeqAn Documentation
+..class:Member of
+..general:Specialization of
+..spec:Specializations
+..param:Parameters
+..value:Values
+..returns:Return Values
+..type:Metafunctions
+..tag:Tags
+..memvar:Data Members
+..memfunc:Member Functions
+..typedef:Typedefs
+..function:Functions
+..remarks:Remarks
+..example:Examples
+..demo:Example Programs
+..demofor:See
+..include:Include Headers
+..status:Status
+..see:See Also
+..implements:Implements
+..conceptimplements:Implemented by
+..concept:Part of Concept
+..conceptmemvar:Required Member Variables
+..conceptmemfunc:Required Member Functions
+..concepttypedef:Required Typedefs
+..conceptfunc:Required Functions
+..conceptmetafunc:Required Metafunctions
+..conceptusedbymeta:Used By Metafunction
+..conceptusedbyfunc:Used By Function
+..baseconcept:Refines
+..childconcept:Refinements
+..shortcut:Shortcuts
+..shortcutfor:Shortcut for
+..output:Output
+..conceptdefinition:Concept Definition
+.
+.globals.subsections:
+..metafunction:Metafunctions:
+..type:Types:
+..concept:Types:
+..default:Default:
+..remarks:Remarks:
+..note:Note:
+..see:See:
+..contents:Contents
+.
+.globals.project:
+..name:SeqAn
+..footline:SeqAn - Sequence Analysis Library - <a href="http://www.seqan.de">www.seqan.de</a>
+..indexcategory:Page
+.
+.globals.namingconventions:
+..Class:bigsmall
+..Enum:bigsmall
+..Macro:big
+..Spec:bigsmall
+..Function:smallbig
+..Metafunction:bigsmall
+..Tag:bigsmall
+.
+.globals.relations:
+..memfunc:Memfunc.*.class
+..memvar:Memvar.*.class
+..typedef:Typedef.*.class
+..function:Function.*.param.*.type
+..function:Function.*.returns.*.type
+..function:Function.*.returns.type
+..type:Metafunction.*.param.*.type
+..derived:Class.*.base
+..derived:Spec.*.base
+..spec:Class.*.general
+..spec:Spec.*.general
+..see:*.*.see
+..conceptmemvar:Memvar.*.concept
+..conceptmemfunc:Memfunc.*.concept
+..concepttypedef:Typedef.*.concept
+..conceptfunc:Function.*.concept
+..conceptmetafunc:Metafunction.*.concept
+..conceptusedbyfunc:Function.*.param.*.concept
+..conceptimplements:*.*.implements
+..childconcept:Concept.*.baseconcept
+..demofor:*.*.demo
+..demo:*.*.demofor
+..shortcut:*.*.shortcutfor
+..shortcutfor:*.*.shortcut
+.
+.globals.inherit:
+..implements.general
+..type.general
+..type.implements:conceptusedbymeta
+..type.baseconcept:conceptusedbymeta
+..memvar.base
+..typedef.base
+..memfunc.general
+..function.general
+..function.implements:conceptusedbyfunc
+..function.baseconcept:conceptusedbyfunc
+..conceptimplements.childconcept
+..conceptmetafunc.baseconcept
+..conceptmemvar.baseconcept
+..conceptmemfunc.baseconcept
+..concepttypedef.baseconcept
+..conceptfunc.baseconcept
+..conceptusedbyfunc.baseconcept
+..conceptusedbymeta.baseconcept
+..demo.general
+.
+.globals.treedown:
+..Concept:childconcept
+..Class:spec
+..Class:derived
+..Spec:spec
+..Spec:derived
+.
+.globals.treeup:
+..Concept:baseconcept
+..Class:general
+..Class:base
+..Class:implements
+..Spec:general
+..Spec:base
+..Spec:implements
+.

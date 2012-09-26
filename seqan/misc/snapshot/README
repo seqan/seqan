@@ -1,0 +1,22 @@
+This is SeqAn, the C++ template library for sequence analysis
+
+See http://www.seqan.de/ for more information
+
+For detailed installation instructions read:
+http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/GettingStarted
+
+
+Folders:
+========
+
+"apps":  SeqAn applications
+"cmake": CMake files to create your own project files
+"demos": SeqAn demos, see also http://www.seqan.de/dddoc/html/INDEXPAGE_Demo.html
+"docs":  HTML-Documentation
+"seqan": SeqAn library (add the folder that contains "seqan" to
+         your include path)
+
+
+Have fun!
+
+Your SeqAn Team

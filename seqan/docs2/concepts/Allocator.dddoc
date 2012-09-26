@@ -1,0 +1,8 @@
+.Concept.Allocator:
+..summary:Object that manages memory allocation.
+
+.Function.allocate.concept:Concept.Allocator
+.Function.deallocate.concept:Concept.Allocator
+.Function.Allocator#clear.concept:Concept.Allocator
+
+

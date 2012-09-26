@@ -1,0 +1,390 @@
+/***********************************\
+/***********  SnpStore  ************\
+/****   SNP and InDel Calling   ****\
+/****	   for mapped NGS reads    ****\
+/***********************************\
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   File Formats
+  5.   Example
+  6.   Contact
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+SnpStore is a program for SNP and indel calling in mapped next-generation
+sequencing read data. 
+It features a simple threshold-based model for SNP and indel calling, and
+a MAQ-like Bayesian model for SNP genotype calling. 
+Reads can optionally be realigned, using the ReAligner algorithm by Anson
+and Myers.
+
+Please note: SnpStore is work in progress! Keep yourself up to date by 
+checking out the latest version of SnpStore from the SeqAn SVN repository
+(instructions follow below).
+
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+SnpStore is distributed with SeqAn - The C++ Sequence Analysis Library (see 
+http://www.seqan.de). To build SnpStore do the following:
+
+  1)  Download the latest snapshot of SeqAn
+  2)  Unzip it to a directory of your choice (e.g. seqan)
+  3)  cd seqan/projects/library/cmake
+  4)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  5)  make snp_store
+  6)  ./apps/snp_store
+
+Alternatively - and this is what I recommend - you can check out the latest 
+SVN version of SnpStore and SeqAn with:
+
+  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
+  2)  cd seqan/build
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  5)  make snp_store
+  7)  ./apps/snp_store
+
+If successful, an executable file snp_store was built and a brief usage 
+description was dumped.
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+Usage: snp_store [OPTIONS]... <REFERENCE.fa> <MAPPED_READS.gff> 
+
+SnpStore expects at least two files: the reference sequence in (Multi-)Fasta format
+and the mapped reads in GFF format. For a description of this GFF format 
+see section 4.1. 
+Multiple mapped read files can be specified by listing multiple GFF files 
+in quotation marks, i.e. "file1.gff file2.gff", or in square brackets, i.e. 
+[file1.gff file2.gff]. 
+
+To produce output files, at least one of the two options "-o" (output file 
+for SNPs) and "-id" (output file for indels) needs to be specified. 
+
+In default mode, SNPs/indels are called only at positions that are covered
+by at least 5 reads. 
+The default behaviour can be modified by adding the following options to 
+the command line:
+
+---------------------------------------------------------------------------
+3.1. Options
+---------------------------------------------------------------------------
+  
+  -o,  --output FILE
+  
+  Specify output filename (default: off). SNPs will only be called if an
+  output filename is specified.
+  
+  -of, --output-format NUM              
+  
+  Output format for SNP file:   0 = output all candidate SNPs (default)
+                                1 = output only succesful candidate SNPs, 
+                                    i.e. actual SNP calls
+  See section 4.2 for a detailed description of the output formats.
+                   
+  -hq, --hide-qualities   
+  
+  Hide ASCII quality values in SNP output file. 
+  Again, see section 4.2 for details.
+
+  -id, --indel-file FILE
+  
+  Output file for called indels in GFF format (off). Indels will only be 
+  called if a filename is specified.
+
+  -m,  --method NUM 
+  
+  Set method used for SNP calling       0 = threshold method
+                                        1 = MAQ-like Bayesian method (default)
+  See below ("SNP calling options") for options specific to each method.
+  
+  -mc, --min-coverage NUM    
+  
+  Only inspect positions that are covered by a minimum of NUM reads (5).
+
+  -re, --realign
+  
+  Realign reads using Anson's and Myers' ReAligner algorithm. See Anson, E. 
+  and Myers, E. "ReAligner: A Program for Refining DNA Sequence Multi-
+  Alignments." Journal of Comp. Biol. 1997.
+    
+  -mp, --max-pile NUM        
+  
+  Maximum number of reads allowed to pile up at the same reference position (4).
+  Use -mp 0 to switch off pile up correction.
+  
+  -mmp, --merged-max-pile
+  
+  Do pile up correction on merged files (off). Only applies when multiple
+  mapped read files are given.
+
+  -oa, --orientation-aware        
+  
+  Distinguish between forward and reverse reads when applying pile up 
+  correction (off).
+  Note that this options influences the output format. See section 4.2 for 
+  details.
+   
+  -dc, --dont-clip    
+  
+  Ignore clip tags in mapped reads file (off).
+  See section 4.1 for a description of the GFF file tags.
+
+  -mu, --multi      
+  
+  Use non-uniquely matched reads (off). By default, only reads that are matched
+  uniquely are parsed.
+
+  -fl, --force-length NUM    
+  
+  Read length to be used (ignores suffix of read) (off).
+
+
+SNP calling options:
+
+  Threshold method related:
+	In the threshold method, a SNP is called whenever a certain minimum number
+	of a non-reference base, a certain minimum quality and a certain minimum 
+	percentage of this base is observed in the read alignment. These three para-
+	meters can be modified with the following options:
+
+  -mm, --min-mutations NUM 
+  
+  Minimum number of observed mutations required for mutation to be called (5).
+
+  -pt, --perc-threshold NUM 
+  
+  Minimum percentage of the mutational base for mutation to be called (0.3), 
+  i.e. #most frequent non-ref base/ total #bases at candidate position
+
+  -mq, --min-quality NUM  
+  
+  Minimum average base quality of mutational base for mutation to be called (10).
+
+	
+  Maq method related:
+  In MAQ-like SNP calling, the genotpye g maximizing the posterior probability
+  P(g|D)=P(D|g)*P(g)/P(D) given the data D. 
+  See Li, H., Ruan, J. & Durbin, R. "Mapping short DNA sequencing reads and 
+  calling variants using mapping quality scores." Genome Res. 2008. 
+  and http://maq.sourceforge.net
+  In contrast to MAQ, we use base quality values instead of mapping qualities.
+  
+  -th, --theta NUM                        
+  
+  Dependency coefficient (0.85).
+
+  -hr, --hetero-rate NUM 
+  
+  Heterozygote rate (0.001).
+
+
+  Indel calling related:
+  Indels are called whenever the absolute number of indel-supporting reads and
+  the relative number (percentage) of indel-supporting reads exceed certain 
+  minimum values. These parameters are set as follows: 
+
+  -it, --indel-threshold  NUM
+  
+  Minimum number of indel-supporting reads required for indel to be called (5).
+
+  -ipt,--indel-perc-threshold NUM   
+  
+  Minimum percentage of the indel-supporting reads for mutation to be called (0.3), 
+  i.e. #reads supporting indel/ total #reads at candidate pos
+
+
+Other options:
+
+  -lf, --log-file FILE                  
+  
+  Write log information to FILE.
+
+  -v,  --verbose       
+  
+  Verbose mode.
+
+  -vv, --very-verbose
+  
+  Very verbose mode.
+
+  -h,  --help             
+  
+  Print this help.
+
+---------------------------------------------------------------------------
+4. File Formats
+---------------------------------------------------------------------------
+
+The reference sequence(s) must be given in a single Fasta file.
+The format for the mapped read files is explained in section 4.1, the 
+output file formats are described in section 4.2.
+
+
+---------------------------------------------------------------------------
+4.1 Mapped Reads General Feature Format
+---------------------------------------------------------------------------
+
+SnpStore expects the mapped reads in General Feature Format (GFF). Read files have
+to be sorted according to 1) chromosome (same order as in the reference sequence file) and 2) genomic start and 3) genomic
+end position.
+
+In general, the General Feature Format has at least 8 tab-delimited columns:
+<seqname> <src> <feat> <start> <end> <score> <strand> <frame> [attr] [cmts]
+
+For our input, we also require a 9th column to be present. The input columns
+are (irrelevant fields are represented as "<>", their content doesn't matter):
+
+<chromosome> <> <> <start> <end> <score> <strand> <> <ID=STR;AdditionalTags> 
+
+Example:
+chrX	AG	read	3427	3502	97.368	+	.	ID=AG_128_1_36_8556_3014;unique;cigar=76M;mutations=70A,72A;clip=0,3;quality=GGGGGGGGGGGGGGGGGGGGGGFGGGGGGGGGGGGGGGGGGGGGGGGGEGGECEGGGGBGGGG@GDGCGCGCF%%%
+chrX	AG	read	3429	3503	98.684	-	.	ID=AG_128_1_11_16882_16537;multi;cigar=6M1I69M;mutations=9T;quality=FFDDFFB==BBBBBDBBBB@B888DEBBBD@=DDFFBDFEBFFAFBDFEEDFBDDFFDEEFDFDFEDBE5D?BDD:
+
+The score in this case is the percent identity in the read-to-reference alignment.
+The 9th column can contain a number of tags. These are:
+
+
+unique;				To specify that the match is the unique hit of the read.
+multi;				To specify that the match is one among multiple best hits of the read.
+suboptimal;		To specify that the match is a suboptimal hit of the read.
+
+If none of these tags is given, the match is assumed to be unique.
+
+cigar=..;			To specify how the read aligns with the reference. The cigar string
+              must be given relative to the read sequence, i.e. in read sequence
+              orientation. See example above.
+mutations=..; To specify which read positions are different from the reference 
+							(mismatches and insertions in the read). Also the mutations string is 
+							relative to the read sequence, i.e. the numbers correspond to read 
+							positions and the bases are the corresponding read bases.
+
+The cigar string and the mutations string contain enough information to reconstruct 
+the read sequence. Alternatively, the read sequence can be given explicitly 
+by using the tag "read", e.g. "read=ACCAGCACA..T".
+However, either the "read" or the "cigar" and the "mutations" tag need to be
+specified, as this information is necessary for finding differences between reads 
+and reference, i.e. for locating SNPs and indels.
+
+clip=x,y;			To specify whether and how the read should be clipped. x bases will
+              be clipped from the read prefix, y bases will be clipped from the
+              suffix. In the above example, the last 3 bases of the first read
+              would be clipped, i.e. discarded, leaving the read 73bp long.
+
+quality=..;		To specify the ASCII quality string (quality value = ord(ASCII quality) - 33). 
+							If qualities are given, these	 MUST be given as the last tag in the 9th column 
+							(because of special characters contained in the ASCII quality string).
+
+
+
+---------------------------------------------------------------------------
+4.2 Output Formats
+---------------------------------------------------------------------------
+
+
+-----------
+SNP OUTPUT:
+-----------
+
+The first line is the program call that was used to generate the file. The second
+line is a header stating the content of the columns.
+
+Example:
+#./snp_store -mc 3 -oa -mp 1 -re -o snp.txt -it 3 -ipt 0.3 -id indels.txt Hs.dna.fa AG_125.mapped_reads.gff
+#chr    pos     ref     [A+]    [C+]    [G+]    [T+]    [A-]    [C-]    [G-]    [T-]    cov     call    quality
+1       7338    T       []      []      []      [FEEEEEEEDDDDDDDDCCCBBB?]       []      [,]     []      [B50--*]        30
+1       7401    C       [EEDCCA??]      [FEEEDDDCCCCAA@5]       []      []      [E]     [EEC/]  []      []      28      M       105
+1       9070    A       [FFFFEEEEEEEEED@?]      []      []      []      [722220--]      [0]     []      []      25
+
+
+Column 1: 				Chromosome
+Column 2:					Position
+Column 3:					Reference base
+Column 4:					ASCII quality values of all read bases 'A' mapping on forward strand of reference
+Column 5:				  ASCII quality values of all read bases 'C' mapping on forward strand of reference
+Column 6:					ASCII quality values of all read bases 'G' mapping on forward strand of reference
+Column 7:					ASCII quality values of all read bases 'T' mapping on forward strand of reference
+Column 8:					ASCII quality values of all read bases 'A' mapping on reverse strand of reference
+Column 9:					ASCII quality values of all read bases 'C' mapping on reverse strand of reference
+Column 10:				ASCII quality values of all read bases 'G' mapping on reverse strand of reference
+Column 11:				ASCII quality values of all read bases 'T' mapping on reverse strand of reference
+Column 12:				Total number of reads covering the position, i.e. read depth.
+Column 13:				SNP/genotype call for this position, if the position was identified as a SNP (empty otherwise).
+									Iupac code is used to represent diploid genotypes.
+Column 14:				Quality score for the SNP/genotype call, if the position was identified as a SNP (empty otherwise).
+
+
+Column 4 to 11 will look different if option -hq/--hide-qualities is specified. Instead of the individual
+ASCII base quality values in square brackets, only the count of bases will be given. For example, 
+instead of the "[EEDCCA??]" representing the 8 quality values associated with the 8 reads showing an A at 
+position 7401 on the forward strand, you would get "8", simply indicating the read count for A on the forward strand.
+
+Furthermore, if also option -oa is not specified, columns 4 and 8, columns 5 and 9, columns 6 and 10, and
+columns 7 and 11 will be merged/summed up, i.e. not differentiating between forward or reverse strand anymore.
+Note that the output file then has 4 columns less (columns 12 to 14 become columns 8 to 10).
+
+
+-------------
+INDEL OUTPUT:
+-------------
+
+Indels are written out in General Feature Format, where the individual 
+columns have the following meaning:
+
+<chromosome> <> <insertion/deletion> <start> <end> <score> <> <> <ID=STR;size=x;depth=y;> 
+
+Example:
+chr1	AG	deletion	141481675	141481679	1		+	.	ID=141481675;size=5;depth=3
+chr1	AG	insertion	141587341	141587341	0.8	+	.	ID=141587342;size=-2;seq=TC;depth=5
+
+The score is the percentage of indel-supporting reads at the candidate position.
+In the example, all reads covering the position of the deletion support the 
+deletion event (3 out of 3 reads), while only 80% percent of the reads covering the
+position of the insertion support the insertion event (4 out of 5 reads). The
+"depth" tag specifies how many reads cover the position. The "size" tag specifies
+the length of the indel event, with negative numbers indicating insertions. The
+insertion sequence is given with the "seq" tag.
+
+
+---------------------------------------------------------------------------
+5. Example
+---------------------------------------------------------------------------
+
+The folder "example" contains a mapped read file as well as the corresponding 
+reference file.
+If you cd into the example directory, you can run SnpStore in default mode with:
+
+../snp_store exampleGenome.fa exampleReads.gff -o example1.snp.txt -id example.indel1.txt
+
+This will produce two output files which are empty except for a header in the snp.txt file.
+In the little example, coverage is too low to permit any variants to be called in default
+mode. By reducing the minimum coverage and indel threshold parameters to 2, the
+output files should be filled:
+
+../snp_store -mc 2 -it 2 exampleGenome.fa exampleReads.gff -o example.snp.txt -id example.indel.txt
+
+To test the realignment option, you can further specify option -re:
+
+../snp_store -re -mc 2 -it 2 exampleGenome.fa exampleReads.gff -o example.snp.txt -id example.indel.txt
+
+In the resulting indel output file, two 1bp insertions should now have been
+merged into one 2bp insertion.
+
+
+---------------------------------------------------------------------------
+6. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Anne-Katrin Emde <emde@inf.fu-berlin.de>

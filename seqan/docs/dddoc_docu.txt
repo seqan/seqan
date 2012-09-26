@@ -1,0 +1,194 @@
+DDDOC - "Dot-Dot-Doc" - Das SEQAN Dokumentationssystem
+
+Autor: Andreas Döring, doering@inf.fu-berlin.de
+Version: 2.0
+
+
+1. Prinzipien:
+==============
+- Die Dokumentation ist eine große, hierarchisch gegliederte Datenstruktur ("Baum")
+- Sie ist auf mehrere Dateien verteilt.
+- Diese Dateien sind entweder spezielle dddoc-Dateien (Endung: ".dddoc"), oder aber C++-Sourcen.
+- In C++ Sourcen gelten Kommentare, die mit /** oder mit /// beginnen, als Bereiche, in denen dddoc-Information steht.
+- Python-Skripts durchsuchen alle Dateien des Projekts, sammeln die Information zusammen und generieren anschließend daraus die Dokumentation. 
+- Unter Windows baut man die Doku mit "make.bat", unter Linux mit "make.sh". Dabei kann man als optionale Argumente die Module angeben, deren Dokumentation gebaut werden soll. Wird kein Modul angegeben, so wird die komplette Doku gebaut. Möchte man ausschließlich die "statischen Seiten" (d.h. alles was unter dem Verzeichnis /docs liegt, z.B. die Tutorials und die Konzepte) bauen, so kann man einfach einen Fantasie-Modulnamen angeben (z.B. "make.bat blablabla").
+- Bislang ist die generierte Dokumentation in HTML, später soll z.B. auch LaTeX dazu kommen.
+
+
+
+2. Notation:
+============
+- Die Dokumentation wird in Form eines dddoc-Baumes gespeichert.
+- Jeder Konten in einem dddoc-Baum besitzt einen ID-String.
+- Den Pfad im dddoc-Baum von der Wurzel zu einem Knoten notiert man durch Aufzählen der ID-Strings aller Knoten auf diesem Pfad, wobei man die ID-Strings durch "." voneinander abtrennt. Beispiel: "Tiere.Haustiere.Hunde.Waldi"
+- Jeder Knoten in einem dddoc-Baum besitzt einen (eventuell leeren) Text. Existieren mehrere Einträge für den gleichen Knoten, so werden alle Texte hintereinander gehängt.
+- Ein Eintrag in die Datenstruktur hat die Form ".[Pfad]:[Text]". Dabei muss der Eintrag mit einer neuen Zeile beginnen, d.h. das erste Zeichen in der Zeile ist ".".
+- Ein Pfad wird als Unterpfad eines vorangegangenen Pfades des selben Kommentarblocks interpretiert, wenn er mit einem Punkt beginnt. Beginnt ein Pfad mit n Punkten, so bezieht er sich auf den letzten davor stehenden Pfad mit n-1 Punkten. 
+- In Texten (nicht in den ID-Strings) sind auch LaTeX-Sonderzeichen erlaubt, z.B. \Sigma, \in, \leftarrow. Die Liste mit allen verfügbaren Zeichen steht in dddoc_html_trans.py.
+
+
+Beispiel 1:
+
+.Tiere.Haustiere
+..Hund.Waldi
+...Name:Waldemar
+...Alter:5
+..Katze.Minka
+...Alter:2
+
+Das ist das selbe wie:
+
+.Tiere.Haustiere.Hund.Waldi.Name:Waldemar
+.Tiere.Haustiere.Hund.Waldi.Alter:5
+.Tiere.Haustiere.Katze.Minka.Alter:2
+
+
+Beispiel 2:
+
+.Adresse.Name:Andreas Döring
+..Kommentar:Dies ist ein Kommentar,
+der über mehrere Zeilen geht.
+..Kommentar:Dies wird an den anderen Kommentar angehängt.
+
+
+Beispiel 3:
+
+.Domainen."www.microsoft.com":Microsoft Homepage
+
+
+
+3. Aufbau der Dokumentation:
+============================
+3.1 Entries
+-----------
+
+Die Dokumentation besteht aus einer Reihe von Entries.
+Jeder Entry in dddoc hat einen Pfad der Form "[Category].[Name]"
+
+- [Category]: Im Moment gibt es folgende Kategorien von Entries: 
+    - "Page": Generelle Seiten, z.B. Tutorials usw.
+    - "Concept": Konzepte
+    - "Class": Klassen
+    - "Spec": Spezialisierungen
+    - "Shortcut": Shortcuts
+    - "Function": (globale) Funktionen
+    - "Memfunc": Memberfunktionen
+    - "Memvar": Membervariablen
+    - "Metafunction": Metafunktionen
+    - "Tag": Tag
+    - "Adaption": Adaptoren
+    - "Demo": Beispielprogramme
+    
+    Außerdem gibt es folgende technische Kategorien:        
+    - "Internal" dient zur Dokumentation interner Entitäten, die nicht zum offiziellen Benutzerinterface der Bibliothek gehören. Auf Entitäten dieser Kategory sollte aus anderen Kategorien heraus nicht verlinkt werden oder umgekehrt.
+    - "globals" speichert Metainformation und Konstanten, die bei der Erzeugung der Dokumentation verwendet werden. Außerdem werden die Indexpages für die einzelnen Kategorien hier definiert.
+    
+    Unterkategorien werden mit dem "cat"-Entry spezifiziert.
+
+- [Name]: Der Name der in diesem Eintrag dokumentierten Entität, d.h. der Funktion, Klasse, usw. 
+    Wenn ein anderer Name als Titel angezeigt werden soll, so verwende man ein "title"-Field.
+    Enthält der Name ein "#"-Zeichen, so wird lediglich der String hinter dem (ersten) "#"-Zeichen dargestellt.
+    Dies sollte z.B. bei Memfunc und Memvar-Einträgen geschehen: Vor dem "#"-Zeichen schreibe man den Klassennamen, hinter das "#"-Zeichen den Namen des Members.
+
+
+3.2 Fields
+----------
+
+Fields definieren die Eigenschaften der Entries. 
+Ein Field hat einen Pfad der Form "[Category].[Name].[Field]":
+ 
+- Spezielle Fields: 
+    - "title": Titel der Seite (optional). Default ist [Name].
+    - "summary": Kurzbeschreibung des Entrys. Längere Beschreibungen in "remarks" oder "description".
+    - "cat": Unterkategorie. 
+        Die Dokumentation erscheint in der Dokumentation unterhalb von [Category] in einem Unterordner. 
+        Ein Entry kann mehrere Unterkategorien besitzen, in diesem Fall erscheint die Dokumentation in verschiedenen Unterordnern.
+    - "signature": Abstrahiertes Codestück, dass die Verwendung der Entität verdeutlicht. 
+        Beispiel: "length(container)"
+    - "file": Zeigt einen Source File an. Angegeben wird der Pfad auf eine .cpp-Datei. Sollte der Übersicht halber nur in Demo-Entries eingesetzt werden. Siehe Abschitt 6.
+    - "hidefromindex": Entry nicht in Indexen (Navigation/Übersichtsseiten) aufführen.
+
+- Text Fields:
+    - "description": Ausführlicher Text. Wird z.B. für Tutorials verwendet. 
+    - "example": Beispieltext oder -code.
+    - "include": Name des Header-Files, das included werden muss, um die Entität zu benutzen.
+    - "remarks": Kommentartext oder -code.
+    - "returns": Rückgabewert. Bei verschiedenen Rückgabewerten verwende man unterhalb von "return" das Subfield "param".
+    
+- Tabellen von Text Fields:
+    Die Kindknoten unterhalb der Tabellenentität werden alphabetisch sortiert in Form einer Tabelle ausgebeben, und zwar als Text Fields.
+    - "param": Funktionsargument. z.B. "..param.length:length of a field"
+    - "value": Ein Wert, den die Entität annehmen kann.
+
+- Link Fields:    
+    - "baseconcept": Link auf Concept. Bei Concept: Basiskonzept. (erzeugt Rückverweis: "childconcept")
+    - "class": Link auf Class oder Spec. Bei Memfunc oder Memvar: Name der zu der Entität gehörenden Klasse. (erzeugt Rückverweis "memfunc" oder "memvar")
+    - "concept": Link auf Concept. Concept fordert die Existenz des Entrys, um erfüllt zu sein. 
+    - "demo": Link auf eine Demo. Demo zeigt die Verwendung des Entrys. (erzeugt Rückverweis "demofor")
+    - "general": Bei Spec: Die zugehörige generelle Klasse. (erzeugt Rückverweis "spec")
+    - "implements": Concept, das die aktuelle Klasse/Spec implementiert
+    - "see": Querverweis zu einem anderen Entry. (erzeugt Rückverweis "see").
+    - "base": Link auf Class oder Spec. Bei Class oder Spec: Die Basisklasse. (erzeugt Rückverweis: "derived")
+    - "shortcutfor": Link auf Entry, für den der aktueller Entry ein Shortcut ist. (erzeugt Rückverweis: "shortcut")
+    
+    Es gibt außerdem folgende Link Fields, von deren Benutzung jedoch abgeraten wird, da sich die wechselseitigen Verlinkungen auch mit den oben genannten Link Fields vornehmen lassen:
+    (- "demofor": Bei Demo: Link auf in Demo verwendete Entität. (erzeugt Rückverweis "demo"))
+    (- "derived": Bei Spec oder Class: Eine Spezialisierung.)
+    (- "memfunc": Bei Class oder Spec: Eine Memberfunktion.)
+    (- "memvar": Bei Class oder Spec: Eine Membervariable.)
+    (- "spec": Bei Class oder Spec: Eine Spezialisierung.)
+    (- "type": Bei Class oder Spec: Eine Metafunktion (wird erzeugt als Rückverweis durch "param.[Name].type" in Metafunktion)
+    (- "function": Bei Class oder Spec: Eine Funktion (wird erzeugt als Rückverweis durch "param.[Name].type", "returns.type" oder "returns.[Name].type" in Funktion)
+    (- "conceptmetafunc", "conceptmemvar", "conceptmemfunc", "conceptfunc", "conceptusedby", : Rückverweise für "concept")
+    (- "conceptimplements": Rückverweis für "implements")
+    (- "childconcept": Rückverweis für "baseconcept")
+    (- "shortcut": Link auf Shortcut. (erzeugt Rückverweis "shortcutfor"))
+
+
+3.3 Subfields
+-------------
+Kindknoten unterhalb von Text Fields. 
+
+- Freie Subfields:
+    Werden in der Reihenfolge ihres Auftretens in den Sources ausgegeben. Alle anderen hier aufgeführten Subfields hingegen zusammengefasst und jeweils unterhalb einer Subsektionüberschrift angezeigt.
+    - "section": Fügt Überschrift für eine neue Sektion ein.
+    - "subsection": Fügt Überschrift für eine neue Untersektion ein.
+    - "text": ein Textabsatz.
+    - "note": ein hervorgehobener Textabsatz.
+    - "code": ein Stück Beispielcode.
+    - "image": Fügt ein Bild ein. Angegeben wird der Name (opt. mit relativem Pfad) ohne Endung auf ein Bild. Bei HTML-Export wird automatisch ".png" angehängt. Bilder sollten im "img"-Ordner abgelegt werden. Optional kann hinter einem weiteren ":" eine Bildunterschrift angegeben werden. z.B. "..remarks.image:seqan_logo_large:Dies ist das große SeqAn-Logo."
+    - "table": Anzeigen einer Tabellenzeile. Die Spalten werden mit "|" voneinander abgetrennt. Hintereinander stehende "table"- und "tableheader"-Subfields werden zu einer gemeinsamen Tabelle zusammengefügt.
+    - "tableheader": Anzeigen einer hervorgehobenen Tabellenzeile (Spaltenüberschriften). Hintereinander stehende "table"- und "tableheader"-Subfields werden zu einer gemeinsamen Tabelle zusammengefügt.
+
+- Text Subfields:
+    - "value": Ein Wert.
+    - "default": Defaultwert.
+    - "remarks": Kommentartext oder -code.
+    
+- Tabellen von Text Subfields:
+    - "param": Liste von Parametern. Wird z.B. bei "returns" verwendet, um verschiedene Rückgabewerte aufzulisten.
+
+- Link Subfields:
+    - "metafunktion": Link auf eine Metafunktion. Bei "param"- oder "return"-Fields z.B. diejenige Metafunktion, die den Typ des Arguments bzw. Rückgabewerte liefert.
+    - "type": Link auf einen Typ (Class, Spec oder Adaption). Bei "param"- oder "return"-Fields z.B. der Typ des Arguments bzw. Rückgabewertes. (erzeugt Rückverweis: "function" Function, "type" bei metafunction.)
+    - "concept": Link auf ein Concept. Bei "param"-Fields z.B. ein Concept, welches das Argument erfüllen muss. (erzeugt Rückverweis: "conceptusedby")
+    - "see": Link auf einen anderen Entry. (erzeugt keinen Rückverweis)
+   
+
+4. Links
+========
+- Interne Links verweisen auf Entries und werden so geschrieben: "[Category].[Name]".
+- Externe Links verweisen auf URLs und beginnen mit "http://".
+- Soll ein anderer Text als "Name" als Link angezeigt werden, so verwendet man bei internen Links "[Category].[Name].[Displaytext]". Bei externen Links Steht der Displaytext hinter einem "|"-Zeichen, z.B. "http://www.microsoft.com|ein Link zu Microsoft".
+- Innerhalb von Text-Fields/Subfields kann man Links einfügen, indem man sie zwischen @-Zeichen schreibt, z.b. "klicken Sie @Class.String.hier@".
+
+
+5. Formatierungen
+=================
+- Soll innerhalb eines Text-Fields/Subfields ein Text als C++-Code gesetzt werden, so schreibt man ihn zwischen zwei $. z.B.: $int x$.
+
+
+6. Source Files:
+==================
+- Source files sind mit dem Field "file" eingebundene Datei.
+- Zeilen der Datei, die mit "///" beginnen, werden als Kommentar gesetzt.

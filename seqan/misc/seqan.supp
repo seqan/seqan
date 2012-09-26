@@ -1,0 +1,54 @@
+# Suppress overlap problems in STL priority queue's pop from Seqan's
+# topological sort.
+{
+   supp_stl_priority_queue_pop_if_len_is_one
+   Memcheck:Overlap
+   fun:memcpy
+   fun:_ZSt10__pop_heapIN9__gnu_cxx17__normal_iteratorIPSt4pairImjESt6vectorIS3_SaIS3_EEEESt4lessIS3_EEvT_SB_SB_T0_
+   fun:_ZSt8pop_heapIN9__gnu_cxx17__normal_iteratorIPSt4pairImjESt6vectorIS3_SaIS3_EEEESt4lessIS3_EEvT_SB_T0_
+   fun:_ZNSt14priority_queueISt4pairImjESt6vectorIS1_SaIS1_EESt4lessIS1_EE3popEv
+   fun:_ZN5seqan15topologicalSort*
+   ...
+   fun:main
+}
+
+# Suppress "still reachable" memory from libgomp, the library with the runtime
+# for OpenMP in GCC.
+{
+   supp_libgomp_set_num_threads
+   Memcheck:Leak
+   fun:malloc
+   fun:gomp_malloc
+   fun:gomp_new_icv
+   ...
+   fun:main
+}
+{
+   supp_libgomp_team_start
+   Memcheck:Leak
+   fun:malloc
+   fun:gomp_malloc
+   fun:gomp_team_start
+   ...
+   fun:main
+}
+
+# Suppress warning in zlib.  Also see the zlib FAQ:
+# http://www.zlib.net/zlib_faq.html#faq36
+{
+   supp_zlib_gzclose
+   Memcheck:Cond
+   ...
+   fun:deflate
+   fun:gzclose
+   ...
+   fun:main
+}
+{
+   Unitialized memory read in zlib's inflateReset2 (not a problem)
+   Memcheck:Cond
+   fun:inflateReset2
+   fun:inflateInit2_
+   ...
+   fun:main
+}

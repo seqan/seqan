@@ -1,0 +1,95 @@
+.Page.Installation:
+..order:010
+..XXXcat:Tutorials
+..summary:Installation of SeqAn and compiling example programs.
+
+.Page.Installation.description
+..contents
+..section:# Installation
+..text:
+SeqAn was successfully tested under Unix-like platforms like GNU/Linux, 
+Darwin and Solaris with the GCC compiler version 3.x and 4.x as well as Windows using
+@http://www.microsoft.com/germany/express/|MS Visual Studio@ 7-9 or @http://www.mingw.org/|MinGW@.
+To install SeqAn, you have to download a current snapshot from @http://www.seqan.de@ and extract the files.
+
+Under Unix-like platforms do the following (change path_to_SeqAn_XY.zip to your downloaded file):
+..output:
+mkdir seqan
+cd seqan
+unzip path_to_SeqAn_XY.zip
+
+..section:# Using Applications and Demos
+..text:SeqAn comes with applications and many small example programs that demonstrate the use of the library.
+The applications and most of the examples are described in the Projects section on the SeqAn homepage or the
+@Demo|examples section@ of this documentation.
+The source code of the applications and demos can be found $apps$ and $demos$ folders of the SeqAn installation directory.
+To compile the sources you can either use the Makefiles in the $apps$ and $demos$ folders or the provided Visual Studio project files.
+
+..subsection:#.# Unix Makefiles
+..text:The $demos$ folder contains a Makefile that can be used with $make$ to build the examples.
+..table:$make all$|Build all examples at once
+..table:$make [file]$|Build only the example [file], where [file] is a .cpp file in $demos$.
+..table:$make clean$|Removes all executables.
+
+..text:The $apps$ folder also contains a Makefile with the following targets.
+..table:$make all$|Build all applications at once
+..table:$make [app]$|Build only one application, where [app] can be dfi, razers, micro_razers, seqan_tcoffee, seqcons, pair_align, or tree_recon
+..table:$make clean$|Removes all executables.
+
+..subsection:#.# Microsoft Visual C++ Projects
+..text:There are two pairs of MS Visual Studio project and solution files in the $apps$ and $demos$ folders: 
+\br 1: $Seqan_7.vcproj$ and $Seqan_7.sln$ for Microsoft Visual C++ Version 7 ("Visual Studio .net 2003"),
+\br 2: $Seqan_8.vcproj$ and $Seqan_8.sln$ for Microsoft Visual C++ Version 8 ("Visual Studio .net 2005"), and
+\br 3: $Seqan_9.vcproj$ and $Seqan_9.sln$ for Microsoft Visual C++ Version 9 ("Visual Studio .net 2008").
+..text:
+Each example file has its own solution configuration, e.g. set the solution configuration "$iterator$" to the active solution configuration
+to select "$iterator.cpp$" for compiling.
+
+..subsection:#.# CMake 
+..text:You can also build a project file for the IDE of your choice using @http://www.cmake.org|CMake@ version 2.6 or later.
+After installing cmake you can generate project files for e.g. Xcode (only Mac OSX) run:
+..output:
+cd cmake
+cmake -G Xcode
+
+..text:To see the list of possible project files supported by cmake type:
+..output:
+cmake --help
+
+..text:After successfully generating the project files, you can either choose between project files
+in the $apps$ or $demos$ folders (below the $cmake$ folder) or the project file in the $cmake$ folder
+combining both of them.
+
+..see:Demo
+
+..section:# Using SeqAn in your own projects
+..text:
+As a pure template library, SeqAn solely consists of header files.
+To use SeqAn, you only have to add the path to the SeqAn installation folder of the installed snapshot to the compiler's include path.
+
+..subsection:#.# Linux, Darwin, Solaris, MinGW
+..text:
+The SeqAn installation path is added as include path by adding the compiler argument '-I'.
+To compile your own projects using SeqAn, you can use the Makefile in the $demos$ folder as a 
+starting point or write your own.
+..text:
+By some (yet unknown) reasons, some versions of the GCC compiler needs the extra flag $-pedantic$ to compile flawlessly.
+For a large file (>4GB) access on 32-bit operating systems you should add $-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64$ to the compiler.
+Under GNU/Linux it is also necessary to link against the runtime library with the additional linker switch $-lrt$.
+
+..subsection:#.# MS Visual C++ Projects
+..text:To add the SeqAn installation folder to the include path for a specific VC++-project, do the following:
+..text:1. Open the projects property page by a right click on the project in the solution explorer and select "Properties".
+..text:2. In the "Configurations" box select "All Configurations".
+..text:3. In the section "Configurations Properties" - "C/C++" - "General" add the SeqAn installation path to the field "Additional Include Directories".
+..image:vc++_property_page|Adding the SeqAn installation path to the include path of a Visual Studio project.
+
+..text:Optionally, you could also add the SeqAn installation folder to the include path for all VC++-projects:
+..text:1. Open the option panel from the menu bar by selecting "Tools" - "Options".
+..text:2. Select section "Projects" - "VC++ Directories".
+..text:3. In the "Show directories for" box select "Include files".
+..text:4. Click the "New Line" button and insert the SeqAn installation path.
+..image:vc++_option_page|Adding the SeqAn installation path to the include path of all Visual Studio projects.
+
+
+

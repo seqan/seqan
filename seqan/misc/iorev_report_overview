@@ -1,0 +1,3627 @@
+
+
+============ projects/tests/file/test_file.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          4
+
+--------         END              --------
+
+
+
+
+============ projects/tests/blast/test_blast_parsing.h ============
+
+-------- General File Information --------
+
+ 
+ uses some custom IO, test will have to be adapted anyways
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                12
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/tests/graph_algorithms/test_graph_algorithms.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/pipe/pool_base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           4
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          4
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/seeds2/seeds_seed_simple.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/seeds2/seeds_seed_set_base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/seeds2/seeds_seed_chained.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/seeds2/align_chain_banded.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/chaining/chain_wrapper_point.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           4
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_msa/graph_align_tcoffee_refinement.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_msa/graph_align_tcoffee_io.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                12
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    12
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          12
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/align/align_hirschberg.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/align/gaps_base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    2
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/align/align_base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/align/align_myers.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/refinement/graph_impl_align_adapt.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           3
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          3
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/refinement/graph_impl_align.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                6
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    4
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          4
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/system/system_thread.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           2
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/system/file_sync.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ contains third way of file-io, low level platform specific, i.e. fd for
+ POSIX and handles for WINDOWS
+ 
+ not clear in which places this is used exactly
+ 
+ SEQAN_DIRECTIO used on UNIX, not sure exactly what it does
+ use of other macros unclear aswell
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                13
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 1
+ # not documented but should be:                    5
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/system/system_manual_forwards.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/system/file_directory.h ============
+
+-------- General File Information --------
+
+ 
+ contains windows specific code
+ 
+ 
+ used by file/file_format_mmap.h and some apps
+ no documentation at all
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                17
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    17
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/system/file_async.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ contains third way of file-io, low level platform specific, i.e. fd for
+ POSIX and handles for WINDOWS
+ 
+ not clear in which places this is used exactly
+ 
+ SEQAN_DIRECTIO used on UNIX, not sure exactly what it does
+ use of other macros unclear aswell
+ 
+ not sure about all the AsyncRequest stuff, as most related calls are
+ deactivated in code, see also file/file_base.h
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                31
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 18
+ # not documented but should be:                    9
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_hsp.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    2
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_stream_hsp_iterator.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_parsing.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_stream_report.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_hit.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_report.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    3
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_stream_hit.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/blast/blast_stream_hit_iterator.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/score/score_matrix.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                8
+ # falsely tagged (regex false positive):           2
+
+ # well documented:                                 0
+ # not documented but should be:                    6
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          7
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/store/store_contig.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/store/store_io_ucsc.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ 
+ maybe move this to file/ because its a file format
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                6
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    2
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/store/store_io_bam.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                5
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             1
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          3
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/store/store_io_sam.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                14
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    7
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             1
+
+ # that contain an obvious bug:                     1
+ # that duplicate existing functionality:           2
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          11
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/store/store_io_gff.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                11
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    10
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           1
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/store/store_io.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ 
+ if this file is about the amos file format why isn't it named accordingly?
+ 
+ altogether it is unclear why sequence io is in file/ but store io is in
+ store/
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 1
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_align/graph_align_smith_waterman.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           2
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/statistics/statistics_markov_model.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/basic/basic_profile.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                21
+ # falsely tagged (regex false positive):           17
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          6
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/basic/basic_debug.h ============
+
+-------- General File Information --------
+
+ 
+ contains a TODO by holtgrew indicating that this should be merged into
+ basic_testing.h
+ 
+ these functions use custom IO, i.e. FILE* fopen etc
+ might be ok for binary comparison
+ 
+ not sure what the text-comparison is all about. If you want to compare
+ text, ignoring differences in EOL-style, you should not use binary
+ file reading at all, but text-mode reading which converts line-endings
+ on the fly anyhow, rendering this code useless (IMHO)
+ 
+ code contains goto statements which could easily be replaced by clean code
+ (I didn't even know this is possible in c++
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          3
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/basic/basic_profchar.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           2
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/basic/basic_testing.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           1
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/consensus/consensus_score.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           3
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/consensus/consensus_base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    4
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_algorithms/graph_algorithm.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/misc/misc_parsing.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ 
+ used in different places
+ except one function non are documented
+ 
+ NOTE atof is used in some functions, but according to standard this is
+ locale dependent (',' or '.' as decimal seperator). Has someone experienced
+ issues with this? we should probably replace it with a local independent
+ version to make sure
+ 
+ Also in general atof should be replaced with strod, atoi with strtol etc
+ 
+ it should also be noted that there are standard C functions in ctype.h
+ for the _is* cases, e.g. isspace(), isdigit() isprint(), isalnum() etc
+ why don't we use these?
+ 
+ when returning a string we should remember to always use Generous() as
+ resize policy to avoid some reallocation efforts (some parsing functions
+ do this already, others don't)
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                29
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 1
+ # not documented but should be:                    28
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     3
+ # that duplicate existing functionality:           5
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          29
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/misc/misc_cmdparser.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                7
+ # falsely tagged (regex false positive):           2
+
+ # well documented:                                 0
+ # not documented but should be:                    5
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          7
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/misc/misc_svg.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_impl_directed.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_impl_undirected.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_impl_automaton.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_utility_parsing.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_drawing.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                17
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 3
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_impl_hmm.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_impl_tree.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/graph_types/graph_impl_wordgraph.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/sequence/sequence_stream.h ============
+
+-------- General File Information --------
+
+ 
+ seems to be an interface that provides _stream operations on anything
+ iterable, would have to be adapted to new interface and could be moved
+ to io-module.
+ 
+ does not use C-References, therefore current interface is NOT compatible
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                10
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/find_motif/profile.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           3
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/index/index_esa_drawing.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/index/index_wotd.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           4
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/index/index_esa_stree.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                4
+ # falsely tagged (regex false positive):           4
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/index/index_base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/find/find_horspool.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/find/find_wild_shiftand.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_cgviz.h ============
+
+-------- General File Information --------
+
+ 
+ tested in tests/file/test_file.h
+ tag mentionen in doc, but no further documentation, no link to spec
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                8
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          3
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_raw.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ has some documentation, but could be better
+ apperently tested by tests/file/test_file.h, used in some other places
+ 
+ unclear why static members are used and functions not overloaded directly
+ 
+ raw is defined as default behaviour for read and write, is this desired
+ or should read and write maybe auto-detect fileformat?
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                17
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/cstream.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ Tested by tests/file
+ documentation non-existent
+ relation to file_cstyle.h not clear
+ Metafunctions supposedly moved to file_cstyle.h are commented there too
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                17
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           9
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          11
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_array.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ Basically contains stuff fro striped and Chained file access
+ (a little) documentation for both is in file_base
+ Chained-tag has no test-case but is used in different demos
+ Striped-tag has no test-case and AFAICT is not used in any app
+ functions used are those of file_cstyle.h not cstream.h
+ not clear why certain things are here and other in file_base
+ 
+ I am unsure whether Striped works at all, there seems to be no open
+ functions or other functions for acutally assigning multiple files
+ to the Striped virtual file
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                36
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             1
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/string_external.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ mostly documented (doc for some functions missing)
+ not tested in any test case nor used in any app right now
+ -> needs testing, especially different iterators
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                99
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 7
+ # not documented but should be:                    9
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     1
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          8
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_page_raid0.h ============
+
+-------- General File Information --------
+
+ 
+ not tested by any test or app
+ no documentation for the functions
+ 
+ hard to say how/if this works, since there is no doc
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                7
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    7
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ well documented
+ apperently tested by tests/file/test_file.h
+ 
+ 
+ AFAICT this not really used widely, as the FileFormat specialization
+ tags are used diretly e.g.
+      read(TFile, TData, TMeta, Fasta)
+ and not
+      read(TFile, TData, TMeta, FileFormat<TFile, TData, TMeta, Fasta>)
+ 
+ the global wrappers in this file also break down to this behaviours
+ 
+ however it is not evident what the purpose of the FileFormat class is
+ altogether and especially the virtual members
+ (except being return value for guessFileFormat, which could aswell return
+ the tag)
+ 
+ -----------------
+ 
+ contains all sorts of stream-IO helper functions that should go someplace
+ else.
+ 
+ For all of these: Should we really look at c passed as argument, how do
+ we know, c is actually current character?
+ 
+ For the iterators the current mechanism is error-prone:
+ 
+ foobar (TInput & input, TIterator it)
+ {
+     Iterator<TInput, Standard()> it_end = end(input);
+     while (it != it_end)
+          ...
+ 
+ }
+ 
+ this does not guarantee, that it and it_end are the same type, since
+ it maybe non-standard
+ 
+ also some functions set it_end = end(input) - 1; which seems to be related
+ to change of atEnd behaviour http://trac.mi.fu-berlin.de/seqan/wiki/IoRevision
+ 
+ IMO all these functions should be changed to not construct a 2nd iterator
+ but use atEnd() directly
+      
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                26
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    10
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     3
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          10
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/stream_algorithms.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ mostly documented (doc for some functions missing)
+ used ubiquitously, but possibly not all specializations
+ 
+ functions seem to be agnostic of FileType (stream.h or cstream.)
+ it is not clear if both are actually tested (but shouldn't matter
+ if underlying routines work correctly)
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                11
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 6
+ # not documented but should be:                    5
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_base.h ============
+
+-------- General File Information --------
+
+ 
+ base class with SPecs and Tags
+ also contains standard calls for IO as wrappers around members
+ in system/file_sync.h and system/file_ssync.h
+ (hese files are built around c++ fstream IO)
+ well documented (in comparison to other files)
+ 
+ SEQAN_DIRECTIO Macro mentioned here but not documented or tested
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                38
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    2
+
+ # that don't do anything, but maybe should:        6
+ # that seem to be incomplete/not done:             4
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           1
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          18
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_cstyle.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ Tested by tests/file
+ documentation non-existent
+ relation to cstream.h not clear
+ Metafunctions supposedly moved hereto from file_cstyle.h are commented here awell
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                19
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           7
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          11
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_guess.h ============
+
+-------- General File Information --------
+
+ 
+ only works if seeking is possible
+ 
+ the whole FileFormat class seems useless, see file_format.h
+ this could aswell return the specific tag
+ 
+ description in code comments not plausible
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 1
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_forwards.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/string_mmap.h ============
+
+-------- General File Information --------
+
+ contains windows specific code
+ 
+ 
+ tested in library/demos/howto/efficiently_import_sequences.cpp and stellar
+ 
+ relation to file_format_mmap.h unclear
+ 
+ relation to string_external unclear, what benifit does string_mmap provide?
+ 
+ contains windows-specific code
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                46
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    11
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          5
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/stream.h ============
+
+-------- General File Information --------
+
+ 
+ well documented
+ tested by tests/file and probably used by a lot of stuff
+ c++ equivalent to  cstream.h
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                40
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_mmap.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ mostly documented
+ contents seems to be used widely in apps
+ 
+ contains all sorts of private _is* and _stream* functions
+ 
+ contains many file format specific functions and even two new file format
+ definitions (fastq and qsec) that should definitely go someplace else,
+ 
+ contains almost nothing specific to MemoryMapped strings, other than
+ the split()-calls
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                68
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 47
+ # not documented but should be:                    13
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             1
+
+ # that contain an obvious bug:                     2
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           1
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          25
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_filereaderiterator.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ relation to file_filereader.h not totally clear
+ 
+ broken according to holtgrew, but used by many file_format implementations
+ that supposedly work
+ 
+ not yet fully understood how this works or is supposed to
+ 
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                9
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_fasta_align.h ============
+
+-------- General File Information --------
+
+ 
+ tested in tests/file/test_file.h
+ tag mentionen in doc, but no further documentation, no link to spec
+ 
+ 
+ bacthreading and -writing
+ 
+ does not treat IDs as Meta-Data, while format_fasta does
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                14
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     1
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          3
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_filereader.h ============
+
+-------- General File Information --------
+
+ 
+ 
+ Tested by tests/file and various demos, but only the fasta-specialization
+ basic documentation
+ uses cstream.h's functions
+ Metafunctions supposedly moved hereto from file_cstyle.h are commented here awell
+ 
+ not fully understood how this works and what relation of the iterators is
+ 
+ possibly broken according to holtgrew
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                64
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/chunk_collector.h ============
+
+-------- General File Information --------
+
+ 
+ this class is only used file_format_raw
+ it is tested by test_file which tests file_format_raw
+ it is sparsely documented, but marked as Internal anyway (does it need doku
+ then?)
+ TODO not fully understood implications of assign and replace
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                32
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_page.h ============
+
+-------- General File Information --------
+
+ 
+ not tested by any test or app
+ no documentation for the functions
+ 
+ contains lots of seemingly important code, however doc is sparse
+ to non-existent. Code needs thorough investigation, to understand
+ how/if this works
+ 
+ probabyl Weese's code according to holtgrew
+ 
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                76
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    30
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          5
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_genbank.h ============
+
+-------- General File Information --------
+
+ 
+ tested in tests/file/test_file.h
+ tag mentionen in doc, but no further documentation, no link to spec
+ 
+ current spec:
+ ftp://ftp.ncbi.nih.gov/genbank/gbrel.txt
+ 
+ IMPORTANT: from what I understand: fileReaderIterator does not iterate
+ through records, but through lines of the sequence of one record.
+ goNext() on the iterator goes to beginning of next line and sets
+ data boundaries for next iteration
+ 
+ goNext() on the file itself goes to the beginning of the next record.
+ 
+ THIS is not intuitive AT ALL.
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                11
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          7
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_embl.h ============
+
+-------- General File Information --------
+
+ 
+ tested in tests/file/test_file.h
+ tag mentioned in doc, but no further documentation, no link to spec
+ 
+ should be broken, because based on filereaderiterator which is broken
+ according to holtgrew.
+ 
+ IMPORTANT: from what I understand: fileReaderIterator does not iterate
+ through records, but through lines of the sequence of one record.
+ goNext() on the iterator goes to beginning of next line and sets
+ data boundaries for next iteration
+ 
+ goNext() on the file itself goes to the beginning of the next record.
+ 
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                14
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     1
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          5
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/file/file_format_fasta.h ============
+
+-------- General File Information --------
+
+ 
+ tested in tests/file/test_file.h
+ tag mentionen in doc, but no further documentation, no link to spec
+ 
+ IMPORTANT: from what I understand: fileReaderIterator does not iterate
+ through records, but through lines of the sequence of one record.
+ goNext() on the iterator goes to beginning of next line and sets
+ data boundaries for next iteration
+ 
+ goNext() on the file itself goes to the beginning of the next record.
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                18
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    4
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          10
+
+--------         END              --------
+
+
+
+
+============ projects/library/seqan/find2/find_pattern_wild_shiftand.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           1
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/indel_simulator/indel_simulator.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                5
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           4
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          5
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/micro_razers/micro_razers.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/seqcons/seqcons.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/stellar/stellar.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                5
+ # falsely tagged (regex false positive):           5
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/stellar/stellar_extension.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/stellar/stellar_types.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/stellar/stellar_output.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             1
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/snp_store/snp_store.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/insegt/read_gtf.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/insegt/base.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           2
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/insegt/read_gff.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/tree_recon/tree_recon.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/razers/paramChooser.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                7
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           1
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          5
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/razers/razers.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/razers2/razers.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/razers2/paramChooser.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                7
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           1
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          5
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/rep_sep/utils.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                3
+ # falsely tagged (regex false positive):           2
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           1
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/rabema/intervals.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                5
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    1
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          3
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/rabema/wit_store.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/splazers/splazers.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/splazers/paramChooser.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                7
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          7
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/mason/mason.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/mason/util.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          2
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/prob_spec/stellar_types.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/prob_spec/stellar_extension.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                1
+ # falsely tagged (regex false positive):           1
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/prob_spec/stellar_output.h ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                2
+ # falsely tagged (regex false positive):           0
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          1
+
+--------         END              --------
+
+
+
+
+============ projects/library/apps/prob_spec/probspec.cpp ============
+
+
+
+--------      Statistics         --------
+
+ # of tagged functions, structs etc:                5
+ # falsely tagged (regex false positive):           5
+
+ # well documented:                                 0
+ # not documented but should be:                    0
+
+ # that don't do anything, but maybe should:        0
+ # that seem to be incomplete/not done:             0
+
+ # that contain an obvious bug:                     0
+ # that duplicate existing functionality:           0
+ # that can be removed for other reasons:           0
+
+ # of parsing functions that get "TChar c&":        0
+
+ # with free-text comment:                          0
+
+--------         END              --------
+
+

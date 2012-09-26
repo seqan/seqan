@@ -1,0 +1,27 @@
+arg_align -- Simple Alignment Tool
+==================================
+
+This simple tool takes two DNA5 strings from the command line and
+performs local and global alignment on them.  The used scoring scheme
+is edit distance scoring.
+
+Example:
+
+  $ arg_align AAACCCCCCCCCCAAA AAAAAA
+  ********************************
+   arg_align  -- Simple Alignment 
+  ********************************
+
+  We use edit distance scoring
+
+  Local alignment with score 0
+        0     .    :    .  
+          AAACCCCCCCCCCAAA
+          |||             
+          AAAAAA----------
+
+  Global alignment with score -10
+        0     .    :    .  
+          AAACCCCCCCCCCAAA
+          |||          |||
+          AAA----------AAA

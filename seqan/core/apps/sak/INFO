@@ -1,0 +1,10 @@
+Name: Swiss Army Knife
+Author: David Weese <david.weese@fu-berlin.de>
+Maintainer: David Weese <david.weese@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: GPL v3
+Copyright: 2008-2011, FU Berlin
+Status: mature
+Description: Slicing and dicing of FASTA/FASTQ files.
+ The sak tool allows the easy and fast manipulation and conversion of FASTA 
+ and FASTQ files.

@@ -1,0 +1,6 @@
+(a,('Darwin''s Bulldog (Huxley)',c):-1.92e19)'The ''Root''':5;
+((a_node,
+  'another node',
+  bird:0.3134)higher_node:4.5,
+ c):1.03e10;
+((,,),(,(,,,),));
