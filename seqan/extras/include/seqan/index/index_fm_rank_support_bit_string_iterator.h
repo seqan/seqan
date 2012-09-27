@@ -37,7 +37,7 @@
 
 namespace seqan {
 // ==========================================================================
-//Metafunctions
+// Metafunctions
 // ==========================================================================
 
 template <typename TSpec>
@@ -60,6 +60,8 @@ template <typename TSpec>
 struct Iterator<RankSupportBitString<TSpec> const, Rooted>:
     Iterator<RankSupportBitString<TSpec> const, Standard>{};
 
+// ==========================================================================
+// Functions
 // ==========================================================================
 template <typename TSpec>
 inline typename Iterator<RankSupportBitString<TSpec>, Standard>::Type
@@ -149,6 +151,7 @@ inline bool getValue(Iter<RankSupportBitString<TSpec>, PositionIterator> & it, B
     return getValue(it);
 }
 
+// ==========================================================================
 template <typename TSpec>
 inline typename Size<RankSupportBitString<TSpec> >::Type
 getValue(Iter<RankSupportBitString<TSpec>, PositionIterator> const & it, Rank)

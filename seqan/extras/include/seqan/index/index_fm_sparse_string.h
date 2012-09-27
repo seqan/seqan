@@ -37,6 +37,10 @@
 
 namespace seqan {
 
+// ==========================================================================
+// Forwards
+// ==========================================================================
+
 template <typename TString, typename TSpec>
 struct SparseString;
 
@@ -47,8 +51,9 @@ typedef Tag<FibreValueString_>       const FibreValueString;
 typedef Tag<FibreIndicatorString_>    const FibreIndicatorString;
 
 // ==========================================================================
-//Metafunctions
+// Metafunctions
 // ==========================================================================
+
 template <typename TFibreValueString, typename TSpec>
 struct Value<SparseString<TFibreValueString, TSpec> >
 {
@@ -61,6 +66,7 @@ struct Value<SparseString<TFibreValueString, TSpec> const>
     typedef typename Value<TFibreValueString>::Type Type;
 };
 
+// ==========================================================================
 template <typename TFibreValueString, typename TSpec>
 struct GetValue<SparseString<TFibreValueString, TSpec> > :
     Value<SparseString<TFibreValueString, TSpec> > {};
@@ -69,6 +75,7 @@ template <typename TFibreValueString, typename TSpec>
 struct GetValue<SparseString<TFibreValueString, TSpec> const> :
     Value<SparseString<TFibreValueString, TSpec> const> {};
 
+// ==========================================================================
 template <typename TFibreValueString, typename TSpec>
 struct Reference<SparseString<TFibreValueString, TSpec> >
 {
@@ -81,6 +88,7 @@ struct Reference<SparseString<TFibreValueString, TSpec> const>
     typedef typename Value<SparseString<TFibreValueString, TSpec> >::Type const Type;
 };
 
+// ==========================================================================
 template <typename TSpec>
 struct DefaultValue {};
 
@@ -98,6 +106,7 @@ struct DefaultValue<SparseString<TFibreValueString, TSpec> >
     static const Type VALUE = -1;
 };
 
+// ==========================================================================
 template <typename TFibreValueString, typename TSpec>
 struct Fibre<SparseString<TFibreValueString, TSpec>, FibreValueString>
 {
@@ -122,6 +131,7 @@ struct Fibre<SparseString<TFibreValueString, TSpec> const, FibreIndicatorString>
     typedef RankSupportBitString<void> const Type;
 };
 
+// ==========================================================================
 template <typename TFibreValueString, typename TSpec>
 struct Iterator<SparseString<TFibreValueString, TSpec> const, Standard>
 {
@@ -220,7 +230,7 @@ inline bool isContained_(SparseString<TFibreValueString, TSpec> const & string, 
 }
 
 /**
-.Function.getValue
+.Function.assignValue
 ..param.object:
 ...type:Class.SparseString
 */
@@ -325,7 +335,6 @@ length(SparseString<TFibreValueString, TSpec> const & string)
     return length(getFibre(string, FibreIndicatorString()));
 }
 
-// TODO(singer): change to account for default and non default values! tag und 0 oder 1 for indicator
 /**
 .Function.resize
 ..param.object:

@@ -48,7 +48,7 @@ template <typename TSparseString, typename TLfTable, typename TSpec>
 class CompressedSA;
 
 // ==========================================================================
-//Metafunctions
+// Metafunctions
 // ==========================================================================
 
 template <typename TSparseString, typename TLfTable, typename TSpec>
@@ -71,6 +71,8 @@ template <typename TSparseString, typename TLfTable, typename TSpec>
 struct Iterator<CompressedSA<TSparseString, TLfTable, TSpec> const, Rooted>:
     Iterator<CompressedSA<TSparseString, TLfTable, TSpec> const, Standard>{};
 
+// ==========================================================================
+// Functions
 // ==========================================================================
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline typename Iterator<CompressedSA<TSparseString, TLfTable, TSpec>, Standard>::Type

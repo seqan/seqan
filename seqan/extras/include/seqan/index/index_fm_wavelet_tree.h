@@ -49,12 +49,6 @@ struct MultiDollar;
 template <typename TSpec = void>
 struct FmiDollarSubstituted;
 
-// template <typename TSpec>
-// struct WaveletTreeBased;
-
-//////////////////////////////////////////////////////////////////////////////
-// WaveletTree fibres
-
 /**
 .Tag.WaveletTree Fibres
 ..summary:Tag to select a specific fibre (e.g. table, object, ...) of a @Class.WaveletTree@.
@@ -78,7 +72,7 @@ occurrence table data structure of a FM index.
 struct FibreBitStrings_;
 struct FibreWaveletTreeStructure_;
 struct FibreDollarPosition_;
-struct FibreTreeVertieces_;
+struct FibreTreeStructureEncoding_;
 
 template <typename TText, typename TSpec>
 class WaveletTree;
@@ -90,7 +84,7 @@ class WaveletTree;
 typedef Tag<FibreWaveletTreeStructure_> const FibreWaveletTreeStructure;
 typedef Tag<FibreBitStrings_> const FibreBitStrings;
 typedef Tag<FibreDollarPosition_> const FibreDollarPosition;
-typedef Tag<FibreTreeVertieces_> const FibreTreeVertieces;
+typedef Tag<FibreTreeStructureEncoding_> const FibreTreeStructureEncoding;
 
 // ==========================================================================
 // Metafunctions
@@ -146,12 +140,7 @@ struct Fibre<WaveletTree<TText, FmiDollarSubstituted<MultiDollar<TSpec> > > cons
     typedef RankSupportBitString<void> const Type;
 };
 
-// template <typename TStringSpec, typename TSpec>
-// struct Fibre<WaveletTree<String<unsigned char, TStringSpec>, TSpec>, FibreWaveletTreeStructure>
-// {
-//     typedef RightArrayBinaryTree<unsigned short, void> Type;
-// };
-
+// ==========================================================================
 template <typename TText, typename TSpec>
 struct Value<WaveletTree<TText, TSpec> >
 {
@@ -175,7 +164,6 @@ struct Value<WaveletTree<StringSet<TText, TSetSpec> const, TSpec> >
 {
     typedef typename Value<WaveletTree<StringSet<TText, TSetSpec>, TSpec> >::Type const Type;
 };
-
 
 // ==========================================================================
 // Classes
@@ -403,7 +391,7 @@ getCharacterImpl(const WaveletTree<TText, TWaveletTreeSpec> & tree,
                  const TPos pos)
 {
     typedef typename Fibre<WaveletTree<TText, TWaveletTreeSpec>, FibreWaveletTreeStructure>::Type const TWaveletTreeStructure;
-    typedef typename Fibre<TWaveletTreeStructure, FibreTreeVertieces>::Type                             TWaveletTreeStructureString;
+    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                             TWaveletTreeStructureString;
     typedef typename Value<TWaveletTreeStructureString>::Type                                           TWaveletTreeStructureEntry;
     typedef typename Value<TWaveletTreeStructureEntry, 1>::Type                                         TChar;
 
@@ -580,7 +568,7 @@ inline unsigned getOccurrencesImpl(const WaveletTree<TText, TWaveletTreeSpec> & 
                                    const TPos pos)
 {
     typedef typename Fibre<WaveletTree<TText, TWaveletTreeSpec>, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
-    typedef typename Fibre<TWaveletTreeStructure, FibreTreeVertieces>::Type TWaveletTreeStructureString;
+    typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeStructureString;
     typedef typename Value<TWaveletTreeStructureString>::Type TWaveletTreeStructureEntry;
     typedef typename Value<TWaveletTreeStructureEntry, 1>::Type TChar;
 

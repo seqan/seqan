@@ -39,11 +39,19 @@
 
 namespace seqan {
 
+// ==========================================================================
+// Forwards
+// ==========================================================================
+
 template <typename TChar, typename TSpec>
 class PrefixSumTable;
 
 struct FibreEntries_;
 typedef Tag<FibreEntries_> const FibreEntries;
+
+// ==========================================================================
+// Metafunctions
+// ==========================================================================
 
 template <typename TChar, typename TSpec>
 struct GetValue<PrefixSumTable<TChar, TSpec> >
@@ -59,6 +67,7 @@ struct GetValue<PrefixSumTable<TChar, TSpec> const>
     typedef typename Value<TEntries>::Type Type;
 };
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 struct Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>
 {
@@ -71,6 +80,7 @@ struct Fibre<PrefixSumTable<TChar, TSpec> const, FibreEntries>
     typedef String<unsigned> const Type;
 };
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 struct Size<PrefixSumTable<TChar, TSpec> >
 {
@@ -78,6 +88,7 @@ struct Size<PrefixSumTable<TChar, TSpec> >
     typedef typename Size<TEntries>::Type Type;
 };
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 struct Infix<PrefixSumTable<TChar, TSpec> >
 {
@@ -92,6 +103,7 @@ struct Infix<PrefixSumTable<TChar, TSpec> const>
     typedef typename Infix<TEntries>::Type Type;
 };
 
+// ==========================================================================
 template <typename TSpec>
 struct CharacterValue;
 
@@ -109,6 +121,7 @@ struct CharacterValue<PrefixSumTable<TChar, TSpec> const>
     typedef TUChar Type;
 };
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 struct Reference<PrefixSumTable<TChar, TSpec> >
 {
@@ -121,6 +134,7 @@ struct Reference<PrefixSumTable<TChar, TSpec> const>
     typedef typename Value<PrefixSumTable<TChar, TSpec> >::Type const & Type;
 };
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 struct Value<PrefixSumTable<TChar, TSpec> >
 {
@@ -134,6 +148,10 @@ struct Value<PrefixSumTable<TChar, TSpec> const>
     typedef typename Fibre<PrefixSumTable<TChar, TSpec> const, FibreEntries>::Type TEntries;
     typedef typename Value<TEntries>::Type const Type;
 };
+
+// ==========================================================================
+// Classes
+// ==========================================================================
 
 template <typename TChar, typename TSpec = void>
 class PrefixSumTable
@@ -175,8 +193,11 @@ public:
     {
         return entries == other.entries;
     }
-
 };
+
+// ==========================================================================
+// Functions
+// ==========================================================================
 
 template <typename TChar, typename TSpec>
 inline void clear(PrefixSumTable<TChar, TSpec> & prefixSumTable)
@@ -184,6 +205,7 @@ inline void clear(PrefixSumTable<TChar, TSpec> & prefixSumTable)
     clear(prefixSumTable.entries);
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TText>
 inline void createPrefixSumTable(PrefixSumTable<TChar, TSpec> & prefixSumTable, TText const & text)
 {
@@ -208,42 +230,28 @@ inline void createPrefixSumTable(PrefixSumTable<TChar, TSpec> & prefixSumTable, 
     setPrefixSum(prefixSumTable, sum, alpSize);
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 unsigned getAlphabetSize(PrefixSumTable<TChar, TSpec> const & pst)
 {
     return length(pst.entries) - 1;
 }
 
+// ==========================================================================
 template <typename TDummy, typename TChar>
 inline unsigned getCharacterPosition(TDummy const & /*tag*/, TChar character)
 {
     return ordValue(character);
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TChar2>
 inline unsigned getCharacterPosition(PrefixSumTable<TChar, TSpec> const & /*tag*/, TChar2 character)
 {
     return ordValue(character);
 }
 
-// template <typename TChar, typename TSpec>
-// inline int getCharacterPosition(PrefixSumTable<TChar, TSpec> const & /*tag*/, char character)
-// {
-//     return static_cast<int>(character) + 128;
-// }
-//
-// template <typename TSpec>
-// inline int getCharacterPosition(PrefixSumTable<char, TSpec> const & /*tag*/, char character)
-// {
-//     return static_cast<int>(character) + 128;
-// }
-//
-// template <typename TSpec, typename TPos>
-// inline char getCharacter(PrefixSumTable<char, TSpec> const & /*tag*/, TPos const pos)
-// {
-//     return static_cast<char>(pos - 128);
-// }
-
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TPos>
 inline typename CharacterValue<PrefixSumTable<TChar, TSpec> const>::Type
 getCharacter(PrefixSumTable<TChar, TSpec> const & /*tag*/, TPos const pos)
@@ -251,6 +259,7 @@ getCharacter(PrefixSumTable<TChar, TSpec> const & /*tag*/, TPos const pos)
     return static_cast<TChar>(pos);
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TBeginPos, typename TEndPos>
 unsigned getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos beginPos, TEndPos endPos)
 {
@@ -287,6 +296,7 @@ unsigned getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos be
     return pivotPos;
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TPos>
 typename Value<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type
 getPrefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
@@ -294,20 +304,7 @@ getPrefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return getValue(pst, pos);
 }
 
-/*template <typename TChar, typename TSpec, typename TPosBegin, typename TPosEnd>
-typename Infix<PrefixSumTable<TChar, TSpec> >::Type
-getPrefixSumTableRange(PrefixSumTable<TChar, TSpec> const & pst, TPosBegin posBegin, TPosEnd posEnd)
-{
-    return infix(pst, posBegin + 1, posEnd + 1);
-}
-
-template <typename TChar, typename TSpec, typename TPosBegin, typename TPosEnd>
-typename Infix<PrefixSumTable<TChar, TSpec> >::Type
-getPrefixSumTableRange(PrefixSumTable<TChar, TSpec> & pst, TPosBegin posBegin, TPosEnd posEnd)
-{
-    return infix(pst, posBegin + 1, posEnd + 1);
-}*/
-
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TPos>
 inline typename GetValue<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type
 getValue(PrefixSumTable<TChar, TSpec> & pst, TPos const pos)
@@ -322,6 +319,7 @@ getValue(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return pst.entries[pos];
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 inline typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type const &
 getFibre(PrefixSumTable<TChar, TSpec> const & pst, FibreEntries const /*tag*/)
@@ -336,20 +334,7 @@ getFibre(PrefixSumTable<TChar, TSpec> & pst, FibreEntries const /*tag*/)
     return pst.entries;
 }
 
-/*template <typename TChar, typename TSpec, typename TPosBegin, typename TPosEnd>
-typename Infix<PrefixSumTable<TChar, TSpec> >::Type
-infix(PrefixSumTable<TChar, TSpec> & pst, TPosBegin start, TPosEnd end)
-{
-    return infix(pst.entries, start, end);
-}
-
-template <typename TChar, typename TSpec, typename TPosBegin, typename TPosEnd>
-typename Infix<PrefixSumTable<TChar, TSpec> >::Type
-infix(PrefixSumTable<TChar, TSpec> const & pst, TPosBegin start, TPosEnd end)
-{
-    return infix(pst.entries, start, end);
-}*/
-
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TNumDollar>
 void insertDollar_(PrefixSumTable<TChar, TSpec> & pst, TNumDollar const numDollar)
 {
@@ -357,6 +342,7 @@ void insertDollar_(PrefixSumTable<TChar, TSpec> & pst, TNumDollar const numDolla
         prefixSum(pst, i) = getPrefixSum(pst, i) + numDollar;
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec>
 inline typename Size<PrefixSumTable<TChar, TSpec> >::Type
 length(PrefixSumTable<TChar, TSpec> const & pst)
@@ -364,6 +350,7 @@ length(PrefixSumTable<TChar, TSpec> const & pst)
     return length(pst.entries);
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TPos>
 typename Value<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type &
 prefixSum(PrefixSumTable<TChar, TSpec>&pst, TPos const pos)
@@ -378,6 +365,7 @@ prefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return value(pst, pos);
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TSize>
 inline void resize(PrefixSumTable<TChar, TSpec> & pst, TSize size)
 {
@@ -390,16 +378,14 @@ inline void resize(PrefixSumTable<TChar, TSpec> & pst, TSize size, TValue value)
     resize(pst.entries, size, value);
 }
 
-// template <typename TChar, typename TSpec, typename TPos>
-// inline void setCharacter(PrefixSumTable<TChar, TSpec> & /*pst*/, TChar /*tag*/, TPos /*tag*/)
-// {}
-
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TValue, typename TPos>
 inline void setPrefixSum(PrefixSumTable<TChar, TSpec> & pst, TValue value, TPos const pos)
 {
     pst.entries[pos] = value;
 }
 
+// ==========================================================================
 template <typename TChar, typename TSpec, typename TPos>
 inline typename Value<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type &
 value(PrefixSumTable<TChar, TSpec>&pst, TPos const pos)
@@ -415,6 +401,7 @@ value(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return pst.entries[pos];
 }
 
+// ==========================================================================
 /**
 .Function.open
 ..param.string:
@@ -472,24 +459,5 @@ inline bool save(
     return save(pst, fileName, DefaultOpenMode<PrefixSumTable<TChar, TSpec> >::VALUE);
 }
 
-
-/*
-template <typename TSpec, typename TPos>
-inline typename Value<typename Fibre<PrefixSumTable<char, TSpec>, FibreEntries>::Type>::Type &
-value(PrefixSumTable<char, TSpec> & pst, TPos const pos)
-{
-    return pst.entries[pos];
 }
-
-template <typename TSpec, typename TPos>
-inline typename Value<typename Fibre<PrefixSumTable<char, TSpec>, FibreEntries>::Type>::Type const &
-value(PrefixSumTable<char, TSpec> const & pst, TPos const pos)
-{
-    return pst.entries[pos];
-}
-*/
-
-}
-
-
 #endif // SANDBOX_MY_SANDBOX_APPS_FMINDEX_PREFIX_SUM_TABLE_H_

@@ -77,6 +77,7 @@ struct Fibre<LfTable<TOccTable, TPrefixSumTable> const, FibreOccTable>
     typedef TOccTable const Type;
 };
 
+// ==========================================================================
 template <typename TOccTable, typename TPrefixSumTable>
 struct Fibre<LfTable<TOccTable, TPrefixSumTable>, FMTablePrefixSumTable>
 {
@@ -89,6 +90,7 @@ struct Fibre<LfTable<TOccTable, TPrefixSumTable> const, FMTablePrefixSumTable>
     typedef TPrefixSumTable const Type;
 };
 
+// ==========================================================================
 template <typename TOccTable, typename TPrefixSumTable>
 struct Reference<LfTable<TOccTable, TPrefixSumTable> >
 {
@@ -154,6 +156,7 @@ inline void clear(LfTable<TOccTable, TPrefixSumTable> & lfTable)
     clear(lfTable.prefixSumTable);
 }
 
+// ==========================================================================
 ///.Function.empty.param.object.type:Class.LfTable
 ///.Function.empty.class:Class.LfTable
 template <typename TOccTable, typename TPrefixSumTable>
@@ -163,6 +166,7 @@ inline bool empty(LfTable<TOccTable, TPrefixSumTable> & lfTable)
            && empty(lfTable.prefixSumTable);
 }
 
+// ==========================================================================
 /**
 .Function.createLfTable
 ..summary:Creates the LF table
@@ -206,6 +210,7 @@ inline bool createLfTable(LfTable<WaveletTree<TText, FmiDollarSubstituted<TDolla
     return true;
 }
 
+// ==========================================================================
 /**
 .Function.getFibre
 ..param.container:
@@ -239,6 +244,7 @@ getFibre(LfTable<TOccTable, TPrefixSumTable> const & lfTable, FibreOccTable )
     return lfTable.occTable;
 }
 
+// ==========================================================================
 /**
 .Function.lfMapping:
 ..summary:Returns the position of the character L[c] in F.
@@ -260,6 +266,7 @@ inline TPos lfMapping(TLfTable & lfTable,
     return getOccurrences(lfTable.occTable, c, pos) + getPrefixSum(lfTable.prefixSumTable, getCharacterPosition(lfTable.prefixSumTable, c)) - 1;
 }
 
+// ==========================================================================
 /**
 .Function.open
 ..param.string:
@@ -290,6 +297,7 @@ inline bool open(
     return open(lfTable, fileName, DefaultOpenMode<LfTable<TOccTable, TPrefixSumTable> >::VALUE);
 }
 
+// ==========================================================================
 /**
 .Function.save
 ..param.string:

@@ -130,12 +130,12 @@ public:
    
     typedef Index<TText, FMIndex<TOccSpec, CompressText> >    TIndex;
     typedef typename VertexDescriptor<TIndex>::Type	        TVertexDesc;
-
     //TODO(singer): What is this
     typedef Iter									        iterator;
-    TIndex const	*index;		// container of all necessary tables
-    TVertexDesc		vDesc;		// current interval in suffix array and
-    TText           representative;
+    
+    TIndex const	*index;		    // container of all necessary tables
+    TVertexDesc		vDesc;		    // current interval in suffix array and
+    TText           representative; // the representative
 
     // pseudo history stack (to go up at most one node)
     TVertexDesc		_parentDesc;
@@ -195,6 +195,12 @@ struct Iterator<Index<TText, FMIndex<TOccSpec, TSpeedSpec> >, TopDown<TSpec> >
     typedef Iter<TIndex, VSTree< TopDown<TSpec> > > Type;
 };
 
+template < typename TText, typename TOccSpec, typename TSpeedSpec, typename TSpec>
+struct Iterator<Index<TText, FMIndex<TOccSpec, TSpeedSpec> > const, TopDown<TSpec> >
+{
+    typedef Index<TText, FMIndex<TOccSpec, TSpeedSpec> > const TIndex;
+    typedef Iter<TIndex, VSTree< TopDown<TSpec> > > Type;
+};
 
 // ==========================================================================
 template < typename TText, typename TOccSpec, typename TSpeedSpec, typename TSpec >
@@ -203,6 +209,19 @@ typename Iterator<Index<TText,FMIndex<TOccSpec, TSpeedSpec> >, TSpec>::Type
 begin(Index<TText, FMIndex<TOccSpec, TSpeedSpec> > & index, TSpec const /*Tag*/)
 {
 	typedef typename Iterator<Index<TText, FMIndex<TOccSpec, TSpeedSpec> >, TSpec>::Type TIter;
+
+	TIter it(index);
+	value(it).range.i1 = index.lfTable.prefixSumTable[0];
+
+	return it;
+}
+
+template < typename TText, typename TOccSpec, typename TSpeedSpec, typename TSpec >
+inline
+typename Iterator<Index<TText,FMIndex<TOccSpec, TSpeedSpec> > const, TSpec>::Type
+begin(Index<TText, FMIndex<TOccSpec, TSpeedSpec> > const & index, TSpec const /*Tag*/)
+{
+	typedef typename Iterator<Index<TText, FMIndex<TOccSpec, TSpeedSpec> > const, TSpec>::Type TIter;
 
 	TIter it(index);
 	value(it).range.i1 = index.lfTable.prefixSumTable[0];
