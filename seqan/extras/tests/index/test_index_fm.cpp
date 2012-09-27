@@ -109,8 +109,6 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_left_child_pos_);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_position_);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_right_child_pos_);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_right_child_pos_only_);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_vertex_to_leaf_);
 
     SEQAN_CALL_TEST(test_wavelet_tree_clear);
     SEQAN_CALL_TEST(test_wavelet_tree_constructor);
