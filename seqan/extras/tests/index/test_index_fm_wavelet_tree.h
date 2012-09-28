@@ -45,7 +45,7 @@ using namespace seqan;
 template <typename TWaveletTree>
 void waveletTreeClear(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -62,7 +62,7 @@ void waveletTreeClear(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeConstructor(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -86,7 +86,7 @@ void waveletTreeConstructor(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeDollarPosition(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -104,7 +104,7 @@ void waveletTreeDollarPosition(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeDollarSubstitute(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -119,7 +119,7 @@ void waveletTreeDollarSubstitute(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeEmpty(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -133,13 +133,13 @@ void waveletTreeEmpty(TWaveletTree & /*tag*/)
     clear(waveletTree);
 
 	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreBitStrings())), 0u);
-	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreWaveletTreeStructure())), 0u);
+	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreTreeStructure())), 0u);
 }
 
 template <typename TWaveletTree>
 void waveletTreeGetCharacter(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -161,7 +161,7 @@ void waveletTreeGetCharacter(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeGetFibre(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -171,13 +171,13 @@ void waveletTreeGetFibre(TWaveletTree & /*tag*/)
 	TWaveletTree waveletTree(text);
 
     typename Fibre<TWaveletTree, FibreBitStrings>::Type & tempBitStrings = getFibre(waveletTree, FibreBitStrings());
-    typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type & tempWaveletTreeStructure = getFibre(waveletTree, FibreWaveletTreeStructure());
+    typename Fibre<TWaveletTree, FibreTreeStructure>::Type & tempWaveletTreeStructure = getFibre(waveletTree, FibreTreeStructure());
 
     resize(tempBitStrings, 110);
     resize(tempWaveletTreeStructure, 100);
 
 	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreBitStrings())), 110u);
-	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreWaveletTreeStructure())), 100u);
+	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreTreeStructure())), 100u);
 }
 
 
@@ -185,7 +185,7 @@ void waveletTreeGetFibre(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeGetOcc(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -214,7 +214,7 @@ template <typename TString, typename TSpec>
 void waveletTreeGetOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*tag*/)
 {
     typedef WaveletTree<TString, FmiDollarSubstituted<TSpec> > TWaveletTree;
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -250,7 +250,7 @@ void waveletTreeGetOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*ta
 template <typename TWaveletTree>
 void waveletTreeNumVertieces(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -267,7 +267,7 @@ void waveletTreeNumVertieces(TWaveletTree & /*tag*/)
 template <typename TWaveletTree>
 void waveletTreeFillWaveletTree_(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;
@@ -292,7 +292,7 @@ String<TChar> text;
 template <typename TWaveletTree>
 void waveletTreeOpenSave(TWaveletTree & /*tag*/)
 {
-	typedef typename Fibre<TWaveletTree, FibreWaveletTreeStructure>::Type TWaveletTreeStructure;
+	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTree>::Type TChar;

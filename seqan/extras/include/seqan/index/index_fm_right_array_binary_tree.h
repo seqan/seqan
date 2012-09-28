@@ -45,8 +45,8 @@ namespace seqan {
 template <typename TText, typename TSpec>
 class WaveletTree;
 
-struct FibreWaveletTreeStructure_;
-typedef Tag<FibreWaveletTreeStructure_> const FibreWaveletTreeStructure;
+struct FibreTreeStructure_;
+typedef Tag<FibreTreeStructure_> const FibreTreeStructure;
 
 template <typename TChar, typename TSpec = void>
 class RightArrayBinaryTree;
@@ -245,7 +245,7 @@ inline void computeRightArrayBinaryTree(Iter<RightArrayBinaryTree<TChar, TSpec>,
 template <typename TSpec, typename TPrefixSumTable, typename TText>
 inline void computeRightArrayBinaryTree(LfTable<WaveletTree<TText, TSpec>, TPrefixSumTable> & lfTable)
 {
-    typedef typename Fibre<WaveletTree<TText, TSpec>, FibreWaveletTreeStructure>::Type TRightArrayBinaryTree;
+    typedef typename Fibre<WaveletTree<TText, TSpec>, FibreTreeStructure>::Type TRightArrayBinaryTree;
     TRightArrayBinaryTree & rightArrayBinaryTree = lfTable.occTable.waveletTreeStructure;
 
     typename Iterator<TRightArrayBinaryTree, TopDown<ParentLinks<void> > >::Type it(rightArrayBinaryTree, 0u);
