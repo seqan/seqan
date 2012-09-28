@@ -2806,7 +2806,7 @@ _doSnpCall(TCounts & countF,
     
     snp.genotype = genotypeCalled;
     snp.count    = mutCoverage;
-    snp.quality  = qualF[mutAllele]+qualR[mutAllele]/ mutCoverage;
+    snp.quality  = (qualF[mutAllele]+qualR[mutAllele])/ mutCoverage;
     snp.coverage = totalCoverage;
     if (genotypeCalled == genotypeRef) snp.called = false;
     else snp.called = true;
