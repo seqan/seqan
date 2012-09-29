@@ -351,7 +351,7 @@ endmacro(CUDA_INCLUDE_NVCC_DEPENDENCIES)
 ###############################################################################
 
 # Allow the user to specify if the device code is supposed to be 32 or 64 bit.
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+if((NOT DEFINED CMAKE_SIZEOF_VOID_P) OR (CMAKE_SIZEOF_VOID_P EQUAL 8))
   set(CUDA_64_BIT_DEVICE_CODE_DEFAULT ON)
 else()
   set(CUDA_64_BIT_DEVICE_CODE_DEFAULT OFF)
@@ -586,6 +586,9 @@ if(APPLE)
   if(_cuda_path_to_cudart)
     list(APPEND CUDA_LIBRARIES -Wl,-rpath "-Wl,${_cuda_path_to_cudart}")
   endif()
+  find_library(CUDA_CUDA_LIBRARY_FW Cuda)
+  mark_as_advanced(CUDA_CUDA_LIBRARY_FW)
+  list(APPEND CUDA_LIBRARIES ${CUDA_CUDA_LIBRARY_FW})
 endif()
 
 # 1.1 toolkit on linux doesn't appear to have a separate library on
