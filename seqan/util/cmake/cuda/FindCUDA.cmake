@@ -351,13 +351,25 @@ endmacro(CUDA_INCLUDE_NVCC_DEPENDENCIES)
 ###############################################################################
 
 # Allow the user to specify if the device code is supposed to be 32 or 64 bit.
-if((NOT DEFINED CMAKE_SIZEOF_VOID_P) OR (CMAKE_SIZEOF_VOID_P EQUAL 8))
-  set(CUDA_64_BIT_DEVICE_CODE_DEFAULT ON)
-else()
-  set(CUDA_64_BIT_DEVICE_CODE_DEFAULT OFF)
-endif()
-option(CUDA_64_BIT_DEVICE_CODE "Compile device code in 64 bit mode" ${CUDA_64_BIT_DEVICE_CODE_DEFAULT})
 
+if (WIN32)
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(CUDA_64_BIT_DEVICE_CODE_DEFAULT ON)
+  else()
+    set(CUDA_64_BIT_DEVICE_CODE_DEFAULT OFF)
+  endif()
+else()
+  find_program(CMAKE_UNAME NAMES uname)
+  execute_process(COMMAND ${CMAKE_UNAME} -m OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+  if(CMAKE_HOST_SYSTEM_ARCH STREQUAL i386)
+    set(CUDA_64_BIT_DEVICE_CODE_DEFAULT OFF)
+  else()
+    set(CUDA_64_BIT_DEVICE_CODE_DEFAULT ON)
+  endif()
+endif()
+
+
+option(CUDA_64_BIT_DEVICE_CODE "Compile device code in 64 bit mode" ${CUDA_64_BIT_DEVICE_CODE_DEFAULT})
 # Attach the build rule to the source file in VS.  This option
 option(CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE "Attach the build rule to the CUDA source file.  Enable only when the CUDA source file is added to at most one target." ON)
 
@@ -536,7 +548,7 @@ set (CUDA_NVCC_INCLUDE_ARGS_USER "")
 set (CUDA_INCLUDE_DIRS ${CUDA_TOOLKIT_INCLUDE})
 
 macro(FIND_LIBRARY_LOCAL_FIRST _var _names _doc)
-  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  if(CUDA_64_BIT_DEVICE_CODE)
     # CUDA 3.2+ on Windows moved the library directoryies, so we need the new
     # and old paths.
     set(_cuda_64bit_lib_dir
@@ -586,6 +598,21 @@ if(APPLE)
   if(_cuda_path_to_cudart)
     list(APPEND CUDA_LIBRARIES -Wl,-rpath "-Wl,${_cuda_path_to_cudart}")
   endif()
+
+# Darwin flags from the Nvidia samples makefile:
+#      LDFLAGS   := -Xlinker -rpath $(CUDA_LIB_PATH) -L$(CUDA_LIB_PATH) -lcudart
+#      CCFLAGS   := -arch $(OS_ARCH) 
+#  find_program(CMAKE_UNAME NAMES uname)
+#  EXECUTE_PROCESS(COMMAND ${CMAKE_UNAME} -m OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+#  STRING(REGEX REPLACE "i386" "i686" CMAKE_HOST_SYSTEM_ARCH "${CMAKE_HOST_SYSTEM_ARCH}")
+
+  # append arch flag
+  if(CUDA_64_BIT_DEVICE_CODE)
+    set(CUDA_HOST_SYSTEM_ARCH x86_64)
+  else()
+    set(CUDA_HOST_SYSTEM_ARCH i386)
+  endif()
+
   find_library(CUDA_CUDA_LIBRARY_FW Cuda)
   mark_as_advanced(CUDA_CUDA_LIBRARY_FW)
   list(APPEND CUDA_LIBRARIES ${CUDA_CUDA_LIBRARY_FW})
@@ -682,17 +709,17 @@ mark_as_advanced(CUDA_CUT_INCLUDE_DIR)
 # the build.
 
 if (CMAKE_HOST_WIN32)
-  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  if(CUDA_64_BIT_DEVICE_CODE)
     set(cuda_cutil_name cutil64)
-  else(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  else()
     set(cuda_cutil_name cutil32)
-  endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  endif()
 else (CMAKE_HOST_WIN32)
-  if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-    set(cuda_cutil_name cutil_i386)
-  else(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  if(CUDA_64_BIT_DEVICE_CODE)
     set(cuda_cutil_name cutil_x86_64)
-  endif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  else()
+    set(cuda_cutil_name cutil_i386)
+  endif()
 endif (CMAKE_HOST_WIN32)
 
 find_library(CUDA_CUT_LIBRARY
@@ -897,11 +924,13 @@ macro(CUDA_WRAP_SRCS cuda_target format generated_files)
   else()
     set(nvcc_flags ${nvcc_flags} -m32)
   endif()
-
+  
+  set(CMAKE_OSX_ARCHITECTURES ${CUDA_HOST_SYSTEM_ARCH})
+  
   # This needs to be passed in at this stage, because VS needs to fill out the
   # value of VCInstallDir from within VS.
   if(CMAKE_GENERATOR MATCHES "Visual Studio")
-    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    if(CUDA_64_BIT_DEVICE_CODE)
       # Add nvcc flag for 64b Windows
       set(ccbin_flags -D "\"CCBIN:PATH=$(VCInstallDir)bin\"" )
     endif()
