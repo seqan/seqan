@@ -155,7 +155,7 @@ SEQAN_DEFINE_TEST(test_stream_read_auto_format_quals_fastq)
 
     typedef Stream<CharArray<char const *> > TStream;
 
-    char const * fastaString = "@id1\nAAACCC\n+\n!!!!!!\n@id2\nGGGTTT+\nIIIIII\n";
+    char const * fastaString = "@id1\nAAACCC\n+\n!!!!!!\n@id2\nGGGTTT\n+\nIIIIII\n";
     TStream stream(fastaString, fastaString + strlen(fastaString));
     RecordReader<TStream, SinglePass<> > reader(stream);
 
@@ -209,7 +209,7 @@ SEQAN_DEFINE_TEST(test_stream_read_auto_format_no_quals_fastq)
 
     typedef Stream<CharArray<char const *> > TStream;
 
-    char const * fastaString = "@id1\nAAACCC\n+\n!!!!!!\n@id2\nGGGTTT+\nIIIIII\n";
+    char const * fastaString = "@id1\nAAACCC\n+\n!!!!!!\n@id2\nGGGTTT\n+\nIIIIII\n";
     TStream stream(fastaString, fastaString + strlen(fastaString));
     RecordReader<TStream, SinglePass<> > reader(stream);
 

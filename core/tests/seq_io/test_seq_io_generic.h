@@ -93,6 +93,33 @@ GLMPFLHTSKHRSMMLRPLSQALFWTLTMDLLTLTWIGSQPVEYPYTIIGQMASILYFSIILAFLPIAGX";
     return file;
 }
 
+std::fstream* createFastAFileAnnotatedProtein(seqan::CharString &tempFilename)
+{
+    using namespace seqan;
+
+    tempFilename = SEQAN_TEMP_FILENAME();
+    char filenameBuffer[1000];
+    strncpy(filenameBuffer, toCString(tempFilename), 999);
+
+    std::fstream *file = new std::fstream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+    SEQAN_ASSERT(file->is_open());
+
+    char const * STR =
+"> sequenceID_with special chars an irregular linebreaks\n\
+LCLYTHIGRNIYYGSYLYSETWNTGIMLLLITMATAFMGYVLPWGQMSFWGAT\n\
+VITNLFSAIP[annotation+-*/]YIGTNLV\n\
+EWIWGGFSVDKATLNRFFAF\n\
+HFILPFTMVALAGVHLTFLHETGSNNPLGLTSDSDKIPFHPYYTIKDFLG\n\
+>sequence2... with no linebreaks and no newline at end\n\
+GLMPFLHTSKHRSMMLRPLSQALFW[CTD(5)->gogogo]TLTMDLLTLTWIGSQPVEYPYTIIGQMASILYFSIILAFLPIAGX";
+
+
+    file->write(STR, strlen(STR));
+    file->seekg(0);
+    file->seekp(0);
+    return file;
+}
+
 std::fstream* createFastQFile(seqan::CharString &tempFilename)
 {
     using namespace seqan;

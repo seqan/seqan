@@ -71,6 +71,8 @@ typedef Tag<TagFastq_> const Fastq;
 // Metafunctions
 // ============================================================================
 
+// Returns character starting a meta field.
+
 template <typename TTag>
 struct MetaFirstChar_;
 
@@ -86,6 +88,24 @@ struct MetaFirstChar_<Tag<TagFastq_> >
     static const char VALUE = '@';
 };
 
+// Returns character starting a field after the sequence field.  In the case of FASTA, this is '>' since a new meta
+// field will be created.  In the case of FASTQ, this is '+'.
+
+template <typename TTag>
+struct AfterSeqFirstChar_;
+
+template <>
+struct AfterSeqFirstChar_<Tag<TagFasta_> >
+{
+    static const char VALUE = '>';
+};
+
+template <>
+struct AfterSeqFirstChar_<Tag<TagFastq_> >
+{
+    static const char VALUE = '+';
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -94,24 +114,60 @@ struct MetaFirstChar_<Tag<TagFastq_> >
 // Function _clearAndReserveMemory() and helpers
 // ----------------------------------------------------------------------------
 
-// if target string is CharString, Sequence is any alphabetical
-template <typename TRecordReader>
-inline int
-_countSequenceFastAQ(unsigned int & count,
-                     TRecordReader & reader,
-                     char const & /* Alphabet type */)
-{
-    return _countHelper(count, reader, FastaFastqGraph_(), Whitespace_(), false);
-}
+// When not reading char values, we can simply use _countHelper() since the separators '>' and '+' are not part of the
+// sequence alphabet.
 
-// allow fine-grained alphabet-checking for DnaString etc
-template <typename TAlph, typename TRecordReader>
+template <typename TFormatTag, typename TAlph, typename TRecordReader>
 inline int
 _countSequenceFastAQ(unsigned int & count,
                      TRecordReader & reader,
+                     TFormatTag const & /* formatTag */,
                      TAlph const & /* Alphabet type */)
 {
     return _countHelper(count, reader, Tag<TAlph>(), Whitespace_(), false);
+}
+
+// When reading char values, we have to use a more complicated algorithm:  Read until the separator char '>'/'+' begins
+// a line.  Note that when reading text including these characters then there is ambiguity.  When we find such a
+// character then we greedily decide that this does not belong to the sequence.
+
+template <typename TFormatTag, typename TRecordReader>
+inline int
+_countSequenceFastAQ(unsigned int & count,
+                     TRecordReader & reader,
+                     TFormatTag const & /* formatTag */,
+                     char const & /* Alphabet type */)
+{
+    // The variable afterEol is true if we are after an EOL char and we are not at the beginning of the sequence
+    // record.  Empty sequence lines are fine, non-existent ones are not.
+    bool afterEol = false;
+
+    while (!atEnd(reader))
+    {
+        char c = value(reader);
+        if (c == '\r' || c == '\n')
+        {
+            afterEol = true;
+            goNext(reader);
+            if (resultCode(reader) != 0)
+                return resultCode(reader);
+            continue;
+        }
+
+        if (afterEol && c == AfterSeqFirstChar_<TFormatTag>::VALUE)
+        {
+            return 0;  // Done, at stop char.
+        }
+
+        if (!isspace(c))
+            count += 1;
+        afterEol = false;
+        goNext(reader);
+        if (resultCode(reader) != 0)
+            return resultCode(reader);
+    }
+
+    return EOF_BEFORE_SUCCESS;
 }
 
 template <typename TSeqAlph,
@@ -122,7 +178,7 @@ inline int
 _countMetaAndSequence(unsigned int & metaLength,
                       unsigned int & seqLength,
                       RecordReader<TFile, DoublePass<TSpec> > & reader,
-                      TTag const & /*tag*/,
+                      TTag const & formatTag,
                       TSeqAlph const & /* tag*/)
 {
     metaLength=0;
@@ -147,7 +203,7 @@ _countMetaAndSequence(unsigned int & metaLength,
         return 0;
 
     // COUNT SEQUENCE
-    res = _countSequenceFastAQ(seqLength, reader, TSeqAlph());
+    res = _countSequenceFastAQ(seqLength, reader, formatTag, TSeqAlph());
     if (res == EOF_BEFORE_SUCCESS)  // EOF half way in sequence is legal
         return 0;
     else if (res)
@@ -229,31 +285,78 @@ _clearAndReserveMemory(TIdString & meta, TSeqString & seq, TQualString & qual,
 // Function _readMetaAndSequence() and helpers
 // ----------------------------------------------------------------------------
 
-// if target string is CharString, Sequence is any alph()
-template <typename TSpec, typename TRecordReader>
-inline int
-_readSequenceFastAQ(String<char, TSpec> & string,
-                    TRecordReader & reader)
-{
-    return _readHelper(string, reader, Alpha_(), Whitespace_(), false);
-}
+// This overload of _readSequenceFastAQ() assumes that the separator characters, such as '>'/'+' are not part of
+// the alphabet.  This way, we can use _readHelper() and do not have to fall back to the more complicated way
+// used in the case of char.
 
-// allow fine-grained alphabet-checking for DnaString etc
-template <typename TAlph, typename TSpec, typename TRecordReader>
+template <typename TAlph, typename TSpec, typename TRecordReader, typename TFormatTag>
 inline int
 _readSequenceFastAQ(String<TAlph, TSpec> & string,
-                    TRecordReader & reader)
+                    TRecordReader & reader,
+                    TFormatTag const & /*formatTag*/)
 {
     return _readHelper(string, reader, Tag<TAlph>(), Whitespace_(), false);
 }
 
-// if target string is something else, assume alphabet is any alph()
-template <typename TString, typename TRecordReader>
+// If we want to read char values from a FASTA or FASTQ file then we have to fall back to a more complicated
+// algorithm, this is similar to the corresponding variant of _countSequenceFastAQ().
+//
+// TODO(holtgrew): Very similar to the _countSequenceFastAQ() function, can we make improve this using functors?
+
+template <typename TString, typename TRecordReader, typename TFormatTag>
+inline int
+_readSequenceFastAQCharImpl(TString & string,
+                            TRecordReader & reader,
+                            TFormatTag const & /*formatTag*/)
+{
+    // The variable afterEol is true if we are after an EOL char and we are not at the beginning of the sequence
+    // record.  Empty sequence lines are fine, non-existent ones are not.
+    bool afterEol = false;
+
+    while (!atEnd(reader))
+    {
+        char c = value(reader);
+        if (c == '\r' || c == '\n')
+        {
+            afterEol = true;
+            goNext(reader);
+            if (resultCode(reader) != 0)
+                return resultCode(reader);
+            continue;
+        }
+
+        if (afterEol && c == AfterSeqFirstChar_<TFormatTag>::VALUE)
+        {
+            return 0;  // Done, at stop char.
+        }
+
+        if (!isspace(c))
+            appendValue(string, c);
+        afterEol = false;
+        goNext(reader);
+        if (resultCode(reader) != 0)
+            return resultCode(reader);
+    }
+
+    return EOF_BEFORE_SUCCESS;
+}
+
+template <typename TSpec, typename TRecordReader, typename TFormatTag>
+inline int
+_readSequenceFastAQ(String<char, TSpec> & string,
+                    TRecordReader & reader,
+                    TFormatTag const & formatTag)
+{
+    return _readSequenceFastAQCharImpl(string, reader, formatTag);
+}
+
+template <typename TString, typename TRecordReader, typename TFormatTag>
 inline int
 _readSequenceFastAQ(TString & string,
-                    TRecordReader & reader)
+                    TRecordReader & reader,
+                    TFormatTag const & formatTag)
 {
-    return _readHelper(string, reader, Alpha_(), Whitespace_(), false);
+    return _readSequenceFastAQCharImpl(string, reader, formatTag);
 }
 
 // This reads Meta and Sequence
@@ -265,7 +368,7 @@ template <typename TIdString,
 inline int
 _readMetaAndSequence(TIdString & meta, TSeqString & seq,
                      RecordReader<TFile, TPass > & reader,
-                     TTag const & /*tag*/)
+                     TTag const & formatTag)
 {
     // READ META
     if (atEnd(reader) || value(reader) != MetaFirstChar_<TTag>::VALUE)
@@ -286,7 +389,7 @@ _readMetaAndSequence(TIdString & meta, TSeqString & seq,
         return 0;
 
     // READ SEQUENCE
-    res = _readSequenceFastAQ(seq, reader);
+    res = _readSequenceFastAQ(seq, reader, formatTag);
     if (res && res != EOF_BEFORE_SUCCESS)
         return res;
 

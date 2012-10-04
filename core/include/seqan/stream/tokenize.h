@@ -80,7 +80,6 @@ struct BackslashR__;
 struct Graph__;
 struct TabOrLineBreak__;
 struct Identifier__;
-struct FastaFastqGraph__;
 
 typedef Tag<Whitespace__> Whitespace_;
 typedef Tag<Blank__> Blank_;
@@ -93,7 +92,6 @@ typedef Tag<BackslashR__> BackslashR_;
 typedef Tag<Graph__> Graph_;
 typedef Tag<TabOrLineBreak__> TabOrLineBreak_;
 typedef Tag<Identifier__> Identifier_;
-typedef Tag<FastaFastqGraph__> FastaFastqGraph_;
 
 // ==========================================================================
 // Metafunctions
@@ -120,15 +118,6 @@ inline int
 _charCompare(int const c, Blank_ const & /* tag*/)
 {
     return isblank(c);
-}
-
-// _charCompare() functions for reading FASTA and FASTQ files into sequences of char.  We can allow all graph
-// characters, but need '>', '+', and '@' as delimiters for record fields. ';' is also reserved since it was once common
-// as a field delimiter.
-inline int
-_charCompare(int const c, FastaFastqGraph_ const & /* tag*/)
-{
-    return isgraph(c) && c != '>' && c != '+' && c != '@'  && c != ';';
 }
 
 inline int
