@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2011, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,54 +29,64 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jochen Singer <jochen.singer@fu-berlin.de>
-// ==========================================================================
-// Facade header for module sequence.
-// ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_INDEX_H_
-#define EXTRAS_INCLUDE_SEQAN_INDEX_H_
-
-// TODO(esiragusa): This file should be renamed to index_extras.h
+#ifndef SEQAN_EXTRAS_APPS_MASAI_STORE_IO_H_
+#define SEQAN_EXTRAS_APPS_MASAI_STORE_IO_H_
 
 // ===========================================================================
 // Prerequisites.
 // ===========================================================================
 
 #include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/align.h>
 #include <seqan/file.h>
-#include <seqan/index.h>
+#include <seqan/bam_io.h>
+
+#include <sstream>
+#include <iostream>
+#include <algorithm>
+#include <set>
+
+#ifndef SEQAN_HAS_SAMTOOLS
+#define SEQAN_HAS_SAMTOOLS 0
+#endif  // #ifndef SEQAN_HAS_SAMTOOLS
+
+#if SEQAN_HAS_SAMTOOLS
+#include <sam.h>
+#include <bam.h>
+#endif  // #if SEQAN_HAS_SAMTOOLS
+
 
 // ===========================================================================
-// FM Index.
+// Fragment Store Sub-Containers.
 // ===========================================================================
 
-#include <seqan/index/index_fm_rank_support_bit_string.h>
-#include <seqan/index/index_fm_rank_support_bit_string_iterator.h>
-#include <seqan/index/index_fm_sparse_string.h>
-#include <seqan/index/index_fm_compressed_sa.h>
-#include <seqan/index/index_fm_compressed_sa_iterator.h>
-#include <seqan/index/index_fm_prefix_sum_table.h>
-#include <seqan/index/index_fm_lf_table.h>
-#include <seqan/index/index_fm_right_array_binary_tree.h>
-#include <seqan/index/index_fm_right_array_binary_tree_iterator.h>
-#include <seqan/index/index_fm_wavelet_tree.h>
-#include <seqan/index/index_fm.h>
-#include <seqan/index/index_fm_stree.h>
+#include <seqan/store/store_base.h>
+#include <seqan/store/store_read.h>
+#include <seqan/store/store_matepair.h>
+#include <seqan/store/store_library.h>
+#include <seqan/store/store_contig.h>
+#include <seqan/store/store_align.h>
+#include <seqan/store/store_annotation.h>
+#include <seqan/store/store_all.h>
+
+#include <seqan/store/store_align_intervals.h>
+#include <seqan/store/store_intervaltree.h>
+
+#include <seqan/store/store_io.h>
+//#include <seqan/store/store_io_sam.h>
+#include <seqan/store/store_io_gff.h>
+#include <seqan/store/store_io_ucsc.h>
+#if SEQAN_HAS_SAMTOOLS
+#include <seqan/store/store_io_bam.h>
+#endif  // #if SEQAN_HAS_SAMTOOLS
+
 
 // ===========================================================================
-// Extra VSTree Iterators.
+// Fragment Store New IO.
 // ===========================================================================
 
-#include <seqan/index/index_sa_stree.h>
-#include <seqan/index/index_qgram_stree.h>
-#include <seqan/index/index_qgram_bucketrefinement.h>
+#include "store_io_sam.h"
 
-// ===========================================================================
-// Backtracking Finder.
-// ===========================================================================
-
-#include <seqan/index/find_backtracking.h>
-
-
-#endif  // EXTRAS_INCLUDE_SEQAN_INDEX_H_
+#endif //#ifndef SEQAN_EXTRAS_APPS_MASAI_STORE_IO_H_

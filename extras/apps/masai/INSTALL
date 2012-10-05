@@ -1,0 +1,34 @@
+*** Masai ***
+http://www.seqan.de/projects/masai.html
+
+---------------------------------------------------------------------------
+1. Installation
+---------------------------------------------------------------------------
+
+This file describes how to compile Masai from source code.
+Masai uses SeqAn, the C++ template library for sequence analysis.
+
+To compile Masai follow these steps:
+
+  1. Check-out the svn-trunk version of SeqAn as described here (up to
+     "Install"): http://trac.seqan.de/wiki/Tutorial/GettingStarted
+
+  2. Copy the folder with Masai's sources (masai) into the SeqAn
+     sandbox directory (seqan-trunk/sandbox)
+
+  3. Follow the "A First Build" step to create a cmake build directory but
+     replace "-DCMAKE_BUILD_TYPE=Debug" by "-DCMAKE_BUILD_TYPE=Release"
+
+  4. Compile masai_indexer and masai_mapper, e.g. with
+     "make masai_indexer masai_mapper" if you use Makefiles
+
+  5. The binaries will appear in a subfolder of the build directory
+
+
+---------------------------------------------------------------------------
+2. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+  David Weese <david.weese@fu-berlin.de>

@@ -1,0 +1,7 @@
+Name: masai
+Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+Maintainer: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+License: GPL v3
+Copyright: 2008-2012, FU Berlin
+Status: stable
+Description: Fast and sensitive read mapping with approximate seeds and multiple backtracking.
