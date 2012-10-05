@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains classes for storing and manipulating matches.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_MATCHES_H_
 #define SEQAN_EXTRAS_MASAI_MATCHES_H_

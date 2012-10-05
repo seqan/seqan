@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains the Pairer class.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_PAIRER_H_
 #define SEQAN_EXTRAS_MASAI_PAIRER_H_

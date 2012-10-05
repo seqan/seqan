@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains basic type definitions.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_STORE_H_
 #define SEQAN_EXTRAS_MASAI_STORE_H_

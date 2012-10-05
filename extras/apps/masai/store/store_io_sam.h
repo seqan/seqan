@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains a reimplementation of Store IO using the Bam IO module.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_APPS_MASAI_STORE_IO_SAM_H_
 #define SEQAN_EXTRAS_APPS_MASAI_STORE_IO_SAM_H_

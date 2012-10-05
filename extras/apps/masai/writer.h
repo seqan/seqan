@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains the MatchWriter class.
+// ==========================================================================
 
 #ifndef SANDBOX_ESIRAGUSA_APPS_MASAI_WRITER_H_
 #define SANDBOX_ESIRAGUSA_APPS_MASAI_WRITER_H_

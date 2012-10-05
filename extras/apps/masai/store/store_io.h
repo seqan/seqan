@@ -29,6 +29,10 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// ==========================================================================
+// This file replaces store.h
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_APPS_MASAI_STORE_IO_H_
 #define SEQAN_EXTRAS_APPS_MASAI_STORE_IO_H_

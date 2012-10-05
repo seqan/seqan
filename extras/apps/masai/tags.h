@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains tags.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_TAGS_H_
 #define SEQAN_EXTRAS_MASAI_TAGS_H_

@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains the Sorter class.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_SORTER_H_
 #define SEQAN_EXTRAS_MASAI_SORTER_H_

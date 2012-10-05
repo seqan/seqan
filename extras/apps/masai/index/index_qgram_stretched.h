@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains a special QGram VSTree iterator for non refined buckets.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_APPS_MASAI_INDEX_QGRAM_STRETCHED_H_
 #define SEQAN_EXTRAS_APPS_MASAI_INDEX_QGRAM_STRETCHED_H_

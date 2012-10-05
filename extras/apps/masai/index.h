@@ -31,6 +31,8 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// This file contains index type definitions.
+// ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_INDEX_H_
 #define SEQAN_EXTRAS_MASAI_INDEX_H_
