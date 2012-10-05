@@ -127,7 +127,8 @@ template <typename TSpec, typename TString, typename TDistance>
 bool sortMappedReads(Sorter<TSpec> & sorter,
                      TString const & mappedReadsFile,
                      TString const & sortedReadsFile,
-                     TDistance, Raw)
+                     TDistance const & /*tag*/,
+                     Raw const & /*tag*/)
 {
     typedef String<Match<>, External<> >                    TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
@@ -147,7 +148,8 @@ template <typename TSpec, typename TString, typename TDistance>
 bool sortMappedReads(Sorter<TSpec> & sorter,
                      TString const & mappedReadsFile,
                      TString const & sortedReadsFile,
-                     TDistance, Sam)
+                     TDistance const & /*tag*/,
+                     Sam const & /*tag*/)
 {
     typedef String<char, External<> >                       TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;

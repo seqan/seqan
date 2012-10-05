@@ -189,7 +189,13 @@ TReadSeqSize _readsLength(Mapper<TSpec> & mapper)
 // ============================================================================
 
 template <typename TSpec, typename TString, typename TErrors, typename TDistance, typename TStrategy, typename TMultiple>
-bool mapReads(Mapper<TSpec> & mapper, TString const & mappedReadsFile, TErrors errors, TDistance, TStrategy, TMultiple, Sam)
+bool mapReads(Mapper<TSpec> & mapper,
+              TString const & mappedReadsFile,
+              TErrors errors,
+              TDistance const & /*tag*/,
+              TStrategy const & /*tag*/,
+              TMultiple const & /*tag*/,
+              Sam const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
     typedef String<char, External<> >                       TStream;
@@ -217,7 +223,13 @@ bool mapReads(Mapper<TSpec> & mapper, TString const & mappedReadsFile, TErrors e
 }
 
 template <typename TSpec, typename TString, typename TErrors, typename TDistance, typename TStrategy, typename TMultiple>
-bool mapReads(Mapper<TSpec> & mapper, TString const & mappedReadsFile, TErrors errors, TDistance, TStrategy, TMultiple, Raw)
+bool mapReads(Mapper<TSpec> & mapper,
+              TString const & mappedReadsFile,
+              TErrors errors,
+              TDistance const & /*tag*/,
+              TStrategy const & /*tag*/,
+              TMultiple const & /*tag*/,
+              Raw const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
     typedef String<TMatch, External<> >                     TStream;
@@ -244,7 +256,7 @@ bool mapReads(Mapper<TSpec> & mapper, TString const & mappedReadsFile, TErrors e
 // ============================================================================
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, All)
+bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, All const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -281,7 +293,7 @@ bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErr
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest)
+bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
 {
     mapReadsByStratum(mapper, seeder, matches, std::min(errors, (TErrors)1), AllBest());
 
@@ -295,7 +307,7 @@ bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErr
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest)
+bool mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -336,7 +348,7 @@ bool mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest)
+bool mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -380,7 +392,7 @@ bool mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matc
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AnyBest)
+bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AnyBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;

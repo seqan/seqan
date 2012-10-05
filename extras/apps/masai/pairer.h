@@ -264,7 +264,8 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TString const & mappedReadsLeftFile,
                      TString const & mappedReadsRightFile,
                      TString const & mappedPairsFile,
-                     TDistance, Raw)
+                     TDistance const & /*tag*/,
+                     Raw const & /*tag*/)
 {
     typedef String<Match<>, External<> >                   TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>     TMatchWriter;
@@ -287,7 +288,8 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TString const & mappedReadsLeftFile,
                      TString const & mappedReadsRightFile,
                      TString const & mappedPairsFile,
-                     TDistance, Sam)
+                     TDistance const & /*tag*/,
+                     Sam const & /*tag*/)
 {
     typedef String<char, External<> >                      TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>     TMatchWriter;
