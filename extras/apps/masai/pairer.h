@@ -76,7 +76,7 @@ struct Pairer
     unsigned            libraryLength;
     unsigned            libraryError;
 
-    // TODO Remove writeCigar from Pairer members.
+    // TODO(esiragusa):Remove writeCigar from Pairer members.
     Pairer(unsigned libraryLength, unsigned libraryError, bool writeCigar = true, bool dumpResults = true) :
         indexer(store),
         readsCount(0),
@@ -195,7 +195,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
     TVerifier verifier(pairer.store, writer, pairer.libraryLength, pairer.libraryError);
     verifier.maxErrorsPerRead = errors;
 
-    // TODO Remove writeCigar from members.
+    // TODO(esiragusa):Remove writeCigar from members.
     writer.writeCigar = pairer.writeCigar;
 
     mateMappedReads(pairer, mappedReadsLeftFile, verifier);
@@ -296,7 +296,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
 
-    // TODO Remove writeCigar from members.
+    // TODO(esiragusa):Remove writeCigar from members.
     writer.writeCigar = pairer.writeCigar;
 
     mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);

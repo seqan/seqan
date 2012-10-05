@@ -59,7 +59,7 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO Use typename TGenomeIndex instead of TSpec.
+// TODO(esiragusa):Use typename TGenomeIndex instead of TSpec.
 template <typename TSpec = void>
 struct Mapper
 {
@@ -75,7 +75,7 @@ struct Mapper
     bool                verifyHits;
     bool                dumpResults;
 
-    // TODO Remove writeCigar from Mapper members.
+    // TODO(esiragusa):Remove writeCigar from Mapper members.
     Mapper(TReadSeqSize seedLength, bool writeCigar = true, bool verifyHits = true, bool dumpResults = true) :
         indexer(store),
         readsCount(0),
@@ -206,7 +206,7 @@ bool mapReads(Mapper<TSpec> & mapper, TString const & mappedReadsFile, TErrors e
     TSeeder seeder(mapper.store, manager, extender);
     seeder.readsCount = mapper.readsCount;
 
-    // TODO Remove writeCigar from mapper members.
+    // TODO(esiragusa):Remove writeCigar from mapper members.
     writer.writeCigar = mapper.writeCigar;
 
     mapReads(mapper, seeder, manager, errors, TStrategy());
@@ -265,7 +265,7 @@ bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErr
              position, position + 1,
              HammingDistance());
 
-        // TODO Compute minErrorsPerRead from seeds.
+        // TODO(esiragusa):Compute minErrorsPerRead from seeds.
 //        seeder.hitsDelegate.minErrorsPerRead += getValueI2(*seedsIt);
         seeder.hitsDelegate.minErrorsPerRead++;
 
@@ -318,7 +318,7 @@ bool mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches
 
         ++position;
 
-        // TODO Compute minErrorsPerRead from seeds.
+        // TODO(esiragusa):Compute minErrorsPerRead from seeds.
 //        seeder.hitsDelegate.minErrorsPerRead += getValueI2(*seedsIt);
         seeder.hitsDelegate.minErrorsPerRead++;
 

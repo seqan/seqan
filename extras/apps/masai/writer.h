@@ -127,7 +127,7 @@ inline void onMatch(MatchWriter<TStream, TDistance, Raw, TSpec> & writer,
                     TErrors errors,
                     bool reverseComplemented)
 {
-    // TODO Make TMatch a template argument
+    // TODO(esiragusa):Make TMatch a template argument
     typedef Match<> TMatch;
 
     if (!writer.writeMatches)

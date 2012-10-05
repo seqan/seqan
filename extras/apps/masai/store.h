@@ -76,7 +76,7 @@ struct FragStoreConfig
 typedef StringSet<FragStoreConfig::TContigSeq, Dependent<> >                TGenome;
 //typedef StringSet<ModifiedString<FragStoreConfig::TContigSeq, ModReverse> > TGenomeRev;
 
-// TODO Overload Size/Limits metafunctions and test
+// TODO(esiragusa):Overload Size/Limits metafunctions and test
 //namespace seqan
 //{
 //    template <>

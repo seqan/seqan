@@ -184,7 +184,7 @@ _alignRead(FragmentStore<TSpec, TConfig> & store,
 
     resize(rows(align), 2);
 
-    // TODO Pass read as argument, already revComplemented
+    // TODO(esiragusa):Pass read as argument, already revComplemented
     TReadSeq readSeq = store.readSeqStore[alignedRead.readId];
 
     if (alignedRead.beginPos > alignedRead.endPos)
@@ -401,7 +401,7 @@ _fillRecord(FragmentStore<TSpec, TConfig> & store,
 
     if (!secondaryAlignment)
     {
-        // TODO Pass read as argument, already revComplemented
+        // TODO(esiragusa):Pass read as argument, already revComplemented
         TReadSeq read = store.readSeqStore[alignedRead.readId];
 
         if (alignedRead.beginPos > alignedRead.endPos)
@@ -424,12 +424,12 @@ _fillRecord(FragmentStore<TSpec, TConfig> & store,
     if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
         setTagValue(tagsDict, "NM", (int)alignQuality.errors);
 
-    // TODO Fill MD using aligned read.
+    // TODO(esiragusa):Fill MD using aligned read.
 //    CharString md;
 //    buildMDString(md, row(align, 0), row(align, 1));
 //    setTagValue(tagsDict, "MD", md, 'Z');
 
-    // TODO Fill other tags.
+    // TODO(esiragusa):Fill other tags.
 //    append(record.tags, alignedTags);
 }
 
