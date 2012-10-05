@@ -195,7 +195,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output format.
     getOptionValue(options.outputFormat, parser, "output-format", options.outputFormatList);
-    
+
     // Parse debug options.
     options.verifyHits = !isSet(parser, "no-verify");
     options.dumpResults = !isSet(parser, "no-dump");

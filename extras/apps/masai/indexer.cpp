@@ -114,7 +114,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse genome index type.
     getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
-    
+
     return seqan::ArgumentParser::PARSE_OK;
 }
 

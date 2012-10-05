@@ -63,7 +63,7 @@ namespace seqan {
 
 struct BucketRefinement_;
 typedef Tag<BucketRefinement_> BucketRefinement;
-    
+
 template <typename TText, typename TShapeSpec>
 class Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >:
     public Index<TText, IndexQGram<TShapeSpec> >

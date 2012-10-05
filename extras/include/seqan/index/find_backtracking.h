@@ -166,7 +166,7 @@ public:
  */
 ///.Class.Pattern.param.TSpec.type:Spec.Backtracking
 ///.Class.Finder.param.TSpec.type:Spec.Backtracking
-    
+
 template <typename TText, typename TSpec, typename TDistance, typename TBacktrackingSpec>
 class Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> >
 {

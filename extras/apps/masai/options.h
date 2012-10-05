@@ -75,11 +75,11 @@ struct MasaiOptions
         indexTypeList.push_back("sa");
         indexTypeList.push_back("qgram");
 //        indexTypeList.push_back("fm");
-        
+
         mappingModeList.push_back("all");
         mappingModeList.push_back("all-best");
         mappingModeList.push_back("any-best");
-        
+
         outputFormatList.push_back("raw");
         outputFormatList.push_back("sam");
         outputFormatList.push_back("sam-no-cigar");
