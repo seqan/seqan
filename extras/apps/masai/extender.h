@@ -55,8 +55,8 @@ using namespace seqan;
 template <typename TMatchesDelegate, typename TDistance = HammingDistance, typename TSpec = void>
 struct Extender
 {
-    TFragmentStore & store;
-    TMatchesDelegate & matchesDelegate;
+    TFragmentStore &        store;
+    TMatchesDelegate &      matchesDelegate;
     String<TContigSeqSize>  contigSizes;
     TReadSeqStoreSize       readsCount;
 
@@ -66,7 +66,11 @@ struct Extender
 
     bool                    verifyHits;
 
-    Extender(TFragmentStore & store, TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount, TReadSeqSize seedLength, bool verifyHits) :
+    Extender(TFragmentStore & store,
+             TMatchesDelegate & matchesDelegate,
+             TReadSeqStoreSize readsCount,
+             TReadSeqSize seedLength,
+             bool verifyHits) :
         store(store),
         matchesDelegate(matchesDelegate),
         readsCount(readsCount),
@@ -96,7 +100,11 @@ struct Extender<TMatchesDelegate, EditDistance, TSpec>:
     TPatternState patternState;
     TPatternStateRev patternStateRev;
 
-    Extender(TFragmentStore & store, TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount, TReadSeqSize seedLength, bool verifyHits) :
+    Extender(TFragmentStore & store,
+             TMatchesDelegate & matchesDelegate,
+             TReadSeqStoreSize readsCount,
+             TReadSeqSize seedLength,
+             bool verifyHits) :
         TBase(store, matchesDelegate, readsCount, seedLength, verifyHits)
     {}
 };
@@ -134,8 +142,11 @@ inline bool _fixReverseComplemented(Extender<TMatchesDelegate, TDistance, TSpec>
 
 template <typename TMatchesDelegate, typename TSpec>
 inline bool onSeedHit(Extender<TMatchesDelegate, HammingDistance, TSpec> & extender,
-                      TContigStoreSize contigId, TContigSeqSize contigBegin,
-                      TReadSeqStoreSize readId, TContigSeqSize seedBegin, TReadSeqSize seedErrors)
+                      TContigStoreSize contigId,
+                      TContigSeqSize contigBegin,
+                      TReadSeqStoreSize readId,
+                      TContigSeqSize seedBegin,
+                      TReadSeqSize seedErrors)
 {
     typedef Segment<TReadSeq, InfixSegment>                 TReadInfix;
 
@@ -224,8 +235,11 @@ inline bool _extend(Extender<TMatchesDelegate, HammingDistance, TSpec> & extende
 
 template <typename TMatchesDelegate, typename TSpec>
 inline bool onSeedHit(Extender<TMatchesDelegate, EditDistance, TSpec> & extender,
-                      TContigStoreSize contigId, TContigSeqSize contigBegin,
-                      TReadSeqStoreSize readId, TContigSeqSize seedBegin, TReadSeqSize seedErrors)
+                      TContigStoreSize contigId,
+                      TContigSeqSize contigBegin,
+                      TReadSeqStoreSize readId,
+                      TContigSeqSize seedBegin,
+                      TReadSeqSize seedErrors)
 {
     typedef Segment<TReadSeq, InfixSegment> TReadInfix;
 

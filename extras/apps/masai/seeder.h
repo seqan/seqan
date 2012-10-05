@@ -51,9 +51,9 @@ using namespace seqan;
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec = MultipleBacktracking>
 struct Seeder
 {
-    TFragmentStore & store;
-    TReadsDelegate & readsDelegate;
-    THitsDelegate & hitsDelegate;
+    TFragmentStore &    store;
+    TReadsDelegate &    readsDelegate;
+    THitsDelegate &     hitsDelegate;
 
     TReadsWotd          readsWotd;
     TReadsQGram         readsQGram;
@@ -82,7 +82,9 @@ struct Seeder
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec>
 void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
-                     TReadSeqSize seedsLength, TReadSeqSize firstSeed, TReadSeqSize lastSeed)
+                     TReadSeqSize seedsLength,
+                     TReadSeqSize firstSeed,
+                     TReadSeqSize lastSeed)
 {
     typedef typename Fibre<TReadsQGram, QGramSA>::Type          TReadsIndexSAFibre;
     typedef typename Fibre<TReadsQGram, QGramDir>::Type         TReadsIndexDirFibre;
@@ -117,7 +119,7 @@ void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
         if (isDisabled(seeder.readsDelegate, readId))
             continue;
 
-        TReadSeq & read          = seeder.store.readSeqStore[readId];
+        TReadSeq & read = seeder.store.readSeqStore[readId];
         TReadSeqIterator itText = begin(read, Standard());
 
         itText += seedsLength * firstSeed;
@@ -165,7 +167,9 @@ void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec>
 void indexSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
-                           TReadSeqSize seedsLength, TReadSeqSize firstSeed, TReadSeqSize lastSeed)
+                           TReadSeqSize seedsLength,
+                           TReadSeqSize firstSeed,
+                           TReadSeqSize lastSeed)
 {
     typedef typename Fibre<TReadsWotd, FibreSA>::Type           TReadsIndexSAFibre;
     typedef typename Value<TReadsIndexSAFibre>::Type            TReadsIndexSAPos;
@@ -214,7 +218,10 @@ void visitSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
 void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
-                    TGenomeIndex & genomeIndex, TReadSeqSize seedsLength, TReadSeqSize errorsPerSeed, TDistance)
+                    TGenomeIndex & genomeIndex,
+                    TReadSeqSize seedsLength,
+                    TReadSeqSize errorsPerSeed,
+                    TDistance)
 {
     typedef Backtracking<TDistance, Stretched<> >           TBacktracking;
 //	typedef Backtracking<TDistance>                         TBacktracking;
@@ -243,7 +250,10 @@ void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
 void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
-                          TGenomeIndex & genomeIndex, TReadSeqSize seedsLength, TReadSeqSize errorsPerSeed, TDistance)
+                          TGenomeIndex & genomeIndex,
+                          TReadSeqSize seedsLength,
+                          TReadSeqSize errorsPerSeed,
+                          TDistance)
 {
     typedef Backtracking<TDistance>                         TBacktracking;
     typedef Finder<TGenomeIndex, TBacktracking>             TFinder;
@@ -272,8 +282,13 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
 // ============================================================================
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
-void find(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder, TGenomeIndex & genomeIndex,
-          TReadSeqSize seedsLength, TReadSeqSize errorsPerSeed, TReadSeqSize firstSeed, TReadSeqSize lastSeed, TDistance)
+void find(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
+          TGenomeIndex & genomeIndex,
+          TReadSeqSize seedsLength,
+          TReadSeqSize errorsPerSeed,
+          TReadSeqSize firstSeed,
+          TReadSeqSize lastSeed,
+          TDistance)
 {
     if (errorsPerSeed > 0)
     {
@@ -293,8 +308,12 @@ void find(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder, TGenomeIndex & 
 // ============================================================================
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TGenomeIndex, typename TDistance>
-void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder, TGenomeIndex & genomeIndex,
-                    TReadSeqSize seedsLength, TReadSeqSize firstSeed, TReadSeqSize lastSeed, TDistance)
+void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder,
+                    TGenomeIndex & genomeIndex,
+                    TReadSeqSize seedsLength,
+                    TReadSeqSize firstSeed,
+                    TReadSeqSize lastSeed,
+                    TDistance)
 {
     typedef Finder<TGenomeIndex, FinderSTree>       TFinder;
     typedef Pattern<TReadSeq>                       TPattern;
@@ -331,8 +350,12 @@ void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & 
 }
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TGenomeIndex, typename TDistance>
-void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder, TGenomeIndex & genomeIndex,
-                          TReadSeqSize seedsLength, TReadSeqSize errorsPerSeed, TReadSeqSize firstSeed, TReadSeqSize lastSeed,
+void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder,
+                          TGenomeIndex & genomeIndex,
+                          TReadSeqSize seedsLength,
+                          TReadSeqSize errorsPerSeed,
+                          TReadSeqSize firstSeed,
+                          TReadSeqSize lastSeed,
                           TDistance)
 {
     typedef Backtracking<TDistance>                 TBacktracking;
@@ -373,8 +396,13 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracki
 // ============================================================================
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TGenomeIndex, typename TDistance>
-void find(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder, TGenomeIndex & genomeIndex,
-          TReadSeqSize seedsLength, TReadSeqSize errorsPerSeed, TReadSeqSize firstSeed, TReadSeqSize lastSeed, TDistance)
+void find(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder,
+          TGenomeIndex & genomeIndex,
+          TReadSeqSize seedsLength,
+          TReadSeqSize errorsPerSeed,
+          TReadSeqSize firstSeed,
+          TReadSeqSize lastSeed,
+          TDistance)
 {
     if (errorsPerSeed > 0)
         findSeedsApproximate(seeder, genomeIndex, seedsLength, errorsPerSeed, firstSeed, lastSeed, TDistance());
