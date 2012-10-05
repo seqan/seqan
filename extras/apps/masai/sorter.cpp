@@ -34,8 +34,6 @@
 // This file contains the masai_output_se application.
 // ==========================================================================
 
-#include <ctime>
-
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
@@ -182,37 +180,37 @@ int runSorter(Options & options)
     // TODO(esiragusa): Remove outputCigar from Sorter members.
     TSorter sorter(options.matchesPerRead, options.outputCigar, options.dumpResults);
 
-    clock_t start, end;
+    double start, finish;
 
     // Loading genome.
     std::cout << "Loading genome:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadGenome(sorter.indexer, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     // Loading reads.
     std::cout << "Loading reads:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadReads(sorter, options.readsFile))
     {
         std::cerr << "Error while loading reads" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
     std::cout << "Reads count:\t\t\t" << sorter.readsCount << std::endl;
 
     // Sorting mapped reads.
     std::cout << "Sorting matches:\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     sortMappedReads(sorter, options.mappedReadsFile, options.sortedReadsFile, TDistance(), TFormat());
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     std::cout << "Matches count:\t\t\t" << sorter.matchesCount << std::endl;
 

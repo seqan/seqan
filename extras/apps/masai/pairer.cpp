@@ -34,8 +34,6 @@
 // This file contains the masai_output_pe application.
 // ==========================================================================
 
-#include <ctime>
-
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
@@ -197,40 +195,40 @@ int runPairer(Options & options)
     // TODO(esiragusa): Remove outputCigar from Pairer members.
     TPairer pairer(options.libraryLength, options.libraryError, options.outputCigar, options.dumpResults);
 
-    clock_t start, end;
+    double start, finish;
 
     // Loading genome.
     std::cout << "Loading genome:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadGenome(pairer.indexer, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     // Loading reads.
     std::cout << "Loading reads:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadReads(pairer, options.readsLeftFile, options.readsRightFile))
     {
         std::cerr << "Error while loading reads" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
     std::cout << "Reads count:\t\t\t" << pairer.readsCount << std::endl;
 
     // Pairing reads.
     std::cout << "Pairing reads:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedReadsRightFile,
                     options.mappedPairsFile, TDistance(), TFormat());
 //    mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedPairsFile,
 //                            options.errorsPerRead, TDistance(), TFormat());
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     std::cout << "Pairs count:\t\t\t" << pairer.pairsCount << std::endl;
 

@@ -34,8 +34,6 @@
 // This file contains the masai_mapper application.
 // ==========================================================================
 
-#include <ctime>
-
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
@@ -217,49 +215,49 @@ int runMapper(Options & options)
     // TODO(esiragusa): Remove writeCigar from Mapper members.
     TMapper mapper(options.seedLength, options.outputCigar, options.verifyHits, options.dumpResults);
 
-    clock_t start, end;
+    double start, finish;
 
     // Loading genome.
     std::cout << "Loading genome:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadGenome(mapper.indexer, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 //	std::cout << "Contigs count:\t\t\t" << mapper.indexer.contigsCount << std::endl;
 
     // Loading genome index.
     std::cout << "Loading genome index:\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadGenomeIndex(mapper.indexer, options.genomeIndexFile))
     {
         std::cout << "Error while loading genome index" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     // Loading reads.
     std::cout << "Loading reads:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadReads(mapper, options.readsFile))
     {
         std::cerr << "Error while loading reads" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
     std::cout << "Reads count:\t\t\t" << mapper.readsCount << std::endl;
 
     // Mapping reads.
-    start = clock();
+    start = sysTime();
     mapReads(mapper, options.mappedReadsFile, options.errorsPerRead, TDistance(), TStrategy(), TBacktracking(), TFormat());
-    end = clock();
+    finish = sysTime();
     std::cout << "Mapping time:\t\t\t" << std::flush;
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    std::cout << finish - start << " sec" << std::endl;
 
     return 0;
 }

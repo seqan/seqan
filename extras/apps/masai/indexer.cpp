@@ -34,8 +34,6 @@
 // This file contains the masai_indexer application.
 // ==========================================================================
 
-#include <ctime>
-
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
@@ -145,33 +143,33 @@ int executeIndexer(Options & options)
     TFragmentStore          store;
     Indexer<TGenomeIndex>   indexer(store);
 
-    clock_t start, end;
+    double start, finish;
 
     std::cout << "Loading genome:\t\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!loadGenome(indexer, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     std::cout << "Building genome index:\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     indexGenome(indexer);
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     std::cout << "Dumping genome index:\t\t" << std::flush;
-    start = clock();
+    start = sysTime();
     if (!dumpIndexedGenome(indexer, options.genomeIndexFile))
     {
         std::cerr << "Error while dumping genome index" << std::endl;
         return 1;
     }
-    end = clock();
-    std::cout << ((end - start) / (double)CLOCKS_PER_SEC) << " sec" << std::endl;
+    finish = sysTime();
+    std::cout << finish - start << " sec" << std::endl;
 
     return 0;
 }
