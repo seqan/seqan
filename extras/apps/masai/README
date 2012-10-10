@@ -1,0 +1,156 @@
+*** Masai - Fast and sensitive read mapping ***
+http://www.seqan.de/projects/masai.html
+
+VERSION: 0.4
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage examples
+  4.   Contact
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+Masai is a tool for mapping millions of short genomic reads onto a reference
+genome. It was designed with focus on mapping next-generation sequencing reads 
+onto whole DNA genomes.
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+To install Masai, you can either compile the latest version from the SVN
+trunk or use precompiled binaries. Please note that precompiled binaries could 
+be slightly outdated.
+
+------------------------------------------------------------------------------
+2.1. Compilation from source code
+------------------------------------------------------------------------------
+
+Follow the "Getting Started" section on http://trac.seqan.de/wiki and check
+out the latest SVN trunk. Instead of creating a project file in Debug mode,
+switch to Release mode (-DCMAKE_BUILD_TYPE=Release) and compile Masai. This
+can be done as follows:
+
+  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
+  mkdir seqan-trunk/build
+  cd seqan-trunk/build
+  cmake .. -DCMAKE_BUILD_TYPE=Release
+  make masai_indexer masai_mapper masai_output_se masai_output_pe
+
+If Masai will be run on the same machine it is compiled on, you may
+consider to optimize for the given system architecture. For gcc or llvm/clang
+compilers this can be done with:
+
+  cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS:STRING="-march=native"
+  make masai_indexer masai_mapper masai_output_se masai_output_pe
+
+After compilation, copy the binary to a folder in your PATH variable, e.g.
+/usr/local/bin:
+
+  sudo cp extras/apps/masai/masai_* /usr/local/bin
+
+------------------------------------------------------------------------------
+2.2. Precompiled binaries
+------------------------------------------------------------------------------
+
+We also provide precompiled binaries of Masai for 64bit Linux. They were
+succesfully tested on Debian GNU/Linux 6.0.5 (squeeze) and Ubuntu 12.04.
+Please download the binaries from: http://www.seqan.de/projects/masai.html
+
+
+---------------------------------------------------------------------------
+3. Usage examples
+---------------------------------------------------------------------------
+
+Masai consists of various programs:
+* masai_indexer:   builds an index for a given reference genome
+* masai_mapper:    maps genomic reads onto an indexed reference genome
+* masai_output_se: outputs a single-end Sam file from one raw file
+* masai_output_pe: outputs a paired-end Sam file from two raw files
+
+To get a short usage description of each program, you can execute e.g. 
+masai_mapper -h or masai_mapper --help.
+
+****** IMPORTANT WARNING ******
+
+You always need to specify a temporary folder able to contain ~20GB of data:
+
+  export TMPDIR=/huge/temp/folder/
+
+---------------------------------------------------------------------------
+3.1 Masai indexer
+---------------------------------------------------------------------------
+
+We can build an index for a reference genome by running the command:
+
+  masai_indexer --index sa --index-prefix hg19 hg19.fasta
+
+This command loads the reference genome stored inside the DNA (multi-)Fasta 
+file called hg19.fasta, builds its suffix array index and writes it on disk.
+
+On success the following file should be present in the current directory:
+
+  hg19.sa    [15G]
+
+---------------------------------------------------------------------------
+3.2 Masai mapper
+---------------------------------------------------------------------------
+
+We are now ready to map genomic reads onto our reference genome, by executing:
+
+  masai_mapper --mapping-mode any-best --errors 5 \
+               --output-format sam --output-file reads.sam \
+               --index sa --index-prefix hg19 \
+               hg19.fasta reads.fastq
+
+This command loads our previous reference genome along with its Esa index, 
+loads genomic reads stored inside the DNA (multi-)Fastq file reads.fastq,
+and reports one best location per read within 5 indels or mismatches. 
+On success, a SAM file called reads.sam should be present in the 
+current directory.
+
+Note that a default seed length of 33 bp will be used. This is the optimal 
+seed length for mapping reads of 100 bp onto the H. sapiens genome within 
+5 errors.
+
+Alternatively we can obtain all mapping locations, by executing:
+
+  masai_mapper --mapping-mode all --errors 5 \
+               --output-format raw --output-file reads.raw \
+               --index sa --index-prefix hg19 \
+               hg19.fasta reads.fastq
+
+---------------------------------------------------------------------------
+3.3 Masai single-end Sam output
+---------------------------------------------------------------------------
+
+We can convert the produced raw file into a proper Sam file:
+
+  masai_output_se --output-format sam --output-file reads.sam \
+                  hg19.fasta reads.fastq reads.raw
+
+---------------------------------------------------------------------------
+3.4 Masai paired-end Sam output
+---------------------------------------------------------------------------
+
+In order to map paired-end reads, first both read sets must be mapped as 
+single-end reads. Afterwards we can produce a Sam file containing all pairs:
+
+  masai_output_pe --output-format sam --output-file reads.sam \
+                  --library-length 220 --library-error 50 \
+                  hg19.fasta reads_left.fastq reads_right.fastq \
+                  reads_left.raw reads_right.raw
+
+
+---------------------------------------------------------------------------
+4. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+  David Weese <david.weese@fu-berlin.de>
