@@ -2,32 +2,44 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 
 #include <seqan/sequence.h>
-#include <seqan/store.h>
-#include <seqan/file.h>
+#include <seqan/seq_io.h>
 
-using namespace seqan;
-
-int main(int argc, char **argv)
+int main(int argc, char const ** argv)
 {
-  if (argc != 2) {
-    std::cerr << "Wrong argument count!" << std::endl
-              << "USAGE: sequence_length SEQUENCE.fasta" << std::endl;
-    return 1;
-  }
+    // Check arguments.
+    if (argc != 2) {
+        std::cerr << "Wrong argument count!" << std::endl
+                  << "USAGE: sequence_length SEQUENCE.fasta" << std::endl;
+        return 1;
+    }
 
-  FragmentStore<> fragmentStore;
-  if (!loadContigs(fragmentStore, argv[1])) {
-    std::cerr << "Could not read contigs." << std::endl;
-    return 1;
-  }
+    // Open file.
+    std::fstream inF(argv[1], std::ios::in | std::ios::binary);
+    if (!inF.good())
+    {
+        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
+        return 1;
+    }
 
-  size_t total = 0;
-  std::cout << "sequence\tlength" << std::endl;
-  for (unsigned i = 0; i < length(fragmentStore.contigStore); ++i) {
-    std::cout << fragmentStore.contigNameStore[i] << "\t" << length(fragmentStore.contigStore[i].seq) << std::endl;
-    total += length(fragmentStore.contigStore[i].seq);
-  }
-  std::cout << "sum\t" << total << std::endl;
+    // Create RecordReader.
+    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inF);
 
-  return 0;
+    // Read sequence file and print sequence lengths.
+    size_t total = 0;
+    seqan::CharString id;
+    seqan::Dna5String seq;
+    while (!atEnd(reader))
+    {
+        if (readRecord(id, seq, reader, seqan::Fasta()) != 0)
+        {
+            std::cerr << "ERROR: Problem reading file " << argv[1] << ".\n";
+            return 1;
+        }
+
+        std::cout << id << "\t" << seq << "\n";
+        total += length(seq);
+    }
+    std::cout << "sum\t" << total << std::endl;
+
+    return 0;
 }
