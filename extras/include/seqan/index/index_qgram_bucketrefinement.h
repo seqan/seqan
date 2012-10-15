@@ -350,7 +350,9 @@ void _pruneSA(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index)
     while (saOld != saEnd)
     {
         if (suffixLength(*saOld, index) < weight(indexShape(index)))
+        {
             ++saOld;
+        }
         else
         {
             *saNew = *saOld;
