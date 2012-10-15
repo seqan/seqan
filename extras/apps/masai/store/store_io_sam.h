@@ -564,10 +564,10 @@ inline void _writeAlignedReads(FragmentStore<TSpec, TConfig> & store, TStream & 
 
     for (; it != itEnd; ++it)
     {
-        TAlignedReadStoreElement & alignedRead   = *it;
+        TAlignedReadStoreElement & alignedRead    = *it;
         TAlignQualityStoreElement & alignQuality  = noAlignQuality;
-        TAlignedReadTagStoreElement & alignedTags   = noAlignedTags;
-        TAlignedReadStoreElement & alignedMate   = noAlignedMate;
+        TAlignedReadTagStoreElement & alignedTags = noAlignedTags;
+        TAlignedReadStoreElement & alignedMate    = noAlignedMate;
 
         // Try to get quality.
         if (alignedRead.id < length(store.alignQualityStore))
