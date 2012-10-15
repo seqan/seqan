@@ -56,7 +56,7 @@ template <typename TStringJournalSpec>
 void testJournaledStringAssign(TStringJournalSpec const &)
 {
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
-    
+
     CharString charStr = "test";
     TJournaledString journaledString(charStr);
 
@@ -90,7 +90,7 @@ void testJournaledStringAssign(TStringJournalSpec const &)
     }
 
     TJournaledString journaledString2(charStr2);
-    
+
     // Test assignment operator with same journaled string type.
     {
         journaledString = journaledString2;
@@ -123,7 +123,7 @@ template <typename TStringJournalSpec>
 void testJournaledStringSet(TStringJournalSpec const &)
 {
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
-    
+
     CharString charStr = "test";
     TJournaledString journaledString(charStr);
 
@@ -142,7 +142,7 @@ void testJournaledStringSet(TStringJournalSpec const &)
         tmp2 << host(journaledString);
         SEQAN_ASSERT_EQ("test", tmp2.str());
     }
-    
+
     // Test set() with same journaled string type.
     {
         set(journaledString, journaledString2);
@@ -176,7 +176,7 @@ void testJournaledStringClear(TStringJournalSpec const &)
 {
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
     typedef typename Size<TJournaledString>::Type TSize;
-    
+
     CharString charStr = "test";
     TJournaledString journaledString(charStr);
 
@@ -622,9 +622,9 @@ void testJournaledStringHostToVirtualPosition()
 
         SEQAN_ASSERT_EQ(0u, hostToVirtualPosition(journaledStr, 0));
         SEQAN_ASSERT_EQ(1u, hostToVirtualPosition(journaledStr, 1));
-        SEQAN_ASSERT_EQ(2u, hostToVirtualPosition(journaledStr, 2));
-        SEQAN_ASSERT_EQ(2u, hostToVirtualPosition(journaledStr, 3));
-        SEQAN_ASSERT_EQ(2u, hostToVirtualPosition(journaledStr, 4));
+        SEQAN_ASSERT_EQ(8u, hostToVirtualPosition(journaledStr, 2));
+        SEQAN_ASSERT_EQ(8u, hostToVirtualPosition(journaledStr, 3));
+        SEQAN_ASSERT_EQ(8u, hostToVirtualPosition(journaledStr, 4));
         SEQAN_ASSERT_EQ(8u, hostToVirtualPosition(journaledStr, 5));
         SEQAN_ASSERT_EQ(9u, hostToVirtualPosition(journaledStr, 6));
         SEQAN_ASSERT_EQ(10u, hostToVirtualPosition(journaledStr, 7));
@@ -770,7 +770,7 @@ void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
             end = mtRand() % (length(string) + 1);
         }
         if (begin > end)
-            std::swap(begin, end);            
+            std::swap(begin, end);
         unsigned len = end - begin;
         String<char> buffer;
         reserve(buffer, len);
@@ -863,7 +863,7 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
                 end = mtRand() % (length(string) + 1);
             }
             if (begin > end)
-                std::swap(begin, end);            
+                std::swap(begin, end);
             unsigned len = end - begin;
             String<char> buffer;
             reserve(buffer, len);
@@ -1029,7 +1029,7 @@ void testJournaledStringSegmentsReadOnly(TStringJournalSpec const &)
         SEQAN_ASSERT(prefix2 == CharString("teX"));
     }
     // Suffixes.
-    {   
+    {
         TSuffix suffix1 = suffix(journaledString, 3);
         SEQAN_ASSERT(suffix1 == CharString("Xst"));
         TSuffix suffix2(journaledString, 3);
@@ -1079,7 +1079,7 @@ void testJournaledStringSegmentsReadWrite(TStringJournalSpec const &)
     }
 
     // Suffixes.
-    {   
+    {
         TJournaledString journaledString(charStr);
         insert(journaledString, 2, "XX");
 
