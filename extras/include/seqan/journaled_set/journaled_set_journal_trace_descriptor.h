@@ -417,6 +417,7 @@ _alignTracePrint(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJou
 
     enum SegmentSource segmentSrc = SOURCE_NULL;
     TPos physicalPos = 0;
+    TPos physicalOriginPos = 0;
 
     if (segLen == 0)
     {
@@ -425,20 +426,25 @@ _alignTracePrint(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJou
     switch (tv)
     {
     case DIAGONAL://matching area
+    {
         segmentSrc = SOURCE_ORIGINAL;
         physicalPos = pos1;
+        physicalOriginPos = pos1;
         break;
+    }
     case VERTICAL://insertion
+    {
         segmentSrc = SOURCE_PATCH;
         physicalPos = length(me.insertionBuffer_);
-
         append(me.insertionBuffer_, infix(seqV,pos2, pos2 + segLen));
         break;
+    }
     case HORIZONTAL://deletion - nothing to be done here
         return;
         break;
     }
-    appendValue(getTrace(me), TJournalEntry(segmentSrc, physicalPos, pos2, segLen));
+    // TODO(rmaerker): Change computation of physicalOrigin position when porting to new alignment module.
+    appendValue(getTrace(me), TJournalEntry(segmentSrc, physicalPos, pos2, physicalOriginPos, segLen));
  }
 
 // ----------------------------------------------------------------------------

@@ -126,7 +126,7 @@ operator<<(TStream & stream, JournalEntries<TNode, SortedArray> const & tree)
 template <typename TCargo>
 bool _checkSortedArrayTree(JournalEntries<TCargo, SortedArray> const & tree)
 {
-    SEQAN_CHECKPOINT;
+    // std::cerr << "TREE\n" << tree._journalNodes << "\nEND OF TREE\n";
     typedef typename Iterator<String<TCargo> const, Standard>::Type TIterator;
     if (length(tree._journalNodes) == 0)
         return true;
@@ -134,13 +134,37 @@ bool _checkSortedArrayTree(JournalEntries<TCargo, SortedArray> const & tree)
         return false;
     if (tree._journalNodes[0].length == 0)
         return false;
-    for (TIterator it = begin(tree._journalNodes, Standard()) + 1, itend = end(tree._journalNodes, Standard()); it != itend; ++it) {
+
+    if (tree._journalNodes[0].segmentSource == SOURCE_ORIGINAL)
+    {
+        if (tree._journalNodes[0].physicalPosition != tree._journalNodes[0].physicalOriginPosition)
+            return false;
+    }
+    else
+    {
+        if (tree._journalNodes[0].physicalOriginPosition != 0)
+            return false;
+    }
+
+    for (TIterator it = begin(tree._journalNodes, Standard()) + 1, itend = end(tree._journalNodes, Standard()); it != itend; ++it)
+    {
 		if (it->length == 0)
 			return false;
         if ((it - 1)->virtualPosition >= it->virtualPosition)
             return false;
         if ((it - 1)->virtualPosition + (it - 1)->length != it->virtualPosition)
             return false;
+
+        if (it->segmentSource == SOURCE_ORIGINAL)
+        {
+            if (it->physicalPosition != it->physicalOriginPosition)
+                return false;
+        }
+        else
+        {
+            if ((it - 1)->physicalOriginPosition != it->physicalOriginPosition)
+                return false;
+        }
     }
 	return true;
 }
@@ -188,16 +212,16 @@ void reinit(JournalEntries<TCargo, SortedArray> & tree,
 {
     SEQAN_CHECKPOINT;
     clear(tree._journalNodes);
-    appendValue(tree._journalNodes, TCargo(TCargo(SOURCE_ORIGINAL, 0, 0, originalStringLength)));
+    appendValue(tree._journalNodes, TCargo(SOURCE_ORIGINAL, 0, 0, 0, originalStringLength));
     tree._originalStringLength = originalStringLength;
 }
 
 
 template <typename TCargo, typename TPos>
 inline
-typename Iterator<JournalEntries<TCargo, SortedArray> const, Standard>::Type 
+typename Iterator<JournalEntries<TCargo, SortedArray> const, Standard>::Type
 findInJournalEntries(JournalEntries<TCargo, SortedArray> const & journalEntries,
-                     TPos pos) 
+                     TPos pos)
 {
     typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos_;
@@ -252,14 +276,14 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
         SEQAN_ASSERT_EQ(virtualPosition, 0u);
         if (len == 0)
             return;
-        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, len));
+        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, 0, len));
         return;
     }
 
     // Find position in sorted array of nodes to insert in.
     TIterator iter = findInJournalEntries(tree, virtualPosition);
     // TODO(holtgrew): Maybe move and update entries right of pos at the same time?
-    
+
     // Create new journal entries.
 	if (iter->virtualPosition + iter->length > virtualPosition)
     {
@@ -270,31 +294,42 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
         if (iter->virtualPosition == virtualPosition)
         {
             // Simple case:  Insert left of iter.
-            insertValue(tree._journalNodes, pos, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, len));
+            TPos physicalOriginPosition = 0;
+            if (iter != begin(tree._journalNodes, Standard()))
+                physicalOriginPosition = (iter - 1)->physicalOriginPosition;
+            insertValue(tree._journalNodes, pos, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, physicalOriginPosition, len));
 			shiftRightOf += 1;
         }
-        else 
+        else
         {
             // Harder case:  Split current and insert new node.
             String<TCargo, Array<3> > buffer;
             resize(buffer, 3);
             TPos offset = virtualPosition - iter->virtualPosition;
-            buffer[0] = TCargo(iter->segmentSource, iter->physicalPosition, iter->virtualPosition, offset);
-            buffer[1] = TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, len);
-            buffer[2] = TCargo(iter->segmentSource, iter->physicalPosition + offset, virtualPosition + len, iter->length - offset);
+            buffer[0] = TCargo(iter->segmentSource, iter->physicalPosition, iter->virtualPosition, iter->physicalOriginPosition, offset);
+            TPos physicalOriginPos1 = iter->physicalOriginPosition;
+            buffer[1] = TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, physicalOriginPos1, len);
+            if (iter->segmentSource == SOURCE_ORIGINAL)
+                physicalOriginPos1 += offset;
+            buffer[2] = TCargo(iter->segmentSource, iter->physicalPosition + offset, virtualPosition + len, physicalOriginPos1, iter->length - offset);
             // Insert new journal entries.
             infix(tree._journalNodes, pos, pos + 1) = buffer;
 			shiftRightOf += 3;
         }
         // Update journal entries right of pos.
         for (TIterator it = begin(tree._journalNodes, Standard()) + shiftRightOf, itend = end(tree._journalNodes, Standard()); it != itend; ++it)
+        {
             it->virtualPosition += len;
+            if (it != begin(tree._journalNodes, Standard()) && it->segmentSource == SOURCE_PATCH)
+                it->physicalOriginPosition = (it - 1)->physicalOriginPosition;
+        }
     }
-    else 
+    else
     {
         // Insert at end.
 		SEQAN_ASSERT_EQ(virtualPosition, iter->virtualPosition + iter->length);
-        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, len));
+        TPos physicalOriginPosition = back(tree._journalNodes).physicalOriginPosition;
+        appendValue(tree._journalNodes, TCargo(SOURCE_PATCH, physicalBeginPos, virtualPosition, physicalOriginPosition, len));
     }
     //std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
 
@@ -338,23 +373,25 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
     TPos beginShiftPos = 0;
 
 	TPos itPos = it - begin(tree._journalNodes, Standard());
-	if (it->virtualPosition == pos && it->length == posEnd - pos) 
+	if (it->virtualPosition == pos && it->length == posEnd - pos)
     {
 		// Remove the whole entry.
 		erase(tree._journalNodes, itPos);
 		delta = posEnd - pos;
 		beginShiftPos = itPos;
-	} 
-    else if (it->virtualPosition == pos && it->length > posEnd - pos) 
+	}
+    else if (it->virtualPosition == pos && it->length > posEnd - pos)
     {
 		// Remove a prefix of the entry.
 		SEQAN_ASSERT_LT(pos, it->virtualPosition + it->length);
 		delta = posEnd - pos;
 		it->physicalPosition += delta;
+        if (it->segmentSource == SOURCE_ORIGINAL)
+            it->physicalOriginPosition += delta;
 		it->length -= delta;
 		beginShiftPos = itPos + 1;
 	}
-    else if (it->virtualPosition < pos && it->virtualPosition + it->length == posEnd) 
+    else if (it->virtualPosition < pos && it->virtualPosition + it->length == posEnd)
     {
 		// Remove a suffix of the entry.
 		SEQAN_ASSERT_GT(pos, it->virtualPosition);
@@ -362,7 +399,7 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
 		it->length -= delta;
 		beginShiftPos = itPos + 1;
 	}
-    else if (it->virtualPosition < pos && it->virtualPosition + it->length > posEnd) 
+    else if (it->virtualPosition < pos && it->virtualPosition + it->length > posEnd)
     {
 		// Remove a true infix of the entry.
 		TSize prefixLength = pos - it->virtualPosition;
@@ -371,13 +408,16 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
 		// Update the left part, this must be done before the iterator is possibly invalidate because of copied memory.
 		it->length -= removedInfixLength + suffixLength;
 		// Insert a new entry for the right part.
-		TCargo tmpEntry(it->segmentSource, it->physicalPosition + prefixLength + removedInfixLength, it->virtualPosition + prefixLength, suffixLength);
+        TPos physicalHostPos = it->physicalPosition;
+        if (it->segmentSource == SOURCE_ORIGINAL)
+            physicalHostPos += prefixLength + removedInfixLength;
+		TCargo tmpEntry(it->segmentSource, it->physicalPosition + prefixLength + removedInfixLength, it->virtualPosition + prefixLength, physicalHostPos, suffixLength);
 		insertValue(tree._journalNodes, itPos + 1, tmpEntry);
 		// Set shift position and delta.
 		delta = removedInfixLength;
 		beginShiftPos = itPos + 2;
 	}
-    else 
+    else
     {
 		// Remove more than one entry.
 		TPos rmBeginPos = itPos;
@@ -397,13 +437,13 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
 			rmEndPos += 1;
 		}
 		it += 1;
-		while (posEnd > it->virtualPosition + it->length) 
+		while (posEnd > it->virtualPosition + it->length)
         {
 			rmEndPos += 1;
 			delta += it->length;
 			it += 1;
 		}
-		if (it->virtualPosition + it->length == posEnd) 
+		if (it->virtualPosition + it->length == posEnd)
         {
 			// Remove all of last.
 			rmEndPos += 1;
@@ -417,6 +457,8 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
 			TSize tmpDelta = delta;
 			delta += posEnd - it->virtualPosition;
 			it->physicalPosition += posEnd - it->virtualPosition;
+            if (it->segmentSource == SOURCE_ORIGINAL)
+                it->physicalOriginPosition = it->physicalPosition;
 			it->length -= posEnd - it->virtualPosition;
 			// We update this entry manually.
 			it->virtualPosition -= tmpDelta;
@@ -429,6 +471,15 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
     for (TIter it = begin(tree._journalNodes, Standard()) + beginShiftPos; it != end(tree._journalNodes, Standard()); ++it) {
         SEQAN_ASSERT_GEQ(it->virtualPosition, delta);
         it->virtualPosition -= delta;
+    }
+    // Perform update of physical host positions.
+    if (beginShiftPos <= 3)
+        beginShiftPos = 1;
+    else
+        beginShiftPos -= 2;
+    for (TIter it = begin(tree._journalNodes, Standard()) + beginShiftPos; it != end(tree._journalNodes, Standard()); ++it) {
+        if (it != begin(tree._journalNodes, Standard()) && it->segmentSource == SOURCE_PATCH)
+            it->physicalOriginPosition = (it - 1)->physicalOriginPosition;
     }
 //	std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
 
@@ -486,36 +537,58 @@ inline
 typename Position<TCargo>::Type
 hostToVirtualPosition(JournalEntries<TCargo, SortedArray> const & journalEntries, TPos const & hostPos)
 {
+    // std::cerr << journalEntries << "\n";
     typedef JournalEntries<TCargo, SortedArray> TJournalEntries;
     typedef typename Iterator<TJournalEntries>::Type TIterator;
     typedef typename Position<TCargo>::Type TCargoPos;
     typedef typename Size<TCargo>::Type TCargoSize;
-    typedef JournalEntryLtByPhysicalPos<TCargoPos, TCargoSize> TComp;
+    typedef JournalEntryLtByPhysicalOriginPos<TCargoPos, TCargoSize> TComp;
 
-    // Find upper bound based on the physical position
-    // Note that only original nodes are considered for the comparison
+    if (empty(journalEntries._journalNodes))
+        return 0;
+
+    TCargoPos result = journalEntries._originalStringLength;
+
+    // Find upper bound based on the physical position in host string.
+    //
+    // After the call to upper_bound(), it can only point to a patch node if there are no more original nodes left.
     TCargo refCargo;
-    refCargo.physicalPosition = hostPos;
+    refCargo.physicalOriginPosition = hostPos;
     TIterator it = std::upper_bound(begin(journalEntries._journalNodes, Standard()),
-            end(journalEntries._journalNodes, Standard()), refCargo, TComp());
+                                    end(journalEntries._journalNodes, Standard()),
+                                    refCargo,
+                                    TComp());
 
-    SEQAN_ASSERT(it != begin(journalEntries._journalNodes, Standard()));
-    it -= 1;
-    SEQAN_ASSERT(it != end(journalEntries._journalNodes, Standard()));
+    // As stated above, if we end up at a patch node then there are no more original nodes left.
+    if (it != end(journalEntries._journalNodes, Standard()) && it->segmentSource == SOURCE_PATCH)
+        return result;
+    // std::cerr << *it << "\n";
 
-    // go to next original node previous to the reported patch node
-    while (value(it).segmentSource != SOURCE_ORIGINAL)
+    // Memoize found virtual position if any as result if we end up right of the segment we go to below.
+    if (it != end(journalEntries._journalNodes, Standard()))  // INVARIANT: Is original node.
+        result = it->virtualPosition;
+
+    if (it == begin(journalEntries._journalNodes, Standard()))
+        return result;
+
+    // Go to the next original node left of the current position to get the projection position.
+    --it;
+    // std::cerr << *it << "\n";
+    while (it != begin(journalEntries._journalNodes, Standard()) && it->segmentSource == SOURCE_PATCH)
     {
         --it;
+        // std::cerr << *it << "\n";
     }
-    SEQAN_ASSERT_EQ(value(it).segmentSource, SOURCE_ORIGINAL);
-    // Case#1: Requested position is deleted - return virtual begin postion of next node
-    if ((value(it).physicalPosition + value(it).length) <= (TCargoPos) hostPos)
-    {
-        return value(it).virtualPosition + value(it).length;
-    }
-    // Case#2: Requested position exists within the node - return correspondent virtual position of this node
-    return value(it).virtualPosition + (hostPos - value(it).physicalPosition);
+    // If we end up at the beginning, finding no original node then return result.
+    if (it == begin(journalEntries._journalNodes, Standard()) && it->segmentSource == SOURCE_PATCH)
+        return result;
+    SEQAN_ASSERT_NEQ(it->segmentSource, SOURCE_PATCH);
+    // If hostPos is not in the found node then return result.
+    if ((TCargoPos)hostPos >= (TCargoPos)(it->physicalPosition + it->length))
+        return result;
+
+    // Otherwise, compute virtual position.
+    return it->virtualPosition + (hostPos - it->physicalPosition);
 }
 
 template <typename TNode, typename TJournalSpec, typename TPos>

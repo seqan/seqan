@@ -71,7 +71,7 @@ _joinInternal(String <TValue, THostSpec> const & reference,
     JournalTraceDescriptor<TJournalString> traceDescriptor;
     std::stringstream stream;
     stream << journal;
-    appendValue(getTrace(traceDescriptor), TJounralEntry(SOURCE_PATCH, 0, 0, length(journal)));
+    appendValue(getTrace(traceDescriptor), TJounralEntry(SOURCE_PATCH, 0, 0, 0,length(journal)));
     append(getInsertionBuffer(traceDescriptor), stream.str());
     _applyTraceOperations(journal, reference, traceDescriptor);
 }

@@ -78,7 +78,7 @@ class JournalEntries<TCargo_, UnbalancedTree>
     TSize _originalStringLength;
     // The root node.
     TNode * _root;
-    
+
     JournalEntries()
             : _root(0)
     {
@@ -103,7 +103,7 @@ class JournalEntries<TCargo_, UnbalancedTree>
         return *this;
 
     }
-    
+
     JournalEntries &
     operator=(JournalEntries const & other) const
 
@@ -275,7 +275,7 @@ void reinit(JournalEntries<TCargo, UnbalancedTree> & tree,
     tree._originalStringLength = originalStringLength;
     TNode *tmp;
     allocate(tree._nodeAllocator, tmp, 1);
-    tree._root = new (tmp) TNode(TCargo(SOURCE_ORIGINAL, 0, 0, originalStringLength));
+    tree._root = new (tmp) TNode(TCargo(SOURCE_ORIGINAL, 0, 0, 0, originalStringLength));
 }
 
 
@@ -520,6 +520,7 @@ void recordErase(JournalEntries<TCargo, UnbalancedTree> & tree,
         TNode * suffixNode = new (tmp) TNode(TCargo(cargo(*node).segmentSource,
                                                     cargo(*node).physicalPosition + prefixLength + deletedInfixLength,
                                                     cargo(*node).virtualPosition + prefixLength,
+                                                    0,
                                                     suffixLength));
         // Insert node for suffix.
         if (node->right == 0) {
@@ -580,10 +581,10 @@ void recordInsertion(JournalEntries<TCargo, UnbalancedTree> & tree,
             return;
         TNode * tmp;
         allocate(tree._nodeAllocator, tmp, 1);
-        tree._root = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, length));
+        tree._root = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, 0, length));
         return;
     }
-    
+
     TNode * node;
     TNode * parent;
     TIterator iter = findInJournalEntries(tree, virtualPos);
@@ -598,7 +599,7 @@ void recordInsertion(JournalEntries<TCargo, UnbalancedTree> & tree,
             // Simple case: Insert left of current.
             TNode * tmp;
             allocate(tree._nodeAllocator, tmp, 1);
-            TNode * insertNode = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, length));
+            TNode * insertNode = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, 0, length));
             _addToVirtualPositionsRightOf(tree._root, virtualPos, length);
             insertNode->left = node->left;
             if (insertNode->left != 0)
@@ -612,12 +613,12 @@ void recordInsertion(JournalEntries<TCargo, UnbalancedTree> & tree,
             // Create right part of the node.
             TNode * tmp;
             allocate(tree._nodeAllocator, tmp, 1);
-            TNode * splitNode = new (tmp) TNode(TCargo(cargo(*node).segmentSource, cargo(*node).physicalPosition + offset, cargo(*node).virtualPosition + offset + length, cargo(*node).length - offset));
+            TNode * splitNode = new (tmp) TNode(TCargo(cargo(*node).segmentSource, cargo(*node).physicalPosition + offset, cargo(*node).virtualPosition + offset + length, 0, cargo(*node).length - offset));
             // Current node becomes left part of current node.
             cargo(*node).length = offset;
             // Create insertion node.
             allocate(tree._nodeAllocator, tmp, 1);
-            TNode * insertNode = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, length));
+            TNode * insertNode = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, 0, length));
             // Insert into tree...
             insertNode->left = node;
             node->parent = insertNode;
@@ -646,7 +647,7 @@ void recordInsertion(JournalEntries<TCargo, UnbalancedTree> & tree,
         SEQAN_ASSERT_EQ(cargo(*node).virtualPosition + cargo(*node).length, virtualPos);
         TNode * tmp;
         allocate(tree._nodeAllocator, tmp, 1);
-        TNode * insertNode = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, length));
+        TNode * insertNode = new (tmp) TNode(TCargo(SOURCE_PATCH, physicalBeginPos, virtualPos, 0, length));
         node->right = insertNode;
         insertNode->parent = node;
     }
@@ -664,7 +665,7 @@ void recordInsertion(JournalEntries<TCargo, UnbalancedTree> & tree,
 /*
 template <typename TNode>
 inline
-TNode const * 
+TNode const *
 back(JournalEntries<TNode, UnbalancedTree> const & tree)
 {
     SEQAN_XXXCHECKPOINT;
@@ -677,7 +678,7 @@ back(JournalEntries<TNode, UnbalancedTree> const & tree)
 
 template <typename TNode>
 inline
-TNode const * 
+TNode const *
 front(JournalEntries<TNode, UnbalancedTree> const & tree)
 {
     SEQAN_XXXCHECKPOINT;
@@ -703,7 +704,7 @@ hostToVirtualPosition(JournalEntries<TCargo, UnbalancedTree> const & journalEntr
 
     TIterator it = begin(journalEntries, Standard());
     SEQAN_ASSERT(it != end(journalEntries, Standard()));
-    TCargo tmp;
+    // TCargo tmp;
     while (it != end(journalEntries, Standard()))
     {
         // host position can only appear in orginal node
@@ -719,11 +720,11 @@ hostToVirtualPosition(JournalEntries<TCargo, UnbalancedTree> const & journalEntr
                 }
                 // Case#2a: Searched position appears either in next node (see Case#1) or
                 // lies within a deletion (see Case#2b)
-                tmp = value(it);
+                // tmp = value(it);
             }
             else
-            {   // Case#2b: Searched position lies within deletion - report virtual position of next node
-                return tmp.virtualPosition + tmp.length;
+            {   // Case#2b: Searched position lies within deletion - report virtual position of this node.
+                return value(it).virtualPosition;
             }
         }
         ++it;

@@ -43,7 +43,8 @@ namespace seqan {
 // Enums, Classes
 // ============================================================================
 
-enum SegmentSource {
+enum SegmentSource
+{
     SOURCE_NULL,
     SOURCE_ORIGINAL,
     SOURCE_PATCH
@@ -63,6 +64,10 @@ struct JournalEntry
     TPos physicalPosition;
     // Position in the virtual string.
     TPos virtualPosition;
+    // Physical position in the host string.  For SOURCE_PATCH entries, this is the position of the closest
+    // SOURCE_ORIGINAL entry left of it.  If there is no such entry then this is 0.  Unused and always 0 for unbalanced
+    // tree.
+    TPos physicalOriginPosition;
     // Length of the segment.
     TSize length;
 
@@ -70,22 +75,21 @@ struct JournalEntry
             : segmentSource(SOURCE_NULL),
               physicalPosition(0),
               virtualPosition(0),
+              physicalOriginPosition(0),
               length(0)
-    {
-		SEQAN_CHECKPOINT;
-    }
+    {}
 
-    JournalEntry(SegmentSource const & _segmentSource,
-                 TPos _physicalPosition,
-                 TPos _virtualPosition,
-                 TSize _length)
-            : segmentSource(_segmentSource),
-              physicalPosition(_physicalPosition),
-              virtualPosition(_virtualPosition),
-              length(_length)
-    {
-		SEQAN_CHECKPOINT;
-    }
+    JournalEntry(SegmentSource const & segmentSource,
+                 TPos physicalPosition,
+                 TPos virtualPosition,
+                 TPos physicalHostPosition,
+                 TSize length)
+            : segmentSource(segmentSource),
+              physicalPosition(physicalPosition),
+              virtualPosition(virtualPosition),
+              physicalOriginPosition(physicalHostPosition),
+              length(length)
+    {}
 };
 
 
@@ -95,7 +99,6 @@ struct JournalEntryLtByVirtualPos
     bool operator()(JournalEntry<TPos, TSize> const & a,
                     JournalEntry<TPos, TSize> const & b) const
     {
-        SEQAN_CHECKPOINT;
         return a.virtualPosition < b.virtualPosition;
     }
 };
@@ -105,17 +108,11 @@ struct JournalEntryLtByVirtualPos
 // in ascending order according to their physical position - this might be violated
 // if rearrangements are included.
 template <typename TPos, typename TSize>
-struct JournalEntryLtByPhysicalPos
+struct JournalEntryLtByPhysicalOriginPos
 {
     bool operator()(JournalEntry<TPos, TSize> const & a, JournalEntry<TPos, TSize> const & b) const
     {
-        // only compare physical position of original nodes since the physical position of
-        // virtual nodes would distort the result
-        if (a.segmentSource != SOURCE_PATCH && b.segmentSource != SOURCE_PATCH)
-        {
-            return a.physicalPosition < b.physicalPosition;
-        }
-        return false;
+        return a.physicalOriginPosition < b.physicalOriginPosition;
     }
 };
 
@@ -153,6 +150,7 @@ TStream & operator<<(TStream & stream, JournalEntry<TPos, TSize> const & entry)
     return stream << "{segmentSource=" << entry.segmentSource
                   << ", virtualPosition=" << entry.virtualPosition
                   << ", physicalPosition=" << entry.physicalPosition
+                  << ", physicalOriginPosition=" << entry.physicalOriginPosition
                   << ", length=" << entry.length
                   << "}";
 }
