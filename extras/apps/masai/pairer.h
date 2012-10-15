@@ -61,6 +61,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Pairer
+// ----------------------------------------------------------------------------
+
 template <typename TSpec = void>
 struct Pairer
 {
@@ -98,6 +102,10 @@ struct Pairer
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function loadReads()                                                [Pairer]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TString>
 bool loadReads(Pairer<TSpec> & pairer, TString const & readsLeftFile, TString const & readsRightFile)
 {
@@ -126,7 +134,9 @@ bool _loadReadsRC(Pairer<TSpec> & pairer)
     return true;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function readIdToPairId()
+// ----------------------------------------------------------------------------
 
 template <typename TReadId>
 TReadId readIdToPairId(TReadId readId, LeftFile)
@@ -139,8 +149,6 @@ TReadId readIdToPairId(TReadId readId, RightFile)
 {
     return readId * 2 + 1;
 }
-
-// ============================================================================
 
 /*
 template <typename TSpec, typename TString, typename TErrors, typename TDistance>
@@ -257,7 +265,9 @@ inline void _matePair(Pairer<TSpec> &,
 }
 */
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function mateMappedReads()                                          [Pairer]
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TString, typename TDistance>
 bool mateMappedReads(Pairer<TSpec> & pairer,
@@ -276,7 +286,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
 
-    mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);
+    _mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);
 
     std::cout << "Pairs:\t\t\t\t" << pairer.pairsCount << std::endl;
 
@@ -303,18 +313,20 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
     // TODO(esiragusa): Remove writeCigar from members.
     writer.writeCigar = pairer.writeCigar;
 
-    mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);
+    _mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);
 
     std::cout << "Pairs:\t\t\t\t" << pairer.pairsCount << std::endl;
 
     return true;
 }
 
+// ============================================================================
+
 template <typename TSpec, typename TString, typename TMatchesDelegate>
-bool mateMappedReads(Pairer<TSpec> & pairer,
-                     TString const & mappedReadsLeftFile,
-                     TString const & mappedReadsRightFile,
-                     TMatchesDelegate & matchesDelegate)
+bool _mateMappedReads(Pairer<TSpec> & pairer,
+                      TString const & mappedReadsLeftFile,
+                      TString const & mappedReadsRightFile,
+                      TMatchesDelegate & matchesDelegate)
 {
     typedef Match<>                  TMatch;
     typedef MatchStore<TMatch>       TMatchStore;
@@ -357,6 +369,8 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
 
     return true;
 }
+
+// ============================================================================
 
 template <typename TSpec, typename TRecordSpec, typename TStringSpec, typename TMatchesDelegate>
 inline void _matePair(Pairer<TSpec> & pairer,
@@ -437,6 +451,8 @@ inline void _matePair(Pairer<TSpec> & pairer,
         }
     }
 }
+
+// ============================================================================
 
 template <typename TSpec, typename TIterator, typename TMateFwd, typename TMateRev, typename TMatchesDelegate>
 inline void _matePair(Pairer<TSpec> & pairer,

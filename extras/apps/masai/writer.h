@@ -56,8 +56,14 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class MatchWriter
+// ----------------------------------------------------------------------------
+
 template <typename TStream, typename TDistance, typename TFormat, typename TSpec = void>
 struct MatchWriter {};
+
+// ============================================================================
 
 template <typename TStream, typename TDistance, typename TSpec>
 struct MatchWriter<TStream, TDistance, Raw, TSpec>
@@ -76,6 +82,8 @@ struct MatchWriter<TStream, TDistance, Raw, TSpec>
         writeMatches(writeMatches)
     {}
 };
+
+// ============================================================================
 
 template <typename TStream, typename TDistance, typename TSpec>
 struct MatchWriter<TStream, TDistance, Sam, TSpec>
@@ -118,6 +126,10 @@ struct MatchWriter<TStream, TDistance, Sam, TSpec>
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function onMatch()                                             [MatchWriter]
+// ----------------------------------------------------------------------------
 
 template <typename TStream, typename TDistance, typename TSpec,
           typename TContigId, typename TContigPos, typename TReadId, typename TErrors>

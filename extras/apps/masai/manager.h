@@ -56,6 +56,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class MatchManager
+// ----------------------------------------------------------------------------
+
 template <typename TMatch, typename TMatchesDelegate, typename TSpec = void>
 struct MatchManager
 {
@@ -87,7 +91,6 @@ struct MatchManager<TMatch, TMatchesDelegate, AllBest>:
     {
         resize(minErrors, readsCount, MaxValue<unsigned char>::VALUE, Exact());
     }
-
 };
 
 template <typename TMatch, typename TMatchesDelegate>
@@ -109,7 +112,6 @@ struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
         // TODO Change hardcoded size.
         resize(matches, 16, Exact());
     }
-
 };
 
 // ============================================================================
@@ -119,6 +121,10 @@ struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function onMatch()                                            [MatchManager]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchesDelegate, typename TSpec,
           typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
@@ -198,7 +204,9 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
     // Otherwise this match is superfluous.
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function isDisabled()                                         [MatchManager]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
 inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, TSpec> &, TReadId)
@@ -230,7 +238,10 @@ inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager
     return manager.minErrors[readId] <= manager.errors;
 }
 
-// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function raiseErrorThreshold()                                [MatchManager]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchesDelegate, typename TSpec>
 inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, TSpec> &)

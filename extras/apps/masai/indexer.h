@@ -54,6 +54,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Indexer
+// ----------------------------------------------------------------------------
+
 template <typename TGenomeIndex>
 struct Indexer
 {
@@ -73,6 +77,10 @@ struct Indexer
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function loadGenome()                                              [Indexer]
+// ----------------------------------------------------------------------------
 
 template <typename TGenomeIndex, typename TString>
 bool loadGenome(Indexer<TGenomeIndex> & indexer, TString const & genomeFile)
@@ -101,6 +109,10 @@ void _reverseContig(Indexer<TGenomeFM> &, TString & contig)
     reverse(contig);
 }
 
+// ----------------------------------------------------------------------------
+// Function loadGenomeIndex()                                         [Indexer]
+// ----------------------------------------------------------------------------
+
 template <typename TGenomeIndex, typename TString>
 bool loadGenomeIndex(Indexer<TGenomeIndex> & indexer, TString const & genomeIndexFile)
 {
@@ -108,11 +120,19 @@ bool loadGenomeIndex(Indexer<TGenomeIndex> & indexer, TString const & genomeInde
     return open(indexer.genomeIndex, toCString(genomeIndexFile));
 }
 
+// ----------------------------------------------------------------------------
+// Function dumpIndexedGenome()                                       [Indexer]
+// ----------------------------------------------------------------------------
+
 template <typename TGenomeIndex, typename TString>
 bool dumpIndexedGenome(Indexer<TGenomeIndex> & indexer, TString const & genomeIndexFile)
 {
     return save(indexer.genomeIndex, toCString(genomeIndexFile));
 }
+
+// ----------------------------------------------------------------------------
+// Function indexGenome()                                             [Indexer]
+// ----------------------------------------------------------------------------
 
 template <typename TGenomeIndex>
 void indexGenome(Indexer<TGenomeIndex> & indexer)

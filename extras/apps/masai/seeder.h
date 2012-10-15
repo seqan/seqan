@@ -50,6 +50,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Seeder
+// ----------------------------------------------------------------------------
+
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec = MultipleBacktracking>
 struct Seeder
 {
@@ -81,6 +85,10 @@ struct Seeder
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function indexSeedsExact()                                          [Seeder]
+// ----------------------------------------------------------------------------
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec>
 void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
@@ -165,7 +173,9 @@ void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
 //    _setHost(seeder.readsQGram);
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function indexSeedsApproximate()                                    [Seeder]
+// ----------------------------------------------------------------------------
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec>
 void indexSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
@@ -200,6 +210,11 @@ void indexSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder
     }
 }
 
+// ----------------------------------------------------------------------------
+// Function visitSeedsApproximate()                                    [Seeder]
+// ----------------------------------------------------------------------------
+
+// NOTE(esiragusa): Debug stuff.
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TDepth>
 void visitSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder, TDepth depth)
 {
@@ -216,7 +231,9 @@ void visitSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder
     while (!isRoot(readsIt));
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function findSeedsExact()                                           [Seeder]
+// ----------------------------------------------------------------------------
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
 void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
@@ -249,65 +266,6 @@ void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
                   0);
     }
 }
-
-template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
-void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
-                          TGenomeIndex & genomeIndex,
-                          TReadSeqSize seedsLength,
-                          TReadSeqSize errorsPerSeed,
-                          TDistance)
-{
-    typedef Backtracking<TDistance>                         TBacktracking;
-    typedef Finder<TGenomeIndex, TBacktracking>             TFinder;
-    typedef Pattern<TReadsWotd, TBacktracking>              TPattern;
-
-    TFinder finder(genomeIndex);
-    TPattern pattern(seeder.readsWotd, seedsLength);
-
-//    seeder.hitsCount = count_iterative(finder, pattern, errorsPerSeed);
-
-    while (find(finder, pattern, errorsPerSeed))
-    {
-        // Skip disabled reads.
-        if (isDisabled(seeder.readsDelegate, position(pattern).i1))
-            continue;
-
-        ++seeder.hitsCount;
-
-        onSeedHit(seeder.hitsDelegate,
-                  position(finder).i1, beginPosition(finder).i2,
-                  position(pattern).i1, beginPosition(pattern).i2,
-                  pattern.prefix_aligner.errors);
-    }
-}
-
-// ============================================================================
-
-template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
-void find(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
-          TGenomeIndex & genomeIndex,
-          TReadSeqSize seedsLength,
-          TReadSeqSize errorsPerSeed,
-          TReadSeqSize firstSeed,
-          TReadSeqSize lastSeed,
-          TDistance)
-{
-    if (errorsPerSeed > 0)
-    {
-        indexSeedsApproximate(seeder, seedsLength, firstSeed, lastSeed);
-        findSeedsApproximate(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
-    }
-    else
-    {
-        indexSeedsExact(seeder, seedsLength, firstSeed, lastSeed);
-        findSeedsExact(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
-    }
-
-//    indexSeedsExact(seeder, seedsLength, firstSeed, lastSeed);
-//    findSeedsExact(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
-}
-
-// ============================================================================
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TGenomeIndex, typename TDistance>
 void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder,
@@ -348,6 +306,41 @@ void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & 
                           0);
             }
         }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function findSeedsApproximate()                                     [Seeder]
+// ----------------------------------------------------------------------------
+
+template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
+void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
+                          TGenomeIndex & genomeIndex,
+                          TReadSeqSize seedsLength,
+                          TReadSeqSize errorsPerSeed,
+                          TDistance)
+{
+    typedef Backtracking<TDistance>                         TBacktracking;
+    typedef Finder<TGenomeIndex, TBacktracking>             TFinder;
+    typedef Pattern<TReadsWotd, TBacktracking>              TPattern;
+
+    TFinder finder(genomeIndex);
+    TPattern pattern(seeder.readsWotd, seedsLength);
+
+//    seeder.hitsCount = count_iterative(finder, pattern, errorsPerSeed);
+
+    while (find(finder, pattern, errorsPerSeed))
+    {
+        // Skip disabled reads.
+        if (isDisabled(seeder.readsDelegate, position(pattern).i1))
+            continue;
+
+        ++seeder.hitsCount;
+
+        onSeedHit(seeder.hitsDelegate,
+                  position(finder).i1, beginPosition(finder).i2,
+                  position(pattern).i1, beginPosition(pattern).i2,
+                  pattern.prefix_aligner.errors);
     }
 }
 
@@ -394,8 +387,33 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracki
         }
     }
 }
+// ----------------------------------------------------------------------------
+// Function find()                                                     [Seeder]
+// ----------------------------------------------------------------------------
 
-// ============================================================================
+template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TGenomeIndex, typename TDistance>
+void find(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
+          TGenomeIndex & genomeIndex,
+          TReadSeqSize seedsLength,
+          TReadSeqSize errorsPerSeed,
+          TReadSeqSize firstSeed,
+          TReadSeqSize lastSeed,
+          TDistance)
+{
+    if (errorsPerSeed > 0)
+    {
+        indexSeedsApproximate(seeder, seedsLength, firstSeed, lastSeed);
+        findSeedsApproximate(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
+    }
+    else
+    {
+        indexSeedsExact(seeder, seedsLength, firstSeed, lastSeed);
+        findSeedsExact(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
+    }
+
+//    indexSeedsExact(seeder, seedsLength, firstSeed, lastSeed);
+//    findSeedsExact(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
+}
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TGenomeIndex, typename TDistance>
 void find(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & seeder,

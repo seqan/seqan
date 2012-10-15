@@ -54,6 +54,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Extender
+// ----------------------------------------------------------------------------
+
 template <typename TMatchesDelegate, typename TDistance = HammingDistance, typename TSpec = void>
 struct Extender
 {
@@ -140,7 +144,9 @@ inline bool _fixReverseComplemented(Extender<TMatchesDelegate, TDistance, TSpec>
     return false;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function onSeedHit()                                              [Extender]
+// ----------------------------------------------------------------------------
 
 template <typename TMatchesDelegate, typename TSpec>
 inline bool onSeedHit(Extender<TMatchesDelegate, HammingDistance, TSpec> & extender,
@@ -234,6 +240,10 @@ inline bool _extend(Extender<TMatchesDelegate, HammingDistance, TSpec> & extende
 
     return true;
 }
+
+// ----------------------------------------------------------------------------
+// Function onSeedHit()                                              [Extender]
+// ----------------------------------------------------------------------------
 
 template <typename TMatchesDelegate, typename TSpec>
 inline bool onSeedHit(Extender<TMatchesDelegate, EditDistance, TSpec> & extender,

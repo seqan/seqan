@@ -54,6 +54,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Match
+// ----------------------------------------------------------------------------
+
 template <typename TSpec = void>
 struct Match
 {
@@ -64,7 +68,9 @@ struct Match
     unsigned char   errors;
 };
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Class MatchSorterByXXX
+// ----------------------------------------------------------------------------
 
 template <typename TMatch>
 struct MatchSorterByReadId :
@@ -111,7 +117,9 @@ struct MatchSorterByErrors
 
 };
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Class MatchIterator
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchString, typename TSpec = void>
 struct MatchIterator
@@ -128,7 +136,9 @@ struct MatchIterator
     {}
 };
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Class MatchStore
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchStoreString = External<>, typename TSpec = void>
 struct MatchStore
@@ -150,6 +160,10 @@ struct MatchStore
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function fill()                                                      [Match]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
 inline void fill(Match<TSpec> & match,
                  TContigId contigId,
@@ -168,6 +182,10 @@ inline void fill(Match<TSpec> & match,
     match.errors = errors;
 }
 
+// ----------------------------------------------------------------------------
+// Function assign()                                                    [Match]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline void assign(Match<TSpec> & dest, Match<TSpec> const & source)
 {
@@ -178,11 +196,19 @@ inline void assign(Match<TSpec> & dest, Match<TSpec> const & source)
     dest.errors = source.errors;
 }
 
+// ----------------------------------------------------------------------------
+// Function isForward()                                                 [Match]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline bool isForward(Match<TSpec> const & match)
 {
     return match.endPosDelta > 0;
 }
+
+// ----------------------------------------------------------------------------
+// Function isReverse()                                                 [Match]
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline bool isReverse(Match<TSpec> const & match)
@@ -190,11 +216,19 @@ inline bool isReverse(Match<TSpec> const & match)
     return match.endPosDelta < 0;
 }
 
+// ----------------------------------------------------------------------------
+// Function isConcordant()                                              [Match]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline bool isConcordant(Match<TSpec> const & a, Match<TSpec> const & b)
 {
     return (isForward(a) && isForward(b)) || (isReverse(a) && isReverse(b));
 }
+
+// ----------------------------------------------------------------------------
+// Function endPos()                                                    [Match]
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline unsigned endPos(Match<TSpec> const & match)
@@ -202,8 +236,11 @@ inline unsigned endPos(Match<TSpec> const & match)
     return match.beginPos + abs(match.endPosDelta);
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function onMatch()                                        [TMatchesDelegate]
+// ----------------------------------------------------------------------------
 
+// NOTE(esiragusa): Syntactical sugar.
 template <typename TMatchesDelegate, typename TSpec>
 inline void onMatch(TMatchesDelegate & matchesDelegate, Match<TSpec> const & match)
 {
@@ -211,6 +248,7 @@ inline void onMatch(TMatchesDelegate & matchesDelegate, Match<TSpec> const & mat
             match.beginPos, endPos(match), match.readId, match.errors, isReverse(match));
 }
 
+// NOTE(esiragusa): Syntactical sugar.
 template <typename TMatchesDelegate, typename TSpec>
 inline void onMatch(TMatchesDelegate & matchesDelegate, Match<TSpec> const & matchFwd, Match<TSpec> const & matchRev)
 {
@@ -219,7 +257,9 @@ inline void onMatch(TMatchesDelegate & matchesDelegate, Match<TSpec> const & mat
             matchRev.beginPos, endPos(matchRev), matchRev.readId, matchRev.errors);
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function open()                                                 [MatchStore]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchStoreString, typename TSpec, typename TString>
 inline bool open(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TString const & file)
@@ -234,6 +274,10 @@ inline bool open(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TString c
     return true;
 }
 
+// ----------------------------------------------------------------------------
+// Function close()                                                [MatchStore]
+// ----------------------------------------------------------------------------
+
 template <typename TMatch, typename TMatchStoreString, typename TSpec>
 inline bool close(MatchStore<TMatch, TMatchStoreString, TSpec> & store)
 {
@@ -241,6 +285,10 @@ inline bool close(MatchStore<TMatch, TMatchStoreString, TSpec> & store)
 
     return close(store.matches);
 }
+
+// ----------------------------------------------------------------------------
+// Function getNext()                                              [MatchStore]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchStoreString, typename TSpec, typename TMatches>
 inline bool getNext(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TMatches & matches)
@@ -262,7 +310,9 @@ inline bool getNext(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TMatch
     return true;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function removeDuplicateMatches()
+// ----------------------------------------------------------------------------
 
 template <typename TRecordSpec, typename TStringSpec>
 inline void removeDuplicateMatches(String<Match<TRecordSpec>, TStringSpec> & matches)
@@ -330,6 +380,10 @@ inline void removeDuplicateMatches(String<Match<TRecordSpec>, TStringSpec> & mat
     resize(matches, newIt - matchesBegin, Exact());
 }
 
+// ----------------------------------------------------------------------------
+// Function sortByErrors()
+// ----------------------------------------------------------------------------
+
 template <typename TRecordSpec, typename TStringSpec>
 inline void sortByErrors(String<Match<TRecordSpec>, TStringSpec> & matches)
 {
@@ -342,13 +396,19 @@ inline void sortByErrors(String<Match<TRecordSpec>, TStringSpec> & matches)
     std::sort(matchesBegin, matchesEnd, MatchSorterByErrors<Match<TRecordSpec> >());
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function atEnd()                                             [MatchIterator]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchString, typename TSpec>
 inline bool atEnd(MatchIterator<TMatch, TMatchString, TSpec> & matchIt)
 {
     return matchIt.it == matchIt.endIt;
 }
+
+// ----------------------------------------------------------------------------
+// Function getNext()                                           [MatchIterator]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchString, typename TSpec>
 inline bool getNext(MatchIterator<TMatch, TMatchString, TSpec> & matchIt,
@@ -372,6 +432,10 @@ inline bool getNext(MatchIterator<TMatch, TMatchString, TSpec> & matchIt,
 
     return true;
 }
+
+// ----------------------------------------------------------------------------
+// Function getNextContig()                                     [MatchIterator]
+// ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchString, typename TSpec>
 inline bool getNextContig(MatchIterator<TMatch, TMatchString, TSpec> & matchIt,
@@ -420,7 +484,7 @@ inline bool getNextContig(MatchIterator<TMatch, TMatchString, TSpec> & matchIt,
 
 // ============================================================================
 
-// DEBUG
+// NOTE(esiragusa): Debug stuff.
 template <typename TRecordSpec>
 void printMatch(Match<TRecordSpec> const & match)
 {

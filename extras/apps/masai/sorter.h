@@ -58,6 +58,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Sorter
+// ----------------------------------------------------------------------------
+
 template <typename TSpec = void>
 struct Sorter
 {
@@ -93,6 +97,10 @@ struct Sorter
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function loadReads()                                                [Sorter]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TString>
 bool loadReads(Sorter<TSpec> & sorter, TString const & readsFile)
 {
@@ -121,7 +129,9 @@ bool _loadReadsRC(Sorter<TSpec> & sorter)
     return true;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function sortMappedReads()                                          [Sorter]
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TString, typename TDistance>
 bool sortMappedReads(Sorter<TSpec> & sorter,
@@ -167,6 +177,8 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
 
     return true;
 }
+
+// ============================================================================
 
 template <typename TSpec, typename TString, typename TMatchesDelegate>
 bool _sortMappedReads(Sorter<TSpec> & sorter,

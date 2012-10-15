@@ -61,6 +61,10 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class Mapper
+// ----------------------------------------------------------------------------
+
 // TODO(esiragusa):Use typename TGenomeIndex instead of TSpec.
 template <typename TSpec = void>
 struct Mapper
@@ -88,8 +92,11 @@ struct Mapper
     {}
 };
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Class Seeding
+// ----------------------------------------------------------------------------
 
+// TODO(esiragusa): refactor class Seeding.
 template <typename TErrors = unsigned char, typename TSpec = void>
 struct Seeding
 {
@@ -152,6 +159,10 @@ void _computeSeeds(Seeding<TErrors, TSpec> & seeding, TReadSeqSize readLength, T
 
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function loadReads()                                                [Mapper]
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TString>
 bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile)
 {
@@ -186,7 +197,9 @@ TReadSeqSize _readsLength(Mapper<TSpec> & mapper)
     return length(mapper.store.readSeqStore[0]);
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function mapReads()                                                 [Mapper]
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TString, typename TErrors, typename TDistance, typename TStrategy, typename TMultiple>
 bool mapReads(Mapper<TSpec> & mapper,
@@ -217,7 +230,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     // TODO(esiragusa):Remove writeCigar from mapper members.
     writer.writeCigar = mapper.writeCigar;
 
-    mapReads(mapper, seeder, manager, errors, TStrategy());
+    _mapReads(mapper, seeder, manager, errors, TStrategy());
 
     return true;
 }
@@ -248,7 +261,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     TSeeder seeder(mapper.store, manager, extender);
     seeder.readsCount = mapper.readsCount;
 
-    mapReads(mapper, seeder, manager, errors, TStrategy());
+    _mapReads(mapper, seeder, manager, errors, TStrategy());
 
     return true;
 }
@@ -256,7 +269,7 @@ bool mapReads(Mapper<TSpec> & mapper,
 // ============================================================================
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, All const & /*tag*/)
+bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, All const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -293,21 +306,21 @@ bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErr
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
+bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
 {
-    mapReadsByStratum(mapper, seeder, matches, std::min(errors, (TErrors)1), AllBest());
+    _mapReadsByStratum(mapper, seeder, matches, std::min(errors, (TErrors)1), AllBest());
 
     if (errors > 1)
     {
         matches.errors = 2;
-        mapReadsBySeed(mapper, seeder, matches, errors, AllBest());
+        _mapReadsBySeed(mapper, seeder, matches, errors, AllBest());
     }
 
     return true;
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
+bool _mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -348,7 +361,7 @@ bool mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
+bool _mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -392,7 +405,7 @@ bool mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matc
 }
 
 template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AnyBest const & /*tag*/)
+bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AnyBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
