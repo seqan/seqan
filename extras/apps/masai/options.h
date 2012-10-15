@@ -126,5 +126,30 @@ void getOptionValue(TOption & option, ArgumentParser & parser, TString const & o
     option = TOption(optionType - optionsBegin);
 }
 
+// ----------------------------------------------------------------------------
+// Function setDateAndVersion()
+// ----------------------------------------------------------------------------
+
+void setDateAndVersion(ArgumentParser & parser)
+{
+    std::string rev  = "$Revision$";
+    std::string date = "$Date$";
+
+    setCategory(parser, "Read Mapping");
+    setVersion(parser, "0.4 [" + rev.substr(11, rev.size() - 13) + "]");
+    setDate(parser, date.substr(7, std::min((int)date.size() - 8, 10)));
+}
+
+// ----------------------------------------------------------------------------
+// Function setDescription()
+// ----------------------------------------------------------------------------
+
+void setDescription(ArgumentParser & parser)
+{
+    addDescription(parser, "Masai is a fast and sensitive read mapper based on approximate seeds and multiple backtracking.");
+    addDescription(parser, "See \\fIhttp://www.seqan.de/projects/masai\\fP for more information.");
+    addDescription(parser, "(c) Copyright 2011-2012 by Enrico Siragusa.");
+}
+
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_OPTIONS_H_

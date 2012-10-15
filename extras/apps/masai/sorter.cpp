@@ -78,19 +78,12 @@ struct Options : public MasaiOptions
 
 void setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
-//    CharString rev  = "$Revision$";
-//    CharString date = "$Date$";
-
     setAppName(parser, "masai_output_se");
     setShortDescription(parser, "Masai Output - Single End Mode");
     setCategory(parser, "Read Mapping");
 
-    setVersion(parser, "0.4");
-    setDate(parser, "October 2012");
-
-    addDescription(parser, "Masai is a fast and sensitive read mapper based on approximate seeds and multiple backtracking.");
-    addDescription(parser, "See \\fIhttp://www.seqan.de/projects/masai\\fP for more information.");
-    addDescription(parser, "(c) Copyright 2011-2012 by Enrico Siragusa.");
+    setDateAndVersion(parser);
+    setDescription(parser);
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP> <\\fIRAW FILE\\fP>");
 
