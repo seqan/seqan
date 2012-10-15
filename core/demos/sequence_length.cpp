@@ -27,7 +27,7 @@ int main(int argc, char const ** argv)
     // Read sequence file and print sequence lengths.
     size_t total = 0;
     seqan::CharString id;
-    seqan::Dna5String seq;
+    seqan::CharString seq;
     while (!atEnd(reader))
     {
         if (readRecord(id, seq, reader, seqan::Fasta()) != 0)
@@ -36,7 +36,7 @@ int main(int argc, char const ** argv)
             return 1;
         }
 
-        std::cout << id << "\t" << seq << "\n";
+        std::cout << id << "\t" << length(seq) << "\n";
         total += length(seq);
     }
     std::cout << "sum\t" << total << std::endl;

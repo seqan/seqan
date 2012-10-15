@@ -1462,7 +1462,7 @@ skipBlanks(RecordReader<TStream, TPass> & reader)
 ...type:Enum.TokenizeResult
 ..remarks:This function stops on the beginning of the next line, if there is a next line
 ..remarks:End-line characters are not written to buffer.
-..remarks:Works on ANSI EOL and on Unix EOL.
+..remarks:Works on ANSI EOL, Mac EOL and on Unix EOL.
 ..include:seqan/stream.h
 ..see:Enum.TokenizeResult
  */
@@ -1470,18 +1470,44 @@ template <typename TStream, typename TPass, typename TBuffer>
 inline int
 readLine(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 {
-    SEQAN_CHECKPOINT
-    int r = _readHelper(buffer,
-                        reader,
-                        UnixEOL_(), // abort on Newline
-                        BackslashR_()); // just ignore carriage return
-    if (r != 0)
-        return r;
+    int r = 0;
 
-    if (!atEnd(reader))
-        goNext(reader); // go to beginning of next line
+    // Loop over characters from stream, taking early exits on line breaks and errors.
+    while (!atEnd(reader))
+    {
+        char c = value(reader);
 
-    return resultCode(reader);
+        // Unix EOL is the simplest case.
+        if (c == '\n')
+        {
+            if (!atEnd(reader))
+                goNext(reader);
+            return resultCode(reader);
+        }
+
+        // If the current character is '\r' then this can be an ANSI or a Mac line ending.
+        if (c == '\r')
+        {
+            goNext(reader);
+            if ((r = resultCode(reader)) != 0)
+                return r;
+            if (atEnd(reader))
+                return 0;  // Assume Mac EOL at end of file.
+            if (value(reader) == '\n')
+            {
+                // Assume Windows EOL.
+                if (!atEnd(reader))
+                    goNext(reader);
+                return resultCode(reader);
+            }
+            return 0;  // Was Mac EOL, not at end of file.
+        }
+
+        appendValue(buffer, c);
+        goNext(reader);
+    }
+
+    return EOF_BEFORE_SUCCESS;
 }
 
 /**
