@@ -195,7 +195,9 @@ _alignRead(FragmentStore<TSpec, TConfig> & store,
         assignSource(row(align, 0), infix(store.contigStore[alignedRead.contigId].seq, alignedRead.endPos, alignedRead.beginPos));
     }
     else
+    {
         assignSource(row(align, 0), infix(store.contigStore[alignedRead.contigId].seq, alignedRead.beginPos, alignedRead.endPos));
+    }
 
     assignSource(row(align, 1), readSeq);
 
@@ -210,7 +212,9 @@ _alignRead(FragmentStore<TSpec, TConfig> & store,
                         NeedlemanWunsch());
     }
     else
+    {
         globalAlignment(align, Score<short, EditDistance>());
+    }
 }
 
 // --------------------------------------------------------------------------
