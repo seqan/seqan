@@ -62,15 +62,21 @@ namespace seqan {
 .Memfunc.ArgParseOption#ArgParseOption
 ..class:Class.ArgParseOption
 ..summary:Constructor
-..signature:ArgParseOption (shortName, longName, helpText [, argument])
+..signature:ArgParseOption(shortName, longName, helpText, argumentType[, argumentLabel[, isList]])
 ..param.shortName:A std::string containing the short-name option identifier (e.g. $"h"$ for the $-h/--help$ option).
 Although not suggested the short-name can contain more than 1 character.
 ...remarks:Note that the leading "-" is not passed.
 ..param.longName:A std::string containing the long-name option identifier (e.g. $"help"$ for the $-h/--help$ option).
 ...remarks:Note that the leading "--" is not passed.
 ..param.helpText:A std::string containing the help text associated with this option.
-..param.argument:A @Class.ArgParseArgument@ for the option (e.g., an integer argument).
+..param.argument:A $ArgParseArgument::ArgumentType$ for the option (e.g., an integer argument).
 ...type:Class.ArgParseArgument
+..param.argumentLabel:The label to use for the argument in the help text, e.g. $"NUMBER"$ for an integer. Optional.
+...default:$""$
+...type:nolink:$char const *$
+..param.isList:Whether or not the argument allows multiple values.
+...default:$false$
+...type:nolink:$bool$
 */
 
 ///.Function.isListArgument.param.argument.type:Class.ArgParseOption
