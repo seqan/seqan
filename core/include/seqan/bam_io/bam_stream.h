@@ -213,7 +213,6 @@ public:
         this->_headerWritten = true;
         return this->_writer->writeHeader(header, bamIOContext);
     }
-
 };
 
 // ============================================================================
@@ -239,14 +238,6 @@ BamStream::BamStream(char const * filename, OperationMode mode, Format format) :
     _nameStoreCache(_nameStore), bamIOContext(_nameStore, _nameStoreCache)
 {
     open(*this, filename, _mode, _format);
-
-    // Read header.
-    if (this->_isGood && mode == READ)
-    {
-        clear(this->header);
-        if (this->_reader->readHeader(this->header, this->bamIOContext) != 0)
-            this->_isGood = false;
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -352,6 +343,17 @@ inline int open(BamStream & bamIO,
 
     bamIO._mode = mode;
     bamIO._format = format;
+
+    // Read header.
+    if (bamIO._isGood && bamIO._mode == BamStream::READ)
+    {
+        clear(bamIO.header);
+        if (bamIO._reader->readHeader(bamIO.header, bamIO.bamIOContext) != 0)
+        {
+            bamIO._isGood = false;
+            return 1;
+        }
+    }
 
     return 0;
 }
@@ -525,6 +527,48 @@ inline int writeRecord(BamStream & bamIO, BamAlignmentRecord & record)
     int res = bamIO._writer->writeRecord(record, bamIO.bamIOContext);
     bamIO._isGood = bamIO._isGood && (res == 0);
     return res;
+}
+
+// ----------------------------------------------------------------------------
+// Function fileSize()
+// ----------------------------------------------------------------------------
+
+// Returns size of file in bytes as stored on the disk.
+
+inline __int64 fileSize(BamStream const & bamIO)
+{
+    if (bamIO._mode == BamStream::WRITE)
+        return 0;
+    return bamIO._reader->fileSize();
+}
+
+// ----------------------------------------------------------------------------
+// Function positionInFile()
+// ----------------------------------------------------------------------------
+
+// Returns "approximate" byte position in file.  To be used for progress display, not for seeking.  For this, we have to
+// implement streamTell() and streamSeek() for BamStream.  This works for BAM only at the moment.
+
+inline __int64 positionInFile(BamStream const & bamIO)
+{
+    if (bamIO._mode == BamStream::WRITE)
+        return 0;
+    return bamIO._reader->positionInFile();
+}
+
+// ----------------------------------------------------------------------------
+// Function jumpToPos()
+// ----------------------------------------------------------------------------
+
+inline bool jumpToPos(BamStream & bamIO, __int32 refId, __int32 pos, BamIndex<Bai> const & index)
+{
+    if (bamIO._format != BamStream::BAM)
+        return false;  // Can only jump in BAM files.
+    if (bamIO._mode != BamStream::READ)
+        return false;  // Can only jump when reading.
+
+    BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
+    return s->jumpToPos(refId, pos, index, bamIO.bamIOContext);
 }
 
 }  // namespace seqan;

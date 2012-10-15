@@ -93,7 +93,7 @@ int _runStreamTell(TStream & /*stream*/, int defaultValue, seqan::False const &)
 
 // Test of streamEof().
 template <typename TStream>
-void testStreamEof(TStream & stream)
+void testStreamEof(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
@@ -106,14 +106,16 @@ void testStreamEof(TStream & stream)
         int res = streamReadChar(c, stream);
         SEQAN_ASSERT_EQ(res, 0);
         SEQAN_ASSERT_EQ(c, buffer[i]);
-        SEQAN_ASSERT_EQ(_runStreamTell(stream, i + 1, typename HasStreamFeature<TStream, Tell>::Type()), i + 1);
+        if (checkTell)
+            SEQAN_ASSERT_EQ(_runStreamTell(stream, i + 1, typename HasStreamFeature<TStream, Tell>::Type()), i + 1);
     }
     // SEQAN_ASSERT_NOT(streamEof(stream));  // Not portable, inconsistent behaviour.
     int res = streamReadChar(c, stream);
     SEQAN_ASSERT_NEQ(res, 0);
     SEQAN_ASSERT(streamEof(stream));
-    SEQAN_ASSERT(_runStreamTell(stream, 15, typename HasStreamFeature<TStream, Tell>::Type()) == 15 ||
-                 _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
+    if (checkTell)
+        SEQAN_ASSERT(_runStreamTell(stream, 15, typename HasStreamFeature<TStream, Tell>::Type()) == 15 ||
+                     _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
 }
 
 // Test of streamPeek().
@@ -138,7 +140,7 @@ void testStreamPeek(TStream & stream)
 
 // Test of testStreamReadBlock(), limit is longer than stream.
 template <typename TStream>
-void testStreamReadBlockHitLimit(TStream & stream)
+void testStreamReadBlockHitLimit(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
@@ -148,13 +150,14 @@ void testStreamReadBlockHitLimit(TStream & stream)
     resize(buffer, charsRead);
     SEQAN_ASSERT_EQ(charsRead, 10u);
     SEQAN_ASSERT_EQ(strcmp(toCString(buffer), "XXXXXXXXXX"), 0);
-    SEQAN_ASSERT(_runStreamTell(stream, 10, typename HasStreamFeature<TStream, Tell>::Type()) == 10 ||
-                 _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
+    if (checkTell)
+        SEQAN_ASSERT(_runStreamTell(stream, 10, typename HasStreamFeature<TStream, Tell>::Type()) == 10 ||
+                     _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
 }
 
 // Test of testStreamReadBlock(), limit is shorter than stream.
 template <typename TStream>
-void testStreamReadBlockHitNoLimit(TStream & stream)
+void testStreamReadBlockHitNoLimit(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
@@ -164,12 +167,13 @@ void testStreamReadBlockHitNoLimit(TStream & stream)
     resize(buffer, charsRead);
     SEQAN_ASSERT_EQ(charsRead, 5u);
     SEQAN_ASSERT(buffer == "XXXXX");
-    SEQAN_ASSERT(_runStreamTell(stream, 5, typename HasStreamFeature<TStream, Tell>::Type()) == 5);
+    if (checkTell)
+        SEQAN_ASSERT(_runStreamTell(stream, 5, typename HasStreamFeature<TStream, Tell>::Type()) == 5);
 }
 
 // Test of testStreamWriteBlock(), iterator interface.
 template <typename TStream>
-void testStreamWriteBlock(TStream & stream)
+void testStreamWriteBlock(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
@@ -177,12 +181,13 @@ void testStreamWriteBlock(TStream & stream)
     append(buffer, "ABCDEFGH");
     size_t charsWritten = streamWriteBlock(stream, begin(buffer, Standard()), length(buffer));
     SEQAN_ASSERT_EQ(charsWritten, 8u);
-    SEQAN_ASSERT_EQ(_runStreamTell(stream, 8, typename HasStreamFeature<TStream, Tell>::Type()), 8);
+    if (checkTell)
+        SEQAN_ASSERT_EQ(_runStreamTell(stream, 8, typename HasStreamFeature<TStream, Tell>::Type()), 8);
 }
 
 // Test of streamWriteChar().
 template <typename TStream>
-void testStreamWriteChar(TStream & stream)
+void testStreamWriteChar(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
@@ -192,7 +197,8 @@ void testStreamWriteChar(TStream & stream)
     SEQAN_ASSERT_EQ(res, 0);
     res = streamWriteChar(stream, '5');
     SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(_runStreamTell(stream, 3, typename HasStreamFeature<TStream, Tell>::Type()), 3);
+    if (checkTell)
+        SEQAN_ASSERT_EQ(_runStreamTell(stream, 3, typename HasStreamFeature<TStream, Tell>::Type()), 3);
 }
 
 template <typename TStream>
@@ -264,7 +270,7 @@ void testStreamPut(TStream & stream)
 
 // Test of streamReadChar().
 template <typename TStream>
-void testStreamReadChar(TStream & stream)
+void testStreamReadChar(TStream & stream, bool checkTell = true)
 {
     using namespace seqan;
 
@@ -282,8 +288,9 @@ void testStreamReadChar(TStream & stream)
     res = streamReadChar(c, stream);
     SEQAN_ASSERT_NEQ(res, 0);
     SEQAN_ASSERT(streamEof(stream));
-    SEQAN_ASSERT(_runStreamTell(stream, 3, typename HasStreamFeature<TStream, Tell>::Type()) == 3 ||
-                 _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
+    if (checkTell)
+        SEQAN_ASSERT(_runStreamTell(stream, 3, typename HasStreamFeature<TStream, Tell>::Type()) == 3 ||
+                     _runStreamTell(stream, -1, typename HasStreamFeature<TStream, Tell>::Type()) == -1);
 }
 
 // Test of streamSeek().

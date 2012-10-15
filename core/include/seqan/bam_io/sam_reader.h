@@ -53,6 +53,9 @@ class SamReader_ :
     public XamReader_
 {
 public:
+    // The size of the file in bytes.
+    __int64 _fileSize;
+
     // Pointer to the input stream to read from.  Used such that we can also read from stdin.
     std::ifstream _fstream;
     // The file stream to read from if we do not read from stdout.  Pointed to by _stream.
@@ -68,7 +71,7 @@ public:
 #endif  // #if __cplusplus <= 199711L
 
     SamReader_() :
-        XamReader_(), _stream(0),
+        XamReader_(), _fileSize(0), _stream(0),
 #if __cplusplus <= 199711L
         // C++98
         _reader(0)
@@ -88,6 +91,9 @@ public:
     virtual int readHeader(BamHeader & header, BamIOContext<StringSet<CharString> > & context);
     virtual int readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > & context);
     virtual int close();
+
+    virtual __int64 fileSize() const;
+    virtual __int64 positionInFile() const;
 };
 
 // ============================================================================
@@ -125,6 +131,11 @@ int SamReader_::open(CharString const & filename)
         this->_fstream.open(toCString(filename), std::ios::binary | std::ios::in);
         if (!this->_fstream.good())
             return 1;
+
+        // Determine file size.
+        this->_stream->seekg(0, std::ios::end);
+        this->_fileSize = this->_stream->tellg();
+        this->_stream->seekg(0, std::ios::beg);
     }
     this->_reader.reset(new RecordReader<std::istream, SinglePass<> >(*this->_stream));
 
@@ -175,6 +186,26 @@ int SamReader_::close()
 {
     if (this->_stream == &this->_fstream)
         this->_fstream.close();
+    return 0;
+}
+
+// ----------------------------------------------------------------------------
+// Member Function SamReader_::fileSize()
+// ----------------------------------------------------------------------------
+
+__int64 SamReader_::fileSize() const
+{
+    return this->_fileSize;
+}
+
+// ----------------------------------------------------------------------------
+// Member Function SamReader_::positionInFile()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): This does not work yet.
+
+__int64 SamReader_::positionInFile() const
+{
     return 0;
 }
 

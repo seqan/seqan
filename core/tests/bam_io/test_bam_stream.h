@@ -33,6 +33,7 @@
 // ==========================================================================
 
 #ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
+#define CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
 
 #include <sstream>
 
@@ -301,6 +302,46 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_write_records)
 SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_write_records)
 {
     testBamIOBamStreamWriteRecords("/core/tests/bam_io/small.bam");
+}
+
+// ---------------------------------------------------------------------------
+// File Size / Byte Position In File
+// ---------------------------------------------------------------------------
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_file_size)
+{
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/core/tests/bam_io/small.sam");
+
+    seqan::BamStream bamStream(toCString(filePath));
+    SEQAN_ASSERT(isGood(bamStream));
+
+    // TODO(holtgrew): tellg() on std::istream does not work correctly for some reason.
+
+    SEQAN_ASSERT_EQ(fileSize(bamStream), 226u);
+    // SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
+
+    seqan::BamAlignmentRecord record;
+    SEQAN_ASSERT_EQ(readRecord(record, bamStream), 0);
+
+    // SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
+}
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_file_size)
+{
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/core/tests/bam_io/small.bam");
+
+    seqan::BamStream bamStream(toCString(filePath));
+    SEQAN_ASSERT(isGood(bamStream));
+
+    SEQAN_ASSERT_EQ(fileSize(bamStream), 182u);
+    SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
+
+    seqan::BamAlignmentRecord record;
+    SEQAN_ASSERT_EQ(readRecord(record, bamStream), 0);
+
+    SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);  // Is block position.
 }
 
 #endif  // #ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_

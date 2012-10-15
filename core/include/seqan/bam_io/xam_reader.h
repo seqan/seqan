@@ -82,6 +82,12 @@ public:
 
     // Close the file again.
     virtual int close() = 0;
+
+    // Return file size in bytes.
+    virtual __int64 fileSize() const = 0;
+
+    // Return approximate position in file.  For BAM, position of previous chunk is returned.
+    virtual __int64 positionInFile() const = 0;
 };
 
 // ============================================================================

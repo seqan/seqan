@@ -165,8 +165,11 @@ public:
     // file handle.
     bool _fileOwned;
 
+    // Size of the file in bytes as it is on the disk.
+    __int64 _fileSize;
+
     Stream() : _error(0), _atEof(false), _openMode(0), _compressLevel(Z_DEFAULT_COMPRESSION), _blockPosition(0),
-               _blockLength(0), _blockOffset(0), _cacheSize(0), _maxCacheSize(0), _fileOwned(false)
+               _blockLength(0), _blockOffset(0), _cacheSize(0), _maxCacheSize(0), _fileOwned(false), _fileSize(0)
     {}
 
     ~Stream()
@@ -744,12 +747,26 @@ open(Stream<Bgzf> & stream, char const * filename, char const * mode)
     stream._blockPosition = 0;
     stream._blockLength = 0;
     stream._blockOffset = 0;
+    stream._fileSize = 0;
 
     // Actually open files.
     if (mode[0] == 'r' || mode[0] == 'R')  // Open for reading.
     {
         stream._openMode = OPEN_RDONLY;
         open(stream._file, filename, stream._openMode);
+
+        // Determine file size.
+        if (seek(stream._file, 0, SEEK_END) == 0)
+        {
+            stream._error = -1;  // Seek from end of file failed.
+            return false;
+        }
+        stream._fileSize = tell(stream._file);
+        if (seek(stream._file, 0, SEEK_SET) != 0)
+        {
+            stream._error = -1;  // Seek from start of file failed.
+            return false;
+        }
     }
     else if (mode[0] == 'w' || mode[0] == 'W')  // Open for writing.
     {
@@ -1093,7 +1110,7 @@ streamWriteBlock(Stream<Bgzf> & stream, char const * source, size_t count)
 inline int
 streamWriteChar(Stream<Bgzf> & stream, char const c)
 {
-    return streamWriteBlock(stream, &c, 1);
+    return streamWriteBlock(stream, &c, 1) != 1;
 }
 
 // ----------------------------------------------------------------------------

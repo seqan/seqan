@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                  ext_lh3
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2011, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -45,40 +45,40 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_metafunctions)
     using namespace seqan;
 
     {
-        bool b = HasStreamFeature<Stream<GZFile>, IsInput>::Type::VALUE;
+        bool b = HasStreamFeature<Stream<Bgzf>, IsInput>::Type::VALUE;
         SEQAN_ASSERT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, IsOutput>::Type::VALUE;
+        bool b = HasStreamFeature<Stream<Bgzf>, IsOutput>::Type::VALUE;
         SEQAN_ASSERT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, HasPeek>::Type::VALUE;
+        bool b = HasStreamFeature<Stream<Bgzf>, HasPeek>::Type::VALUE;
         SEQAN_ASSERT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, HasFilename>::Type::VALUE;
+        bool b = HasStreamFeature<Stream<Bgzf>, HasFilename>::Type::VALUE;
         SEQAN_ASSERT_NOT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, Seek<OriginBegin> >::Type::VALUE;
+        bool b = HasStreamFeature<Stream<Bgzf>, Seek<OriginBegin> >::Type::VALUE;
         SEQAN_ASSERT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, Seek<OriginEnd> >::Type::VALUE;
-        SEQAN_ASSERT(b);
+        bool b = HasStreamFeature<Stream<Bgzf>, Seek<OriginEnd> >::Type::VALUE;
+        SEQAN_ASSERT_NOT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, Seek<OriginCurrent> >::Type::VALUE;
-        SEQAN_ASSERT(b);
+        bool b = HasStreamFeature<Stream<Bgzf>, Seek<OriginCurrent> >::Type::VALUE;
+        SEQAN_ASSERT_NOT(b);
     }
     {
-        bool b = HasStreamFeature<Stream<GZFile>, Tell>::Type::VALUE;
+        bool b = HasStreamFeature<Stream<Bgzf>, Tell>::Type::VALUE;
         SEQAN_ASSERT(b);
     }
 }
 
-// Simple example of writing to FILE *.
+// Simple example of reading from BGZF Stream.
 SEQAN_DEFINE_TEST(test_stream_bgzf_read_simple_usage)
 {
     using namespace seqan;
@@ -88,20 +88,20 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_read_simple_usage)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "This is a string!\nWith two lines.";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamReadSimpleUsage(f2);
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+    SEQAN_ASSERT_EQ(f._fileSize, 87);
+    testStreamReadSimpleUsage(f);
+    close(f);
 }
 
-// More complex example of writing to FILE *.
+// More complex example of reading from BGZF Stream.
 SEQAN_DEFINE_TEST(test_stream_bgzf_read_complex_usage)
 {
     using namespace seqan;
@@ -111,17 +111,17 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_read_complex_usage)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "This is a string!\nWith two lines.";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamReadComplexUsage(f2);
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+    SEQAN_ASSERT_EQ(f._fileSize, 87);
+    testStreamReadComplexUsage(f);
+    close(f);
 }
 
 // Simple example of reading from FILE *.
@@ -133,22 +133,21 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_write_simple_usage)
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
 
-    gzFile f = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    streamWriteChar(f2, '1');
-    streamWriteChar(f2, '2');
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "wb"));
+    streamWriteChar(f, '1');
+    streamWriteChar(f, '2');
+    close(f);
 
     // Read in data and compare.
-    gzFile gzIn = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(gzIn != NULL);
+    Stream<Bgzf> bgzfIn;
+    SEQAN_ASSERT(open(bgzfIn, filenameBuffer, "rb"));
     char buffer[100];
-    int bytesRead = gzread(gzIn, buffer, 10);
+    int bytesRead = streamReadBlock(buffer, bgzfIn, 10);
     SEQAN_ASSERT_EQ(bytesRead, 2);
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "12"), 0);
-    gzclose(gzIn);
+    close(bgzfIn);
 }
 
 // A bit more complex usage of writing to FILE *.
@@ -160,22 +159,21 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_write_complex_usage)
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
    
-    gzFile f = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "wb"));
     for (int i = 0; i < 10; ++i)
-        streamWriteChar(f2, '0' + i);
-    gzclose(f);
+        streamWriteChar(f, '0' + i);
+    close(f);
 
     // Read in data and compare.
-    gzFile gzIn = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(gzIn != NULL);
+    Stream<Bgzf> bgzfIn;
+    SEQAN_ASSERT(open(bgzfIn, filenameBuffer, "rb"));
     char buffer[100];
-    int bytesRead = gzread(gzIn, buffer, 10);
+    int bytesRead = streamReadBlock(buffer, bgzfIn, 10);
     SEQAN_ASSERT_EQ(bytesRead, 10);
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "0123456789"), 0);
-    gzclose(gzIn);
+    close(bgzfIn);
 }
 
 // Test of streamEof().
@@ -188,17 +186,16 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_eof)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "This is a test.";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamEof(f2);
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+    testStreamEof(f, false);
+    close(f);
 }
 
 // Test of streamPeek().
@@ -211,17 +208,16 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_peek)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "This is a test.";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamPeek(f2);
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+    testStreamPeek(f);
+    close(f);
 }
 
 // Test of streamReadChar().
@@ -234,17 +230,16 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_read_char)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "123";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamReadChar(f2);
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+    testStreamReadChar(f, false);
+    close(f);
 }
 
 // Test of streamReadBlock().
@@ -257,25 +252,23 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_read_block)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "XXXXXXXXXX";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
     {
-        gzFile f = gzopen(filenameBuffer, "rb");
-        SEQAN_ASSERT(f != NULL);
-        Stream<GZFile> f2(f);
-        testStreamReadBlockHitLimit(f2);
-        gzclose(f);
+        Stream<Bgzf> f;
+        SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+        testStreamReadBlockHitLimit(f, false);
+        close(f);
     }
     {
-        gzFile f = gzopen(filenameBuffer, "rb");
-        SEQAN_ASSERT(f != NULL);
-        Stream<GZFile> f2(f);
-        testStreamReadBlockHitNoLimit(f2);
-        gzclose(f);
+        Stream<Bgzf> f;
+        SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+        testStreamReadBlockHitNoLimit(f, false);
+        close(f);
     }
 }
 
@@ -288,21 +281,20 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_write_char)
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
 
-    gzFile f = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamWriteChar(f2);
-    gzclose(f);
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
+    testStreamWriteChar(bgzfOut);
+    close(bgzfOut);
 
     // Read in data and compare.
-    gzFile gzIn = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(gzIn != NULL);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
     char buffer[100];
-    int bytesRead = gzread(gzIn, buffer, 99);
+    int bytesRead = streamReadBlock(buffer, f, 99);
     SEQAN_ASSERT_EQ(bytesRead, 3);
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "345"), 0);
-    gzclose(gzIn);
+    close(f);
 }
 
 // Test of streamWrite().
@@ -314,21 +306,20 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_write_block)
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
 
-    gzFile f = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamWriteBlock(f2);
-    gzclose(f);
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
+    testStreamWriteBlock(bgzfOut);
+    close(bgzfOut);
 
     // Read in data and compare.
-    gzFile gzIn = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(gzIn != NULL);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
     char buffer[100];
-    int bytesRead = gzread(gzIn, buffer, 99);
+    int bytesRead = streamReadBlock(buffer, f, 99);
     SEQAN_ASSERT_EQ(bytesRead, 8);
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "ABCDEFGH"), 0);
-    gzclose(gzIn);
+    close(f);
 }
 
 // Test of streamWrite().
@@ -340,22 +331,21 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_streamPut)
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
 
-    gzFile f = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamPut(f2);
-    gzclose(f);
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
+    testStreamPut(bgzfOut);
+    close(bgzfOut);
 
     // Read in data and compare.
-    gzFile gzIn = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(gzIn != NULL);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
     char buffer[100];
-    int bytesRead = gzread(gzIn, buffer, 99);
+    int bytesRead = streamReadBlock(buffer, f, 99);
     char cmp[] = "c\nseq\nsss\n12\n34\n56\n78\n5.4\n6.5\nA\nACGT\nACGTN\n";
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(bytesRead, int(sizeof(cmp) - sizeof(char)));
     SEQAN_ASSERT_EQ(strcmp(buffer, cmp), 0);
-    gzclose(gzIn);
+    close(f);
 }
 
 
@@ -369,11 +359,10 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_flush)
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
 
-    gzFile f = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    streamFlush(f2);
-    gzclose(f);
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
+    streamFlush(bgzfOut);
+    close(bgzfOut);
 }
 
 // Test of streamSeek().
@@ -386,17 +375,19 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_seek)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "0123456789";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
-    testStreamSeek(f2);
-    gzclose(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
+
+    streamSeek(f, 2, SEEK_SET);
+    char c = '\0';
+    streamReadChar(c, f);
+    SEQAN_ASSERT_EQ(c, '2');
 }
 
 // Test of streamTell().
@@ -409,27 +400,24 @@ SEQAN_DEFINE_TEST(test_stream_bgzf_tell)
     strcpy(filenameBuffer, tempFilename);
 
     // Write out test data.
+    Stream<Bgzf> bgzfOut;
+    SEQAN_ASSERT(open(bgzfOut, filenameBuffer, "w"));
     char const * STR = "0123456789";
-    gzFile gzOut = gzopen(filenameBuffer, "wb");
-    SEQAN_ASSERT(gzOut != NULL);
-    gzwrite(gzOut, STR, strlen(STR));
-    gzclose(gzOut);
+    streamWriteBlock(bgzfOut, STR, strlen(STR));
+    close(bgzfOut);
 
-    gzFile f = gzopen(filenameBuffer, "rb");
-    SEQAN_ASSERT(f != NULL);
-    Stream<GZFile> f2(f);
+    Stream<Bgzf> f;
+    SEQAN_ASSERT(open(f, filenameBuffer, "r"));
 
     char c;
-    size_t pos = streamTell(f2);
+    size_t pos = streamTell(f);
     SEQAN_ASSERT_EQ(pos, 0u);
-    int res = streamReadChar(c, f2);
+    int res = streamReadChar(c, f);
     SEQAN_ASSERT_EQ(res, 0);
-    res = streamReadChar(c, f2);
+    res = streamReadChar(c, f);
     SEQAN_ASSERT_EQ(res, 0);
-    pos = streamTell(f2);
+    pos = streamTell(f);
     SEQAN_ASSERT_EQ(pos, 2u);
-
-    gzclose(f);
 }
 
 SEQAN_DEFINE_TEST(test_stream_bgzf_write_large_and_compare_with_file)

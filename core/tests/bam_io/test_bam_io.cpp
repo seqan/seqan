@@ -158,10 +158,12 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
 #endif  // #if SEQAN_HAS_ZLIB
 
     // Test BamStream class.
+    SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_file_size);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_read_records);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_sam_write_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_file_size);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_records);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_write_header);

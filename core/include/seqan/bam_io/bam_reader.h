@@ -55,9 +55,11 @@ public:
     Stream<Bgzf> _stream;
     // Flag indicating whether there was an error or not.
     bool _isGood;
+    // Size of the underlying file in bytes as it is on the disk.
+    __int64 _fileSize;
 
     BamReader_() :
-        XamReader_(), _isGood(true)
+        XamReader_(), _isGood(true), _fileSize(0)
     {}
 
     BamReader_(CharString const & filename);
@@ -70,6 +72,11 @@ public:
     virtual int readHeader(BamHeader & header, BamIOContext<StringSet<CharString> > & context);
     virtual int readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > & context);
     virtual int close();
+
+    virtual __int64 fileSize() const;
+    virtual __int64 positionInFile() const;
+
+    bool jumpToPos(__int32 refId, __int32 pos, BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context);
 };
 
 // ============================================================================
@@ -101,6 +108,9 @@ int BamReader_::open(CharString const & filename)
         _isGood = false;
         return 1;
     }
+
+    // Get file size from BGZF stream.
+    this->_fileSize = this->_stream._fileSize;
 
     return 0;
 }
@@ -149,6 +159,36 @@ int BamReader_::close()
 {
     seqan::close(this->_stream);
     return 0;
+}
+
+// ----------------------------------------------------------------------------
+// Member Function BamReader_::fileSize()
+// ----------------------------------------------------------------------------
+
+__int64 BamReader_::fileSize() const
+{
+    return this->_fileSize;
+}
+
+// ----------------------------------------------------------------------------
+// Member Function BamReader_::positionInFile()
+// ----------------------------------------------------------------------------
+
+__int64 BamReader_::positionInFile() const
+{
+    return this->_stream._blockPosition;
+}
+
+// ----------------------------------------------------------------------------
+// Member Function BamReader_::jumpToPos()
+// ----------------------------------------------------------------------------
+
+bool BamReader_::jumpToPos(__int32 refId, __int32 pos, BamIndex<Bai> const & index,
+                           BamIOContext<StringSet<CharString> > & context)
+{
+    bool hasAlignments = false;
+    (void) hasAlignments;
+    return seqan::jumpToPos(this->_stream, hasAlignments, context, refId, pos, index);
 }
 
 }  // namespace seqan
