@@ -91,6 +91,9 @@ public:
     // original position of this read.
     bool oracleMode;
 
+    // Consider only reads that have a unique match in the mapping result file. Usefull for precision computation.
+    bool onlyUniqueReads;
+
     // The benchmark category, one of {"all", "any-best", "all-best"}.
     BenchmarkCategory benchmarkCategory;
 
@@ -148,6 +151,7 @@ public:
         maxError(0),
         matchN(false),
         oracleMode(false),
+        onlyUniqueReads(false),
         benchmarkCategory(CATEGORY_ALL),
         distanceMetric(EDIT_DISTANCE),
         trustNM(false),
@@ -369,6 +373,14 @@ int benchmarkReadResult(RabemaStats & result,
     {
         // There are no GSI intervals in oracle mode.  This can be the case if we constructed the gold standard
         // with a maximal error rate.  If this is the case then we ignore these reads.
+        return 0;
+    }
+
+    if (options.onlyUniqueReads && length(samRecords) != 1)
+    {
+        // The read was mapped non-uniquely by the mapper. Either it was not found or found at multiple locations
+        // However, to compute the precision of mapper we only evaluate whether reads mapped to a single location
+        // were correctly mapped.
         return 0;
     }
 
@@ -1014,6 +1026,9 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
                                             "Enable oracle mode.  This is used for simulated data when the input "
                                             "GSI file gives exactly one position that is considered as the true "
                                             "sample position.  For simulated data."));
+    addOption(parser, seqan::ArgParseOption("", "only-unique-reads",
+                                            "Consider only reads that a single alignment in the mapping result file. "
+                                            "Usefull for precision computation."));
     addOption(parser, seqan::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
     addOption(parser, seqan::ArgParseOption("", "distance-metric",
                                             "Set distance metric.  Valid values: hamming, edit.  Default: edit.",
@@ -1129,6 +1144,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     getOptionValue(options.maxError, parser, "max-error");
     options.matchN = isSet(parser, "match-N");
     options.oracleMode = isSet(parser, "oracle-mode");
+    options.onlyUniqueReads = isSet(parser, "only-unique-reads");
     CharString benchmarkCategory;
     getOptionValue(benchmarkCategory, parser, "benchmark-category");
     if (benchmarkCategory == "all")
@@ -1182,6 +1198,7 @@ int main(int argc, char const ** argv)
 
     std::cerr << "Max error rate [%]    " << options.maxError << "\n"
               << "Oracle mode           " << yesNo(options.oracleMode) << '\n'
+              << "Only unique reads     " << yesNo(options.onlyUniqueReads) << '\n'
               << "Benchmark category    " << categoryName(options.benchmarkCategory) << "\n"
               << "Distance measure      " << metricName(options.distanceMetric) << "\n"
               << "Match Ns              " << yesNo(options.matchN) << '\n'
