@@ -35,7 +35,6 @@
 #ifndef INDEX_FM_RANK_SUPPORT_BIT_STRING_H_
 #define INDEX_FM_RANK_SUPPORT_BIT_STRING_H_
 
-#include <seqan/index_fm.h>
 #include <seqan/misc/misc_bit_twiddling.h>
 
 namespace seqan {
