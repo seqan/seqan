@@ -379,12 +379,7 @@ inline void _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement
     typedef typename Value<TIndex>::Type                                TAlphabet;
 
     _historyPush(it._bottomIterator);
-
-    resize(value(it._bottomIterator).dir, ValueSize<TAlphabet>::VALUE);
-    arrayFill(begin(value(it._bottomIterator).dir, Standard()),
-              end(value(it._bottomIterator).dir, Standard()),
-              value(it._topIterator).range.i1);
-
+    
     value(it._bottomIterator).repLen = value(it._topIterator).repLen;
     value(it._bottomIterator).range = value(it._topIterator).range;
     value(it._bottomIterator).lastChar = value(it._topIterator).lastChar;
