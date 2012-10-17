@@ -99,14 +99,10 @@ public:
 };
 
 template <typename TSize, typename TAlphabet>
-struct VertexSA :
-    public VertexEsa<TSize>
+struct VertexSA : public VertexEsa<TSize>
 {
     typedef VertexEsa<TSize>                        TBase;
-    typedef Array<ValueSize<TAlphabet>::VALUE>      TDirSpec;
-    typedef String<TSize, TDirSpec>                 TDir;
 
-    TDir        dir;
     TSize       repLen;
     TAlphabet   lastChar;
 
@@ -124,7 +120,6 @@ struct VertexSA :
 
     VertexSA(VertexSA const & other) :
         TBase(other),
-        dir(other.dir),
         repLen(other.repLen),
         lastChar(other.lastChar)
     {}
@@ -133,10 +128,6 @@ struct VertexSA :
 template <typename TSize, typename TAlphabet>
 struct HistoryStackSA_
 {
-    typedef Array<ValueSize<TAlphabet>::VALUE>      TDirSpec;
-    typedef String<TSize, TDirSpec>                 TDir;
-
-    TDir        dir;
     Pair<TSize> range;
     TAlphabet   lastChar;
 
@@ -207,7 +198,7 @@ inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > con
                     VSTreeIteratorTraits<TDfsOrder, True> const)
 {
     typedef Index<TText, IndexSa<TIndexSpec> >                                  TIndex;
-    typedef typename Infix<typename Fibre<TIndex, EsaSA>::Type const>::Type   TOccs;
+    typedef typename Infix<typename Fibre<TIndex, EsaSA>::Type const>::Type     TOccs;
     typedef typename Iterator<TOccs, Standard>::Type                            TIter;
 
     TIndex const & index = container(it);
@@ -260,12 +251,14 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
 
     // TODO(esiragusa): check nodeHullPredicate
 
+#ifdef SEQAN_DEBUG
+    std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+#endif
+
     TSASize saRangeBegin = value(it).range.i1;
     TSASize saRangeEnd = isRoot(it) ? length(sa) : value(it).range.i2;
 
-    typename VertexDescriptor<TIndex>::Type childDesc = value(it);
-    resize(childDesc.dir, ValueSize<TAlphabet>::VALUE);
-    arrayFill(begin(childDesc.dir, Standard()), end(childDesc.dir, Standard()), saRangeBegin);
+    if (saRangeBegin >= saRangeEnd) return false;
 
     // Skip $-edges.
     while (suffixLength(saAt(saRangeBegin, index), index) <= value(it).repLen)
@@ -274,8 +267,6 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
         if (++saRangeBegin >= saRangeEnd)
             return false;
     }
-
-    childDesc.range.i1 = saRangeBegin;
 
     // Get first and last characters in interval.
     TAlphabet cLeft = textAt(posAdd(saAt(saRangeBegin, index), value(it).repLen), index);
@@ -286,35 +277,33 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     std::cout << "cRight: " << cRight << std::endl;
 #endif
 
-    // Fill child dir.
-    // TODO(esiragusa): Remove workaround for alphabets with quality values
-    for (typename ValueSize<TAlphabet>::Type c = ordValue(cLeft); c < ordValue(cRight); ++c)
+    // Save vertex descriptor.
+    _historyPush(it);
+
+    // Update left range.
+    value(it).range.i1 = saRangeBegin;
+
+    // Update right range.
+    // NOTE(esiragusa): I should use ordLess(cLeft, cRight) but masai redefines it for Ns.
+    if (ordValue(cLeft) != ordValue(cRight))
     {
         TSAIterator saBegin = begin(sa, Standard()) + saRangeBegin;
         TSASize saLen = saRangeEnd - saRangeBegin;
         TSearchTreeIterator node(saBegin, saLen);
-        TAlphabet edgeLabel = c;
-        TSAIterator upperBound = _upperBoundSA(text, node, edgeLabel, value(it).repLen);
 
-        childDesc.dir[ordValue(c)] = upperBound - begin(sa, Standard());
-        saRangeBegin = childDesc.dir[ordValue(c)];
+        TSAIterator upperBound = _upperBoundSA(text, node, cLeft, value(it).repLen);
+
+        value(it).range.i2 = upperBound - begin(sa, Standard());
     }
-//    childDesc.dir[ordValue(cRight)] = saRangeEnd;
-    arrayFill(begin(childDesc.dir, Standard()) + ordValue(cRight), end(childDesc.dir, Standard()), saRangeEnd);
+    // NOTE(esiragusa): right range is already parent range (saRangeEnd).
+
+    // Update child repLen, lastChar.
+    value(it).repLen++;
+    value(it).lastChar = cLeft;
 
 #ifdef SEQAN_DEBUG
-    for (typename ValueSize<TAlphabet>::Type i = 0; i < ValueSize<TAlphabet>::VALUE; ++i)
-        std::cout << value(childDesc.dir, i) << std::endl;
-    std::cout << std::endl;
+    std::cout << "child: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
-
-    // Update child repLen, lastChar and range.
-    childDesc.repLen++;
-    childDesc.lastChar = cLeft;
-    childDesc.range.i2 = childDesc.dir[ordValue(childDesc.lastChar)];
-
-    _historyPush(it);
-    value(it) = childDesc;
 
     return true;
 }
@@ -324,6 +313,10 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
                      VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const)
 {
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
+    typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
+    typedef typename Size<TSA const>::Type                  TSASize;
+    typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
+    typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
     typedef typename Value<TIndex>::Type                    TAlphabet;
 
 #ifdef SEQAN_DEBUG
@@ -333,25 +326,70 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
     if (isRoot(it))
         return false;
 
+    TIndex const & index = container(it);
+    TSA const & sa = indexSA(index);
+    TText const & text = indexText(index);
+
 #ifdef SEQAN_DEBUG
-    std::cout << length(value(it).dir) << std::endl;
-    for (typename ValueSize<TAlphabet>::Type i = 0; i < ValueSize<TAlphabet>::VALUE; ++i)
-        std::cout << value(value(it).dir, i) << std::endl;
-    std::cout << std::endl;
+    std::cout << "current: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
 
-    // TODO(esiragusa): Remove workaround for alphabets with quality values
-    for (typename ValueSize<TAlphabet>::Type lastChar = ordValue(value(it).lastChar) + 1; lastChar < ValueSize<TAlphabet>::VALUE; ++lastChar)
-    {
-        value(it).range.i1 = value(it).range.i2;
-        value(it).range.i2 = value(it).dir[ordValue(value(it).lastChar)];
-        value(it).lastChar = lastChar;
+    TSASize saRangeBegin = value(it).range.i2;
+    TSASize saRangeEnd = (value(it).parentRight == MaxValue<TSASize>::VALUE) ? length(sa) : value(it).parentRight;
 
-        if (value(it).range.i1 < value(it).range.i2)
-            return true;
+    if (saRangeBegin >= saRangeEnd) return false;
+
+    // Change repLen to parent repLen.
+    value(it).repLen--;
+    
+    // Skip $-edges.
+    while (suffixLength(saAt(saRangeBegin, index), index) <= value(it).repLen)
+    {
+        // Interval contains only $-edges.
+        if (++saRangeBegin >= saRangeEnd)
+            return false;
     }
 
-    return false;
+    // Get first and last characters in interval.
+    TAlphabet cLeft = textAt(posAdd(saAt(saRangeBegin, index), value(it).repLen), index);
+    TAlphabet cRight = textAt(posAdd(saAt(saRangeEnd - 1, index), value(it).repLen), index);
+
+    SEQAN_ASSERT_NEQ(ordValue(cLeft), ordValue(value(it).lastChar));
+
+#ifdef SEQAN_DEBUG
+    std::cout << "cLeft: " << cLeft << std::endl;
+    std::cout << "cRight: " << cRight << std::endl;
+#endif
+
+    // Update left range.
+    value(it).range.i1 = saRangeBegin;
+
+    // Update right range.
+    // NOTE(esiragusa): I should use ordLess(cLeft, cRight) but masai redefines it for Ns.
+    if (ordValue(cLeft) != ordValue(cRight))
+    {
+        TSAIterator saBegin = begin(sa, Standard()) + saRangeBegin;
+        TSASize saLen = saRangeEnd - saRangeBegin;
+        TSearchTreeIterator node(saBegin, saLen);
+
+        TSAIterator upperBound = _upperBoundSA(text, node, cLeft, value(it).repLen);
+
+        value(it).range.i2 = upperBound - begin(sa, Standard());
+    }
+    else
+    {
+        value(it).range.i2 = saRangeEnd;
+    }
+
+    // Update repLen, lastChar.
+    value(it).repLen++;
+    value(it).lastChar = cLeft;
+
+#ifdef SEQAN_DEBUG
+    std::cout << "sibling: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
+#endif
+
+    return true;
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TValue>
@@ -372,10 +410,6 @@ inline bool _getNodeByChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec
     TSA const & sa = indexSA(index);
     TText const & text = indexText(index);
 
-    childDesc = value(it);
-    resize(childDesc.dir, ValueSize<TAlphabet>::VALUE);
-    arrayFill(begin(childDesc.dir, Standard()), end(childDesc.dir, Standard()), MaxValue<TSASize>::VALUE);
-
 #ifdef SEQAN_DEBUG
     std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
@@ -389,14 +423,15 @@ inline bool _getNodeByChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec
     if (range.i1 >= range.i2)
         return false;
 
-    childDesc.range.i1 = range.i1 - begin(sa, Standard());
-    childDesc.range.i2 = range.i2 - begin(sa, Standard());
-
+    // Update range, lastChar and repLen.
+    value(it).range.i1 = range.i1 - begin(sa, Standard());
+    value(it).range.i2 = range.i2 - begin(sa, Standard());
+    value(it).lastChar = c;
+    value(it).repLen++;
+    
 #ifdef SEQAN_DEBUG
-    std::cout << "child: " <<  childDesc.range.i1 << " " << childDesc.range.i2 << std::endl;
+    std::cout << "child: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
-
-    childDesc.repLen++;
 
     return true;
 }
@@ -418,8 +453,6 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     TSA const & sa = indexSA(index);
     TText const & text = indexText(index);
 
-    typename VertexDescriptor<TIndex>::Type childDesc = value(it);
-
 #ifdef SEQAN_DEBUG
     std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
@@ -432,44 +465,23 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     if (range.i1 >= range.i2)
         return false;
 
-    childDesc.range.i1 = range.i1 - begin(sa, Standard());
-    childDesc.range.i2 = range.i2 - begin(sa, Standard());
+    // Save vertex descriptor.
+    _historyPush(it);
+    
+    // Update range, lastChar and repLen.
+    value(it).range.i1 = range.i1 - begin(sa, Standard());
+    value(it).range.i2 = range.i2 - begin(sa, Standard());
+    value(it).lastChar = back(pattern);
+    value(it).repLen += length(pattern);
 
 #ifdef SEQAN_DEBUG
-    std::cout << "child: " <<  childDesc.range.i1 << " " << childDesc.range.i2 << std::endl;
+    std::cout << "child: " <<  value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
 
-    childDesc.repLen += length(pattern);
-
-    _historyPush(it);
-    value(it) = childDesc;
-
-    lcp = childDesc.repLen;
+    lcp = length(pattern);
 
     return true;
 }
-
-//template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize>
-//inline bool _goDownString(Iter< Index<TText, IndexSa<TIndexSpec> >, VSTree< TopDown<TSpec> > > &node,
-//                          TString const &pattern,
-//                          TSize &lcp)
-//{
-//    typedef typename Iterator<TString const, Standard>::Type	PatternIterator;
-//
-//    lcp = 0;
-//
-//    PatternIterator patternBegin = begin(pattern, Standard());
-//    PatternIterator patternEnd = end(pattern, Standard());
-//
-//    // TODO(esiragusa): Specialize to compute the whole hash at once
-//    for (PatternIterator patternIt = patternBegin; patternIt != patternEnd; ++patternIt)
-//    {
-//        if (!_goDownChar(node, *patternIt)) return false;
-//        ++lcp;
-//    }
-//
-//    return true;
-//}
 
 template <typename TText, typename TIndexSpec, typename TSpec>
 inline bool _goUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
@@ -482,10 +494,10 @@ inline bool _goUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<Parent
     {
         value(it).range = back(it.history).range;
         value(it).lastChar = back(it.history).lastChar;
-        value(it).dir = back(it.history).dir;
-        // TODO(esiragusa): Restore repLen from history
         value(it).repLen--;
         pop(it.history);
+        if (!empty(it.history))
+            value(it).parentRight = back(it.history).range.i2;
         return true;
     }
     return false;
@@ -505,7 +517,6 @@ inline void _historyPush(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown
 {
     typedef Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > TIter;
     typename HistoryStackEntry_<TIter>::Type h;
-    h.dir = value(it).dir;
     h.range = value(it).range;
     h.lastChar = value(it).lastChar;
 
