@@ -38,7 +38,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include "test_index_fm.h"
 
 using namespace seqan;
 
@@ -81,7 +80,7 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
 
         String<unsigned> freq;
         resize(freq, ValueSize<TChar>::VALUE, 0);
-        getFrequencies_(freq, text);
+        _getFrequencies(freq, text);
 
 		TRightArrayBinaryTree waveletTreeStructure(text);
 		typename Iterator<TRightArrayBinaryTree, TopDown<> >::Type it(waveletTreeStructure, 0u);
@@ -210,11 +209,11 @@ void waveletTreeStructureLength(TRightArrayBinaryTree & /*tag*/)
 		TRightArrayBinaryTree waveletTreeStructure;
 		
 		TWaveletTreeVertieces & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+		SEQAN_ASSERT_EQ(_length(waveletTreeStructure), 0u);
 
 		resize(temp, 10);
 		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
+		SEQAN_ASSERT_EQ(_length(waveletTreeStructure), 10u);
 	}
 }
 
@@ -230,21 +229,21 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 		TRightArrayBinaryTree waveletTreeStructure;
 		
 		TWaveletTreeVertieces & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+		SEQAN_ASSERT_EQ(_length(waveletTreeStructure), 0u);
 
 		resize(temp, 10);
 		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
+		SEQAN_ASSERT_EQ(_length(waveletTreeStructure), 10u);
 	}
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
 		
 		TWaveletTreeVertieces & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+		SEQAN_ASSERT_EQ(_length(waveletTreeStructure), 0u);
 
 		resize(temp, 10, TWaveletTreeVertex(0, 10));
 		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
+		SEQAN_ASSERT_EQ(_length(waveletTreeStructure), 10u);
 		SEQAN_ASSERT_EQ(getFibre(waveletTreeStructure, FibreTreeStructureEncoding())[9],  TWaveletTreeVertex(0, 10));
 	}
 
@@ -260,7 +259,7 @@ void waveletTreeStructureOpenSave(TRightArrayBinaryTree & /*tag*/)
 
 	
     TRightArrayBinaryTree waveletTreeStructure;
-    resize(waveletTreeStructure, 10);
+    _resize(waveletTreeStructure, 10);
 
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
@@ -283,12 +282,12 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_constructor)
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
     RightArrayBinaryTree<AminoAcid, void> asTag;
-    //RightArrayBinaryTree<signed char, void> charTag;
+    RightArrayBinaryTree<signed char, void> charTag;
     RightArrayBinaryTree<unsigned char, void> uCharTag;
     waveletTreeStructureConstructor(dnaTag);
     waveletTreeStructureConstructor(dna5Tag);
     waveletTreeStructureConstructor(asTag);
-    //waveletTreeStructureConstructor(charTag);
+    waveletTreeStructureConstructor(charTag);
     waveletTreeStructureConstructor(uCharTag);
 }
 

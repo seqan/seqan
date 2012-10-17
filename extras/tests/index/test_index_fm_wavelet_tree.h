@@ -1,5 +1,5 @@
 // ==========================================================================
-//                               fm_index_beta
+//                 seqan - the library for sequence analysis
 // ==========================================================================
 // Copyright (c) 2006-2011, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -38,7 +38,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include "test_index_fm.h"
 
 using namespace seqan;
 
@@ -75,10 +74,14 @@ void waveletTreeConstructor(TWaveletTree & /*tag*/)
 		String<TChar> text;        
         generateText(text);
 		TWaveletTree waveletTree(text);
+		TWaveletTree waveletTree2(waveletTree);
+        
+        SEQAN_ASSERT(waveletTree == waveletTree2);
 
 		for (unsigned i = 0; i < length(text); ++i)
         {
 		    SEQAN_ASSERT_EQ(getCharacter(waveletTree, i), (TChar)text[i]);
+		    SEQAN_ASSERT_EQ(getCharacter(waveletTree2, i), (TChar)text[i]);
         }
     }
 }
@@ -133,7 +136,7 @@ void waveletTreeEmpty(TWaveletTree & /*tag*/)
     clear(waveletTree);
 
 	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreBitStrings())), 0u);
-	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreTreeStructure())), 0u);
+	SEQAN_ASSERT_EQ(_length(getFibre(waveletTree, FibreTreeStructure())), 0u);
 }
 
 template <typename TWaveletTree>
@@ -174,16 +177,16 @@ void waveletTreeGetFibre(TWaveletTree & /*tag*/)
     typename Fibre<TWaveletTree, FibreTreeStructure>::Type & tempWaveletTreeStructure = getFibre(waveletTree, FibreTreeStructure());
 
     resize(tempBitStrings, 110);
-    resize(tempWaveletTreeStructure, 100);
+    _resize(tempWaveletTreeStructure, 100);
 
 	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreBitStrings())), 110u);
-	SEQAN_ASSERT_EQ(length(getFibre(waveletTree, FibreTreeStructure())), 100u);
+	SEQAN_ASSERT_EQ(_length(getFibre(waveletTree, FibreTreeStructure())), 100u);
 }
 
 
 
 template <typename TWaveletTree>
-void waveletTreeGetOcc(TWaveletTree & /*tag*/)
+void waveletTreeCountOcc(TWaveletTree & /*tag*/)
 {
 	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
@@ -205,13 +208,13 @@ void waveletTreeGetOcc(TWaveletTree & /*tag*/)
             {
                 if(text[j] == (TChar)i)
                     ++counter;
-		        SEQAN_ASSERT_EQ(getOccurrences(waveletTree, (TChar)i, j), counter);
+		        SEQAN_ASSERT_EQ(countOccurrences(waveletTree, (TChar)i, j), counter);
             }
         }
     }
 }
 template <typename TString, typename TSpec>
-void waveletTreeGetOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*tag*/)
+void waveletTreecountOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*tag*/)
 {
     typedef WaveletTree<TString, FmiDollarSubstituted<TSpec> > TWaveletTree;
 	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
@@ -240,15 +243,14 @@ void waveletTreeGetOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*ta
                     if(text[j] == getDollarSubstitute(waveletTree) && j == getDollarPosition(waveletTree))
                         --counter;
                 }
-		        SEQAN_ASSERT_EQ(getOccurrences(waveletTree, (TChar)i, j), counter);
+		        SEQAN_ASSERT_EQ(countOccurrences(waveletTree, (TChar)i, j), counter);
             }
         }
     }
 }
 
-
 template <typename TWaveletTree>
-void waveletTreeNumVertieces(TWaveletTree & /*tag*/)
+void _waveletTreeFillWaveletTree(TWaveletTree & /*tag*/)
 {
 	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
 	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
@@ -258,30 +260,13 @@ void waveletTreeNumVertieces(TWaveletTree & /*tag*/)
 
     String<TChar> text;
     generateText(text);
-
-    TWaveletTree waveletTree(text);
-
-    SEQAN_ASSERT_EQ(numVertieces(waveletTree), (unsigned)ValueSize<TChar>::VALUE - 1);    
-}
-
-template <typename TWaveletTree>
-void waveletTreeFillWaveletTree_(TWaveletTree & /*tag*/)
-{
-	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
-	typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
-	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTree>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
-
-String<TChar> text;
-    generateText(text);
     resize(text, 1000);
 
     TWaveletTree waveletTree(text);
 
     clear(getFibre(waveletTree, FibreBitStrings()));
 
-    fillWaveletTree_(waveletTree, text);
+    _fillWaveletTree(waveletTree, text);
 
     for (unsigned i = 0; i < length(text); ++i)
     {
@@ -338,11 +323,13 @@ SEQAN_DEFINE_TEST(test_wavelet_tree_constructor)
     WaveletTree<String<AminoAcid>, void> asTag;
     WaveletTree<String<char>, void> charTag;
     WaveletTree<String<unsigned char>, void> uCharTag;
+    WaveletTree<String<unsigned char>, FmiDollarSubstituted<SingleDollar<void> > > uCharDollarTag;
     waveletTreeConstructor(dnaTag);
     waveletTreeConstructor(dna5Tag);
     waveletTreeConstructor(asTag);
     waveletTreeConstructor(charTag);
     waveletTreeConstructor(uCharTag);
+    waveletTreeConstructor(uCharDollarTag);
 }
 
 SEQAN_DEFINE_TEST(test_wavelet_tree_dollar_position)
@@ -455,11 +442,11 @@ SEQAN_DEFINE_TEST(test_wavelet_tree_get_occ)
         WaveletTree<String<signed char>, void> charTag;
         WaveletTree<String<unsigned char>, void> uCharTag;
 
-//         waveletTreeGetOcc(dnaTag);
-//         waveletTreeGetOcc(dna5Tag);
-//         waveletTreeGetOcc(asTag);
-        waveletTreeGetOcc(charTag);
-//         waveletTreeGetOcc(uCharTag);
+        waveletTreeCountOcc(dnaTag);
+        waveletTreeCountOcc(dna5Tag);
+        waveletTreeCountOcc(asTag);
+        waveletTreeCountOcc(charTag);
+        waveletTreeCountOcc(uCharTag);
     }
     {
         WaveletTree<String<Dna>, FmiDollarSubstituted<SingleDollar<void> > > dnaTag;
@@ -468,29 +455,12 @@ SEQAN_DEFINE_TEST(test_wavelet_tree_get_occ)
         WaveletTree<String<signed char>, FmiDollarSubstituted<SingleDollar<void> > > charTag;
         WaveletTree<String<unsigned char>, FmiDollarSubstituted<SingleDollar<void> > > uCharTag;
 
-//         waveletTreeGetOcc(dnaTag);
-//         waveletTreeGetOcc(dna5Tag);
-//         waveletTreeGetOcc(asTag);
-        waveletTreeGetOcc(charTag);
-//         waveletTreeGetOcc(uCharTag);
+        waveletTreeCountOcc(dnaTag);
+        waveletTreeCountOcc(dna5Tag);
+        waveletTreeCountOcc(asTag);
+        waveletTreeCountOcc(charTag);
+        waveletTreeCountOcc(uCharTag);
     }
-}
-
-SEQAN_DEFINE_TEST(test_wavelet_tree_num_vertieces)
-{
-    using namespace seqan;
-
-    WaveletTree<String<Dna>, void> dnaTag;
-    WaveletTree<String<Dna5>, void> dna5Tag;
-    WaveletTree<String<AminoAcid>, void> asTag;
-    WaveletTree<String<signed char>, void> charTag;
-    WaveletTree<String<unsigned char>, void> uCharTag;
-
-    waveletTreeNumVertieces(dnaTag);
-    waveletTreeNumVertieces(dna5Tag);
-    waveletTreeNumVertieces(asTag);
-    waveletTreeNumVertieces(charTag);
-    waveletTreeNumVertieces(uCharTag);
 }
 
 SEQAN_DEFINE_TEST(test_wavelet_tree_fill_wavelet_tree_)
@@ -503,11 +473,11 @@ SEQAN_DEFINE_TEST(test_wavelet_tree_fill_wavelet_tree_)
     WaveletTree<String<signed char>, void> charTag;
     WaveletTree<String<unsigned char>, void> uCharTag;
 
-    waveletTreeFillWaveletTree_(dnaTag);
-    waveletTreeFillWaveletTree_(dna5Tag);
-    waveletTreeFillWaveletTree_(asTag);
-    waveletTreeFillWaveletTree_(charTag);
-    waveletTreeFillWaveletTree_(uCharTag);
+    _waveletTreeFillWaveletTree(dnaTag);
+    _waveletTreeFillWaveletTree(dna5Tag);
+    _waveletTreeFillWaveletTree(asTag);
+    _waveletTreeFillWaveletTree(charTag);
+    _waveletTreeFillWaveletTree(uCharTag);
 }
 
 SEQAN_DEFINE_TEST(test_wavelet_tree_open_save)

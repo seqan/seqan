@@ -38,7 +38,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include "test_index_fm.h"
 
 using namespace seqan;
 
@@ -139,7 +138,7 @@ void compressedSaGetFibre(TCompressedSA & /*tag*/)
 }
 
 template <typename TIndex>
-void compressedSaGetNextPos_(TIndex & /*tag*/)
+void _compressedSaGetNextPos(TIndex & /*tag*/)
 { 
     typedef typename Fibre<TIndex, FibreText>::Type TText;
     typedef typename SAValue<TText>::Type TSAValue;
@@ -173,10 +172,10 @@ void compressedSaGetNextPos_(TIndex & /*tag*/)
             pos2 = pos;
             while(compressedSA[pos] % 3 != 0)
             {
-                SEQAN_ASSERT(getNextPos_(compressedSA, pos) == false);
+                SEQAN_ASSERT(_getNextPos(compressedSA, pos) == false);
                 pos2 = lfMapping(getFibre(index, FibreLfTable()), pos2);
             }
-            SEQAN_ASSERT(getNextPos_(compressedSA, pos) == true);
+            SEQAN_ASSERT(_getNextPos(compressedSA, pos) == true);
             SEQAN_ASSERT_EQ(pos, pos2);
         }
     }
@@ -296,7 +295,7 @@ SEQAN_DEFINE_TEST(compressed_sa_get_next_pos_)
 
     Index<TText, FMIndex<WT<FmiDollarSubstituted<> >, void > > tag;
 
-    compressedSaGetNextPos_(tag);
+    _compressedSaGetNextPos(tag);
 }
 
 SEQAN_DEFINE_TEST(compressed_sa_set_lf_table)

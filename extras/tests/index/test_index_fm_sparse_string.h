@@ -38,7 +38,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include "test_index_fm.h"
 
 using namespace seqan;
 
@@ -82,7 +81,7 @@ void sparseStringGetValue(TSparseString & /*tag*/)
     setBit(getFibre(sparseString, FibreIndicatorString()), 0, 1);
     setBit(getFibre(sparseString, FibreIndicatorString()), 10, 1);
     setBit(getFibre(sparseString, FibreIndicatorString()), 20, 1);
-    updateRanks_(getFibre(sparseString, FibreIndicatorString()));
+    _updateRanks(getFibre(sparseString, FibreIndicatorString()));
 
     SEQAN_ASSERT_EQ(getValue(sparseString, 0), 0u);
     SEQAN_ASSERT_EQ(getValue(sparseString, 10), 2u);

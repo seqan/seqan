@@ -63,7 +63,7 @@ SEQAN_DEFINE_TEST(test_rsbs_resize)
     typedef typename Value<TFibreBlocks>::Type              TFibreBlocksValue;
 
     TRankSupportBitString bitString;
-    TFibreBlocksValue const bitsPerValue_ = BitsPerValue<TFibreBitsValue>::VALUE;
+    TFibreBlocksValue const _bitsPerValue = BitsPerValue<TFibreBitsValue>::VALUE;
 
     resize(bitString, 0u);
     SEQAN_ASSERT_EQ(length(bitString), 0u);
@@ -74,9 +74,9 @@ SEQAN_DEFINE_TEST(test_rsbs_resize)
     {
         resize(bitString, i);
         SEQAN_ASSERT_EQ(length(bitString), i);
-        SEQAN_ASSERT_EQ(length(getFibre(bitString, FibreBits())), (i + bitsPerValue_ - 1) / bitsPerValue_);
-        SEQAN_ASSERT_EQ(length(getFibre(bitString, FibreBlocks())), (i + bitsPerValue_ - 1) / bitsPerValue_);
-        SEQAN_ASSERT_EQ(length(getFibre(bitString, FibreSuperBlocks())), ((i + bitsPerValue_ - 1) / bitsPerValue_ + bitsPerValue_ - 1) / bitsPerValue_);
+        SEQAN_ASSERT_EQ(length(getFibre(bitString, FibreBits())), (i + _bitsPerValue - 1) / _bitsPerValue);
+        SEQAN_ASSERT_EQ(length(getFibre(bitString, FibreBlocks())), (i + _bitsPerValue - 1) / _bitsPerValue);
+        SEQAN_ASSERT_EQ(length(getFibre(bitString, FibreSuperBlocks())), ((i + _bitsPerValue - 1) / _bitsPerValue + _bitsPerValue - 1) / _bitsPerValue);
     }
 
     resize(bitString, 0);
@@ -102,12 +102,12 @@ SEQAN_DEFINE_TEST(test_rsbs_getBuPos)
     typedef typename Value<TFibreBlocks>::Type              TFibreBlocksValue;
 
     TRankSupportBitString bitString;
-    TFibreBlocksValue const bitsPerValue_ = BitsPerValue<TFibreBitsValue>::VALUE;
+    TFibreBlocksValue const _bitsPerValue = BitsPerValue<TFibreBitsValue>::VALUE;
 
     resize(bitString, 100000);
     for (unsigned i = 0; i < length(bitString); ++i)
     {
-        SEQAN_ASSERT_EQ(getBlockPos_(bitString, i), i / bitsPerValue_);
+        SEQAN_ASSERT_EQ(_getBlockPos(bitString, i), i / _bitsPerValue);
     }
 }
 
@@ -120,12 +120,12 @@ SEQAN_DEFINE_TEST(test_rsbs_getSBuPos)
     typedef typename Value<TFibreBlocks>::Type              TFibreBlocksValue;
 
     TRankSupportBitString bitString;
-    TFibreBlocksValue const bitsPerValue_ = BitsPerValue<TFibreBitsValue>::VALUE;
+    TFibreBlocksValue const _bitsPerValue = BitsPerValue<TFibreBitsValue>::VALUE;
 
     resize(bitString, 100000);
     for (unsigned i = 0; i < length(bitString); ++i)
     {
-        SEQAN_ASSERT_EQ(getSuperBlockPos_(bitString, i), i / (bitsPerValue_ * bitsPerValue_));
+        SEQAN_ASSERT_EQ(_getSuperBlockPos(bitString, i), i / (_bitsPerValue * _bitsPerValue));
     }
 
 }
@@ -139,12 +139,12 @@ SEQAN_DEFINE_TEST(test_rsbs_getPosInBu)
     typedef typename Value<TFibreBlocks>::Type              TFibreBlocksValue;
 
     TRankSupportBitString bitString;
-    TFibreBlocksValue const bitsPerValue_ = BitsPerValue<TFibreBitsValue>::VALUE;
+    TFibreBlocksValue const _bitsPerValue = BitsPerValue<TFibreBitsValue>::VALUE;
 
     resize(bitString, 100000);
     for (unsigned i = 0; i < length(bitString); ++i)
     {
-        SEQAN_ASSERT_EQ(getPosInBlock_(bitString, i), i % bitsPerValue_);
+        SEQAN_ASSERT_EQ(_getPosInBlock(bitString, i), i % _bitsPerValue);
     }
 
 }
@@ -153,12 +153,12 @@ SEQAN_DEFINE_TEST(test_rsbs_getPosInBu)
 // A test for strings.
 SEQAN_DEFINE_TEST(test_rsbs_getSetBit)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     RankSupportBitString<> bitString;
-    resize(bitString, length_);
+    resize(bitString, _length);
 
     String<bool> controlBitString;
-    resize(controlBitString, length_);
+    resize(controlBitString, _length);
 
 
     Rng<MersenneTwister> rng(SEED);
@@ -173,14 +173,14 @@ SEQAN_DEFINE_TEST(test_rsbs_getSetBit)
 // A test for strings.
 SEQAN_DEFINE_TEST(test_rsbs_append_value)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     RankSupportBitString<> bitString;
 
     String<bool> controlBitString;
-    resize(controlBitString, length_);
+    resize(controlBitString, _length);
 
     Rng<MersenneTwister> rng(SEED);
-    for (unsigned i = 0; i < length_; ++i)
+    for (unsigned i = 0; i < _length; ++i)
     {
         controlBitString[i] = pickRandomNumber(rng) % 2;
         appendValue(bitString, controlBitString[i]);
@@ -192,11 +192,11 @@ SEQAN_DEFINE_TEST(test_rsbs_append_value)
 // A test for strings.
 SEQAN_DEFINE_TEST(test_rsbs_rank)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     RankSupportBitString<> bitString;
 
     String<unsigned int> controlRankString;
-    resize(controlRankString, length_);
+    resize(controlRankString, _length);
 
     Rng<MersenneTwister> rng(SEED);
     bool bit = pickRandomNumber(rng) % 2;
@@ -205,7 +205,7 @@ SEQAN_DEFINE_TEST(test_rsbs_rank)
     SEQAN_ASSERT_EQ(length(bitString), 1u);
     SEQAN_ASSERT_EQ(getRank(bitString, 0), controlRankString[0]);
 
-    for (unsigned i = 1; i < length_; ++i)
+    for (unsigned i = 1; i < _length; ++i)
     {
         bit = pickRandomNumber(rng) % 2;
         controlRankString[i] = controlRankString[i - 1] + bit;
@@ -218,28 +218,28 @@ SEQAN_DEFINE_TEST(test_rsbs_rank)
 // Note: updateRank_ is tested in test_rsbs_append_value
 SEQAN_DEFINE_TEST(test_rsbs_update_ranks_)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     RankSupportBitString<> bitString;
-    resize(bitString, length_);
+    resize(bitString, _length);
 
     String<bool> controlBitString;
-    resize(controlBitString, length_);
+    resize(controlBitString, _length);
 
     String<unsigned> controlRankString;
-    resize(controlRankString, length_);
+    resize(controlRankString, _length);
 
     Rng<MersenneTwister> rng(SEED);
     controlBitString[0] = pickRandomNumber(rng) % 2;
     controlRankString[0] = controlBitString[0];
     setBit(bitString, 0, controlBitString[0]);
-    updateRanks_(bitString);
+    _updateRanks(bitString);
     SEQAN_ASSERT_EQ(getRank(bitString, 0), controlRankString[0]);
 
     for (unsigned i = 1; i < length(bitString); ++i)
     {
         controlBitString[i] = pickRandomNumber(rng) % 2;
         setBit(bitString, i, controlBitString[i]);
-        updateRanks_(bitString);
+        _updateRanks(bitString);
         controlRankString[i] = controlRankString[i - 1] + controlBitString[i];
         SEQAN_ASSERT_EQ(getRank(bitString, i), controlRankString[i]);
     }
@@ -251,7 +251,7 @@ SEQAN_DEFINE_TEST(test_rsbs_update_ranks_)
         controlRankString[i] = controlRankString[i - 1] + controlBitString[i];
     }
     
-    updateRanks_(bitString, 0);
+    _updateRanks(bitString, 0);
     for (unsigned i = 0 / 2 ; i < length(bitString); ++i)
     {
         SEQAN_ASSERT_EQ(getRank(bitString, i), controlRankString[i]);
@@ -260,18 +260,18 @@ SEQAN_DEFINE_TEST(test_rsbs_update_ranks_)
 
 SEQAN_DEFINE_TEST(test_rsbs_constructor)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     String<unsigned> controlString;
-    resize(controlString, length_);
+    resize(controlString, _length);
 
     String<unsigned> controlRankString;
-    resize(controlRankString, length_);
+    resize(controlRankString, _length);
 
     Rng<MersenneTwister> rng(SEED);
     controlString[0] = pickRandomNumber(rng) % 2;
     controlRankString[0] = controlString[0];
 
-    for (unsigned i = 1; i < length_; ++i)
+    for (unsigned i = 1; i < _length; ++i)
     {
         controlString[i] = pickRandomNumber(rng) % 2;
         controlRankString[i] = controlRankString[i - 1] + controlString[i];
@@ -289,15 +289,15 @@ SEQAN_DEFINE_TEST(test_rsbs_constructor)
 
 SEQAN_DEFINE_TEST(test_rsbs_equalOperator)
 {
-    unsigned length_ = 10000;
+    unsigned _length = 10000;
     RankSupportBitString<> bitString;
 	RankSupportBitString<> otherBitString;
 
     String<bool> controlBitString;
-    resize(controlBitString, length_);
+    resize(controlBitString, _length);
 
     Rng<MersenneTwister> rng(SEED);
-    for (unsigned i = 0; i < length_; ++i)
+    for (unsigned i = 0; i < _length; ++i)
     {
     	controlBitString[i] = pickRandomNumber(rng) % 2;
     	appendValue(bitString, controlBitString[i]);
@@ -307,20 +307,20 @@ SEQAN_DEFINE_TEST(test_rsbs_equalOperator)
 	SEQAN_ASSERT_EQ(bitString.bits, otherBitString.bits);
 	SEQAN_ASSERT_EQ(bitString.blocks, otherBitString.blocks);
 	SEQAN_ASSERT_EQ(bitString.superBlocks, otherBitString.superBlocks);
-	SEQAN_ASSERT_EQ(bitString.length_, otherBitString.length_);
+	SEQAN_ASSERT_EQ(bitString._length, otherBitString._length);
 }
 
 
 SEQAN_DEFINE_TEST(test_rsbs_assignOperator)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     RankSupportBitString<> bitString;
 
     String<bool> controlBitString;
-    resize(controlBitString, length_);
+    resize(controlBitString, _length);
 
     Rng<MersenneTwister> rng(SEED);
-    for (unsigned i = 0; i < length_; ++i)
+    for (unsigned i = 0; i < _length; ++i)
     {
     	controlBitString[i] = pickRandomNumber(rng) % 2;
     	appendValue(bitString, controlBitString[i]);
@@ -332,14 +332,14 @@ SEQAN_DEFINE_TEST(test_rsbs_assignOperator)
 
 SEQAN_DEFINE_TEST(test_rsbs_open_save)
 {
-    unsigned length_ = 100000;
+    unsigned _length = 100000;
     RankSupportBitString<> bitString;
 
     String<bool> controlBitString;
-    resize(controlBitString, length_);
+    resize(controlBitString, _length);
 
     Rng<MersenneTwister> rng(SEED);
-    for (unsigned i = 0; i < length_; ++i)
+    for (unsigned i = 0; i < _length; ++i)
     {
     	controlBitString[i] = pickRandomNumber(rng) % 2;
     	appendValue(bitString, controlBitString[i]);

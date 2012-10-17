@@ -38,7 +38,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include "test_index_fm.h"
 
 using namespace seqan;
 template <typename TPrefixSumTable>
@@ -121,14 +120,14 @@ void prefixSumTableGetPivotPosition(TPrefixSumTable & /*tag*/)
     {
         TText text;
         TPrefixSumTable pst(text);
-        unsigned pivotPos = getPivotPosition(pst, 0u, ValueSize<TChar>::VALUE - 1);
+        unsigned pivotPos = _getPivotPosition(pst, 0u, ValueSize<TChar>::VALUE - 1);
         SEQAN_ASSERT_EQ(pivotPos, 1u); 
     }
     {
         TText text = "AAA";
         TPrefixSumTable pst(text);
 
-        unsigned pivotPos = getPivotPosition(pst, 0u, ValueSize<TChar>::VALUE - 1);
+        unsigned pivotPos = _getPivotPosition(pst, 0u, ValueSize<TChar>::VALUE - 1);
         SEQAN_ASSERT_EQ(pivotPos, 1u); 
     }
     {
@@ -137,7 +136,7 @@ void prefixSumTableGetPivotPosition(TPrefixSumTable & /*tag*/)
         TPrefixSumTable pst(text);
         for (unsigned i = 0; i < ValueSize<TChar>::VALUE - 2; ++i)
         {
-            unsigned pivotPos = getPivotPosition(pst, i, ValueSize<TChar>::VALUE - 1);
+            unsigned pivotPos = _getPivotPosition(pst, i, ValueSize<TChar>::VALUE - 1);
             long currentSum = std::abs((long)(pst[pivotPos] - pst[i]) - (long)(pst[ValueSize<TChar>::VALUE] - pst[pivotPos]));
             if(pivotPos > 0)
             {
@@ -152,7 +151,7 @@ void prefixSumTableGetPivotPosition(TPrefixSumTable & /*tag*/)
         }
         for (unsigned i = 0; i < ValueSize<TChar>::VALUE - 2; ++i)
         {
-            unsigned pivotPos = getPivotPosition(pst, 0u, ValueSize<TChar>::VALUE - 1 - i);
+            unsigned pivotPos = _getPivotPosition(pst, 0u, ValueSize<TChar>::VALUE - 1 - i);
             long currentSum = std::abs((long)(pst[pivotPos] - pst[0]) - (long)(pst[ValueSize<TChar>::VALUE - i] - pst[pivotPos]));
             if(pivotPos > 0)
             {
@@ -179,28 +178,28 @@ void prefixSumTableDetermineDollarSubstitute(TPrefixSumTable & /*tag*/)
 		String<TChar> text = "ACGTNACGTNACGTNNN";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		determineDollarSubstitute_(prefixSumTable, character);
+		_determineDollarSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('A'));
 	}
 	{
 		String<TChar> text = "AGTNAGTNAGTNNN";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		determineDollarSubstitute_(prefixSumTable, character);
+		_determineDollarSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('A'));
 	}
 	{
 		String<TChar> text = "ACGTNAGTNAGTNNN";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		determineDollarSubstitute_(prefixSumTable, character);
+		_determineDollarSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('C'));
 	}
 	{
 		String<TChar> text = "ACGTNACGTNACGT";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		determineDollarSubstitute_(prefixSumTable, character);
+		_determineDollarSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('N'));
 	}
 }
@@ -224,7 +223,7 @@ void prefixSumTableGetValue(TPrefixSumTable & /*tag*/)
 
 
 template <typename TPrefixSumTable>
-void prefixSumTableInsertDollar_(TPrefixSumTable & /*tag*/)
+void _prefixSumTableInsertDollar(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
     typedef typename MakeUnsigned<TChar>::Type TUChar;
@@ -236,7 +235,7 @@ void prefixSumTableInsertDollar_(TPrefixSumTable & /*tag*/)
     TPrefixSumTable const pstConst = pst;
 
     unsigned numDollar = 10;
-    insertDollar_(pst, numDollar);
+    _insertDollar(pst, numDollar);
 
     for (unsigned i = 0; i < length(pst); ++i)
         SEQAN_ASSERT_EQ(getPrefixSum(pst, i), getPrefixSum(pstConst, i) + numDollar);
@@ -421,7 +420,7 @@ SEQAN_DEFINE_TEST(prefix_sum_table_insert_dollar_)
     using namespace seqan;
 
     PrefixSumTable<Dna5, void> tag;
-    prefixSumTableInsertDollar_(tag);
+    _prefixSumTableInsertDollar(tag);
 }
 
 SEQAN_DEFINE_TEST(prefix_sum_table_length)

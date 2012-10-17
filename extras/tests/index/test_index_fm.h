@@ -39,7 +39,6 @@
 #include <seqan/index.h>
 #include <seqan/sequence.h>
 #include <seqan/random.h>
-#include <seqan/index_fm.h>
 
 using namespace seqan;
 
@@ -224,7 +223,7 @@ void fmIndexConstructor(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*
         {
             ++counter;
             for (unsigned i = 0; i < length(getFibre(getFibre(fmiIndex, FibreLfTable()), FibreOccTable())); ++i)
-                SEQAN_ASSERT_EQ(getOccurrences(getFibre(getFibre(fmiIndex, FibreLfTable()), FibreOccTable()), character, i), occ[ordValue(character)][i]);
+                SEQAN_ASSERT_EQ(countOccurrences(getFibre(getFibre(fmiIndex, FibreLfTable()), FibreOccTable()), character, i), occ[ordValue(character)][i]);
         }
 
         // check the compressed suffix array
@@ -269,7 +268,7 @@ void fmIndexClear(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 }
 
 template <typename TText, typename TIndexSpec, typename TOptimization>
-void fmIndexDetermineDollarSubstitute_(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
+void _fmIndexDetermineDollarSubstitute(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
 	typedef typename Value<TText>::Type TChar;
@@ -290,7 +289,7 @@ void fmIndexDetermineDollarSubstitute_(Index<TText, FMIndex<TIndexSpec, TOptimiz
 	TPrefixSumTable pst(text);
 	TChar dollarSub;
 
-	determineDollarSubstitute_(pst, dollarSub);
+	_determineDollarSubstitute(pst, dollarSub);
 
 	for (unsigned i = 0; i < length(freq); ++i)
     {
@@ -421,6 +420,7 @@ void fmIndexSearch(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 
 	TIndex fmiIndex(text);
 	Finder<TIndex> fmiFinder(fmiIndex);
+	indexRequire(fmiIndex, FibreSaLfTable());
 
 	TIndexEsa esaIndex(text);
 	Finder<TIndexEsa> esaFinder(esaIndex);
@@ -428,7 +428,7 @@ void fmIndexSearch(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 	StringSet<String<typename Value<TIndex>::Type> > pattern;
 	generatePattern(pattern, text);
 
-    for(unsigned i = 0; i < length(pattern); ++i)
+    for(unsigned i = 36; i < length(pattern); ++i)
     {  
         clear(fmiFinder);
         clear(esaFinder);
@@ -524,11 +524,11 @@ SEQAN_DEFINE_TEST(test_fm_index_determine_dollar_substitute_)
     Index<String<AminoAcid>, FMIndex<WT<FmiDollarSubstituted<> >, void > > asTag;
     Index<String<signed char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > charTag;
     Index<String<unsigned char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > uCharTag;
-    fmIndexDetermineDollarSubstitute_(dnaTag);
-    fmIndexDetermineDollarSubstitute_(dna5Tag);
-    fmIndexDetermineDollarSubstitute_(asTag);
-    fmIndexDetermineDollarSubstitute_(uCharTag);
-    fmIndexDetermineDollarSubstitute_(charTag);
+    _fmIndexDetermineDollarSubstitute(dnaTag);
+    _fmIndexDetermineDollarSubstitute(dna5Tag);
+    _fmIndexDetermineDollarSubstitute(asTag);
+    _fmIndexDetermineDollarSubstitute(uCharTag);
+    _fmIndexDetermineDollarSubstitute(charTag);
 }
 
 SEQAN_DEFINE_TEST(test_fm_index_empty)
@@ -571,7 +571,8 @@ SEQAN_DEFINE_TEST(test_fm_index_get_fibre)
     Index<String<Dna5>, FMIndex<WT<FmiDollarSubstituted<> >, void > > dna5Tag;
     Index<String<AminoAcid>, FMIndex<WT<FmiDollarSubstituted<> >, void > > asTag;
     Index<String<signed char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > charTag;
-    Index<String<unsigned char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > uCharTag;    fmIndexGetFibre(dnaTag);
+    Index<String<unsigned char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > uCharTag;    
+    fmIndexGetFibre(dnaTag);
     fmIndexGetFibre(dna5Tag);
     fmIndexGetFibre(asTag);
     fmIndexGetFibre(uCharTag);
@@ -586,44 +587,58 @@ SEQAN_DEFINE_TEST(test_fm_index_search)
         Index<DnaString, FMIndex<WT<FmiDollarSubstituted<> >, void > > dnaTag;
         Index<String<Dna5>, FMIndex<WT<FmiDollarSubstituted<> >, void > > dna5Tag;
         Index<String<AminoAcid>, FMIndex<WT<FmiDollarSubstituted<> >, void > > asTag;
-        //Index<String<signed char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > sCharTag;
+        Index<String<signed char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > sCharTag;
         Index<String<unsigned char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > uCharTag;
-        //Index<String<char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > charTag;
+        Index<String<char>, FMIndex<WT<FmiDollarSubstituted<> >, void > > charTag;
         fmIndexSearch(dnaTag);
         fmIndexSearch(dna5Tag);
         fmIndexSearch(asTag);
         fmIndexSearch(uCharTag);
-        //fmIndexSearch(sCharTag);
-        //fmIndexSearch(charTag);
+        fmIndexSearch(sCharTag);
+        fmIndexSearch(charTag);
     }
     {
         Index<StringSet<DnaString>, FMIndex<WT<FmiDollarSubstituted<> >, void > > dnaTag;
         Index<StringSet<Dna5String>, FMIndex<WT<FmiDollarSubstituted<> >, void > > dna5Tag;
         Index<StringSet<String<AminoAcid> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > asTag;
-        //Index<StringSet<String<unsigned char> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > uCharTag;
-        //Index<StringSet<String<signed char> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > sCharTag;
-        //Index<StringSet<String<char> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > charTag;
+        Index<StringSet<String<unsigned char> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > uCharTag;
+        Index<StringSet<String<signed char> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > sCharTag;
+        Index<StringSet<String<char> >, FMIndex<WT<FmiDollarSubstituted<> >, void > > charTag;
         fmIndexSearch(dnaTag);
         fmIndexSearch(dna5Tag);
         fmIndexSearch(asTag);
-        //fmIndexSearch(uCharTag);
-        //fmIndexSearch(sCharTag);
-        //fmIndexSearch(charTag);
+        fmIndexSearch(uCharTag);
+        fmIndexSearch(sCharTag);
+        fmIndexSearch(charTag);
     }    
     {
         Index<DnaString, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > dnaTag;
         Index<String<Dna5>, FMIndex<WT<FmiDollarSubstituted<> >, CompressText > > dna5Tag;
         Index<String<AminoAcid>, FMIndex<WT<FmiDollarSubstituted<> >,CompressText> > asTag;
-        //Index<String<signed char>, FMIndex<WT<FmiDollarSubstituted<> >, CompressedText > > sCharTag;
-        //Index<String<unsigned char>, FMIndex<WT<FmiDollarSubstituted<> >, CompressedText > > uCharTag;
-       // Index<String<char>, FMIndex<WT<FmiDollarSubstituted<> >, CompressedText > > charTag;
+        Index<String<signed char>, FMIndex<WT<FmiDollarSubstituted<> >, CompressText > > sCharTag;
+        Index<String<unsigned char>, FMIndex<WT<FmiDollarSubstituted<> >, CompressText > > uCharTag;
+        Index<String<char>, FMIndex<WT<FmiDollarSubstituted<> >, CompressText > > charTag;
         fmIndexSearch(dnaTag);
         fmIndexSearch(dna5Tag);
         fmIndexSearch(asTag);
-        //fmIndexSearch(uCharTag);
-        //fmIndexSearch(sCharTag);
-        //fmIndexSearch(charTag); 
+        fmIndexSearch(uCharTag);
+        fmIndexSearch(sCharTag);
+        fmIndexSearch(charTag); 
     }
+    {
+        Index<StringSet<DnaString>, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > dnaTag;
+        Index<StringSet<Dna5String>, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > dna5Tag;
+        Index<StringSet<String<AminoAcid> >, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > asTag;
+        Index<StringSet<String<unsigned char> >, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > uCharTag;
+        Index<StringSet<String<signed char> >, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > sCharTag;
+        Index<StringSet<String<char> >, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > charTag;
+        fmIndexSearch(dnaTag);
+        fmIndexSearch(dna5Tag);
+        fmIndexSearch(asTag);
+        fmIndexSearch(uCharTag);
+        fmIndexSearch(sCharTag);
+        fmIndexSearch(charTag);
+    }  
 }
 
 SEQAN_DEFINE_TEST(test_fm_index_open_save)

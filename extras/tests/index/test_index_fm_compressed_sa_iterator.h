@@ -38,7 +38,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include "test_index_fm.h"
 
 using namespace seqan;
 
@@ -69,7 +68,7 @@ void compressedSaIterEnd(TIndex & /*tag*/)
     TCompressedSA compressedSA;
     resize(compressedSA, 3);
     setBit(compressedSA.sparseString.indicatorString, 2, 1);
-    updateRanks_(compressedSA.sparseString.indicatorString);
+    _updateRanks(compressedSA.sparseString.indicatorString);
     appendValue(compressedSA.sparseString.valueString, 12);
 
     typename Iterator<TCompressedSA>::Type defaultIter = end(compressedSA);

@@ -118,7 +118,6 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(test_wavelet_tree_get_character);
     SEQAN_CALL_TEST(test_wavelet_tree_get_fibre);
     SEQAN_CALL_TEST(test_wavelet_tree_get_occ);
-    SEQAN_CALL_TEST(test_wavelet_tree_num_vertieces);
     SEQAN_CALL_TEST(test_wavelet_tree_fill_wavelet_tree_);
     SEQAN_CALL_TEST(test_wavelet_tree_open_save);
 
