@@ -115,15 +115,27 @@ struct Fibre<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> >, FibreOccTable>
 	typedef WaveletTree<TText, FmiDollarSubstituted<SingleDollar<void> > > Type;
 };
 
+template <typename TText, typename TWaveletTreeSpec, typename TSpec>
+struct Fibre<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> > const, FibreOccTable>
+{
+    typedef WaveletTree<TText, FmiDollarSubstituted<SingleDollar<void> > > const Type;
+};
+    
 template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
 struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<WT<TWaveletTreeSpec>, TSpec > >, FibreOccTable>
 {
      typedef WaveletTree<TText, FmiDollarSubstituted<MultiDollar<void> > > Type;
 };
+
+template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
+struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<WT<TWaveletTreeSpec>, TSpec > > const, FibreOccTable>
+{
+    typedef WaveletTree<TText, FmiDollarSubstituted<MultiDollar<void> > > const Type;
+};
 // ==========================================================================
 
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable>
 {
     typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreOccTable>::Type        TOccTable_;
 	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable>::Type  TPrefixSumTable_;
@@ -131,7 +143,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable const>
 };
 
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreLfTable const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreLfTable>
 {
     typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreOccTable>::Type          TOccTable_;
 	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable>::Type    TPrefixSumTable_;
@@ -140,7 +152,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreLfTable const>
 
 // ==========================================================================
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable>
 {
     typedef typename Value<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type  TChar_;
     typedef typename MakeUnsigned<TChar_>::Type                             TUChar_;
@@ -148,7 +160,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable const>
 };
     
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable>
 {
     typedef typename Value<Index<TText, FMIndex<TOccSpec, TSpec> > const>::Type TChar_;
     typedef typename MakeUnsigned<TChar_>::Type                                 TUChar_;
@@ -157,7 +169,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable 
 
 // ==========================================================================
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>
 {
 	typedef unsigned int                                                                    TSAValue_;
 	typedef SparseString<String<TSAValue_>, void>                                           TSparseString_;
@@ -166,7 +178,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA const>
 };
 
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreSA const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreSA>
 {
 	typedef unsigned int                                                                TSAValue_;
 	typedef SparseString<String<TSAValue_>, void>                                       TSparseString_;
@@ -199,7 +211,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreText>
 };
 
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreText const>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreText>
 {
 	typedef TText const Type;
 };
