@@ -108,7 +108,7 @@ public:
 // Member Function SamReader_::SamReader_()
 // ----------------------------------------------------------------------------
 
-SamReader_::SamReader_(CharString const & filename) :
+inline SamReader_::SamReader_(CharString const & filename) :
     XamReader_(filename), _stream(0), _reader()
 {
     this->open(_filename);
@@ -118,7 +118,7 @@ SamReader_::SamReader_(CharString const & filename) :
 // Member Function SamReader_::open()
 // ----------------------------------------------------------------------------
 
-int SamReader_::open(CharString const & filename)
+inline int SamReader_::open(CharString const & filename)
 {
     // Open file.
     if (filename == "-")
@@ -146,7 +146,7 @@ int SamReader_::open(CharString const & filename)
 // Member Function SamReader_::isGood()
 // ----------------------------------------------------------------------------
 
-bool SamReader_::isGood()
+inline bool SamReader_::isGood()
 {
     return this->_stream->good();
 }
@@ -155,7 +155,7 @@ bool SamReader_::isGood()
 // Member Function SamReader_::atEnd()
 // ----------------------------------------------------------------------------
 
-bool SamReader_::atEnd()
+inline bool SamReader_::atEnd()
 {
     return seqan::atEnd(*this->_reader);
 }
@@ -164,7 +164,7 @@ bool SamReader_::atEnd()
 // Member Function SamReader_::readHeader()
 // ----------------------------------------------------------------------------
 
-int SamReader_::readHeader(BamHeader & header, BamIOContext<StringSet<CharString> > & context)
+inline int SamReader_::readHeader(BamHeader & header, BamIOContext<StringSet<CharString> > & context)
 {
     return seqan::readRecord(header, context, *this->_reader, Sam());
 }
@@ -173,7 +173,7 @@ int SamReader_::readHeader(BamHeader & header, BamIOContext<StringSet<CharString
 // Member Function SamReader_::readRecord()
 // ----------------------------------------------------------------------------
 
-int SamReader_::readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > & context)
+inline int SamReader_::readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > & context)
 {
     return seqan::readRecord(record, context, *this->_reader, Sam());
 }
@@ -182,7 +182,7 @@ int SamReader_::readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<C
 // Member Function SamReader_::readRecord()
 // ----------------------------------------------------------------------------
 
-int SamReader_::close()
+inline int SamReader_::close()
 {
     if (this->_stream == &this->_fstream)
         this->_fstream.close();
@@ -193,7 +193,7 @@ int SamReader_::close()
 // Member Function SamReader_::fileSize()
 // ----------------------------------------------------------------------------
 
-__int64 SamReader_::fileSize() const
+inline __int64 SamReader_::fileSize() const
 {
     return this->_fileSize;
 }
@@ -204,7 +204,7 @@ __int64 SamReader_::fileSize() const
 
 // TODO(holtgrew): This does not work yet.
 
-__int64 SamReader_::positionInFile() const
+inline __int64 SamReader_::positionInFile() const
 {
     return 0;
 }

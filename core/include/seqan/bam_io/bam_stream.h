@@ -233,7 +233,7 @@ inline int open(BamStream & bamIO,
                 BamStream::OperationMode mode,
                 BamStream::Format format);
 
-BamStream::BamStream(char const * filename, OperationMode mode, Format format) :
+inline BamStream::BamStream(char const * filename, OperationMode mode, Format format) :
     _filename(filename), _mode(mode), _format(format), _headerWritten(false), _atEnd(false), _isGood(true),
     _nameStoreCache(_nameStore), bamIOContext(_nameStore, _nameStoreCache)
 {

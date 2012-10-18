@@ -91,7 +91,7 @@ public:
 // Member Function BamReader_::BamReader_()
 // ----------------------------------------------------------------------------
 
-BamReader_::BamReader_(CharString const & filename) :
+inline BamReader_::BamReader_(CharString const & filename) :
     XamReader_(filename), _isGood(true)
 {
     this->open(_filename);
@@ -101,7 +101,7 @@ BamReader_::BamReader_(CharString const & filename) :
 // Member Function BamReader_::open()
 // ----------------------------------------------------------------------------
 
-int BamReader_::open(CharString const & filename)
+inline int BamReader_::open(CharString const & filename)
 {
     if (!seqan::open(this->_stream, toCString(filename), "r"))
     {
@@ -119,7 +119,7 @@ int BamReader_::open(CharString const & filename)
 // Member Function BamReader_::isGood()
 // ----------------------------------------------------------------------------
 
-bool BamReader_::isGood()
+inline bool BamReader_::isGood()
 {
     return this->_isGood;
 }
@@ -128,7 +128,7 @@ bool BamReader_::isGood()
 // Member Function BamReader_::atEnd()
 // ----------------------------------------------------------------------------
 
-bool BamReader_::atEnd()
+inline bool BamReader_::atEnd()
 {
     return seqan::atEnd(this->_stream);
 }
@@ -137,7 +137,7 @@ bool BamReader_::atEnd()
 // Member Function BamReader_::readHeader()
 // ----------------------------------------------------------------------------
 
-int BamReader_::readHeader(BamHeader & header, BamIOContext<StringSet<CharString> > & context)
+inline int BamReader_::readHeader(BamHeader & header, BamIOContext<StringSet<CharString> > & context)
 {
     return seqan::readRecord(header, context, this->_stream, Bam());
 }
@@ -146,7 +146,7 @@ int BamReader_::readHeader(BamHeader & header, BamIOContext<StringSet<CharString
 // Member Function BamReader_::readRecord()
 // ----------------------------------------------------------------------------
 
-int BamReader_::readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > & context)
+inline int BamReader_::readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > & context)
 {
     return seqan::readRecord(record, context, this->_stream, Bam());
 }
@@ -155,7 +155,7 @@ int BamReader_::readRecord(BamAlignmentRecord & record, BamIOContext<StringSet<C
 // Member Function BamReader_::close()
 // ----------------------------------------------------------------------------
 
-int BamReader_::close()
+inline int BamReader_::close()
 {
     seqan::close(this->_stream);
     return 0;
@@ -165,7 +165,7 @@ int BamReader_::close()
 // Member Function BamReader_::fileSize()
 // ----------------------------------------------------------------------------
 
-__int64 BamReader_::fileSize() const
+inline __int64 BamReader_::fileSize() const
 {
     return this->_fileSize;
 }
@@ -174,7 +174,7 @@ __int64 BamReader_::fileSize() const
 // Member Function BamReader_::positionInFile()
 // ----------------------------------------------------------------------------
 
-__int64 BamReader_::positionInFile() const
+inline __int64 BamReader_::positionInFile() const
 {
     return this->_stream._blockPosition;
 }
@@ -183,7 +183,7 @@ __int64 BamReader_::positionInFile() const
 // Member Function BamReader_::jumpToPos()
 // ----------------------------------------------------------------------------
 
-bool BamReader_::jumpToPos(__int32 refId, __int32 pos, BamIndex<Bai> const & index,
+inline bool BamReader_::jumpToPos(__int32 refId, __int32 pos, BamIndex<Bai> const & index,
                            BamIOContext<StringSet<CharString> > & context)
 {
     bool hasAlignments = false;

@@ -87,7 +87,7 @@ public:
 // Member Function BamWriter_::BamWriter_()
 // ----------------------------------------------------------------------------
 
-BamWriter_::BamWriter_(CharString const & filename) :
+inline BamWriter_::BamWriter_(CharString const & filename) :
     XamWriter_(filename)
 {
     this->open(filename);
@@ -97,7 +97,7 @@ BamWriter_::BamWriter_(CharString const & filename) :
 // Member Function BamWriter_::open()
 // ----------------------------------------------------------------------------
 
-int BamWriter_::open(CharString const & filename)
+inline int BamWriter_::open(CharString const & filename)
 {
     if (!seqan::open(this->_stream, toCString(filename), "w"))
     {
@@ -112,7 +112,7 @@ int BamWriter_::open(CharString const & filename)
 // Member Function BamWriter_::isGood()
 // ----------------------------------------------------------------------------
 
-bool BamWriter_::isGood()
+inline bool BamWriter_::isGood()
 {
     return this->_isGood;
 }
@@ -121,7 +121,7 @@ bool BamWriter_::isGood()
 // Member Function BamWriter_::writeHeader()
 // ----------------------------------------------------------------------------
 
-int BamWriter_::writeHeader(BamHeader const & header,
+inline int BamWriter_::writeHeader(BamHeader const & header,
                             BamIOContext<StringSet<CharString> > const & context)
 {
     return write2(this->_stream, header, context, Bam());
@@ -131,7 +131,7 @@ int BamWriter_::writeHeader(BamHeader const & header,
 // Member Function BamWriter_::writeRecord()
 // ----------------------------------------------------------------------------
 
-int BamWriter_::writeRecord(BamAlignmentRecord & record,
+inline int BamWriter_::writeRecord(BamAlignmentRecord & record,
                             BamIOContext<StringSet<CharString> > const & context)
 {
     return write2(this->_stream, record, context, Bam());
@@ -141,7 +141,7 @@ int BamWriter_::writeRecord(BamAlignmentRecord & record,
 // Member Function BamWriter_::flush()
 // ----------------------------------------------------------------------------
 
-int BamWriter_::flush()
+inline int BamWriter_::flush()
 {
     return streamFlush(this->_stream);
 }
@@ -150,7 +150,7 @@ int BamWriter_::flush()
 // Member Function BamWriter_::close()
 // ----------------------------------------------------------------------------
 
-int BamWriter_::close()
+inline int BamWriter_::close()
 {
     seqan::close(this->_stream);
     return 0;

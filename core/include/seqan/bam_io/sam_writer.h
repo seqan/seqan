@@ -82,7 +82,7 @@ public:
 // Member Function SamWriter_::SamWriter_()
 // ----------------------------------------------------------------------------
 
-SamWriter_::SamWriter_(CharString const & filename) :
+inline SamWriter_::SamWriter_(CharString const & filename) :
     XamWriter_(filename), _stream(0)
 {
     this->open(filename);
@@ -92,7 +92,7 @@ SamWriter_::SamWriter_(CharString const & filename) :
 // Member Function SamWriter_::open()
 // ----------------------------------------------------------------------------
 
-int SamWriter_::open(CharString const & filename)
+inline int SamWriter_::open(CharString const & filename)
 {
     if (filename == "-")
     {
@@ -113,7 +113,7 @@ int SamWriter_::open(CharString const & filename)
 // Member Function SamWriter_::isGood()
 // ----------------------------------------------------------------------------
 
-bool SamWriter_::isGood()
+inline bool SamWriter_::isGood()
 {
     return this->_stream->good();
 }
@@ -122,7 +122,7 @@ bool SamWriter_::isGood()
 // Member Function SamWriter_::writeHeader()
 // ----------------------------------------------------------------------------
 
-int SamWriter_::writeHeader(BamHeader const & header, BamIOContext<StringSet<CharString> > const & context)
+inline int SamWriter_::writeHeader(BamHeader const & header, BamIOContext<StringSet<CharString> > const & context)
 {
     return seqan::write2(*this->_stream, header, context, Sam());
 }
@@ -131,7 +131,7 @@ int SamWriter_::writeHeader(BamHeader const & header, BamIOContext<StringSet<Cha
 // Member Function SamWriter_::writeRecord()
 // ----------------------------------------------------------------------------
 
-int SamWriter_::writeRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > const & context)
+inline int SamWriter_::writeRecord(BamAlignmentRecord & record, BamIOContext<StringSet<CharString> > const & context)
 {
     return seqan::write2(*this->_stream, record, context, Sam());
 }
@@ -140,7 +140,7 @@ int SamWriter_::writeRecord(BamAlignmentRecord & record, BamIOContext<StringSet<
 // Member Function SamWriter_::flush()
 // ----------------------------------------------------------------------------
 
-int SamWriter_::flush()
+inline int SamWriter_::flush()
 {
     return streamFlush(*this->_stream);
 }
@@ -149,7 +149,7 @@ int SamWriter_::flush()
 // Member Function SamWriter_::close()
 // ----------------------------------------------------------------------------
 
-int SamWriter_::close()
+inline int SamWriter_::close()
 {
     if (this->_stream == &this->_fstream)  // not to stdout
         this->_fstream.close();
