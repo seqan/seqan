@@ -46,7 +46,7 @@ struct SingleDollar;
 template <typename TSpec>
 struct MultiDollar;
 
-template <typename TSpec = void>
+template <typename TSpec>
 struct FmiDollarSubstituted;
 
 struct FibreBitStrings_;
