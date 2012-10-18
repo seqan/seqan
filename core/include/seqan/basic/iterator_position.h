@@ -111,7 +111,7 @@ public:
 
     template <typename TContainer2, typename TSpec2>
     Iter(Iter<TContainer2, TSpec2> const & other_)
-            : data_container(container(other_)),
+            : data_container(_toPointer(container(other_))),
               data_position(position(other_))
     {
         SEQAN_CHECKPOINT;
