@@ -138,7 +138,7 @@ class Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> >
 {
 protected:
     typedef Index<TText, TSpec>                                         TIndex;
-    typedef typename Iterator<TIndex, TopDown<> >::Type                TIndexIterator;
+    typedef typename Iterator<TIndex, TopDown<> >::Type                 TIndexIterator;
     typedef String<TIndexIterator, Block<> >                            TParentStack;
 
     typedef typename Fibre<TIndex, FibreSA>::Type                       TSA;
@@ -524,8 +524,7 @@ void setHost(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackin
     clear(me.index_parents);
 
     // Init data iterator on empty range
-//		hostIterator(me) = begin(indexSA(host(me)), Standard());
-    me.data_iterator = begin(indexSA(host(me)), Standard());
+    hostIterator(me) = begin(indexSA(host(me)), Standard());
     me.range.i1 = me.range.i2 = TIterator();
     me.data_length = 0;
 
@@ -553,20 +552,19 @@ void setHost(Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & me,
 
 // ============================================================================
 
-// TODO(esiragusa): Implement hostIterator(pattern)
-//	template < typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec >
-//	inline typename Iterator< typename Fibre<Index<TNeedle, TSpec>, FibreSA>::Type const, Standard>::Type const &
-//	hostIterator(Pattern< Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > const & me)
-//	{
-////		return me.data_iterator;
-//	}
+template < typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec >
+inline typename Iterator< typename Fibre<Index<TNeedle, TSpec>, FibreSA>::Type const, Standard>::Type const &
+hostIterator(Pattern< Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > const & me)
+{
+    return me.data_iterator;
+}
 
-//	template < typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec >
-//	inline typename Iterator< typename Fibre<Index<TNeedle, TSpec>, FibreSA>::Type const, Standard >::Type &
-//	hostIterator(Pattern< Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
-//	{
-////		return me.data_iterator;
-//	}
+template < typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec >
+inline typename Iterator< typename Fibre<Index<TNeedle, TSpec>, FibreSA>::Type const, Standard >::Type &
+hostIterator(Pattern< Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
+{
+    return me.data_iterator;
+}
 
 // ============================================================================
 
@@ -581,32 +579,28 @@ template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktr
 inline bool
 atBegin(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
-//		return (empty(me) || hostIterator(me) == me.range.i1);
-    return empty(me) || me.data_iterator == me.range.i1;
+    return (empty(me) || hostIterator(me) == me.range.i1);
 }
 
 template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec>
 inline bool
 atEnd(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
-//		return (empty(me) || hostIterator(me) == me.range.i2);
-    return empty(me) || me.data_iterator == me.range.i2;
+    return (empty(me) || hostIterator(me) == me.range.i2);
 }
 
 template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec>
 inline void
 goBegin(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
-//		hostIterator(me) = me.range.i1;
-    me.data_iterator = me.range.i1;
+    hostIterator(me) = me.range.i1;
 }
 
 template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktrackingSpec>
 inline void
 goEnd(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
-//		hostIterator(me) = me.range.i2;
-    me.data_iterator = me.range.i2;
+    hostIterator(me) = me.range.i2;
 }
 
 // ============================================================================
@@ -1186,14 +1180,10 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
                 finder.range.i2 = hostIterator(finder) + finder.index_range.i2;
                 hostIterator(finder) = finder.range.i1;
 
-//				hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
-//				pattern.range.i1 = hostIterator(pattern) + pattern.index_range.i1;
-//				pattern.range.i2 = hostIterator(pattern) + pattern.index_range.i2;
-//				hostIterator(pattern) = pattern.range.i1;
-                pattern.data_iterator = begin(indexSA(host(pattern)), Standard());
-                pattern.range.i1 = pattern.data_iterator + pattern.index_range.i1;
-                pattern.range.i2 = pattern.data_iterator + pattern.index_range.i2;
-                pattern.data_iterator = pattern.range.i1;
+				hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
+				pattern.range.i1 = hostIterator(pattern) + pattern.index_range.i1;
+				pattern.range.i2 = hostIterator(pattern) + pattern.index_range.i2;
+				hostIterator(pattern) = pattern.range.i1;
 
                 // Set match length
                 _setFinderLength(finder);
@@ -1206,12 +1196,9 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
                 finder.range.i1 = hostIterator(finder);
                 finder.range.i2 = hostIterator(finder);
 
-//				hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
-//				pattern.range.i1 = hostIterator(pattern);
-//				pattern.range.i2 = hostIterator(pattern);
-                pattern.data_iterator = begin(indexSA(host(pattern)), Standard());
-                pattern.range.i1 = pattern.data_iterator;
-                pattern.range.i2 = pattern.data_iterator;
+				hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
+				pattern.range.i1 = hostIterator(pattern);
+				pattern.range.i2 = hostIterator(pattern);
             }
         }
 
