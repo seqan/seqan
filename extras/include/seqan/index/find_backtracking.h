@@ -446,7 +446,7 @@ inline void
 clear(Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
     typedef Index<TText, TSpec>                                         TIndex;
-    typedef typename Iterator<TIndex, TopDown<> >::Type                TIndexIterator;
+    typedef typename Iterator<TIndex, TopDown<> >::Type                 TIndexIterator;
 
     typedef typename Fibre<TIndex, FibreSA>::Type                       TSA;
     typedef typename Iterator<TSA const, Standard>::Type                TIterator;
@@ -495,7 +495,7 @@ template <typename TNeedle, typename TSpec, typename TDistance, typename TBacktr
 void _moveIteratorAtRoot(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & me)
 {
     typedef Index<TNeedle, TSpec>                                       TIndex;
-    typedef typename Iterator<TIndex, TopDown<> >::Type                TIndexIterator;
+    typedef typename Iterator<TIndex, TopDown<> >::Type                 TIndexIterator;
     me.index_iterator = TIndexIterator(host(me));
 }
 
@@ -961,7 +961,7 @@ _search(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpe
         Pattern<Index<TNeedle, TNeedleSpec>, Backtracking<TDistance, TBacktrackingSpec> > & pattern)
 {
     typedef Index<TText, TTextSpec>                                     TTextIndex;
-    typedef typename Iterator<TTextIndex, TopDown<> >::Type            TTextIndexIterator;
+    typedef typename Iterator<TTextIndex, TopDown<> >::Type             TTextIndexIterator;
     typedef typename Fibre<TTextIndex, EsaText>::Type                   TSAText;
     typedef typename Infix<TSAText const>::Type                         TSuffix;
     typedef typename Size<TTextIndex>::Type                             TSuffixSize;
