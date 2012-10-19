@@ -1156,8 +1156,7 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
     // Try to get another match from current pattern node
     if (atEnd(finder))
     {
-//			goNext(hostIterator(pattern));
-        goNext(pattern.data_iterator);
+        goNext(hostIterator(pattern));
 
         if (!atEnd(pattern))
         {
