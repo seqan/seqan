@@ -201,6 +201,8 @@ inline bool operator>=(Dna5Q const & left_, Dna5 const & right_)
     return __MASK_DNA5Q_LT[ordValue(left_)] >= __MASK_DNA5_LT[ordValue(right_)];
 }
 
+// ============================================================================
+
 template <>
 inline bool ordLess(Dna5 const & left_, Dna5 const & right_)
 {
@@ -211,6 +213,12 @@ template <>
 inline bool ordEqual(Dna5 const & left_, Dna5 const & right_)
 {
     return __MASK_DNA5_EQ[ordValue(left_)] & __MASK_DNA5_EQ[ordValue(right_)];
+}
+
+template <>
+inline bool ordGreater(Dna5 const & left_, Dna5 const & right_)
+{
+    return __MASK_DNA5_LT[ordValue(left_)] > __MASK_DNA5Q_LT[ordValue(right_)];
 }
 }
 
