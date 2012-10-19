@@ -646,7 +646,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			}
 			
             // is text <= query ?
-			if (q == qEnd || t == tEnd || !(ordLess(convert<TTextAlphabet>(*q), *t))) {
+			if (q == qEnd || t == tEnd || !ordGreater(*t, convert<TTextAlphabet>(*q))) {
 				treeIter.right();
 			} else {
 				treeIter.left();
@@ -698,7 +698,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			}
 			
             // is text <= query ?
-			if (q == qEnd || t == tEnd || !(ordLess(convert<TTextAlphabet>(*q), *t))) {
+			if (q == qEnd || t == tEnd || !ordGreater(*t, convert<TTextAlphabet>(*q))) {
 				treeIter.right();
 				lcpLower = lcp;
 			} else {
@@ -754,7 +754,7 @@ namespace SEQAN_NAMESPACE_MAIN
 				treeIter.right();
 			}
             // is text > query ?
-			else if (q != qEnd && (t != tEnd && ordLess(convert<TTextAlphabet>(*q), *t)))
+			else if (q != qEnd && (t != tEnd && ordGreater(*t, convert<TTextAlphabet>(*q))))
 			{	// range in first half, loop
 				treeIter.left();
 			} else
@@ -821,7 +821,7 @@ namespace SEQAN_NAMESPACE_MAIN
 				lcpLower = lcp;
 			}
             // is text > query ?
-			else if (q != qEnd && (t != tEnd && ordLess(convert<TTextAlphabet>(*q), *t)))
+			else if (q != qEnd && (t != tEnd && ordGreater(*t, convert<TTextAlphabet>(*q))))
 			{	// range in first half, loop
 				treeIter.left();
 				lcpUpper = lcp;
@@ -1464,7 +1464,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			lcp += max - i;
 
             // is text <= query ?
-			if (q == qEnd || t == tEnd || !(lexxLess(*q, *t))) 
+			if (q == qEnd || t == tEnd || !ordGreater(*t, convert<TTextAlphabet>(*q)))
 			{
 				// second half
 				lcpLower = lcp;
@@ -1498,7 +1498,7 @@ namespace SEQAN_NAMESPACE_MAIN
             for(; i && ordEqual(*t, convert<TTextAlphabet>(*q)); --i, ++t, ++q) ;
 
             // is text <= query ?
-			if (q == qEnd || t == tEnd || !(ordLess(convert<TTextAlphabet>(*q), *t))) {
+			if (q == qEnd || t == tEnd || !ordGreater(*t, convert<TTextAlphabet>(*q))) {
 				// second half
 				++first;
 				if (!delta) return first;
@@ -1638,7 +1638,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			lcp += max - i;
 
             // is text < query ?
-			if (q != qEnd && (t == tEnd || !(ordLess(convert<TTextAlphabet>(*q), *t)))) {
+			if (q != qEnd && (t == tEnd || ordLess(*t, convert<TTextAlphabet>(*q)))) {
 				// second half
 				lcpLower = lcp;
 				first = mid;
@@ -1649,7 +1649,7 @@ namespace SEQAN_NAMESPACE_MAIN
 				}
 			} else
             // is text > query ?
-			if (q != qEnd && t != tEnd && (ordLess(convert<TTextAlphabet>(*q), *t))) {
+			if (q != qEnd && t != tEnd && ordGreater(*t, convert<TTextAlphabet>(*q))) {
 				// first half
 				lcpUpper = lcp;
 				treeIter.left();

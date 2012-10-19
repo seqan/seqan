@@ -130,6 +130,12 @@ inline bool ordEqual(TValue const & left, TValue const & right)
     return ordValue(left) == ordValue(right);
 }
 
+template <typename TValue>
+inline bool ordGreater(TValue const & left, TValue const & right)
+{
+    return ordValue(left) > ordValue(right);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
