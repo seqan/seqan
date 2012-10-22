@@ -48,59 +48,73 @@
 
 using namespace seqan;
 
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
-// Tags, Classes, Enums
+// QGram Shape Definitions
 // ============================================================================
 
 typedef UngappedShape<10>                               TShape;
 
+
+// ============================================================================
+// Genome Index Type Definitions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Genome Enhanced Suffix Array Type Definitions
+// ----------------------------------------------------------------------------
+
 typedef Index<TGenome, IndexEsa<> >                     TGenomeEsa;
+
+#if defined(SEQAN_EXTRAS_MASAI_DISABLE_MMAP) || defined(SEQAN_EXTRAS_MASAI_INDEXER_H_)
+typedef DefaultIndexStringSpec<TGenomeEsa>::Type        TGenomeEsaStringSpec;
+#else
+typedef MMap<>                                          TGenomeEsaStringSpec;
+#endif
 
 namespace seqan {
 template <>
 struct Fibre<TGenomeEsa, FibreSA>
 {
-    typedef String<Pair<unsigned char, unsigned int, Pack>,
-                   DefaultIndexStringSpec<TGenomeEsa>::Type>          Type;
-//        typedef String< Pair<unsigned char, unsigned int, Pack>, MMap<> > Type;
+    typedef String<Pair<unsigned char, unsigned int, Pack>, TGenomeEsaStringSpec>   Type;
 };
 
 template <>
 struct Fibre<TGenomeEsa, FibreLcp>
 {
-    typedef String<unsigned int, DefaultIndexStringSpec<TGenomeEsa>::Type>   Type;
-//        typedef String<unsigned int, MMap<> >   Type;
+    typedef String<unsigned int, TGenomeEsaStringSpec>   Type;
 };
 
 template <>
 struct Fibre<TGenomeEsa, FibreChildtab>
 {
-    typedef String<unsigned int, DefaultIndexStringSpec<TGenomeEsa>::Type>   Type;
-//        typedef String<unsigned int, MMap<> >   Type;
+    typedef String<unsigned int, TGenomeEsaStringSpec>   Type;
 };
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Genome Suffix Array Type Definitions
+// ----------------------------------------------------------------------------
 
-typedef Index<TGenome, IndexSa<> >                     TGenomeSa;
+typedef Index<TGenome, IndexSa<> >                      TGenomeSa;
+
+#if defined(SEQAN_EXTRAS_MASAI_DISABLE_MMAP) || defined(SEQAN_EXTRAS_MASAI_INDEXER_H_)
+typedef DefaultIndexStringSpec<TGenomeSa>::Type         TGenomeSaStringSpec;
+#else
+typedef MMap<>                                          TGenomeSaStringSpec;
+#endif
 
 namespace seqan {
 template <>
 struct Fibre<TGenomeSa, FibreSA>
 {
-    typedef String<Pair<unsigned char, unsigned int, Pack>,
-                   DefaultIndexStringSpec<TGenomeSa>::Type>          Type;
-//        typedef String< Pair<unsigned char, unsigned int, Pack>, MMap<> > Type;
+    typedef String<Pair<unsigned char, unsigned int, Pack>, TGenomeSaStringSpec>    Type;
 };
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Genome QGram Index with Bucket Refinement Type Definitions
+// ----------------------------------------------------------------------------
 
 typedef IndexQGram<TShape>                              TQGramBaseIndex;
 typedef IndexQGram<TShape, BucketRefinement>            TQGramBucketRefinementIndex;
@@ -109,36 +123,46 @@ typedef Index<TGenome, TQGramBaseIndex>                 TGenomeBaseQGram;
 typedef Index<TGenome, IndexSa<InfixSegment> >          TGenomeInfixSa;
 typedef Index<TGenome, TQGramBucketRefinementIndex>     TGenomeQGram;
 
+#if defined(SEQAN_EXTRAS_MASAI_DISABLE_MMAP) || defined(SEQAN_EXTRAS_MASAI_INDEXER_H_)
+typedef DefaultIndexStringSpec<TGenomeBaseQGram>::Type  TGenomeQGramStringSpec;
+#else
+typedef MMap<>                                          TGenomeQGramStringSpec;
+#endif
+
 namespace seqan {
 template <>
 struct Fibre<TGenomeBaseQGram, FibreSA>
 {
-    typedef String<Pair<unsigned char, unsigned int, Pack>,
-                   DefaultIndexStringSpec<TGenomeBaseQGram>::Type>                Type;
-//        typedef String< Pair<unsigned int, unsigned short, PackPack>, MMap<> >	Type;
+    typedef String<Pair<unsigned char, unsigned int, Pack>, TGenomeQGramStringSpec> Type;
 };
 
 template <>
 struct Fibre<TGenomeBaseQGram, FibreDir>
 {
-    typedef String<unsigned int, DefaultIndexStringSpec<TGenomeBaseQGram>::Type>   Type;
-//        typedef String<unsigned int, MMap<> >     Type;
+    typedef String<unsigned int, TGenomeQGramStringSpec>   Type;
 };
 
 template <>
 struct Fibre<TGenomeInfixSa, FibreSA>
 {
-    typedef Segment<Fibre<TGenomeBaseQGram, FibreSA>::Type const, InfixSegment>           Type;
+    typedef Segment<Fibre<TGenomeBaseQGram, FibreSA>::Type const, InfixSegment>     Type;
 };
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Genome FM Index Type Definitions
+// ----------------------------------------------------------------------------
 
 typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > TGenomeFM;
-//typedef Index<TGenome, FMIndex<> >                     TGenomeFM;
-//typedef Index<TGenomeRev, FMIndex<> >                     TGenomeFM;
+
 
 // ============================================================================
+// Reads Index Type Definitions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Reads Wotd Type Definitions
+// ----------------------------------------------------------------------------
 
 typedef Index<TReadSeqStore, IndexWotd<> >              TReadsWotd;
 
@@ -146,9 +170,7 @@ namespace seqan {
 template <>
 struct Fibre<TReadsWotd, FibreSA>
 {
-    typedef String<Pair<unsigned int, unsigned short, Pack>,
-                   DefaultIndexStringSpec<TReadsWotd>::Type>                  Type;
-//        typedef String< Pair<unsigned int, unsigned short, PackPack>, MMap<> >	Type;
+    typedef String<Pair<unsigned int, unsigned short, Pack>, DefaultIndexStringSpec<TReadsWotd>::Type>  Type;
 };
 
 //	template <>
@@ -158,7 +180,9 @@ struct Fibre<TReadsWotd, FibreSA>
 //	};
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Reads QGram Index with Bucket Refinement Type Definitions
+// ----------------------------------------------------------------------------
 
 //typedef Index<TReadSeqStore, TQGramBaseIndex>                 TReadsBaseQGram;
 //typedef Index<TReadSeqStore, IndexSa<InfixSegment> >          TReadsInfixSa;
@@ -169,8 +193,7 @@ struct Fibre<TReadsWotd, FibreSA>
 //    template <>
 //    struct Fibre<TReadsBaseQGram, FibreSA>
 //    {
-//        typedef String< Pair<unsigned int, unsigned short, Pack>,
-//                        DefaultIndexStringSpec<TReadsBaseQGram>::Type >                Type;
+//        typedef String< Pair<unsigned int, unsigned short, Pack>, DefaultIndexStringSpec<TReadsBaseQGram>::Type > Type;
 //    };
 //
 //    template <>
@@ -186,7 +209,9 @@ struct Fibre<TReadsWotd, FibreSA>
 //    };
 //}
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Reads QGram Index Type Definitions
+// ----------------------------------------------------------------------------
 
 typedef Index<TReadSeqStore, TQGramBaseIndex>               TReadsQGram;
 
@@ -194,8 +219,7 @@ namespace seqan {
 template <>
 struct Fibre<TReadsQGram, FibreSA>
 {
-    typedef String<Pair<unsigned int, unsigned short, Pack>,
-                   DefaultIndexStringSpec<TReadsQGram>::Type>             Type;
+    typedef String<Pair<unsigned int, unsigned short, Pack>, DefaultIndexStringSpec<TReadsQGram>::Type> Type;
 };
 
 template <>
@@ -205,7 +229,9 @@ struct Fibre<TReadsQGram, FibreDir>
 };
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Reads QGram Index with Wotd Subtree Type Definitions
+// ----------------------------------------------------------------------------
 
 //typedef Index<TReadSeqStore, IndexWotd< Subtree<> > >   TReadsWotdSubtree;
 //
