@@ -187,7 +187,7 @@ int mainWithOptions(Options & options)
     switch (options.genomeIndexType)
     {
     case Options::INDEX_ESA:
-        return executeIndexer<TGenomeFM>(options);
+        return executeIndexer<TGenomeEsa>(options);
 
     case Options::INDEX_SA:
         return executeIndexer<TGenomeSa>(options);
