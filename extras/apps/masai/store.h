@@ -44,14 +44,13 @@
 using namespace seqan;
 
 // ============================================================================
-// Forwards
+// Fragment Store Types
 // ============================================================================
 
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Fragment Store Configuration
+// ----------------------------------------------------------------------------
 
-// Fragment Store Configuration Template
 struct FragStoreConfig
 {
     typedef String<Dna5Q>           TReadSeq;
@@ -74,9 +73,11 @@ struct FragStoreConfig
     typedef void                    TAnnotationStoreElementSpec;
 };
 
-// Genome Index Templates
+// ----------------------------------------------------------------------------
+// Genome Type
+// ----------------------------------------------------------------------------
+
 typedef StringSet<FragStoreConfig::TContigSeq, Dependent<> >                TGenome;
-//typedef StringSet<ModifiedString<FragStoreConfig::TContigSeq, ModReverse> > TGenomeRev;
 
 // TODO(esiragusa):Overload Size/Limits metafunctions and test
 //namespace seqan
@@ -94,10 +95,16 @@ typedef StringSet<FragStoreConfig::TContigSeq, Dependent<> >                TGen
 //    };
 //}
 
-// Fragment Store Template
+// ----------------------------------------------------------------------------
+// Fragment Store Type
+// ----------------------------------------------------------------------------
+
 typedef FragmentStore<void, FragStoreConfig>            TFragmentStore;
 
-// Fragment Store Genome Templates
+// ----------------------------------------------------------------------------
+// Fragment Store Genome Types
+// ----------------------------------------------------------------------------
+
 typedef TFragmentStore::TContigStore                    TContigStore;
 typedef Size<TContigStore>::Type                        TContigStoreSize;
 typedef Value<TContigStore>::Type                       TContigStoreElement;
@@ -105,13 +112,19 @@ typedef TFragmentStore::TContigSeq                      TContigSeq;
 typedef Size<TContigSeq>::Type                          TContigSeqSize;
 typedef Segment<TContigSeq, InfixSegment>               TContigInfix;
 
-// Fragment Store Reads Templates
+// ----------------------------------------------------------------------------
+// Fragment Store Reads Types
+// ----------------------------------------------------------------------------
+
 typedef TFragmentStore::TReadSeqStore                   TReadSeqStore;
 typedef Size<TReadSeqStore>::Type                       TReadSeqStoreSize;
 typedef Value<TReadSeqStore>::Type const                TReadSeq;
 typedef Size<TReadSeq>::Type                            TReadSeqSize;
 
-// Fragment Store Mapped Reads Templates
+// ----------------------------------------------------------------------------
+// Fragment Store Mapped Reads Types
+// ----------------------------------------------------------------------------
+
 typedef TFragmentStore::TAlignedReadStore               TAlignedReadStore;
 typedef Value<TAlignedReadStore>::Type                  TAlignedReadStoreElement;
 typedef TFragmentStore::TAlignQualityStore              TAlignQualityStore;
@@ -119,15 +132,19 @@ typedef Value<TAlignQualityStore>::Type                 TAlignQualityStoreElemen
 typedef TFragmentStore::TAlignedReadTagStore            TAlignedReadTagStore;
 typedef Value<TAlignedReadTagStore>::Type               TAlignedReadTagStoreElement;
 
+
 // ============================================================================
-// Functions
+// Dna5 specializations to deal with uncalled bases
 // ============================================================================
 
-// Dna5 specializations to deal with uncalled bases
 namespace seqan {
 static unsigned char __MASK_DNA5_EQ[]  = {1, 2, 4, 8, 0};
 static unsigned char __MASK_DNA5_LT[]  = {0, 1, 2, 3, 4};
 static unsigned char __MASK_DNA5Q_LT[] = {0, 1, 2, 3, 5};
+
+// ----------------------------------------------------------------------------
+// Comparison operators for (Dna5 vs Dna5Q) and (Dna5Q vs Dna5)
+// ----------------------------------------------------------------------------
 
 template <>
 inline bool operator==(Dna5 const & left_, Dna5Q const & right_)
@@ -201,8 +218,10 @@ inline bool operator>=(Dna5Q const & left_, Dna5 const & right_)
     return __MASK_DNA5Q_LT[ordValue(left_)] >= __MASK_DNA5_LT[ordValue(right_)];
 }
 
-// ============================================================================
-
+// ----------------------------------------------------------------------------
+// ordLess/Equal/Greater() functions for (Dna5 vs Dna5)
+// ----------------------------------------------------------------------------
+    
 template <>
 inline bool ordLess(Dna5 const & left_, Dna5 const & right_)
 {
