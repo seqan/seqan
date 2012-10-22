@@ -229,7 +229,7 @@ SEQAN_CHECKPOINT
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// Checks whether two matches overlap in seq2 and 
+// Checks whether two matches overlap *in seq2* and 
 //  whether the non-overlaping parts are shorter than minLength.
 template<typename TMatch, typename TSize>
 bool
@@ -273,56 +273,65 @@ SEQAN_CHECKPOINT
 ///////////////////////////////////////////////////////////////////////////////
 // Marks matches that overlap in both sequences with a longer match as invalid.
 template<typename TSequence, typename TId, typename TSize>
-void
-maskOverlaps(String<StellarMatch<TSequence, TId> > & matches,
-			 TSize minLength) {
-SEQAN_CHECKPOINT
-	typedef StellarMatch<TSequence, TId>					TMatch;
-	typedef typename TMatch::TPos							TPos;
-	typedef typename Iterator<String<TMatch>, Rooted>::Type	TIter;
-	typedef typename Iterator<String<TSize>, Rooted>::Type	TOverlapIter;
+void maskOverlaps(String<StellarMatch<TSequence, TId> > & matches, TSize minLength)
+{
+	typedef StellarMatch<TSequence, TId>                    TMatch;
+	typedef typename TMatch::TPos                           TPos;
+	typedef typename Iterator<String<TMatch>, Rooted>::Type TIter;
+	typedef typename Iterator<String<TSize>, Rooted>::Type  TOverlapIter;
 
 	// sort matches by begin position in row0
 	sortMatches(matches, LessPos<TMatch>());
 
-	// list of "open" matches in row0
-	String<TSize> overlaps;
+    // iterate all matches
+    TIter it = begin(matches);
 
-	TIter it = begin(matches);
-	TIter itEnd = end(matches);
+    // list of matches that potentially overlap with the current match in row0 and
+    // start earlier (including matches that overlap but have a unique part of at
+    // least minLength) sorted by descending end positions
+    String<TSize> overlaps;
 
-	for (; it != itEnd; ++it) {
-		if ((*it).id == TMatch::INVALID_ID) continue;
+    for (; it != end(matches); ++it)
+    {
+        if ((*it).id == TMatch::INVALID_ID) continue;
 
-		TOverlapIter overlapIt = begin(overlaps);
-		TOverlapIter overlapEnd = end(overlaps);
-		
-		while (overlapIt != overlapEnd && matches[*overlapIt].end1 >= (*it).end1) {
-			if (checkOverlap(*it,  matches[*overlapIt], minLength)) {
-				// set shorter match invalid (*it is here shorter than *overlapIt)
-				(*it).id = TMatch::INVALID_ID;
-			}
-			++overlapIt;
-		}
+        TPos insertPos = 0;
+        
+        // iterate potentially overlapping matches
+        TOverlapIter overlapIt = begin(overlaps);
+        for (; overlapIt != end(overlaps); ++overlapIt)
+        {
+            TMatch & o = matches[*overlapIt];
 
-		TPos insertPos = position(overlapIt);
-		while (overlapIt != overlapEnd &&  matches[*overlapIt].end1 >= (*it).begin1) {
-			if (checkOverlap(*it,  matches[*overlapIt], minLength)) {
-				// set shorter match invalid
-				if (length((*it)) > length(matches[*overlapIt])) {
-					 matches[*overlapIt].id = TMatch::INVALID_ID;
-				} else {
-					(*it).id = TMatch::INVALID_ID;
-				}
-			}
-			++overlapIt;
-		}
-		resize(overlaps, position(overlapIt));
+            // determine position for inserting *it into overlaps after checking
+            if ((*it).end1 < o.end1) insertPos++;
 
-		// insert match into list
-		if ((*it).id != TMatch::INVALID_ID)
-			insertValue(overlaps, insertPos, position(it));
-	}
+            // check if matches overlap in row0 - if not, then break
+            if (o.end1 <= (*it).begin1) break;
+
+            // check if unique parts of the two matches in row0 are longer than minLength - if yes, then continue
+            if ((*it).begin1 - o.begin1 >= (TPos)minLength &&
+                (*it).end1 > o.end1 && (*it).end1 - o.end1 >= (TPos)minLength) continue;
+
+            // check if matches overlap in row1 - if not, then continue
+            if (!checkOverlap(*it, o, minLength)) continue;
+
+            // (TODO: check exact align col overlap)
+
+            // set shorter match invalid
+            if (length(*it) > length(o))
+			    o.id = TMatch::INVALID_ID;
+            else
+                (*it).id = TMatch::INVALID_ID;
+        }
+
+        // remove all matches from overlaps that end earlier than current match begins
+        resize(overlaps, position(overlapIt));
+
+        if ((*it).id != TMatch::INVALID_ID)
+            insertValue(overlaps, insertPos, position(it));
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////

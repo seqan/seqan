@@ -483,7 +483,7 @@ _parseOptions(ArgumentParser & parser, TOptions & options)
 void _setParser(ArgumentParser & parser)
 {
     setShortDescription(parser, "the SwifT Exact LocaL AligneR");
-    setDate(parser, "July 2012");
+    setDate(parser, "October 2012");
     setVersion(parser, "1.3");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIFASTA FILE 1\\fP> <\\fIFASTA FILE 2\\fP>");
