@@ -125,13 +125,15 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "output-file", "Specify output file.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a huge temporary folder. Required.", ArgParseOption::STRING));
+    setRequired(parser, "tmp-folder");
+
+    addOption(parser, ArgParseOption("o", "output-file", "Specify output file. Required.", ArgParseOption::OUTPUTFILE));
     setRequired(parser, "output-file");
 
     addOption(parser, ArgParseOption("of", "output-format", "Select output format.", ArgParseOption::STRING));
     setValidValues(parser, "output-format", options.outputFormatList);
     setDefaultValue(parser, "output-format", options.outputFormatList[options.outputFormat]);
-
 
     addSection(parser, "Debug Options");
 
@@ -157,12 +159,16 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getArgumentValue(options.mappedReadsLeftFile, parser, 3);
     getArgumentValue(options.mappedReadsRightFile, parser, 4);
 
-
     // Parse pairing options.
 //    getOptionValue(options.errorsPerRead, parser, "errors");
     options.mismatchesOnly = isSet(parser, "no-gaps");
     getOptionValue(options.libraryLength, parser, "library-length");
     getOptionValue(options.libraryError, parser, "library-error");
+
+    // Parse tmp folder.
+    CharString tmpFolder;
+    getOptionValue(tmpFolder, parser, "tmp-folder");
+    setenv("TMPDIR", toCString(tmpFolder), true);
 
     // Parse output file.
     getOptionValue(options.mappedPairsFile, parser, "output-file");

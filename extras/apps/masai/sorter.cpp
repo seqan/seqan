@@ -114,7 +114,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "output-file", "Specify output file.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a huge temporary folder. Required.", ArgParseOption::STRING));
+    setRequired(parser, "tmp-folder");
+
+    addOption(parser, ArgParseOption("o", "output-file", "Specify output file. Required.", ArgParseOption::OUTPUTFILE));
     setRequired(parser, "output-file");
 
     addOption(parser, ArgParseOption("of", "output-format", "Select output format.", ArgParseOption::STRING));
@@ -148,6 +151,11 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 //    getOptionValue(options.errorsPerRead, parser, "errors");
     options.mismatchesOnly = isSet(parser, "no-gaps");
     getOptionValue(options.matchesPerRead, parser, "matches");
+
+    // Parse tmp folder.
+    CharString tmpFolder;
+    getOptionValue(tmpFolder, parser, "tmp-folder");
+    setenv("TMPDIR", toCString(tmpFolder), true);
 
     // Parse output file.
     getOptionValue(options.sortedReadsFile, parser, "output-file");

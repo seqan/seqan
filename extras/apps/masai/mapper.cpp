@@ -133,7 +133,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "output-file", "Specify output file.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output-file", "Specify output file. Required.", ArgParseOption::OUTPUTFILE));
     setRequired(parser, "output-file");
 
     addOption(parser, ArgParseOption("of", "output-format", "Select output format.", ArgParseOption::STRING));
@@ -277,6 +277,7 @@ int configureGenomeIndex(Options & options)
 
 //        case Options::INDEX_FM:
 //            return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeFM>(options);
+
     default:
         return 1;
     }

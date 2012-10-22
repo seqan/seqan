@@ -88,6 +88,12 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "index", options.indexTypeList[options.genomeIndexType]);
 
     addOption(parser, ArgParseOption("xp", "index-prefix", "Specify genome index prefix name.", ArgParseOption::STRING));
+
+
+    addSection(parser, "Output Options");
+
+    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a huge temporary folder. Required.", ArgParseOption::STRING));
+    setRequired(parser, "tmp-folder");
 }
 
 ArgumentParser::ParseResult
@@ -111,6 +117,11 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse genome index type.
     getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
+
+    // Parse tmp folder.
+    CharString tmpFolder;
+    getOptionValue(tmpFolder, parser, "tmp-folder");
+    setenv("TMPDIR", toCString(tmpFolder), true);
 
     return seqan::ArgumentParser::PARSE_OK;
 }
