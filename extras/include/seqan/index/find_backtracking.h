@@ -74,12 +74,15 @@ public:
     TSize               suffix_length;
     TSize               position;
 
-    SuffixAligner() {}
-
-    SuffixAligner(TSuffix & suffix) :
-//        suffix(suffix),
+    SuffixAligner() :
+        suffix_length(0),
         position(0)
     {}
+
+//    SuffixAligner(TSuffix & suffix) :
+//        suffix(suffix),
+//        position(0)
+//    {}
 };
 
 // ============================================================================
@@ -100,12 +103,16 @@ public:
     TSize               position;
     unsigned            errors;
 
-    PrefixAligner() {}
-
-    PrefixAligner(TPrefix const & prefix) :
-//        prefix(prefix),
-        position(0)
+    PrefixAligner() :
+        prefix_length(0),
+        position(0),
+        errors(0)
     {}
+
+//    PrefixAligner(TPrefix const & prefix) :
+//        prefix(prefix),
+//        position(0)
+//    {}
 };
 
 // ============================================================================

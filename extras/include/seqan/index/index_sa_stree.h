@@ -393,8 +393,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TValue>
-inline bool _getNodeByChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
-                           TValue c, typename VertexDescriptor<Index<TText, IndexSa<TIndexSpec> > >::Type & childDesc)
+inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, TValue c)
 {
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
     typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
@@ -423,6 +422,9 @@ inline bool _getNodeByChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec
     if (range.i1 >= range.i2)
         return false;
 
+    // Save vertex descriptor.
+    _historyPush(it);
+    
     // Update range, lastChar and repLen.
     value(it).range.i1 = range.i1 - begin(sa, Standard());
     value(it).range.i2 = range.i2 - begin(sa, Standard());
