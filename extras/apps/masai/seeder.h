@@ -358,6 +358,7 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracki
     typedef Pattern<TReadSeq, TBacktracking>        TPattern;
 
     TFinder finder(genomeIndex);
+    TPattern pattern;
 
     TReadSeqStoreSize readsCount = seeder.readsCount * 2;
 
@@ -371,7 +372,7 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracki
 
         for (TReadSeqSize seed = firstSeed; seed < lastSeed; ++seed)
         {
-            TPattern pattern(infix(read, seedsLength * seed, seedsLength * (seed + 1)));
+            setHost(pattern, infix(read, seedsLength * seed, seedsLength * (seed + 1)));
 
             clear(finder);
 
