@@ -172,11 +172,19 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
             }
             else  // this seems to be a normal argument
             {
-                ArgParseArgument & argument = getArgument(me, currentArgument);
-                _assignArgumentValue(argument, argv[arg]);
+                // check if we have that much arguments
+                if (me.argumentList.size() > currentArgument)
+                {
+                    ArgParseArgument & argument = getArgument(me, currentArgument);
+                    _assignArgumentValue(argument, argv[arg]);
 
-                if (!isListArgument(argument))
-                    ++currentArgument;
+                    if (!isListArgument(argument))
+                        ++currentArgument;
+                }
+                else
+                {
+                    throw ParseException("To many arguments!");
+                }
             }
         }
         if (hasOption(me, "version") && isSet(me, "version"))
@@ -220,7 +228,19 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_OK;
     else
     {
-        errorStream << getAppName(me) << ": Not all required arguments or options were set" << std::endl;
+        // find missing options
+        if (!_allRequiredSet(me))
+        {
+            for (unsigned o = 0; o < length(me.optionMap); ++o)
+                if (!isSet(me.optionMap[o]) && isRequired(me.optionMap[o]))
+                    errorStream << getAppName(me) << ": Missing value for option: " << getOptionName(me.optionMap[o]) << std::endl;
+        }
+        // and arguments
+        if (!_allArgumentsSet(me))
+        {
+            errorStream << getAppName(me) << ": Not enough arguments were provided." << std::endl;
+        }
+        errorStream << "Try '" << getAppName(me) << " --help' for more information.\n";
         return ArgumentParser::PARSE_ERROR;
     }
 }

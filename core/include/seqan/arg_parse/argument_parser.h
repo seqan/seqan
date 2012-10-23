@@ -365,13 +365,14 @@ inline ArgParseOption const & getOption(ArgumentParser const & me, std::string c
 ..class:Class.ArgumentParser
 ..summary:Sets whether or not the option defined by the parameter $name$ (which can be
  either the short or the long name) is mandatory.
+..remarks: Note that the empty string is, at least for string options, also a valid string.
+Hence setting an option to required does not guarantee that the returned string is not empty.
 ..cat:Miscellaneous
 ..signature:setRequired(parser, optionName [, required])
 ..param.parser:The @Class.ArgumentParser@ object.
 ...type:Class.ArgumentParser
 ..param.optionName:The identifier of the command line option.
-..param.required:The new required value of the option. Default is true.
-...type:nolink:bool
+..param.required.remarks: The default value is true.
 ..include:seqan/arg_parse.h
 */
 
@@ -497,7 +498,7 @@ inline bool _allRequiredSet(ArgumentParser const & me)
 
 // ----------------------------------------------------------------------------
 // Function _allArgumentsSet()
-// -------------------------------------------------------------------------}---
+// ----------------------------------------------------------------------------
 
 inline bool _allArgumentsSet(ArgumentParser const & me)
 {

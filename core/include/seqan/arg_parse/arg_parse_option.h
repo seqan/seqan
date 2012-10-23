@@ -379,21 +379,34 @@ inline std::string const getArgumentLabel(ArgParseOption const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Helper Function _writeOptName()
+// Function getOptionName()                                    [ArgParseOption]
 // ----------------------------------------------------------------------------
 
-template <typename TStream>
-inline void _writeOptName(TStream & target, ArgParseOption const & me)
+/**
+ .Function.getOptionName
+ ..class:Class.ArgParseOption
+ ..summary:Returns the name of the @Class.ArgParseOption@ in a well formated
+ way.
+ ..cat:Miscellaneous
+ ..signature:getOptionName(option)
+ ..param.option:The @Class.ArgParseOption@ object.
+ ...type:Class.ArgParseOption
+ ..include:seqan/arg_parse.h
+ ..returns:The name of the option as well formated string (e.g., -h, --help).
+ */
+inline std::string getOptionName(ArgParseOption const & me)
 {
-    //IOREV _notio_ irrelevant for iorev
-    streamWrite(target, empty(me.shortName) ? "" : "-");
-    streamWrite(target, me.shortName);
-    streamWrite(target, (empty(me.shortName) || empty(me.longName)) ? "" : ", ");
+    std::stringstream stream;
+
+    stream << (empty(me.shortName) ? "" : "-");
+    stream << me.shortName;
+    stream << ((empty(me.shortName) || empty(me.longName) ? "" : ", "));
     if (!empty(me.longName))
     {
-        streamWrite(target, "--");
-        streamWrite(target, me.longName);
+        stream << "--";
+        stream << me.longName;
     }
+    return stream.str();
 }
 
 // ----------------------------------------------------------------------------
@@ -416,7 +429,7 @@ template <typename TStream>
 inline void write(TStream & target, ArgParseOption const & me)
 {
     streamPut(target, '\t');
-    _writeOptName(target, me);
+    streamPut(target, getOptionName(me));
     streamPut(target, '\t');
     streamPut(target, '\t');
     streamPut(target, me._helpText);
