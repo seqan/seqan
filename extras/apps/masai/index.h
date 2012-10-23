@@ -153,7 +153,7 @@ struct Fibre<TGenomeInfixSa, FibreSA>
 // Genome FM Index Type Definitions
 // ----------------------------------------------------------------------------
 
-typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<> >, CompressText> > TGenomeFM;
+typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<MultiDollar<void> > >, CompressText> > TGenomeFM;
 
 
 // ============================================================================
