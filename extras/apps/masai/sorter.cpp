@@ -155,7 +155,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse tmp folder.
     CharString tmpFolder;
     getOptionValue(tmpFolder, parser, "tmp-folder");
-    setenv("TMPDIR", toCString(tmpFolder), true);
+    setEnv("TMPDIR", tmpFolder);
 
     // Parse output file.
     getOptionValue(options.sortedReadsFile, parser, "output-file");

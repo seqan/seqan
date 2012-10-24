@@ -121,7 +121,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse tmp folder.
     CharString tmpFolder;
     getOptionValue(tmpFolder, parser, "tmp-folder");
-    setenv("TMPDIR", toCString(tmpFolder), true);
+    setEnv("TMPDIR", tmpFolder);
 
     return seqan::ArgumentParser::PARSE_OK;
 }

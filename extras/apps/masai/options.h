@@ -151,5 +151,13 @@ void setDescription(ArgumentParser & parser)
     addDescription(parser, "(c) Copyright 2011-2012 by Enrico Siragusa.");
 }
 
+template <typename TString, typename TValue>
+bool setEnv(TString & key, TValue & value)
+{
+    CharString env(key);
+    appendValue(env, '=');
+    append(env, value);
+    return !putenv(toCString(env));
+}
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_OPTIONS_H_
