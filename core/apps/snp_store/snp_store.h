@@ -5309,7 +5309,7 @@ void dumpShortIndelPolymorphismsBatch(
             std::cout << splitCountIt->first.i1 << ","  << splitCountIt->first.i2 << "," << splitCountIt->second << std::endl;
         }
         splitCountIt = splitCounts.begin();*/
-        for(; indelIt != endIt; ++indelIt)
+        for(; indelIt != endIt; ++indelIt, ++strandIt)
         {
             bool debug = false;
 #ifdef SNPSTORE_DEBUG
@@ -5431,7 +5431,7 @@ void dumpShortIndelPolymorphismsBatch(
                 indelfile << ";ebiDepth=" << depth << ";depth=" << covF+covR;
                 if(splitSupport>0) indelfile << ";splitSupport=" << splitSupport;
                 if(homoLength > 1) indelfile << ";homorun=" << homoLength;
-                if(bsi) indelfile << ";bsi;";
+                if(bsi) indelfile << ";bsi";
                 if( (float)indelIt->second.i1/depth <= options.indelHetMax) indelfile << ";geno=het";
                 else indelfile << ";geno=hom";
                 indelfile << std::endl;
