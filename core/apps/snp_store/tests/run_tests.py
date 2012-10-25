@@ -99,10 +99,28 @@ def main(source_base, binary_base):
     # test 3
     conf = app_tests.TestConf(
         program=path_to_program,
-        redir_stdout=ph.outFile('snp_store_realign_m0mp1oa.stdout'),
+        redir_stdout=ph.outFile('snp_store_realign_m1mp1oa.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.sam'),
               '-re', '-if', str(1), '-oa', '-hq', '-it', str(1), '-mp', str(1), '-m', str(1),
+              '-id', ph.outFile('indels_realign_m1mp1oa.out'),
+              '-o', ph.outFile('snps_realign_m1mp1oa.out')],
+        to_diff=[(ph.inFile('snp_store_realign_m1mp1oa.stdout'),
+                  ph.outFile('snp_store_realign_m1mp1oa.stdout')),
+                 (ph.inFile('snps_realign_m1mp1oa.out'),
+                  ph.outFile('snps_realign_m1mp1oa.out'),
+                  transforms),
+                 (ph.inFile('indels_realign_m1mp1oa.out'),
+                  ph.outFile('indels_realign_m1mp1oa.out'))])
+    conf_list.append(conf)
+
+    # test 4
+    conf = app_tests.TestConf(
+        program=path_to_program,
+        redir_stdout=ph.outFile('snp_store_realign_m0mp1oa.stdout'),
+        args=[ph.inFile('human-chr22-inf2.fa'),
+              ph.inFile('human-reads2.gff'),
+              '-re', '-oa', '-hq', '-it', str(2), '-mp', str(1), 
               '-id', ph.outFile('indels_realign_m0mp1oa.out'),
               '-o', ph.outFile('snps_realign_m0mp1oa.out')],
         to_diff=[(ph.inFile('snp_store_realign_m0mp1oa.stdout'),
@@ -113,6 +131,26 @@ def main(source_base, binary_base):
                  (ph.inFile('indels_realign_m0mp1oa.out'),
                   ph.outFile('indels_realign_m0mp1oa.out'))])
     conf_list.append(conf)
+
+    # test 5
+    conf = app_tests.TestConf(
+        program=path_to_program,
+        redir_stdout=ph.outFile('snp_store_realign_m0mp1oa_it1ipt01.stdout'),
+        args=[ph.inFile('human-chr22-inf2.fa'),
+              ph.inFile('human-reads2.sam'),
+              '-re', '-if', str(1), '-oa', '-hq', '-it', str(1), '-mp', str(1), '-ipt', str(0.1),
+              '-id', ph.outFile('indels_realign_m0mp1oa_it1ipt01.out'),
+              '-o', ph.outFile('snps_realign_m0mp1oa_it1ipt01.out')],
+        to_diff=[(ph.inFile('snp_store_realign_m0mp1oa_it1ipt01.stdout'),
+                  ph.outFile('snp_store_realign_m0mp1oa_it1ipt01.stdout')),
+                 (ph.inFile('snps_realign_m0mp1oa_it1ipt01.out'),
+                  ph.outFile('snps_realign_m0mp1oa_it1ipt01.out'),
+                  transforms),
+                 (ph.inFile('indels_realign_m0mp1oa_it1ipt01.out'),
+                  ph.outFile('indels_realign_m0mp1oa_it1ipt01.out'))])
+    conf_list.append(conf)
+
+
 
     # ============================================================
     # Execute the tests.
