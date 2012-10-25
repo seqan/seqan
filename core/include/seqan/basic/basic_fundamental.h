@@ -44,6 +44,8 @@
 // Prerequisites
 // --------------------------------------------------------------------------
 
+#include <algorithm>
+
 #include <seqan/platform.h>
 #include <seqan/basic/basic_metaprogramming.h>
 

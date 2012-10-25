@@ -37,6 +37,8 @@
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_METAPROGRAMMING_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_METAPROGRAMMING_H_
 
+#include <cstdlib>
+
 #include <seqan/platform.h>
 
 // Metaprogramming logical operations.

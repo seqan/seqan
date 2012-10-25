@@ -57,6 +57,10 @@
 // Fundamental meta and global functions.  This is what makes SeqAn SeqAn.
 #include <seqan/basic/basic_fundamental.h>
 
+// More advanced debug system constructs.
+// TODO(holtgrew): Move into basic_debug subsystem, some stuff from metaprogramming and fundamental required, those should not depend on debug system.
+#include <seqan/basic/test_system.h>
+
 // SeqAn Concept Checking Library (ported from Boost).
 #include <seqan/basic/basic_concept.h>
 

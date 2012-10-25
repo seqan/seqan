@@ -208,6 +208,28 @@ struct TagList
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction TagListValue
+// ----------------------------------------------------------------------------
+
+
+// TODO(holtgrew): Document me!
+
+template <typename TList, int i>
+struct TagListValue;
+
+template <typename TTag, typename TSubList>
+struct TagListValue<TagList<TTag, TSubList>, 1>
+{
+    typedef TTag Type;
+};
+
+template <typename TTag, typename TSubList, int I>
+struct TagListValue<TagList<TTag, TSubList>, I>
+{
+    typedef typename TagListValue<TSubList, I - 1>::Type Type;
+};
+
+// ----------------------------------------------------------------------------
 // Class TagSelector
 // ----------------------------------------------------------------------------
 
