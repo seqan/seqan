@@ -278,6 +278,7 @@ class Index<TText, FMIndex<TOccSpec, TSpec> >
 		n(_computeBwtLength(text)),
 		compressionFactor(compressionFactor)
 	{
+        // TODO(esiragusa): Fix _indexCreate()
 	    if (IsSameType<TSpec, CompressText>::VALUE)
     		_indexCreate(*this, text);
 	}

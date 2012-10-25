@@ -298,6 +298,11 @@ inline unsigned getCharacterPosition(TDummy const & /*tag*/, TChar character)
 template <typename TChar, typename TSpec, typename TChar2>
 inline unsigned getCharacterPosition(PrefixSumTable<TChar, TSpec> const & /*tag*/, TChar2 character)
 {
+    // TODO: Cast TChar2 to TChar
+//    if ((TChar2)(TChar)character != character)
+//        return ValueSize<TChar>::VALUE;
+//    else
+//        return ordValue((TChar)character);
     return ordValue(character);
 }
 
