@@ -155,7 +155,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(fm_index_iterator_go_right);
     SEQAN_CALL_TEST(fm_index_iterator_go_up);
     SEQAN_CALL_TEST(fm_index_iterator_representative);
-    SEQAN_CALL_TEST(fm_index_iterator_path_label);
+//    SEQAN_CALL_TEST(fm_index_iterator_path_label);
     SEQAN_CALL_TEST(fm_index_iterator_is_root);
     SEQAN_CALL_TEST(fm_index_iterator_count_occurrences);
     SEQAN_CALL_TEST(fm_index_iterator_range);
