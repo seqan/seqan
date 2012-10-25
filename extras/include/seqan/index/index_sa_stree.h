@@ -160,6 +160,12 @@ public:
     typedef HistoryStackSA_<TSize, TAlphabet>       Type;
 };
 
+template <typename TText, typename TIndexSpec, typename TSpec>
+struct EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > >
+{
+    typedef typename Value<Index<TText, IndexSa<TIndexSpec> > >::Type Type;
+};
+
 // ============================================================================
 
 template <typename TText>
@@ -193,30 +199,44 @@ inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > con
 }
 
 // is this a leaf? (hide empty $-edges)
-template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
-inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
-                    VSTreeIteratorTraits<TDfsOrder, True> const)
+//template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
+//inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
+//                    VSTreeIteratorTraits<TDfsOrder, True> const)
+//{
+//    typedef Index<TText, IndexSa<TIndexSpec> >                                  TIndex;
+//    typedef typename Infix<typename Fibre<TIndex, EsaSA>::Type const>::Type     TOccs;
+//    typedef typename Iterator<TOccs, Standard>::Type                            TIter;
+//
+//    TIndex const & index = container(it);
+//
+//    typename Size<TIndex>::Type lcp = repLength(it);
+//
+//    // if the last suffix in the interval is larger than the lcp,
+//    // not all outgoing edges are empty (uses lex. sorting)
+//    TOccs occs = getOccurrences(it);
+//    TIter oc = begin(occs, Standard()) + length(occs) - 1;
+//    return getSeqOffset(*oc, stringSetLimits(index)) + lcp == sequenceLength(getSeqNo(*oc, stringSetLimits(index)), index);
+//}
+
+template <typename TIndex, typename TSize, typename TAlphabet>
+inline typename Size<TIndex>::Type
+repLength(TIndex const &, VertexSA<TSize, TAlphabet> const & vDesc)
 {
-    typedef Index<TText, IndexSa<TIndexSpec> >                                  TIndex;
-    typedef typename Infix<typename Fibre<TIndex, EsaSA>::Type const>::Type     TOccs;
-    typedef typename Iterator<TOccs, Standard>::Type                            TIter;
-
-    TIndex const & index = container(it);
-
-    typename Size<TIndex>::Type lcp = repLength(it);
-
-    // if the last suffix in the interval is larger than the lcp,
-    // not all outgoing edges are empty (uses lex. sorting)
-    TOccs occs = getOccurrences(it);
-    TIter oc = begin(occs, Standard()) + length(occs) - 1;
-    return getSeqOffset(*oc, stringSetLimits(index)) + lcp == sequenceLength(getSeqNo(*oc, stringSetLimits(index)), index);
+    return vDesc.repLen;
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline typename Size<Index<TText, IndexSa<TIndexSpec> > >::Type
-repLength(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+inline typename EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
+parentEdgeLabel(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
 {
-    return value(it).repLen;
+    return value(it).lastChar;
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec>
+inline typename Value<Index<TText, IndexSa<TIndexSpec> > >::Type
+parentEdgeFirstChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return value(it).lastChar;
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDfsOrder>
@@ -242,6 +262,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     std::cout << "goDown" << std::endl;
 #endif
 
+    // TODO(esiragusa): use HideEmptyEdges()
     if (_isLeaf(it, EmptyEdges()))
         return false;
 
@@ -255,14 +276,17 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     std::cout << "parent: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
 
+//    Pair<TSASize> saRange = range(it);
     TSASize saRangeBegin = value(it).range.i1;
     TSASize saRangeEnd = isRoot(it) ? length(sa) : value(it).range.i2;
 
+    // TODO(esiragusa): remove this check.
     if (saRangeBegin >= saRangeEnd) return false;
 
     // Skip $-edges.
     while (suffixLength(saAt(saRangeBegin, index), index) <= value(it).repLen)
     {
+        // TODO(esiragusa): remove this check and ++saRangeBegin in loop.
         // Interval contains only $-edges.
         if (++saRangeBegin >= saRangeEnd)
             return false;
@@ -341,7 +365,8 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
 
     // Change repLen to parent repLen.
     value(it).repLen--;
-    
+
+    // TODO(esiragusa): don't check for empty edges (do it in goDown)
     // Skip $-edges.
     while (suffixLength(saAt(saRangeBegin, index), index) <= value(it).repLen)
     {
