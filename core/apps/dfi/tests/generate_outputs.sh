@@ -26,8 +26,8 @@ do
 
 	# Mine emerging substrings
 	RESFILE=${result}_emerging_0.002_5.res
-	${DFI} ${inputPos} ${inputNeg} --growth 0.002 5 ${flag} > ${RESFILE}
-	echo ${RESFILE} ${inputPos} ${inputNeg} --growth 0.002 5 ${flag} >> params.txt
+	${DFI} ${inputPos} ${inputNeg} --support 0.002 --growth 5 ${flag} > ${RESFILE}
+	echo ${RESFILE} ${inputPos} ${inputNeg} --support 0.002 --growth 5 ${flag} >> params.txt
 
 	# Mine minmax substrings
 	RESFILE=${result}_minmax_${newmin}_${newmax}.res
@@ -45,8 +45,8 @@ growth=5
 for supp in 0.0005 0.001 0.005 0.01 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.6 0.7 0.8 0.9 1
 do
 	RESFILE=${result}_emerging_${supp}_${growth}.res
-	${DFI} ${inputPos} ${inputNeg} --growth ${supp} ${growth} ${flag} > ${RESFILE}
-	echo ${RESFILE} ${inputPos} ${inputNeg} --growth ${supp} ${growth} ${flag} >> params.txt
+	${DFI} ${inputPos} ${inputNeg} --support ${supp} --growth ${growth} ${flag} > ${RESFILE}
+	echo ${RESFILE} ${inputPos} ${inputNeg} --support ${supp} --growth ${growth} ${flag} >> params.txt
 done
 
 # Mine emerging substrings with different minimal growth rates
@@ -54,8 +54,8 @@ supp=0.002
 for growth in 1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 6 6.5 7 7.5 8 8.5 9 9.5 10
 do
 	RESFILE=${result}_emerging_${supp}_${growth}.res
-	${DFI} ${inputPos} ${inputNeg} --growth ${supp} ${growth} ${flag} > ${RESFILE}
-	echo ${RESFILE} ${inputPos} ${inputNeg} --growth ${supp} ${growth} ${flag} >> params.txt
+	${DFI} ${inputPos} ${inputNeg} --support ${supp} --growth ${growth} ${flag} > ${RESFILE}
+	echo ${RESFILE} ${inputPos} ${inputNeg} --support ${supp} --growth ${growth} ${flag} >> params.txt
 done
 
 # run dummy example (see dfi README)
@@ -67,8 +67,8 @@ result=Example
 flag=
 
 	RESFILE=${result}_emerging_${supp}_${growth}.res
-    ${DFI} ${inputPos} ${inputNeg} --growth ${supp} ${growth} ${flag} > ${RESFILE}
-    echo ${RESFILE} ${inputPos} ${inputNeg} --growth ${supp} ${growth} ${flag} >> params.txt
+    ${DFI} ${inputPos} ${inputNeg} --support ${supp} --growth ${growth} ${flag} > ${RESFILE}
+    echo ${RESFILE} ${inputPos} ${inputNeg} --support ${supp} --growth ${growth} ${flag} >> params.txt
 
 
 zip results.zip *.res
