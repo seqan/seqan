@@ -305,7 +305,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     string date = "$Date$";
 
     setAppName(parser, "razers3");
-    setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
+    setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
     setVersion(parser, "3.1 [" + rev.substr(11, rev.size() - 13) + "]");
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
@@ -330,7 +330,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addDescription(parser, "(c) Copyright 2009-2012 by David Weese.");
 
     addSection(parser, "Main Options");
-    addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity\n threshold.", ArgParseOption::DOUBLE));
+    addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
     setMinValue(parser, "percent-identity", "50");
     setMaxValue(parser, "percent-identity", "100");
     setDefaultValue(parser, "percent-identity", 100 - (100.0 * options.errorRate));
@@ -521,8 +521,6 @@ extractOptions(
 #ifndef NO_PARAM_CHOOSER
     getOptionValue(pm_options.optionLossRate, parser, "recognition-rate");
     getOptionValue(pm_options.paramFolder, parser, "param-dir");
-    if (isSet(parser, "param-dir"))
-        pm_options.fnameCount0 = true;  // read param files if param-dir is given
 #endif
     options.gapMode = (isSet(parser, "no-gaps")) ? RAZERS_UNGAPPED : RAZERS_GAPPED;
 #ifdef RAZERS_MATEPAIRS
