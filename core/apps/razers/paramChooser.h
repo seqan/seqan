@@ -1277,7 +1277,6 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
 	}
 	else if(!pm_options.prefixCount) pm_options.fprefix[0] = "results";
 
-
 	// get name of loss rate file
 	::std::stringstream paramsfile;
     getParamsFilename(paramsfile,pm_options);
@@ -1291,7 +1290,7 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
     }
 	
     // Parse or pick gapped parameters.
-    if (pm_options.fnameCount0 || pm_options.fnameCount1)
+    if (!empty(pm_options.paramFolder))
     {
         if (pm_options.verbose)
             std::cerr << std::endl << "--> Reading " <<  paramsfile.str() << std::endl;

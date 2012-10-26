@@ -249,7 +249,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setAppName(parser, "razers");
     setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "1.1 [" + rev.substr(11, rev.size() - 13) + "]");
+    setVersion(parser, "1.2 [" + rev.substr(11, rev.size() - 13) + "]");
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
@@ -405,8 +405,6 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
                     "\\fBrazer\\fP, \\fBfasta\\fP, \\fBsam\\fP, and \\fBamos\\fP. Primary and secondary sort keys are:");
     addListItem(parser, "0", "1. read number, 2. genome position");
     addListItem(parser, "1", "1. genome position, 2. read number");
-	addListItem(parser, "2", "1. read name, 2. genome position");
-	addListItem(parser, "3", "1. genome position, 2. read name");
 
     addText(parser, "");
     addText(parser, "The coordinate space used for begin and end positions can be changed with the "
@@ -439,8 +437,6 @@ extractOptions(
 #ifndef NO_PARAM_CHOOSER
     getOptionValue(pm_options.optionLossRate, parser, "recognition-rate");
     getOptionValue(pm_options.paramFolder, parser, "param-dir");
-    if (isSet(parser, "param-dir"))
-        pm_options.fnameCount0 = true;  // read param files if param-dir is given
 #endif
 	getOptionValue(options.hammingOnly, parser, "indels");
 	options.hammingOnly = !options.hammingOnly;
@@ -630,15 +626,6 @@ int main(int argc, const char *argv[])
 			pm_options.optionProbDELETE = (ParamChooserOptions::TFloat)0.01;	//edit distance parameter choosing
 		}
 
-		// if (empty(pm_options.paramFolder)) 
-		// {
-		// 	string razersFolder = argv[0];
-		// 	size_t lastPos = razersFolder.find_last_of('/') + 1;
-		// 	if (lastPos == razersFolder.npos + 1) lastPos = razersFolder.find_last_of('\\') + 1;
-		// 	if (lastPos == razersFolder.npos + 1) lastPos = 0;
-		// 	razersFolder.erase(lastPos); 
-		// 	pm_options.paramFolderPath = razersFolder;
-		// }
 		if (options.trimLength > 0) readLength = options.trimLength;
 		if (readLength > 0)
 		{
