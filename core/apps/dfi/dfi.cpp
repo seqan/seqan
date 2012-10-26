@@ -23,7 +23,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ==========================================================================*/
 
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
+//#include <seqan/misc/misc_cmdparser.h>
 #include <seqan/index.h>
 #include <../../extras/include/seqan/math.h>
 #include <string>
@@ -42,6 +43,33 @@ typedef double TFloat;
 //typedef Rational<__int64> TFloat;
 //#define DFI_PLUS_EPSILON
 //#define DFI_MINUS_EPSILON
+
+
+	struct DFIOptions
+	{
+        typedef unsigned TFreq;
+        typedef String<TFreq> TFreqString;
+        
+        // main options
+        int         alphabet;   // 0..char, 1..protein, 2..dna
+        int         predicate;  // 0..minmax, 1..growth, 2..entropy
+        TFreqString minFreq;
+        TFreqString maxFreq;
+        TFloat      minSupp;
+        TFloat      growthRate;
+        double      entropy;
+        bool        maximal;
+
+        DFIOptions()
+        {
+            alphabet = 0;
+            predicate = -1;
+            minSupp = 0;
+            growthRate = 0;
+            entropy = 0;
+            maximal = false;
+        }
+    };
 
 //////////////////////////////////////////////////////////////////////////////
 // predicates for the Frequent Pattern Mining Problem
@@ -395,46 +423,46 @@ inline void compactSameSuffLinkFreqMatches(TMatchString &matches, TIndex const &
 	resize(matches, dst - begin(matches, Standard()));
 }
 
-namespace seqan {
-/*
-	template < typename TObject, typename TPredHull, typename TPred >
-	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreSA> 
-	{
-		typedef Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
-		typedef String< 
-			typename SAValue<TIndex>::Type,
-			MMap<>
-		> Type;
-	};
-	template < typename TObject, typename TPredHull, typename TPred >
-	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > const, FibreSA>:
-		public struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreSA> {};
-*/
-
-/*	template < typename TObject, typename TPredHull, typename TPred >
-	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir> 
-	{
-		typedef Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
-		typedef String< 
-			typename Size<TIndex>::Type,
-			MMap<>
-		> Type;
-	};
-	template < typename TObject, typename TPredHull, typename TPred >
-	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > const, FibreDir>: 
-		public struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir> {};
-*/
-
-	template <typename TInt>
-	inline bool
-	_convertOptionValue(CommandLineOption const & opt, Rational<TInt> & dst, CharString const & src)
-	{
-		if (!isDoubleOption(opt)) return false;
-		std::istringstream stream(toCString(src));
-		return !(stream >> dst).fail();
-	}
-
-}
+//namespace seqan {
+///*
+//	template < typename TObject, typename TPredHull, typename TPred >
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreSA> 
+//	{
+//		typedef Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
+//		typedef String< 
+//			typename SAValue<TIndex>::Type,
+//			MMap<>
+//		> Type;
+//	};
+//	template < typename TObject, typename TPredHull, typename TPred >
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > const, FibreSA>:
+//		public struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreSA> {};
+//*/
+//
+///*	template < typename TObject, typename TPredHull, typename TPred >
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir> 
+//	{
+//		typedef Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
+//		typedef String< 
+//			typename Size<TIndex>::Type,
+//			MMap<>
+//		> Type;
+//	};
+//	template < typename TObject, typename TPredHull, typename TPred >
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > const, FibreDir>: 
+//		public struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir> {};
+//*/
+//
+//	template <typename TInt>
+//	inline bool
+//	_convertOptionValue(CommandLineOption const & opt, Rational<TInt> & dst, CharString const & src)
+//	{
+//		if (!isDoubleOption(opt)) return false;
+//		std::istringstream stream(toCString(src));
+//		return !(stream >> dst).fail();
+//	}
+//
+//}
 
 //////////////////////////////////////////////////////////////////////////////
 // Create Dfi and output substrings within constraints band
@@ -631,21 +659,54 @@ int runDFI(
 	return 0;
 }
 
-int main(int argc, const char *argv[])
+void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
 {
-	int optionAlphabet = 0;   // 0..char, 1..protein, 2..dna
-	int optionPredicate = -1; // 0..minmax, 1..growth, 2..entropy
-	String<unsigned> optionMinFreq;
-	String<unsigned> optionMaxFreq;
-	TFloat optionMinSupp = 0;
-	TFloat optionGrowthRate = 0;
-	double optionEntropy = 0;
-	bool optionMaximal = false;
-		
-	CommandLineParser parser;
 	string rev = "$Revision$";
-	addVersionLine(parser, "Dfi version 2.0 20100107 [" + rev.substr(11, 4) + "]");
+    string date = "$Date$";
 
+    setAppName(parser, "dfi");
+    setShortDescription(parser, "Fast String Mining of Multiple Databases under Frequency Constraints");
+    setCategory(parser, "Data Mining");
+    setVersion(parser, "2.1 [" + rev.substr(11, rev.size() - 13) + "]");
+    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
+
+	addUsageLine(parser, "[\\fIOPTIONS\\fP] --minmax <\\fImin_1\\fP> <\\fImax_1\\fP> ... --minmax <\\fImin_m\\fP> <\\fImax_m\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");
+	addUsageLine(parser, "[\\fIOPTIONS\\fP] --support <\\fIrho_s\\fP> --growth  <\\fIrho_g\\fP> <\\fIdatabase 1\\fP> <\\fIdatabase 2\\fP>");
+	addUsageLine(parser, "[\\fIOPTIONS\\fP] --support <\\fIrho_s\\fP> --entropy <\\fIalpha\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");
+
+    addDescription(parser, "The Deferred Frequency Index (DFI) is a tool for string mining under "
+                           "frequency constraints, i.e., predicates that evaluate solely the frequency "
+                           "of a pattern occurrence in the data. The frequency of a pattern is defined "
+                           "as the number of distinct sequences in a database that contain the pattern "
+                           "at least once. Currently the implementation contains 3 different predicates "
+                           "and can easily be extended by user-defined frequency predicates. "
+                           "The frequencies are calculated during the construction of a suffix tree "
+                           "over all databases, which enables to limit the index construction to a "
+                           "problem-specific minimum referred to as the optimal monotonic hull. ");
+
+	addDescription(parser, "(c) Copyright 2010 by David Weese and Marcel H. Schulz");
+
+    addSection(parser, "Predicate Options");
+    addOption(parser, ArgParseOption("f", "minmax", "Set minimal and maximal frequency per database.", ArgParseOption::INTEGER, "NUM NUM", true, 2));
+    addOption(parser, ArgParseOption("s", "support", "Minimal support in the first (with --growth) or all (with --entropy) databases.", ArgParseOption::DOUBLE));
+    setMinValue(parser, "support", "0");
+    setMaxValue(parser, "support", "1");
+    setDefaultValue(parser, "support", "0");
+    addOption(parser, ArgParseOption("g", "growth", "Minimal support ratio between the first and second databases.", ArgParseOption::DOUBLE));
+    addOption(parser, ArgParseOption("e", "entropy", "Maximal entropy of support values of all databases.", ArgParseOption::DOUBLE));
+    setMinValue(parser, "entropy", "0");
+    setMaxValue(parser, "entropy", "1");
+
+    addSection(parser, "Input/Output Options");
+    addOption(parser, ArgParseOption("a", "alphabet", "Specify database alphabet.", ArgParseOption::STRING));
+    setValidValues(parser, "alphabet", "dna protein char");
+    setDefaultValue(parser, "alphabet", "char");
+	addOption(parser, ArgParseOption("m", "maximal", "Output only left and right maximal substrings."));
+
+
+/*
 	//////////////////////////////////////////////////////////////////////////////
 	// Define options
 	addTitleLine(parser, "**************************************************************");
@@ -653,8 +714,8 @@ int main(int argc, const char *argv[])
 	addTitleLine(parser, "*** (c) Copyright 2010 by David Weese and Marcel H. Schulz ***");
 	addTitleLine(parser, "**************************************************************");
 	addUsageLine(parser, "[OPTION]... --minmax  <min_1> <max_1> <database 1> ... --minmax <min_m> <max_m> <database m>");
-	addUsageLine(parser, "[OPTION]... --growth  <rho_s> <rho_g> <database 1> <database 2>");
-	addUsageLine(parser, "[OPTION]... --entropy <rho_s> <alpha> <database 1> <database 2> ... <database m>");
+	addUsageLine(parser, "[OPTION]... --growth  <rho_g> --support <rho_s> <database 1> <database 2>");
+	addUsageLine(parser, "[OPTION]... --entropy <alpha> --support <rho_s> <database 1> <database 2> ... <database m>");
 	
 	addOption(parser, CommandLineOption("f",  "minmax",  2, "solve Frequent Pattern Mining Problem", OptionType::Int | OptionType::Label | OptionType::List));
 	addOption(parser, CommandLineOption("g",  "growth",  2, "solve Emerging Substring Mining Problem", OptionType::Double | OptionType::Label));
@@ -664,100 +725,120 @@ int main(int argc, const char *argv[])
 	addOption(parser, CommandLineOption("d",  "dna",        "use DNA alphabet (for genomes)", OptionType::Boolean));
 	addOption(parser, CommandLineOption("m",  "maximal",    "output only left and right maximal substrings", OptionType::Boolean));
 	addHelpLine(parser, "The default is byte alphabet");
+*/
 
-	if (argc == 1)
-	{
-		shortHelp(parser, cerr);	// print short help and exit
-		return 0;
-	}
+}
 
-	bool stop = !parse(parser, argc, argv, cerr);
+ArgumentParser::ParseResult
+extractOptions(
+    DFIOptions & options,
+    ArgumentParser const & parser)
+{
+    //////////////////////////////////////////////////////////////////////////////
+    // Extract options
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Extract options
-	getOptionValueLong(parser, "maximal", optionMaximal);
-	if (isSetLong(parser, "protein")) optionAlphabet = 1;
-	if (isSetLong(parser, "dna")) optionAlphabet = 2;
-	if (isSetLong(parser, "help") || isSetLong(parser, "version")) return 0;	// print help or version and exit
-	
+    bool stop = false;
+
+    CharString alphabetString;
+    getOptionValue(alphabetString, parser, "alphabet");
+    if (alphabetString == "char") options.alphabet = 0;
+    if (alphabetString == "protein") options.alphabet = 1;
+    if (alphabetString == "dna") options.alphabet = 2;
+	getOptionValue(options.maximal, parser, "maximal");
+
+    unsigned numDatabases = getArgumentValueCount(parser, 0);
+
 	//////////////////////////////////////////////////////////////////////////////
 	// Check options
-	if (isSetLong(parser, "minmax"))
+	if (isSet(parser, "minmax"))
 	{
-		optionPredicate = 0;
-		unsigned cons = length(getOptionValuesLong(parser, "minmax")) / 2;
-		resize(optionMinFreq, cons);
-		resize(optionMaxFreq, cons);
+		options.predicate = 0;
+		unsigned cons = length(getOptionValues(parser, "minmax")) / 2;
+		resize(options.minFreq, cons);
+		resize(options.maxFreq, cons);
 		for (unsigned d = 0; d < cons; ++d)
 		{
-			getOptionValueLong(parser, "minmax", 2*d,   optionMinFreq[d]);
-			getOptionValueLong(parser, "minmax", 2*d+1, optionMaxFreq[d]);
-			if ((optionMinFreq[d] < 1) && (stop = true))
+			getOptionValue(options.minFreq[d], parser, "minmax", 2*d);
+			getOptionValue(options.maxFreq[d], parser, "minmax", 2*d+1);
+			if ((options.minFreq[d] < 1) && (stop = true))
 				cerr << "Minimum frequency threshold must be at least 1." << endl;
-			if ((optionMaxFreq[d] < 1) && (stop = true))
+			if ((options.maxFreq[d] < 1) && (stop = true))
 				cerr << "Maximum frequency threshold must be greater than 0." << endl;
 		}
-		if ((argumentCount(parser) < cons) && (stop = true))
+		if ((numDatabases < cons) && (stop = true))
 			cerr << "Please specify " << cons << " databases." << endl;
-		if ((argumentCount(parser) > cons) && (stop = true))
-			cerr << "Please specify " << argumentCount(parser) << " min/max constraints." << endl;
+		if ((numDatabases > cons) && (stop = true))
+			cerr << "Please specify " << numDatabases << " min/max constraints." << endl;
 	}
-	if (isSetLong(parser, "growth"))
+	if (isSet(parser, "growth"))
 	{
-		optionPredicate = 1;
-		getOptionValueLong(parser, "growth", 0, optionMinSupp);
-		getOptionValueLong(parser, "growth", 1, optionGrowthRate);
-		if ((optionMinSupp <= (TFloat)0 || optionMinSupp > (TFloat)1) && (stop = true))
-			cerr << "Support threshold must be greater than 0 and less than or equal to 1." << endl;
-		if ((optionGrowthRate < (TFloat)1) && (stop = true))
-			cerr << "Growth rate must not be less than 1." << endl;
-		if ((argumentCount(parser) != 2) && (stop = true))
+		options.predicate = 1;
+		getOptionValue(options.minSupp, parser, "support");
+		getOptionValue(options.growthRate, parser, "growth");
+		if ((numDatabases != 2) && (stop = true))
 			cerr << "Please specify 2 databases." << endl;
 	}
-	if (isSetLong(parser, "entropy"))
+	if (isSet(parser, "entropy"))
 	{
-		optionPredicate = 2;
-		getOptionValueLong(parser, "entropy", 0, optionMinSupp);
-		getOptionValueLong(parser, "entropy", 1, optionEntropy);
-		if ((optionMinSupp <= (TFloat)0 || optionMinSupp > (TFloat)1) && (stop = true))
-			cerr << "Support threshold must be greater than 0 and less than or equal to 1." << endl;
-		if ((optionEntropy <= 0.0 || optionEntropy > 1.0) && (stop = true))
-			cerr << "Entropy must not be grater than 0 and less or equal to 1." << endl;
-		if ((argumentCount(parser) < 2) && (stop = true))
+		options.predicate = 2;
+		getOptionValue(options.minSupp, parser, "support");
+		getOptionValue(options.entropy, parser, "entropy");
+		if ((numDatabases < 2) && (stop = true))
 			cerr << "Please specify at least 2 databases." << endl;
 	}
 
-	if (stop)
-	{
-		cerr << "Exiting ..." << endl;
-		return -1;
-	}
+    return (stop) ? ArgumentParser::PARSE_ERROR : ArgumentParser::PARSE_OK;
+}
 
-	switch (optionPredicate)
+int main(int argc, const char *argv[])
+{
+    DFIOptions options;    
+
+    // Set up command line parser.
+    ArgumentParser parser;
+    setUpArgumentParser(parser, options);
+
+    // Parse command line.
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    if (res != ArgumentParser::PARSE_OK)
+    {
+        if (res == ArgumentParser::PARSE_ERROR)
+            cerr << "Exiting ..." << endl;
+        return (res == ArgumentParser::PARSE_ERROR);
+    }
+    // Extract options.
+    res = extractOptions(options, parser);
+    if (res != ArgumentParser::PARSE_OK)
+    {
+        cerr << "Exiting ..." << endl;
+        return 1;
+    }
+	
+	switch (options.predicate)
 	{
 		case 0:
-			switch (optionAlphabet)
+			switch (options.alphabet)
 			{
-				case 0: return runDFI<PredMinFreq, PredMaxFreq, unsigned char> (getArgumentValues(parser), optionMinFreq, optionMaxFreq, optionMaximal);
-				case 1: return runDFI<PredMinFreq, PredMaxFreq, AminoAcid> (getArgumentValues(parser), optionMinFreq, optionMaxFreq, optionMaximal);
-				case 2: return runDFI<PredMinFreq, PredMaxFreq, Dna> (getArgumentValues(parser), optionMinFreq, optionMaxFreq, optionMaximal);
+				case 0: return runDFI<PredMinFreq, PredMaxFreq, unsigned char> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal);
+				case 1: return runDFI<PredMinFreq, PredMaxFreq, AminoAcid> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal);
+				case 2: return runDFI<PredMinFreq, PredMaxFreq, Dna> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal);
 			}
 		case 1:
-			switch (optionAlphabet)
+			switch (options.alphabet)
 			{
-				case 0: return runDFI<PredMinSupp, PredEmerging, unsigned char> (getArgumentValues(parser), optionMinSupp, optionGrowthRate, optionMaximal);
-				case 1: return runDFI<PredMinSupp, PredEmerging, AminoAcid> (getArgumentValues(parser), optionMinSupp, optionGrowthRate, optionMaximal);
-				case 2: return runDFI<PredMinSupp, PredEmerging, Dna> (getArgumentValues(parser), optionMinSupp, optionGrowthRate, optionMaximal);
+				case 0: return runDFI<PredMinSupp, PredEmerging, unsigned char> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal);
+				case 1: return runDFI<PredMinSupp, PredEmerging, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal);
+				case 2: return runDFI<PredMinSupp, PredEmerging, Dna> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal);
 			}
 		case 2:
-			switch (optionAlphabet)
+			switch (options.alphabet)
 			{
-				case 0: return runDFI<PredMinAllSupp, PredEntropy, unsigned char> (getArgumentValues(parser), optionMinSupp, optionEntropy, optionMaximal);
-				case 1: return runDFI<PredMinAllSupp, PredEntropy, AminoAcid> (getArgumentValues(parser), optionMinSupp, optionEntropy, optionMaximal);
-				case 2: return runDFI<PredMinAllSupp, PredEntropy, Dna> (getArgumentValues(parser), optionMinSupp, optionEntropy, optionMaximal);
+				case 0: return runDFI<PredMinAllSupp, PredEntropy, unsigned char> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal);
+				case 1: return runDFI<PredMinAllSupp, PredEntropy, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal);
+				case 2: return runDFI<PredMinAllSupp, PredEntropy, Dna> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal);
 			}
 	}
 	cerr << "Please choose a mining problem." << endl;
 	cerr << "Exiting ..." << endl;
-	return -1;
+	return 1;
 }
