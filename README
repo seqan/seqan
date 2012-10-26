@@ -38,7 +38,7 @@ can be found in the LICENSE files.
 
   Visual C++ 8, 9, 10
   MinGW
-  LLVM (current trunk)
+  LLVM >= 3.0
   GCC >= 4.1
 
 ===========================================================================
@@ -47,7 +47,6 @@ can be found in the LICENSE files.
 
   Supported C++ compiler
   CMake (http://cmake.org/)
-  Python (Except when using Visual C++)
 
 ===========================================================================
  5. For the Impatient
@@ -68,11 +67,11 @@ prerequisites are installed and you are on Linux or Mac Os X:
 ===========================================================================
 
   Getting Started
-    https://trac.mi.fu-berlin.de/seqan/wiki/Tutorial/GettingStarted
+    https://trac.seqan.de/wiki/Tutorial/GettingStarted
   Tutorial
-    http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial
+    http://trac.seqan.de/wiki/Tutorial
   How Tos
-    http://trac.mi.fu-berlin.de/seqan/wiki/HowTo
+    http://trac.seqan.de/wiki/HowTo
   Stable Documentation
     http://www.seqan.de/dddoc/html/
   Nightly Documentation (updated, more recent!)
@@ -85,4 +84,4 @@ prerequisites are installed and you are on Linux or Mac Os X:
   Mailing List
     https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe
   Bug Tracker, Wiki
-    http://trac.mi.fu-berlin.de/seqan/
+    http://trac.seqan.de
