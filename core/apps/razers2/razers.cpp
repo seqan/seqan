@@ -231,7 +231,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setAppName(parser, "razers2");
     setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "2.0 [" + rev.substr(11, rev.size() - 13) + "]");
+    setVersion(parser, "2.1 [" + rev.substr(11, rev.size() - 13) + "]");
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));

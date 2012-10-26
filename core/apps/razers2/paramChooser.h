@@ -1068,7 +1068,7 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
 		}
 		
 		if(r_options.artSeedLength<28 || r_options.artSeedLength> 32)
-			::std::cerr << "Warning: This Version of RazerS nly supports quality-seed-lengths of 28 to 32. Using default filter parameters." << ::std::endl;
+			::std::cerr << "Warning: This Version of RazerS only supports quality-seed-lengths of 28 to 32. Using default filter parameters." << ::std::endl;
 		else return true;
 	}
 #endif
@@ -1090,7 +1090,6 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
 		|| (!pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedEditN ))
 		extrapolateNK(pm_options);
 	
-
 	// compute data specific loss rates
 	if (pm_options.fnameCount0 || pm_options.fnameCount1) 
 	{
