@@ -437,6 +437,18 @@ extractOptions(
 #ifndef NO_PARAM_CHOOSER
     getOptionValue(pm_options.optionLossRate, parser, "recognition-rate");
     getOptionValue(pm_options.paramFolder, parser, "param-dir");
+    // append slash/backslash
+    if (!empty(pm_options.paramFolder))
+    {
+        if (back(pm_options.paramFolder) != '/' && back(pm_options.paramFolder) != '\\')
+        {
+#ifdef PLATFORM_WINDOWS
+            appendValue(pm_options.paramFolder, '\\');
+#else
+            appendValue(pm_options.paramFolder, '/');
+#endif
+        }
+    }
 #endif
 	getOptionValue(options.hammingOnly, parser, "indels");
 	options.hammingOnly = !options.hammingOnly;
@@ -537,7 +549,6 @@ extractOptions(
 		if ((ones < 7 || ones > maxOnes) && !stop)
 			cerr << "Warning: Shape should contain at least 7 and at most " << maxOnes << " '1's" << endl;
 	}
-
     if (getArgumentValueCount(parser, 1) == 1)
 		options.libraryLength = -1;		// only 1 readset -> disable mate-pair mapping
     if ((getArgumentValueCount(parser, 1) > maxReadFiles) && (stop = true))
@@ -548,11 +559,10 @@ extractOptions(
 		cerr << "Min. clipped read length must be a value greater 0" << endl;
 
 	options.errorRate = (100.0 - options.errorRate) / 100.0;
-	pm_options.optionLossRate = (100.0 - pm_options.optionLossRate) / 100.0;
+	pm_options.optionLossRate = (ParamChooserOptions::TFloat)(100.0 - pm_options.optionLossRate) / 100.0;
 
     return (stop) ? ArgumentParser::PARSE_ERROR : ArgumentParser::PARSE_OK;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Command line parsing and parameter choosing
@@ -606,15 +616,13 @@ int main(int argc, const char *argv[])
 
 	if (options.trimLength > readLength)
 		options.trimLength = readLength;
-	
-		
 		
 #ifndef NO_PARAM_CHOOSER
 	if (!(isSet(argParser, "shape") || isSet(argParser, "threshold")))
 	{
 		if (options.lowMemory) pm_options.maxWeight = 13;
 		pm_options.verbose = (options._debugLevel >= 1);
-		pm_options.optionErrorRate = options.errorRate;
+		pm_options.optionErrorRate = (ParamChooserOptions::TFloat)options.errorRate;
 		if (options.hammingOnly)
 		{
 			pm_options.optionProbINSERT = (ParamChooserOptions::TFloat)0.0;
