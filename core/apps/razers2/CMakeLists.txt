@@ -4,6 +4,9 @@ project (core_apps_razers2)
 # Update the list of file names below if you add source files to your application.
 seqan_add_executable(razers2 razers.cpp
                              razers.h
+                             param_tabs.h
+                             param_tabs.cpp
+                             param_tabs.inc
                              outputFormat.h
                              paramChooser.h
                              razers_matepairs.h

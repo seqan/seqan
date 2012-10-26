@@ -387,8 +387,18 @@ extractOptions(
 #ifndef NO_PARAM_CHOOSER
     getOptionValue(pm_options.optionLossRate, parser, "recognition-rate");
     getOptionValue(pm_options.paramFolder, parser, "param-dir");
-//    if (isSet(parser, "param-dir"))
-//        pm_options.fnameCount0 = true;  // read param files if param-dir is given
+    // append slash/backslash
+    if (!empty(pm_options.paramFolder))
+    {
+        if (back(pm_options.paramFolder) != '/' && back(pm_options.paramFolder) != '\\')
+        {
+#ifdef PLATFORM_WINDOWS
+            appendValue(pm_options.paramFolder, '\\');
+#else
+            appendValue(pm_options.paramFolder, '/');
+#endif
+        }
+    }
 #endif
 	getOptionValue(options.hammingOnly, parser, "indels");
 	options.hammingOnly = !options.hammingOnly;
@@ -418,7 +428,6 @@ extractOptions(
     getOptionValue(options.tabooLength, parser, "taboo-length");
     getOptionValue(options.matchN, parser, "match-N");
     getOptionValue(errorPrbFileName, parser, "error-distr");
-//	if (isSetLong(parser, "help") || isSetLong(parser, "version")) return 0;	// print help or version and exit
     if (isSet(parser, "verbose"))
         options._debugLevel = max(options._debugLevel, 1);
     if (isSet(parser, "vverbose"))
@@ -502,7 +511,6 @@ int main(int argc, const char *argv[])
 	StringSet<CharString>	genomeFileNames;
 	StringSet<CharString>	readFileNames;
 	CharString				errorPrbFileName;
-	
 
 	// Change defaults
 	options.forward = false;
@@ -563,15 +571,6 @@ int main(int argc, const char *argv[])
 			pm_options.optionProbDELETE = (ParamChooserOptions::TFloat)0.01;	//edit distance parameter choosing
 		}
 
-		if (empty(pm_options.paramFolder)) 
-		{
-			string razersFolder = argv[0];
-			size_t lastPos = razersFolder.find_last_of('/') + 1;
-			if (lastPos == razersFolder.npos + 1) lastPos = razersFolder.find_last_of('\\') + 1;
-			if (lastPos == razersFolder.npos + 1) lastPos = 0;
-			razersFolder.erase(lastPos); 
-			pm_options.paramFolderPath = razersFolder;
-		}
 		if (options.trimLength > 0) readLength = options.trimLength;
 		if (readLength > 0)
 		{
