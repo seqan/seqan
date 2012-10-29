@@ -31,7 +31,7 @@
 // ==========================================================================
 
 #define SEQAN_DEBUG
-#define SEQAN_TEST
+
 
 #include<seqan/seeds.h>
 

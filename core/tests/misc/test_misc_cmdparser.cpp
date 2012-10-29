@@ -37,7 +37,7 @@
 #include <seqan/misc/misc_cmdparser.h>  // Header under test.
 
 #define SEQAN_DEBUG
-#define SEQAN_TEST
+
 
 #include <seqan/basic.h>
 #include <iostream>

@@ -33,7 +33,7 @@
 // ==========================================================================
 
 #define SEQAN_DEBUG
-#define SEQAN_TEST
+
 
 #include <seqan/basic.h>
 #include <seqan/file.h>

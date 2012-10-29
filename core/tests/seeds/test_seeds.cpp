@@ -34,7 +34,7 @@
 #include <cstdio>
 #include <vector>
 
-#define SEQAN_TEST
+
 
 #include <seqan/seeds.h>
 
