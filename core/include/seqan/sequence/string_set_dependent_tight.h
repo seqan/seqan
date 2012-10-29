@@ -200,7 +200,7 @@ inline typename Reference<StringSet<TString, Dependent<Tight> > >::Type
 getValueById(StringSet<TString, Dependent<Tight> > & me,
             TId const id)
 {
-    SEQAN_CHECKPOINT;
+    SEQAN_ASSERT_GT_MSG(me.id_pos_map.count(id), 0u, "String id must be known!");
     return (value(me, me.id_pos_map.find(id)->second));
 }
 
