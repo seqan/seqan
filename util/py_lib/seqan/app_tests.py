@@ -322,7 +322,7 @@ class RegexpReplaceTransform(object):
         """Apply the transform."""
         if (is_left and not self.left) or (not is_left and not self.right):
             return text  # Skip if no transform is to be applied.
-            return re.sub(self.needle, self.replacement, text)
+        return re.sub(self.needle, self.replacement, text)
 
 
 def main(main_func):
