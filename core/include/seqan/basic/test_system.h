@@ -44,6 +44,10 @@
 #ifndef CORE_INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
 #define CORE_INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
 
+#ifdef PLATFORM_WINDOWS_VS
+#include <typeinfo>
+#endif  // #ifdef PLATFORM_WINDOWS_VS
+
 #include <seqan/basic/fundamental_tags.h>
 
 #include <memory>
