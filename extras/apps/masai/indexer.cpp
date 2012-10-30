@@ -195,8 +195,8 @@ int mainWithOptions(Options & options)
     case Options::INDEX_QGRAM:
         return executeIndexer<TGenomeQGram>(options);
 
-//    case Options::INDEX_FM:
-//        return executeIndexer<TGenomeFM>(options);
+    case Options::INDEX_FM:
+        return executeIndexer<TGenomeFM>(options);
 
     default:
         return 1;
