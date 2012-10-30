@@ -272,11 +272,11 @@ int configureGenomeIndex(Options & options)
     case Options::INDEX_SA:
         return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeSa>(options);
 
-    case Options::INDEX_QGRAM:
-        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeQGram>(options);
+//    case Options::INDEX_QGRAM:
+//        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeQGram>(options);
 
-//        case Options::INDEX_FM:
-//            return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeFM>(options);
+        case Options::INDEX_FM:
+            return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeFM>(options);
 
     default:
         return 1;
@@ -286,9 +286,9 @@ int configureGenomeIndex(Options & options)
 template <typename TStrategy, typename TDistance, typename TFormat>
 int configureBacktracking(Options & options)
 {
-    if (options.multipleBacktracking)
-        return configureGenomeIndex<TStrategy, TDistance, TFormat, MultipleBacktracking>(options);
-    else
+//    if (options.multipleBacktracking)
+//        return configureGenomeIndex<TStrategy, TDistance, TFormat, MultipleBacktracking>(options);
+//    else
         return configureGenomeIndex<TStrategy, TDistance, TFormat, SingleBacktracking>(options);
 }
 
