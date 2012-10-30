@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Andres Gogol-Döring <andreas.doering@mdc-berlin.de>
+// Author: Andreas Gogol-Döring <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 // Adaptions of builting types such as bool, int, but also "builtin-level"
 // user defined types such as wchar_t, __int64, __uint64 to the alphabet

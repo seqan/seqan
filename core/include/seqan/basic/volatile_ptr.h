@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Andres Gogol-Döring <andreas.doering@mdc-berlin.de>
+// Author: Andreas Gogol-Döring <andreas.doering@mdc-berlin.de>
 // TODO(holtgrew): Or is this by Dave?
 // ==========================================================================
 // Pointer-like data structure that helps with the management of volatile
