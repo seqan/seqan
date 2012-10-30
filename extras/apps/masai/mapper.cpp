@@ -286,9 +286,9 @@ int configureGenomeIndex(Options & options)
 template <typename TStrategy, typename TDistance, typename TFormat>
 int configureBacktracking(Options & options)
 {
-//    if (options.multipleBacktracking)
-//        return configureGenomeIndex<TStrategy, TDistance, TFormat, MultipleBacktracking>(options);
-//    else
+    if (options.multipleBacktracking)
+        return configureGenomeIndex<TStrategy, TDistance, TFormat, MultipleBacktracking>(options);
+    else
         return configureGenomeIndex<TStrategy, TDistance, TFormat, SingleBacktracking>(options);
 }
 
