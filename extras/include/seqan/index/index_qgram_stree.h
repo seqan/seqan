@@ -121,6 +121,12 @@ public:
 };
 
 template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > >
+{
+    typedef typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type Type;
+};
+
+template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 struct Iterator<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> >
 {
     typedef Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> >    Type;
@@ -153,6 +159,20 @@ inline typename Size<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
 repLength(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
 {
     return value(it).repLen;
+}
+
+template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
+parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return value(it).lastChar;
+}
+
+template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+inline typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
+parentEdgeFirstChar(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return value(it).lastChar;
 }
 
 template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
