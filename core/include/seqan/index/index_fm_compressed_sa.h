@@ -374,7 +374,7 @@ inline bool _getNextPos(CompressedSA<TSparseString, TLfTable, TSpec> const & com
 */
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline typename Size<typename Fibre<CompressedSA<TSparseString, TLfTable, TSpec>, FibreSparseString>::Type>::Type
-length(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA)
+length(CompressedSA<TSparseString, TLfTable, TSpec> const & compressedSA)
 {
     return length(getFibre(compressedSA, FibreSparseString()));
 }
