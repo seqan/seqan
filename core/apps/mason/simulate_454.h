@@ -224,7 +224,7 @@ void buildSimulationInstructions(ReadSimulationInstruction<LS454Reads> & inst, T
     // Initialize information about the current homopolymer length.
     unsigned homopolymerLength = 0;
     Dna homopolymerType = haplotypeInfix[0];
-    while (haplotypeInfix[homopolymerLength] == homopolymerType)
+    while (homopolymerLength < length(haplotypeInfix) && haplotypeInfix[homopolymerLength] == homopolymerType)
         ++homopolymerLength;
 
     // Simulate flowcell.
