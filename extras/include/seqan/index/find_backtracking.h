@@ -1349,22 +1349,21 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
      TErrors errors)
 {
 
+    // Try to get another match from current pattern node
+    goNext(hostIterator(pattern));
+
     // Try to get another match from current text node
-    if (!atEnd(finder))
+    if (atEnd(pattern))
+    {
         goNext(hostIterator(finder));
 
-    // Try to get another match from current pattern node
-    if (atEnd(finder))
-    {
-        goNext(hostIterator(pattern));
-
-        if (!atEnd(pattern))
+        if (!atEnd(finder))
         {
             // Set data iterator range to the interval containing matches
-            hostIterator(finder) = begin(indexSA(host(finder)), Standard());
-            finder.range.i1 = hostIterator(finder) + finder.index_range.i1;
-            finder.range.i2 = hostIterator(finder) + finder.index_range.i2;
-            hostIterator(finder) = finder.range.i1;
+            hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
+            pattern.range.i1 = hostIterator(pattern) + pattern.index_range.i1;
+            pattern.range.i2 = hostIterator(pattern) + pattern.index_range.i2;
+            hostIterator(pattern) = pattern.range.i1;
         }
         // Try to get more matches by backtracking some more
         else
