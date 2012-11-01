@@ -70,12 +70,10 @@ struct SuffixAligner<TSuffix, HammingDistance>
 
     TSize               suffix_length;
     TSize               suffix_position;
-//    TSize               position;
 
     SuffixAligner() :
         suffix_length(0),
         suffix_position(0)
-//        position(0)
     {}
 };
 
@@ -134,7 +132,7 @@ class Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> >
 protected:
     typedef Index<TText, TSpec>                                         TIndex;
     typedef typename Iterator<TIndex, TopDown<> >::Type                 TIndexIterator;
-    typedef String<TIndexIterator, Block<> >                            TParentStack;
+    typedef String<TIndexIterator>                                      TParentStack;
 
     typedef typename Fibre<TIndex, FibreSA>::Type                       TSA;
     typedef typename Iterator<TSA const, Standard>::Type                TIterator;
@@ -192,7 +190,7 @@ protected:
     typedef PrefixAligner<TPrefix, TDistance>           TPrefixAligner;
 
     typedef typename State<TPrefix, TDistance>::Type    TState;
-    typedef String<TState, Block<> >                    TStateStack;
+    typedef String<TState>                              TStateStack;
 
 public:
     Holder<TNeedle>         data_host;
@@ -220,7 +218,7 @@ class Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackingSpec> 
 protected:
     typedef Index<TNeedle, TSpec>                                       TIndex;
     typedef typename Iterator<TIndex, TopDown<> >::Type                 TIndexIterator;
-    typedef String<TIndexIterator, Block<> >                            TParentStack;
+    typedef String<TIndexIterator>                                      TParentStack;
 
     typedef typename Fibre<TIndex, FibreSA>::Type                       TSA;
     typedef typename Iterator<TSA const, Standard>::Type                TIterator;
@@ -230,9 +228,9 @@ protected:
     typedef PrefixAligner<TPrefix, TDistance>                           TPrefixAligner;
 
     typedef typename State<TPrefix, TDistance>::Type                    TState;
-    typedef String<TState, Block<> >                                    TStateStack;
+    typedef String<TState>                                              TStateStack;
 
-    typedef String<bool, Block<> >                                      TEndStack;
+    typedef String<bool>                                                TEndStack;
 
 public:
     bool                index_iterator_at_root;
