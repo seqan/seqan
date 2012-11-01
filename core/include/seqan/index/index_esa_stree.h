@@ -134,8 +134,10 @@ The iterator starts in the root node by default.
 
 		Iter(TIndex &_index, MinimalCtor):
 			index(&_index),
-			vDesc(MinimalCtor()) {}
+			vDesc(MinimalCtor()),
+            _parentDesc(MinimalCtor()) {}
 
+        // NOTE(esiragusa): _parentDesc is unitialized
 		Iter(TIndex &_index, TVertexDesc const &_vDesc):
 			index(&_index),
 			vDesc(_vDesc)
@@ -1415,6 +1417,14 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 	template < typename TIndex, class TSpec >
 	inline void 
 	_historyClear(Iter< TIndex, VSTree<TSpec> > &) {}
+
+    template < typename TIndex, class TSpec >
+    inline void
+    _historyClear(Iter< TIndex, VSTree< TopDown<TSpec> > > &it)
+    {
+        // Set _parentDesc to infinite range.
+        _setSizeInval(it._parentDesc.range.i2);
+    }
 
 	template < typename TIndex, class TSpec >
 	inline void 
