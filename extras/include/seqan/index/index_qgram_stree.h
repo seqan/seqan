@@ -120,11 +120,11 @@ public:
     typedef HistoryStackQGram_<TSize, TShape>                   Type;
 };
 
-template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > >
-{
-    typedef typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type Type;
-};
+//template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+//struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > >
+//{
+//    typedef typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type Type;
+//};
 
 template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 struct Iterator<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> >
@@ -154,26 +154,26 @@ inline bool isLeaf(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTre
     return value(it).hash.i1 + 1 >= value(it).hash.i2;
 }
 
-template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-inline typename Size<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
-repLength(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+template <typename TIndex, typename TSize, typename TShape>
+inline typename Size<TIndex>::Type
+repLength(TIndex const &, VertexQGram<TSize, TShape> const & vDesc)
 {
-    return value(it).repLen;
+    return vDesc.repLen;
 }
 
-template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
-parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
-{
-    return value(it).lastChar;
-}
-
-template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
-inline typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
-parentEdgeFirstChar(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
-{
-    return value(it).lastChar;
-}
+//template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+//inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
+//parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+//{
+//    return value(it).lastChar;
+//}
+//
+//template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
+//inline typename Value<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
+//parentEdgeFirstChar(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+//{
+//    return value(it).lastChar;
+//}
 
 template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 inline void goRoot(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > & it)
