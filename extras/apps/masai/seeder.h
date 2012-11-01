@@ -388,6 +388,7 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracki
         }
     }
 }
+
 // ----------------------------------------------------------------------------
 // Function find()                                                     [Seeder]
 // ----------------------------------------------------------------------------
@@ -411,9 +412,6 @@ void find(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
         indexSeedsExact(seeder, seedsLength, firstSeed, lastSeed);
         findSeedsExact(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
     }
-
-//    indexSeedsExact(seeder, seedsLength, firstSeed, lastSeed);
-//    findSeedsExact(seeder, genomeIndex, seedsLength, errorsPerSeed, TDistance());
 }
 
 template <typename TReadsDelegate, typename THitsDelegate, typename TGenomeIndex, typename TDistance>
