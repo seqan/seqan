@@ -171,29 +171,16 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable>
 template <typename TText, typename TOccSpec, typename TSpec>
 struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>
 {
-	typedef unsigned int                                                                    TSAValue_;
+	typedef typename SAValue<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type                TSAValue_;
 	typedef SparseString<String<TSAValue_>, void>                                           TSparseString_;
 	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable>::Type     TLfTable_;
 	typedef CompressedSA<TSparseString_, TLfTable_, void>                                   Type;
 };
 
 template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreSA>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreSA> 
 {
-	typedef unsigned int                                                                TSAValue_;
-	typedef SparseString<String<TSAValue_>, void>                                       TSparseString_;
-	typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreLfTable>::Type TLfTable_;
-	typedef CompressedSA<TSparseString_, TLfTable_, void> const                         Type;
-};
-
-template <typename TText, typename TSetSpec, typename TOccSpec, typename TSpec>
-struct Fibre<Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> >, FibreSA>
-{
-    // TODO(singer): Note that we use a pair of unsigned values here at the moment instead of using SAValue to force using 32 bit integers. Is this what we ultimately want?
-	typedef Pair<unsigned, unsigned>                                                                            TSAValue_;
-	typedef SparseString<String<TSAValue_>, void>                                                               TSparseString_;
-	typedef typename Fibre<Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> >, FibreLfTable>::Type    TLfTable_;
-	typedef CompressedSA<TSparseString_, TLfTable_, void>                                                       Type;
+    typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>::Type const Type;
 };
 
 template <typename TText, typename TSetSpec, typename TOccSpec, typename TSpec>
@@ -201,32 +188,6 @@ struct Fibre<Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> > const,
 {
     typedef Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> >    TNonConstIndex_;
     typedef typename Fibre<TNonConstIndex_, FibreSA>::Type const            Type;
-};
-
-// ==========================================================================
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreText>
-{
-	typedef TText Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreText>
-{
-	typedef TText const Type;
-};
-
-// ==========================================================================
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Size<Index<TText, FMIndex<TOccSpec, TSpec> > >
-{
-	typedef typename Size<TText>::Type Type;
-};
-
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Size<Index<TText, FMIndex<TOccSpec, TSpec> > const>
-{
-	typedef typename Size<TText>::Type const Type;
 };
 
 // ==========================================================================
@@ -277,11 +238,7 @@ class Index<TText, FMIndex<TOccSpec, TSpec> >
 	    text(text),
 		n(_computeBwtLength(text)),
 		compressionFactor(compressionFactor)
-	{
-        // TODO(esiragusa): Fix _indexCreate()
-	    if (IsSameType<TSpec, CompressText>::VALUE)
-    		_indexCreate(*this, text);
-	}
+	{}
 
 	inline bool operator==(const Index & b) const
     {
@@ -491,34 +448,6 @@ getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > const & index,
 	return index.compressedSA;
 }
 
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-typename Fibre<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FibreText >::Type & 
-getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > & index, FibreText /*tag*/)
-{
-	return value(index.text); 
-}
-
-template <typename TText, typename TIndexSpec, typename TFMISpeedEnhancement>
-typename Fibre<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >, FibreText >::Type const &
-getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > const & index, FibreText /*tag*/)
-{
-	return value(index.text); 
-}
-
-template <typename TText, typename TIndexSpec, typename TSpecSpec>
-Nothing
-getFibre(Index<TText, FMIndex<TIndexSpec, CompressText> > & /*tag*/, FibreText /*tag*/)
-{
-	return Nothing(); 
-}
-
-template <typename TText, typename TIndexSpec, typename TSpecSpec>
-Nothing
-getFibre(Index<TText, FMIndex<TIndexSpec, CompressText> > const & /*tag*/, FibreText /*tag*/)
-{
-	return Nothing(); 
-}
-
 // ==========================================================================
 // This function determines the number of the different characters in the text.
 template <typename TText, typename TSetSpec, typename TFreq>
@@ -663,13 +592,6 @@ inline bool indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec> > & index)
 {
     return indexCreate(index, FibreSaLfTable());
 }
-    
-template <typename TText, typename TIndexSpec>
-inline bool indexCreate(Index<TText, FMIndex<TIndexSpec, CompressText> > & /*tag*/, FibreSaLfTable const)
-{
-    SEQAN_FAIL("Logic error. It is not possible to create this index without a text");
-    return false;
-}
 
 // ==========================================================================
 /**
@@ -693,12 +615,16 @@ inline bool indexSupplied(Index<TText, FMIndex<TIndexSpec, TSpec > > const & ind
 // ==========================================================================
 // This function computes a range in the suffix array who's entries point to location
 // in the text where the pattern occurs. 
-template <typename TText, typename TPattern, typename TIter, typename TPairSpec, typename TOccSpec, typename TSpec>
+template <typename TText, typename TOccSpec, typename TSpec, typename TPattern, typename TIter, typename TPairSpec>
 inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index,
 		const TPattern & pattern,
 		Pair<TIter, TPairSpec> & range)
 {
-    typedef unsigned TPos;
+    typedef Index<TText, FMIndex<TOccSpec, TSpec> >             TIndex;
+    typedef typename Value<TIndex>::Type                        TAlphabet;
+    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
+    typedef typename Size<TIndex>::Type                         TSize;
+ 	typedef typename Value<TIndex>::Type                        TChar;
 
     if (empty(pattern))
     {
@@ -706,16 +632,13 @@ inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index,
 	    setPosition(range.i2, index.n);
     }
 
- 	typedef typename Value<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type TChar;
- 	typedef typename Size<TPattern>::Type TSize;
-
 	TSize i = length(pattern) - 1;
 	TChar letter = pattern[i];
 
     // initilization
-	unsigned letterPosition = getCharacterPosition(index.lfTable.prefixSumTable, letter);
-	TPos sp = getPrefixSum(index.lfTable.prefixSumTable, letterPosition);
-	TPos ep = getPrefixSum(index.lfTable.prefixSumTable, letterPosition + 1) - 1;
+	TAlphabetSize letterPosition = getCharacterPosition(index.lfTable.prefixSumTable, letter);
+	TSize sp = getPrefixSum(index.lfTable.prefixSumTable, letterPosition);
+	TSize ep = getPrefixSum(index.lfTable.prefixSumTable, letterPosition + 1) - 1;
 	
 	// the search as proposed by Ferragina and Manzini
 	while ((sp <= ep) && (i > 0))
@@ -723,7 +646,7 @@ inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index,
 	    --i;
 		letter = pattern[i];
 		letterPosition = getCharacterPosition(index.lfTable.prefixSumTable, letter);
-		unsigned long prefixSum = getPrefixSum(index.lfTable.prefixSumTable, letterPosition);
+		TSize prefixSum = getPrefixSum(index.lfTable.prefixSumTable, letterPosition);
 		sp = prefixSum + countOccurrences(index.lfTable.occTable, letter, sp - 1);
 		ep = prefixSum + countOccurrences(index.lfTable.occTable, letter, ep) - 1;
 	}
