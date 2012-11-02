@@ -92,21 +92,10 @@ bool loadGenome(Indexer<TGenomeIndex> & indexer, TString const & genomeFile)
     for (unsigned contigId = 0; contigId < length(indexer.store.contigStore); ++contigId)
     {
         shrinkToFit(indexer.store.contigStore[contigId].seq);
-        _reverseContig(indexer, indexer.store.contigStore[contigId].seq);
         appendValue(indexer.genome, indexer.store.contigStore[contigId].seq);
     }
 
     return length(indexer.store.contigStore);
-}
-
-template <typename TGenomeIndex, typename TString>
-void _reverseContig(Indexer<TGenomeIndex> &, TString &)
-{}
-
-template <typename TString>
-void _reverseContig(Indexer<TGenomeFM> &, TString & contig)
-{
-    reverse(contig);
 }
 
 // ----------------------------------------------------------------------------
@@ -131,16 +120,34 @@ bool dumpIndexedGenome(Indexer<TGenomeIndex> & indexer, TString const & genomeIn
 }
 
 // ----------------------------------------------------------------------------
+// Function _reverseGenome()                                          [Indexer]
+// ----------------------------------------------------------------------------
+
+template <typename TGenomeIndex>
+void _reverseGenome(Indexer<TGenomeIndex> &) {}
+
+template <>
+void _reverseGenome(Indexer<TGenomeFM> & indexer)
+{
+    for (unsigned contigId = 0; contigId < length(indexer.store.contigStore); ++contigId)
+        reverse(indexer.store.contigStore[contigId].seq);
+}
+
+// ----------------------------------------------------------------------------
 // Function indexGenome()                                             [Indexer]
 // ----------------------------------------------------------------------------
 
 template <typename TGenomeIndex>
 void indexGenome(Indexer<TGenomeIndex> & indexer)
 {
+    _reverseGenome(indexer);
+
     indexer.genomeIndex = TGenomeIndex(indexer.genome);
 
     // Iterator instantiation calls automatic index construction.
     typename Iterator<TGenomeIndex, TopDown<> >::Type it(indexer.genomeIndex);
+
+    _reverseGenome(indexer);
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_INDEXER_H_
