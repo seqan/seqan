@@ -104,25 +104,24 @@ struct PrefixAligner<TPrefix, HammingDistance>
 // ============================================================================
 
 /**
- .Spec.Backtracking:
- ..summary:Provides approximate string matching via backtracking on a substring index.
- ..general:Class.Pattern
- ..general:Class.Finder
- ..cat:Searching
- ..signature:Finder<TIndex, Backtracking<TDistance> >
- ..signature:Pattern<TNeedle, Backtracking<TDistance> >
- ..param.TIndex: An index of the sequence that should be searched.
- ...type:Spec.Index
- ..param.TNeedle: The type of the sequence(s) that should be searched for.
- ...type:Spec.String
- ...type:Spec.Index
- ..param.TDistance: Specifies the distance filter.
- ...type:Spec.HammingDistance
- ...type:Spec.EditDistance
- ..include:seqan/index.h
- ..remarks:
- The @Class.Pattern@ can be a sequence, or an index for a set of sequences. The tolerated backtracking distance must be given when @Function.find@ is called.
- */
+.Spec.Backtracking:
+..summary:Provides approximate string matching via backtracking on a substring index.
+..general:Class.Pattern
+..general:Class.Finder
+..cat:Searching
+..signature:Finder<TIndex, Backtracking<TDistance> >
+..signature:Pattern<TNeedle, Backtracking<TDistance> >
+..param.TIndex: An index of the sequence that should be searched.
+...type:Class.Index
+..param.TNeedle: The type of the sequence(s) that should be searched for.
+...type:Class.String
+...type:Class.Index
+..param.TDistance: Specifies the distance filter.
+...type:Tag.HammingDistance
+..include:seqan/index.h
+..remarks:
+The @Class.Pattern@ can be a sequence, or an index for a set of sequences. The tolerated backtracking distance must be given when @Function.find@ is called.
+*/
 ///.Class.Pattern.param.TSpec.type:Spec.Backtracking
 ///.Class.Finder.param.TSpec.type:Spec.Backtracking
 

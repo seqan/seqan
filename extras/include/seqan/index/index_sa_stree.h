@@ -57,16 +57,16 @@ template <typename TSpec = void>
 struct IndexSa {};
 
 /**
- .Spec.IndexSa:
- ..summary:An index based on a suffix array.
- ..cat:Index
- ..general:Class.Index
- ..signature:Index<TText, IndexSa<> >
- ..param.TText:The text type.
- ...type:Class.String
- ...type:Class.StringSet
- ..include:seqan/index.h
- */
+.Spec.IndexSa:
+..summary:An index based on a suffix array.
+..cat:Index
+..general:Class.Index
+..signature:Index<TText, IndexSa<> >
+..param.TText:The text type.
+...type:Class.String
+...type:Class.StringSet
+..include:seqan/index.h
+*/
 
 template <typename TText, typename TSpec>
 class Index<TText, IndexSa<TSpec> >
