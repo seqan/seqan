@@ -825,7 +825,7 @@ If the fibre doesn't exist then @Function.indexCreate@ is called to create it.
 		return true;
 	}
 	template < typename TValue, typename TSpec >
-	inline bool save(String<TValue, TSpec> &string, const char *fileName) {
+	inline bool save(String<TValue, TSpec> const &string, const char *fileName) {
 	SEQAN_CHECKPOINT
 		return save(string, fileName, OPEN_WRONLY | OPEN_CREATE);
 	}
@@ -863,14 +863,14 @@ If the fibre doesn't exist then @Function.indexCreate@ is called to create it.
 	}
 
 	template < typename TValue, typename TSpec, typename TSSSpec >
-        inline bool save(StringSet<String<TValue, TSpec>, Dependent<TSSSpec> > &, const char *, int) {
+    inline bool save(StringSet<String<TValue, TSpec>, Dependent<TSSSpec> > const &, const char *, int) {
         SEQAN_CHECKPOINT
         // Do nothing for dependent string sets
         return true;
     }
 
 	template < typename TString, typename TSSSpec >
-	inline bool save(StringSet<TString, Owner<ConcatDirect<TSSSpec> > > &multi, const char *fileName, int openMode) {
+	inline bool save(StringSet<TString, Owner<ConcatDirect<TSSSpec> > > const &multi, const char *fileName, int openMode) {
 	SEQAN_CHECKPOINT
 		CharString name;
 		name = fileName;

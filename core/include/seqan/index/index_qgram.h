@@ -2440,15 +2440,18 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 		int openMode)
 	{
 		String<char> name;
-		name = fileName;	append(name, ".txt");
-		bool result = true;
-		if ((!open(getFibre(index, QGramText()), toCString(name), openMode)) && 
-			(!open(getFibre(index, QGramText()), fileName, openMode)))
-			result = false;
 
-		name = fileName;	append(name, ".sa");	open(getFibre(index, QGramSA()), toCString(name), openMode);
-		name = fileName;	append(name, ".dir");	open(getFibre(index, QGramDir()), toCString(name), openMode);
-		return result;
+		name = fileName;	append(name, ".txt");
+		if ((!open(getFibre(index, QGramText()), toCString(name), openMode)) &&
+			(!open(getFibre(index, QGramText()), fileName, openMode))) return false;
+
+		name = fileName;	append(name, ".sa");
+        if (!open(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".dir");
+        if (!open(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
+        
+		return true;
 	}
 	template < typename TObject, typename TShapeSpec, typename TSpec >
 	inline bool open(
@@ -2469,12 +2472,17 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 		int openMode)
 	{
 		String<char> name;
+
 		name = fileName;	append(name, ".txt");
 		if ((!save(getFibre(index, QGramText()), toCString(name), openMode)) && 
 			(!save(getFibre(index, QGramText()), fileName, openMode))) return false;
 
-		name = fileName;	append(name, ".sa");	save(getFibre(index, QGramSA()), toCString(name), openMode);
-		name = fileName;	append(name, ".dir");	save(getFibre(index, QGramDir()), toCString(name), openMode);
+		name = fileName;	append(name, ".sa");
+        if (!save(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".dir");
+        if (!save(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
+
 		return true;
 	}
 	template < typename TObject, typename TShapeSpec, typename TSpec >

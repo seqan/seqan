@@ -1981,19 +1981,24 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<TIndex>::Type    TValue;
 
 		String<char> name;
+
 		name = fileName;	append(name, ".txt");
-		bool result = true;
 		if ((!open(getFibre(index, WotdText()), toCString(name), openMode)) && 
-			(!open(getFibre(index, WotdText()), fileName, openMode)))
-			result = false;
-		name = fileName;	append(name, ".sa");	open(getFibre(index, WotdSA()), toCString(name), openMode);
-		name = fileName;	append(name, ".dir");	open(getFibre(index, WotdDir()), toCString(name), openMode);
+			(!open(getFibre(index, WotdText()), fileName, openMode))) return false;
+
+		name = fileName;	append(name, ".sa");
+        if (!open(getFibre(index, WotdSA()), toCString(name), openMode)) return false;
+		name = fileName;	append(name, ".dir");
+
+        if (!open(getFibre(index, WotdDir()), toCString(name), openMode)) return false;
+
         if (!empty(getFibre(index, WotdDir())))
         {
             resize(index.tempOcc, ValueSize<TValue>::VALUE + 1);
             resize(index.tempBound, ValueSize<TValue>::VALUE + 1);
         }
-		return result;
+
+		return true;
 	}
 	template < typename TText, typename TSpec >
 	inline bool open(
@@ -2014,12 +2019,17 @@ namespace SEQAN_NAMESPACE_MAIN
 		int openMode)
 	{
 		String<char> name;
+
 		name = fileName;	append(name, ".txt");
 		if ((!save(getFibre(index, WotdText()), toCString(name), openMode)) && 
 			(!save(getFibre(index, WotdText()), fileName, openMode))) return false;
 
-		name = fileName;	append(name, ".sa");	save(getFibre(index, WotdSA()), toCString(name), openMode);
-		name = fileName;	append(name, ".dir");	save(getFibre(index, WotdDir()), toCString(name), openMode);
+		name = fileName;	append(name, ".sa");
+        if (!save(getFibre(index, WotdSA()), toCString(name), openMode)) return false;
+		name = fileName;	append(name, ".dir");
+
+        if (!save(getFibre(index, WotdDir()), toCString(name), openMode)) return false;
+        
 		return true;
 	}
 	template < typename TText, typename TSpec >

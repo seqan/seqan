@@ -382,18 +382,24 @@ The entries are the characters left of the corresponding suffix in the suffix ar
 		int openMode)
 	{
 		String<char> name;
-		name = fileName;	append(name, ".txt");	
 
-		bool result = true;
+		name = fileName;	append(name, ".txt");
 		if ((!open(getFibre(index, EsaText()), toCString(name), openMode)) && 
-			(!open(getFibre(index, EsaText()), fileName, openMode))) 
-			result = false;
+			(!open(getFibre(index, EsaText()), fileName, openMode))) return false;
 
-		name = fileName;	append(name, ".sa");	open(getFibre(index, EsaSA()), toCString(name), openMode);
-		name = fileName;	append(name, ".lcp");	open(getFibre(index, EsaLcp()), toCString(name), openMode);
-		name = fileName;	append(name, ".child");	open(getFibre(index, EsaChildtab()), toCString(name), openMode);
-		name = fileName;	append(name, ".bwt");	open(getFibre(index, EsaBwt()), toCString(name), openMode);
-		return result;
+		name = fileName;	append(name, ".sa");
+        if (!open(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".lcp");
+        if (!open(getFibre(index, EsaLcp()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".child");
+        if (!open(getFibre(index, EsaChildtab()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".bwt");
+        if (!open(getFibre(index, EsaBwt()), toCString(name), openMode)) return false;
+
+		return true;
 	}
 	template < typename TObject, typename TSpec >
 	inline bool open(
@@ -414,14 +420,23 @@ The entries are the characters left of the corresponding suffix in the suffix ar
 		int openMode)
 	{
 		String<char> name;
+
 		name = fileName;	append(name, ".txt");	
 		if ((!save(getFibre(index, EsaText()), toCString(name), openMode)) && 
 			(!save(getFibre(index, EsaText()), fileName, openMode))) return false;
 
-		name = fileName;	append(name, ".sa");	save(getFibre(index, EsaSA()), toCString(name), openMode);
-		name = fileName;	append(name, ".lcp");	save(getFibre(index, EsaLcp()), toCString(name), openMode);
-		name = fileName;	append(name, ".child");	save(getFibre(index, EsaChildtab()), toCString(name), openMode);
-		name = fileName;	append(name, ".bwt");	save(getFibre(index, EsaBwt()), toCString(name), openMode);
+		name = fileName;	append(name, ".sa");
+        if (!save(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".lcp");
+        if (!save(getFibre(index, EsaLcp()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".child");
+        if (!save(getFibre(index, EsaChildtab()), toCString(name), openMode)) return false;
+
+		name = fileName;	append(name, ".bwt");
+        if (!save(getFibre(index, EsaBwt()), toCString(name), openMode)) return false;
+
 		return true;
 	}
 	template < typename TObject, typename TSpec >

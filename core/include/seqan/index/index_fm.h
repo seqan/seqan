@@ -663,30 +663,34 @@ inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index,
 */
 // This function can be used to open a previously saved index.
 template <typename TText, typename TOccSpec, typename TSpec>
-inline bool open(
-    Index<TText, FMIndex<TOccSpec, TSpec> > & index,
-    const char * fileName,
-    int openMode)
+inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
 
     String<Pair<unsigned, typename Size<TText>::Type> > infoString;
-    name = fileName;    append(name, ".txt");   open(getFibre(index, FibreText()), toCString(name), openMode);
-    name = fileName;    append(name, ".sa");    open(getFibre(index, FibreSA()), toCString(name), openMode);
-    name = fileName;    append(name, ".lf");    open(getFibre(index, FibreLfTable()), toCString(name), openMode);
-    name = fileName;    append(name, ".fma");   open(infoString, toCString(name), openMode);
+
+    name = fileName;    append(name, ".txt");
+    if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".sa");
+    if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".lf");
+    if (!open(getFibre(index, FibreLfTable()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".fma");
+    if (!open(infoString, toCString(name), openMode)) return false;
     
     index.compressionFactor = infoString[0].i1;
     index.n = infoString[0].i2;
     getFibre(index, FibreSA()).lfTable = & getFibre(index, FibreLfTable());
+
     return true;
 }
 
 // This function can be used to open a previously saved index.
 template <typename TText, typename TOccSpec, typename TSpec>
-inline bool open(
-    Index<TText, FMIndex<TOccSpec, TSpec> > & index,
-    const char * fileName)
+inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * fileName)
 {
     return open(index, fileName, DefaultOpenMode<Index<TText, FMIndex<TOccSpec, TSpec> > >::VALUE);
 }
@@ -713,27 +717,31 @@ inline bool open(
 */
 
 template <typename TText, typename TOccSpec, typename TSpec>
-inline bool save(
-    Index<TText, FMIndex<TOccSpec, TSpec> > const & index,
-    const char * fileName,
-    int openMode)
+inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const char * fileName, int openMode)
 {
     String<char> name;
 
     String<Pair<unsigned, typename Size<TText>::Type> > infoString;
     appendValue(infoString, Pair<unsigned, typename Size<TText>::Type>(index.compressionFactor, index.n));
-    name = fileName;    append(name, ".txt");   save(getFibre(index, FibreText()), toCString(name), openMode);
-    name = fileName;    append(name, ".sa");    save(getFibre(index, FibreSA()), toCString(name), openMode);
-    name = fileName;    append(name, ".lf");    save(getFibre(index, FibreLfTable()), toCString(name), openMode);
-    name = fileName;    append(name, ".fma");   save(infoString, toCString(name), openMode);
+
+    name = fileName;    append(name, ".txt");
+    if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".sa");
+    if (!save(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".lf");
+    if (!save(getFibre(index, FibreLfTable()), toCString(name), openMode)) return false;
+
+    name = fileName;    append(name, ".fma");
+    if (!save(infoString, toCString(name), openMode)) return false;
+
     return true;
 }
 
 // This function can be used to save an index on disk.
 template <typename TText, typename TOccSpec, typename TSpec>
-inline bool save(
-    Index<TText, FMIndex<TOccSpec, TSpec> > const & index,
-    const char * fileName)
+inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const char * fileName)
 {
     return save(index, fileName, DefaultOpenMode<Index<TText, FMIndex<TOccSpec, TSpec> > >::VALUE);
 }
