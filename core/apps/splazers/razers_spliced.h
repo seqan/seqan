@@ -148,7 +148,7 @@ expNumRandomMatches(TReadSet &readSet, TSize genomeLen, TOptions & options)
 	TSize d_m1 = (int) options.maxPrefixErrors;
 	TSize d_m2 = (int) options.maxSuffixErrors;
 	TSize numReads = length(readSet);
-	genomeLen = options.specifiedGenomeLen;
+	genomeLen = 1000000 * options.specifiedGenomeLen; // go from Mb to bp
 	if(options.anchored) genomeLen = options.maxGap + 2*options.libraryError; // upper bound
 	TSize readLen = (numReads > 0) ? length(readSet[0]) : 0;
 	TSize numErrors = static_cast<int>(readLen * options.errorRate);

@@ -286,7 +286,7 @@ int main(int argc, const char *argv[])
     addOption(parser, ArgParseOption("pf", "position-format", "Select begin/end position numbering (see Coordinate section below). 0 = gap space, 1 = position space.", ArgParseOption::INTEGER));
     setMinValue(parser, "position-format", "0");
     setMaxValue(parser, "position-format", "1");
-    setDefaultValue(parser, "position-format", options.sortOrder);
+    setDefaultValue(parser, "position-format", options.positionFormat);
     
     // Parse command line.
     ArgumentParser::ParseResult res = parse(parser, argc, argv);

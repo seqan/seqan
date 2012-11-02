@@ -46,7 +46,7 @@
 	#define SEQAN_DEFAULT_TMPDIR "./"
 #endif
 
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 #include "razers.h"
 #include "outputFormat.h"
 #include "paramChooser.h"
@@ -286,11 +286,6 @@ int main(int argc, const char *argv[])
 	RazerSOptions<>			options;
 	ParamChooserOptions		pm_options;
 
-#ifdef RAZERS_MATEPAIRS
-	const unsigned			maxFiles = 3;
-#else
-	const unsigned			maxFiles = 2;
-#endif
 	StringSet<CharString>	genomeFileNames;
 	StringSet<CharString>	readFileNames;
 	CharString				errorPrbFileName;
@@ -299,163 +294,226 @@ int main(int argc, const char *argv[])
 	options.forward = false;
 	options.reverse = false;
 	
-	CommandLineParser parser;
-	string rev = "$Revision$";
-	addVersionLine(parser, "RazerS version 1.1 20100618 [" + rev.substr(11, 4) + "]");
-
-	//////////////////////////////////////////////////////////////////////////////
-	// Define options
-	addTitleLine(parser, "***********************************************************");
-	addTitleLine(parser, "*** RazerS - Fast Read Mapping with Sensitivity Control ***");
-	addTitleLine(parser, "***          (c) Copyright 2009 by David Weese          ***");
-	addTitleLine(parser, "***********************************************************");
-	addUsageLine(parser, "[OPTION]... <GENOME FILE> <READS FILE>");
+    ArgumentParser parser("splazers");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
 #ifdef RAZERS_MATEPAIRS
-	addUsageLine(parser, "[OPTION]... <GENOME FILE> <MP-READS FILE1> <MP-READS FILE2>");
+	addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE 1\\fP> <\\fIREADS FILE 2\\fP>");
 #endif
-	addSection(parser, "Main Options:");
-	addOption(parser, CommandLineOption("f",  "forward",           "only compute forward matches", OptionType::Boolean));
-	addOption(parser, CommandLineOption("r",  "reverse",           "only compute reverse complement matches", OptionType::Boolean));
-	addOption(parser, CommandLineOption("i",  "percent-identity",  "set the percent identity threshold", OptionType::Double | OptionType::Label, 100 - (100.0 * options.errorRate)));
-#ifndef NO_PARAM_CHOOSER
-	addOption(parser, CommandLineOption("rr", "recognition-rate",  "set the percent recognition rate", OptionType::Double | OptionType::Label, 100 - (100.0 * pm_options.optionLossRate)));
-	addOption(parser, addArgumentText(CommandLineOption("pd", "param-dir",         "folder containing user-computed parameter files (optional)", OptionType::String | OptionType::Label), "DIR"));
-#endif
-	addOption(parser, CommandLineOption("id", "indels",            "allow indels (default: mismatches only)", OptionType::Boolean));
-	addOption(parser, CommandLineOption("ll", "library-length",    "mate-pair library length", OptionType::Int | OptionType::Label, options.libraryLength));
-	addOption(parser, CommandLineOption("le", "library-error",     "mate-pair library length tolerance", OptionType::Int | OptionType::Label, options.libraryError));
-	addOption(parser, CommandLineOption("m",  "max-hits",          "output only NUM of the best hits", OptionType::Int | OptionType::Label, options.maxHits));
-	addOption(parser, CommandLineOption("",   "unique",            "output only unique best matches (-m 1 -dr 0 -pa)", OptionType::Boolean));
-	addOption(parser, CommandLineOption("tr", "trim-reads",        "trim reads to given length (default off)", OptionType::Int | OptionType::Label));
-	addOption(parser, addArgumentText(CommandLineOption("o",  "output",            "change output filename (default <READS FILE>.result)", OptionType::String), "FILE"));
-	addOption(parser, addArgumentText(CommandLineOption("ou", "outputUnmapped",    "output filename for unmapped reads", OptionType::String), "FILE"));
-	addOption(parser, CommandLineOption("v",  "verbose",           "verbose mode", OptionType::Boolean));
-	addOption(parser, CommandLineOption("vv", "vverbose",          "very verbose mode", OptionType::Boolean));
-	addSection(parser, "Output Format Options:");
-	addOption(parser, CommandLineOption("a",  "alignment",         "dump the alignment for each match", OptionType::Boolean));
-	addOption(parser, CommandLineOption("pa", "purge-ambiguous",   "purge reads with more than max-hits best matches", OptionType::Boolean));
-	addOption(parser, CommandLineOption("dr", "distance-range",    "only consider matches with at most NUM more errors compared to the best (default output all)", OptionType::Int | OptionType::Label));
-	addOption(parser, CommandLineOption("of", "output-format",     "set output format", OptionType::Int | OptionType::Label, options.outputFormat));
-	addHelpLine(parser, "0 = Razer format");
-	addHelpLine(parser, "1 = enhanced Fasta format");
-	addHelpLine(parser, "2 = Eland format");
-	addHelpLine(parser, "3 = GFF format");
-	addHelpLine(parser, "4 = SAM format (for split mapping only)");
-	addOption(parser, CommandLineOption("gn", "genome-naming",     "select how genomes are named", OptionType::Int | OptionType::Label, options.genomeNaming));
-	addHelpLine(parser, "0 = use Fasta id");
-	addHelpLine(parser, "1 = enumerate beginning with 1");
-	addOption(parser, CommandLineOption("rn", "read-naming",       "select how reads are named", OptionType::Int | OptionType::Label, options.readNaming));
-	addHelpLine(parser, "0 = use Fasta id");
-	addHelpLine(parser, "1 = enumerate beginning with 1");
-	addHelpLine(parser, "2 = use the read sequence (only for short reads!)");
-	addOption(parser, CommandLineOption("so", "sort-order",        "select how matches are sorted", OptionType::Int | OptionType::Label, options.sortOrder));
-	addHelpLine(parser, "0 = 1. read number, 2. genome position");
-	addHelpLine(parser, "1 = 1. genome position, 2. read number");
-	addOption(parser, CommandLineOption("pf", "position-format",   "select begin/end position numbering", OptionType::Int | OptionType::Label, options.sortOrder));
-	addHelpLine(parser, "0 = gap space");
-	addHelpLine(parser, "1 = position space");
+    addDescription(parser,
+            "SplazerS uses a prefix-suffix mapping strategy to split-map read sequences."
+            "If a SAM file of mapped reads is given as input, all unmapped but anchored"
+            "reads are split-mapped onto anchoring target regions (specify option -an),"
+            "if a Fasta/q file of reads is given, reads are split-mapped onto the whole"
+            "reference sequence.");
+            
+    addDescription(parser, "(c) Copyright 2010 by Anne-Katrin Emde.");
+    setCategory(parser, "Read Mapping");
+    setVersion(parser, "1.1");
+    setDate(parser, "Apr 2011" );
 
-#ifdef RAZERS_DIRECT_MAQ_MAPPING
-	addOption(parser, CommandLineOption("mcl", "min-clipped-len",  "min. read length for read clipping", OptionType::Int | OptionType::Label, options.minClippedLen));
-	addOption(parser, CommandLineOption("qih", "quality-in-header","quality string in fasta header", OptionType::Boolean));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+
+	addSection(parser, "Main Options:");
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+	addOption(parser, ArgParseOption("f",  "forward",           "only compute forward matches"));
+	addOption(parser, ArgParseOption("r",  "reverse",           "only compute reverse complement matches"));
+    addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
+    setMinValue(parser, "percent-identity", "50");
+    setMaxValue(parser, "percent-identity", "100");
+    setDefaultValue(parser, "percent-identity", 100 - (100.0 * options.errorRate));
+#ifndef NO_PARAM_CHOOSER
+    addOption(parser, ArgParseOption("rr", "recognition-rate",  "set the percent recognition rate", ArgParseOption::DOUBLE));
+    setMinValue(parser, "recognition-rate", "80");
+    setMaxValue(parser, "recognition-rate", "100");
+    setDefaultValue(parser, "recognition-rate", 100 - (100.0 * pm_options.optionLossRate));
+    addOption(parser, ArgParseOption("pd", "param-dir", "Read user-computed parameter files in the directory <\\fIDIR\\fP>.", ArgParseOption::STRING, "DIR"));
 #endif
+    addOption(parser, ArgParseOption("id", "indels", "Allow indels. Default: mismatches only."));
+
+    addOption(parser, ArgParseOption("ll", "library-length", "Paired-end library length.", ArgParseOption::INTEGER));
+    setMinValue(parser, "library-length", "1");
+    setDefaultValue(parser, "library-length", options.libraryLength);
+    addOption(parser, ArgParseOption("le", "library-error", "Paired-end library length tolerance.", ArgParseOption::INTEGER));
+    setMinValue(parser, "library-error", "0");
+    setDefaultValue(parser, "library-error", options.libraryError);
+
+    addOption(parser, ArgParseOption("m", "max-hits", "Output only <\\fINUM\\fP> of the best hits.", ArgParseOption::INTEGER));
+    setMinValue(parser, "max-hits", "1");
+    setDefaultValue(parser, "max-hits", options.maxHits);
+
+    addOption(parser, ArgParseOption("", "unique", "Output only unique best matches (-m 1 -dr 0 -pa)."));
+    addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
+    setMinValue(parser, "trim-reads", "14");
+	addOption(parser, ArgParseOption("mcl", "min-clipped-len",  "min. read length for read clipping", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "min-clipped-len", options.minClippedLen);
+    setMinValue(parser, "min-clipped-len", "1");
+	addOption(parser, ArgParseOption("qih", "quality-in-header","quality string in fasta header"));
+
+	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUTFILE));
+    
+	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
+	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));
+	addSection(parser, "Output Format Options:");
+	addOption(parser, ArgParseOption("a",  "alignment",         "dump the alignment for each match"));
+    addOption(parser, ArgParseOption("pa", "purge-ambiguous",   "purge reads with more than max-hits best matches"));
+	addOption(parser, ArgParseOption("dr", "distance-range",    "only consider matches with at most NUM more errors compared to the best (default output all)", ArgParseOption::INTEGER));
+	addOption(parser, ArgParseOption("of", "output-format", "Set output format. 0 = RazerS, 1 = Enhanced Fasta, 2 = Eland, 3 = GFF, 4 = SAM.", ArgParseOption::INTEGER));
+    setMinValue(parser, "output-format", "0");
+    setMaxValue(parser, "output-format", "4");
+    addOption(parser, ArgParseOption("gn", "genome-naming", "Select how genomes are named. 0 = use Fasta id, 1 = enumerate beginning with 1.", ArgParseOption::INTEGER));
+    setMinValue(parser, "genome-naming", "0");
+    setMaxValue(parser, "genome-naming", "1");
+    setDefaultValue(parser, "genome-naming", options.genomeNaming);
+  
+    addOption(parser, ArgParseOption("rn", "read-naming", "Select how reads are named. 0 = use Fasta id, 1 = enumerate beginning with 1.", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "read-naming", options.readNaming);
+    setMinValue(parser, "read-naming", "0");
+    setMaxValue(parser, "read-naming", "1");
+
+    addOption(parser, ArgParseOption("so", "sort-order", "Select how matches are sorted. 0 = read number, 1 = genome position.", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "sort-order", options.sortOrder);
+    setMinValue(parser, "sort-order", "0");
+    setMaxValue(parser, "sort-order", "1");
+    
+    addOption(parser, ArgParseOption("pf", "position-format", "Select begin/end position numbering (see Coordinate section below). 0 = gap space, 1 = position space.", ArgParseOption::INTEGER));
+    setMinValue(parser, "position-format", "0");
+    setMaxValue(parser, "position-format", "1");
+    setDefaultValue(parser, "position-format", options.positionFormat);
+
 
 	addSection(parser, "Split Mapping Options:");
-	addOption(parser, CommandLineOption("sm", "split-mapping",   "min. match length for prefix/suffix mapping (to disable split mapping, set to 0)", OptionType::Int | OptionType::Label, options.minMatchLen));
-	addOption(parser, CommandLineOption("maxG", "max-gap",    "max. length of middle gap", OptionType::Int | OptionType::Label, options.maxGap));
-	addOption(parser, CommandLineOption("minG", "min-gap",    "min. length of middle gap (for edit distance mapping about 10% of read length is recommended)", OptionType::Int | OptionType::Label, options.minGap));
-	addOption(parser, CommandLineOption("ep", "errors-prefix",    "max. number of errors in prefix match", OptionType::Int | OptionType::Label, options.maxPrefixErrors));
-	addOption(parser, CommandLineOption("es", "errors-suffix",    "max. number of errors in suffix match", OptionType::Int | OptionType::Label, options.maxSuffixErrors));
-	addOption(parser, CommandLineOption("gl", "genome-len",    "genome length, for computation of expected number of random matches", OptionType::Int | OptionType::Label, options.specifiedGenomeLen));
-	addOption(parser, CommandLineOption("an", "anchored",           "anchored split mapping, only unmapped reads with mapped mates will be considered, requires the reads to be given in SAM format", OptionType::Boolean));
-	addOption(parser, CommandLineOption("pc",  "penalty-c",    "percent of read length, used as penalty for split-gap", OptionType::Int | OptionType::Label, options.penaltyC));
-
-
+	addOption(parser, ArgParseOption("sm", "split-mapping",   "min. match length for prefix/suffix mapping (to disable split mapping, set to 0)", ArgParseOption::INTEGER));
+    setDefaultValue(parser,"split-mapping",options.minMatchLen);
+    
+	addOption(parser, ArgParseOption("maxG", "max-gap",    "max. length of middle gap", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "max-gap", options.maxGap);
+	addOption(parser, ArgParseOption("minG", "min-gap",    "min. length of middle gap (for edit distance mapping about 10% of read length is recommended)", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "min-gap", options.minGap);
+    addOption(parser, ArgParseOption("ep", "errors-prefix",    "max. number of errors in prefix match", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "errors-prefix", options.maxPrefixErrors);
+    
+	addOption(parser, ArgParseOption("es", "errors-suffix",    "max. number of errors in suffix match", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "errors-suffix", options.maxSuffixErrors);
+    
+	addOption(parser, ArgParseOption("gl", "genome-len",    "genome length in Mb, for computation of expected number of random matches", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "genome-len", options.specifiedGenomeLen);
+    setMaxValue(parser, "genome-len", "10000");
+    
+	addOption(parser, ArgParseOption("an", "anchored",           "anchored split mapping, only unmapped reads with mapped mates will be considered, requires the reads to be given in SAM format"));
+	addOption(parser, ArgParseOption("pc",  "penalty-c",    "percent of read length, used as penalty for split-gap", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "penalty-c", options.penaltyC);
 
 	addSection(parser, "Filtration Options:");
-	addOption(parser, addArgumentText(CommandLineOption("s",  "shape",             "set k-mer shape", OptionType::String | OptionType::Label, options.shape), "BITSTRING"));
-	addOption(parser, CommandLineOption("t",  "threshold",         "set minimum k-mer threshold", OptionType::Int | OptionType::Label, options.threshold));
-	addOption(parser, CommandLineOption("oc", "overabundance-cut", "set k-mer overabundance cut ratio", OptionType::Int | OptionType::Label, options.abundanceCut));
-	addOption(parser, CommandLineOption("rl", "repeat-length",     "set simple-repeat length threshold", OptionType::Int | OptionType::Label, options.repeatLength));
-	addOption(parser, CommandLineOption("tl", "taboo-length",      "set taboo length", OptionType::Int | OptionType::Label, options.tabooLength));
-	addOption(parser, CommandLineOption("lm", "low-memory",        "decrease memory usage at the expense of runtime", OptionType::Boolean));
+    addOption(parser, ArgParseOption("s", "shape", "Manually set k-mer shape.", ArgParseOption::STRING, "BITSTRING"));
+    setDefaultValue(parser, "shape", options.shape);
+    hideOption(parser,"shape");
+    addOption(parser, ArgParseOption("t", "threshold", "Manually set minimum k-mer count threshold.", ArgParseOption::INTEGER));
+    setMinValue(parser, "threshold", "1");    
+    hideOption(parser,"threshold");
+
+    addOption(parser, ArgParseOption("oc", "overabundance-cut", "Set k-mer overabundance cut ratio.", ArgParseOption::INTEGER));
+    setMinValue(parser, "overabundance-cut", "0");
+    setMaxValue(parser, "overabundance-cut", "1");
+    addOption(parser, ArgParseOption("rl", "repeat-length", "Skip simple-repeats of length <\\fINUM\\fP>.", ArgParseOption::INTEGER));
+    setMinValue(parser, "repeat-length", "1");
+    setDefaultValue(parser, "repeat-length", options.repeatLength);
+    addOption(parser, ArgParseOption("tl", "taboo-length", "Set taboo length.", ArgParseOption::INTEGER));
+    setMinValue(parser, "taboo-length", "1");
+    setDefaultValue(parser, "taboo-length", options.tabooLength);
+    addOption(parser, ArgParseOption("lm", "low-memory",        "decrease memory usage at the expense of runtime"));
+
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
 	addSection(parser, "Mapping Quality Options:");
-	addOption(parser, CommandLineOption("mq", "mapping-quality",   "switch on mapping quality mode", OptionType::Boolean));
-	addOption(parser, CommandLineOption("nbi","no-below-id",       "do not report matches with seed identity < percent id", OptionType::Boolean));
-	addOption(parser, CommandLineOption("qsl","mq-seed-length",    "seed length used for mapping quality assignment", OptionType::Int | OptionType::Label, options.artSeedLength));
-	addOption(parser, CommandLineOption("smq","seed-mism-quality", OptionType::Int | OptionType::Label, options.maxMismatchQualSum));
-	addOption(parser, CommandLineOption("tmq","total-mism-quality", OptionType::Int | OptionType::Label, options.absMaxQualSumErrors));
+	addOption(parser, ArgParseOption("mq", "mapping-quality", "Switch on mapping quality mode."));
+	addOption(parser, ArgParseOption("nbi", "no-below-id", "Do not report matches with seed identity < percent id."));
+	addOption(parser, ArgParseOption("qsl", "mq-seed-length", "Set MAQ seed length." , ArgParseOption::INTEGER));
+    setMinValue(parser, "mq-seed-length", "24");
+    setDefaultValue(parser, "mq-seed-length", options.artSeedLength));
+	addOption(parser, ArgParseOption("smq", "seed-mism-quality", "Set maximal mismatch-quality sum in the seed.", ArgParseOption::INTEGER));
+    setMinValue(parser, "seed-mism-quality", "0");
+    setDefaultValue(parser, "seed-mism-quality", options.maxMismatchQualSum));
+	addOption(parser, ArgParseOption("tmq", "total-mism-quality", "Set total maximal mismatch-quality.", ArgParseOption::INTEGER));
+    setMinValue(parser, "total-mism-quality", "0");
+    setDefaultValue(parser, "total-mism-quality", options.absMaxQualSumErrors));
 #endif
-	addSection(parser, "Verification Options:");
-	addOption(parser, CommandLineOption("mN", "match-N",           "\'N\' matches with all other characters", OptionType::Boolean));
-	addOption(parser, addArgumentText(CommandLineOption("ed", "error-distr",       "write error distribution to FILE", OptionType::String), "FILE"));
+    addSection(parser, "Verification Options");
+    addOption(parser, ArgParseOption("mN", "match-N", "N matches all other characters. Default: N matches nothing."));
+    addOption(parser, ArgParseOption("ed", "error-distr", "Write error distribution to \\fIFILE\\fP.", ArgParseOption::STRING, "FILE"));
 
-	
 
-	
-	bool stop = !parse(parser, argc, argv, cerr);
-	
+    // Parse command line.
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    if (res != ArgumentParser::PARSE_OK)
+    {
+        if (res == ArgumentParser::PARSE_ERROR)
+            cerr << "Exiting ..." << endl;
+        return (res == ArgumentParser::PARSE_ERROR) ? RAZERS_INVALID_OPTIONS : 0;
+    }
+
+    bool stop = false;
+
 	//////////////////////////////////////////////////////////////////////////////
 	// Extract options
-	getOptionValueLong(parser, "forward", options.forward);
-	getOptionValueLong(parser, "reverse", options.reverse);
-	getOptionValueLong(parser, "percent-identity", options.errorRate);
+	getOptionValue(options.forward, parser, "forward");
+	getOptionValue(options.reverse, parser, "reverse");
+	getOptionValue(options.errorRate, parser, "percent-identity");
 #ifndef NO_PARAM_CHOOSER
-	getOptionValueLong(parser, "recognition-rate", pm_options.optionLossRate);
-	getOptionValueLong(parser, "param-dir", pm_options.paramFolder);
+	getOptionValue(pm_options.optionLossRate, parser, "recognition-rate");
+	getOptionValue(pm_options.paramFolder, parser, "param-dir");
 #endif
-	getOptionValueLong(parser, "indels", options.hammingOnly);
+	getOptionValue(options.hammingOnly, parser, "indels");
 	options.hammingOnly = !options.hammingOnly;
-	getOptionValueLong(parser, "library-length", options.libraryLength);
-	getOptionValueLong(parser, "library-error", options.libraryError);
-	getOptionValueLong(parser, "max-hits", options.maxHits);
-	getOptionValueLong(parser, "purge-ambiguous", options.purgeAmbiguous);
-	getOptionValueLong(parser, "distance-range", options.distanceRange);
-	if (isSetLong(parser, "distance-range")) options.distanceRange++;
-	getOptionValueLong(parser, "alignment", options.dumpAlignment);
-	getOptionValueLong(parser, "output", options.output);
-	getOptionValueLong(parser, "output-format", options.outputFormat);
-	getOptionValueLong(parser, "sort-order", options.sortOrder);
-	getOptionValueLong(parser, "genome-naming", options.genomeNaming);
-	getOptionValueLong(parser, "read-naming", options.readNaming);
-	getOptionValueLong(parser, "position-format", options.positionFormat);
-	getOptionValueLong(parser, "outputUnmapped", options.outputUnmapped);
-	getOptionValueLong(parser, "shape", options.shape);
-	getOptionValueLong(parser, "threshold", options.threshold);
-	getOptionValueLong(parser, "overabundance-cut", options.abundanceCut);
-	getOptionValueLong(parser, "repeat-length", options.repeatLength);
+	getOptionValue(options.libraryLength, parser, "library-length");
+	getOptionValue(options.libraryError, parser, "library-error");
+	getOptionValue(options.maxHits, parser, "max-hits");
+	getOptionValue(options.purgeAmbiguous, parser, "purge-ambiguous");
+	getOptionValue(options.distanceRange, parser, "distance-range");
+	if (isSet(parser, "distance-range")) options.distanceRange++;
+	getOptionValue(options.dumpAlignment, parser, "alignment");
+	getOptionValue(options.output, parser, "output");
+	getOptionValue(options.outputFormat, parser, "output-format");
+    getOptionValue(options.sortOrder, parser, "sort-order");
+    getOptionValue(options.genomeNaming, parser, "genome-naming");
+    getOptionValue(options.readNaming, parser, "read-naming");
+    getOptionValue(options.positionFormat, parser, "position-format");
+    getOptionValue(options.outputUnmapped, parser, "outputUnmapped");
+    getOptionValue(options.shape, parser, "shape");
+    getOptionValue(options.threshold, parser, "threshold");
+    getOptionValue(options.abundanceCut, parser, "overabundance-cut");
+    getOptionValue(options.repeatLength, parser, "repeat-length");
+
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
-	getOptionValueLong(parser, "quality-in-header", options.fastaIdQual);
-	getOptionValueLong(parser, "mapping-quality", options.maqMapping);
-	getOptionValueLong(parser, "no-below-id", options.noBelowIdentity);
-	getOptionValueLong(parser, "mq-seed-length", options.artSeedLength);
-	getOptionValueLong(parser, "seed-mism-quality", options.maxMismatchQualSum);
-	getOptionValueLong(parser, "total-mism-quality", options.absMaxQualSumErrors);
+	getOptionValue(options.fastaIdQual, parser, "quality-in-header");
+	getOptionValue(options.maqMapping, parser, "mapping-quality");
+	getOptionValue(options.noBelowIdentity, parser, "no-below-id");
+	getOptionValue(options.artSeedLength, parser, "mq-seed-length");
+	getOptionValue(options.maxMismatchQualSum, parser, "seed-mism-quality");
+	getOptionValue(options.absMaxQualSumErrors, parser, "total-mism-quality");
 #endif
-	getOptionValueLong(parser, "low-memory", options.lowMemory);
-	getOptionValueLong(parser, "trim-reads", options.trimLength);
-	getOptionValueLong(parser, "taboo-length", options.tabooLength);
-	getOptionValueLong(parser, "match-N", options.matchN);
-	getOptionValueLong(parser, "error-distr", errorPrbFileName);
+
+	getOptionValue(options.lowMemory, parser, "low-memory");
+    getOptionValue(options.trimLength, parser, "trim-reads");
+    getOptionValue(options.tabooLength, parser, "taboo-length");
+    getOptionValue(options.matchN, parser, "match-N");
+    getOptionValue(errorPrbFileName, parser, "error-distr");
 	
- 	getOptionValueLong(parser, "split-mapping", options.minMatchLen);
- 	getOptionValueLong(parser, "max-gap", options.maxGap);
- 	getOptionValueLong(parser, "min-gap", options.minGap);
- 	getOptionValueLong(parser, "errors-prefix", options.maxPrefixErrors);
- 	getOptionValueLong(parser, "errors-suffix", options.maxSuffixErrors);
- 	getOptionValueLong(parser, "genome-len", options.specifiedGenomeLen);
-	getOptionValueLong(parser, "anchored", options.anchored);
-	getOptionValueLong(parser, "penalty-c", options.penaltyC);
+ 	getOptionValue(options.minMatchLen, parser, "split-mapping");
+ 	getOptionValue(options.maxGap, parser, "max-gap");
+ 	getOptionValue(options.minGap, parser, "min-gap");
+ 	getOptionValue(options.maxPrefixErrors, parser, "errors-prefix");
+ 	getOptionValue(options.maxSuffixErrors, parser, "errors-suffix");
+ 	getOptionValue(options.specifiedGenomeLen, parser, "genome-len");
+	getOptionValue(options.anchored, parser, "anchored");
+	getOptionValue(options.penaltyC, parser, "penalty-c");
 	
-#ifdef RAZERS_DIRECT_MAQ_MAPPING
-	getOptionValueLong(parser, "min-clipped-len", options.minClippedLen);
-	getOptionValueLong(parser, "quality-in-header", options.fastaIdQual);
-#endif	
-	if (isSetLong(parser, "help") || isSetLong(parser, "version")) return 0;	// print help or version and exit
-	if (isSetLong(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
-	if (isSetLong(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 3);
-	if (isSetLong(parser, "unique"))
+	getOptionValue(options.minClippedLen, parser, "min-clipped-len");
+	getOptionValue(options.fastaIdQual, parser, "quality-in-header");
+	
+    if (isSet(parser, "help") || isSet(parser, "version")) return 0;	// print help or version and exit
+	if (isSet(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
+	if (isSet(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 3);
+	if (isSet(parser, "unique"))
 	{
 		options.maxHits = 1;
 		options.distanceRange = 1;
@@ -466,39 +524,28 @@ int main(int argc, const char *argv[])
 		options.forward = true;
 		options.reverse = true;
 	}
-	appendValue(genomeFileNames, getArgumentValue(parser, 0));
-	for (unsigned i = 1; i < argumentCount(parser) && i < maxFiles; ++i)
-		appendValue(readFileNames, getArgumentValue(parser, i), Generous());
-	if(argumentCount(parser) == 3)
+
+#ifdef RAZERS_MATEPAIRS
+    unsigned maxReadFiles = 2;
+#else
+    unsigned maxReadFiles = 1;
+#endif
+    resize(genomeFileNames, length(genomeFileNames) + 1);
+    getArgumentValue(back(genomeFileNames), parser, 0);
+    resize(readFileNames, _min(getArgumentValueCount(parser, 1), maxReadFiles), Exact());
+    for (unsigned i = 0; i < length(readFileNames); ++i)
+        getArgumentValue(readFileNames[i], parser, 1, i);
+
+	if(length(readFileNames) == 2)
 		options.minMatchLen = 0;  //switch off split mapping if mate pairs are given
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Check options
 	if ((options.outputFormat == 4 && options.minMatchLen == 0) && (stop = true))
 		cerr << "Invalid output format option. Note that SAM output is only available for split mapping." << endl;
-	if ((options.errorRate < 50 || options.errorRate > 100) && (stop = true))
-		cerr << "Percent identity threshold must be a value between 50 and 100" << endl;
-	if ((pm_options.optionLossRate < 80 || pm_options.optionLossRate > 100) && (stop = true))
-		cerr << "Recognition rate must be a value between 80 and 100" << endl;
-	if ((options.libraryLength <= 0) && (stop = true))
-		cerr << "Library length must be a value greater 0" << endl;
-	if ((options.libraryError <= 0) && (stop = true))
-		cerr << "Library error must be a value greater or equal 0" << endl;
-	if ((options.maxHits < 1) && (stop = true))
-		cerr << "Maximum hits threshold must be greater than 0" << endl;
 	if ((options.outputFormat > 4 && options.outputFormat != 33 ) && (stop = true))
 		cerr << "Invalid output format option." << endl;
-	if ((options.sortOrder > 1) && (stop = true))
-		cerr << "Invalid sort order options." << endl;
-	if ((options.genomeNaming > 1) && (stop = true))
-		cerr << "Invalid genome naming options." << endl;
-	if ((options.readNaming > 2) && (stop = true))
-		cerr << "Invalid read naming options." << endl;
-	if ((options.positionFormat > 1) && (stop = true))
-		cerr << "Invalid position format options." << endl;
-	if ((options.threshold < 1) && (stop = true))
-		cerr << "Threshold must be a value greater than 0" << endl;
-	if (isSetLong(parser, "shape"))
+	if (isSet(parser, "shape"))
 	{
 		unsigned ones = 0;
 		unsigned zeros = 0;
@@ -533,38 +580,15 @@ int main(int argc, const char *argv[])
 		options.thresholdR = options.threshold;
 
 	}
-	if ((options.abundanceCut <= 0 || options.abundanceCut > 1) && (stop = true))
-		cerr << "Overabundance cut ratio must be a value >0 and <=1. Set to 1 to disable." << endl;
-	if ((options.repeatLength <= 1) && (stop = true))
-		cerr << "Repeat length must be a value greater than 1" << endl;
-#ifdef RAZERS_DIRECT_MAQ_MAPPING
-	if ((options.artSeedLength < 24) && (stop = true))
-		cerr << "Minimum seed length is 24" << endl;
-	if ((options.maxMismatchQualSum < 0) && (stop = true))
-		cerr << "Max seed mismatch quality needs to be 0 or a positive value" << endl;
-	if ((options.absMaxQualSumErrors < 0) && (stop = true))
-		cerr << "Max total mismatch quality needs to be 0 or a positive value" << endl;
-#endif
-	if ((options.trimLength != 0 && options.trimLength < 14) && (stop = true))
-		cerr << "Minimum read length is 14" << endl;
-	if ((options.tabooLength < 1) && (stop = true))
-		cerr << "Taboo length must be a value greater than 0" << endl;
-	if (argumentCount(parser) == 2 && !options.anchored)
+	if (length(readFileNames) == 1 && !options.anchored)
 		options.libraryLength = -1;		// only 1 readset -> disable mate-pair mapping
-	if ((argumentCount(parser) > maxFiles) && (stop = true))
-		cerr << "More than " << maxFiles << " input files specified." << endl;
-	if ((argumentCount(parser) < 2) && (stop = true))
-	{
-		if (argc > 1)
-			cerr << "Less than 2 input files specified." << endl;
-		else
-		{
-			shortHelp(parser, cerr);	// print short help and exit
-			return 0;
-		}
-	}
+    if ((getArgumentValueCount(parser, 1) > maxReadFiles) && (stop = true))
+		cerr << "More than " << maxReadFiles << " read files specified." << endl;
+    if ((getArgumentValueCount(parser, 1) == 0) && (stop = true))
+        cerr << "No read files specified." << endl;
 	if ((options.minClippedLen < 0) && (stop = true))
 		cerr << "Min. clipped read length must be a value greater 0" << endl;
+
 
 	options.errorRate = (100.0 - options.errorRate) / 100.0;
 	pm_options.optionLossRate = (100.0 - pm_options.optionLossRate) / 100.0;
@@ -611,7 +635,7 @@ int main(int argc, const char *argv[])
 			
 		
 #ifndef NO_PARAM_CHOOSER
-	if (!(isSetLong(parser, "shape") || isSetLong(parser, "threshold")))
+	if (!(isSet(parser, "shape") || isSet(parser, "threshold")))
 	{
 		if (options.lowMemory) pm_options.maxWeight = 13;
 		pm_options.verbose = (options._debugLevel >= 1);

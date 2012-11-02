@@ -221,7 +221,7 @@ namespace SEQAN_NAMESPACE_MAIN
  			minGap = 0;
  			maxPrefixErrors = 1;
  			maxSuffixErrors = 1;
- 			specifiedGenomeLen = 3000000000U; //whole human genome default
+ 			specifiedGenomeLen = 3000; //in Mb, whole human genome default
 			anchored = false;
 			maxReadRegionsEnd = 0;
 			minReadRegionsStart = 0; // 
