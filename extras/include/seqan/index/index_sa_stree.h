@@ -563,15 +563,15 @@ template <typename TObject, typename TSpec>
 inline bool open(Index<TObject, IndexSa<TSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
+
     name = fileName;    append(name, ".txt");
-
-    bool result = true;
     if ((!open(getFibre(index, EsaText()), toCString(name), openMode)) &&
-        (!open(getFibre(index, EsaText()), fileName, openMode)))
-        result = false;
+        (!open(getFibre(index, EsaText()), fileName, openMode))) return false;
 
-    name = fileName;    append(name, ".sa");    open(getFibre(index, EsaSA()), toCString(name), openMode);
-    return result;
+    name = fileName;    append(name, ".sa");
+    if (!open(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
+
+    return true;
 }
 
 template <typename TObject, typename TSpec>
@@ -584,12 +584,14 @@ template <typename TObject, typename TSpec>
 inline bool save(Index<TObject, IndexSa<TSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
+    
     name = fileName;    append(name, ".txt");
     if ((!save(getFibre(index, EsaText()), toCString(name), openMode)) &&
-        (!save(getFibre(index, EsaText()), fileName, openMode)))
-        return false;
+        (!save(getFibre(index, EsaText()), fileName, openMode))) return false;
 
-    name = fileName;    append(name, ".sa");    save(getFibre(index, EsaSA()), toCString(name), openMode);
+    name = fileName;    append(name, ".sa");
+    if (!save(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
+
     return true;
 }
 
