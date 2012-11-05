@@ -110,9 +110,9 @@ void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
 
     setStepSize(seeder.readsQGram, seedsLength);
 
-    TReadsIndexSAFibre & sa     = indexSA(seeder.readsQGram);
-    TReadsIndexDirFibre & dir    = indexDir(seeder.readsQGram);
-    TReadsIndexShape & shape  = indexShape(seeder.readsQGram);
+    TReadsIndexSAFibre & sa = indexSA(seeder.readsQGram);
+    TReadsIndexDirFibre & dir = indexDir(seeder.readsQGram);
+    TReadsIndexShape & shape = indexShape(seeder.readsQGram);
     TReadsIndexBucketMap & bucketMap = indexBucketMap(seeder.readsQGram);
 
     // Resize suffix array and directory.
@@ -150,7 +150,7 @@ void indexSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
         if (isDisabled(seeder.readsDelegate, readId))
             continue;
 
-        TReadSeq & read          = seeder.store.readSeqStore[readId];
+        TReadSeq & read = seeder.store.readSeqStore[readId];
         TReadSeqIterator itText = begin(read, Standard());
 
         typename Value<TReadsIndexSAFibre>::Type localPos;
@@ -225,8 +225,7 @@ void visitSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> const & 
     {
         if (repLength(readsIt) >= depth || !goDown(readsIt))
             if (!goRight(readsIt))
-                while (goUp(readsIt) && !goRight(readsIt))
-                    ;
+                while (goUp(readsIt) && !goRight(readsIt)) ;
     }
     while (!isRoot(readsIt));
 }
@@ -255,14 +254,16 @@ void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
     while (find(finder, pattern, errorsPerSeed))
     {
         // Skip disabled reads.
-        if (isDisabled(seeder.readsDelegate, position(pattern).i1))
+        if (isDisabled(seeder.readsDelegate, getValueI1(position(pattern))))
             continue;
 
         ++seeder.hitsCount;
 
         onSeedHit(seeder.hitsDelegate,
-                  position(finder).i1, beginPosition(finder).i2,
-                  position(pattern).i1, beginPosition(pattern).i2,
+                  getValueI1(position(finder)),
+                  getValueI2(toSuffixPosition(host(finder), beginPosition(finder), length(finder))),
+                  getValueI1(position(pattern)),
+                  getValueI2(beginPosition(pattern)),
                   0);
     }
 }
@@ -301,8 +302,10 @@ void findSeedsExact(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracking> & 
                 ++seeder.hitsCount;
 
                 onSeedHit(seeder.hitsDelegate,
-                          position(finder).i1, beginPosition(finder).i2,
-                          readId, seedsLength * seed,
+                          getValueI1(position(finder)),
+                          getValueI2(toSuffixPosition(host(finder), beginPosition(finder), length(finder))),
+                          readId,
+                          seedsLength * seed,
                           0);
             }
         }
@@ -332,14 +335,19 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder,
     while (find(finder, pattern, errorsPerSeed))
     {
         // Skip disabled reads.
-        if (isDisabled(seeder.readsDelegate, position(pattern).i1))
+        if (isDisabled(seeder.readsDelegate, getValueI1(position(pattern))))
             continue;
 
         ++seeder.hitsCount;
 
+//        seeder.hitsDelegate.minErrorsPerRead = minErrors(seeder.readsDelegate, position(pattern).i1);
+//        seeder.hitsDelegate.maxErrorsPerRead = maxErrors(seeder.readsDelegate, position(pattern).i1);
+
         onSeedHit(seeder.hitsDelegate,
-                  position(finder).i1, beginPosition(finder).i2,
-                  position(pattern).i1, beginPosition(pattern).i2,
+                  getValueI1(position(finder)),
+                  getValueI2(toSuffixPosition(host(finder), beginPosition(finder), length(finder))),
+                  getValueI1(position(pattern)),
+                  getValueI2(beginPosition(pattern)),
                   pattern.prefix_aligner.errors);
     }
 }
@@ -380,9 +388,14 @@ void findSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, SingleBacktracki
             {
                 ++seeder.hitsCount;
 
+//                seeder.hitsDelegate.minErrorsPerRead = minErrors(seeder.readsDelegate, readId);
+//                seeder.hitsDelegate.maxErrorsPerRead = maxErrors(seeder.readsDelegate, readId);
+
                 onSeedHit(seeder.hitsDelegate,
-                          position(finder).i1, beginPosition(finder).i2,
-                          readId, seedsLength * seed,
+                          getValueI1(position(finder)),
+                          getValueI2(toSuffixPosition(host(finder), beginPosition(finder), length(finder))),
+                          readId,
+                          seedsLength * seed,
                           pattern.prefix_aligner.errors);
             }
         }
