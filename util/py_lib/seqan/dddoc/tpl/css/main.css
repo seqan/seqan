@@ -91,6 +91,15 @@ div.default
     margin-top: 2px;
 }
 
+pre.console
+{
+    background-color: rgba(0, 0, 0, 0.85);
+    font-weight: 600;
+    color: lightgray;
+    margin-left: 6%;
+    margin-right: 6%;
+}
+
 /* ===========================================================================
  * Standard HTML Elements
  * ===========================================================================

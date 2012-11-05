@@ -30,8 +30,8 @@ DATA = None
 ID = 0
 
 # Text attribute node keys.
-TEXT_ATTRIBUTE_KEYS = set(['text', 'table', 'tableheader', 'code', 'section', 'subsection',
-                           'image', 'contents', 'note'])
+TEXT_ATTRIBUTE_KEYS = set(['text', 'table', 'tableheader', 'code', 'console', 'section',
+                           'subsection', 'image', 'contents', 'note'])
 
 # Nodes having paths matching the following patterns are considered text
 # container nodes.  Their children having only one more component which is in

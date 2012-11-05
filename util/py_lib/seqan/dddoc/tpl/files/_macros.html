@@ -70,6 +70,8 @@
         $!table_of_contents(path=path)!$
         <!--(elif text.startswith('type=code:'))-->
         $!html._formatCode(text[len('type=code:'):])!$
+        <!--(elif text.startswith('type=console:'))-->
+        <pre class="console">$!html.translateMarkup(text[len('type=console:'):])!$</pre>
         <!--(else)-->
         <pre>@!path!@ @!tree.find(path)!@</pre>
         <pre>@!text!@</pre>
