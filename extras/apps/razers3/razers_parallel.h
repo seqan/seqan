@@ -1087,8 +1087,8 @@ int _mapSingleReadsParallel(
         }
     }
 
-    std::cerr << "useExternalSort == " << useExternalSort << "\n"
-              << "useSequentialCompaction == " << useSequentialCompaction << "\n";
+    // std::cerr << "useExternalSort == " << useExternalSort << "\n"
+    //           << "useSequentialCompaction == " << useSequentialCompaction << "\n";
 
     // Switch between using parallel compaction, sequential compaction, and
     // sequential compaction with external sorting.  The actual switch for the
@@ -1133,8 +1133,8 @@ int _mapSingleReadsParallel(
 
     // Write back local stores to global stores.
     writeBackToGlobalStore(store, threadLocalStorages);
-    std::cerr << "length(threadLocalStorages[0].matches) == " << length(threadLocalStorages[0].matches) << std::endl;
-    std::cerr << "length(store.alignedReadStore) == " << length(store.alignedReadStore) << std::endl;
+    // std::cerr << "length(threadLocalStorages[0].matches) == " << length(threadLocalStorages[0].matches) << std::endl;
+    // std::cerr << "length(store.alignedReadStore) == " << length(store.alignedReadStore) << std::endl;
     double endWriteback = sysTime();
     options.timeFsCopy = endWriteback - endMapping;
 
