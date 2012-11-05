@@ -72,7 +72,9 @@ namespace seqan {
 class Test
 {
 public:
+    virtual void setUp() {}
     virtual void runTest() = 0;
+    virtual void tearDown() {}
 };
 
 // --------------------------------------------------------------------------
@@ -150,7 +152,9 @@ public:
             }
             ::seqan::ClassTest::beginTest(testName.c_str());
             try {
+                (*it)->instance->setUp();
                 (*it)->instance->runTest();
+                (*it)->instance->tearDown();
             } catch(::seqan::ClassTest::AssertionFailedException e) {
                 /* Swallow exception, go on with next test. */       
                 (void) e;  /* Get rid of unused variable warning. */
@@ -260,9 +264,7 @@ public:
     class SEQAN_TEST_NAME_(testCaseName, testName) : public ::seqan::Test     \
     {                                                                         \
     public:                                                                   \
-        SEQAN_TEST_NAME_(testCaseName, testName)()                            \
-        {                                                                     \
-        }                                                                     \
+        SEQAN_TEST_NAME_(testCaseName, testName)() {}                         \
                                                                               \
         virtual void runTest();                                               \
                                                                               \
@@ -272,7 +274,32 @@ public:
     ::seqan::TestDescription_ *                                               \
     SEQAN_TEST_NAME_(testCaseName, testName)::description =                   \
     ::seqan::TestCaseFactory_<SEQAN_TEST_NAME_(testCaseName, testName)>::make(\
-            SEQAN_MKSTRING(testDescription),                                  \
+            SEQAN_MKSTRING(testCaseName),                                     \
+            SEQAN_MKSTRING(testName));                                        \
+                                                                              \
+    void SEQAN_TEST_NAME_(testCaseName, testName)::runTest()
+
+// --------------------------------------------------------------------------
+// Macro SEQAN_TEST_F()
+// --------------------------------------------------------------------------
+
+// Macro for defining a test with a fixture.
+
+#define SEQAN_TEST_F(testCaseName, testName)                                  \
+    class SEQAN_TEST_NAME_(testCaseName, testName) : public testCaseName      \
+    {                                                                         \
+    public:                                                                   \
+        SEQAN_TEST_NAME_(testCaseName, testName)() {}                         \
+                                                                              \
+        virtual void runTest();                                               \
+                                                                              \
+        static ::seqan::TestDescription_ * description;                       \
+    };                                                                        \
+                                                                              \
+    ::seqan::TestDescription_ *                                               \
+    SEQAN_TEST_NAME_(testCaseName, testName)::description =                   \
+    ::seqan::TestCaseFactory_<SEQAN_TEST_NAME_(testCaseName, testName)>::make(\
+            SEQAN_MKSTRING(testCaseName),                                     \
             SEQAN_MKSTRING(testName));                                        \
                                                                               \
     void SEQAN_TEST_NAME_(testCaseName, testName)::runTest()
@@ -316,7 +343,7 @@ public:
     bool SEQAN_ ## testCaseName ## __ ## testName ## _registered_ =     \
             ::seqan::TypedTestFactory_<SEQAN_TEST_NAME_(testCaseName, testName), \
                                SEQAN_TYPED_TEST_CASE_TYPES_NAME_(testCaseName, types) \
-                               >::make(#testCaseName, #testName);       \
+                               >::make(SEQAN_MKSTRING(testCaseName), SEQAN_MKSTRING(testName)); \
                                                                         \
     template <typename SEQAN_TParam>                                    \
     void SEQAN_TEST_NAME_(testCaseName, testName)<SEQAN_TParam>::runTest()
