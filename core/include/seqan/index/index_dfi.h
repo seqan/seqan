@@ -344,7 +344,7 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 			TTempSAIterator itSA = begin(tempSA, Standard());
 			TTempSAIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = 0;
-			unsigned lastSeqSeen = -1;
+			unsigned lastSeqSeen = (unsigned)-1;
 			unsigned dsNo = 0;
 			Pair<unsigned, TTextSize> lPos;
 			for (; itSA != itSAEnd; ++itSA) 
@@ -409,7 +409,7 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 			TTempSAIterator itSA = begin(tempSA, Standard());
 			TTempSAIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = 0;
-			unsigned lastSeqSeen = -1;
+			unsigned lastSeqSeen = (unsigned)-1;
 			Pair<unsigned, TTextSize> lPos;
 			for(; itSA != itSAEnd; ++itSA)
 			{

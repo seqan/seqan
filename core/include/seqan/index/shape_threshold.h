@@ -230,13 +230,13 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 #ifdef PLATFORM_WINDOWS
 
 	template<typename TValue>
-	inline bool isnan(TValue value)
+	inline bool isNan(TValue value)
 	{
 		return value != value;
 	}
 
 	template<typename TValue>
-	inline bool isinf(TValue value)
+	inline bool isInf(TValue value)
 	{
 		return value == log(0.0);
 	}
@@ -244,15 +244,15 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 #else
 
 	template<typename TValue>
-	inline bool isnan(TValue value)
+	inline bool isNan(TValue value)
 	{
-		return std::isnan(value);
+		return isnan(value);
 	}
 
 	template<typename TValue>
-	inline bool isinf(TValue value)
+	inline bool isInf(TValue value)
 	{
-		return std::isinf(value);
+		return isinf(value);
 	}
 
 #endif
@@ -287,12 +287,12 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 	_probAdd(TValue &a, TValue b)
 	{
 #ifdef USE_LOGVALUES
-		if (isinf(a)) {
+		if (isInf(a)) {
 			a = b;
 			return;
 		}
-		if (isinf(b)) return;
-		if (isnan(a + log(1 + exp(b - a)))) return;
+		if (isInf(b)) return;
+		if (isNan(a + log(1 + exp(b - a)))) return;
 		a += log(1 + exp(b - a));
 #else
 		a += b;

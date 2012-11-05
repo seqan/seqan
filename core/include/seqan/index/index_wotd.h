@@ -1008,7 +1008,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		TTextSize sentinels = 0;
 		TTextSize textLength = 0;
-		unsigned lastSeqSeen = -1;
+		unsigned lastSeqSeen = (unsigned)-1;
 		Pair<unsigned, TTextSize> lPos;
 		for (; itSA != itSAEnd; ++itSA) 
 		{
@@ -1424,7 +1424,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TTempSAIterator itSA = begin(tempSA, Standard());
 			TTempSAIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = 0;
-			unsigned lastSeqSeen = -1;
+			unsigned lastSeqSeen = (unsigned)-1;
 			Pair<unsigned, TTextSize> lPos;
 			for(; itSA != itSAEnd; ++itSA)
 			{

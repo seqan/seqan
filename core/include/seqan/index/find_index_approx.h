@@ -153,7 +153,6 @@ _exactTreeSearch(
                         return;
                 }
             }
-            return;
         }
     }
 }
