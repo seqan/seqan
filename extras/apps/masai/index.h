@@ -61,6 +61,16 @@ typedef UngappedShape<10>                               TShape;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Genome Suffix Array Value Type Definition
+// ----------------------------------------------------------------------------
+
+template <>
+struct SAValue<TGenome>
+{
+    typedef Pair<unsigned char, unsigned int, Pack> Type;
+};
+
+// ----------------------------------------------------------------------------
 // Genome Enhanced Suffix Array Type Definitions
 // ----------------------------------------------------------------------------
 
@@ -73,12 +83,6 @@ typedef MMap<>                                          TGenomeEsaStringSpec;
 #endif
 
 namespace seqan {
-template <>
-struct Fibre<TGenomeEsa, FibreSA>
-{
-    typedef String<Pair<unsigned char, unsigned int, Pack>, TGenomeEsaStringSpec>   Type;
-};
-
 template <>
 struct Fibre<TGenomeEsa, FibreLcp>
 {
@@ -104,14 +108,6 @@ typedef DefaultIndexStringSpec<TGenomeSa>::Type         TGenomeSaStringSpec;
 typedef MMap<>                                          TGenomeSaStringSpec;
 #endif
 
-namespace seqan {
-template <>
-struct Fibre<TGenomeSa, FibreSA>
-{
-    typedef String<Pair<unsigned char, unsigned int, Pack>, TGenomeSaStringSpec>    Type;
-};
-}
-
 // ----------------------------------------------------------------------------
 // Genome QGram Index with Bucket Refinement Type Definitions
 // ----------------------------------------------------------------------------
@@ -130,12 +126,6 @@ typedef MMap<>                                          TGenomeQGramStringSpec;
 #endif
 
 namespace seqan {
-template <>
-struct Fibre<TGenomeBaseQGram, FibreSA>
-{
-    typedef String<Pair<unsigned char, unsigned int, Pack>, TGenomeQGramStringSpec> Type;
-};
-
 template <>
 struct Fibre<TGenomeBaseQGram, FibreDir>
 {
@@ -161,24 +151,28 @@ typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<MultiDollar<void> > >, Co
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Reads Suffix Array Value Type Definition
+// ----------------------------------------------------------------------------
+
+template <>
+struct SAValue<TReadSeqStore>
+{
+    typedef Pair<unsigned int, unsigned short, Pack> Type;
+};
+
+// ----------------------------------------------------------------------------
 // Reads Wotd Type Definitions
 // ----------------------------------------------------------------------------
 
 typedef Index<TReadSeqStore, IndexWotd<> >              TReadsWotd;
 
-namespace seqan {
-template <>
-struct Fibre<TReadsWotd, FibreSA>
-{
-    typedef String<Pair<unsigned int, unsigned short, Pack>, DefaultIndexStringSpec<TReadsWotd>::Type>  Type;
-};
-
+//namespace seqan {
 //	template <>
 //	struct Fibre<TReadsWotd, FibreDir>
 //	{
 //		typedef String< unsigned int, DefaultIndexStringSpec<TReadsWotd>::Type >   Type;
 //	};
-}
+//}
 
 // ----------------------------------------------------------------------------
 // Reads QGram Index with Bucket Refinement Type Definitions
@@ -191,16 +185,10 @@ struct Fibre<TReadsWotd, FibreSA>
 //namespace seqan
 //{
 //    template <>
-//    struct Fibre<TReadsBaseQGram, FibreSA>
+//    struct Fibre<TReadsBaseQGram, FibreDir>
 //    {
-//        typedef String< Pair<unsigned int, unsigned short, Pack>, DefaultIndexStringSpec<TReadsBaseQGram>::Type > Type;
-//    };
-//
-//    template <>
-//	struct Fibre<TReadsBaseQGram, FibreDir>
-//	{
 //        typedef String<unsigned int, DefaultIndexStringSpec<TReadsBaseQGram>::Type >   Type;
-//	};
+//    };
 //
 //    template <>
 //    struct Fibre<TReadsInfixSa, FibreSA>
@@ -216,12 +204,6 @@ struct Fibre<TReadsWotd, FibreSA>
 typedef Index<TReadSeqStore, TQGramBaseIndex>               TReadsQGram;
 
 namespace seqan {
-template <>
-struct Fibre<TReadsQGram, FibreSA>
-{
-    typedef String<Pair<unsigned int, unsigned short, Pack>, DefaultIndexStringSpec<TReadsQGram>::Type> Type;
-};
-
 template <>
 struct Fibre<TReadsQGram, FibreDir>
 {
