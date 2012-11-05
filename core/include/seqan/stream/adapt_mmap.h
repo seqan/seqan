@@ -149,7 +149,6 @@ inline int
 streamPut(String<TValue, TSpec> & stream, char const *source)
 {
     return _appendWithoutTrailing0(stream, source);
-    return 0;
 }
 
 
@@ -163,7 +162,6 @@ streamPut(String<TValue, TSpec> & stream, TSource const & source)
     if (str.fail())
         return str.fail();
     return _appendWithoutTrailing0(stream, str.str());
-    return 0;
 }
 
 }  // namespace seqan

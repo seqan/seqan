@@ -94,8 +94,7 @@ public:
 
 private:
     // No default or copy constructor.
-    RecordReader() {}
-    RecordReader(RecordReader const &) {}
+    RecordReader(RecordReader const &other): _string(other._string) {}
 };
 
 // ============================================================================
