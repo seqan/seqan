@@ -138,7 +138,7 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('snp_store_realign_m0mp1oa_it1ipt01.stdout'),
         args=[ph.inFile('human-chr22-inf2.fa'),
               ph.inFile('human-reads2.sam'),
-              '-re', '-if', str(1), '-oa', '-hq', '-it', str(1), '-mp', str(1), '-ipt', str(0.1),
+              '-re', '-if', str(1), '-oa', '-hq', '-it', str(1), '-mp', str(1), '-ipt', str(0.1), '-of', str(1),
               '-id', ph.outFile('indels_realign_m0mp1oa_it1ipt01.out'),
               '-o', ph.outFile('snps_realign_m0mp1oa_it1ipt01.out')],
         to_diff=[(ph.inFile('snp_store_realign_m0mp1oa_it1ipt01.stdout'),
