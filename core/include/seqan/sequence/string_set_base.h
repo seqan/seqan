@@ -463,6 +463,26 @@ inline TPos getSeqOffset(TPos const & pos, TLimitsString const & limits) {
 }
 
 // --------------------------------------------------------------------------
+// Function setSeqOffset()
+// --------------------------------------------------------------------------
+
+// TODO(esiragusa): Implement a spec for global positions.
+template <typename TPosition, typename TSeqOffset>
+inline void
+setSeqOffset(TPosition & pos, TSeqOffset seqOffset)
+{
+    pos = seqOffset;
+}
+
+template <typename T1, typename T2, typename TPack, typename TSeqOffset>
+inline void
+setSeqOffset(Pair<T1, T2, TPack> & pos, TSeqOffset seqOffset)
+{
+    setValueI2(pos, seqOffset);
+}
+
+
+// --------------------------------------------------------------------------
 // Function posGlobalize()
 // --------------------------------------------------------------------------
 
