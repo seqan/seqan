@@ -63,6 +63,7 @@ struct SeqIOFileType_
         FILE_TYPE_TEXT_STD,  // text stdin, stdout
         FILE_TYPE_TEXT,
         FILE_TYPE_GZ,
+        FILE_TYPE_GZ_DIRECT,  // gzfile stream but uncompressed/direct (stdin)
         FILE_TYPE_BZ2
     };
 };
@@ -170,14 +171,18 @@ public:
     // reading.
     void _guessFileTypeAndFormatForReadingAndInitialize()
     {
-        // We only support reading text from stdin at the moment.  It might be hard to implement robust file format
-        // guessing from stdin since the raw GZFile and BZ2 Streams use POSIX files / FILE* at the moment.  Crossing
-        // such library boundaries will probably not work with ungetc.
+        // When reading from STDIN, we use a GZFile stream if possible.  This will automatically decompress .gz files
+        // and just pass through plain text files.  Otherwise, we would have to use buffer ourselves and use zlib/bzlib
+        // directly.
         //
         // TODO(holtgrew): Re-implement manual decompression/compression using the zlib and bzlib consistently using one interface?
         if (_filename == "-")
         {
+#if SEQAN_HAS_ZLIB
+            _fileType = SeqIOFileType_::FILE_TYPE_GZ;
+#else  // #if SEQAN_HAS_ZLIB
             _fileType = SeqIOFileType_::FILE_TYPE_TEXT_STD;
+#endif  // #if SEQAN_HAS_ZLIB
         }
         else
         {
@@ -252,6 +257,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
             _gzStream.reset(new Stream<GZFile>());
             if (!open(*_gzStream, toCString(_filename), "r"))
@@ -262,6 +268,8 @@ public:
             {
                 _gzReader.reset(new RecordReader<Stream<GZFile>, SinglePass<> >(*_gzStream));
                 _fileFormat = this->_checkFormat(*_gzReader);
+                if (_filename == "-" && isDirect(*_gzStream))
+                    _fileType = SeqIOFileType_::FILE_TYPE_GZ_DIRECT;
             }
         }
         break;
@@ -436,6 +444,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             res = seqan::readRecord(id, seq, qual, *_gzReader, tag);
             _atEnd = seqan::atEnd(*_gzReader);
             break;      // end of case
@@ -478,6 +487,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             res = seqan::readRecord(id, seq, *_gzReader, tag);
             _atEnd = seqan::atEnd(*_gzReader);
             break;      // end of case
@@ -550,6 +560,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
             for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_gzReader); ++i)
             {
@@ -626,6 +637,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
             for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_gzReader); ++i)
             {
@@ -711,6 +723,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
             while (!seqan::atEnd(*_gzReader))
             {
@@ -786,6 +799,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
             while (!seqan::atEnd(*_gzReader))
             {
@@ -839,6 +853,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             res = seqan::writeRecord(*_gzStream, id, seq, qual, tag);
             break;      // end of case
 
@@ -870,6 +885,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             res = seqan::writeRecord(*_gzStream, id, seq, tag);
             break;      // end of case
 
@@ -911,6 +927,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             res = seqan::write2(*_gzStream, ids, seqs, quals, tag);
             break;      // end of case
 
@@ -946,6 +963,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             res = seqan::write2(*_gzStream, ids, seqs, tag);
             break;      // end of case
 
@@ -978,6 +996,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             seqan::streamFlush(*_gzStream);
             break;      // end of case
 
@@ -1003,6 +1022,7 @@ public:
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
+        case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
             seqan::close(*_gzStream);
             break;      // end of case
 
