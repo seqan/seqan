@@ -64,11 +64,13 @@ typedef UngappedShape<10>                               TShape;
 // Genome Suffix Array Value Type Definition
 // ----------------------------------------------------------------------------
 
+namespace seqan {
 template <>
 struct SAValue<TGenome>
 {
     typedef Pair<unsigned char, unsigned int, Pack> Type;
 };
+}
 
 // ----------------------------------------------------------------------------
 // Genome Enhanced Suffix Array Type Definitions
@@ -154,11 +156,13 @@ typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<MultiDollar<void> > >, Co
 // Reads Suffix Array Value Type Definition
 // ----------------------------------------------------------------------------
 
+namespace seqan {
 template <>
 struct SAValue<TReadSeqStore>
 {
     typedef Pair<unsigned int, unsigned short, Pack> Type;
 };
+}
 
 // ----------------------------------------------------------------------------
 // Reads Wotd Type Definitions
