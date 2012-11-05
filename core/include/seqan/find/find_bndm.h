@@ -191,7 +191,7 @@ template <typename TFinder, typename TNeedle>
 inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & me) {
 	SEQAN_CHECKPOINT
 	typedef unsigned int TWord;
-	TWord carryPattern = (1<< (BitsPerValue<TWord>::VALUE - 1));
+	TWord carryPattern = ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
 	while (position(finder) <= me.haystackLength - me.needleLength) {
 		me.last=me.needleLength;
 		TWord j=me.needleLength;

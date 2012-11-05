@@ -322,7 +322,7 @@ inline bool _findAbndmSmallNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
         TWord pos = convert<TWord>(*(finder + j));
 
         me.r_table[0] = me.b_table[pos];				    
-        nR = 0 - 1;
+        nR = (TWord)-1;
 	for(i = 1;i <= me.limit;++i) me.r_table[i] = nR;
 
 #ifdef SEQAN_DEBUG_ABNDM
@@ -400,7 +400,7 @@ inline bool _findAbndmLargeNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
 {
     SEQAN_CHECKPOINT
         typedef unsigned int TWord;
-    TWord carryPattern = (1<< (BitsPerValue<TWord>::VALUE - 1));
+    TWord carryPattern = ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
     typedef typename Host<TFinder>::Type    THost;
     typedef Segment<THost>                  THostSegment;
     typedef Finder<THostSegment>            THSFinder;

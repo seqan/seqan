@@ -1129,7 +1129,7 @@ _patternInitSmallStateBanded(
 		if (errors < (unsigned)BitsPerValue<TWord>::VALUE-1)
 			VP |= ((TWord) -1) << ((unsigned)BitsPerValue<TWord>::VALUE-1 - errors);
 		else
-			VP = -1;
+			VP = (TWord)-1;
 	}
 
     for (; ndlIter != ndlEnd; ++ndlIter, goNext(finder), ++shift)
