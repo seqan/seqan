@@ -201,18 +201,6 @@ begin(Index<TText, FMIndex<TOccSpec, TIndexSpec> > const & index, TSpec const /*
 }
 
 // ----------------------------------------------------------------------------
-// Function clear()                                                  [Iterator]
-// ----------------------------------------------------------------------------
-
-// ==========================================================================
-///.Function.clear.param.type:Spec.FMIndex
-template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
-inline void clear(Iter<Index<TText, FMIndex<TOccSpec, CompressText> >, VSTree<TSpec> > & it)
-{
-    _clear(it);
-}
-
-// ----------------------------------------------------------------------------
 // Function _isRoot()                                                [Iterator]
 // ----------------------------------------------------------------------------
 
@@ -388,7 +376,7 @@ inline bool _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VST
                           TString const & string,
                           TSize & lcp)
 {
-    typedef Index<TText, FMIndex<TOccSpec, CompressText> >      TIndex;
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
     typedef typename Value<TIndex>::Type                        TAlphabet;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
