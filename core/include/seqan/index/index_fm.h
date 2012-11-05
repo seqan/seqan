@@ -449,6 +449,24 @@ getFibre(Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> > const & index,
 }
 
 // ==========================================================================
+
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TPos, typename TSize>
+inline typename SAValue<Index<TText, FMIndex<TOccSpec, TIndexSpec > > >::Type
+toSuffixPosition(Index<TText, FMIndex<TOccSpec, TIndexSpec > > & index, TPos i, TSize offset)
+{
+    setSeqOffset(i, suffixLength(i, index) - offset);
+    return i;
+}
+
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TPos, typename TSize>
+inline typename SAValue<Index<TText, FMIndex<TOccSpec, TIndexSpec > > const>::Type
+toSuffixPosition(Index<TText, FMIndex<TOccSpec, TIndexSpec > > const & index, TPos i, TSize offset)
+{
+    setSeqOffset(i, suffixLength(i, index) - offset);
+    return i;
+}
+
+// ==========================================================================
 // This function determines the number of the different characters in the text.
 template <typename TText, typename TSetSpec, typename TFreq>
 inline void _getFrequencies(TFreq & freq,

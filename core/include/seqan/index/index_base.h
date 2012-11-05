@@ -1047,6 +1047,17 @@ String<char> & text = getFibre(indexEsa, EsaText());
 	}
 
 //////////////////////////////////////////////////////////////////////////////
+
+    template <typename TIndex, typename TPos, typename TSize>
+	inline typename SAValue<TIndex>::Type toSuffixPosition(TIndex &, TPos i, TSize) {
+        return i;
+	}
+    template <typename TIndex, typename TPos, typename TSize>
+	inline typename SAValue<TIndex const>::Type toSuffixPosition(TIndex const &, TPos i, TSize) {
+        return i;
+	}
+
+//////////////////////////////////////////////////////////////////////////////
 // interface for infinity/invalid values
 
 	template <typename TValue>
