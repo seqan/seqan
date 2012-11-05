@@ -215,7 +215,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     typedef Extender<TMatchManager, TDistance>              TExtender;
     typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
 
-    TStream file;
+    TWriterStream file;
     if (mapper.dumpResults)
         open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE);
 
@@ -249,7 +249,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     typedef Extender<TMatchManager, TDistance>              TExtender;
     typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
 
-    TStream file;
+    TWriterStream file;
     if (mapper.dumpResults)
         open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE);
 
