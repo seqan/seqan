@@ -321,8 +321,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSize sum = 0;
 /*		for(unsigned i = 0; i < seqs; ++i)
 			sum += (length((*me.in.in.in.in.set)[i]) / STEP_SIZE) * (1 + length(me.tmp.i2) * (alphabetSize - 1));
-*/		return (length(me.in) / STEP_SIZE) * (1 + length(me.tmp.i2) * (alphabetSize - 1));
 		return sum;
+*/		return (length(me.in) / STEP_SIZE) * (1 + length(me.tmp.i2) * (alphabetSize - 1));
     }
 
     template < typename TInput, unsigned STEP_SIZE >

@@ -209,7 +209,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
             PageBucket &pb = top(pqueue);
 			SEQAN_ASSERT_LEQ(pb.cur, pb.end);
-			
+
             Ref_ = *pb.cur;
             if (++pb.cur == pb.end)
 			{
