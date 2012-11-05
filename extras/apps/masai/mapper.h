@@ -209,15 +209,15 @@ bool mapReads(Mapper<TSpec> & mapper,
               Sam const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
-    typedef String<char, External<> >                       TStream;
-    typedef MatchWriter<TStream, TDistance, Sam>            TMatchWriter;
+    typedef String<char, TStream>                           TWriterStream;
+    typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
     typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
     typedef Extender<TMatchManager, TDistance>              TExtender;
     typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
 
     TStream file;
     if (mapper.dumpResults)
-        open(file, toCString(mappedReadsFile), OPEN_RDWR | OPEN_CREATE);
+        open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE);
 
     TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
     TMatchManager manager(writer, mapper.readsCount);
@@ -243,15 +243,15 @@ bool mapReads(Mapper<TSpec> & mapper,
               Raw const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
-    typedef String<TMatch, External<> >                     TStream;
-    typedef MatchWriter<TStream, TDistance, Raw>            TMatchWriter;
+    typedef String<TMatch, TStream>                         TWriterStream;
+    typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
     typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
     typedef Extender<TMatchManager, TDistance>              TExtender;
     typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
 
     TStream file;
     if (mapper.dumpResults)
-        open(file, toCString(mappedReadsFile), OPEN_RDWR | OPEN_CREATE);
+        open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE);
 
     TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
     TMatchManager manager(writer, mapper.readsCount);

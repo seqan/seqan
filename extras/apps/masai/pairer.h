@@ -158,7 +158,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TErrors errors,
                      TDistance, Raw)
 {
-    typedef String<Match<>, External<> >                    TWriterStream;
+    typedef String<Match<>, TStream>                        TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
     typedef Verifier<TMatchWriter, TDistance>               TVerifier;
 
@@ -193,7 +193,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TErrors errors,
                      TDistance, Sam)
 {
-    typedef String<char, External<> >                       TWriterStream;
+    typedef String<char, TStream>                           TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
     typedef Verifier<TMatchWriter, TDistance>               TVerifier;
 
@@ -277,12 +277,12 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef String<Match<>, External<> >                   TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Raw>     TMatchWriter;
+    typedef String<Match<>, TStream>                    TWriterStream;
+    typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
     if (pairer.dumpResults)
-        open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE);
+        open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE);
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
 
@@ -301,12 +301,12 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef String<char, External<> >                      TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Sam>     TMatchWriter;
+    typedef String<char, TStream>                      TWriterStream;
+    typedef MatchWriter<TWriterStream, TDistance, Sam> TMatchWriter;
 
     TWriterStream file;
     if (pairer.dumpResults)
-        open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE);
+        open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE);
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
 
@@ -352,8 +352,7 @@ bool _mateMappedReads(Pairer<TSpec> & pairer,
 
     do
     {
-        while (front(matchesLeft).readId > front(matchesRight).readId && getNext(storeRight, matchesRight))
-            ;
+        while (front(matchesLeft).readId > front(matchesRight).readId && getNext(storeRight, matchesRight)) ;
 
         if (front(matchesLeft).readId == front(matchesRight).readId)
         {
