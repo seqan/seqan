@@ -36,7 +36,7 @@
 #include <typeinfo>
 #include <time.h>
 #define SEQAN_DEBUG
-#define SEQAN_TEST
+//#define SEQAN_TEST
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>

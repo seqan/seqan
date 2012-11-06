@@ -31,7 +31,7 @@
 // ==========================================================================
 
 #define SEQAN_DEBUG
-#define SEQAN_TEST
+//#define SEQAN_TEST
 #define SEQAN_VERBOSE
 
 // SeqAn

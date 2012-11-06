@@ -39,7 +39,7 @@
 #include <cmath>
 
 //#define SEQAN_DEBUG
-#define SEQAN_TEST
+//#define SEQAN_TEST
 //#define SEQAN_NOSRAN //suppress srand
 
 #include <seqan/sequence.h>

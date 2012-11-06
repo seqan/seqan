@@ -33,7 +33,7 @@
 #ifndef TESTS_ALIGN_TEST_ALIGN_MYERS_H_
 #define TESTS_ALIGN_TEST_ALIGN_MYERS_H_
 
-#define SEQAN_TEST
+//#define SEQAN_TEST
 
 #include <seqan/sequence.h>
 #include <seqan/file.h>

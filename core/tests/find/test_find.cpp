@@ -44,7 +44,7 @@
 #include <time.h>
 
 #define SEQAN_DEBUG
-#define SEQAN_TEST
+//#define SEQAN_TEST
 
 #define SEQAN_DEBUG_MYERSBITVECTOR
 //#define SEQAN_DEBUG_MYERSBITVECTOR_DUMP
