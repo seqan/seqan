@@ -48,7 +48,7 @@
 #include "index.h"
 #include "indexer.h"
 #include "manager.h"
-#include "stream.h"
+//#include "stream.h"
 #include "writer.h"
 #include "extender.h"
 #include "seeder.h"
