@@ -83,7 +83,7 @@ struct MasaiOptions
     {
         indexTypeList.push_back("esa");
         indexTypeList.push_back("sa");
-        indexTypeList.push_back("qgram");
+//        indexTypeList.push_back("qgram");
         indexTypeList.push_back("fm");
 
         mappingModeList.push_back("all");
