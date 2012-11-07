@@ -63,6 +63,7 @@ struct Options : public MasaiOptions
 
     MappingMode mappingMode;
     unsigned    errorsPerRead;
+    unsigned    errorsLossy;
     unsigned    seedLength;
     bool        mismatchesOnly;
 
@@ -77,6 +78,7 @@ struct Options : public MasaiOptions
         outputCigar(true),
         mappingMode(ANY_BEST),
         errorsPerRead(5),
+        errorsLossy(0),
         seedLength(33),
         mismatchesOnly(false),
         verifyHits(true),
@@ -113,6 +115,13 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMinValue(parser, "errors", "0");
     setMaxValue(parser, "errors", "32");
     setDefaultValue(parser, "errors", options.errorsPerRead);
+
+    addOption(parser, ArgParseOption("el", "errors-lossy",
+                                     "Maximum number of errors per read to report. For any-best mode only.",
+                                     ArgParseOption::INTEGER));
+    setMinValue(parser, "errors-lossy", "0");
+    setMaxValue(parser, "errors-lossy", "32");
+    setDefaultValue(parser, "errors-lossy", options.errorsLossy);
 
     addOption(parser, ArgParseOption("sl", "seed-length", "Minimum seed length.", ArgParseOption::INTEGER));
     setMinValue(parser, "seed-length", "10");
@@ -167,6 +176,8 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse mapping options.
     getOptionValue(options.errorsPerRead, parser, "errors");
+    getOptionValue(options.errorsLossy, parser, "errors-lossy");
+    options.errorsLossy = std::max(options.errorsLossy, options.errorsPerRead);
     getOptionValue(options.seedLength, parser, "seed-length");
     options.mismatchesOnly = isSet(parser, "no-gaps");
 
@@ -251,7 +262,8 @@ int runMapper(Options & options)
 
     // Mapping reads.
     start = sysTime();
-    mapReads(mapper, options.mappedReadsFile, options.errorsPerRead, TDistance(), TStrategy(), TBacktracking(), TFormat());
+    mapReads(mapper, options.mappedReadsFile, options.errorsPerRead, options.errorsLossy,
+             TDistance(), TStrategy(), TBacktracking(), TFormat());
     finish = sysTime();
     std::cout << "Mapping time:\t\t\t" << std::flush;
     std::cout << finish - start << " sec" << std::endl;

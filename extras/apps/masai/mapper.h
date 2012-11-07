@@ -41,12 +41,14 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/find.h>
+#include <seqan/stream.h>
 
 #include "tags.h"
 #include "store.h"
 #include "index.h"
 #include "indexer.h"
 #include "manager.h"
+#include "stream.h"
 #include "writer.h"
 #include "extender.h"
 #include "seeder.h"
@@ -190,7 +192,7 @@ bool _loadReadsRC(Mapper<TSpec> & mapper)
 }
 
 template <typename TSpec>
-TReadSeqSize _readsLength(Mapper<TSpec> & mapper)
+TReadSeqSize _readsLength(Mapper<TSpec> const & mapper)
 {
     return length(mapper.store.readSeqStore[0]);
 }
@@ -203,6 +205,7 @@ template <typename TSpec, typename TString, typename TErrors, typename TDistance
 bool mapReads(Mapper<TSpec> & mapper,
               TString const & mappedReadsFile,
               TErrors errors,
+              TErrors errorsLossy,
               TDistance const & /*tag*/,
               TStrategy const & /*tag*/,
               TMultiple const & /*tag*/,
@@ -228,7 +231,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     // TODO(esiragusa):Remove writeCigar from mapper members.
     writer.writeCigar = mapper.writeCigar;
 
-    _mapReads(mapper, seeder, manager, errors, TStrategy());
+    _mapReads(mapper, seeder, manager, errors, errorsLossy, TStrategy());
 
     return true;
 }
@@ -237,6 +240,7 @@ template <typename TSpec, typename TString, typename TErrors, typename TDistance
 bool mapReads(Mapper<TSpec> & mapper,
               TString const & mappedReadsFile,
               TErrors errors,
+              TErrors errorsLossy,
               TDistance const & /*tag*/,
               TStrategy const & /*tag*/,
               TMultiple const & /*tag*/,
@@ -259,15 +263,20 @@ bool mapReads(Mapper<TSpec> & mapper,
     TSeeder seeder(mapper.store, manager, extender);
     seeder.readsCount = mapper.readsCount;
 
-    _mapReads(mapper, seeder, manager, errors, TStrategy());
+    _mapReads(mapper, seeder, manager, errors, errorsLossy, TStrategy());
 
     return true;
 }
 
 // ============================================================================
 
-template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, All const & /*tag*/)
+template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
+bool _mapReads(Mapper<TSpec> & mapper,
+               TSeeder & seeder,
+               TManager & manager,
+               TErrors errors,
+               TErrors,
+               All const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -298,27 +307,36 @@ bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TEr
     }
 
     std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-    std::cout << "Matches:\t\t\t" << matches.matchesCount << std::endl;
+    std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
 
     return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
+template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
+bool _mapReads(Mapper<TSpec> & mapper,
+               TSeeder & seeder,
+               TManager & manager,
+               TErrors errors,
+               TErrors,
+               AllBest const & /*tag*/)
 {
-    _mapReadsByStratum(mapper, seeder, matches, std::min(errors, (TErrors)1), AllBest());
+    _mapReadsByStratum(mapper, seeder, manager, std::min(errors, (TErrors)1), AllBest());
 
     if (errors > 1)
     {
-        matches.errors = 2;
-        _mapReadsBySeed(mapper, seeder, matches, errors, AllBest());
+        manager.errors = 2;
+        _mapReadsBySeed(mapper, seeder, manager, errors, AllBest());
     }
 
     return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool _mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
+template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
+bool _mapReadsBySeed(Mapper<TSpec> & mapper,
+                     TSeeder & seeder,
+                     TManager & manager,
+                     TErrors errors,
+                     AllBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -348,18 +366,22 @@ bool _mapReadsBySeed(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matche
         seeder.hitsDelegate.minErrorsPerRead++;
 
         std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << matches.matchesCount << std::endl;
+        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
 
-//        matches.errors += getValueI2(*seedsIt);
-//        raiseErrorThreshold(matches);
-        matches.errors = std::max((TErrors)matches.errors, (TErrors)position);
+//        manager.errors += getValueI2(*seedsIt);
+//        raiseErrorThreshold(manager);
+        manager.errors = std::max((TErrors)manager.errors, (TErrors)position);
     }
 
     return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool _mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AllBest const & /*tag*/)
+template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
+bool _mapReadsByStratum(Mapper<TSpec> & mapper,
+                        TSeeder & seeder,
+                        TManager & manager,
+                        TErrors errors,
+                        AllBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -393,17 +415,22 @@ bool _mapReadsByStratum(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & mat
         seeder.hitsDelegate.minErrorsPerRead++;
         seeder.hitsDelegate.maxErrorsPerRead++;
 
-        raiseErrorThreshold(matches);
+        raiseErrorThreshold(manager);
 
         std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << matches.matchesCount << std::endl;
+        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
     }
 
     return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TMatches, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TErrors errors, AnyBest const & /*tag*/)
+template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
+bool _mapReads(Mapper<TSpec> & mapper,
+               TSeeder & seeder,
+               TManager & manager,
+               TErrors errors,
+               TErrors,
+               KBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
     typedef TSeeding::TSeeds                    TSeeds;
@@ -429,9 +456,60 @@ bool _mapReads(Mapper<TSpec> & mapper, TSeeder & seeder, TMatches & matches, TEr
         find(seeder, mapper.indexer.genomeIndex, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
 
         std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << matches.matchesCount << std::endl;
+        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
 
-        raiseErrorThreshold(matches);
+        raiseErrorThreshold(manager);
+    }
+
+    return true;
+}
+
+template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
+bool _mapReads(Mapper<TSpec> & mapper,
+               TSeeder & seeder,
+               TManager & manager,
+               TErrors errors,
+               TErrors errorsLossy,
+               AnyBest const & /*tag*/)
+{
+    typedef Seeding<>                           TSeeding;
+    typedef TSeeding::TSeeds                    TSeeds;
+    typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
+
+    TReadSeqSize readsLength = _readsLength(mapper);
+    TReadSeqSize seedLength  = mapper.seedLength;
+    TReadSeqSize seedCount   = readsLength / seedLength;
+    TErrors stratumDelta     = seedCount - 1;
+
+    for (TErrors errors_ = 0; errors_ <= errors; ++errors_)
+    {
+        std::cout << "Errors:\t\t\t\t" << errors_ << std::endl;
+
+        TErrors seedErrors_ = errors_ / seedCount;
+        TReadSeqSize seed = errors_ % seedCount;
+
+        std::cout << "Seed:\t\t\t\t(" << seedLength << "," << seedErrors_ << ")" << std::endl;
+
+        seeder.hitsDelegate.minErrorsPerRead = seed;
+        seeder.hitsDelegate.maxErrorsPerRead = std::min(errors, errors_ + stratumDelta);
+
+        if (seeder.hitsDelegate.maxErrorsPerRead == errors)
+            seeder.hitsDelegate.maxErrorsPerRead = errorsLossy;
+
+        find(seeder, mapper.indexer.genomeIndex, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
+
+        std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
+        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+
+        raiseErrorThreshold(manager);
+    }
+
+    for (TErrors errors_ = errors + 1; errors_ <= errorsLossy; ++errors_)
+    {
+        std::cout << "Errors:\t\t\t\t" << errors_ << std::endl;
+        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+
+        raiseErrorThreshold(manager);
     }
 
     return true;
