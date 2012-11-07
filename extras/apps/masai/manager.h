@@ -80,7 +80,6 @@ struct MatchManager<TMatch, TMatchesDelegate, AllBest>:
     public MatchManager<TMatch, TMatchesDelegate>
 {
     typedef MatchManager<TMatch, TMatchesDelegate>  TBase;
-    typedef String<TMatch>                          TMatches;
 
     unsigned                    errors;
     String<unsigned char>       minErrors;
@@ -94,7 +93,7 @@ struct MatchManager<TMatch, TMatchesDelegate, AllBest>:
 };
 
 template <typename TMatch, typename TMatchesDelegate>
-struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
+struct MatchManager<TMatch, TMatchesDelegate, KBest>:
     public MatchManager<TMatch, TMatchesDelegate>
 {
     typedef MatchManager<TMatch, TMatchesDelegate>  TBase;
@@ -114,6 +113,26 @@ struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
     }
 };
 
+template <typename TMatch, typename TMatchesDelegate>
+struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
+    public MatchManager<TMatch, TMatchesDelegate>
+{
+    typedef MatchManager<TMatch, TMatchesDelegate>  TBase;
+    typedef String<TMatch>                          TMatches;
+
+    unsigned                    errors;
+    TMatches                    matches;
+
+    MatchManager(TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount) :
+        TBase(matchesDelegate, readsCount),
+        errors(0)
+    {
+        TMatch match;
+        fill(match, 0, 0, 0, 0, MaxValue<unsigned char>::VALUE, false);
+        resize(matches, readsCount, match, Exact());
+    }
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -121,6 +140,18 @@ struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _fixReverseComplement()                              [MatchManager]
+// ----------------------------------------------------------------------------
+
+// NOTE(esiragusa): This should be done outside of Manager, i.e. in Seeder.
+template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
+inline TReadId _fixReverseComplement(MatchManager<TMatch, TMatchesDelegate, TSpec> const & manager, TReadId readId)
+{
+    // Deal with reverse complemented reads.
+    return (readId < manager.readsCount) ? readId : readId - manager.readsCount;
+}
 
 // ----------------------------------------------------------------------------
 // Function onMatch()                                            [MatchManager]
@@ -171,7 +202,7 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AllBest> & manager,
 
 template <typename TMatch, typename TMatchesDelegate,
           typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
-inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
+inline void onMatch(MatchManager<TMatch, TMatchesDelegate, KBest> & manager,
                     TContigId contigId,
                     TContigPos beginPos,
                     TContigPos endPos,
@@ -204,40 +235,98 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
     // Otherwise this match is superfluous.
 }
 
+template <typename TMatch, typename TMatchesDelegate,
+typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
+inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
+                    TContigId contigId,
+                    TContigPos beginPos,
+                    TContigPos endPos,
+                    TReadId readId,
+                    TErrors errors,
+                    bool reverseComplemented)
+{
+    // NOTE(esiragusa): This match should always be useful...
+    if (errors < manager.matches[readId].errors)
+    {
+        // Store match.
+        fill(manager.matches[readId], contigId, beginPos, endPos, readId, errors, reverseComplemented);
+
+        if (errors == manager.errors)
+        {
+            // Call matches delegate.
+            onMatch(manager.matchesDelegate, manager.matches[readId]);
+
+            // Increment matches counters.
+            manager.matchesCount++;
+        }
+    }
+}
+
 // ----------------------------------------------------------------------------
 // Function isDisabled()                                         [MatchManager]
 // ----------------------------------------------------------------------------
 
 template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, TSpec> &, TReadId)
+inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, TSpec> const &, TReadId)
 {
     return false;
 }
 
 template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AllBest> & manager, TReadId readId)
+inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AllBest> const & manager, TReadId readId)
 {
-    // Deal with reverse complemented reads.
-    // NOTE This should be done outside of Manager, i.e. in Seeder.
-    if (readId >= manager.readsCount)
-        readId -= manager.readsCount;
-
     // Reads with at least one match in lower strata are disabled.
-    return manager.minErrors[readId] < manager.errors;
+    return manager.minErrors[_fixReverseComplement(manager, readId)] < manager.errors;
 }
 
 template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager, TReadId readId)
+inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, KBest> const & manager, TReadId readId)
 {
-    // Deal with reverse complemented reads.
-    // NOTE This should be done outside of Manager, i.e. in Seeder.
-    if (readId >= manager.readsCount)
-        readId -= manager.readsCount;
-
     // Reads with at least one best match are disabled.
-    return manager.minErrors[readId] <= manager.errors;
+    return manager.minErrors[_fixReverseComplement(manager, readId)] <= manager.errors;
 }
 
+template <typename TMatch, typename TMatchesDelegate, typename TReadId>
+inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & manager, TReadId readId)
+{
+    // Reads with at least one best match are disabled.
+    return manager.matches[_fixReverseComplement(manager, readId)].errors <= manager.errors;
+}
+
+// ----------------------------------------------------------------------------
+// Function minErrors()                                          [MatchManager]
+// ----------------------------------------------------------------------------
+
+//template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
+//inline unsigned char minErrors(MatchManager<TMatch, TMatchesDelegate, TSpec> const &, TReadId)
+//{
+//    // TODO
+//    return 0;
+//}
+//
+//template <typename TMatch, typename TMatchesDelegate, typename TReadId>
+//inline unsigned char minErrors(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & manager, TReadId readId)
+//{
+//    return manager.matches[_fixReverseComplement(manager, readId)].errors + 1;
+//}
+
+// ----------------------------------------------------------------------------
+// Function maxErrors()                                          [MatchManager]
+// ----------------------------------------------------------------------------
+
+//template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
+//inline unsigned char maxErrors(MatchManager<TMatch, TMatchesDelegate, TSpec> const &, TReadId)
+//{
+//    // TODO
+//    return 0;
+//}
+//
+//template <typename TMatch, typename TMatchesDelegate, typename TReadId>
+//inline unsigned char maxErrors(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & manager, TReadId readId)
+//{
+//    // TODO
+//    return 0;
+//}
 
 // ----------------------------------------------------------------------------
 // Function raiseErrorThreshold()                                [MatchManager]
@@ -255,7 +344,7 @@ inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AllBest> 
 }
 
 template <typename TMatch, typename TMatchesDelegate>
-inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager)
+inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, KBest> & manager)
 {
     typedef String<TMatch>                                  TMatches;
     typedef typename Iterator<TMatches, Standard>::Type     TMatchesIterator;
@@ -271,7 +360,7 @@ inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AnyBest> 
         // Call matches delegate.
         onMatch(manager.matchesDelegate, *matchesIt);
 
-        // Increment matches counters.
+        // Increment matches counter.
         manager.matchesCount++;
 
         // Disable the read.
@@ -284,6 +373,32 @@ inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AnyBest> 
     // Forget matches below error threshold.
     clear(manager.matches[manager.errors]);
     shrinkToFit(manager.matches[manager.errors]);
+}
+
+template <typename TMatch, typename TMatchesDelegate>
+inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager)
+{
+    typedef String<TMatch>                                  TMatches;
+    typedef typename Iterator<TMatches, Standard>::Type     TMatchesIterator;
+
+    // Increment error threshold.
+    manager.errors++;
+
+    TMatchesIterator matchesEnd = end(manager.matches, Standard());
+
+    for (TMatchesIterator matchesIt = begin(manager.matches, Standard()); matchesIt != matchesEnd; ++matchesIt)
+    {
+        // Write current best matches.
+        if ((*matchesIt).errors == manager.errors)
+        {
+            // Call matches delegate.
+            onMatch(manager.matchesDelegate, *matchesIt);
+
+            // Increment matches counter.
+            manager.matchesCount++;
+
+        }
+    }
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_MATCHES_H_
