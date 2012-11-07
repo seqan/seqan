@@ -154,10 +154,14 @@ void setDescription(ArgumentParser & parser)
 template <typename TString, typename TValue>
 bool setEnv(TString & key, TValue & value)
 {
+#ifdef PLATFORM_WINDOWS
     CharString env(key);
     appendValue(env, '=');
     append(env, value);
     return !putenv(toCString(env));
+#else
+    return !setenv(toCString(key), toCString(value), true);
+#endif
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_OPTIONS_H_
