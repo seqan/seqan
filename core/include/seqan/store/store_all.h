@@ -2280,6 +2280,19 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 					}
 				}
 			}
+            else
+            {
+                typename Size<TContig>::Type blkLen;
+                blkLen = _min(_min(blockLength(rIt), blockLength(pIt)), blockLength(cIt));
+                if (blkLen > 1)
+                {
+                    // fast forward uninteresting region
+                    --blkLen;
+                    goFurther(rIt, blkLen);
+                    goFurther(pIt, blkLen);
+                    goFurther(cIt, blkLen);
+                }
+            }
 			goNext(pIt);
 		}
 

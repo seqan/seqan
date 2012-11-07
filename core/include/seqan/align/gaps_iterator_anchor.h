@@ -284,6 +284,20 @@ countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function blockLength()
+// ----------------------------------------------------------------------------
+
+template <typename TGaps, typename TGapAnchors>
+inline typename Size<TGaps>::Type
+blockLength(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
+{
+    if (isGap(me))
+        return countGaps(me);
+    else
+        return countCharacters(me);
+}
+
+// ----------------------------------------------------------------------------
 // Function atBegin()
 // ----------------------------------------------------------------------------
 
