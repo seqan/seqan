@@ -147,6 +147,37 @@ struct Fibre<TGenomeInfixSa, FibreSA>
 
 typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<MultiDollar<void> > >, CompressText> > TGenomeFM;
 
+// ----------------------------------------------------------------------------
+// getCharacterPosition() functions for (Dna5 vs Dna5Q)
+// ----------------------------------------------------------------------------
+
+namespace seqan {
+template <typename TSpec>
+inline unsigned getCharacterPosition(PrefixSumTable<Dna5, TSpec> const & /*tag*/, Dna5Q character)
+{
+    return __MASK_DNA5Q_LT[ordValue(character)];
+}
+
+// ----------------------------------------------------------------------------
+// countOccurrences() functions for Dna5Q
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec, typename TPos>
+inline unsigned countOccurrences(WaveletTree<TText, FmiDollarSubstituted<MultiDollar<TSpec> > > const & tree,
+                                 Dna5Q const character,
+                                 TPos const pos)
+{
+    typedef typename Value<TText>::Type             TAlphabet;
+
+    if (__MASK_DNA5Q_LT[ordValue(character)] >= ValueSize<TAlphabet>::VALUE) return 0;
+
+    unsigned occ = _countOccurrences(tree, character, pos);
+    if (ordEqual(getDollarSubstitute(tree), character))
+        occ -= getRank(getFibre(tree, FibreDollarPosition()), pos);
+
+    return occ;
+}
+}
 
 // ============================================================================
 // Reads Index Type Definitions
