@@ -190,33 +190,35 @@ void _indexRequireTopDownIteration(Index<TText, IndexSa<InfixSegment> > &)
     // The SA fibre must be provided by calling setHost explicitely.
 }
 
-// is this a leaf? (including empty $-edges)
-template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
-inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
-                    VSTreeIteratorTraits<TDfsOrder, False> const)
+template <typename TText, typename TIndexSpec, typename TSpec>
+inline typename SAValue<Index<TText, IndexSa<TIndexSpec> > >::Type
+_lastOccurrence(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const &it)
 {
-    return _isLeaf(value(it)) && _isLeaf(it, VSTreeIteratorTraits<TDfsOrder, True>());
+    if (_isSizeInval(value(it).range.i2))
+        return back(indexSA(container(it)));
+    else
+        return saAt(value(it).range.i2 - 1, container(it));
 }
 
 // is this a leaf? (hide empty $-edges)
-//template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
-//inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
-//                    VSTreeIteratorTraits<TDfsOrder, True> const)
-//{
-//    typedef Index<TText, IndexSa<TIndexSpec> >                                  TIndex;
-//    typedef typename Infix<typename Fibre<TIndex, EsaSA>::Type const>::Type     TOccs;
-//    typedef typename Iterator<TOccs, Standard>::Type                            TIter;
-//
-//    TIndex const & index = container(it);
-//
-//    typename Size<TIndex>::Type lcp = repLength(it);
-//
-//    // if the last suffix in the interval is larger than the lcp,
-//    // not all outgoing edges are empty (uses lex. sorting)
-//    TOccs occs = getOccurrences(it);
-//    TIter oc = begin(occs, Standard()) + length(occs) - 1;
-//    return getSeqOffset(*oc, stringSetLimits(index)) + lcp == sequenceLength(getSeqNo(*oc, stringSetLimits(index)), index);
-//}
+template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
+inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
+                    VSTreeIteratorTraits<TDfsOrder, True> const)
+{
+    typedef Index<TText, IndexSa<TIndexSpec> >                      TIndex;
+    typedef typename SAValue<TIndex>::Type                          TOcc;
+
+//    if (_isLeaf(value(it))) return true;
+
+    TIndex const & index = container(it);
+
+    typename Size<TIndex>::Type lcp = repLength(it);
+
+    // if the last suffix in the interval is larger than the lcp,
+    // not all outgoing edges are empty (uses lex. sorting)
+    TOcc oc = _lastOccurrence(it);
+    return getSeqOffset(oc, stringSetLimits(index)) + lcp == sequenceLength(getSeqNo(oc, stringSetLimits(index)), index);
+}
 
 template <typename TIndex, typename TSize, typename TAlphabet>
 inline typename Size<TIndex>::Type
@@ -263,7 +265,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
 #endif
 
     // TODO(esiragusa): use HideEmptyEdges()
-    if (_isLeaf(it, EmptyEdges()))
+    if (_isLeaf(it, HideEmptyEdges()))
         return false;
 
     TIndex const & index = container(it);
@@ -427,7 +429,7 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
     typedef typename Value<TIndex>::Type                    TAlphabet;
 
-    if (_isLeaf(it, EmptyEdges()))
+    if (_isLeaf(it, HideEmptyEdges()))
         return false;
 
     TIndex const & index = container(it);
@@ -473,7 +475,7 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
 
-    if (_isLeaf(it, EmptyEdges()))
+    if (_isLeaf(it, HideEmptyEdges()))
         return false;
 
     TIndex const & index = container(it);
