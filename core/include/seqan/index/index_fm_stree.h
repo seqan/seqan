@@ -265,8 +265,7 @@ inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VS
     TIndex const & _index = container(it);
     TPrefixSumTable const & pst = getFibre(getFibre(_index, FibreLfTable()), FibrePrefixSumTable());
 
-    // TODO(esiragusa): Remove cast to TAlphabet
-    TAlphabetSize cPosition = getCharacterPosition(pst, (TAlphabet)c);
+    TAlphabetSize cPosition = getCharacterPosition(pst, c);
 
     if (_isRoot(vDesc))
     {
@@ -276,8 +275,8 @@ inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VS
     else
     {
         TSize prefixSum = getPrefixSum(pst, cPosition);
-        _range.i1 = prefixSum + countOccurrences(_index.lfTable.occTable, (TAlphabet)cPosition, vDesc.range.i1 - 1);
-        _range.i2 = prefixSum + countOccurrences(_index.lfTable.occTable, (TAlphabet)cPosition, vDesc.range.i2 - 1);
+        _range.i1 = prefixSum + countOccurrences(_index.lfTable.occTable, c, vDesc.range.i1 - 1);
+        _range.i2 = prefixSum + countOccurrences(_index.lfTable.occTable, c, vDesc.range.i2 - 1);
     }
 
     return _range.i1 + 1 <= _range.i2;

@@ -642,7 +642,7 @@ inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index,
     typedef typename Value<TIndex>::Type                        TAlphabet;
     typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
     typedef typename Size<TIndex>::Type                         TSize;
- 	typedef typename Value<TIndex>::Type                        TChar;
+ 	typedef typename Value<TPattern>::Type                      TChar;
 
     if (empty(pattern))
     {

@@ -492,7 +492,7 @@ inline unsigned _countOccurrences(WaveletTree<TText, TWaveletTreeSpec> const & t
     do
     {
         TPos addValue = getRank(tree.bitStrings[treePos], sum);
-        if (character < (TChar)getCharacter(it)) 
+        if (ordGreater(getCharacter(it), character))
         {
             if (addValue > sum) return 0;
 
@@ -513,7 +513,7 @@ inline unsigned _countOccurrences(WaveletTree<TText, TWaveletTreeSpec> const & t
     }
     while (true);
 
-    if (character == charInTree)
+    if (ordEqual(charInTree, character))
         return sum + 1;
 
     return 0;
@@ -541,9 +541,7 @@ inline unsigned countOccurrences(WaveletTree<TText, TWaveletTreeSpec> const & tr
                                TChar const character,
                                TPos const pos)
 {
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
-
-    return _countOccurrences(tree, static_cast<TUChar>(character), pos);
+    return _countOccurrences(tree, character, pos);
 }
 
 template <typename TText, typename TSpec, typename TChar, typename TPos>
@@ -551,10 +549,8 @@ inline unsigned countOccurrences(WaveletTree<TText, FmiDollarSubstituted<SingleD
                                TChar const character,
                                TPos const pos)
 {
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
-
-    unsigned occ = _countOccurrences(tree, static_cast<TUChar>(character), pos);
-    if (character == getDollarSubstitute(tree) && pos >= tree.dollarPosition)
+    unsigned occ = _countOccurrences(tree, character, pos);
+    if (ordEqual(getDollarSubstitute(tree), character) && pos >= tree.dollarPosition)
          --occ;
     return occ;
 }
@@ -564,12 +560,8 @@ inline unsigned countOccurrences(WaveletTree<TText, FmiDollarSubstituted<MultiDo
                                TChar const character,
                                TPos const pos)
 {
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
-
-
-
-    unsigned occ = _countOccurrences(tree, static_cast<TUChar>(character), pos);
-    if (character == getDollarSubstitute(tree))
+    unsigned occ = _countOccurrences(tree, character, pos);
+    if (ordEqual(getDollarSubstitute(tree), character))
         return occ - getRank(getFibre(tree, FibreDollarPosition()), pos);
 
     return occ;
@@ -668,7 +660,7 @@ inline void _fillWaveletTree(WaveletTree<TText, TWaveletTreeSpec> & tree,
 
         do
         {
-            if ((ordValue(getValue(text, i))) < (TUChar)getCharacter(it))
+            if (ordGreater(getCharacter(it), getValue(text, i)))
             {
                 bit = 0;
                 appendValue(getFibre(tree, FibreBitStrings())[getPosition(it)], bit);

@@ -288,6 +288,7 @@ unsigned getAlphabetSize(PrefixSumTable<TChar, TSpec> const & pst)
 ..param.character:A character.
 ..include:seqan/index.h
 */
+// TODO(esiragusa): Remove TDummy specialization.
 template <typename TDummy, typename TChar>
 inline unsigned getCharacterPosition(TDummy const & /*tag*/, TChar character)
 {
@@ -298,12 +299,7 @@ inline unsigned getCharacterPosition(TDummy const & /*tag*/, TChar character)
 template <typename TChar, typename TSpec, typename TChar2>
 inline unsigned getCharacterPosition(PrefixSumTable<TChar, TSpec> const & /*tag*/, TChar2 character)
 {
-    // TODO: Cast TChar2 to TChar
-//    if ((TChar2)(TChar)character != character)
-//        return ValueSize<TChar>::VALUE;
-//    else
-//        return ordValue((TChar)character);
-    return ordValue(character);
+    return ordValue(static_cast<TChar>(character));
 }
 
 // ==========================================================================
