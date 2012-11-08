@@ -165,7 +165,7 @@ Segment<TString, PrefixSegment>
 getPath(TString & string)
 {
 #ifdef PLATFORM_WINDOWS
-    return prefix(string, lastOf(string, '\'));
+    return prefix(string, lastOf(string, '\\'));
 #else
     return prefix(string, lastOf(string, '/'));
 #endif
@@ -180,7 +180,7 @@ Segment<TString, SuffixSegment>
 getFilename(TString & string)
 {
 #ifdef PLATFORM_WINDOWS
-    return suffix(string, lastOf(string, '\'));
+    return suffix(string, lastOf(string, '\\'));
 #else
     return suffix(string, lastOf(string, '/'));
 #endif
