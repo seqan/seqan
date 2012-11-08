@@ -262,6 +262,79 @@ jumpToPos(Stream<Bgzf> & stream,
 }
 
 // ----------------------------------------------------------------------------
+// Function jumpToOrphans()
+// ----------------------------------------------------------------------------
+
+/**
+.Function.BamIndex#jumpToOrphans
+..class:Class.BamIndex
+..cat:BAM I/O
+..signature:jumpToOrphans(bgzfStream, bamIOContext, bamIndex)
+..summary:Seek to orphans block in BAM BGZF stream using an index.
+..param.bgzfStream:The BGZF Stream to seek in.
+...type:Spec.BGZF Stream
+..param.bamIOContext:Context to use for loading alignments.
+...type:Class.BamIOContext
+..param.bamIndex:The index to use.
+...type:Class.BamIndex
+..returns:$bool$ indicating success.
+..include:seqan/bam_io.h
+*/
+
+template <typename TNameStore, typename TNameStoreCache>
+bool jumpToOrphans(Stream<Bgzf> & stream,
+                   bool & hasAlignments,
+                   BamIOContext<TNameStore, TNameStoreCache> /*const*/ & bamIOContext,
+                   BamIndex<Bai> const & index)
+{
+    hasAlignments = false;
+
+    // Search linear indices for the largest entry of all references.
+    __uint64 aliOffset = MaxValue<__uint64>::VALUE;
+    for (int i = length(index._linearIndices) - 1; i >= 0; --i)
+        if (!empty(index._linearIndices[i]))
+        {
+            aliOffset = back(index._linearIndices[i]);
+            break;
+        }
+    if (aliOffset == MaxValue<__uint64>::VALUE)
+        return false;  // No offset found.
+
+    // Get index of the first orphan alignment by seeking from linear index bucket.
+    BamAlignmentRecord record;
+    __uint64 offset = MaxValue<__uint64>::VALUE;
+    __uint64 result = 0;
+    int res = streamSeek(stream, aliOffset, SEEK_SET);
+    if (res != 0)
+        return false;  // Error while seeking.
+    while (!atEnd(stream))
+    {
+        result = streamTell(stream);
+        res = readRecord(record, bamIOContext, stream, Bam());
+        if (res != 0)
+            return false;  // Error while reading.
+        if (record.rId == -1)
+        {
+            // Found alignment.
+            hasAlignments = true;
+            offset = result;
+            break;
+        }
+    }
+
+    // Jump back to the first alignment.
+    if (offset != MaxValue<__uint64>::VALUE)
+    {
+        int res = streamSeek(stream, offset, SEEK_SET);
+        if (res != 0)
+            return false;  // Error while seeking.
+    }
+
+    // Finding no orphan alignment is not an error, hasAilgnments is false then.
+    return true;
+}
+
+// ----------------------------------------------------------------------------
 // Function getUnalignedCount()
 // ----------------------------------------------------------------------------
 
