@@ -78,6 +78,7 @@ struct MasaiOptions
     TList       indexTypeList;
     TList       mappingModeList;
     TList       outputFormatList;
+    TList       outputFormatExtensions;
 
     MasaiOptions()
     {
@@ -93,6 +94,10 @@ struct MasaiOptions
         outputFormatList.push_back("raw");
         outputFormatList.push_back("sam");
         outputFormatList.push_back("sam-no-cigar");
+
+        outputFormatExtensions.push_back("raw");
+        outputFormatExtensions.push_back("sam");
+        outputFormatExtensions.push_back("sam");
     }
 };
 
@@ -105,23 +110,103 @@ struct MasaiOptions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function setEnv()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TValue>
+bool setEnv(TString & key, TValue & value)
+{
+#ifdef PLATFORM_WINDOWS
+    CharString env(key);
+    appendValue(env, '=');
+    append(env, value);
+    return !putenv(toCString(env));
+#else
+    return !setenv(toCString(key), toCString(value), true);
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// Function lastOf()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TToken>
+typename Iterator<TString, Standard>::Type
+lastOf(TString const & string, TToken const & token)
+{
+    typedef typename Iterator<TString, Standard>::Type    TIterator;
+
+    TIterator it = end(string, Standard()) - length(token);
+
+    for (TIterator itBegin = begin(string, Standard());
+         it != itBegin && !isEqual(infix(string, it, it + length(token)), token);
+         goPrevious(it)) ;
+
+    return it;
+}
+
+// ----------------------------------------------------------------------------
+// Function trimExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+Segment<TString, PrefixSegment>
+trimExtension(TString & string)
+{
+    return prefix(string, lastOf(string, '.'));
+}
+
+// ----------------------------------------------------------------------------
+// Function getPath()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+Segment<TString, PrefixSegment>
+getPath(TString & string)
+{
+#ifdef PLATFORM_WINDOWS
+    return prefix(string, lastOf(string, '\'));
+#else
+    return prefix(string, lastOf(string, '/'));
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// Function getFilename()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+Segment<TString, SuffixSegment>
+getFilename(TString & string)
+{
+#ifdef PLATFORM_WINDOWS
+    return suffix(string, lastOf(string, '\'));
+#else
+    return suffix(string, lastOf(string, '/'));
+#endif
+}
+
+// ----------------------------------------------------------------------------
 // Function getOptionValue()
 // ----------------------------------------------------------------------------
 
 template <typename TOption, typename TString, typename TOptionsList>
-void getOptionValue(TOption & option, ArgumentParser & parser, TString const & optionName, TOptionsList & optionsList)
+void getOptionValue(TOption & option,
+                    ArgumentParser const & parser,
+                    TString const & optionName,
+                    TOptionsList & optionsList)
 {
     typedef typename Iterator<TOptionsList, Standard>::Type TOptionsIterator;
     typedef typename Value<TOptionsList>::Type              TOptionString;
-    
+
     TOptionsIterator optionsBegin = begin(optionsList, Standard());
     TOptionsIterator optionsEnd = end(optionsList, Standard());
-    
+
     TOptionString optionStr;
     getOptionValue(optionStr, parser, optionName);
-    
+
     TOptionsIterator optionType = std::find(optionsBegin, optionsEnd, optionStr);
-    
+
     SEQAN_ASSERT(optionType != optionsEnd);
     option = TOption(optionType - optionsBegin);
 }
@@ -151,17 +236,126 @@ void setDescription(ArgumentParser & parser)
     addDescription(parser, "(c) Copyright 2011-2012 by Enrico Siragusa.");
 }
 
-template <typename TString, typename TValue>
-bool setEnv(TString & key, TValue & value)
+// ----------------------------------------------------------------------------
+// Function setIndexType()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+void setIndexType(ArgumentParser & parser, TOptions const & options)
 {
-#ifdef PLATFORM_WINDOWS
-    CharString env(key);
-    appendValue(env, '=');
-    append(env, value);
-    return !putenv(toCString(env));
-#else
-    return !setenv(toCString(key), toCString(value), true);
-#endif
+    addOption(parser, ArgParseOption("x", "index", "Select the genome index type.", ArgParseOption::STRING));
+    setValidValues(parser, "index", options.indexTypeList);
+    setDefaultValue(parser, "index", options.indexTypeList[options.genomeIndexType]);
+}
+
+// ----------------------------------------------------------------------------
+// Function getIndexType()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+void getIndexType(TOptions & options, ArgumentParser const & parser)
+{
+    getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
+}
+
+// ----------------------------------------------------------------------------
+// Function setIndexPrefix()
+// ----------------------------------------------------------------------------
+
+void setIndexPrefix(ArgumentParser & parser)
+{
+    addOption(parser, ArgParseOption("xp", "index-prefix", "Specify an genome index prefix name. \
+                                     Default: use the genome filename prefix.", ArgParseOption::STRING));
+}
+
+// ----------------------------------------------------------------------------
+// Function getIndexPrefix()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+void getIndexPrefix(TOptions & options, ArgumentParser const & parser)
+{
+    getOptionValue(options.genomeIndexFile, parser, "index-prefix");
+    if (!isSet(parser, "index-prefix"))
+        options.genomeIndexFile = trimExtension(options.genomeFile);
+}
+
+// ----------------------------------------------------------------------------
+// Function setOutputFormat()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+void setOutputFormat(ArgumentParser & parser, TOptions const & options)
+{
+    addOption(parser, ArgParseOption("of", "output-format", "Select the output format.", ArgParseOption::STRING));
+    setValidValues(parser, "output-format", options.outputFormatList);
+    setDefaultValue(parser, "output-format", options.outputFormatList[options.outputFormat]);
+}
+
+// ----------------------------------------------------------------------------
+// Function getOutputFormat()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+void getOutputFormat(TOptions & options, ArgumentParser const & parser)
+{
+    getOptionValue(options.outputFormat, parser, "output-format", options.outputFormatList);
+}
+
+// ----------------------------------------------------------------------------
+// Function setOutputFile()
+// ----------------------------------------------------------------------------
+
+void setOutputFile(ArgumentParser & parser)
+{
+    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
+                                     Default: use the reads filename and guess the extension.",
+                                     ArgParseOption::OUTPUTFILE));
+}
+
+// ----------------------------------------------------------------------------
+// Function getOutputFile()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TOptions, typename TSuffix>
+void getOutputFile(TString & file,
+                   TOptions const & options,
+                   ArgumentParser const & parser,
+                   TString const & from,
+                   TSuffix const & suffix)
+{
+    getOptionValue(file, parser, "output-file");
+    if (!isSet(parser, "output-file"))
+    {
+        file = trimExtension(from);
+        append(file, suffix);
+        appendValue(file, '.');
+        append(file, options.outputFormatExtensions[options.outputFormat]);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function setTmpFolder()
+// ----------------------------------------------------------------------------
+
+void setTmpFolder(ArgumentParser & parser)
+{
+    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a huge temporary folder. \
+                                     Default: use the genome folder.", ArgParseOption::STRING));
+}
+
+// ----------------------------------------------------------------------------
+// Function getTmpFolder()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+void getTmpFolder(TOptions const & options, ArgumentParser const & parser)
+{
+    CharString tmpFolder;
+    getOptionValue(tmpFolder, parser, "tmp-folder");
+    if (!isSet(parser, "tmp-folder"))
+        tmpFolder = getPath(options.genomeFile);
+    setEnv("TMPDIR", tmpFolder);
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_OPTIONS_H_

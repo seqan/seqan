@@ -125,15 +125,9 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a huge temporary folder. Required.", ArgParseOption::STRING));
-    setRequired(parser, "tmp-folder");
-
-    addOption(parser, ArgParseOption("o", "output-file", "Specify output file. Required.", ArgParseOption::OUTPUTFILE));
-    setRequired(parser, "output-file");
-
-    addOption(parser, ArgParseOption("of", "output-format", "Select output format.", ArgParseOption::STRING));
-    setValidValues(parser, "output-format", options.outputFormatList);
-    setDefaultValue(parser, "output-format", options.outputFormatList[options.outputFormat]);
+    setTmpFolder(parser);
+    setOutputFile(parser);
+    setOutputFormat(parser, options);
 
     addSection(parser, "Debug Options");
 
@@ -166,21 +160,13 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.libraryError, parser, "library-error");
 
     // Parse tmp folder.
-    CharString tmpFolder;
-    getOptionValue(tmpFolder, parser, "tmp-folder");
-    setEnv("TMPDIR", tmpFolder);
-
-    // Parse output file.
-    getOptionValue(options.mappedPairsFile, parser, "output-file");
-    if (!isSet(parser, "output-file"))
-    {
-        options.mappedPairsFile = options.readsLeftFile;
-        // TODO(esiragusa): Guess output file extension.
-        append(options.mappedPairsFile, ".out");
-    }
+    getTmpFolder(options, parser);
 
     // Parse output format.
-    getOptionValue(options.outputFormat, parser, "output-format", options.outputFormatList);
+    getOutputFormat(options, parser);
+
+    // Parse output file.
+    getOutputFile(options.mappedPairsFile, options, parser, options.readsLeftFile, "_pe");
 
     // Parse debug options.
     options.dumpResults = !isSet(parser, "no-dump");

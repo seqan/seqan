@@ -83,17 +83,12 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addSection(parser, "Genome Index Options");
 
-    addOption(parser, ArgParseOption("x", "index", "Select genome index type.", ArgParseOption::STRING));
-    setValidValues(parser, "index", options.indexTypeList);
-    setDefaultValue(parser, "index", options.indexTypeList[options.genomeIndexType]);
-
-    addOption(parser, ArgParseOption("xp", "index-prefix", "Specify genome index prefix name.", ArgParseOption::STRING));
-
-
+    setIndexType(parser, options);
+    setIndexPrefix(parser);
+    
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a huge temporary folder. Required.", ArgParseOption::STRING));
-    setRequired(parser, "tmp-folder");
+    setTmpFolder(parser);
 }
 
 ArgumentParser::ParseResult
@@ -108,20 +103,13 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getArgumentValue(options.genomeFile, parser, 0);
 
     // Parse genome index prefix.
-    getOptionValue(options.genomeIndexFile, parser, "index-prefix");
-    if (!isSet(parser, "index-prefix"))
-    {
-        // TODO(esiragusa): Trim extension .fasta from genomeIndexFile.
-        options.genomeIndexFile = options.genomeFile;
-    }
+    getIndexPrefix(options, parser);
 
     // Parse genome index type.
-    getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
+    getIndexType(options, parser);
 
     // Parse tmp folder.
-    CharString tmpFolder;
-    getOptionValue(tmpFolder, parser, "tmp-folder");
-    setEnv("TMPDIR", tmpFolder);
+    getTmpFolder(options, parser);
 
     return seqan::ArgumentParser::PARSE_OK;
 }
@@ -192,8 +180,8 @@ int mainWithOptions(Options & options)
     case Options::INDEX_SA:
         return executeIndexer<TGenomeSa>(options);
 
-    case Options::INDEX_QGRAM:
-        return executeIndexer<TGenomeQGram>(options);
+//    case Options::INDEX_QGRAM:
+//        return executeIndexer<TGenomeQGram>(options);
 
     case Options::INDEX_FM:
         return executeIndexer<TGenomeFM>(options);

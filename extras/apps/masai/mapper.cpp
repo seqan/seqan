@@ -133,21 +133,14 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addSection(parser, "Genome Index Options");
 
-    addOption(parser, ArgParseOption("x", "index", "Select genome index type.", ArgParseOption::STRING));
-    setValidValues(parser, "index", options.indexTypeList);
-    setDefaultValue(parser, "index", options.indexTypeList[options.genomeIndexType]);
-
-    addOption(parser, ArgParseOption("xp", "index-prefix", "Specify genome index prefix name.", ArgParseOption::STRING));
+    setIndexType(parser, options);
+    setIndexPrefix(parser);
 
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "output-file", "Specify output file. Required.", ArgParseOption::OUTPUTFILE));
-    setRequired(parser, "output-file");
-
-    addOption(parser, ArgParseOption("of", "output-format", "Select output format.", ArgParseOption::STRING));
-    setValidValues(parser, "output-format", options.outputFormatList);
-    setDefaultValue(parser, "output-format", options.outputFormatList[options.outputFormat]);
+    setOutputFile(parser);
+    setOutputFormat(parser, options);
 
 
     addSection(parser, "Debug Options");
@@ -182,27 +175,19 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     options.mismatchesOnly = isSet(parser, "no-gaps");
 
     // Parse genome index prefix.
-    getOptionValue(options.genomeIndexFile, parser, "index-prefix");
-    if (!isSet(parser, "index-prefix"))
-    {
-        // TODO(esiragusa): Trim extension .fasta from genomeIndexFile.
-        options.genomeIndexFile = options.genomeFile;
-    }
+    getIndexPrefix(options, parser);
 
     // Parse genome index type.
-    getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
-
-    // Parse output file.
-    getOptionValue(options.mappedReadsFile, parser, "output-file");
-    if (!isSet(parser, "output-file"))
-    {
-        options.mappedReadsFile = options.readsFile;
-        // TODO(esiragusa): Guess output file extension.
-        append(options.mappedReadsFile, ".out");
-    }
+    getIndexType(options, parser);
 
     // Parse output format.
-    getOptionValue(options.outputFormat, parser, "output-format", options.outputFormatList);
+    getOutputFormat(options, parser);
+
+    // Parse output format.
+    getOutputFormat(options, parser);
+
+    // Parse output file.
+    getOutputFile(options.mappedReadsFile, options, parser, options.readsFile, "");
 
     // Parse debug options.
     options.verifyHits = !isSet(parser, "no-verify");
