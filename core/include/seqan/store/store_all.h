@@ -2234,24 +2234,28 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 		TContigPWIter pIt = begin(contigGapsPW);
 		TReadIter rIt = begin(readGaps);
 		
-		for (; /*!atEnd(cIt) && */!atEnd(rIt); goNext(cIt), goNext(rIt))
+		while (!atEnd(rIt))
 		{
 			bool isGapContig = isGap(cIt);
 			bool isGapLocalContig = isGap(pIt);
+            typename Size<TContig>::Type blkLen = _min(blockLength(cIt), blockLength(pIt));
+            SEQAN_ASSERT_GT(blkLen, 0u);
+//          SEQAN_ASSERT_LT(blkLen, length(contigGapsGlobal));
+
 			if (isGapContig != isGapLocalContig)
 			{
 				if (isGapContig)
 				{
 					// *** gap in contig of the global alignment ***
 					// copy exisiting contig gap
-					insertGaps(rIt, 1);
-					continue;
-				} else
+					insertGaps(rIt, blkLen);
+				}
+                else
 				{
 					// *** gap in contig of the pairwise alignment ***
 					// insert padding gaps in contig and reads
 					TContigPos insPos = cIt.current.gapPos;
-					insertGaps(cIt, 1);
+					insertGaps(cIt, blkLen);
 					for (TAlignedReadIter j = firstOverlap; j != it; ++j)
 					{
                         
@@ -2262,8 +2266,9 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 							if (rBegin < insPos)
 							{
 								TReadGaps gaps(store.readSeqStore[(*j).readId], (*j).gaps);
-								insertGap(gaps, insPos - rBegin);
-							} else
+								insertGaps(gaps, insPos - rBegin, blkLen);
+							}
+                            else
 							{
 								// shift beginPos if insertion was at the front of the read
 								if ((*j).beginPos < (*j).endPos)
@@ -2279,21 +2284,13 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 						}
 					}
 				}
+                // fast forward the whole block
+                goFurther(pIt, blkLen);
 			}
-            else
-            {
-                typename Size<TContig>::Type blkLen;
-                blkLen = _min(_min(blockLength(rIt), blockLength(pIt)), blockLength(cIt));
-                if (blkLen > 1)
-                {
-                    // fast forward uninteresting region
-                    --blkLen;
-                    goFurther(rIt, blkLen);
-                    goFurther(pIt, blkLen);
-                    goFurther(cIt, blkLen);
-                }
-            }
-			goNext(pIt);
+            
+            // fast forward the whole block
+            goFurther(rIt, blkLen);
+            goFurther(cIt, blkLen);
 		}
 
 		// store new gap-space alignment borders
