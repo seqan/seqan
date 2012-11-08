@@ -159,7 +159,6 @@ public:
 ...type:Class.BamIndex
 ..returns:$bool$ indicating success.
 ..remarks:This function may fail if the refId/pos is invalid.
-..remarks:This function jumps to a "close position left of $pos$".
 ..include:seqan/bam_io.h
 */
 
@@ -180,7 +179,12 @@ _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 
 template <typename TNameStore, typename TNameStoreCache>
 inline bool
-jumpToPos(Stream<Bgzf> & stream, bool & hasAlignments, BamIOContext<TNameStore, TNameStoreCache> /*const*/ & bamIOContext, __int32 refId, __int32 pos, BamIndex<Bai> const & index)
+jumpToPos(Stream<Bgzf> & stream,
+          bool & hasAlignments,
+          BamIOContext<TNameStore, TNameStoreCache> /*const*/ & bamIOContext,
+          __int32 refId,
+          __int32 pos,
+          BamIndex<Bai> const & index)
 {
     hasAlignments = false;
     if (refId < 0)
@@ -234,8 +238,11 @@ jumpToPos(Stream<Bgzf> & stream, bool & hasAlignments, BamIOContext<TNameStore, 
         if (res != 0)
             return false;  // Error while reading.
         __int32 endPos = record.pos + getAlignmentLengthInRef(record);
-        if ((record.rId == refId && endPos >= pos) || (record.rId > refId))  // Found!
+        // We perform a conversion to __uint32 such that we also stop correctly at the end of a BAM file where all the
+        // unaligned reads are.
+        if ((record.rId == refId && endPos >= pos) || ((__uint32)record.rId > (__uint32)refId))
         {
+            // Found alignment.
             hasAlignments = true;
             if (candIt != offsetCandidates.begin())
                 --candIt;  // Against overlaps, logic taken from BamTools.
