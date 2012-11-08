@@ -47,6 +47,7 @@
 #include "indexer.h"
 #include "matches.h"
 #include "writer.h"
+#include "stream.h"
 
 using namespace seqan;
 
@@ -140,7 +141,7 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef String<Match<>, TStream>                    TWriterStream;
+    typedef Stream<FileWriter<Match<> > >               TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
@@ -161,7 +162,7 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef String<char, TStream>                       TWriterStream;
+    typedef Stream<FileWriter<char> >                   TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>  TMatchWriter;
 
     TWriterStream file;
