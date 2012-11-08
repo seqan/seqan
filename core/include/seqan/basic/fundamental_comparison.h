@@ -113,27 +113,25 @@ struct CompareType
 // Functions
 // ============================================================================
 
-// TODO(holtgrew): What does this do / extend / complement?
-
 // These functions are shortcuts to provide comparisons based on the same order
 // that is imposed by ordValue
 
-template <typename TValue>
-inline bool ordLess(TValue const & left, TValue const & right)
+template <typename TValue1, typename TValue2>
+inline bool ordLess(TValue1 const & left, TValue2 const & right)
 {
-    return ordValue(left) < ordValue(right);
+    return ordValue(left) < ordValue(static_cast<TValue1>(right));
 }
 
-template <typename TValue>
-inline bool ordEqual(TValue const & left, TValue const & right)
+template <typename TValue1, typename TValue2>
+inline bool ordEqual(TValue1 const & left, TValue2 const & right)
 {
-    return ordValue(left) == ordValue(right);
+    return ordValue(left) == ordValue(static_cast<TValue1>(right));
 }
 
-template <typename TValue>
-inline bool ordGreater(TValue const & left, TValue const & right)
+template <typename TValue1, typename TValue2>
+inline bool ordGreater(TValue1 const & left, TValue2 const & right)
 {
-    return ordValue(left) > ordValue(right);
+    return ordValue(left) > ordValue(static_cast<TValue1>(right));
 }
 
 }  // namespace seqan
