@@ -40,7 +40,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/find.h>
 
 #include "tags.h"
 #include "store.h"
@@ -153,7 +152,7 @@ inline void onMatch(MatchWriter<TStream, TDistance, Raw, TSpec> & writer,
     fill(match, contigId, beginPos, endPos, readId, errors, reverseComplemented);
 
     // Write record.
-    appendValue(writer.stream, match);
+    streamWriteChar(writer.stream, match);
 }
 
 template <typename TStream, typename TDistance, typename TSpec,
