@@ -1261,9 +1261,15 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		{
 			nukeCopies(pf.begin);      				// proceeding writes should wait and set dirty bit
 
-            if (pf.status != TPageFrame::READY) {            
+            if (pf.status != TPageFrame::READY)
+            {
 				pager[pf.pageNo] = TPageFrame::ON_DISK;		// page is not dirty and on disk
-				waitFor(pf);                                // after finishing i/o transfer
+				bool waitResult = waitFor(pf);              // after finishing I/O transfer
+
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
                 pf.pageNo = -1;                             // cut back link
                 return;
             }
@@ -1280,7 +1286,11 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                     lastDiskPageSize = data_size % PAGESIZE;
                 }
 				pager[pf.pageNo] = TPageFrame::ON_DISK;		// page is marked to be on disk
-				waitFor(pf);
+				bool waitResult = waitFor(pf);              // after finishing I/O transfer
+
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
 			} else
 				pager[pf.pageNo] = pf.dataStatus;			// restore original data status
 
@@ -1292,13 +1302,22 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 			String &me;
 			testIODone(String &_me): me(_me) {}
 
-			inline bool operator() (TPageFrame &pf) {
-                if (waitFor(pf, 0)) {
+			inline bool operator() (TPageFrame &pf)
+            {
+                typename TPageFrame::Status oldStatus = pf.status;
+                bool inProgress;
+                bool waitResult = waitFor(pf, 0, inProgress);
+
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+                if (!inProgress && (oldStatus != pf.READY))
+                {
                     if (pf.pageNo >= me.lastDiskPage)
                         me.lastDiskPage = -1;    // make lastDiskPage(Size) invalid because file size is aligned
-                    return true;
-                } else
-                    return false;
+                }
+                return !inProgress;
 			}
 		};
 
@@ -1309,17 +1328,23 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
             int prefetchPages)
         {
 			int frameNo = pager[pageNo];
-			if (frameNo >= 0) {					// cache hit
-
+			if (frameNo >= 0)					// cache hit
+            {
 				TPageFrame &pf = cache[frameNo];
 				cache.upgrade(
                     pf, 
                     _max(pf.priority, newLevel));    		// update lru order
 
-				if (waitFor(pf))    						// wait for i/o transfer to complete
-                    if (pf.pageNo >= lastDiskPage) {
+                typename TPageFrame::Status oldStatus = pf.status;
+				bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
+
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+				if (oldStatus != pf.READY)
+                    if (pf.pageNo >= lastDiskPage)
                         lastDiskPage = -1;       			// make lastDiskPage(Size) invalid because file size is aligned
-                    }
 
                 if (prefetchPages > 0) prefetch(pageNo + 1, pageNo + 1 + prefetchPages, frameNo);
                 else if (prefetchPages < 0) prefetch(pageNo + prefetchPages, pageNo, frameNo);
@@ -1360,7 +1385,12 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                 if (prefetchPages > 0) prefetch(pageNo + 1, pageNo + 1 + prefetchPages, frameNo);
                 else if (prefetchPages < 0) prefetch(pageNo + prefetchPages, pageNo, frameNo);
                 
-                waitFor(pf);    							// wait for i/o transfer to complete
+				bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
+
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
 				return pf;
 			}
 		}
@@ -1622,7 +1652,12 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		TIter fEnd = end(me.cache, Standard());
 
 		for(; f != fEnd ; ++f)
-			waitFor(*f);
+        {
+            bool waitResult = waitFor(*f);              // wait for I/O transfer to complete
+
+            if (!waitResult)
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*f), strerror(errno));
+        }
 	}
 	
 /**

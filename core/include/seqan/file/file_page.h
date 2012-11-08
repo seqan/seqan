@@ -155,11 +155,18 @@ namespace SEQAN_NAMESPACE_MAIN
         setPageSize(pf, size);
         allocate(me, pf.begin, pageSize(pf));
         resize(pf, size);
+//		#ifdef SEQAN_VVERBOSE
+//			::std::cerr << "allocPage: " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
+//		#endif
 	}
 
 	template < typename TValue, typename T > inline
 	void freePage(SimpleBuffer<TValue> &pf, T const & me) {
 //IOREV _nodoc_
+//		#ifdef SEQAN_VVERBOSE
+//			if ((void*)pf.begin)
+//				::std::cerr << "freePage:  " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
+//		#endif
 		deallocate(me, pf.begin, pageSize(pf));
 		pf.begin = NULL;
         resize(pf, 0);
@@ -293,7 +300,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		bool			dirty;		// data needs to be written to disk before freeing
 		unsigned   		pageNo;		// maps frames to pages (reverse vector mapper)
-        AsyncRequest        request;    // request structure of the async io process
+        AsyncRequest    request;    // request structure of the async io process
 		Status			status;
         PageFrame       *next;      // next buffer in a chained list
 
@@ -335,7 +342,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		bool			dirty;		// data needs to be written to disk before freeing
 		int     		pageNo;		// maps frames to pages (reverse vector mapper)
 		TIterator		begin;	    // start address of page memory
-        AsyncRequest        request;    // request structure of the async io process
+        AsyncRequest    request;    // request structure of the async io process
 		Status			status;
 		DataStatus		dataStatus;
 		PageLRUEntry	lruEntry;   // priority based lru
@@ -410,33 +417,39 @@ namespace SEQAN_NAMESPACE_MAIN
 	// various page frame methods
 
 	template < typename TValue, typename TFile, typename TSpec >
+    const char * _pageFrameStatusString(PageFrame<TValue, TFile, TSpec > const &pf)
+    {
+        switch (pf.status)
+        {
+			case PageFrame<TValue, TFile, TSpec >::READY:
+                return "READY";
+			case PageFrame<TValue, TFile, TSpec >::READING:
+                return "READING";
+			case PageFrame<TValue, TFile, TSpec >::WRITING:
+                return "WRITING";
+        }
+        return "UNKNOWN";
+    }
+
+	template < typename TValue, typename TFile, typename TSpec >
     ::std::ostream& operator<<(::std::ostream &out, const PageFrame<TValue, TFile, TSpec > &pf) 
 	{
 //IOREV _nodoc_
         out << "PageFrame @ " << pf.pageNo;
         if (pf.dirty)
-            out << " DIRTY";
+            out << " DIRTY ";
         else
-            out << " CLEAN";
+            out << " CLEAN ";
 
-        switch (pf.status) {
-			case PageFrame<TValue, TFile, TSpec >::READY:
-                out << " READY";
-                break;
-			case PageFrame<TValue, TFile, TSpec >::READING:
-                out << " READING";
-                break;
-			case PageFrame<TValue, TFile, TSpec >::WRITING:
-                out << " WRITING";
-        }
+        out << _pageFrameStatusString(pf);
 
-        if (pf.dataStatus == pf.ON_DISK)
-            out << " ON_DISK";
-        else
-            out << " UNITIALIZED";
-
-        out << " Prio:" << pf.priority;
-        out << " Buffer:" << (TValue*)pf.begin;
+//        if (pf.dataStatus == pf.ON_DISK)
+//            out << " ON_DISK";
+//        else
+//            out << " UNITIALIZED";
+//
+//        out << " Prio:" << pf.priority;
+        out << " Buffer:" << (void*)pf.begin;
 
         return out;
 	}
@@ -458,8 +471,8 @@ namespace SEQAN_NAMESPACE_MAIN
 	{
 //IOREV _nodoc_
 		#ifdef SEQAN_VVERBOSE
-			if ((TValue*)pf.begin)
-				::std::cerr << "freePage:  " << ::std::hex << (TValue*)pf.begin << ::std::dec << ::std::endl;
+			if ((void*)pf.begin)
+				::std::cerr << "freePage:  " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
 		#endif
         nukeCopies(pf.begin);
 		deallocate(me, (TValue*)pf.begin, pageSize(pf));
@@ -473,13 +486,20 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type pos_t;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readPage:  " << ::std::hex << (TValue*)pf.begin;
+			::std::cerr << "readPage:  " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
 		#endif
 		pf.dirty = false;
 		pf.status = pf.READING;
 //        resize(pf, pageSize(pf));
-		return asyncReadAt(file, (TValue*)pf.begin, size(pf), (pos_t)pageNo * (pos_t)pageSize(pf), pf.request);
+
+		bool readResult = asyncReadAt(file, (TValue*)pf.begin, size(pf), (pos_t)pageNo * (pos_t)pageSize(pf), pf.request);
+
+        // TODO(weese): Throw an I/O exception
+        if (!readResult)
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+        return readResult;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec > inline
@@ -488,12 +508,19 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type pos_t;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writePage: " << ::std::hex << (TValue*)pf.begin;
+			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
 		#endif
 		pf.status = pf.WRITING;
 //        resize(pf, pageSize(pf));
-		return asyncWriteAt(file, (TValue*)pf.begin, size(pf), (pos_t)pageNo * (pos_t)pageSize(pf), pf.request);
+
+		bool writeResult = asyncWriteAt(file, (TValue*)pf.begin, size(pf), (pos_t)pageNo * (pos_t)pageSize(pf), pf.request);
+
+        // TODO(weese): Throw an I/O exception
+        if (!writeResult)
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+        return writeResult;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec, typename TSize> inline
@@ -502,13 +529,20 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type pos_t;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readPage:  " << ::std::hex << (TValue*)pf.begin;
+			::std::cerr << "readPage:  " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
 		#endif
 		pf.dirty = false;
 		pf.status = pf.READY;
 //        resize(pf, size);
-		return readAt(file, (TValue*)pf.begin, size, (pos_t)pageNo * (pos_t)pageSize(pf));
+
+		bool readResult = readAt(file, (TValue*)pf.begin, size, (pos_t)pageNo * (pos_t)pageSize(pf));
+
+        // TODO(weese): Throw an I/O exception
+        if (!readResult)
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+        return readResult;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec, typename TSize > inline
@@ -517,45 +551,70 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type pos_t;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writePage: " << ::std::hex << (TValue*)pf.begin;
+			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
 		#endif
 		pf.dirty = false;
 		pf.status = pf.READY;
 //        resize(pf, size);
-		return writeAt(file, (TValue*)pf.begin, size, (pos_t)pageNo * (pos_t)pageSize(pf));
+
+		bool writeResult = writeAt(file, (TValue*)pf.begin, size, (pos_t)pageNo * (pos_t)pageSize(pf));
+
+        // TODO(weese): Throw an I/O exception
+        if (!writeResult)
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+        return writeResult;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec > inline
 	bool waitFor(PageFrame<TValue, TFile, TSpec> &pf) 
 	{
 //IOREV _nodoc_ equally named functions with different purposes in system_thread.h, system_event.h and file_async.h
-		if ((pf.status != pf.READY) && waitFor(pf.request)) 
-		{
-			pf.status = pf.READY;
-			pf.dirty = false;
+		if (pf.status == pf.READY)
             return true;
-		}
-        return false;
+
+        bool waitResult = waitFor(pf.request);
+
+        // TODO(weese): Throw an I/O exception
+        if (!waitResult)
+            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+        pf.status = pf.READY;
+        pf.dirty = false;
+        return waitResult;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec, typename TTime > inline
-	bool waitFor(PageFrame<TValue, TFile, TSpec> &pf, TTime timeOut) 
+	bool waitFor(PageFrame<TValue, TFile, TSpec> &pf, TTime timeOut, bool &inProgress)
 	{
 //IOREV _nodoc_ equally named functions with different purposes in system_thread.h, system_event.h and file_async.h (none documented)
-		if ((pf.status != pf.READY) && waitFor(pf.request, timeOut)) {
-			pf.status = pf.READY;
-			pf.dirty = false;
-			return true;
-		}
-        return false;
+		if (pf.status == pf.READY)
+        {
+            inProgress = false;
+            return true;
+        }
+
+        bool waitResult = waitFor(pf.request, timeOut, inProgress);
+
+        // TODO(weese): Throw an I/O exception
+        if (!waitResult)
+            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+
+        if (!inProgress)
+        {
+            pf.status = pf.READY;
+            pf.dirty = false;
+        }
+        return waitResult;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec > inline
 	bool cancel(PageFrame<TValue, TFile, TSpec> &pf, TFile &file) 
 	{
 //IOREV _nodoc_ equally named functions with different purposes in pipe/pool_*.h, system_thread.h, and file_async.h (only the latter documented)
-        waitFor(pf, 0);
+        bool dummy;
+        waitFor(pf, 0, dummy);
 		if (pf.status != pf.READY) 
 		{
             if (!cancel(file, pf.request)) return false;
@@ -688,12 +747,29 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline TPageFrame * getReadyPage() 
 		{
-            if (!first || (frames < maxFrames && waitFor(*first, 0)))
+            if (!first)
                 return pushBack();
-            else {
-                waitFor(*first);
-                return firstToEnd();
+
+            if (frames < maxFrames)
+            {
+                bool inProgress;
+                bool waitResult = waitFor(*first, 0, inProgress);
+                
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
+
+                if (!inProgress)
+                    return pushBack();
             }
+
+            bool waitResult = waitFor(*first);
+
+            // TODO(weese): Throw an I/O exception
+            if (!waitResult)
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
+
+            return firstToEnd();
         }
 
         template < typename TFile >
@@ -708,7 +784,13 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
             TPageFrame *p = first;
             for (; p != NULL; p = p->next)
-                waitFor(*p);
+            {
+                bool waitResult = waitFor(*p);
+
+                // TODO(weese): Throw an I/O exception
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
+            }
         }
 
     private:

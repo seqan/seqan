@@ -283,8 +283,11 @@ namespace SEQAN_NAMESPACE_MAIN
                 p = p->next;
             }
 
-            // retrieve the very first
-            waitFor(*chain.first);
+            // retrieve the very first and wait for I/O transfer to complete
+            bool waitResult = waitFor(*chain.first);
+            if (!waitResult)
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*chain.first), strerror(errno));
+
             return processBuffer(*chain.first, *this);
         }
 
@@ -296,8 +299,11 @@ namespace SEQAN_NAMESPACE_MAIN
             chain.last->pageNo = readPageNo++;
             _read(*chain.last);
             
-            // retrieve the next buffer in order
-            waitFor(*chain.first);
+            // retrieve the next buffer in order and wait for I/O transfer to complete
+            bool waitResult = waitFor(*chain.first);
+            if (!waitResult)
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*chain.first), strerror(errno));
+
             return processBuffer(*chain.first, *this);
         }
 
@@ -420,8 +426,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline void flush() {
             TPageFrame *p = chain.first;
-            while (p) {
-                waitFor(*p);
+            while (p)
+            {
+                // wait for I/O transfer to complete
+                bool waitResult = waitFor(*p);
+                if (!waitResult)
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
+
                 freePage(*p, pool.file);
                 p = p->next;
             }

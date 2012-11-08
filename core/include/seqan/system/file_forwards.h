@@ -139,7 +139,7 @@ inline int _returnValue(aiocb &request);       	// "core/include/seqan/file/file
 // waitFor
 
 inline bool waitFor(aiocb &request);       	// "core/include/seqan/file/file_async.h"(189)
-inline bool waitFor(aiocb &request, long timeout_millis);       	// "core/include/seqan/file/file_async.h"(204)
+inline bool waitFor(aiocb &request, long timeout_millis, bool &inProgress);       	// "core/include/seqan/file/file_async.h"(204)
 
 //____________________________________________________________________________
 // waitForAny
