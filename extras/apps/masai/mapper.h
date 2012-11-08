@@ -48,7 +48,7 @@
 #include "index.h"
 #include "indexer.h"
 #include "manager.h"
-//#include "stream.h"
+#include "stream.h"
 #include "writer.h"
 #include "extender.h"
 #include "seeder.h"
@@ -212,7 +212,7 @@ bool mapReads(Mapper<TSpec> & mapper,
               Sam const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
-    typedef String<char, TStream>                           TWriterStream;
+    typedef Stream<FileWriter<char> >                       TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
     typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
     typedef Extender<TMatchManager, TDistance>              TExtender;
@@ -247,7 +247,7 @@ bool mapReads(Mapper<TSpec> & mapper,
               Raw const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
-    typedef String<TMatch, TStream>                         TWriterStream;
+    typedef Stream<FileWriter<Match<> > >                   TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
     typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
     typedef Extender<TMatchManager, TDistance>              TExtender;
