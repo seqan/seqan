@@ -116,12 +116,12 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "errors", "32");
     setDefaultValue(parser, "errors", options.errorsPerRead);
 
-    addOption(parser, ArgParseOption("el", "errors-lossy",
-                                     "Maximum number of errors per read to report. For any-best mode only.",
-                                     ArgParseOption::INTEGER));
-    setMinValue(parser, "errors-lossy", "0");
-    setMaxValue(parser, "errors-lossy", "32");
-    setDefaultValue(parser, "errors-lossy", options.errorsLossy);
+//    addOption(parser, ArgParseOption("el", "errors-lossy",
+//                                     "Maximum number of errors per read to report. For any-best mode only.",
+//                                     ArgParseOption::INTEGER));
+//    setMinValue(parser, "errors-lossy", "0");
+//    setMaxValue(parser, "errors-lossy", "32");
+//    setDefaultValue(parser, "errors-lossy", options.errorsLossy);
 
     addOption(parser, ArgParseOption("sl", "seed-length", "Minimum seed length.", ArgParseOption::INTEGER));
     setMinValue(parser, "seed-length", "10");
@@ -169,7 +169,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse mapping options.
     getOptionValue(options.errorsPerRead, parser, "errors");
-    getOptionValue(options.errorsLossy, parser, "errors-lossy");
+//    getOptionValue(options.errorsLossy, parser, "errors-lossy");
     options.errorsLossy = std::max(options.errorsLossy, options.errorsPerRead);
     getOptionValue(options.seedLength, parser, "seed-length");
     options.mismatchesOnly = isSet(parser, "no-gaps");

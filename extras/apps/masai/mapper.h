@@ -275,7 +275,7 @@ bool _mapReads(Mapper<TSpec> & mapper,
                TSeeder & seeder,
                TManager & manager,
                TErrors errors,
-               TErrors,
+               TErrors /* errorsLossy */,
                All const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
@@ -317,7 +317,7 @@ bool _mapReads(Mapper<TSpec> & mapper,
                TSeeder & seeder,
                TManager & manager,
                TErrors errors,
-               TErrors,
+               TErrors /* errorsLossy */,
                AllBest const & /*tag*/)
 {
     _mapReadsByStratum(mapper, seeder, manager, std::min(errors, (TErrors)1), AllBest());
@@ -429,7 +429,7 @@ bool _mapReads(Mapper<TSpec> & mapper,
                TSeeder & seeder,
                TManager & manager,
                TErrors errors,
-               TErrors,
+               TErrors /* errorsLossy */,
                KBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
@@ -469,7 +469,7 @@ bool _mapReads(Mapper<TSpec> & mapper,
                TSeeder & seeder,
                TManager & manager,
                TErrors errors,
-               TErrors errorsLossy,
+               TErrors /* errorsLossy */,
                AnyBest const & /*tag*/)
 {
     typedef Seeding<>                           TSeeding;
@@ -493,8 +493,8 @@ bool _mapReads(Mapper<TSpec> & mapper,
         seeder.hitsDelegate.minErrorsPerRead = seed;
         seeder.hitsDelegate.maxErrorsPerRead = std::min(errors, errors_ + stratumDelta);
 
-        if (seeder.hitsDelegate.maxErrorsPerRead == errors)
-            seeder.hitsDelegate.maxErrorsPerRead = errorsLossy;
+//        if (seeder.hitsDelegate.maxErrorsPerRead == errors)
+//            seeder.hitsDelegate.maxErrorsPerRead = errorsLossy;
 
         find(seeder, mapper.indexer.genomeIndex, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
 
@@ -504,13 +504,13 @@ bool _mapReads(Mapper<TSpec> & mapper,
         raiseErrorThreshold(manager);
     }
 
-    for (TErrors errors_ = errors + 1; errors_ <= errorsLossy; ++errors_)
-    {
-        std::cout << "Errors:\t\t\t\t" << errors_ << std::endl;
-        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
-
-        raiseErrorThreshold(manager);
-    }
+//    for (TErrors errors_ = errors + 1; errors_ <= errorsLossy; ++errors_)
+//    {
+//        std::cout << "Errors:\t\t\t\t" << errors_ << std::endl;
+//        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+//
+//        raiseErrorThreshold(manager);
+//    }
 
     return true;
 }
