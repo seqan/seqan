@@ -247,8 +247,12 @@ int runMapper(Options & options)
 
     // Mapping reads.
     start = sysTime();
-    mapReads(mapper, options.mappedReadsFile, options.errorsPerRead, options.errorsLossy,
-             TDistance(), TStrategy(), TBacktracking(), TFormat());
+    if (!mapReads(mapper, options.mappedReadsFile, options.errorsPerRead, options.errorsLossy,
+                  TDistance(), TStrategy(), TBacktracking(), TFormat()))
+    {
+        std::cerr << "Error while writing results" << std::endl;
+        return 1;
+    }
     finish = sysTime();
     std::cout << "Mapping time:\t\t\t" << std::flush;
     std::cout << finish - start << " sec" << std::endl;

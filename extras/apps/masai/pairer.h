@@ -281,8 +281,10 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
+    
     if (pairer.dumpResults)
-        open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE);
+        if (!open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE))
+            return false;
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
 
@@ -305,8 +307,10 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
     typedef MatchWriter<TWriterStream, TDistance, Sam> TMatchWriter;
 
     TWriterStream file;
+    
     if (pairer.dumpResults)
-        open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE);
+        if (!open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE))
+            return false;
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
 

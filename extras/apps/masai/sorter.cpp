@@ -199,7 +199,11 @@ int runSorter(Options & options)
     // Sorting mapped reads.
     std::cout << "Sorting matches:\t\t" << std::flush;
     start = sysTime();
-    sortMappedReads(sorter, options.mappedReadsFile, options.sortedReadsFile, TDistance(), TFormat());
+    if (!sortMappedReads(sorter, options.mappedReadsFile, options.sortedReadsFile, TDistance(), TFormat()))
+    {
+        std::cerr << "Error while writing results" << std::endl;
+        return 1;
+    }
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
 

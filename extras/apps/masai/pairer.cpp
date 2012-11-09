@@ -212,10 +212,14 @@ int runPairer(Options & options)
     // Pairing reads.
     std::cout << "Pairing reads:\t\t\t" << std::flush;
     start = sysTime();
-    mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedReadsRightFile,
-                    options.mappedPairsFile, TDistance(), TFormat());
 //    mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedPairsFile,
 //                            options.errorsPerRead, TDistance(), TFormat());
+    if (!mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedReadsRightFile,
+                         options.mappedPairsFile, TDistance(), TFormat()))
+    {
+        std::cerr << "Error while writing results" << std::endl;
+        return 1;
+    }
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
 

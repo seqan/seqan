@@ -218,8 +218,10 @@ bool mapReads(Mapper<TSpec> & mapper,
     typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
 
     TWriterStream file;
+    
     if (mapper.dumpResults)
-        open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE);
+        if (!open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE))
+            return false;
 
     TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
     TMatchManager manager(writer, mapper.readsCount);
@@ -253,8 +255,10 @@ bool mapReads(Mapper<TSpec> & mapper,
     typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
 
     TWriterStream file;
+    
     if (mapper.dumpResults)
-        open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE);
+        if (!open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE))
+            return false;
 
     TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
     TMatchManager manager(writer, mapper.readsCount);
