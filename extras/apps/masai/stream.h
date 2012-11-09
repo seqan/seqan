@@ -39,11 +39,22 @@
 
 namespace seqan {
 
-template <typename TValue>
-struct FileWriter {};
+struct MMapWriter;
+struct FileWriter;
+
+template <typename TValue, typename TSpec>
+struct FileStream;
+
+template <typename TValue, typename TSpec>
+struct Value<Stream<FileStream<TValue, TSpec> > >
+{
+    typedef TValue Type;
+};
+
+// FileStream with async. file I/O
 
 template <typename TValue>
-class Stream<FileWriter<TValue> >
+class Stream<FileStream<TValue, FileWriter> >
 {
 public:
     typedef File< Async<> >                             TFile;
@@ -52,7 +63,7 @@ public:
     typedef PageChain<TPageFrame>                       TPageChain;
     typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
 
-    static const unsigned pageSize = 3*1024*1024;      // 1M entries per page
+    static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
     static const unsigned numPages = 2;                // double-buffering
 
     TFile       file;
@@ -114,7 +125,6 @@ public:
         // wait for all outstanding operations to finish
         result &= _flush();
 
-        // reset to initial state
         _initialize();
 
         return result;
@@ -127,8 +137,6 @@ private:
         // shrink buffer size if it was not fully written (like the last buffer)
         if (it != itEnd)
             resize(*chain.last, it - chain.last->begin);
-//        std::cout << chain.last->pageNo << '\t';
-//        std::cout << *chain.last << std::endl;
         return writePage(*chain.last, file);
     }
 
@@ -148,31 +156,133 @@ private:
     }
 };
 
+
+
+// FileStream with memory mapping
+
 template <typename TValue>
-struct Value<Stream<FileWriter<TValue> > >
+class Stream<FileStream<TValue, MMapWriter> >
 {
-    typedef TValue Type;
+public:
+    typedef File< Async<> >                             TFile;
+    typedef SimpleBuffer<TValue>                        TBuffer;
+    typedef PageFrame<TValue, TFile, Dynamic<> >        TPageFrame;
+    typedef PageChain<TPageFrame>                       TPageChain;
+    //        typedef String<TPageFrame*>                         TPageChain;
+    typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
+
+    static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
+    static const unsigned numPages = 2;                // double-buffering
+
+    TFile       file;
+    TPageChain  chain;
+    unsigned    nextPageNo;
+    TIterator   it, itEnd;
+
+    Stream():
+    chain(numPages)
+    {
+        _initialize();
+    }
+
+    ~Stream()
+    {
+        close(*this);
+    }
+
+    inline void _initialize()
+    {
+        it = NULL;
+        itEnd = NULL;
+        nextPageNo = 0;
+    }
+
+    inline bool _advanceBuffer()
+    {
+        bool result = true;
+
+        // write previously provided buffer to disk
+        if (nextPageNo != 0)
+            result &= _writeBuffer();
+
+        // step one buffer ahead
+        TPageFrame &pf = *chain.getReadyPage();
+
+        // assign correct page number
+        pf.pageSize = pageSize;
+        pf.pageNo = nextPageNo++;
+
+        // map next page into memory
+        resize(file, nextPageNo * pageSize * sizeof(TValue));
+        mapWritePage(pf, file, pageSize);
+
+        it = pf.begin;
+        itEnd = pf.end;
+
+        return result;
+    }
+
+    inline bool _stopWriting()
+    {
+        // has anything been written?
+        if (nextPageNo == 0)
+            return true;
+
+        // write previously provided buffer to disk
+        bool result = _writeBuffer();
+
+        // wait for all outstanding operations to finish
+        result &= _flush();
+
+        resize(file, (nextPageNo * pageSize - (itEnd - it)) * sizeof(TValue));
+
+        _initialize();
+
+        return result;
+    }
+
+private:
+
+    inline bool _writeBuffer()
+    {
+        // shrink buffer size if it was not fully written (like the last buffer)
+        if (it != itEnd)
+            resize(*chain.last, it - chain.last->begin);
+        //            std::cout << chain.last->pageNo << '\t';
+        //            std::cout << *chain.last << std::endl;
+        return unmapPage(*chain.last, file);
+    }
+
+    inline bool _flush()
+    {
+        bool result = true;
+        TPageFrame *p = chain.first;
+        while (p != NULL)
+        {
+            result &= waitFor(*p);
+            freePage(*p, file);
+            p = p->next;
+        }
+        result &= flush(file);
+
+        return result;
+    }
 };
 
-//    template <typename TValue>
-//    struct Size<Stream<FileWriter<TValue> > >:
-//        public Size<typename Stream<FileWriter<TValue> >::TFile> {};
-//
-//    template <typename TValue>
-//    struct Position<Stream<FileWriter<TValue> > >:
-//        public Position<typename Stream<FileWriter<TValue> >::TFile> {};
 
-template <typename TValue, typename TFilename, typename TFlags>
+
+
+template <typename TValue, typename TSpec, typename TFilename, typename TFlags>
 inline int
-open(Stream<FileWriter<TValue> > & stream, TFilename const &filename, TFlags const &flags)
+open(Stream<FileStream<TValue, TSpec> > & stream, TFilename const &filename, TFlags const &flags)
 {
     stream._initialize();
     return open(stream.file, filename, flags);
 }
 
-template <typename TValue>
+template <typename TValue, typename TSpec>
 inline int
-streamWriteChar(Stream<FileWriter<TValue> > & stream, TValue const &value)
+streamWriteChar(Stream<FileStream<TValue, TSpec> > & stream, TValue const &value)
 {
     if (stream.it == stream.itEnd)
     {
@@ -183,11 +293,11 @@ streamWriteChar(Stream<FileWriter<TValue> > & stream, TValue const &value)
     return 0;
 }
 
-template <typename TValue, typename TSourceIter, typename TCount>
+template <typename TValue, typename TSpec, typename TSourceIter, typename TCount>
 inline size_t
-streamWriteBlock(Stream<FileWriter<TValue> > & stream, TSourceIter srcIter, TCount count)
+streamWriteBlock(Stream<FileStream<TValue, TSpec> > & stream, TSourceIter srcIter, TCount count)
 {
-    typedef typename Size<Stream<FileWriter<TValue> > >::Type TSSize;
+    typedef typename Size<Stream<FileStream<TValue, TSpec> > >::Type TSSize;
 
     TCount written = 0;
 
@@ -212,9 +322,9 @@ streamWriteBlock(Stream<FileWriter<TValue> > & stream, TSourceIter srcIter, TCou
     return written;
 }
 
-template <typename TValue>
+template <typename TValue, typename TSpec>
 inline int
-close(Stream<FileWriter<TValue> > & stream)
+close(Stream<FileStream<TValue, TSpec> > & stream)
 {
     stream._stopWriting();
     return close(stream.file);

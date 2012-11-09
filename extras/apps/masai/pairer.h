@@ -277,13 +277,13 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef Stream<FileWriter<Match<> > >               TWriterStream;
+    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
     
     if (pairer.dumpResults)
-        if (!open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE))
+        if (!open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE))
             return false;
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
@@ -303,13 +303,13 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef Stream<FileWriter<char> >                  TWriterStream;
+    typedef Stream<FileStream<char, MMapWriter> >      TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam> TMatchWriter;
 
     TWriterStream file;
     
     if (pairer.dumpResults)
-        if (!open(file, toCString(mappedPairsFile), OPEN_WRONLY | OPEN_CREATE))
+        if (!open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE))
             return false;
 
     TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);

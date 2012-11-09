@@ -141,13 +141,13 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef Stream<FileWriter<Match<> > >               TWriterStream;
+    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
 
     if (sorter.dumpResults)
-        if (!open(file, toCString(sortedReadsFile), OPEN_WRONLY | OPEN_CREATE))
+        if (!open(file, toCString(sortedReadsFile), OPEN_RDWR | OPEN_CREATE))
             return false;
 
     TMatchWriter writer(file, sorter.store, sorter.readsCount, sorter.dumpResults);
@@ -164,13 +164,13 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef Stream<FileWriter<char> >                   TWriterStream;
+    typedef Stream<FileStream<char, MMapWriter> >       TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>  TMatchWriter;
 
     TWriterStream file;
 
     if (sorter.dumpResults)
-        if (!open(file, toCString(sortedReadsFile), OPEN_WRONLY | OPEN_CREATE))
+        if (!open(file, toCString(sortedReadsFile), OPEN_RDWR | OPEN_CREATE))
             return false;
 
     TMatchWriter writer(file, sorter.store, sorter.readsCount, sorter.dumpResults);

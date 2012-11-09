@@ -211,7 +211,7 @@ bool mapReads(Mapper<TSpec> & mapper,
               Sam const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
-    typedef Stream<FileWriter<char> >                       TWriterStream;
+    typedef Stream<FileStream<char, MMapWriter> >           TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
     typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
     typedef Extender<TMatchManager, TDistance>              TExtender;
@@ -220,7 +220,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     TWriterStream file;
     
     if (mapper.dumpResults)
-        if (!open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE))
+        if (!open(file, toCString(mappedReadsFile), OPEN_RDWR | OPEN_CREATE))
             return false;
 
     TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
@@ -248,7 +248,7 @@ bool mapReads(Mapper<TSpec> & mapper,
               Raw const & /*tag*/)
 {
     typedef Match<>                                         TMatch;
-    typedef Stream<FileWriter<Match<> > >                   TWriterStream;
+    typedef Stream<FileStream<Match<>, MMapWriter> >        TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
     typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
     typedef Extender<TMatchManager, TDistance>              TExtender;
@@ -257,7 +257,7 @@ bool mapReads(Mapper<TSpec> & mapper,
     TWriterStream file;
     
     if (mapper.dumpResults)
-        if (!open(file, toCString(mappedReadsFile), OPEN_WRONLY | OPEN_CREATE))
+        if (!open(file, toCString(mappedReadsFile), OPEN_RDWR | OPEN_CREATE))
             return false;
 
     TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
