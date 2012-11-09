@@ -567,8 +567,8 @@ struct MMap;
         {
             pf.begin = pf.end = NULL;
             SEQAN_FAIL(
-                "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_PRIVATE, %d, %d) failed in mapReadPage", 
-                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+                "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_PRIVATE, %d, %d) failed in mapReadPage: \"%s\"",
+                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue), strerror(errno));
             return false;
         }
         pf.end = pf.begin + size;
@@ -585,8 +585,8 @@ struct MMap;
         {
             pf.begin = pf.end = NULL;
             SEQAN_FAIL(
-                "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_SHARED, %d, %d) failed in mapWritePage", 
-                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+                "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_SHARED, %d, %d) failed in mapWritePage: \"%s\"",
+                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue), strerror(errno));
             return false;
         }
         pf.end = pf.begin + size;
