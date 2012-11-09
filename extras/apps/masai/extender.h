@@ -39,7 +39,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
 #include <seqan/find.h>
 
 #include "store.h"

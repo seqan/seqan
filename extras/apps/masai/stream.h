@@ -218,6 +218,6 @@ close(Stream<FileWriter<TValue> > & stream)
     return close(stream.file);
 }
 
-#endif  // #ifndef SANDBOX_ESIRAGUSA_APPS_MASAI_STREAM_H_
-
 }
+
+#endif  // #ifndef SANDBOX_ESIRAGUSA_APPS_MASAI_STREAM_H_

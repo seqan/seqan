@@ -40,8 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/find.h>
-#include <seqan/pipe.h>
+#include <seqan/stream.h>
 
 #include "tags.h"
 #include "store.h"
@@ -49,6 +48,7 @@
 #include "matches.h"
 //#include "verifier.h"
 #include "extender.h"
+#include "stream.h"
 #include "writer.h"
 
 using namespace seqan;
@@ -277,7 +277,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef String<Match<>, TStream>                    TWriterStream;
+    typedef Stream<FileWriter<Match<> > >               TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
@@ -301,7 +301,7 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef String<char, TStream>                      TWriterStream;
+    typedef Stream<FileWriter<char> >                  TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam> TMatchWriter;
 
     TWriterStream file;
