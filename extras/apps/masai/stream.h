@@ -184,30 +184,32 @@ streamWriteChar(Stream<FileWriter<TValue> > & stream, TValue const &value)
 }
 
 template <typename TValue, typename TSourceIter, typename TCount>
-inline int
+inline size_t
 streamWriteBlock(Stream<FileWriter<TValue> > & stream, TSourceIter srcIter, TCount count)
 {
     typedef typename Size<Stream<FileWriter<TValue> > >::Type TSSize;
 
-    while (count > (TCount)0)
+    TCount written = 0;
+
+    while (written < count)
     {
         // do we need a new buffer?
         if (stream.it == stream.itEnd)
         {
             if (!stream._advanceBuffer())
-                return 1;
+                return written;
         }
 
         // how many values can we write into the buffer?
-        TSSize cnt = _min((TSSize)count, (TSSize)(stream.itEnd - stream.it));
+        TSSize cnt = _min((TSSize)(count - written), (TSSize)(stream.itEnd - stream.it));
         // write them
         arrayCopyForward(srcIter, srcIter + cnt, stream.it);
 
         stream.it += cnt;
         srcIter += cnt;
-        count -= cnt;
+        written += cnt;
     }
-    return 0;
+    return written;
 }
 
 template <typename TValue>
