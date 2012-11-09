@@ -591,7 +591,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     inline bool waitFor(AsyncDummyRequest &, TTime, bool &inProgress)
 	{ 
 //IOREV _noop_ see general discussion about AsynRequest
-        inProgress = true;
+        inProgress = false;
 		return true; 
 	}
 

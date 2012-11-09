@@ -45,23 +45,29 @@
  * to non-existent. Code needs thorough investigation, to understand
  * how/if this works
  *
- * probabyl Weese's code according to holtgrew
- * 
+ * probably Weese's code according to holtgrew
+ *
  *
  */
 
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TConfig>
+struct MMap;
 
 
 	//////////////////////////////////////////////////////////////////////////////
 	// base class for memory buffers
 
 	template < typename TValue >
-	struct SimpleBuffer 
+	struct SimpleBuffer
 	{
 //IOREV _nodoc_
 		typedef	typename Size<SimpleBuffer>::Type               TSize;
@@ -218,6 +224,13 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
 		int     	pageNo;		            // related page (needed by merger sort)
     };
+    
+    template < typename TValue >
+    struct MMapPage : PageBucketExtended<TValue>
+    {
+        TValue      *nextBegin;
+        TValue      *nextEnd;
+    };
 
 	template < typename TValue >
     ::std::ostream& operator<<(::std::ostream &out, const PageBucketExtended<TValue> &pb) {
@@ -251,7 +264,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 	template < typename TValue, typename TFile, typename TSpec >
-    struct PageFrame;    
+    struct PageFrame;
 //IOREV
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -360,6 +373,28 @@ namespace SEQAN_NAMESPACE_MAIN
         inline TValue const & operator[](TSize i) const { return begin[i]; }
 	};
 
+
+	//////////////////////////////////////////////////////////////////////////////
+	// a memory-mapped page frame
+
+    template < typename TValue, typename TFile, typename TConfig >
+	struct PageFrame< TValue, TFile, MMap<TConfig> >: public SimpleBuffer< TValue >
+    {
+		typedef SimpleBuffer<TValue>	        TBase;
+
+        enum Status		{ READY, READING, WRITING };
+
+		unsigned   		pageNo;		// maps frames to pages (reverse vector mapper)
+		Status			status;
+        PageFrame       *next;      // next buffer in a chained list
+
+        PageFrame():
+			TBase(),
+            pageNo(MaxValue<unsigned>::VALUE),
+			next(NULL) {}
+    };
+
+
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
@@ -399,6 +434,13 @@ namespace SEQAN_NAMESPACE_MAIN
     length(PageFrame<TValue, TFile, Fixed<PageSize_> > const &/*me*/) {
 //IOREV
         return PageSize_;
+    }
+
+    template < typename TValue, typename TFile, typename TSpec>
+    inline typename Size<PageFrame<TValue, TFile, TSpec> >::Type
+    length(PageFrame<TValue, TFile, TSpec> const &me) {
+//IOREV
+        return me.end - me.begin;
     }
 
     template < typename TValue, typename TFile, unsigned PageSize_ >
@@ -481,10 +523,10 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template < typename TValue, typename TFile, typename TSpec > inline
-	bool readPage(int pageNo, PageFrame<TValue, TFile, TSpec> &pf, TFile &file) 
+	bool readPage(int pageNo, PageFrame<TValue, TFile, TSpec> &pf, TFile &file)
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "readPage:  " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
@@ -493,7 +535,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		pf.status = pf.READING;
 //        resize(pf, pageSize(pf));
 
-		bool readResult = asyncReadAt(file, (TValue*)pf.begin, size(pf), (pos_t)pageNo * (pos_t)pageSize(pf), pf.request);
+		bool readResult = asyncReadAt(file, (TValue*)pf.begin, size(pf), (TPos)pageNo * (TPos)pageSize(pf), pf.request);
 
         // TODO(weese): Throw an I/O exception
         if (!readResult)
@@ -502,11 +544,61 @@ namespace SEQAN_NAMESPACE_MAIN
         return readResult;
 	}
 
+#if 1
+	template < typename TValue, typename TFile, typename TSpec > inline
+	bool unmapPage(PageFrame<TValue, TFile, TSpec> &pf, TFile &)
+	{
+		typedef typename Position<TFile>::Type TPos;
+        if (pf.begin)
+        {
+            munmap(pf.begin, size(pf) * sizeof(TValue));
+            pf.begin = NULL;
+        }
+        return true;
+    }
+
+	template < typename TValue, typename TFile, typename TSpec, typename TSize > inline
+	bool mapReadPage(PageFrame<TValue, TFile, TSpec> &pf, TFile &file, TSize size)
+	{
+		typedef typename Position<TFile>::Type TPos;
+        unmapPage(pf, file);
+        pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_PRIVATE, file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+        if (pf.begin == MAP_FAILED)
+        {
+            pf.begin = pf.end = NULL;
+            SEQAN_FAIL(
+                "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_PRIVATE, %d, %d) failed in mapReadPage", 
+                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+            return false;
+        }
+        pf.end = pf.begin + size;
+        return true;
+    }
+
+	template < typename TValue, typename TFile, typename TSpec, typename TSize > inline
+	bool mapWritePage(PageFrame<TValue, TFile, TSpec> &pf, TFile &file, TSize size) 
+	{
+		typedef typename Position<TFile>::Type TPos;
+        unmapPage(pf, file);
+        pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+        if (pf.begin == MAP_FAILED)
+        {
+            pf.begin = pf.end = NULL;
+            SEQAN_FAIL(
+                "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_SHARED, %d, %d) failed in mapWritePage", 
+                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+            return false;
+        }
+        pf.end = pf.begin + size;
+        return true;
+    }
+#endif
+
 	template < typename TValue, typename TFile, typename TSpec > inline
 	bool writePage(PageFrame<TValue, TFile, TSpec> &pf, int pageNo, TFile &file) 
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
@@ -514,7 +606,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		pf.status = pf.WRITING;
 //        resize(pf, pageSize(pf));
 
-		bool writeResult = asyncWriteAt(file, (TValue*)pf.begin, size(pf), (pos_t)pageNo * (pos_t)pageSize(pf), pf.request);
+		bool writeResult = asyncWriteAt(file, (TValue*)pf.begin, size(pf), (TPos)pageNo * (TPos)pageSize(pf), pf.request);
 
         // TODO(weese): Throw an I/O exception
         if (!writeResult)
@@ -527,7 +619,7 @@ namespace SEQAN_NAMESPACE_MAIN
     bool readLastPage(int pageNo, PageFrame<TValue, TFile, TSpec> &pf, TFile &file, TSize size) 
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "readPage:  " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
@@ -536,7 +628,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		pf.status = pf.READY;
 //        resize(pf, size);
 
-		bool readResult = readAt(file, (TValue*)pf.begin, size, (pos_t)pageNo * (pos_t)pageSize(pf));
+		bool readResult = readAt(file, (TValue*)pf.begin, size, (TPos)pageNo * (TPos)pageSize(pf));
 
         // TODO(weese): Throw an I/O exception
         if (!readResult)
@@ -549,7 +641,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	bool writeLastPage(PageFrame<TValue, TFile, TSpec> &pf, int pageNo, TFile &file, TSize size) 
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
@@ -558,7 +650,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		pf.status = pf.READY;
 //        resize(pf, size);
 
-		bool writeResult = writeAt(file, (TValue*)pf.begin, size, (pos_t)pageNo * (pos_t)pageSize(pf));
+		bool writeResult = writeAt(file, (TValue*)pf.begin, size, (TPos)pageNo * (TPos)pageSize(pf));
 
         // TODO(weese): Throw an I/O exception
         if (!writeResult)
@@ -650,14 +742,14 @@ namespace SEQAN_NAMESPACE_MAIN
 	unsigned readBucket(PageBucket<TValue> &b, int pageNo, unsigned pageSize, unsigned dataSize, TFile &file) 
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
         unsigned readSize = _min(dataSize - b.pageOfs, (unsigned)(b.end - b.begin));
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "readBucket:  " << ::std::hex << b.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (pos_t)pageNo * (pos_t)pageSize + b.pageOfs;
+			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
 			::std::cerr << " size " << readSize << ::std::endl;
 		#endif
-        if (readSize && readAt(file, b.begin, readSize, (pos_t)pageNo * (pos_t)pageSize + b.pageOfs)) {
+        if (readSize && readAt(file, b.begin, readSize, (TPos)pageNo * (TPos)pageSize + b.pageOfs)) {
             b.pageOfs += readSize;
             b.cur = b.begin;
             b.end = b.begin + readSize;
@@ -670,13 +762,13 @@ namespace SEQAN_NAMESPACE_MAIN
 	bool writeBucket(PageBucket<TValue> &b, int pageNo, unsigned pageSize, TFile &file) 
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "writeBucket: " << ::std::hex << b.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (pos_t)pageNo * (pos_t)pageSize + b.pageOfs;
+			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
 			::std::cerr << " size " << b.cur - b.begin << ::std::endl;
 		#endif
-        if ((b.cur == b.begin) || writeAt(file, b.begin, b.cur - b.begin, (pos_t)pageNo * (pos_t)pageSize + b.pageOfs)) {
+        if ((b.cur == b.begin) || writeAt(file, b.begin, b.cur - b.begin, (TPos)pageNo * (TPos)pageSize + b.pageOfs)) {
             b.pageOfs += b.cur - b.begin;
             b.cur = b.begin;
             return true;
@@ -688,14 +780,14 @@ namespace SEQAN_NAMESPACE_MAIN
 	bool writeBucket(PageFrame<TValue, TFile, Dynamic<TSpec> > &pf, unsigned &pageOfs, TFile &file) 
 	{
 //IOREV _nodoc_
-		typedef typename Position<TFile>::Type pos_t;
+		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "writeBucket: " << ::std::hex << pf.begin;
-			::std::cerr << " from page " << ::std::dec << pf.pageNo << " at " << (pos_t)pf.pageNo * (pos_t)pageSize(pf) + pageOfs;
+			::std::cerr << " from page " << ::std::dec << pf.pageNo << " at " << (TPos)pf.pageNo * (TPos)pageSize(pf) + pageOfs;
 			::std::cerr << " size " << size(pf) << ::std::endl;
 		#endif
         if (pf.end == pf.begin) return true;
-        if (asyncWriteAt(file, pf.begin, size(pf), (pos_t)pf.pageNo * (pos_t)pageSize(pf) + pageOfs, pf.request)) {
+        if (asyncWriteAt(file, pf.begin, size(pf), (TPos)pf.pageNo * (TPos)pageSize(pf) + pageOfs, pf.request)) {
             pf.status = pf.WRITING;
             pageOfs += size(pf);
             return true;
@@ -793,8 +885,6 @@ namespace SEQAN_NAMESPACE_MAIN
             }
         }
 
-    private:
-
         inline TPageFrame * firstToEnd() 
 		{
             last->next = first;
@@ -803,6 +893,8 @@ namespace SEQAN_NAMESPACE_MAIN
             last->next = NULL;
             return last;
         }
+
+    private:
 
         inline TPageFrame * pushBack() 
 		{
