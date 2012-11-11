@@ -246,13 +246,13 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 	template<typename TValue>
 	inline bool isNan(TValue value)
 	{
-		return isnan(value);
+		return std::isnan(value);
 	}
 
 	template<typename TValue>
 	inline bool isInf(TValue value)
 	{
-		return isinf(value);
+		return std::isinf(value);
 	}
 
 #endif
