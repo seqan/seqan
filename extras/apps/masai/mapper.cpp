@@ -73,7 +73,7 @@ struct Options : public MasaiOptions
 
     Options() :
         MasaiOptions(),
-        genomeIndexType(INDEX_ESA),
+        genomeIndexType(INDEX_SA),
         outputFormat(RAW),
         outputCigar(true),
         mappingMode(ANY_BEST),

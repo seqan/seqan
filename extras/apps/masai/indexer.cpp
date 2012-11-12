@@ -59,7 +59,7 @@ struct Options : public MasaiOptions
 
     Options() :
         MasaiOptions(),
-        genomeIndexType(INDEX_ESA)
+        genomeIndexType(INDEX_SA)
     {}
 };
 
