@@ -474,12 +474,17 @@ you should think of using @Tag.ExternalConfig@.
 			return *this;
 		}
 
+        inline TSize position() const
+        {
+            return (TSize)pageNo * (TSize)PAGESIZE + pageOfs;
+        }
+
         inline operator TStdIterator() const {
-            return TStdIterator(extString, (TSize)pageNo * (TSize)PAGESIZE + pageOfs);
+            return TStdIterator(extString, position());
         }
 
         inline operator TStdConstIterator() const {
-            return TStdConstIterator(extString, (TSize)pageNo * (TSize)PAGESIZE + pageOfs);
+            return TStdConstIterator(extString, position());
         }
 
 		inline TIterator& operator=(TIterator const & Right_) {
@@ -494,8 +499,9 @@ you should think of using @Tag.ExternalConfig@.
 		//////////////////////////////////////////////////////////////////////////////
 		// iterator arithmetic
 
-		inline TDifference operator- (const TIterator &I) const {
-			return (TDifference)(pageNo - I.pageNo) * (TDifference)PAGESIZE + (pageOfs - I.pageOfs);
+		inline TDifference operator- (const TIterator &I) const
+        {
+            return position() - I.position();
 		}
 		
 		inline TIterator operator- (TDifference delta) const {
@@ -733,8 +739,13 @@ you should think of using @Tag.ExternalConfig@.
 			return *this;
 		}
 
+        inline TSize position() const
+        {
+            return (TSize)pageNo * (TSize)PAGESIZE + pageOfs;
+        }
+
         inline operator TStdConstIterator() const {
-            return TStdConstIterator(extString, (TSize)pageNo * (TSize)PAGESIZE + pageOfs);
+            return TStdConstIterator(extString, position());
         }
 
 		inline TIterator& operator=(TIterator const & Right_) {
@@ -758,8 +769,9 @@ you should think of using @Tag.ExternalConfig@.
 		//////////////////////////////////////////////////////////////////////////////
 		// iterator arithmetic
 
-		inline TDifference operator- (const TIterator &I) const {
-			return (TDifference)(pageNo - I.pageNo) * (TDifference)PAGESIZE + (pageOfs - I.pageOfs);
+		inline TDifference operator- (const TIterator &I) const
+        {
+            return position() - I.position();
 		}
 		
 		inline TIterator operator- (TDifference delta) const {
