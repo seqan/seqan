@@ -228,7 +228,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		}
 		return false;
 	}
-	
+
 /**
 .Function.split:
 ..summary:Divides the contents of a sequence file into sequence file fragments separated by a file format specific delimiter.
@@ -241,42 +241,39 @@ namespace SEQAN_NAMESPACE_MAIN
 ...type:Tag.File Format
 ...type:Class.AutoSeqFormat
 ..remarks:The @Memvar.ConcatDirect#concat@ member should contain the contents of the sequence file by a prior call of @Function.open@.
-..remarks:This function expects a @Spec.ConcatDirect@ StringSet and divides the underlying concatenation string into 
+..remarks:This function expects a @Spec.ConcatDirect@ StringSet and divides the underlying concatenation string into
 sequence fragments separated by a file format specific delimiter.
 After calling this function, the StringSet length is the number of sequence fragments and each fragment can be retrieved by @Function.value@ or @Function.getValue@.
 ..see:Function.guessFormat
 ..include:seqan/file.h
 */
 
-	// split stringset into single Fasta sequences
-	template < typename TValue, typename TConfig, typename TDelimiter >
-	inline void
-	split(
-		StringSet<String<TValue, MMap<TConfig> >, Owner<ConcatDirect<TDelimiter> > > &me, 
-		Fasta)
-	{
-//IOREV _doc_ 
-		typedef String<TValue, MMap<TConfig> >						TString;
-		typedef StringSet<TString, ConcatDirect<TDelimiter> >		TStringSet;
-		typedef typename Iterator<TString const, Standard>::Type	TIterator;
+    // split stringset into single Fasta sequences
+    template <typename TValue, typename TSpec, typename TStringSetSpec>
+    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Fasta const & /* tag */)
+    {
+//IOREV _doc_
+        typedef String<TValue, TSpec>                               TString;
+        typedef StringSet<TString, TStringSetSpec>                  TStringSet;
+        typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
-		clear(me.limits);
+        clear(me.limits);
 
-		TIterator itBeg = begin(me.concat, Standard());
-		TIterator itEnd = end(me.concat, Standard());
-		bool newLine = true;
-		for (TIterator it = itBeg; it != itEnd; ++it)
-		{
-			TValue c = *it;
-			if (newLine && c == '>')
-				appendValue(me.limits, it - itBeg, Generous());
-			newLine = _isLineBreak(c);
-		}
-		if (empty(me.limits))
-			appendValue(me.limits, 0);
-		appendValue(me.limits, itEnd - itBeg);
-	}
-	
+        TIterator itBeg = begin(me.concat, Standard());
+        TIterator itEnd = end(me.concat, Standard());
+        bool newLine = true;
+        for (TIterator it = itBeg; it != itEnd; ++it)
+        {
+            TValue c = *it;
+            if (newLine && c == '>')
+                appendValue(me.limits, it - itBeg, Generous());
+            newLine = _isLineBreak(c);
+        }
+        if (empty(me.limits))
+            appendValue(me.limits, 0);
+        appendValue(me.limits, itEnd - itBeg);
+    }
+
 /**
 .Function.assignSeq:
 ..summary:Extracts the sequence part of a sequence file fragment.
@@ -523,42 +520,41 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
 		}
 		return false;
 	}
-	
-	// split stringset into single Fasta sequences
-	template < typename TValue, typename TConfig, typename TDelimiter >
-	inline void
-	split(
-		StringSet<String<TValue, MMap<TConfig> >, Owner<ConcatDirect<TDelimiter> > > &me, 
-		Fastq)
-	{
-//IOREV
-		typedef String<TValue, MMap<TConfig> >						TString;
-		typedef StringSet<TString, ConcatDirect<TDelimiter> >		TStringSet;
-		typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
-		clear(me.limits);
+    // split stringset into single Fasta sequences
+    template <typename TValue, typename TSpec, typename TStringSetSpec>
+    inline void
+    split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Fastq const & /* tag */)
+    {
+        //IOREV
+        typedef String<TValue, TSpec>                               TString;
+        typedef StringSet<TString, TStringSetSpec>                  TStringSet;
+        typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
-		TIterator itBeg = begin(me.concat, Standard());
-		TIterator itEnd = end(me.concat, Standard());
-		bool newLine = true;
-		for (TIterator it = itBeg; it != itEnd; ++it)
-		{
-			if (newLine && *it == '@')
-				appendValue(me.limits, it - itBeg, Generous());
-			if (newLine && *it == '+')
-			{
-				// skip qualitity fasta id
-				if (!_seekLineBreak(it, itEnd)) break;
-				if (!_seekNonLineBreak(it, itEnd)) break;
-				// skip qualitity values
-				if (!_seekLineBreak(it, itEnd)) break;
-			}
-			newLine = _isLineBreak(*it);
-		}
-		if (empty(me.limits))
-			appendValue(me.limits, 0);
-		appendValue(me.limits, itEnd - itBeg);
-	}
+        clear(me.limits);
+
+        TIterator itBeg = begin(me.concat, Standard());
+        TIterator itEnd = end(me.concat, Standard());
+        bool newLine = true;
+        for (TIterator it = itBeg; it != itEnd; ++it)
+        {
+            if (newLine && *it == '@')
+                appendValue(me.limits, it - itBeg, Generous());
+            if (newLine && *it == '+')
+            {
+                // skip qualitity fasta id
+                if (!_seekLineBreak(it, itEnd)) break;
+                if (!_seekNonLineBreak(it, itEnd)) break;
+                // skip qualitity values
+                if (!_seekLineBreak(it, itEnd)) break;
+            }
+            newLine = _isLineBreak(*it);
+        }
+        if (empty(me.limits))
+            appendValue(me.limits, 0);
+        appendValue(me.limits, itEnd - itBeg);
+    }
+    
 
 	template <typename TSeq, typename TFastaSeq>
 	inline void
@@ -843,15 +839,13 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
 	}
 
 	// split stringset into single QSeq sequences
-	template < typename TValue, typename TConfig, typename TDelimiter >
+	template <typename TValue, typename TSpec, typename TStringSetSpec>
 	inline void
-	split(
-		StringSet<String<TValue, MMap<TConfig> >, Owner<ConcatDirect<TDelimiter> > > &me, 
-		QSeq)
+	split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, QSeq const & /* tag */)
 	{
 //IOREV
-		typedef String<TValue, MMap<TConfig> >						TString;
-		typedef StringSet<TString, ConcatDirect<TDelimiter> >		TStringSet;
+		typedef String<TValue, TSpec>                               TString;
+		typedef StringSet<TString, TStringSetSpec>                  TStringSet;
 		typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
 		clear(me.limits);
@@ -1006,32 +1000,29 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		}
 		return false;
 	}
-	
-	// split stringset into single Fasta sequences
-	template < typename TValue, typename TConfig, typename TDelimiter >
-	inline void
-	split(
-		StringSet<String<TValue, MMap<TConfig> >, Owner<ConcatDirect<TDelimiter> > > &me, 
-		Raw)
-	{
+
+    // split stringset into single Fasta sequences
+    template <typename TValue, typename TSpec, typename TStringSetSpec>
+    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Raw const & /* tag */)
+    {
 //IOREV _doc_
-		typedef String<TValue, MMap<TConfig> >						TString;
-		typedef StringSet<TString, ConcatDirect<TDelimiter> >		TStringSet;
-		typedef typename Iterator<TString const, Standard>::Type	TIterator;
+        typedef String<TValue, TSpec>                               TString;
+        typedef StringSet<TString, TStringSetSpec>                  TStringSet;
+        typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
-		clear(me.limits);
+        clear(me.limits);
 
-		TIterator itBeg = begin(me.concat, Standard());
-		TIterator itEnd = end(me.concat, Standard());
-		bool newLine = true;
-		for (TIterator it = itBeg; it != itEnd; ++it)
-		{
-			if (newLine)
-				appendValue(me.limits, it - itBeg, Generous());
-			newLine = _isLineBreak(*it);
-		}
-		appendValue(me.limits, itEnd - itBeg);
-	}
+        TIterator itBeg = begin(me.concat, Standard());
+        TIterator itEnd = end(me.concat, Standard());
+        bool newLine = true;
+        for (TIterator it = itBeg; it != itEnd; ++it)
+        {
+            if (newLine)
+                appendValue(me.limits, it - itBeg, Generous());
+            newLine = _isLineBreak(*it);
+        }
+        appendValue(me.limits, itEnd - itBeg);
+    }
 
 	template <typename TSeq, typename TRawSeq>
 	inline void
@@ -1130,8 +1121,8 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 	typedef
 		TagList<Fastq,
 		TagList<Fasta,
-		TagList<QSeq,
-		TagList<Raw> > > > 						SeqFormats; //IOREV
+//		TagList<QSeq,   // doesn't work as it uses STL strings and parsers
+		TagList<Raw> /* > */  > > 						SeqFormats; //IOREV
 	typedef TagSelector<SeqFormats>				AutoSeqFormat; //IOREV _doc_ _tested_ alltogether this recursive construction of format-autodetection is not very intuitive
 
 //____________________________________________________________________________
@@ -1203,28 +1194,25 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 //____________________________________________________________________________
 // split stringset into single sequences
 
-	template < typename TValue, typename TConfig, typename TDelimiter >
-	inline void
-	split(
-		StringSet<String<TValue, MMap<TConfig> >, Owner<ConcatDirect<TDelimiter> > > &, 
-		TagSelector<void> const &)
-	{
+    template <typename TValue, typename TSpec, typename TStringSetSpec>
+    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> &,
+                      TagSelector<void> const & /* tag */)
+    {
 //IOREV _doc_
-	}
-	
-	template < typename TValue, typename TConfig, typename TDelimiter, typename TTagList >
-	inline void
-	split(
-		StringSet<String<TValue, MMap<TConfig> >, Owner<ConcatDirect<TDelimiter> > > &me, 
-		TagSelector<TTagList> const &format)
-	{
+    }
+
+    template <typename TValue, typename TSpec, typename TStringSetSpec, typename TTagList>
+    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me,
+                      TagSelector<TTagList> const & format)
+    {
 //IOREV _doc_
-		if (format.tagId == LENGTH<TTagList>::VALUE)
-			split(me, typename TTagList::Type());
-		else
-			split(me, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-	}
-	
+        if (format.tagId == LENGTH<TTagList>::VALUE)
+            split(me, typename TTagList::Type());
+        else
+            split(me, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+    }
+    
+
 //____________________________________________________________________________
 // assignSeq
 
