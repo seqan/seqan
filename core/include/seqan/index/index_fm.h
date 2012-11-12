@@ -454,6 +454,7 @@ template <typename TText, typename TOccSpec, typename TIndexSpec, typename TPos,
 inline typename SAValue<Index<TText, FMIndex<TOccSpec, TIndexSpec > > >::Type
 toSuffixPosition(Index<TText, FMIndex<TOccSpec, TIndexSpec > > & index, TPos i, TSize offset)
 {
+    SEQAN_ASSERT_GEQ(suffixLength(i, index), offset);
     setSeqOffset(i, suffixLength(i, index) - offset);
     return i;
 }
@@ -462,6 +463,7 @@ template <typename TText, typename TOccSpec, typename TIndexSpec, typename TPos,
 inline typename SAValue<Index<TText, FMIndex<TOccSpec, TIndexSpec > > const>::Type
 toSuffixPosition(Index<TText, FMIndex<TOccSpec, TIndexSpec > > const & index, TPos i, TSize offset)
 {
+    SEQAN_ASSERT_GEQ(suffixLength(i, index), offset);
     setSeqOffset(i, suffixLength(i, index) - offset);
     return i;
 }
@@ -537,7 +539,7 @@ inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TS
 // ==========================================================================
 // This function creates all table of the lf table given a text and a suffix array.
 template <typename TIndexSpec, typename TSpec, typename TText, typename TSA>
-inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TText & text, TSA & sa)
+inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TText & text, TSA const & sa)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TSpec> >		        TIndex;
 	typedef typename Fibre<TIndex, FibreLfTable>::Type              TLfTable;
@@ -555,10 +557,7 @@ inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & ind
 	TDollarPosition dollarPos = 0;
 	_createBwTable(bwt, dollarPos, text, sa, dollarSub);
 
-	clear(sa);
-    
     createOccurrenceTable(index.lfTable, bwt, dollarSub, dollarPos);
-	clear(bwt);
 
 	_insertDollar(index.lfTable.prefixSumTable, countSequences(text));
 
@@ -585,13 +584,14 @@ inline bool _indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec > > & index,
 	typedef typename Fibre<TCompressedSA, FibreSparseString>::Type TSparseString;
 	typedef typename Fibre<TSparseString, FibreValueString>::Type TValueString;
 
-    if(empty(text))
+    if (empty(text))
         return false;
 
+    TValueString fullSa;
+
 	// create the compressed SA
-	TValueString fullSa;
 	_indexCreateSA(index, fullSa, text);
-	
+
 	// create the lf table
 	_indexCreateLfTables(index, text, fullSa);
 
