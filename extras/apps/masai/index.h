@@ -148,36 +148,129 @@ struct Fibre<TGenomeInfixSa, FibreSA>
 typedef Index<TGenome, FMIndex<WT<FmiDollarSubstituted<MultiDollar<void> > >, CompressText> > TGenomeFM;
 
 // ----------------------------------------------------------------------------
-// getCharacterPosition() functions for (Dna5 vs Dna5Q)
+// Genome FM Index Uncompressed Suffix Array Definitions
+// ----------------------------------------------------------------------------
+
+//#if defined(SEQAN_EXTRAS_MASAI_INDEXER_H_)
+//typedef DefaultIndexStringSpec<TGenomeFM>::Type         TGenomeFMStringSpec;
+//#else
+//typedef External<ExternalConfigLarge<File<>,8192,2> >   TGenomeFMStringSpec;
+//#endif
+//
+//namespace seqan {
+//template <>
+//struct Fibre<TGenomeFM, FibreSA> {
+//    typedef String<SAValue<TGenomeFM>::Type, TGenomeFMStringSpec> Type;
+//};
+//}
+//
+//namespace seqan {
+//template <>
+//inline bool _indexCreate(TGenomeFM & index, TGenome & text)
+//{
+//    if (empty(text)) return false;
+//
+//    // Create the suffix array table.
+//    indexCreate(index, FibreSA());
+//
+//    // Create the lf table.
+//    _indexCreateLfTables(index, text, indexSA(index));
+//
+//    return true;
+//}
+//}
+//
+//namespace seqan {
+//template <>
+//inline bool open(TGenomeFM & index, const char * fileName, int openMode)
+//{
+//    String<char> name;
+//    
+//    String<Pair<unsigned, Size<TGenomeFM>::Type> > infoString;
+//    
+//    name = fileName;    append(name, ".txt");
+//    if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+//    
+//    name = fileName;    append(name, ".sa");
+//    if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
+//    
+//    name = fileName;    append(name, ".lf");
+//    if (!open(getFibre(index, FibreLfTable()), toCString(name), openMode)) return false;
+//    
+//    name = fileName;    append(name, ".fma");
+//    if (!open(infoString, toCString(name), openMode)) return false;
+//    
+//    index.compressionFactor = infoString[0].i1;
+//    index.n = infoString[0].i2;
+//    //getFibre(index, FibreSA()).lfTable = & getFibre(index, FibreLfTable());
+//    
+//    return true;
+//}
+//}
+
+// ----------------------------------------------------------------------------
+// _getNodeByChar() function for Dna5Q
 // ----------------------------------------------------------------------------
 
 namespace seqan {
-template <typename TSpec>
-inline unsigned getCharacterPosition(PrefixSumTable<Dna5, TSpec> const & /*tag*/, Dna5Q character)
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
+inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
+                           typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
+                           Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
+                           Dna5Q c)
 {
-    return __MASK_DNA5Q_LT[ordValue(character)];
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
+    typedef typename Value<TIndex>::Type                        TAlphabet;
+    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
+    typedef typename Size<TIndex>::Type                         TSize;
+
+    typedef typename Fibre<TIndex, FibreLfTable>::Type          TLfTable;
+    typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
+
+    if (__MASK_DNA5Q_LT[ordValue(c)] >= ValueSize<TAlphabet>::VALUE) return false;
+
+    TIndex const & _index = container(it);
+    TPrefixSumTable const & pst = getFibre(getFibre(_index, FibreLfTable()), FibrePrefixSumTable());
+
+    TAlphabetSize cPosition = getCharacterPosition(pst, c);
+
+    if (_isRoot(vDesc))
+    {
+        _range.i1 = getPrefixSum(pst, cPosition);
+        _range.i2 = getPrefixSum(pst, cPosition + 1);
+    }
+    else
+    {
+        TSize prefixSum = getPrefixSum(pst, cPosition);
+        _range.i1 = prefixSum + countOccurrences(_index.lfTable.occTable, c, vDesc.range.i1 - 1);
+        _range.i2 = prefixSum + countOccurrences(_index.lfTable.occTable, c, vDesc.range.i2 - 1);
+    }
+
+    return _range.i1 + 1 <= _range.i2;
+}
 }
 
 // ----------------------------------------------------------------------------
-// countOccurrences() functions for Dna5Q
+// countOccurrences() function for Dna5Q
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TSpec, typename TPos>
-inline unsigned countOccurrences(WaveletTree<TText, FmiDollarSubstituted<MultiDollar<TSpec> > > const & tree,
-                                 Dna5Q const character,
-                                 TPos const pos)
-{
-    typedef typename Value<TText>::Type             TAlphabet;
-
-    if (__MASK_DNA5Q_LT[ordValue(character)] >= ValueSize<TAlphabet>::VALUE) return 0;
-
-    unsigned occ = _countOccurrences(tree, character, pos);
-    if (ordEqual(getDollarSubstitute(tree), character))
-        occ -= getRank(getFibre(tree, FibreDollarPosition()), pos);
-
-    return occ;
-}
-}
+//namespace seqan {
+//template <typename TText, typename TSpec, typename TPos>
+//inline unsigned countOccurrences(WaveletTree<TText, FmiDollarSubstituted<MultiDollar<TSpec> > > const & tree,
+//                                 Dna5Q const character,
+//                                 TPos const pos)
+//{
+//    typedef typename Value<TText>::Type             TAlphabet;
+//
+//    if (__MASK_DNA5Q_LT[ordValue(character)] >= ValueSize<TAlphabet>::VALUE) return 0;
+//
+//    unsigned occ = _countOccurrences(tree, character, pos);
+//    if (ordEqual(getDollarSubstitute(tree), character))
+//        occ -= getRank(getFibre(tree, FibreDollarPosition()), pos);
+//
+//    return occ;
+//}
+//}
 
 // ============================================================================
 // Reads Index Type Definitions
@@ -202,11 +295,11 @@ struct SAValue<TReadSeqStore>
 typedef Index<TReadSeqStore, IndexWotd<> >              TReadsWotd;
 
 //namespace seqan {
-//	template <>
-//	struct Fibre<TReadsWotd, FibreDir>
-//	{
-//		typedef String< unsigned int, DefaultIndexStringSpec<TReadsWotd>::Type >   Type;
-//	};
+//template <>
+//struct Fibre<TReadsWotd, FibreDir>
+//{
+//    typedef String<unsigned int, DefaultIndexStringSpec<TReadsWotd>::Type>   Type;
+//};
 //}
 
 // ----------------------------------------------------------------------------
