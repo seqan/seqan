@@ -562,7 +562,7 @@ inline __int64 positionInFile(BamStream const & bamIO)
 
 inline bool jumpToPos(BamStream & bamIO, __int32 refId, __int32 pos, BamIndex<Bai> const & index)
 {
-#if !SEQAN_HAS_ZLIB
+#if SEQAN_HAS_ZLIB
     if (bamIO._format != BamStream::BAM)
         return false;  // Can only jump in BAM files.
     if (bamIO._mode != BamStream::READ)
@@ -570,9 +570,9 @@ inline bool jumpToPos(BamStream & bamIO, __int32 refId, __int32 pos, BamIndex<Ba
 
     BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
     return s->jumpToPos(refId, pos, index, bamIO.bamIOContext);
-#else  // #if !SEQAN_HAS_ZLIB
+#else  // #if SEQAN_HAS_ZLIB
     return 1;
-#endif  // #if !SEQAN_HAS_ZLIB
+#endif  // #if SEQAN_HAS_ZLIB
 }
 
 // ----------------------------------------------------------------------------
@@ -581,7 +581,7 @@ inline bool jumpToPos(BamStream & bamIO, __int32 refId, __int32 pos, BamIndex<Ba
 
 inline bool jumpToOrphans(BamStream & bamIO, BamIndex<Bai> const & index)
 {
-#if !SEQAN_HAS_ZLIB
+#if SEQAN_HAS_ZLIB
     if (bamIO._format != BamStream::BAM)
         return false;  // Can only jump in BAM files.
     if (bamIO._mode != BamStream::READ)
@@ -589,9 +589,9 @@ inline bool jumpToOrphans(BamStream & bamIO, BamIndex<Bai> const & index)
 
     BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
     return s->jumpToOrphans(index, bamIO.bamIOContext);
-#else  // #if !SEQAN_HAS_ZLIB
+#else  // #if SEQAN_HAS_ZLIB
     return 1;
-#endif  // #if !SEQAN_HAS_ZLIB
+#endif  // #if SEQAN_HAS_ZLIB
 }
 
 }  // namespace seqan;
