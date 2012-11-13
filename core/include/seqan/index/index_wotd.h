@@ -120,20 +120,21 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Fibre<Index, WotdDir>::Type		TDir;
 
 		typedef typename Value<Index>::Type					TValue;
+		typedef typename Value<TDir>::Type					TDirValue;
 		typedef typename Size<TText>::Type					TSize;
 		typedef String<TSize, Alloc<> >						TCounter;
 		typedef String<typename Value<TSA>::Type, Alloc<> >	TTempSA;
 		typedef typename Cargo<Index>::Type					TCargo;
 
 		// 1st word flags
-		static TSize const LEAF          = (TSize)1 << (BitsPerValue<TSize>::VALUE - 1); // this node is a leaf
-		static TSize const LAST_CHILD    = (TSize)1 << (BitsPerValue<TSize>::VALUE - 2); // this node is the last child
+		static TDirValue const LEAF          = (TDirValue)1 << (BitsPerValue<TDirValue>::VALUE - 1); // this node is a leaf
+		static TDirValue const LAST_CHILD    = (TDirValue)1 << (BitsPerValue<TDirValue>::VALUE - 2); // this node is the last child
 		// 2nd word flag
-		static TSize const UNEVALUATED   = (TSize)1 << (BitsPerValue<TSize>::VALUE - 1); // this node is partially evalutated and has no evaluated children
-		static TSize const SENTINELS     = (TSize)1 << (BitsPerValue<TSize>::VALUE - 2); // the children of this node have solely $-edges
+		static TDirValue const UNEVALUATED   = (TDirValue)1 << (BitsPerValue<TDirValue>::VALUE - 1); // this node is partially evalutated and has no evaluated children
+		static TDirValue const SENTINELS     = (TDirValue)1 << (BitsPerValue<TDirValue>::VALUE - 2); // the children of this node have solely $-edges
 
-		static TSize const BITMASK0      = ~(LEAF | LAST_CHILD);
-		static TSize const BITMASK1      = ~(UNEVALUATED | SENTINELS);
+		static TDirValue const BITMASK0      = ~(LEAF | LAST_CHILD);
+		static TDirValue const BITMASK1      = ~(UNEVALUATED | SENTINELS);
 
 
 		Holder<TText>	text;	// underlying text
@@ -900,7 +901,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TTextIterator itText = begin(text, Standard());
 		TTextIterator itTextEnd = end(text, Standard());
 		for (; itText != itTextEnd; ++itText)
-			++buckets[ordValue(*itText)];
+			++buckets[ordValue(getValue(itText))];
 	}
 
 
@@ -917,7 +918,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TTextIterator itText = begin(text, Standard());
 			TTextIterator itTextEnd = end(text, Standard());
 			for (; itText != itTextEnd; ++itText)
-				++buckets[ordValue(*itText)];
+				++buckets[ordValue(getValue(itText))];
 		}
 	}
 
@@ -1118,7 +1119,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TTextIterator itText = begin(text, Standard());
 			TTextIterator itTextEnd = end(text, Standard());
 			for(TSize i = 0; itText != itTextEnd; ++itText, ++i)
-				*(saBeg + (*(boundBeg + ordValue(*itText)))++) = i;
+				*(saBeg + (*(boundBeg + ordValue(getValue(itText))))++) = i;
 		}
 		index.sentinelOcc = 0;
 		index.sentinelBound = 0;
@@ -1171,7 +1172,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TTextIterator itTextEnd = end(text, Standard());
 			for(; itText != itTextEnd; ++itText) 
 			{
-				*(saBeg + (*(boundBeg + ordValue(*itText)))++) = localPos;
+				*(saBeg + (*(boundBeg + ordValue(getValue(itText))))++) = localPos;
 				assignValueI2(localPos, getValueI2(localPos) + 1);
 			}
 		}
