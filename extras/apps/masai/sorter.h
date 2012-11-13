@@ -118,7 +118,7 @@ bool loadReads(Sorter<TSpec> & sorter, TString const & readsFile)
 template <typename TSpec>
 bool _loadReadsRC(Sorter<TSpec> & sorter)
 {
-    reserve(sorter.store.readSeqStore, sorter.readsCount * 2, Exact());
+//    reserve(sorter.store.readSeqStore, sorter.readsCount * 2, Exact());
 
     for (TReadSeqStoreSize readId = 0; readId < sorter.readsCount; ++readId)
     {

@@ -39,6 +39,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/seq_io.h>
 #include "store/store_io.h"
 
 using namespace seqan;
@@ -140,45 +141,30 @@ typedef Value<TAlignedReadTagStore>::Type               TAlignedReadTagStoreElem
 template <typename TFileName>
 bool loadReads(TFragmentStore & store, TFileName & fileName)
 {
-    typedef TFragmentStore::TContigFileStore                                    TContigFileStore;
-    typedef Value<TContigFileStore>::Type                                       TContigFile;
-    typedef External<ExternalConfigLarge<File<>, 10485760, 2> >                 TStringSpec;
-    typedef String<char, TStringSpec>                                           TString;
-    typedef StringSet<TString, Owner<ConcatDirect<> > >                         TMultiSeqFile;
-    typedef Iterator<TMultiSeqFile const, Standard>::Type                       TMultiSeqFileIter;
+//    typedef External<ExternalConfigLarge<File<>, 10485760, 2> >   TStringSpec;
+//    typedef String<char, TStringSpec>               TStream;
+    typedef std::fstream                            TStream;
+    typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
 
-    TMultiSeqFile multiSeqFile;
-    if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
-        return false;
+//    TStream file;
+//    if (!open(file, toCString(fileName), OPEN_RDONLY))
+//        return false;
 
-    // Guess file format and split into sequence fractions.
-    AutoSeqFormat format;
-    guessFormat(multiSeqFile.concat, format);
-    split(multiSeqFile, format);
+    TStream file(toCString(fileName), std::ios::binary | std::ios::in);
 
-    // Reserve space in fragment store.
-    unsigned seqOfs = length(store.readStore);
-    unsigned seqCount = length(multiSeqFile);
-    reserve(store.readStore, seqOfs + seqCount);
-    reserve(store.readSeqStore, seqOfs + seqCount);
-    reserve(store.readNameStore, seqOfs + seqCount);
+    TRecordReader reader(file);
 
-    // Read sequences.
-    String<Dna5Q> seq;
-    CharString qual;
     CharString _id;
+    FragStoreConfig::TReadSeq seq;
 
-    TMultiSeqFileIter multiSeqEnd = end(multiSeqFile);
-    for (TMultiSeqFileIter multiSeqIt = begin(multiSeqFile); multiSeqIt != multiSeqEnd; goNext(multiSeqIt))
+    while (!atEnd(reader))
     {
-        assignSeq(seq, value(multiSeqIt), format);
-        assignQual(qual, value(multiSeqIt), format);
-        assignSeqId(_id, value(multiSeqIt), format);
+        if (readRecord(_id, seq, reader, Fastq()) != 0)
+            return false;
 
-        assignQualities(seq, qual);
         appendRead(store, seq, _id);
     }
-    
+
     return true;
 }
 

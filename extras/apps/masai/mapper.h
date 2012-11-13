@@ -178,7 +178,7 @@ bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile)
 template <typename TSpec>
 bool _loadReadsRC(Mapper<TSpec> & mapper)
 {
-    reserve(mapper.store.readSeqStore, mapper.readsCount * 2, Exact());
+//    reserve(mapper.store.readSeqStore, mapper.readsCount * 2, Exact());
 
     for (TReadSeqStoreSize readId = 0; readId < mapper.readsCount; ++readId)
     {
