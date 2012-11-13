@@ -236,7 +236,7 @@ int runMapper(Options & options)
     // Loading reads.
     std::cout << "Loading reads:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadReads(mapper, options.readsFile))
+    if (!loadReads(mapper, options.readsFile, TFormat()))
     {
         std::cerr << "Error while loading reads" << std::endl;
         return 1;
