@@ -156,14 +156,15 @@ void _reserveReadStore(TFragmentStore &, TSize, False const & /* tag */)
 
 // ============================================================================
 
-template <typename TSize>
-void _reserveReadNameStore(TFragmentStore & store, TSize space, True const & /* tag */)
+template <typename TSize, typename TLength>
+void _reserveReadNameStore(TFragmentStore & store, TSize count, TLength length, True const & /* tag */)
 {
-    reserve(store.readNameStore.concat, space, Exact());
+    reserve(store.readNameStore.concat, count * length, Exact());
+    reserve(store.readNameStore, count, Exact());
 }
 
-template <typename TSize>
-void _reserveReadNameStore(TFragmentStore &, TSize, False const & /* tag */)
+template <typename TSize, typename TLength>
+void _reserveReadNameStore(TFragmentStore &, TSize, TLength, False const & /* tag */)
 {}
 
 // ============================================================================
@@ -230,14 +231,14 @@ bool loadReads(TFragmentStore & store,
     unsigned long numberOfRecords = fileLength / recordLength;
 
     // Reserve space in the readSeqStore, also considering reverse complemented reads.
-    reserve(store.readSeqStore.concat, 2 * length(seq) * numberOfRecords, Exact());
+    reserve(store.readSeqStore.concat, 2 * numberOfRecords * length(seq), Exact());
     reserve(store.readSeqStore, 2 * numberOfRecords, Exact());
 
-    // Reserve space in the readStore, also considering reverse complemented reads.
-    _reserveReadStore(store, 2 * numberOfRecords, TUseReadStore());
+    // Reserve space in the readStore.
+    _reserveReadStore(store, numberOfRecords, TUseReadStore());
 
     // Reserve space in the readNameStore.
-    _reserveReadNameStore(store, length(seqName) * numberOfRecords, TUseReadNameStore());
+    _reserveReadNameStore(store, numberOfRecords, length(seqName), TUseReadNameStore());
 
     // Store first record.
     _storeReadSeq(store, seq);

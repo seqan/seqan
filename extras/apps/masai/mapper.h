@@ -165,8 +165,8 @@ void _computeSeeds(Seeding<TErrors, TSpec> & seeding, TReadSeqSize readLength, T
 template <typename TSpec, typename TString, typename TOutputFormat>
 bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile, TOutputFormat const & /* tag */)
 {
-    typedef typename IsSameType<TOutputFormat, Sam>::Type   TUseReadStore;
-    typedef typename IsSameType<TOutputFormat, Sam>::Type   TUseReadNameStore;
+    typedef typename IsSameType<TOutputFormat, Tag<Sam_> >::Type   TUseReadStore;
+    typedef typename IsSameType<TOutputFormat, Tag<Sam_> >::Type   TUseReadNameStore;
 
     if (!loadReads(mapper.store, readsFile, TUseReadStore(), TUseReadNameStore()))
         return false;
