@@ -64,7 +64,7 @@ struct FragStoreConfig
 
     typedef void                    TReadStoreElementSpec;
     typedef Owner<ConcatDirect<> >  TReadSeqStoreSpec;
-    typedef MMap<>                  TReadNameSpec;
+    typedef Alloc<>                 TReadNameSpec;
     typedef Owner<ConcatDirect<> >  TReadNameStoreSpec;
     typedef void                    TMatePairStoreElementSpec;
     typedef void                    TLibraryStoreElementSpec;
@@ -141,27 +141,45 @@ typedef Value<TAlignedReadTagStore>::Type               TAlignedReadTagStoreElem
 template <typename TFileName>
 bool loadReads(TFragmentStore & store, TFileName & fileName)
 {
-//    typedef External<ExternalConfigLarge<File<>, 10485760, 2> >   TStringSpec;
-//    typedef String<char, TStringSpec>               TStream;
     typedef std::fstream                            TStream;
     typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
 
-//    TStream file;
-//    if (!open(file, toCString(fileName), OPEN_RDONLY))
-//        return false;
-
     TStream file(toCString(fileName), std::ios::binary | std::ios::in);
+
+    // Compute file size.
+    file.seekg(0, std::ios::end);
+    unsigned long fileLength = file.tellg();
+    file.seekg(0, std::ios::beg);
 
     TRecordReader reader(file);
 
     CharString _id;
     FragStoreConfig::TReadSeq seq;
 
+    // Read first record.
+    if (readRecord(_id, seq, reader, Fastq()) != 0)
+        return false;
+    appendRead(store, seq, _id);
+
+    // Estimate record size (6 counts @, +, and four \n).
+    unsigned long recordLength = length(_id) + 2 * length(seq) + 6;
+
+    // Estimate number of records.
+    unsigned long numberOfRecords = fileLength / recordLength;
+
+//    std::cout << "Records Estimated:\t\t\t"  << numberOfRecords << std::endl;
+
+    // Reserve space in the readSeqStore, also considering reverse complemented reads.
+    reserve(store.readSeqStore.concat,  2 * length(seq) * numberOfRecords);
+
+    // Reserve space in the readNameStore.
+    reserve(store.readNameStore.concat,  length(_id) * numberOfRecords);
+
+    // Read whole file.
     while (!atEnd(reader))
     {
         if (readRecord(_id, seq, reader, Fastq()) != 0)
             return false;
-
         appendRead(store, seq, _id);
     }
 

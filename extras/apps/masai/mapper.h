@@ -178,8 +178,6 @@ bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile)
 template <typename TSpec>
 bool _loadReadsRC(Mapper<TSpec> & mapper)
 {
-//    reserve(mapper.store.readSeqStore, mapper.readsCount * 2, Exact());
-
     for (TReadSeqStoreSize readId = 0; readId < mapper.readsCount; ++readId)
     {
         TReadSeq const & read = mapper.store.readSeqStore[readId];
@@ -193,6 +191,7 @@ bool _loadReadsRC(Mapper<TSpec> & mapper)
 template <typename TSpec>
 TReadSeqSize _readsLength(Mapper<TSpec> const & mapper)
 {
+    // TODO(esiragusa): Check if reads length differ. Check if read store is empty.
     return length(mapper.store.readSeqStore[0]);
 }
 

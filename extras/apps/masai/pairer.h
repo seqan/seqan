@@ -122,8 +122,6 @@ bool loadReads(Pairer<TSpec> & pairer, TString const & readsLeftFile, TString co
 template <typename TSpec>
 bool _loadReadsRC(Pairer<TSpec> & pairer)
 {
-//    reserve(pairer.store.readSeqStore, pairer.readsCount * 2, Exact());
-
     for (TReadSeqStoreSize readId = 0; readId < pairer.readsCount; ++readId)
     {
         TReadSeq const & read = pairer.store.readSeqStore[readId];
