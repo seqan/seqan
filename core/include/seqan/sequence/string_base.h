@@ -1073,6 +1073,25 @@ valueConstructMove(TIterator it,
 */
 
 // ----------------------------------------------------------------------------
+// Function _stringCheckForOverlap
+// ----------------------------------------------------------------------------
+
+template <typename TIter1, typename TIter2, typename TSize>
+inline bool
+_stringCheckForPossibleOverlap(TIter1 const &, TIter2 const &, TSize)
+{
+    return true;
+}
+
+template <typename TIter, typename TSize>
+inline bool
+_stringCheckForPossibleOverlap(TIter const &it1, TIter const &it2, TSize length)
+{
+    // return false if [it1,it1+length) and [it2,it2+length) are not overlapping
+    return !(it2 + length <= it1 || it1 + length <= it2);
+}
+
+// ----------------------------------------------------------------------------
 // Function append()
 // ----------------------------------------------------------------------------
 
@@ -1088,7 +1107,8 @@ struct AppendString_
     append_(TTarget & target,
             TSource & source)
     {
-        if (!getObjectId(source) || !shareResources(target, source))
+        if (!getObjectId(source) || !shareResources(target, source) ||
+            !_stringCheckForPossibleOverlap(begin(source, Standard()), end(target, Standard()), length(source)))
         {
             SEQAN_CHECKPOINT;
             typename Size<TTarget>::Type target_length = length(target);
