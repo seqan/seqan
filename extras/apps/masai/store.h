@@ -118,6 +118,8 @@ typedef Segment<TContigSeq, InfixSegment>               TContigInfix;
 // Fragment Store Reads Types
 // ----------------------------------------------------------------------------
 
+typedef TFragmentStore::TReadStore                      TReadStore;
+typedef Value<TReadStore>::Type                         TReadStoreElement;
 typedef TFragmentStore::TReadSeqStore                   TReadSeqStore;
 typedef Size<TReadSeqStore>::Type                       TReadSeqStoreSize;
 typedef Value<TReadSeqStore>::Type const                TReadSeq;
@@ -134,12 +136,73 @@ typedef Value<TAlignQualityStore>::Type                 TAlignQualityStoreElemen
 typedef TFragmentStore::TAlignedReadTagStore            TAlignedReadTagStore;
 typedef Value<TAlignedReadTagStore>::Type               TAlignedReadTagStoreElement;
 
+// ============================================================================
+
+template <typename TReadSeq>
+void _storeReadSeq(TFragmentStore & store, TReadSeq const & seq)
+{
+    appendValue(store.readSeqStore, seq, Generous());
+}
+
+template <typename TSize>
+void _reserveReadStore(TFragmentStore & store, TSize space, True const & /* tag */)
+{
+    reserve(store.readStore, space, Exact());
+}
+
+template <typename TSize>
+void _reserveReadStore(TFragmentStore &, TSize, False const & /* tag */)
+{}
+
+// ============================================================================
+
+template <typename TSize>
+void _reserveReadNameStore(TFragmentStore & store, TSize space, True const & /* tag */)
+{
+    reserve(store.readNameStore.concat, space, Exact());
+}
+
+template <typename TSize>
+void _reserveReadNameStore(TFragmentStore &, TSize, False const & /* tag */)
+{}
+
+// ============================================================================
+
+template <typename TReadSeqName>
+void _storeReadName(TFragmentStore & store, TReadSeqName const & seqName, True const & /* tag */)
+{
+    appendValue(store.readNameStore, seqName, Generous());
+}
+
+template <typename TReadSeqName>
+void _storeReadName(TFragmentStore &, TReadSeqName const &, False const & /* tag */)
+{}
+
+// ============================================================================
+
+template <typename TReadId>
+void _storeReadId(TFragmentStore & store, TReadId const & matePairId, True const & /* tag */)
+{
+	typename Value<TFragmentStore::TReadStore>::Type r;
+	r.matePairId = matePairId;
+
+	appendValue(store.readStore, r, Generous());
+}
+
+template <typename TReadId>
+void _storeReadId(TFragmentStore &, TReadId const &, False const & /* tag */)
+{}
+
 // ----------------------------------------------------------------------------
 // Function loadReads()                                         [FragmentStore]
 // ----------------------------------------------------------------------------
 
-template <typename TFileName>
-bool loadReads(TFragmentStore & store, TFileName & fileName)
+// TODO(esiragusa): Implement paired-end loadReads()
+template <typename TFileName, typename TUseReadStore, typename TUseReadNameStore>
+bool loadReads(TFragmentStore & store,
+               TFileName & fileName,
+               TUseReadStore const & /* tag */,
+               TUseReadNameStore const & /* tag */)
 {
     typedef std::fstream                            TStream;
     typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
@@ -153,38 +216,48 @@ bool loadReads(TFragmentStore & store, TFileName & fileName)
 
     TRecordReader reader(file);
 
-    CharString _id;
+    CharString seqName;
     FragStoreConfig::TReadSeq seq;
 
     // Read first record.
-    if (readRecord(_id, seq, reader, Fastq()) != 0)
+    if (readRecord(seqName, seq, reader, Fastq()) != 0)
         return false;
-    appendRead(store, seq, _id);
 
     // Estimate record size (6 counts @, +, and four \n).
-    unsigned long recordLength = length(_id) + 2 * length(seq) + 6;
+    unsigned long recordLength = length(seqName) + 2 * length(seq) + 6;
 
     // Estimate number of records.
     unsigned long numberOfRecords = fileLength / recordLength;
 
-//    std::cout << "Records Estimated:\t\t\t"  << numberOfRecords << std::endl;
-
     // Reserve space in the readSeqStore, also considering reverse complemented reads.
-    reserve(store.readSeqStore.concat,  2 * length(seq) * numberOfRecords);
+    reserve(store.readSeqStore.concat, 2 * length(seq) * numberOfRecords, Exact());
+    reserve(store.readSeqStore, 2 * numberOfRecords, Exact());
+
+    // Reserve space in the readStore, also considering reverse complemented reads.
+    _reserveReadStore(store, 2 * numberOfRecords, TUseReadStore());
 
     // Reserve space in the readNameStore.
-    reserve(store.readNameStore.concat,  length(_id) * numberOfRecords);
+    _reserveReadNameStore(store, length(seqName) * numberOfRecords, TUseReadNameStore());
+
+    // Store first record.
+    _storeReadSeq(store, seq);
+    _storeReadName(store, seqName, TUseReadNameStore());
+    _storeReadId(store, TReadStoreElement::INVALID_ID, TUseReadStore());
 
     // Read whole file.
     while (!atEnd(reader))
     {
-        if (readRecord(_id, seq, reader, Fastq()) != 0)
+        if (readRecord(seqName, seq, reader, Fastq()) != 0)
             return false;
-        appendRead(store, seq, _id);
+
+        _storeReadSeq(store, seq);
+        _storeReadName(store, seqName, TUseReadNameStore());
+        _storeReadId(store, TReadStoreElement::INVALID_ID, TUseReadStore());
     }
 
     return true;
 }
+
 
 // ============================================================================
 // Dna5 specializations to deal with uncalled bases

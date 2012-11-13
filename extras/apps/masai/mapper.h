@@ -162,10 +162,13 @@ void _computeSeeds(Seeding<TErrors, TSpec> & seeding, TReadSeqSize readLength, T
 // Function loadReads()                                                [Mapper]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString>
-bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile)
+template <typename TSpec, typename TString, typename TOutputFormat>
+bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile, TOutputFormat const & /* tag */)
 {
-    if (!loadReads(mapper.store, readsFile))
+    typedef typename IsSameType<TOutputFormat, Sam>::Type   TUseReadStore;
+    typedef typename IsSameType<TOutputFormat, Sam>::Type   TUseReadNameStore;
+
+    if (!loadReads(mapper.store, readsFile, TUseReadStore(), TUseReadNameStore()))
         return false;
 
     mapper.readsCount = length(mapper.store.readSeqStore);
@@ -180,7 +183,7 @@ bool _loadReadsRC(Mapper<TSpec> & mapper)
 {
     for (TReadSeqStoreSize readId = 0; readId < mapper.readsCount; ++readId)
     {
-        TReadSeq const & read = mapper.store.readSeqStore[readId];
+        TReadSeq & read = mapper.store.readSeqStore[readId];
         appendValue(mapper.store.readSeqStore, read);
         reverseComplement(back(mapper.store.readSeqStore));
     }
