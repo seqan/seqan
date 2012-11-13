@@ -133,6 +133,54 @@ typedef Value<TAlignQualityStore>::Type                 TAlignQualityStoreElemen
 typedef TFragmentStore::TAlignedReadTagStore            TAlignedReadTagStore;
 typedef Value<TAlignedReadTagStore>::Type               TAlignedReadTagStoreElement;
 
+// ----------------------------------------------------------------------------
+// Function loadReads()                                         [FragmentStore]
+// ----------------------------------------------------------------------------
+
+template <typename TFileName>
+bool loadReads(TFragmentStore & store, TFileName & fileName)
+{
+    typedef TFragmentStore::TContigFileStore                                    TContigFileStore;
+    typedef Value<TContigFileStore>::Type                                       TContigFile;
+    typedef External<ExternalConfigLarge<File<>, 10485760, 2> >                 TStringSpec;
+    typedef String<char, TStringSpec>                                           TString;
+    typedef StringSet<TString, Owner<ConcatDirect<> > >                         TMultiSeqFile;
+    typedef Iterator<TMultiSeqFile const, Standard>::Type                       TMultiSeqFileIter;
+
+    TMultiSeqFile multiSeqFile;
+    if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
+        return false;
+
+    // Guess file format and split into sequence fractions.
+    AutoSeqFormat format;
+    guessFormat(multiSeqFile.concat, format);
+    split(multiSeqFile, format);
+
+    // Reserve space in fragment store.
+    unsigned seqOfs = length(store.readStore);
+    unsigned seqCount = length(multiSeqFile);
+    reserve(store.readStore, seqOfs + seqCount);
+    reserve(store.readSeqStore, seqOfs + seqCount);
+    reserve(store.readNameStore, seqOfs + seqCount);
+
+    // Read sequences.
+    String<Dna5Q> seq;
+    CharString qual;
+    CharString _id;
+
+    TMultiSeqFileIter multiSeqEnd = end(multiSeqFile);
+    for (TMultiSeqFileIter multiSeqIt = begin(multiSeqFile); multiSeqIt != multiSeqEnd; goNext(multiSeqIt))
+    {
+        assignSeq(seq, value(multiSeqIt), format);
+        assignQual(qual, value(multiSeqIt), format);
+        assignSeqId(_id, value(multiSeqIt), format);
+
+        assignQualities(seq, qual);
+        appendRead(store, seq, _id);
+    }
+    
+    return true;
+}
 
 // ============================================================================
 // Dna5 specializations to deal with uncalled bases
