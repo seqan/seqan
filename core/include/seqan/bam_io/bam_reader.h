@@ -77,6 +77,7 @@ public:
     virtual __int64 positionInFile() const;
 
     bool jumpToPos(__int32 refId, __int32 pos, BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context);
+    bool jumpToOrphans(BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context);
 };
 
 // ============================================================================
@@ -189,6 +190,17 @@ inline bool BamReader_::jumpToPos(__int32 refId, __int32 pos, BamIndex<Bai> cons
     bool hasAlignments = false;
     (void) hasAlignments;
     return seqan::jumpToPos(this->_stream, hasAlignments, context, refId, pos, index);
+}
+
+// ----------------------------------------------------------------------------
+// Member Function BamReader_::jumpToOrphans()
+// ----------------------------------------------------------------------------
+
+inline bool BamReader_::jumpToOrphans(BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context)
+{
+    bool hasAlignments = false;
+    (void) hasAlignments;
+    return seqan::jumpToOrphans(this->_stream, hasAlignments, context, index);
 }
 
 }  // namespace seqan
