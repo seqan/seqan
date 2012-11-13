@@ -328,23 +328,6 @@ length(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me)
 // Function resize()
 // --------------------------------------------------------------------------
 
-// TODO(rmaerker): This belongs to string_set_base.h. Move it!
-template <typename TString, typename TSpec, typename TSize, typename TExpand >
-inline typename Size<StringSet<TString, TSpec > >::Type
-resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> const & tag)
-{
-    resize(me.limits, new_size + 1, tag);
-    me.limitsValid = (new_size == 0);
-
-//     the following would not work as changing the size of
-//     a single string cannot be recognized by the stringset
-//
-//        if (_validStringSetLimits(me))
-//            resize(me.limits, new_size + 1, back(me.limits), tag);
-
-    return resize(me.strings, new_size, tag);
-}
-
 template <typename TString, typename TSpec, typename TSize, typename TExpand >
 inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 resize(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TSize new_size, Tag<TExpand> const & tag)
@@ -355,6 +338,20 @@ resize(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TSize new_size, Ta
         return resize(me.limits, new_size + 1, tag) - 1;
     } else
         return resize(me.limits, new_size + 1, back(me.limits), tag) - 1;
+}
+
+
+// --------------------------------------------------------------------------
+// Function reserve()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TSize, typename TExpand>
+inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+reserve(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
+        TSize const & new_capacity,
+        Tag<TExpand> const & tag)
+{
+    return reserve(me.limits, new_capacity + 1, tag) - 1;
 }
 
 // --------------------------------------------------------------------------
