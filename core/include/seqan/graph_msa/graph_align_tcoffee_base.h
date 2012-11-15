@@ -316,12 +316,13 @@ struct LessMsaEdgeCargo_ :
 ..summary:Performs a full or group-based consistency extension.
 ..cat:Graph
 ..signature:
-tripletLibraryExtension(graph, [,guideTree, minMembers])
+void tripletLibraryExtension(graph, [,guideTree, minMembers])
 ..param.graph:An alignment graph.
 ...type:Spec.Alignment Graph
 ..param.guideTree:A guide tree.
 ..param.minMembers:Minimum number of sequences per group.
 ...remarks:If a guide tree and a minimum number of memebers is given, the triplet extension is limited to groups of sequences.
+..remarks:The running time is quadratic in the number of pairwise edges.
 ..returns:void
 ..include:seqan/graph_msa.h
 */
