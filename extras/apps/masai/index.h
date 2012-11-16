@@ -116,11 +116,13 @@ typedef DefaultIndexStringSpec<TGenomeSa>::Type         TGenomeSaStringSpec;
 typedef MMap<>                                          TGenomeSaStringSpec;
 #endif
 
+namespace seqan {
 template <>
 struct Fibre<TGenomeSa, FibreSA>
 {
     typedef String<SAValue<TGenome>::Type, TGenomeSaStringSpec>     Type;
 };
+}
 
 // ----------------------------------------------------------------------------
 // Genome QGram Index with Bucket Refinement Type Definitions
