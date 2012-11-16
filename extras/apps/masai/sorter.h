@@ -72,7 +72,7 @@ struct Sorter
     TIndexer            indexer;
 
     unsigned            readsCount;
-    unsigned            matchesCount;
+    unsigned long       matchesCount;
 
     bool                writeCigar;
     bool                dumpResults;
@@ -105,6 +105,7 @@ struct Sorter
 template <typename TSpec, typename TString>
 bool loadReads(Sorter<TSpec> & sorter, TString const & readsFile)
 {
+    // TODO(esiragusa): Use loadReads() from store.h
     if (!loadReads(sorter.store, readsFile))
         return false;
 
@@ -120,7 +121,7 @@ bool _loadReadsRC(Sorter<TSpec> & sorter)
 {
     for (TReadSeqStoreSize readId = 0; readId < sorter.readsCount; ++readId)
     {
-        TReadSeq const & read = sorter.store.readSeqStore[readId];
+        TReadSeq & read = sorter.store.readSeqStore[readId];
         appendValue(sorter.store.readSeqStore, read);
         reverseComplement(back(sorter.store.readSeqStore));
     }
@@ -139,7 +140,9 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
+    typedef External<ExternalConfigLarge<> >            TStream;
+    typedef String<Match<>, TStream>                    TWriterStream;
+//    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
@@ -162,7 +165,9 @@ bool sortMappedReads(Sorter<TSpec> & sorter,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef Stream<FileStream<char, MMapWriter> >       TWriterStream;
+    typedef External<ExternalConfigLarge<> >            TStream;
+    typedef String<char, TStream>                       TWriterStream;
+//    typedef Stream<FileStream<char, MMapWriter> >       TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam>  TMatchWriter;
 
     TWriterStream file;
@@ -202,9 +207,14 @@ bool _sortMappedReads(Sorter<TSpec> & sorter,
     if (!getNext(store, matches))
         return false;
 
+    unsigned long allMatches = 0;
+    unsigned long nonDuplicatedMatches = 0;
+
     do
     {
+        allMatches += length(matches);
         removeDuplicateMatches(matches);
+        nonDuplicatedMatches += length(matches);
 
         if (sorter.matchesPerRead < MaxValue<unsigned>::VALUE)
             sortByErrors(matches);
@@ -214,6 +224,9 @@ bool _sortMappedReads(Sorter<TSpec> & sorter,
     while (getNext(store, matches));
 
     close(store);
+
+    std::cout << "All Matches: " << allMatches << std::endl;
+    std::cout << "Non Duplicated: " << nonDuplicatedMatches << std::endl;
 
     return true;
 }

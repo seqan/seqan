@@ -74,7 +74,7 @@ struct Pairer
     TIndexer            indexer;
 
     unsigned            readsCount;
-    unsigned            pairsCount;
+    unsigned long       pairsCount;
 
     bool                writeCigar;
     bool                dumpResults;
@@ -109,6 +109,7 @@ struct Pairer
 template <typename TSpec, typename TString>
 bool loadReads(Pairer<TSpec> & pairer, TString const & readsLeftFile, TString const & readsRightFile)
 {
+    // TODO(esiragusa): Use loadReads() from store.h
     if (!loadReads(pairer.store, readsLeftFile, readsRightFile))
         return false;
 
@@ -124,7 +125,7 @@ bool _loadReadsRC(Pairer<TSpec> & pairer)
 {
     for (TReadSeqStoreSize readId = 0; readId < pairer.readsCount; ++readId)
     {
-        TReadSeq const & read = pairer.store.readSeqStore[readId];
+        TReadSeq & read = pairer.store.readSeqStore[readId];
         appendValue(pairer.store.readSeqStore, read);
         reverseComplement(back(pairer.store.readSeqStore));
     }
