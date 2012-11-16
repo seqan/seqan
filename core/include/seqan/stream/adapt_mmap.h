@@ -69,9 +69,9 @@ namespace seqan {
 // Function streamWriteChar()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
+template <typename TValue, typename TSpec, typename TChar>
 inline int
-streamWriteChar(String<TValue, TSpec> & stream, char c)
+streamWriteChar(String<TValue, TSpec> & stream, TChar const & c)
 {
     appendValue(stream, c);
     return 0;
