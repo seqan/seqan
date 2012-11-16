@@ -276,7 +276,9 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Raw const & /*tag*/)
 {
-    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
+    typedef External<ExternalConfigLarge<> >            TStream;
+    typedef String<Match<>, TStream>                    TWriterStream;
+//    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
 
     TWriterStream file;
@@ -302,7 +304,9 @@ bool mateMappedReads(Pairer<TSpec> & pairer,
                      TDistance const & /*tag*/,
                      Sam const & /*tag*/)
 {
-    typedef Stream<FileStream<char, MMapWriter> >      TWriterStream;
+    typedef External<ExternalConfigLarge<> >            TStream;
+    typedef String<char, TStream>                       TWriterStream;
+//    typedef Stream<FileStream<char, MMapWriter> >       TWriterStream;
     typedef MatchWriter<TWriterStream, TDistance, Sam> TMatchWriter;
 
     TWriterStream file;
