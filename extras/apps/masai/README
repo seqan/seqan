@@ -1,7 +1,7 @@
 *** Masai - Fast and sensitive read mapping ***
 http://www.seqan.de/projects/masai.html
 
-VERSION: 0.4
+VERSION: 0.6.0
 
 ---------------------------------------------------------------------------
 Table of Contents
@@ -36,9 +36,9 @@ out the latest SVN trunk. Instead of creating a project file in Debug mode,
 switch to Release mode (-DCMAKE_BUILD_TYPE=Release) and compile Masai. This
 can be done as follows:
 
-  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
-  mkdir seqan-trunk/build
-  cd seqan-trunk/build
+  svn co http://svn.mi.fu-berlin.de/seqan/tags/masai-0.6.0 masai-0.6.0
+  mkdir masai-0.6.0/build
+  cd masai-0.6.0/build
   cmake .. -DCMAKE_BUILD_TYPE=Release
   make masai_indexer masai_mapper masai_output_se masai_output_pe
 
@@ -69,12 +69,6 @@ Masai consists of various programs:
 To get a short usage description of each program, you can execute e.g. 
 masai_mapper -h or masai_mapper --help.
 
-****** IMPORTANT WARNING ******
-
-You always need to specify a temporary folder able to contain more than 
-40GB of data. This must be done through the option "tmp-folder", e.g.:
-
-  --tmp-folder /huge/temp/folder/
 
 ---------------------------------------------------------------------------
 3.1 Masai indexer
@@ -82,8 +76,7 @@ You always need to specify a temporary folder able to contain more than
 
 We can build an index for a reference genome by running the command:
 
-  masai_indexer --tmp-folder /huge/temp/folder/ \
-                --index sa --index-prefix hg19 hg19.fasta
+  masai_indexer hg19.fasta
 
 This command loads the reference genome stored inside the DNA (multi-)Fasta 
 file called hg19.fasta, builds its suffix array index and writes it on disk.
@@ -99,16 +92,12 @@ On success the following file should be present in the current directory:
 
 We are now ready to map genomic reads onto our reference genome, by executing:
 
-  masai_mapper --mapping-mode any-best --errors 5 \
-               --output-format sam --output-file reads.sam \
-               --index sa --index-prefix hg19 \
-               hg19.fasta reads.fastq
+  masai_mapper --output-format sam hg19.fasta reads.fastq
 
-This command loads our previous reference genome along with its Esa index, 
-loads genomic reads stored inside the DNA (multi-)Fastq file reads.fastq,
-and reports one best location per read within 5 indels or mismatches. 
-On success, a SAM file called reads.sam should be present in the 
-current directory.
+This command loads our previous reference genome along with its index, loads 
+genomic reads stored inside the DNA (multi-)Fastq file reads.fastq, and 
+reports one best location per read within 5 errors. On success, a SAM 
+file called reads.sam should be present in the current directory.
 
 Note that a default seed length of 33 bp will be used. This is the optimal 
 seed length for mapping reads of 100 bp onto the H. sapiens genome within 
@@ -116,11 +105,10 @@ seed length for mapping reads of 100 bp onto the H. sapiens genome within
 
 Alternatively we can obtain all mapping locations, by executing:
 
-  masai_mapper --tmp-folder /huge/temp/folder/ \
-               --mapping-mode all --errors 5 \
-               --output-format raw --output-file reads.raw \
-               --index sa --index-prefix hg19 \
-               hg19.fasta reads.fastq
+  masai_mapper --mapping-mode all --output-format raw hg19.fasta reads.fastq
+
+On success, a binary file called reads.raw should be present in the current 
+directory.
 
 ---------------------------------------------------------------------------
 3.3 Masai single-end Sam output
@@ -128,8 +116,7 @@ Alternatively we can obtain all mapping locations, by executing:
 
 We can convert the produced raw file into a proper Sam file:
 
-  masai_output_se --tmp-folder /huge/temp/folder/ \
-                  --output-format sam --output-file reads.sam \
+  masai_output_se --output-format sam --output-file reads.sam \
                   hg19.fasta reads.fastq reads.raw
 
 ---------------------------------------------------------------------------
