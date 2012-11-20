@@ -178,9 +178,15 @@ public:
     enum FileType
     {
         AUTO_TYPE,
-        PLAIN_TEXT,
-        GZ,
+        PLAIN_TEXT
+#if SEQAN_HAS_ZLIB
+        ,
+        GZ
+#endif  // #if SEQAN_HAS_ZLIB
+#if SEQAN_HAS_BZIP2
+        ,
         BZ2
+#endif  // #if SEQAN_HAS_BZIP2
     };
 
     // -----------------------------------------------------------------------
@@ -207,9 +213,21 @@ public:
     // Constructor
     // -----------------------------------------------------------------------
 
-    SequenceStream(char const * filename, OperationMode operationMode = READ, FileFormat format = AUTO_FORMAT, FileType fileType = AUTO_TYPE) :
+    SequenceStream() : _atEnd(false), _isGood(false), _fileType(SeqIOFileType_::FILE_TYPE_TEXT),
+        _fileFormat(SeqIOFileFormat_::FILE_FORMAT_FASTA)
+    {}
+
+    SequenceStream(char const * filename,
+                   OperationMode operationMode = READ,
+                   FileFormat format = AUTO_FORMAT,
+                   FileType fileType = AUTO_TYPE) :
         filename(filename), operationMode(operationMode), _atEnd(false), _isGood(true), _fileType(SeqIOFileType_::FILE_TYPE_TEXT),
         _fileFormat(SeqIOFileFormat_::FILE_FORMAT_FASTA)
+    {
+        _init(operationMode, format, fileType);
+    }
+
+    void _init(OperationMode operationMode, FileFormat format, FileType fileType)
     {
         // Translate from FileFormat to SeqIOFileFormat_::Type.
         switch (format)
@@ -233,12 +251,16 @@ public:
             case PLAIN_TEXT:
                 _fileType = SeqIOFileType_::FILE_TYPE_TEXT;
                 break;
+#if SEQAN_HAS_ZLIB
             case GZ:
                 _fileType = SeqIOFileType_::FILE_TYPE_GZ;
                 break;
+#endif  // #if SEQAN_HAS_ZLIB
+#if SEQAN_HAS_BZIP2
             case BZ2:
                 _fileType = SeqIOFileType_::FILE_TYPE_BZ2;
                 break;
+#endif  // #if SEQAN_HAS_BZIP2
         }
 
         bool isRead = (operationMode != WRITE);
@@ -259,6 +281,44 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+/**
+.Function.SequenceStream#open
+..summary:Open or re-open a file using a SequenceStream.
+..class:Class.SequenceStream
+..signature:void open(fileName[, operationMode[, format[, fileType]]])
+..param.fileName:Path to the file to open.
+...type:nolink:$char const *$
+..param.operationMode:Mode to open the file in. Optional.
+...default:@Enum.SequenceStream\colon\colonOperationMode.value.READ@
+...type:Enum.SequenceStream\colon\colonOperationMode
+..param.format:Mode to open the file in. Optional.
+...type:Enum.SequenceStream\colon\colonFileFormat
+...default:@Enum.SequenceStream\colon\colonFileFormat.value.AUTO_FORMAT@
+..param.fileType:Mode to open the file in. Optional.
+...type:Enum.SequenceStream\colon\colonFileType
+...default:@Enum.SequenceStream\colon\colonFileType.value.AUTO_TYPE@
+*/
+
+inline void open(SequenceStream & seqIO,
+                 char const * filename,
+                 SequenceStream::OperationMode operationMode = SequenceStream::READ,
+                 SequenceStream::FileFormat format = SequenceStream::AUTO_FORMAT,
+                 SequenceStream::FileType fileType = SequenceStream::AUTO_TYPE)
+{
+    seqIO.filename = filename;
+    seqIO.operationMode = operationMode;
+    seqIO._atEnd = false;
+    seqIO._isGood = true;
+    seqIO._fileType = SeqIOFileType_::FILE_TYPE_TEXT;
+    seqIO._fileFormat = SeqIOFileFormat_::FILE_FORMAT_FASTA;
+
+    seqIO._init(operationMode, format, fileType);
+}
 
 // ----------------------------------------------------------------------------
 // Function close()

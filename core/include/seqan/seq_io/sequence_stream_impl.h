@@ -61,10 +61,16 @@ struct SeqIOFileType_
         FILE_TYPE_AUTO,
         FILE_TYPE_ERROR,
         FILE_TYPE_TEXT_STD,  // text stdin, stdout
-        FILE_TYPE_TEXT,
+        FILE_TYPE_TEXT
+#if SEQAN_HAS_ZLIB
+        ,
         FILE_TYPE_GZ,
-        FILE_TYPE_GZ_DIRECT,  // gzfile stream but uncompressed/direct (stdin)
+        FILE_TYPE_GZ_DIRECT  // gzfile stream but uncompressed/direct (stdin)
+#endif  // #if SEQAN_HAS_ZLIB
+#if SEQAN_HAS_BZIP2
+        ,
         FILE_TYPE_BZ2
+#endif  // #if SEQAN_HAS_BZIP2
     };
 };
 
@@ -339,17 +345,23 @@ public:
         // Guess file type from file name if requested.
         if (_fileType == SeqIOFileType_::FILE_TYPE_AUTO)
         {
+#if SEQAN_HAS_ZLIB
             if (endsWith(tmp, ".gz"))
             {
                 _fileType = SeqIOFileType_::FILE_TYPE_GZ;
                 tmp = prefix(tmp, length(tmp) - 3);
             }
-            else if (endsWith(tmp, ".bz2"))
+            else
+#endif  // #if SEQAN_HAS_ZLIB
+#if SEQAN_HAS_BZIP2
+            if (endsWith(tmp, ".bz2"))
             {
                 _fileType = SeqIOFileType_::FILE_TYPE_BZ2;
                 tmp = prefix(tmp, length(tmp) - 4);
             }
-            else if (tmp == "-")
+            else
+#endif  // #if SEQAN_HAS_BZIP2
+            if (tmp == "-")
             {
                 _fileType = SeqIOFileType_::FILE_TYPE_TEXT_STD;
             }
