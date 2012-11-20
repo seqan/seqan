@@ -26,6 +26,7 @@ void printHelp(int, const char *[],TOptions & options, bool longHelp = false)
 	cerr << "\n";
 	if (longHelp) {
 		cerr << "  -n,  --num-indels NUM         \t" << "total number of indels to simulate (" << options.numIndels << ")" << endl;
+		cerr << "  -ns, --num-snps NUM           \t" << "total number of SNPs to simulate (" << options.numIndels << ")" << endl;
 		cerr << "  -r,  --ranges FILE            \t" << "simulation ranges" << endl;
 		cerr << "  -o,  --output FILE            \t" << "change output filename (default: <SOURCE SEQUENCE FILE>.indeled)" << endl;
 		cerr << "  -oi,  --output-info FILE      \t" << "change output filename for simulation info (default: <output>.info)" << endl;
@@ -51,39 +52,71 @@ int main(int argc, const char *argv[])
 	IndelSimOptions<> options;
 
 
-	CommandLineParser parser;
+	ArgumentParser parser("indelSimulator");
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Define options
-	addTitleLine(parser, "****************************************************'*");
-	addTitleLine(parser, "*****    Simdel - Insertion/deletion Simulator   *****");
-	addTitleLine(parser, "*****   (c) Copyright 2010 by Anne-Katrin Emde   *****");
-	addTitleLine(parser, "******************************************************");
-	addUsageLine(parser, "[OPTION]... <GENOME FILE> ");
-	addOption(parser, CommandLineOption("n",  "num-indels",        "number of indels to simulate", OptionType::Int | OptionType::Label, options.numIndels));
-	addOption(parser, addArgumentText(CommandLineOption("o",  "output",            "output filename for manipulated sequence ", OptionType::String), "FILE"));
-	addOption(parser, addArgumentText(CommandLineOption("oi", "output-info",       "output filename for implanted indel information", OptionType::String), "FILE"));
-	addOption(parser, addArgumentText(CommandLineOption("i",  "input-info",        "input filename that indels should be sampled from", OptionType::String), "FILE"));
-	addOption(parser, addArgumentText(CommandLineOption("r",  "ranges",            "file containing ranges of indelsizes to simulate from (uniformly)", OptionType::String), "FILE"));
-	addOption(parser, CommandLineOption("v",  "verbose",           "verbose mode", OptionType::Boolean));
-	addOption(parser, CommandLineOption("vv", "vverbose",          "very verbose mode", OptionType::Boolean));
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP>");
+    addDescription(parser,
+            "IndelSimulator simulates indels and optionally SNPs into the sequence(s) specified. "
+            "SNPs are simulated randomly, indels can be simulated either randomly (uniformly within specified size ranges) or from a "
+            "database of known indels (given as GFF file).");
+        
+    addDescription(parser, "(c) Copyright 2010 by Anne-Katrin Emde.");
+    setVersion(parser, "1.0");
+    setDate(parser, "May 2011" );
 
-	bool stop = !parse(parser, argc, argv, cerr);
-	if(stop) {printHelp(argc, argv, options); cout << "Exiting...\n" ;}
+//    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME", true));
+   
+    addSection(parser, "Main Options:");
 
-	getOptionValueLong(parser, "num-indels", options.numIndels);
-	getOptionValueLong(parser, "output", options.output);
-	getOptionValueLong(parser, "input-info", options.inputInfo);
-	getOptionValueLong(parser, "output-info", options.outputInfo);
-	getOptionValueLong(parser, "ranges", rangeFile);
+	addOption(parser, ArgParseOption("ns",  "num-snps",        "Number of SNPs to simulate", ArgParseOption::INTEGER));
+    setMinValue(parser, "num-snps", "0");   
+    setDefaultValue(parser, "num-snps", options.numSnps);
+
+	addOption(parser, ArgParseOption("n",  "num-indels",        "Number of indels to simulate", ArgParseOption::INTEGER));
+    setMinValue(parser, "num-indels", "0");   
+    setDefaultValue(parser, "num-indels", options.numIndels);
+ 
+    addOption(parser, ArgParseOption("i", "input-indel", "GFF file that indels should be sampled from", ArgParseOption::INPUTFILE));
+
+    addOption(parser, ArgParseOption("r", "ranges", "File containing ranges of indel sizes to simulate (specifying [rangeBegin,rangeEnd) intervals, see example file ranges.txt)", ArgParseOption::INPUTFILE));
+
+	addOption(parser, ArgParseOption("d",  "diploid",           "Simulate two haplotypes"));
+
+    addSection(parser, "Output Options:");
+
+    addOption(parser, ArgParseOption("o", "output", "Output filename for manipulated sequence", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("oi", "output-indel", "Output filename for simulated indels", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("os", "output-snp", "Output filename for simulated SNPs", ArgParseOption::OUTPUTFILE));
+
+	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
+	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));
+
+    // Parse command line.
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    if (res != ArgumentParser::PARSE_OK)
+    {
+        cerr << "Exiting ..." << endl;
+    }
+
+
+	getOptionValue(options.numIndels, parser, "num-indels");
+	getOptionValue(options.numSnps, parser, "num-snps");
+	getOptionValue(options.output, parser, "output");
+	getOptionValue(options.inputIndel, parser, "input-indel");
+	getOptionValue(options.outputIndel, parser, "output-indel");
+	getOptionValue(options.outputSnp, parser, "output-snp");
+	getOptionValue(rangeFile, parser, "ranges");
+	getOptionValue(options.diploid, parser, "diploid");
 	
-	if (isSetLong(parser, "help") || isSetLong(parser, "version")) return 0;	// print help or version and exit
-	if (isSetLong(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
-	if (isSetLong(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 3);
-	appendValue(genomeFileNames, getArgumentValue(parser, 0));
-
-
-	if(argumentCount(parser) > 1) { std::cerr << "Too many arguments. Exiting... \n"; exit(0); }
+	if (isSet(parser, "help") || isSet(parser, "version")) return 0;	// print help or version and exit
+	if (isSet(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
+	if (isSet(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 3);
+	if(getArgumentValueCount(parser, 0) > 1) { std::cerr << "Too many arguments. Exiting... \n"; exit(0); }
+    if(getArgumentValueCount(parser, 0) < 1) { std::cerr << "Not enough arguments. Exiting... \n"; exit(0); }
+    resize(genomeFileNames, length(genomeFileNames) + 1);
+    getArgumentValue(back(genomeFileNames), parser, 0, 0);
+   
 	fstream file;
 	clear(options.ranges);
 	int absMaxValue = 0;
@@ -99,113 +132,10 @@ int main(int argc, const char *argv[])
 		if(abs(rangeEnd) > absMaxValue) absMaxValue = abs(rangeEnd);
 		appendValue(options.ranges,Pair<int,int>(rangeBegin,rangeEnd));
 	}
-	options.minDistance = 2 * absMaxValue;
-	options.noNsInRange = _min(30,options.minDistance);
+	options.minDistance = 2 * absMaxValue;                // minimum distance between indel varians, should be an option, and not hard-coded..
+	options.noNsInRange = _min(30,options.minDistance);   // same here, distance of simulated indel to masked/unkonwn "N"-regions in genome
 	file.close();
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Check options
-	if (options.numIndels < 1 )
-	{
-		std::cerr << "NumIndels must be a value > 0 100" << std::endl;
-		exit(0);
-	}
-
-/*
-	// Command line parsing
-	for(int arg = 1; arg < argc; ++arg) {
-		if (argv[arg][0] == '-') {
-			// parse option
-
-			if (strcmp(argv[arg], "-n") == 0 || strcmp(argv[arg], "--num-indels") == 0) {
-				if (arg + 1 < argc) {
-					++arg;
-					istringstream istr(argv[arg]);
-					istr >> options.numIndels;
-					if (!istr.fail())
-					{
-						if (options.numIndels < 1)
-							cerr << "Num Indels must be a positive integer value" << endl << endl;
-						else
-							continue;
-					}
-				}
-				printHelp(argc, argv, options);
-				return 0;
-			}
-			if (strcmp(argv[arg], "-r") == 0 || strcmp(argv[arg], "--ranges") == 0) {
-				if (arg + 1 < argc) {
-					++arg;
-					fstream file;
-					clear(options.ranges);
-					int absMaxValue = 0;
-					file.open(argv[arg],ios_base::in | ios_base::binary);
-					char c = _streamGet(file);
-					while (!_streamEOF(file))
-					{
-						parse_skipWhitespace(file,c);
-						int rangeBegin = parse_readDouble(file,c);
-						if(abs(rangeBegin) > absMaxValue) absMaxValue = abs(rangeBegin);
-						parse_skipWhitespace(file,c);
-						int rangeEnd = parse_readDouble(file,c);
-						if(abs(rangeEnd) > absMaxValue) absMaxValue = abs(rangeEnd);
-						appendValue(options.ranges,Pair<int,int>(rangeBegin,rangeEnd));
-					}
-					options.minDistance = 2 * absMaxValue;
-					options.noNsInRange = _min(30,options.minDistance);
-					file.close();
-					continue;
-				}
-				printHelp(argc, argv, options);
-				return 0;
-			}
-
-			if (strcmp(argv[arg], "-o") == 0 || strcmp(argv[arg], "--output") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.output = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-v") == 0 || strcmp(argv[arg], "--verbose") == 0) {
-				options._debugLevel = max(options._debugLevel, 1);
-				continue;
-			}
-			if (strcmp(argv[arg], "-vv") == 0 || strcmp(argv[arg], "--very-verbose") == 0) {
-				options._debugLevel = max(options._debugLevel, 2);
-				continue;
-			}
-			if (strcmp(argv[arg], "-oi") == 0 || strcmp(argv[arg], "--output-info") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.outputInfo = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-h") == 0 || strcmp(argv[arg], "--help") == 0) {
-				// print help
-				printHelp(argc, argv, options, true);
-				return 0;
-			}
-		}
-		else {
-			// parse file name
-			if (fnameCount == 1) {
-				printHelp(argc, argv, options);
-				return 0;
-			}
-			fname[fnameCount++] = argv[arg];
-		}
-	}
-	if (fnameCount < 1) {
-		printHelp(argc, argv, options);
-		return 0;
-	}
-*/	
 	::std::map<CharString,unsigned> gIdStringToIdNumMap;
 	StringSet<CharString> genomeIDs;
 	StringSet<Dna5String> genomes;
@@ -231,12 +161,13 @@ int main(int argc, const char *argv[])
 	
 	// Main Part - Simulation
 	
-	StringSet<Dna5String>		simGenomes;
+	StringSet<Dna5String>		simGenomes; // if diploid --> twice as many as original genomes
 	StringSet<CharString>		simIDs;
 	::std::map<int,IndelInfo>	indelInfos;
+	::std::map<int,SnpInfo>	    snpInfos;
 
 
-	int result = simulateIndels(genomes,genomeIDs,gIdStringToIdNumMap,simGenomes,simIDs,indelInfos,options);
+	int result = simulateIndels(genomes,genomeIDs,gIdStringToIdNumMap,simGenomes,simIDs,indelInfos,snpInfos,options);
 	if(result > 0)
 	{
 		cerr << "Something went wrong.. Exiting..\n";
@@ -249,6 +180,7 @@ int main(int argc, const char *argv[])
 	//saveIndelInfos(indelInfos, genomeIDs, options, fname[0]); 
 	saveFasta(simGenomes, simIDs, options, toCString(genomeFileNames[0])); 
 	saveIndelInfos(indelInfos, genomeIDs, options, toCString(genomeFileNames[0])); 
+	saveSnpInfos(snpInfos, genomeIDs, options, toCString(genomeFileNames[0])); 
 
 	return 0;
 }
