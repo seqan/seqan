@@ -100,30 +100,47 @@ int main(int argc, char *argv[])
                   << "USAGE: minimapper GENOME.fasta READS.fasta OUT.sam" << std::endl;
         return 1;
     }
+    std::cerr << "Phase -2" << std::endl;
     // 1) Load contigs and reads.
     FragmentStore<> fragStore;
     if (!loadContigs(fragStore, argv[1])) return 1;
     if (!loadReads(fragStore, argv[2])) return 1;
+    
+    std::cerr << "Phase -1" << std::endl;
 
     StringSet<TString> text;
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
-        appendValue(text, fragStore.contigStore[i].seq);
-        
+    {
+        if(length(fragStore.contigStore[i].seq) != 0)
+            appendValue(text, fragStore.contigStore[i].seq);
+    }
+       
+    std::cerr << "Phase 0" << std::endl;
+
     TIndex fmIndex(text);
+    std::cerr << "Phase 1" << std::endl;
     TIter it(fmIndex);
+    std::cerr << "Phase 2" << std::endl;
     search(it, fragStore.readSeqStore, fragStore, ForwardTag());
+    std::cerr << "Phase 3" << std::endl;
     clear(fmIndex);
     clear(it);
 
+    std::cerr << "Phase 4" << std::endl;
     reverse(text);
     reverse(fragStore.readSeqStore);
 
+    std::cerr << "Phase 5" << std::endl;
     fmIndex = TIndex(text);
+    std::cerr << "Phase 6" << std::endl;
     it = TIter(fmIndex);
+    std::cerr << "Phase 7" << std::endl;
     search(it, fragStore.readSeqStore, fragStore, ReverseTag());
+    std::cerr << "Phase 8" << std::endl;
     clear(fmIndex);
     clear(it);
 
+    std::cerr << "Phase 9" << std::endl;
     reverse(text);
     reverse(fragStore.readSeqStore);
     std::ofstream samFile(argv[3], std::ios_base::out);
