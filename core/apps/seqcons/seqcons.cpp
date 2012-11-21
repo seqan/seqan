@@ -23,84 +23,94 @@
 #include <seqan/basic.h>
 #include <seqan/consensus.h>
 #include <seqan/modifier.h>
-#include <seqan/misc/misc_cmdparser.h>
 
 #include <iostream>
 #include <fstream>
 
+#include <seqan/arg_parse.h>
 
 using namespace seqan;
 
 void
-_addVersion(CommandLineParser & parser)
+_setVersion(ArgumentParser & parser)
 {
 	::std::string rev = "$Revision: 4663 $";
-	addVersionLine(parser, "Version 0.22 (06. August 2009) Revision: " + rev.substr(11, 4) + "");
+	setVersion(parser, "0.23 Revision: " + rev.substr(11, 4) + "");
+	setDate(parser, "Nov 21, 2012");
 }
 
-void setUpCommandLineParser(CommandLineParser & parser)
+int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
 {
-	_addVersion(parser);
-
-	addTitleLine(parser, "***************************************");
-	addTitleLine(parser, "* Multi-read alignment - SeqCons      *");
-	addTitleLine(parser, "* (c) Copyright 2009 by Tobias Rausch *");
-	addTitleLine(parser, "***************************************");
+    // Setup ArgumentParser.
+    seqan::ArgumentParser parser("seqcons");
+    _setVersion(parser);
+    setShortDescription(parser, "Multi-read alignment.");
+    addDescription(parser, "(c) Copyright 2009 by Tobias Rausch");
 
 	addUsageLine(parser, "-r <FASTA file with reads> [Options]");
 	addUsageLine(parser, "-a <AMOS message file> [Options]");
 	addUsageLine(parser, "-s <Sam file> [-c <FASTA contigs file>] [Options]");
 
+
 	addSection(parser, "Main Options:");
-	addOption(parser, addArgumentText(CommandLineOption("r", "reads", "file with reads", OptionType::String), "<FASTA reads file>"));
-	addOption(parser, addArgumentText(CommandLineOption("a", "afg", "message file", OptionType::String), "<AMOS afg file>"));
-	addOption(parser, addArgumentText(CommandLineOption("s", "sam", "Sam file", OptionType::String), "<Sam file>"));
-	addOption(parser, addArgumentText(CommandLineOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", OptionType::String), "<FASTA contigs file>"));
-	addOption(parser, addArgumentText(CommandLineOption("o", "outfile", "output filename", (int)OptionType::String, "align.txt"), "<Filename>"));
-	addOption(parser, addArgumentText(CommandLineOption("f", "format", "output format", (int)OptionType::String, "afg"), "[seqan | afg | sam]"));
-	addOption(parser, addArgumentText(CommandLineOption("m", "method", "alignment method", (int)OptionType::String, "realign"), "[realign | msa]"));
-	addOption(parser, addArgumentText(CommandLineOption("b", "bandwidth", "bandwidth", (int)OptionType::Int, 8), "<Int>"));
-	addOption(parser, CommandLineOption("n", "noalign", "no align, only convert input", OptionType::Boolean));
+	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::STRING, "<FASTA reads file>"));
+	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::STRING, "<AMOS afg file>"));
+	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::STRING, "<Sam file>"));
+	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::STRING, "<FASTA contigs file>"));
+	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::STRING, "<Filename>"));
+	setDefaultValue(parser, "outfile", "align.txt");
+	addOption(parser, ArgParseOption("f", "format", "output format", ArgParseArgument::STRING, "afg", "[seqan | afg | sam]"));
+	setDefaultValue(parser, "format", "afg");
+	addOption(parser, ArgParseOption("m", "method", "alignment method", ArgParseArgument::STRING, "realign", "[realign | msa]"));
+	setDefaultValue(parser, "method", "realign");
+	addOption(parser, ArgParseOption("b", "bandwidth", "bandwidth", ArgParseArgument::INTEGER, "<Int>"));
+	setDefaultValue(parser, "bandwidth", "8");
+    addOption(parser, ArgParseOption("n", "noalign", "no align, only convert input", ArgParseArgument::INTEGER, "<Bool>"));
+    setDefaultValue(parser, "noalign", "0");
 
-	addSection(parser, "MSA Method Options:");
-	addOption(parser, addArgumentText(CommandLineOption("ma", "matchlength", "min. overlap length", (int)OptionType::Int, 15), "<Int>"));
-	addOption(parser, addArgumentText(CommandLineOption("qu", "quality", "min. overlap precent identity", (int)OptionType::Int, 80), "<Int>"));
-	addOption(parser, addArgumentText(CommandLineOption("ov", "overlaps", "min. number of overlaps per read", (int)OptionType::Int, 3), "<Int>"));
-	addOption(parser, addArgumentText(CommandLineOption("wi", "window", "window size", (int)OptionType::Int, 0), "<Int>"));
-	addHelpLine(parser, "/*If this parameter is > 0 then all");
-	addHelpLine(parser, "  overlaps within a given window");
-	addHelpLine(parser, "  are computed.*/");
-
+	addOption(parser, ArgParseOption("ma", "matchlength", "min. overlap length", ArgParseArgument::INTEGER, "<Int>"));
+	setDefaultValue(parser, "matchlength", "15");
+	addOption(parser, ArgParseOption("qu", "quality", "min. overlap precent identity", ArgParseArgument::INTEGER, "<Int>"));
+	setDefaultValue(parser, "quality", "80");
+	addOption(parser, ArgParseOption("ov", "overlaps", "min. number of overlaps per read", ArgParseArgument::INTEGER, "<Int>"));
+	setDefaultValue(parser, "overlaps", "3");
+	addOption(parser, ArgParseOption("wi", "window", "The window size.  If this parameter is greater than 0 then all overlaps within a given window are computed.", ArgParseArgument::INTEGER,"<Int>"));
+	setDefaultValue(parser, "window", "0");
+ 
 	addSection(parser, "ReAlign Method Options:");
-	addOption(parser, CommandLineOption("in", "include", "include contig sequence", OptionType::Boolean));
-	addOption(parser, addArgumentText(CommandLineOption("rm", "rmethod", "realign method", (int)OptionType::String, "gotoh"), "[nw | gotoh]"));
-}
+	addOption(parser, ArgParseOption("in", "include", "include contig sequence", ArgParseArgument::INTEGER, "<Bool>"));
+	setDefaultValue(parser, "include", "0");
+	addOption(parser, ArgParseOption("rm", "rmethod", "realign method", ArgParseArgument::STRING, "[nw | gotoh]"));
+	setDefaultValue(parser, "rmethod", "gotoh");
 
-int parseCommandLine(ConsensusOptions & consOpt, CommandLineParser & parser, int argc, const char * argv[])
-{
-    if (argc == 1)
+	if (argc == 1)
 	{
-		shortHelp(parser, std::cerr);	// print short help and exit
+		printShortHelp(parser, std::cerr);	// print short help and exit
 		return 1;
 	}
 
-	if (!parse(parser, argc, argv, ::std::cerr))
-        return 1;
-	if (isSetLong(parser, "help") || isSetLong(parser, "version"))
-        return 0;	// print help or version and exit
+    // Parse command line.
+    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+
+    // If parsing was not successful then exit with code 1 if there were errors.
+    // Otherwise, exit with code 0 (e.g. help was printed).
+    if (res != seqan::ArgumentParser::PARSE_OK)
+    {
+        return res;// == seqan::ArgumentParser::PARSE_ERROR;
+    }
 
 	// Main options
-	getOptionValueLong(parser, "reads", consOpt.readsfile);
-	getOptionValueLong(parser, "afg", consOpt.afgfile);
-	getOptionValueLong(parser, "sam", consOpt.samfile);
-	getOptionValueLong(parser, "contigs", consOpt.contigsfile);
-	getOptionValueLong(parser, "outfile", consOpt.outfile);
+	getOptionValue(consOpt.readsfile, parser, "reads");
+	getOptionValue(consOpt.afgfile, parser, "afg");
+	getOptionValue(consOpt.samfile, parser, "sam");
+	getOptionValue(consOpt.contigsfile, parser, "contigs");
+	getOptionValue(consOpt.outfile, parser, "outfile");
 
     if (empty(consOpt.samfile) && !empty(consOpt.contigsfile))
         std::cerr << "WARNING: Contigs specified by input is not FASTA, ignoring --contigs parameters." << std::endl;
 
 	String<char> optionVal;
-	getOptionValueLong(parser, "format", optionVal);
+	getOptionValue(optionVal, parser, "format");
 	if (optionVal == "seqan")
         consOpt.output = 0;
 	else if (optionVal == "afg")
@@ -112,35 +122,36 @@ int parseCommandLine(ConsensusOptions & consOpt, CommandLineParser & parser, int
 	else if (optionVal == "sam")
         consOpt.output = 4;
 
-	getOptionValueLong(parser, "method", optionVal);
+	getOptionValue(optionVal, parser, "method");
 	if (optionVal == "realign")
         consOpt.method = 0;
 	else if (optionVal == "msa")
         consOpt.method = 1;
 
-	getOptionValueLong(parser, "bandwidth", consOpt.bandwidth);
+	getOptionValue(consOpt.bandwidth, parser, "bandwidth");
 #ifdef CELERA_OFFSET
-	if (!isSetLong(parser, "bandwidth")) consOpt.bandwidth = 15;	
+	if (!isSetLong(parser, "bandwidth")) consOpt.bandwidth = 15;
 #endif
-	getOptionValueLong(parser, "noalign", consOpt.noalign);
+    getOptionValue(consOpt.noalign, parser, "noalign");
 
 	// MSA options
-	getOptionValueLong(parser, "matchlength", consOpt.matchlength);
-	getOptionValueLong(parser, "quality", consOpt.quality);
-	getOptionValueLong(parser, "overlaps", consOpt.overlaps);
+	getOptionValue(consOpt.matchlength, parser, "matchlength");
+	getOptionValue(consOpt.quality, parser, "quality");
+	getOptionValue(consOpt.overlaps, parser, "overlaps");
 #ifdef CELERA_OFFSET
-	if (!isSetLong(parser, "overlaps")) consOpt.overlaps = 5;	
+	if (!isSetLong(parser, "overlaps")) consOpt.overlaps = 5;
 #endif
-	getOptionValueLong(parser, "window", consOpt.window);
-	
+	getOptionValue(consOpt.window, parser, "window");
+
 	// ReAlign options
-	getOptionValueLong(parser, "include", consOpt.include);
-	getOptionValueLong(parser, "rmethod", optionVal);
+	getOptionValue(consOpt.include, parser, "include");
+	getOptionValue(optionVal, parser, "rmethod");
 	if (optionVal == "nw")
         consOpt.rmethod = 0;
 	else if (optionVal == "gotoh")
         consOpt.rmethod = 1;
     return 0;
+
 }
 
 // Load the reads and layout positions
@@ -225,12 +236,9 @@ int writeOutput(TFragmentStore /*const*/ & fragStore, ConsensusOptions const & c
 
 int main(int argc, const char *argv[]) {
 	// Command line parsing
-	CommandLineParser parser;
-    setUpCommandLineParser(parser);
-
-	// Get all command line options
+	ArgumentParser parser;
 	ConsensusOptions consOpt;
-    int ret = parseCommandLine(consOpt, parser, argc, argv);
+    int ret = parseCommandLine(consOpt, argc, argv);
     if (ret != 0)
         return ret;
 
@@ -242,10 +250,6 @@ int main(int argc, const char *argv[]) {
 	// Load the reads and layout positions
 	TSize numberOfContigs = 0;
     ret = loadFiles(fragStore, numberOfContigs, consOpt);
-    if (ret != 0) {
-        shortHelp(parser, std::cerr);
-        return ret;
-    }
 
 	// Multi-realignment desired or just conversion of the input
 	if (!consOpt.noalign) {
