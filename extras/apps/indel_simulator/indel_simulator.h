@@ -195,7 +195,7 @@ bool loadGenomes(const char* fileName,
 			}
 		}
 		genomeIDs[i] = temp;
-		gIdStringToIdNumMap.insert(::std::make_pair<CharString,unsigned>(temp,i)); 
+		gIdStringToIdNumMap.insert(std::make_pair(temp, i)); 
 	}
 	return (seqCount > 0);
 }
@@ -611,7 +611,8 @@ simulateSnps( ::std::map<int,SnpInfo>	&snpMap,
 		if(pos != randPos-limits[chr]+options.noNsInRange) continue;
 		
 		// now generate base 
-        Dna refBase = genomes[chr][relPos]; 
+        Dna refBase = genomes[chr][relPos];
+        (void)refBase;
 		Dna randBase = (Dna) (rand() % 4);
         while(randBase == genomes[chr][relPos])
             randBase = (Dna) (rand() % 4);
@@ -644,7 +645,7 @@ simulateSnps( ::std::map<int,SnpInfo>	&snpMap,
 
         }
  
-		snpMap.insert(std::make_pair<int,SnpInfo>(randPos,info));
+		snpMap.insert(std::make_pair(randPos, info));
 		++count;
 		if(options._debugLevel > 1 && count%100==0) std::cout << "." << std::flush;
 		if(options._debugLevel > 1 && count%1000==0) std::cout << count<< std::flush;
@@ -839,7 +840,7 @@ simulateIndelsFromRanges( ::std::map<int,IndelInfo>	&indelMap,
             else info.heterozygote = true;
         }
  
-		indelMap.insert(std::make_pair<int,IndelInfo>(randPos,info));
+		indelMap.insert(std::make_pair(randPos, info));
 		++count;
 		if(options._debugLevel > 1 && count%100==0) std::cout << "." << std::flush;
 		if(options._debugLevel > 1 && count%1000==0) std::cout << count<< std::flush;
@@ -927,7 +928,7 @@ simulateIndelsFromGff( ::std::map<int,IndelInfo> &indelMap,
 		
 		
 		if(options._debugLevel > 1) std::cout << "randPos = " << randPos << std::endl;
-		indelMap.insert(std::make_pair<int,IndelInfo>(randPos,indelSet[indelsetPos]));
+		indelMap.insert(std::make_pair(randPos, indelSet[indelsetPos]));
 		++count;
 
 		if(options._debugLevel > 1 && count%100==0) std::cout << "." << std::flush;
