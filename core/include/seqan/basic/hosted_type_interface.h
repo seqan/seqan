@@ -158,7 +158,7 @@ clearHost(T & me)
 .Function.createHost
 ..cat:Dependent Object
 ..summary:Construct the host of the given object.
-..signature:assignHost(object[, host])
+..signature:createHost(object[, host])
 ..param.object:The object to copy construct the host of.
 ..param.host:The object to copy in host creation.
 ...type:nolink:$Host<T>::Type const &$
