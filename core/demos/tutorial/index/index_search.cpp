@@ -8,7 +8,9 @@ using namespace seqan;
 int main ()
 {
 	typedef Index<CharString> TIndex;
-	TIndex index("How many wood would a woodchuck chuck.");
+	TIndex index("How many wood would a woodchuck chuck?");
+// FRAGMENT(iterator)
+
 	Iterator< TIndex, TopDown<> >::Type it(index);
 // FRAGMENT(iteration)
 
