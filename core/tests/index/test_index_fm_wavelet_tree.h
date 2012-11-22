@@ -214,7 +214,7 @@ void waveletTreeCountOcc(TWaveletTree & /*tag*/)
     }
 }
 template <typename TString, typename TSpec>
-void waveletTreecountOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*tag*/)
+void waveletTreeCountOcc(WaveletTree<TString, FmiDollarSubstituted<TSpec> > & /*tag*/)
 {
     typedef WaveletTree<TString, FmiDollarSubstituted<TSpec> > TWaveletTree;
 	typedef typename Fibre<TWaveletTree, FibreTreeStructure>::Type TWaveletTreeStructure;
