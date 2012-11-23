@@ -1,0 +1,13 @@
+381	Twinscan	exon	150	200	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	exon	300	401	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	CDS	380	401	.	+	0	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	exon	501	650	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	CDS	501	650	.	+	2	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	exon	700	800	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	CDS	700	707	.	+	2	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	exon	900	1000	.	+	.	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	start_codon	380	382	.	+	0	gene_id "381.000"; transcript_id "381.000.1";
+381	Twinscan	exon	160	210	.	+	.	gene_id "381.000"; transcript_id "381.000.2";
+381	Twinscan	exon	310	411	.	+	.	gene_id "381.000"; transcript_id "381.000.2";
+381	Twinscan	exon	1200	1290	.	+	.	gene_id "382.000"; transcript_id "381.000.0";
+381	Twinscan	exon	2300	2410	.	+	.	gene_id "382.000"; transcript_id "381.000.0";
