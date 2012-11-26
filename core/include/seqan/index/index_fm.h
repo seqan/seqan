@@ -89,6 +89,7 @@ struct DefaultFinder<Index<TText, FMIndex<TOccSpec, TSpec> > >
 
 struct FibrePrefixSumTable_;
 struct FibreSA_;
+struct FibreTempSA_;
 struct FibreText_;
 struct FibreLfTable_;
 struct FibreSaLfTable_;
@@ -100,6 +101,7 @@ struct CompressText_;
 
 typedef Tag<FibrePrefixSumTable_> const     FmiPrefixSumTable;  typedef FmiPrefixSumTable   FibrePrefixSumTable;
 typedef Tag<FibreSA_> const                 FmiCompressedSA;    typedef FmiCompressedSA     FibreSA;
+typedef Tag<FibreTempSA_> const             FmiTempSA;          typedef FmiTempSA           FibreTempSA;
 typedef Tag<FibreText_> const               FmiText;            typedef FmiText             FibreText;
 typedef Tag<FibreLfTable_> const            FmiLfTable;         typedef FmiLfTable          FibreLfTable;
 typedef Tag<FibreSaLfTable_> const          FmiSaLfTable;       typedef FmiSaLfTable        FibreSaLfTable;
@@ -115,23 +117,23 @@ struct Fibre<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> >, FibreOccTable>
 	typedef WaveletTree<TText, FmiDollarSubstituted<SingleDollar<void> > > Type;
 };
 
-template <typename TText, typename TWaveletTreeSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> > const, FibreOccTable>
-{
-    typedef WaveletTree<TText, FmiDollarSubstituted<SingleDollar<void> > > const Type;
-};
-    
+//template <typename TText, typename TWaveletTreeSpec, typename TSpec>
+//struct Fibre<Index<TText, FMIndex<WT<TWaveletTreeSpec>, TSpec> > const, FibreOccTable>
+//{
+//    typedef WaveletTree<TText, FmiDollarSubstituted<SingleDollar<void> > > const Type;
+//};
+
 template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
 struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<WT<TWaveletTreeSpec>, TSpec > >, FibreOccTable>
 {
      typedef WaveletTree<TText, FmiDollarSubstituted<MultiDollar<void> > > Type;
 };
 
-template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
-struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<WT<TWaveletTreeSpec>, TSpec > > const, FibreOccTable>
-{
-    typedef WaveletTree<TText, FmiDollarSubstituted<MultiDollar<void> > > const Type;
-};
+//template <typename TText, typename TStringSetSpec, typename TWaveletTreeSpec, typename TSpec>
+//struct Fibre<Index<StringSet<TText, TStringSetSpec>, FMIndex<WT<TWaveletTreeSpec>, TSpec > > const, FibreOccTable>
+//{
+//    typedef WaveletTree<TText, FmiDollarSubstituted<MultiDollar<void> > > const Type;
+//};
 // ==========================================================================
 
 template <typename TText, typename TOccSpec, typename TSpec>
@@ -158,7 +160,7 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibrePrefixSumTable>
     typedef typename MakeUnsigned<TChar_>::Type                             TUChar_;
 	typedef PrefixSumTable<TUChar_, void>                                   Type;
 };
-    
+
 template <typename TText, typename TOccSpec, typename TSpec>
 struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibrePrefixSumTable>
 {
@@ -177,17 +179,25 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>
 	typedef CompressedSA<TSparseString_, TLfTable_, void>                                   Type;
 };
 
-template <typename TText, typename TOccSpec, typename TSpec>
-struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreSA> 
-{
-    typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>::Type const Type;
-};
+//template <typename TText, typename TOccSpec, typename TSpec>
+//struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> > const, FibreSA> 
+//{
+//    typedef typename Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreSA>::Type const Type;
+//};
+//
+//template <typename TText, typename TSetSpec, typename TOccSpec, typename TSpec>
+//struct Fibre<Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> > const, FibreSA>
+//{
+//    typedef Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> >    TNonConstIndex_;
+//    typedef typename Fibre<TNonConstIndex_, FibreSA>::Type const            Type;
+//};
 
-template <typename TText, typename TSetSpec, typename TOccSpec, typename TSpec>
-struct Fibre<Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> > const, FibreSA>
+// ==========================================================================
+template <typename TText, typename TOccSpec, typename TSpec>
+struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreTempSA>
 {
-    typedef Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TSpec> >    TNonConstIndex_;
-    typedef typename Fibre<TNonConstIndex_, FibreSA>::Type const            Type;
+	typedef typename SAValue<Index<TText, FMIndex<TOccSpec, TSpec> > >::Type    TSAValue;
+	typedef String<TSAValue, External<ExternalConfigLarge<> > >                 Type;
 };
 
 // ==========================================================================
@@ -282,25 +292,31 @@ inline void _createBwTable(
 		TBwt & bwt,
 		TDollarPosition & dollarPos,
 		TText const & text,
-		TSA const & SA,
+		TSA const & sa,
 		TDollarSub const dollarSub)
 {
 	//typedefs
-	typedef typename GetValue<TSA>::Type    TSAValue;
-	typedef typename Size<TSA>::Type        TSize;
+	typedef typename GetValue<TSA>::Type                    TSAValue;
+	typedef typename Size<TSA>::Type                        TSize;
+    typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
+    typedef typename Iterator<TBwt, Standard>::Type         TBwtIter;
 
 	//little helpers
-	TSize n = length(text);
-	bwt[0] = back(text);
-	for (TSize i = 0; i < n; i++)
+    TSAIter saIt = begin(sa, Standard());
+    TSAIter saItEnd = end(sa, Standard());
+    TBwtIter bwtIt = begin(bwt, Standard());
+    
+	assignValue(bwtIt, back(text));
+	for (; saIt != saItEnd; ++saIt)
 	{
-		TSAValue sa = getValue(SA, i);
-		if (sa != 0)
-			bwt[i + 1] = getValue(text, sa - 1);
+        ++bwtIt;
+		TSAValue pos = getValue(saIt);
+		if (pos != 0)
+			assignValue(bwtIt, getValue(text, pos - 1));
 		else
 		{
-			bwt[i + 1] = dollarSub;
-			dollarPos = i + 1;
+			assignValue(bwtIt, dollarSub);
+			dollarPos = bwtIt - begin(bwt, Standard());
 		}
 	}
 }
@@ -312,35 +328,40 @@ inline void _createBwTable(
 		TBwt & bwt,
 		TDollarPosition & dollarPos,
 		StringSet<TText, TSetSpec> const & text,
-		TSA const & SA,
+		TSA const & sa,
 		TDollarSub const dollarSub)
 {
-    typedef typename Value<TSA>::Type   TSAValue;
-    typedef typename Size<TSA>::Type    TSize;
+    typedef typename Value<TSA>::Type                       TSAValue;
+    typedef typename Size<TSA>::Type                        TSize;
+    typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
+    typedef typename Iterator<TBwt, Standard>::Type         TBwtIter;
 
     // little Helpers
-    TSize n = countSequences(text);
-    TSize nn = lengthSum(text);
+    TSize seqNum = countSequences(text);
+    TSize totalLen = lengthSum(text);
 
-    resize(dollarPos, n + nn);
+    resize(dollarPos, seqNum + totalLen);
     
+    TSAIter saIt = begin(sa, Standard());
+    TSAIter saItEnd = end(sa, Standard());
+    TBwtIter bwtItBeg = begin(bwt, Standard());
+    TBwtIter bwtIt = bwtItBeg;
+
     // fill the dollar positions (they are all at the beginning of the bwt)
-    for (TSize i = 0; i < n; ++i)
-    {
-        bwt[i] = back(text[n - 1 - i]);
-    }
+    for (TSize i = 1; i <= seqNum; ++i, ++bwtIt)
+        assignValue(bwtIt, back(text[seqNum - i]));
 
     // compute the rest of the bwt
-    for (TSize i = 0; i < nn; ++i)
+    for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
-        TSAValue sa;    // = SA[i];
-        posLocalize(sa, getValue(SA, i), stringSetLimits(text));
-        if (sa.i2 != 0)
-            bwt[i + n] = text[sa.i1][sa.i2 - 1];
+        TSAValue pos;    // = SA[i];
+        posLocalize(pos, getValue(saIt), stringSetLimits(text));
+        if (getSeqOffset(pos) != 0)
+            assignValue(bwtIt, getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1));
         else
         {
-            bwt[i + n] = dollarSub;
-            setBit(dollarPos, i + n, 1);
+            assignValue(bwtIt, dollarSub);
+            setBit(dollarPos, bwtIt - bwtItBeg);
         }
     }
 
@@ -521,6 +542,8 @@ inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TS
 
     // TODO(singer): If there is a lfTable we do not need the Skew7
 	// create the fulle sa
+
+    // TODO(weese): Jochen, can this createSuffixArray call go to the caller function?
 	resize(fullSa, length(text));
 	createSuffixArray(fullSa,
 			text,
@@ -579,21 +602,19 @@ template <typename TText, typename TIndexSpec, typename TSpec>
 inline bool _indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec > > & index,
 		TText & text)
 {
-	typedef Index<TText, FMIndex<TIndexSpec, TSpec> > TIndex;
-	typedef typename Fibre<TIndex, FibreSA>::Type TCompressedSA;
-	typedef typename Fibre<TCompressedSA, FibreSparseString>::Type TSparseString;
-	typedef typename Fibre<TSparseString, FibreValueString>::Type TValueString;
+	typedef Index<TText, FMIndex<TIndexSpec, TSpec> >   TIndex;
+	typedef typename Fibre<TIndex, FibreTempSA>::Type   TTempSA;
 
     if (empty(text))
         return false;
 
-    TValueString fullSa;
+    TTempSA tempSA;
 
 	// create the compressed SA
-	_indexCreateSA(index, fullSa, text);
+	_indexCreateSA(index, tempSA, text);
 
 	// create the lf table
-	_indexCreateLfTables(index, text, fullSa);
+	_indexCreateLfTables(index, text, tempSA);
 
 	return true;
 }

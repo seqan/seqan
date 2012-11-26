@@ -86,10 +86,9 @@ namespace seqan {
 ..see:Function.isBitSet
  */
 
-template <typename TWord>
-inline
-void
-setBitTo(TWord & word, unsigned index, bool value)
+template <typename TWord, typename TPos>
+inline void
+setBitTo(TWord & word, TPos index, bool value)
 {
     // See http://www-graphics.stanford.edu/~seander/bithacks.html#ConditionalSetOrClearBitsWithoutBranching
     word = (word & ~(1u << index)) | (-value & (1u << index));
@@ -115,10 +114,9 @@ setBitTo(TWord & word, unsigned index, bool value)
 ..see:Function.isBitSet
  */
 
-template <typename TWord>
-inline
-void
-setBit(TWord & word, unsigned index)
+template <typename TWord, typename TPos>
+inline void
+setBit(TWord & word, TPos index)
 {
     word |= (1u << index);
 }
@@ -143,10 +141,9 @@ setBit(TWord & word, unsigned index)
 ..see:Function.isBitSet
  */
 
-template <typename TWord>
-inline
-void
-clearBit(TWord & word, unsigned index)
+template <typename TWord, typename TPos>
+inline void
+clearBit(TWord & word, TPos index)
 {
     word &= ~(1u << index);
 }

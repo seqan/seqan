@@ -165,7 +165,7 @@ SEQAN_DEFINE_TEST(test_rsbs_getSetBit)
     for (unsigned i = 0; i < length(bitString); ++i)
     {
         controlBitString[i] = pickRandomNumber(rng) % 2;
-        setBit(bitString, i, controlBitString[i]);
+        setBitTo(bitString, i, controlBitString[i]);
         SEQAN_ASSERT_EQ(getBit(bitString, i), controlBitString[i]);
     }
 }
@@ -231,14 +231,14 @@ SEQAN_DEFINE_TEST(test_rsbs_update_ranks_)
     Rng<MersenneTwister> rng(SEED);
     controlBitString[0] = pickRandomNumber(rng) % 2;
     controlRankString[0] = controlBitString[0];
-    setBit(bitString, 0, controlBitString[0]);
+    setBitTo(bitString, 0, controlBitString[0]);
     _updateRanks(bitString);
     SEQAN_ASSERT_EQ(getRank(bitString, 0), controlRankString[0]);
 
     for (unsigned i = 1; i < length(bitString); ++i)
     {
         controlBitString[i] = pickRandomNumber(rng) % 2;
-        setBit(bitString, i, controlBitString[i]);
+        setBitTo(bitString, i, controlBitString[i]);
         _updateRanks(bitString);
         controlRankString[i] = controlRankString[i - 1] + controlBitString[i];
         SEQAN_ASSERT_EQ(getRank(bitString, i), controlRankString[i]);
@@ -247,7 +247,7 @@ SEQAN_DEFINE_TEST(test_rsbs_update_ranks_)
     for (unsigned i = length(bitString) / 2 ; i < length(bitString); ++i)
     {
         controlBitString[i] = pickRandomNumber(rng) % 2;
-        setBit(bitString, i, controlBitString[i]);
+        setBitTo(bitString, i, controlBitString[i]);
         controlRankString[i] = controlRankString[i - 1] + controlBitString[i];
     }
     

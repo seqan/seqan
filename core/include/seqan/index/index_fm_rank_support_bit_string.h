@@ -131,8 +131,8 @@ struct Fibre<RankSupportBitString<TSpec>, FibreSuperBlocks>
 */
 
 // Forward declaration because setBit is used in constructor
-template <typename TSpec, typename TPos, typename TBit>
-inline void setBit(RankSupportBitString<TSpec> & bitString, TPos const pos, TBit const setBit);
+template <typename TSpec, typename TPos>
+inline void setBitTo(RankSupportBitString<TSpec> & bitString, TPos pos, bool setBit);
 
 template <typename TSpec>
 struct RankSupportBitString
@@ -159,7 +159,7 @@ struct RankSupportBitString
         resize(*this, _length);
         typename Position<RankSupportBitString>::Type i = 0;
         for (TIter_ it = begin(input, Standard()); it != end(input, Standard()); ++it, ++i)
-            setBit(*this, i, getValue(it));
+            setBitTo(*this, i, getValue(it));
         _updateRanks(*this);
     }
 
@@ -189,12 +189,12 @@ struct RankSupportBitString
 ...remarks:If the value is different from 0 it is interpreted as 1.
 ..include:seqan/sequence.h
 */
-template <typename TSpec, typename TBit>
-inline void appendValue(RankSupportBitString<TSpec> & bitString, TBit const bit)
+template <typename TSpec>
+inline void appendValue(RankSupportBitString<TSpec> & bitString, bool bit)
 {
 	typename Size<RankSupportBitString<TSpec> >::Type len = length(bitString);
     resize(bitString, len + 1);
-    setBit(bitString, len, bit);
+    setBitTo(bitString, len, bit);
     _updateLastRank(bitString); 
 }
 
@@ -439,7 +439,7 @@ resize(bitString, length(genome));
 
 for (unsigned i = 0; i < length(genome); ++i)
     if(genome[i] < Dna5('c'))
-        setBit(bitString, 1);
+        setBitTo(bitString, 1);
 
 _updateRanks(bitString);
 */
@@ -584,7 +584,7 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue co
     if (_value != 0 && currentLength < _length)
     {
         for (unsigned i = currentLength; i < (typename MakeUnsigned<TLength const>::Type)_length; ++i)
-            setBit(bitString, i, 1);
+            setBit(bitString, i);
         _updateRanks(bitString, currentLength);
     }
 
@@ -600,9 +600,9 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, Tag<TExpa
 
 // ==========================================================================
 /**
-.Function.setBit
+.Function.setBitTo
 ..summary:Set a specified bit to true or false.
-..signature:setBit(bitString, pos, bit)
+..signature:setBitTo(bitString, pos, bit)
 ..param.bitString:The bit string.
 ...type:Class.RankSupportBitString
 ..param.pos:Position of the bit.
@@ -617,22 +617,39 @@ resize(bitString, length(genome));
 
 for (unsigned i = 0; i < length(genome); ++i)
     if(genome[i] < Dna5('c'))
-        setBit(bitString, 1);
+        setBitTo(bitString, 1);
 
 updateRanks_(bitString);
 */
-template <typename TSpec, typename TPos, typename TBit>
-inline void setBit(RankSupportBitString<TSpec> & bitString, TPos const pos, TBit const newBit)
+template <typename TSpec, typename TPos>
+inline void setBit(RankSupportBitString<TSpec> & bitString, TPos pos)
 {
     typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
 
     TFibreBitsValue const shiftValue = (TFibreBitsValue)1u << _getPosInBlock(bitString, pos);
-    if (newBit != (TBit)0)
-        bitString.bits[_getBlockPos(bitString, pos)] |= shiftValue;
+    bitString.bits[_getBlockPos(bitString, pos)] |= shiftValue;
+}
+
+template <typename TSpec, typename TPos>
+inline void clearBit(RankSupportBitString<TSpec> & bitString, TPos pos)
+{
+    typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
+    typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
+    typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
+
+    TFibreBitsValue const shiftValue = (TFibreBitsValue)1u << _getPosInBlock(bitString, pos);
+    bitString.bits[_getBlockPos(bitString, pos)] &= ~shiftValue;
+}
+
+template <typename TSpec, typename TPos>
+inline void setBitTo(RankSupportBitString<TSpec> & bitString, TPos pos, bool value)
+{
+    if (value)
+        setBit(bitString, pos);
     else
-        bitString.bits[_getBlockPos(bitString, pos)] &= ~shiftValue;
+        clearBit(bitString, pos);
 }
 
 // ==========================================================================

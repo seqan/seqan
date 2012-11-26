@@ -275,39 +275,44 @@ inline bool entryStored(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
 ..param:offset:Number of elements at the beginning which should contain the default value.
 ..include:seqan/index.h
 */
-template <typename TSparseString, typename TLfTable, typename TSpec, typename TSA, typename TCompression>
+template <typename TSparseString, typename TLfTable, typename TSpec, typename TSA, typename TCompression, typename TSize>
 void compressedSaCreate(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, 
-        TSA const & completeSA, 
+        TSA const & sa,
         TCompression const compressionFactor, 
-        unsigned offSet)
+        TSize offset)
 {
-    typedef CompressedSA<TSparseString, TLfTable, TSpec> TCompressedSA;
-    typedef typename GetValue<TSA>::Type                            TSAValue;
-    typedef typename Size<TSA>::Type                                TSize;
+    typedef CompressedSA<TSparseString, TLfTable, TSpec>            TCompressedSA;
+    typedef typename Size<TSA>::Type                                TSASize;
     typedef typename Fibre<TCompressedSA, FibreSparseString>::Type  TSparseSA;
     typedef typename Fibre<TSparseSA, FibreIndicatorString>::Type   TIndicatorString;
+    typedef typename Iterator<TSA const, Standard>::Type            TSAIter;
 
     TSparseSA & sparseString = getFibre(compressedSA, FibreSparseString());
     TIndicatorString & indicatorString = getFibre(sparseString, FibreIndicatorString());
 
-    TSize n = length(completeSA);
+    TSASize saLen = length(sa);
+    resize(compressedSA, saLen + offset);
+    
+    TSAIter saIt = begin(sa, Standard());
+    TSAIter saItEnd = end(sa, Standard());
 
-    resize(compressedSA, offSet + n);
-    for (TSize i = 0; i < n; i++)
+    for (TSASize pos = offset; saIt != saItEnd; ++saIt, ++pos)
     {
-        TSAValue sa = getValue(completeSA, i);
-        (getSeqOffset(sa) % compressionFactor == 0) ? setBit(indicatorString, i + offSet, 1) : setBit(indicatorString, i + offSet, 0);
+        if (getSeqOffset(getValue(saIt)) % compressionFactor == 0)
+            setBit(indicatorString, pos);
+        else
+            clearBit(indicatorString, pos);
     }
     _updateRanks(indicatorString);
 
     resize(sparseString.valueString, getRank(indicatorString, length(indicatorString) - 1));
 
-    TSize counter = 0;
-    for (TSize i = 0; i < n; i++)
+    saIt = begin(sa, Standard());
+    for (TSASize pos = offset, counter = 0; saIt != saItEnd; ++saIt, ++pos)
     {
-        if (getBit(indicatorString, i + offSet))
+        if (getBit(indicatorString, pos))
         {
-            assignValue(compressedSA.sparseString.valueString, counter, completeSA[i]);
+            assignValue(compressedSA.sparseString.valueString, counter, getValue(saIt));
             ++counter;
         }
     }

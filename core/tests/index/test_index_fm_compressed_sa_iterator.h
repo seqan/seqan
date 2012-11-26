@@ -47,7 +47,7 @@ void compressedSaIterBegin(TIndex & /*tag*/)
     typedef typename Fibre<TIndex, FibreSA>::Type TCompressedSA;
     TCompressedSA compressedSA;
     resize(compressedSA, 3);
-    setBit(compressedSA.sparseString.indicatorString, 0, 1);
+    setBitTo(compressedSA.sparseString.indicatorString, 0, 1);
     appendValue(compressedSA.sparseString.valueString, 12);
 
     typename Iterator<TCompressedSA>::Type defaultIter = begin(compressedSA);
@@ -67,7 +67,7 @@ void compressedSaIterEnd(TIndex & /*tag*/)
     typedef typename Fibre<TIndex, FibreSA>::Type TCompressedSA;
     TCompressedSA compressedSA;
     resize(compressedSA, 3);
-    setBit(compressedSA.sparseString.indicatorString, 2, 1);
+    setBitTo(compressedSA.sparseString.indicatorString, 2, 1);
     _updateRanks(compressedSA.sparseString.indicatorString);
     appendValue(compressedSA.sparseString.valueString, 12);
 
