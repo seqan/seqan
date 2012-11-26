@@ -313,7 +313,7 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
                 physicalOriginPos1 += offset;
             buffer[2] = TCargo(iter->segmentSource, iter->physicalPosition + offset, virtualPosition + len, physicalOriginPos1, iter->length - offset);
             // Insert new journal entries.
-            infix(tree._journalNodes, pos, pos + 1) = buffer;
+            replace(tree._journalNodes, pos, pos + 1, buffer);
 			shiftRightOf += 3;
         }
         // Update journal entries right of pos.

@@ -620,7 +620,7 @@ int simulateReads(TOptions options, CharString referenceFilename, TReadsTypeTag 
         for (size_t i = 0; i < length(mateFilename); ++i)
             if (mateFilename[i] == '.')
                 dotPos = i;
-        infix(mateFilename, dotPos, dotPos + 1) = "_1.";
+        replace(mateFilename, dotPos, dotPos + 1, "_1.");
         // Write out first mates.
         std::cerr << "Writing resulting reads to \"" << mateFilename << "\" mates/1" << std::endl;
         StringSet<String<Dna5Q>, Dependent<> > reads;
@@ -630,9 +630,9 @@ int simulateReads(TOptions options, CharString referenceFilename, TReadsTypeTag 
             appendValue(readNames, fragmentStore.readNameStore[readId]);
             if (options.readNaming != READ_NAMING_NOSUFFIX) {
                 if (options.readNaming == READ_NAMING_SLASH_SUFFIX0)
-                    infix(back(readNames), pos, pos) = "/0";
+                    insert(back(readNames), pos, "/0");
                 else if (options.readNaming == READ_NAMING_SLASH_SUFFIX1)
-                    infix(back(readNames), pos, pos) =  "/1";
+                    insert(back(readNames), pos, "/1");
             }
             appendValue(reads, fragmentStore.readSeqStore[readId]);
         }
@@ -648,7 +648,7 @@ int simulateReads(TOptions options, CharString referenceFilename, TReadsTypeTag 
                 write(fstrm, readNames, reads, Fasta());
         }
         // Build filename with '_2.' infix.
-        infix(mateFilename, dotPos + 1, dotPos + 2) = "2";
+        replace(mateFilename, dotPos + 1, dotPos + 2, "2");
         // Write out second mates.
         std::cerr << "Writing resulting reads to \"" << mateFilename << "\" mates/2" << std::endl;
         clear(reads);
@@ -658,9 +658,9 @@ int simulateReads(TOptions options, CharString referenceFilename, TReadsTypeTag 
             appendValue(readNames, fragmentStore.readNameStore[readId]);
             if (options.readNaming != READ_NAMING_NOSUFFIX) {
                 if (options.readNaming == READ_NAMING_SLASH_SUFFIX0)
-                    infix(back(readNames), pos, pos) = "/1";
+                    insert(back(readNames), pos, "/1");
                 else if (options.readNaming == READ_NAMING_SLASH_SUFFIX1)
-                    infix(back(readNames), pos, pos) =  "/2";
+                    insert(back(readNames), pos, "/2");
             }
             appendValue(reads, fragmentStore.readSeqStore[readId]);
         }

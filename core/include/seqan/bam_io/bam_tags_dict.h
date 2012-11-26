@@ -705,7 +705,7 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val, char cons
         // TODO(holtgrew): Speed this up with positions?
         CharString tmp;
         tmp = getTagValue(tags, idx);
-        infix(host(tags), tags._positions[idx] + 2, tags._positions[idx] + 2 + length(tmp)) = bamTagVal;
+        replace(host(tags), tags._positions[idx] + 2, tags._positions[idx] + 2 + length(tmp), bamTagVal);
     }
     else
     {

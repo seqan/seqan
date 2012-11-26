@@ -776,7 +776,7 @@ void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
         reserve(buffer, len);
         for (unsigned i = 0; i < len; ++i)
             appendValue(buffer, RAND_CHAR());
-        infix(string, begin, end) = buffer;
+        replace(string, begin, end, buffer);
         assignInfix(journaledString, begin, end, buffer);
     }
 
@@ -872,7 +872,7 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
             // Perform insert.
 //             std::cout << "assignInfix(journaledString, " << begin << ", " << end << ", \"" << buffer << "\")" << std::endl;
 //             std::cout << "assignInfix(journaledString, " << begin << ", " << end << ", buffer, len(buffer) == " << length(buffer) << ")" << std::endl;
-            infix(string, begin, end) = buffer;
+            replace(string, begin, end, buffer);
 //             std::cout << "pre assign infix " << length(journaledString) << std::endl;
             assignInfix(journaledString, begin, end, buffer);
 //             std::cout << "post assign infix " << length(journaledString) << std::endl;
@@ -894,7 +894,7 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
             // Perform insert.
 //             std::cout << "insert(journaledString, " << begin << ", \"" << buffer << "\")" << std::endl;
 //             std::cout << "insert(journaledString, " << begin << ", buffer)" << std::endl;
-            infix(string, begin, begin) = buffer;
+            replace(string, begin, begin, buffer);
             insert(journaledString, begin, buffer);
         } else if (changeType == 2) {  // delete
             if (length(string) == 0)
@@ -1047,7 +1047,7 @@ void testJournaledStringSegmentsReadOnly(TStringJournalSpec const &)
 
 
 template <typename TStringJournalSpec>
-void testJournaledStringSegmentsReadWrite(TStringJournalSpec const &)
+void testJournaledStringReplace(TStringJournalSpec const &)
 {
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
     typedef typename Prefix<TJournaledString>::Type TPrefix;
@@ -1056,46 +1056,20 @@ void testJournaledStringSegmentsReadWrite(TStringJournalSpec const &)
 
     CharString charStr = "test";
 
-    // Prefixes.
+    // Replace prefix.
     {
         TJournaledString journaledString(charStr);
         insert(journaledString, 2, "XX");
-
-        TPrefix prefix1 = prefix(journaledString, 3);
-        SEQAN_ASSERT(prefix1 == CharString("teX"));
-        prefix1 = "ABCD";
-        SEQAN_ASSERT_EQ(journaledString, "ABCDXst");
-        SEQAN_ASSERT_EQ(charStr, "test");
-    }
-    {
-        TJournaledString journaledString(charStr);
-        insert(journaledString, 2, "XX");
-
-        TPrefix prefix2(journaledString, 3);
-        SEQAN_ASSERT(prefix2 == CharString("teX"));
-        prefix2 = "ABCD";
+        replace(journaledString, 0, 3, "ABCD");
         SEQAN_ASSERT_EQ(journaledString, "ABCDXst");
         SEQAN_ASSERT_EQ(charStr, "test");
     }
 
-    // Suffixes.
+    // Replace suffix.
     {
         TJournaledString journaledString(charStr);
         insert(journaledString, 2, "XX");
-
-        TSuffix suffix1 = suffix(journaledString, 3);
-        SEQAN_ASSERT(suffix1 == CharString("Xst"));
-        suffix1 = "ABCD";
-        SEQAN_ASSERT_EQ(journaledString, "teXABCD");
-        SEQAN_ASSERT_EQ(charStr, "test");
-    }
-    {
-        TJournaledString journaledString(charStr);
-        insert(journaledString, 2, "XX");
-
-        TSuffix suffix2(journaledString, 3);
-        SEQAN_ASSERT(suffix2 == CharString("Xst"));
-        suffix2 = "ABCD";
+        replace(journaledString, 3, 6, "ABCD");
         SEQAN_ASSERT_EQ(journaledString, "teXABCD");
         SEQAN_ASSERT_EQ(charStr, "test");
     }
@@ -1104,20 +1078,7 @@ void testJournaledStringSegmentsReadWrite(TStringJournalSpec const &)
     {
         TJournaledString journaledString(charStr);
         insert(journaledString, 2, "XX");
-
-        TInfix infix1 = infix(journaledString, 1, 5);
-        SEQAN_ASSERT(infix1 == CharString("eXXs"));
-        infix1 = "ABCD";
-        SEQAN_ASSERT_EQ(journaledString, "tABCDt");
-        SEQAN_ASSERT_EQ(charStr, "test");
-    }
-    {
-        TJournaledString journaledString(charStr);
-        insert(journaledString, 2, "XX");
-
-        TInfix infix2(journaledString, 1, 5);
-        SEQAN_ASSERT(infix2 == CharString("eXXs"));
-        infix2 = "ABCD";
+        replace(journaledString, 1, 5, "ABCD");
         SEQAN_ASSERT_EQ(journaledString, "tABCDt");
         SEQAN_ASSERT_EQ(charStr, "test");
     }
@@ -1226,7 +1187,7 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_segments_read_only) {
 
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_segments_read_write) {
-    testJournaledStringSegmentsReadWrite(UnbalancedTree());
+    testJournaledStringReplace(UnbalancedTree());
 }
 
 // Tag: SortedArray()
@@ -1333,7 +1294,7 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_segments_read_only) {
 
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_segments_read_write) {
-    testJournaledStringSegmentsReadWrite(SortedArray());
+    testJournaledStringReplace(SortedArray());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_flatten)

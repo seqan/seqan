@@ -549,7 +549,7 @@ read(TFile & file,
 			for(TSize j = 0; j<length(origNames); ++j) {
 				if (value(names, i) != value(origNames, j)) continue;
 				// Copy the whole row
-				infix(finalMat, j * len, j * len + len) = infix(mat, i * len, i*len + len);
+				replace(finalMat, j * len, j * len + len, infix(mat, i * len, i*len + len));
 				break;
 			}
 		}

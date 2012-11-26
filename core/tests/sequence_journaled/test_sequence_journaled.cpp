@@ -96,14 +96,5 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_sum);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_difference);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_relations);
-
-    // Verify checkpoints.
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/journal_entry.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/journal_entries_unbalanced_tree.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/journal_entries_unbalanced_tree_iterator.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/journal_entries_unbalanced_tree_node.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/journal_entries_sorted_array.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/sequence_journaled.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence_journaled/sequence_journaled_iterator.h");
 }
 SEQAN_END_TESTSUITE

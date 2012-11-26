@@ -24,7 +24,7 @@ int main ()
 
 	std::cout << myString << std::endl;
 	std::cout << myModifier << std::endl;
-	infix(myString, 9, 9) = "master ";
+	replace(myString, 9, 9, "master ");
 	std::cout << myString << std::endl;
 	std::cout << myModifier << std::endl;
 

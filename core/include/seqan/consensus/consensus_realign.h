@@ -506,7 +506,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 		}
 		resize(newConsensus, newConsIt - begin(newConsensus, Standard()), Generous());
 
-		infix(consensus, bandOffset, itCons - begin(consensus)) = newConsensus;
+		replace(consensus, bandOffset, itCons - begin(consensus), newConsensus);
         double tEnd = sysTime();
 
         timeBeforeAlign += tBegAlign - tBegin;

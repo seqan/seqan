@@ -624,6 +624,8 @@ insertValue(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & j
 // Function assignInfix
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): More of an undescore function.
+
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TBeginPos, typename TEndPos, typename TSequence2>
 inline void
 assignInfix(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString,
