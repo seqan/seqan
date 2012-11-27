@@ -773,7 +773,7 @@ SEQAN_DEFINE_TEST(test_argument_not_all_set)
     std::stringstream outputStream;
 
     SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
-    SEQAN_ASSERT_EQ(error_stream.str(), "test: Not all required arguments or options were set\n");
+    SEQAN_ASSERT_EQ(error_stream.str(), "test: Not enough arguments were provided.\nTry 'test --help' for more information.\n");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 }
 

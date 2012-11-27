@@ -4,7 +4,7 @@
 
 # We use the current trunk version of 2011-10-13 (r10463) for building the
 # reference.
-RAZERS=../../../../build/Release/core/apps/razers2/razers2
+RAZERS=../../../../../seqan-trunk-build/Release/core/apps/razers2/razers2
 
 # ============================================================
 # Run Adeno Single-End Example
