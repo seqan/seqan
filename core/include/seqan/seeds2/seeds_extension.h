@@ -513,7 +513,7 @@ _extendSeedGappedXDropOneDirection(
         TQuerySegment const & querySeg,
         TDatabaseSegment const & databaseSeg,
         ExtensionDirection direction,
-        Score<TScoreValue, TScoreSpec> const & scoringScheme,
+        Score<TScoreValue, TScoreSpec> scoringScheme,
 		TScoreValue scoreDropOff) {
 SEQAN_CHECKPOINT
     typedef typename Size<TQuerySegment>::Type TSize;
@@ -522,6 +522,11 @@ SEQAN_CHECKPOINT
     TSize cols = length(querySeg)+1;
     TSize rows = length(databaseSeg)+1;
 	if (rows == 1 || cols == 1) return 0;
+
+    TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
+    TScoreValue minGapScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
+    setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minGapScore));
+    setScoreMismatch(scoringScheme, _max(scoreMismatch(scoringScheme), minGapScore));
 
     TScoreValue gapCost = scoreGap(scoringScheme);
     TScoreValue undefined = minValue<TScoreValue>() - gapCost;
