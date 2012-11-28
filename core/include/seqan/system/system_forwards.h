@@ -115,7 +115,7 @@ inline bool unlock(Mutex &m);       	// "core/include/seqan/system/system_mutex.
 // waitFor
 
 inline bool waitFor(Event &e);       	// "core/include/seqan/system/system_event.h"(113)
-template <typename TTime > inline bool waitFor(Event &e, TTime timeout_millis);       	// "core/include/seqan/system/system_event.h"(118)
+template <typename TTime > inline bool waitFor(Event &e, TTime timeoutMilliSec, bool &inProgress);       	// "core/include/seqan/system/system_event.h"(118)
 template <typename TWorker> inline bool waitFor(Thread<TWorker> &m);       	// "core/include/seqan/system/system_thread.h"(107)
 
 } //namespace SEQAN_NAMESPACE_MAIN

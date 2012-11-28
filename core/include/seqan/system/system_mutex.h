@@ -76,8 +76,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			return success;
         }
 
-        inline bool lock(DWORD timeout_millis = INFINITE) {
-            return WaitForSingleObject(hMutex, timeout_millis) != WAIT_TIMEOUT;
+        inline bool lock(DWORD timeoutMilliSec = INFINITE) {
+            return WaitForSingleObject(hMutex, timeoutMilliSec) != WAIT_TIMEOUT;
         }
 
         inline bool unlock() {

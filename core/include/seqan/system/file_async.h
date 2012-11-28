@@ -395,39 +395,37 @@ namespace SEQAN_NAMESPACE_MAIN
     inline bool waitFor(aiocb_win32 &request) {
 //IOREV _doc_ 
         SEQAN_PROTIMESTART(tw);
-		if (!waitFor(request.xmitDone, 60000))
+		bool inProgress;
+		bool waitResult = waitFor(request.xmitDone, 60000, inProgress);
+		if (inProgress)
             std::cerr << "waitFor timeout" << std::endl;
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-        return true;
+        return waitResult;
 	}
 
     template < typename TTime >
-    inline bool waitFor(aiocb_win32 &request, TTime timeout_millis, bool &inProgress) {
+    inline bool waitFor(aiocb_win32 &request, TTime timeoutMilliSec, bool &inProgress) {
 //IOREV _doc_ 
         SEQAN_PROTIMESTART(tw);
-		inProgress = !waitFor(request.xmitDone, timeout_millis);
+		bool waitResult = waitFor(request.xmitDone, timeoutMilliSec, inProgress);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-        return !inProgress;
+        return waitResult;
 	}
 
 	template < typename TSize >
-	inline TSize waitForAny(aiocb_win32 const * const contexts[], TSize count, DWORD timeout_millis = Event::Infinite, bool &inProgress) {
+	inline int waitForAny(aiocb_win32 const * const contexts[], TSize count, DWORD timeoutMilliSec = Event::Infinite) {
 //IOREV _nodoc_ 
         Event::Handle *handles = new Event::Handle[count];
         for(TSize i = 0; i < count; ++i)
             handles[i] = contexts[i]->xmitDone.hEvent;
 
         SEQAN_PROTIMESTART(tw);
-        DWORD result = WaitForMultipleObjects(count, handles, false, timeout_millis);
+        DWORD result = WaitForMultipleObjects(count, handles, false, timeoutMilliSec);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
 		delete[] handles;
         if (/*result >= WAIT_OBJECT_0 && */result < WAIT_OBJECT_0 + count)
-        {
-            inProgress = false;
     		return result - WAIT_OBJECT_0;
-        }
-        inProgress = true;
-        return count;
+        return -1;
 	}
 
 	template <typename TSpec>
@@ -894,7 +892,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		return (result == 0) && (count == (ssize_t)request.aio_nbytes);
 	}
 
-	inline bool waitFor(aiocb &request, long timeout_millis, bool &inProgress)
+	inline bool waitFor(aiocb &request, long timeoutMilliSec, bool &inProgress)
     {
 //IOREV _doc_ 
 /*		#ifdef SEQAN_VVERBOSE
@@ -908,12 +906,12 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
 		int result;
-		if (timeout_millis != 0)
+		if (timeoutMilliSec != 0)
         {
 			aiocb * cblist = &request;
 			timespec ts;
-			ts.tv_sec = timeout_millis / 1000;
-			ts.tv_nsec = (timeout_millis % 1000) * 1000;
+			ts.tv_sec = timeoutMilliSec / 1000;
+			ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
 			SEQAN_PROTIMESTART(tw);
 			result = aio_suspend(&cblist, 1, &ts);
 			SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
@@ -934,7 +932,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 {
                     if (errorNo != ECANCELED)
                         errorNo = errno;
-                    std::cerr << "Asynchronous I/O operation failed (waitFor with timeOut=" << timeout_millis << "ms): \"" << ::strerror(errorNo) << '"' << std::endl;
+                    std::cerr << "Asynchronous I/O operation failed (waitFor with timeOut=" << timeoutMilliSec << "ms): \"" << ::strerror(errorNo) << '"' << std::endl;
                 }
 			}
 		#endif
@@ -951,11 +949,11 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template < typename TSize >
-	inline TSize waitForAny(aiocb const * const contexts[], TSize count, long timeout_millis) {
+	inline TSize waitForAny(aiocb const * const contexts[], TSize count, long timeoutMilliSec) {
 //IOREV _nodoc_ 
         timespec ts;
-        ts.tv_sec = timeout_millis / 1000;
-        ts.tv_nsec = (timeout_millis % 1000) * 1000;
+        ts.tv_sec = timeoutMilliSec / 1000;
+        ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
         SEQAN_PROTIMESTART(tw);
 		bool result = aio_suspend(contexts, count, &ts);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));

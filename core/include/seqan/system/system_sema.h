@@ -69,8 +69,8 @@ namespace SEQAN_NAMESPACE_MAIN
             SEQAN_ASSERT_MSG(res != 0, "Could not destroy Semaphore!");
         }
 
-        bool lock(DWORD timeout_millis = INFINITE) {
-            return WaitForSingleObject(hSemaphore, timeout_millis) != WAIT_TIMEOUT;
+        bool lock(DWORD timeoutMilliSec = INFINITE) {
+            return WaitForSingleObject(hSemaphore, timeoutMilliSec) != WAIT_TIMEOUT;
         }
 
         void unlock()

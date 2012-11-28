@@ -570,14 +570,14 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 ..class:Class.AsyncRequest
 ..summary:Waits for an asynchronous request to complete.
 ..cat:Input/Output
-..signature:waitFor(request[, timeout_millis])
+..signature:waitFor(request[, timeoutMilliSec])
 ..param.request:Reference to an AsyncRequest object.
 ...type:Class.AsyncRequest
-..param.timeout_millis:Timout value in milliseconds.
+..param.timeoutMilliSec:Timout value in milliseconds.
 ...remarks:A value of 0 can be used to test for completion without waiting.
 ...default:Infinity.
 ..returns:A $bool$ which is $true$ on completion and $false$ on timeout.
-..remarks:$waitFor$ suspends the calling process until $request$ is completed or after $timeout_millis$ milliseconds.
+..remarks:$waitFor$ suspends the calling process until $request$ is completed or after $timeoutMilliSec$ milliseconds.
 ..include:seqan/file.h
 */
 

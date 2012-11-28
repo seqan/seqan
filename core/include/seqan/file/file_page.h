@@ -225,13 +225,6 @@ struct MMap;
 		int     	pageNo;		            // related page (needed by merger sort)
     };
     
-    template < typename TValue >
-    struct MMapPage : PageBucketExtended<TValue>
-    {
-        TValue      *nextBegin;
-        TValue      *nextEnd;
-    };
-
 	template < typename TValue >
     ::std::ostream& operator<<(::std::ostream &out, const PageBucketExtended<TValue> &pb) {
 //IOREV _ _nodoc_
@@ -309,7 +302,7 @@ struct MMap;
 		typedef SimpleBuffer<TValue>	        TBase;
         typedef typename AsyncRequest<TFile>::Type  AsyncRequest;
 
-        enum Status		{ READY, READING, WRITING };
+        enum Status		{ UNUSED, READING, PREPROCESSING, READY, POSTPROCESSING, POSTPROCESSED, WRITING };
 
 		bool			dirty;		// data needs to be written to disk before freeing
 		unsigned   		pageNo;		// maps frames to pages (reverse vector mapper)
@@ -348,7 +341,7 @@ struct MMap;
 		typedef	typename Iterator<PageFrame, Standard>::Type    TIterator;
 
 		enum            { PageSize = PageSize_ };
-		enum Status		{ READY, READING, WRITING };
+        enum Status     { UNUSED, READING, PREPROCESSING, READY, POSTPROCESSING, POSTPROCESSED, WRITING };
 		enum DataStatus	{ ON_DISK = -1, UNINITIALIZED = -2 };
 		enum Priority	{ NORMAL_LEVEL = 0, PREFETCH_LEVEL = 1, ITERATOR_LEVEL = 2, PERMANENT_LEVEL = 3 };
 
@@ -376,7 +369,7 @@ struct MMap;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// a memory-mapped page frame
-
+/*
     template < typename TValue, typename TFile, typename TConfig >
 	struct PageFrame< TValue, TFile, MMap<TConfig> >: public SimpleBuffer< TValue >
     {
@@ -393,7 +386,7 @@ struct MMap;
             pageNo(MaxValue<unsigned>::VALUE),
 			next(NULL) {}
     };
-
+*/
 
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
@@ -461,16 +454,27 @@ struct MMap;
 	template < typename TValue, typename TFile, typename TSpec >
     const char * _pageFrameStatusString(PageFrame<TValue, TFile, TSpec > const &pf)
     {
+        typedef PageFrame<TValue, TFile, TSpec> TPage;
+
         switch (pf.status)
         {
-			case PageFrame<TValue, TFile, TSpec >::READY:
+			case TPage::READY:
                 return "READY";
-			case PageFrame<TValue, TFile, TSpec >::READING:
+			case TPage::READING:
                 return "READING";
-			case PageFrame<TValue, TFile, TSpec >::WRITING:
+			case TPage::WRITING:
                 return "WRITING";
+            case TPage::UNUSED:
+                return "UNUSED";
+            case TPage::PREPROCESSING:
+                return "PREPROCESSING";
+            case TPage::POSTPROCESSING:
+                return "POSTPROCESSING";
+            case TPage::POSTPROCESSED:
+                return "POSTPROCESSED";
+            default:
+                return "UNKNOWN";
         }
-        return "UNKNOWN";
     }
 
 	template < typename TValue, typename TFile, typename TSpec >
@@ -544,15 +548,17 @@ struct MMap;
         return readResult;
 	}
 
-#if 1
 	template < typename TValue, typename TFile, typename TSpec > inline
 	bool unmapPage(PageFrame<TValue, TFile, TSpec> &pf, TFile &)
 	{
 		typedef typename Position<TFile>::Type TPos;
         if (pf.begin)
         {
+#ifdef PLATFORM_WINDOWS
+#else
             munmap(pf.begin, size(pf) * sizeof(TValue));
-            pf.begin = NULL;
+#endif
+			pf.begin = NULL;
         }
         return true;
     }
@@ -562,7 +568,51 @@ struct MMap;
 	{
 		typedef typename Position<TFile>::Type TPos;
         unmapPage(pf, file);
+		pf.status = pf.READY;
+        SEQAN_ASSERT_GT(size, 0);
+
+#ifdef PLATFORM_WINDOWS
+#if 0
+		DWORD prot = 0;
+		DWORD access = 0;
+		if ((me._openMode & OPEN_MASK) == OPEN_RDONLY) 
+		{
+			prot = PAGE_READONLY;
+			access = FILE_MAP_READ;
+		} else {
+			prot = PAGE_READWRITE;
+			access = FILE_MAP_ALL_ACCESS;
+		}
+        LARGE_INTEGER largeSize;
+		largeSize.QuadPart = new_capacity;
+		largeSize.QuadPart *= sizeof(TValue);
+
+		me.handle = CreateFileMapping(file.handle, &MMapStringDefaultAttributes, prot, largeSize.HighPart, largeSize.LowPart, NULL);
+		if (me.handle == NULL)
+		{
+            SEQAN_FAIL(
+                "CreateFileMapping(%d, %d, 0, 0, 0) failed in mapReadPage: \"%s\"",
+                file.handle, access, strerror(errno));
+		#ifdef SEQAN_DEBUG
+			::std::cerr << "CreateFileMapping failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
+		#endif
+			return false;
+		}
+
+		pf.begin = (TValue *) MapViewOfFile(pf.handle, access, 0, 0, 0);	
+		if (pf.begin == NULL)
+		{
+            SEQAN_FAIL(
+                "MapViewOfFile(%d, %d, 0, 0, 0) failed in mapReadPage: \"%s\"",
+                pf.handle, access, strerror(errno));
+			return false;
+		}
+				
+		me.data_begin = (TValue *) addr;
+#endif
+#else
         pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_PRIVATE, file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+
         if (pf.begin == MAP_FAILED)
         {
             pf.begin = pf.end = NULL;
@@ -571,6 +621,7 @@ struct MMap;
                 size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue), strerror(errno));
             return false;
         }
+#endif
         pf.end = pf.begin + size;
         return true;
     }
@@ -580,7 +631,13 @@ struct MMap;
 	{
 		typedef typename Position<TFile>::Type TPos;
         unmapPage(pf, file);
+        pf.status = pf.READY;
+        SEQAN_ASSERT_GT(size, 0);
+        
+#ifdef PLATFORM_WINDOWS
+#else
         pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+
         if (pf.begin == MAP_FAILED)
         {
             pf.begin = pf.end = NULL;
@@ -589,10 +646,10 @@ struct MMap;
                 size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue), strerror(errno));
             return false;
         }
+#endif
         pf.end = pf.begin + size;
         return true;
     }
-#endif
 
 	template < typename TValue, typename TFile, typename TSpec > inline
 	bool writePage(PageFrame<TValue, TFile, TSpec> &pf, int pageNo, TFile &file) 
@@ -805,7 +862,7 @@ struct MMap;
         TPageFrame          *first, *last;
         unsigned            frames, maxFrames;
         
-        PageChain(unsigned _maxFrames = UINT_MAX):
+        PageChain(unsigned _maxFrames = 0):
             first(NULL),
             last(NULL),
             frames(0),
@@ -817,8 +874,8 @@ struct MMap;
         
         ~PageChain()
         {
-            while (first)
-                popFront();
+            while (!empty())
+                delete &popFront();
         }
         
         inline TPageFrame & operator[](int k) 
@@ -839,8 +896,8 @@ struct MMap;
 
         inline TPageFrame * getReadyPage() 
 		{
-            if (!first)
-                return pushBack();
+            if (empty())
+                return &pushBack();
 
             if (frames < maxFrames)
             {
@@ -852,7 +909,7 @@ struct MMap;
                     SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
 
                 if (!inProgress)
-                    return pushBack();
+                    return &pushBack();
             }
 
             bool waitResult = waitFor(*first);
@@ -861,7 +918,7 @@ struct MMap;
             if (!waitResult)
                 SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
 
-            return firstToEnd();
+            return &firstToEnd();
         }
 
         template < typename TFile >
@@ -874,8 +931,7 @@ struct MMap;
 
         inline void waitForAll() 
 		{
-            TPageFrame *p = first;
-            for (; p != NULL; p = p->next)
+            for (TPageFrame *p = first; p != NULL; p = p->next)
             {
                 bool waitResult = waitFor(*p);
 
@@ -885,42 +941,143 @@ struct MMap;
             }
         }
 
-        inline TPageFrame * firstToEnd() 
+    public:
+
+        inline bool
+        empty()
+        {
+            return first == NULL;
+        }
+
+        inline bool
+        size()
+        {
+            return frames;
+        }
+
+        inline TPageFrame &
+        front()
+        {
+            return *first;
+        }
+
+        inline TPageFrame &
+        back()
+        {
+            return *last;
+        }
+
+        //
+        // append a PageFrame at the end of this chain
+        //
+        inline TPageFrame &
+        pushBack(TPageFrame &pageFrame)
 		{
+            if (last != NULL)
+                last->next = &pageFrame;
+            else
+                first = &pageFrame;
+            
+            last = &pageFrame;
+            pageFrame.next = NULL;
+            ++frames;
+
+            return pageFrame;
+        }
+
+        //
+        // append a *new* PageFrame at the end of this chain
+        //
+        inline TPageFrame &
+        pushBack()
+		{
+            TPageFrame *pageFrame = new TPageFrame();
+            return pushBack(*pageFrame);
+        }
+
+        //
+        // remove a PageFrame from this chain
+        //
+        inline TPageFrame &
+        erase(TPageFrame & pageFrame)
+        {
+            TPageFrame *prev = NULL;
+            TPageFrame *p;
+
+            for (p = first; p != NULL; p = p->next)
+            {
+                if (p == &pageFrame)
+                {
+                    // found it, now detach from neighbors
+                    if (prev == NULL)
+                        first = p->next;
+                    else
+                        prev->next = p->next;
+
+                    p->next = NULL;
+
+                    // were we the last?
+                    if (last == p)
+                        last = prev;
+
+                    --frames;
+                    break;
+                }
+                prev = p;
+            }
+            // we assert that the page has been found
+            SEQAN_ASSERT(p != NULL);
+            return pageFrame;
+        }
+
+        inline TPageFrame &
+        popFront()
+        {
+            // equivalent to erase(front())
+            TPageFrame *p = first;
+            if (p != NULL)
+            {
+                first = p->next;
+                p->next = NULL;
+                if (first == NULL)
+                    last = NULL;
+                --frames;
+            }
+            else
+                SEQAN_FAIL("pop() was called on an empty PageChain.");
+            return *p;
+        }
+
+        //
+        // move first page to the end of this chain
+        // return the moved page
+        //
+        inline TPageFrame &
+        firstToEnd()
+		{
+            // equivalent to pushBack(popFront())
             last->next = first;
             last = first;
             first = first->next;
             last->next = NULL;
-            return last;
+            return *last;
         }
 
-    private:
 
-        inline TPageFrame * pushBack() 
-		{
-            TPageFrame * p = new TPageFrame();
-            if (p) {
-                if (last)
-                    last->next = p;
-                else
-                    first = p;
-                last = p;
-                ++frames;
-            }
-            return p;
-        }
+// call pop(chain.front())
 
-        inline TPageFrame * popFront() 
-		{
-            TPageFrame *p = first;
-            if (p) {
-                first = first->next;
-                if (!first) last = NULL;
-                --frames;
-                delete p;
-            }
-            return p;
-        }
+//        inline TPageFrame &
+//        popFront()
+//		{
+//            TPageFrame *p = first;
+//            if (p) {
+//                first = first->next;
+//                if (!first) last = NULL;
+//                --frames;
+//                delete p;
+//            }
+//            return p;
+//        }
     };
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -995,7 +1152,7 @@ struct MMap;
 
 		inline void push_back() 
 		{
-			TPos last = endPosition(pages);
+			TPos last = length(pages);
 			resize(pages, last + 1);
 			pages[last].lruEntry = lruList[0].insert(lruList[0].end(), last);
 		}

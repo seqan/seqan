@@ -32,12 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-//SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
-
 #ifndef SEQAN_HEADER_SYSTEM_EVENT_H
 #define SEQAN_HEADER_SYSTEM_EVENT_H
-
-//#include <iterator>
 
 namespace SEQAN_NAMESPACE_MAIN
 {
@@ -59,59 +55,86 @@ namespace SEQAN_NAMESPACE_MAIN
         Event():
             hEvent(NULL) {}
 
-        Event(BOOL initial) {
+        Event(BOOL initial)
+        {
             SEQAN_DO_SYS2(open(initial), "Could not create Event");
         }
 
-        ~Event() {
+        ~Event()
+        {
             if (*this) SEQAN_DO_SYS2(close(), "Could not destroy Event");
         }
 
-        Event(Event const &origin) {
+        // TODO(weese): Use rvalue refs instead
+        Event(Event const &origin)
+        {
             // resource sharing is not yet supported (performance reason)
             // it needs a reference counting technique
-            if (origin) {
+            if (origin)
+            {
                 hEvent = origin.hEvent;
                 const_cast<Event&>(origin).hEvent = NULL;
-            } else
+            }
+            else
                 hEvent = NULL;
         }
 
-        inline Event& operator=(Event const &origin) {
+        inline Event& operator=(Event const &origin)
+        {
             // resource sharing is not yet supported (performance reason)
             // it needs a reference counting technique
-            if (origin) {
+            if (origin)
+            {
                 hEvent = origin.hEvent;
                 const_cast<Event&>(origin).hEvent = NULL;
-            } else
+            }
+            else
                 hEvent = NULL;
             return *this;
         }
 
-        inline bool open(BOOL initial = FALSE) {
+        inline bool open(BOOL initial = FALSE)
+        {
             return (hEvent = CreateEvent(&EventDefaultAttributes, TRUE, initial, NULL)) != NULL;
         }
 
-        inline bool close() {
+        inline bool close()
+        {
             bool success = CloseHandle(hEvent);
 			hEvent = NULL;
 			return success;
         }
 
-        inline bool wait(DWORD timeout_millis = Infinite) {
-            if (!hEvent) return true;
-            return WaitForSingleObject(hEvent, timeout_millis) != WAIT_TIMEOUT;
+        inline bool wait(DWORD timeoutMilliSec, bool &inProgress)
+		{
+            if (!hEvent)
+            {
+               inProgress = false;
+               return true;
+            }
+            DWORD result = WaitForSingleObject(hEvent, timeoutMilliSec);
+			inProgress = (result == WAIT_TIMEOUT);
+			return (result == WAIT_OBJECT_0 || inProgress);
         }
 
-        inline bool signal() {
+        inline bool wait()
+		{
+			bool dummy;
+			return wait(Infinite, dummy);
+        }
+
+        inline bool signal()
+        {
             return SetEvent(hEvent) != 0;
         }
 
-        inline bool reset() {
+        inline bool reset()
+        {
             return ResetEvent(hEvent) != 0;
         }
 
-        inline operator bool() const {
+        inline operator bool() const
+        {
             return hEvent != NULL;
         }
     };
@@ -119,36 +142,37 @@ namespace SEQAN_NAMESPACE_MAIN
 
     //////////////////////////////////////////////////////////////////////////////
     // global event functions
-	
-	inline void reset(Event &e) {
+
+	inline void reset(Event &e)
+    {
 		e.reset();
 	}
 
-    inline bool waitForAll(Event eventList[], DWORD count, DWORD timeout_millis)
+    inline bool waitForAll(Event eventList[], DWORD count, DWORD timeoutMilliSec)
 	{
-		return WaitForMultipleObjects(count, &eventList[0].hEvent, true, timeout_millis) != WAIT_TIMEOUT;
+		return WaitForMultipleObjects(count, &eventList[0].hEvent, true, timeoutMilliSec) != WAIT_TIMEOUT;
 	}
-    
+
     inline bool waitForAll(Event eventList[], DWORD count)
 	{
 		return waitForAll(eventList, count, Event::Infinite);
 	}
-    
-	inline int waitForAny(Event eventList[], DWORD count, DWORD timeout_millis)
+
+	inline int waitForAny(Event eventList[], DWORD count, DWORD timeoutMilliSec)
 	{
-        DWORD result = WaitForMultipleObjects(count, &eventList[0].hEvent, false, timeout_millis);
+        DWORD result = WaitForMultipleObjects(count, &eventList[0].hEvent, false, timeoutMilliSec);
 
         if (/*result >= WAIT_OBJECT_0 && */result < WAIT_OBJECT_0 + count)
-    		return result - WAIT_OBJECT_0;
+            return result - WAIT_OBJECT_0;
 
         return -1;
 	}
-    
+
 	inline int waitForAny(Event eventList[], DWORD count)
 	{
 		return waitForAny(eventList, count, Event::Infinite);
 	}
-    
+
 #else
 
     struct Event: public Mutex
@@ -160,119 +184,150 @@ namespace SEQAN_NAMESPACE_MAIN
         Event():
             hEvent(NULL) {}
 
-        Event(bool initial) {
+        Event(bool initial)
+        {
             SEQAN_DO_SYS(open(initial));
         }
 
-        ~Event() {
+        ~Event()
+        {
             if (*this)
                 SEQAN_DO_SYS(close());
         }
 
+
+        // TODO(weese): Change c'tor the rvalue refs
+		//Event(Event const &&origin):
 		Event(Event const &origin):
 			Mutex()
 		{
             // resource sharing is not yet supported (performance reason)
             // it needs a reference counting technique
-            if (origin) {
+            if (origin)
+            {
                 data = origin.data;
                 const_cast<Event&>(origin).hEvent = NULL;
                 hEvent = &data;
-            } else
+            }
+            else
                 hEvent = NULL;
         }
 
-        inline Event& operator=(Event const &origin) {
+        inline Event& operator=(Event const &origin)
+        {
             // resource sharing is not yet supported (performance reason)
             // it needs a reference counting technique
-            if (origin) {
+            if (origin)
+            {
                 data = origin.data;
                 const_cast<Event&>(origin).hEvent = NULL;
                 hEvent = &data;
-            } else
+            }
+            else
                 hEvent = NULL;
             return *this;
         }
 
         inline bool open(bool initial = false)
         {
-            if (Mutex::open() && !pthread_cond_init(&data, NULL) && (hEvent = &data)) {
-                if (initial) return signal();
+            if (Mutex::open() && pthread_cond_init(&data, NULL) == 0 && (hEvent = &data))
+            {
+                if (initial)
+                    return signal();
                 return true;
-            } else
+            }
+            else
                 return false;
         }
 
-        inline bool close() {
+        inline bool close()
+        {
             bool success = (pthread_cond_destroy(hEvent) == 0);
 		    success &= Mutex::close();
             hEvent = NULL;
             return success;
 		}
 
-        inline bool wait() {
+        inline bool wait()
+        {
             if (!hEvent) return true;
             Mutex::lock();
-            return !pthread_cond_wait(hEvent, Mutex::hMutex);
+            return pthread_cond_wait(hEvent, Mutex::hMutex) == 0;
         }
 
-        inline bool wait(long timeout_millis) {
-            if (timeout_millis != Infinite) {
+        inline bool wait(long timeoutMilliSec, bool &inProgress)
+        {
+            if (timeoutMilliSec != Infinite)
+            {
                 timespec ts;
-                ts.tv_sec = timeout_millis / 1000;
-                ts.tv_nsec = (timeout_millis % 1000) * 1000;
+                ts.tv_sec = timeoutMilliSec / 1000;
+                ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
                 Mutex::lock();
-				return pthread_cond_timedwait(hEvent, Mutex::hMutex, &ts) != ETIMEDOUT;
-            } else
+				int result = pthread_cond_timedwait(hEvent, Mutex::hMutex, &ts);
+                inProgress = (result == ETIMEDOUT);
+                return (result == 0 || inProgress);
+            }
+            else
+            {
+                inProgress = false;
                 return wait();
+            }
         }
 
-        inline bool signal() {
-            return !pthread_cond_broadcast(hEvent);
+        inline bool signal()
+        {
+            return pthread_cond_broadcast(hEvent) == 0;
         }
 
-        inline operator bool() const {
+        inline operator bool() const
+        {
             return hEvent != NULL;
         }
     };
-    
+
 #endif
 
 
 	//////////////////////////////////////////////////////////////////////////////
 	// global event functions
 
-	inline bool open(Event &e, bool initial) {
+	inline bool open(Event &e, bool initial)
+    {
 		return e.open(initial);
 	}
 
-	inline bool open(Event &e) {
+	inline bool open(Event &e)
+    {
 		return open(e, false);
 	}
 
-	inline bool close(Event &e) {
+	inline bool close(Event &e)
+    {
 		return e.close();
 	}
 
-	inline bool waitFor(Event &e) {
+	inline bool waitFor(Event &e)
+	{
 		return e.wait();
 	}
 
     template < typename TTime >
-	inline bool waitFor(Event &e, TTime timeout_millis) {
+	inline bool waitFor(Event &e, TTime timeoutMilliSec, bool &inProgress)
+	{
         #ifdef disabledSEQAN_PROFILE
 			double begin = sysTime();
-			bool b = e.wait(timeout_millis);
+			bool b = e.wait(timeoutMilliSec, inProgress);
 			double end = sysTime();
             if (begin != end)
                 ::std::cerr << "waitTime: " << end - begin << ::std::endl;
 			return b;
         #else
-            return e.wait(timeout_millis);
+            return e.wait(timeoutMilliSec, inProgress);
         #endif
 	}
 
-	inline bool signal(Event &e) {
+	inline bool signal(Event &e)
+    {
 		return e.signal();
 	}
 
@@ -297,7 +352,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template < typename TCount, typename TTime >
-	inline bool waitForAll(DummyEvent eventList[], TCount count, TTime timeout_millis) {
+	inline bool waitForAll(DummyEvent eventList[], TCount count, TTime timeoutMilliSec) {
 		return true;
 	}
 
@@ -306,7 +361,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		return 0;
 	}
 	template < typename TCount, typename TTime >
-	inline TCount waitForAny(DummyEvent eventList[], TCount count, TTime timeout_millis) {
+	inline TCount waitForAny(DummyEvent eventList[], TCount count, TTime timeoutMilliSec) {
 		return 0;
 	}
 */

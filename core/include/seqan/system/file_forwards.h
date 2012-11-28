@@ -139,13 +139,13 @@ inline int _returnValue(aiocb &request);       	// "core/include/seqan/file/file
 // waitFor
 
 inline bool waitFor(aiocb &request);       	// "core/include/seqan/file/file_async.h"(189)
-inline bool waitFor(aiocb &request, long timeout_millis, bool &inProgress);       	// "core/include/seqan/file/file_async.h"(204)
+inline bool waitFor(aiocb &request, long timeoutMilliSec, bool &inProgress);       	// "core/include/seqan/file/file_async.h"(204)
 
 //____________________________________________________________________________
 // waitForAny
 
 template <typename TSize > inline TSize waitForAny(aiocb const * const contexts[], TSize count);       	// "core/include/seqan/file/file_async.h"(223)
-template <typename TSize > inline TSize waitForAny(aiocb const * const contexts[], TSize count, long timeout_millis);       	// "core/include/seqan/file/file_async.h"(231)
+template <typename TSize > inline TSize waitForAny(aiocb const * const contexts[], TSize count, long timeoutMilliSec);       	// "core/include/seqan/file/file_async.h"(231)
 
 //____________________________________________________________________________
 // write

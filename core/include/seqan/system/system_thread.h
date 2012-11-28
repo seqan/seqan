@@ -91,8 +91,8 @@ namespace SEQAN_NAMESPACE_MAIN
             return !TerminateThread(hThread, exitCode);
         }
 
-        inline bool wait(DWORD timeout_millis = INFINITE) {
-            return WaitForSingleObject(hThread, timeout_millis) != WAIT_TIMEOUT;
+        inline bool wait(DWORD timeoutMilliSec = INFINITE) {
+            return WaitForSingleObject(hThread, timeoutMilliSec) != WAIT_TIMEOUT;
         }
 
         inline operator bool() const {
