@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/index.h>
-#include <seqan/index_fm.h>
+#include <seqan/index_extras.h>
 
 #include "index/index_qgram_stretched.h"
 #include "index/find_backtracking_stretched.h"
