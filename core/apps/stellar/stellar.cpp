@@ -508,7 +508,7 @@ void _setParser(ArgumentParser & parser)
 
     addOption(parser, ArgParseOption("e", "epsilon", "Maximal error rate (max 0.25).", ArgParseArgument::DOUBLE));
     setDefaultValue(parser, "e", "0.05");
-    setMinValue(parser, "e", "0");
+    setMinValue(parser, "e", "0.0000001");
     setMaxValue(parser, "e", "0.25");
     addOption(parser, ArgParseOption("l", "minLength", "Minimal length of epsilon-matches.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "l", "100");
