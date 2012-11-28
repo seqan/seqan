@@ -270,6 +270,36 @@ SEQAN_CHECKPOINT
 	return true;
 }
 
+template<typename TRow, typename TPosition>
+TPosition
+projectedPosition(TRow & rowA, TRow & rowB, TPosition pos)
+{
+    return toSourcePosition(rowA, toViewPosition(rowB, pos));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Checks all alignment columns of two overlapping matches.
+// It is assumed that matchA.begin1 < matchB.begin1.
+template<typename TMatch, typename TSize>
+bool
+_checkAlignColOverlap(TMatch & matchA, TMatch & matchB, TSize minLength)
+{
+    TSize equalCols = 0;
+    TSize diffCols = 0;
+
+    for  (typename TMatch::TPos pos = matchB.begin1; pos < _min(matchA.end1, matchB.end1); ++pos)
+    {
+        if (projectedPosition(matchA.row1, matchA.row2, pos) == projectedPosition(matchB.row1, matchB.row2, pos))
+            ++equalCols;
+        else
+            ++diffCols;
+    }
+
+    // TODO: This criterium has to be revisited
+    if (diffCols >= minLength || equalCols/(equalCols+diffCols) < 0.95) return false;
+    return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Marks matches that overlap in both sequences with a longer match as invalid.
 template<typename TSequence, typename TId, typename TSize>
@@ -316,7 +346,8 @@ void maskOverlaps(String<StellarMatch<TSequence, TId> > & matches, TSize minLeng
             // check if matches overlap in row1 - if not, then continue
             if (!checkOverlap(*it, o, minLength)) continue;
 
-            // (TODO: check exact align col overlap)
+            // check exact alignment columns for overlap
+            if (!_checkAlignColOverlap(o, *it, minLength)) continue;
 
             // set shorter match invalid
             if (length(*it) > length(o))
