@@ -632,7 +632,7 @@ struct MMap;
 		typedef typename Position<TFile>::Type TPos;
         unmapPage(pf, file);
         pf.status = pf.READY;
-        SEQAN_ASSERT_GT(size, 0);
+        SEQAN_ASSERT_GT(size, 0u);
         
 #ifdef PLATFORM_WINDOWS
 #else
