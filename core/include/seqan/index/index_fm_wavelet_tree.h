@@ -523,7 +523,7 @@ inline unsigned _countOccurrences(WaveletTree<TText, TWaveletTreeSpec> const & t
 .Function.WaveletTree#countOccurrences
 ..summary:Returns the number of occurrences of a specified character from the start
 to a specified position.
-..signature:getOccurrences(waveletTree, character, pos)
+..signature:countOccurrences(waveletTree, character, pos)
 ..param.waveletTree:The wavelet tree.
 ...type:Class.WaveletTree
 ..param.character:The character.
