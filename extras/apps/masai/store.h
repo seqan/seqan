@@ -81,21 +81,21 @@ struct FragStoreConfig
 
 typedef StringSet<FragStoreConfig::TContigSeq, Dependent<> >                TGenome;
 
-// TODO(esiragusa):Overload Size/Limits metafunctions and test
-//namespace seqan
-//{
-//    template <>
-//    struct Size<FragStoreConfig::TContigSeq>
-//    {
-//        typedef unsigned int            Type;
-//    };
-//
-//    template <>
-//    struct StringSetLimits<TGenome>
-//    {
-//        typedef String<unsigned char>   Type;
-//    };
-//}
+namespace seqan
+{
+    template <>
+    struct Size<FragStoreConfig::TContigSeq>
+    {
+        typedef unsigned int            Type;
+    };
+
+    // NOTE(esiragusa): Genome can be at most 2^32 bp in total
+    template <>
+    struct StringSetLimits<TGenome>
+    {
+        typedef String<unsigned int>    Type;
+    };
+}
 
 // ----------------------------------------------------------------------------
 // Fragment Store Type
