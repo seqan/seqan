@@ -207,14 +207,14 @@ bool _sortMappedReads(Sorter<TSpec> & sorter,
     if (!getNext(store, matches))
         return false;
 
-    unsigned long allMatches = 0;
-    unsigned long nonDuplicatedMatches = 0;
+//    unsigned long allMatches = 0;
+//    unsigned long nonDuplicatedMatches = 0;
 
     do
     {
-        allMatches += length(matches);
+//        allMatches += length(matches);
         removeDuplicateMatches(matches);
-        nonDuplicatedMatches += length(matches);
+//        nonDuplicatedMatches += length(matches);
 
         if (sorter.matchesPerRead < MaxValue<unsigned>::VALUE)
             sortByErrors(matches);
@@ -225,8 +225,8 @@ bool _sortMappedReads(Sorter<TSpec> & sorter,
 
     close(store);
 
-    std::cout << "All Matches: " << allMatches << std::endl;
-    std::cout << "Non Duplicated: " << nonDuplicatedMatches << std::endl;
+//    std::cout << "All Matches: " << allMatches << std::endl;
+//    std::cout << "Non Duplicated: " << nonDuplicatedMatches << std::endl;
 
     return true;
 }
