@@ -405,8 +405,8 @@ inline bool _align(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     if (extension > 0)
     {
@@ -433,8 +433,8 @@ inline bool _align(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     if (extension > 0)
     {
@@ -461,8 +461,8 @@ inline bool _align(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     if (extension > 0)
     {
@@ -489,8 +489,8 @@ inline bool _align(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     TSize endPosition = prefix_aligner.global_position + extension;
 
@@ -530,8 +530,8 @@ inline bool _match(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     if (extension > 0)
     {
@@ -556,8 +556,8 @@ inline bool _match(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     if (extension > 0)
     {
@@ -582,8 +582,8 @@ inline bool _match(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
     
     if (extension > 0)
     {
@@ -608,8 +608,8 @@ inline bool _match(SuffixAligner<TSuffix, HammingDistance> & suffix_aligner,
 {
     typedef typename Size<TPrefix>::Type            TSize;
 
-    TSize extension = std::min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
-                               prefix_aligner.prefix_length - prefix_aligner.prefix_position);
+    TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
+                           prefix_aligner.prefix_length - prefix_aligner.prefix_position);
 
     TSize endPosition = prefix_aligner.global_position + extension;
 
@@ -868,7 +868,7 @@ _backtrack(Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec
         std::cout << "Stack Height:   " << length(pattern.state) << std::endl;
         std::cout << "Suffix:         " <<
         prefix(representative(finder.index_iterator),
-               std::min(repLength(finder.index_iterator), length(needle(pattern))))
+               _min(repLength(finder.index_iterator), length(needle(pattern))))
         << std::endl;
 #endif
         // Restore last state
@@ -1032,7 +1032,7 @@ _backtrack(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktracking
         TPrefix prefixEdge = parentEdgeLabel(pattern.index_iterator);
         TSuffixSize prefixLength = parentEdgeLength(pattern.index_iterator);
         TSuffixSize prefixPos = pattern.prefix_aligner.global_position - parentRepLength(pattern.index_iterator);
-        setLength(pattern.prefix_aligner, std::min(prefixLength, pattern.depth - parentRepLength(pattern.index_iterator)));
+        setLength(pattern.prefix_aligner, _min(prefixLength, pattern.depth - parentRepLength(pattern.index_iterator)));
         setPosition(pattern.prefix_aligner, prefixPos);
 
         // Align suffix with prefix
@@ -1207,7 +1207,7 @@ _search(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpe
         TPrefix prefixEdge = parentEdgeLabel(pattern.index_iterator);
         TSuffixSize prefixLength = parentEdgeLength(pattern.index_iterator);
         TSuffixSize prefixPos = pattern.prefix_aligner.global_position - parentRepLength(pattern.index_iterator);
-        setLength(pattern.prefix_aligner, std::min(prefixLength, pattern.depth - parentRepLength(pattern.index_iterator)));
+        setLength(pattern.prefix_aligner, _min(prefixLength, pattern.depth - parentRepLength(pattern.index_iterator)));
         setPosition(pattern.prefix_aligner, prefixPos);
 
         // Align exactly suffix with prefix
@@ -1404,13 +1404,13 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
     return !(atEnd(finder) && atEnd(pattern));
 }
 
-template <typename TText, typename TSpec, typename TDistance, typename TBacktrackingSpec, typename TNeedle>
-inline bool
-find(Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & finder,
-     Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & pattern)
-{
-    return find(finder, pattern, 0u);
-}
+//template <typename TText, typename TSpec, typename TDistance, typename TBacktrackingSpec, typename TNeedle>
+//inline bool
+//find(Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec> > & finder,
+//     Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & pattern)
+//{
+//    return find(finder, pattern, 0u);
+//}
 
 }
 
