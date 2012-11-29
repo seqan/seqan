@@ -241,6 +241,16 @@ parentEdgeFirstChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     return value(it).lastChar;
 }
 
+template <typename TText, typename TIndexSpec, typename TSpec>
+inline void goRoot(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > & it)
+{
+    _historyClear(it);
+    clear(it);
+    if (!empty(indexSA(container(it))))
+        _setSizeInval(value(it).range.i2);
+    value(it).repLen = 0;
+}
+
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDfsOrder>
 inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it,
                     VSTreeIteratorTraits<TDfsOrder, False> const)
@@ -255,7 +265,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
 {
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
     typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
-    typedef typename Size<TSA const>::Type                  TSASize;
+    typedef typename Size<TIndex>::Type                     TSASize;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
     typedef typename Value<TIndex>::Type                    TAlphabet;
@@ -340,7 +350,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
 {
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
     typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
-    typedef typename Size<TSA const>::Type                  TSASize;
+    typedef typename Size<TIndex>::Type                     TSASize;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
     typedef typename Value<TIndex>::Type                    TAlphabet;
@@ -360,6 +370,8 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
     std::cout << "current: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
 #endif
 
+
+    // TODO(esiragusa): Use range().
     TSASize saRangeBegin = value(it).range.i2;
     TSASize saRangeEnd = (value(it).parentRight == MaxValue<TSASize>::VALUE) ? length(sa) : value(it).parentRight;
 
@@ -424,7 +436,7 @@ inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<
 {
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
     typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
-    typedef typename Size<TSA const>::Type                  TSASize;
+    typedef typename Size<TIndex>::Type                     TSASize;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
     typedef typename Value<TIndex>::Type                    TAlphabet;
