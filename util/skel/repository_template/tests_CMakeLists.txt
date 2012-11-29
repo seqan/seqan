@@ -1,6 +1,13 @@
-cmake_minimum_required (VERSION 2.6)
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /%(CMAKE_PROJECT_PATH)s/CMakeLists.txt
+#
+# CMakeLists.txt file for %(CMAKE_PROJECT_PATH)s tests.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
 project (seqan_%(CMAKE_PROJECT_NAME)s)
 
-seqan_setup_tests(%(CMAKE_PROJECT_NAME)s)  # Setup flags etc, add meta target.
-
-seqan_add_all_subdirectories()  # include_directory(*)
+# Setup flags and register all subdirectories.
+seqan_register_tests ()

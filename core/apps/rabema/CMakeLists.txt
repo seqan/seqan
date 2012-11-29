@@ -1,51 +1,115 @@
-cmake_minimum_required (VERSION 2.6)
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /core/apps/rabema/CMakeLists.txt
+#
+# CMakeLists.txt file for Rabema.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_rabema)
+message (STATUS "Configuring core/apps/rabema")
 
-# We need the module bam_io from extras, so add the necessary include
-# directory here.
-include_directories(../../../extras/include)
+# ----------------------------------------------------------------------------
+# Dependencies
+# ----------------------------------------------------------------------------
 
+# Search SeqAn and select dependencies.
+set (SEQAN_FIND_DEPENDENCIES ZLIB)
+find_package (SeqAn REQUIRED)
+
+if (NOT ZLIB_FOUND)
+  message (STATUS "  ZLIB not found: RABEMA will not be built.")
+  return ()
+endif (NOT ZLIB_FOUND)
+
+# ----------------------------------------------------------------------------
+# Build Setup
+# ----------------------------------------------------------------------------
+
+# Add include directories.
+include_directories (${SEQAN_INCLUDE_DIRS})
+
+# Add definitions set by find_package (SeqAn).
+add_definitions (${SEQAN_DEFINITIONS})
 
 # Preparation of SAM files, i.e. filling SEQ field of each record.
-seqan_add_executable(rabema_prepare_sam prepare_sam.cpp sorting.h)
+add_executable (rabema_prepare_sam prepare_sam.cpp sorting.h)
+target_link_libraries (rabema_prepare_sam ${SEQAN_LIBRARIES})
 
-if (ZLIB_FOUND)
-    # Building of GSI file from "perfect" SAM file and reference sequence.
-    seqan_add_executable(rabema_build_gold_standard rabema_build_gold_standard.cpp
-                         curve_smoothing.h
-                         find_hamming_simple_ext.h
-                         find_myers_ukkonen_ext.h
-                         find_myers_ukkonen_reads.h
-                         io_gsi.h
-                         rabema_stats.h
-                         ref_id_mapping.h
-                         sorting.h)
+# Building of GSI file from "perfect" SAM file and reference sequence.
+add_executable (rabema_build_gold_standard
+               rabema_build_gold_standard.cpp
+               curve_smoothing.h
+               find_hamming_simple_ext.h
+               find_myers_ukkonen_ext.h
+               find_myers_ukkonen_reads.h
+               io_gsi.h
+               rabema_stats.h
+               ref_id_mapping.h
+               sorting.h)
+target_link_libraries (rabema_build_gold_standard ${SEQAN_LIBRARIES})
 
-    # Comparison of arbitrary read mapper SAM against GSI file.
-    seqan_add_executable(rabema_evaluate rabema_evaluate.cpp
-                         curve_smoothing.h
-                         find_hamming_simple_ext.h
-                         find_myers_ukkonen_ext.h
-                         find_myers_ukkonen_reads.h
-                         io_gsi.h
-                         rabema_stats.h
-                         ref_id_mapping.h
-                         sorting.h)
-
-    # Install rabema in /bin directory
-    install(TARGETS rabema_prepare_sam rabema_build_gold_standard rabema_evaluate
-            DESTINATION bin)
-else (ZLIB_FOUND)
-    message(STATUS "INFO: Rabema not build because zlib was not found.")
-endif (ZLIB_FOUND)
+# Comparison of arbitrary read mapper SAM against GSI file.
+add_executable (rabema_evaluate rabema_evaluate.cpp
+               curve_smoothing.h
+               find_hamming_simple_ext.h
+               find_myers_ukkonen_ext.h
+               find_myers_ukkonen_reads.h
+               io_gsi.h
+               rabema_stats.h
+               ref_id_mapping.h
+               sorting.h)
+target_link_libraries (rabema_evaluate ${SEQAN_LIBRARIES})
 
 # Small tool for helping in debugging.
-seqan_add_executable(do_search do_search.cpp find_myers_ukkonen_ext.h)
+add_executable (rabema_do_search do_search.cpp find_myers_ukkonen_ext.h)
+target_link_libraries (rabema_do_search ${SEQAN_LIBRARIES})
 
+# Add CXX flags found by find_package (SeqAn).
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
-# Run app tests if python was found
-if(PYTHONINTERP_FOUND)
-  add_test(NAME app_test_rabema COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
-  #message(STATUS "add_test(NAME app_test_rabema COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})")
-endif(PYTHONINTERP_FOUND)
+# ----------------------------------------------------------------------------
+# Installation
+# ----------------------------------------------------------------------------
+
+# Set variables for installing, depending on the selected build type.
+if (NOT SEQAN_PREFIX_SHARE_DOC)
+  seqan_setup_install_vars (rabema)
+endif (NOT SEQAN_PREFIX_SHARE_DOC)
+
+# Install rabema programs in ${PREFIX}/bin directory
+install (TARGETS rabema_prepare_sam
+                 rabema_build_gold_standard
+                 rabema_evaluate
+         DESTINATION bin)
+
+# Install rabema in /bin directory
+install (TARGETS rabema_prepare_sam rabema_build_gold_standard rabema_evaluate
+        DESTINATION bin)
+
+# Install non-binary files for the package to "." for app builds and
+# ${PREFIX}/share/doc/pair_align for SeqAn release builds.
+install (FILES LICENSE
+               README
+         DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
+
+# ----------------------------------------------------------------------------
+# App Test
+# ----------------------------------------------------------------------------
+
+seqan_add_app_test (rabema)
+
+# ----------------------------------------------------------------------------
+# CPack Install
+# ----------------------------------------------------------------------------
+
+if (SEQAN_BUILD_SYSTEM STREQUAL "APP:rabema")
+    set (CPACK_PACKAGE_NAME "rabema")
+    set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Rabema - Read Alignment Benchmark")
+    set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>")
+    set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
+
+    seqan_configure_cpack_app (rabema "Rabema")
+endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:rabema")
 

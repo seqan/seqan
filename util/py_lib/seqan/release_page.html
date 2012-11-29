@@ -1,0 +1,110 @@
+<!--(macro packages_cell)-->
+<td>
+  <!--(if packages.archs['i386'].files)-->
+    32 bit:#!
+    <!--(for f in FORMATS)-->#!
+      <!--(if packages.archs['i386'].files.get(f))-->#!
+      <a href="@!packages.archs['i386'].files[f]!@">@!f!@</a>#!
+      <!--(end)-->#!
+    <!--(end)-->#!
+  <!--(end)-->
+  <br />
+  <!--(if packages.archs['x86_64'].files)-->
+    64 bit:#!
+    <!--(for f in FORMATS)-->#!
+      <!--(if packages.archs['x86_64'].files.get(f))-->#!
+      <a href="@!packages.archs['x86_64'].files[f]!@">@!f!@</a>#!
+      <!--(end)-->#!
+    <!--(end)-->#!
+  <!--(else)-->
+  &nbsp;
+  <!--(end)-->
+</td>
+<!--(end)-->
+
+<html>
+  <head>
+    <title>SeqAn Package Releases</title>
+    <style type="text/css">
+      table, td, th { border: 1px solid black; }
+    </style>
+  <body>
+    <h1>SeqAn Package Releases</h1>
+
+    <h2>SeqAn Library</h2>
+    <p>
+      Below, you find links to the SeqAn library releases.
+      The releases contain the library and demo source code as well as the API documentation.
+    </p>
+
+    <table>
+      <tr>
+        <th>Version</th>
+        <th>Platform Independent Download</th>
+      </tr>
+      <!--(for version in seqan_library.versions.values())-->
+      <tr>
+        <td>@!version.version!@</td>
+        <td>
+        <!--(for f in FORMATS)-->#!
+          <!--(if version.packages['src'].archs['src'].files.get(f))-->#!
+           <a href="@!version.packages['src'].archs['src'].files[f]!@">@!f!@</a>
+          <!--(end)-->
+        <!--(end)-->
+        </td>
+      </tr>
+      <!--(end)-->
+    </table>
+
+    <h2>SeqAn Apps Bundle</h2>
+    <p>
+      On each SeqAn release, the apps are also released in a bundle.
+      The version number is the same as the one of the corresponding SeqAn release.
+      See below for individual app releases.
+    </p>
+
+    <table>
+      <tr>
+        <th>Version</th>
+        <th>Linux</th>
+        <th>Mac</th>
+        <th>Windows</th>
+      </tr>
+      <!--(for version in seqan_apps.versions.values())-->
+      <tr>
+        <td>@!version.version!@</td>
+        @!packages_cell(packages=version.packages['Linux'])!@
+        @!packages_cell(packages=version.packages['Mac'])!@
+        @!packages_cell(packages=version.packages['Windows'])!@
+      </tr>
+      <!--(end)-->
+    </table>
+
+    <h2>Individual App Releases</h2>
+    <p>
+      The SeqAn apps are also released independently of the apps bundle release.
+      You can find the builds below.
+      The version numbers are independent of any SeqAn release number.
+    </p>
+
+    <!--(for software in softwares.values())-->
+      <h3>@!software.name!@</h3>
+      <table>
+        <tr>
+          <th>Version</th>
+          <th>Linux</th>
+          <th>Mac</th>
+          <th>Windows</th>
+        </tr>
+        <!--(for version in software.versions.values())-->
+          <tr>
+            <td>@!version.version!@</td>
+            @!packages_cell(packages=version.packages['Linux'])!@
+            @!packages_cell(packages=version.packages['Mac'])!@
+            @!packages_cell(packages=version.packages['Windows'])!@
+          </tr>
+        <!--(end)-->
+      </table>
+    <!--(end)-->
+  </body>
+</html>

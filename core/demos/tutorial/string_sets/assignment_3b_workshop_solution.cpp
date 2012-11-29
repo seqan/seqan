@@ -3,6 +3,7 @@
 #include <seqan/file.h>
 
 using namespace seqan;
+
 // Function to print simple alignment between two sequences with the same length
 template <typename TText1, typename TText2>
 void printAlign(TText1 const & genomeFragment, TText2 const & read)
@@ -11,6 +12,7 @@ void printAlign(TText1 const & genomeFragment, TText2 const & read)
         std::cout << "  genome : " << genomeFragment << std::endl;
         std::cout << "  read   : " << read << std::endl;
 }
+
 int main(int, char const **)
 {
     // Build reads and genomes
@@ -82,7 +84,7 @@ int main(int, char const **)
         unsigned beginPosition = alignPosList[i];
         unsigned endPosition = beginPosition + length(value(it2));
         // Build Infix
-        Infix<DnaString>::Type genomeFragment = infix(bsChr1, beginPosition, endPosition);
+        Infix<DnaString>::Type genomeFragment = infix(chr1, beginPosition, endPosition);
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, value(it2));
     }

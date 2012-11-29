@@ -19,8 +19,10 @@ It will perform the following replacements:
 
   %(HEADER_GUARD)s  will be replaced by the UPPER_CASE_PATH_H_ to the file.
 
-  %(CMAKE_PROJECT_PATH)s  will be replaced by lower_case_path to the target
+  %(CMAKE_PROJECT_NAME)s  will be replaced by lower_case_path to the target
                           directory.
+
+  %(CMAKE_PROJECT_PATH)s  will be replaced by the path to the target directory.
 
 Copyright: (c) 2010, Knut Reinert, FU Berlin
 License:   3-clause BSD (see LICENSE)
@@ -161,8 +163,9 @@ def buildReplacements(type_, name, location, target_file, options):
                            paths.repositoryRoot())
     cmake_project_name = _pathToIdentifier(path)
     result['CMAKE_PROJECT_NAME'] = cmake_project_name
+    result['CMAKE_PROJECT_PATH'] = path
     if type_ == 'repository':
-        result['REPOSITORY_PSEUDO_TARGET_NAME'] = string.capwords(name.replace('/', ' ').replace('\\', ' ')).replace(' ', '')
+        result['REPOSITORY_PSEUDO_TARGET_NAME'] = name.replace('/', '_').replace('\\', '_').replace(' ', '_')
     if type_ == 'app_tests':
         result['APP_NAME'] = os.path.split(os.path.split(location)[0])[1]
         result['APP_NAME_U'] = result['APP_NAME'].upper()

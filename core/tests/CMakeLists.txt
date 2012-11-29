@@ -1,6 +1,13 @@
-cmake_minimum_required (VERSION 2.6)
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /core/tests/CMakeLists.txt
+#
+# CMakeLists.txt file for core tests.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests)
 
-seqan_setup_tests(core_tests)  # Setup flags etc.
-
-seqan_add_all_subdirectories()  # include_directory(*)
+# Setup flags and register all subdirectories.
+seqan_register_tests ()

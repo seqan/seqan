@@ -1,6 +1,16 @@
-cmake_minimum_required (VERSION 2.6)
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /%(CMAKE_PROJECT_PATH)s/CMakeLists.txt
+#
+# CMakeLists.txt file for the %(CMAKE_PROJECT_PATH)s demos.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
 project (seqan_%(CMAKE_PROJECT_NAME)s)
+message (STATUS "Configuring %(CMAKE_PROJECT_PATH)s")
 
-seqan_setup_demos(%(CMAKE_PROJECT_NAME)s)  # Add meta target and make executables depend on it.
-
-seqan_add_all_executables(%(CMAKE_PROJECT_NAME)s)
+# Recursively register all demos in core and prefix their target/binary names
+# with "demo_".  The demos will be built in DEVELOP mode, copied in
+# SEQAN_RELEASE mode and left alone otherwise.
+seqan_register_demos (demo_)

@@ -34,7 +34,7 @@
 // Tests for the synopsis module: Mining of large data sets.
 // ==========================================================================
 
-#include "config.h"
+//#include "config.h"
 
 #include <seqan/basic.h>
 #include <seqan/file.h>

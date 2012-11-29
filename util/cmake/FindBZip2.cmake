@@ -36,6 +36,8 @@ else (MSVC)
 	FIND_LIBRARY(BZIP2_LIBRARY_D NAMES libbz2_d bz2_d bzip2_d)
 endif (MSVC)
 
+mark_as_advanced(BZIP_LIBRARY BZIP_LIBRARY_D)
+
 # handle the QUIETLY and REQUIRED arguments and set BZip2_FOUND to TRUE if 
 # all listed variables are TRUE
 INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)

@@ -49,7 +49,7 @@ def main(source_base, binary_base):
     # We prepare a list of transforms to apply to the output files: Strip the
     # running times from output.
     transforms = [
-        app_tests.RegexpReplaceTransform(r'Finished haplotype creation in [0-9.]+s',
+        app_tests.RegexpReplaceTransform(r'Finished haplotype creation in [^ ]+s',
                                          r'Finished haplotype creation in <cut out>s',
                                          left=True, right=True),
         ]

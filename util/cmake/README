@@ -1,0 +1,84 @@
+                  ** SeqAn Build System and Support Files **
+
+Description
+===========
+
+This directory contains the SeqAn CMake build system and supporting files.  We
+will give a rough overview of the most important files and mechanisms used in
+the build system.  It should be fairly easy to understand the system from the
+documentation embedded in the CMake files.
+
+Files
+=====
+
+  FindTBB
+
+    Copy from http://code.google.com/p/findtbb/ of the TBB finder.
+
+  CMakeMacroParseArguments.cmake
+
+   Makes writing CMake find modules easier.  Copied from CMake project, not
+   available in older CMake versions.
+
+  CTestConfig.cmake
+
+    This file is copied into the project root in nightly builds for
+    configuration.
+
+  FeatureSummary.cmake
+
+    Print a summary of the features enabled in the SeqAn library.
+
+  FindBZip2.cmake
+
+    Contains the functionality from FindZLIB.cmake for libbz2.
+
+  FindPackageHandleStandardArgs.cmake
+
+    See CMakeMacroParseArguments.cmake.
+
+  GetCurrentDate.cmake
+
+    Get the current date into ${CURRENT_YEAR}, ${CURRENT_MONTH}, and
+    ${CURRENT_DAY}.
+
+  package.cmake
+
+    CPack configuration for the SeqAn library/all-apps builds.
+
+  SeqAnBuildSystem.cmake
+
+    This CMake file defines various functions and macros to be used in the
+    SeqAn file hierarchy.  They form the SeqAn build system.
+
+  SeqAnContribs.cmake
+
+    Included from the root CMakeLists.txt, looks for the SeqAn contribs on
+    windows in their default install locations.
+
+  SeqAnLegacyBuildSystem.cmake
+
+   This CMake file defines functions from the previous build system.  They are
+   translated to the functions from SeqAnBuildSystem.cmake for backward
+   compatibility and a smoother upgrade path.
+
+  SeqAnUsabilityAnalyzer.cmake
+
+   CMake functions that allow for the integration of the SeqAn Usability
+   Analyzer (SUA) into the build process.
+
+  FindZLIB.cmake
+
+    A CMake module for finding the ZLIB.  This is a copy of the original
+    FindZLIB.cmake from the CMake project.  The main difference is that the
+    libraries are searched for in an optimized version (no suffix) and a debug
+    version (suffix "_d").
+
+    This is relevant on Windows where you can only link against libraries
+    build in the same optimization configuration.
+
+    Note that you can such compiled libraries from the SeqAn Contribs.
+
+  SetCPackSystemName.cmake
+
+    Include to set the system name into CPACK_SYSTEM_NAME.

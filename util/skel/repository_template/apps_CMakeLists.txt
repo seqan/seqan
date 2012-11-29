@@ -1,6 +1,14 @@
-cmake_minimum_required (VERSION 2.6)
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /%(CMAKE_PROJECT_PATH)s/CMakeLists.txt
+#
+# CMakeLists.txt file for the %(CMAKE_PROJECT_PATH)s apps.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
 project (seqan_%(CMAKE_PROJECT_NAME)s)
 
-seqan_setup_apps(%(CMAKE_PROJECT_NAME)s)  # Add meta target and make executables depend on it.
-
-seqan_add_all_subdirectories()  # include_directory(*)
+# Register all apps in core.  The apps will be built in SEQAN_RELEASE mode or
+# the apps called ${app} in APP:${app} mode.
+seqan_register_apps ()

@@ -146,13 +146,15 @@ def autolocateBinary(base_path, relative_path, binary_name):
   could be 'core/apps/tree_recon' whereas for Visual Studio, it could be
   'core/apps/Release/tree_recon'.
 
+  Also, it searches for the binary name in "${base_path}/bin".
+
   This function tries to automatically guess the name of the file and return
   the first one it finds.
   """
   # Names of intermediary directories and possible file extensions.
   intermediary_dir_names = ['', 'Debug', 'Release']
   extensions = ['', '.exe']
-  paths = []
+  paths = [os.path.join(base_path, 'bin', binary_name)]
   # Try all possible paths.
   for dir_name in intermediary_dir_names:
     for ext in extensions:

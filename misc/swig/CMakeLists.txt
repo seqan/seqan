@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 2.6)
-project(SwigBinding)
+cmake_minimum_required (VERSION 2.6)
+project (SwigBinding)
 #################################################################################
 ## get svn version
 #################################################################################
 
-find_package(Subversion)
-if(Subversion_FOUND)
+find_package (Subversion)
+if (Subversion_FOUND)
   Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} ER)
-  set(SUBVERSION_REVISION ${ER_WC_REVISION})
-endif(Subversion_FOUND)
+  set (SUBVERSION_REVISION ${ER_WC_REVISION})
+endif (Subversion_FOUND)
 
 
 #################################################################################
@@ -153,14 +153,14 @@ INSTALL(FILES example.py  DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin )
 
 SET(CPACK_SET_DESTDIR "ON")
 IF (WIN32)
-	SET(CMAKE_INSTALL_PREFIX .)
+    SET(CMAKE_INSTALL_PREFIX .)
 ENDIF (WIN32)
 
 SET(CPACK_GENERATOR "ZIP")
-set(CPACK_PACKAGE_VERSION_PATCH "${SUBVERSION_REVISION}")
+set (CPACK_PACKAGE_VERSION_PATCH "${SUBVERSION_REVISION}")
 IF (WIN32)
-	SET(CMAKE_INSTALL_PREFIX .)
-	SET(CPACK_GENERATOR "ZIP")
+    SET(CMAKE_INSTALL_PREFIX .)
+    SET(CPACK_GENERATOR "ZIP")
 ENDIF (WIN32)
 
 include (InstallRequiredSystemLibraries)

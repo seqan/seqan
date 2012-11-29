@@ -78,6 +78,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_stream_recognize_file_type_text_fasta)
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_stream_recognize_file_type_gz_fasta)
 {
+#if SEQAN_HAS_ZLIB
     // Build path to file.
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/seq_io/test_dna.fa.gz");
@@ -89,10 +90,12 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_stream_recognize_file_type_gz_fasta)
     SEQAN_ASSERT(isGood(seqIO));
     SEQAN_ASSERT_EQ(seqIO._fileType, seqan::SeqIOFileType_::FILE_TYPE_GZ);
     SEQAN_ASSERT_EQ(seqIO._fileFormat, seqan::SeqIOFileFormat_::FILE_FORMAT_FASTA);
+#endif  // #if SEQAN_HAS_ZLIB
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_stream_recognize_file_type_bz2_fasta)
 {
+#if SEQAN_HAS_BZIP2
     // Build path to file.
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/core/tests/seq_io/test_dna.fa.bz2");
@@ -104,6 +107,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_stream_recognize_file_type_bz2_fasta)
     SEQAN_ASSERT(isGood(seqIO));
     SEQAN_ASSERT_EQ(seqIO._fileType, seqan::SeqIOFileType_::FILE_TYPE_BZ2);
     SEQAN_ASSERT_EQ(seqIO._fileFormat, seqan::SeqIOFileFormat_::FILE_FORMAT_FASTA);
+#endif  // #if SEQAN_HAS_BZIP2
 }
 
 // ---------------------------------------------------------------------------
