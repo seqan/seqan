@@ -427,7 +427,8 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
         if (goDown(it._topIterator))
             return true;
 
-        SEQAN_ASSERT_EQ(repLength(it._topIterator), weight(indexShape(container(it._topIterator))));
+        if (!isLeaf(it._topIterator))
+            return false;
 
         _implantSa(it);
     }
@@ -449,14 +450,12 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 {
     if (_atTop(it))
     {
-        SEQAN_ASSERT_LT(repLength(it._topIterator), weight(indexShape(container(it._topIterator))));
-
         if (goDown(it._topIterator, pattern, lcp))
             return true;
 
         if (!isLeaf(it._topIterator))
             return false;
-        
+
         _implantSa(it);
     }
 
