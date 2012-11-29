@@ -38,6 +38,7 @@
 #define SEQAN_SYNOPSIS_HOT_LIST_SPACE_SAVING_H_
 
 #include <algorithm>
+#include <map>
 
 namespace seqan {
 
@@ -79,7 +80,7 @@ public:
     typedef typename Size<THotList_>::Type TSize_;
     typedef CounterBuckets<TValue, TSize_> TCounterBuckets_;
     typedef typename Iterator<TCounterBuckets_, Entries>::Type TEntriesIter_;
-    typedef std::tr1::unordered_map<TValue, TEntriesIter_> TMap_;
+    typedef std::map<TValue, TEntriesIter_> TMap_;
 
     TSize_ _n;
     unsigned _k;

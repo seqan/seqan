@@ -38,6 +38,7 @@
 #define SEQAN_SYNOPSIS_HOT_LIST_LOSSY_COUNTING_H_
 
 #include <algorithm>
+#include <map>
 
 namespace seqan {
 
@@ -75,7 +76,7 @@ class HotList<TValue, LossyCounting, TCallback>
 public:
     typedef HotList<TValue, LossyCounting> THotList_;
     typedef typename Size<THotList_>::Type TSize_;
-    typedef typename std::tr1::unordered_map<TValue, TSize_> TMap_;
+    typedef typename std::map<TValue, TSize_> TMap_;
 
     TSize_ _n;
     TSize_ _delta;  // One global delta.
@@ -89,13 +90,13 @@ public:
     // ------------------------------------------------------------------------
 
     HotList(unsigned k)
-            : _n(0), _delta(0), _k(k), _map(k)
+            : _n(0), _delta(0), _k(k)
     {
         create(_callbackContext);
     }
 
     HotList(unsigned k, TCallback & callbackContext)
-            : _n(0), _delta(0), _k(k), _map(k), _callbackContext(callbackContext)
+            : _n(0), _delta(0), _k(k), _callbackContext(callbackContext)
     {}
 };
 

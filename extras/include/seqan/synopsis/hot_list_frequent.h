@@ -40,6 +40,7 @@
 #define SEQAN_SYNOPSIS_HOT_LIST_FREQUENT_H_
 
 #include <algorithm>
+#include <map>
 
 namespace seqan {
 
@@ -81,7 +82,7 @@ class HotList<TValue, Frequent, TCallback>
 public:
     typedef HotList<TValue, Frequent> THotList_;
     typedef typename Size<THotList_>::Type TSize_;
-    typedef typename std::tr1::unordered_map<TValue, TSize_> TMap_;
+    typedef typename std::map<TValue, TSize_> TMap_;
     
     TSize_ _n;   // number of items seen so far, unnecessary?
     unsigned _k; // number of buckets
@@ -94,13 +95,13 @@ public:
     // ------------------------------------------------------------------------
 
     HotList(unsigned k)
-            : _n(0), _k(k), _map(k)
+            : _n(0), _k(k)
     {
         create(_callbackContext);
     }
 
     HotList(unsigned k, TCallback & callbackContext)
-            : _n(0), _k(k), _map(k), _callbackContext(callbackContext)
+            : _n(0), _k(k), _callbackContext(callbackContext)
     {}
 };
 
