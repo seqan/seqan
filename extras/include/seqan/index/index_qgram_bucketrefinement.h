@@ -186,10 +186,10 @@ public:
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
 
     typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
-    typedef typename Iterator<TBase, TopDown<ParentLinks<TSpec> > >::Type          TBaseIterator;
+    typedef typename Iterator<TBase, TopDown<ParentLinks<TSpec> > >::Type           TBaseIterator;
 
     typedef Index<TText, IndexSa<InfixSegment> >                                    TIndexSa;
-    typedef typename Iterator<TIndexSa, TopDown<ParentLinks<TSpec> > >::Type       TIndexSaIterator;
+    typedef typename Iterator<TIndexSa, TopDown<ParentLinks<TSpec> > >::Type        TIndexSaIterator;
 
     TBaseIterator       _topIterator;
     TIndexSaIterator    _bottomIterator;
@@ -289,6 +289,12 @@ struct DefaultIndexCreator<Index<TText, IndexQGram<TShapeSpec, BucketRefinement>
 // ============================================================================
 
 template <typename TText, typename TShapeSpec, typename TSpec>
+struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > > :
+    EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec> >, VSTree<TSpec> > > {};
+
+// ============================================================================
+
+template <typename TText, typename TShapeSpec, typename TSpec>
 struct Iterator<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > >
 {
     typedef Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > >     Type;
@@ -304,8 +310,10 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
     typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
 
+//    // Create QGram directory and refine suffix array.
 //    indexCreate(static_cast<TBase &>(index), FibreSADir(), Default());
-//    _refineQGramIndex(indexSA(index), indexDir(index), indexText(index), weight(indexShape(index)), lengthSum(indexText(index)));
+//    _refineQGramIndex(indexSA(index), indexDir(index), indexText(index),
+//                      weight(indexShape(index)), lengthSum(indexText(index)));
 
     // Create QGram directory.
     resize(indexDir(index), _fullDirLength(index), Exact());
@@ -378,8 +386,12 @@ inline void _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
     typedef typename Value<TIndex>::Type                                TAlphabet;
 
+    SEQAN_ASSERT_EQ(repLength(it._topIterator), weight(indexShape(container(it._topIterator))));
+    SEQAN_ASSERT_EQ(repLength(it._bottomIterator), 0u);
+    SEQAN_ASSERT(isRoot(it._bottomIterator));
+
     _historyPush(it._bottomIterator);
-    
+
     value(it._bottomIterator).repLen = value(it._topIterator).repLen;
     value(it._bottomIterator).range = value(it._topIterator).range;
     value(it._bottomIterator).lastChar = value(it._topIterator).lastChar;
@@ -388,54 +400,20 @@ inline void _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement
 // ============================================================================
 
 template <typename TText, typename TShapeSpec, typename TSpec>
-inline Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > const &
-container(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
-{
-    SEQAN_ASSERT(_atTop(it));
-    return container(it._topIterator);
-}
-
-template <typename TText, typename TShapeSpec, typename TSpec>
-inline Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > &
-container(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
-{
-    SEQAN_ASSERT(_atTop(it));
-    return container(it._topIterator);
-}
-
-template <typename TText, typename TShapeSpec, typename TSpec>
-inline typename VertexDescriptor<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type &
-value(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > >&it)
-{
-    SEQAN_ASSERT(_atTop(it));
-    return value(it._topIterator);
-}
-
-template <typename TText, typename TShapeSpec, typename TSpec>
-inline typename VertexDescriptor<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type const &
-value(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
-{
-    SEQAN_ASSERT(_atTop(it));
-    return value(it._topIterator);
-}
-
-// ============================================================================
-
-template <typename TText, typename TShapeSpec, typename TSpec>
-inline bool isRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+inline bool isRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     return isRoot(it._topIterator);
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
-inline bool isLeaf(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+inline bool isLeaf(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     // TODO(esiragusa): Fix isLeaf: last qgram is a top leaf but there is no subtree attached
     return isLeaf(it._topIterator) && isLeaf(it._bottomIterator);
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
-inline void goRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
+inline void goRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > & it)
 {
     goRoot(it._bottomIterator);
     goRoot(it._topIterator);
@@ -449,8 +427,11 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
         if (goDown(it._topIterator))
             return true;
 
+        SEQAN_ASSERT_EQ(repLength(it._topIterator), weight(indexShape(container(it._topIterator))));
+
         _implantSa(it);
     }
+    
     return goDown(it._bottomIterator);
 }
 
@@ -468,12 +449,14 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 {
     if (_atTop(it))
     {
+        SEQAN_ASSERT_LT(repLength(it._topIterator), weight(indexShape(container(it._topIterator))));
+
         if (goDown(it._topIterator, pattern, lcp))
             return true;
 
         if (!isLeaf(it._topIterator))
             return false;
-
+        
         _implantSa(it);
     }
 
@@ -487,35 +470,57 @@ inline bool goRight(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
-inline bool goUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
+inline bool
+goUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
 {
-    if (!_atTop(it))
+//    if (!_atTop(it))
+//    {
+//        goUp(it._bottomIterator);
+//        if (!isRoot(it._bottomIterator))
+//            return true;
+//    }
+
+    if (repLength(it._bottomIterator) > repLength(it._topIterator))
     {
+        SEQAN_ASSERT_NOT(isRoot(it._bottomIterator));
+
         goUp(it._bottomIterator);
-        if (!isRoot(it._bottomIterator))
+
+        SEQAN_ASSERT_NOT(isRoot(it._bottomIterator));
+
+        if (repLength(it._bottomIterator) > repLength(it._topIterator))
             return true;
+
+        goRoot(it._bottomIterator);
     }
 
     return goUp(it._topIterator);
 }
 
+//template <typename TText, typename TShapeSpec, typename TSpec>
+//inline typename VertexDescriptor<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
+//nodeUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<ParentLinks<TSpec> > > > const & it)
+//{
+//    return _atTop(it) ? nodeUp(it._topIterator) : nodeUp(it._bottomIterator);
+//}
+
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline typename Size<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
-countOccurrences(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+countOccurrences(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     return _atTop(it) ? countOccurrences(it._topIterator) : countOccurrences(it._bottomIterator);
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline typename SAValue<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
-getOccurrence(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+getOccurrence(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     return _atTop(it) ? getOccurrence(it._topIterator) : getOccurrence(it._bottomIterator);
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline typename Infix<typename Fibre<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, FibreSA>::Type const>::Type
-getOccurrences(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+getOccurrences(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     return _atTop(it) ? getOccurrences(it._topIterator) : getOccurrences(it._bottomIterator);
 }
@@ -529,14 +534,42 @@ repLength(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<T
 
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline typename Infix<typename Fibre<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, FibreText>::Type const>::Type
-representative(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+representative(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     return _atTop(it) ? representative(it._topIterator) : representative(it._bottomIterator);
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
+inline typename Size<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
+parentRepLength(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return _atTop(it) ? parentRepLength(it._topIterator) : parentRepLength(it._bottomIterator);
+}
+
+template <typename TText, typename TShapeSpec, typename TSpec>
+inline typename Size<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
+parentEdgeLength(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return _atTop(it) ? parentEdgeLength(it._topIterator) : parentEdgeLength(it._bottomIterator);
+}
+
+template <typename TText, typename TShapeSpec, typename TSpec>
+inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > >::Type
+parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return _atTop(it) ? parentEdgeLabel(it._topIterator) : parentEdgeLabel(it._bottomIterator);
+}
+
+template <typename TText, typename TShapeSpec, typename TSpec>
+inline typename Value<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
+parentEdgeFirstChar(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return _atTop(it) ? parentEdgeFirstChar(it._topIterator) : parentEdgeFirstChar(it._bottomIterator);
+}
+
+template <typename TText, typename TShapeSpec, typename TSpec>
 inline Pair<typename Size<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type>
-range(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+range(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec> > const & it)
 {
     return _atTop(it) ? range(it._topIterator) : range(it._bottomIterator);
 }
