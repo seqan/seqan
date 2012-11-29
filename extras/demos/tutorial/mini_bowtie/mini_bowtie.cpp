@@ -7,7 +7,6 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/index.h>
-#include <seqan/index_fm.h>
 #include <seqan/store.h>
 
 using namespace seqan;
