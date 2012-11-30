@@ -349,7 +349,8 @@ inline bool _extendLeft(Extender<TMatchesDelegate, EditDistance, TSpec> & extend
     TFinder finder(contigInfixRev);
     patternState.leftClip = remainingErrors;
 
-    while (find(finder, readInfixRev, patternState, -remainingErrors))
+    // TODO(esiragusa): Use a generic type for errors.
+    while (find(finder, readInfixRev, patternState, -static_cast<int>(remainingErrors)))
     {
         TReadSeqSize currentErrors = -getScore(patternState);
 
@@ -414,7 +415,8 @@ inline bool _extendRight(Extender<TMatchesDelegate, EditDistance, TSpec> & exten
     TFinder finder(contigPrefix);
     patternState.leftClip = remainingErrors;
 
-    while (find(finder, readPrefix, patternState, -remainingErrors))
+    // TODO(esiragusa): Use a generic type for errors.
+    while (find(finder, readPrefix, patternState, -static_cast<int>(remainingErrors)))
     {
         TContigSeqSize currentEnd = position(finder) + 1;
         TReadSeqSize currentErrors = -getScore(patternState);
