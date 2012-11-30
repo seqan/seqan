@@ -484,6 +484,7 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
     return goDown(it._bottomIterator);
 }
 
+// NOTE(esiragusa): I should have overloaded _goDownChar() instead.
 template <typename TText, typename TShapeSpec, typename TSpec, typename TObject>
 inline bool _goDownObject(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it,
                           TObject const & obj,
@@ -502,20 +503,28 @@ inline bool _goDownObject(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinem
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec, typename TString, typename TSize>
-inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it,
-                   TString const & pattern,
-                   TSize & lcp)
+inline bool _goDownString(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it,
+                          TString const & pattern,
+                          TSize & lcp)
 {
+    TSize topLcp = 0;
+
     if (_atTop(it))
     {
-        if (goDown(it._topIterator, pattern, lcp))
+        if (_goDownString(it._topIterator, pattern, lcp))
             return true;
 
         if (!_implantSa(it))
             return false;
+
+        topLcp = lcp;
     }
 
-    return goDown(it._bottomIterator, suffix(pattern, lcp));
+    bool wentDown = _goDownString(it._bottomIterator, suffix(pattern, topLcp), lcp);
+
+    lcp += topLcp;
+
+    return wentDown;
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
