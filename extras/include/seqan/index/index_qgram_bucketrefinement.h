@@ -422,13 +422,13 @@ inline void goRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
 {
+    typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
+    typedef Pair<typename Size<TIndex>::Type>                           TSARange;
+
     if (_atTop(it))
     {
         if (goDown(it._topIterator))
             return true;
-
-        if (!isLeaf(it._topIterator))
-            return false;
 
         _implantSa(it);
     }
@@ -437,16 +437,25 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec, typename TObject>
-inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it,
-                   TObject const & obj)
+inline bool _goDownObject(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it,
+                          TObject const & obj,
+                          False const & /* tag */)
 {
-    unsigned lcp = 0;
-    return goDown(it, obj, lcp);
+    if (_atTop(it))
+    {
+        if (_goDownObject(it._topIterator, obj, False()))
+            return true;
+
+        _implantSa(it);
+    }
+
+    return _goDownObject(it._bottomIterator, obj, False());
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec, typename TString, typename TSize>
 inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it,
-                   TString const & pattern, TSize & lcp)
+                   TString const & pattern,
+                   TSize & lcp)
 {
     if (_atTop(it))
     {
