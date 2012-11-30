@@ -237,7 +237,18 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
         if (oldErrors == nfa.errors)
         {
             if (goDown(nfaIt, symbol))
-                appendValue(nextStates, TState(nfaIt, oldErrors));
+            {            
+#ifdef SEQAN_DEBUG
+                std::cout << "transition:     " << symbol << std::endl;
+                std::cout << "distance:       " << 0 << std::endl;
+                std::cout << "errors:         " << oldErrors << std::endl;
+#endif
+
+                if (accept(nfa))
+                    onMatch(nfa.delegate, textIt, nfaIt, oldErrors);
+                else
+                    appendValue(nextStates, TState(nfaIt, oldErrors));
+            }
         }
         else
         {
