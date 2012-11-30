@@ -432,7 +432,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TValue>
-inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it, TValue c)
+inline bool _goDownChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, TValue c)
 {
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
     typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
