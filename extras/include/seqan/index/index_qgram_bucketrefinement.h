@@ -47,6 +47,36 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+template <typename TText>
+class Index<TText, IndexSa<InfixSegment> >
+{
+public:
+    Holder<typename Fibre<Index, EsaText>::Type>    text;
+    Holder<typename Fibre<Index, EsaSA>::Type>      sa;
+
+    Index() {}
+
+    Index(Index & other) :
+        text(other.text),
+        sa(other.sa)
+    {}
+
+    Index(Index const & other) :
+        text(other.text),
+        sa(other.sa)
+    {}
+
+    template <typename TText_>
+    Index(TText_ & _text) :
+        text(_text)
+    {}
+
+    template <typename TText_>
+    Index(TText_ const & _text) :
+        text(_text)
+    {}
+};
+
 /**
 .Spec.BucketRefinement
 ..summary:An index based on a refined array of sorted q-grams.
@@ -304,6 +334,22 @@ struct Iterator<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<
 // Functions
 // ============================================================================
 
+template <typename TText>
+inline typename Fibre<Index<TText, IndexSa<InfixSegment> >, FibreSA>::Type &
+getFibre(Index<TText, IndexSa<InfixSegment> > & index, FibreSA)
+{
+    return value(index.sa);
+}
+
+template <typename TText>
+inline typename Fibre<Index<TText, IndexSa<InfixSegment> > const, FibreSA>::Type &
+getFibre(Index<TText, IndexSa<InfixSegment> > const & index, FibreSA)
+{
+    return value(index.sa);
+}
+
+// ============================================================================
+
 template <typename TText, typename TShapeSpec>
 inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, FibreSADir, Default const)
 {
@@ -331,13 +377,12 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
     return true;
 }
 
+// ============================================================================
+
 template <typename TText, typename TShapeSpec>
 void _setHost(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index)
 {
-    // Make SA index fibre point to QGramSA index fibre.
-    setHost(indexSA(index._indexSa), indexSA(index));
-    setBeginPosition(indexSA(index._indexSa), 0);
-    setEndPosition(indexSA(index._indexSa), length(indexSA(index)));
+    setValue(index._indexSa.sa, indexSA(index));
 }
 
 template <typename TText, typename TShapeSpec>
@@ -372,14 +417,6 @@ void _pruneSA(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index)
     resize(sa, saNew - saBegin, Exact());
 }
 
-// ============================================================================
-
-template <typename TText, typename TShapeSpec, typename TSpec>
-inline bool _atTop(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
-{
-    return isRoot(it._bottomIterator);
-}
-
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline bool _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
 {
@@ -399,6 +436,12 @@ inline bool _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement
     value(it._bottomIterator).lastChar = value(it._topIterator).lastChar;
 
     return true;
+}
+
+template <typename TText, typename TShapeSpec, typename TSpec>
+inline bool _atTop(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return isRoot(it._bottomIterator);
 }
 
 // ============================================================================

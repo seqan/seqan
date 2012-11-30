@@ -147,12 +147,6 @@ struct Fibre<TGenomeBaseQGram, FibreDir>
 {
     typedef String<unsigned int, TGenomeQGramStringSpec>   Type;
 };
-
-template <>
-struct Fibre<TGenomeInfixSa, FibreSA>
-{
-    typedef Segment<Fibre<TGenomeBaseQGram, FibreSA>::Type const, InfixSegment>     Type;
-};
 }
 
 // ----------------------------------------------------------------------------

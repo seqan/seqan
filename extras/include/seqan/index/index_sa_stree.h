@@ -167,14 +167,6 @@ struct EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > >
 };
 
 // ============================================================================
-
-template <typename TText>
-struct Fibre<Index<TText, IndexSa<InfixSegment> >, FibreSA>
-{
-    typedef Segment<typename Fibre<Index<TText, IndexSa<> >, FibreSA>::Type const, InfixSegment>  Type;
-};
-
-// ============================================================================
 // Functions
 // ============================================================================
 
