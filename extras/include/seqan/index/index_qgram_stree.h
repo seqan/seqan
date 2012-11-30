@@ -275,13 +275,13 @@ inline bool _getNextNode(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >,
     THValue h = pow(static_cast<double>(ValueSize<TAlphabet>::VALUE), static_cast<int>(weight(shape) - value(it).repLen));
 
     // TODO(esiragusa): Remove workaround for alphabets with quality values
-    for (typename ValueSize<TAlphabet>::Type lastChar = ordValue(value(it).lastChar) + 1; lastChar < ValueSize<TAlphabet>::VALUE - 1; ++lastChar)
+    for (typename ValueSize<TAlphabet>::Type c = ordValue(value(it).lastChar) + 1; c < ValueSize<TAlphabet>::VALUE; ++c)
     {
         value(it).hash.i1 = value(it).hash.i2;
         value(it).hash.i2 += h;
         value(it).range.i1 = value(it).range.i2;
         value(it).range.i2 = dir[getBucket(index.bucketMap, value(it).hash.i2)];
-        value(it).lastChar = lastChar;
+        value(it).lastChar = c;
 
         if (value(it).range.i1 < value(it).range.i2)
             return true;
