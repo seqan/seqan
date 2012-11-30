@@ -39,6 +39,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/find.h>
 
 using namespace seqan;
 
@@ -216,13 +217,36 @@ void indexSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder
 
 // NOTE(esiragusa): Debug stuff.
 template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TDepth>
-void visitSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> const & seeder, TDepth depth)
+void visitSeedsApproximate(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder, TDepth depth)
 {
     typedef typename Iterator<TReadsWotd, TopDown<ParentLinks<> > >::Type  TReadsIndexIterator;
     TReadsIndexIterator readsIt(seeder.readsWotd);
 
     do
     {
+        std::cout << representative(readsIt) << std::endl;
+        if (repLength(readsIt) >= depth || !goDown(readsIt))
+            if (!goRight(readsIt))
+                while (goUp(readsIt) && !goRight(readsIt)) ;
+    }
+    while (!isRoot(readsIt));
+}
+
+// ----------------------------------------------------------------------------
+// Function visitSeedsExact()                                          [Seeder]
+// ----------------------------------------------------------------------------
+
+// NOTE(esiragusa): Debug stuff.
+template <typename TReadsDelegate, typename THitsDelegate, typename TSpec, typename TDepth>
+void visitSeedsExact(Seeder<TReadsDelegate, THitsDelegate, TSpec> & seeder, TDepth depth)
+{
+    typedef typename Iterator<TReadsQGram, TopDown<ParentLinks<> > >::Type  TReadsIndexIterator;
+
+    TReadsIndexIterator readsIt(seeder.readsQGram);
+
+    do
+    {
+        std::cout << representative(readsIt) << std::endl;
         if (repLength(readsIt) >= depth || !goDown(readsIt))
             if (!goRight(readsIt))
                 while (goUp(readsIt) && !goRight(readsIt)) ;
