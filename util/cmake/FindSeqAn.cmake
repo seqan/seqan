@@ -210,14 +210,22 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  set(SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -DNOMINMAX")
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
+  add_definitions (-DNOMINMAX)
 endif (WIN32)
 
 # Visual Studio Setup
 if (MSVC)
   # Warning level 3 for MSVC is disabled for now to see how much really bad warnings there are.
   #set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
+
+  # TODO(holtgrew): This rather belongs into the SeqAn build system and notso much into FindSeqAn.cmake.
+
+  # Force to always compile with W2.
+  add_definitions (/W2)
+
+  # Disable warnings about unsecure (although standard) functions.
+  add_definitions (-D_SCL_SECURE_NO_WARNING)
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
