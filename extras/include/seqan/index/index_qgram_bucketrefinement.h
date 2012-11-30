@@ -381,12 +381,14 @@ inline bool _atTop(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 }
 
 template <typename TText, typename TShapeSpec, typename TSpec>
-inline void _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
+inline bool _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
 {
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
     typedef typename Value<TIndex>::Type                                TAlphabet;
 
-    SEQAN_ASSERT_EQ(repLength(it._topIterator), weight(indexShape(container(it._topIterator))));
+    if (repLength(it._topIterator) < weight(indexShape(container(it._topIterator))))
+        return false;
+
     SEQAN_ASSERT_EQ(repLength(it._bottomIterator), 0u);
     SEQAN_ASSERT(isRoot(it._bottomIterator));
 
@@ -395,6 +397,8 @@ inline void _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement
     value(it._bottomIterator).repLen = value(it._topIterator).repLen;
     value(it._bottomIterator).range = value(it._topIterator).range;
     value(it._bottomIterator).lastChar = value(it._topIterator).lastChar;
+
+    return true;
 }
 
 // ============================================================================
@@ -430,7 +434,8 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
         if (goDown(it._topIterator))
             return true;
 
-        _implantSa(it);
+        if (!_implantSa(it))
+            return false;
     }
     
     return goDown(it._bottomIterator);
@@ -446,7 +451,8 @@ inline bool _goDownObject(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinem
         if (_goDownObject(it._topIterator, obj, False()))
             return true;
 
-        _implantSa(it);
+        if (!_implantSa(it))
+            return false;
     }
 
     return _goDownObject(it._bottomIterator, obj, False());
@@ -462,10 +468,8 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
         if (goDown(it._topIterator, pattern, lcp))
             return true;
 
-        if (!isLeaf(it._topIterator))
+        if (!_implantSa(it))
             return false;
-
-        _implantSa(it);
     }
 
     return goDown(it._bottomIterator, suffix(pattern, lcp));
@@ -481,13 +485,6 @@ template <typename TText, typename TShapeSpec, typename TSpec>
 inline bool
 goUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
 {
-//    if (!_atTop(it))
-//    {
-//        goUp(it._bottomIterator);
-//        if (!isRoot(it._bottomIterator))
-//            return true;
-//    }
-
     if (repLength(it._bottomIterator) > repLength(it._topIterator))
     {
         SEQAN_ASSERT_NOT(isRoot(it._bottomIterator));
@@ -504,13 +501,6 @@ goUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDow
 
     return goUp(it._topIterator);
 }
-
-//template <typename TText, typename TShapeSpec, typename TSpec>
-//inline typename VertexDescriptor<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
-//nodeUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<ParentLinks<TSpec> > > > const & it)
-//{
-//    return _atTop(it) ? nodeUp(it._topIterator) : nodeUp(it._bottomIterator);
-//}
 
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline typename Size<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > >::Type
