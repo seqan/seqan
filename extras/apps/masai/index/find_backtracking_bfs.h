@@ -37,7 +37,7 @@
 #ifndef SANDBOX_ESIRAGUSA_INCLUDE_SEQAN_FIND_BACKTRACKING_BFS_H_
 #define SANDBOX_ESIRAGUSA_INCLUDE_SEQAN_FIND_BACKTRACKING_BFS_H_
 
-#define SEQAN_DEBUG
+//#define SEQAN_DEBUG
 
 namespace seqan {
 
@@ -99,32 +99,32 @@ struct NFA_
 // Functions
 // ============================================================================
 
-//template <typename TSpec, typename TTextIndexIterator, typename TPatternIndexIterator, typename TErrors>
-//inline void onMatch(MatchesDelegate_<TSpec> & delegate,
-//                    TTextIndexIterator const & textIt,
-//                    TPatternIndexIterator const & nfaIt,
-//                    TErrors /* errors */)
-//{
-//    delegate.matches += countOccurrences(textIt) * countOccurrences(nfaIt);
-//}
-
 template <typename TSpec, typename TTextIndexIterator, typename TPatternIndexIterator, typename TErrors>
 inline void onMatch(MatchesDelegate_<TSpec> & delegate,
                     TTextIndexIterator const & textIt,
                     TPatternIndexIterator const & nfaIt,
                     TErrors /* errors */)
 {
-    unsigned long textOccurrences = countOccurrences(textIt);
-    unsigned long patternOccurrences = countOccurrences(nfaIt);
-
-    for (unsigned long i = 0; i < textOccurrences; ++i)
-        for (unsigned long j = 0; j < patternOccurrences; ++j)
-            std::cout << '[' << getOccurrences(textIt)[i] <<
-                         ',' << getOccurrences(textIt)[i] <<
-                         ")\t" << representative(textIt) << std::endl;
-
     delegate.matches += countOccurrences(textIt) * countOccurrences(nfaIt);
 }
+
+//template <typename TSpec, typename TTextIndexIterator, typename TPatternIndexIterator, typename TErrors>
+//inline void onMatch(MatchesDelegate_<TSpec> & delegate,
+//                    TTextIndexIterator const & textIt,
+//                    TPatternIndexIterator const & nfaIt,
+//                    TErrors /* errors */)
+//{
+//    unsigned long textOccurrences = countOccurrences(textIt);
+//    unsigned long patternOccurrences = countOccurrences(nfaIt);
+//
+//    for (unsigned long i = 0; i < textOccurrences; ++i)
+//        for (unsigned long j = 0; j < patternOccurrences; ++j)
+//            std::cout << '[' << getOccurrences(textIt)[i] <<
+//                         ',' << getOccurrences(textIt)[i] <<
+//                         ")\t" << representative(textIt) << std::endl;
+//
+//    delegate.matches += countOccurrences(textIt) * countOccurrences(nfaIt);
+//}
 
 // ============================================================================
 
@@ -225,42 +225,53 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
     std::cout << "symbol:         " << symbol << std::endl;
 #endif
 
+//    if (statesEnd - statesIt == 1 && getValueI2(value(statesIt)) == nfa.errors)
+//        std::cout << "One exact search" << std::endl;
+
     // Apply the symbol transition to all active states.
     for (; statesIt != statesEnd; ++statesIt)
     {
         TIterator nfaIt = getValueI1(value(statesIt));
         TErrors oldErrors = getValueI2(value(statesIt));
 
-        // Traverse all children of current state.
-        if (goDown(nfaIt))
+        if (oldErrors == nfa.errors)
         {
-            do
+            if (goDown(nfaIt, symbol))
+                appendValue(nextStates, TState(nfaIt, oldErrors));
+        }
+        else
+        {
+            // Traverse all children of current state.
+            if (goDown(nfaIt))
             {
-                // Align edge label with the input symbol.
-                TNFALabel transition = parentEdgeLabel(nfaIt);
-                TErrors distance = (symbol == transition) ? 0 : 1;
-                TErrors errors = oldErrors + distance;
+                do
+                {
+                    // Align edge label with the input symbol.
+                    TNFALabel transition = parentEdgeLabel(nfaIt);
+                    TErrors distance = (symbol == transition) ? 0 : 1;
+                    TErrors errors = oldErrors + distance;
 
 #ifdef SEQAN_DEBUG
-                std::cout << "transition:     " << transition << std::endl;
-                std::cout << "distance:       " << static_cast<unsigned>(distance) << std::endl;
-                std::cout << "errors:         " << static_cast<unsigned>(errors) << std::endl;
+                    std::cout << "transition:     " << transition << std::endl;
+                    std::cout << "distance:       " << static_cast<unsigned>(distance) << std::endl;
+                    std::cout << "errors:         " << static_cast<unsigned>(errors) << std::endl;
 #endif
 
-                // Add children to next states.
-                if (errors <= nfa.errors)
-                {
-                    // The NFA moved into an acceptance state.
-                    // NOTE(esiragusa): nfaIt should be a leaf.
-                    if (accept(nfa))
-                        onMatch(nfa.delegate, textIt, nfaIt, errors);
+                    // Add children to next states.
+                    if (errors <= nfa.errors)
+                    {
+                        // The NFA moved into an acceptance state.
+                        // NOTE(esiragusa): nfaIt should be a leaf.
+                        if (accept(nfa))
+                            onMatch(nfa.delegate, textIt, nfaIt, errors);
 
-                    // The NFA moved into a non-acceptance state.
-                    else
-                        appendValue(nextStates, TState(nfaIt, errors));
+                        // The NFA moved into a non-acceptance state.
+                        else
+                            appendValue(nextStates, TState(nfaIt, errors));
+                    }
                 }
+                while (goRight(nfaIt));
             }
-            while (goRight(nfaIt));
         }
     }
 
