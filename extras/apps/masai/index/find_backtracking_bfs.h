@@ -236,7 +236,8 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
 
         if (oldErrors == nfa.errors)
         {
-            if (goDown(nfaIt, symbol))
+            // TODO(esiragusa): goDown(nfaIt, Dna5) must be overloaded not to follow Ns.
+            if (ordValue(symbol) < 4 && goDown(nfaIt, symbol))
             {            
 #ifdef SEQAN_DEBUG
                 std::cout << "transition:     " << symbol << std::endl;
