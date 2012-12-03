@@ -116,23 +116,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
 // ============================================================================
 
-template <typename TIndex, typename TDepth>
-void visit(TIndex & index, TDepth depth)
-{
-    typedef typename Iterator<TIndex, TopDown<ParentLinks<> > >::Type  TIndexIterator;
-    TIndexIterator readsIt(index);
-
-    do
-    {
-        std::cout << representative(readsIt) << std::endl;
-        if (repLength(readsIt) >= depth || !goDown(readsIt))
-            if (!goRight(readsIt))
-                while (goUp(readsIt) && !goRight(readsIt))
-                    ;
-    }
-    while (!isRoot(readsIt));
-}
-
 template <typename TGenomeIndex>
 int executeIndexer(Options & options)
 {
@@ -180,8 +163,8 @@ int mainWithOptions(Options & options)
     case Options::INDEX_SA:
         return executeIndexer<TGenomeSa>(options);
 
-//    case Options::INDEX_QGRAM:
-//        return executeIndexer<TGenomeQGram>(options);
+    case Options::INDEX_QGRAM:
+        return executeIndexer<TGenomeQGram>(options);
 
     case Options::INDEX_FM:
         return executeIndexer<TGenomeFM>(options);
