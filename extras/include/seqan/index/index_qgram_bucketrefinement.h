@@ -356,11 +356,6 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
     typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
 
-//    // Create QGram directory and refine suffix array.
-//    indexCreate(static_cast<TBase &>(index), FibreSADir(), Default());
-//    _refineQGramIndex(indexSA(index), indexDir(index), indexText(index),
-//                      weight(indexShape(index)), lengthSum(indexText(index)));
-
     // Create QGram directory.
     resize(indexDir(index), _fullDirLength(index), Exact());
     createQGramIndexDirOnly(indexDir(index), indexBucketMap(index), indexText(index), indexShape(index), getStepSize(index));
@@ -376,6 +371,23 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
 
     return true;
 }
+
+//template <typename TText, typename TShapeSpec>
+//inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, FibreSADir, Default const)
+//{
+//    typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
+//    typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
+//
+////    // Create QGram directory and refine suffix array.
+//    indexCreate(static_cast<TBase &>(index), FibreSADir(), Default());
+//    _refineQGramIndex(indexSA(index), indexDir(index), indexText(index),
+//                      weight(indexShape(index)), lengthSum(indexText(index)));
+//
+//    // Update indexSA host.
+//    _setHost(index);
+//
+//    return true;
+//}
 
 // ============================================================================
 
