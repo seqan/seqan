@@ -545,10 +545,10 @@ goUp(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDow
 
         SEQAN_ASSERT_NOT(isRoot(it._bottomIterator));
 
-        if (repLength(it._bottomIterator) > repLength(it._topIterator))
-            return true;
+        if (repLength(it._bottomIterator) <= repLength(it._topIterator))
+            goRoot(it._bottomIterator);
 
-        goRoot(it._bottomIterator);
+        return true;
     }
 
     return goUp(it._topIterator);
