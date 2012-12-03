@@ -273,8 +273,8 @@ int configureGenomeIndex(Options & options)
     case Options::INDEX_SA:
         return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeSa>(options);
 
-    case Options::INDEX_QGRAM:
-        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeQGram>(options);
+//    case Options::INDEX_QGRAM:
+//        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeQGram>(options);
 
         case Options::INDEX_FM:
             return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeFM>(options);
