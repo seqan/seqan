@@ -216,7 +216,7 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
 #endif
 
     // NOTE(esiragusa): Using repLength() is fine only for tries.
-//    SEQAN_ASSERT_EQ(repLength(textIt), nfa.currentDepth);
+    SEQAN_ASSERT_EQ(repLength(textIt), nfa.currentDepth);
 
     // Read text symbol.
     TTextLabel symbol = parentEdgeLabel(textIt);
@@ -238,11 +238,11 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
         {
             // TODO(esiragusa): goDown(nfaIt, Dna5) must be overloaded not to follow Ns.
             if (ordValue(symbol) < 4 && goDown(nfaIt, symbol))
-            {            
+            {
 #ifdef SEQAN_DEBUG
                 std::cout << "transition:     " << symbol << std::endl;
                 std::cout << "distance:       " << 0 << std::endl;
-                std::cout << "errors:         " << oldErrors << std::endl;
+                std::cout << "errors:         " << static_cast<unsigned>(oldErrors) << std::endl;
 #endif
 
                 if (accept(nfa))
