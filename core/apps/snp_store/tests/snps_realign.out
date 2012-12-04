@@ -1,4 +1,4 @@
-#../../../../../seqan-trunk-build/develop/bin/snp_store human-chr22-inf2.fa human-reads2.sam -if 1 -re -o snps_realign.out -id indels_realign.out 
+#../../../../../seqan-clean-build/release64/bin/snp_store human-chr22-inf2.fa human-reads2.sam -if 1 -re -o snps_realign.out -id indels_realign.out 
 #chr	pos	ref	A	C	G	T	cov	call	quality	snpQ
 22	30	T	[]	[]	[*]	[???>>><;:985]	13		
 22	36	T	[]	[4+]	[]	[?>>==<<;73%]	13		

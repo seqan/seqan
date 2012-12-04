@@ -1142,7 +1142,7 @@ int readMatchesFromGFF_Batch(
                 options.maxHitLength = endPos - beginPos;
             
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord) options.minCoord = (unsigned)beginPos;
+            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
             if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
             
             // create match m
@@ -1648,7 +1648,7 @@ int readMatchesFromSamBam_Batch(
                 options.maxHitLength = endPos - beginPos;
             
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord) options.minCoord = (unsigned)beginPos;
+            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
             if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
             
             // create match m
@@ -2442,8 +2442,8 @@ void dumpVariantsRealignBatchWrap(
             //copyFragmentStore(fragStoreGroup,fragmentStore,matchItBatchBegin,matchItBatchEnd,groupStartPos,groupEndPos);
 
             TFragmentStore fragStoreGroup = fragmentStore; 
-            resize(fragStoreGroup.alignedReadStore,numMatches,Exact());
             arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
+            resize(fragStoreGroup.alignedReadStore,numMatches,Exact());
             fragStoreGroup.contigStore[0].seq = infix(fragmentStore.contigStore[0].seq,groupStartCoordLocal,groupEndCoordLocal);
     
 #ifdef SNPSTORE_DEBUG
@@ -4281,7 +4281,6 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
             // write SNP to file
             if(isSnp && (snp.called || options.outputFormat == 0))
                 _writeSnp(file,snp,qualityStringF,qualityStringR,refAllele,genomeID,candidatePos+startCoord,realCoverage,options);
-            
         }
 
         bool isIndel = true;
@@ -4443,7 +4442,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << "\t" << percentage;
                     indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat ;
                     indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)(percentage*depth);
+                    indelfile << ";count=" << (int)floor(percentage*depth);
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
                     indelfile << ";homorun=" << homoLength;
@@ -4504,7 +4503,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
                     indelfile << "\t" << percentage;
                     indelfile << "\t+\t.\tID=" << candidatePos + startCoord + options.positionFormat;
                     indelfile << ";size=" << indelSize;
-                    indelfile << ";count=" << (int)(percentage*depth);
+                    indelfile << ";count=" << (int)floor(percentage*depth);
                     indelfile << ";seq="<< insertionSeq;
                     indelfile << ";depth=" << depth;
                     indelfile << ";quality=" << indelQ;
@@ -4839,7 +4838,6 @@ void dumpSNPsBatch(
         // write SNP to file
         if(isSnp && (snp.called || options.outputFormat == 0))
             _writeSnp(file,snp,qualityStringF,qualityStringR,refAllele,genomeID,candidatePos+startCoord,realCoverage,options);
-            
     }
 
     if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
@@ -5643,8 +5641,8 @@ void dumpPositionsRealignBatchWrap(
             //copyFragmentStore(fragStoreGroup,fragmentStore,matchItBatchBegin,matchItBatchEnd,groupStartPos,groupEndPos);
 
             TFragmentStore fragStoreGroup = fragmentStore; 
-            resize(fragStoreGroup.alignedReadStore,numMatches,Exact());
             arrayMoveForward(matchItBatchBegin,matchItBatchEnd,begin(fragStoreGroup.alignedReadStore,Standard())); // reads wont be needed anymore
+            resize(fragStoreGroup.alignedReadStore,numMatches,Exact());
             fragStoreGroup.contigStore[0].seq = infix(fragmentStore.contigStore[0].seq,groupStartCoordLocal,groupEndCoordLocal);
     
 #ifdef SNPSTORE_DEBUG

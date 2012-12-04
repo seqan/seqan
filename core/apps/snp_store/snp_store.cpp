@@ -23,7 +23,7 @@
 
 
 ///// switch on extreme debug output 
-//#define SNPSTORE_DEBUG
+// #define SNPSTORE_DEBUG
 //#define SNPSTORE_DEBUG_CANDPOS
 
 
@@ -160,9 +160,10 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
     TMatchIt mIt        = end(fragmentStore.alignedReadStore,Standard());
     TMatchIt mItBegin   = begin(fragmentStore.alignedReadStore,Standard());
     --mIt;
-    
-    options.minCoord = MaxValue<unsigned>::VALUE;
-    options.maxCoord = 0;
+
+    // We will use minCoord/maxCoord to store the temporarily minimal and maximal coordinates in the window.
+    int minCoord = maxValue<int>();
+    int maxCoord = minValue<int>();
     //CharString str = "discBef";
     //_dumpMatches(fragmentStore, str);
     
@@ -183,13 +184,18 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
             appendValue(tmpReadCigars,readCigars[(*mIt).readId]);
 //            appendValue(tmpReadClips,TPair(0,0));
             appendValue(tmpReadClips,readClips[(*mIt).readId]);
-            if(_max((*mIt).beginPos,(*mIt).endPos) > (TContigPos)options.maxCoord) options.maxCoord = (unsigned) _max((*mIt).beginPos,(*mIt).endPos);
-            if(_min((*mIt).beginPos,(*mIt).endPos) < (TContigPos)options.minCoord) options.minCoord = (unsigned) _min((*mIt).beginPos,(*mIt).endPos);
-            
+            maxCoord = std::max(maxCoord, (int)std::max(mIt->beginPos, mIt->endPos));
+            minCoord = std::min(minCoord, (int)std::min(mIt->beginPos, mIt->endPos));
         }
         --mIt;
     }
-    
+
+    // Write minimal and maximal coordinate from reads in this window to options.minCoord/options.maxCoord.
+    if (minCoord != maxValue<int>())
+        options.minCoord = minCoord;
+    if (maxCoord != minValue<int>())
+        options.maxCoord = maxCoord;
+   
     if(options._debugLevel > 1)
         std::cout << length(tmpMatches)<<" matches left over from previous window.\n";
     

@@ -1,4 +1,4 @@
-#../../../../../seqan-trunk-build/develop/bin/snp_store human-chr22-inf2.fa human-reads2.sam -if 1 -it 1 -re -oa -mp 1 -m 1 -hq -o snps_realign_m1mp1oa.out -id indels_realign_m1mp1oa.out 
+#../../../../../seqan-clean-build/release64/bin/snp_store human-chr22-inf2.fa human-reads2.sam -if 1 -it 1 -re -oa -mp 1 -m 1 -hq -o snps_realign_m1mp1oa.out -id indels_realign_m1mp1oa.out 
 #chr	pos	ref	[A+]	[C+]	[G+]	[T+]	[A-]	[C-]	[G-]	[T-]	cov	call	quality	snpQ
 22	30	T	0	0	1	12	0	0	0	0	13		
 22	36	T	0	2	0	11	0	0	0	0	13		
