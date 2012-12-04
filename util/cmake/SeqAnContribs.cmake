@@ -38,29 +38,36 @@ if (WIN32)
     # The contrib version we look for.
 	set (_SEQAN_CONTRIB_VERSION D20111031)
 	set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
+	
+	# Determine architecture for the precompiled contribs.
+	if (CMAKE_GENERATOR MATCHES ".*Win64")
+		set (CONTRIB_ARCH "x64")
+	else ()
+		set (CONTRIB_ARCH "x86")
+	endif ()
 
 	# Try to figure out where the user installed the contrib.  We expect
 	# it to be either in C:\, or one of the Program Files dirs.
 	#
 	# First, look into Program Files on 64 bit.
 	if (DEFINED ENV{ProgramW6432})
-		if (IS_DIRECTORY "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-x64")
-			set (SEQAN_CONTRIB_BASE "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-x64")
-		endif (IS_DIRECTORY "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-x64")
+		if (IS_DIRECTORY "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+			set (SEQAN_CONTRIB_BASE "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		endif (IS_DIRECTORY "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 	endif (DEFINED ENV{ProgramW6432})
 	# Try out Program Files for 32bit Windows.
 	if (NOT DEFINED SEQAN_CONTRIB_BASE)
-		if (IS_DIRECTORY "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-x86")
-			set (SEQAN_CONTRIB_BASE "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-x86")
-		endif (IS_DIRECTORY "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-x86")
+		if (IS_DIRECTORY "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+			set (SEQAN_CONTRIB_BASE "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		endif (IS_DIRECTORY "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 	endif (NOT DEFINED SEQAN_CONTRIB_BASE)
 	# Try out on C:/.
 	if (NOT DEFINED SEQAN_CONTRIB_BASE)
-		if (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-x86")
-			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-x86")
-		elseif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-x64")
-			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-x64")
-		endif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-x86")
+		if (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		elseif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		endif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 	endif (NOT DEFINED SEQAN_CONTRIB_BASE)
 
 	# Debug help.
