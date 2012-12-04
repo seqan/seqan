@@ -519,46 +519,24 @@ $limit$ denotes the maximal length of @Function.host.$host(target)$@ after the o
 ..param.source.type:Class.Segment
 */
 
-//overload of binary version for strings:
+// TODO(holtgrew): We'd rather only have one version.
 
-template<typename THost, typename TSpec, typename TSource>
+template<typename THost, typename TSpec>
 inline void
 assign(Segment<THost, TSpec> & target,
-      TSource & source)
+       Segment<THost, TSpec> const & source)
 {
-SEQAN_CHECKPOINT
-    typedef Segment<THost, TSpec> TTarget;
-    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
+    typedef Segment<THost, TSpec> TSegment;
+    assign(target, source, typename DefaultOverflowImplicit<TSegment>::Type());
 }
-template<typename THost, typename TSpec, typename TSource>
+
+template<typename THost, typename TSpec>
 inline void
 assign(Segment<THost, TSpec> & target,
-      TSource const & source)
+       Segment<THost, TSpec> & source)
 {
-SEQAN_CHECKPOINT
-    typedef Segment<THost, TSpec> TTarget;
-    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-
-//(for temporary targets)
-
-template<typename THost, typename TSpec, typename TSource>
-inline void
-assign(Segment<THost, TSpec> const & target,
-      TSource & source)
-{
-SEQAN_CHECKPOINT
-    typedef Segment<THost, TSpec> const TTarget;
-    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
-}
-template<typename THost, typename TSpec, typename TSource>
-inline void
-assign(Segment<THost, TSpec> const & target,
-      TSource const & source)
-{
-SEQAN_CHECKPOINT
-    typedef Segment<THost, TSpec> const TTarget;
-    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
+    typedef Segment<THost, TSpec> TSegment;
+    assign(target, source, typename DefaultOverflowImplicit<TSegment>::Type());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -593,20 +571,7 @@ SEQAN_CHECKPOINT
         Segment<THost, TSpec> & target,
         TSource & source)
     {
-SEQAN_CHECKPOINT
-        if ((void *) &target == (void *) &source) return;
-
-        if (!operationToSet(target, source))
-        {
-            typedef Segment<THost, TSpec> Target;
-
-            replace(host(target), beginPosition(target), endPosition(target), source, TExpand());
-
-            typename Iterator<Target, Standard>::Type new_end = begin(target, Standard()) + length(source);
-            typename Iterator<THost, Standard>::Type host_end = end(host(target), Standard());
-            if (new_end > host_end) new_end = host_end;
-            setEnd(target, new_end);
-        }
+        set(target, source);
     }
 
     template <typename THost, typename TSpec, typename TSource>
@@ -616,21 +581,7 @@ SEQAN_CHECKPOINT
         TSource & source,
         typename Size< Segment<THost, TSpec> >::Type limit)
     {
-SEQAN_CHECKPOINT
-        if ((void *) &target == (void *) &source) return;
-
-        if (!operationToSet(target, source))
-        {
-            typedef Segment<THost, TSpec> Target;
-
-            replace(host(target), beginPosition(target), endPosition(target), source, limit, TExpand());
-
-            typename Iterator<Target, Standard>::Type new_end = begin(target, Standard()) + length(source);
-            typename Iterator<THost, Standard>::Type host_end = end(host(target), Standard());
-            if (begin(target, Standard()) > host_end) setBegin(target, host_end);
-            if (new_end > host_end) new_end = host_end;
-            setEnd(target, new_end);
-        }
+        set(target, source);
     }
 
     template <typename THost, typename TSpec, typename TSource>
@@ -639,9 +590,7 @@ SEQAN_CHECKPOINT
         Segment<THost, TSpec> const & target,
         TSource & source)
     {
-        SEQAN_CHECKPOINT;
-        SEQAN_ASSERT_NOT(hasNoHost(target));
-        replace(host(target), beginPosition(target), endPosition(target), source, TExpand());
+        set(target, source);
     }
 
     template <typename THost, typename TSpec, typename TSource>
@@ -651,9 +600,7 @@ SEQAN_CHECKPOINT
         TSource & source,
         typename Size< Segment<THost, TSpec> >::Type limit)
     {
-        SEQAN_CHECKPOINT;
-        SEQAN_ASSERT_NOT(hasNoHost(target));
-        replace(host(target), beginPosition(target), endPosition(target), source, limit, TExpand());
+        set(target, source);
     }
 };
 
@@ -1278,14 +1225,6 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 ///.Function.clear.param.object.type:Class.Segment
 ///.Function.clear.class:Class.Segment
-
-template <typename THost, typename TSpec>
-inline void
-clear(Segment<THost, TSpec> & target)
-{
-SEQAN_CHECKPOINT
-    assign(target, "");
-}
 
 //////////////////////////////////////////////////////////////////////////////
 

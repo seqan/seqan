@@ -207,6 +207,33 @@ struct Infix< StringSet< TString, Owner<ConcatDirect<TSpec> > > const >
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Function assignValue()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TPos, typename TSequence >
+inline void assignValue(
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
+    TPos pos,
+    TSequence const & seq)
+{
+    typedef StringSet<TString, Owner<ConcatDirect<TSpec> > > TStringSet;
+    typedef typename Size<TStringSet>::Type TSize;
+    typedef typename StringSetLimits<TStringSet>::Type TLimits;
+    typedef typename Value<TLimits>::Type TLimitValue;
+    typedef typename MakeSigned<TLimitValue>::Type TSignedLimitValue;
+
+    TSignedLimitValue oldSize = length(me[pos]);
+    replace(me.concat, me.limits[pos], me.limits[pos + 1], seq);
+    if (_validStringSetLimits(me))
+    {
+        TSignedLimitValue delta = (TSignedLimitValue)length(seq) - oldSize;
+        TSize size = length(me);
+        while (pos < size)
+            me.limits[++pos] += delta;
+    }
+}
+
+// --------------------------------------------------------------------------
 // Function _validStringSetLimits
 // --------------------------------------------------------------------------
 

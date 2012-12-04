@@ -159,13 +159,6 @@ SEQAN_CHECKPOINT
 SEQAN_CHECKPOINT
     }
 
-    template <typename TSource>
-    inline Segment &
-    operator = (TSource const & source)
-    {
-        assign(*this, source);
-        return *this;
-    }
     inline Segment &
     operator = (Segment const & source)
     {
@@ -197,6 +190,13 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 };
+
+template <typename THost>
+inline void
+clear(Segment<THost, SuffixSegment> & target)
+{
+    replace(host(target), beginPosition(target), endPosition(target), "");
+}
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -1398,7 +1398,7 @@ If $formatTag$ is a @Class.AutoSeqFormat@ object, the file format is set to the 
 
 			for (; !atEnd(dir); goNext(dir))
 			{
-				assign(suffix(fname, len), value(dir));
+                replace(fname, length(fname) - len, length(fname), value(dir));
 				if (guessFormatFromFilename(fname, format))
 				{
 					if (!open(multiSeqFile.concat, toCString(fname), OPEN_RDONLY)) continue;

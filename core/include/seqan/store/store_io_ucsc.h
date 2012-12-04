@@ -178,7 +178,7 @@ _readOneAnnotation (
 	if (c != '+' && c != '-')
 	{
 		ctx.format = ctx.KNOWN_ISOFORMS;
-		assign(prefix(ctx.transName, 0), "GENE");
+        insert(ctx.transName, 0, "GENE");
 		_parseSkipLine(file, c);
 		return true;
 	}

@@ -81,12 +81,12 @@ SEQAN_DEFINE_TEST(Infix)
 	SEQAN_ASSERT(end(infix(str_1, 0, length(str_1))) == end(str_1));
 	SEQAN_ASSERT_EQ(length(infix(str_1, 0, length(str_1))), length(str_1));
 
-	str_1 = "begin middle end";
-	assign(infix(str_1, 6, 12),  "to");
-	SEQAN_ASSERT_EQ(str_1, "begin to end");
+	// str_1 = "begin middle end";
+	// assign(infix(str_1, 6, 12),  "to");
+	// SEQAN_ASSERT_EQ(str_1, "begin to end");
 
-	assign(infix(str_1, 6, 8), "the test", 14);
-	SEQAN_ASSERT_EQ(str_1, "begin the test");
+	// assign(infix(str_1, 6, 8), "the test", 14);
+	// SEQAN_ASSERT_EQ(str_1, "begin the test");
 
 //	setEnd(infix_1);
 //	SEQAN_ASSERT(infix_1 == "");
@@ -190,19 +190,19 @@ SEQAN_DEFINE_TEST(Suffix)
 	SEQAN_ASSERT(end(suffix(str_1, 3)) == end(str_1));
 	SEQAN_ASSERT_EQ(length(suffix(str_1, 0)), length(str_1));
 
-	str_1 = "begin middle end";
-	assign(suffix(str_1, 6), "to panic");
-	SEQAN_ASSERT_EQ(str_1, "begin to panic");
+	// str_1 = "begin middle end";
+	// assign(suffix(str_1, 6), "to panic");
+	// SEQAN_ASSERT_EQ(str_1, "begin to panic");
 
-	assign(suffix(str_1, 6), "the test", 9);
-	SEQAN_ASSERT_EQ(str_1, "begin the");
+	// assign(suffix(str_1, 6), "the test", 9);
+	// SEQAN_ASSERT_EQ(str_1, "begin the");
 
-	char str_2[200] = "begin middle end";
-	assign(suffix(str_2, 6), "to panic");
-	SEQAN_ASSERT(isEqual(str_2, "begin to panic"));
+	// char str_2[200] = "begin middle end";
+	// assign(suffix(str_2, 6), "to panic");
+	// SEQAN_ASSERT(isEqual(str_2, "begin to panic"));
 
-	assign(suffix(str_2, 6), "the test", 9);
-	SEQAN_ASSERT(isEqual(str_2, "begin the"));
+	// assign(suffix(str_2, 6), "the test", 9);
+	// SEQAN_ASSERT(isEqual(str_2, "begin the"));
 
 //____________________________________________________________________________
 // test suffix iteration
