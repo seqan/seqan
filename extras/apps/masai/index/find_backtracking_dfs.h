@@ -75,6 +75,10 @@ inline void _search(TTextIterator textIt,
     std::cout << "current depth:  " << currentDepth << std::endl;
 #endif
 
+    // NOTE(esiragusa): Using repLength() is fine only for tries.
+    SEQAN_ASSERT_EQ(repLength(textIt), currentDepth);
+    SEQAN_ASSERT_EQ(repLength(patternIt), currentDepth);
+    
     // An acceptance state was reached.
     if (currentDepth == patternsLength)
     {
@@ -126,6 +130,10 @@ inline void _dfs(TTextIterator textIt,
     std::cout << "repLength:      " << repLength(textIt) << std::endl;
     std::cout << "current depth:  " << currentDepth << std::endl;
 #endif
+
+    // NOTE(esiragusa): Using repLength() is fine only for tries.
+    SEQAN_ASSERT_EQ(repLength(textIt), currentDepth);
+    SEQAN_ASSERT_EQ(repLength(patternIt), currentDepth);
 
     // An acceptance state was reached.
     if (currentDepth == patternsLength)
