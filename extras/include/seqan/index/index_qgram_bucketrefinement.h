@@ -166,15 +166,16 @@ class Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDo
 {
 public:
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >         TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >            TParentLinksIter;
 
-    typedef Index<TText, IndexQGram<TShapeSpec> >                           TBase;
-    typedef typename Iterator<TBase, TopDown<TSpec> >::Type                 TBaseIterator;
+    typedef Index<TText, IndexQGram<TShapeSpec> >                           TTopIndex;
+    typedef typename Iterator<TTopIndex, TopDown<TSpec> >::Type             TTopIterator;
 
-    typedef Index<TText, IndexSa<InfixSegment> >                            TIndexSa;
-    typedef typename Iterator<TIndexSa, TopDown<TSpec> >::Type              TIndexSaIterator;
+    typedef Index<TText, IndexSa<InfixSegment> >                            TBottomIndex;
+    typedef typename Iterator<TBottomIndex, TopDown<TSpec> >::Type          TBottomIterator;
 
-    TBaseIterator       _topIterator;
-    TIndexSaIterator    _bottomIterator;
+    TTopIterator    _topIterator;
+    TBottomIterator _bottomIterator;
 
 // ============================================================================
 
@@ -185,12 +186,17 @@ public:
         _bottomIterator(_index._indexSa)
     {
         _indexRequireTopDownIteration(_index);
-        _topIterator = TBaseIterator(static_cast<TBase &>(_index));
+        _topIterator = TTopIterator(static_cast<TTopIndex &>(_index));
         goRoot(_topIterator);
         goRoot(_bottomIterator);
     }
 
     Iter(Iter const & _origin) :
+        _topIterator(_origin._topIterator),
+        _bottomIterator(_origin._bottomIterator)
+    {}
+
+    Iter(TParentLinksIter const & _origin) :
         _topIterator(_origin._topIterator),
         _bottomIterator(_origin._bottomIterator)
     {}
@@ -204,7 +210,6 @@ public:
         _topIterator = _origin._topIterator;
         return *this;
     }
-
 };
 
 // ============================================================================
@@ -214,15 +219,16 @@ class Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDo
 {
 public:
     typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<TSpec> > >                                  TBase;
 
-    typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
-    typedef typename Iterator<TBase, TopDown<ParentLinks<TSpec> > >::Type           TBaseIterator;
+    typedef Index<TText, IndexQGram<TShapeSpec> >                                   TTopIndex;
+    typedef typename Iterator<TTopIndex, TopDown<ParentLinks<TSpec> > >::Type       TTopIterator;
 
-    typedef Index<TText, IndexSa<InfixSegment> >                                    TIndexSa;
-    typedef typename Iterator<TIndexSa, TopDown<ParentLinks<TSpec> > >::Type        TIndexSaIterator;
+    typedef Index<TText, IndexSa<InfixSegment> >                                    TBottomIndex;
+    typedef typename Iterator<TBottomIndex, TopDown<ParentLinks<TSpec> > >::Type    TBottomIterator;
 
-    TBaseIterator       _topIterator;
-    TIndexSaIterator    _bottomIterator;
+    TTopIterator    _topIterator;
+    TBottomIterator _bottomIterator;
 
 // ============================================================================
 
@@ -233,7 +239,7 @@ public:
         _bottomIterator(_index._indexSa)
     {
         _indexRequireTopDownIteration(_index);
-        _topIterator = TBaseIterator(static_cast<TBase &>(_index));
+        _topIterator = TTopIterator(static_cast<TTopIndex &>(_index));
         goRoot(_topIterator);
         goRoot(_bottomIterator);
     }
@@ -252,7 +258,6 @@ public:
         _topIterator = _origin._topIterator;
         return *this;
     }
-
 };
 
 // ============================================================================
@@ -353,9 +358,6 @@ getFibre(Index<TText, IndexSa<InfixSegment> > const & index, FibreSA)
 template <typename TText, typename TShapeSpec>
 inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, FibreSADir, Default const)
 {
-    typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
-    typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
-
     // Create QGram directory.
     resize(indexDir(index), _fullDirLength(index), Exact());
     createQGramIndexDirOnly(indexDir(index), indexBucketMap(index), indexText(index), indexShape(index), getStepSize(index));
@@ -376,10 +378,10 @@ inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > 
 //inline bool indexCreate(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, FibreSADir, Default const)
 //{
 //    typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >                 TIndex;
-//    typedef Index<TText, IndexQGram<TShapeSpec> >                                   TBase;
+//    typedef Index<TText, IndexQGram<TShapeSpec> >                                   TTopIndex;
 //
 ////    // Create QGram directory and refine suffix array.
-//    indexCreate(static_cast<TBase &>(index), FibreSADir(), Default());
+//    indexCreate(static_cast<TTopIndex &>(index), FibreSADir(), Default());
 //    _refineQGramIndex(indexSA(index), indexDir(index), indexText(index),
 //                      weight(indexShape(index)), lengthSum(indexText(index)));
 //
@@ -639,9 +641,9 @@ range(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TSpec
 template <typename TText, typename TShapeSpec>
 inline bool open(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, const char * fileName)
 {
-    typedef Index<TText, IndexQGram<TShapeSpec> >    TBase;
+    typedef Index<TText, IndexQGram<TShapeSpec> >    TBaseIndex;
 
-    if (open(static_cast<TBase &>(index), fileName))
+    if (open(static_cast<TBaseIndex &>(index), fileName))
     {
         _setHost(index);
         return true;
@@ -653,9 +655,9 @@ inline bool open(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index
 template <typename TText, typename TShapeSpec>
 inline bool save(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index, const char * fileName)
 {
-    typedef Index<TText, IndexQGram<TShapeSpec> >    TBase;
+    typedef Index<TText, IndexQGram<TShapeSpec> >    TBaseIndex;
 
-    return save(static_cast<TBase &>(index), fileName);
+    return save(static_cast<TBaseIndex &>(index), fileName);
 }
 
 }  // namespace seqan
