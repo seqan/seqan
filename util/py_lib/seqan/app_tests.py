@@ -154,10 +154,16 @@ def autolocateBinary(base_path, relative_path, binary_name):
   # Names of intermediary directories and possible file extensions.
   intermediary_dir_names = ['', 'Debug', 'Release']
   extensions = ['', '.exe']
-  paths = [os.path.join(base_path, 'bin', binary_name)]
+  paths = [os.path.join(base_path, 'bin', binary_name),
+           os.path.join(base_path, 'bin', 'Debug', binary_name),
+           os.path.join(base_path, 'bin', 'Release', binary_name),
+           os.path.join(base_path, 'bin', binary_name + '.exe'),
+           os.path.join(base_path, 'bin', 'Debug', binary_name + '.exe'),
+           os.path.join(base_path, 'bin', 'Release', binary_name + '.exe')]
   # Try all possible paths.
   for dir_name in intermediary_dir_names:
     for ext in extensions:
+      # With CMAKE_BINARY_DIR not set to "bin".
       res_list = [base_path, relative_path, dir_name, binary_name + ext]
       filtered_list = [x for x in res_list if x]  # Filter out empty strings.
       paths.append(os.path.join(*filtered_list))
@@ -167,8 +173,10 @@ def autolocateBinary(base_path, relative_path, binary_name):
                               [binary_name]))
   for path in paths:
     logging.debug('Trying path %s', path)
+    print >>sys.stderr, 'Trying path', path
     if os.path.isfile(path):
       logging.debug('  Found binary %s', path)
+      print >>sys.stderr, '  Found binary', path
       return path
   # Fall back ot Unix default.
   return os.path.join(base_path, relative_path, binary_name)
