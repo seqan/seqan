@@ -550,7 +550,6 @@ struct AssignSegment_
         Segment<THost const, TSpec> & target,
         TSource & source)
     {
-SEQAN_CHECKPOINT
         set(target, source);
     }
 
@@ -561,7 +560,6 @@ SEQAN_CHECKPOINT
         TSource & source,
         typename Size< Segment<THost const, TSpec> >::Type /*limit*/)
     {
-SEQAN_CHECKPOINT
         set(target, source);
     }
 
@@ -581,6 +579,7 @@ SEQAN_CHECKPOINT
         TSource & source,
         typename Size< Segment<THost, TSpec> >::Type limit)
     {
+        (void)limit;
         set(target, source);
     }
 
@@ -600,6 +599,7 @@ SEQAN_CHECKPOINT
         TSource & source,
         typename Size< Segment<THost, TSpec> >::Type limit)
     {
+        (void)limit;
         set(target, source);
     }
 };
