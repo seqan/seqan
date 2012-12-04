@@ -287,7 +287,7 @@ def runTest(test_conf):
 class ReplaceTransform(object):
     """Transformation on left and/or right files to diff."""
 
-    def __init__(self, needle, replacement, left=False, right=False):
+    def __init__(self, needle, replacement, left=True, right=True):
         self.needle = needle
         self.replacement = replacement
         self.left = left
