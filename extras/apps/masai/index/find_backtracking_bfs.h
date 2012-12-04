@@ -163,7 +163,7 @@ inline bool goBack(TNFA & nfa)
     nfa.currentDepth--;
 
 #ifdef SEQAN_DEBUG
-    std::cout << "NFA depth back: " << nfa.currentDepth << std::endl;
+    std::cout << "back to depth:  " << nfa.currentDepth << std::endl;
 #endif
 
     return true;
@@ -185,16 +185,16 @@ inline bool atEnd(NFA_<TIndex, TErrors, TDelegate> & nfa)
 }
 
 template <typename TIndex, typename TErrors, typename TDelegate, typename TTextIterator>
-inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const & textIt)
+inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator & textIt)
 {
     typedef NFA_<TIndex, TErrors, TDelegate>            TNFA;
-    typedef typename TNFA::TIterator                    TIterator;
+    typedef typename TNFA::TIterator                    TPatternIterator;
     typedef typename TNFA::TState                       TState;
     typedef typename TNFA::TStates                      TStates;
     typedef typename Iterator<TStates, Standard>::Type  TStatesIterator;
-    typedef typename EdgeLabel<TIterator>::Type         TNFALabel;
     typedef typename EdgeLabel<TTextIterator>::Type     TTextLabel;
-    
+    typedef typename EdgeLabel<TPatternIterator>::Type  TPatternLabel;
+
     // Get active states.
     SEQAN_ASSERT_GT(length(nfa.states), nfa.currentDepth);
     TStates & activeStates = nfa.states[nfa.currentDepth];
@@ -206,6 +206,16 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
     // The next states become active.
     nfa.currentDepth++;
 
+    // Read text label.
+    TTextLabel textLabel = parentEdgeLabel(textIt);
+
+#ifdef SEQAN_DEBUG
+    std::cout << "text:           " << textLabel << std::endl;
+#endif
+
+    // NOTE(esiragusa): Using repLength() is fine only for tries.
+    SEQAN_ASSERT_EQ(repLength(textIt), nfa.currentDepth);
+
     // Clear next states.
     SEQAN_ASSERT_GT(length(nfa.states), nfa.currentDepth);
     TStates & nextStates = nfa.states[nfa.currentDepth];
@@ -214,59 +224,58 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
 #ifdef SEQAN_DEBUG
     std::cout << "representative: " << representative(textIt) << std::endl;
     std::cout << "repLength:      " << repLength(textIt) << std::endl;
-    std::cout << "NFA depth:      " << nfa.currentDepth << std::endl;
-#endif
-
-    // NOTE(esiragusa): Using repLength() is fine only for tries.
-    SEQAN_ASSERT_EQ(repLength(textIt), nfa.currentDepth);
-
-    // Read text symbol.
-    TTextLabel symbol = parentEdgeLabel(textIt);
-
-#ifdef SEQAN_DEBUG
-    std::cout << "symbol:         " << symbol << std::endl;
+    std::cout << "current depth:  " << nfa.currentDepth << std::endl;
 #endif
 
 //    if (statesEnd - statesIt == 1 && getValueI2(value(statesIt)) == nfa.errors)
 //        std::cout << "One exact search" << std::endl;
 
-    // Apply the symbol transition to all active states.
+    // Apply the transition to all active states.
     for (; statesIt != statesEnd; ++statesIt)
     {
-        TIterator nfaIt = getValueI1(value(statesIt));
+        TPatternIterator patternIt = getValueI1(value(statesIt));
         TErrors oldErrors = getValueI2(value(statesIt));
 
         if (oldErrors == nfa.errors)
         {
             // TODO(esiragusa): goDown(nfaIt, Dna5) must be overloaded not to follow Ns.
-            if (ordValue(symbol) < 4 && goDown(nfaIt, symbol))
+            if (ordValue(textLabel) < 4 && goDown(patternIt, textLabel))
             {
 #ifdef SEQAN_DEBUG
-                std::cout << "transition:     " << symbol << std::endl;
+                std::cout << "pattern:        " << textLabel << std::endl;
                 std::cout << "distance:       " << 0 << std::endl;
                 std::cout << "errors:         " << static_cast<unsigned>(oldErrors) << std::endl;
 #endif
 
                 if (accept(nfa))
-                    onMatch(nfa.delegate, textIt, nfaIt, oldErrors);
+                    onMatch(nfa.delegate, textIt, patternIt, oldErrors);
                 else
-                    appendValue(nextStates, TState(nfaIt, oldErrors));
+                {
+                    if (nfa.currentDepth >= 10)
+                        // TODO(esiragusa): Fix cast for BucketRefinement QGramIndex
+                        _search(static_cast<typename TTextIterator::TBase>(textIt), patternIt,
+                                nfa.patternsLength, nfa.errors,
+                                nfa.currentDepth, oldErrors,
+                                nfa.delegate);
+                    else
+                        appendValue(nextStates, TState(patternIt, oldErrors));
+                }
             }
         }
         else
         {
             // Traverse all children of current state.
-            if (goDown(nfaIt))
+            if (goDown(patternIt))
             {
                 do
                 {
-                    // Align edge label with the input symbol.
-                    TNFALabel transition = parentEdgeLabel(nfaIt);
-                    TErrors distance = (symbol == transition) ? 0 : 1;
+                    // Align edge labels.
+                    TPatternLabel patternLabel = parentEdgeLabel(patternIt);
+                    TErrors distance = (textLabel == patternLabel) ? 0 : 1;
                     TErrors errors = oldErrors + distance;
 
 #ifdef SEQAN_DEBUG
-                    std::cout << "transition:     " << transition << std::endl;
+                    std::cout << "pattern:        " << patternLabel << std::endl;
                     std::cout << "distance:       " << static_cast<unsigned>(distance) << std::endl;
                     std::cout << "errors:         " << static_cast<unsigned>(errors) << std::endl;
 #endif
@@ -275,16 +284,32 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator const &
                     if (errors <= nfa.errors)
                     {
                         // The NFA moved into an acceptance state.
-                        // NOTE(esiragusa): nfaIt should be a leaf.
+                        // NOTE(esiragusa): patternIt should be a leaf.
                         if (accept(nfa))
-                            onMatch(nfa.delegate, textIt, nfaIt, errors);
+                            onMatch(nfa.delegate, textIt, patternIt, errors);
 
                         // The NFA moved into a non-acceptance state.
                         else
-                            appendValue(nextStates, TState(nfaIt, errors));
+                        {
+//                            if (nfa.currentDepth >= 10)
+//                            {
+//                                if (errors > 0)
+//                                    _dfs(static_cast<typename TTextIterator::TBase>(textIt), patternIt,
+//                                         nfa.patternsLength, nfa.errors,
+//                                         nfa.currentDepth, errors,
+//                                         nfa.delegate);
+//                                else
+//                                    _search(static_cast<typename TTextIterator::TBase>(textIt), patternIt,
+//                                            nfa.patternsLength, nfa.errors,
+//                                            nfa.currentDepth, errors,
+//                                            nfa.delegate);
+//                            }
+//                            else
+                                appendValue(nextStates, TState(patternIt, errors));
+                        }
                     }
                 }
-                while (goRight(nfaIt));
+                while (goRight(patternIt));
             }
         }
     }
