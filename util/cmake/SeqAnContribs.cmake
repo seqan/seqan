@@ -69,8 +69,8 @@ if (WIN32)
 			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 		endif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 	endif (NOT DEFINED SEQAN_CONTRIB_BASE)
-    # Try to fall back to x86 on C:\ (MinGW is only available as 32 bit).
-    set (CONTRIB_ARCH "x86")
+    # Try to fall back to x64 on C:\ (MinGW is only available as 32 bit).
+    set (CONTRIB_ARCH "x64")
     if (NOT DEFINED SEQAN_CONTRIB_BASE)
         if (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
             set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
