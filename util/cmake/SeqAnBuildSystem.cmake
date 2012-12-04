@@ -48,6 +48,22 @@ include (SeqAnUsabilityAnalyzer)
 include (SeqAnLegacyBuildSystem)
 
 # ---------------------------------------------------------------------------
+# Normalize CMAKE_CXX_FLAGS to be a string.
+#
+# If we do not do this then setting the environment variable CXXFLAGS will
+# cause CMAKE_CXX_FLAGS to become a list and this will generate compiler
+# command lines including the list item separator semicolon ";".  This makes
+# the compiler command fail.
+# ---------------------------------------------------------------------------
+
+if (CMAKE_CXX_FLAGS)
+  foreach (_FLAG ${CMAKE_CXX_FLAGS})
+    set (_FLAGS "${_FLAGS} ${_FLAG}")
+  endforeach (_FLAG ${CMAKE_CXX_FLAGS})
+  set (CMAKE_CXX_FLAGS "${_FLAGS}")
+endif (CMAKE_CXX_FLAGS)
+
+# ---------------------------------------------------------------------------
 # Function add_executable (name [WIN32] [MACOSX_BUNDLE] [EXCLUDE_FROM_ALL]
 #                          source1 source2 ... sourceN)
 #
