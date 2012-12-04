@@ -335,7 +335,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_file_size)
     seqan::BamStream bamStream(toCString(filePath));
     SEQAN_ASSERT(isGood(bamStream));
 
-    SEQAN_ASSERT_EQ(fileSize(bamStream), 182u);
+    SEQAN_ASSERT_EQ(fileSize(bamStream), 181u);
     SEQAN_ASSERT_EQ(positionInFile(bamStream), 0u);
 
     seqan::BamAlignmentRecord record;
