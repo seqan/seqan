@@ -67,6 +67,8 @@ struct MatchesDelegate_
     MatchesDelegate_() : matches(0) {}
 };
 
+// ============================================================================
+
 // NOTE(esiragusa): TIterator should be a template argument instead of TIndex
 template <typename TIndex, typename TErrors, typename TDelegate>
 struct NFA_
@@ -315,17 +317,9 @@ inline void _cut(TTextIterator & textIt, TNFA & nfa)
     }
 }
 
-// NOTE(esiragusa): TTextIndex and TPatternIndex must be tries
-template <typename TTextIndex, typename TPatternIndex, typename TSize, typename TErrors, typename TDelegate>
-void find(TTextIndex & text, TPatternIndex & pattern, TSize patternsLength, TErrors errors, TDelegate & delegate)
+template <typename TTextIterator, typename TNFA>
+inline void _bfs(TTextIterator & textIt, TNFA & nfa)
 {
-    typedef TopDown<ParentLinks<Preorder> >                         TTextIteratorSpec;
-    typedef typename Iterator<TTextIndex, TTextIteratorSpec>::Type  TTextIterator;
-    typedef NFA_<TPatternIndex, TErrors, TDelegate>                 TNFA;
-
-    TTextIterator textIt(text);
-    TNFA nfa(pattern, patternsLength, errors, delegate);
-
     if (goDown(textIt))
     {
         do
@@ -335,6 +329,25 @@ void find(TTextIndex & text, TPatternIndex & pattern, TSize patternsLength, TErr
         }
         while (!isRoot(textIt));
     }
+}
+
+// NOTE(esiragusa): TTextIndex and TPatternIndex must be tries
+template <typename TTextIndex, typename TPatternIndex, typename TSize, typename TErrors, typename TDelegate>
+void find(TTextIndex & text,
+          TPatternIndex & pattern,
+          TSize patternsLength,
+          TErrors errors,
+          TDelegate & delegate,
+          BfsIterator const & /* tag */)
+{
+    typedef TopDown<ParentLinks<> >                                 TTextIteratorSpec;
+    typedef typename Iterator<TTextIndex, TTextIteratorSpec>::Type  TTextIterator;
+    typedef NFA_<TPatternIndex, TErrors, TDelegate>                 TNFA;
+
+    TTextIterator textIt(text);
+    TNFA nfa(pattern, patternsLength, errors, delegate);
+
+    _bfs(textIt, nfa);
 }
 
 }
