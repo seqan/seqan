@@ -79,7 +79,9 @@ int write2(TStream & stream,
         if (res != 0)
             return 1;  // Error writing header to buffer.
     }
-    appendValue(headerBuffer, '\0');
+    // Note that we do not write out a null-character to terminate the header.  This would be valid by the SAM standard
+    // but the samtools do not expect this and write out the '\0' when converting from BAM to SAM.
+    // appendValue(headerBuffer, '\0');
 
     // Write text header.
     __int32 lText = length(headerBuffer);
