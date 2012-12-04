@@ -206,6 +206,8 @@ SEQAN_CHECKPOINT
 
     TSize minLength = matchMinLength;
 	bool found = false;
+    // DELTA is used below against floating point rounding errors.
+	double const DELTA = 0.0001;
 
 	while (leftIt >= begin(possEndsLeft)) {
 		TSize totalLen = (*leftIt).length + alignLen + (*rightIt).length;
@@ -214,7 +216,7 @@ SEQAN_CHECKPOINT
 		while (rightIt >= begin(possEndsRight)) {
 			totalLen = (*leftIt).length + alignLen + (*rightIt).length;
 			if (totalLen < minLength) break;
-			if ((TEps)totalErr/(TEps)totalLen <= epsilon) {
+			if ((TEps)totalErr/(TEps)totalLen < epsilon + DELTA) {
 				right = rightIt;
 				left = leftIt;
 				//std::cout << totalLen << std::endl;

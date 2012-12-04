@@ -418,14 +418,9 @@ write(TFile & target,
             windowSize_ = end_ - begin_;
 
         // Print header line
-        unsigned int offset = 0;
-        if (baseCount != 0)
-            offset = (unsigned int) floor(log((double)baseCount) / log((double)10));
-        for (unsigned int j = 0; j < leftSpace - offset; ++j)
-        {
-            streamPut(target, ' ');
-        }
-        streamPut(target, (int)baseCount);
+        char buffer[100];
+        sprintf(buffer, "%7u", (unsigned)baseCount);
+        streamPut(target, buffer);
         baseCount += windowSize_;
         streamPut(target, ' ');
         for (TPosition i = 1; i <= windowSize_; ++i)
