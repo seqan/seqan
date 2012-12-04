@@ -56,12 +56,12 @@ include (SeqAnLegacyBuildSystem)
 # the compiler command fail.
 # ---------------------------------------------------------------------------
 
-if (CMAKE_CXX_FLAGS)
-  foreach (_FLAG ${CMAKE_CXX_FLAGS})
-    set (_FLAGS "${_FLAGS} ${_FLAG}")
-  endforeach (_FLAG ${CMAKE_CXX_FLAGS})
-  set (CMAKE_CXX_FLAGS "${_FLAGS}")
-endif (CMAKE_CXX_FLAGS)
+#if (CMAKE_CXX_FLAGS)
+#  foreach (_FLAG ${CMAKE_CXX_FLAGS})
+#    set (_FLAGS "${_FLAGS} ${_FLAG}")
+#  endforeach (_FLAG ${CMAKE_CXX_FLAGS})
+#  set (CMAKE_CXX_FLAGS "${_FLAGS}")
+#endif (CMAKE_CXX_FLAGS)
 
 # ---------------------------------------------------------------------------
 # Function add_executable (name [WIN32] [MACOSX_BUNDLE] [EXCLUDE_FROM_ALL]
@@ -469,6 +469,7 @@ macro (seqan_register_tests)
     # Setup flags for tests.
     set (SEQAN_FIND_ENABLE_DEBUG TRUE)
     set (SEQAN_FIND_ENABLE_TESTING TRUE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")

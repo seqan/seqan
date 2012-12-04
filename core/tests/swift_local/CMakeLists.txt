@@ -35,7 +35,7 @@ add_executable (test_find_swift test_find_swift.cpp)
 target_link_libraries (test_find_swift ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS})
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # ----------------------------------------------------------------------------
 # Register with CTest
