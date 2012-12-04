@@ -60,6 +60,7 @@ add_executable (masai_mapper mapper.cpp
                             index/index_qgram_stretched.h
                             index/find_backtracking_stretched.h
                             index/find_backtracking_bfs.h
+                            index/find_backtracking_dfs.h
                             store/store_io.h
                             store/store_io_sam.h)
 
