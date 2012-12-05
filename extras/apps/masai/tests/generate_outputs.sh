@@ -3,7 +3,6 @@
 # Masai reference output generation. Version v0.6.1 was used.
 
 PATH=~/Documents/Code/SeqAn-Trunk/build/Release/bin/
-#PATH=../../../../../seqan-trunk-build/Release/extras/apps/masai
 INDEXER=$PATH/masai_indexer
 MAPPER=$PATH/masai_mapper
 SINGLE=$PATH/masai_output_se
