@@ -194,41 +194,44 @@ template <typename TReadId>
 void _storeReadId(TFragmentStore &, TReadId const &, False const & /* tag */)
 {}
 
-// ----------------------------------------------------------------------------
-// Function loadReads()                                         [FragmentStore]
-// ----------------------------------------------------------------------------
+// ============================================================================
 
-// TODO(esiragusa): Implement paired-end loadReads()
-template <typename TFileName, typename TUseReadStore, typename TUseReadNameStore>
-bool loadReads(TFragmentStore & store,
-               TFileName & fileName,
-               TUseReadStore const & /* tag */,
-               TUseReadNameStore const & /* tag */)
+template <typename TSeqName, typename TSeq>
+unsigned long _estimateRecordLength(TSeqName const & seqName, TSeq const & seq, Fastq const & /* tag */)
 {
-    typedef std::fstream                            TStream;
-    typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
+    // 6 stands for: @, +, and four \n.
+    return length(seqName) + 2 * length(seq) + 6;
+}
 
-    TStream file(toCString(fileName), std::ios::binary | std::ios::in);
+template <typename TSeqName, typename TSeq>
+unsigned long _estimateRecordLength(TSeqName const & seqName, TSeq const & seq, Fasta const & /* tag */)
+{
+    // 3 stands for: >, and two \n.
+    return length(seqName) + length(seq) + 3;
+}
 
-    // Compute file size.
-    file.seekg(0, std::ios::end);
-    unsigned long fileLength = file.tellg();
-    file.seekg(0, std::ios::beg);
+// ============================================================================
 
-    TRecordReader reader(file);
-
+template <typename TRecordReader, typename TFormat, typename TUseReadStore, typename TUseReadNameStore>
+bool _loadReads(TFragmentStore & store,
+                TRecordReader & reader,
+                unsigned long fileSize,
+                TFormat const & /* tag */,
+                TUseReadStore const & /* tag */,
+                TUseReadNameStore const & /* tag */)
+{
     CharString seqName;
     FragStoreConfig::TReadSeq seq;
 
     // Read first record.
-    if (readRecord(seqName, seq, reader, Fastq()) != 0)
+    if (readRecord(seqName, seq, reader, TFormat()) != 0)
         return false;
 
-    // Estimate record size (6 counts @, +, and four \n).
-    unsigned long recordLength = length(seqName) + 2 * length(seq) + 6;
+    // Estimate record size.
+    unsigned long recordLength = _estimateRecordLength(seqName, seq, TFormat());
 
     // Estimate number of records.
-    unsigned long numberOfRecords = fileLength / recordLength;
+    unsigned long numberOfRecords = fileSize / recordLength;
 
     // Reserve space in the readSeqStore, also considering reverse complemented reads.
     reserve(store.readSeqStore.concat, 2 * numberOfRecords * length(seq), Exact());
@@ -248,7 +251,7 @@ bool loadReads(TFragmentStore & store,
     // Read whole file.
     while (!atEnd(reader))
     {
-        if (readRecord(seqName, seq, reader, Fastq()) != 0)
+        if (readRecord(seqName, seq, reader, TFormat()) != 0)
             return false;
 
         _storeReadSeq(store, seq);
@@ -257,6 +260,46 @@ bool loadReads(TFragmentStore & store,
     }
 
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function loadReads()                                         [FragmentStore]
+// ----------------------------------------------------------------------------
+
+// TODO(esiragusa): Implement paired-end loadReads()
+template <typename TFileName, typename TUseReadStore, typename TUseReadNameStore>
+bool loadReads(TFragmentStore & store,
+               TFileName & fileName,
+               TUseReadStore const & /* tag */,
+               TUseReadNameStore const & /* tag */)
+{
+    typedef std::fstream                            TStream;
+    typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
+
+    TStream file(toCString(fileName), std::ios::binary | std::ios::in);
+
+    // Compute file size.
+    file.seekg(0, std::ios::end);
+    unsigned long fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    TRecordReader reader(file);
+
+    // Autodetect file format.
+    AutoSeqStreamFormat tagSelector;
+    checkStreamFormat(reader, tagSelector);
+
+    switch (tagSelector.tagId)
+    {
+    case 1:
+        return _loadReads(store, reader, fileSize, Fasta(), TUseReadStore(), TUseReadNameStore());
+
+    case 2:
+        return _loadReads(store, reader, fileSize, Fastq(), TUseReadStore(), TUseReadNameStore());
+
+    default:
+        return false;
+    }
 }
 
 
