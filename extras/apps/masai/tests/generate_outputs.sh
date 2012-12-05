@@ -15,7 +15,7 @@ PAIRED=$PATH/masai_output_pe
 
 # Run with different indices.
 for i in sa esa fm qgram; do
-    ${INDEXER} --index ${i} --index-prefix adeno-index-${i} adeno-genome.fa &> adeno-index-${i}.stdout
+    ${INDEXER} --index ${i} --index-prefix adeno-index-${i}.out adeno-genome.fa &> adeno-index-${i}.stdout
 done
 
 exit
@@ -35,7 +35,7 @@ for rl in 100; do #36 100; do
 
     # Run with different indices.
 #    for i in in esa fm qgram; do
-#        ${MAPPER} --index ${i} --index-prefix adeno-index-${i} adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-i${i}.out &> se-adeno-reads${rl}_1-i${i}.stdout
+#        ${MAPPER} --index ${i} --index-prefix adeno-index-${i}.out adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-i${i}.out &> se-adeno-reads${rl}_1-i${i}.stdout
 #    done
 
     # Run with different mapping modes.

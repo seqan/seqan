@@ -73,13 +73,13 @@ def main(source_base, binary_base):
 
     for i in ['sa', 'esa', 'fm', 'qgram']:
         # Get file extensions for the given index type
-        exts=[file.split('.', 1).pop() for file in glob.glob('adeno-index-%s.*' % i) ]
+        exts=[file.split('.', 1).pop() for file in glob.glob(ph.inFile('adeno-index-%s.out.*' % i)) ]
         conf = app_tests.TestConf(
             program=path_to_indexer,
             redir_stdout=ph.outFile('adeno-index-%s.stdout' % i),
             args=[ph.inFile('adeno-genome.fa'),
                   '-xp', ph.outFile('adeno-index-%s.out' % i)],
-            to_diff= [(ph.inFile('adeno-index-%s.%s' % (i,ext)),
+            to_diff= [(ph.inFile('adeno-index-%s.out.%s' % (i,ext)),
                        ph.outFile('adeno-index-%s.out.%s' % (i, ext))) for ext in exts] +
                      [(ph.inFile('adeno-index-%s.stdout' % i),
                       ph.outFile('adeno-index-%s.stdout' % i),
@@ -90,60 +90,60 @@ def main(source_base, binary_base):
     # Run Mapper Single-End Tests
     # ============================================================
 
-    # We run the following for various read lengths.
-    for rl in [100]: #[36, 100]:
-        # Run with default options.
-        conf = app_tests.TestConf(
-            program=path_to_mapper,
-            redir_stdout=ph.outFile('se-adeno-reads%d_1.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
-                  ph.inFile('adeno-reads%d_1.fa' % rl),
-                  '-o', ph.outFile('se-adeno-reads%d_1.out' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1.out' % rl)),
-                     (ph.inFile('se-adeno-reads%d_1.stdout' % rl),
-                      ph.outFile('se-adeno-reads%d_1.stdout' % rl),
-                      transforms)])
-        conf_list.append(conf)
-
-        # Run with different seed length.
-        for optionValue in [16, 50]:
-            optionName='sl'
-            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
-
-        # Run with different indices.
-#        for optionValue in ['esa', 'fm', 'qgram']:
-#            optionName='i'
+#    # We run the following for various read lengths.
+#    for rl in [100]: #[36, 100]:
+#        # Run with default options.
+#        conf = app_tests.TestConf(
+#            program=path_to_mapper,
+#            redir_stdout=ph.outFile('se-adeno-reads%d_1.stdout' % rl),
+#            args=[ph.inFile('adeno-genome.fa'),
+#                  ph.inFile('adeno-reads%d_1.fa' % rl),
+#                  '-o', ph.outFile('se-adeno-reads%d_1.out' % rl)],
+#            to_diff=[(ph.inFile('se-adeno-reads%d_1.out' % rl),
+#                      ph.outFile('se-adeno-reads%d_1.out' % rl)),
+#                     (ph.inFile('se-adeno-reads%d_1.stdout' % rl),
+#                      ph.outFile('se-adeno-reads%d_1.stdout' % rl),
+#                      transforms)])
+#        conf_list.append(conf)
+#
+#        # Run with different seed length.
+#        for optionValue in [16, 50]:
+#            optionName='sl'
 #            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
-
-        # Run with different mapping modes.
-        for optionValue in ['all']:
-            optionName='mm'
-            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
-
-        # Run with different absolute number of errors.
-        for optionValue in [0, 1, 2, 3, 4]:
-            optionName='e'
-            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
-
-        # Run with different output formats.
-        for optionValue in ['sam', 'sam-no-cigar']:
-            optionName='of'
-            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
-
-        # Run without gaps.
-        conf = app_tests.TestConf(
-            program=path_to_mapper,
-            redir_stdout=ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
-                  ph.inFile('adeno-reads%d_1.fa' % rl),
-                  '-o', ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1-nogaps.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)),
-                     (ph.inFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
-                      ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
-                      transforms)])
-        conf_list.append(conf)
+#
+#        # Run with different indices.
+##        for optionValue in ['esa', 'fm', 'qgram']:
+##            optionName='i'
+##            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
+#
+#        # Run with different mapping modes.
+#        for optionValue in ['all']:
+#            optionName='mm'
+#            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
+#
+#        # Run with different absolute number of errors.
+#        for optionValue in [0, 1, 2, 3, 4]:
+#            optionName='e'
+#            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
+#
+#        # Run with different output formats.
+#        for optionValue in ['sam', 'sam-no-cigar']:
+#            optionName='of'
+#            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
+#
+#        # Run without gaps.
+#        conf = app_tests.TestConf(
+#            program=path_to_mapper,
+#            redir_stdout=ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
+#            args=[ph.inFile('adeno-genome.fa'),
+#                  ph.inFile('adeno-reads%d_1.fa' % rl),
+#                  '-o', ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)],
+#            to_diff=[(ph.inFile('se-adeno-reads%d_1-nogaps.out' % rl),
+#                      ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)),
+#                     (ph.inFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
+#                      ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
+#                      transforms)])
+#        conf_list.append(conf)
 
     # ============================================================
     # Run Mapper Paired-End Tests
