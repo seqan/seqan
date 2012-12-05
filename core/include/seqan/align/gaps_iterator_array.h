@@ -245,7 +245,8 @@ countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
     if (!isGap(it) || atEnd(it))
         return 0;  // Not on a gap or at end, no gap here.
 
-    typename Size<TGaps>::Type result = it._container->_array[it._bucketIndex] - it._bucketOffset;
+    typedef typename Size<TGaps>::Type TSize;
+    TSize result = it._container->_array[it._bucketIndex] - it._bucketOffset;
     // Check whether gaps reach behind the clipping and trim gaps for counting.
     if ((TSize)(it._unclippedViewPosition + result) > (TSize)it._container->_clippingEndPos)
         result = it._container->_clippingEndPos - it._unclippedViewPosition;
