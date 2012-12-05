@@ -86,10 +86,14 @@ SEQAN_DEFINE_TEST(test_misc_terminal_get_terminal_size)
     
     unsigned cols = maxValue<unsigned>(), rows = maxValue<unsigned>();
     bool succ = getTerminalSize(cols, rows);
-    
+
+#if !defined(PLATFORM_WINDOWS)
     SEQAN_ASSERT(succ);
     SEQAN_ASSERT_NEQ(cols, maxValue<unsigned>());
     SEQAN_ASSERT_NEQ(rows, maxValue<unsigned>());
+#else  // #if !defined(PLATFORM_WINDOWS)
+    SEQAN_ASSERT_NOT(succ);
+#endif  // #if !defined(PLATFORM_WINDOWS)
 }
 
 SEQAN_BEGIN_TESTSUITE(test_misc) {

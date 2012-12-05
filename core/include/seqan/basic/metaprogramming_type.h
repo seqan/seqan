@@ -95,13 +95,14 @@ template <typename T>
 struct MakeUnsigned
 {
 	typedef
+		typename If<typename IsSameType<T, __int8>::Type,       __uint8,
 		typename If<typename IsSameType<T, char>::Type,         unsigned char,
 		typename If<typename IsSameType<T, signed char>::Type,  unsigned char,
 		typename If<typename IsSameType<T, signed short>::Type, unsigned short,
 		typename If<typename IsSameType<T, signed int>::Type,   unsigned int,
 		typename If<typename IsSameType<T, signed long>::Type,  unsigned long,
 		typename If<typename IsSameType<T, __int64>::Type,      __uint64, T
-		>::Type>::Type>::Type>::Type>::Type>::Type Type;
+		>::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
 };
 
 template <typename T>
@@ -141,12 +142,13 @@ struct MakeSigned
 {
 	typedef
 		typename If<typename IsSameType<T, char>::Type,           signed char,
+		typename If<typename IsSameType<T, __int8>::Type,         __int8,
 		typename If<typename IsSameType<T, unsigned char>::Type,  signed char,
 		typename If<typename IsSameType<T, unsigned short>::Type, signed short,
 		typename If<typename IsSameType<T, unsigned int>::Type,   signed int,
 		typename If<typename IsSameType<T, unsigned long>::Type,  signed long,
 		typename If<typename IsSameType<T, __uint64>::Type,       __int64, T
-		>::Type>::Type>::Type>::Type>::Type>::Type Type;
+		>::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
 };
 
 template <typename T>

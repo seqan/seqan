@@ -144,6 +144,13 @@ struct MinimumValueSigned_<bool>
     static const bool VALUE = false;
 };
 
+// Declare __int8 explicitely as signed type.
+template <>
+struct MinimumValueSigned_<__int8>
+{
+    static const __int8 VALUE = -128;
+};
+
 // template <>
 // const char MinimumValueUnsigned_<char>::VALUE = 0;
 // template <>
@@ -158,7 +165,7 @@ template <
       IsSameType<float, T>::VALUE,
       MinimumValueFloat_<>,
       typename IfC<
-        IsSameType< typename MakeSigned_<T>::Type, T >::VALUE,
+        IsSameType<typename MakeSigned_<T>::Type, T >::VALUE,
         MinimumValueSigned_<T>,
         MinimumValueUnsigned_<T>
         >::Type

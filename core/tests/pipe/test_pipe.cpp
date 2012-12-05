@@ -306,23 +306,6 @@ SEQAN_BEGIN_TESTSUITE(test_pipe) {
     SEQAN_CALL_TEST(test_pipe_test_mapper);
     SEQAN_CALL_TEST(test_pipe_test_mapper_partially_filled);
     SEQAN_CALL_TEST(test_pipe_test_sorter);
-
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_base.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_caster.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_counter.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_echoer.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_edit_environment.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_filter.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_iterator.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_joiner.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_namer.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_sampler.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_shifter.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_source.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pipe_tupler.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pool_base.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pool_mapper.h");
-	SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/pipe/pool_sorter.h");
 }
 SEQAN_END_TESTSUITE
 

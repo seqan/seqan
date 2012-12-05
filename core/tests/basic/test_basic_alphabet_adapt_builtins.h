@@ -117,7 +117,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
     // Ordered Alphabet Concept
     {
         char b = false, c = true;
-        
+#if !defined(_MSC_VER) || defined(_CHAR_UNSIGNED)
         SEQAN_ASSERT_EQ(minValue(char()), '\0');
         SEQAN_ASSERT_EQ(minValue<char>(), '\0');
         SEQAN_ASSERT_EQ(+(MinValue<char>::VALUE), '\0');
@@ -126,6 +126,16 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
         SEQAN_ASSERT_EQ(maxValue<char>(), char(-1));
         SEQAN_ASSERT_EQ(+(MaxValue<char>::VALUE), char(-1));
         SEQAN_ASSERT(b < c);
+#else  // #if !defined(_MSC_VER) || defined(_CHAR_UNSIGNED)
+        SEQAN_ASSERT_EQ(minValue(char()), -128);
+        SEQAN_ASSERT_EQ(minValue<char>(), -128);
+        SEQAN_ASSERT_EQ(+(MinValue<char>::VALUE), -128);
+        // TODO(holtgrew): Is the following correct?
+        SEQAN_ASSERT_EQ(maxValue(char()), 127);
+        SEQAN_ASSERT_EQ(maxValue<char>(), 127);
+        SEQAN_ASSERT_EQ(+(MaxValue<char>::VALUE), 127);
+        SEQAN_ASSERT(b < c);
+#endif  // #if !defined(_MSC_VER) || defined(_CHAR_UNSIGNED)
     }
 
     // Finite Ordered Alphabet
@@ -256,11 +266,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
     {
         long b = 0;
 
-#if SEQAN_IS_32_BIT
-        SEQAN_ASSERT_EQ(+(BitsPerValue<long>::VALUE), 32u);
-#else  // #if SEQAN_IS_32_BIT
-        SEQAN_ASSERT_EQ(+(BitsPerValue<long>::VALUE), 64u);
-#endif  // #if SEQAN_IS_32_BIT
+        SEQAN_ASSERT_EQ(+(BitsPerValue<long>::VALUE), sizeof(long) * 8);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
     }
@@ -290,8 +296,16 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
         SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 4294967296ull);
         SEQAN_ASSERT_EQ(valueSize<long>(), 4294967296ull);
 #else  // #if SEQAN_IS_32_BIT
-        SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 0u);
-        SEQAN_ASSERT_EQ(valueSize<long>(), 0u);
+        if (sizeof(long) == 16u)  // long has 64 bit
+        {
+            SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 0u);
+            SEQAN_ASSERT_EQ(valueSize<long>(), 0u);
+        }
+        else
+        {
+            SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 4294967296ull);
+            SEQAN_ASSERT_EQ(valueSize<long>(), 4294967296ull);
+        }
 #endif  // #if SEQAN_IS_32_BIT
 
         b = 1;
