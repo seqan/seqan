@@ -377,9 +377,11 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
             if (qualStore[a.id].score > qualStore[b.id].score) return true;
             if (!(qualStore[a.id].score >= qualStore[b.id].score)) return false;
-            return (qualStore[a.id].errors < qualStore[b.id].errors);
 
+            if (qualStore[a.id].errors < qualStore[b.id].errors) return true;
+            if (qualStore[a.id].errors > qualStore[b.id].errors) return false;
 
+            return a.id < b.id;
         }
     };
 
@@ -440,8 +442,9 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             if (b.id == TMatch::INVALID_ID) return true;
             if (qualStore[a.id].score > qualStore[b.id].score) return true;
             if (!(qualStore[a.id].score >= qualStore[b.id].score)) return false;
-            return (qualStore[a.id].errors < qualStore[b.id].errors);
-
+            if (qualStore[a.id].errors < qualStore[b.id].errors) return true;
+            if (qualStore[a.id].errors > qualStore[b.id].errors) return false;
+            return a.id < b.id;
         }
     };
 
@@ -470,7 +473,13 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             if (a.contigId > b.contigId) return false;
 
             // begin position
-            return (_min(a.endPos,a.beginPos) < _min(b.endPos,b.beginPos));
+            if (std::min(a.beginPos, a.endPos) < std::min(b.beginPos, b.endPos))
+                return true;
+            if (std::min(a.beginPos, a.endPos) > std::min(b.beginPos, b.endPos))
+                return false;
+
+            // Break tie by read id.
+            return a.readId < b.readId;
         }
     };
 
@@ -487,7 +496,10 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             if (a.contigId > b.contigId) return false;
 
             // end position
-            return (_max(a.endPos,a.beginPos) < _max(b.endPos,b.beginPos));
+            if (std::max(a.endPos,a.beginPos) < std::max(b.endPos,b.beginPos)) return true;
+            if (std::max(a.endPos,a.beginPos) > std::max(b.endPos,b.beginPos)) return false;
+
+            return a.readId < b.readId;
         }
     };
 
@@ -521,7 +533,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         inline bool operator() (TQual const &a, TQual const &b) const 
         {
             // quality
-            return ordValue(a) > ordValue(b); // 
+            return ordValue(a) > ordValue(b);
         }
     };
 

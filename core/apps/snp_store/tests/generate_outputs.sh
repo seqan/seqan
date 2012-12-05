@@ -2,7 +2,7 @@
 #
 # Output generation script for snp_store
 
-SNP_STORE=../../../../../seqan-clean-build/release64/bin/snp_store
+SNP_STORE=../../../../../seqan-clean-build/release/bin/snp_store
 
 # ============================================================
 # First Section
