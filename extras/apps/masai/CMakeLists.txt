@@ -120,7 +120,7 @@ install (FILES LICENSE
 # App Test
 # ----------------------------------------------------------------------------
 
-#seqan_add_app_test (masai)
+seqan_add_app_test (masai)
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -128,7 +128,7 @@ install (FILES LICENSE
 
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:masai")
   set (CPACK_PACKAGE_NAME "masai")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "masai - Read Mapping With Multiple Approximate Seed")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Masai - Fast and accurate read mapping with approximate seeds and multiple backtracking")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 
