@@ -221,7 +221,7 @@ void setDateAndVersion(ArgumentParser & parser)
     std::string date = "$Date$";
 
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "0.6 [" + rev.substr(11, rev.size() - 13) + "]");
+    setVersion(parser, "0.7 [" + rev.substr(11, rev.size() - 13) + "]");
     setDate(parser, date.substr(7, std::min((int)date.size() - 8, 10)));
 }
 
@@ -231,7 +231,7 @@ void setDateAndVersion(ArgumentParser & parser)
 
 void setDescription(ArgumentParser & parser)
 {
-    addDescription(parser, "Masai is a fast and sensitive read mapper based on approximate seeds and multiple backtracking.");
+    addDescription(parser, "Masai is a fast and accurate read mapper based on approximate seeds and multiple backtracking.");
     addDescription(parser, "See \\fIhttp://www.seqan.de/projects/masai\\fP for more information.");
     addDescription(parser, "(c) Copyright 2011-2012 by Enrico Siragusa.");
 }
