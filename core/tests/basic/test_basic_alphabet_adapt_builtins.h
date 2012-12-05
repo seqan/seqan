@@ -296,7 +296,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
         SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 4294967296ull);
         SEQAN_ASSERT_EQ(valueSize<long>(), 4294967296ull);
 #else  // #if SEQAN_IS_32_BIT
-        if (sizeof(long) == 16u)  // long has 64 bit
+        if (sizeof(long) == 8u)  // long has 64 bit
         {
             SEQAN_ASSERT_EQ(+ValueSize<long>::VALUE, 0u);
             SEQAN_ASSERT_EQ(valueSize<long>(), 0u);
