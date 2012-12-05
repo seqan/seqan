@@ -548,6 +548,11 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 1u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        ++it;
+
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
     }
 
     // Clip into leading/trailing characters.
@@ -584,12 +589,12 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
-        SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 1u);
         ++it;
 
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
-        SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
     }
 }
 
