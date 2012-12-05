@@ -76,6 +76,5 @@
 #include <seqan/math.h>
 #include <seqan/parse_lm.h>
 #include <seqan/statistics.h>
-#include <seqan/synopsis.h>
 
 #endif  // SEQAN_CORE_INCLUDE_SEQAN_H_
