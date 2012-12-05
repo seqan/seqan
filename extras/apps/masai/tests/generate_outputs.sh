@@ -18,8 +18,6 @@ for i in sa esa fm qgram; do
     ${INDEXER} --index ${i} --index-prefix adeno-index-${i}.out adeno-genome.fa &> adeno-index-${i}.stdout
 done
 
-exit
-
 # ============================================================
 # Run Mapper Single-End
 # ============================================================
