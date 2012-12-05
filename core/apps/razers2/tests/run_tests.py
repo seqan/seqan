@@ -26,7 +26,7 @@ def main(source_base, binary_base):
     print 'Executing test for razers2'
     print '==========================='
     print
-    
+
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
         'core/apps/razers2/tests')  # tests dir
@@ -56,7 +56,8 @@ def main(source_base, binary_base):
         conf = app_tests.TestConf(
             program=path_to_program,
             redir_stdout=ph.outFile('se-adeno-reads%d_1.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
+            args=['--low-memory',
+                  ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   '-o', ph.outFile('se-adeno-reads%d_1.out' % rl)],
             to_diff=[(ph.inFile('se-adeno-reads%d_1.out' % rl),
@@ -69,7 +70,7 @@ def main(source_base, binary_base):
         conf = app_tests.TestConf(
             program=path_to_program,
             redir_stdout=ph.outFile('se-adeno-reads%d_1-id.stdout' % rl),
-            args=['-id',
+            args=['--low-memory', '-id',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   '-o', ph.outFile('se-adeno-reads%d_1-id.out' % rl)],
@@ -84,7 +85,7 @@ def main(source_base, binary_base):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-id%s.stdout' % (rl, o)),
-                args=['-id', o,
+                args=['--low-memory', '-id', o,
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-id%s.out' % (rl, o))],
@@ -99,7 +100,7 @@ def main(source_base, binary_base):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-id-i%d.stdout' % (rl, i)),
-                args=['-id', '-i', str(i),
+                args=['--low-memory', '-id', '-i', str(i),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-id-i%d.out' % (rl, i))],
@@ -108,13 +109,13 @@ def main(source_base, binary_base):
                          (ph.inFile('se-adeno-reads%d_1-id-i%d.stdout' % (rl, i)),
                           ph.outFile('se-adeno-reads%d_1-id-i%d.stdout' % (rl, i)))])
             conf_list.append(conf)
-            
+
         # Compute with different output formats.
         for of in [0, 1, 2, 3, 4, 5]:
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)),
-                args=['-id', '-of', str(of),
+                args=['--low-memory', '-id', '-of', str(of),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-id-of%d.out' % (rl, of))],
@@ -123,13 +124,13 @@ def main(source_base, binary_base):
                          (ph.inFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)),
                           ph.outFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)))])
             conf_list.append(conf)
-            
+
         # Compute with different sort orders.
         for so in [0, 1]:
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-id-so%d.stdout' % (rl, so)),
-                args=['-id', '-so', str(so),
+                args=['--low-memory', '-id', '-so', str(so),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-id-so%d.out' % (rl, so))],
@@ -138,7 +139,7 @@ def main(source_base, binary_base):
                          (ph.inFile('se-adeno-reads%d_1-id-so%d.stdout' % (rl, so)),
                           ph.outFile('se-adeno-reads%d_1-id-so%d.stdout' % (rl, so)))])
             conf_list.append(conf)
-            
+
     # ============================================================
     # Run Adeno Paired-End Tests
     # ============================================================
@@ -149,7 +150,8 @@ def main(source_base, binary_base):
         conf = app_tests.TestConf(
             program=path_to_program,
             redir_stdout=ph.outFile('pe-adeno-reads%d_2.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
+            args=['--low-memory',
+                  ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   ph.inFile('adeno-reads%d_2.fa' % rl),
                   '-o', ph.outFile('pe-adeno-reads%d_2.out' % rl)],
@@ -163,7 +165,7 @@ def main(source_base, binary_base):
         conf = app_tests.TestConf(
             program=path_to_program,
             redir_stdout=ph.outFile('pe-adeno-reads%d_2-id.stdout' % rl),
-            args=['-id',
+            args=['--low-memory', '-id',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   ph.inFile('adeno-reads%d_2.fa' % rl),
@@ -179,7 +181,7 @@ def main(source_base, binary_base):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-id%s.stdout' % (rl, o)),
-                args=['-id', o,
+                args=['--low-memory', '-id', o,
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
@@ -195,7 +197,7 @@ def main(source_base, binary_base):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-id-i%d.stdout' % (rl, i)),
-                args=['-id', '-i', str(i),
+                args=['--low-memory', '-id', '-i', str(i),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
@@ -205,13 +207,13 @@ def main(source_base, binary_base):
                          (ph.inFile('pe-adeno-reads%d_2-id-i%d.stdout' % (rl, i)),
                           ph.outFile('pe-adeno-reads%d_2-id-i%d.stdout' % (rl, i)))])
             conf_list.append(conf)
-            
+
         # Compute with different output formats.
         for of in [0, 1, 2, 3]:
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)),
-                args=['-id', '-of', str(of),
+                args=['--low-memory', '-id', '-of', str(of),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
@@ -221,13 +223,13 @@ def main(source_base, binary_base):
                          (ph.inFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)),
                           ph.outFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)))])
             conf_list.append(conf)
-            
+
         # Compute with different sort orders.
         for so in [0, 1]:
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-id-so%d.stdout' % (rl, so)),
-                args=['-id', '-so', str(so),
+                args=['--low-memory', '-id', '-so', str(so),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
@@ -237,7 +239,7 @@ def main(source_base, binary_base):
                          (ph.inFile('pe-adeno-reads%d_2-id-so%d.stdout' % (rl, so)),
                           ph.outFile('pe-adeno-reads%d_2-id-so%d.stdout' % (rl, so)))])
             conf_list.append(conf)
-            
+
     # Execute the tests.
     failures = 0
     for conf in conf_list:
