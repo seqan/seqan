@@ -207,7 +207,7 @@ SEQAN_CHECKPOINT
     TSize minLength = matchMinLength;
 	bool found = false;
     // DELTA is used below against floating point rounding errors.
-	double const DELTA = 0.0001;
+	double const DELTA = 0.000001;
 
 	while (leftIt >= begin(possEndsLeft)) {
 		TSize totalLen = (*leftIt).length + alignLen + (*rightIt).length;
