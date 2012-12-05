@@ -1194,19 +1194,19 @@ int main(int argc, char const ** argv)
     BamIOContext<TNameStore> bamIOContext(refNameStore, refNameStoreCache);
     BamHeader bamHeader;
     std::ifstream inSam;  // Use this for reading SAM.
-    RecordReader<std::ifstream, SinglePass<> > samReader(inSam);
+    Stream<Bgzf> bamStream;   // Use this for reading BAM.
     bool fromSam = !empty(options.inSamPath);
     if (fromSam)
     {
         std::cerr << "Alignments            " << options.inSamPath << " (header) ...";
         inSam.open(toCString(options.inSamPath), std::ios_base::in | std::ios_base::binary);
-        if (!inSam.is_open())
+        if (!inSam.is_open() || !inSam.good())
         {
             std::cerr << "Could not open SAM file.\n";
             return 1;
         }
     }
-    Stream<Bgzf> bamStream;   // Use this for reading BAM.
+    RecordReader<std::ifstream, SinglePass<> > samReader(inSam);
     if (fromSam)
     {
         if (readRecord(bamHeader, bamIOContext, samReader, Sam()) != 0)

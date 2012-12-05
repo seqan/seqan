@@ -1289,7 +1289,6 @@ int main(int argc, char const ** argv)
     BamIOContext<TNameStore> bamIOContext(refNameStore, refNameStoreCache);
     BamHeader bamHeader;
     std::ifstream inSam;      // Use this for reading SAM.
-    RecordReader<std::ifstream, SinglePass<> > samReader(inSam);
     Stream<Bgzf> bamStream;   // Use this for reading BAM.
     bool fromSam = !empty(options.inSamPath);
     if (fromSam)
@@ -1301,6 +1300,10 @@ int main(int argc, char const ** argv)
             std::cerr << "Could not open SAM file." << std::endl;
             return 1;
         }
+    }
+    RecordReader<std::ifstream, SinglePass<> > samReader(inSam);
+    if (fromSam)
+    {
         if (readRecord(bamHeader, bamIOContext, samReader, Sam()) != 0)
         {
             std::cerr << "Could not read SAM header.\n";
