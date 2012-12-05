@@ -21,18 +21,23 @@ sys.path.insert(0, path)
 
 import seqan.app_tests as app_tests
 
+transforms = [
+	app_tests.RegexpReplaceTransform("\d+\.\d+(e-\d+)? sec", "0.0 sec")
+]
+
 def getMapperConf(ph, path_to_program, rl, optionName, optionValue):
     return app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
-                args=['-'+optionName, optionValue,
+                args=['-'+optionName, str(optionValue),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-%s%s.out' % (rl, optionName, optionValue))],
                 to_diff=[(ph.inFile('se-adeno-reads%d_1-%s%s.out' % (rl, optionName, optionValue)),
                           ph.outFile('se-adeno-reads%d_1-%s%s.out' % (rl, optionName, optionValue))),
                          (ph.inFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
-                          ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)))])
+                          ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
+                          transforms)])
 
 def main(source_base, binary_base):
     """Main entry point of the script."""
@@ -63,10 +68,6 @@ def main(source_base, binary_base):
     # was generated in generate_outputs.sh.
     conf_list = []
 
-    transforms = [
-        app_tests.RegexpReplaceTransform("\d+\.\d+(e-\d+)? sec", "0.0 sec")
-    ]
-
     # ============================================================
     # Run Indexer Tests
     # ============================================================
@@ -93,6 +94,7 @@ def main(source_base, binary_base):
 
     # We run the following for various read lengths.
     for rl in [100]: #[36, 100]:
+    
         # Run with default options.
         conf = app_tests.TestConf(
             program=path_to_mapper,
@@ -138,6 +140,7 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
             args=[ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
+                  '--no-gaps',
                   '-o', ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)],
             to_diff=[(ph.inFile('se-adeno-reads%d_1-nogaps.out' % rl),
                       ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)),
