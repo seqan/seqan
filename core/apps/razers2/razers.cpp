@@ -326,6 +326,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setMinValue(parser, "taboo-length", "1");
     setDefaultValue(parser, "taboo-length", options.tabooLength);
 
+    addOption(parser, ArgParseOption("lm", "low-memory", "Decrease memory usage at the expense of runtime."));
+
     addSection(parser, "Verification Options");
     addOption(parser, ArgParseOption("mN", "match-N", "N matches all other characters. Default: N matches nothing."));
     addOption(parser, ArgParseOption("ed", "error-distr", "Write error distribution to \\fIFILE\\fP.", ArgParseOption::STRING, "FILE"));
@@ -424,6 +426,7 @@ extractOptions(
     getOptionValue(options.threshold, parser, "threshold");
     getOptionValue(options.abundanceCut, parser, "overabundance-cut");
     getOptionValue(options.repeatLength, parser, "repeat-length");
+    getOptionValue(options.lowMemory, parser, "low-memory");
     getOptionValue(options.trimLength, parser, "trim-reads");
     getOptionValue(options.tabooLength, parser, "taboo-length");
     getOptionValue(options.matchN, parser, "match-N");
