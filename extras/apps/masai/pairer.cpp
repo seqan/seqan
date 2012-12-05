@@ -100,7 +100,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    setValidValues(parser, 0, "fasta");
+    setValidValues(parser, 0, "fasta fa");
     setValidValues(parser, 1, "fastq");
     setValidValues(parser, 2, "fastq");
     setValidValues(parser, 3, "raw");

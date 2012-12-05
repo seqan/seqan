@@ -79,7 +79,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP>");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    setValidValues(parser, 0, "fasta");
+    setValidValues(parser, 0, "fasta fa");
 
     addSection(parser, "Genome Index Options");
 
