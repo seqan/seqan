@@ -2,8 +2,8 @@
 #
 # Masai reference output generation. Version v0.6.1 was used.
 
-#PATH=../../../../build/Release/bin/
-PATH=../../../../../seqan-trunk-build/Release/extras/apps/masai
+PATH=~/Documents/Code/SeqAn-Trunk/build/Release/bin/
+#PATH=../../../../../seqan-trunk-build/Release/extras/apps/masai
 INDEXER=$PATH/masai_indexer
 MAPPER=$PATH/masai_mapper
 SINGLE=$PATH/masai_output_se
@@ -14,12 +14,14 @@ PAIRED=$PATH/masai_output_pe
 # ============================================================
 
 # Run with different indices.
-for i in esa sa fm qgram; do
-    ${INDEXER} --index ${i} --index-prefix adeno-index-${i}.out adeno-genome.fa &> adeno-index-${i}.stdout
+for i in sa esa fm qgram; do
+    ${INDEXER} --index ${i} --index-prefix adeno-index-${i} adeno-genome.fa &> adeno-index-${i}.stdout
 done
 
+exit
+
 # ============================================================
-# Run Mapper
+# Run Mapper Single-End
 # ============================================================
 
 for rl in 100; do #36 100; do
@@ -32,9 +34,9 @@ for rl in 100; do #36 100; do
     done
 
     # Run with different indices.
-    for i in in esa fm qgram; do
-        ${MAPPER} --index ${i} --index-prefix adeno-index-${i} adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-i${i}.out &> se-adeno-reads${rl}_1-i${i}.stdout
-    done
+#    for i in in esa fm qgram; do
+#        ${MAPPER} --index ${i} --index-prefix adeno-index-${i} adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-i${i}.out &> se-adeno-reads${rl}_1-i${i}.stdout
+#    done
 
     # Run with different mapping modes.
     for mm in all; do
@@ -56,7 +58,7 @@ for rl in 100; do #36 100; do
 done
 
 # ============================================================
-# Run Adeno Paired-End Example
+# Run Mapper Paired-End
 # ============================================================
 
 # TODO(esiragusa): Write Paired-End tests.
