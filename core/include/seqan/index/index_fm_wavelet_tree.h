@@ -194,6 +194,7 @@ public:
 
     WaveletTree() {}
 
+    explicit
     WaveletTree(TText const & text)
     {
         waveletTreeCreate(*this, text);
@@ -246,10 +247,11 @@ public:
     typename Fibre<WaveletTree<TText, FmiDollarSubstituted<TSpec> >, FibreDollarPosition>::Type dollarPosition;
     TChar dollarSubstitute;
 
-    WaveletTree() {}
+    WaveletTree() : dollarPosition(), dollarSubstitute() {}
 
+    explicit
     WaveletTree(TText const & text) :
-        TBase(text)
+            TBase(text), dollarPosition(), dollarSubstitute()
     {}
 
     bool operator==(const WaveletTree & b) const
@@ -760,14 +762,14 @@ inline bool openDollarInformation(
     typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > >, FibreDollarPosition>::Type TDollarString;
     typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > > >::Type TChar;
 
-    String<Pair<TChar, TDollarString> > dollarValues;
+    String<Pair<__int64, TDollarString, Pack> > dollarValues;
 
     name = fileName;    append(name, ".dr");
     if (!open(dollarValues, toCString(name), openMode) || empty(dollarValues))
     {
         return false;
     }
-    tree.dollarSubstitute = dollarValues[0].i1;
+    tree.dollarSubstitute = static_cast<TChar>(dollarValues[0].i1);
     tree.dollarPosition = dollarValues[0].i2;
     return true;
 }
@@ -852,8 +854,8 @@ inline bool saveDollarInformation(
     typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > > >::Type TChar;
     typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > >, FibreDollarPosition>::Type TDollarString;
 
-    String<Pair<TChar, TDollarString> > dollarValues;
-    appendValue(dollarValues, Pair<TChar, TDollarString>(tree.dollarSubstitute, tree.dollarPosition));
+    String<Pair<__int64, TDollarString, Pack> > dollarValues;
+    appendValue(dollarValues, Pair<__int64, TDollarString, Pack>(ordValue(tree.dollarSubstitute), tree.dollarPosition));
 
     name = fileName;    append(name, ".dr"); if (!save(dollarValues, toCString(name), openMode)) return false;
     return true;

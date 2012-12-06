@@ -757,7 +757,7 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
     if (!open(infoString, toCString(name), openMode)) return false;
 
     // Check that the size of the SA entries is correct.
-    if (infoString[0].sizeOfSAEntry != sizeof(TSAFibre))
+    if (infoString[0].sizeOfSAEntry != sizeof(TSAValue))
         return false;
     
     index.compressionFactor = infoString[0].compressionFactor;
