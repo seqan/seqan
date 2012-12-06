@@ -503,7 +503,8 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     }
 
     template<typename TCigarString, typename TGaps>
-    inline unsigned cigarToGapAnchorContig(TCigarString const & cigar, TGaps & gaps)
+    inline unsigned
+    cigarToGapAnchorContig(TCigarString const & cigar, TGaps & gaps)
     {
         typename Iterator<TGaps>::Type it = begin(gaps);
         bool atBegin = true;
@@ -870,12 +871,43 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
 
 ///.Function.read.param.tag.type:Tag.File Format.tag.Sam
     
+    struct FragStoreImportFlags
+    {
+        bool importRead:1;
+        bool importReadSeq:1;
+        bool importReadName:1;
+        bool importReadAlignment:1;
+        bool importReadAlignmentQuality:1;
+        bool importReadAlignmentTags:1;
+
+        FragStoreImportFlags():
+            importRead(true),
+            importReadSeq(true),
+            importReadName(true),
+            importReadAlignment(true),
+            importReadAlignmentQuality(true),
+            importReadAlignmentTags(true)
+        {}
+    };
+
+    inline void
+    clear(FragStoreImportFlags & flags)
+    {
+        flags.importRead = false;
+        flags.importReadSeq = false;
+        flags.importReadName = false;
+        flags.importReadAlignment = false;
+        flags.importReadAlignmentQuality = false;
+        flags.importReadAlignmentTags = false;
+    }
+
     template<typename TFile, typename TSpec, typename TConfig>
     inline void 
     read(
         TFile & file,
         FragmentStore<TSpec, TConfig> & fragStore,
-        Sam)
+        Sam,
+        FragStoreImportFlags const & importFlags)
     {
 //IOREV not sure if recordreading or batchreading
         typedef Value<FILE>::Type TValue;
@@ -886,7 +918,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         // data structure to temporarily store the gaps that need to be inserted in the contig sequences
         typedef MatchMateInfo_<TContigPos, TId> TMatchMateInfo;
         typedef String<TMatchMateInfo> TMatchMateInfos;
-        typedef StringSet<String<typename TFragmentStore::TContigGapAnchor> > TContigAnchorGaps;
+        typedef StringSet<String<typename TFragmentStore::TContigGapAnchor>, Owner<ConcatDirect<> > > TContigAnchorGaps;
 
         // data structure to temporarily store information about match mates
         TMatchMateInfos matchMateInfos;
@@ -901,14 +933,27 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         _readHeader(file, fragStore, c, Sam());
         
         // Read in alignments section
-        _readAlignments(file, fragStore, contigAnchorGaps, matchMateInfos, c, Sam());
+        _readAlignments(file, fragStore, contigAnchorGaps, matchMateInfos, c, Sam(), importFlags);
         
-        // set the match mate IDs using the information stored in matchMateInfos
-        _generatePairMatchIds(fragStore, matchMateInfos);
-        
-        convertPairWiseToGlobalAlignment(fragStore, contigAnchorGaps);
+        if (importFlags.importReadAlignment)
+        {
+            // set the match mate IDs using the information stored in matchMateInfos
+            _generatePairMatchIds(fragStore, matchMateInfos);
+
+            convertPairWiseToGlobalAlignment(fragStore, contigAnchorGaps);
+        }
     }
-    
+
+    template<typename TFile, typename TSpec, typename TConfig>
+    inline void 
+    read(
+        TFile & file,
+        FragmentStore<TSpec, TConfig> & fragStore,
+        Sam)
+    {
+        read(file, fragStore, Sam(), FragStoreImportFlags());
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 // _readHeader
 
@@ -925,12 +970,28 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         while (c == '@')
             _parseSkipLine(file, c);
     }
+
     
 //////////////////////////////////////////////////////////////////////////////
 // _readAlignments
 //
 // reads in alignement sections from a Sam file
-    
+
+    template <typename TFragmentStore>
+    struct FragStoreSAMContext
+    {
+        typedef typename Id<TFragmentStore>::Type                                   TId;
+        typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type    TAlignedElement;
+        typedef typename TAlignedElement::TGapAnchors                               TReadGapAnchors;
+        typedef String<typename TFragmentStore::TContigGapAnchor>                   TContigAnchorGaps;
+
+        TId                 readId;
+        TId                 contigId;
+        TReadGapAnchors     readGapAnchors;
+        TContigAnchorGaps   contigGapAnchors;
+    };
+
+
     template<typename TFile, typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos, typename TChar>
     inline void 
     _readAlignments (
@@ -939,7 +1000,8 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         TContigAnchorGaps & contigAnchorGaps,   
         TMatchMateInfos & matchMateInfos,
         TChar & c,
-        Sam)
+        Sam,
+        FragStoreImportFlags const & importFlags)
     {
 //IOREV _nodoc_ docusmentation in code, but unclear
         // create dummy entries in Sam specific aligned read quality store and aligned read tag store
@@ -963,44 +1025,113 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
             appendValue(fragStore.alignedReadTagStore, "", Generous());
         
         // read in alignments
-        Nothing contextSAM;
+        FragStoreSAMContext<TFragmentStore> contextSAM;
         refresh(fragStore.contigNameStoreCache);
         refresh(fragStore.readNameStoreCache);
 
         while (!_streamEOF(file))
-            _readOneAlignment(file, fragStore, contigAnchorGaps, matchMateInfos, c, Sam(), contextSAM);
-            
-        TReadSeqStoreSize emptyReads = 0; 
-        for(TReadSeqStoreSize i = 0; i < length(fragStore.alignedReadStore); ++i)
-            if (empty(fragStore.readSeqStore[fragStore.alignedReadStore[i].readId]))
-            {
-                ++emptyReads;
-//                std::cerr << "Read sequence empty for " << fragStore.readNameStore[fragStore.alignedReadStore[i].readId] << std::endl;
-            }
-        if (emptyReads != 0)
-            std::cerr << "Warning: " << emptyReads << " read sequences are empty." << std::endl;
+            _readOneAlignment(file, fragStore, contigAnchorGaps, matchMateInfos, c, contextSAM, importFlags);
+
+        if (importFlags.importReadSeq)
+        {
+            TReadSeqStoreSize emptyReads = 0;
+            for(TReadSeqStoreSize i = 0; i < length(fragStore.alignedReadStore); ++i)
+                if (empty(fragStore.readSeqStore[fragStore.alignedReadStore[i].readId]))
+                {
+                    ++emptyReads;
+    //                std::cerr << "Read sequence empty for " << fragStore.readNameStore[fragStore.alignedReadStore[i].readId] << std::endl;
+                }
+            if (emptyReads != 0)
+                std::cerr << "Warning: " << emptyReads << " read sequences are empty." << std::endl;
+        }
     }
     
-    
+        
+    template <typename TReadSeq, typename TCigar, typename TPos, typename TId, typename TFragmentStore>
+    inline void
+    _samAppendAlignment(
+        TFragmentStore &fragStore,
+        TReadSeq const &readSeq,
+        TCigar &cigar,
+        TPos &beginPos, TPos &endPos,
+        TId &pairMatchId,
+        FragStoreSAMContext<TFragmentStore> & contextSAM)
+    {
+        typedef typename TFragmentStore::TAlignedReadStore                      TAlignedReadStore;
+        typedef typename Value<TAlignedReadStore>::Type                         TAlignedRead;
+        typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
+
+        // insert alignment gaps
+        clear(contextSAM.readGapAnchors);
+        TReadGaps readGaps(readSeq, contextSAM.readGapAnchors);
+        unsigned beginGaps = cigarToGapAnchorRead(cigar, readGaps);
+
+        // adapt start or end (on reverse strand) position if alignment begins with gaps
+        if (beginPos > endPos)
+            endPos += beginGaps;
+        else
+            beginPos += beginGaps;
+
+        // create a new entry in the aligned read store
+        pairMatchId = appendAlignment(fragStore, contextSAM.readId, contextSAM.contigId, beginPos, endPos, contextSAM.readGapAnchors);
+    }
+
+    template <typename TCigar, typename TPos, typename TId, typename TFragmentStore>
+    inline void
+    _samAppendAlignmentWithoutSeq(
+        TFragmentStore &fragStore,
+        TCigar &cigar,
+        TPos &beginPos, TPos &endPos,
+        TId &pairMatchId,
+        FragStoreSAMContext<TFragmentStore> & contextSAM)
+    {
+        typedef typename TFragmentStore::TAlignedReadStore                      TAlignedReadStore;
+        typedef typename Value<TAlignedReadStore>::Type                         TAlignedRead;
+        typedef Gaps<Nothing, AnchorGaps<typename TAlignedRead::TGapAnchors> >  TReadGaps;
+        Nothing nothing;
+
+        // insert alignment gaps
+        clear(contextSAM.readGapAnchors);
+        TReadGaps readGaps(nothing, contextSAM.readGapAnchors);
+        unsigned beginGaps = cigarToGapAnchorRead(cigar, readGaps);
+
+        // adapt start or end (on reverse strand) position if alignment begins with gaps
+        if (beginPos > endPos)
+            endPos += beginGaps;
+        else
+            beginPos += beginGaps;
+
+        // create a new entry in the aligned read store
+        pairMatchId = appendAlignment(fragStore, contextSAM.readId, contextSAM.contigId, beginPos, endPos, contextSAM.readGapAnchors);
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 // _readOneAlignment
 //
 // reads in one alignement section from a Sam file
     
-    template<typename TFile, typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos, typename TChar, typename TContextSAM>
-    inline void 
+    template <
+        typename TFile,
+        typename TSpec,
+        typename TConfig,
+        typename TContigAnchorGaps,
+        typename TMatchMateInfos,
+        typename TChar,
+        typename TFragStore>
+    inline void
     _readOneAlignment (
         TFile & file,
         FragmentStore<TSpec, TConfig> & fragStore,
         TContigAnchorGaps & contigAnchorGaps,
         TMatchMateInfos & matchMateInfos,
         TChar & c,
-        Sam,
-        TContextSAM & contextSAM)
+        FragStoreSAMContext<TFragStore> & contextSAM,
+        FragStoreImportFlags const & importFlags)
     {
 //IOREV _nodoc_
         // Basic types
         typedef FragmentStore<TSpec, TConfig>                                       TFragmentStore;
+        typedef FragStoreSAMContext<TFragStore>                                     TSAMContext;
         typedef typename Id<TFragmentStore>::Type                                   TId;
         typedef typename Size<TFragmentStore>::Type                                 TSize;
         
@@ -1009,9 +1140,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         typedef typename Value<typename TFragmentStore::TLibraryStore>::Type        TLibraryStoreElement;
         typedef typename Value<typename TFragmentStore::TMatePairStore>::Type       TMatePairElement;
         typedef typename Value<typename TFragmentStore::TReadStore>::Type           TReadStoreElement;
-        typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type    TAlignedElement;
         typedef typename Value<typename TFragmentStore::TAlignQualityStore>::Type   TAlignQualityElement;
-        typedef typename TAlignedElement::TGapAnchors                               TReadGapAnchors;
         
         // Type for sequence in readstore
         typedef typename Value<typename TFragmentStore::TReadSeqStore>::Type        TReadSeqStoreElement;
@@ -1019,8 +1148,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         
         // Type for gap anchor
         typedef typename TFragmentStore::TContigPos                                 TContigPos;
-        typedef Gaps<TReadSeqStoreElement, AnchorGaps<TReadGapAnchors> >            TReadGaps;
-        typedef Gaps<Nothing, AnchorGaps<typename Value<TContigAnchorGaps>::Type> > TContigGapsPW;
+        typedef Gaps<Nothing, AnchorGaps<typename TSAMContext::TContigAnchorGaps> > TContigGapsPW;
         
         // Type to temporarily store information about match mates
         typedef typename Value<TMatchMateInfos>::Type                               TMatchMateInfo;
@@ -1076,9 +1204,6 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
             endPos = temp;
         }
 
-        // generate gap anchor string for the read
-        TReadGapAnchors readGapAnchors;
-        
         // read mate reference name
         String<char> mrnm;
         _parseReadSamIdentifier(file, mrnm, c);
@@ -1116,88 +1241,100 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         // if so get the ID, otherwise create new entries in the
         // read, read name and mate pair store
         
-        TId readId = 0;
-        bool newRead = _storeAppendRead(fragStore, readId, qname, readSeq, flag, contextSAM);
-        (void)newRead;
-        
-        SEQAN_ASSERT_NOT(newRead && empty(readSeq));
+        contextSAM.readId = 0;
+        if (importFlags.importRead)
+        {
+            if (!importFlags.importReadName)
+                clear(qname);
+
+            bool newRead = _storeAppendRead(fragStore, contextSAM.readId, qname, readSeq, flag, contextSAM);
+            (void)newRead;
+            
+            SEQAN_ASSERT_NOT(newRead && empty(readSeq));
+        }
         
         if (rname == "*")
             return; // stop here if read is not aligned
         
         // check if the contig is already in the store
         // get its ID or create a new one otherwise
-        TId contigId = 0;
-        _storeAppendContig(fragStore, contigId, rname);
+        contextSAM.contigId = 0;
+        _storeAppendContig(fragStore, contextSAM.contigId, rname);
 
-        // insert alignment gaps
         if (empty(cigar)) return;
-        TReadGaps readGaps(fragStore.readSeqStore[readId], readGapAnchors);
-        unsigned beginGaps = cigarToGapAnchorRead(cigar, readGaps);
 
-        // adapt start or end (on reverse strand) position if alignment begins with gaps
-        if (reverse)
-            endPos += beginGaps;
-        else
-            beginPos += beginGaps;
+        TId pairMatchId = 0;
+        if (importFlags.importReadAlignment)
+        {
+            // generate gap anchor string for the read
+            if (importFlags.importReadSeq)
+                _samAppendAlignment(fragStore, fragStore.readSeqStore[contextSAM.readId], cigar, beginPos, endPos, pairMatchId, contextSAM);
+            else
+                _samAppendAlignmentWithoutSeq(fragStore, cigar, beginPos, endPos, pairMatchId, contextSAM);
+
+            clear(contextSAM.contigGapAnchors);
+            TContigGapsPW contigGaps(contextSAM.contigGapAnchors);
+            cigarToGapAnchorContig(cigar, contigGaps);
+            appendValue(contigAnchorGaps, contextSAM.contigGapAnchors);
+        }
         
-        // create a new entry in the aligned read store
-        TId pairMatchId = appendAlignment(fragStore, readId, contigId, beginPos, endPos, readGapAnchors);
-        resize(contigAnchorGaps, length(fragStore.alignedReadStore), Generous());
-        TContigGapsPW contigGaps(back(contigAnchorGaps));
-        cigarToGapAnchorContig(cigar, contigGaps);
-        
-        // extract and delete some tags
-        if (!empty(tags))
-            for (unsigned pos = length(tags), right = length(tags); pos != 0; )
-            {
-                --pos;
-                if (pos == 0 || tags[pos] == '\t')
+        if (importFlags.importReadAlignmentTags || importFlags.importReadAlignmentQuality)
+        {
+            // extract and delete some tags
+            if (!empty(tags))
+                for (unsigned pos = length(tags), right = length(tags); pos != 0; )
                 {
-                    unsigned left = pos;
-                    if (tags[left] == '\t') ++left;                    
-
-                    bool remove = false;
-                    if (infix(tags, left, left + 2) == "MD")
-                        remove = true;
-                    
-                    if (infix(tags, left, left + 2) == "NM")
+                    --pos;
+                    if (pos == 0 || tags[pos] == '\t')
                     {
-                        std::string val;
-                        int errors;
-                        assign(val, infix(tags, left + 5, right)); // NM:i:x
-                        std::istringstream stream(val);
-                        stream >> errors;
-                        mapQ.errors = errors;
-                        remove = true;
-                    }
-                    
-                    if (remove)
-                        erase(tags, left, _min(right + 1, length(tags)));
+                        unsigned left = pos;
+                        if (tags[left] == '\t') ++left;                    
 
-                    right = pos;
+                        bool remove = false;
+                        if (infix(tags, left, left + 2) == "MD")
+                            remove = true;
+                        
+                        if (infix(tags, left, left + 2) == "NM")
+                        {
+                            std::string val;
+                            int errors;
+                            assign(val, infix(tags, left + 5, right)); // NM:i:x
+                            std::istringstream stream(val);
+                            stream >> errors;
+                            mapQ.errors = errors;
+                            remove = true;
+                        }
+                        
+                        if (remove)
+                            erase(tags, left, _min(right + 1, length(tags)));
+
+                        right = pos;
+                    }
                 }
-            }
-        
+        }
+
         // create entries in Sam specific stores
-        appendValue(fragStore.alignQualityStore, mapQ, Generous());
-        appendValue(fragStore.alignedReadTagStore, tags, Generous());
+        if (importFlags.importReadAlignmentQuality)
+            appendValue(fragStore.alignQualityStore, mapQ, Generous());
         
+        if (importFlags.importReadAlignmentTags)
+            appendValue(fragStore.alignedReadTagStore, tags, Generous());
+
         // store additional data about match mate temporarily
         // used in the end of the read function to generate match mate IDs
-        TId mcontigId = contigId;
-        if (mrnm != "*")
+        if (importFlags.importRead && importFlags.importReadAlignment && mrnm != "*")
         {
+            TId mcontigId = contextSAM.contigId;
             if (mrnm != "=")
                 _storeAppendContig(fragStore, mcontigId, mrnm);
 
-            if (getMateNo(fragStore, readId) == 0)  // store mate info only for one mate
+            if (getMateNo(fragStore, contextSAM.readId) == 0)  // store mate info only for one mate
             {
                 typename TMatePairElement::TId matePairId = TMatePairElement::INVALID_ID;
-                if (readId < length(fragStore.readStore))
-                    matePairId = fragStore.readStore[readId].matePairId;
+                if (contextSAM.readId < length(fragStore.readStore))
+                    matePairId = fragStore.readStore[contextSAM.readId].matePairId;
                 
-                TMatchMateInfo matchMateInfo = {readId, mcontigId, pairMatchId, matePairId, (flag & 0x20) != 0, mPos};
+                TMatchMateInfo matchMateInfo = {contextSAM.readId, mcontigId, pairMatchId, matePairId, (flag & 0x20) != 0, mPos};
                 appendValue(matchMateInfos, matchMateInfo);
                 back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
             }
