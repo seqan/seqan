@@ -330,12 +330,21 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
     {
         __int8 b = 0, c = 42;
 
+#if defined(PLATFORM_WINDOWS_MINGW)
+        SEQAN_ASSERT_EQ(minValue(__int8()), 0);
+        SEQAN_ASSERT_EQ(minValue<__int8>(), 0);
+        SEQAN_ASSERT_EQ(+(MinValue<__int8>::VALUE), 0);
+        SEQAN_ASSERT_GEQ(maxValue(__int8()), 255);
+        SEQAN_ASSERT_GEQ(maxValue<__int8>(), 255);
+        SEQAN_ASSERT_GEQ(+(MaxValue<__int8>::VALUE), 255);
+#else  // #if defined(PLATFORM_WINDOWS_MINGW)
         SEQAN_ASSERT_EQ(minValue(__int8()), -128);
         SEQAN_ASSERT_EQ(minValue<__int8>(), -128);
         SEQAN_ASSERT_EQ(+(MinValue<__int8>::VALUE), -128);
         SEQAN_ASSERT_GEQ(maxValue(__int8()), 127);
         SEQAN_ASSERT_GEQ(maxValue<__int8>(), 127);
         SEQAN_ASSERT_GEQ(+(MaxValue<__int8>::VALUE), 127);
+#endif  // #if defined(PLATFORM_WINDOWS_MINGW)
         SEQAN_ASSERT(b < c);
     }
 
