@@ -65,9 +65,8 @@ Usage: snp_store [OPTIONS]... <REFERENCE.fa> <MAPPED_READS.gff>
 SnpStore expects at least two files: the reference sequence in (Multi-)Fasta format
 and the mapped reads in GFF format. For a description of this GFF format 
 see section 4.1. 
-Multiple mapped read files can be specified by listing multiple GFF files 
-in quotation marks, i.e. "file1.gff file2.gff", or in square brackets, i.e. 
-[file1.gff file2.gff]. 
+Multiple mapped read files can be specified by listing multiple GFF files, 
+i.e. file1.gff file2.gff.
 
 To produce output files, at least one of the two options "-o" (output file 
 for SNPs) and "-id" (output file for indels) needs to be specified. 

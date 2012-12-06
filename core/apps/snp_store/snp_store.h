@@ -100,13 +100,18 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         unsigned    inputFormat;                // 0 = razers, 1=eland, 2 = maq
         unsigned    positionFormat;             // position format of mapped read input
                                                 // 1..position space
-        const char  *outputSNP;                 // name of snp result file
-        const char  *outputIndel;               // name of indel result file
-        const char  *outputLog;                 // name of log output file
 
-        const char  *inputPositionFile;         // name of position analysis input file
-        const char  *outputPosition;            // name of position analysis output file
-        const char  *outputCNV;                 // name of cnv result file
+        CharString          genomeFName;        // name of genome file
+        String<CharString>  readFNames;         // list of read file names
+        String<CharString>  qualityFNames;      // list of quality file names
+
+        CharString          outputSNP;          // name of snp result file
+        CharString          outputIndel;        // name of indel result file
+        CharString          outputLog;          // name of log output file
+
+        CharString          inputPositionFile;  // name of position analysis input file
+        CharString          outputPosition;     // name of position analysis output file
+        CharString          outputCNV;          // name of cnv result file
  
         bool        showQualityStrings;         // output ascii qualities in SNP output
  
@@ -205,6 +210,9 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             outputFormat = 0;
             inputFormat = 0;
             positionFormat = 1;
+            genomeFName = "";
+            readFNames = "";
+            qualityFNames = "";
             showQualityStrings = true;
             outputSNP = "";
             inputPositionFile = "";
@@ -543,10 +551,10 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
     
 // get reference file names
 template<typename TOptions>
-int getGenomeFileNameList(char const * filename, StringSet<CharString> & genomeFileNames, TOptions &options)
+int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions &options)
 {
     ::std::ifstream file;
-    file.open(filename,::std::ios_base::in | ::std::ios_base::binary);
+    file.open(toCString(options.genomeFName),::std::ios_base::in | ::std::ios_base::binary);
     if(!file.is_open())
         return CALLSNPS_GENOME_FAILED;
     
@@ -582,7 +590,7 @@ int getGenomeFileNameList(char const * filename, StringSet<CharString> & genomeF
             ::std::cout << i-1 << " genome files total." <<::std::endl;
     }
     else        //if file starts with a fasta header --> regular one-genome-file input
-        appendValue(genomeFileNames,filename,Generous());
+        appendValue(genomeFileNames,options.genomeFName,Generous());
     file.close();
     return 0;
     
@@ -3815,9 +3823,9 @@ void dumpVariantsRealignBatch(
 
     // log file business
     ::std::ofstream logfile;
-    if(*options.outputLog != 0)
+    if(options.outputLog != "")
     {
-        logfile.open(options.outputLog, ::std::ios_base::out | ::std::ios_base::app);
+        logfile.open(toCString(options.outputLog), ::std::ios_base::out | ::std::ios_base::app);
         if (!logfile.is_open()) 
             ::std::cerr << "Failed to write to log file" << ::std::endl;
         logfile << "#stats for window " << currStart << " " << currEnd << " of " << genomeID << std::endl;
@@ -4538,7 +4546,7 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
     
     if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
 
-    if((*options.outputLog != 0) && logfile.is_open())
+    if((options.outputLog != "") && logfile.is_open())
         logfile.close();
         
     
@@ -4602,9 +4610,9 @@ void dumpSNPsBatch(
     }
 
     ::std::ofstream logfile;
-    if(*options.outputLog != 0)
+    if(options.outputLog != "")
     {
-        logfile.open(options.outputLog, ::std::ios_base::out | ::std::ios_base::app);
+        logfile.open(toCString(options.outputLog), ::std::ios_base::out | ::std::ios_base::app);
         if (!logfile.is_open()) 
             ::std::cerr << "Failed to write to log file" << ::std::endl;
         logfile << "#stats for window " << currStart << " " << currEnd << " of " << genomeID << std::endl;
@@ -4854,7 +4862,7 @@ void dumpSNPsBatch(
 
     if(options._debugLevel>1) std::cout <<"Finished scanning window.\n"<<std::flush;
 
-    if((*options.outputLog != 0) && logfile.is_open())
+    if((options.outputLog != "") && logfile.is_open())
         logfile.close();
         
 

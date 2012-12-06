@@ -55,6 +55,7 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <seqan/arg_parse.h>
 
 using namespace std;
 using namespace seqan;
@@ -595,11 +596,7 @@ _dumpMatches(TTmpReads & reads, TTmpMatches & matches, TTmpQualities & qualities
 //////////////////////////////////////////////////////////////////////////////
 // Main read mapper function
 template <typename TSpec>
-int detectSNPs(
-               const char *genomeFileName,
-               String<CharString> & readFNames,
-               String<CharString> &,
-               SNPCallingOptions<TSpec> &options)
+int detectSNPs(SNPCallingOptions<TSpec> &options)
 {
     
     typedef FragmentStore<SnpStoreSpec_>            TFragmentStore;
@@ -637,10 +634,10 @@ int detectSNPs(
     if (options._debugLevel >= 1) 
     {
         ::std::cerr << "___SETTINGS____________" << ::std::endl;
-        ::std::cerr << "Genome file:                             \t" << genomeFileName << ::std::endl;
-        ::std::cerr << "Read files:                              \t" << readFNames[0] << ::std::endl;
-        for(unsigned i = 1; i < length(readFNames); ++i)
-            ::std::cerr << "                                         \t" << readFNames[i] << ::std::endl;
+        ::std::cerr << "Genome file:                             \t" << options.genomeFName << ::std::endl;
+        ::std::cerr << "Read files:                              \t" << options.readFNames[0] << ::std::endl;
+        for(unsigned i = 1; i < length(options.readFNames); ++i)
+            ::std::cerr << "                                         \t" << options.readFNames[i] << ::std::endl;
 /*      if(options.inputFormat == 1) 
         {
             ::std::cerr << "Quality files:                           \t" << qualityFNames[0] << ::std::endl;
@@ -660,7 +657,7 @@ int detectSNPs(
         {
             ::std::cerr << "MinMappingQuality:                       \t" << options.minMapQual << ::std::endl;
         }
-        if(*options.outputIndel != 0)
+        if(options.outputIndel != "")
         {
             ::std::cerr << "IndelCountThreshold:                     \t" << options.indelCountThreshold << ::std::endl;
             ::std::cerr << "IndelPercentageThreshold:                \t" << options.indelPercentageT << ::std::endl;
@@ -673,10 +670,10 @@ int detectSNPs(
     // Step 1: Determine genome file type and load genomes
     SEQAN_PROTIMESTART(load_time);
     
-    int result = getGenomeFileNameList(genomeFileName, genomeFileNameList, options);
-    if(result == CALLSNPS_GENOME_FAILED || !loadGenomes(genomes, genomeFileNameList,gIdStringToIdNumMap,genomeNames))
+    int result = getGenomeFileNameList(genomeFileNameList, options);
+    if(result == CALLSNPS_GENOME_FAILED || !loadGenomes(genomes, genomeFileNameList, gIdStringToIdNumMap, genomeNames))
     {
-        ::std::cerr << "Failed to open genome file " << genomeFileName << ::std::endl;
+        ::std::cerr << "Failed to open genome file " << options.genomeFName << ::std::endl;
         return result;
     }
     
@@ -684,15 +681,15 @@ int detectSNPs(
     // Step 2: Load fragmentStore.readSeqStore and fragmentStore.alignedReadStore
     // open read files and  store open file pointers
     String<int> highestChrId;
-    resize(highestChrId,length(readFNames),0);
+    resize(highestChrId,length(options.readFNames),0);
     vector< ::std::fstream* > readFileStreams;
-    readFileStreams.resize(length(readFNames));
-    for(unsigned i = 0; options.inputFormat != 2 && i < length(readFNames); ++i)
-    {
-        readFileStreams[i] = new fstream(toCString(readFNames[i]), ios_base::in | ios::binary);
+    readFileStreams.resize(length(options.readFNames));
+    for(unsigned i = 0; options.inputFormat != 2 && i < length(options.readFNames); ++i)
+    { 
+        readFileStreams[i] = new fstream(toCString(options.readFNames[i]), ios_base::in | ios::binary);
         if(!(*(readFileStreams[i])).is_open())
         {
-            ::std::cerr << "Failed to open read file " << readFNames[i] << ::std::endl;
+            ::std::cerr << "Failed to open read file " << options.readFNames[i] << ::std::endl;
             return CALLSNPS_GFF_FAILED;
         }
     }
@@ -701,14 +698,14 @@ int detectSNPs(
     String<Stream<Bgzf>* > bgzfStreams;
     if(options.inputFormat == 2)
     {
-        resize(bgzfStreams,length(readFNames));
-        for(unsigned i = 0; i < length(readFNames); ++i)
+        resize(bgzfStreams,length(options.readFNames));
+        for(unsigned i = 0; i < length(options.readFNames); ++i)
         {
             bgzfStreams[i] = new Stream<Bgzf>();
             std::cout <<"Opening bam file" << std::endl;
-            if (!open(*bgzfStreams[i], toCString(readFNames[i]), "r"))
+            if (!open(*bgzfStreams[i], toCString(options.readFNames[i]), "r"))
             {
-                std::cerr << "[ERROR] Could not open BAM file" << readFNames[i] << std::endl;
+                std::cerr << "[ERROR] Could not open BAM file" << options.readFNames[i] << std::endl;
               return 1;
             }
         }
@@ -723,10 +720,10 @@ int detectSNPs(
     String<BamAlignmentRecord> records;
     if(options.inputFormat > 0)
     {
-        if(options.inputFormat == 1) resize(recordReaders, length(readFNames));
-        resize(records, length(readFNames));
-        //resize(contexts, length(readFNames));
-        for (unsigned i = 0; i < length(readFNames); ++i)
+        if(options.inputFormat == 1) resize(recordReaders, length(options.readFNames));
+        resize(records, length(options.readFNames));
+        //resize(contexts, length(options.readFNames));
+        for (unsigned i = 0; i < length(options.readFNames); ++i)
         {
             clear(records[i].qName);
             if(options.inputFormat == 1) recordReaders[i] = new RecordReader<std::fstream,SinglePass< > >(*readFileStreams[i]);
@@ -737,7 +734,7 @@ int detectSNPs(
     /////////////////////////////////////////////////////////////////////
     // open out file streams and store open file pointers
     ::std::ofstream snpFileStream; 
-    if (*options.outputSNP != 0)
+    if (options.outputSNP != "")
     {
     
         // prepare lookup tables for maq statistics
@@ -754,7 +751,7 @@ int detectSNPs(
 
         }
         
-        snpFileStream.open(options.outputSNP,::std::ios_base::out);
+        snpFileStream.open(toCString(options.outputSNP),::std::ios_base::out);
         if(!snpFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
         snpFileStream << "#" << (options.programCall).str() << "\n";
@@ -771,9 +768,9 @@ int detectSNPs(
         }
     }
     ::std::ofstream indelFileStream; 
-    if (*options.outputIndel != 0)
+    if (options.outputIndel != "")
     {
-        indelFileStream.open(options.outputIndel,::std::ios_base::out);
+        indelFileStream.open(toCString(options.outputIndel),::std::ios_base::out);
         if(!indelFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
     }
@@ -786,16 +783,16 @@ int detectSNPs(
     //  }
     
     ::std::ofstream posFileStream; 
-    if(*options.inputPositionFile != 0)
+    if(options.inputPositionFile != "")
     {
         resize(positions,length(genomeNames));
-        result = loadPositions(positions,gIdStringToIdNumMap,options.inputPositionFile,options);
+        result = loadPositions(positions,gIdStringToIdNumMap, toCString(options.inputPositionFile),options);
         if(result != 0)
         {
             ::std::cerr << "Failed to read position file " << options.inputPositionFile << ::std::endl;
             return result;
         }
-        posFileStream.open(options.outputPosition,::std::ios_base::out);
+        posFileStream.open(toCString(options.outputPosition),::std::ios_base::out);
         if(!posFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
         if(options.orientationAware)
@@ -810,7 +807,7 @@ int detectSNPs(
     int sumreads = 0;
     int sumwindows = 0;
     
-    bool positionStatsOnly = (*options.outputSNP == 0 && *options.outputPosition != 0);
+    bool positionStatsOnly = (options.outputSNP == "" && options.outputPosition != "");
     TPosIterator inspectPosIt, inspectPosItEnd;
 
     bool firstCall = true;
@@ -896,7 +893,7 @@ int detectSNPs(
             // parse matches for current window
             if(options._debugLevel > 0)
                 ::std::cout << "Parsing reads up to position " << currentWindowEnd << "...\n";
-            for(unsigned j = 0; j < length(readFNames); ++j)
+            for(unsigned j = 0; j < length(options.readFNames); ++j)
             {
                 unsigned sizeBefore = length(fragmentStore.alignedReadStore);
                 
@@ -919,7 +916,7 @@ int detectSNPs(
                firstCall = false;
                 if(result == CALLSNPS_GFF_FAILED)
                 {
-                    ::std::cerr << "Failed to open read file " << readFNames[j] << ::std::endl;
+                    ::std::cerr << "Failed to open read file " << options.readFNames[j] << ::std::endl;
                     ::std::cerr << "or reads are not sorted correctly. " << ::std::endl;
                     return result;
                 }
@@ -994,7 +991,7 @@ int detectSNPs(
                 }
                 
                 // check for indels
-                if (*options.outputIndel != 0)
+                if (options.outputIndel != "")
                 {
                     if(options._debugLevel > 1) ::std::cout << "Check for indels..." << std::endl;
                     if(!options.realign) dumpShortIndelPolymorphismsBatch(fragmentStore, readCigars, fragmentStore.contigStore[0].seq, genomeNames[i], startCoord, currentWindowBegin, currentWindowEnd, indelFileStream, options);
@@ -1008,7 +1005,7 @@ int detectSNPs(
                 CharString strstr = "test";
                 //              _dumpMatches(fragmentStore, strstr );
 #endif
-                if (*options.outputSNP != 0)
+                if (options.outputSNP != "")
                 {
                     if(options._debugLevel > 1) ::std::cout << "Check for SNPs..." << std::endl;
                     if(options.realign)
@@ -1043,16 +1040,16 @@ int detectSNPs(
         }
         
     }
-    if (*options.outputSNP != 0)
+    if (options.outputSNP != "")
         snpFileStream.close();
     
-    if (*options.outputIndel != 0)
+    if (options.outputIndel != "")
         indelFileStream.close();
     
-    if (*options.outputPosition != 0)
+    if (options.outputPosition != "")
         posFileStream.close();
 
-    //  if (*options.outputCNV != 0)
+    //  if (options.outputCNV != "")
     //      cnvFileStream.close();
     
     return 0;
@@ -1063,16 +1060,10 @@ int detectSNPs(
 
 // log file to keep track of happenings
 template <typename TSpec>
-int writeLogFile(
-                 int argc, const char *argv[],
-                 const char *genomeFileName,
-                 String<CharString> & readFNames,
-                 String<CharString> & ,
-                 SNPCallingOptions<TSpec> &options)
+int writeLogFile(int argc, const char *argv[], SNPCallingOptions<TSpec> &options)
 {
-    
     ::std::ofstream logfile;
-    logfile.open(options.outputLog, ::std::ios_base::out | ::std::ios_base::trunc);
+    logfile.open(toCString(options.outputLog), ::std::ios_base::out | ::std::ios_base::trunc);
     if (!logfile.is_open()) 
     {
         ::std::cerr << "Failed to open log file" << ::std::endl;
@@ -1084,16 +1075,16 @@ int writeLogFile(
     logfile << std::endl;
     
     logfile << "#files" << ::std::endl;
-    logfile << "Genome=\"" << genomeFileName << "\""<<::std::endl;
-    logfile << "Reads=\"" << readFNames[0];
-    for(unsigned i = 1; i < length(readFNames); ++i)
-        logfile << " " << readFNames[i] << ::std::endl;
+    logfile << "Genome=\"" << options.genomeFName << "\""<<::std::endl;
+    logfile << "Reads=\"" << options.readFNames[0];
+    for(unsigned i = 1; i < length(options.readFNames); ++i)
+        logfile << " " << options.readFNames[i] << ::std::endl;
     logfile << "\"" << std::endl;
-    if(*options.outputSNP != 0)
+    if(options.outputSNP != "")
     {
         logfile << "OutputSnp=\"" << CharString(options.outputSNP) << "\"" << ::std::endl;
     }
-    if(*options.outputIndel != 0)
+    if(options.outputIndel != "")
     {
         logfile << "OutputIndel=\"" << CharString(options.outputIndel) << "\""<< ::std::endl;
     }
@@ -1111,7 +1102,7 @@ int writeLogFile(
     {
         logfile << "MinMapQual=" << options.minMapQual << ::std::endl;
     }
-    if(*options.outputIndel != 0)
+    if(options.outputIndel != "")
     {
         logfile << "MinIndel=" << options.indelCountThreshold << ::std::endl;
         logfile << "MinPercIndelT=" << options.indelPercentageT << ::std::endl;
@@ -1121,644 +1112,239 @@ int writeLogFile(
 }
 
 
-
-template <typename TOptions>
-void printHelp(int, const char *[], TOptions &options, bool longHelp = false)
+template <typename TSpec>
+ArgumentParser::ParseResult
+parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** argv)
 {
+    // Setup ArgumentParser.
+    ArgumentParser parser("snp_store");
+    // Set short description, version, and date.
+    setShortDescription(parser, "SnpStore");
+    setVersion(parser, "1.0");
+    setDate(parser, "October 2012");
+
+    // Define usage line and long description.
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIGENOME FILE\\fP\" \"\\fIMAPPED READ FILE(S)\\fP\" ");
+    addDescription(parser, "SNP and Indel Calling in Mapped Read Data.");
+
+    // We require two arguments.
+    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+    addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+
+    addSection(parser, "Options: ");
+    addOption(parser, ArgParseOption("o", "output", "Output file for SNPs (must be set, no default construction).", ArgParseArgument::OUTPUTFILE)); 
+    addOption(parser, ArgParseOption("if", "input-format", "Set input format: 0 for GFF format and 1 for SAM format (both must be sorted according to genome positions).", ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "if", "0");
+    addOption(parser, ArgParseOption("of", "output-format", "Set output format: 0 to output all candidate snps amd 1 to output successful candidate snps only.", ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "of", "0");
+    addOption(parser, ArgParseOption("dc", "dont-clip", "Ignore clip tags in gff. Default: off."));
+
+    addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique fragmentStore.alignedReadStore. Default: off."));
+    addOption(parser, ArgParseOption("hq", "hide-qualities", "Only show coverage (no qualities) in SNP output file. Default: off."));
+    addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
+    addOption(parser, ArgParseOption("id", "indel-file", "Output file for called indels in gff format. Default: off.", ArgParseArgument::OUTPUTFILE));  
+    addOption(parser, ArgParseOption("m", "method", "Set method used for SNP calling: 0 for threshold method and 1 for maq method.", ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "m", "1");
+    addOption(parser, ArgParseOption("mp", "max-pile", "Maximal number of matches allowed to pile up at the same genome position.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("mmp", "merged-max-pile", "Do pile up correction on merged lanes. Default: off."));
+    addOption(parser, ArgParseOption("mc", "min-coverage", "Minimal required number of reads covering a candidate position.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("fc", "force-call", "Always call base if count is >= fc, ignore other parameters. Default: off.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "force-call", "1");
+    addOption(parser, ArgParseOption("oa", "orientation-aware", "Distinguish between forward and reverse reads. Default: off."));
+    addOption(parser, ArgParseOption("cnv", "output-cnv", "Name of CNV result file.", ArgParseArgument::OUTPUTFILE));
+    hideOption(parser, "cnv");
+    addOption(parser, ArgParseOption("op", "output-positions", "Name of positions output file.", ArgParseArgument::OUTPUTFILE)); 
+    hideOption(parser, "op");
+    addOption(parser, ArgParseOption("ip", "input-positions", "Name of positions input file.", ArgParseArgument::INPUTFILE)); 
+    hideOption(parser, "ip");
+    addOption(parser, ArgParseOption("mpr", "max-polymer-run", "Discard indels in homopolymer runs longer than mpr.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("dp", "diff-pos", "Minimal number of different read positions supporting the mutation.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNV calling.", ArgParseArgument::INTEGER)); 
+    addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads."));  
+    addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates."));   
+    addOption(parser, ArgParseOption("cq", "corrected-quality", "New quality calibration factor.", ArgParseArgument::DOUBLE));
+    hideOption(parser, "cq");
+    addOption(parser, ArgParseOption("pws", "parse-window-size", "Genomic window size for parsing reads (concerns memory consumption, choose smaller windows for higher coverage).", ArgParseArgument::INTEGER));
+    setMinValue(parser, "parse-window-size", "1");
+    setMaxValue(parser, "parse-window-size", "100000");
+    addOption(parser, ArgParseOption("reb", "realign-border", "Realign border.", ArgParseArgument::INTEGER));
+    setMinValue(parser, "realign-border", "0");
+    setMaxValue(parser, "realign-border", "10");
+    hideOption(parser, "reb");
+
+    addSection(parser, "SNP calling options: ");
+    addSection(parser, " Threshold method related: ");
+    addOption(parser, ArgParseOption("mm", "min-mutations", "Minimal number of observed mutations for mutation to be called.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("pt", "perc-threshold", "Minimal percentage of mutational base for mutation to be called.", ArgParseArgument::DOUBLE));
+    addOption(parser, ArgParseOption("mq", "min-quality", "Minimal average quality of mutational base for mutation to be called.", ArgParseArgument::DOUBLE));
+    addSection(parser, " Maq method related: ");
+    addOption(parser, ArgParseOption("th", "theta", "Dependency coefficient.", ArgParseArgument::DOUBLE));
+    addOption(parser, ArgParseOption("hr", "hetero-rate", "Heterozygote rate.", ArgParseArgument::DOUBLE));
+    addOption(parser, ArgParseOption("mmq", "min-map-quality", "Minimum base call (mapping) quality for a match to be considered.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("ch", "corrected-het", "Use amplification bias corrected distribution for heterozygotes. Default: off."));
+    addOption(parser, ArgParseOption("maf", "mean-alleleFreq", "Mean ref allele frequency in heterozygotes.", ArgParseArgument::DOUBLE));
+    addOption(parser, ArgParseOption("ac", "amp-cycles", "Number of amplification cycles.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("ae", "amp-efficiency", "Polymerase efficiency, probability of amplification.", ArgParseArgument::DOUBLE));
+    addOption(parser, ArgParseOption("in", "initial-N", "Initial allele population size.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("pht", "print-hetTable", "Print het table. Default: off.")); 
+    hideOption(parser, "pht");
+    addOption(parser, ArgParseOption("mec", "min-explained-column", "Minimum fraction of alignment column reads explained by genotype call.", ArgParseArgument::DOUBLE));
+
+    addSection(parser, "Indel calling options: ");
+    addOption(parser, ArgParseOption("it", "indel-threshold", "Minimal number of indel-supporting reads required for indel calling.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("ipt", "indel-perc-threshold", "Minimal ratio of indel-supporting/covering reads for indel to be called.", ArgParseArgument::DOUBLE));
+    addOption(parser, ArgParseOption("iqt", "indel-quality-thresh", "Minimal average quality of inserted base/deletion-neighboring bases for indel to be called.", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("bsi", "both-strands-indel", "Both strands need to be observed for indel to be called. Default: off."));
+    addOption(parser, ArgParseOption("iw", "indel-window", "Overlap window used for indel calling.", ArgParseArgument::INTEGER)); 
+    hideOption(parser, "iw");
+    addOption(parser, ArgParseOption("ebi", "exclude-border-indel", "Same as option -eb but for indel candidates.", ArgParseArgument::INTEGER)); 
+    addOption(parser, ArgParseOption("cws", "cnv-window-size", "CNV window size.", ArgParseArgument::INTEGER)); 
+    hideOption(parser, "cws");
+    setMaxValue(parser, "cnv-window-size", "10000");
+
+    addSection(parser, "Other options: ");
+    addOption(parser, ArgParseOption("lf", "log-file", "Write log file to FILE.", ArgParseArgument::OUTPUTFILE)); 
+    addOption(parser, ArgParseOption("v", "verbose", "Enable verbose output."));
+    addOption(parser, ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
+    addOption(parser, ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
+
+
+    // Parse command line.
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+
+    // Only extract  options if the program will continue after parseCommandLine()
+    if (res != ArgumentParser::PARSE_OK)
+        return res;
+
+    // Extract option values.
+    // Options:
+    getOptionValue(options.outputSNP, parser, "output");
+    getOptionValue(options.inputFormat, parser, "input-format");
+    getOptionValue(options.outputFormat, parser, "output-format");
+    if (isSet(parser, "dont-clip"))
+        options.dontClip = true;
+    if (isSet(parser, "multi"))
+        options.keepMultiReads = true;
+    if (isSet(parser, "hide-qualities"))
+        options.showQualityStrings = false;
+    if (isSet(parser, "solexa-qual-offset"))
+        options.asciiQualOffset = 64;
+    getOptionValue(options.outputIndel, parser, "indel-file");
+    getOptionValue(options.method, parser, "method");
+    getOptionValue(options.maxPile, parser, "max-pile");
+    if (isSet(parser, "merged-max-pile"))
+        options.laneSpecificMaxPile = false;
+    getOptionValue(options.minCoverage, parser, "min-coverage");
+    getOptionValue(options.forceCallCount, parser, "force-call");
+    if (isSet(parser, "orientation-aware"))
+        options.orientationAware = true;
+    getOptionValue(options.outputCNV, parser, "output-cnv");
+    getOptionValue(options.outputPosition, parser, "output-positions");
+    getOptionValue(options.inputPositionFile, parser, "input-positions");
+    getOptionValue(options.maxPolymerRun, parser, "max-polymer-run");
+    getOptionValue(options.minDifferentReadPos, parser, "diff-pos");
+    getOptionValue(options.excludeBorderPos, parser, "exclude-border");
+    if (isSet(parser, "suboptimal"))
+        options.keepSuboptimalReads = true;
+    if (isSet(parser, "realign"))
+        options.realign = true;
+    getOptionValue(options.newQualityCalibrationFactor, parser, "corrected-quality");
+    getOptionValue(options.windowSize, parser, "parse-window-size");
+    getOptionValue(options.realignAddBorder, parser, "realign-border");
+    // SNP Calling Options:
+    getOptionValue(options.minMutT, parser, "min-mutations");
+    getOptionValue(options.percentageT, parser, "perc-threshold");
+    getOptionValue(options.avgQualT, parser, "min-quality");
+    getOptionValue(options.theta, parser, "theta");
+    getOptionValue(options.hetRate, parser, "hetero-rate");
+    getOptionValue(options.minMapQual, parser, "min-map-quality");
+    if (isSet(parser, "corrected-het"))
+        options.correctedHetTable = true;
+    getOptionValue(options.meanAlleleFrequency, parser, "mean-alleleFreq");
+    getOptionValue(options.amplificationCycles, parser, "amp-cycles");
+    getOptionValue(options.amplificationEfficiency, parser, "amp-efficiency");
+    getOptionValue(options.initialN, parser, "initial-N");
+    if (isSet(parser, "print-hetTable"))
+        options.printHetTable = true;
+    getOptionValue(options.minExplainedColumn, parser, "min-explained-column");
+    // Indel Calling Options:
+    getOptionValue(options.indelCountThreshold, parser, "indel-threshold");
+    getOptionValue(options.indelPercentageT, parser, "indel-perc-threshold");
+    getOptionValue(options.indelQualityThreshold, parser, "indel-quality-thresh");
+    if (isSet(parser, "both-strands-indel"))
+        options.bothIndelStrands = true;
+    getOptionValue(options.indelWindow, parser, "indel-window");
+    getOptionValue(options.indelDepthMinOverlap, parser, "exclude-border-indel");
+    getOptionValue(options.cnvWindowSize, parser, "cnv-window-size");
+    // Other Options:
+    getOptionValue(options.outputLog, parser, "log-file");
+    if (isSet(parser, "verbose"))
+        options._debugLevel = max(options._debugLevel, 1);
+    if (isSet(parser, "very-verbose"))
+        options._debugLevel = max(options._debugLevel, 2);
     
-    cerr << "Usage: snpStore [OPTION]... <GENOME FILE> <MAPPED READ FILE>" << endl;
-    if (longHelp) {
-        cerr << endl << "Options:" << endl;
-        cerr << "  -o,  --output FILE               \t" << "change output filename (default <READ FILE>.snp)" << endl;
-        cerr << "  -if, --input-format NUM          \t" << "input format:" << endl;
-        cerr << "                                   \t" << "0 = GFF sorted according to genome pos (default)" << endl;
-        cerr << "                                   \t" << "1 = SAM sorted according to genome pos" << endl;
-        cerr << "  -of, --output-format NUM         \t" << "output format:" << endl;
-        cerr << "                                   \t" << "0 = output all candidate snps (default)" << endl;
-        cerr << "                                   \t" << "1 = output succesful candidate snps only" << endl;
-        cerr << "  -dc, --dont-clip                 \t" << "ignore clip tags in gff (off)" << endl;
-        cerr << "  -mu, --multi                     \t" << "keep non-unique fragmentStore.alignedReadStore (off)" << endl;
-        cerr << "  -hq, --hide-qualities            \t" << "only show coverage (no qualities) in SNP output file (off)" << endl;
-        cerr << "  -sqo,--solexa-qual-offset        \t" << "base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)" << endl;
-        cerr << "  -id, --indel-file FILE           \t" << "output file for called indels in gff format (off)" << endl;
-        cerr << "  -m,  --method NUM                \t" << "set method used for SNP calling" << endl;
-        cerr << "                                   \t" << "0 = threshold method" << endl;
-        cerr << "                                   \t" << "1 = maq (default)" << endl;
-        //      cerr << "                                   \t" << "(default = "<<options.method << ")" << endl;
-        cerr << "  -mp, --max-pile NUM              \t" << "maximal number of matches allowed to pile up at the same genome position ("<<options.maxPile<<")" << endl;
-        cerr << "  -mmp,--merged-max-pile           \t" << "do pile up correction on merged lanes (off)" << endl;
-        cerr << "  -mc, --min-coverage NUM          \t" << "minimal required number of reads covering a candidate position ("<< options.minCoverage<<")" << endl;
-        cerr << "  -fc, --force-call NUM            \t" << "always call base if count is >= fc, ignore other parameters (off)" << endl;
-        cerr << "  -oa, --orientation-aware         \t" << "distinguish between forward and reverse reads (off)" << endl;
-        cerr << "  -fl, --force-length NUM          \t" << "read length to be used (ignores suffix of read) (off)" << endl;
-        cerr << endl;
-        cerr << "SNP calling options: " << endl;
-        cerr << "  Threshold method related: " << endl;
-        cerr << "  -mm, --min-mutations NUM         \t" << "minimal number of observed mutations for mutation to be called ("<<options.minMutT<<")" << endl;
-        cerr << "  -pt, --perc-threshold NUM        \t" << "minimal percentage of mutational base for mutation to be called (" << options.percentageT << ")" << endl;
-        cerr << "  -mq, --min-quality NUM           \t" << "minimal average quality of mutational base for mutation to be called ("<<options.avgQualT <<")" << endl;
-        cerr << "  Maq method related: " << endl;
-        cerr << "  -th, --theta NUM                 \t" << "dependency coefficient ("<< options.theta <<")" << endl;
-        cerr << "  -hr, --hetero-rate NUM           \t" << "heterozygote rate ("<< options.hetRate <<")" <<  endl;
-        cerr << "  -mmq,--min-map-quality NUM       \t" << "minimum base call (mapping) quality for a match to be considered ("<< options.minMapQual <<")" <<  endl;
-        cerr << "  -ch, --corrected-het             \t" << "use amplification bias corrected distribution for heterozygotes (off)" << endl;
-        cerr << "  -maf,--mean-alleleFreq NUM       \t" << "mean ref allele frequency in heterozygotes (" << options.meanAlleleFrequency << ")"  << endl;
-        cerr << "  -ac, --amp-cycles NUM            \t" << "number of amplification cycles (" << options.amplificationCycles << ")"  << endl;
-        cerr << "  -ae, --amp-efficiency NUM        \t" << "polymerase efficiency, probability of amplification (" << options.amplificationEfficiency << ")"  << endl;
-        cerr << "  -in, --initialN NUM              \t" << "initial allele population size (" << options.initialN << ")" << endl;
-        cerr << "  -pht,--print-hetTable            \t" << "print het table (off)" << endl;
-//        cerr << "  -cq, --corrected-quality NUM     \t" << "do simple quality recalibration with x=NUM (" << options.newQualityCalibrationFactor << ")" << endl;
-        cerr << "  -mec,--min-explained-col         \t" << "minimum fraction of alignment column reads explained by genotype call (" << options.minExplainedColumn << ")"  << endl;
-        cerr << "Indel calling options: " << endl;
-        cerr << "  -it, --indel-threshold NUM       \t" << "minimal number of indel-supporting reads required for indel calling (" << options.indelCountThreshold<<")"<< endl;
-        cerr << "  -ipt,--indel-perc-threshold NUM  \t" << "minimal ratio of indel-supporting/covering reads for indel to be called (" << options.indelPercentageT<<")" << endl;
-        cerr << "  -iqt,--indel-quality-thresh NUM  \t" << "minimal average quality of inserted base/deletion-neighboring bases for indel to be called (" << options.indelQualityThreshold<<")" << endl;
-        cerr << "  -bsi,--both-strands-indel        \t" << "both strands need to be observed for indel to be called (off)" << endl;
-//      cerr << "  -iw, --indel-window              \t" << "overlap window used for indel calling (" << options.indelWindow<<")"<< endl;
-        
-        cerr << endl<< "Other options: " << endl;
-        cerr << "  -lf, --log-file FILE             \t" << "write log file to FILE" << endl;
-        cerr << "  -v,  --verbose                   \t" << "verbose mode" << endl;
-        cerr << "  -vv, --very-verbose              \t" << "very verbose mode" << endl;
-        cerr << "  -h,  --help                      \t" << "print this help" << endl << endl;
+    getArgumentValue(options.genomeFName, parser, 0);
+    unsigned countFiles = getArgumentValueCount(parser, 1);
+    resize(options.readFNames, countFiles);
+    for (unsigned i = 0; i < countFiles; ++i)
+        getArgumentValue(options.readFNames[i], parser, 1, i);
+
+
+    // some additional option checking:
+
+    //if(options.inputFormat == 1 && (!options.qualityFile || (length(qualityFNames)!=length(options.readFNames))))
+    //{
+    //  cerr << "If mapped read file is in Eland format, a .qual or .fastq file containing read qualities needs to be specified." << endl << endl;
+    //  return 0;
+    //}
+    if(options.inputPositionFile == "" && options.outputPosition != "")
+    {
+        cerr << "Position analysis output specified, but no position file given." << endl << endl;
+        return ArgumentParser::PARSE_ERROR;
     }
-    else {
-        cerr << "Try 'snpStore --help' for more information." << endl <<endl;
+
+    if((options.realign && options.windowSize > 50000) || options.windowSize > 1000000) 
+        options.windowSize = 10000;
+    
+    if (options.outputLog != "")
+        writeLogFile(argc, argv, options);
+    
+    if(options.runID == "")
+    {
+        ::std::string tempStr = toCString(options.readFNames[0]);
+        size_t lastPos = tempStr.find_last_of('/') + 1;
+        if (lastPos == tempStr.npos) lastPos = tempStr.find_last_of('\\') + 1;
+        if (lastPos == tempStr.npos) lastPos = 0;
+        options.runID = tempStr.substr(lastPos);
     }
+
+    return ArgumentParser::PARSE_OK;
 }
 
 
 
 int main(int argc, const char *argv[]) 
 {
-    //////////////////////////////////////////////////////////////////////////////
-    // Parse command line
-    
+
+    ArgumentParser parser;
     SNPCallingOptions<>     options;
-    
-    unsigned                fnameCount = 0;
-    const char              *genomeFName = "";
-    String<CharString>      readFNames;
-    String<CharString>      qualityFNames;
+    ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+
+    // If parsing was not successful then exit with code 1 if there were errors.
+    // Otherwise, exit with code 0 (e.g. help was printed).
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
     
     for(int arg = 0; arg < argc; ++arg) {
         options.programCall << argv[arg] << " ";
     }
-    
-    /*  std::cout << "lgamma(1) = " << lgamma(1) << std::endl;
-     std::cout << "lgamma(2) = " << lgamma(2) << std::endl;
-     std::cout << "lgamma(3) = " << lgamma(3) << std::endl;
-     std::cout << "lgamma(4) = " << lgamma(4) << std::endl;
-     std::cout << "lgamma(25) = " << lgamma(25) << std::endl;
-     std::cout << "lgamma(105) = " << lgamma(105) << std::endl;
-     std::cout << "lgamma(255) = " << lgamma(255) << std::endl;*/
-    for(int arg = 1; arg < argc; ++arg) {
-        if (argv[arg][0] == '-') {
-            // parse options
-            if (strcmp(argv[arg], "-m") == 0 || strcmp(argv[arg], "--method") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.method;
-                    if (!istr.fail())
-                    {
-                        if (options.method > 1)
-                            cerr << "Invalid method option." << endl << endl;
-                        else
-                            continue;
-                    }
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mq") == 0 || strcmp(argv[arg], "--min-quality") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.avgQualT;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mm") == 0 || strcmp(argv[arg], "--min-mutations") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.minMutT;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-fc") == 0 || strcmp(argv[arg], "--force-call") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.forceCallCount;
-                    if (!istr.fail())
-                    {
-                        if(options.forceCallCount < 1)
-                            cerr << "--force-call expects a positive integer." << endl; 
-                        else continue;
-                    }
-                    
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mpr") == 0 || strcmp(argv[arg], "--max-polymer-run") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.maxPolymerRun;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-bsi") == 0 || strcmp(argv[arg], "--both-strands-indel") == 0) {
-                options.bothIndelStrands = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-iqt") == 0 || strcmp(argv[arg], "--indel-quality-thresh") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.indelQualityThreshold;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mec") == 0 || strcmp(argv[arg], "--min-explained-column") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.minExplainedColumn;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-ipt") == 0 || strcmp(argv[arg], "--indel-perc-threshold") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.indelPercentageT;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-pt") == 0 || strcmp(argv[arg], "--perc-threshold") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.percentageT;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mp") == 0 || strcmp(argv[arg], "--max-pile") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.maxPile;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-dp") == 0 || strcmp(argv[arg], "--diff-pos") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.minDifferentReadPos;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-eb") == 0 || strcmp(argv[arg], "--exclude-border") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.excludeBorderPos;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-ebi") == 0 || strcmp(argv[arg], "--exclude-border-indel") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.indelDepthMinOverlap;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mc") == 0 || strcmp(argv[arg], "--min-coverage") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.minCoverage;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-dc") == 0 || strcmp(argv[arg], "--dont-clip") == 0) {
-                options.dontClip = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-su") == 0 || strcmp(argv[arg], "--suboptimal") == 0) {
-                options.keepSuboptimalReads = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-ch") == 0 || strcmp(argv[arg], "--corrected-het") == 0) {
-                options.correctedHetTable = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-mu") == 0 || strcmp(argv[arg], "--multi") == 0) {
-                options.keepMultiReads = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-re") == 0 || strcmp(argv[arg], "--realign") == 0) {
-                options.realign = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-hq") == 0 || strcmp(argv[arg], "--hide-qualities") == 0) {
-                options.showQualityStrings = false;
-                continue;
-            }
-            if (strcmp(argv[arg], "-mmp") == 0 || strcmp(argv[arg], "--merged-max-pile") == 0) {
-                options.laneSpecificMaxPile = false;
-                continue;
-            }
-            if (strcmp(argv[arg], "-oa") == 0 || strcmp(argv[arg], "--orientation-aware") == 0) {
-                options.orientationAware = true;
-                continue;
-            }
-            if (strcmp(argv[arg], "-pht") == 0 || strcmp(argv[arg], "--print-hetTable") == 0) {
-                options.printHetTable = true;
-                continue;
-            }
- 
-            if (strcmp(argv[arg], "-ae") == 0 || strcmp(argv[arg], "--amp-efficiency") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.amplificationEfficiency;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-cq") == 0 || strcmp(argv[arg], "--corrected-quality") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.newQualityCalibrationFactor;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
 
-            if (strcmp(argv[arg], "-maf") == 0 || strcmp(argv[arg], "--mean-alleleFreq") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.meanAlleleFrequency;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-    
-            if (strcmp(argv[arg], "-ac") == 0 || strcmp(argv[arg], "--amp-cycles") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.amplificationCycles;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-in") == 0 || strcmp(argv[arg], "--initial-N") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.initialN;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-
-            if (strcmp(argv[arg], "-iw") == 0 || strcmp(argv[arg], "--indel-window") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.indelWindow;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-it") == 0 || strcmp(argv[arg], "--indel-threshold") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.indelCountThreshold;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-mmq") == 0 || strcmp(argv[arg], "--min-map-quality") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.minMapQual;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-th") == 0 || strcmp(argv[arg], "--theta") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.theta;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-pws") == 0 || strcmp(argv[arg], "--parse-window-size") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.windowSize;
-                    if (!istr.fail() && options.windowSize > 0)
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-sqo") == 0 || strcmp(argv[arg], "--solexa-qual-offset") == 0) {
-                options.asciiQualOffset = 64;
-                continue;
-            }
-            if (strcmp(argv[arg], "-reb") == 0 || strcmp(argv[arg], "--realign-border") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.realignAddBorder;
-                    if (!istr.fail() && options.realignAddBorder >= 0 && options.realignAddBorder <= 100)
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-cws") == 0 || strcmp(argv[arg], "--cnv-window-size") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.cnvWindowSize;
-                    if (!istr.fail() && options.cnvWindowSize > 0)
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-hr") == 0 || strcmp(argv[arg], "--hetero-rate") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.hetRate;
-                    if (!istr.fail())
-                        continue;
-            }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-if") == 0 || strcmp(argv[arg], "--input-format") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.inputFormat;
-                    if (!istr.fail())
-                    {
-                        if(options.inputFormat > 2 )
-                            cerr << "--input-format expects 0 or 1." << endl;   
-                        else continue;
-                    }
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-of") == 0 || strcmp(argv[arg], "--output-format") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    istringstream istr(argv[arg]);
-                    istr >> options.outputFormat;
-                    if (!istr.fail())
-                        continue;
-                }
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-lf") == 0 || strcmp(argv[arg], "--log-file") == 0) {
-                if (arg + 1 == argc) {
-                    printHelp(argc, argv, options, true);
-                    return 0;
-                }
-                ++arg;
-                options.outputLog = argv[arg];
-                continue;
-            }
-            if (strcmp(argv[arg], "-o") == 0 || strcmp(argv[arg], "--output") == 0) {
-                if (arg + 1 == argc) {
-                    printHelp(argc, argv, options, true);
-                    return 0;
-                }
-                ++arg;
-                options.outputSNP = argv[arg];
-                continue;
-            }
-            if (strcmp(argv[arg], "-id") == 0 || strcmp(argv[arg], "--indel-file") == 0) {
-                if (arg + 1 == argc) {
-                    printHelp(argc, argv, options, true);
-                    return 0;
-                }
-                ++arg;
-                options.outputIndel = argv[arg];
-                continue;
-            }
-            if (strcmp(argv[arg], "-cnv") == 0 || strcmp(argv[arg], "--output-cnv") == 0) {
-                if (arg + 1 == argc) {
-                    printHelp(argc, argv, options, true);
-                    return 0;
-                }
-                ++arg;
-                options.outputCNV = argv[arg];
-                continue;
-            }
-            if (strcmp(argv[arg], "-op") == 0 || strcmp(argv[arg], "--output-positions") == 0) {
-                if (arg + 1 == argc) {
-                    printHelp(argc, argv, options, true);
-                    return 0;
-                }
-                ++arg;
-                options.outputPosition = argv[arg];
-                continue;
-            }
-            if (strcmp(argv[arg], "-ip") == 0 || strcmp(argv[arg], "--input-positions") == 0) {
-                if (arg + 1 == argc) {
-                    printHelp(argc, argv, options, true);
-                    return 0;
-                }
-                ++arg;
-                options.inputPositionFile = argv[arg];
-                continue;
-            }
-            if (strcmp(argv[arg], "-h") == 0 || strcmp(argv[arg], "--help") == 0) {
-                // print help
-                printHelp(argc, argv, options, true);
-                return 0;
-            }
-            if (strcmp(argv[arg], "-v") == 0 || strcmp(argv[arg], "--verbose") == 0) {
-                options._debugLevel = max(options._debugLevel, 1);
-                continue;
-            }
-            if (strcmp(argv[arg], "-vv") == 0 || strcmp(argv[arg], "--very-verbose") == 0) {
-                options._debugLevel = max(options._debugLevel, 2);
-                continue;
-            }
-            cerr << "Unknown option: " << argv[arg] << endl << endl;
-            printHelp(argc, argv, options);
-            return 0;
-        } else {
-            // parse file name
-            if (fnameCount == 0)
-                genomeFName = argv[arg];
-            if (fnameCount == 1)
-            {
-                if(argv[arg][0]=='[')
-                {
-                    String<char> tempStr = argv[arg];
-                    appendValue(readFNames,suffix(tempStr,1),Generous());
-                    ++arg;
-                    while(arg < argc && argv[arg][0] != '-')
-                    {
-                        tempStr = argv[arg];
-                        appendValue(readFNames,tempStr,Generous());
-                        ++arg;
-                    }
-                    if(readFNames[length(readFNames)-1][length(readFNames[length(readFNames)-1])-1] != ']' )
-                        cerr << "Something wrong with read file list?" << endl;
-                    resize(readFNames[length(readFNames)-1],length(readFNames[length(readFNames)-1])-1);
-                    --arg;
-                }
-                else
-                {
-                    //split by whitesapce and append each read file
-                    ::std::string tempStr(argv[arg]);
-                    size_t firstPos = 0;
-                    size_t lastPos = tempStr.find(' ');
-                    ::std::string tempFile = tempStr.substr(firstPos,lastPos);
-                    appendValue(readFNames,String<char>(tempFile),Generous());
-                    while (lastPos != 0 && lastPos != tempStr.npos)
-                    {
-                        while(tempStr[lastPos]==' ')
-                            ++lastPos;
-                        firstPos = lastPos; 
-                        lastPos = tempStr.find(' ',firstPos);
-                        if (lastPos != tempStr.npos) tempFile = tempStr.substr(firstPos,lastPos-firstPos);
-                        else tempFile = tempStr.substr(firstPos,length(tempStr));
-                        appendValue(readFNames,String<char>(tempFile),Generous());
-                    }
-                }
-            }
-            if (fnameCount == 2) {
-                cerr << "More than 2 input files specified." <<endl;
-                cerr << "If more than 2 mapped read files are to be parsed, use quotation marks directly before first file name and directly after last file name (e.g. \"lane1.gff lane2.gff\")." << endl << endl;
-                printHelp(argc, argv, options);
-                return 0;
-            }
-            ++fnameCount;
-        }
-    }
-    
-    // some option checking
-    if (fnameCount != 2) {
-        if (argc > 1 && !options.printVersion)
-            cerr << "Exactly 2 input files need to be specified." << endl << endl;
-        printHelp(argc, argv, options);
-        return 0;
-    }
-    //if(options.inputFormat == 1 && (!options.qualityFile || (length(qualityFNames)!=length(readFNames))))
-    //{
-    //  cerr << "If mapped read file is in Eland format, a .qual or .fastq file containing read qualities needs to be specified." << endl << endl;
-    //  return 0;
-    //}
-    if(*options.inputPositionFile == 0 && *options.outputPosition != 0)
-    {
-        cerr << "Position analysis output specified, but no position file given." << endl << endl;
-        return 0;
-    }
-    
-    if((options.realign && options.windowSize > 50000) || options.windowSize > 1000000) 
-        options.windowSize = 10000;
-    
-    if (*options.outputLog != 0)
-        writeLogFile(argc, argv, genomeFName, readFNames, qualityFNames, options);
-    
-    if(options.runID == "")
-    {
-        ::std::string tempStr = toCString(readFNames[0]);
-        size_t lastPos = tempStr.find_last_of('/') + 1;
-        if (lastPos == tempStr.npos) lastPos = tempStr.find_last_of('\\') + 1;
-        if (lastPos == tempStr.npos) lastPos = 0;
-        options.runID = tempStr.substr(lastPos);
-    }
-    
-    
-    
     //////////////////////////////////////////////////////////////////////////////
     // check for variants
-    int result = detectSNPs(genomeFName, readFNames, qualityFNames, options);
+    int result = detectSNPs(options);
     if (result > 0)
     {
-        printHelp(argc, argv, options);
+        cerr << "ERROR: Something went wrong. Try 'snpStore --help' for more information." << endl << endl;
         return 0;
     }
     return result;
