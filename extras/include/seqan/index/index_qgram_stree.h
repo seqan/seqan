@@ -238,7 +238,7 @@ _getNodeByChar(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TS
     childDesc.lastChar = c;
 
     // TODO(esiragusa): Remove call to pow
-    THValue h = pow(static_cast<double>(ValueSize<TAlphabet>::VALUE), static_cast<int>(weight(shape) - childDesc.repLen - 1));
+    THValue h = static_cast<THValue>(pow(static_cast<double>(ValueSize<TAlphabet>::VALUE), static_cast<int>(weight(shape) - childDesc.repLen - 1)));
     childDesc.hash.i1 = childDesc.hash.i1 + ordValue(childDesc.lastChar) * h;
     childDesc.hash.i2 = childDesc.hash.i2 - (ValueSize<TAlphabet>::VALUE - 1 - ordValue(childDesc.lastChar)) * h;
 
@@ -272,7 +272,7 @@ inline bool _getNextNode(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >,
     TShape const & shape = indexShape(index);
 
     // TODO(esiragusa): Remove call to pow
-    THValue h = pow(static_cast<double>(ValueSize<TAlphabet>::VALUE), static_cast<int>(weight(shape) - value(it).repLen));
+    THValue h = static_cast<THValue>(pow(static_cast<double>(ValueSize<TAlphabet>::VALUE), static_cast<int>(weight(shape) - value(it).repLen)));
 
     // TODO(esiragusa): Remove workaround for alphabets with quality values
     for (typename ValueSize<TAlphabet>::Type c = ordValue(value(it).lastChar) + 1; c < ValueSize<TAlphabet>::VALUE; ++c)
