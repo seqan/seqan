@@ -225,7 +225,7 @@ if (MSVC)
   add_definitions (/W2)
 
   # Disable warnings about unsecure (although standard) functions.
-  add_definitions (-D_SCL_SECURE_NO_WARNING)
+  add_definitions (-D_SCL_SECURE_NO_WARNINGS)
 endif (MSVC)
 
 # ----------------------------------------------------------------------------
