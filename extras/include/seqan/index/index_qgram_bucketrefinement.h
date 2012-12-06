@@ -106,7 +106,7 @@ public:
 
     Index() :
         TBase(),
-        _indexSa(indexText(*this))
+        _indexSa(value(text))
     {
         _setHost(*this);
     }
@@ -128,7 +128,7 @@ public:
     template <typename TText_>
     Index(TText_ & _text) :
         TBase(_text),
-        _indexSa(indexText(*this))
+        _indexSa(value(text))
     {
         _setHost(*this);
     }
@@ -136,7 +136,7 @@ public:
     template <typename TText_>
     Index(TText_ const & _text) :
         TBase(_text),
-        _indexSa(indexText(*this))
+        _indexSa(value(text))
     {
         _setHost(*this);
     }
