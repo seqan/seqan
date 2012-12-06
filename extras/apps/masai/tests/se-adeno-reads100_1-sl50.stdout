@@ -1,6 +1,6 @@
-Loading genome:			8.67844e-05 sec
-Loading genome index:		0.000140905 sec
-Loading reads:			0.00176311 sec
+Loading genome:			4.7293e-05 sec
+Loading genome index:		1.0775e-05 sec
+Loading reads:			0.00171962 sec
 Reads count:			1000
 Errors:				0
 Seed:				(50,0)
@@ -26,4 +26,4 @@ Errors:				5
 Seed:				(50,2)
 Hits:				1127
 Matches:			962
-Mapping time:			0.0718281 sec
+Mapping time:			0.0522712 sec

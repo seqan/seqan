@@ -200,6 +200,38 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreTempSA>
 	typedef String<TSAValue, External<ExternalConfigLarge<> > >                 Type;
 };
 
+
+// Stores the information about an FM index file bundle and is written to the .fma file.
+
+#ifdef PLATFORM_WINDOWS
+    #pragma pack(push,1)
+#endif
+
+struct FmIndexInfo_
+{
+    // The compression factor.
+    __int32 compressionFactor;
+    // The sizeof(TSAEntry) values for suffix array entries.
+    __int32 sizeOfSAEntry;
+    // The length of the genome.
+    __int64 genomeLength;
+
+    FmIndexInfo_() : compressionFactor(0), sizeOfSAEntry(0), genomeLength(0)
+    {}
+
+    FmIndexInfo_(__int32 compressionFactor, __int32 sizeOfSAEntry, __int32 genomeLength) :
+            compressionFactor(compressionFactor), sizeOfSAEntry(sizeOfSAEntry), genomeLength(genomeLength)
+    {}
+}
+
+#ifndef PLATFORM_WINDOWS
+    __attribute__((packed))
+#endif
+    ;
+#ifdef PLATFORM_WINDOWS
+      #pragma pack(pop)
+#endif
+
 // ==========================================================================
 // Classes
 // ==========================================================================
@@ -706,7 +738,11 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 {
     String<char> name;
 
-    String<Pair<unsigned, typename Size<TText>::Type> > infoString;
+    typedef Index<TText, FMIndex<TOccSpec, TSpec> > TIndex;
+    typedef typename Fibre<TIndex, FmiCompressedSA>::Type TSAFibre;
+    typedef typename Value<TSAFibre>::Type TSAValue;
+
+    String<FmIndexInfo_> infoString;
 
     name = fileName;    append(name, ".txt");
     if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
@@ -719,9 +755,13 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 
     name = fileName;    append(name, ".fma");
     if (!open(infoString, toCString(name), openMode)) return false;
+
+    // Check that the size of the SA entries is correct.
+    if (infoString[0].sizeOfSAEntry != sizeof(TSAFibre))
+        return false;
     
-    index.compressionFactor = infoString[0].i1;
-    index.n = infoString[0].i2;
+    index.compressionFactor = infoString[0].compressionFactor;
+    index.n = infoString[0].genomeLength;
     getFibre(index, FibreSA()).lfTable = & getFibre(index, FibreLfTable());
 
     return true;
@@ -760,8 +800,12 @@ inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const ch
 {
     String<char> name;
 
-    String<Pair<unsigned, typename Size<TText>::Type> > infoString;
-    appendValue(infoString, Pair<unsigned, typename Size<TText>::Type>(index.compressionFactor, index.n));
+    typedef Index<TText, FMIndex<TOccSpec, TSpec> > TIndex;
+    typedef typename Fibre<TIndex, FmiCompressedSA>::Type TSAFibre;
+    typedef typename Value<TSAFibre>::Type TSAValue;
+
+    String<FmIndexInfo_> infoString;
+    appendValue(infoString, FmIndexInfo_(index.compressionFactor, sizeof(TSAValue), index.n));
 
     name = fileName;    append(name, ".txt");
     if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;

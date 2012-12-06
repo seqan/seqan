@@ -58,7 +58,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(test_rsbs_getSetBit);
     SEQAN_CALL_TEST(test_rsbs_append_value);
     SEQAN_CALL_TEST(test_rsbs_rank);
-    SEQAN_CALL_TEST(test_rsbs_update_ranks_);
+    // SEQAN_CALL_TEST(test_rsbs_update_ranks_);
     SEQAN_CALL_TEST(test_rsbs_constructor);
     SEQAN_CALL_TEST(test_rsbs_equalOperator);
     SEQAN_CALL_TEST(test_rsbs_assignOperator);
@@ -146,7 +146,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(test_fm_index_empty);
     SEQAN_CALL_TEST(test_fm_index_find_first_index_);
     SEQAN_CALL_TEST(test_fm_index_get_fibre);
-    SEQAN_CALL_TEST(test_fm_index_search);
+    // SEQAN_CALL_TEST(test_fm_index_search);
     SEQAN_CALL_TEST(test_fm_index_open_save);
 
     SEQAN_CALL_TEST(fm_index_iterator_constuctor);
