@@ -117,7 +117,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
     // Ordered Alphabet Concept
     {
         char b = false, c = true;
-#if !defined(_MSC_VER) || defined(_CHAR_UNSIGNED)
         SEQAN_ASSERT_EQ(minValue(char()), '\0');
         SEQAN_ASSERT_EQ(minValue<char>(), '\0');
         SEQAN_ASSERT_EQ(+(MinValue<char>::VALUE), '\0');
@@ -126,16 +125,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
         SEQAN_ASSERT_EQ(maxValue<char>(), char(-1));
         SEQAN_ASSERT_EQ(+(MaxValue<char>::VALUE), char(-1));
         SEQAN_ASSERT(b < c);
-#else  // #if !defined(_MSC_VER) || defined(_CHAR_UNSIGNED)
-        SEQAN_ASSERT_EQ(minValue(char()), -128);
-        SEQAN_ASSERT_EQ(minValue<char>(), -128);
-        SEQAN_ASSERT_EQ(+(MinValue<char>::VALUE), -128);
-        // TODO(holtgrew): Is the following correct?
-        SEQAN_ASSERT_EQ(maxValue(char()), 127);
-        SEQAN_ASSERT_EQ(maxValue<char>(), 127);
-        SEQAN_ASSERT_EQ(+(MaxValue<char>::VALUE), 127);
-        SEQAN_ASSERT(b < c);
-#endif  // #if !defined(_MSC_VER) || defined(_CHAR_UNSIGNED)
     }
 
     // Finite Ordered Alphabet
@@ -330,21 +319,21 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
     {
         __int8 b = 0, c = 42;
 
-#if defined(PLATFORM_WINDOWS_MINGW)
+#if defined(PLATFORM_WINDOWS_VS) || defined(PLATFORM_WINDOWS_MINGW)
         SEQAN_ASSERT_EQ(minValue(__int8()), 0);
         SEQAN_ASSERT_EQ(minValue<__int8>(), 0);
         SEQAN_ASSERT_EQ(+(MinValue<__int8>::VALUE), 0);
-        SEQAN_ASSERT_GEQ(maxValue(__int8()), 255);
-        SEQAN_ASSERT_GEQ(maxValue<__int8>(), 255);
-        SEQAN_ASSERT_GEQ(+(MaxValue<__int8>::VALUE), 255);
-#else  // #if defined(PLATFORM_WINDOWS_MINGW)
+        SEQAN_ASSERT_EQ(maxValue(__int8()), '\xff');
+        SEQAN_ASSERT_EQ(maxValue<__int8>(), '\xff');
+        SEQAN_ASSERT_EQ(+(MaxValue<__int8>::VALUE), '\xff');
+#else  // #if defined(PLATFORM_WINDOWS_VS) || defined(PLATFORM_WINDOWS_MINGW)
         SEQAN_ASSERT_EQ(minValue(__int8()), -128);
         SEQAN_ASSERT_EQ(minValue<__int8>(), -128);
         SEQAN_ASSERT_EQ(+(MinValue<__int8>::VALUE), -128);
         SEQAN_ASSERT_GEQ(maxValue(__int8()), 127);
         SEQAN_ASSERT_GEQ(maxValue<__int8>(), 127);
         SEQAN_ASSERT_GEQ(+(MaxValue<__int8>::VALUE), 127);
-#endif  // #if defined(PLATFORM_WINDOWS_MINGW)
+#endif  // #if defined(PLATFORM_WINDOWS_VS) || defined(PLATFORM_WINDOWS_MINGW)
         SEQAN_ASSERT(b < c);
     }
 
