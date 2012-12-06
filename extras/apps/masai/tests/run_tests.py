@@ -82,7 +82,7 @@ def main(source_base, binary_base):
             	  '-x', i,
                   '-xp', ph.outFile('adeno-index-%s.out' % i)],
             to_diff=[(ph.inFile('adeno-index-%s.out.%s' % (i,ext)),
-                     ph.outFile('adeno-index-%s.out.%s' % (i, ext))) for ext in exts] +
+                     ph.outFile('adeno-index-%s.out.%s' % (i, ext)), 'md5') for ext in exts] +
                     [(ph.inFile('adeno-index-%s.stdout' % i),
                      ph.outFile('adeno-index-%s.stdout' % i),
                      transforms)])
@@ -103,7 +103,8 @@ def main(source_base, binary_base):
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   '-o', ph.outFile('se-adeno-reads%d_1.out' % rl)],
             to_diff=[(ph.inFile('se-adeno-reads%d_1.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1.out' % rl)),
+                      ph.outFile('se-adeno-reads%d_1.out' % rl),
+                      'md5'),
                      (ph.inFile('se-adeno-reads%d_1.stdout' % rl),
                       ph.outFile('se-adeno-reads%d_1.stdout' % rl),
                       transforms)])
@@ -143,7 +144,8 @@ def main(source_base, binary_base):
                   '--no-gaps',
                   '-o', ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)],
             to_diff=[(ph.inFile('se-adeno-reads%d_1-nogaps.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)),
+                      ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl),
+                      'md5'),
                      (ph.inFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
                       ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
                       transforms)])

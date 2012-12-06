@@ -23,6 +23,7 @@ from __future__ import with_statement
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
 import difflib
+import hashlib
 import logging
 import optparse
 import os
@@ -32,6 +33,19 @@ import subprocess
 import shutil
 import sys
 import tempfile
+
+def md5ForFile(f, block_size=2**20):
+    """Compute MD5 of a file.
+
+    Taken from http://stackoverflow.com/a/1131255/84349.
+    """
+    md5 = hashlib.md5()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        md5.update(data)
+    return md5.hexdigest()
 
 
 # Valgrind flags, taken from CMake output, ideally given to test script by CMake?
@@ -173,10 +187,8 @@ def autolocateBinary(base_path, relative_path, binary_name):
                               [binary_name]))
   for path in paths:
     logging.debug('Trying path %s', path)
-    print >>sys.stderr, 'Trying path', path
     if os.path.isfile(path):
       logging.debug('  Found binary %s', path)
-      print >>sys.stderr, '  Found binary', path
       return path
   # Fall back ot Unix default.
   return os.path.join(base_path, relative_path, binary_name)
@@ -256,27 +268,43 @@ def runTest(test_conf):
     result = True
     for tuple_ in test_conf.to_diff:
         expected_path, result_path = tuple_[:2]
+        binary = False
         transforms = []
         if len(tuple_) >= 3:
-            transforms += tuple_[2]
+            if tuple_[2] == 'md5':
+                binary = True
+            else:
+                transforms += tuple_[2]
         try:
-            with open(expected_path, 'r') as f:
-                expected_str = f.read()
-            for t in transforms:
-                expected_str = t.apply(expected_str, True)
-            with open(result_path, 'r') as f:
-                result_str = f.read()
-            for t in transforms:
-                result_str = t.apply(result_str, False)
-            if expected_str == result_str:
-                continue
-            fmt = 'Comparing %s against %s'
-            print >>sys.stderr, fmt % (expected_path, result_path)
-            diff = difflib.unified_diff(expected_str.splitlines(),
-                                        result_str.splitlines())
-            for line in diff:
-                print >>sys.stderr, line
-            result = False
+            if binary:
+                with open(expected_path, 'r') as f:
+                    expected_md5 = md5ForFile(f)
+                with open(result_path, 'r') as f:
+                    result_md5 = md5ForFile(f)
+                if expected_md5 == result_md5:
+                    continue
+                else:
+                    tpl = (expected_path, expected_md5, result_md5, result_path)
+                    print >>sys.stderr, 'md5(%s) == %s != %s == md5(%s)' % tpl
+                    result = False
+            else:
+                with open(expected_path, 'r') as f:
+                    expected_str = f.read()
+                for t in transforms:
+                    expected_str = t.apply(expected_str, True)
+                with open(result_path, 'r') as f:
+                    result_str = f.read()
+                for t in transforms:
+                    result_str = t.apply(result_str, False)
+                if expected_str == result_str:
+                    continue
+                fmt = 'Comparing %s against %s'
+                print >>sys.stderr, fmt % (expected_path, result_path)
+                diff = difflib.unified_diff(expected_str.splitlines(),
+                                            result_str.splitlines())
+                for line in diff:
+                    print >>sys.stderr, line
+                result = False
         except Exception, e:
             fmt = 'Error when trying to compare %s to %s: %s ' + str(type(e))
             print >>sys.stderr, fmt % (expected_path, result_path, e)
