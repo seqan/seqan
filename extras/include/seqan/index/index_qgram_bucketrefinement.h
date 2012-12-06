@@ -105,8 +105,7 @@ public:
     TIndexSa    _indexSa;
 
     Index() :
-        TBase(),
-        _indexSa(value(text))
+        TBase()
     {
         _setHost(*this);
     }
@@ -128,7 +127,7 @@ public:
     template <typename TText_>
     Index(TText_ & _text) :
         TBase(_text),
-        _indexSa(value(text))
+        _indexSa(_text)
     {
         _setHost(*this);
     }
@@ -136,7 +135,7 @@ public:
     template <typename TText_>
     Index(TText_ const & _text) :
         TBase(_text),
-        _indexSa(value(text))
+        _indexSa(_text)
     {
         _setHost(*this);
     }
@@ -144,7 +143,7 @@ public:
     template <typename TText_, typename TShape_>
     Index(TText_ & _text, TShape_ const & _shape) :
         TBase(_text, _shape),
-        _indexSa(indexText(*this))
+        _indexSa(_text)
     {
         _setHost(*this);
     }
@@ -152,11 +151,10 @@ public:
     template <typename TText_, typename TShape_>
     Index(TText_ const & _text, TShape_ const & _shape) :
         TBase(_text, _shape),
-        _indexSa(indexText(*this))
+        _indexSa(_text)
     {
         _setHost(*this);
     }
-
 };
 
 // ============================================================================
