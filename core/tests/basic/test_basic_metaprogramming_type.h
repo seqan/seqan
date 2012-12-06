@@ -73,7 +73,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_signed)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<         long>::Type,   signed long>::VALUE), true);
 
 // MSVC does not distinguis between char and __int8.
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) && !defined(PLATFORM_WINDOWS_MINGW)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__int8  >::Type, __int8>::VALUE), true);
 #endif  // #if !defined(_MSC_VER)
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<__int16 >::Type, __int16>::VALUE), true);
