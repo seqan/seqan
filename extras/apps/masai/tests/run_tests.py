@@ -22,7 +22,7 @@ sys.path.insert(0, path)
 import seqan.app_tests as app_tests
 
 transforms = [
-	app_tests.RegexpReplaceTransform("\d+\.\d+(e-\d+)? sec", "0.0 sec")
+	app_tests.RegexpReplaceTransform("[0-9\.\-e]+ sec", "0.0 sec")
 ]
 
 def getMapperConf(ph, path_to_program, rl, optionName, optionValue):
