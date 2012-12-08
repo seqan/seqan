@@ -34,7 +34,8 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-//////////////////////////////////////////////////////////////////////////////
+    
+    //////////////////////////////////////////////////////////////////////////////
 // Default options
 
 
@@ -48,12 +49,12 @@ struct IndelCheck{};
 template<typename TSpec = IndelCheck>
 struct IndelCompareOptions
 {
-	const char *output; 	    // output file for statistics and shared indels
-	const char *outputFN; 	    // output file for unmatched reference indels
-	const char *outputSnp; 	        // output file for statistics and shared SNPs
-	const char *outputSnpFN; 	    // output file for unmatched reference SNPs
-	const char *inputReference;	// reference indels+SNPs in gff format
-	const char *inputPredicted;	// predicted indels+SNPs in gff format
+	CharString output; 	    // output file for statistics and shared indels
+	CharString outputFN; 	    // output file for unmatched reference indels
+	CharString outputSnp; 	        // output file for statistics and shared SNPs
+	CharString outputSnpFN; 	    // output file for unmatched reference SNPs
+	CharString inputReference;	// reference indels+SNPs in gff format
+	CharString inputPredicted;	// predicted indels+SNPs in gff format
 
 	int positionTolerance;		// max. deviation of predicted indel position from reference indel position
 	double sizeTolerance;		    // max. deviation of predicted indel size from reference indel size (in percent)
@@ -157,6 +158,80 @@ dumpSnpInfo(SnpInfo & snp)
 }
 */
 
+
+//////////////////////////// Write Functions ///////////////////////////////////
+
+// write one gff line
+template <typename TFile, typename TOptions>
+bool write(TFile &file, IndelInfo &refIndel, CharString &genomeID, CharString &tagAppend, TOptions & options)
+{
+	if(!file.is_open()) return false;
+	file << genomeID << '\t';
+	
+	if(!empty(refIndel.field2)) file << refIndel.field2 << '\t';
+	else file << "variantCmp\t";
+
+	if(!empty(refIndel.field3)) file << refIndel.field3 << '\t';
+	else
+	{
+		if(refIndel.indelSize < 0) file << "insertion\t";
+		if(refIndel.indelSize == 0) file << "baseexchange\t";
+		if(refIndel.indelSize > 0) file << "deletion\t";
+	}
+
+	if(refIndel.indelSize <= 0) file << refIndel.originalPos + 1 << '\t' << refIndel.originalPos + 1 ;
+	else file << refIndel.originalPos + 1 << '\t' << refIndel.originalPos + refIndel.indelSize ;
+	
+	file << "\t" << refIndel.quality << "\t+\t.\t";
+	if(!empty(refIndel.ninethCol)) file << refIndel.ninethCol;
+	else
+	{
+		file << "ID=" << refIndel.idStr << ";size=" << refIndel.indelSize;
+        if(options.genotypeAware && refIndel.genotype==0) file << ";geno=hom";
+        else if(options.genotypeAware && refIndel.genotype==1) file << ";geno=het";
+
+//		if(refIndel.duplication) file << ";duplication=1";
+	}
+	if(refIndel.duplication) file << ";duplication=1";
+	
+	file << toCString(tagAppend) << std::endl;
+	
+	return true;
+	
+}
+
+
+// write one gff line
+template <typename TFile, typename TOptions>
+bool write(TFile &file, SnpInfo &refSnp, CharString &genomeID, CharString &tagAppend, TOptions & options)
+{
+	if(!file.is_open()) return false;
+	file << genomeID << '\t';
+	
+	if(!empty(refSnp.field2)) file << refSnp.field2 << '\t';
+	else file << "variantCmp\t";
+
+	if(!empty(refSnp.field3)) file << refSnp.field3 << '\t';
+	else file << "snp\t";
+		
+	file << refSnp.originalPos + 1 << '\t' << refSnp.originalPos + 1 ;
+    file << "\t" << refSnp.quality << "\t+\t.\t";
+	if(!empty(refSnp.ninethCol)) file << refSnp.ninethCol;
+	else
+	{
+		file << "ID=" << refSnp.idStr;
+        if(options.genotypeAware && refSnp.genotype==0) file << ";geno=hom";
+        else if(options.genotypeAware && refSnp.genotype==1) file << ";geno=het";
+	}
+	
+	file << toCString(tagAppend) << std::endl;
+	
+	return true;
+	
+}
+
+///////////////////////// Compare Functions ////////////////////////////////////////    
+    
 //____________________________________________________________________________
 
 template <typename TIndel>
@@ -171,6 +246,23 @@ struct LessGPosSize : public ::std::binary_function < TIndel, TIndel, bool >
 		if (a.originalPos > b.originalPos ) return false;
 
 		return a.indelSize < b.indelSize;
+	}
+};
+
+//____________________________________________________________________________
+
+
+template <typename TVariant>
+struct LessGPos : public ::std::binary_function < TVariant, TVariant, bool >
+{
+	inline bool operator() (TVariant const &a, TVariant const &b) const 
+	{
+		// genome sequence
+		if (a.genomeID < b.genomeID) return true;
+		if (a.genomeID > b.genomeID) return false;
+
+        // genome position
+        return (a.originalPos < b.originalPos);
 	}
 };
 
@@ -236,44 +328,6 @@ bool compareIndelPair(TIndel &refIndel, TIndel &predIndel, TPos beginPoint, TPos
 }
 
 
-// write one gff line
-template <typename TFile, typename TOptions>
-bool write(TFile &file, IndelInfo &refIndel, CharString &genomeID, CharString &tagAppend, TOptions & options)
-{
-	if(!file.is_open()) return false;
-	file << genomeID << '\t';
-	
-	if(!empty(refIndel.field2)) file << refIndel.field2 << '\t';
-	else file << "variantCmp\t";
-
-	if(!empty(refIndel.field3)) file << refIndel.field3 << '\t';
-	else
-	{
-		if(refIndel.indelSize < 0) file << "insertion\t";
-		if(refIndel.indelSize == 0) file << "baseexchange\t";
-		if(refIndel.indelSize > 0) file << "deletion\t";
-	}
-
-	if(refIndel.indelSize <= 0) file << refIndel.originalPos + 1 << '\t' << refIndel.originalPos + 1 ;
-	else file << refIndel.originalPos + 1 << '\t' << refIndel.originalPos + refIndel.indelSize ;
-	
-	file << "\t" << refIndel.quality << "\t+\t.\t";
-	if(!empty(refIndel.ninethCol)) file << refIndel.ninethCol;
-	else
-	{
-		file << "ID=" << refIndel.idStr << ";size=" << refIndel.indelSize;
-        if(options.genotypeAware && refIndel.genotype==0) file << ";geno=hom";
-        else if(options.genotypeAware && refIndel.genotype==1) file << ";geno=het";
-
-//		if(refIndel.duplication) file << ";duplication=1";
-	}
-	if(refIndel.duplication) file << ";duplication=1";
-	
-	file << toCString(tagAppend) << std::endl;
-	
-	return true;
-	
-}
 
 
 template<typename TIndel, typename TGenome, typename TPos>
@@ -366,7 +420,7 @@ int compareIndels(
 	typedef typename Iterator<TIndelSet>::Type TIndelIt;
 
 	::std::ostringstream fileName;
-	if (*options.output != 0)
+	if (!empty(options.output))
 		fileName << options.output;
 	else
 		fileName << options.inputPredicted << ".overlap.gff";
@@ -593,10 +647,10 @@ int compareIndels(
                 
 	}
 
-	if(*options.outputFN != 0)
+	if(!empty(options.outputFN))
     {
         ::std::ofstream fileFN;
-	    fileFN.open(options.outputFN, ::std::ios_base::out | ::std::ios_base::trunc);
+	    fileFN.open(toCString(options.outputFN), ::std::ios_base::out | ::std::ios_base::trunc);
     	if (!fileFN.is_open()) {
 	    	::std::cerr << "\nFailed to open FN output file" << ::std::endl;
 	    	return 1;
@@ -672,48 +726,6 @@ int compareIndels(
 
 
 
-template <typename TVariant>
-struct LessGPos : public ::std::binary_function < TVariant, TVariant, bool >
-{
-	inline bool operator() (TVariant const &a, TVariant const &b) const 
-	{
-		// genome sequence
-		if (a.genomeID < b.genomeID) return true;
-		if (a.genomeID > b.genomeID) return false;
-
-        // genome position
-        return (a.originalPos < b.originalPos);
-	}
-};
-
-// write one gff line
-template <typename TFile, typename TOptions>
-bool write(TFile &file, SnpInfo &refSnp, CharString &genomeID, CharString &tagAppend, TOptions & options)
-{
-	if(!file.is_open()) return false;
-	file << genomeID << '\t';
-	
-	if(!empty(refSnp.field2)) file << refSnp.field2 << '\t';
-	else file << "variantCmp\t";
-
-	if(!empty(refSnp.field3)) file << refSnp.field3 << '\t';
-	else file << "snp\t";
-		
-	file << refSnp.originalPos + 1 << '\t' << refSnp.originalPos + 1 ;
-    file << "\t" << refSnp.quality << "\t+\t.\t";
-	if(!empty(refSnp.ninethCol)) file << refSnp.ninethCol;
-	else
-	{
-		file << "ID=" << refSnp.idStr;
-        if(options.genotypeAware && refSnp.genotype==0) file << ";geno=hom";
-        else if(options.genotypeAware && refSnp.genotype==1) file << ";geno=het";
-	}
-	
-	file << toCString(tagAppend) << std::endl;
-	
-	return true;
-	
-}
 
 template<typename TOptions>
 bool
@@ -748,7 +760,7 @@ int compareSnps(
 	typedef typename Iterator<TSnpSet>::Type TSnpIt;
 
 	::std::ostringstream fileName;
-	if (*options.outputSnp != 0)
+	if (!empty(options.outputSnp))
 		fileName << options.outputSnp;
 	else
 		fileName << options.inputPredicted << ".snp_overlap.gff";
@@ -760,9 +772,9 @@ int compareSnps(
 		return 1;
 	}
     ::std::ofstream fileFN;
-   	if(*options.outputSnpFN != 0)
+   	if(!empty(options.outputSnpFN))
     {
-	    fileFN.open(options.outputSnpFN, ::std::ios_base::out | ::std::ios_base::trunc);
+	    fileFN.open(toCString(options.outputSnpFN), ::std::ios_base::out | ::std::ios_base::trunc);
     	if (!fileFN.is_open()) {
 	    	::std::cerr << "\nFailed to open SNP FN output file" << ::std::endl;
 	    	return 1;
@@ -814,7 +826,7 @@ int compareSnps(
 		{
             while(refSnpIt != currRefGenomeEnd && (*predSnpIt).originalPos > (*refSnpIt).originalPos) //refSnp iterator is behind
             {
-                if(options.outputSnpFN != 0)// SNP was not matched
+                if(!empty(options.outputSnpFN))// SNP was not matched
                     write(fileFN,*predSnpIt,genomeIDs[i],tagAppendEmpty,options);
                 ++refSnpIt;
                 //FN++
@@ -843,14 +855,14 @@ int compareSnps(
                 }
                 ++refSnpIt;
             }
-            if(first && options.outputSnpFN != 0)// SNP was not matched
+            if(first && !empty(options.outputSnpFN))// SNP was not matched
                 write(fileFN,*predSnpIt,genomeIDs[i],tagAppendEmpty,options);
                      
         }
 
     }
 
-	if(*options.outputSnpFN != 0)
+	if(!empty(options.outputSnpFN))
         fileFN.close(); 
 
 

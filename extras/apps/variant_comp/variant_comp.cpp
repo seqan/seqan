@@ -29,6 +29,7 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/misc/misc_parsing.h>
+#include <seqan/arg_parse.h>
 #include <seqan/refinement.h>
 
 #include "variant_comp.h"
@@ -38,6 +39,8 @@ using namespace seqan;
 
 
 
+    
+//////////////////////// Parsing ///////////////////////////
 
 template<typename TChar>
 inline bool
@@ -296,8 +299,8 @@ getInfoFromNinethCol(CharString &ninethCol, TIndel &indel, TMap & gIdStringToIdN
 		}
 	}
 }
-
-
+    
+    
 // parse last column of GFF file, containing id, tags,... for SNPs
 template <typename TSnp, typename TMap, typename TOptions>
 void
@@ -354,6 +357,7 @@ getSnpInfoFromNinethCol(CharString &ninethCol, TSnp &snp, TMap & , TOptions &opt
     }
 	return;
 }
+
 
 template<typename TSnp, typename TFile, typename TChar, typename TMap, typename TOptions>
 void
@@ -414,14 +418,9 @@ _parseSnp(TSnp & snp, TFile & file, TChar & c, TMap & gIdStringToIdNumMap, TOpti
 
 /////////////////////////////////////////////////////////////
 // read Gff input file containing indels and SNPs
-template <
-	typename TIndelSet,
-	typename TSnpSet,
-	typename TGenomeMap,
-	typename TOptions
->
+template<typename TIndelSet, typename TSnpSet, typename TGenomeMap, typename TOptions>
 int readGFF(
-	const char*				&filename,
+	const char*	    		filename,
 	TIndelSet 				&indelSet,
 	TSnpSet 				&snpSet,
 	TGenomeMap				&gIdStringToIdNumMap,
@@ -666,6 +665,8 @@ int readGFF(
 
 
 
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Print usage
 template<typename TOptions>
@@ -703,210 +704,143 @@ int main(int argc, const char *argv[])
 {
 	srand(time(NULL));
 
-	unsigned fnameCount = 0;
-	const char *fname[1] = {""};
+	StringSet<CharString> genomeFileNames;
 	IndelCompareOptions<> options;
+    CharString rangeFile;
+    
+    ArgumentParser parser("variant_comp");
+    
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP>");
+    addDescription(parser,
+            "VariantComp compares a set of predicted variants with a reference set.");
+        
+    addDescription(parser, "(c) Copyright 2010 by Anne-Katrin Emde.");
+    setVersion(parser, "1.0");
+    setDate(parser, "Jul 2011" );
 
-	// Command line parsing
-	for(int arg = 1; arg < argc; ++arg) {
-		if (argv[arg][0] == '-') {
-			// parse option
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME", true));
 
-			if (strcmp(argv[arg], "-ip") == 0 || strcmp(argv[arg], "--input-predicted") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.inputPredicted = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-ir") == 0 || strcmp(argv[arg], "--input-reference") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.inputReference = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-pt") == 0 || strcmp(argv[arg], "--position-tolerance") == 0) {
-				if (arg + 1 < argc) {
-					++arg;
-					istringstream istr(argv[arg]);
-					istr >> options.positionTolerance;
-					if (!istr.fail())
-					{
-						if (options.positionTolerance < 0)
-							cerr << "PositionTolerance must be a positive integer value" << endl << endl;
-						else
-							continue;
-					}
-				}
-				printHelp(argc, argv, options);
-				return 0;
-			}
-			if (strcmp(argv[arg], "-st") == 0 || strcmp(argv[arg], "--size-tolerance") == 0) {
-				if (arg + 1 < argc) {
-					++arg;
-					istringstream istr(argv[arg]);
-					istr >> options.sizeTolerance;
-					if (!istr.fail())
-					{
-						if (options.sizeTolerance < 0 || options.sizeTolerance > 100)
-							cerr << "SizeTolerance must be a value between 0 and 100" << endl << endl;
-						else{
-							options.sizeTolerance /= 100;
-							continue;
-						}
-					}
-				}
-				printHelp(argc, argv, options);
-				return 0;
-			}
-			if (strcmp(argv[arg], "-r") == 0 || strcmp(argv[arg], "--ranges") == 0) {
-				if (arg + 1 < argc) {
-					++arg;
-					fstream file;
-					clear(options.ranges);
-					file.open(argv[arg],ios_base::in | ios_base::binary);
-					char c = _streamGet(file);
-					while (!_streamEOF(file))
-					{
-						parseSkipWhitespace(file,c);
-						int rangeBegin = static_cast<int>(parseReadDouble(file,c));
-						parseSkipWhitespace(file,c);
-						int rangeEnd = static_cast<int>(parseReadDouble(file,c));
-						appendValue(options.ranges,Pair<int,int>(rangeBegin,rangeEnd));
-					}
-					file.close();
-					continue;
-				}
-				printHelp(argc, argv, options);
-				return 0;
-			}
-			if (strcmp(argv[arg], "-at") == 0 || strcmp(argv[arg], "--attach-tag") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.attachTag = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-on") == 0 || strcmp(argv[arg], "--outputFN") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.outputFN = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-o") == 0 || strcmp(argv[arg], "--output") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.output = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-osn") == 0 || strcmp(argv[arg], "--outputSnpFN") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.outputSnpFN = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-os") == 0 || strcmp(argv[arg], "--outputSnp") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv, options);
-					return 0;
-				}
-				++arg;
-				options.outputSnp = argv[arg];
-				continue;
-			}
-			if (strcmp(argv[arg], "-gta") == 0 || strcmp(argv[arg], "--genotype-aware") == 0) {
-				options.genotypeAware = true;
-				continue;
-			}
-			if (strcmp(argv[arg], "-sc") == 0 || strcmp(argv[arg], "--sequence-context") == 0) {
-				options.sequenceContext = true;
-				continue;
-			}
-			if (strcmp(argv[arg], "-v") == 0 || strcmp(argv[arg], "--verbose") == 0) {
-				options._debugLevel = max(options._debugLevel, 1);
-				continue;
-			}
-			if (strcmp(argv[arg], "-vv") == 0 || strcmp(argv[arg], "--very-verbose") == 0) {
-				options._debugLevel = max(options._debugLevel, 2);
-				continue;
-			}
-			if (strcmp(argv[arg], "-h") == 0 || strcmp(argv[arg], "--help") == 0) {
-				// print help
-				printHelp(argc, argv, options, true);
-				return 0;
-			}
-		}
-		else {
-			// parse file name
-			if (fnameCount == 1) {
-				printHelp(argc, argv, options);
-				return 0;
-			}
-			fname[fnameCount++] = argv[arg];
-		}
-	}
-	if (fnameCount < 1) {
-		printHelp(argc, argv, options);
-		return 0;
-	}
+    //////////////////////////////////////////////////////////////////////////////
+    // Define options
+
+    addSection(parser, "Main Options:");
+
+    addOption(parser, ArgParseOption("ip", "input-predicted", "Input GFF file that contains predicted variants", ArgParseOption::INPUTFILE));
+    addOption(parser, ArgParseOption("ir", "input-reference", "Input GFF file that contains reference variants", ArgParseOption::INPUTFILE));
+
+	addOption(parser, ArgParseOption("pt",  "position-tolerance",   "Position tolerance in bp (for indel comparison)", ArgParseOption::INTEGER));
+    setMinValue(parser, "position-tolerance", "0");   
+    setDefaultValue(parser, "position-tolerance", options.positionTolerance);
+
+	addOption(parser, ArgParseOption("st",  "size-tolerance",   "Size tolerance in percent (of candidate reference variant)", ArgParseOption::INTEGER));
+    setMinValue(parser, "size-tolerance", "0");   
+    setDefaultValue(parser, "size-tolerance", options.positionTolerance);
+    setMaxValue(parser, "size-tolerance", "100");   
+
+	addOption(parser, ArgParseOption("gta",  "genotype-aware",           "Genotype aware (het/hom) matching of variants"));
+	addOption(parser, ArgParseOption("sc",  "sequence-context",          "Switch on computation of extended indel region")); // requires seq tag to be specified in input variants
+
+    addSection(parser, "Output Options:");
+
+    addOption(parser, ArgParseOption("r", "ranges", "File containing ranges of indel sizes to inspect separately (specifying [rangeBegin,rangeEnd) intervals, see example file ranges.txt)", ArgParseOption::INPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Indel output filename", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("on", "outputFN", "Output filename for false negative reference indels", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("os", "outputSnp", "SNP output filename", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("osn", "outputSnpFN", "Output filename for false negative reference SNPs", ArgParseOption::OUTPUTFILE));
+//    addOption(parser, ArgParseOption("at", "attach-tag", "String to attach as tag to overlapped indels.", ArgParseOption::STRING));
+
+	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
+	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));
+
 	
-	StringSet<IndelInfo>		refIndels, predictedIndels;
-	StringSet<SnpInfo>		    refSnps, predictedSnps;
+    // Parse command line.
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    if (res != ArgumentParser::PARSE_OK)
+    {
+        cerr << "Exiting ..." << endl;
+    }
+
+	getOptionValue(options.sizeTolerance, parser, "size-tolerance");
+    options.sizeTolerance /= 100;
+	getOptionValue(options.positionTolerance, parser, "position-tolerance");
+	getOptionValue(options.output, parser, "output");
+	getOptionValue(options.outputFN, parser, "outputFN");
+	getOptionValue(options.outputSnpFN, parser, "outputSnpFN");
+	getOptionValue(options.outputSnp, parser, "outputSnp");
+
+	getOptionValue(options.inputPredicted, parser, "input-predicted");
+	getOptionValue(options.inputReference, parser, "input-reference");
+	getOptionValue(options.genotypeAware, parser, "genotype-aware");
+	getOptionValue(options.sequenceContext, parser, "sequence-context");
+	getOptionValue(rangeFile, parser, "ranges");
 	
-	::std::map<CharString,unsigned> gIdStringToIdNumMap;
-	String<CharString> genomeIDs;
-	StringSet<Dna5String> genomes;
+	if (isSet(parser, "help") || isSet(parser, "version")) return 0;	// print help or version and exit
+	if (isSet(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
+	if (isSet(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 2);
+	if(getArgumentValueCount(parser, 0) > 1) { std::cerr << "Too many arguments. Exiting... \n"; exit(0); }
+    if(getArgumentValueCount(parser, 0) < 1) { std::cerr << "Not enough arguments. Exiting... \n"; exit(0); }
+    resize(genomeFileNames, length(genomeFileNames) + 1);
+    getArgumentValue(back(genomeFileNames), parser, 0, 0);
+    
+   	fstream file;
+    clear(options.ranges);
+    int absMaxValue = 0;
+    file.open(toCString(rangeFile),ios_base::in | ios_base::binary);
+    char c = _streamGet(file);
+    while (!_streamEOF(file))
+    {
+        parseSkipWhitespace(file,c);
+        int rangeBegin = static_cast<int>(parseReadDouble(file,c));
+        if(abs(rangeBegin) > absMaxValue) absMaxValue = abs(rangeBegin);
+        parseSkipWhitespace(file,c);
+        int rangeEnd = static_cast<int>(parseReadDouble(file,c));
+        if(abs(rangeEnd) > absMaxValue) absMaxValue = abs(rangeEnd);
+        appendValue(options.ranges,Pair<int,int>(rangeBegin,rangeEnd));
+    }
+    file.close();
+                        
+                            
+    StringSet<IndelInfo>		refIndels, predictedIndels;
+    StringSet<SnpInfo>		    refSnps, predictedSnps;
 	
-	loadGenomes(fname[0],genomes,genomeIDs,gIdStringToIdNumMap,options);
+    ::std::map<CharString,unsigned> gIdStringToIdNumMap;
+    String<CharString> genomeIDs;
+    StringSet<Dna5String> genomes;
 	
-	if (readGFF(options.inputReference, refIndels, refSnps, gIdStringToIdNumMap, options) > 0) 
-	{
-		cerr << "Reference variants " << options.inputReference << " can't be loaded." << endl;
-		return 0;
-	}
-	if (readGFF(options.inputPredicted, predictedIndels, predictedSnps, gIdStringToIdNumMap, options) > 0) 
-	{
-		cerr << "Predicted variants " << options.inputPredicted << " can't be loaded." << endl;
-		return 0;
-	}
+    loadGenomes(toCString(genomeFileNames[0]),genomes,genomeIDs,gIdStringToIdNumMap,options);
 	
-	if(options._debugLevel > 0 )
-	{
-		::std::cout << endl << "Number of reference indels: " << length(refIndels) << endl;
-		::std::cout << "Number of predicted indels: " << length(predictedIndels) << endl;
-		::std::cout << endl << "Number of reference SNPs: " << length(refSnps) << endl;
-		::std::cout << "Number of predicted SNPs: " << length(predictedSnps) << endl << endl;
-	}
+    if (readGFF(toCString(options.inputReference), refIndels, refSnps, gIdStringToIdNumMap, options) > 0) 
+    {
+        cerr << "Reference variants " << options.inputReference << " can't be loaded." << endl;
+        return 0;
+    }
+    if (readGFF(toCString(options.inputPredicted), predictedIndels, predictedSnps, gIdStringToIdNumMap, options) > 0) 
+    {
+        cerr << "Predicted variants " << options.inputPredicted << " can't be loaded." << endl;
+        return 0;
+    }
+    
+    if(options._debugLevel > 0 )
+    {
+        ::std::cout << endl << "Number of reference indels: " << length(refIndels) << endl;
+        ::std::cout << "Number of predicted indels: " << length(predictedIndels) << endl;
+        ::std::cout << endl << "Number of reference SNPs: " << length(refSnps) << endl;
+        ::std::cout << "Number of predicted SNPs: " << length(predictedSnps) << endl << endl;
+    }
 	
-	int result = compareIndels(refIndels,predictedIndels,genomes,genomeIDs,options);
-	if(result > 0)
-	{
-		cerr << "Something went wrong.. Exiting..\n";
-		return 1;
-	}
+    int result = compareIndels(refIndels,predictedIndels,genomes,genomeIDs,options);
+    if(result > 0)
+    {
+        cerr << "Something went wrong.. Exiting..\n";
+        return 1;
+    }
     if(!empty(predictedSnps) || !empty(refSnps))
         result = compareSnps(refSnps,predictedSnps,genomes,genomeIDs,options);
-	if(result > 0)
-	{
-		cerr << "Something went wrong.. Exiting..\n";
-		return 1;
-	}
+    if(result > 0)
+    {
+        cerr << "Something went wrong.. Exiting..\n";
+        return 1;
+    }
 
-	return 0;
+    return 0;
 }
