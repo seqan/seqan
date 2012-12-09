@@ -921,24 +921,44 @@ _storeAppendContig (
 // adds a new entry to the read store if neccessary. Otherwise it writes the 
 // correct Id in the variable using to qname to identify it
 
-template <typename TSpec, typename TConfig, typename TId, typename TName>
+template <typename TSpec, typename TConfig, typename TId, typename TName, typename TTypeId>
 inline void 
 _storeAppendAnnotationName (
 	FragmentStore<TSpec, TConfig> & fragStore, 
-	TId & annotationId, 
-	TName & annotationName)
+	TId & annotationId,
+	TName & annotationName,
+    TTypeId typeId)
 {
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
 
 	if (!empty(annotationName) && getIdByName(fragStore.annotationNameStore, annotationName, annotationId, fragStore.annotationNameStoreCache))
+    {
+        do
+        {
+            // allow different annotations to have the same name (but different typeId)
+            if (typeId == maxValue<TTypeId>() || fragStore.annotationStore[annotationId].typeId == typeId)
+                return;
+            ++annotationId;
+        } while (annotationId < length(fragStore.annotationNameStore) && fragStore.annotationNameStore[annotationId] == annotationName);
 		return;
+    }
 	// if the annotation is not in the store yet
 	// set the ID on the last entry after appending
 	annotationId = length(fragStore.annotationNameStore);
 	// append to annotationName store
 	appendName(fragStore.annotationNameStore, annotationName, fragStore.annotationNameStoreCache);
 //	std::cout << "added annotation:" << annotationName << std::endl;	
+}
+
+template <typename TSpec, typename TConfig, typename TId, typename TName>
+inline void 
+_storeAppendAnnotationName (
+	FragmentStore<TSpec, TConfig> & fragStore, 
+	TId & annotationId,
+	TName & annotationName)
+{
+    _storeAppendAnnotationName(fragStore, annotationId, annotationName, maxValue<TId>());
 }
 
 template <typename TSpec, typename TConfig, typename TId, typename TName>

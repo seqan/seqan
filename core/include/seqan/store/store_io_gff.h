@@ -382,7 +382,7 @@ _storeOneAnnotation (
 	TId geneId = TAnnotation::INVALID_ID;
 	if (!empty(ctx.gtfGeneId))
 	{
-		_storeAppendAnnotationName(fragStore, geneId, ctx.gtfGeneId);
+		_storeAppendAnnotationName(fragStore, geneId, ctx.gtfGeneId, (TId)TFragmentStore::ANNO_GENE);
 		if (maxId < geneId)
 			maxId = geneId;
 	}	
@@ -390,12 +390,23 @@ _storeOneAnnotation (
 	// if we have a parent transcript, get/add the parent transcript then
 	if (!empty(ctx.parentName))
 	{
-        // if gene and transcript names are equal (like in some strange gtf files)
-        // try to make the transcript name unique
-        if (ctx.gtfGeneId == ctx.parentName)
-            append(ctx.parentName, "_1");
-        
-		_storeAppendAnnotationName(fragStore, ctx.annotation.parentId, ctx.parentName);
+// From now, we support gtf files with genes/transcripts having the same name.
+//
+//        // if gene and transcript names are equal (like in some strange gtf files)
+//        // try to make the transcript name unique
+//        if (ctx.gtfGeneId == ctx.parentName)
+//            append(ctx.parentName, "_1");
+
+        if (ctx.parentKey == "transcript_id")
+        {
+            // type is implicitly given (mRNA)
+            _storeAppendAnnotationName(fragStore, ctx.annotation.parentId, ctx.parentName, (TId)TFragmentStore::ANNO_MRNA);
+        }
+        else
+        {
+            // type is unknown
+            _storeAppendAnnotationName(fragStore, ctx.annotation.parentId, ctx.parentName);
+        }
 		if (maxId < ctx.annotation.parentId)
 			maxId = ctx.annotation.parentId;
 	}
@@ -407,7 +418,7 @@ _storeOneAnnotation (
 	_storeAppendType(fragStore, ctx.annotation.typeId, ctx.typeName);
 
 	// add annotation name of the current line
-	_storeAppendAnnotationName(fragStore, ctx.annotationId, ctx.annotationName);
+	_storeAppendAnnotationName(fragStore, ctx.annotationId, ctx.annotationName, ctx.annotation.typeId);
 	if (maxId < ctx.annotationId)
 		maxId = ctx.annotationId;
 	

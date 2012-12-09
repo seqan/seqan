@@ -297,7 +297,7 @@ _storeOneAnnotationKnownGene (
 	TId cdsId = TAnnotation::INVALID_ID;
 
 	// add transcript and CDS
-	_storeAppendAnnotationName(fragStore, transId, ctx.transName);
+	_storeAppendAnnotationName(fragStore, transId, ctx.transName, (TId)TFragmentStore::ANNO_MRNA);
 	cdsId = length(fragStore.annotationNameStore);
 	appendName(fragStore.annotationNameStore, ctx.proteinName, fragStore.annotationNameStoreCache);
 	
@@ -359,8 +359,8 @@ _storeOneAnnotationKnownIsoforms (
 	TId transId = TAnnotation::INVALID_ID;
 	
 	// add transcript and CDS
-	_storeAppendAnnotationName(fragStore, geneId, ctx.transName);
-	_storeAppendAnnotationName(fragStore, transId, ctx.contigName);
+	_storeAppendAnnotationName(fragStore, geneId, ctx.transName, (TId)TFragmentStore::ANNO_GENE);
+	_storeAppendAnnotationName(fragStore, transId, ctx.contigName, (TId)TFragmentStore::ANNO_MRNA);
 	
 	if (annoStoreLen <= geneId)
 		annoStoreLen = geneId + 1;
