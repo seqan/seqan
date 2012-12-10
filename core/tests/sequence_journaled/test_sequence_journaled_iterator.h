@@ -172,6 +172,143 @@ void testJournaledStringIteratorRelations(TStringJournalSpec const &)
     SEQAN_ASSERT(it3 >= it3);
 }
 
+template <typename TJournalSpec>
+void testJournaledStringIteratorDecrement(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Standard>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+
+    {
+        TJournalString journal("aaaa");
+
+        insert(journal,2,"xx"); // aaxxaa
+        erase(journal,4,5); // aaxxa
+        insert(journal,0,"y"); //yaaxxa
+
+        SEQAN_ASSERT_EQ(journal, "yaaxxa");
+
+        {
+            TIterator it = end(journal);
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+        }
+
+        {
+            TIterator it = end(journal);
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+        }
+
+        {
+            TIterator it = end(journal)-2;
+
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it -= 2;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it -= 1;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it -= 5;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+        }
+    }
+
+    {
+        THost src = "aaaaaaa";
+        TJournalString journal(src);
+
+        SEQAN_ASSERT_EQ(host(journal), src);
+
+        insert(journal,2,"xyxyx"); // aaxyxyxaaaaa
+        erase(journal,8,10); // aaxyxyxaaa
+
+        {
+            TIterator it = end(journal);
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            --it;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+        }
+
+        {
+            TIterator it = end(journal);
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it--;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+        }
+
+        {
+            TIterator it = end(journal)-3;
+
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it -= 1;
+            SEQAN_ASSERT_EQ(value(it), 'x');
+            it -= 3;
+            SEQAN_ASSERT_EQ(value(it), 'y');
+            it -= 2;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+            it -= 20;
+            SEQAN_ASSERT_EQ(value(it), 'a');
+
+            it = end(journal) - 20;
+            SEQAN_ASSERT(it == TIterator(begin(journal)));
+        }
+    }
+}
+
 // Tag: UnbalancedTree()
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_difference)
@@ -189,6 +326,11 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_relations)
     testJournaledStringIteratorRelations(UnbalancedTree());
 }
 
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_decrement)
+{
+    testJournaledStringIteratorDecrement(UnbalancedTree());
+}
+
 // Tag: SortedArray()
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_difference)
@@ -204,6 +346,11 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_sum)
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_relations)
 {
     testJournaledStringIteratorRelations(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_decrement)
+{
+    testJournaledStringIteratorDecrement(SortedArray());
 }
 
 #endif  // TEST_SEQUENCE_JOURNALED_TEST_SEQUENCE_JOURNALED_ITERATOR_H_
