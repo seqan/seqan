@@ -234,6 +234,7 @@ _initJournaledStringIteratorEnd(Iter<TJournaledString, JournaledStringIterSpec<T
     iterator._journalEntriesIterator = end(journalString._journalEntries);
 }
 
+// TODO(rmaerker): Rename to _updateSegmentIteratorsRight().
 template <typename TJournaledString, typename TJournalSpec>
 inline
 void
@@ -258,10 +259,34 @@ _updateSegmentIterators(Iter<TJournaledString, JournaledStringIterSpec<TJournalS
     }
 }
 
-// value
+// ----------------------------------------------------------------------------
+// Function _updateSegmentIteratorsLeft()
+// ----------------------------------------------------------------------------
 
 template <typename TJournaledString, typename TJournalSpec>
-inline typename Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > >::Type 
+inline
+void
+_updateSegmentIteratorsLeft(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
+{
+    SEQAN_CHECKPOINT;
+    switch (value(iterator._journalEntriesIterator).segmentSource) {
+        case SOURCE_ORIGINAL:
+            iterator._hostSegmentBegin = begin(host(*iterator._journalStringPtr), Standard()) + value(iterator._journalEntriesIterator).physicalPosition;
+            iterator._hostSegmentEnd = iterator._hostSegmentBegin + value(iterator._journalEntriesIterator).length;
+            iterator._currentHostIt = iterator._hostSegmentEnd - 1;
+            break;
+        case SOURCE_PATCH:
+            iterator._insertionBufferSegmentBegin = begin(iterator._journalStringPtr->_insertionBuffer, Standard()) + value(iterator._journalEntriesIterator).physicalPosition;
+            iterator._insertionBufferSegmentEnd = iterator._insertionBufferSegmentBegin + value(iterator._journalEntriesIterator).length;
+            iterator._currentInsertionBufferIt = iterator._insertionBufferSegmentEnd - 1;
+            break;
+        default:
+            SEQAN_ASSERT_FAIL("Invalid segment source!");
+    }
+}
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > >::Type
 value(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me)
 {
     SEQAN_CHECKPOINT;
@@ -271,7 +296,7 @@ value(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me)
 }
 
 template <typename TJournaledString, typename TJournalSpec>
-inline typename Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type 
+inline typename Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
 value(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & me)
 {
     SEQAN_CHECKPOINT;
@@ -361,20 +386,47 @@ valueDestruct(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
 }
 
 // position
+// TODO(rmaerker): Implements an unexpected behavior. Should return the virtual position of the current iterator not the relative position within the current node.
 template <typename TJournaledString, typename TJournalSpec>
-inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type 
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
 position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
     if (atEnd(iterator._journalEntriesIterator)) {
         return length(*iterator._journalStringPtr);
     }
-    
+
     switch (value(iterator._journalEntriesIterator).segmentSource) {
         case SOURCE_ORIGINAL:
             return iterator._currentHostIt - iterator._hostSegmentBegin;
             break;
         case SOURCE_PATCH:
             return iterator._currentInsertionBufferIt - iterator._insertionBufferSegmentBegin;
+            break;
+        default:
+            SEQAN_ASSERT_FAIL("Invalid segment source!");
+            return 0;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function _position()
+// ----------------------------------------------------------------------------
+
+// Returns the virtual position of the current iterator. Note, that the
+// function position() should implement this behavior.
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
+_position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+{
+    if (atEnd(iterator._journalEntriesIterator))
+        return length(*iterator._journalStringPtr);
+
+    switch (value(iterator._journalEntriesIterator).segmentSource) {
+        case SOURCE_ORIGINAL:
+            return value(iterator._journalEntriesIterator).virtualPosition + iterator._currentHostIt - iterator._hostSegmentBegin;
+            break;
+        case SOURCE_PATCH:
+            return value(iterator._journalEntriesIterator).virtualPosition + iterator._currentInsertionBufferIt - iterator._insertionBufferSegmentBegin;
             break;
         default:
             SEQAN_ASSERT_FAIL("Invalid segment source!");
@@ -444,7 +496,7 @@ operator++(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
             }
             break;
         default:
-            SEQAN_ASSERT_FAIL("Invalid segment source!");
+            SEQAN_ASSERT_FAIL("Invalid Segment Source");
     }
     return iterator;
 }
@@ -457,7 +509,62 @@ operator++(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
     SEQAN_CHECKPOINT;
     Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > temp(iterator);
     ++iterator;
-    return temp;    
+    return temp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator--()                                               [prefix]
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline
+Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > &
+operator--(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
+{
+    switch (value(iterator._journalEntriesIterator).segmentSource) {
+        case SOURCE_ORIGINAL:
+            if (iterator._currentHostIt == iterator._hostSegmentBegin) {
+                --iterator._journalEntriesIterator;
+                _updateSegmentIteratorsLeft(iterator);
+            }
+            else
+                --iterator._currentHostIt;
+            break;
+        case SOURCE_PATCH:
+            if (iterator._currentInsertionBufferIt == iterator._insertionBufferSegmentBegin) {
+                --iterator._journalEntriesIterator;
+                _updateSegmentIteratorsLeft(iterator);
+            }
+            else
+                --iterator._currentInsertionBufferIt;
+            break;
+        default:
+        {
+            if (atEnd(iterator._journalEntriesIterator))
+            {
+                --iterator._journalEntriesIterator;
+                _updateSegmentIteratorsLeft(iterator);
+            }
+            else
+                SEQAN_ASSERT_FAIL("Invalid segment source!");
+        }
+    }
+    return iterator;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator--()                                              [postfix]
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline
+Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> >
+operator--(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator,
+            int /*postfix*/)
+{
+    Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > temp(iterator);
+    --iterator;
+    return temp;
 }
 
 template <typename TJournaledString, typename TJournalSpec>
@@ -487,7 +594,7 @@ operator+=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
     SEQAN_CHECKPOINT;
 
     typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
-    
+
     // TODO(holtgrew): Handle case where len_ < 0?!
     SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
     size_t len = len_;
@@ -543,6 +650,90 @@ operator+(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const &
     SEQAN_CHECKPOINT;
     Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > temp(iterator);
     temp += len;
+    return temp;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator-=()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec, typename TLen>
+inline
+Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > &
+operator-=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator,
+            TLen len_)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
+    typedef typename Position<TIterator>::Type TPosition;
+
+    // TODO(holtgrew): Handle case where len_ < 0?!
+    SEQAN_ASSERT_GEQ(len_, static_cast<TLen>(0));
+    size_t len = len_;
+
+    // Handle bad case of len_ pointing before begin.
+    if (_position(iterator) <= static_cast<TPosition>(len_)) {
+        iterator = TIterator(begin(*iterator._journalStringPtr));
+        return iterator;
+    }
+
+    // Handle other case.
+    typedef typename Size<TJournaledString>::Type TSize;
+    while (len > 0) {
+        TSize relNodePos;
+        switch (value(iterator._journalEntriesIterator).segmentSource) {
+            case SOURCE_ORIGINAL:
+                relNodePos = iterator._currentHostIt - iterator._hostSegmentBegin;
+                if (len > relNodePos) {
+                    len -= (relNodePos + 1);
+                    --iterator._journalEntriesIterator;
+                    _updateSegmentIteratorsLeft(iterator);
+                }
+                else
+                {
+                    iterator._currentHostIt -= len;
+                    len = 0;
+                }
+                break;
+            case SOURCE_PATCH:
+                relNodePos = iterator._currentInsertionBufferIt - iterator._insertionBufferSegmentBegin;
+                if (len > relNodePos) {
+                    len -= (relNodePos + 1);
+                    --iterator._journalEntriesIterator;
+                    _updateSegmentIteratorsLeft(iterator);
+                } else {
+                    iterator._currentInsertionBufferIt -= len;
+                    len = 0;
+                }
+                break;
+            default:
+            {
+                if (atEnd(iterator._journalEntriesIterator))
+                {
+                    --iterator._journalEntriesIterator;
+                    _updateSegmentIteratorsLeft(iterator);
+                    --len;
+                }
+                else
+                    SEQAN_ASSERT_FAIL("Invalid segment source!");
+            }
+        }
+    }
+    return iterator;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator-()
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline
+Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> >
+operator-(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator,
+           typename Size<TJournaledString>::Type const & len)
+{
+    SEQAN_CHECKPOINT;
+    Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > temp(iterator);
+    temp -= len;
     return temp;
 }
 
