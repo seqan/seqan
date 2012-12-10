@@ -11,9 +11,9 @@ project (seqan_%(CMAKE_PROJECT_NAME)s)
 
 # Add the paths %(CMAKE_PROJECT_PATH)s/include and %(CMAKE_PROJECT_PATH)s/include to the paths that CMake
 # searches for libraries.
-set (CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../../core/include
+set (CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/include
                                               ${CMAKE_CURRENT_SOURCE_DIR}/../../extras/include
-                                              ${CMAKE_CURRENT_SOURCE_DIR}/include)
+                                              ${CMAKE_CURRENT_SOURCE_DIR}/../../core/include)
 
 # Setup the library modules from core and extras.
 seqan_setup_library (%(REPOSITORY_PSEUDO_TARGET_NAME)s core extras)
