@@ -193,13 +193,13 @@ SEQAN_CHECKPOINT
 };
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename THost>
-inline void
-clear(Segment<THost, PrefixSegment> & target)
-{
-    replace(host(target), beginPosition(target), endPosition(target), "");
-    setEndPosition(target, 0);
-}
+// template <typename THost>
+// inline void
+// clear(Segment<THost, PrefixSegment> & target)
+// {
+//     replace(host(target), beginPosition(target), endPosition(target), "");
+//     setEndPosition(target, 0);
+// }
 
 template <typename THost_>
 inline typename Parameter_<THost_>::Type

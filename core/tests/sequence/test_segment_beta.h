@@ -811,25 +811,25 @@ void testSegmentBeginPosition(TString & /*Tag*/)
 }
 
 // Test of clear().
-template <typename TString>
-void testSegmentClear(TString & /*Tag*/)
-{
-    using namespace seqan;
-    typedef Segment<TString, PrefixSegment> TPrefix;
-    typedef Segment<TString, InfixSegment> TInfix;
-    typedef Segment<TString, SuffixSegment> TSuffix;
-
-    // Since clear does not have to free anything it is only
-    // necessary that the code compiles.
-    // TODO (singer): at the moment clear erases parts of the host.
-    TString string = "CAAGAAAATA";
-    TPrefix prefixSeg(string, 3);
-    clear(prefixSeg);
-    TInfix infixSeg(string, 3, 7);
-    clear(infixSeg);
-    TSuffix suffixSeg(string, 1);
-    clear(suffixSeg);
-}
+// template <typename TString>
+// void testSegmentClear(TString & /*Tag*/)
+// {
+//     using namespace seqan;
+//     typedef Segment<TString, PrefixSegment> TPrefix;
+//     typedef Segment<TString, InfixSegment> TInfix;
+//     typedef Segment<TString, SuffixSegment> TSuffix;
+// 
+//     // Since clear does not have to free anything it is only
+//     // necessary that the code compiles.
+//     // TODO (singer): at the moment clear erases parts of the host.
+//     TString string = "CAAGAAAATA";
+//     TPrefix prefixSeg(string, 3);
+//     clear(prefixSeg);
+//     TInfix infixSeg(string, 3, 7);
+//     clear(infixSeg);
+//     TSuffix suffixSeg(string, 1);
+//     clear(suffixSeg);
+// }
 
 // Test of end().
 template <typename TString>
@@ -1078,129 +1078,6 @@ void testSegmentMoveValue(TString & /*Tag*/)
     SEQAN_ASSERT_EQ(string, "AAACACAAAAAC");
 }
 
-// Test of replace().
-template <typename TString>
-void testSegmentReplace(TString & /*Tag*/)
-{
-    using namespace seqan;
-
-    typedef typename Value<TString>::Type TValue;
-    typedef Segment<TString, PrefixSegment> TPrefix;
-    typedef Segment<TString, InfixSegment> TInfix;
-    typedef Segment<TString, SuffixSegment> TSuffix;
-
-    {
-        // Segment do not overlap.
-        TString string = "AACCGGTT";
-        TPrefix prefixSeg(string, 6);
-        TInfix infixSeg(string, 4, 6);
-        replace(prefixSeg, 0, 2, infixSeg);
-        SEQAN_ASSERT_EQ(string, "GGCCGGTT");
-    }
-    {
-        // Segment overlap.
-        TString string = "AACCGGTT";
-        TPrefix prefixSeg(string, 6);
-        TInfix infixSeg(string, 2, 6);
-        replace(prefixSeg, 0, 4, infixSeg);
-        SEQAN_ASSERT_EQ(string, "CCGGGGTT");
-    }
-    {
-        // Segment do not overlap.
-        TString string = "AACCGGTT";
-        TInfix infixSeg(string, 0, 2);
-        TSuffix suffixSeg(string, 6);
-        replace(infixSeg, 0, 2, suffixSeg);
-        SEQAN_ASSERT_EQ(string, "TTCCGGTT");
-    }
-    {
-        // Segment overlap.
-        TString string = "AACCGGTT";
-        TInfix infixSeg(string, 0, 4);
-        TSuffix suffixSeg(string, 6);
-        replace(infixSeg, 0, 2, suffixSeg);
-        SEQAN_ASSERT_EQ(string, "TTCCGGTT");
-    }
-    {
-        // Segment do not overlap.
-        TString string = "AACCGGTT";
-        TSuffix suffixSeg(string, 4);
-        TPrefix prefixSeg(string, 2);
-        replace(suffixSeg, 2, 4, prefixSeg);
-        SEQAN_ASSERT_EQ(string, "AACCGGAA");
-    }
-    {
-        // Segment overlap.
-        TString string = "AACCGGTT";
-        TSuffix suffixSeg(string, 2);
-        TPrefix prefixSeg(string, 4);
-        replace(suffixSeg, 2, 6, prefixSeg);
-        SEQAN_ASSERT_EQ(string, "AACCAACC");
-    }
-}
-
-// Test of resize().
-// TODO (singer): resize() is not defined for Segments (even though it
-// appears in the docu)!
-template <typename TString>
-void testSegmentResize(TString & /*Tag*/)
-{
-    using namespace seqan;
-    typedef Segment<TString, PrefixSegment> TPrefix;
-    typedef Segment<TString, InfixSegment> TInfix;
-    typedef Segment<TString, SuffixSegment> TSuffix;
-
-    TString string = "CAAGAAAATA";
-    TPrefix prefixSeg(string, 3);
-    TInfix infixSeg(string, 3, 8);
-    TSuffix suffixSeg(string, 8);
-
-//    resize(prefixSeg, 4);
-//    resize(infixSeg, 4);
-//    resize(suffixSeg, 4);
-//    SEQAN_ASSERT_EQ(length(prefixSeg), 4u);
-//    SEQAN_ASSERT_EQ(length(infixSeg), 4u);
-//    SEQAN_ASSERT_EQ(length(suffixSeg), 4u);
-}
-
-// Test of swap().
-// TODO (singer): swap() is not defined for Segments!
-// It appears in the docu, but it seams inapropriate
-// for segments since it is not cleat how to deal with
-// overlaps.
-template <typename TString>
-void testSegmentSwap(TString & /*Tag*/)
-{
-//    using namespace seqan;
-//
-//    typedef typename Value<TString>::Type TValue;
-//    typedef Segment<TString, PrefixSegment> TPrefix;
-//    typedef Segment<TString, InfixSegment> TInfix;
-//    typedef Segment<TString, SuffixSegment> TSuffix;
-//
-//    {
-//        TString string = "AACCGGTT";
-//        TPrefix prefixSeg(string, 4);
-//        TInfix infixSeg(string, 4, 8);
-//        swap(prefixSeg, infixSeg);
-//        SEQAN_ASSERT_EQ(string, "GGTTAACC");
-//    }
-//    {
-//        TString string = "AACCGGTT";
-//        TInfix infixSeg(string, 0, 4);
-//        TSuffix suffixSeg(string, 4);
-//        swap(infixSeg, suffixSeg);
-//        SEQAN_ASSERT_EQ(string, "GGTTAACC");
-//    }
-//    {
-//        TString string = "AACCGGTT";
-//        TSuffix suffixSeg(string, 4);
-//        TPrefix prefixSeg(string, 4);
-//        swap(suffixSeg, prefixSeg);
-//        SEQAN_ASSERT_EQ(string, "GGTTAACC");
-//    }
-}
-
 // Test of value().
 template <typename TString>
 void testSegmentValue(TString & /*Tag*/)
@@ -1442,14 +1319,14 @@ SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin_position)
     //testSegmentBeginPosition(constTag);
 }
 
-// Test of clear().
-SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_clear)
-{
-    using namespace seqan;
-
-    String<Dna, Alloc<> > tag;
-    testSegmentClear(tag);
-}
+// // Test of clear().
+// SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_clear)
+// {
+//     using namespace seqan;
+// 
+//     String<Dna, Alloc<> > tag;
+//     testSegmentClear(tag);
+// }
 
 // Test of end().
 SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end)
@@ -1530,33 +1407,6 @@ SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_move_value)
 
     String<Dna, Alloc<> > tag;
     testSegmentMoveValue(tag);
-}
-
-// Test of replace().
-SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_replace)
-{
-    using namespace seqan;
-
-    String<Dna, Alloc<> > tag;
-    testSegmentReplace(tag);
-}
-
-// Test of resize().
-SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_resize)
-{
-    using namespace seqan;
-
-    String<Dna, Alloc<> > tag;
-    testSegmentResize(tag);
-}
-
-// Test of swap().
-SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_swap)
-{
-    using namespace seqan;
-
-    String<Dna, Alloc<> > tag;
-    testSegmentSwap(tag);
 }
 
 // Test of value().

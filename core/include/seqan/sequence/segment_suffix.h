@@ -191,12 +191,12 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 };
 
-template <typename THost>
-inline void
-clear(Segment<THost, SuffixSegment> & target)
-{
-    replace(host(target), beginPosition(target), endPosition(target), "");
-}
+// template <typename THost>
+// inline void
+// clear(Segment<THost, SuffixSegment> & target)
+// {
+//     replace(host(target), beginPosition(target), endPosition(target), "");
+// }
 
 //////////////////////////////////////////////////////////////////////////////
 

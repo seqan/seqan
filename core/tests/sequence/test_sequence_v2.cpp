@@ -141,7 +141,7 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_concept)
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_back);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_begin);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_begin_position);
-    SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_clear);
+//     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_clear);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_end);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_end_position);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_front);
@@ -149,9 +149,6 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_concept)
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_iter);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_length);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_move_value);
-    SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_replace);
-    SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_resize);
-    SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_swap);
     SEQAN_CALL_TEST(test_sequence_alloc_segment_dna_value);
 
 /*

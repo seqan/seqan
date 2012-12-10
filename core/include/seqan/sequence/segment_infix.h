@@ -198,13 +198,13 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 
-template <typename THost>
-inline void
-clear(Segment<THost, InfixSegment> & target)
-{
-    replace(host(target), beginPosition(target), endPosition(target), "");
-    setEndPosition(target, beginPosition(target));
-}
+// template <typename THost>
+// inline void
+// clear(Segment<THost, InfixSegment> & target)
+// {
+//     replace(host(target), beginPosition(target), endPosition(target), "");
+//     setEndPosition(target, beginPosition(target));
+// }
 
 ///Function.host.param.object.type:Class.Segment
 
