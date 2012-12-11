@@ -75,7 +75,11 @@ public:
     // Current iterator in the insertion buffer.
     TInsertionBufferIterator _currentInsertionBufferIt;
 
-    Iter() : _journalStringPtr(0) { SEQAN_CHECKPOINT; }
+    Iter() :
+        _journalStringPtr(), _journalEntriesIterator(), _hostSegmentBegin(), _hostSegmentEnd(),
+        _currentHostIt(), _insertionBufferSegmentBegin(), _insertionBufferSegmentEnd(),
+        _currentInsertionBufferIt()
+    {}
 
     Iter(TIterator const & other)
             : _journalStringPtr(other._journalStringPtr),
