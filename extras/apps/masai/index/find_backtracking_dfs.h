@@ -80,7 +80,7 @@ inline void _search(TTextIterator textIt,
     SEQAN_ASSERT_EQ(repLength(patternIt), currentDepth);
     
     // An acceptance state was reached.
-    if (currentDepth == patternsLength)
+    if (currentDepth == patternsLength || isLeaf(patternIt))
     {
         onMatch(delegate, textIt, patternIt, errors);
     }
@@ -136,7 +136,7 @@ inline void _dfs(TTextIterator textIt,
     SEQAN_ASSERT_EQ(repLength(patternIt), currentDepth);
 
     // An acceptance state was reached.
-    if (currentDepth == patternsLength)
+    if (currentDepth == patternsLength || isLeaf(patternIt))
     {
         onMatch(delegate, textIt, patternIt, errors);
     }
@@ -182,6 +182,89 @@ inline void _dfs(TTextIterator textIt,
         }
     }
 }
+
+//template <typename TTextIterator, typename TPatternIterator, typename TSize, typename TErrors, typename TDelegate>
+//inline void _dfs(TTextIterator textIt,
+//                 TPatternIterator patternIt,
+//                 TSize const patternsLength,
+//                 TErrors const maxErrors,
+//                 TSize currentDepth,
+//                 TErrors errors,
+//                 TDelegate & delegate)
+//{
+//    typedef typename EdgeLabel<TTextIterator>::Type         TTextLabel;
+//    typedef typename EdgeLabel<TPatternIterator>::Type      TPatternLabel;
+//
+//    typedef typename Container<TPatternIterator>::Type      TPatternIndex;
+//    typedef typename Value<TPatternIndex>::Type             TPatternAlphabet;
+//    typedef typename ValueSize<TPatternAlphabet>::Type      TPatternAlphabetSize;
+//
+//    TPatternIterator patternChildren[ValueSize<TPatternAlphabet>::VALUE + 1];
+//
+//#ifdef SEQAN_DEBUG
+//    std::cout << "representative: " << representative(textIt) << std::endl;
+//    std::cout << "repLength:      " << repLength(textIt) << std::endl;
+//    std::cout << "current depth:  " << currentDepth << std::endl;
+//#endif
+//
+//    // NOTE(esiragusa): Using repLength() is fine only for tries.
+//    SEQAN_ASSERT_EQ(repLength(textIt), currentDepth);
+//    SEQAN_ASSERT_EQ(repLength(patternIt), currentDepth);
+//
+//    // An acceptance state was reached.
+//    if (currentDepth == patternsLength)
+//    {
+//        onMatch(delegate, textIt, patternIt, errors);
+//    }
+//    else
+//    {
+//        // Visit all children of text and pattern.
+//        if (goDown(textIt) && (currentDepth < patternsLength && goDown(patternIt)))
+//        {
+//            // Fetch all children of pattern.
+//            TPatternAlphabetSize childrenCount = 0;
+//            do
+//            {
+//                patternChildren[childrenCount] = patternIt;
+//                ++childrenCount;
+//            } while (goRight(patternIt));
+//
+//            // Visit all children of text.
+//            do
+//            {
+//                TTextLabel textLabel = parentEdgeLabel(textIt);
+//
+//                // Visit all children of pattern.
+//                for (TPatternAlphabetSize child = 0; child < childrenCount; ++child)
+//                {
+//                    TPatternIterator & patternChildIt = patternChildren[child];
+//                    TTextLabel patternLabel = parentEdgeLabel(patternChildIt);
+//
+//                    // Align edge labels.
+//                    TErrors distance = (textLabel == patternLabel) ? 0 : 1;
+//                    TErrors newErrors = errors + distance;
+//
+//#ifdef SEQAN_DEBUG
+//                    std::cout << "text:           " << textLabel << std::endl;
+//                    std::cout << "pattern:        " << patternLabel << std::endl;
+//                    std::cout << "distance:       " << static_cast<unsigned>(distance) << std::endl;
+//                    std::cout << "errors:         " << static_cast<unsigned>(newErrors) << std::endl;
+//#endif
+//
+//                    if (newErrors < maxErrors)
+//                        _dfs(textIt, patternChildIt, patternsLength, maxErrors, currentDepth + 1, newErrors, delegate);
+//                    else
+//                        _search(textIt, patternChildIt, patternsLength, maxErrors, currentDepth + 1, newErrors, delegate);
+//
+//#ifdef SEQAN_DEBUG
+//                    std::cout << "back to depth:  " << currentDepth << std::endl;
+//#endif
+//                }
+//
+//            } while (goRight(textIt));
+//        }
+//    }
+//}
 
 // NOTE(esiragusa): TTextIndex and TPatternIndex must be tries
 template <typename TTextIndex, typename TPatternIndex, typename TSize, typename TErrors, typename TDelegate>
