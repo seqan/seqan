@@ -39,7 +39,156 @@
 
 using namespace seqan;
 
-SEQAN_DEFINE_TEST(test_store_io_sam) 
+SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
+{
+    // The file contains 13 annotations in total which will be checked line
+    // after line.
+    seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
+    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+
+    std::fstream f(toCString(ucscPath), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(f.good());
+
+    seqan::FragmentStore<> store;
+
+    read(f, store, seqan::Ucsc());
+    f.close();
+
+    // Check store
+    Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
+    it = begin(store, AnnotationTree<>());
+
+    SEQAN_ASSERT_EQ(getType(it), "<root>");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 9223372036854775807);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 9223372036854775807);
+    SEQAN_ASSERT_EQ(value(it), 0u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 4294967295);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031813);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos,33026870);
+    SEQAN_ASSERT_EQ(value(it), 1u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "CDS");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33026870);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
+    SEQAN_ASSERT_EQ(value(it), 2u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33027740);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
+    SEQAN_ASSERT_EQ(value(it), 3);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33030540);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33030246);
+    SEQAN_ASSERT_EQ(value(it), 4);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031813);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33031709);
+    SEQAN_ASSERT_EQ(value(it), 5);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "mRNA");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031934);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33041243);
+    SEQAN_ASSERT_EQ(value(it), 6);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0);
+    SEQAN_ASSERT_EQ(getParentName(it), "<root>");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "CDS");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33032082);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33040891);
+    SEQAN_ASSERT_EQ(value(it), 7);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031934);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33032154);
+    SEQAN_ASSERT_EQ(value(it), 8);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33036102);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33036199);
+    SEQAN_ASSERT_EQ(value(it), 9);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33038761);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33038831);
+    SEQAN_ASSERT_EQ(value(it), 10);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33039570);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33039688);
+    SEQAN_ASSERT_EQ(value(it), 11);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT_EQ(getType(it), "exon");
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33040783);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33041243);
+    SEQAN_ASSERT_EQ(value(it), 12);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
+    goNext(it);
+
+    SEQAN_ASSERT(atEnd(it));
+}
+
+SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
+{
+    seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
+    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+
+    std::fstream fin(toCString(ucscPath), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fin.good());
+
+    seqan::FragmentStore<> store;
+    read(fin, store, seqan::Ucsc());
+
+    seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
+    append(outPath, ".tsv");
+    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
+    write(fout, store, seqan::Ucsc());
+    fout.close();
+
+    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
+    append(goldPath, "/core/tests/store/example_known_genes.tsv");
+
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+}
+
+SEQAN_DEFINE_TEST(test_store_io_sam)
 {
 	FragmentStore<> store;
     char buffer[1023];

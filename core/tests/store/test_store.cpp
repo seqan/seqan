@@ -45,6 +45,10 @@
 
 SEQAN_BEGIN_TESTSUITE(test_store)
 {
+    // the UCSC knownGene format
+    SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
+    SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
+
     SEQAN_CALL_TEST(test_store_io_sam);
 #if SEQAN_HAS_SAMTOOLS
     SEQAN_CALL_TEST(test_store_io_bam_read);
