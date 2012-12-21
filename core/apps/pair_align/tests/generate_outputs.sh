@@ -15,8 +15,8 @@
 #
 # They can be used to compare against the output of new pair_align programs.
 
-# seqan-apps was a checkout of September 25, 2009 as advocated by T. Rausch.
-PAIR_ALIGN=../../../../../seqan-apps/projects/library/cmake/apps/pair_align
+# Revision 13383 was used for generating the output.
+PAIR_ALIGN=../../../../../seqan-align-build/release/bin/pair_align
 
 # ============================================================
 # Run on Proteins (Balibase).
