@@ -736,14 +736,16 @@ scoreSeed(Seed<TPosition, ChainedSeed> &seed, String<TText> &query, String<TText
 	int tmpScore =0;
 	TIterator it = _getDiagSet(seed).begin();
 	for (int i = 0; i < it->i3; ++i){
-		tmpScore+=score(matrix, it->i1+i, it->i2+i, query, database);
+	    tmpScore += score(matrix, sequenceEntryForScore(matrix, query, it->i1 + i),
+	                      sequenceEntryForScore(matrix, database, it->i2 + i));
 	}
 
 	if (_getDiagSet(seed).size()>=2){
 		TIterator it_end = _getDiagSet(seed).end();
 		for (TIterator it2 = ++_getDiagSet(seed).begin(); it2!= it_end; it2++){
 			for (int i = 0; i < it2->i3; ++i){
-				tmpScore+=score(matrix, it2->i1+i, it2->i2+i, query, database);
+				tmpScore+=score(matrix, sequenceEntryForScore(matrix, query, it2->i1+i),
+				                sequenceEntryForScore(matrix, database, it2->i2+i));
 			}
 			tmpScore += scoreGap(matrix)*(it2->i2-(it->i2+it->i3)+it2->i1-(it->i1+it->i3));
 			++it;

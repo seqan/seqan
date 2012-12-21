@@ -60,23 +60,82 @@ struct Value<Score<TValue, TSpec> > {
     typedef TValue Type;
 };
 
+// --------------------------------------------------------------------------
+// Metafunction ConsensusScoreSequenceEntry
+// --------------------------------------------------------------------------
+
+/**
+.Metafunction.Score#SequenceEntryForScore
+..cat:Alignments
+..class:Class.Score
+..signature:SequenceEntryForScore<TScore, TSequence>::Type
+..summary:Returns representation type for an character of a/position in a sequence.
+..description:This is used for unified interfaces for position dependent and independent scores.
+..param.TScore:The score type to use.
+...type:Class.Score
+..param.TSequence:The underlying sequence of the alignments or gaps.
+...type:Concept.Sequence
+..return:The type to use for the representation of sequence entries.
+..see:Metafunction.SequenceEntryForScore
+..see:Function.sequenceEntryForScore
+..include:seqan/score.h
+*/
+
+template <typename TScore, typename TSequence>
+struct SequenceEntryForScore
+{
+    typedef typename Value<TSequence>::Type Type;
+};
+
+// --------------------------------------------------------------------------
+// Function sequenceEntryForScore
+// --------------------------------------------------------------------------
+
+/**
+.Function.Score#sequenceEntryForScore
+..cat:Alignments
+..signature:sequenceEntryForScore(scoringScheme, seq, pos)
+..param.scoringScheme:The scoring scheme to get the representation for.
+...type:Class.Score
+..param.seq:The sequence to get the representation for.
+...type:Concept.Sequence
+..param.pos:The position of the character.
+..return:
+Representation of the character $seq[pos]$ to be used for the given scoring scheme.
+The resulting type is $SequenceEntryForScore<TScore, TSequence>::Type$.
+*/
+
+// TODO(rmaerker): Check if using iterator instead would be more efficient than subscript operator.
+template <typename TScore, typename TSequence, typename TPosition>
+inline typename Value<TSequence>::Type
+sequenceEntryForScore(TScore const & /*scoringScheme*/, TSequence const & seq, TPosition pos)
+{
+    return seq[pos];
+}
 
 /**
 .Function.scoreGapOpenHorizontal
 ..class:Class.Score
 ..cat:Scoring
-..signature:scoreGapOpenHorizontal(score, pos1, pos2, seq1, seq2)
-..summary:Returns the score for opening a horizontal gap after $pos1$ in $seq1$.
+..signature:scoreGapOpenHorizontal(score, entry1, entry2)
+..param.score:The scoring scheme to use.
+...type:Class.Score
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for opening a horizontal gap after $entry1$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapOpenHorizontal(
     Score<TValue, TSpec> const & me,
-    TPos1,
-    TPos2,
-    TSeq1 const &,
-    TSeq2 const &) {
+    TSeqHValue const & /*seqHVal*/,
+    TSeqVValue const & /*seqHVal*/)
+{
     SEQAN_CHECKPOINT;
     return scoreGapOpen(me);
 }
@@ -86,18 +145,25 @@ scoreGapOpenHorizontal(
 .Function.scoreGapOpenVertical
 ..class:Class.Score
 ..cat:Scoring
-..signature:scoreGapOpenVertical(score, pos1, pos2, seq1, seq2)
-..summary:Returns the score for opening a vertical gap after $pos2$ in $seq2$.
+..signature:scoreGapOpenVertical(score, entry1, entry2)
+..param.score:The scoring scheme to use.
+...type:Class.Score
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for opening a vertical gap after $entry2$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapOpenVertical(
     Score<TValue, TSpec> const & me,
-    TPos1,
-    TPos2,
-    TSeq1 const &,
-    TSeq2 const &) {
+    TSeqHValue const & /*seqHVal*/,
+    TSeqVValue const & /*seqHVal*/)
+{
     SEQAN_CHECKPOINT;
     return scoreGapOpen(me);
 }
@@ -106,18 +172,25 @@ scoreGapOpenVertical(
 /**
 .Function.scoreGapExtendHorizontal
 ..cat:Scoring
-..signature:scoreGapExtendHorizontal(score, pos1, pos2, seq1, seq2)
-..summary:Returns the score for extending a horizontal gap after $pos1$ in $seq1$.
+..signature:scoreGapExtendHorizontal(score, entry1, entry2)
+..param.score:The scoring scheme to use.
+...type:Class.Score
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for extending a horizontal gap after $entry1$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapExtendHorizontal(
     Score<TValue, TSpec> const & me,
-    TPos1,
-    TPos2,
-    TSeq1 const &,
-    TSeq2 const &) {
+    TSeqHValue const & /*seqHVal*/,
+    TSeqVValue const & /*seqHVal*/)
+{
     SEQAN_CHECKPOINT;
     return scoreGapExtend(me);
 }
@@ -126,18 +199,25 @@ scoreGapExtendHorizontal(
 /**
 .Function.scoreGapExtendVertical
 ..cat:Scoring
-..signature:scoreGapExtendVertical(score, pos1, pos2, seq1, seq2)
-..summary:Returns the score for extending a vertical gap after $pos2$ in $seq2$.
+..signature:scoreGapExtendVertical(score, entry1, entry2)
+..param.score:The scoring scheme to use.
+...type:Class.Score
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for extending a vertical gap after $entry2$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapExtendVertical(
     Score<TValue, TSpec> const & me,
-    TPos1,
-    TPos2,
-    TSeq1 const &,
-    TSeq2 const &) {
+    TSeqHValue const & /*seqHVal*/,
+    TSeqVValue const & /*seqHVal*/)
+{
     SEQAN_CHECKPOINT;
     return scoreGapExtend(me);
 }
@@ -146,18 +226,25 @@ scoreGapExtendVertical(
 /**
 .Function.scoreGapHorizontal
 ..cat:Scoring
-..signature:scoreGapHorizontal(score, pos1, pos2, seq1, seq2)
-..summary:Returns the score for a horizontal gap after $pos1$ in $seq1$.
+..signature:scoreGapHorizontal(score, entry1, entry2)
+..param.score:The scoring scheme to use.
+...type:Class.Score
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for a horizontal gap after $entry1$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapHorizontal(
     Score<TValue, TSpec> const & me,
-    TPos1,
-    TPos2,
-    TSeq1 const &,
-    TSeq2 const &) {
+    TSeqHValue const & /*seqHVal*/,
+    TSeqVValue const & /*seqHVal*/)
+{
     SEQAN_CHECKPOINT;
     return scoreGap(me);
 }
@@ -166,46 +253,53 @@ scoreGapHorizontal(
 /**
 .Function.scoreGapVertical
 ..cat:Scoring
-..signature:scoreGapVertical(score, pos1, pos2, seq1, seq2)
-..summary:Returns the score for a vertical gap after $pos2$ in $seq2$.
+..signature:scoreGapVertical(score, entry1, entry2)
+..param.score:The scoring scheme to use.
+...type:Class.Score
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for a vertical gap after $entry2$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapVertical(
     Score<TValue, TSpec> const & me,
-    TPos1,
-    TPos2,
-    TSeq1 const &,
-    TSeq2 const &) {
+    TSeqHValue const & /*seqHVal*/,
+    TSeqVValue const & /*seqHVal*/)
+{
     SEQAN_CHECKPOINT;
     return scoreGap(me);
 }
 
 
 /**
-.Function.score:
+.Function.score
 ..cat:Scoring
-..signature:score(score, pos1, pos2, seq1, seq2)
+..signature:score(score, entry1, entry2)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.pos1:Position of the aligned character in $seq1$.
-..param.pos2:Position of the aligned character in $seq2$.
-..param.seq1:First sequence.
-..param.seq2:Second sequence.
-..summary:Returns the score for aligning the characters $seq1[pos1]$ and $seq2[pos2]$.
-This function allows to define a position-dependent scoring scheme.
+..param.entry1:Entry in sequence one.
+...type:Metafunction.Score#SequenceEntryForScore
+..param.entry2:Entry in sequence two.
+...type:Metafunction.Score#SequenceEntryForScore
+..summary:Returns the score for aligning the characters $valH$ and $valV$.
+..see:Function.Score#sequenceEntryForScore
+..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
  */
-template <typename TValue, typename TSpec, typename TPos1, typename TPos2, typename TSeq1, typename TSeq2>
+template <typename TValue, typename TSpec, typename TSeqHVal, typename TSeqVVal>
 inline TValue
-score(Score<TValue, TSpec> const & me,
-      TPos1 pos1,
-      TPos2 pos2,
-      TSeq1 const &seq1,
-      TSeq2 const &seq2) {
+score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {
     SEQAN_CHECKPOINT;
-    return score(me, seq1[pos1], seq2[pos2]);
+    if (valH == valV)
+        return scoreMatch(me);
+    else
+        return scoreMismatch(me);
 }
 
 }  // namespace SEQAN_NAMESPACE_MAIN

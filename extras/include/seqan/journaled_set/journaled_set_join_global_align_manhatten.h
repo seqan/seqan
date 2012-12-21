@@ -68,7 +68,7 @@ _joinInternal(String <TValue, THostSpec> const & reference,
     typedef typename TJournalString::TJournalEntry TJounralEntry;
     typedef typename Size<TJournalString>::Type TSize;
 
-    JournalTraceDescriptor<TJournalString> traceDescriptor;
+    JournalTraceBuffer<TJournalString> traceDescriptor;
     std::stringstream stream;
     stream << journal;
     appendValue(getTrace(traceDescriptor), TJounralEntry(SOURCE_PATCH, 0, 0, 0,length(journal)));

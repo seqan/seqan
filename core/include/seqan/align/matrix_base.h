@@ -126,17 +126,17 @@ public:
 
 //____________________________________________________________________________
 
-	inline TValue & 
+	inline TValue &
 	operator () (TSize x1, TSize x2)
 	{
 		return value(*this, x1, x2);
 	}
-	inline TValue & 
+	inline TValue &
 	operator () (TSize x1, TSize x2, TSize x3)
 	{
 		return value(*this, x1, x2, x3);
 	}
-	inline TValue & 
+	inline TValue &
 	operator () (TSize x1, TSize x2, TSize x3, TSize x4)
 	{
 		return value(*this, x1, x2, x3, x4);
@@ -171,7 +171,7 @@ public:
 
 		//setDimension to 2
 		resize(data_lengths, 2, 0);
-		resize(data_factors, 2);
+		resize(data_factors, 2, 0);
 		data_factors[0] = 1;
 	}
 	Matrix(Matrix const & other_):
@@ -290,7 +290,7 @@ _dataFactors(Matrix<TValue, DIMENSION> & me)
 }
 
 template <typename TValue, unsigned DIMENSION>
-inline typename SizeArr_<Matrix<TValue, DIMENSION> >::Type &
+inline typename SizeArr_<Matrix<TValue, DIMENSION> >::Type const &
 _dataFactors(Matrix<TValue, DIMENSION> const & me)
 {
 	return me.data_factors;
@@ -377,7 +377,7 @@ struct Iterator< Matrix<TValue, DIMENSION> const, TIteratorSpec >
 
 template <typename TValue, unsigned DIMENSION>
 inline unsigned int
-dimension(Matrix<TValue, DIMENSION> & me)
+dimension(Matrix<TValue, DIMENSION> const & me)
 {
 	return length(_dataLengths(me));
 }
@@ -531,7 +531,7 @@ previousPosition(Matrix<TValue, DIMENSION> const & me,
 
 template <typename TValue, unsigned DIMENSION, typename TPosition>
 inline typename Size< Matrix <TValue, DIMENSION> >::Type
-coordinate(Matrix<TValue, DIMENSION> & me,
+coordinate(Matrix<TValue, DIMENSION> const & me,
 		   TPosition position_,
 		   unsigned int dimension_)
 {
@@ -591,6 +591,14 @@ value(Matrix<TValue, DIMENSION> & me,
 	return value(host(me), position_);
 }
 
+template <typename TValue, unsigned DIMENSION, typename TPosition>
+inline typename Reference<Matrix<TValue, DIMENSION> const>::Type
+value(Matrix<TValue, DIMENSION> const & me,
+      TPosition position_)
+{
+    return value(host(me), position_);
+}
+
 //____________________________________________________________________________
 
 //two dimensional value access
@@ -603,6 +611,15 @@ value(Matrix<TValue, DIMENSION> & me,
 	return value(host(me), i1 + i2 * _dataFactors(me)[1]);
 }
 
+template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2>
+inline typename Reference<Matrix<TValue, DIMENSION> const>::Type
+value(Matrix<TValue, DIMENSION> const & me,
+      TOrdinate1 i1,
+      TOrdinate2 i2)
+{
+    return value(host(me), i1 + i2 * _dataFactors(me)[1]);
+}
+
 //____________________________________________________________________________
 
 //3 dimensional value access
@@ -610,7 +627,7 @@ value(Matrix<TValue, DIMENSION> & me,
 template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2, typename TOrdinate3>
 inline typename Reference<Matrix<TValue, DIMENSION> >::Type
 value(Matrix<TValue, DIMENSION> & me,
-	  TOrdinate1 i1, 
+	  TOrdinate1 i1,
 	  TOrdinate2 i2,
 	  TOrdinate3 i3)
 {
@@ -624,7 +641,7 @@ value(Matrix<TValue, DIMENSION> & me,
 template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2, typename TOrdinate3, typename TOrdinate4>
 inline typename Reference<Matrix<TValue, DIMENSION> >::Type
 value(Matrix<TValue, DIMENSION> & me,
-	  TOrdinate1 i1, 
+	  TOrdinate1 i1,
 	  TOrdinate2 i2,
 	  TOrdinate3 i3,
 	  TOrdinate4 i4)

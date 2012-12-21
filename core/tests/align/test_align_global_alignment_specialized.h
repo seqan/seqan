@@ -170,4 +170,67 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_myers_hirschberg_graph)
     // TODO(holtgrew): Test when implemented!
 }
 
+SEQAN_DEFINE_TEST(test_align_global_alignment_score_hirschberg)
+{
+    using namespace seqan;
+
+    Dna5String strH = "ATGT";
+    DnaString strV = "ATAGAT";
+
+    StringSet<Dna5String> strings;
+    appendValue(strings, strH);
+    appendValue(strings, strV);
+
+    Score<int, Simple> scoringScheme(2, -1, -1);
+
+    int res = 0;
+
+    res = globalAlignmentScore(strH, strV, scoringScheme, Hirschberg());
+    SEQAN_ASSERT_EQ(res, 6);
+
+
+    res = globalAlignmentScore(strings, scoringScheme, Hirschberg());
+    SEQAN_ASSERT_EQ(res, 6);
+}
+
+SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
+{
+    using namespace seqan;
+
+    Dna5String strH = "AAAAAATTTTTTTTG";
+    DnaString strV = "AATTTTTTTTTTGGGGG";
+
+    StringSet<Dna5String> strings;
+    appendValue(strings, strH);
+    appendValue(strings, strV);
+
+    int res = 0;
+
+    res = globalAlignmentScore(strH, strV, MyersBitVector());
+    SEQAN_ASSERT_EQ(res, -8);
+
+    res = globalAlignmentScore(strings, MyersBitVector());
+    SEQAN_ASSERT_EQ(res, -8);
+}
+
+SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers_hirschberg)
+{
+    using namespace seqan;
+
+    Dna5String strH = "AAAAAATTTTTTTTG";
+    DnaString strV = "AATTTTTTTTTTGGGGG";
+
+    StringSet<Dna5String> strings;
+    appendValue(strings, strH);
+    appendValue(strings, strV);
+
+    int res = 0;
+
+    res = globalAlignmentScore(strH, strV, MyersHirschberg());
+    SEQAN_ASSERT_EQ(res, -8);
+
+    res = globalAlignmentScore(strings, MyersHirschberg());
+    SEQAN_ASSERT_EQ(res, -8);
+}
+
 #endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_

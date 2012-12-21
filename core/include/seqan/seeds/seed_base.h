@@ -832,11 +832,13 @@ extendSeed(Seed<TPosition,TSpecSeed> &seed,
 		while ((tmpScore > scoreDropOff) && (xPos >= 0) && (yPos>=0)){
 			if (query[xPos] == database[yPos]){
 				last = 0;
-				tmpScore += score(scoreMatrix, xPos, yPos, query, database);
+				tmpScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+				                  sequenceEntryForScore(scoreMatrix, database, yPos));
 				if (tmpScore > 0)
 					tmpScore = 0;
 			} else{
-				tmpScore += score(scoreMatrix, xPos, yPos, query, database);
+				tmpScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+                                  sequenceEntryForScore(scoreMatrix, database, yPos));
 				++last;
 			}
 		--xPos;
@@ -859,11 +861,13 @@ extendSeed(Seed<TPosition,TSpecSeed> &seed,
 		while ((tmpScore > scoreDropOff) && (xPos < xLength) && (yPos < yLength)){
 			if (query[xPos] == database[yPos]){
 				last = 0;
-				tmpScore += score(scoreMatrix, xPos, yPos, query, database);
+				tmpScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+				                  sequenceEntryForScore(scoreMatrix, database, yPos));
 				if (tmpScore > 0)
 					tmpScore = 0;
 			}else{
-				tmpScore += score(scoreMatrix, xPos, yPos, query, database);
+				tmpScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+				                  sequenceEntryForScore(scoreMatrix, database, yPos));
 				++last;
 			}
 			++xPos;
@@ -973,7 +977,9 @@ _extendSeedOneDirection(Seed<TPosition, TSeedSpec/*SimpleSeed*/> & seed,
             // calculate matrix entry
 			tmp = infimum;
 			tmp = _max((*antiDiag2)[i-1], (*antiDiag2)[i]) + gapCost;
-			tmp = _max(tmp, (*antiDiag1)[i-1] + score(scoreMatrix, xSummand + factor*i, ySummand + factor*(k-i), querySeg, dataSeg));
+			tmp = _max(tmp, (*antiDiag1)[i-1] +
+			           score(scoreMatrix, sequenceEntryForScore(scoreMatrix, querySeg, xSummand + factor*i),
+			                 sequenceEntryForScore(scoreMatrix, dataSeg, ySummand + factor*(k-i))));
 
 			tmpMax2 = _max(tmpMax2, tmp);
 			if (tmp < tmpMax1-scoreDropOff)

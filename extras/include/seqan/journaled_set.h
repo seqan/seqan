@@ -44,10 +44,11 @@
 #include <seqan/basic.h>  // Include the basics.
 #include <seqan/align.h>  // Include the alignment interface.
 #include <seqan/score.h>
+#include <seqan/journaled_set/score_biaffine.h>
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>
 #include <seqan/seq_io.h>
-#include <seqan/journaled_set/score_biaffine.h>
+
 
 // ===========================================================================
 // First Header Group.
@@ -58,6 +59,17 @@
 #include <seqan/journaled_set/journaled_set_impl.h>
 
 #include <seqan/journaled_set/journaled_set_journal_trace_descriptor.h>
+
+// ----------------------------------------------------------------------------
+// Alignment Extension for Journaled Sequences
+// ----------------------------------------------------------------------------
+
+#include <seqan/journaled_set/journal_alignment_interface.h>
+#include <seqan/journaled_set/journal_alignment_traceback_adaptor.h>
+
+// ----------------------------------------------------------------------------
+// Journaled Set Interfaces
+// ----------------------------------------------------------------------------
 
 #include <seqan/journaled_set/journaled_set_join_config.h>
 #include <seqan/journaled_set/journaled_set_join.h>

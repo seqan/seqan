@@ -1,0 +1,403 @@
+// ==========================================================================
+//                 SeqAn - The Library for Sequence Analysis
+// ==========================================================================
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
+//       its contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+// DAMAGE.
+//
+// ==========================================================================
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
+// ==========================================================================
+// Defines the recursion functions when dealing with affine gap functions.
+// ==========================================================================
+
+#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
+#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
+
+namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _retrieveTraceAffine                        [RecursionDirectionAll]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TraceBitMap_::TTraceValue
+_retrieveTraceAffine(TScoreValue const & globalMax,
+                     TScoreValue const & diagScore,
+                     TScoreValue const & horiScore,
+                     TScoreValue const & horiOpenScore,
+                     TScoreValue const & vertiScore,
+                     TScoreValue const & vertiOpenScore,
+                     RecursionDirectionAll const &)
+{
+    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
+    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceBitMap_::DIAGONAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceBitMap_::HORIZONTAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceBitMap_::VERTICAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    return traceValue;
+}
+
+// ----------------------------------------------------------------------------
+// Function _retrieveTraceAffine              [RecursionDirectionUpperDiagonal]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TraceBitMap_::TTraceValue
+_retrieveTraceAffine(TScoreValue const & globalMax,
+                     TScoreValue const & diagScore,
+                     TScoreValue const & horiScore,
+                     TScoreValue const & horiOpenScore,
+                     TScoreValue const &,
+                     TScoreValue const &,
+                     RecursionDirectionUpperDiagonal const &)
+{
+    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
+    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceBitMap_::DIAGONAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceBitMap_::HORIZONTAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    return traceValue;
+}
+
+// ----------------------------------------------------------------------------
+// Function _retrieveTraceAffine              [RecursionDirectionLowerDiagonal]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TraceBitMap_::TTraceValue
+_retrieveTraceAffine(TScoreValue const & globalMax,
+                     TScoreValue const & diagScore,
+                     TScoreValue const &,
+                     TScoreValue const &,
+                     TScoreValue const & vertiScore,
+                     TScoreValue const & vertiOpenScore,
+                     RecursionDirectionLowerDiagonal const &)
+{
+    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
+    _conditionalOrOnEquality(traceValue, globalMax, diagScore, TraceBitMap_::DIAGONAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceBitMap_::VERTICAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    return traceValue;
+}
+
+// ----------------------------------------------------------------------------
+// Function _retrieveTraceAffine                 [RecursionDirectionHorizontal]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TraceBitMap_::TTraceValue
+_retrieveTraceAffine(TScoreValue const & globalMax,
+                     TScoreValue const &,
+                     TScoreValue const & horiScore,
+                     TScoreValue const & horiOpenScore,
+                     TScoreValue const &,
+                     TScoreValue const &,
+                     RecursionDirectionHorizontal const &)
+{
+    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
+    _conditionalOrOnEquality(traceValue, globalMax, horiScore, TraceBitMap_::HORIZONTAL);
+    _conditionalOrOnEquality(traceValue, globalMax, horiOpenScore, TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    return traceValue;
+}
+
+// ----------------------------------------------------------------------------
+// Function _retrieveTraceAffine                   [RecursionDirectionVertical]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TraceBitMap_::TTraceValue
+_retrieveTraceAffine(TScoreValue const & globalMax,
+                     TScoreValue const &,
+                     TScoreValue const &,
+                     TScoreValue const &,
+                     TScoreValue const & vertiScore,
+                     TScoreValue const & vertiOpenScore,
+                     RecursionDirectionVertical const &)
+{
+    typename TraceBitMap_::TTraceValue traceValue(TraceBitMap_::NONE);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiScore, TraceBitMap_::VERTICAL);
+    _conditionalOrOnEquality(traceValue, globalMax, vertiOpenScore, TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    return traceValue;
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeScore                   [RecursionAllDirection, AffineGaps]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+          typename TDPProfile>
+inline typename TraceBitMap_::TTraceValue
+_computeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+              DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
+              DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
+              DPCell_<TScoreValue, AffineGaps> const & previousVertical,
+              TSequenceHValue const & seqHVal,
+              TSequenceVValue const & seqVVal,
+              TScoringScheme const & scoringScheme,
+              RecursionDirectionAll const &,
+              TDPProfile const &)
+{
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+
+    TScoreValue tmpScoreDiagonal = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal) +
+                                         scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal)
+                                       + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapExtendVertical = _verticalScoreOfCell(previousVertical)
+                                       + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical)
+                                     + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
+
+    activeCell._horizontalScore = _max(tmpGapExtendHorizontal, tmpGapOpenHorizontal);
+    activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
+    activeCell._score = _max(tmpScoreDiagonal, _max(activeCell._horizontalScore, activeCell._verticalScore));
+
+    if (IsLocalAlignment_<TDPProfile>::VALUE)
+    {
+        if (activeCell._score <= 0)
+        {
+            activeCell._score = 0;
+            activeCell._horizontalScore = 0;
+            activeCell._verticalScore = 0;
+            return TraceBitMap_::NONE;
+        }
+    }
+    if (!IsTracebackEnabled_<TDPProfile>::VALUE)
+        return TraceBitMap_::NONE;
+
+    TTraceValue traceGapOpen = TraceBitMap_::NONE;
+    _conditionalOrOnInequality(traceGapOpen, _horizontalScoreOfCell(activeCell), tmpGapExtendHorizontal, TraceBitMap_::HORIZONTAL_OPEN);
+    _conditionalOrOnInequality(traceGapOpen, _verticalScoreOfCell(activeCell), tmpGapExtendVertical, TraceBitMap_::VERTICAL_OPEN);
+    return traceGapOpen |
+           _retrieveTraceAffine(activeCell._score, tmpScoreDiagonal, tmpGapExtendHorizontal, tmpGapOpenHorizontal,
+                                tmpGapExtendVertical, tmpGapOpenVertical, RecursionDirectionAll());
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeScore         [RecursionUpperDiagonalDirection, AffineGaps]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+          typename TDPProfile>
+inline typename TraceBitMap_::TTraceValue
+_computeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+              DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
+              DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
+              DPCell_<TScoreValue, AffineGaps> const & /*previousVertical*/,
+              TSequenceHValue const & seqHVal,
+              TSequenceVValue const & seqVVal,
+              TScoringScheme const & scoringScheme,
+              RecursionDirectionUpperDiagonal const &,
+              TDPProfile const &)
+{
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    TScoreValue tmpScoreDiagonal = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal)
+                                         + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal)
+                                       + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
+
+    activeCell._horizontalScore = _max(tmpGapExtendHorizontal, tmpGapOpenHorizontal);
+    activeCell._score = _max(tmpScoreDiagonal, activeCell._horizontalScore);
+
+    if (IsLocalAlignment_<TDPProfile>::VALUE)
+    {
+        if (activeCell._score <= 0)
+        {
+            activeCell._score = 0;
+            activeCell._horizontalScore = 0;
+            activeCell._verticalScore = 0;
+            return TraceBitMap_::NONE;
+        }
+    }
+    if (!IsTracebackEnabled_<TDPProfile>::VALUE)
+        return TraceBitMap_::NONE;
+
+    TTraceValue traceGapOpen = TraceBitMap_::NONE;
+    _conditionalOrOnInequality(traceGapOpen, _horizontalScoreOfCell(activeCell), tmpGapExtendHorizontal, TraceBitMap_::HORIZONTAL_OPEN);
+    return traceGapOpen |
+           _retrieveTraceAffine(activeCell._score, tmpScoreDiagonal, tmpGapExtendHorizontal, tmpGapOpenHorizontal,
+                                TScoreValue(), TScoreValue(), RecursionDirectionUpperDiagonal());
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeScore                   [RecursionAllDirection, AffineGaps]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+          typename TDPProfile>
+inline typename TraceBitMap_::TTraceValue
+_computeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+              DPCell_<TScoreValue, AffineGaps> const & previousDiagonal,
+              DPCell_<TScoreValue, AffineGaps> const & /*previousHorizontal*/,
+              DPCell_<TScoreValue, AffineGaps> const & previousVertical,
+              TSequenceHValue const & seqHVal,
+              TSequenceVValue const & seqVVal,
+              TScoringScheme const & scoringScheme,
+              RecursionDirectionLowerDiagonal const &,
+              TDPProfile const &)
+{
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    TScoreValue tmpScoreDiagonal = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapExtendVertical = _verticalScoreOfCell(previousVertical) +
+                                       scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical) +
+                                     scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
+
+    activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
+    activeCell._score = _max(tmpScoreDiagonal, activeCell._verticalScore);
+
+    if (IsLocalAlignment_<TDPProfile>::VALUE)
+    {
+        if (activeCell._score <= 0)
+        {
+            activeCell._score = 0;
+            activeCell._horizontalScore = 0;
+            activeCell._verticalScore = 0;
+            return TraceBitMap_::NONE;
+        }
+    }
+    if (!IsTracebackEnabled_<TDPProfile>::VALUE)
+        return TraceBitMap_::NONE;
+
+    TTraceValue traceGapOpen = TraceBitMap_::NONE;
+    _conditionalOrOnInequality(traceGapOpen, _verticalScoreOfCell(activeCell), tmpGapExtendVertical, TraceBitMap_::VERTICAL_OPEN);
+    return traceGapOpen |
+           _retrieveTraceAffine(activeCell._score, tmpScoreDiagonal, TScoreValue(), TScoreValue(), tmpGapExtendVertical,
+                                tmpGapOpenVertical, RecursionDirectionLowerDiagonal());
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeScore                        [RecursionHorizontalDirection]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+          typename TDPProfile>
+inline typename TraceBitMap_::TTraceValue
+_computeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+              DPCell_<TScoreValue, AffineGaps> const & /*previousDiagonal*/,
+              DPCell_<TScoreValue, AffineGaps> const & previousHorizontal,
+              DPCell_<TScoreValue, AffineGaps> const & /*previousVertical*/,
+              TSequenceHValue const & seqHVal,
+              TSequenceVValue const & seqVVal,
+              TScoringScheme const & scoringScheme,
+              RecursionDirectionHorizontal const &,
+              TDPProfile const &)
+{
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal) +
+                                       scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal) +
+                                         scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    activeCell._horizontalScore = _max(tmpGapOpenHorizontal, tmpGapExtendHorizontal);
+    activeCell._score = activeCell._horizontalScore;
+
+    if (IsLocalAlignment_<TDPProfile>::VALUE)
+    {
+        if (activeCell._score <= 0)
+        {
+            activeCell._score = 0;
+            activeCell._horizontalScore = 0;
+            activeCell._verticalScore = 0;
+            return TraceBitMap_::NONE;
+        }
+    }
+    if (!IsTracebackEnabled_<TDPProfile>::VALUE)
+        return TraceBitMap_::NONE;
+
+    TTraceValue traceGapOpen = TraceBitMap_::NONE;
+    _conditionalOrOnInequality(traceGapOpen, _horizontalScoreOfCell(activeCell), tmpGapExtendHorizontal, TraceBitMap_::HORIZONTAL_OPEN);
+    return traceGapOpen |
+           _retrieveTraceAffine(activeCell._score, TScoreValue(), tmpGapExtendHorizontal, tmpGapOpenHorizontal,
+                                TScoreValue(), TScoreValue(), RecursionDirectionHorizontal());
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeScore                          [RecursionVerticalDirection]
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+          typename TDPProfile>
+inline typename TraceBitMap_::TTraceValue
+_computeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
+              DPCell_<TScoreValue, AffineGaps> const & /*previousDiagonal*/,
+              DPCell_<TScoreValue, AffineGaps> const & /*previousHorizontal*/,
+              DPCell_<TScoreValue, AffineGaps> const & previousVertical,
+              TSequenceHValue const & seqHVal,
+              TSequenceVValue const & seqVVal,
+              TScoringScheme const & scoringScheme,
+              RecursionDirectionVertical const &,
+              TDPProfile const &)
+{
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical) +
+                                     scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
+    TScoreValue tmpGapExtendVertical = _verticalScoreOfCell(previousVertical) +
+                                       scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
+    activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
+    activeCell._score = activeCell._verticalScore;
+
+    if (IsLocalAlignment_<TDPProfile>::VALUE)
+    {
+        if (activeCell._score <= 0)
+        {
+            activeCell._score = 0;
+            activeCell._horizontalScore = 0;
+            activeCell._verticalScore = 0;
+            return TraceBitMap_::NONE;
+        }
+    }
+    if (!IsTracebackEnabled_<TDPProfile>::VALUE)
+        return TraceBitMap_::NONE;
+
+    TTraceValue traceGapOpen = TraceBitMap_::NONE;
+    _conditionalOrOnInequality(traceGapOpen, _verticalScoreOfCell(activeCell), tmpGapExtendVertical, TraceBitMap_::VERTICAL_OPEN);
+    return traceGapOpen |
+           _retrieveTraceAffine(activeCell._score, TScoreValue(), TScoreValue(), TScoreValue(), tmpGapExtendVertical,
+                                tmpGapOpenVertical, RecursionDirectionVertical());
+}
+
+}  // namespace seqan
+
+#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_

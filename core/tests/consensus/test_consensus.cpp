@@ -31,9 +31,35 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/consensus.h>
+
+#include "test_consensus.h"
 
 SEQAN_BEGIN_TESTSUITE(test_consensus) {
+
+    SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_weightedconsensus_score);
+
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_weightedconsensus_score);
+
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_weightedconsensus_score);
+
+    SEQAN_CALL_TEST(test_consensus_host_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_host_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_host_weightedconsensus_score);
+
+    SEQAN_CALL_TEST(test_consensus_position_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_position_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_position_weightedconsensus_score);
+
+    SEQAN_CALL_TEST(test_consensus_value_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_value_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_value_weightedconsensus_score);
+
     // Yep, no tests here :(
 
     SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/consensus/consensus_base.h");

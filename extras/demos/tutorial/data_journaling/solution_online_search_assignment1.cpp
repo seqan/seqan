@@ -19,7 +19,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
 
     // Construct the temporary buffers for the read id and sequence.
     String<char> tempSeqId;
-    THost tempSeq;
+    THost sequence;
 
     // No sequences in the fasta file!
     if (atEnd(reader))
@@ -28,24 +28,24 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
         return -1;
     }
     // First read sequence for reference sequence.
-    if (readRecord(tempSeqId, tempSeq, reader, Fasta()) != 0)
+    if (readRecord(tempSeqId, sequence, reader, Fasta()) != 0)
     {
         std::cerr << "ERROR reading FASTA." << std::endl;
         return 1;
     }
     // [B]
-    createGlobalReference(journalSet, tempSeq);  // When using create we copy the reference instead of storing a pointer.
+    createGlobalReference(journalSet, sequence);  // When using create we copy the reference instead of storing a pointer.
 
     // Read remaining sequences.
     while (!atEnd(reader))
     {
-        if (readRecord(tempSeqId, tempSeq, reader, Fasta()) != 0)
+        if (readRecord(tempSeqId, sequence, reader, Fasta()) != 0)
         {
             std::cerr << "ERROR reading FASTA." << std::endl;
             return 1;
         }
         // [C]
-        appendValue(journalSet, tempSeq);  // First we append the sequence to the set.
+        appendValue(journalSet, TString(sequence)); // First we append the sequence to the set.
         join(journalSet, length(journalSet) - 1, joinConfig); // Second we join it to the set.
     }
     return 0;

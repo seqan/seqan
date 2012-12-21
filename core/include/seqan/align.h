@@ -93,16 +93,71 @@
 // Alignment Algorithm Implementations.
 // ============================================================================
 
+//################################################################################
+// New module
+//################################################################################
+
 // The tags have to be available everywhere so we define them centrally.
 #include <seqan/align/alignment_algorithm_tags.h>
+
+// Defines all tags needed for the DP alignment.
+#include <seqan/align/dp_profile.h>
+
+// The DP Band
+#include <seqan/align/dp_band.h>
+
+// The DP Scout
+#include <seqan/align/dp_scout.h>
+
+// The DP Value
+#include <seqan/align/dp_cell.h>
+#include <seqan/align/dp_cell_linear.h>
+#include <seqan/align/dp_cell_affine.h>
+
+// The Trace Segment
+#include <seqan/align/dp_trace_segment.h>
+
+#include <seqan/align/dp_setup.h>
+
+// the DP algorithms.
+
+// The DP recursion formula
+#include <seqan/align/dp_formula.h>
+#include <seqan/align/dp_formula_linear.h>
+#include <seqan/align/dp_formula_affine.h>
+
+// Defines meta informations which determine how to compute a column and a
+// certain cell for different profiles.
+#include <seqan/align/dp_meta_info.h>
+
+// The DP Matrix
+#include <seqan/align/dp_matrix.h>
+#include <seqan/align/dp_matrix_sparse.h>
+
+#include <seqan/align/dp_matrix_navigator.h>
+#include <seqan/align/dp_matrix_navigator_score_matrix.h>
+#include <seqan/align/dp_matrix_navigator_score_matrix_sparse.h>
+#include <seqan/align/dp_matrix_navigator_trace_matrix.h>
+
+// Everything that is needed to set up the alignment
+#include <seqan/align/dp_setup.h>
+
+#include <seqan/align/dp_traceback_adaptor.h>
+#include <seqan/align/dp_traceback_impl.h>
+#include <seqan/align/dp_algorithm_impl.h>
+
+//################################################################################
+// Old module
+//################################################################################
+
 
 // The global alignment algorithm are implemented in a straightforward fashion:
 // We simply have unbanded and banded variants of both the Needleman-Wunsch and
 // Gotoh's algorithm.
-#include <seqan/align/global_alignment_needleman_wunsch_impl.h>
-#include <seqan/align/global_alignment_banded_needleman_wunsch_impl.h>
-#include <seqan/align/global_alignment_gotoh_impl.h>
-#include <seqan/align/global_alignment_banded_gotoh_impl.h>
+//#include <seqan/align/global_alignment_needleman_wunsch_impl.h>
+//#include <seqan/align/global_alignment_banded_needleman_wunsch_impl.h>
+//#include <seqan/align/global_alignment_gotoh_impl.h>
+//#include <seqan/align/global_alignment_banded_gotoh_impl.h>
 
 // Also, we have an implementation of Hirschberg's algorithm to compute
 // alignments.
@@ -123,7 +178,7 @@
 // We carry around this implementation of Smith-Waterman because it supports
 // aligning into fragment strings and alignment graphs.  Eventually, it could
 // go away if Waterman-Eggert supports them.
-#include <seqan/align/local_alignment_smith_waterman_impl.h>
+//#include <seqan/align/local_alignment_smith_waterman_impl.h>
 
 // ============================================================================
 // Alignment Algorithm Interfaces

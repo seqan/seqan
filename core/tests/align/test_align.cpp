@@ -38,12 +38,26 @@
 #include "test_align_stream.h"
 #include "test_align_gaps.h"
 #include "test_align_gaps_iterator.h"
+
 // TODO(holtgrew): Test Align<>, AlignCols<>!
-#include "test_align_global_alignment.h"
-#include "test_align_global_alignment_banded.h"
+
+#include "test_alignment_dp_band.h"
+#include "test_alignment_dp_cell.h"
+#include "test_alignment_dp_profile.h"
+#include "test_alignment_dp_formula.h"
+#include "test_alignment_dp_matrix.h"
+#include "test_alignment_dp_matrix_navigator.h"
+#include "test_alignment_dp_trace_segment.h"
+#include "test_alignment_dp_adapt_tracesegments.h"
+#include "test_alignment_dp_traceback.h"
+
+#include "test_alignment_algorithms_band_position.h"
+#include "test_alignment_algorithms_global.h"
+#include "test_alignment_algorithms_global_banded.h"
+#include "test_alignment_algorithms_local.h"
+#include "test_alignment_algorithms_local_banded.h"
 #include "test_align_global_alignment_specialized.h"
-#include "test_align_global_alignment_score.h"
-#include "test_align_local_alignment.h"
+
 #include "test_align_alignment_operations.h"
 
 SEQAN_BEGIN_TESTSUITE(test_align)
@@ -130,59 +144,413 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_iterator_anchor_gap_operations_leading);
     SEQAN_CALL_TEST(test_align_gaps_iterator_anchor_gap_operations_trailing);
 
-    // -----------------------------------------------------------------------
-    // Test Unbanded Global Alignment Algorithms
-    // -----------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
+    // Test DPProfile.
+    // ----------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_gaps_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_gaps_gaps_free_notop_left_noright_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_graph_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_graph_gaps_free_notop_left_noright_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_fragments_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_noright_bottom_nw);
+    SEQAN_CALL_TEST(test_alignment_dp_profile_is_global_alignment);
+    SEQAN_CALL_TEST(test_alignment_dp_profile_is_local_alignment);
+    SEQAN_CALL_TEST(test_alignment_dp_profile_is_traceback_enabled);
+    SEQAN_CALL_TEST(test_alignment_dp_profile_is_free_end_gaps);
 
-    SEQAN_CALL_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_gaps_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_gaps_gaps_free_notop_left_noright_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_graph_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_graph_gaps_free_notop_left_noright_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_fragments_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_noright_bottom_gotoh);
+    // ----------------------------------------------------------------------------
+    // Test DPBand.
+    // ----------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_align_global_alignment_shorter_interfaces_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_shorter_interfaces_gotoh);
+    SEQAN_CALL_TEST(test_dp_band_off_constructor);
+    SEQAN_CALL_TEST(test_dp_band_on_constructor);
+    SEQAN_CALL_TEST(test_dp_band_off_lower_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_off_upper_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_off_set_lower_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_off_set_upper_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_on_lower_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_on_upper_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_on_set_lower_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_on_set_upper_diagonal);
+    SEQAN_CALL_TEST(test_dp_band_off_band_size);
+    SEQAN_CALL_TEST(test_dp_band_on_band_size);
 
-    // -----------------------------------------------------------------------
-    // Test Banded Global Alignment Algorithms
-    // -----------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
+    // Test DPCell.
+    // ----------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_align_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_align_gaps_free_notop_left_noright_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_gaps_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_gaps_gaps_free_notop_left_noright_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_graph_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_graph_gaps_free_notop_left_noright_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_fragments_gaps_free_top_left_right_bottom_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_fragments_gaps_free_notop_left_noright_bottom_nw);
+	SEQAN_CALL_TEST(test_dp_cell_value);
+	SEQAN_CALL_TEST(test_dp_cell_reference);
+	SEQAN_CALL_TEST(test_dp_cell_default_infinity);
 
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_align_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_align_gaps_free_notop_left_noright_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_gaps_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_gaps_gaps_free_notop_left_noright_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_graph_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_graph_gaps_free_notop_left_noright_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_fragments_gaps_free_top_left_right_bottom_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_fragments_gaps_free_notop_left_noright_bottom_gotoh);
+    SEQAN_CALL_TEST(test_dp_cell_linear_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_linear_copy_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_linear_assignment);
+    SEQAN_CALL_TEST(test_dp_cell_linear_score);
 
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_shorter_interfaces_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_banded_shorter_interfaces_gotoh);
+    SEQAN_CALL_TEST(test_dp_cell_affine_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_affine_copy_constructor);
+    SEQAN_CALL_TEST(test_dp_cell_affine_assignment);
+    SEQAN_CALL_TEST(test_dp_cell_affine_score);
+    SEQAN_CALL_TEST(test_dp_cell_affine_vertical_score);
+    SEQAN_CALL_TEST(test_dp_cell_affine_horizontal_score);
 
-    // -----------------------------------------------------------------------
-    // Test Specialized Global Alignment Algorithms
-    // -----------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
+    // Test DPMatrix.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_metafunction_data_host);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_metafunction_size_arr);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_data_host);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_data_lengths);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_data_factors);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_check_dimension);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_clear);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_host);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_set_host);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_begin_standard);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_begin_rooted);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_end_standard);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_end_rooted);
+
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_copy_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_assigment);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_reference);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_getvalue);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_position);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_size);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_host);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_iterator_standard);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_metafunction_iterator_rooted);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_resize);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_resize_with_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_value_with_coordinates);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_set_length);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_length_dimension);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_length);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_empty);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_full_coordinate);
+
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_copy_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_assigment);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_reference);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_getvalue);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_position);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_size);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_host);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_iterator_standard);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_metafunction_iterator_rooted);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_resize);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_resize_with_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_value_with_coordinates);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_set_length);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_length_dimension);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_length);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_empty);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_sparse_coordinate);
+
+    // ----------------------------------------------------------------------------
+    // Test DPMatrix Navigator.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_unbanded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_banded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_cell);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_assign_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_diagonal);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_horizontal);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_vertical);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_coordinate);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_container);
+
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_unbanded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_banded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_assign_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_diagonal);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_horizontal);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_vertical);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_coordinate);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_container);
+
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_constructor);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_unbanded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_unbanded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_banded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_banded);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_next);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_assign_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordinate);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_container);
+
+    // ----------------------------------------------------------------------------
+    // Test Recursion Formula.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_linear_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_linear_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_linear_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_linear_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_linear_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_linear_all_direction);
+
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_global_affine_all_direction);
+
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_linear_all_direction);
+
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_affine_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_affine_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_affine_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_affine_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_affine_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_trace_local_affine_all_direction);
+
+    SEQAN_CALL_TEST(test_dp_formula_notrace_diagonal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_notrace_horizontal_direction);
+    SEQAN_CALL_TEST(test_dp_formula_notrace_vertical_direction);
+    SEQAN_CALL_TEST(test_dp_formula_notrace_upper_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_notrace_lower_band_direction);
+    SEQAN_CALL_TEST(test_dp_formula_notrace_all_direction);
+
+
+    // ----------------------------------------------------------------------------
+    // Test Trace Segment.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_constructor);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_assignment);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_position);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_size);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_get_begin_horizontal);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_get_begin_vertical);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_get_end_horizontal);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_get_end_vertical);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_translate_trace_value);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_operator_stream);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_operator_equal);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_operator_unequal);
+    SEQAN_CALL_TEST(test_alignment_traceback_tracesegment_record_segment);
+
+    // ----------------------------------------------------------------------------
+    // Test Adaptor.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_align2_trace_adaptor_trace_segment);
+    SEQAN_CALL_TEST(test_align2_trace_adaptor_record_trace_segment);
+    SEQAN_CALL_TEST(test_align2_trace_adaptor_adapt_file);
+    SEQAN_CALL_TEST(test_align2_trace_adaptor_adapt_align);
+    SEQAN_CALL_TEST(test_align2_trace_adaptor_adapt_fragments);
+    SEQAN_CALL_TEST(test_align2_trace_adaptor_adapt_alignment_graph);
+
+    // ----------------------------------------------------------------------------
+    // Test Traceback.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_align2_traceback_linear_unbanded_alignment);
+    SEQAN_CALL_TEST(test_align2_traceback_linear_normal_banded_alignment);
+    SEQAN_CALL_TEST(test_align2_traceback_linear_small_banded_alignment);
+    SEQAN_CALL_TEST(test_align2_traceback_linear_wide_banded_alignment);
+    SEQAN_CALL_TEST(test_align2_traceback_affine);
+
+    // ----------------------------------------------------------------------------
+    // Test Band Locations.
+    // ----------------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case1);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case2);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case3);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case4);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case5);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case6);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case7);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case8);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case9);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case10);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case11);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case12);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case13);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case14);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case15);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case16);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case17);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case18);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case19);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case20);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case21);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case22);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case23);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case24);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case25);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case26);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case27);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case28);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case29);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case30);
+    SEQAN_CALL_TEST(test_alignment_algorithms_band_position_case31);
+
+	// Integration tests of dp algorithms.
+
+    // ----------------------------------------------------------------------------
+    // Unbanded Alignment Algorithms.
+    // ----------------------------------------------------------------------------
+
+    // Global Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_global_linear);
+    SEQAN_CALL_TEST(test_align_global_alignment_shorter_interfaces_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_score_global_linear);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_global_affine);
+    SEQAN_CALL_TEST(test_align_global_alignment_shorter_interfaces_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_score_global_affine);
+
+    // Overlap Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_overlap_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_overlap_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_overlap_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_overlap_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_score_overlap_linear);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_overlap_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_overlap_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_overlap_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_overlap_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_score_overlap_affine);
+
+    // Semi-Global Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_semi_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_semi_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_semi_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_semi_global_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_score_semi_global_linear);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_semi_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_semi_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_semi_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_semi_global_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_score_semi_global_affine);
+
+    // Local Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_local_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_local_linear);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_local_linear);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_local_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_local_affine);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_local_affine);
+
+    // Suboptimal Alignment.
+
+    // This is working on the old  module - should be replaced by the new module at some stage.
+    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_align);
+    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_gaps);
+    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_fragment);
+
+    // TODO(rmaerker): Here are the tests that should run when the Waterman-Eggert is adapted
+//    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_suboptimal_linear);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_suboptimal_linear);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_suboptimal_linear);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_suboptimal_linear);
+//
+//    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_suboptimal_affine);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_suboptimal_affine);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_suboptimal_affine);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_suboptimal_affine);
+
+    // ----------------------------------------------------------------------------
+    // Banded Alignment Algorithms.
+    // ----------------------------------------------------------------------------
+
+    // Global Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_global_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_global_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_global_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_global_linear_banded);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_global_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_global_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_global_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_global_affine_banded);
+
+    // Overlap Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_overlap_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_overlap_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_overlap_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_overlap_linear_banded);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_overlap_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_overlap_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_overlap_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_overlap_affine_banded);
+
+    // Semi-Global Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_semi_global_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_semi_global_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_semi_global_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_semi_global_linear_banded);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_semi_global_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_semi_global_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_semi_global_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_semi_global_affine_banded);
+
+    SEQAN_CALL_TEST(test_align_global_alignment_banded_shorter_interfaces_linear);
+    SEQAN_CALL_TEST(test_align_global_alignment_banded_shorter_interfaces_affine);
+
+    // Local Alignment.
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_local_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_local_linear_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_local_linear_banded);
+
+    SEQAN_CALL_TEST(test_alignment_algorithms_align_local_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_local_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_graph_local_affine_banded);
+    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_local_affine_banded);
+
+    // Suboptimal Alignment.
+    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_align);
+    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_gaps);
+    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_fragment);
+
+    // TODO(rmaerker): Here are the tests that should run when the Waterman-Eggert is adapted
+//    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_suboptimal_linear_banded);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_suboptimal_linear_banded);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_suboptimal_linear_banded);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_suboptimal_linear_banded);
+//
+//    SEQAN_CALL_TEST(test_alignment_algorithms_align_gaps_suboptimal_affine_banded);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_gaps_gaps_suboptimal_affine_banded);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_graph_gaps_suboptimal_affine_banded);
+//    SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_suboptimal_affine_banded);
+
+
+    // ----------------------------------------------------------------------------
+    // Test specialized alignments.
+    // ----------------------------------------------------------------------------
 
     SEQAN_CALL_TEST(test_align_global_alignment_hirschberg_align);
     SEQAN_CALL_TEST(test_align_global_alignment_hirschberg_gaps);
@@ -194,43 +562,9 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_global_alignment_myers_hirschberg_fragments);
     SEQAN_CALL_TEST(test_align_global_alignment_myers_hirschberg_graph);
 
-    // -----------------------------------------------------------------------
-    // Test Global Alignment Score Functions
-    // -----------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_align_global_alignment_score_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_score_banded_nw);
-    SEQAN_CALL_TEST(test_align_global_alignment_score_gotoh);
-    SEQAN_CALL_TEST(test_align_global_alignment_score_banded_gotoh);
     SEQAN_CALL_TEST(test_align_global_alignment_score_hirschberg);
     SEQAN_CALL_TEST(test_align_global_alignment_score_myers);
     SEQAN_CALL_TEST(test_align_global_alignment_score_myers_hirschberg);
-
-    // -----------------------------------------------------------------------
-    // Test Unbanded And Banded Local Alignment Algorithms
-    // -----------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_align_local_alignment_align);
-    SEQAN_CALL_TEST(test_align_local_alignment_gaps);
-    SEQAN_CALL_TEST(test_align_local_alignment_graph);
-    SEQAN_CALL_TEST(test_align_local_alignment_fragment);
-
-    SEQAN_CALL_TEST(test_align_local_alignment_banded_align);
-    SEQAN_CALL_TEST(test_align_local_alignment_banded_gaps);
-    SEQAN_CALL_TEST(test_align_local_alignment_banded_graph);
-    SEQAN_CALL_TEST(test_align_local_alignment_banded_fragment);
-
-    // -----------------------------------------------------------------------
-    // Test Unbanded And Banded Local Alignment Enumeration Algorithms
-    // -----------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_align);
-    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_gaps);
-    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_fragment);
-
-    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_align);
-    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_gaps);
-    SEQAN_CALL_TEST(test_align_local_alignment_enumeration_banded_fragment);
 
     // -----------------------------------------------------------------------
     // Test Operations On Align Objects
@@ -241,7 +575,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // -----------------------------------------------------------------------
     // Test Printing.
     // -----------------------------------------------------------------------
-    
+
     SEQAN_CALL_TEST(test_align_stream_gaps_write);
     SEQAN_CALL_TEST(test_align_stream_gaps_stream);
     SEQAN_CALL_TEST(test_align_stream_align_write);

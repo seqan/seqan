@@ -83,14 +83,17 @@ TScoreValue globalAlignment(Align<TSequence, TAlignSpec> & align,
                             TAlgoTag const & algoTag)
 {
     typedef Align<TSequence, TAlignSpec> TAlign;
-    typedef typename Size<TAlign>::Type  TSize;
+    typedef typename Size<TAlign>::Type TSize;
+    typedef typename Position<TAlign>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-	AlignTraceback<TSize> trace;
+    String<TTraceSegment> trace;
 
     // We do not need string ids for this variant and set them to 0u.  They are
     // only required for the Fragment String and the Alignment Graph variant.
-    TScoreValue res = _globalAlignment(trace, source(row(align, 0)), source(row(align, 1)), 0u, 0u, scoringScheme, alignConfig, algoTag);
-    _pumpTraceToGaps(row(align, 0), row(align, 1), trace);
+    TScoreValue res = _setUpAndRunAlignment(trace, source(row(align, 0)), source(row(align, 1)), scoringScheme,
+                                            alignConfig, algoTag);
+    _adaptTraceSegmentsTo(row(align, 0), row(align, 1), trace);
     return res;
 }
 
@@ -149,13 +152,16 @@ TScoreValue globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                             TAlgoTag const & algoTag)
 {
     typedef typename Size<TSequenceH>::Type TSize;
+    typedef typename Position<TSequenceH>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-	AlignTraceback<TSize> trace;
+    String<TTraceSegment> traceSegments;
 
     // We do not need string ids for this variant and set them to 0u.  They are
     // only required for the Fragment String and the Alignment Graph variant.
-    TScoreValue res = _globalAlignment(trace, source(gapsH), source(gapsV), 0u, 0u, scoringScheme, alignConfig, algoTag);
-    _pumpTraceToGaps(gapsH, gapsV, trace);
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, source(gapsH), source(gapsV), scoringScheme, alignConfig,
+                                            algoTag);
+    _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
     return res;
 }
 
@@ -219,11 +225,18 @@ TScoreValue globalAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & 
                             AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                             TAlgoTag const & algoTag)
 {
-    return _globalAlignment(alignmentGraph, value(stringSet(alignmentGraph), 0),
-                            value(stringSet(alignmentGraph), 1),
-                            positionToId(stringSet(alignmentGraph), 0),
-                            positionToId(stringSet(alignmentGraph), 1),
-                            scoringScheme, alignConfig, algoTag);
+    typedef Graph<Alignment<TStringSet, TCargo, TGraphSpec> > TGraph;
+    typedef typename Position<TGraph>::Type TPosition;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> traceSegments;
+
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, value(stringSet(alignmentGraph), 0),
+                                            value(stringSet(alignmentGraph), 1), scoringScheme, alignConfig, algoTag);
+    _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
+                          positionToId(stringSet(alignmentGraph), 1), traceSegments);
+    return res;
 }
 
 // Interface without AlignConfig<>.
@@ -282,10 +295,16 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
                             AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                             TAlgoTag const & algoTag)
 {
-    return _globalAlignment(fragmentString,
-                            value(strings, 0), value(strings, 1),
-                            positionToId(strings, 0), positionToId(strings, 1),
-                            scoringScheme, alignConfig, algoTag);
+    typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
+    typedef typename Position<TFragments>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> traceSegments;
+
+    TScoreValue res = _setUpAndRunAlignment(traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
+                                            alignConfig, algoTag);
+    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
+    return res;
 }
 
 // Interface without AlignConfig<>.
@@ -348,10 +367,7 @@ TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
                                  AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                                  TAlgoTag const & algoTag)
 {
-    typedef typename Size<TAlphabetH>::Type TSize;
-
-	AlignTraceback<TSize> trace;
-    return _globalAlignment(trace, seqH, seqV, 0u, 0u, scoringScheme, alignConfig, algoTag);
+    return _setUpAndRunAlignment(seqH, seqV, scoringScheme, alignConfig, algoTag);
 }
 
 // Interface without AlignConfig<>.
@@ -413,11 +429,7 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
                                  TAlgoTag const & algoTag)
 {
     SEQAN_ASSERT_EQ(length(strings), 2u);
-
-    typedef typename Size<TString>::Type TSize;
-	AlignTraceback<TSize> trace;
-
-    return _globalAlignment(trace, strings[0], strings[1], 0u, 0u, scoringScheme, alignConfig, algoTag);
+    return _setUpAndRunAlignment(strings[0], strings[1], scoringScheme, alignConfig, algoTag);
 }
 
 // Interface without AlignConfig<>.

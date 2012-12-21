@@ -109,13 +109,17 @@ _alignBandedSmithWaterman(LocalAlignmentFinder<TScoreValue>& finder,
 
             if (actualCol != 0) {
                 // Get the new maximum for diagonal
-                *matIt = *matIt2 + score(const_cast<TScore&>(sc), ((int) actualCol - 1), ((int) actualRow - 1), str1, str2);
+                *matIt = *matIt2 +
+                            score(const_cast<TScore&>(sc), sequenceEntryForScore(sc, str1, (int) actualCol - 1),
+                                  sequenceEntryForScore(sc, str2, (int) actualRow - 1));
 
                 ++matIt2;
 
                 // Get the new maximum for vertical
                 if (col < diagonalWidth - 1) {
-                    verti_val = *matIt2 + scoreGapExtendVertical(sc, ((int) actualCol - 1), ((int) actualRow - 1), str1, str2);
+                    verti_val = *matIt2 +
+                                    scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, (int) actualCol - 1),
+                                                           sequenceEntryForScore(sc, str2, (int) actualRow - 1));
                     if (verti_val > *matIt) {
                         *matIt = verti_val;
                     }
@@ -123,7 +127,9 @@ _alignBandedSmithWaterman(LocalAlignmentFinder<TScoreValue>& finder,
 
                 // Get the new maximum for horizontal
                 if (col > 0) {
-                    hori_val = hori_val + scoreGapExtendHorizontal(sc, ((int) actualCol - 1), ((int) actualRow - 1), str1, str2);
+                    hori_val = hori_val +
+                                scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, (int) actualCol - 1),
+                                                         sequenceEntryForScore(sc, str2, (int) actualRow - 1));
                     if (hori_val > *matIt) {
                         *matIt = hori_val;
                     }
@@ -287,18 +293,23 @@ _alignBandedSmithWatermanDeclump(LocalAlignmentFinder<TScoreValue>& finder,
 
                 // diagonal
                 if (!value(finder.forbidden, position(matIt))) {
-                    newVal = _max(newVal, *matIt2 + score(sc, ((int)actualCol-1), ((int)actualRow-1), str1, str2));
+                    newVal = _max(newVal, *matIt2 + score(sc, sequenceEntryForScore(sc, str1, (int)actualCol-1),
+                                                          sequenceEntryForScore(sc, str2, (int)actualRow-1)));
                 }
                 ++matIt2;
 
                 // horizontal
 				if (col > 0) {
-		            newVal = _max(newVal, *(matIt-1) + scoreGapExtendHorizontal(sc, ((int)actualCol-1), ((int)actualRow-1), str1, str2));
+		            newVal = _max(newVal, *(matIt-1) +
+		                          scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, (int) actualCol-1),
+		                                                   sequenceEntryForScore(sc, str2, (int)actualRow-1)));
 				}
 
                 // vertical
 				if (col+1 < maxCol) {
-					newVal = _max(newVal, *matIt2 + scoreGapExtendVertical(sc, ((int)actualCol-1), ((int)actualRow-1), str1, str2));
+					newVal = _max(newVal, *matIt2 +
+					              scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, (int)actualCol-1),
+					                                     sequenceEntryForScore(sc, str2, (int)actualRow-1)));
 				}
 
                 if (newVal != *matIt) {
@@ -410,20 +421,28 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
         if (*matIt == 0) {
             nextTraceValue = Stop;
         }
-        else if (*matIt == *matIt2 + score(const_cast<TScore&>(sc), ((int)actualCol-1), ((int)actualRow-1), str1, str2)) {
+        else if (*matIt == *matIt2 +
+            score(const_cast<TScore&>(sc), sequenceEntryForScore(sc, str1, (int)actualCol-1),
+                  sequenceEntryForScore(sc, str2, (int)actualRow-1)))
+        {
             nextTraceValue = Diagonal;
             --actualRow; --actualCol;
             --row;
             goPrevious(matIt, 1); 
             goPrevious(matIt2, 1);
-        } else if (*matIt == *(matIt2+1) + scoreGapExtendVertical(sc, ((int)actualCol-1), ((int)actualRow-1), str1, str2)) {
+        } else if (*matIt == *(matIt2+1) +
+            scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, (int)actualCol-1),
+                                   sequenceEntryForScore(sc, str2, (int)actualRow-1)))
+        {
             nextTraceValue = Vertical;
             --actualRow; 
             --row; ++col;
             goPrevious(matIt, 1); goNext(matIt, 0);
             goPrevious(matIt2, 1); goNext(matIt2, 0);
         } else {
-            SEQAN_ASSERT_EQ(*matIt, *(matIt-1) + scoreGapExtendHorizontal(sc, ((int)actualCol-1), ((int)actualRow-1), str1, str2));
+            SEQAN_ASSERT_EQ(*matIt, *(matIt-1) +
+                            scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, (int) actualCol-1),
+                                                     sequenceEntryForScore(sc, str2, (int) actualRow-1)));
             nextTraceValue = Horizontal;
             --actualCol; 
             --col;

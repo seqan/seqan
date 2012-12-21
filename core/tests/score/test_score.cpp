@@ -48,6 +48,8 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/score.h>
+// TODO(rmaerker): Remove when done with the tests.
+#include <seqan/align.h>
 
 using namespace std;
 using namespace seqan;
@@ -89,13 +91,27 @@ SEQAN_DEFINE_TEST(test_score_gap_open) {
     const TPos kPos1 = 0;
     const TPos kPos2 = 0;
 
-    SEQAN_ASSERT_EQ(scoreGapOpen(simpleScore), scoreGapOpenHorizontal(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
-    SEQAN_ASSERT_EQ(scoreGapOpen(simpleScore), scoreGapOpenVertical(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
-    SEQAN_ASSERT_EQ(scoreGapExtend(simpleScore), scoreGapExtendHorizontal(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
-    SEQAN_ASSERT_EQ(scoreGapExtend(simpleScore), scoreGapExtendVertical(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
-    SEQAN_ASSERT_EQ(scoreGap(simpleScore), scoreGapHorizontal(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
-    SEQAN_ASSERT_EQ(scoreGap(simpleScore), scoreGapVertical(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
-    SEQAN_ASSERT_EQ(score(simpleScore, kSeq1[kPos1], kSeq2[kPos2]), score(simpleScore, kPos1, kPos2, kSeq1, kSeq2));
+    SEQAN_ASSERT_EQ(scoreGapOpen(simpleScore),
+                    scoreGapOpenHorizontal(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                                           sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
+    SEQAN_ASSERT_EQ(scoreGapOpen(simpleScore),
+                    scoreGapOpenVertical(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                                         sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
+    SEQAN_ASSERT_EQ(scoreGapExtend(simpleScore),
+                    scoreGapExtendHorizontal(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                                             sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
+    SEQAN_ASSERT_EQ(scoreGapExtend(simpleScore),
+                    scoreGapExtendVertical(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                                           sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
+    SEQAN_ASSERT_EQ(scoreGap(simpleScore),
+                    scoreGapHorizontal(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                                       sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
+    SEQAN_ASSERT_EQ(scoreGap(simpleScore),
+                    scoreGapVertical(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                                     sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
+    SEQAN_ASSERT_EQ(score(simpleScore, kSeq1[kPos1], kSeq2[kPos2]),
+                    score(simpleScore, sequenceEntryForScore(simpleScore, kSeq1, kPos1),
+                          sequenceEntryForScore(simpleScore, kSeq2, kPos2)));
 }
 
 
@@ -651,6 +667,37 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
     }
 }
 
+template <typename TScoreSpec>
+void testScoreSequenceEntryForScore()
+{
+    typedef Score<int, TScoreSpec> TScoringScheme;
+    typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TEntry1;
+    typedef typename SequenceEntryForScore<TScoringScheme, Dna5String>::Type TEntry2;
+
+    DnaString seq1 = "ACGTACG";
+    Dna5String seq2 = "ACGTNACNA";
+
+    TScoringScheme scoringScheme;
+
+    TEntry1 val1 = sequenceEntryForScore(scoringScheme, seq1, 0);
+    TEntry1 val2 = sequenceEntryForScore(scoringScheme, seq2, 0);
+
+    SEQAN_ASSERT_EQ(val1, 'A');
+    SEQAN_ASSERT_EQ(val2, 'A');
+
+    val1 = sequenceEntryForScore(scoringScheme, seq1, 4);
+    val2 = sequenceEntryForScore(scoringScheme, seq2, 4);
+
+    SEQAN_ASSERT_EQ(val1, 'A');
+    SEQAN_ASSERT_EQ(val2, 'N');
+}
+
+SEQAN_DEFINE_TEST(test_score_sequence_entry_for_score)
+{
+    testScoreSequenceEntryForScore<Simple>();
+    testScoreSequenceEntryForScore<ScoreMatrix<AminoAcid, Blosum62_> >();
+}
+
 
 SEQAN_BEGIN_TESTSUITE(test_score) {
     // Call the tests for this module.
@@ -661,5 +708,6 @@ SEQAN_BEGIN_TESTSUITE(test_score) {
     SEQAN_CALL_TEST(test_score_matrix_file);
     SEQAN_CALL_TEST(test_score_matrix_sprintf_value);
     SEQAN_CALL_TEST(test_score_matrix_data);
+    SEQAN_CALL_TEST(test_score_sequence_entry_for_score);
 }
 SEQAN_END_TESTSUITE

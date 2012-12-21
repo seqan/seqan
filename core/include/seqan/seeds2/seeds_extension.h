@@ -258,7 +258,8 @@ extendSeed(Seed<Simple, TConfig> & seed,
 		TPosition posDim1 = getBeginDim1(seed);
         TPosition mismatchingSuffixLength = 0;
 		while (posDim0 >= 1 && posDim1 >= 1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, posDim0, posDim1, query, database);
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
+                              sequenceEntryForScore(scoringScheme, database, posDim1));
             if (query[posDim0 - 1] == database[posDim1 - 1]) {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
@@ -282,7 +283,8 @@ extendSeed(Seed<Simple, TConfig> & seed,
 		TPosition posDim1 = getEndDim1(seed);
         TPosition mismatchingSuffixLength = 0;
 		while (posDim0 < lengthDim0 && posDim1 < lengthDim1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, posDim0, posDim1, query, database);
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
+                              sequenceEntryForScore(scoringScheme, database, posDim1));
             if (query[posDim0] == database[posDim1]) {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
@@ -331,7 +333,8 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
 		TPosition posDim1 = getBeginDim1(seed);
         TSize diagonalLength = diag.length;
 		while (posDim0 >= 1 && posDim1 >= 1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, posDim0, posDim1, query, database);
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
+                              sequenceEntryForScore(scoringScheme, database, posDim1));
             if (query[posDim0 - 1] == database[posDim1 - 1]) {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
@@ -359,7 +362,8 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
 		TPosition posDim1 = diag.beginDim1 + diag.length;
         TSize diagonalLength = diag.length;
 		while (posDim0 < lengthDim0 && posDim1 < lengthDim1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, posDim0, posDim1, query, database);
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
+                              sequenceEntryForScore(scoringScheme, database, posDim1));
             if (query[posDim0] == database[posDim1]) {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
@@ -582,7 +586,8 @@ SEQAN_CHECKPOINT
 
 			// Calculate matrix entry (-> antiDiag3[col])
 			TScoreValue tmp = _max(antiDiag2[i2-1], antiDiag2[i2]) + gapCost;
-			tmp = _max(tmp, antiDiag1[i1-1] + score(scoringScheme, queryPos, dbPos, querySeg, databaseSeg));
+			tmp = _max(tmp, antiDiag1[i1-1] + score(scoringScheme, sequenceEntryForScore(scoringScheme, querySeg, queryPos),
+			                                        sequenceEntryForScore(scoringScheme, databaseSeg, dbPos)));
 			if (tmp < best - scoreDropOff) {
 				antiDiag3[i3] = undefined;
 			} else {

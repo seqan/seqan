@@ -334,6 +334,7 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 }
 
 
+// TODO(rmaerker): Remove this here!
 /**
 .Function.score:
 ..cat:Scoring
@@ -348,15 +349,15 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 as they require character positions and sequences and allow for position-dependent scoring schemes.
 ..include:seqan/score.h
 */
-template <typename TValue, typename TSpec, typename TVal1, typename TVal2>
-inline TValue
-score(Score<TValue, TSpec> const & me, TVal1 left, TVal2 right) {
-    SEQAN_CHECKPOINT;
-    if (left == right)
-        return scoreMatch(me);
-    else
-        return scoreMismatch(me);
-}
+//template <typename TValue, typename TSpec, typename TVal1, typename TVal2>
+//inline TValue
+//score(Score<TValue, TSpec> const & me, TVal1 left, TVal2 right) {
+//    SEQAN_CHECKPOINT;
+//    if (left == right)
+//        return scoreMatch(me);
+//    else
+//        return scoreMismatch(me);
+//}
 
 }  // namespace SEQAN_NAMESPACE_MAIN
 

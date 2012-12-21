@@ -303,15 +303,22 @@ _align_banded_nw_best_ends(TTrace& trace,
 
 			if ((actualRow != 0) && (actualCol != 0)) {
 				// Get the new maximum for mat
-				*matIt += score(const_cast<TScore&>(sc), ((int) actualCol - 1), ((int) actualRow - 1), str1, str2);
+				*matIt += score(const_cast<TScore&>(sc), sequenceEntryForScore(const_cast<TScore&>(sc), str1, ((int) actualCol - 1)),
+				                sequenceEntryForScore(const_cast<TScore&>(sc), str2, ((int) actualRow - 1)));
 				*traceIt = Diagonal;
 				++(*lenIt);
-				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) + scoreGapExtendVertical(sc, ((int) actualCol - 1), ((int) actualRow - 1), str1, str2) : MinValue<TScoreValue>::VALUE) > *matIt) {
+				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) +
+				    scoreGapExtendVertical(sc,sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				{
 					*matIt = verti_val;
 					*traceIt = Vertical;
 					*lenIt = *(lenIt+1) + 1;
 				}						
-				if ((hori_val = (col > 0) ? hori_val + scoreGapExtendHorizontal(sc, ((int) actualCol - 1), ((int) actualRow - 1), str1, str2) : MinValue<TScoreValue>::VALUE) > *matIt) {
+				if ((hori_val = (col > 0) ? hori_val +
+				    scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				{
 					*matIt = hori_val;
 					*traceIt = Horizontal;
 					*lenIt = hori_len + 1;
@@ -321,11 +328,13 @@ _align_banded_nw_best_ends(TTrace& trace,
 			} else {			
 				// Usual initialization for first row and column
 				if (actualRow == 0) {
-					*matIt = actualCol * scoreGapExtendHorizontal(sc, ((int) actualCol - 1), -1, str1, str2);
+					*matIt = actualCol * scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+					                                              sequenceEntryForScore(sc, str2, -1));
 					*lenIt = actualCol;
 				}
 				else {
-					*matIt = actualRow * scoreGapExtendVertical(sc, -1, ((int) actualRow - 1), str1, str2);
+					*matIt = actualRow * scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, -1),
+					                                            sequenceEntryForScore(sc, str2, ((int) actualRow - 1)));
 					*lenIt = actualRow;
 					hori_val = *matIt;
 					hori_len = actualRow;

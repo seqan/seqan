@@ -65,9 +65,16 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme)
 {
     SEQAN_ASSERT_EQ(length(rows(align)), 2u);
+    typedef Align<TSequence, TAlignSpec> TAlign;
+    typedef typename Size<TAlign>::Type TSize;
+    typedef typename Position<TAlign>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
-    LocalAlignmentFinder<TScoreValue> laFinder;
-    return _smithWaterman(row(align, 0), row(align, 1), laFinder, scoringScheme, 0);
+    String<TTraceSegment> traceSegments;
+    TScoreValue score = _setUpAndRunAlignment(traceSegments, source(row(align, 0)), source(row(align, 1)),
+                                              scoringScheme, SmithWaterman());
+    _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traceSegments);
+    return score;
 }
 
 // ----------------------------------------------------------------------------
@@ -81,8 +88,15 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                            Gaps<TSequenceV, TGapsSpecV> & gapsV,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme)
 {
-    LocalAlignmentFinder<TScoreValue> laFinder;
-    return _smithWaterman(gapsH, gapsV, laFinder, scoringScheme, 0);
+    typedef typename Size<TSequenceH>::Type TSize;
+    typedef typename Position<TSequenceH>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> traceSegments;
+    TScoreValue score = _setUpAndRunAlignment(traceSegments, source(gapsH), source(gapsV), scoringScheme,
+                                              SmithWaterman());
+    _adaptTraceSegmentsTo(gapsH, gapsV, traceSegments);
+    return score;
 }
 
 // ----------------------------------------------------------------------------
@@ -96,12 +110,17 @@ template <typename TStringSet, typename TCargo, typename TGraphSpec,
 TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & alignmentGraph,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme)
 {
-    return _localAlignment(alignmentGraph,
-                           value(stringSet(alignmentGraph), 0),
-                           value(stringSet(alignmentGraph), 1),
-                           positionToId(stringSet(alignmentGraph), 0),
-                           positionToId(stringSet(alignmentGraph), 1),
-                           scoringScheme, SmithWaterman());
+    typedef Graph<Alignment<TStringSet, TCargo, TGraphSpec> > TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef typename Position<TGraph>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> traceSegments;
+    TScoreValue score = _setUpAndRunAlignment(traceSegments, value(stringSet(alignmentGraph), 0),
+                                              value(stringSet(alignmentGraph), 1), scoringScheme, SmithWaterman());
+    _adaptTraceSegmentsTo(alignmentGraph, positionToId(stringSet(alignmentGraph), 0),
+                          positionToId(stringSet(alignmentGraph), 1), traceSegments);
+    return score;
 }
 
 // ----------------------------------------------------------------------------
@@ -117,13 +136,15 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
                            StringSet<TSequence, TStringSetSpec> const & strings,
                            Score<TScoreValue, TScoreSpec> const & scoringScheme)
 {
-    // TODO(holtgrew): This is currently not supported.
-    // TODO(holtgrew): Write tests!
-    (void)fragmentString;
-    (void)strings;
-    (void)scoringScheme;
-    SEQAN_FAIL("Write me!");
-    return 0;
+    typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
+    typedef typename Position<TFragments>::Type TPosition;
+    typedef TraceSegment_<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> traceSegments;
+    TScoreValue score = _setUpAndRunAlignment(traceSegments, value(strings, 0), value(strings, 1), scoringScheme,
+                                              SmithWaterman());
+    _adaptTraceSegmentsTo(fragmentString, positionToId(strings, 0), positionToId(strings, 1), traceSegments);
+    return score;
 }
 
 }  // namespace seqan

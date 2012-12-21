@@ -100,6 +100,26 @@ typedef Tag<LcsLibrary_> const LcsLibrary;
 
 // TODO(holtgrew): Reproduction from old graph_align module. This should go away once we can compute and enumerate local matches into Fragment strings.
 
+template<typename TSpec, typename TSize>
+inline bool
+_isClumping(String<bool, TSpec> const& forbidden,
+			TSize row,
+			TSize col,
+			TSize len2)
+{
+	return forbidden[(col-1) * len2 + (row-1)];
+}
+
+template<typename TSize>
+inline bool
+_isClumping(Nothing&,
+			TSize,
+			TSize,
+			TSize)
+{
+	return false;
+}
+
 struct SmithWatermanClump_;
 typedef Tag<SmithWatermanClump_> SmithWatermanClump;
 
@@ -262,14 +282,18 @@ _alignSmithWaterman(TTrace& trace,
 	*matIt = 0;
 	for(TSize row = 1; row <= len2; ++row) {
 		*(++matIt) = 0;
-		*(++horiIt) = scoreGapOpenHorizontal(sc, 0, row-1, str1, str2) - scoreGapExtendHorizontal(sc, 0, row-1, str1, str2);
+        *(++horiIt) = scoreGapOpenHorizontal(sc, sequenceEntryForScore(sc, str1, 0),
+                                             sequenceEntryForScore(sc, str2, row - 1)) -
+                     scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, 0),
+                                              sequenceEntryForScore(sc, str2, row - 1));
 	}
 	for(TSize col = 1; col <= len1; ++col) {
 		matIt = begin(mat, Standard() );
 		horiIt = begin(horizontal, Standard() );
 		TScoreValue diagValMat = *matIt;
 		*matIt = 0;
-		vert = scoreGapOpenVertical(sc, col-1, 0, str1, str2) - scoreGapExtendVertical(sc, col-1, 0, str1, str2);
+		vert = scoreGapOpenVertical(sc, sequenceEntryForScore(sc, str1, col-1), sequenceEntryForScore(sc, str2, 0)) -
+		       scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, col-1), sequenceEntryForScore(sc, str2, 0));
 		TSize row = 1;
 		while(row <= len2) {
 			if (_isClumping(forbidden, row, col, len2)) {
@@ -281,21 +305,26 @@ _alignSmithWaterman(TTrace& trace,
 				++matIt;
 			} else {
 				// Get the new maximum for vertical
-				a = *matIt + scoreGapOpenVertical(sc, col-1, row-1, str1, str2);
-				b = vert + scoreGapExtendVertical(sc, col-1, row-1, str1, str2);
+				a = *matIt + scoreGapOpenVertical(sc, sequenceEntryForScore(sc, str1, col-1),
+				                                  sequenceEntryForScore(sc, str2, row-1));
+				b = vert + scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, col-1),
+                                                  sequenceEntryForScore(sc, str2, row-1));
 				if (a > b) { vert = a; *it |= 1;} 
 				else vert = b;
 	
 				// Get the new maximum for horizontal
 				*it <<= 1;
-				a = *(++matIt) + scoreGapOpenHorizontal(sc, col-1, row-1, str1, str2);
-				b = *(++horiIt) + scoreGapExtendHorizontal(sc, col-1, row-1, str1, str2);
+				a = *(++matIt) + scoreGapOpenHorizontal(sc, sequenceEntryForScore(sc, str1, col-1),
+				                                        sequenceEntryForScore(sc, str2, row-1));
+				b = *(++horiIt) + scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, col-1),
+				                                           sequenceEntryForScore(sc, str2, row-1));
 				if (a > b) {*horiIt = a; *it |= 1; } 
 				else *horiIt =  b;
 	
 				// Get the new maximum for mat
 				*it <<= 2;
-				max_val = diagValMat + score(const_cast<TScore&>(sc), col-1, row-1, str1, str2);
+				max_val = diagValMat + score(const_cast<TScore&>(sc), sequenceEntryForScore(sc, str1, col-1),
+				                             sequenceEntryForScore(sc, str2, row-1));
 				tvMat =  Diagonal;
 				if (vert > max_val) {
 					max_val = vert;

@@ -78,7 +78,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     clear(journalSet);
 
     String<char> tempSeqId;
-    THost tempSeq;
+    THost sequence;
 
     // No sequences in the fasta file!
     if (atEnd(reader))
@@ -87,23 +87,23 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
         return -1;
     }
     // First read sequence for reference sequence.
-    if (readRecord(tempSeqId, tempSeq, reader, Fasta()) != 0)
+    if (readRecord(tempSeqId, sequence, reader, Fasta()) != 0)
     {
         std::cerr << "ERROR reading FASTA." << std::endl;
         return 1;
     }
     // We have to create the global reference sequence otherwise we loose the information after this function terminates.
-    createGlobalReference(journalSet, tempSeq);
+    createGlobalReference(journalSet, sequence);
 
     // If there are more
     while (!atEnd(reader))
     {
-        if (readRecord(tempSeqId, tempSeq, reader, Fasta()) != 0)
+        if (readRecord(tempSeqId, sequence, reader, Fasta()) != 0)
         {
             std::cerr << "ERROR reading FASTA." << std::endl;
             return 1;
         }
-        appendValue(journalSet, tempSeq);
+        appendValue(journalSet, TString(sequence));
         join(journalSet, length(journalSet) - 1, joinConfig);
     }
     return 0;

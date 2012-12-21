@@ -963,7 +963,8 @@ _mergeTwoSeedsScore(Seed<TValue, SimpleSeed>  &firstSeed,
 	{
 		TValue de = rightDim1(firstSeed);
 		for (int i = rightDim0(firstSeed)+1; i <qPos;++i){
-			currentScore += score(scoreMatrix,i,++de,query,database);
+			currentScore += score(scoreMatrix,sequenceEntryForScore(scoreMatrix, query, i),
+			                      sequenceEntryForScore(scoreMatrix, database, ++de));
 		}
 	} else {
 		TValue lPositionQuery = rightDim0(firstSeed);
@@ -973,13 +974,17 @@ _mergeTwoSeedsScore(Seed<TValue, SimpleSeed>  &firstSeed,
 
 		TValue gap = (databaseGap < queryGap) ? databaseGap : queryGap;
 		for (int i = 0; i <gap;++i){
-			currentScore += score(scoreMatrix,--rPositionQuery,--rPositionDatabase,query,database);
+			currentScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, --rPositionQuery),
+			                      sequenceEntryForScore(scoreMatrix, database, --rPositionDatabase));
 		}
 		TValue tmpScore = currentScore;
 		TValue tmpLength = 0;
 
 		for (int i = 0; i < gap ; ++i){
-			currentScore += score(scoreMatrix,++lPositionQuery,++lPositionDatabase,query,database) - score(scoreMatrix,rPositionQuery++,rPositionDatabase++,query,database);
+			currentScore += score(scoreMatrix,sequenceEntryForScore(scoreMatrix, query, ++lPositionQuery),
+			                      sequenceEntryForScore(scoreMatrix, database, ++lPositionDatabase)) -
+			                score(scoreMatrix,sequenceEntryForScore(scoreMatrix, query, rPositionQuery++),
+			                      sequenceEntryForScore(scoreMatrix, database, rPositionDatabase++));
 			if (currentScore > tmpScore){
 				tmpScore = currentScore;
 
@@ -1024,7 +1029,8 @@ _mergeTwoSeedsScore(Seed<TValue, ChainedSeed>  &firstSeed,
 		//cout << "interessant" << endl;
 		TValue de = rightDim1(firstSeed);
 		for (int i = rightDim0(firstSeed)+1; i <qPos;++i){
-			currentScore += score(scoreMatrix,i,++de,query,database);
+			currentScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, i),
+			                      sequenceEntryForScore(scoreMatrix, database, ++de));
 		}
 		setRightDim0(firstSeed,qPos + length-1);
 	} 
@@ -1037,13 +1043,17 @@ _mergeTwoSeedsScore(Seed<TValue, ChainedSeed>  &firstSeed,
 
 		TValue gap = (databaseGap < queryGap)? databaseGap : queryGap;
 		for (int i = 0; i <gap;++i){
-			currentScore += score(scoreMatrix,--rPositionQuery,--rPositionDatabase,query,database);
+			currentScore += score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, --rPositionQuery),
+			                      sequenceEntryForScore(scoreMatrix, database, --rPositionDatabase));
 		}
 		TValue tmpScore = currentScore;
 		TValue tmpLength = 0;
 
 		for (int i = 0; i < gap; ++i){
-			currentScore += score(scoreMatrix,++lPositionQuery,++lPositionDatabase,query,database) - score(scoreMatrix,rPositionQuery++,rPositionDatabase++,query,database);
+			currentScore += score(scoreMatrix,sequenceEntryForScore(scoreMatrix, query, ++lPositionQuery),
+			                      sequenceEntryForScore(scoreMatrix, database, ++lPositionDatabase)) -
+			                score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, rPositionQuery++),
+			                      sequenceEntryForScore(scoreMatrix, database, rPositionDatabase++));
 			if (currentScore > tmpScore){
 				tmpScore = currentScore;
 				tmpLength = i+1;
@@ -1282,7 +1292,8 @@ _mergeTwoSeedsScore(Seed<TValue, SimpleSeed>  &firstSeed,
 			rightDiag = diag;
 		tmpScore += _calculateScoringValue(rightDim0(firstSeed), rightDim1(firstSeed), it1->i1, it1->i2, scoreMatrix, tag);
 		for (int i = 0; i < it1->i3; ++i){
-			tmpScore += score(scoreMatrix,it1->i1+i,it1->i2+i,query,database);
+			tmpScore += score(scoreMatrix,sequenceEntryForScore(scoreMatrix, query, it1->i1+i),
+			                  sequenceEntryForScore(scoreMatrix, database,it1->i2+i));
 		}
 		while (it2 != tmp.end()){
 			diag = it2->i2-it2->i1;
@@ -1336,7 +1347,8 @@ _mergeTwoSeedsScore(Seed<TValue, ChainedSeed>  &firstSeed,
 		TIterator it2 = ++tmp.begin();
 		tmpScore += _calculateScoringValue(rightDim0(firstSeed), rightDim1(firstSeed), it1->i1, it1->i2, scoreMatrix, tag);
 		for (int i = 0; i < it1->i3; ++i){
-			tmpScore += score(scoreMatrix,it1->i1+i,it1->i2+i,query,database);
+			tmpScore += score(scoreMatrix,sequenceEntryForScore(scoreMatrix, query, it1->i1+i),
+			                  sequenceEntryForScore(scoreMatrix, database, it1->i2+i));
 		}
 		while (it2 != tmp.end()){
 			tmpScore += _calculateScoringValue(it1->i1+it1->i3-1,it1->i2+it1->i3-1,it2->i1,it2->i2, scoreMatrix, tag);
@@ -2051,13 +2063,15 @@ extendSeedScore(Seed<TValue,TSeedSpec> &seed,
 		while ((tmpScore > scoreDropOff) && (xPos >= 0) && (yPos>=0)){
 			if (query[xPos] == database[yPos]){
 				last = 0;
-				tmp = score(scoreMatrix, xPos, yPos, query, database);
+				tmp = score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+				            sequenceEntryForScore(scoreMatrix, database, yPos));
 				tmpScore += tmp;
 				currentScore += tmp;
 				if (tmpScore > 0)
 					tmpScore = 0;
 			} else{
-				tmp = score(scoreMatrix, xPos, yPos, query, database);
+				tmp = score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+                            sequenceEntryForScore(scoreMatrix, database, yPos));
 				tmpScore += tmp;
 				currentScore += tmp;
 				++last;
@@ -2082,13 +2096,15 @@ extendSeedScore(Seed<TValue,TSeedSpec> &seed,
 		while ((tmpScore > scoreDropOff) && (xPos < xLength) && (yPos < yLength)){
 			if (query[xPos] == database[yPos]){
 				last = 0;
-				tmp = score(scoreMatrix, xPos, yPos, query, database);
+				tmp = score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+				            sequenceEntryForScore(scoreMatrix, database, yPos));
 				tmpScore += tmp;
 				currentScore += tmp;
 				if (tmpScore > 0)
 					tmpScore = 0;
 			}else{
-				tmp = score(scoreMatrix, xPos, yPos, query, database);
+				tmp = score(scoreMatrix, sequenceEntryForScore(scoreMatrix, query, xPos),
+				            sequenceEntryForScore(scoreMatrix, database, yPos));
 				tmpScore += tmp;
 				currentScore += tmp;
 				++last;

@@ -57,17 +57,17 @@ enum TraceDirection
 };
 
 // ----------------------------------------------------------------------------
-// Class JournalTraceDescriptor
+// Class JournalTraceBuffer
 // ----------------------------------------------------------------------------
 
 /**
- * Specialization of the JournalTraceDescriptor for the use of Journal sequences.
+ * Specialization of the JournalTraceBuffer for the use of Journal sequences.
  * Describes the trace back in form of journal nodes in a sorted array.
  * Note, that the nodes are entered in reversed order, because the trace back
  * is parsed from the end to the beginning of the alignment.
  */
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-class JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > >
+class JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > >
 {
 public:
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString;
@@ -79,19 +79,19 @@ public:
     String<TJournalNode> revSortedOperation_;
     String<TValue, TBuffSpec> insertionBuffer_;
 
-    JournalTraceDescriptor()
+    JournalTraceBuffer()
     {
     }
 
     template <typename TPos>
-    inline typename Reference<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >::Type
+    inline typename Reference<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >::Type
     operator[](TPos const pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    inline typename Reference<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>::Type
+    inline typename Reference<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>::Type
     operator[](TPos const pos) const
     {
         return value(*this, pos);
@@ -108,7 +108,7 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Value<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
+struct Value<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
 {
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString_;
     typedef typename Position<TString_>::Type TPos_;
@@ -117,7 +117,7 @@ struct Value<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournal
 };
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Value<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
+struct Value<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
 {
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString_;
     typedef typename Position<TString_>::Type TPos_;
@@ -130,17 +130,17 @@ struct Value<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournal
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Reference<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
+struct Reference<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
 {
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString_;
-    typedef typename Value<JournalTraceDescriptor<TString_> >::Type & Type;
+    typedef typename Value<JournalTraceBuffer<TString_> >::Type & Type;
 };
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Reference<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
+struct Reference<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
 {
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString_;
-    typedef typename Value<JournalTraceDescriptor<TString_> >::Type const & Type;
+    typedef typename Value<JournalTraceBuffer<TString_> >::Type const & Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -148,37 +148,37 @@ struct Reference<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJou
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Size<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
+struct Size<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
 {
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString_;
     typedef typename Size<TString_>::Type Type;
 };
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Size<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
-    : Size<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >{};
+struct Size<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
+    : Size<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Position<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
+struct Position<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >
 {
     typedef String<TValue, Journaled< THostSpec, TJournalSpec, TBuffSpec> > TString_;
     typedef typename Position<TString_>::Type Type;
 };
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Position<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
-    : Position<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > > {};
+struct Position<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const>
+    : Position<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Iterator<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > >, Standard >
+struct Iterator<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > >, Standard >
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString_;
     typedef typename TJournalString_::TJournalEntry TJournalEntry_;
@@ -186,7 +186,7 @@ struct Iterator<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJour
 };
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-struct Iterator<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const, Standard >
+struct Iterator<JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const, Standard >
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString_;
     typedef typename TJournalString_::TJournalEntry TJournalEntry_;
@@ -202,8 +202,8 @@ struct Iterator<JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJour
 // ----------------------------------------------------------------------------
 
 template <typename TString>
-inline typename Iterator<JournalTraceDescriptor<TString>, Standard >::Type
-begin(JournalTraceDescriptor<TString> & me)
+inline typename Iterator<JournalTraceBuffer<TString>, Standard >::Type
+begin(JournalTraceBuffer<TString> & me)
 {
     SEQAN_CHECKPOINT;
 
@@ -211,8 +211,8 @@ begin(JournalTraceDescriptor<TString> & me)
 }
 
 template <typename TString>
-inline typename Iterator<JournalTraceDescriptor<TString> const, Standard >::Type
-begin(JournalTraceDescriptor<TString> const & me)
+inline typename Iterator<JournalTraceBuffer<TString> const, Standard >::Type
+begin(JournalTraceBuffer<TString> const & me)
 {
     return begin(getTrace(me));
 }
@@ -222,15 +222,15 @@ begin(JournalTraceDescriptor<TString> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TString>
-inline typename Iterator<JournalTraceDescriptor<TString>, Standard >::Type
-end(JournalTraceDescriptor<TString> & me)
+inline typename Iterator<JournalTraceBuffer<TString>, Standard >::Type
+end(JournalTraceBuffer<TString> & me)
 {
     return end(getTrace(me));
 }
 
 template <typename TString>
-inline typename Iterator<JournalTraceDescriptor<TString> const, Standard >::Type
-end(JournalTraceDescriptor<TString> const & me)
+inline typename Iterator<JournalTraceBuffer<TString> const, Standard >::Type
+end(JournalTraceBuffer<TString> const & me)
 {
     return end(getTrace(me));
 }
@@ -242,7 +242,7 @@ end(JournalTraceDescriptor<TString> const & me)
 template <typename TStream, typename TJournal>
 TStream &
 operator <<(TStream & stream,
-            JournalTraceDescriptor<TJournal> const & obj)
+            JournalTraceBuffer<TJournal> const & obj)
 {
     for (unsigned int i = 0; i < length(obj);++i)
     {
@@ -262,19 +262,31 @@ operator <<(TStream & stream,
 // ----------------------------------------------------------------------------
 
 template <typename TJournal>
-inline typename Size<JournalTraceDescriptor<TJournal> >::Type
-length(JournalTraceDescriptor<TJournal> const & me)
+inline typename Size<JournalTraceBuffer<TJournal> >::Type
+length(JournalTraceBuffer<TJournal> const & me)
 {
     return length(me.revSortedOperation_);
+}
+
+// ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+template <typename TJournalString>
+inline void
+clear(JournalTraceBuffer<TJournalString> & traceBuff)
+{
+    clear(traceBuff.revSortedOperation_);
+    clear(traceBuff.insertionBuffer_);
 }
 
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
 template <typename TJournalString>
-inline typename Reference<JournalTraceDescriptor<TJournalString> >::Type
-value(JournalTraceDescriptor<TJournalString> & me,
-      typename Position<JournalTraceDescriptor<TJournalString> >::Type const pos)
+inline typename Reference<JournalTraceBuffer<TJournalString> >::Type
+value(JournalTraceBuffer<TJournalString> & me,
+      typename Position<JournalTraceBuffer<TJournalString> >::Type const pos)
 {
     SEQAN_CHECKPOINT;
     return me.revSortedOperation_[pos];
@@ -284,9 +296,9 @@ value(JournalTraceDescriptor<TJournalString> & me,
  * Returns a reference to the node at the given position within the trace back.
  */
 template <typename TJournalString>
-inline typename Reference<JournalTraceDescriptor<TJournalString> const>::Type
-value(JournalTraceDescriptor<TJournalString> const & me,
-      typename Position<JournalTraceDescriptor<TJournalString> >::Type const pos)
+inline typename Reference<JournalTraceBuffer<TJournalString> const>::Type
+value(JournalTraceBuffer<TJournalString> const & me,
+      typename Position<JournalTraceBuffer<TJournalString> >::Type const pos)
 {
     return me.revSortedOperation_[pos];
 }
@@ -296,16 +308,16 @@ value(JournalTraceDescriptor<TJournalString> const & me,
 // ----------------------------------------------------------------------------
 
 template <typename TString>
-inline String <typename Value<JournalTraceDescriptor<TString> >::Type> &
-getTrace(JournalTraceDescriptor<TString > & me)
+inline String <typename Value<JournalTraceBuffer<TString> >::Type> &
+getTrace(JournalTraceBuffer<TString > & me)
 {
     return me.revSortedOperation_;
 }
 
 
 template <typename TString>
-inline String<typename Value<JournalTraceDescriptor<TString> >::Type> const &
-getTrace(JournalTraceDescriptor<TString> const & me)
+inline String<typename Value<JournalTraceBuffer<TString> >::Type> const &
+getTrace(JournalTraceBuffer<TString> const & me)
 {
     return me.revSortedOperation_;
 }
@@ -317,7 +329,7 @@ getTrace(JournalTraceDescriptor<TString> const & me)
 // TODO(rmaerker): Use modifier instead.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 void inline
-reverseTrace(JournalTraceDescriptor<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
+reverseTrace(JournalTraceBuffer<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
 {
     reverse(me.revSortedOperation_);
 }
@@ -327,13 +339,13 @@ reverseTrace(JournalTraceDescriptor<String< TValue, Journaled<THostSpec, TJourna
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
-inline String <typename Value<JournalTraceDescriptor<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >::Type>
-getTraceReverse(JournalTraceDescriptor<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
+inline String <typename Value<JournalTraceBuffer<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > >::Type>
+getTraceReverse(JournalTraceBuffer<String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
 {
     SEQAN_CHECKPOINT;
 
     typedef String< TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournal;
-    typedef typename Value<JournalTraceDescriptor<TJournal> >::Type  TEntry;
+    typedef typename Value<JournalTraceBuffer<TJournal> >::Type  TEntry;
     typedef String<TEntry> TJournalEntries;
 
     TJournalEntries cpy(me.revSortedOperation_);
@@ -346,11 +358,11 @@ getTraceReverse(JournalTraceDescriptor<String< TValue, Journaled<THostSpec, TJou
  * in consecutive order from the beginning to the end of the sequence.
  */
 template <typename TString>
-inline String <typename Value<JournalTraceDescriptor<TString> const>::Type> const
-getTraceReverse(JournalTraceDescriptor<TString> const & me)
+inline String <typename Value<JournalTraceBuffer<TString> const>::Type> const
+getTraceReverse(JournalTraceBuffer<TString> const & me)
 {
     SEQAN_CHECKPOINT;
-    return getTraceReverse(const_cast<JournalTraceDescriptor<TString> &>(me));
+    return getTraceReverse(const_cast<JournalTraceBuffer<TString> &>(me));
 }
 
 // ----------------------------------------------------------------------------
@@ -359,7 +371,7 @@ getTraceReverse(JournalTraceDescriptor<TString> const & me)
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 inline String<TValue, TBuffSpec> &
-getInsertionBuffer(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
+getInsertionBuffer(JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me)
 {
     SEQAN_CHECKPOINT;
     return me.insertionBuffer_;
@@ -367,7 +379,7 @@ getInsertionBuffer(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJ
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 inline String<TValue, TBuffSpec> const &
-getInsertionBuffer(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const & me)
+getInsertionBuffer(JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const & me)
 
 {
     SEQAN_CHECKPOINT;
@@ -383,7 +395,7 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 void
 _applyTraceOperations(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journal,
                       String<TValue, THostSpec> const & newHost,
-                      JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const & traceDescr)
+                      JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > const & traceDescr)
 {
     typedef String<TValue, THostSpec> THost;
 
@@ -399,7 +411,7 @@ _applyTraceOperations(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpe
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TSequenceH,
     typename TSequenceV, typename TId, typename TPos, typename TTraceValue>
 inline void
-_alignTracePrint(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me,
+_alignTracePrint(JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > > & me,
          TSequenceH const & /*seqH*/,
          TSequenceV const & seqV,
          TId,
@@ -412,7 +424,7 @@ _alignTracePrint(JournalTraceDescriptor<String<TValue, Journaled<THostSpec, TJou
     SEQAN_CHECKPOINT;
 
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TString;
-    typedef typename Value<JournalTraceDescriptor<TString> >::Type TEntryString;
+    typedef typename Value<JournalTraceBuffer<TString> >::Type TEntryString;
     typedef typename Value<TEntryString>::Type TJournalEntry;
 
     enum SegmentSource segmentSrc = SOURCE_NULL;

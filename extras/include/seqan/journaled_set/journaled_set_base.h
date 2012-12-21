@@ -70,11 +70,11 @@ typedef Tag<JournaledSet_> JournaledSet;
 
 
 // ----------------------------------------------------------------------------
-// Class JournalTraceDescriptor
+// Class JournalTraceBuffer
 // ----------------------------------------------------------------------------
 
 template <typename TString>
-class JournalTraceDescriptor;
+class JournalTraceBuffer;
 
 /**
 .Tag.Join Strategies

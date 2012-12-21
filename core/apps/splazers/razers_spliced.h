@@ -1397,22 +1397,34 @@ _alignBandedNeedlemanWunsch(TTrace& trace,
 
 			if ((actualRow != 0) && (actualCol != 0)) {
 				// Get the new maximum for mat
-				*matIt += score(const_cast<TScore&>(sc), ((int) actualCol - 1), ((int) actualRow - 1), str1, str2);
+				*matIt += score(const_cast<TScore&>(sc), sequenceEntryForScore(const_cast<TScore&>(sc), str1, ((int) actualCol - 1)),
+				                sequenceEntryForScore(const_cast<TScore&>(sc), str2, ((int) actualRow - 1)));
 				*traceIt = Diagonal;
-				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) + scoreGapExtendVertical(sc, ((int) actualCol - 1), ((int) actualRow - 1), str1, str2) : MinValue<TScoreValue>::VALUE) > *matIt) {
+				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) +
+				    scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				{
 					*matIt = verti_val;
 					*traceIt = Vertical;
 				}
-				if ((hori_val = (col > 0) ? hori_val + scoreGapExtendHorizontal(sc, ((int) actualCol - 1), ((int) actualRow - 1), str1, str2) : MinValue<TScoreValue>::VALUE) > *matIt) {
+				if ((hori_val = (col > 0) ? hori_val +
+				    scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				{
 					*matIt = hori_val;
 					*traceIt = Horizontal;
 				}
 				hori_val = *matIt;
 			} else {
 				// Usual initialization for first row and column
-				if (actualRow == 0) _initFirstRow(TAlignConfig(), *matIt, (TScoreValue) actualCol * scoreGapExtendHorizontal(sc, ((int) actualCol - 1), -1, str1, str2));
+				if (actualRow == 0)
+				    _initFirstRow(TAlignConfig(), *matIt, (TScoreValue) actualCol *
+				                  scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, std::max(0,((int) actualCol - 1))),
+				                                           sequenceEntryForScore(sc, str2, 0)));
 				else {
-					_initFirstColumn(TAlignConfig(), *matIt, (TScoreValue) actualRow * scoreGapExtendVertical(sc, -1, ((int) actualRow - 1), str1, str2));
+					_initFirstColumn(TAlignConfig(), *matIt, (TScoreValue) actualRow *
+					                 scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, 0),
+					                                        sequenceEntryForScore(sc, str2, std::max(0,((int) actualRow - 1)))));
 					hori_val = *matIt;
 				}
 			}
@@ -1748,6 +1760,7 @@ combineLeftRight(TMatch & mR,
 		appendValue(strR,genomeInfR);
 		appendValue(strR,readInfR);
 		String<Pair<int,int> > maxColsR;
+
 		_globalAlignment(strR,scoreType,AlignConfig<false,false,false,false>(),diag1R,diag2R,maxColsR,minColNum,NeedlemanWunsch());
 	
 		int rowPosL1 = ((int)options.minMatchLen > readLength-mR.mScore) ? (int)0 : readLength-mR.mScore-options.minMatchLen;

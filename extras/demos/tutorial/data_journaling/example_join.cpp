@@ -20,9 +20,9 @@ int main()
 
     // FRAGMENT(init)
     setGlobalReference(journaledSet, reference);
-    appendValue(journaledSet, seq0);
-    appendValue(journaledSet, seq1);
-    appendValue(journaledSet, seq2);
+    appendValue(journaledSet, TJournalString(seq0));
+    appendValue(journaledSet, TJournalString(seq1));
+    appendValue(journaledSet, TJournalString(seq2));
 
     // FRAGMENT(join)
     join(journaledSet, 0, JoinConfig<GlobalAlign<JournaledManhatten> >());  // Simply inserts the

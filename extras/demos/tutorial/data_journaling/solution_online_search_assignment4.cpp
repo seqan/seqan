@@ -228,7 +228,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
             std::cerr << "ERROR reading FASTA." << std::endl;
             return 1;
         }
-        appendValue(journalSet, sequence);
+        appendValue(journalSet, TString(sequence));
         join(journalSet, length(journalSet) - 1, joinConfig);
     }
     return 0;

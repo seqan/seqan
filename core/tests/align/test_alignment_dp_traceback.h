@@ -1,0 +1,361 @@
+// ==========================================================================
+//                       test_alignment_dp_traceback.h
+// ==========================================================================
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
+//       its contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+// DAMAGE.
+//
+// ==========================================================================
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
+// ==========================================================================
+
+#ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_TRACEBACK_H_
+#define SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_TRACEBACK_H_
+
+#include <seqan/basic.h>
+#include <seqan/align.h>
+
+SEQAN_DEFINE_TEST(test_align2_traceback_affine)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 4);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::DIAGONAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_::VERTICAL_OPEN;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 3) = +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    value(traceMatrix, 2, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 3) = +TraceBitMap_::DIAGONAL;
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+    DnaString str0 = "ACG";
+    DnaString str1 = "ACG";
+
+    _computeTraceback(target, navigator, 15, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
+
+    clear(target);
+    _computeTraceback(target, navigator, 14, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 2, 1, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 2, 3, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 2, +TraceBitMap_::VERTICAL));
+
+    clear(target);
+    _computeTraceback(target, navigator, 13, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 1, 2, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(2, 1, 1, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 0, 1, +TraceBitMap_::DIAGONAL));
+    SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::HORIZONTAL));
+
+    clear(target);
+    _computeTraceback(target, navigator, 12, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 0, 3, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 3, +TraceBitMap_::HORIZONTAL));
+
+    clear(target);
+    _computeTraceback(target, navigator, 11, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 3, 1, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(2, 1, 2, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 0, 1, +TraceBitMap_::DIAGONAL));
+    SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::HORIZONTAL));
+
+    clear(target);
+    _computeTraceback(target, navigator, 7, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(1, 3, 2, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 1, 2, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
+
+    clear(target);
+    _computeTraceback(target, navigator, 3, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 3, 3, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 3, +TraceBitMap_::VERTICAL));
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 4);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 3, 3) = +TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL  | +TraceBitMap_::HORIZONTAL;
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+    DnaString str0 = "ACG";
+    DnaString str1 = "ACG";
+
+    _computeTraceback(target, navigator, 15, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::DIAGONAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 2, 1, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 1, 1, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 5);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 3);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 3) = +TraceBitMap_::VERTICAL | +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 3) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 4) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 4) = +TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL  | +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 4) = +TraceBitMap_::NONE;
+
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOn>(-1, 1));
+
+    DnaString str0 = "ACGT";
+    DnaString str1 = "ACGT";
+
+    _computeTraceback(target, navigator, 13, str0, str1, DPBand_<BandOn>(-1, 1), TDPProfile());
+
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 3, 1, +TraceBitMap_::DIAGONAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(3, 2, 1, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 2, 2, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[3], TTraceSegment(1, 1, 1, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[4], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 7);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 7);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 4, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 5, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 6, 0) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 4, 1) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 5, 1) = +TraceBitMap_::NONE;
+    value(traceMatrix, 6, 1) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::NONE;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 4, 2) = +TraceBitMap_::NONE;
+    value(traceMatrix, 5, 2) = +TraceBitMap_::NONE;
+    value(traceMatrix, 6, 2) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 3, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 4, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 5, 3) = +TraceBitMap_::NONE;
+    value(traceMatrix, 6, 3) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 4) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 4) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 4) = +TraceBitMap_::NONE;
+    value(traceMatrix, 3, 4) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 4, 4) = +TraceBitMap_::NONE;
+    value(traceMatrix, 5, 4) = +TraceBitMap_::NONE;
+    value(traceMatrix, 6, 4) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 5) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 5) = +TraceBitMap_::NONE;
+    value(traceMatrix, 2, 5) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 5) = +TraceBitMap_::NONE;
+    value(traceMatrix, 4, 5) = +TraceBitMap_::NONE;
+    value(traceMatrix, 5, 5) = +TraceBitMap_::NONE;
+    value(traceMatrix, 6, 5) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 6) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 6) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 6) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 6) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 4, 6) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 5, 6) = +TraceBitMap_::NONE;
+    value(traceMatrix, 6, 6) = +TraceBitMap_::NONE;
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOn>(-4, 4));
+
+    DnaString str0 = "ACGTAC";
+    DnaString str1 = "ACGTAC";
+
+    _computeTraceback(target, navigator, 46, str0, str1, DPBand_<BandOn>(-4, 4), TDPProfile());
+
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(6, 3, 3, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 3, 5, +TraceBitMap_::HORIZONTAL));
+    SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 1, 2, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 4);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 1);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::DIAGONAL;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::DIAGONAL;
+
+    value(traceMatrix, 0, 3) = +TraceBitMap_::DIAGONAL;
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOn>(0, 0));
+
+    DnaString str0 = "ACG";
+    DnaString str1 = "ACG";
+
+    _computeTraceback(target, navigator, 3, str0, str1, DPBand_<BandOn>(0, 0), TDPProfile());
+
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
+}
+
+#endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_TRACEBACK_H_

@@ -57,6 +57,8 @@ namespace seqan {
 // Function _joinInternal()                     [GlobalAlign<JournaledCompact>]
 // ----------------------------------------------------------------------------
 
+// TODO(rmaerker): Change the orientation of reference and journal.
+// The journal needs to be adapted. The simple thing would be to just
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 inline void
 _joinInternal(String <TValue, THostSpec> const & reference,
@@ -64,42 +66,21 @@ _joinInternal(String <TValue, THostSpec> const & reference,
               JoinConfig<GlobalAlign<JournaledCompact> > const & joinConfig)
 {
 
-    typedef String <TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
     typedef typename Size<TJournalString>::Type TSize;
-    typedef typename JoinConfig<GlobalAlign<JournaledCompact> >::TScoringScheme TScoringScheme;
-    typedef typename Value<TScoringScheme>::Type TScoreValue;
 
-    //assure we compare only to the ref, not to the journal of the ref, which might has a tre
-
-    JournalTraceDescriptor<TJournalString> traceDescriptor;
-    String<unsigned char> trace;
+    // TODO(rmaerker): Check the correct behavior here.
+    TJournalString tmpJournal;
+    setHost(tmpJournal, host(journal));
 
     if (isBandSet(joinConfig))
-    {
-        TScoreValue overallMaxValue[2];
-        TSize overallMaxIndex[4];
-
-        _alignBandedGotoh(trace, reference, journal, scoringScheme(joinConfig), overallMaxValue,
-                          overallMaxIndex, lowerDiagonal(joinConfig), upperDiagonal(joinConfig),
-                          joinConfig._alignConfig);
-
-        // Follow the trace and create the graph
-        _alignBandedGotohTrace(traceDescriptor, reference, journal, 0, 0, trace, overallMaxValue, overallMaxIndex,
-                               lowerDiagonal(joinConfig), upperDiagonal(joinConfig));
-    }
+        globalAlignment(tmpJournal, reference, journal, scoringScheme(joinConfig), joinConfig._alignConfig,
+                        lowerDiagonal(joinConfig), upperDiagonal(joinConfig));
     else
-    {
-        unsigned char initialDir;
-        TScoreValue overallMaxValue[2];
-        TSize overallMaxIndex[2];
+        globalAlignment(tmpJournal, reference, journal, scoringScheme(joinConfig), joinConfig._alignConfig);
 
-        _alignGotoh(trace, reference, journal, scoringScheme(joinConfig), overallMaxValue, overallMaxIndex, initialDir,
-                    joinConfig._alignConfig);
-        _alignGotohTrace(traceDescriptor, reference, journal, 0, 0, trace, overallMaxIndex, initialDir);
-    }
-
-    reverseTrace(traceDescriptor);
-    _applyTraceOperations(journal, reference, traceDescriptor);
+    // Apply the alignment to the journal.
+    journal = tmpJournal;
 }
 
 }  // namespace seqan
