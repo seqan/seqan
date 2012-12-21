@@ -59,8 +59,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 9223372036854775807);
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 9223372036854775807);
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
     SEQAN_ASSERT_EQ(value(it), 0u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 4294967295);
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
@@ -70,7 +70,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031813);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos,33026870);
     SEQAN_ASSERT_EQ(value(it), 1u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -78,87 +78,87 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33026870);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
     SEQAN_ASSERT_EQ(value(it), 2u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33027740);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33026870);
-    SEQAN_ASSERT_EQ(value(it), 3);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(value(it), 3u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33030540);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33030246);
-    SEQAN_ASSERT_EQ(value(it), 4);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(value(it), 4u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031813);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33031709);
-    SEQAN_ASSERT_EQ(value(it), 5);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1);
+    SEQAN_ASSERT_EQ(value(it), 5u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002yoz.1");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "mRNA");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031934);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33041243);
-    SEQAN_ASSERT_EQ(value(it), 6);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0);
+    SEQAN_ASSERT_EQ(value(it), 6u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 0u);
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "CDS");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33032082);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33040891);
-    SEQAN_ASSERT_EQ(value(it), 7);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(value(it), 7u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33031934);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33032154);
-    SEQAN_ASSERT_EQ(value(it), 8);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(value(it), 8u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33036102);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33036199);
-    SEQAN_ASSERT_EQ(value(it), 9);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(value(it), 9u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33038761);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33038831);
-    SEQAN_ASSERT_EQ(value(it), 10);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(value(it), 10u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33039570);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33039688);
-    SEQAN_ASSERT_EQ(value(it), 11);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(value(it), 11u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
     goNext(it);
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 33040783);
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 33041243);
-    SEQAN_ASSERT_EQ(value(it), 12);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6);
+    SEQAN_ASSERT_EQ(value(it), 12u);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 6u);
     SEQAN_ASSERT_EQ(getParentName(it), "uc002ypa.3");
     goNext(it);
 
