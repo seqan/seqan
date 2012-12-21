@@ -163,8 +163,9 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
     typedef DPMatrix_<int, SparseDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
+    typedef DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise> TDPMatrixNavigator;
 
-    DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise> dpScoreMatrixNavigator;
+    TDPMatrixNavigator dpScoreMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -174,8 +175,8 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
     _init(dpScoreMatrixNavigator, dpMatrix, DPBand_<BandOff>());
 
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
-    SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0u);
-    SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix, Standard()), 0u);
+    SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
+    SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix, Standard()), 0);
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator._activeColIterator), 0);
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator._prevColIterator), 0);
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, -9);
@@ -191,8 +192,9 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
+    typedef DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise> TDPMatrixNavigator;
 
-    DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise> dpScoreMatrixNavigator;
+    TDPMatrixNavigator dpScoreMatrixNavigator;
 
     { // Case1: Band intersects with poit of origin.
         TDPMatrix dpMatrix;
@@ -256,8 +258,9 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
     typedef DPMatrix_<int, SparseDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
+    typedef DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise> TDPMatrixNavigator;
 
-    DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise> dpScoreMatrixNavigator;
+    TDPMatrixNavigator dpScoreMatrixNavigator;
 
     {
         TDPMatrix dpMatrix;

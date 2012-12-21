@@ -44,16 +44,18 @@ void testConsensusConsensusScoreSequenceEntry()
     using namespace seqan;
 
     {
+        typedef typename Position<DnaString>::Type TPosition;
         ConsensusScoreSequenceEntry<DnaString> consensusScoreSequenceEntry;
         SEQAN_ASSERT_EQ(consensusScoreSequenceEntry._seq, (DnaString *) 0);
-        SEQAN_ASSERT_EQ(consensusScoreSequenceEntry._pos, 0);
+        SEQAN_ASSERT_EQ(consensusScoreSequenceEntry._pos, static_cast<TPosition>(0));
     }
 
     {
+        typedef typename Position<DnaString>::Type TPosition;
         DnaString seq = "ACGTACGACT";
         ConsensusScoreSequenceEntry<DnaString> consensusScoreSequenceEntry(seq, 3);
         SEQAN_ASSERT_EQ(consensusScoreSequenceEntry._seq, &seq);
-        SEQAN_ASSERT_EQ(consensusScoreSequenceEntry._pos, 3);
+        SEQAN_ASSERT_EQ(consensusScoreSequenceEntry._pos, static_cast<TPosition>(3));
     }
 }
 
@@ -74,15 +76,16 @@ void testConsensusSequenceEntryForScore()
     using namespace seqan;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
+    typedef typename Position<DnaString>::Type TPosition;
 
     DnaString seq = "ACGTACGTAC";
 
     TSequenceEntry entry = sequenceEntryForScore(TScoringScheme(), seq, 0);
-    SEQAN_ASSERT_EQ(entry._pos, 0);
+    SEQAN_ASSERT_EQ(entry._pos, static_cast<TPosition>(0));
     SEQAN_ASSERT_EQ(*entry._seq, seq);
 
     entry = sequenceEntryForScore(TScoringScheme(), seq, 4);
-    SEQAN_ASSERT_EQ(entry._pos, 4);
+    SEQAN_ASSERT_EQ(entry._pos, static_cast<TPosition>(4));
     SEQAN_ASSERT_EQ(*entry._seq, seq);
 }
 
@@ -110,14 +113,15 @@ void testConsensusPosition()
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
     typedef typename Value<DnaString>::Type TDnaStringValue;
+    typedef typename Position<DnaString>::Type TPosition;
 
     DnaString seq = "ACGTACGTAC";
 
     TSequenceEntry entry = sequenceEntryForScore(TScoringScheme(), seq, 0);
-    SEQAN_ASSERT_EQ(position(entry), 0);
+    SEQAN_ASSERT_EQ(position(entry), static_cast<TPosition>(0));
 
     entry = sequenceEntryForScore(TScoringScheme(), seq, 3);
-    SEQAN_ASSERT_EQ(position(entry), 3);
+    SEQAN_ASSERT_EQ(position(entry), static_cast<TPosition>(3));
 }
 
 template <typename TScoringScheme>
