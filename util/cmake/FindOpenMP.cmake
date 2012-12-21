@@ -1,3 +1,5 @@
+# Updated FindOpenMP file such that the failure of finding OpenMP is cached.
+
 # - Finds OpenMP support
 # This module can be used to detect OpenMP support in a compiler.
 # If the compiler supports OpenMP, the flags required to compile with
@@ -23,6 +25,11 @@
 #=============================================================================
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
+
+# Do not try to find OpenMP if we know that it cannot be found.
+if (_OPENMP_NOT_FOUND)
+    return ()
+endif ()
 
 include(CheckCSourceCompiles)
 include(CheckCXXSourceCompiles)
@@ -112,3 +119,8 @@ mark_as_advanced(
   OpenMP_C_FLAGS
   OpenMP_CXX_FLAGS
 )
+
+if (NOT OPENMP_FOUND)
+    set (OPENMP_NOT_FOUND TRUE CACHE INTERNAL
+        "Set such that OpenMP is not searched for more than once.")
+endif ()
