@@ -2,9 +2,8 @@
 #
 # Currently, we run RazerS only on
 
-# We use the current trunk version of 2011-10-13 (r10463) for building the
-# reference.
-RAZERS=../../../../../seqan-clean-build/release/bin/razers2
+# We use revision 13383 for building the gold standard.
+RAZERS=../../../../../seqan-align-build/release/bin/razers2
 
 # ============================================================
 # Run Adeno Single-End Example
