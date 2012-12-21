@@ -15,8 +15,8 @@ gi|9632547|ref|NC_002077.1|	razers	read	458	488	100	-	.	ID=adeno-reads36.fasta.0
 gi|9632547|ref|NC_002077.1|	razers	read	458	488	100	-	.	ID=adeno-reads36.fasta.000000742/R;multi
 gi|9632547|ref|NC_002077.1|	razers	read	460	486	100	-	.	ID=adeno-reads36.fasta.000000260/R;unique
 gi|9632547|ref|NC_002077.1|	razers	read	472	507	100	+	.	ID=adeno-reads36.fasta.000000767/L;unique
-gi|9632547|ref|NC_002077.1|	razers	read	543	571	97.2222	-	.	ID=adeno-reads36.fasta.000000022/R;multi;cigar=1I1M1I3M1I5M2I4M1D4M1I2M1I3M1I6M;mutations=1G,2C,3G,4C,5C,7C,8G,9T,13T,14A,23A,26C,30C,32T,35T,36T
-gi|9632547|ref|NC_002077.1|	razers	read	543	571	97.2222	-	.	ID=adeno-reads36.fasta.000000022/R;multi;cigar=1I1M1I3M1I5M2I4M1D4M1I2M1I3M1I6M;mutations=1G,2C,3G,4C,5C,7C,8G,9T,13T,14A,23A,26C,30C,32T,35T,36T
+gi|9632547|ref|NC_002077.1|	razers	read	543	571	97.2222	-	.	ID=adeno-reads36.fasta.000000022/R;multi;cigar=2I4M1I5M2I4M1D4M1I2M1I3M1I6M;mutations=1G,2C,3G,4C,5C,7C,8G,9T,13T,14A,23A,26C,30C,32T,35T,36T
+gi|9632547|ref|NC_002077.1|	razers	read	543	571	97.2222	-	.	ID=adeno-reads36.fasta.000000022/R;multi;cigar=2I4M1I5M2I4M1D4M1I2M1I3M1I6M;mutations=1G,2C,3G,4C,5C,7C,8G,9T,13T,14A,23A,26C,30C,32T,35T,36T
 gi|9632547|ref|NC_002077.1|	razers	read	566	592	100	-	.	ID=adeno-reads36.fasta.000000620/R;unique
 gi|9632547|ref|NC_002077.1|	razers	read	601	620	100	-	.	ID=adeno-reads36.fasta.000000856/R;unique
 gi|9632547|ref|NC_002077.1|	razers	read	639	669	97.2222	+	.	ID=adeno-reads36.fasta.000000508/R;unique;cigar=8M1I2M1I7M1I11M2I3M;mutations=2T,4A,6C,9A,12C,13A,16A,17A,20G,21G,22C,25A,27C,28A,29C,32T,33G
@@ -96,7 +96,7 @@ gi|9632547|ref|NC_002077.1|	razers	read	3137	3171	97.2222	+	.	ID=adeno-reads36.f
 gi|9632547|ref|NC_002077.1|	razers	read	3146	3175	100	+	.	ID=adeno-reads36.fasta.000000434/R;multi
 gi|9632547|ref|NC_002077.1|	razers	read	3146	3175	100	+	.	ID=adeno-reads36.fasta.000000434/R;multi
 gi|9632547|ref|NC_002077.1|	razers	read	3286	3318	97.2222	+	.	ID=adeno-reads36.fasta.000000702/R;unique;cigar=2M1I1M1I7M1I2M1D5M1I2M1D2M1I10M;mutations=1A,3A,5A,7G,8G,9A,10G,13A,18T,21T,26A,27G,28A,29G,32G,33A,34G,36A
-gi|9632547|ref|NC_002077.1|	razers	read	3352	3384	100	-	.	ID=adeno-reads36.fasta.000000254/R;unique
+gi|9632547|ref|NC_002077.1|	razers	read	3357	3384	100	-	.	ID=adeno-reads36.fasta.000000254/R;unique
 gi|9632547|ref|NC_002077.1|	razers	read	3372	3407	100	-	.	ID=adeno-reads36.fasta.000000434/L;multi
 gi|9632547|ref|NC_002077.1|	razers	read	3372	3407	100	-	.	ID=adeno-reads36.fasta.000000434/L;multi
 gi|9632547|ref|NC_002077.1|	razers	read	3472	3507	100	+	.	ID=adeno-reads36.fasta.000000646/L;multi

@@ -4,7 +4,7 @@
 
 # We use the current trunk version of 2011-10-18 (r10612) for building the
 # reference.
-RAZERS="../../../../build/Release/core/apps/razers/razers --low-memory"
+RAZERS="../../../../../seqan-align-build/release/bin/razers --low-memory"
 
 # ============================================================
 # Run Adeno Single-End Example
@@ -13,7 +13,7 @@ RAZERS="../../../../build/Release/core/apps/razers/razers --low-memory"
 for rl in 36 100; do
     # Run with defaults for everything.
     ${RAZERS} adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1.out > se-adeno-reads${rl}_1.stdout
-    
+
     # Allow indels.
     ${RAZERS} -id adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-id.out > se-adeno-reads${rl}_1-id.stdout
 
@@ -44,7 +44,7 @@ done
 for rl in 36 100; do
     # Run with defaults for everything.
     ${RAZERS} adeno-genome.fa adeno-reads${rl}_1.fa adeno-reads${rl}_2.fa -o pe-adeno-reads${rl}_2.out > pe-adeno-reads${rl}_2.stdout
-    
+
     # Allow indels.
     ${RAZERS} -id adeno-genome.fa adeno-reads${rl}_1.fa adeno-reads${rl}_2.fa -o pe-adeno-reads${rl}_2-id.out > pe-adeno-reads${rl}_2-id.stdout
 
