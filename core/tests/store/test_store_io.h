@@ -37,6 +37,8 @@
 #include <seqan/basic.h>  // For test functionality.
 #include <seqan/store.h>  // Header under test.
 
+#include <seqan/misc/misc_svg.h>
+
 using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
@@ -212,6 +214,10 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
 		SEQAN_ASSERT(samFile);
 		read(samFile, store, Sam());
 	}
+
+	//AlignedReadLayout layout;
+	//layoutAlignment(layout, store);
+	//printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
 	
 	// 3. WRITE SAM ALIGNMENTS
     strcpy(buffer, SEQAN_TEMP_FILENAME());
