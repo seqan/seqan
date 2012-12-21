@@ -2,9 +2,8 @@
 #
 # Expected output generation for mason.
 
-# We use the current trunk version of 2011-10-13 (r10463) for building the
-# reference.
-MASON=../../../../build/Release/core/apps/mason/mason
+# We use version 13383 for building the test data.
+MASON=../../../../../seqan-align-build/release/bin/mason
 
 # ============================================================
 # Simulate 454 Reads, Single-End
