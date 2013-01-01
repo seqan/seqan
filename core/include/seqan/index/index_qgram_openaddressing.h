@@ -44,8 +44,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	template <typename THashValue>
 	struct BucketMap 
 	{
-		String<THashValue>	qgramHash;
-		THashValue			prime;
+		String<THashValue>	qgramCode;
 	};
 
 	// use the index value type as shape value type
@@ -178,226 +177,115 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 	{
         if (!empty(dir))
             arrayFill(begin(dir, Standard()), end(dir, Standard()), 0);
-        if (!empty(bucketMap.qgramHash))
-            arrayFill(begin(bucketMap.qgramHash, Standard()), end(bucketMap.qgramHash, Standard()), (THashValue)-1);
+        if (!empty(bucketMap.qgramCode))
+            arrayFill(begin(bucketMap.qgramCode, Standard()), end(bucketMap.qgramCode, Standard()), (THashValue)-1);
 	}
 
-	// looks up the bucket for the hash
-	// allocates a new bucket if non for this hash exsits yet
-	// returns the position of the bucket
-#if SEQAN_DISABLED_BECAUSE_INEFFICIENT
-	template < typename THashValue, typename THashValue2 >
-	inline THashValue
-	requestBucket(BucketMap<THashValue> &bucketMap, THashValue2 hash)
-	{
-		typedef unsigned long TSize;
-		// get size of the index
-
-		// check whether bucket map is disabled and
-		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramHash);
-		if (hlen == 0ul) return hash;
-#ifdef SEQAN_OPENADDRESSING_COMPACT
-        --hlen;
-		register TSize h1 = (TSize)(hash % hlen);
+    template < typename TBucketMap, typename TValue >
+    inline TValue
+    _hashFunction(TBucketMap const &, TValue val)
+    {
+        // WARNING:
+        // As SSE4.2 is not always available, the bucket order is platform dependent
+#ifdef __SSE4_2__
+        return _mm_crc32_u64(0ul, val);
 #else
-        hlen -= 2;
-		register TSize h1 = (TSize)(hash & hlen);
+        return ((val * 43) ^ (val >> 20)) + val;
 #endif
-		// -1 is the undefiend value, hence the method works not for the largest word of length 32
-		// if there is no collision with another hash value
-		// the bucket is still empty
-		if (bucketMap.qgramHash[h1] == (THashValue)-1)
-		{
-			bucketMap.qgramHash[h1] = hash;
-			return h1;
-		}
-		// if there is a collision
-		else
-		{
-			// the bucket for this hash was requestet before
-			// return the same bucket
-			if (bucketMap.qgramHash[h1] == hash)
-				return h1;
-			// another hash is occupying this bucket already
-			else 
-			{
-				// TSize step = 1 + (hash % bucketMap.prime);
-				register TSize step = (TSize)bucketMap.prime;
-				// look 'step' buckets further untill one is free or was requested by this hash earlier
-				do {
-#ifdef SEQAN_OPENADDRESSING_COMPACT
-					h1 = (h1 + step) % hlen;
-#else
-					h1 = (h1 + step) & hlen;
-#endif
-				} while (bucketMap.qgramHash[h1] != (THashValue)-1 && bucketMap.qgramHash[h1] != hash);
-				bucketMap.qgramHash[h1] = hash;
-				return h1;
-			}
-		}
-	}
-#endif
-
-	template < typename THashValue, typename THashValue2 >
-	inline THashValue
-	requestBucket(BucketMap<THashValue> &bucketMap, THashValue2 hash)
-	{
-		typedef unsigned long TSize;
-		// get size of the index
-
-		// check whether bucket map is disabled and
-		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramHash);
-		if (hlen == 0ul) return hash;
-
-        register TSize a = ((hash * 43) ^ (hash >> 20)) + hash;
-#ifdef SEQAN_OPENADDRESSING_COMPACT
-        --hlen;
-		register TSize h1 = (TSize)(a % hlen);
-#else
-        hlen -= 2;
-		register TSize h1 = (TSize)(a & hlen);
-#endif
-		// -1 is the undefiend value, hence the method works not for the largest word of length 32
-		// if there is no collision with another hash value
-		// the bucket is still empty
-		if (bucketMap.qgramHash[h1] == (THashValue)-1)
-		{
-			bucketMap.qgramHash[h1] = hash;
-			return h1;
-		}
-		// if there is a collision
-		else
-		{
-			// the bucket for this hash was requestet before
-			// return the same bucket
-			if (bucketMap.qgramHash[h1] == hash)
-				return h1;
-			// another hash is occupying this bucket already
-			else
-			{
-				// look one bucket further untill one is free or was requested by this hash earlier
-				do {
-#ifdef SEQAN_OPENADDRESSING_COMPACT
-					h1 = (h1 + 1) % hlen;
-#else
-					h1 = (h1 + 1) & hlen;
-#endif
-				} while (bucketMap.qgramHash[h1] != (THashValue)-1 && bucketMap.qgramHash[h1] != hash);
-				bucketMap.qgramHash[h1] = hash;
-				return h1;
-			}
-		}
-	}
-
-
-	// looks up the bucket for the hash
-	// returns the position of the bucket
-#if SEQAN_DISABLED_BECAUSE_INEFFICIENT
-	template < typename THashValue, typename THashValue2 >
-	inline THashValue
-	getBucket(BucketMap<THashValue> const &bucketMap, THashValue2 hash)
-	{
-		typedef unsigned long TSize;
-		// get size of the index
-		
-		// check whether bucket map is disabled and
-		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramHash);
-		if (hlen == 0ul) return hash;
-#ifdef SEQAN_OPENADDRESSING_COMPACT
-        --hlen;
-		register TSize h1 = (TSize)(hash % hlen);
-#else
-        hlen -= 2;
-		register TSize h1 = (TSize)(hash & hlen);
-#endif
-		
-		// -1 is the undefined value, hence the method works not for the largest word of length 32
-		// if there is no collision with another hash value
-		// the bucket is still empty
-		if (bucketMap.qgramHash[h1] == (THashValue)-1)
-			return h1;
-		// if there is a collision
-		else
-		{
-			// the bucket for this hash was requestet before
-			// return the same bucket
-			if (bucketMap.qgramHash[h1] == hash)
-				return h1;
-			// another hash is occupying this bucket already
-			else 
-			{
-				register TSize step = bucketMap.prime;
-				// look 'step' buckets further untill one is free or was requested by this hash earlier
-				do {
-#ifdef SEQAN_OPENADDRESSING_COMPACT
-					h1 = (h1 + step) % hlen;
-#else
-					h1 = (h1 + step) & hlen;
-#endif
-				} while (bucketMap.qgramHash[h1] != (THashValue)-1 && bucketMap.qgramHash[h1] != hash);
-				return h1;
-			}
-		}
-	}
-#endif
+    }
     
+
 	template < typename THashValue, typename THashValue2 >
 	inline THashValue
-	getBucket(BucketMap<THashValue> const &bucketMap, THashValue2 hash)
+	requestBucket(BucketMap<THashValue> &bucketMap, THashValue2 code)
+	{
+		typedef unsigned long TSize;
+		// get size of the index
+
+		// check whether bucket map is disabled and
+		// where the hash should be found if no collision took place before
+		register TSize hlen = length(bucketMap.qgramCode);
+		if (hlen == 0ul) return code;
+
+        register TSize h1 = _hashFunction(bucketMap, code);
+#ifdef SEQAN_OPENADDRESSING_COMPACT
+        --hlen;
+		h1 %= hlen;
+#else
+        hlen -= 2;
+		h1 &= hlen;
+#endif
+		// was the entry empty?
+		if (bucketMap.qgramCode[h1] == (THashValue)-1)
+		{
+			bucketMap.qgramCode[h1] = code;
+			return h1;
+		}
+		// if not ...
+		else
+		{
+			// is it occupied by our code?
+			if (bucketMap.qgramCode[h1] == code)
+				return h1;
+            
+			// if not we have a collision -> probe for our code or an empty entry
+            //
+            // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
+            // otherwise do quadratic probing to avoid clustering (Cormen 1998)
+            register TSize delta = 0;
+            (void)delta;
+            do {
+#ifdef SEQAN_OPENADDRESSING_COMPACT
+                h1 = (h1 + 1) % hlen;               // linear probing guarantees that all entries are visited
+#else
+                h1 = (h1 + delta + 1) & hlen;       // for power2-sized tables the (i*i+i)/2 probing guarantees the same
+                ++delta;
+#endif
+            } while (bucketMap.qgramCode[h1] != (THashValue)-1 && bucketMap.qgramCode[h1] != code);
+            bucketMap.qgramCode[h1] = code;
+            return h1;
+		}
+	}
+
+	template < typename THashValue, typename THashValue2 >
+	inline THashValue
+	getBucket(BucketMap<THashValue> const &bucketMap, THashValue2 code)
 	{
 		typedef unsigned long TSize;
 		// get size of the index
 		
 		// check whether bucket map is disabled and
 		// where the hash should be found if no collision took place before
-		register TSize hlen = length(bucketMap.qgramHash);
-		if (hlen == 0ul) return hash;
+		register TSize hlen = length(bucketMap.qgramCode);
+		if (hlen == 0ul) return code;
 
-        register TSize a = ((hash * 43) ^ (hash >> 20)) + hash;
+        register TSize h1 = _hashFunction(bucketMap, code);
 #ifdef SEQAN_OPENADDRESSING_COMPACT
         --hlen;
-		register TSize h1 = (TSize)(a % hlen);
+        h1 %= hlen;
 #else
         hlen -= 2;
-		register TSize h1 = (TSize)(a & hlen);
+		h1 &= hlen;
 #endif
 		
-		// -1 is the undefined value, hence the method works not for the largest word of length 32
-		// if there is no collision with another hash value
-		// the bucket is still empty
-		//
-		// look one bucket further until one is free or was requested by this hash earlier
-		while (bucketMap.qgramHash[h1] != hash && bucketMap.qgramHash[h1] != (THashValue)-1)
+        // probe for our code or an empty entry
+        //
+        // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
+        // otherwise do quadratic probing to avoid clustering (Cormen 1998)
+        register TSize delta = 0;
+        (void)delta;
+		while (bucketMap.qgramCode[h1] != code && bucketMap.qgramCode[h1] != (THashValue)-1)
 		{
 #ifdef SEQAN_OPENADDRESSING_COMPACT
-			h1 = (h1 + 1) % hlen;
+			h1 = (h1 + 1) % hlen;               // linear probing guarantees that all entries are visited
 #else
-			h1 = (h1 + 1) & hlen;
+			h1 = (h1 + delta + 1) & hlen;       // for power2-sized tables the (i*i+i)/2 probing guarantees the same
+            ++delta;
 #endif
 		}
 		return h1;
 	}
     
-
-	template <typename TSize>
-	inline unsigned coprimeTest(TSize hlen)
-	{
-		static unsigned _primes[42] = { 43, 47, 53, 59, 61, 67, 71, 
-										73, 79, 83, 89, 97, 101, 103, 
-										107, 109, 113, 127, 131, 137, 139, 
-										149, 151, 157, 163, 167, 173, 179,
-										181, 191, 193, 197, 199, 211, 223, 
-										227, 229, 233, 239, 241, 251, 257 };
-
-		for (int i = 0; i < 42; ++i)
-			if ((hlen % _primes[i]) != 0)
-				return _primes[i];
-		
-		return _primes[0];
-	}
 
 	template <typename TObject, typename TShapeSpec>
 	inline __int64 _fullDirLength(Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> > const &index) 
@@ -423,14 +311,13 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 				power2 <<= 1;
 			qgrams = power2;
 #endif
-			resize(const_cast<TIndex &>(index).bucketMap.qgramHash, qgrams + 1, Exact());
+			resize(const_cast<TIndex &>(index).bucketMap.qgramCode, qgrams + 1, Exact());
 		} else
 		{
 			qgrams = (__int64)ceil(max_qgrams);
-			clear(const_cast<TIndex &>(index).bucketMap.qgramHash);	// 1-1 mapping, no bucket map needed
+			clear(const_cast<TIndex &>(index).bucketMap.qgramCode);	// 1-1 mapping, no bucket map needed
 		}
 		
-		const_cast<TIndex &>(index).bucketMap.prime = coprimeTest(qgrams);
 		return qgrams + 1;
 	}
 	

@@ -118,12 +118,12 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
 
 	typedef FibreText		QGramText;
 	typedef FibreRawText	QGram_RawText;
-	typedef FibreSA		QGramSA;
+	typedef FibreSA         QGramSA;
 	typedef FibreRawSA		QGramRawSA;
 	typedef FibreDir		QGramDir;
 	typedef FibreSADir		QGramSADir;
 	typedef FibreShape		QGramShape;
-	typedef FibreCounts	QGramCounts;
+	typedef FibreCounts     QGramCounts;
 	typedef FibreCountsDir	QGramCountsDir;
 	typedef FibreBucketMap	QGramBucketMap;
 
@@ -154,22 +154,22 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 	struct IndexQGram {};
 
 	// use the index value type as shape value type
-	template < typename TObject, typename TShapeSpec, typename TSpec >
-	struct Fibre< Index<TObject, IndexQGram<TShapeSpec, TSpec> >, FibreShape> 
+	template < typename TText, typename TShapeSpec, typename TSpec >
+	struct Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreShape> 
 	{
-		typedef Index< TObject, IndexQGram<TShapeSpec, TSpec> >	TIndex;
+		typedef Index< TText, IndexQGram<TShapeSpec, TSpec> >	TIndex;
 		typedef Shape< typename Value<TIndex>::Type, TShapeSpec >	Type;
 	};
 
 	// allow different value types for the shape
-	template < typename TObject, typename TShapeValue, typename TShapeSpec, typename TSpec >
-	struct Fibre< Index<TObject, IndexQGram<Shape<TShapeValue, TShapeSpec>, TSpec> >, FibreShape> 
+	template < typename TText, typename TShapeValue, typename TShapeSpec, typename TSpec >
+	struct Fibre< Index<TText, IndexQGram<Shape<TShapeValue, TShapeSpec>, TSpec> >, FibreShape> 
 	{
 		typedef Shape<TShapeValue, TShapeSpec>	Type;
 	};
 
-	template < typename TObject, typename TShapeSpec, typename TSpec >
-	struct Fibre< Index<TObject, IndexQGram<TShapeSpec, TSpec> >, FibreBucketMap>
+	template < typename TText, typename TShapeSpec, typename TSpec >
+	struct Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreBucketMap>
 	{
 		typedef Nothing Type;
 	};
@@ -182,16 +182,16 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 #pragma warning( disable: 4522 )
 #endif  // PLATFORM_WINDOWS_VS
 
-	template < typename TObject, typename TShapeSpec, typename TSpec >
-	class Index<TObject, IndexQGram<TShapeSpec, TSpec> > {
+	template < typename TText_, typename TShapeSpec, typename TSpec >
+	class Index<TText_, IndexQGram<TShapeSpec, TSpec> > {
 	public:
 		typedef typename Fibre<Index, QGramText>::Type			TText;
 		typedef typename Fibre<Index, QGramSA>::Type			TSA;
 		typedef typename Fibre<Index, QGramDir>::Type			TDir;
 		typedef typename Fibre<Index, QGramCounts>::Type		TCounts;
-		typedef typename Fibre<Index, QGramCountsDir>::Type	TCountsDir;
-		typedef typename Fibre<Index, QGramShape>::Type		TShape;
-		typedef typename Fibre<Index, QGramBucketMap>::Type	TBucketMap;
+		typedef typename Fibre<Index, QGramCountsDir>::Type     TCountsDir;
+		typedef typename Fibre<Index, QGramShape>::Type         TShape;
+		typedef typename Fibre<Index, QGramBucketMap>::Type     TBucketMap;
 		typedef typename Cargo<Index>::Type						TCargo;
 		typedef typename Size<Index>::Type						TSize;
 
@@ -228,24 +228,24 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 			cargo(other.cargo),
 			stepSize(1) {}
 
-		template <typename TText_>
-		Index(TText_ &_text):
+		template <typename TText__>
+		Index(TText__ &_text):
 			text(_text),
 			stepSize(1) {}
 
-		template <typename TText_>
-		Index(TText_ const &_text):
+		template <typename TText__>
+		Index(TText__ const &_text):
 			text(_text),
 			stepSize(1) {}
 
-		template <typename TText_, typename TShape_>
-		Index(TText_ &_text, TShape_ const &_shape):
+		template <typename TText__, typename TShape_>
+		Index(TText__ &_text, TShape_ const &_shape):
 			text(_text),
 			shape(_shape),
 			stepSize(1) {}
 
-		template <typename TText_, typename TShape_>
-		Index(TText_ const &_text, TShape_ const &_shape):
+		template <typename TText__, typename TShape_>
+		Index(TText__ const &_text, TShape_ const &_shape):
 			text(_text),
 			shape(_shape),
 			stepSize(1) {}
@@ -972,6 +972,10 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Counting sort - Step 3: Cumulative sum
+    //
+    // a disabled bucket 3,2,x,4   (x = disabled)
+    // results in        0,0,3,x,5 (_qgramCummulativeSum)
+    // or in             0,3,5,x,9 (_qgramCummulativeSumAlt)
 
 	// First two entries are 0.
 	// Step 4 increments the entries hash(qgram)+1 on-the-fly while filling the SA table.
@@ -986,24 +990,24 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 
 		TDirIterator it = begin(dir, Standard());
 		TDirIterator itEnd = end(dir, Standard());
-		TSize diff = 0, diff_prev = 0, sum = 0;
+		TSize prevDiff = 0, prev2Diff = 0, sum = 0;
 		while (it != itEnd) 
 		{
-			if (TWithConstraints::VALUE && diff == (TSize)-1)
+			if (TWithConstraints::VALUE && prevDiff == (TSize)-1)
 			{
-				sum += diff_prev;
-				diff_prev = 0;
-				diff = *it;
+				sum += prev2Diff;
+				prev2Diff = 0;
+				prevDiff = *it;
 				*it = (TSize)-1;								// disable bucket
 			} else {
-				sum += diff_prev;
-				diff_prev = diff;
-				diff = *it;
+				sum += prev2Diff;
+				prev2Diff = prevDiff;
+				prevDiff = *it;
 				*it = sum;
 			}
 			++it;
 		}
-		return sum + diff_prev;
+		return sum + prev2Diff;
 	}
 
 	// The first entry is 0.
@@ -1018,17 +1022,22 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 
 		TDirIterator it = begin(dir, Standard());
 		TDirIterator itEnd = end(dir, Standard());
-		TSize diff = 0, sum = 0;
+		TSize prevDiff = 0, sum = 0;
 		while (it != itEnd) 
 		{
-			sum += diff;
-			diff = *it;
-			if (TWithConstraints::VALUE && diff == (TSize)-1) 
-				diff = 0;										// ignore disabled buckets
-			*it = sum;
+			if (TWithConstraints::VALUE && prevDiff == (TSize)-1)
+			{
+                sum += 0;
+                prevDiff = *it;
+                *it = (TSize)-1;                                // disable bucket
+			} else {
+                sum += prevDiff;
+                prevDiff = *it;
+                *it = sum;
+			}
 			++it;
 		}
-		return sum + diff;
+		return sum + prevDiff;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -1183,7 +1192,7 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 		TDirIterator itEnd = end(dir, Standard());
 		TSize prev = 0;
 		for (; it != itEnd; ++it) 
-			if (*it == (TSize)-1)
+			if (*it == (TSize)-1)   // end positions
 				*it = prev;
 			else
 				prev = *it;
@@ -1284,9 +1293,9 @@ The resulting tables must have appropriate size before calling this function.
 
 		// 3. cumulative sum
         __int64 res = _qgramCummulativeSum(dir, False());
-        (void)res;  // In case we run without assertions.
         SEQAN_ASSERT_EQ(res, static_cast<__int64>(length(sa)));
-		
+        ignoreUnusedVariableWarning(res);
+
 		// 4. fill suffix array
 		_qgramFillSuffixArray(sa, text, shape, dir, bucketMap, stepSize, False());
 	}
@@ -1420,15 +1429,15 @@ The resulting tables must have appropriate size before calling this function.
 		typename TSize2 >
 	void _refineQGramIndex(
 		TSA &sa,
-		TDir &dir,
+		TDir const &dir,
 		TText const &text,
 		TSize1 oldQ,
 		TSize2 newQ)
 	{
 	SEQAN_CHECKPOINT
 		typedef typename Size<TSA>::Type TSize;
-		typedef typename Iterator<TSA, Standard>::Type		TIter;
-		typedef typename Iterator<TDir, Standard>::Type		TDirIter;
+		typedef typename Iterator<TSA, Standard>::Type          TIter;
+		typedef typename Iterator<TDir const, Standard>::Type   TDirIter;
 
 		if (newQ <= (TSize2)oldQ) return;
 
@@ -1706,52 +1715,42 @@ The resulting tables must have appropriate size before calling this function.
         }
     };
 
-
-    template <typename TValue, typename TResult = unsigned>
-    struct _qgramHash : public ::std::unary_function<TValue, TResult> {
-        inline TResult operator()(TValue const &a) const
-        {
-			typedef typename Value<TValue, 2>::Type	TQGram;
-			TResult hash = 0;
-			unsigned len = length(a.i2);
-            for (unsigned i = 0; i < len; ++i) {
-				hash *= ValueSize< typename Value<TQGram>::Type >::VALUE;
-				hash += ordValue(a.i2[i]);
-            }
-            return hash;
-        }
-    };
-
-	// TODO: replace fixed tuple size of 6 with q and add q to Shape template arguments
 	template < 
-		typename TSA, 
-		typename TDir,
-		typename TText,
-		typename TValue,
-		unsigned q >
-	void createQGramIndexExt(
-		TSA &suffixArray,
-		TDir &dir,
-		TText &text,
-		Shape<TValue, UngappedShape<q> >)
+		typename TText_,
+		typename TShapeSpec,
+		typename TSpec >
+	void createQGramIndexExt(Index<TText_, IndexQGram<TShapeSpec, TSpec> > &index)
 	{
+	SEQAN_CHECKPOINT
+        typedef Index<TText_, IndexQGram<TShapeSpec, TSpec> >       TIndex;
+        typedef typename Fibre<TIndex, QGramText>::Type             TText;
+        typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
+        typedef typename Fibre<TIndex, QGramDir>::Type              TDir;
+        typedef typename Fibre<TIndex, QGramShape>::Type            TShape;
+        typedef typename Fibre<TIndex, QGramBucketMap>::Type        TBucketMap;
+
+		TText const &text = indexText(index);
+		TSA &sa = indexSA(index);
+		TDir &dir = indexDir(index);
+		TShape &shape = indexShape(index);
+		TBucketMap &bucketMap = index.bucketMap;
+
         // signed characters behave different than unsigned when compared
         // to get the same index with signed or unsigned chars we simply cast them to unsigned
         // before feeding them into the pipeline
-		typedef Shape<TValue, UngappedShape<q> >					TShape;
+		typedef typename Value<TIndex>::Type                        TValue;
         typedef typename MakeUnsigned_<TValue>::Type				TUValue;
 
         // *** SPECIALIZATION ***
 
 		typedef Pipe< TText, Source<> >								TSource;
         typedef Pipe< TSource, Caster<TUValue, CasterConvert> >		TUnsigner;
-		typedef Pipe< TUnsigner, Tupler<q> >						TTupler;
+		typedef Pipe< TUnsigner, Tupler<LENGTH<TShape>::VALUE> >	TTupler;
 						                typedef _qgramComp<TypeOf_(TTupler)> qcomp_t;
         typedef Pool< 
 					TypeOf_(TTupler), 
 					SorterSpec< SorterConfigSize<qcomp_t, TSizeOf_(TTupler) > > 
 				> TSortTuples;
-										typedef _qgramHash<TypeOf_(TTupler), typename Size<TDir>::Type> qhash_t;
 
         // *** INSTANTIATION ***
 
@@ -1766,20 +1765,19 @@ The resulting tables must have appropriate size before calling this function.
 		// fill sa and dir
 		if (!beginRead(sorter)) return;
 
-		typename Iterator<TSA>::Type itSA = begin(suffixArray);
+		typename Iterator<TSA>::Type itSA = begin(sa);
 		typename Iterator<TDir>::Type itDir = begin(dir);
 
 		qcomp_t	qcomp;
-		qhash_t qhash;
 
         typename Size<TSortTuples>::Type leftToRead = length(sorter);
-        typename Size<TDir>::Type hash, old_hash = 0;
+        typename Value<TShape>::Type code, old_code = 0;
         
         if (leftToRead > 0)
         {
             typename Value<TSortTuples>::Type old_qgram = *sorter;
 
-            old_hash = qhash(old_qgram);
+            old_code = hash(shape, getValueI2(old_qgram));
             *itSA = (*sorter).i1;
             *itDir = 0;
             --leftToRead, ++sorter, ++itSA, ++itDir;
@@ -1791,13 +1789,13 @@ The resulting tables must have appropriate size before calling this function.
                 if (qcomp(old_qgram, *sorter) != 0) 
                 {
                     old_qgram = *sorter;
-                    hash = qhash(old_qgram);
+                    code = hash(shape, getValueI2(old_qgram));
 
-                    SEQAN_ASSERT_LT(old_hash, hash);
+                    SEQAN_ASSERT_LT(old_code, code);
 
                     // copy bucket begin
                     typename Size<TSortTuples>::Type i = length(sorter) - leftToRead;
-                    for(; old_hash < hash; ++old_hash, ++itDir)
+                    for(; old_code < code; ++old_code, ++itDir)
                         *itDir = i;
                 }
             }
@@ -1805,8 +1803,8 @@ The resulting tables must have appropriate size before calling this function.
 
         // fill bucket table
         typename Size<TSortTuples>::Type i = length(sorter);
-        hash = length(dir);
-        for(; old_hash < hash; ++old_hash, ++itDir)
+        code = length(dir);
+        for(; old_code < code; ++old_code, ++itDir)
             *itDir = i;
 
 		endRead(sorter);
@@ -1816,31 +1814,42 @@ The resulting tables must have appropriate size before calling this function.
 //////////////////////////////////////////////////////////////////////////////
 // create q-gram index of *multiple* sequences in external memory 
 
+    // uses a Sorter to (1) sort q-grams and (2) afterwards create the bucket directory
 	template < 
-		typename TSA, 
-		typename TDir,
 		typename TString,
-		typename TSpec,
-		typename TValue,
-		unsigned q,
-		typename TLimitsString >
-	void createQGramIndexExt(
-		TSA &suffixArray,
-		TDir &dir,
-		StringSet<TString, TSpec> const &stringSet,
-		Shape<TValue, UngappedShape<q> >,
-		TLimitsString &limits)
+		typename TSSSpec,
+		typename TShapeSpec,
+		typename TSpec >
+	void createQGramIndexExt(Index<StringSet<TString, TSSSpec>, IndexQGram<TShapeSpec, TSpec> > &index)
 	{
+	SEQAN_CHECKPOINT
+        typedef StringSet<TString, TSSSpec>                         TText_;
+        typedef Index<TText_, IndexQGram<TShapeSpec, TSpec> >       TIndex;
+        typedef typename Fibre<TIndex, QGramText>::Type             TText;
+        typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
+        typedef typename Fibre<TIndex, QGramDir>::Type              TDir;
+        typedef typename Fibre<TIndex, QGramShape>::Type            TShape;
+        typedef typename Fibre<TIndex, QGramBucketMap>::Type        TBucketMap;
+
+		TText const &stringSet = indexText(index);
+		TSA &sa = indexSA(index);
+		TDir &dir = indexDir(index);
+		TShape &shape = indexShape(index);
+		TBucketMap &bucketMap = index.bucketMap;
+
+        typedef typename Value<TDir>::Type TSize;
+        const TSize DISABLED_BUCKET = (TSize)-1;
+
         // signed characters behave different than unsigned when compared
         // to get the same index with signed or unsigned chars we simply cast them to unsigned
         // before feeding them into the pipeline
-		typedef typename Concatenator<StringSet<TString, TSpec> >::Type	TConcat;
-		typedef Shape<TValue, UngappedShape<q> >						TShape;
-        typedef typename MakeUnsigned_<TValue>::Type					TUValue;
+		typedef typename Concatenator<TText>::Type                  TConcat;
+		typedef typename Value<TIndex>::Type                        TValue;
+        typedef typename MakeUnsigned_<TValue>::Type                TUValue;
 		typedef Multi<
-			Tupler<q, true, BitPacked<> >, 
+			Tupler<LENGTH<TShape>::VALUE, true, BitPacked<> >,
 			typename Value<TSA>::Type,
-			typename StringSetLimits< StringSet<TString, TSpec> >::Type >		TTuplerSpec;
+			typename StringSetLimits<TText>::Type >                 TTuplerSpec;
 
         // *** SPECIALIZATION ***
 
@@ -1852,35 +1861,104 @@ The resulting tables must have appropriate size before calling this function.
 					TypeOf_(TTupler), 
 					SorterSpec< SorterConfigSize<qcomp_t, TSizeOf_(TTupler) > > 
 				> TSortTuples;
-										typedef _qgramHash<TypeOf_(TTupler), typename Size<TDir>::Type> qhash_t;
 
         // *** INSTANTIATION ***
 
 		TSource			src(concat(stringSet));
         TUnsigner		unsigner(src);
-		TTupler			tupler(unsigner, limits);
+		TTupler			tupler(unsigner, stringSetLimits(stringSet));
 		TSortTuples		sorter;
 
+		if (empty(shape)) return;
+
+#ifdef _OPENMP
+std::cout << "start\n";
+double start = omp_get_wtime();
+#endif
+
+		// 1. clear counters
+		_qgramClearDir(dir, bucketMap);
+
+		// 2. count q-grams
+        if (!beginRead(tupler))
+            return;
+
+        for (; !eof(tupler); ++tupler)
+            ++dir[requestBucket(bucketMap, hash(shape, getValueI2(*tupler)))];
+
+        endRead(tupler);
+
+#ifdef _OPENMP
+std::cout << "scan took " << omp_get_wtime() - start << " seconds.\n";
+#endif
+
+        // 3a. optionally disable some buckets
+		bool bucketsDisabled = _qgramDisableBuckets(index);
+
+        // 3b. cumulative sum
+        TSize qgramCount;
+        if (bucketsDisabled)
+            qgramCount = _qgramCummulativeSumAlt(dir, True());
+        else
+            qgramCount = _qgramCummulativeSumAlt(dir, False());
+
+		// 4. fill suffix array
+        resize(sorter, qgramCount);
+        if (!beginRead(tupler) || !beginWrite(sorter))
+            return;
+
+#ifdef _OPENMP
+std::cout << "start write\n";
+start = omp_get_wtime();
+#endif
+
+        for (; !eof(tupler); ++tupler)
+            if (dir[getBucket(bucketMap, hash(shape, getValueI2(*tupler))) + 1] != DISABLED_BUCKET)
+                push(sorter, *tupler);
+
+        endRead(tupler);
+        endWrite(sorter);
+
+#ifdef _OPENMP
+std::cout << "writing took " << omp_get_wtime() - start << " seconds.\n";
+start = omp_get_wtime();
+#endif
+
+        beginRead(sorter);
+        typename Iterator<TSA, Standard>::Type saIt = begin(sa, Standard());
+        for (; !eof(sorter); ++sorter, ++saIt)
+            *saIt = getValueI1(*sorter);
+        endRead(sorter);
+
+#ifdef _OPENMP
+std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
+#endif
+
+        // 5. correct disabled buckets
+        if (bucketsDisabled)
+            _qgramPostprocessBuckets(dir);
+
+
+/*
 		// sort q-grams
 		sorter << tupler;
 
 		// fill sa and dir
 		if (!beginRead(sorter)) return;
 
-		typename Iterator<TSA>::Type itSA = begin(suffixArray);
+		typename Iterator<TSA>::Type itSA = begin(sa);
 		typename Iterator<TDir>::Type itDir = begin(dir);
 
 		qcomp_t	qcomp;
-		qhash_t qhash;
 
         typename Size<TSortTuples>::Type leftToRead = length(sorter);
-        typename Size<TDir>::Type hash, old_hash = 0;
+        typename Value<TShape>::Type code, old_code = 0;
         
         if (leftToRead > 0)
         {
             typename Value<TSortTuples>::Type old_qgram = *sorter;
 
-            old_hash = qhash(old_qgram);
+            old_code = hash(shape, getValueI2(old_qgram));
             *itSA = (*sorter).i1;
             *itDir = 0;
             --leftToRead, ++sorter, ++itSA, ++itDir;
@@ -1893,15 +1971,11 @@ The resulting tables must have appropriate size before calling this function.
                 if (qcomp(old_qgram, *sorter) != 0) 
                 {
                     old_qgram = *sorter;
-                    hash = qhash(old_qgram);
-                    
-                    SEQAN_ASSERT_LEQ(old_hash, hash);
-                    if (old_hash > hash)
-                        std::cerr << "ERROR!! " << old_qgram << "\t" << old_hash << "  > " << hash <<std::endl;
+                    code = hash(shape, getValueI2(old_qgram));
                     
                     // copy bucket begin
                     typename Size<TSortTuples>::Type i = length(sorter) - leftToRead;
-                    for(; old_hash < hash; ++old_hash, ++itDir)
+                    for(; old_code < code; ++old_code, ++itDir)
                         *itDir = i;
                 }
             }
@@ -1909,11 +1983,142 @@ The resulting tables must have appropriate size before calling this function.
 
         // fill bucket table
         typename Size<TSortTuples>::Type i = length(sorter);
-        hash = length(dir);
-        for(; old_hash < hash; ++old_hash, ++itDir)
+        code = length(dir);
+        for(; old_code < code; ++old_code, ++itDir)
             *itDir = i;
 
 		endRead(sorter);
+*/
+	}
+
+    // uses a Mapper to (1) create the bucket directory and (2) afterwards map q-grams to their final position
+    // dir must allow random accesses
+	template < typename TIndex >
+	void createQGramIndexExtSA(TIndex &index)
+	{
+	SEQAN_CHECKPOINT
+        typedef typename Fibre<TIndex, QGramText>::Type             TText;
+        typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
+        typedef typename Fibre<TIndex, QGramDir>::Type              TDir;
+        typedef typename Fibre<TIndex, QGramShape>::Type            TShape;
+        typedef typename Fibre<TIndex, QGramBucketMap>::Type        TBucketMap;
+
+		TText const &stringSet = indexText(index);
+		TSA &sa = indexSA(index);
+		TDir &dir = indexDir(index);
+		TShape &shape = indexShape(index);
+		TBucketMap &bucketMap = index.bucketMap;
+		
+        typedef typename Value<TDir>::Type TSize;
+        const TSize DISABLED_BUCKET = (TSize)-1;
+        
+        // signed characters behave different than unsigned when compared
+        // to get the same index with signed or unsigned chars we simply cast them to unsigned
+        // before feeding them into the pipeline
+		typedef typename Concatenator<TText>::Type                  TConcat;
+		typedef typename Value<TIndex>::Type                        TValue;
+        typedef typename MakeUnsigned_<TValue>::Type                TUValue;
+		typedef Multi<
+			Tupler<LENGTH<TShape>::VALUE, true, BitPacked<> >,
+			typename Value<TSA>::Type,
+			typename StringSetLimits<TText>::Type >                 TTuplerSpec;
+
+        // *** SPECIALIZATION ***
+
+		typedef Pipe< TConcat, Source<> >							TSource;
+        typedef Pipe< TSource, Caster<TUValue, CasterConvert> >		TUnsigner;
+		typedef Pipe< TUnsigner, TTuplerSpec >						TTupler;
+        typedef Pair<
+            typename Value<TSA>::Type,
+            typename Size<TSA>::Type,
+            Pack >                                                  TPosWithRank;       // (pos_pair,rank)
+
+        typedef Pool< 
+					TPosWithRank,
+					MapperSpec< MapperConfig<filterI2<TPosWithRank> > >
+				> TMapTuples;
+
+
+		if (empty(shape)) return;
+
+        // *** INSTANTIATION ***
+
+		TSource			src(concat(stringSet));
+        TUnsigner		unsigner(src);
+		TTupler			tupler(unsigner, stringSetLimits(stringSet));
+        TMapTuples      mapper;
+
+#ifdef _OPENMP
+std::cout << "start\n";
+double start = omp_get_wtime();
+#endif
+
+		// 1. clear counters
+		_qgramClearDir(dir, bucketMap);
+
+		// 2. count q-grams
+        if (!beginRead(tupler))
+            return;
+
+        for (; !eof(tupler); ++tupler)
+            ++dir[requestBucket(bucketMap, hash(shape, getValueI2(*tupler)))];
+
+        endRead(tupler);
+
+#ifdef _OPENMP
+std::cout << "scan took " << omp_get_wtime() - start << " seconds.\n";
+#endif
+
+        // 3a. optionally disable some buckets
+		bool bucketsDisabled = _qgramDisableBuckets(index);
+
+        // 3b. cumulative sum
+        TSize qgramCount;
+        if (bucketsDisabled)
+            qgramCount = _qgramCummulativeSum(dir, True());
+        else
+            qgramCount = _qgramCummulativeSum(dir, False());
+
+        
+		// 4. fill suffix array
+        resize(mapper, qgramCount);
+        if (!beginRead(tupler) || !beginWrite(mapper))
+            return;
+
+#ifdef _OPENMP
+std::cout << "start write\n";
+start = omp_get_wtime();
+#endif
+
+        typedef typename Value<TMapTuples>::Type TMapperValue;
+        for (; !eof(tupler); ++tupler)
+        {
+            TSize bktNo = getBucket(bucketMap, hash(shape, getValueI2(*tupler))) + 1;
+            if (dir[bktNo] != DISABLED_BUCKET)
+                push(mapper, TPosWithRank(getValueI1(*tupler), dir[bktNo]++));
+        }
+
+        endRead(tupler);
+        endWrite(mapper);
+
+#ifdef _OPENMP
+std::cout << "writing took " << omp_get_wtime() - start << " seconds.\n";
+start = omp_get_wtime();
+#endif
+
+        beginRead(mapper);
+        typename Iterator<TSA, Standard>::Type saIt = begin(sa, Standard());
+        for (; !eof(mapper); ++mapper, ++saIt)
+            *saIt = getValueI1(*mapper);
+        endRead(mapper);
+
+#ifdef _OPENMP
+std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
+#endif
+
+        // 5. correct disabled buckets
+        if (bucketsDisabled)
+            _qgramPostprocessBuckets(dir);
 	}
 
 
@@ -1951,6 +2156,7 @@ The resulting tables must have appropriate size before calling this function.
 		resize(indexSA(index), _qgramQGramCount(index), Exact());
 		resize(indexDir(index), _fullDirLength(index), Exact());
 		createQGramIndex(index);
+		resize(indexSA(index), back(indexDir(index)), Exact());     // shrink if some buckets were disabled
 		return true;
 	}
 
@@ -2014,12 +2220,12 @@ It sums up the minimum number of q-gram occurrences between both sequences for e
 ..include:seqan/index.h
 */
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TDistMatrix >
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TDistMatrix >
 	inline void getKmerSimilarityMatrix(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index, 
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
 		TDistMatrix &distMat)
 	{
-		typedef Index< TObject, IndexQGram<TShapeSpec,TSpec> >	TIndex;
+		typedef Index< TText, IndexQGram<TShapeSpec,TSpec> >	TIndex;
 		typedef typename Size<TIndex>::Type						TSize;
 		typedef typename Size<TDistMatrix>::Type				TSizeMat;
 		typedef typename Value<TDistMatrix>::Type				TValueMat;
@@ -2108,18 +2314,18 @@ It sums up the minimum number of q-gram occurrences between both sequences for e
 //     for a subset of the StringSet given as a sorted string of sequence numbers
 
 	template < 
-		typename TObject, 
+		typename TText, 
 		typename TShapeSpec, 
 		typename TSpec, 
 		typename TDistMatrix, 
 		typename TSeqNoString 
 	>
 	inline void getKmerSimilarityMatrix(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index, 
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
 		TDistMatrix &distMat,
 		TSeqNoString const &seqNo)
 	{
-		typedef Index< TObject, IndexQGram<TShapeSpec,TSpec> >	TIndex;
+		typedef Index< TText, IndexQGram<TShapeSpec,TSpec> >	TIndex;
 		typedef typename Size<TIndex>::Type						TSize;
 		typedef typename Size<TDistMatrix>::Type				TSizeMat;
 		typedef typename Value<TDistMatrix>::Type				TValueMat;
@@ -2245,26 +2451,26 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 ..include:seqan/index.h
 */
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline Pair<typename Size< Index< TObject, IndexQGram<TShapeSpec, TSpec> > >::Type>
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline Pair<typename Size< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type>
 	range(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > const &index,
 		Shape< TValue, TShapeSpec2 > const &shape)
 	{
-		typedef typename Size< Index< TObject, IndexQGram<TShapeSpec, TSpec> > >::Type TSize;
-		typedef typename Size< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
+		typedef typename Size< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type TSize;
+		typedef typename Size< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
 		TDirSize bucket = getBucket(indexBucketMap(index), value(shape));
 		return Pair<TSize>(indexDir(index)[bucket], indexDir(index)[bucket + 1]);
 	}
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline Pair<typename Size< Index< TObject, IndexQGram<TShapeSpec, TSpec> > >::Type>
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline Pair<typename Size< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type>
 	range(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index,
 		Shape< TValue, TShapeSpec2 > const &shape)
 	{
 		indexRequire(index, QGramDir());
-		return getOccurrences(const_cast<Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
+		return getOccurrences(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
 	}
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2282,23 +2488,23 @@ If the type of $index$ is $TIndex$ the return type is $SAValue<TIndex>::Type$.
 ..include:seqan/index.h
 */
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename SAValue< Index< TObject, IndexQGram<TShapeSpec, TSpec> > >::Type
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename SAValue< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type
 	getOccurrence(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > const &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
 		return saAt(indexDir(index)[getBucket(indexBucketMap(index), value(shape))], index);
 	}
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename SAValue< Index< TObject, IndexQGram<TShapeSpec, TSpec> > >::Type
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename SAValue< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type
 	getOccurrence(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
 		indexRequire(index, QGramSADir());
-		return getOccurrence(const_cast<Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
+		return getOccurrence(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
 	}
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2317,25 +2523,25 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 ..include:seqan/index.h
 */
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename Infix< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
 	getOccurrences(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > const &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
-		typedef typename Size<typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
+		typedef typename Size<typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
 		TDirSize bucket = getBucket(indexBucketMap(index), value(shape));
 		return infix(indexSA(index), indexDir(index)[bucket], indexDir(index)[bucket + 1]);
 	}	
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename Infix< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
 	getOccurrences(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
 		indexRequire(index, QGramSADir());
-		return getOccurrences(const_cast<Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
+		return getOccurrences(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
 	}	
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2355,25 +2561,25 @@ If the type of $index$ is $TIndex$ the return type is $Size<TIndex>::Type$.
 ..include:seqan/index.h
 */
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename Size< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename Size< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
 	countOccurrences(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > const &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
-		typedef typename Size<typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
+		typedef typename Size<typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreDir>::Type>::Type TDirSize;
 		TDirSize bucket = getBucket(indexBucketMap(index), value(shape));
 		return indexDir(index)[bucket + 1] - indexDir(index)[bucket];
 	}	
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename Size< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename Size< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
 	countOccurrences(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
 		indexRequire(index, QGramDir());
-		return countOccurrences(const_cast<Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
+		return countOccurrences(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
 	}
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2396,25 +2602,25 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 ..include:seqan/index.h
 */
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename Infix< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreCounts>::Type const >::Type 
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreCounts>::Type const >::Type 
 	countOccurrencesMultiple(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > const &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
-		typedef typename Size<typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreCountsDir>::Type>::Type TDirSize;
+		typedef typename Size<typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreCountsDir>::Type>::Type TDirSize;
 		TDirSize bucket = getBucket(indexBucketMap(index), value(shape));
 		return infix(indexCounts(index), indexCountsDir(index)[bucket], indexCountsDir(index)[bucket + 1]);
 	}	
 
-	template < typename TObject, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
-	inline typename Infix< typename Fibre< Index< TObject, IndexQGram<TShapeSpec, TSpec> >, FibreCounts>::Type const >::Type 
+	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
+	inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreCounts>::Type const >::Type 
 	countOccurrencesMultiple(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index,
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index,
 		Shape< TValue, TShapeSpec2 > const &shape) 
 	{
 		indexRequire(index, QGramCounts());
-		return countOccurrencesMultiple(const_cast<Index< TObject, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
+		return countOccurrencesMultiple(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
 	}
 
 
@@ -2433,9 +2639,9 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 //////////////////////////////////////////////////////////////////////////////
 // open
 
-	template < typename TObject, typename TShapeSpec, typename TSpec >
+	template < typename TText, typename TShapeSpec, typename TSpec >
 	inline bool open(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index, 
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
 		const char *fileName,
 		int openMode)
 	{
@@ -2453,9 +2659,9 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
         
 		return true;
 	}
-	template < typename TObject, typename TShapeSpec, typename TSpec >
+	template < typename TText, typename TShapeSpec, typename TSpec >
 	inline bool open(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index, 
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
 		const char *fileName)
 	{
 		return open(index, fileName, OPEN_RDONLY);
@@ -2465,9 +2671,9 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 //////////////////////////////////////////////////////////////////////////////
 // save
 
-	template < typename TObject, typename TShapeSpec, typename TSpec >
+	template < typename TText, typename TShapeSpec, typename TSpec >
 	inline bool save(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index, 
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
 		const char *fileName,
 		int openMode)
 	{
@@ -2485,9 +2691,9 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 
 		return true;
 	}
-	template < typename TObject, typename TShapeSpec, typename TSpec >
+	template < typename TText, typename TShapeSpec, typename TSpec >
 	inline bool save(
-		Index< TObject, IndexQGram<TShapeSpec, TSpec> > &index, 
+		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
 		const char *fileName)
 	{
 		return save(index, fileName, OPEN_WRONLY | OPEN_CREATE);

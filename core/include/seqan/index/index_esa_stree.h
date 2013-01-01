@@ -1761,9 +1761,10 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 	inline typename VertexDescriptor<TIndex>::Type
 	nodeUp(Iter< TIndex, VSTree< TopDown< ParentLinks<TSpec> > > > const &it) 
 	{
-		if (!empty(it.history)) {
+		if (!empty(it.history))
+        {
 			typename Size<TIndex>::Type parentRight = 0;
-			if (length(it.history) > 2)
+			if (length(it.history) >= 2)
 				parentRight = topPrev(it.history).range.i2;
 			return typename VertexDescriptor<TIndex>::Type(back(it.history).range, parentRight);
 		} else

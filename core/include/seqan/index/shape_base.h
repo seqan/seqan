@@ -391,7 +391,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	{
 	SEQAN_CHECKPOINT
 		typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
-		typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type	TSize;
+		typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type     TSize;
 
 		me.hValue = ordValue(me.leftChar = *it);
 		return me.hValue = _hashFixedShape(me.hValue, it, TValue(), UngappedShape<q>());
@@ -477,7 +477,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(
 		Shape<TValue, UngappedShape<q> > &me, 
-		Tuple<TTValue, SIZE, Pack> const &tuple)
+		Tuple<TTValue, SIZE, BitPacked<> > /*const &*/tuple)
 	{
 	SEQAN_CHECKPOINT
 		if (ValueSize<TValue>::VALUE == (1 << BitsPerValue<TTValue>::VALUE))
@@ -498,7 +498,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(
 		Shape<TValue, UngappedShape<q> > &me, 
-		Tuple<TTValue, SIZE, TPack> const &tuple)
+		Tuple<TTValue, SIZE, TPack> /*const &*/tuple)
 	{
 	SEQAN_CHECKPOINT
 		return me.hValue = _hashTuple2FixedShape(me.hValue, tuple, TValue(), UngappedShape<q>());
