@@ -301,11 +301,11 @@ SEQAN_DEFINE_TEST(test_pipe_test_sorter) {
 
 SEQAN_BEGIN_TESTSUITE(test_pipe) {
 	std::cerr << "";  // This line is an esoteric fix for an even more esoteric crash in MS VC++ 9/10.
-//    SEQAN_CALL_TEST(test_pipe_test_external_string);
+    SEQAN_CALL_TEST(test_pipe_test_external_string);
     SEQAN_CALL_TEST(test_pipe_test_simple_pool);
-//    SEQAN_CALL_TEST(test_pipe_test_mapper);
-//    SEQAN_CALL_TEST(test_pipe_test_mapper_partially_filled);
-//    SEQAN_CALL_TEST(test_pipe_test_sorter);
+    SEQAN_CALL_TEST(test_pipe_test_mapper);
+    SEQAN_CALL_TEST(test_pipe_test_mapper_partially_filled);
+    SEQAN_CALL_TEST(test_pipe_test_sorter);
 }
 SEQAN_END_TESTSUITE
 
