@@ -26,6 +26,10 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
+if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
+  get_filename_component(CMAKE_CURRENT_LIST_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+endif (NOT CMAKE_CURRENT_LIST_DIR)
+
 # Do not try to find OpenMP if we know that it cannot be found.
 if (_OPENMP_NOT_FOUND)
     return ()
