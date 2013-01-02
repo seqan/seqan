@@ -193,30 +193,37 @@ _lastOccurrence(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const &
         return saAt(value(it).range.i2 - 1, container(it));
 }
 
+
 // is this the last child of the parent node?
-template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
+template <typename TIndex, typename TSpec>
 inline bool
-isLastChild(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it)
+isLastChild(Iter<TIndex, VSTree<TopDown<TSpec> > >  const & it)
 {
-    typedef Index<TText, IndexSa<TIndexSpec> >  TIndex;
-    typedef Pair<typename Size<TIndex>::Type>   TSAPair;
-    typedef typename Value<TIndex>::Type        TAlphabet;
+    return value(it).range.i2 == value(it).parentRight;
+}
 
-    TSAPair saRange = TSAPair(value(it).range.i1, value(it).parentRight);
+template <typename TIndex, typename TSpec>
+inline bool
+isLastChild(Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >  const & it)
+{
+    if (!empty(it.history))
+        return value(it).range.i2 == back(it.history).range.i2;
+    else
+        return _isSizeInval(value(it).range.i2);
 
-    if (saRange.i1 + 1 >= saRange.i2)
-        return true;
-    
-    --saRange.i2;
+}
 
-    if (suffixLength(saAt(saRange.i1, index), index) <= value(it).repLen)
-        return (suffixLength(saAt(saRange.i2, index), index) <= value(it).repLen);
-
-    // Get first and last characters in interval.
-    TAlphabet cLeft = textAt(posAdd(saAt(saRange.i1, index), value(it).repLen), index);
-    TAlphabet cRight = textAt(posAdd(saAt(saRange.i2, index), value(it).repLen), index);
-
-    return cLeft == cRight;
+// go down and skip non-branching nodes
+// this function emulates suffix tree traversal
+template <typename TIndex, typename TSpec>
+inline bool
+goDownSkipSingletons(Iter<TIndex, VSTree< TopDown<TSpec> > > &it)
+{
+    do {
+        if (!goDown(it))
+            return false;
+    } while (isLastChild(it));
+    return true;
 }
 
 // is this a leaf? (hide empty $-edges)
