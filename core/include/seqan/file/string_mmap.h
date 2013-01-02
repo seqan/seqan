@@ -45,7 +45,6 @@
  *
  * relation to string_external unclear, what benifit does string_mmap provide?
  *
- * contains windows-specific code
  */
 
 
@@ -57,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TFile_ = File<>,				// default file type
                typename TSize_ = size_t >				// size type
     struct MMapConfig {
-//IOREV _nodoc_ doc says using MMap<ExternalConfig> is correct, whats this for?
+//IOREV _nodoc_ doc says using MMap<MMapConfig> is correct, whats this for?
         typedef TFile_ TFile;
         typedef TSize_ TSize;
     };
@@ -93,42 +92,6 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
 ..include:seqan/file.h
 */
 
-/**
-.Enum.MMapAdviseScheme
-..cat:Sequences
-..cat:Input / Output
-..summary:Enum with mmap advise values.
-..value.MMAP_NORMAL:There is no advise on the given address range.
-..value.MMAP_RANDOM:The address range will be accessed with a random access memory pattern.
-..value.MMAP_SEQUENTIAL:The address range will be accessed sequentially.
-..value.MMAP_WILLNEED:The address range in the advise will be needed in the future.
-..value.MMAP_DONTNEED:The address range in the advise will not be needed any more.
-..see:Function.mmapAdvise
-..include:seqan/file.h
- */
-
-#ifdef PLATFORM_WINDOWS
-
-		enum MMapAdviseScheme {
-			MMAP_NORMAL = 0,
-			MMAP_RANDOM = 0,
-			MMAP_SEQUENTIAL = 0,
-			MMAP_WILLNEED = 0,
-			MMAP_DONTNEED = 0
-		};
-
-#else
-
-		enum MMapAdviseScheme {
-			MMAP_NORMAL = POSIX_MADV_NORMAL,
-			MMAP_RANDOM = POSIX_MADV_RANDOM,
-			MMAP_SEQUENTIAL = POSIX_MADV_SEQUENTIAL,
-			MMAP_WILLNEED = POSIX_MADV_WILLNEED,
-			MMAP_DONTNEED = POSIX_MADV_DONTNEED
-		};
-
-#endif
-
     template < typename TValue,
                typename TConfig >
 	class String<TValue, MMap<TConfig> >
@@ -139,50 +102,35 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
         typedef typename TConfig::TFile		TFile;
         typedef typename TConfig::TSize		TSize;
 
-		TValue				*data_begin;
-		TValue				*data_end;
-		TSize				data_capacity;
+		TValue                  *data_begin;
+		TValue                  *data_end;
 
-		TFile				file;
-		int					_openMode;
-        bool                _temporary, _ownFile;
+		FileMapping<>           mapping;
+		FileMappingAdvise       advise;
 
-#ifdef PLATFORM_WINDOWS
-        HANDLE				handle;
-#endif
-		MMapAdviseScheme	scheme;
-
-        // TODO(holtgrew): Explicit?
-		String(TSize size = 0):
+		explicit
+        String(TSize size = 0):
 			data_begin(0),
 			data_end(0),
-			data_capacity(0),
-            file(NULL),
-			scheme(MMAP_NORMAL)
+			advise(MAP_NORMAL)
         {
-            _temporary = true;
-            _ownFile = false;
-
 			resize(*this, size);
         }
 
-        // TODO(holtgrew): Explicit?
-		String(TFile &_file):
+		explicit
+        String(TFile &_file):
 			data_begin(0),
 			data_end(0),
-			data_capacity(0),
-            file(NULL),
-			scheme(MMAP_NORMAL)
+			advise(MAP_NORMAL)
         {
 			open(*this, _file);
         }
 
-		explicit String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
+		explicit
+        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
 			data_begin(0),
 			data_end(0),
-			data_capacity(0),
-            file(NULL),
-			scheme(MMAP_NORMAL)
+			advise(MAP_NORMAL)
         {
 			open(*this, fileName, openMode);
         }
@@ -227,15 +175,15 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
 //____________________________________________________________________________
 
         inline operator bool() 
-   	{
-            return file;
+        {
+            return mapping;
         }
 
 //____________________________________________________________________________
 
 };
 
-   template < typename TValue, typename TConfig >
+    template < typename TValue, typename TConfig >
 	inline typename Iterator<String<TValue, MMap<TConfig> > , Standard>::Type
 	begin(String<TValue, MMap<TConfig> > & me,
 		Standard)
@@ -244,7 +192,7 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
 SEQAN_CHECKPOINT
 		return me.data_begin;
 	}
-   template < typename TValue, typename TConfig >
+    template < typename TValue, typename TConfig >
 	inline typename Iterator<String<TValue, MMap<TConfig> >  const, Standard>::Type
 	begin(String<TValue, MMap<TConfig> > const & me,
 		Standard)
@@ -256,8 +204,8 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-   template < typename TValue, typename TConfig >
-   inline typename Iterator<String<TValue, MMap<TConfig> > , Standard>::Type
+    template < typename TValue, typename TConfig >
+    inline typename Iterator<String<TValue, MMap<TConfig> > , Standard>::Type
 	end(String<TValue, MMap<TConfig> > & me,
 		Standard)
 	{
@@ -265,7 +213,7 @@ SEQAN_CHECKPOINT
 SEQAN_CHECKPOINT
 		return me.data_end;
 	}
-   template < typename TValue, typename TConfig >
+    template < typename TValue, typename TConfig >
 	inline typename Iterator<String<TValue, MMap<TConfig> >  const, Standard>::Type
 	end(String<TValue, MMap<TConfig> > const & me,
 		Standard)
@@ -277,27 +225,27 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-   template < typename TValue, typename TConfig >
+    template < typename TValue, typename TConfig >
 	inline typename Size<String<TValue, MMap<TConfig> > >::Type
-	capacity(String<TValue, MMap<TConfig> > & me) 
+	capacity(String<TValue, MMap<TConfig> > & me)
 	{
 //IOREV
 SEQAN_CHECKPOINT
-		return me.data_capacity;
+		return length(me.mapping) / sizeof(TValue);
 	}
 
-   template < typename TValue, typename TConfig >
+    template < typename TValue, typename TConfig >
 	inline typename Size<String<TValue, MMap<TConfig> > >::Type
 	capacity(String<TValue, MMap<TConfig> > const & me) 
 	{
 //IOREV
 SEQAN_CHECKPOINT
-		return me.data_capacity;
+		return length(me.mapping) / sizeof(TValue);
 	}
 
 //____________________________________________________________________________
 
-   template < typename TValue, typename TConfig >
+    template < typename TValue, typename TConfig >
 	inline void 
 	_setLength(
 		String<TValue, MMap<TConfig> > & me, 
@@ -307,20 +255,6 @@ SEQAN_CHECKPOINT
 SEQAN_CHECKPOINT
 		me.data_end = me.data_begin + new_length;
 	}
-
-//____________________________________________________________________________
-
-	template < typename TValue, typename TConfig >
-   inline void 
-	_setCapacity(
-		String<TValue, MMap<TConfig> > & me, 
-		size_t new_capacity)
-	{
-//IOREV
-SEQAN_CHECKPOINT
-		me.data_capacity = new_capacity;
-	}
-
 
     //////////////////////////////////////////////////////////////////////////////
     // meta-function interface
@@ -378,97 +312,109 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-	inline void 
-	waitForAll(String<TValue, MMap<TConfig> > &)
+	inline bool
+	flush(String<TValue, MMap<TConfig> > &me)
 	{
-//IOREV _nodoc_
+        typedef typename Size<typename TConfig::TFile>::Type TFileSize;
+        return flushFileSegment(
+            me.mapping,
+            me.data_begin,
+            0,
+            (TFileSize)capacity(me) * (TFileSize)sizeof(TValue));
 	}
-	
-#ifdef PLATFORM_WINDOWS
 
-    static SECURITY_ATTRIBUTES MMapStringDefaultAttributes = {
-        sizeof(SECURITY_ATTRIBUTES),
-        NULL,
-        true
-    };
-
-    template < typename TValue, typename TConfig, typename TScheme, typename TBeginPos, typename TEndPos >
-	inline int
-	mmapAdvise(String<TValue, MMap<TConfig> > &/*me*/, TScheme const & /*scheme*/, TBeginPos const &, TEndPos const &)
+/**
+.Function.mmapAdvise
+..class:Spec.MMap String
+..cat:Sequences
+..summary:Call advise function for memory mapped files.
+..signature:mmapAdvise(mmapString, scheme[, beginPos, size])
+..param.mmapString:The @Spec.MMap String@ that contains the location in the advise call.
+...type:Spec.MMap String
+..param.scheme:The memory access scheme to use.
+...type:Enum.MMapAdviseScheme
+..param.beginPos:Begin position in the string for the advise call.
+..param.size:Size of the range used for the advise call.
+..returns:$int$, return code 0 on success.
+..see:Enum.MMapAdviseScheme
+..include:seqan/file.h
+ */
+    template <typename TValue, typename TConfig, typename TPos, typename TSize>
+	inline bool
+	mmapAdvise(String<TValue, MMap<TConfig> > &me, FileMappingAdvise advise, TPos beginPos, TSize size)
 	{
-//IOREV  _nodoc_ _windows_
-		return 0;
+        typedef typename Size<typename TConfig::TFile>::Type TFileSize;
+        me.advise = advise;
+        return adviseFileSegment(
+            me.mapping,
+            advise,
+            me.data_begin,
+            (TFileSize)beginPos * (TFileSize)sizeof(TValue),
+            (TFileSize)size * (TFileSize)sizeof(TValue));
+	}
+
+    template <typename TValue, typename TConfig, typename TPos>
+	inline int
+	mmapAdvise(String<TValue, MMap<TConfig> > &me, FileMappingAdvise advise, TPos beginPos)
+	{
+		return mmapAdvise(me, advise, beginPos, capacity(me) - beginPos);
 	}
 		
-    template < typename TValue, typename TConfig >
-    inline void 
-	flush(String<TValue, MMap<TConfig> > &) 
+    template <typename TValue, typename TConfig>
+	inline int
+	mmapAdvise(String<TValue, MMap<TConfig> > &me, FileMappingAdvise advise)
 	{
-//IOREV _nodoc_ _windows_
-    }
+		return mmapAdvise(me, advise, 0, capacity(me));
+	}
+		
+//____________________________________________________________________________
 
 	// cancel all transactions
     template < typename TValue, typename TConfig >
 	inline void 
-	cancel(String<TValue, MMap<TConfig> > &)
+	cancel(String<TValue, MMap<TConfig> > &me)
 	{
-//IOREV _windows_
+        typedef typename Size<typename TConfig::TFile>::Type TFileSize;
+        cancelFileSegment(
+            me.mapping,
+            me.data_begin,
+            0,
+            (TFileSize)capacity(me) * (TFileSize)sizeof(TValue));
 	}
+
+//____________________________________________________________________________
 
 	// flush and free all allocated pages
     template < typename TValue, typename TConfig >
-	inline int
-	flushAndFree(String<TValue, MMap<TConfig> > &)
+	inline bool
+	flushAndFree(String<TValue, MMap<TConfig> > &me)
 	{
-//IOREV _nodoc_ _windows_
-		return 0;
+        return flush(me) && mmapAdvise(me, MAP_DONTNEED);
 	}
+    
 //____________________________________________________________________________
 
 	template < typename TValue, typename TConfig >
     inline bool 
-    _map(String<TValue, MMap<TConfig> > &me, size_t new_capacity) 
+    _map(String<TValue, MMap<TConfig> > &me, size_t new_capacity)
 	{
-//IOREV _windows_
-		if (new_capacity > 0) 
+        typedef typename Size<typename TConfig::TFile>::Type TFileSize;
+		if (new_capacity > 0)
 		{
-			resize(me.file, new_capacity * sizeof(TValue));
-			DWORD prot = 0;
-			DWORD access = 0;
-			if ((me._openMode & OPEN_MASK) == OPEN_RDONLY) 
-			{
-				prot = PAGE_READONLY;
-				access = FILE_MAP_READ;
-			} else {
-				prot = PAGE_READWRITE;
-				access = FILE_MAP_ALL_ACCESS;
-			}
-            LARGE_INTEGER largeSize;
-			largeSize.QuadPart = new_capacity;
-			largeSize.QuadPart *= sizeof(TValue);
-
-			me.handle = CreateFileMapping(me.file.handle, &MMapStringDefaultAttributes, prot, largeSize.HighPart, largeSize.LowPart, NULL);
-			if (me.handle == NULL)
-			{
-			#ifdef SEQAN_DEBUG
-				::std::cerr << "CreateFileMapping failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
-			#endif
-				return false;
-			}
-
-			void *addr = MapViewOfFile(me.handle, access, 0, 0, 0);	
-			if (addr == NULL)
-			{
-			#ifdef SEQAN_DEBUG
-				::std::cerr << "MapViewOfFile failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
-			#endif
-				return false;
-			}
-				
-			me.data_begin = (TValue *) addr;
-			_setLength(me, new_capacity);
-			_setCapacity(me, new_capacity);
+			_ensureFileIsOpen(me);
+            if (capacity(me) < new_capacity)
+                resize(me.mapping, (TFileSize)new_capacity * (TFileSize)sizeof(TValue));
+            me.data_begin = static_cast<TValue*>(mapFileSegment(me.mapping, 0, length(me.mapping)));
+            if (me.data_begin == NULL)
+            {
+                me.data_end = NULL;
+                return false;
+            }
+            adviseFileSegment(me.mapping, me.advise, me.data_begin, 0, length(me.mapping));
+            me.data_end = me.data_begin + new_capacity;
 		}
+        else
+			resize(me.mapping, 0);
 		return true;
 	}
 
@@ -476,31 +422,13 @@ SEQAN_CHECKPOINT
     inline bool 
     _unmap(String<TValue, MMap<TConfig> > &me) 
 	{
-//IOREV _windows_
 		bool result = true;
-		if (me.data_begin) 
+		if (me.data_begin != NULL)
 		{
-			if (UnmapViewOfFile(me.data_begin) == 0)
-			{
-			#ifdef SEQAN_DEBUG
-				::std::cerr << "UnmapViewOfFile failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
-			#endif
-				result = false;
-			}
-			
-			if (CloseHandle(me.handle) == 0)
-			{
-			#ifdef SEQAN_DEBUG
-				::std::cerr << "CloseHandle failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
-			#endif
-				result = false;
-			}
-			
-			resize(me.file, length(me) * sizeof(TValue));
+            result = unmapFileSegment(me.mapping, me.data_begin, length(me.mapping));
 			me.data_begin = NULL;
-			me.data_end = NULL;
-			me.data_capacity = 0;
 		}
+        me.data_end = NULL;
 		return result;
 	}
 
@@ -508,233 +436,43 @@ SEQAN_CHECKPOINT
     inline bool 
     _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity) 
 	{
-//IOREV _windows_
 		typedef typename Size< String<TValue, MMap<TConfig> > >::Type TSize;
 
-		if (me.data_begin) 
-		{
-			if (new_capacity > 0) 
-			{
-				TSize seq_length = length(me);
-				
-				DWORD prot = 0;
-				DWORD access = 0;
-				if ((me._openMode & OPEN_MASK) == OPEN_RDONLY) 
-				{
-					prot = PAGE_READONLY;
-					access = FILE_MAP_READ;
-				} else {
-					prot = PAGE_READWRITE;
-					access = FILE_MAP_ALL_ACCESS;
-				}
-				LARGE_INTEGER largeSize;
-				largeSize.QuadPart = new_capacity;
-				largeSize.QuadPart *= sizeof(TValue);
+        bool result = true;
+        TSize old_capacity = capacity(me);
+        TSize seq_length = length(me);
 
-				bool result = true;
-				result &= (UnmapViewOfFile(me.data_begin) != 0);
-				result &= (CloseHandle(me.handle) != 0);
+#ifndef PLATFORM_WINDOWS
+        // Windows doesn't allow to resize the file while having a mapped file segment
+        // Thus, the following part is only supported on Linux/BSD/Mac OS
+        if (me.data_begin && new_capacity > 0)
+        {
+            // if file gets bigger, resize first
+            if (old_capacity < new_capacity)
+                resize(me.mapping, new_capacity * sizeof(TValue));
 
-				HANDLE handle = CreateFileMapping(me.file.handle, &MMapStringDefaultAttributes, prot, largeSize.HighPart, largeSize.LowPart, NULL);
-				if (handle == NULL)
-				{
-				#ifdef SEQAN_DEBUG
-					::std::cerr << "CreateFileMapping failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
-				#endif
-					return false;
-				}
+            me.data_begin = static_cast<TValue*>(remapFileSegment(me.mapping, me.data_begin, 0, old_capacity, new_capacity));
 
-				void *addr = MapViewOfFile(handle, access, 0, 0, 0);	
-				if (addr == NULL)
-				{
-				#ifdef SEQAN_DEBUG
-					::std::cerr << "MapViewOfFile failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
-				#endif
-					return false;
-				}
+            // if file gets smaller, resize at last
+            if (old_capacity > new_capacity)
+                resize(me.mapping, new_capacity * sizeof(TValue));
 
-				if (capacity(me) > new_capacity)
-					resize(me.file, new_capacity * sizeof(TValue));
+            if (me.data_begin == NULL)
+            {
+                me.data_end = NULL;
+                return false;
+            }
 
-				me.handle = handle;
-				me.data_begin = (TValue*) addr;
-				_setLength(me, seq_length);
-				_setCapacity(me, new_capacity);
-				return true;
-			} else
-				return _unmap(me);
-		} else
-			return _allocateStorage(me, new_capacity) != NULL;
-	}
-
-#else
-
-///.Function.flush.param.string.type:Spec.MMap String
-///.Function.flush.class:Spec.MMap String
-
-/**
-.Function.mmapAdvise
-..class:Spec.MMap String
-..cat:Sequences
-..summary:Call advise function for memory mapped files.
-..signature:mmapAdvise(mmapString, scheme, beginPos, endPos)
-..param.mmapString:The @Spec.MMap String@ that contains the location in the advise call.
-...type:Spec.MMap String
-..param.scheme:The memory access scheme to use.
-...type:Enum.MMapAdviseScheme
-..param.beginPos:Begin position in the string for the advise call.
-..param.endPos:End position in the string for the advise call.
-..returns:$int$, return code 0 on success.
-..see:Enum.MMapAdviseScheme
-..include:seqan/file.h
- */
-    template < typename TValue, typename TConfig, typename TScheme, typename TBeginPos, typename TEndPos >
-	inline int
-	mmapAdvise(String<TValue, MMap<TConfig> > &me, TScheme const & scheme, TBeginPos const & beginPos, TEndPos const & endPos)
-	{
-//IOREV _nodoc_
-		me.scheme = scheme;
-//		posix_fadvise(me.file.handle, beginPos * sizeof(TValue), (endPos - beginPos) * sizeof(TValue), scheme);
-		if (scheme == MMAP_DONTNEED)
-			msync(me.data_begin + beginPos, (endPos - beginPos) * sizeof(TValue), MS_INVALIDATE);
-		return posix_madvise(me.data_begin + beginPos, (endPos - beginPos) * sizeof(TValue), scheme);
-	}
-		
-    template < typename TValue, typename TConfig >
-    inline void 
-	flush(String<TValue, MMap<TConfig> > &me) 
-	{
-//IOREV
-		msync(me.data_begin, length(me) * sizeof(TValue), MS_SYNC);
-    }
-
-	// cancel all transactions
-    template < typename TValue, typename TConfig >
-	inline void 
-	cancel(String<TValue, MMap<TConfig> > &me)
-	{
-//IOREV
-		msync(me.data_begin, capacity(me) * sizeof(TValue), MS_INVALIDATE);
-	}
-
-	// flush and free all allocated pages
-    template < typename TValue, typename TConfig >
-	inline int
-	flushAndFree(String<TValue, MMap<TConfig> > &me)
-	{
-//IOREV _nodoc_
-		return posix_madvise(me.data_begin, capacity(me) * sizeof(TValue), MADV_DONTNEED);
-	}
-	
-//____________________________________________________________________________
-
-	template < typename TValue, typename TConfig >
-    inline bool 
-    _map(String<TValue, MMap<TConfig> > &me, size_t new_capacity) 
-	{
-//IOREV
-		if (new_capacity > 0) 
-		{
-			_ensureFileIsOpen(me);
-			resize(me.file, new_capacity * sizeof(TValue));
-			int prot = 0;
-			if (me._openMode & OPEN_RDONLY) prot |= PROT_READ;
-			if (me._openMode & OPEN_WRONLY) prot |= PROT_WRITE;
-			void *addr = mmap(NULL, new_capacity * sizeof(TValue), prot, MAP_SHARED, me.file.handle, 0);
-			mmapAdvise(me, me.scheme);
-			
-			if (addr == MAP_FAILED)
-			{
-			#ifdef SEQAN_DEBUG
-				::std::cerr << "mmap failed. errno=" << errno << " (" << ::strerror(errno) << ")" << ::std::endl;
-			#endif
-				return false;
-			}
-				
-			me.data_begin = (TValue *) addr;
-			_setLength(me, new_capacity);
-			_setCapacity(me, new_capacity);
-		}
-		return true;
-	}
-
-	template < typename TValue, typename TConfig >
-    inline bool 
-    _unmap(String<TValue, MMap<TConfig> > &me) 
-	{
-//IOREV
-		if (me.data_begin) 
-		{
-			int error = munmap(me.data_begin, capacity(me) * sizeof(TValue));
-			if (error != 0)
-			{
-			#ifdef SEQAN_DEBUG
-				::std::cerr << "munmap failed. errno=" << errno << " (" << ::strerror(errno) << ")" << ::std::endl;
-			#endif
-				return false;
-			}
-			
-			resize(me.file, length(me) * sizeof(TValue));
-			me.data_begin = NULL;
-			me.data_end = NULL;
-			me.data_capacity = 0;
-		}
-		return true;
-	}
-
-	template < typename TValue, typename TConfig, typename TCapSize >
-    inline bool 
-    _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity) 
-	{
-//IOREV
-		typedef typename Size< String<TValue, MMap<TConfig> > >::Type TSize;
-
-		if (me.data_begin)
-		{
-			if (new_capacity > 0) 
-			{
-				TSize seq_length = length(me);
-				
-				_ensureFileIsOpen(me);
-				if (capacity(me) < new_capacity)
-					resize(me.file, new_capacity * sizeof(TValue));
-
-#ifdef MREMAP_MAYMOVE
-				void *addr = mremap(me.data_begin, capacity(me) * sizeof(TValue), new_capacity * sizeof(TValue), MREMAP_MAYMOVE);
-				mmapAdvise(me, me.scheme);
-#else
-				// for BSD systems without mremap(..) like Mac OS X ...
-				int prot = 0;
-				if (me._openMode & OPEN_RDONLY) prot |= PROT_READ;
-				if (me._openMode & OPEN_WRONLY) prot |= PROT_WRITE;
-	//			void *addr = mmap(me.data_begin, new_capacity * sizeof(TValue), prot, MAP_SHARED | MAP_FIXED, me.file.handle, 0);
-				munmap(me.data_begin, capacity(me) * sizeof(TValue));
-				void *addr = mmap(NULL, new_capacity * sizeof(TValue), prot, MAP_SHARED, me.file.handle, 0);
-				mmapAdvise(me, me.scheme);
+            _setLength(me, seq_length);
+            return true;
+        }
 #endif
-
-				if (addr == MAP_FAILED) 
-				{
-				#ifdef SEQAN_DEBUG
-					::std::cerr << "mremap failed. errno=" << errno << " (" << ::strerror(errno) << ")" << ::std::endl;
-				#endif
-					return false;
-				}
-
-				if (capacity(me) > new_capacity)
-					resize(me.file, new_capacity * sizeof(TValue));
-
-				me.data_begin = (TValue*) addr;
-				_setLength(me, seq_length);
-				_setCapacity(me, new_capacity);
-				return true;
-			} else
-				return _unmap(me);
-		} else
-			return _map(me, new_capacity);
+        result &= _unmap(me);
+        result &= _map(me, new_capacity);
+        if (me.data_begin != NULL)
+            _setLength(me, seq_length);
+        return result;
 	}
-
-#endif
 
 	template < typename TValue, typename TConfig >
     inline void 
@@ -743,18 +481,8 @@ SEQAN_CHECKPOINT
 //IOREV
 		cancel(me);
 		_unmap(me);
-		resize(me.file, 0);
+		resize(me.mapping, 0);
 	}
-//____________________________________________________________________________
-
-    template < typename TValue, typename TConfig, typename TScheme >
-	inline int
-	mmapAdvise(String<TValue, MMap<TConfig> > &me, TScheme scheme)
-	{
-//IOREV _nodoc_
-		return mmapAdvise(me, scheme, 0, capacity(me));
-	}
-		
 //____________________________________________________________________________
 
 	template < typename TValue, typename TConfig, typename TSize >
@@ -795,14 +523,8 @@ SEQAN_CHECKPOINT
 	{
 //IOREV
 		close(me);
-		me._temporary = false;
-				
-		if ((me._ownFile = open(me.file, fileName, openMode))) 
-		{
-			me._openMode = openMode;
-			return _map(me, (size_t)(size(me.file) / sizeof(TValue)));
-		}
-
+		if (open(me.mapping, fileName, openMode))
+			return _map(me, (size_t)(length(me.mapping) / sizeof(TValue)));
 		return false;
     }
 
@@ -821,16 +543,8 @@ SEQAN_CHECKPOINT
 	{
 //IOREV
 		close(me);
-		me.file = file;
-        me._temporary = false;
-        me._ownFile = false;
-
-		if (me.file) 
-		{
-			me._openMode = OPEN_RDWR;
-			return _map(me, size(me.file) / sizeof(TValue));
-		}
-
+		if (open(me.mapping, file))
+			return _map(me, 0, size(me.file) / sizeof(TValue));
 		return false;
     }
 
@@ -843,10 +557,7 @@ SEQAN_CHECKPOINT
 	{
 //IOREV
 		close(me);
-        me._temporary = true;
-		me._openMode = OPEN_RDWR;
-		
-		return me._ownFile = openTemp(me.file);
+		return openTemp(me.mapping);
     }
 //____________________________________________________________________________
 
@@ -854,13 +565,10 @@ SEQAN_CHECKPOINT
 	inline void _ensureFileIsOpen(String<TValue, MMap<TConfig> > &me) 
 	{
 //IOREV
-		if (!me.file)
+		if (!me)
 		{
-			me._temporary = true;
-			me._openMode = OPEN_RDWR;
-
-			if (!(me._ownFile = openTemp(me.file)))
-				::std::cerr << "Memory Mapped String couldn't open temporary file" << ::std::endl;
+			if (!openTemp(me.mapping))
+				SEQAN_FAIL("Memory Mapped String couldn't open temporary file");
 		}
 	}
 //____________________________________________________________________________
@@ -899,23 +607,14 @@ SEQAN_CHECKPOINT
     inline bool 
     close(String<TValue, MMap<TConfig> > &me) 
 	{
-//IOREV shouldn't we cancel/flush in any case, even if not temp?
-		if (me.file) 
+        typedef typename Size<typename TConfig::TFile>::Type TFileSize;
+		if (me)
 		{
 			// close associated file
-			if (me._temporary) 
-			{
-				me._temporary = false;
+			if (me.mapping.temporary)
 				cancel(me);
-			}
 
-			_unmap(me);
-
-			if (me._ownFile) 
-			{
-				me._ownFile = false;
-				return close(me.file);
-			}
+			closeAndResize(me.mapping, (TFileSize)length(me) * (TFileSize)sizeof(TValue));
 		}
 		return true;
     }

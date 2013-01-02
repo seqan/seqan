@@ -77,46 +77,6 @@ namespace seqan {
     class File;
 //IOREV
 
-/**
-.Spec.Chained:
-..cat:Files
-..general:Class.File
-..summary:Splits a large file into a chain of smaller files.
-..signature:File<Chained<FileSize, TFile> >
-..param.FileSize:The maximal split file size in byte.
-...default:2^31-1 (~2GB)
-..param.TFile:Underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..remarks:This file type uses a chain of $TFile$ files, whose file sizes are at most $FileSize$ bytes.
-Chained Files should be used for file systems or $TFile$ types that don't support large files (e.g. FAT32, C-style FILE*).
-..remarks:The chain can be used as if it were one contiguous file.
-..include:seqan/file.h
-*/
-
-	// chained file's default filesize is 2gb-1byte (fat16 filesize limitation)
-	template < __int64 FileSize_ = ~(((__int64)1) << 63), typename TFile = File<> >
-	struct Chained;
-//IOREV
-
-/**
-.Spec.Striped:
-..cat:Files
-..general:Class.File
-..summary:Stripes a file across multiple files.
-..signature:File<Chained<FileCount, TFile> >
-..param.FileCount:The number of files used for striping.
-...default:2
-..param.TFile:Underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..remarks:This file type uses a software striping without redundance (see RAID0) to accelerate I/O access when using more than one disks.
-..remarks:Striped files should only be used in @Class.Pool@s or external Strings as they only support block operations and no random accesses.
-..include:seqan/file.h
-*/
-
-	template < unsigned FileCount_ = 2, typename TFile = File<> >
-	struct Striped;
-//IOREV not known if working, see file_array.h
-
     enum FileOpenMode {
         OPEN_RDONLY     = 1,
         OPEN_WRONLY     = 2,

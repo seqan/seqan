@@ -117,9 +117,9 @@ namespace SEQAN_NAMESPACE_MAIN
     struct PoolParameters
     {
 
-        enum { DefaultMemBufferSize     = 2 * 1024*1024*1024ul - 1,	// max memory config
-               DefaultPageSize          = 32 * 1024*1024,
-               DefaultBucketBufferSize  = 64 * 1024*1024,
+        enum { DefaultMemBufferSize     = 8 * 1024*1024,        // max memory config [kB]
+               DefaultPageSize          = 1 * 1024*1024,        // [kB]
+               DefaultBucketBufferSize  = 2 * 1024*1024,        // [kB]
                DefaultReadAheadBuffers  = 4,
                DefaultWriteBackBuffers  = 4,
                DefaultWriteBackBuckets  = 16,
@@ -127,9 +127,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 /*
-        enum { DefaultMemBufferSize     = 128 * 1024*1024,		// normal memory config
-               DefaultPageSize          = 32 * 1024*1024,
-               DefaultBucketBufferSize  = 64 * 1024*1024,
+        enum { DefaultMemBufferSize     = 128 * 1024,           // normal memory config [kB]
+               DefaultPageSize          = 32 * 1024,            // [kB]
+               DefaultBucketBufferSize  = 64 * 1024,            // [kB]
                DefaultReadAheadBuffers  = 2,
                DefaultWriteBackBuffers  = 2,
                DefaultWriteBackBuckets  = 16,
@@ -137,41 +137,41 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 
 /*
-        enum { DefaultMemBufferSize     = 0*8192,//64 * 1024*1024,	// low memory config
-               DefaultPageSize          = 2 * 1024*1024,
-               DefaultBucketBufferSize  = 6 * 1024*1024,
+        enum { DefaultMemBufferSize     = 0*8192,//64 * 1024,	// low memory config [kB]
+               DefaultPageSize          = 2 * 1024,             // [kB]
+               DefaultBucketBufferSize  = 6 * 1024,             // [kB]
                DefaultReadAheadBuffers  = 4,
                DefaultWriteBackBuffers  = 4,
                DefaultWriteBackBuckets  = 16,
                DefaultAbsoluteSizes     = true };
 */
 
-        unsigned memBufferSize;
-        unsigned pageSize;
-        unsigned bucketBufferSize;
-        unsigned readAheadBuffers;
-        unsigned writeBackBuffers;
-        unsigned writeBackBuckets;
-        bool     absoluteSizes;     // when false, sizes are measured in units of TValue
+        size_t  memBufferSize;
+        size_t  pageSize;
+        size_t  bucketBufferSize;
+        size_t  readAheadBuffers;
+        size_t  writeBackBuffers;
+        size_t  writeBackBuckets;
+        bool    absoluteSizes;      // when false, sizes are measured in units of TValue
                                     // when true, sizes are measured in bytes
 
         PoolParameters():
-            memBufferSize(DefaultMemBufferSize),
-            pageSize(DefaultPageSize),
-            bucketBufferSize(DefaultBucketBufferSize),
+            memBufferSize((size_t)DefaultMemBufferSize * 1024ul),
+            pageSize((size_t)DefaultPageSize * 1024ul),
+            bucketBufferSize((size_t)DefaultBucketBufferSize * 1024ul),
             readAheadBuffers(DefaultReadAheadBuffers),
             writeBackBuffers(DefaultWriteBackBuffers),
             writeBackBuckets(DefaultWriteBackBuckets),
             absoluteSizes(DefaultAbsoluteSizes) {}
 
         template < typename TValue >
-        void absolutize(unsigned aligning, TValue *) {
+        void absolutize(size_t aligning, TValue *)
+        {
             if (!absoluteSizes) return;
-            memBufferSize = memBufferSize / sizeof(TValue);
-            bucketBufferSize = bucketBufferSize / sizeof(TValue);
-            pageSize = pageSize / sizeof(TValue);
-            pageSize = (pageSize / aligning) * aligning;
-            if (!pageSize) pageSize += aligning;
+            memBufferSize = (memBufferSize + sizeof(TValue) - 1) / sizeof(TValue);
+            bucketBufferSize = (bucketBufferSize + sizeof(TValue) - 1) / sizeof(TValue);
+            pageSize = (pageSize + sizeof(TValue) - 1) / sizeof(TValue);
+            pageSize = ((pageSize + aligning - 1) / aligning) * aligning;
         }
     };
 
@@ -188,33 +188,33 @@ namespace SEQAN_NAMESPACE_MAIN
     struct MemorySpec_;
 	typedef Tag<MemorySpec_> MemorySpec;
 
-    template < typename TPool >
-    struct BufferHandler< TPool, MemorySpec >
+    template <typename TValue, typename TPoolSpec>
+    struct BufferHandler<Pool<TValue, TPoolSpec>, MemorySpec>
     {
-		typedef TPool							Pool;
-        typedef typename TPool::Type            Type;
-
-        typedef SimpleBuffer<Type>				Buffer;
-        typedef Buffer&							BufferRef;
+        typedef Pool<TValue, TPoolSpec> TPool;
+        typedef Buffer<TValue>          TBuffer;
 
 		TPool	&pool;
-        Buffer	empty;
+        TBuffer	empty;
 
 		BufferHandler(TPool &_pool):
 			pool(_pool) {}
 
-		BufferHandler(TPool &_pool, unsigned):
+		BufferHandler(TPool &_pool, size_t):
 			pool(_pool) {}
 
-        inline BufferRef first() {
+        inline TBuffer & first()
+        {
             return pool.memBuffer;
         }
 
-        inline BufferRef next() {
+        inline TBuffer & next()
+        {
             return empty;
         }
 
-        inline void process() {
+        inline void process()
+        {
             processBuffer(pool.memBuffer, *this);
         }
 
@@ -229,31 +229,28 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _notio_ not directly relevant to iorev
 	typedef Tag<ReadFileSpec_> ReadFileSpec; //IOREV _notio_ not directly relevant to iorev
 
-    template < typename TPool >
-    struct BufferHandler< TPool, ReadFileSpec >
+    template <typename TValue, typename TSpec>
+    struct BufferHandler<Pool<TValue, TSpec>, ReadFileSpec >
     {
-		typedef TPool								Pool;
-        typedef typename TPool::Type                Type;
-        typedef typename TPool::File                File;
+		typedef Pool<TValue, TSpec>                         TPool;
+        typedef typename TPool::File                        TFile;
 
-        typedef SimpleBuffer<Type>					Buffer;
-        typedef PageFrame<Type, File, Dynamic<> >   TPageFrame;
-		typedef TPageFrame&                         PageFrameRef;
-        typedef Buffer&								BufferRef;
-        typedef PageChain<TPageFrame>	            TPageChain;
+        typedef Buffer<TValue>                              TBuffer;
+        typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
+        typedef PageChain<TPageFrame>                       TPageChain;
 
         TPool       &pool;
-        TPageChain   chain;
-        unsigned    pageSize;
-        unsigned    readPageNo, _pages;
-        Buffer	    empty;
+        TPageChain  chain;
+        size_t      pageSize;
+        size_t      readPageNo, _pages;
+        TBuffer	    empty;
 
         BufferHandler(TPool &_pool):
             pool(_pool),
             chain(_min(_pool.readAheadBuffers, _pool.pages())),
 			pageSize(_pool.pageSize) {}
 
-        BufferHandler(TPool &_pool, unsigned _requestedBufferSize, unsigned _readAheadBuffers = 1):
+        BufferHandler(TPool &_pool, size_t _requestedBufferSize, size_t _readAheadBuffers = 1):
             pool(_pool),
 //            pageSize(alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)),
             chain(_min(_readAheadBuffers, _pool.pages(pageSize = alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)))) 
@@ -266,11 +263,13 @@ namespace SEQAN_NAMESPACE_MAIN
 			#endif
         }
 
-        ~BufferHandler() {
+        ~BufferHandler()
+        {
             end();
         }
         
-        inline BufferRef first() {
+        inline TBuffer & first()
+        {
             _pages = pool.pages(pageSize);
             if (!_pages) return empty;
 
@@ -291,7 +290,8 @@ namespace SEQAN_NAMESPACE_MAIN
             return processBuffer(*chain.first, *this);
         }
 
-        inline BufferRef next() {
+        inline TBuffer & next()
+        {
             // step one buffer ahead
             chain.getReadyPage();
 
@@ -307,11 +307,13 @@ namespace SEQAN_NAMESPACE_MAIN
             return processBuffer(*chain.first, *this);
         }
 
-        inline void end() {
+        inline void end()
+        {
             cancel();
         }
 
-        inline void cancel() {
+        inline void cancel()
+        {
             TPageFrame *p = chain.first;
             while (p) {
 				::seqan::cancel(*p, pool.file);
@@ -328,13 +330,15 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
 
-        inline bool _read(TPageFrame &pf) {
+        inline bool _read(TPageFrame &pf)
+        {
             if (pf.pageNo < _pages) {
                 // alloc if empty
                 if (!pf.begin)
                     allocPage(pf, pageSize, pool.file);
 
                 // set buffer size according to read size
+                std::cout << "poolsize="<<pool._size<<" pageno="<<pf.pageNo<<" pagesize="<<pageSize<<" resutl="<<pool.dataSize(pf.pageNo, pageSize)<<std::endl;
                 resize(pf, pool.dataSize(pf.pageNo, pageSize));
 
                 // read asynchronously (if possible) from disk
@@ -354,31 +358,28 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _notio_ not directly relevant to iorev
 	typedef Tag<WriteFileSpec_> WriteFileSpec; //IOREV _notio_ not directly relevant to iorev
 
-    template < typename TPool >
-    struct BufferHandler< TPool, WriteFileSpec >
+    template < typename TValue, typename TSpec >
+    struct BufferHandler<Pool<TValue, TSpec>, WriteFileSpec>
     {
-		typedef TPool								Pool;
-        typedef typename TPool::Type                Type;
-        typedef typename TPool::File                File;
+		typedef Pool<TValue, TSpec>                 TPool;
+        typedef typename TPool::File                TFile;
 
-        typedef SimpleBuffer<Type>					Buffer;
-        typedef PageFrame<Type, File, Dynamic<> >   TPageFrame;
-		typedef TPageFrame&                          PageFrameRef;
-        typedef Buffer&								BufferRef;
-        typedef PageChain<TPageFrame>	            TPageChain;
+        typedef Buffer<TValue>                              TBuffer;
+        typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
+        typedef PageChain<TPageFrame>                       TPageChain;
 
         TPool       &pool;
-        TPageChain   chain;
-        unsigned    pageSize;
-        unsigned    writePageNo, _pages;
-        Buffer	    empty;
+        TPageChain  chain;
+        size_t      pageSize;
+        size_t      writePageNo, _pages;
+        TBuffer	    empty;
 
         BufferHandler(TPool &_pool):
             pool(_pool),
             chain(_min(_pool.writeBackBuffers, _pool.pages())),
 			pageSize(_pool.pageSize) {}
 
-        BufferHandler(TPool &_pool, unsigned _requestedBufferSize, unsigned _writeBackBuffers = 1):
+        BufferHandler(TPool &_pool, size_t _requestedBufferSize, size_t _writeBackBuffers = 1):
             pool(_pool),
             chain(_min(_writeBackBuffers, _pool.pages(pageSize))),
 			pageSize(alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)) {}
@@ -389,12 +390,13 @@ namespace SEQAN_NAMESPACE_MAIN
         
     public:
 
-        inline BufferRef first() {
+        inline TBuffer & first()
+        {
             _pages = pool.pages(pageSize);
             if (!_pages) return empty;
 
             // get a ready page frame
-            PageFrameRef pf = *chain.getReadyPage();
+            TPageFrame & pf = *chain.getReadyPage();
 
             if (!pf.begin)
                 allocPage(pf, pageSize, pool.file);
@@ -404,12 +406,13 @@ namespace SEQAN_NAMESPACE_MAIN
             return pf;
         }
 
-        inline BufferRef next() {
+        inline TBuffer & next()
+        {
             // write previously provided buffer to disk
             _write(processBuffer(*chain.last, *this));
 
             // step one buffer ahead
-            PageFrameRef pf = *chain.getReadyPage();
+            TPageFrame & pf = *chain.getReadyPage();
 
             if (!pf.begin)
                 allocPage(pf, pageSize, pool.file);
@@ -418,13 +421,15 @@ namespace SEQAN_NAMESPACE_MAIN
             return pf;
         }
 
-        inline void end() {
+        inline void end()
+        {
             // write previously provided buffer to disk
             _write(processBuffer(*chain.last, *this));
             flush();
         }
 
-        inline void flush() {
+        inline void flush()
+        {
             TPageFrame *p = chain.first;
             while (p)
             {
@@ -439,7 +444,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			::seqan::flush(pool.file);
         }
 
-        inline void cancel() {
+        inline void cancel()
+        {
             TPageFrame *p = chain.first;
             while (p) {
                 ::seqan::cancel(*p, pool.file);
@@ -452,12 +458,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 
-        bool _error() {
+        bool _error()
+        {
 //            ::std::cerr << "Error in BufWriteFileHandler::_write " << pool.file.error() << ::std::endl;
             return true;
         }
 
-        bool _write(TPageFrame &pf) {
+        bool _write(TPageFrame &pf)
+        {
             if (pf.pageNo < _pages) {
                 // write asynchronously (if possible) to disk
                 return writePage(pf, pool.file) || _error();
@@ -477,8 +485,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	template < typename TBufferHandler1, typename TBufferHandler2 >
     struct BufferHandler< Bundle2< TBufferHandler1, TBufferHandler2 >, MultiplexSpec >
 	{
-        typedef typename TBufferHandler1::Type   Type;
-        typedef typename TBufferHandler1::Buffer Buffer;
+        typedef typename Value<TBufferHandler1>::Type TBuffer;
 
 		TBufferHandler1 *handler1;
 		TBufferHandler2 *handler2;
@@ -495,7 +502,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		}
 
 		template <typename TPool>
-		BufferHandler(TPool &_pool, unsigned _requestedBufferSize) {
+		BufferHandler(TPool &_pool, size_t _requestedBufferSize) {
 			if (_pool.memBuffer.begin || _pool._size == 0) {	// decision to choose handler1 or handler2
 				handler1 = new TBufferHandler1(_pool, _requestedBufferSize);
 				handler2 = NULL;
@@ -510,12 +517,12 @@ namespace SEQAN_NAMESPACE_MAIN
 			delete handler2;
 		}
 		
-        inline Buffer first() {
+        inline TBuffer first() {
 			if (handler1)	return handler1->first();
 			else			return handler2->first();
 		}
 
-		inline Buffer next() {
+		inline TBuffer next() {
 			if (handler1)	return handler1->next();
 			else			return handler2->next();
 		}
@@ -540,13 +547,14 @@ namespace SEQAN_NAMESPACE_MAIN
 	template < typename THandler1, typename THandler2 >
     struct Handler< Bundle2< THandler1, THandler2 >, MultiplexSpec >
 	{
-        typedef typename THandler1::Type            Type;
+        typedef typename Value<Handler>::Type TValue;
 
         THandler1 *handler1;
 		THandler2 *handler2;
 
 		template <typename TPool>
-		Handler(TPool &_pool) {
+		Handler(TPool &_pool)
+        {
 			if (_pool.memBuffer.begin || _pool._size == 0) {	// decision to choose handler1 or handler2
 				handler1 = new THandler1(_pool);
 				handler2 = NULL;
@@ -566,7 +574,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			else			return handler2->begin();
 		}
 
-        inline Type const & front() const {
+        inline TValue const & front() const {
             if (handler1)	return handler1->front();
 			else			return handler2->front();
         }
@@ -576,12 +584,12 @@ namespace SEQAN_NAMESPACE_MAIN
 			else			handler2->pop();
         }
 
-        inline void pop(Type &Ref_) {
+        inline void pop(TValue &Ref_) {
             if (handler1)	handler1->pop(Ref_);
 			else			handler2->pop(Ref_);
         }
 
-        inline void push(Type const & Val_) {
+        inline void push(TValue const & Val_) {
             if (handler1)	handler1->push(Val_);
 			else			handler2->push(Val_);
         }
@@ -625,10 +633,13 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-    template < typename TValue, typename TPoolSpec, typename TSpec >
-    struct Value< BufferHandler< Pool< TValue, TPoolSpec >, TSpec > > {
-        typedef SimpleBuffer< TValue > Type;
-    };
+    template <typename TBufferHandler1, typename TBufferHandler2>
+    struct Value< BufferHandler< Bundle2<TBufferHandler1, TBufferHandler2>, MultiplexSpec> > :
+        public Value<TBufferHandler1> {};
+
+    template <typename THandler1, typename THandler2>
+    struct Value< Handler< Bundle2<THandler1, THandler2>, MultiplexSpec> > :
+        public Value<THandler1> {};
 
     template < typename TPool >
     struct HandlerArgs {
@@ -643,12 +654,10 @@ namespace SEQAN_NAMESPACE_MAIN
                typename TSpec >
     struct Pool
     {
-		typedef TValue	                    Type;
-        typedef TSpec                       Spec;
         typedef typename TSpec::Config      Config;
         typedef typename Config::File       File;
         typedef typename Config::SizeType   SizeType;
-        typedef SimpleBuffer<TValue>        Buffer;
+        typedef Buffer<TValue>              TBuffer;
 
 		// public handlers to read simultanously buffer- or character-wise
         typedef typename ReadHandler<Pool>::Type    ReadHandler;
@@ -658,23 +667,23 @@ namespace SEQAN_NAMESPACE_MAIN
 		File				file;
         bool                _temporary, _ownFile;
 		SizeType			_size;
-        unsigned            _pages;
-        unsigned            pageSize;
-        unsigned            bucketBufferSize;
-        unsigned            readAheadBuffers;
-        unsigned            writeBackBuffers;
-        unsigned            writeBackBuckets;
+        size_t              _pages;
+        size_t              pageSize;
+        size_t              bucketBufferSize;
+        size_t              readAheadBuffers;
+        size_t              writeBackBuffers;
+        size_t              writeBackBuckets;
 
-        Buffer				memBuffer;
-        unsigned            memBufferSize;
+        TBuffer				memBuffer;
+        size_t              memBufferSize;
         HandlerArgs         handlerArgs;
 
 		bool				_partiallyFilled;		// the pool is partially filled (it contains undefined values)
 		TValue				undefinedValue;			// value to represent undefined (unwritten) entries
 
     protected:
-        unsigned            _lastPageNo;
-        unsigned            _lastPageSize;
+        size_t              _lastPageNo;
+        size_t              _lastPageSize;
 
         int                 listeners;
        
@@ -810,32 +819,39 @@ namespace SEQAN_NAMESPACE_MAIN
         //////////////////////////////////////////////////////////////////////////////
 		// queue interface
 
-        inline Type const & front() const {
+        inline TValue const & front() const
+        {
             return reader->front();
         }
 
-		inline Type const & operator*() const {
+		inline TValue const & operator*() const
+        {
 			return reader->front();
 		}
 
-        inline void pop() {
+        inline void pop()
+        {
 			reader->pop();
         }
 
-        inline Pool& operator++() {
+        inline Pool& operator++()
+        {
 			reader->pop();
 			return *this;
         }
 
-        inline void pop(Type &Ref_) {
+        inline void pop(TValue &Ref_)
+        {
             reader->pop(Ref_);
         }
 
-        inline void push(Type const &Val_) {
+        inline void push(TValue const &Val_)
+        {
             writer->push(Val_);
         }
 
-        inline bool eof() {
+        inline bool eof()
+        {
             if (reader) return reader->eof();
             if (writer) return writer->eof();
             return true;
@@ -878,21 +894,21 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
 
-        inline unsigned pages() const {
+        inline size_t pages() const {
             return _pages;
         }
 
-        inline unsigned pages(unsigned pageSize__) const {
-            return enclosingBlocks(_size, (unsigned)pageSize__);
+        inline size_t pages(size_t pageSize__) const {
+            return enclosingBlocks(_size, pageSize__);
         }
 
         // used by buffer handlers ...
-        inline unsigned dataSize(unsigned pageNo__) const {
+        inline size_t dataSize(size_t pageNo__) const {
             return (pageNo__ != _lastPageNo)? pageSize: _lastPageSize;
         }
 
         // used by buffer handlers with variable PageSize ...
-        inline unsigned dataSize(unsigned pageNo__, unsigned pageSize__) const {
+        inline size_t dataSize(size_t pageNo__, size_t pageSize__) const {
             return (pageNo__ != _size / pageSize__)? pageSize__: _size % pageSize__;
         }
 
@@ -909,14 +925,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline void _setSize(size_type _newSize) {
             _size = _newSize;
-            _pages = enclosingBlocks(_size, (unsigned)pageSize);
+            _pages = enclosingBlocks(_size, pageSize);
             _lastPageNo = _size / pageSize;
             _lastPageSize = _size % pageSize;
         }
 
 		void _init(PoolParameters _conf = PoolParameters()) 
 		{
-            _conf.absolutize(16*1024/*sectorSize(file)*/, (Type*)NULL);
+            _conf.absolutize(16*1024/*sectorSize(file)*/, (TValue*)NULL);
             memBufferSize    = _conf.memBufferSize;
             pageSize		 = _conf.pageSize;
             bucketBufferSize = _conf.bucketBufferSize;

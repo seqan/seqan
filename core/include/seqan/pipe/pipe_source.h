@@ -229,7 +229,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<TPipe>::Type			TValue;
         typedef typename Size<TPipe>::Type			TSize;
 
-        typedef SimpleBuffer<TValue>						TBuffer;
+        typedef Buffer<TValue>                              TBuffer;
 		typedef IPipeIterator<TPipe>						ISource;
 		typedef typename Iterator<TBuffer, Standard>::Type	ITarget;
 
@@ -274,7 +274,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template < typename TPipe >
     struct Value< BufferHandler< TPipe, SourceCachingSpec > > {
-        typedef SimpleBuffer< typename Value<TPipe>::Type > Type;
+        typedef Buffer<typename Value<TPipe>::Type> Type;
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -287,7 +287,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
 		typedef typename Value<TSequence>::Type		TValue;
         typedef typename Size<TSequence>::Type		TSize;
-        typedef SimpleBuffer<TValue>				TBuffer;
+        typedef Buffer<TValue>                      TBuffer;
         typedef Pipe<TSequence, TSpec>				TPipe;
 
 		typedef typename Iterator<TSequence const, Standard>::Type	ISource;
@@ -333,8 +333,9 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 	template < typename TSequence, typename TSpec >
-    struct Value< BufferHandler< Pipe<TSequence, TSpec>, ExtStringSourceCachingSpec > > {
-		typedef SimpleBuffer< typename Value<TSequence>::Type > Type;
+    struct Value<BufferHandler< Pipe<TSequence, TSpec>, ExtStringSourceCachingSpec > >
+    {
+		typedef Buffer<typename Value<TSequence>::Type> Type;
     };
 
     //////////////////////////////////////////////////////////////////////////////

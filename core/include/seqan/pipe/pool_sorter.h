@@ -150,48 +150,49 @@ namespace SEQAN_NAMESPACE_MAIN
     struct ReadSorterSpec_;
 	typedef Tag<ReadSorterSpec_> ReadSorterSpec;
 
-    template < typename TPool >
-    struct Handler< TPool, ReadSorterSpec >
+    template <typename TValue, typename TPoolSpec>
+    struct Handler<Pool<TValue, TPoolSpec>, ReadSorterSpec>
     {
-        typedef typename TPool::Type                    Type;
-        typedef typename TPool::Buffer					Buffer;
-        typedef typename TPool::Spec::Config::Compare   Compare;
-        typedef PageBucketExtended<Type>                PageBucket;
+        typedef Pool<TValue, TPoolSpec>                 TPool;
+        typedef typename TPool::TBuffer					TBuffer;
+        typedef typename TPoolSpec::Config::Compare     TCompare;
+        typedef PageBucketExtended<TValue>              TPageBucket;
 
-        typedef MergeStreamComparer<Type, Compare>      StreamComparer;
+        typedef MergeStreamComparer<TValue, TCompare>   TStreamComparer;
 /*        typedef ::std::priority_queue <
-            PageBucket,
-            ::std::vector<PageBucket>,
+            TPageBucket,
+            ::std::vector<TPageBucket>,
             MergeStreamComparer<Type, Compare> >	    PQueue;
 */
-        typedef PriorityType<
-			PageBucket, 
-			MergeStreamComparer<Type, Compare> >	    PQueue;
+        typedef PriorityType<TPageBucket, TStreamComparer> TPrioQueue;
 
-		TPool   &pool;
-        Buffer	bucketBuffer;
-        PQueue  pqueue;
+		TPool       &pool;
+        TBuffer     bucketBuffer;
+        TPrioQueue  pqueue;
 
         Handler(TPool &_pool):
             pool(_pool),
-            pqueue(StreamComparer(_pool.handlerArgs)) { }
+            pqueue(TStreamComparer(_pool.handlerArgs)) { }
 
         ~Handler() {
             cancel();
         }
 
-		struct insertBucket : public ::std::unary_function<PageBucket,void> {
+		struct insertBucket : public ::std::unary_function<TPageBucket,void>
+        {
 			Handler &me;
 			insertBucket(Handler &_me): me(_me) {}
 
-			inline void operator() (PageBucket &pb) const {
+			inline void operator() (TPageBucket &pb) const
+            {
                 pb.pageNo = length(me.pqueue);
                 readBucket(pb, pb.pageNo, me.pool.pageSize, me.pool.dataSize(pb.pageNo), me.pool.file);
                 push(me.pqueue, pb);
 			}
 		};
 
-        bool begin() {
+        bool begin()
+        {
             // 1. initially fill priority queue
 //    		pqueue.reserve(pool.pages);
             equiDistantDistribution(
@@ -201,13 +202,14 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
 
-        inline Type const & front() const {
+        inline TValue const & front() const
+        {
 			return *(top(pqueue).cur);
         }
 
-        inline void pop(Type &Ref_) 
+        inline void pop(TValue &Ref_) 
 		{
-            PageBucket &pb = top(pqueue);
+            TPageBucket &pb = top(pqueue);
 			SEQAN_ASSERT_LEQ(pb.cur, pb.end);
 
             Ref_ = *pb.cur;
@@ -222,8 +224,9 @@ namespace SEQAN_NAMESPACE_MAIN
 			adjustTop(pqueue);
         }
 
-        inline void pop() {
-            PageBucket &pb = top(pqueue);
+        inline void pop()
+        {
+            TPageBucket &pb = top(pqueue);
 			SEQAN_ASSERT_LEQ(pb.cur, pb.end);
 
             if (++pb.cur == pb.end)
@@ -235,11 +238,13 @@ namespace SEQAN_NAMESPACE_MAIN
 			adjustTop(pqueue);
         }
 
-		inline bool eof() const {
+		inline bool eof() const
+        {
 			return empty(pqueue);
 		}
 
-        inline void end() {
+        inline void end()
+        {
             cancel();
         }
         
@@ -254,26 +259,25 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-    template < typename TPool >
-    struct BufferHandler< TPool, ReadSorterSpec >
+    template <typename TValue, typename TPoolSpec>
+    struct BufferHandler< Pool<TValue, TPoolSpec>, ReadSorterSpec >
     {
-        typedef typename TPool::Type                Type;
-        typedef typename TPool::Buffer				Buffer;
-        typedef typename TPool::Spec::Compare       Compare;
+        typedef Pool<TValue, TPoolSpec>                 TPool;
+        typedef typename TPool::Buffer                  TBuffer;
+        typedef typename TPool::Spec::Compare           TCompare;
 
-        typedef Buffer&								BufferRef;
-		typedef PageBucketExtended<Type>            PageBucket;
+		typedef PageBucketExtended<TValue>              TPageBucket;
 
-        typedef MergeStreamComparer<Type, Compare>  StreamComparer;
+        typedef MergeStreamComparer<TValue, TCompare>   StreamComparer;
         typedef ::std::priority_queue <
-            PageBucket,
-            ::std::vector<PageBucket>,
-            MergeStreamComparer<Type, Compare> >	PQueue;
+            TPageBucket,
+            ::std::vector<TPageBucket>,
+            MergeStreamComparer<TValue, TCompare> >     TPrioQueue;
 
         TPool       &pool;
         unsigned    mergeBufferSize;
-        Buffer	    bucketBuffer, mergeBuffer, tmpBuffer;
-        PQueue	    pqueue;
+        TBuffer     bucketBuffer, mergeBuffer, tmpBuffer;
+        TPrioQueue  pqueue;
 
         BufferHandler(TPool &_pool):
             pool(_pool),
@@ -289,18 +293,19 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
 
-		struct insertBucket : public ::std::unary_function<PageBucket,void> {
+		struct insertBucket : public ::std::unary_function<TPageBucket, void> {
 			BufferHandler &me;
 			insertBucket(BufferHandler &_me): me(_me) {}
 
-			inline void operator() (PageBucket &pb) const {
+			inline void operator() (TPageBucket &pb) const
+            {
                 pb.pageNo = length(pqueue);
                 readBucket(pb, pb.pageNo, me.pool.pageSize, me.pool.dataSize(pb.pageNo), pool.file);
                 push(pqueue, pb);
 			}
 		};
 
-        inline BufferRef first() {
+        inline TBuffer & first() {
             // 1. initially fill priority queue
 //    		pqueue.reserve(pool.pages);
             equiDistantDistribution(
@@ -311,7 +316,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			return merge();
         }
 
-		inline BufferRef next() {
+		inline TBuffer & next() {
 			return merge();
 		}
 
@@ -330,11 +335,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 
-        BufferRef merge()
+        TBuffer & merge()
         {
             // 2. merge streams into mergeBuffer
             
-			typename PQueue::size_type pqsize = length(pqueue);
+			typename TPrioQueue::size_type pqsize = length(pqueue);
 			if (!pqsize) {
 				resize(tmpBuffer, 0);
 				return tmpBuffer;
@@ -343,7 +348,7 @@ namespace SEQAN_NAMESPACE_MAIN
             if (pqsize == 1)
 			{
                 // only one stream left => retrieve what's left in stream es
-                PageBucket &pb = pqueue.top();
+                TPageBucket &pb = pqueue.top();
 
                 // flush stream
 				if (pb.cur != pb.end) {
@@ -365,8 +370,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			}
             else
             {
-                for(Type *cur = mergeBuffer.begin; cur != mergeBuffer.end; ++cur) {
-                    PageBucket &pb = pqueue.top();
+                for(TValue *cur = mergeBuffer.begin; cur != mergeBuffer.end; ++cur) {
+                    TPageBucket &pb = pqueue.top();
                     *cur = *pb.cur;
 					if (++pb.cur == pb.end) {
 						// bucket is empty, we have to fetch the next bucket
@@ -391,8 +396,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template < typename TValue,
 			   typename TConfig >
-    inline PageFrame< TValue, typename TConfig::File, Dynamic<> > & processBuffer(
-        PageFrame< TValue, typename TConfig::File, Dynamic<> > &buf,
+    inline Buffer<TValue, PageFrame<typename TConfig::File, Dynamic> > & processBuffer(
+        Buffer<TValue, PageFrame<typename TConfig::File, Dynamic> > &buf,
         BufferHandler< Pool< TValue, SorterSpec<TConfig> >, WriteFileSpec > &me)
     {
         AdaptorCompare2Less<typename TConfig::Compare> cmp(me.pool.handlerArgs);
@@ -405,8 +410,8 @@ namespace SEQAN_NAMESPACE_MAIN
 	// character and buffer based handler definitions
     template < typename TValue,
                typename TConfig >
-    inline SimpleBuffer<TValue> & processBuffer(
-        SimpleBuffer< TValue > &buf,
+    inline Buffer<TValue> & processBuffer(
+        Buffer<TValue> &buf,
         BufferHandler< Pool< TValue, SorterSpec<TConfig> >, MemorySpec > &me)
     {
         AdaptorCompare2Less<typename TConfig::Compare> cmp(me.pool.handlerArgs);
@@ -433,48 +438,6 @@ namespace SEQAN_NAMESPACE_MAIN
 			Handler<				 Pool< TValue, SorterSpec<TConfig> >, ReadSorterSpec >
 		>, MultiplexSpec > Type;
     };
-
-
-    //template < typename TValue,
-    //           typename TCompare,
-			 //  typename TFile = File<> >
-    //struct Sorter: public Pool< TValue, SorterSpec< SorterConfig<TCompare, TFile> > >
-    //{
-    //    typedef Pool< TValue, SorterSpec< SorterConfig<TCompare, TFile> > > Base;
-
-    //    typedef TValue	                    Type;
-    //    typedef TFile                       File;
-    //    typedef typename Size<TFile>::Type  SizeType;
-
-    //    Sorter(TCompare const & C)
-    //    {
-    //        Base::handlerArgs = C;
-    //    }
-
-    //    template < typename TInput, typename TSpec >
-    //    Sorter(Pipe<TInput, TSpec> &src):
-    //        Base(src) {}
-
-    //    template < typename TInput, typename TSpec >
-    //    Sorter(Pipe<TInput, TSpec> &src, TCompare const & C):
-    //        Base(src)
-    //    {
-    //        Base::handlerArgs = C;
-    //    }
-    //};
-
- //   template < typename TValue,
- //              typename TCompare,
-	//		   typename TFile >
- //   ::std::ostream& operator<<(::std::ostream &out, Sorter<TValue, TCompare, TFile> &p) {
- //       beginRead(p);
- //       while (!eof(p)) {
-	//	    out << p.front() << ::std::endl;
- //           p.pop();
- //       }
- //       endRead(p);
-	//	return out;
-	//}
 
 }
 

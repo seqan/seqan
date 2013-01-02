@@ -390,7 +390,7 @@ Return type is $Value<TObject>::Type$ for $object$ type $TObject$.
 */
 
     template < typename TInput, typename TSpec, typename TValue >
-    inline Value< Pipe<TInput, TSpec> > const & 
+    inline typename Value< Pipe<TInput, TSpec> >::Type const &
     front(Pipe<TInput, TSpec> &me) {
 SEQAN_CHECKPOINT
         return *me;
@@ -545,43 +545,66 @@ SEQAN_CHECKPOINT
 
 	//////////////////////////////////////////////////////////////////////////////
     // pipe -> string
+
+    // We cannot use the most-generic TObject as first argument, as operator << specialized somewhere else in
+    // the first argument and here we need to specialize it in the second.
     template < typename TValue,
                typename TStringSpec,
                typename TInput,
                typename TSpec >
-    inline bool assign(String<TValue, TStringSpec> &dest, Pipe<TInput, TSpec> &src) {
-        typedef typename Iterator< String<TValue, TStringSpec>, Standard >::Type TIter;
-        typename Size< Pipe<TInput, TSpec> >::Type _size = length(src);
-        resize(dest, _size);
-        if (!beginRead(src)) return false;
-        TIter _cur = begin(dest), _end = end(dest);
-        while (_cur != _end) {
+    inline void assign(String<TValue, TStringSpec> &dest, Pipe<TInput, TSpec> &src)
+    {
+        typedef typename Iterator<String<TValue, TStringSpec>, Standard >::Type TDestIter;
+        resize(dest, length(src));
+        beginRead(src);
+        for (TDestIter _cur = begin(dest, Standard()), _end = end(dest, Standard()); _cur != _end; ++_cur, ++src)
             *_cur = *src;
-            ++_cur;
-            ++src;
-        }
         endRead(src);
-        return true;
+    }
+
+    template < typename TValue,
+               typename TSegmentSpec,
+               typename TInput,
+               typename TSpec >
+    inline void assign(Segment<TValue, TSegmentSpec> &dest, Pipe<TInput, TSpec> &src)
+    {
+        typedef typename Iterator<Segment<TValue, TSegmentSpec>, Standard >::Type TDestIter;
+        resize(dest, length(src));
+        beginRead(src);
+        for (TDestIter _cur = begin(dest, Standard()), _end = end(dest, Standard()); _cur != _end; ++_cur, ++src)
+            *_cur = *src;
+        endRead(src);
     }
 
     template < typename TValue,
                typename TStringSpec,
                typename TInput,
                typename TSpec >
-    inline bool operator<<(String<TValue, TStringSpec> &dest, Pipe<TInput, TSpec> &src) {
-        return assign(dest, src);
+    inline void operator << (String<TValue, TStringSpec> &dest, Pipe<TInput, TSpec> &src)
+    {
+        assign(dest, src);
+    }
+
+    template < typename TValue,
+               typename TSegmentSpec,
+               typename TInput,
+               typename TSpec >
+    inline void operator << (Segment<TValue, TSegmentSpec> &dest, Pipe<TInput, TSpec> &src)
+    {
+        assign(dest, src);
     }
 
 	//////////////////////////////////////////////////////////////////////////////
     // pipe -> out_stream
-    template < typename TInput, typename TSpec >
-	std::ostream& operator<<(std::ostream &out, Pipe<TInput, TSpec> &p) {
-        beginRead(p);
-        while (!eof(p)) {
-			out << *p << ::std::endl;
-            ++p;
+    template <typename TInput, typename TSpec>
+	std::ostream& operator << (std::ostream &out, Pipe<TInput, TSpec> &src)
+    {
+        beginRead(src);
+        while (!eof(src)) {
+			out << *src << ::std::endl;
+            ++src;
         }
-        endRead(p);
+        endRead(src);
 		return out;
 	}
 
@@ -589,8 +612,20 @@ SEQAN_CHECKPOINT
     template < typename TObject, typename TSpec >
     struct BufferHandler;
 
-    template < typename TObject, typename TSpec >
+    template <typename TObject, typename TSpec>
+    struct Value<BufferHandler<TObject, TSpec> >
+    {
+        typedef Buffer<typename Value<TObject>::Type> Type;
+    };
+
+
+
+    template <typename TObject, typename TSpec>
     struct Handler;
+
+    template <typename TObject, typename TSpec>
+    struct Value<Handler<TObject, TSpec> >:
+        public Value<TObject> {};
 
     // buffer-based read/write handler metafunctions
     template < typename TInput >
@@ -603,80 +638,97 @@ SEQAN_CHECKPOINT
 
 	//////////////////////////////////////////////////////////////////////////////
 	// generic adapter for buffered readers/writers
+
+	template <typename TValue, typename TSpec, typename TSize >
+    inline void resize(Buffer<TValue, TSpec> &me, TSize size);
+
 	struct AdapterSpec;
 
-	template < typename TBufferHandler >
-    struct Handler< TBufferHandler, AdapterSpec >
+	template <typename TBufferHandler>
+    struct Handler<TBufferHandler, AdapterSpec>
     {
-        typedef typename TBufferHandler::Type	Type;
-        typedef typename TBufferHandler::Buffer	Buffer;
-		typedef typename Iterator<Buffer>::Type	Iterator;
+        typedef typename Value<TBufferHandler>::Type        TBuffer;
+        typedef typename Value<TBuffer>::Type               TValue;
+		typedef typename Iterator<TBuffer, Standard>::Type  TIterator;
 
         TBufferHandler  handler;
-        Buffer			buffer;
-        Iterator        cur;
+        TBuffer			buffer;
+        TIterator       cur;
 
         template < typename TObject >
         Handler(TObject &_object):
             handler(_object) {}
 
-        inline bool begin() {
+        inline bool begin()
+        {
             buffer = handler.first();
-            cur = buffer.begin;
+            cur = seqan::begin(buffer, Standard());
             return true;
         }
 
-        inline Type const & front() const {
+        inline TValue const & front() const
+        {
             return *cur;
         }
 
-        inline void pop() {
-			if (++cur == buffer.end) {
+        inline void pop()
+        {
+			if (++cur == seqan::end(buffer, Standard()))
+            {
                 buffer = handler.next();
-				cur = buffer.begin;
+				cur = seqan::begin(buffer, Standard());
 			}
         }
 
-        inline void pop(Type &Ref_) {
+        inline void pop(TValue &Ref_)
+        {
             Ref_ = *cur;
             pop();
         }
 
-        inline void push(Type const & Val_) {
-            if (cur == buffer.end) {
+        inline void push(TValue const & Val_)
+        {
+            if (cur == seqan::end(buffer, Standard()))
+            {
                 buffer = handler.next();
-                cur = buffer.begin;
+                cur = seqan::begin(buffer, Standard());
             }
             *cur = Val_;
             ++cur;
         }
 
-        inline bool eof() const {
-            return size(buffer) == 0;
+        inline bool eof() const
+        {
+            return length(buffer) == 0;
         }
 
-        inline void end() {
+        inline void end()
+        {
             handler.end();
             resize(buffer, 0);
         }
 
-        inline void process() {
+        inline void process()
+        {
             handler.process();
         }
     };
 
+    template <typename TBufferHandler>
+    struct Value<Handler<TBufferHandler, AdapterSpec> >:
+        public Value<typename Value<TBufferHandler>::Type> {};
 
     // character-based read/write handler metafunctions
     template < typename TInput >
     struct ReadHandler
     {
-        typedef Handler< typename BufReadHandler< TInput > ::Type, AdapterSpec > Type;
+        typedef Handler< typename BufReadHandler<TInput> ::Type, AdapterSpec > Type;
     };
 
     template < typename TOutput >
     struct WriteHandler
     {
-        typedef Handler< typename BufWriteHandler< TOutput > ::Type, AdapterSpec > Type;
+        typedef Handler< typename BufWriteHandler<TOutput> ::Type, AdapterSpec > Type;
     };
 
 

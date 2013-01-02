@@ -630,17 +630,17 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 	T1 enclosingBlocks(T1 _size, T2 _blockSize) 
 	{
 //IOREV not sure what this does, but is used in several places
-		return (_size + _blockSize - 1) / _blockSize;
+		return (_size + (T1)_blockSize - (T1)1) / (T1)_blockSize;
 	}
 
 	template <typename T1, typename T2> inline
 	T1 alignSize(T1 _size, T2 _aligning) 
 	{
 //IOREV not sure what this does, but is used in several places
-        if (_size < _aligning)
+        if (_size < (T1)_aligning)
             return _aligning;
         else
-		    return (_size / _aligning) * (T1)_aligning;
+		    return (_size / (T1)_aligning) * (T1)_aligning;
 	}
 }  // namespace seqan
 

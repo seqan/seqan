@@ -59,9 +59,10 @@ computeSplitters(splitters, 10, 5);
 ..include:seqan/parallel.h
  */
 
-template <typename TPos, typename TSize, typename TCount>
-void computeSplitters(String<TPos> & splitters, TSize size, TCount count)
+template <typename TPosString, typename TSize, typename TCount>
+void computeSplitters(TPosString & splitters, TSize size, TCount count)
 {
+    typedef typename Value<TPosString>::Type TPos;
     resize(splitters, count + 1);
     splitters[0] = 0;
     TSize blockLength = size / count;

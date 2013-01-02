@@ -66,33 +66,42 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// base class for memory buffers
 
-	template < typename TValue >
-	struct SimpleBuffer
+	template <typename TValue, typename TSpec = Simple>
+	struct Buffer
 	{
 //IOREV _nodoc_
-		typedef	typename Size<SimpleBuffer>::Type               TSize;
-		typedef	typename Iterator<SimpleBuffer, Standard>::Type	TIterator;
+		typedef	typename Size<Buffer>::Type                 TSize;
+		typedef	typename Iterator<Buffer, Standard>::Type   TIterator;
 
 		TIterator	begin;      // the beginning of the buffer
         TIterator	end;        // end of valid data
         TSize		pageSize;   // size of allocated memory
 
-        SimpleBuffer():
-            begin(NULL),
-            end(NULL) {}
-
-        SimpleBuffer(TIterator _begin, TIterator _end):
-            begin(_begin),
-            end(_end) {}
-
-        SimpleBuffer(TIterator _begin, TSize _size):
-            begin(_begin),
-            end(_begin + _size) {}
-
-        SimpleBuffer(TSize _pageSize):
+        Buffer():
             begin(NULL),
             end(NULL),
-            pageSize(_pageSize) {}
+            pageSize(0) {}
+
+        Buffer(TIterator _begin, TIterator _end):
+            begin(_begin),
+            end(_end),
+            pageSize(0) {}
+
+        Buffer(TIterator _begin, TSize _size):
+            begin(_begin),
+            end(_begin + _size),
+            pageSize(0) {}
+
+//        template <typename T>
+//        Buffer(T &x):
+//        {
+//            const_cast<int&>(x);
+//        }
+//
+//        Buffer(TSize _pageSize):
+//            begin(NULL),
+//            end(NULL),
+//            pageSize(_pageSize) {}
 
         inline TValue       & operator[](TSize i)       { return begin[i]; }
         inline TValue const & operator[](TSize i) const { return begin[i]; }
@@ -102,104 +111,116 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-	template < typename TValue >
-    struct Value< SimpleBuffer<TValue> >	{ typedef TValue Type; };
-//IOREV
+	template <typename TValue, typename TSpec>
+    struct Value<Buffer<TValue, TSpec> >
+    {
+        typedef TValue Type;
+    };
 
-    template < typename TValue >
-	struct Size< SimpleBuffer<TValue> >		{ typedef size_t Type; };
-//IOREV
+	template <typename TValue, typename TSpec>
+	struct Size<Buffer<TValue, TSpec> >
+    {
+        typedef size_t Type;
+    };
 
-    template < typename TValue >
-    struct Iterator< SimpleBuffer<TValue>, Standard >		{ typedef TValue *Type; };
-//IOREV
+	template <typename TValue, typename TSpec>
+    struct Iterator<Buffer<TValue, TSpec>, Standard>
+    {
+        typedef TValue *Type;
+    };
 
-    template < typename TValue >
-    struct Iterator< SimpleBuffer<TValue> const, Standard >	{ typedef TValue const *Type; };
-//IOREV
+	template <typename TValue, typename TSpec>
+    struct Iterator<Buffer<TValue, TSpec> const, Standard>
+    {
+        typedef TValue const *Type;
+    };
 
 
 	//////////////////////////////////////////////////////////////////////////////
 	// global interface
 
-    template < typename TValue >
-    inline typename Size<SimpleBuffer<TValue> >::Type
-    pageSize(SimpleBuffer<TValue> &me) {
-//IOREV _nodoc_
+	template <typename TValue, typename TSpec>
+    inline typename Size<Buffer<TValue, TSpec> >::Type
+    capacity(Buffer<TValue, TSpec> &me)
+    {
         return me.pageSize;
     }
 
-    template < typename TValue, typename TSize >
-    inline void setPageSize(SimpleBuffer<TValue> &me, TSize size) {
-//IOREV _nodoc_
+	template <typename TValue, typename TSpec, typename TSize>
+    inline void
+    _setCapacity(Buffer<TValue, TSpec> &me, TSize size)
+    {
         me.pageSize = size;
     }
 
-    template < typename TValue >
-    inline typename Size<SimpleBuffer<TValue> >::Type
-    size(SimpleBuffer<TValue> const &me) {
-//IOREV
+	template <typename TValue, typename TSpec>
+    inline typename Size<Buffer<TValue, TSpec> >::Type
+    length(Buffer<TValue, TSpec> const &me)
+    {
         return me.end - me.begin;
     }
 
-    template < typename TValue >
-    inline typename Size<SimpleBuffer<TValue> >::Type
-    length(SimpleBuffer<TValue> const &me) {
-//IOREV
-        return me.end - me.begin;
-    }
-
-    template < typename TValue, typename TSize >
-    inline void resize(SimpleBuffer<TValue> &me, TSize size) {
-//IOREV
+	template <typename TValue, typename TSpec, typename TSize>
+    inline void
+    resize(Buffer<TValue, TSpec> &me, TSize size)
+    {
         me.end = me.begin + size;
     }
 
-    template < typename TValue, typename TSize, typename T >
-	inline void allocPage(SimpleBuffer<TValue> &pf, TSize size, T const & me) {
+    template <typename TValue, typename TSpec, typename TSize, typename T>
+	inline bool
+    allocPage(Buffer<TValue, TSpec> &buffer, TSize size, T const & me)
+    {
 //IOREV _nodoc_
-        setPageSize(pf, size);
-        allocate(me, pf.begin, pageSize(pf));
-        resize(pf, size);
+        allocate(me, buffer.begin, size);
+        _setCapacity(buffer, size);
+        resize(buffer, size);
 //		#ifdef SEQAN_VVERBOSE
-//			::std::cerr << "allocPage: " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
+//			::std::cerr << "allocPage: " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
 //		#endif
+        return buffer.begin != NULL;
 	}
 
-	template < typename TValue, typename T > inline
-	void freePage(SimpleBuffer<TValue> &pf, T const & me) {
+	template <typename TValue, typename TSpec, typename T>
+	inline void
+    freePage(Buffer<TValue, TSpec> &buffer, T const & me)
+    {
 //IOREV _nodoc_
 //		#ifdef SEQAN_VVERBOSE
-//			if ((void*)pf.begin)
-//				::std::cerr << "freePage:  " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
+//			if ((void*)buffer.begin)
+//				::std::cerr << "freePage:  " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
 //		#endif
-		deallocate(me, pf.begin, pageSize(pf));
-		pf.begin = NULL;
-        resize(pf, 0);
-        setPageSize(pf, 0);
+		deallocate(me, buffer.begin, capacity(buffer));
+		buffer.begin = NULL;
+        resize(buffer, 0);
+        _setCapacity(buffer, 0);
 	}
 
-	template < typename TValue >
-	inline TValue* begin(SimpleBuffer<TValue> &pf, Standard) {
-//IOREV
+	template <typename TValue, typename TSpec>
+	inline typename Iterator<Buffer<TValue, TSpec>, Standard>::Type
+    begin(Buffer<TValue, TSpec> &pf, Standard)
+    {
 		return pf.begin;
 	}
 
-	template < typename TValue >
-	inline TValue const * begin(SimpleBuffer<TValue> const &pf, Standard) {
-//IOREV
+	template <typename TValue, typename TSpec>
+	inline typename Iterator<Buffer<TValue, TSpec> const, Standard>::Type
+    begin(Buffer<TValue, TSpec> const &pf, Standard)
+    {
 		return pf.begin;
 	}
 
-	template < typename TValue >
-	inline TValue * end(SimpleBuffer<TValue> &pf, Standard) {
-//IOREV
+	template <typename TValue, typename TSpec>
+	inline typename Iterator<Buffer<TValue, TSpec>, Standard>::Type
+    end(Buffer<TValue, TSpec> &pf, Standard)
+    {
 		return pf.end;
 	}
 
-	template < typename TValue >
-	inline TValue const * end(SimpleBuffer<TValue> const &pf, Standard) {
-//IOREV
+	template <typename TValue, typename TSpec>
+	inline typename Iterator<Buffer<TValue, TSpec> const, Standard>::Type
+    end(Buffer<TValue, TSpec> const &pf, Standard)
+    {
 		return pf.end;
 	}
 
@@ -209,7 +230,7 @@ struct MMap;
 	// a bucket is a structure to represent a small window of a page
     // used by algorithms which need a global view of all pages (merge sort, mapper)
 
-	template < typename TValue >
+	template <typename TValue>
     struct PageBucket
 	{
 //IOREV _nodoc_ has some unformatted comments in code, but not enough doc
@@ -219,13 +240,13 @@ struct MMap;
         TIterator	begin, cur, end;        // begin/end of buckets memory buffer and a pointer
     };
 
-    template < typename TValue >
+    template <typename TValue>
     struct PageBucketExtended : public PageBucket< TValue > {
 //IOREV _nodoc_
 		int     	pageNo;		            // related page (needed by merger sort)
     };
     
-	template < typename TValue >
+	template <typename TValue>
     ::std::ostream& operator<<(::std::ostream &out, const PageBucketExtended<TValue> &pb) {
 //IOREV _ _nodoc_
         for(TValue *cur = pb.begin; cur != pb.end; cur++)
@@ -237,80 +258,79 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-	template < typename TValue >
+	template <typename TValue>
     struct Value< PageBucket<TValue> >		{ typedef TValue Type; };
 //IOREV
 
-    template < typename TValue >
+    template <typename TValue>
     struct Size< PageBucket<TValue> >		{ typedef size_t Type; };
 //IOREV
 
-    template < typename TValue >
+    template <typename TValue>
     struct Iterator< PageBucket<TValue>, Standard >			{ typedef TValue *Type; };
 //IOREV
 
-    template < typename TValue >
+    template <typename TValue>
     struct Iterator< PageBucket<TValue> const, Standard >	{ typedef TValue const *Type; };
 //IOREV
 
+	//////////////////////////////////////////////////////////////////////////////
+
+    template <typename TFilePos, typename TSize>
+    struct FilePageRequest
+    {
+        enum FilePageRequestMode {
+            MODE_RDONLY = 1,
+            MODE_WRONLY = 2,
+            MODE_RDWR   = 3
+        };
+
+        TFilePos            filePos;
+        TSize               size;
+        FilePageRequestMode mode;
+    };
 
 	//////////////////////////////////////////////////////////////////////////////
 
-	template < typename TValue, typename TFile, typename TSpec >
+    struct Dynamic;
+
+	template <typename TFile, typename TSpec = Dynamic>
     struct PageFrame;
-//IOREV
 
-	//////////////////////////////////////////////////////////////////////////////
-
-	template < typename TValue, typename TFile, typename TSpec >
-    struct Value< PageFrame< TValue, TFile, TSpec > > {
-//IOREV
-        typedef TValue Type;
+    enum PageFrameStatus
+    {
+        UNUSED,
+        READING,
+        PREPROCESSING,
+        READY,
+        POSTPROCESSING,
+        POSTPROCESSED,
+        WRITING
     };
-
-	template < typename TValue, typename TFile, typename TSpec >
-    struct Size< PageFrame< TValue, TFile, TSpec > > {
-//IOREV
-        typedef size_t Type;
-    };
-
-	template < typename TValue, typename TFile, typename TSpec >
-    struct Iterator< PageFrame< TValue, TFile, TSpec >, Standard > {
-//IOREV
-        typedef TValue *Type;
-    };
-
-	template < typename TValue, typename TFile, typename TSpec >
-    struct Iterator< PageFrame< TValue, TFile, TSpec > const, Standard> {
-//IOREV
-        typedef TValue const *Type;
-    };
-
 
 	//////////////////////////////////////////////////////////////////////////////
 	// page frame of dynamic size
 
-    template < typename TSpec = void >
-    struct Dynamic;
-//IOREV
-
-    template < typename TValue, typename TFile >
-	struct PageFrame< TValue, TFile, Dynamic<> >: public SimpleBuffer< TValue >
+    template <typename TValue, typename TFile>
+	struct Buffer<TValue, PageFrame<TFile, Dynamic> > :
+        public Buffer<TValue>
 	{
 //IOREV _nodoc_
-		typedef TFile							File;
-		typedef SimpleBuffer<TValue>	        TBase;
+		typedef Buffer<TValue>                      TBase;
+		typedef TFile                               File;
+		typedef typename Size<TFile>::Type          TFileSize;
         typedef typename AsyncRequest<TFile>::Type  AsyncRequest;
+        typedef FilePageRequest<TFileSize, size_t>  TFilePageRequest;
 
-        enum Status		{ UNUSED, READING, PREPROCESSING, READY, POSTPROCESSING, POSTPROCESSED, WRITING };
+        TFilePageRequest pageRequest;
 
 		bool			dirty;		// data needs to be written to disk before freeing
 		unsigned   		pageNo;		// maps frames to pages (reverse vector mapper)
         AsyncRequest    request;    // request structure of the async io process
-		Status			status;
-        PageFrame       *next;      // next buffer in a chained list
+		PageFrameStatus status;
+        Buffer          *next;      // next buffer in a chained list
 
-        PageFrame():
+        Buffer():
 			TBase(),
             dirty(false),
             pageNo(MaxValue<unsigned>::VALUE),
@@ -322,58 +342,65 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// page frame of static size
 
-    template < unsigned PageSize_ >
+    template <size_t PAGE_SIZE>
     struct Fixed;
 //IOREV
 
-    typedef ::std::list<Position<String<void*> >::Type>		PageLRUList;    // least recently usage list
-	typedef PageLRUList::iterator	PageLRUEntry;
+    typedef ::std::list<Position<String<void*> >::Type> PageLRUList;    // least recently usage list
+	typedef PageLRUList::iterator PageLRUEntry;
 
     template < typename TValue,
                typename TFile,
-               unsigned PageSize_ >
-	struct PageFrame<TValue, TFile, Fixed<PageSize_> >
-	{
-//IOREV _nodoc_
-		typedef TFile                                           File;
-        typedef typename AsyncRequest<TFile>::Type              AsyncRequest;
-		typedef	typename Size<PageFrame>::Type                  TSize;
-		typedef	typename Iterator<PageFrame, Standard>::Type    TIterator;
+               unsigned PAGE_SIZE_ >
+	struct Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE_> > >
+    {   
+		typedef TFile                                       File;
+        typedef typename AsyncRequest<TFile>::Type          AsyncRequest;
+		typedef	typename Iterator<Buffer, Standard>::Type   TIterator;
 
-		enum            { PageSize = PageSize_ };
-        enum Status     { UNUSED, READING, PREPROCESSING, READY, POSTPROCESSING, POSTPROCESSED, WRITING };
+		enum            { PAGE_SIZE = PAGE_SIZE_ };
 		enum DataStatus	{ ON_DISK = -1, UNINITIALIZED = -2 };
 		enum Priority	{ NORMAL_LEVEL = 0, PREFETCH_LEVEL = 1, ITERATOR_LEVEL = 2, PERMANENT_LEVEL = 3 };
 
-		bool			dirty;		// data needs to be written to disk before freeing
-		int     		pageNo;		// maps frames to pages (reverse vector mapper)
-		TIterator		begin;	    // start address of page memory
+        TIterator       begin;
         AsyncRequest    request;    // request structure of the async io process
-		Status			status;
+		PageFrameStatus status;
 		DataStatus		dataStatus;
 		PageLRUEntry	lruEntry;   // priority based lru
         Priority        priority;
+		int     		pageNo;		// maps frames to pages (reverse vector mapper)
+		bool			dirty;		// data needs to be written to disk before freeing
 
-		PageFrame():
+		Buffer():
             dirty(false),
             pageNo(-1),
-			begin(NULL),
 			status(READY),
 			dataStatus(UNINITIALIZED),
             priority(NORMAL_LEVEL) {}
 
-		inline TValue       & operator[](TSize i)       { return begin[i]; }
-        inline TValue const & operator[](TSize i) const { return begin[i]; }
+        template <typename TPos>
+		inline TValue &
+        operator[] (TPos i)
+        {
+            return begin[i];
+        }
+
+        template <typename TPos>
+        inline TValue const &
+        operator[] (TPos i) const
+        {
+            return begin[i];
+        }
 	};
 
 
 	//////////////////////////////////////////////////////////////////////////////
 	// a memory-mapped page frame
 /*
-    template < typename TValue, typename TFile, typename TConfig >
-	struct PageFrame< TValue, TFile, MMap<TConfig> >: public SimpleBuffer< TValue >
+    template <typename TValue, typename TFile, typename TConfig>
+	struct PageFrame< TValue, TFile, MMap<TConfig> >: public Buffer<TValue>
     {
-		typedef SimpleBuffer<TValue>	        TBase;
+		typedef Buffer<TValue> TBase;
 
         enum Status		{ READY, READING, WRITING };
 
@@ -391,17 +418,15 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-	template < typename TValue, typename TFile, unsigned PageSize_ >
-    struct Iterator< PageFrame< TValue, TFile, Fixed<PageSize_> >, Standard >
+	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
+    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >, Standard >
     {
-//IOREV
         typedef VolatilePtr<TValue> Type;
     };
 
-	template < typename TValue, typename TFile, unsigned PageSize_ >
-    struct Iterator< PageFrame< TValue, TFile, Fixed<PageSize_> > const, Standard>
+	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
+    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const, Standard >
     {
-//IOREV
         typedef VolatilePtr<TValue> const Type;
     };
 
@@ -409,76 +434,54 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// global interface
 
-	template < typename TValue, typename TFile, typename TSpec, typename TSize >
-    inline void resize(PageFrame<TValue, TFile, Dynamic<TSpec> > &me, TSize size) {
-//IOREV
-        me.end = me.begin + size;
+	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
+    inline typename Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >::Type
+    length(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
+    {
+        return PAGE_SIZE;
     }
 
-    template < typename TValue, typename TFile, unsigned PageSize_ >
-    inline typename Size<PageFrame<TValue, TFile, Fixed<PageSize_> > >::Type
-    size(PageFrame<TValue, TFile, Fixed<PageSize_> > &/*me*/) {
-//IOREV
-        return PageSize_;
+	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
+    inline typename Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >::Type
+    capacity(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
+    {
+        return PAGE_SIZE;
     }
 
-    template < typename TValue, typename TFile, unsigned PageSize_ >
-    inline typename Size<PageFrame<TValue, TFile, Fixed<PageSize_> > >::Type
-    length(PageFrame<TValue, TFile, Fixed<PageSize_> > const &/*me*/) {
-//IOREV
-        return PageSize_;
-    }
-
-    template < typename TValue, typename TFile, typename TSpec>
-    inline typename Size<PageFrame<TValue, TFile, TSpec> >::Type
-    length(PageFrame<TValue, TFile, TSpec> const &me) {
-//IOREV
-        return me.end - me.begin;
-    }
-
-    template < typename TValue, typename TFile, unsigned PageSize_ >
-    inline typename Size<PageFrame<TValue, TFile, Fixed<PageSize_> > >::Type
-    pageSize(PageFrame<TValue, TFile, Fixed<PageSize_> > &/*me*/) {
-//IOREV _nodoc_
-        return PageSize_;
-    }
-
-    template < typename TValue, typename TFile, unsigned PageSize_, typename TSize >
-    inline void resize(PageFrame<TValue, TFile, Fixed<PageSize_> > &/*me*/, TSize /*size*/) {}
-//IOREV
 
 
 	//////////////////////////////////////////////////////////////////////////////
 	// various page frame methods
 
-	template < typename TValue, typename TFile, typename TSpec >
-    const char * _pageFrameStatusString(PageFrame<TValue, TFile, TSpec > const &pf)
+	template <typename TValue, typename TFile, typename TSpec>
+    inline const char *
+    _pageFrameStatusString(Buffer<TValue, PageFrame<TFile, TSpec> > const &pf)
     {
-        typedef PageFrame<TValue, TFile, TSpec> TPage;
+        typedef Buffer<TValue, PageFrame<TFile, TSpec> > TPage;
 
         switch (pf.status)
         {
-			case TPage::READY:
+			case READY:
                 return "READY";
-			case TPage::READING:
+			case READING:
                 return "READING";
-			case TPage::WRITING:
+			case WRITING:
                 return "WRITING";
-            case TPage::UNUSED:
+            case UNUSED:
                 return "UNUSED";
-            case TPage::PREPROCESSING:
+            case PREPROCESSING:
                 return "PREPROCESSING";
-            case TPage::POSTPROCESSING:
+            case POSTPROCESSING:
                 return "POSTPROCESSING";
-            case TPage::POSTPROCESSED:
+            case POSTPROCESSED:
                 return "POSTPROCESSED";
             default:
                 return "UNKNOWN";
         }
     }
 
-	template < typename TValue, typename TFile, typename TSpec >
-    ::std::ostream& operator<<(::std::ostream &out, const PageFrame<TValue, TFile, TSpec > &pf) 
+	template <typename TValue, typename TFile, typename TSpec>
+    ::std::ostream& operator<<(::std::ostream &out, const Buffer<TValue, PageFrame<TFile, TSpec> > &pf)
 	{
 //IOREV _nodoc_
         out << "PageFrame @ " << pf.pageNo;
@@ -500,20 +503,20 @@ struct MMap;
         return out;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec, typename T > inline
-	void allocPage(PageFrame<TValue, TFile, TSpec> &pf, T const & me) 
+	template <typename TValue, typename TFile, typename TSpec, typename T> inline
+	void allocPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, T const & me) 
 	{
 //IOREV _nodoc_
 		TValue* tmp = NULL;
-		allocate(me, tmp, pageSize(pf));
+		allocate(me, tmp, capacity(pf));
 		pf.begin = tmp;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "allocPage: " << ::std::hex << tmp << ::std::dec << ::std::endl;
 		#endif
 	}
 
-	template < typename TValue, typename TFile, typename TSpec, typename T > inline
-	void freePage(PageFrame<TValue, TFile, TSpec> &pf, T const & me) 
+	template <typename TValue, typename TFile, typename TSpec, typename T> inline
+	void freePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, T const & me) 
 	{
 //IOREV _nodoc_
 		#ifdef SEQAN_VVERBOSE
@@ -521,13 +524,13 @@ struct MMap;
 				::std::cerr << "freePage:  " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
 		#endif
         nukeCopies(pf.begin);
-		deallocate(me, (TValue*)pf.begin, pageSize(pf));
+		deallocate(me, (TValue*)pf.begin, capacity(pf));
 		pf.begin = NULL;
         resize(pf, 0);
 	}
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool readPage(int pageNo, PageFrame<TValue, TFile, TSpec> &pf, TFile &file)
+	template <typename TValue, typename TFile, typename TSpec> inline
+	bool readPage(int pageNo, Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file)
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
@@ -536,10 +539,10 @@ struct MMap;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
 		#endif
 		pf.dirty = false;
-		pf.status = pf.READING;
-//        resize(pf, pageSize(pf));
+		pf.status = READING;
+//        resize(pf, capacity(pf));
 
-		bool readResult = asyncReadAt(file, (TValue*)pf.begin, size(pf), (TPos)pageNo * (TPos)pageSize(pf), pf.request);
+		bool readResult = asyncReadAt(file, (TValue*)pf.begin, length(pf), (TPos)pageNo * (TPos)capacity(pf), pf.request);
 
         // TODO(weese): Throw an I/O exception
         if (!readResult)
@@ -548,27 +551,27 @@ struct MMap;
         return readResult;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool unmapPage(PageFrame<TValue, TFile, TSpec> &pf, TFile &)
+	template <typename TValue, typename TFile, typename TSpec> inline
+	bool unmapPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &)
 	{
 		typedef typename Position<TFile>::Type TPos;
         if (pf.begin)
         {
 #ifdef PLATFORM_WINDOWS
 #else
-            munmap(pf.begin, size(pf) * sizeof(TValue));
+            munmap(pf.begin, length(pf) * sizeof(TValue));
 #endif
 			pf.begin = NULL;
         }
         return true;
     }
 
-	template < typename TValue, typename TFile, typename TSpec, typename TSize > inline
-	bool mapReadPage(PageFrame<TValue, TFile, TSpec> &pf, TFile &file, TSize size)
+	template <typename TValue, typename TFile, typename TSpec, typename TSize> inline
+	bool mapReadPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size)
 	{
 		typedef typename Position<TFile>::Type TPos;
         unmapPage(pf, file);
-		pf.status = pf.READY;
+		pf.status = READY;
         SEQAN_ASSERT_GT(size, 0);
 
 #ifdef PLATFORM_WINDOWS
@@ -611,14 +614,14 @@ struct MMap;
 		me.data_begin = (TValue *) addr;
 #endif
 #else
-        pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_PRIVATE, file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+        pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_PRIVATE, file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue));
 
         if (pf.begin == MAP_FAILED)
         {
             pf.begin = pf.end = NULL;
             SEQAN_FAIL(
                 "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_PRIVATE, %d, %d) failed in mapReadPage: \"%s\"",
-                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue), strerror(errno));
+                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue), strerror(errno));
             return false;
         }
 #endif
@@ -626,24 +629,24 @@ struct MMap;
         return true;
     }
 
-	template < typename TValue, typename TFile, typename TSpec, typename TSize > inline
-	bool mapWritePage(PageFrame<TValue, TFile, TSpec> &pf, TFile &file, TSize size) 
+	template <typename TValue, typename TFile, typename TSpec, typename TSize> inline
+	bool mapWritePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size) 
 	{
 		typedef typename Position<TFile>::Type TPos;
         unmapPage(pf, file);
-        pf.status = pf.READY;
+        pf.status = READY;
         SEQAN_ASSERT_GT(size, 0u);
         
 #ifdef PLATFORM_WINDOWS
 #else
-        pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue));
+        pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue));
 
         if (pf.begin == MAP_FAILED)
         {
             pf.begin = pf.end = NULL;
             SEQAN_FAIL(
                 "mmap(NULL, %d, PROT_READ | PROT_WRITE, MAP_SHARED, %d, %d) failed in mapWritePage: \"%s\"",
-                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)pageSize(pf) * (TPos)sizeof(TValue), strerror(errno));
+                size * sizeof(TValue), file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue), strerror(errno));
             return false;
         }
 #endif
@@ -651,8 +654,8 @@ struct MMap;
         return true;
     }
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool writePage(PageFrame<TValue, TFile, TSpec> &pf, int pageNo, TFile &file) 
+	template <typename TValue, typename TFile, typename TSpec> inline
+	bool writePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, int pageNo, TFile &file) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
@@ -660,10 +663,10 @@ struct MMap;
 			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
 		#endif
-		pf.status = pf.WRITING;
-//        resize(pf, pageSize(pf));
+		pf.status = WRITING;
+//        resize(pf, capacity(pf));
 
-		bool writeResult = asyncWriteAt(file, (TValue*)pf.begin, size(pf), (TPos)pageNo * (TPos)pageSize(pf), pf.request);
+		bool writeResult = asyncWriteAt(file, (TValue*)pf.begin, length(pf), (TPos)pageNo * (TPos)capacity(pf), pf.request);
 
         // TODO(weese): Throw an I/O exception
         if (!writeResult)
@@ -673,7 +676,7 @@ struct MMap;
 	}
 
 	template < typename TValue, typename TFile, typename TSpec, typename TSize> inline
-    bool readLastPage(int pageNo, PageFrame<TValue, TFile, TSpec> &pf, TFile &file, TSize size) 
+    bool readLastPage(int pageNo, Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
@@ -682,10 +685,10 @@ struct MMap;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
 		#endif
 		pf.dirty = false;
-		pf.status = pf.READY;
+		pf.status = READY;
 //        resize(pf, size);
 
-		bool readResult = readAt(file, (TValue*)pf.begin, size, (TPos)pageNo * (TPos)pageSize(pf));
+		bool readResult = readAt(file, (TValue*)pf.begin, size, (TPos)pageNo * (TPos)capacity(pf));
 
         // TODO(weese): Throw an I/O exception
         if (!readResult)
@@ -694,8 +697,8 @@ struct MMap;
         return readResult;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec, typename TSize > inline
-	bool writeLastPage(PageFrame<TValue, TFile, TSpec> &pf, int pageNo, TFile &file, TSize size) 
+	template <typename TValue, typename TFile, typename TSpec, typename TSize> inline
+	bool writeLastPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, int pageNo, TFile &file, TSize size) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
@@ -704,10 +707,10 @@ struct MMap;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
 		#endif
 		pf.dirty = false;
-		pf.status = pf.READY;
+		pf.status = READY;
 //        resize(pf, size);
 
-		bool writeResult = writeAt(file, (TValue*)pf.begin, size, (TPos)pageNo * (TPos)pageSize(pf));
+		bool writeResult = writeAt(file, (TValue*)pf.begin, size, (TPos)pageNo * (TPos)capacity(pf));
 
         // TODO(weese): Throw an I/O exception
         if (!writeResult)
@@ -716,29 +719,32 @@ struct MMap;
         return writeResult;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool waitFor(PageFrame<TValue, TFile, TSpec> &pf) 
+	template <typename TValue, typename TFile, typename TSpec> inline
+	bool waitFor(Buffer<TValue, PageFrame<TFile, TSpec> > &pf) 
 	{
 //IOREV _nodoc_ equally named functions with different purposes in system_thread.h, system_event.h and file_async.h
-		if (pf.status == pf.READY)
+		if (pf.status == READY)
             return true;
 
         bool waitResult = waitFor(pf.request);
 
         // TODO(weese): Throw an I/O exception
         if (!waitResult)
+        {
+            printRequest(pf.request);
             SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+        }
 
-        pf.status = pf.READY;
+        pf.status = READY;
         pf.dirty = false;
         return waitResult;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec, typename TTime > inline
-	bool waitFor(PageFrame<TValue, TFile, TSpec> &pf, TTime timeOut, bool &inProgress)
+	template <typename TValue, typename TFile, typename TSpec, typename TTime> inline
+	bool waitFor(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TTime timeOut, bool &inProgress)
 	{
 //IOREV _nodoc_ equally named functions with different purposes in system_thread.h, system_event.h and file_async.h (none documented)
-		if (pf.status == pf.READY)
+		if (pf.status == READY)
         {
             inProgress = false;
             return true;
@@ -748,26 +754,29 @@ struct MMap;
 
         // TODO(weese): Throw an I/O exception
         if (!waitResult)
+        {
+            printRequest(pf.request);
             SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+        }
 
         if (!inProgress)
         {
-            pf.status = pf.READY;
+            pf.status = READY;
             pf.dirty = false;
         }
         return waitResult;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool cancel(PageFrame<TValue, TFile, TSpec> &pf, TFile &file) 
+	template <typename TValue, typename TFile, typename TSpec> inline
+	bool cancel(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file) 
 	{
 //IOREV _nodoc_ equally named functions with different purposes in pipe/pool_*.h, system_thread.h, and file_async.h (only the latter documented)
         bool dummy;
         waitFor(pf, 0, dummy);
-		if (pf.status != pf.READY) 
+		if (pf.status != READY) 
 		{
             if (!cancel(file, pf.request)) return false;
-            pf.status = pf.READY;
+            pf.status = READY;
         }
         return true;
 	}
@@ -775,27 +784,27 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// page based read/write methods used by Pool classes
 
-    template < typename TValue, typename TFile, typename TSpec > inline
-	bool readPage(PageFrame<TValue, TFile, Dynamic<TSpec> > &pf, TFile &file) 
+    template <typename TValue, typename TFile> inline
+	bool readPage(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TFile &file) 
 	{
 //IOREV _nodoc_
-        if (size(pf) == pageSize(pf))
+        if (length(pf) == capacity(pf))
             return readPage(pf.pageNo, pf, file);
         else
-            return readLastPage(pf.pageNo, pf, file, size(pf));
+            return readLastPage(pf.pageNo, pf, file, length(pf));
 	}
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool writePage(PageFrame<TValue, TFile, Dynamic<TSpec> > &pf, TFile &file) 
+	template <typename TValue, typename TFile> inline
+	bool writePage(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TFile &file) 
 	{
 //IOREV _nodoc_
-        if (size(pf) == pageSize(pf))
+        if (length(pf) == capacity(pf))
             return writePage(pf, pf.pageNo, file);
         else
-            return writeLastPage(pf, pf.pageNo, file, size(pf));
+            return writeLastPage(pf, pf.pageNo, file, length(pf));
 	}
 
-	template < typename TValue, typename TFile > inline
+	template <typename TValue, typename TFile> inline
 	unsigned readBucket(PageBucket<TValue> &b, int pageNo, unsigned pageSize, unsigned dataSize, TFile &file) 
 	{
 //IOREV _nodoc_
@@ -815,7 +824,7 @@ struct MMap;
             return 0;
 	}
 
-	template < typename TValue, typename TFile > inline
+	template <typename TValue, typename TFile> inline
 	bool writeBucket(PageBucket<TValue> &b, int pageNo, unsigned pageSize, TFile &file) 
 	{
 //IOREV _nodoc_
@@ -833,20 +842,20 @@ struct MMap;
             return false;
 	}
 
-	template < typename TValue, typename TFile, typename TSpec > inline
-	bool writeBucket(PageFrame<TValue, TFile, Dynamic<TSpec> > &pf, unsigned &pageOfs, TFile &file) 
+	template <typename TValue, typename TFile> inline
+	bool writeBucket(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, unsigned &pageOfs, TFile &file) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "writeBucket: " << ::std::hex << pf.begin;
-			::std::cerr << " from page " << ::std::dec << pf.pageNo << " at " << (TPos)pf.pageNo * (TPos)pageSize(pf) + pageOfs;
-			::std::cerr << " size " << size(pf) << ::std::endl;
+			::std::cerr << " from page " << ::std::dec << pf.pageNo << " at " << (TPos)pf.pageNo * (TPos)capacity(pf) + pageOfs;
+			::std::cerr << " size " << length(pf) << ::std::endl;
 		#endif
         if (pf.end == pf.begin) return true;
-        if (asyncWriteAt(file, pf.begin, size(pf), (TPos)pf.pageNo * (TPos)pageSize(pf) + pageOfs, pf.request)) {
-            pf.status = pf.WRITING;
-            pageOfs += size(pf);
+        if (asyncWriteAt(file, pf.begin, length(pf), (TPos)pf.pageNo * (TPos)capacity(pf) + pageOfs, pf.request)) {
+            pf.status = WRITING;
+            pageOfs += length(pf);
             return true;
         } else
             return false;
@@ -855,7 +864,7 @@ struct MMap;
 
 	//////////////////////////////////////////////////////////////////////////////
 
-    template < typename TPageFrame >
+    template <typename TPageFrame>
     struct PageChain 
 	{
 //IOREV _nodoc_
@@ -921,7 +930,7 @@ struct MMap;
             return &firstToEnd();
         }
 
-        template < typename TFile >
+        template <typename TFile>
         inline void cancelAll(TFile &file) 
 		{
             TPageFrame *p = first;
@@ -1083,28 +1092,28 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-    template < typename TPageFrame >    
+    template <typename TPageFrame>    
 	struct Value< PageChain<TPageFrame> > 
 	{
 //IOREV
 		typedef TPageFrame Type;
 	};
 
-    template < typename TPageFrame >    
+    template <typename TPageFrame>    
 	struct Size< PageChain<TPageFrame> > 
 	{
 //IOREV
 		typedef unsigned Type;
 	};
 
-    template < typename TPageFrame >    
+    template <typename TPageFrame>    
 	struct Iterator< PageChain<TPageFrame> > 
 	{
 //IOREV
 		typedef TPageFrame *Type;
 	};
 
-    template < typename TPageFrame >    
+    template <typename TPageFrame>    
 	struct Iterator< PageChain<TPageFrame> const > 
 	{
 //IOREV
@@ -1261,43 +1270,43 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> > 
 	{
 //IOREV
 		typedef String<TPageFrame> Type;
 	};
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const > 
 	{
 //IOREV
 		typedef String<TPageFrame> const Type;
 	};
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Value< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> > 
 	{
 //IOREV
 		typedef TPageFrame Type;
 	};
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Size< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >:
 		public Size< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type> {};
 //IOREV
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Position< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >:
 		public Position< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type> {};
 //IOREV
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >:
 		public Iterator< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type> {};
 //IOREV
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const >:
 		public Iterator< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const>::Type> {};
 //IOREV
@@ -1306,7 +1315,7 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// global interface
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS, typename TExpand >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS, typename TExpand>
 	inline void reserve(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
 		unsigned Count_,
@@ -1316,7 +1325,7 @@ struct MMap;
 		reserve(pageCont.pages, Count_, expand);
 	}
 
-    template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+    template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	inline void resize(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont, 
 		unsigned Count_) 
@@ -1333,7 +1342,7 @@ struct MMap;
 					pageCont.pop_back();
 	}
 
-    template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+    template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	inline typename Size< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type
 	length(PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont) 
 	{
@@ -1341,7 +1350,7 @@ struct MMap;
 		return length(pageCont.pages);
 	}
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS>, Standard >::Type
 	begin(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
@@ -1351,7 +1360,7 @@ struct MMap;
 		return begin(pageCont.pages, Standard());
 	}
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const, Standard >::Type
 	begin(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont,
@@ -1361,7 +1370,7 @@ struct MMap;
 		return begin(pageCont.pages, Standard());
 	}
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS>, Standard >::Type
 	end(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
@@ -1371,7 +1380,7 @@ struct MMap;
 		return end(pageCont.pages, Standard());
 	}
 
-	template < typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS >
+	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const, Standard >::Type
 	end(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont,
@@ -1386,13 +1395,14 @@ struct MMap;
 
 	//////////////////////////////////////////////////////////////////////////////
 
-    template < typename TValue, typename TSize, typename T, class Function >
+    template <typename TValue, typename TSize, typename T, class Function>
     inline bool equiDistantDistribution(
-        SimpleBuffer<TValue> &_clusterBuffer, unsigned _bufferSize, T const &me,
+        Buffer<TValue> &_clusterBuffer, unsigned _bufferSize, T const &me,
         TSize _size, unsigned _pageSize,
         Function const &Func_)
     {
 //IOREV _nodoc_
+        ::std::cerr << "equiDistantDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
         unsigned _pages         = enclosingBlocks(_size, (unsigned)_pageSize);
         if (!_pages) {
 			::std::cerr << "equiDistantDistribution: _pages is null!" << ::std::endl;
@@ -1415,6 +1425,7 @@ struct MMap;
         pb.begin = _clusterBuffer.begin;
 
         unsigned clusterSize = _bufferSize / pages;
+        ::std::cerr << "equiDistantDistribution: pages=" << _pages << "\tclusterSize=" << clusterSize << ::std::endl;
         if (lastPageSize > 0 && clusterSize >= lastPageSize) {
             // last page bucket would get more memory than page would need
             // --> exclude from equi-size distribution
@@ -1449,16 +1460,17 @@ struct MMap;
         return true;
     }
 
-    template < typename TValue, typename TSize, typename T, class Function >
+    template <typename TValue, typename TSize, typename T, class Function>
     inline unsigned equiDistantAlignedDistribution(
-        SimpleBuffer<TValue> &_clusterBuffer, unsigned aligning, unsigned _bufferSize, T const &me,
+        Buffer<TValue> &_clusterBuffer, unsigned aligning, unsigned _bufferSize, T const &me,
         TSize _size, unsigned _pageSize,
         Function const &Func_)
     {
 //IOREV _nodoc_
         unsigned _pages         = enclosingBlocks(_size, (unsigned)_pageSize);
+        ::std::cerr << "equiDistantAlignedDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
         if (!_pages) {
-			::std::cerr << "equiDistantDistribution: _pages is null!" << ::std::endl;
+			::std::cerr << "equiDistantAlignedDistribution: _pages is null!" << ::std::endl;
             return 0;
         }
 
@@ -1477,6 +1489,8 @@ struct MMap;
         unsigned aclusterSize = (clusterSize / aligning) * aligning;
         if (clusterSize - aclusterSize > aligning / 2)
             aclusterSize += aligning;
+
+        ::std::cerr << "equiDistantAlignedDistribution: pages=" << _pages << "\tclusterSize=" << aclusterSize << ::std::endl;
 
 		if (aclusterSize != 0) {
 

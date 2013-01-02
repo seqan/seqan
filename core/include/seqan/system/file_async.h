@@ -885,6 +885,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 if (errorNo != ECANCELED)
                     errorNo = errno;
 				std::cerr << "Asynchronous I/O operation failed (waitFor): \"" << ::strerror(errorNo) << '"' << std::endl;
+                printRequest(request);
             }
         }
 #endif
@@ -933,6 +934,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     if (errorNo != ECANCELED)
                         errorNo = errno;
                     std::cerr << "Asynchronous I/O operation failed (waitFor with timeOut=" << timeoutMilliSec << "ms): \"" << ::strerror(errorNo) << '"' << std::endl;
+                    printRequest(request);
                 }
 			}
 		#endif

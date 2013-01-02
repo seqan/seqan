@@ -75,7 +75,6 @@
 
 #include <seqan/system.h>	// async file (default file type of File<>)
 
-#include <seqan/file/file_array.h>
 /*#include <seqan/system/file_sync.h>
 #include <seqan/system/system_event.h>
 #include <seqan/system/file_async.h>
@@ -112,9 +111,10 @@
 // external strings
 
 #include <seqan/file/file_page.h>
-#include <seqan/file/file_page_raid0.h>
-#include <seqan/file/string_external.h>
+#include <seqan/file/file_mapping.h>
 #include <seqan/file/string_mmap.h>
+//#include <seqan/file/file_pager.h>
+#include <seqan/file/string_external.h>
 
 #ifndef SEQAN_NEW_IO
 #include <seqan/file/file_format_mmap.h>

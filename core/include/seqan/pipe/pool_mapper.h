@@ -103,7 +103,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..include:seqan/pipe.h
 */
 
-    template < typename TConfig >
+    template <typename TConfig>
     struct MapperSpec {
         typedef TConfig Config;
     };
@@ -122,26 +122,26 @@ namespace SEQAN_NAMESPACE_MAIN
     // mapping phase 2
     template < typename TValue,
 			   typename TConfig >
-    inline SimpleBuffer< TValue > & processBuffer(
-        PageFrame< TValue, typename TConfig::File, Dynamic<> > &buf,
-        BufferHandler< Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec > &_me)
+    inline Buffer<TValue> & processBuffer(
+        PageFrame< TValue, typename TConfig::File, Dynamic> &buf,
+        BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec> &_me)
     {
-		typedef BufferHandler< Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec > Handler;
+		typedef BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec> Handler;
         Handler *me = static_cast<Handler*>(&_me);
         
         typename Size< Pool< TValue, MapperSpec<TConfig> > >::Type offset = buf.pageNo;
-	    offset *= (unsigned)pageSize(buf);
+	    offset *= (unsigned)capacity(buf);
 
 		typename TConfig::Map M = me->pool.handlerArgs;
         for(TValue *cur = buf.begin; cur != buf.end; ++cur) {
             #ifdef SEQAN_DEBUG
-                if (!(M(*cur) >= offset && M(*cur) < offset + pageSize(buf))) {
+                if (!(M(*cur) >= offset && M(*cur) < offset + capacity(buf))) {
 					::std::cerr << "Mapper assertion failed: " << ::std::hex << M(*cur);
-					::std::cerr << " not in [" << offset << "," << (offset + pageSize(buf)) << ") at " << (cur - buf.begin);
+					::std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
                     ::std::cerr << " element is " << ::std::dec << *cur << ::std::endl;
                 }
             #endif
-            SEQAN_ASSERT(M(*cur) >= offset && M(*cur) < offset + pageSize(buf));
+            SEQAN_ASSERT(M(*cur) >= offset && M(*cur) < offset + capacity(buf));
             me->mapBuffer[M(*cur) - offset] = *cur;
         }
 		resize(me->mapBuffer, size(buf));
@@ -152,16 +152,17 @@ namespace SEQAN_NAMESPACE_MAIN
     // mapping phase 2 (in-place)
     template < typename TValue,
 			   typename TConfig >
-    inline SimpleBuffer< TValue > & processBuffer(
-        PageFrame< TValue, typename TConfig::File, Dynamic<> > &buf,
-        BufferHandler< Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec > &me)
+    inline Buffer<TValue> &
+    processBuffer(
+        Buffer<TValue, PageFrame<typename TConfig::File, Dynamic> > &buf,
+        BufferHandler<Pool<TValue, MapperSpec<TConfig> >, ReadFileSpec> &me)
     {
         typedef typename Size< Pool< TValue, MapperSpec<TConfig> > >::Type TSize;
 
 		TSize undefinedPos = 0;
 		TSize offset = buf.pageNo;
 		TSize dstPos;
-	    offset *= (unsigned)pageSize(buf);
+	    offset *= capacity(buf);
 
 		typename TConfig::Map M = me.pool.handlerArgs;
 		bool partiallyFilled = me.pool._partiallyFilled;
@@ -177,13 +178,13 @@ namespace SEQAN_NAMESPACE_MAIN
 				continue;							// don't move undefined values
 
 			#ifdef SEQAN_DEBUG
-                if (!(dstPos >= offset && dstPos < offset + (TSize)pageSize(buf))) {
+                if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
 					::std::cerr << "Mapper assertion failed: " << ::std::hex << dstPos;
-					::std::cerr << " not in [" << offset << "," << (offset + pageSize(buf)) << ") at " << (cur - buf.begin);
+					::std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
                     ::std::cerr << " element is " << ::std::dec << *cur << ::std::endl;
                 }
 			#endif
-            SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)pageSize(buf));
+            SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
 
             TValue *I = buf.begin + (dstPos - offset);
             if (I != cur) {
@@ -201,14 +202,14 @@ namespace SEQAN_NAMESPACE_MAIN
 					else 
 					{
 						#ifdef SEQAN_DEBUG
-							if (!(dstPos >= offset && dstPos < offset + (TSize)pageSize(buf))) {
+							if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
 								::std::cerr << "Mapper assertion failed: " << ::std::hex << dstPos;
-								::std::cerr << " not in [" << offset << "," << (offset + pageSize(buf)) << ") at " << (refNext - buf.begin);
+								::std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (refNext - buf.begin);
 								::std::cerr << " element is " << ::std::dec << *refNext << ::std::endl;
 							}
 							TValue *oldI = I;
 						#endif
-						SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)pageSize(buf));
+						SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
 
 						I = buf.begin + (dstPos - offset);
 
@@ -240,10 +241,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*
     // inherits buffered file reader and uses a map buffer
-    template < typename TPool >
-    struct BufferHandler< TPool, ReadMapperSpec >: public BufferHandler< TPool, ReadFileSpec > 
+    template <typename TPool>
+    struct BufferHandler<TPool, ReadMapperSpec >: public BufferHandler< TPool, ReadFileSpec> 
     {
-        typedef BufferHandler< TPool, ReadFileSpec >    Base;
+        typedef BufferHandler<TPool, ReadFileSpec>    Base;
         typedef typename Base::Type                     Type;
         typedef typename Base::Buffer					Buffer;
 
@@ -272,18 +273,18 @@ namespace SEQAN_NAMESPACE_MAIN
 	// generic adapter for buffered memory writers
     struct MapperMemAdapter;
 
-	template < typename TBufferHandler >
-	struct Handler< TBufferHandler, MapperMemAdapter >
+	template <typename TBufferHandler>
+	struct Handler<TBufferHandler, MapperMemAdapter>
     {
-		typedef typename TBufferHandler::Pool	Pool;
-        typedef typename TBufferHandler::Type   Type;
-        typedef typename TBufferHandler::Buffer	Buffer;
+		typedef typename TBufferHandler::TPool          TPool;
+        typedef typename Value<TBufferHandler>::Type    TBuffer;
+        typedef typename Value<Handler>::Type           TValue;
 
-		Pool			&pool;
+		TPool			&pool;
         TBufferHandler  handler;
-        Buffer			buffer;
+        TBuffer			buffer;
 
-        template < typename TPool >
+        template <typename TPool>
         Handler(TPool &_pool):
 			pool(_pool),
             handler(_pool) { }
@@ -296,10 +297,10 @@ namespace SEQAN_NAMESPACE_MAIN
         inline bool begin() {
             buffer = handler.first();
             _initializeBuffer();
-            return buffer.begin != NULL;
+            return seqan::begin(buffer) != NULL;
         }
 
-        inline void push(Type const & Val_) {
+        inline void push(TValue const & Val_) {
             buffer[pool.handlerArgs(Val_)] = Val_;
         }
 
@@ -311,7 +312,9 @@ namespace SEQAN_NAMESPACE_MAIN
 		inline void process() {}
     };
 
-
+    template <typename TBufferHandler>
+    struct Value<Handler<TBufferHandler, MapperMemAdapter> >:
+        public Value<typename Value<TBufferHandler>::Type> {};
 
 
 
@@ -319,17 +322,17 @@ namespace SEQAN_NAMESPACE_MAIN
 	// cache bucket based synchronous write handler
     struct MapperSyncWriter;
 
-	template < typename TPool >
-	struct Handler< TPool, MapperSyncWriter >
+	template <typename TValue, typename TSpec>
+	struct Handler<Pool<TValue, TSpec>, MapperSyncWriter>
     {
-        typedef typename TPool::Type		Type;
-        typedef typename TPool::Buffer		Buffer;
-        typedef PageBucket<Type>            TPageBucket;
-        typedef ::std::vector<TPageBucket>	Cache;
+        typedef Pool<TValue, TSpec>             TPool;
+        typedef Buffer<TValue>                  TBuffer;
+        typedef PageBucket<TValue>              TPageBucket;
+        typedef ::std::vector<TPageBucket>      TCache;
 
         TPool   &pool;
-        Buffer	bucketBuffer;
-        Cache   cache;
+        TBuffer bucketBuffer;
+        TCache  cache;
 
         Handler(TPool &_pool):
             pool(_pool) { }
@@ -338,16 +341,19 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
         
-		struct insertBucket : public ::std::unary_function<TPageBucket,void> {
+		struct insertBucket : public ::std::unary_function<TPageBucket,void>
+        {
 			Handler &me;
 			insertBucket(Handler &_me): me(_me) {}
 
-			inline void operator() (TPageBucket const &cb) const {
+			inline void operator() (TPageBucket const &cb) const
+            {
                 me.cache.push_back(cb);
 			}
 		};
 
-        bool begin() {
+        bool begin()
+        {
     		cache.reserve(pool.pages);
             return equiDistantDistribution(
                 bucketBuffer, pool.bucketBufferSize, *this,
@@ -355,7 +361,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 insertBucket(*this));
         }
 
-        inline void push(Type const &item) {
+        inline void push(TValue const &item) {
 			unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
             #ifdef SEQAN_DEBUG
                 if (!(pageNo < cache.size())) {
@@ -371,12 +377,13 @@ namespace SEQAN_NAMESPACE_MAIN
 				writeBucket(cb, pageNo, pool.pageSize, pool.file);
         }
 
-        inline void end() {
+        inline void end()
+        {
             // flush all cache buckets to disk and compact cache
 			pool._partiallyFilled = false;
 			unsigned pageNo = 0;
 			unsigned curOfs, endOfs;
-			for(typename Cache::iterator cb = cache.begin(); cb != cache.end(); ++cb, ++pageNo) {
+			for(typename TCache::iterator cb = cache.begin(); cb != cache.end(); ++cb, ++pageNo) {
 				curOfs = cb->pageOfs + (cb->cur - cb->begin);
 				endOfs = pool.dataSize(pageNo);
 				if (curOfs < endOfs) {
@@ -394,7 +401,8 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
 
-        inline void cancel() {
+        inline void cancel()
+        {
             cache.clear();
 			cache.reserve(0);
             freePage(bucketBuffer, *this);
@@ -409,22 +417,21 @@ namespace SEQAN_NAMESPACE_MAIN
 	// cache bucket based synchronous write handler
     struct MapperAsyncWriter;
 
-	template < typename TPool >
-	struct Handler< TPool, MapperAsyncWriter >
+	template <typename TValue, typename TConfig>
+	struct Handler<Pool<TValue, MapperSpec<TConfig> >, MapperAsyncWriter>
     {
-        typedef typename TPool::Type                Type;
-        typedef typename TPool::File                File;
-
-        typedef SimpleBuffer<Type>					Buffer;
-        typedef PageFrame<Type, File, Dynamic<> >   TPageFrame;
-        typedef PageBucket<Type>                    TPageBucket;
-        typedef ::std::vector<TPageBucket>	        Cache;
-        typedef PageChain<TPageFrame>	            TPageChain;
+        typedef Pool<TValue, MapperSpec<TConfig> >          TPool;
+        typedef typename TConfig::File                      TFile;
+        typedef Buffer<TValue>                              TBuffer;
+        typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
+        typedef PageBucket<TValue>                          TPageBucket;
+        typedef ::std::vector<TPageBucket>                  Cache;
+        typedef PageChain<TPageFrame>                       TPageChain;
 
         TPool       &pool;
-        Buffer		bucketBuffer;
+        TBuffer		bucketBuffer;
         TPageChain	chain;
-        Buffer		writeCache;
+        TBuffer		writeCache;
         Cache       cache;
         unsigned    clusterSize;
 
@@ -440,7 +447,8 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
         
-		struct insertBucket : public ::std::unary_function<TPageBucket,void> {
+		struct insertBucket : public ::std::unary_function<TPageBucket,void>
+        {
 			Handler &me;
 			insertBucket(Handler &_me): me(_me) {}
 
@@ -449,7 +457,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			}
 		};
 
-        bool begin() {
+        bool begin()
+        {
     		cache.reserve(pool.pages());
             clusterSize = equiDistantAlignedDistribution(
                 bucketBuffer, sectorSize(pool.file), pool.bucketBufferSize, pool.file,
@@ -473,18 +482,19 @@ namespace SEQAN_NAMESPACE_MAIN
             allocPage(writeCache, chain.maxFrames * clusterSize, pool.file);
 
             // distribute write back buffers
-            Type *cur = writeCache.begin;
+            TValue *cur = writeCache.begin;
             TPageFrame *p = chain.first;
             while (p) {
                 p->begin = cur; cur += clusterSize;
                 p->end = cur;
-                setPageSize(*p, pool.pageSize);
+                _setCapacity(*p, pool.pageSize);
                 p = p->next;
             }
             return true;
         }
 
-        inline void push(Type const &item) {
+        inline void push(TValue const &item)
+        {
 			unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
             #ifdef SEQAN_DEBUG
                 if (!(pageNo < cache.size())) {
@@ -502,7 +512,8 @@ namespace SEQAN_NAMESPACE_MAIN
 				_writeBucket(cb, pageNo);
         }
 
-        inline void end() {
+        inline void end()
+        {
             // flush all cache buckets to disk and compact cache
 			pool._partiallyFilled = false;
 			unsigned pageNo = 0;
@@ -526,7 +537,8 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
 
-        inline void cancel() {
+        inline void cancel()
+        {
             chain.cancelAll(pool.file);
             cache.clear();
 			cache.reserve(0);
@@ -539,8 +551,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     protected:
 
-        inline void _swap(TPageFrame &pf, TPageBucket &pb) {
-            Type *tmp = pf.begin;
+        inline void _swap(TPageFrame &pf, TPageBucket &pb)
+        {
+            TValue *tmp = pf.begin;
             pf.begin = pb.begin;
             pf.end   = pb.cur;
 
@@ -549,7 +562,8 @@ namespace SEQAN_NAMESPACE_MAIN
             pb.end   = tmp + clusterSize;
         }
 
-        bool _writeBucket(TPageBucket &cb, unsigned pageNo) {
+        bool _writeBucket(TPageBucket &cb, unsigned pageNo)
+        {
             if ((unsigned)(cb.cur - cb.begin) != clusterSize)
                 return writeBucket(cb, pageNo, pool.pageSize, pool.file);
 
@@ -565,22 +579,22 @@ namespace SEQAN_NAMESPACE_MAIN
 	// character and buffer based handler definitions
 	template < typename TValue,
 			   typename TConfig >
-    struct BufReadHandler< Pool< TValue, MapperSpec<TConfig> > >
+    struct BufReadHandler<Pool< TValue, MapperSpec<TConfig> > >
     {
         typedef BufferHandler< Bundle2<
-			BufferHandler< Pool< TValue, MapperSpec<TConfig> >, MemorySpec >,
-//			BufferHandler< Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec >
-			BufferHandler< Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec >
+			BufferHandler<Pool< TValue, MapperSpec<TConfig> >, MemorySpec>,
+//			BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec>
+			BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec>
 		>, MultiplexSpec > Type;
     };
 
     template < typename TValue,
 			   typename TConfig >
-    struct WriteHandler< Pool< TValue, MapperSpec<TConfig> > >
+    struct WriteHandler<Pool< TValue, MapperSpec<TConfig> > >
     {
         typedef Handler< Bundle2<
-			Handler< BufferHandler < Pool< TValue, MapperSpec<TConfig> >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<TConfig> >, MapperSyncWriter >
+			Handler<BufferHandler < Pool< TValue, MapperSpec<TConfig> >, MemorySpec >, MapperMemAdapter>,
+			Handler<Pool< TValue, MapperSpec<TConfig> >, MapperSyncWriter>
 		>, MultiplexSpec > Type;
 	};
 
@@ -591,113 +605,25 @@ namespace SEQAN_NAMESPACE_MAIN
    	           typename TMap,
 		       typename TSize,
 			   typename TSpec >
-    struct WriteHandler< Pool< TValue, MapperSpec< MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > > >
+    struct WriteHandler<Pool< TValue, MapperSpec< MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > > >
     {
         typedef Handler< Bundle2<
-			Handler< BufferHandler	< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MapperAsyncWriter >
+			Handler<BufferHandler	< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter>,
+			Handler<Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MapperAsyncWriter>
 		>, MultiplexSpec > Type;
 	};
 
     template < typename TValue,
    	           typename TMap,
 			   typename TSpec >
-    struct WriteHandler< Pool< TValue, MapperSpec< MapperConfig< TMap, File<Async<TSpec> > > > > >
+    struct WriteHandler<Pool< TValue, MapperSpec< MapperConfig< TMap, File<Async<TSpec> > > > > >
     {
         typedef Handler< Bundle2<
-			Handler< BufferHandler < Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MapperAsyncWriter >
+			Handler<BufferHandler < Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter>,
+			Handler<Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MapperAsyncWriter>
 		>, MultiplexSpec > Type;
 	};
 
-
-	// async file arrays
-
-    template < typename TValue,
-   	           typename TMap,
-		       typename TSize,
-			   __int64  FileSize_,
-			   typename TSpec >
-    struct WriteHandler< Pool< TValue, MapperSpec< MapperConfigSize< TMap, TSize, File< Chained<FileSize_, File< Async<TSpec> > > > > > > >
-    {
-        typedef Handler< Bundle2<
-			Handler< BufferHandler	< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File< Chained<FileSize_, File< Async<TSpec> > > > > > >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File< Chained<FileSize_, File< Async<TSpec> > > > > > >, MapperAsyncWriter >
-		>, MultiplexSpec > Type;
-	};
-
-    template < typename TValue,
-   	           typename TMap,
-			   __int64  FileSize_,
-			   typename TSpec >
-    struct WriteHandler< Pool< TValue, MapperSpec< MapperConfig< TMap, File< Chained< FileSize_, File< Async<TSpec> > > > > > > >
-    {
-        typedef Handler< Bundle2<
-			Handler< BufferHandler < Pool< TValue, MapperSpec<MapperConfig< TMap, File< Chained<FileSize_, File< Async<TSpec> > > > > > >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<MapperConfig< TMap, File< Chained<FileSize_, File< Async<TSpec> > > > > > >, MapperAsyncWriter >
-		>, MultiplexSpec > Type;
-	};
-
-    template < typename TValue,
-   	           typename TMap,
-		       typename TSize,
-			   unsigned FileCount_,
-			   typename TSpec >
-    struct WriteHandler< Pool< TValue, MapperSpec< MapperConfigSize< TMap, TSize, File< Striped<FileCount_, File< Async<TSpec> > > > > > > >
-    {
-        typedef Handler< Bundle2<
-			Handler< BufferHandler	< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File< Striped<FileCount_, File< Async<TSpec> > > > > > >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File< Striped<FileCount_, File< Async<TSpec> > > > > > >, MapperAsyncWriter >
-		>, MultiplexSpec > Type;
-	};
-
-    template < typename TValue,
-   	           typename TMap,
-			   unsigned FileCount_,
-			   typename TSpec >
-    struct WriteHandler< Pool< TValue, MapperSpec< MapperConfig< TMap, File< Striped<FileCount_, File< Async<TSpec> > > > > > > >
-    {
-        typedef Handler< Bundle2<
-			Handler< BufferHandler < Pool< TValue, MapperSpec<MapperConfig< TMap, File< Striped<FileCount_, File< Async<TSpec> > > > > > >, MemorySpec >, MapperMemAdapter >,
-			Handler< Pool< TValue, MapperSpec<MapperConfig< TMap, File< Striped<FileCount_, File< Async<TSpec> > > > > > >, MapperAsyncWriter >
-		>, MultiplexSpec > Type;
-	};
-
-
-/*
-    // WARNING:
-    // Using template based polymorphy with oop inheritance causes
-    // funny side effects, i.e. the VS compiler can't find the right
-    // global template function/structure implicitly. And instead
-	// of redefining every Pool structure for Mapper/Sorter/Pool
-	// we now only use Pool and rename it to Pool
-
-
-    template < typename TValue,
-               typename TMap,
-			   typename TFile = File<> >
-    struct Mapper: public Pool< TValue, MapperSpec< MapperConfig<TMap, TFile> > >
-    {
-        typedef Pool< TValue, MapperSpec< MapperConfig<TMap, TFile> > > Base;
-
-        typedef TValue	                    Type;
-        typedef TFile                       File;
-        typedef typename Size<TFile>::Type  SizeType;
-
-        Mapper(TMap const & M)
-        {
-            Base::handlerArgs = M;
-        }
-
-        template < typename TInput, typename TSpec >
-        Mapper(Pipe<TInput, TSpec> &src, TMap const & M):
-            Base(src)
-        {
-            Base::handlerArgs = M;
-        }
-
-    };
-*/
 }
 
 #endif
