@@ -113,7 +113,7 @@ template <typename TMMapString>
 void
 startFirstPass(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
 {
-    mmapAdvise(recordReader._string, MMAP_SEQUENTIAL, 0, length(recordReader._string));
+    mmapAdvise(recordReader._string, MAP_SEQUENTIAL);
     recordReader._passNo = 1;
     recordReader._first = recordReader._current;
 }
