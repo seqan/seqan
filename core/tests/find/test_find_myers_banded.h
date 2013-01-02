@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Helper functions for testing banded edit distance aproximate
 // string search algorithms.
