@@ -60,6 +60,7 @@ SEQAN_BEGIN_TESTSUITE(test_index)
 	SEQAN_CALL_TEST(testGappedShapes);
 	SEQAN_CALL_TEST(testUngappedShapes);
 	SEQAN_CALL_TEST(testUngappedQGramIndex);
+	SEQAN_CALL_TEST(testUngappedQGramIndexMulti);
 	SEQAN_CALL_TEST(testQGramFind);
 }
 SEQAN_END_TESTSUITE

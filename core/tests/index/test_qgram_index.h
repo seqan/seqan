@@ -91,11 +91,11 @@ SEQAN_DEFINE_TEST(testUngappedShapes)
 template <typename TIndex>
 void testStepSize()
 {
-    TIndex index("CATGATTACATA");
-    setStepSize(index,2);
-    hash(indexShape(index), "CAT");
+    TIndex pos("CATGATTACATA");
+    setStepSize(pos, 2);
+    hash(indexShape(pos), "CAT");
     String<typename Position<DnaString>::Type> occs;
-    occs = getOccurrences(index, indexShape(index));
+    occs = getOccurrences(pos, indexShape(pos));
     SEQAN_ASSERT_EQ(length(occs), 2u);
     SEQAN_ASSERT_EQ(occs[0], 0u);
     SEQAN_ASSERT_EQ(occs[1], 8u);
@@ -135,17 +135,17 @@ void testQGramIndexSchnell()
 	stringToShape(shape, shape_string);
 
 	typedef Position<String<Dna> >::Type TPosition;
-	String<TPosition> index;
-	resize(index, length(text) - q + 2);	
+	String<TPosition> pos;
+	resize(pos, length(text) - q + 2);	
 	
-	String<TPosition> pos;	
+	String<TPosition> dir;	
 	int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, weight(shape));
 	pos_size += 1;	
-	resize(pos, pos_size);
+	resize(dir, pos_size);
 
 	start = clock();
 	Nothing nothing;
-	createQGramIndex(index, pos, nothing, text, shape, 1);
+	createQGramIndex(pos, dir, nothing, text, shape, 1);
 	finish = clock();
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;
 	//std::cout << "\nQGramIndex bauen dauert: " << duration << " Sekunden.\n\n";
@@ -163,49 +163,49 @@ void testGappedQGramIndex()
 	stringToShape(shape, shape_string);
 
 	typedef Position<String<Dna> >::Type TPosition;
-	String<TPosition> index;
-	resize(index, length(text) - q + 2);
-	
 	String<TPosition> pos;
+	resize(pos, length(text) - q + 2);
+	
+	String<TPosition> dir;
     int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, weight(shape));
 	pos_size += 1;	
-	resize(pos, pos_size);
+	resize(dir, pos_size);
 
 	Nothing nothing;
-	createQGramIndex(index, pos, nothing, text, shape, 1);
+	createQGramIndex(pos, dir, nothing, text, shape, 1);
 	
-	SEQAN_ASSERT(pos[0] == 0);
-	SEQAN_ASSERT(pos[1] == 1);
-	SEQAN_ASSERT(pos[2] == 5);
-	SEQAN_ASSERT(pos[3] == 5);
-	SEQAN_ASSERT(pos[4] == 5);
-	SEQAN_ASSERT(pos[5] == 6);
-	SEQAN_ASSERT(pos[6] == 8);
-	SEQAN_ASSERT(pos[7] == 9);
-	SEQAN_ASSERT(pos[8] == 11);
-	SEQAN_ASSERT(pos[9] == 12);
-	SEQAN_ASSERT(pos[10] == 12);
-	SEQAN_ASSERT(pos[11] == 12);
-	SEQAN_ASSERT(pos[12] == 12);
-	SEQAN_ASSERT(pos[13] == 14);
-	SEQAN_ASSERT(pos[14] == 14);
-	SEQAN_ASSERT(pos[15] == 14);
-	SEQAN_ASSERT(pos[16] == 14);
+	SEQAN_ASSERT(dir[0] == 0);
+	SEQAN_ASSERT(dir[1] == 1);
+	SEQAN_ASSERT(dir[2] == 5);
+	SEQAN_ASSERT(dir[3] == 5);
+	SEQAN_ASSERT(dir[4] == 5);
+	SEQAN_ASSERT(dir[5] == 6);
+	SEQAN_ASSERT(dir[6] == 8);
+	SEQAN_ASSERT(dir[7] == 9);
+	SEQAN_ASSERT(dir[8] == 11);
+	SEQAN_ASSERT(dir[9] == 12);
+	SEQAN_ASSERT(dir[10] == 12);
+	SEQAN_ASSERT(dir[11] == 12);
+	SEQAN_ASSERT(dir[12] == 12);
+	SEQAN_ASSERT(dir[13] == 14);
+	SEQAN_ASSERT(dir[14] == 14);
+	SEQAN_ASSERT(dir[15] == 14);
+	SEQAN_ASSERT(dir[16] == 14);
 
-	SEQAN_ASSERT(index[0] == 9);
-	SEQAN_ASSERT(index[1] == 11);
-	SEQAN_ASSERT(index[2] == 10);
-	SEQAN_ASSERT(index[3] == 4);
-	SEQAN_ASSERT(index[4] == 3);
-	SEQAN_ASSERT(index[5] == 7);
-	SEQAN_ASSERT(index[6] == 12);
-	SEQAN_ASSERT(index[7] == 5);
-	SEQAN_ASSERT(index[8] == 0);
-	SEQAN_ASSERT(index[9] == 13);
-	SEQAN_ASSERT(index[10] == 6);
-	SEQAN_ASSERT(index[11] == 2);
-	SEQAN_ASSERT(index[12] == 8);
-	SEQAN_ASSERT(index[13] == 1);
+	SEQAN_ASSERT(pos[0] == 9);
+	SEQAN_ASSERT(pos[1] == 11);
+	SEQAN_ASSERT(pos[2] == 10);
+	SEQAN_ASSERT(pos[3] == 4);
+	SEQAN_ASSERT(pos[4] == 3);
+	SEQAN_ASSERT(pos[5] == 7);
+	SEQAN_ASSERT(pos[6] == 12);
+	SEQAN_ASSERT(pos[7] == 5);
+	SEQAN_ASSERT(pos[8] == 0);
+	SEQAN_ASSERT(pos[9] == 13);
+	SEQAN_ASSERT(pos[10] == 6);
+	SEQAN_ASSERT(pos[11] == 2);
+	SEQAN_ASSERT(pos[12] == 8);
+	SEQAN_ASSERT(pos[13] == 1);
 	
 }
 */
@@ -217,51 +217,109 @@ SEQAN_DEFINE_TEST(testUngappedQGramIndex)
 	resize(shape, q);
 
 	typedef Position<String<Dna> >::Type TPosition;
-	String<TPosition> index;
-	resize(index, length(text) - q + 1);
-	
 	String<TPosition> pos;
+	resize(pos, length(text) - q + 1);
+	
+	String<TPosition> dir;
     int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, q);
-	pos_size += 1;	
-	resize(pos, pos_size);
+	pos_size += 1;
+	resize(dir, pos_size);
 
 	Nothing nothing;
-	createQGramIndex(index, pos, nothing, text, shape, 1);
+	createQGramIndex(pos, dir, nothing, text, shape, 1);
 	
 	
-	SEQAN_ASSERT(pos[0] == 0);
-	SEQAN_ASSERT(pos[1] == 3);
-	SEQAN_ASSERT(pos[2] == 5);
-	SEQAN_ASSERT(pos[3] == 5);
-	SEQAN_ASSERT(pos[4] == 5);
-	SEQAN_ASSERT(pos[5] == 5);
-	SEQAN_ASSERT(pos[6] == 9);
-	SEQAN_ASSERT(pos[7] == 9);
-	SEQAN_ASSERT(pos[8] == 12);
-	SEQAN_ASSERT(pos[9] == 13);
-	SEQAN_ASSERT(pos[10] == 13);
-	SEQAN_ASSERT(pos[11] == 13);
-	SEQAN_ASSERT(pos[12] == 13);
-	SEQAN_ASSERT(pos[13] == 14);
-	SEQAN_ASSERT(pos[14] == 14);
-	SEQAN_ASSERT(pos[15] == 15);
+	SEQAN_ASSERT(dir[0] == 0);
+	SEQAN_ASSERT(dir[1] == 3);
+	SEQAN_ASSERT(dir[2] == 5);
+	SEQAN_ASSERT(dir[3] == 5);
+	SEQAN_ASSERT(dir[4] == 5);
+	SEQAN_ASSERT(dir[5] == 5);
+	SEQAN_ASSERT(dir[6] == 9);
+	SEQAN_ASSERT(dir[7] == 9);
+	SEQAN_ASSERT(dir[8] == 12);
+	SEQAN_ASSERT(dir[9] == 13);
+	SEQAN_ASSERT(dir[10] == 13);
+	SEQAN_ASSERT(dir[11] == 13);
+	SEQAN_ASSERT(dir[12] == 13);
+	SEQAN_ASSERT(dir[13] == 14);
+	SEQAN_ASSERT(dir[14] == 14);
+	SEQAN_ASSERT(dir[15] == 15);
 
-	SEQAN_ASSERT(index[0] == 3);
-	SEQAN_ASSERT(index[1] == 9);
-	SEQAN_ASSERT(index[2] == 10);
-	SEQAN_ASSERT(index[3] == 4);
-	SEQAN_ASSERT(index[4] == 11);
-	SEQAN_ASSERT(index[5] == 5);
-	SEQAN_ASSERT(index[6] == 6);
-	SEQAN_ASSERT(index[7] == 12);
-	SEQAN_ASSERT(index[8] == 13);
-	SEQAN_ASSERT(index[9] == 0);
-	SEQAN_ASSERT(index[10] == 7);
-	SEQAN_ASSERT(index[11] == 14);
-	SEQAN_ASSERT(index[12] == 2);
-	SEQAN_ASSERT(index[13] == 8);
-	SEQAN_ASSERT(index[14] == 1);
+	SEQAN_ASSERT(pos[0] == 3);
+	SEQAN_ASSERT(pos[1] == 9);
+	SEQAN_ASSERT(pos[2] == 10);
+	SEQAN_ASSERT(pos[3] == 4);
+	SEQAN_ASSERT(pos[4] == 11);
+	SEQAN_ASSERT(pos[5] == 5);
+	SEQAN_ASSERT(pos[6] == 6);
+	SEQAN_ASSERT(pos[7] == 12);
+	SEQAN_ASSERT(pos[8] == 13);
+	SEQAN_ASSERT(pos[9] == 0);
+	SEQAN_ASSERT(pos[10] == 7);
+	SEQAN_ASSERT(pos[11] == 14);
+	SEQAN_ASSERT(pos[12] == 2);
+	SEQAN_ASSERT(pos[13] == 8);
+	SEQAN_ASSERT(pos[14] == 1);
 }
+
+inline bool
+_qgramDisableBuckets(Index<StringSet<DnaString>, IndexQGram<Shape<Dna, UngappedShape<3> > > > &index)
+{
+    indexDir(index)[1] = -1;
+    return true;
+}
+
+SEQAN_DEFINE_TEST(testUngappedQGramIndexMulti)
+{
+    typedef StringSet<DnaString>                    TStrings;
+	typedef SAValue<TStrings>::Type                 TSAValue;
+    typedef String<TSAValue>                        TPos;
+    typedef Shape<Dna, UngappedShape<3> >           TShape;
+    typedef Index<TStrings, IndexQGram<TShape> >    TIndex;
+    
+    TStrings strings;
+	TIndex refIndex(strings);
+	TIndex testIndex(strings);
+    
+                       //           111111
+                       // 0123456789012345
+	appendValue(strings, "CTGAACCCTAAACCCT");
+//	appendValue(strings, "");                   // TODO: fix tupler to cope with strings smaller than q
+	appendValue(strings, "GAAGGAGTGTGTGT");     //       requires to adapt pipe interface to return limitsString
+//	appendValue(strings, "GT");
+	appendValue(strings, "AAAACCCCAAACCCC");
+
+    TShape &shape = indexShape(refIndex);
+    indexCreate(refIndex, QGramSADir());
+	resize(indexSA(refIndex), lengthSum(strings) - length(strings) * (length(shape) - 1));
+	resize(indexDir(refIndex), _intPow((unsigned)ValueSize<Dna>::VALUE, length(shape)) + 1);
+    createQGramIndex(refIndex);
+
+    // test classic external index construction
+	resize(indexSA(testIndex), length(indexSA(refIndex)));
+	resize(indexDir(testIndex), length(indexDir(refIndex)));
+	createQGramIndexExt(testIndex);
+
+    for (unsigned i = 0; i < length(indexDir(refIndex)); ++i)
+        SEQAN_ASSERT_EQ_MSG(dirAt(i, refIndex), dirAt(i, testIndex), "i is %d", i);
+    for (unsigned i = 0; i < length(indexSA(refIndex)); ++i)
+        SEQAN_ASSERT_EQ_MSG(saAt(i, refIndex), saAt(i, testIndex), "i is %d", i);
+
+    clear(indexSA(testIndex));
+    clear(indexDir(testIndex));
+
+    // test new external index construction
+	resize(indexSA(testIndex), length(indexSA(refIndex)));
+	resize(indexDir(testIndex), length(indexDir(refIndex)));
+	createQGramIndexExtSA(testIndex);
+
+    for (unsigned i = 0; i < length(indexDir(refIndex)); ++i)
+        SEQAN_ASSERT_EQ_MSG(dirAt(i, refIndex), dirAt(i, testIndex), "i is %d", i);
+    for (unsigned i = 0; i < length(indexSA(refIndex)); ++i)
+        SEQAN_ASSERT_EQ_MSG(saAt(i, refIndex), saAt(i, testIndex), "i is %d", i);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 
