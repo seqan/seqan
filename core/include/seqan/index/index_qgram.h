@@ -1423,11 +1423,33 @@ The resulting tables must have appropriate size before calling this function.
 
 	template < 
 		typename TSA, 
+		typename TText,
+		typename TSize1,
+		typename TSize2 >
+	inline void
+    _refineQGramIndexBucket(
+		TSA &sa,
+		TText const &text,
+		TSize1 oldQ,
+		TSize2 newQ)
+	{
+	SEQAN_CHECKPOINT
+        if (length(sa) <= 1)
+            return;
+
+        ::std::sort(
+            begin(sa, Standard()), 
+            end(sa, Standard()),
+            QGramLessOffset_<typename Value<TSA>::Type, TText const>(text, newQ - oldQ, oldQ));
+	}
+
+	template < 
+		typename TSA, 
 		typename TDir,
 		typename TText,
 		typename TSize1,
 		typename TSize2 >
-	void _refineQGramIndex(
+	inline void _refineQGramIndex(
 		TSA &sa,
 		TDir const &dir,
 		TText const &text,
@@ -1435,7 +1457,7 @@ The resulting tables must have appropriate size before calling this function.
 		TSize2 newQ)
 	{
 	SEQAN_CHECKPOINT
-		typedef typename Size<TSA>::Type TSize;
+		typedef typename Size<TSA>::Type                        TSize;
 		typedef typename Iterator<TSA, Standard>::Type          TIter;
 		typedef typename Iterator<TDir const, Standard>::Type   TDirIter;
 

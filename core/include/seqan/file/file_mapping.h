@@ -60,6 +60,13 @@ namespace seqan {
 ..include:seqan/file.h
  */
 
+enum FileMappingMode {
+    MAP_RDONLY = 1,
+    MAP_WRONLY = 2,
+    MAP_RDWR = 3,
+    MAP_COPYONWRITE = 4
+};
+
 #ifdef PLATFORM_WINDOWS
 
 enum FileMappingAdvise {
@@ -339,7 +346,7 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
 
 template <typename TSpec, typename TPos, typename TSize>
 inline void *
-mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size)
+mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappingMode mode)
 {
     void *addr;
     if (size == 0)
@@ -362,11 +369,17 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size)
     if (mapping.openMode & OPEN_RDONLY) prot |= PROT_READ;
     if (mapping.openMode & OPEN_WRONLY) prot |= PROT_WRITE;
 
+    int flags = 0;
+    if ((mode & MAP_COPYONWRITE) != 0)
+        flags |= MAP_PRIVATE;
+    else
+        flags |= MAP_SHARED;
+
     addr = mmap(
         NULL,
         size,
         prot,
-        MAP_SHARED,
+        flags,
         mapping.file.handle,
         fileOfs);
 
@@ -376,6 +389,13 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size)
     if (addr == NULL)
         SEQAN_FAIL("mapFileSegment failed: \"%s\"", strerror(errno));
     return addr;
+}
+
+template <typename TSpec, typename TPos, typename TSize>
+inline void *
+mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size)
+{
+    return mapFileSegment(mapping, fileOfs, size, MAP_RDWR);
 }
 
 template <typename TSpec, typename TPos, typename TSize>
