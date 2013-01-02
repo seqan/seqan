@@ -680,6 +680,25 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
+// this function doesn't do anything as we are not allowed to change the host (only its elements)
+// it is, however, implemented for algorithms that get a sequence to work on
+// and need to make sure that it has a certain length
+
+template <typename THost, typename TSpec, typename TSize, typename TExpand>
+inline typename Size< Segment<THost, TSpec> >::Type
+resize(
+    Segment<THost, TSpec> & me,
+    TSize new_length,
+    Tag<TExpand> const)
+{
+    ignoreUnusedVariableWarning(new_length);
+
+    SEQAN_ASSERT_EQ(new_length, length(me));
+    return length(me);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 // TODO(singer): moveValue still works. Should make the compiler throw an error.
 
 } //namespace SEQAN_NAMESPACE_MAIN
