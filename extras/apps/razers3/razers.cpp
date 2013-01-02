@@ -521,6 +521,18 @@ extractOptions(
 #ifndef NO_PARAM_CHOOSER
     getOptionValue(pm_options.optionLossRate, parser, "recognition-rate");
     getOptionValue(pm_options.paramFolder, parser, "param-dir");
+    // append slash/backslash
+    if (!empty(pm_options.paramFolder))
+    {
+        if (back(pm_options.paramFolder) != '/' && back(pm_options.paramFolder) != '\\')
+        {
+#ifdef PLATFORM_WINDOWS
+            appendValue(pm_options.paramFolder, '\\');
+#else
+            appendValue(pm_options.paramFolder, '/');
+#endif
+        }
+    }
 #endif
     options.gapMode = (isSet(parser, "no-gaps")) ? RAZERS_UNGAPPED : RAZERS_GAPPED;
 #ifdef RAZERS_MATEPAIRS
