@@ -1000,7 +1000,7 @@ template < typename T >
 inline void _refreshStringSetLimits(T &) {}
 
 template < typename TString, typename TSpec >
-inline void _refreshStringSetLimits(StringSet< TString, TSpec > & me)
+void _refreshStringSetLimits(StringSet< TString, TSpec > & me)
 {
     typedef StringSet< TString, TSpec >                 TStringSet;
     typedef typename StringSetLimits<TStringSet>::Type  TLimits;
