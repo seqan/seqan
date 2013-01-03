@@ -194,17 +194,36 @@ _lastOccurrence(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const &
 }
 
 
+// is this the first child of the parent node?
+template <typename TIndex, typename TSpec>
+inline bool
+isFirstChild(Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > const & it)
+{
+    if (!empty(it.history))
+    {
+        typename Size<TIndex>::Type parentLeft = back(it.history).range.i1;
+        if (value(it).range.i1 == parentLeft)
+            return true;
+
+        TIndex const & index = container(it);
+        return suffixLength(saAt(value(it).range.i1 - 1, index), index) + 1 == value(it).repLen;
+    }
+    else
+        return value(it).range.i1 == 0;
+
+}
+
 // is this the last child of the parent node?
 template <typename TIndex, typename TSpec>
 inline bool
-isLastChild(Iter<TIndex, VSTree<TopDown<TSpec> > >  const & it)
+isLastChild(Iter<TIndex, VSTree<TopDown<TSpec> > > const & it)
 {
     return value(it).range.i2 == value(it).parentRight;
 }
 
 template <typename TIndex, typename TSpec>
 inline bool
-isLastChild(Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >  const & it)
+isLastChild(Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > const & it)
 {
     if (!empty(it.history))
         return value(it).range.i2 == back(it.history).range.i2;
@@ -227,7 +246,7 @@ goDownSkipSingletons(Iter<TIndex, VSTree< TopDown<TSpec> > > &it)
 }
 
 // is this a leaf? (hide empty $-edges)
-template <typename TText, typename TIndexSpec, class TSpec, typename TDfsOrder>
+template <typename TText, typename TIndexSpec, typename TSpec, typename TDfsOrder>
 inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
                     VSTreeIteratorTraits<TDfsOrder, True> const)
 {
@@ -592,14 +611,14 @@ inline bool _goUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<Parent
 
 // ============================================================================
 
-template <typename TText, class TIndexSpec, class TSpec>
+template <typename TText, typename TIndexSpec, typename TSpec>
 inline void _historyPush(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it)
 {
     it._parentDesc = value(it);
     value(it).parentRight = value(it).range.i2;
 }
 
-template <typename TText, class TIndexSpec, class TSpec>
+template <typename TText, typename TIndexSpec, typename TSpec>
 inline void _historyPush(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > & it)
 {
     typedef Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > TIter;
