@@ -696,12 +696,16 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 		typedef typename Iterator<TString, Standard>::Type	TIter;
 		typedef typename Size<TString>::Type				TSize;
         typedef StringSet<TString, TSpec>                   TStringSet;
+        typedef typename StringSetLimits<TStringSet>::Type  TLimits;
+
 		TStringSet const &_stringSet;
-		typename Size<TString>::Type _q, _offset;
+        TLimits const &limits;
+		TSize _q, _offset;
 
 		template <typename TSize1, typename TSize2>
 		QGramLessOffset_(StringSet<TString, TSpec> const &text, TSize1 q, TSize2 offset): 
 			_stringSet(text),
+            limits(stringSetLimits(text)),
 			_q(q),
 			_offset(offset) {}
 
@@ -709,12 +713,13 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 		{
 			if (a == b) return false;
             
-            typename Size<TStringSet>::Type seqNoA = getSeqNo(a, stringSetLimits(_stringSet));
-            typename Size<TStringSet>::Type seqNoB = getSeqNo(b, stringSetLimits(_stringSet));
-			TIter itA = begin(_stringSet[seqNoA], Standard()) + getSeqOffset(a, stringSetLimits(_stringSet));
-			TIter itB = begin(_stringSet[seqNoB], Standard()) + getSeqOffset(b, stringSetLimits(_stringSet));
-            TIter itAEnd = end(_stringSet[seqNoA], Standard());
-            TIter itBEnd = end(_stringSet[seqNoB], Standard());
+            typename Size<TStringSet>::Type seqNoA = getSeqNo(a, limits);
+            typename Size<TStringSet>::Type seqNoB = getSeqNo(b, limits);
+
+			TIter itA    = begin(_stringSet[seqNoA], Standard()) + getSeqOffset(a, limits);
+            TIter itAEnd =   end(_stringSet[seqNoA], Standard());
+			TIter itB    = begin(_stringSet[seqNoB], Standard()) + getSeqOffset(b, limits);
+            TIter itBEnd =   end(_stringSet[seqNoB], Standard());
             
             if (itAEnd - itA < itBEnd - itB)
             {
