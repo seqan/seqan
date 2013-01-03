@@ -818,8 +818,17 @@ String<char> & text = getFibre(indexEsa, EsaText());
 
 	template <typename TPos, typename TText, typename TSpec>
 	inline typename Size<Index<TText, TSpec> >::Type 
-	suffixLength(TPos pos, Index<TText, TSpec> const &index) {
-		return sequenceLength(getSeqNo(pos, stringSetLimits(index)), index) - getSeqOffset(pos, stringSetLimits(index));
+	suffixLength(TPos pos, Index<TText, TSpec> const &index)
+    {
+		return length(indexText(index)) - pos;
+	}
+
+	template <typename TPos, typename TString, typename TSSetSpec, typename TSpec>
+	inline typename Size<Index<StringSet<TString, TSSetSpec>, TSpec> >::Type 
+	suffixLength(TPos pos, Index<StringSet<TString, TSSetSpec>, TSpec> const &index)
+    {
+        typename StringSetLimits<StringSet<TString, TSSetSpec> >::Type const &limits = stringSetLimits(index);
+		return sequenceLength(getSeqNo(pos, limits), index) - getSeqOffset(pos, limits);
 	}
 
 
