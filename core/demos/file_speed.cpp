@@ -8,8 +8,8 @@
 using namespace seqan;
 using namespace std;
 
-const int blockSize = 1 << 12;
-const int repeats = 1 << 17;
+const unsigned long blockSize = 1 << 12;
+const unsigned long repeats = 1 << 19;
 
 CharString block1 = "This a test string";
 CharString block2;
@@ -29,7 +29,7 @@ void testThroughput(const char *fileName)
 
 	asyncWriteAt(myFile, toCString(block1), blockSize, 0 * blockSize, req1);
 	asyncWriteAt(myFile, toCString(block2), blockSize, 1 * blockSize, req2);
-	for (int i = 1; i < repeats; ++i) 
+	for (unsigned i = 1; i < repeats; ++i)
 	{
 		waitFor(req1);
 		asyncWriteAt(myFile, toCString(block1), blockSize,    2*i  * blockSize, req1);
@@ -57,7 +57,7 @@ void testExtString(const char *fileName)
 
 	SEQAN_PROTIMESTART(iotime);
 
-	for (int i = 0; i < repeats; ++i) 
+	for (unsigned i = 0; i < repeats; ++i)
 	{
 		append(myString, block1);
 		append(myString, block2);
@@ -70,16 +70,16 @@ void testExtString(const char *fileName)
 template <typename TFile>
 void testMMapString(const char *fileName)
 {
-	String<char, MMap<ExternalConfig<TFile> > > myString;
+	String<char, MMap<> > myString;
 
-	if (!open(myString, fileName, OPEN_RDWR | OPEN_CREATE)) {
+	if (!open(myString, fileName, OPEN_RDWR /*| OPEN_CREATE*/)) {
 		cout << "Could not open for writing" << endl;
 		return;
 	}
 
 	SEQAN_PROTIMESTART(iotime);
 
-	for (int i = 0; i < repeats; ++i) 
+	for (unsigned i = 0; i < repeats; ++i)
 	{
 		append(myString, block1);
 		append(myString, block2);
