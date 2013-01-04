@@ -754,7 +754,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //    enum { AsyncIOSignal_ = SIGIO };
 
-	inline void printRequest(aiocb &request, const char *_hint = NULL) {
+	inline void printRequest(aiocb &request, const char *_hint)
+    {
 //IOREV _nodoc_ _notinlined_
 		std::cerr << std::hex;
 		if (_hint)
@@ -767,6 +768,11 @@ namespace SEQAN_NAMESPACE_MAIN
 		std::cerr << "Raddr:   " << &request << std::endl;
 		std::cerr << std::dec;
 	}
+
+    inline void printRequest(aiocb &request)
+    {
+        printRequest(request, NULL);
+    }
 
     template < typename TSpec, typename TValue, typename TSize, typename TPos >
     bool asyncReadAt(File<Async<TSpec> > & me, TValue *memPtr, TSize const count, TPos const fileOfs,

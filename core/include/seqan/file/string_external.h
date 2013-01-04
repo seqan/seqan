@@ -1230,7 +1230,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                 else
                     ::std::cerr << " ";
 
-                if (pf.status == TPageFrame::READY)
+                if (pf.status == READY)
                     ::std::cerr << "   ";
                 else
                     ::std::cerr << ".  ";
@@ -1250,7 +1250,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		// write page to disk if dirty and remove from page table now or after finishing IO
 		inline void flush(TPageFrame &pf) 
 		{
-            if (pf.status == TPageFrame::READY && pf.dirty) {    // write if dirty and not i/o transferring
+            if (pf.status == READY && pf.dirty) {    // write if dirty and not i/o transferring
 				nukeCopies(pf.begin);				            // proceeding writes should wait and set dirty bit
 
                 if (pf.priority > TPageFrame::NORMAL_LEVEL && pf.priority <= TPageFrame::ITERATOR_LEVEL)
@@ -1273,7 +1273,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		{
 			nukeCopies(pf.begin);      				// proceeding writes should wait and set dirty bit
 
-            if (pf.status != TPageFrame::READY)
+            if (pf.status != READY)
             {
 				pager[pf.pageNo] = TPageFrame::ON_DISK;		// page is not dirty and on disk
 				bool waitResult = waitFor(pf);              // after finishing I/O transfer
@@ -1316,7 +1316,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 			inline bool operator() (TPageFrame &pf)
             {
-                typename TPageFrame::Status oldStatus = pf.status;
+                PageFrameStatus oldStatus = pf.status;
                 bool inProgress;
                 bool waitResult = waitFor(pf, 0, inProgress);
 
@@ -1324,7 +1324,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                 if (!waitResult)
                     SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
 
-                if (!inProgress && (oldStatus != pf.READY))
+                if (!inProgress && (oldStatus != READY))
                 {
                     if (pf.pageNo >= me.lastDiskPage)
                         me.lastDiskPage = -1;    // make lastDiskPage(Size) invalid because file size is aligned
@@ -1347,14 +1347,14 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                     pf, 
                     _max(pf.priority, newLevel));    		// update lru order
 
-                typename TPageFrame::Status oldStatus = pf.status;
+                PageFrameStatus oldStatus = pf.status;
 				bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
                     SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
 
-				if (oldStatus != pf.READY)
+				if (oldStatus != READY)
                     if (pf.pageNo >= lastDiskPage)
                         lastDiskPage = -1;       			// make lastDiskPage(Size) invalid because file size is aligned
 

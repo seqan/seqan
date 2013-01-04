@@ -66,6 +66,15 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// base class for memory buffers
 
+    struct Dynamic;
+
+    template <size_t PAGE_SIZE>
+    struct Fixed;
+
+	template <typename TFile, typename TSpec = Dynamic>
+    struct PageFrame;
+
+
 	template <typename TValue, typename TSpec = Simple>
 	struct Buffer
 	{
@@ -141,9 +150,16 @@ struct MMap;
 
 	template <typename TValue, typename TSpec>
     inline typename Size<Buffer<TValue, TSpec> >::Type
-    capacity(Buffer<TValue, TSpec> &me)
+    capacity(Buffer<TValue, TSpec> const &me)
     {
         return me.pageSize;
+    }
+
+	template <typename TValue, typename TFile, size_t PAGE_SIZE>
+    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > >::Type
+    capacity(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
+    {
+        return PAGE_SIZE;
     }
 
 	template <typename TValue, typename TSpec, typename TSize>
@@ -158,6 +174,13 @@ struct MMap;
     length(Buffer<TValue, TSpec> const &me)
     {
         return me.end - me.begin;
+    }
+
+	template <typename TValue, typename TFile, size_t PAGE_SIZE>
+    inline typename Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >::Type
+    length(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
+    {
+        return PAGE_SIZE;
     }
 
 	template <typename TValue, typename TSpec, typename TSize>
@@ -292,11 +315,6 @@ struct MMap;
 
 	//////////////////////////////////////////////////////////////////////////////
 
-    struct Dynamic;
-
-	template <typename TFile, typename TSpec = Dynamic>
-    struct PageFrame;
-
     enum PageFrameStatus
     {
         UNUSED,
@@ -325,7 +343,7 @@ struct MMap;
         TFilePageRequest pageRequest;
 
 		bool			dirty;		// data needs to be written to disk before freeing
-		unsigned   		pageNo;		// maps frames to pages (reverse vector mapper)
+		unsigned		pageNo;		// maps frames to pages (reverse vector mapper)
         AsyncRequest    request;    // request structure of the async io process
 		PageFrameStatus status;
         Buffer          *next;      // next buffer in a chained list
@@ -342,8 +360,6 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// page frame of static size
 
-    template <size_t PAGE_SIZE>
-    struct Fixed;
 //IOREV
 
     typedef ::std::list<Position<String<void*> >::Type> PageLRUList;    // least recently usage list
@@ -351,9 +367,9 @@ struct MMap;
 
     template < typename TValue,
                typename TFile,
-               unsigned PAGE_SIZE_ >
+               size_t PAGE_SIZE_ >
 	struct Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE_> > >
-    {   
+    {
 		typedef TFile                                       File;
         typedef typename AsyncRequest<TFile>::Type          AsyncRequest;
 		typedef	typename Iterator<Buffer, Standard>::Type   TIterator;
@@ -363,6 +379,7 @@ struct MMap;
 		enum Priority	{ NORMAL_LEVEL = 0, PREFETCH_LEVEL = 1, ITERATOR_LEVEL = 2, PERMANENT_LEVEL = 3 };
 
         TIterator       begin;
+        TIterator       end;
         AsyncRequest    request;    // request structure of the async io process
 		PageFrameStatus status;
 		DataStatus		dataStatus;
@@ -418,35 +435,18 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
+	template <typename TValue, typename TFile, size_t PAGE_SIZE>
     struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >, Standard >
     {
         typedef VolatilePtr<TValue> Type;
     };
 
-	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
+	template <typename TValue, typename TFile, size_t PAGE_SIZE>
     struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const, Standard >
     {
         typedef VolatilePtr<TValue> const Type;
     };
 
-
-	//////////////////////////////////////////////////////////////////////////////
-	// global interface
-
-	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
-    inline typename Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >::Type
-    length(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
-    {
-        return PAGE_SIZE;
-    }
-
-	template <typename TValue, typename TFile, unsigned PAGE_SIZE>
-    inline typename Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >::Type
-    capacity(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
-    {
-        return PAGE_SIZE;
-    }
 
 
 
@@ -731,7 +731,7 @@ struct MMap;
         // TODO(weese): Throw an I/O exception
         if (!waitResult)
         {
-            printRequest(pf.request);
+            //printRequest(pf.request);
             SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
         }
 
@@ -755,7 +755,7 @@ struct MMap;
         // TODO(weese): Throw an I/O exception
         if (!waitResult)
         {
-            printRequest(pf.request);
+            //printRequest(pf.request);
             SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
         }
 
@@ -805,11 +805,11 @@ struct MMap;
 	}
 
 	template <typename TValue, typename TFile> inline
-	unsigned readBucket(PageBucket<TValue> &b, int pageNo, unsigned pageSize, unsigned dataSize, TFile &file) 
+	unsigned readBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, size_t dataSize, TFile &file) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
-        unsigned readSize = _min(dataSize - b.pageOfs, (unsigned)(b.end - b.begin));
+        size_t readSize = _min(dataSize - b.pageOfs, (size_t)(b.end - b.begin));
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "readBucket:  " << ::std::hex << b.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
@@ -825,7 +825,7 @@ struct MMap;
 	}
 
 	template <typename TValue, typename TFile> inline
-	bool writeBucket(PageBucket<TValue> &b, int pageNo, unsigned pageSize, TFile &file) 
+	bool writeBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, TFile &file) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
@@ -843,7 +843,7 @@ struct MMap;
 	}
 
 	template <typename TValue, typename TFile> inline
-	bool writeBucket(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, unsigned &pageOfs, TFile &file) 
+	bool writeBucket(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, size_t &pageOfs, TFile &file) 
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
@@ -1227,8 +1227,8 @@ struct MMap;
                     ::std::cerr << pf.pageNo;
                     if (pf.dirty) ::std::cerr << "*";
                     else          ::std::cerr << " ";
-                    if (pf.status == TPageFrame::READY) ::std::cerr << "  ";
-                    else                                ::std::cerr << ". ";
+                    if (pf.status == READY) ::std::cerr << "  ";
+                    else                    ::std::cerr << ". ";
 				};
             }
             ::std::cerr << ::std::endl;
@@ -1245,7 +1245,7 @@ struct MMap;
 				while (I != first) {
 					--I;
 					TPageFrame& pf = pages[*I];
-					if (pf.status == TPageFrame::READY && !pf.dirty)
+					if (pf.status == READY && !pf.dirty)
 						return *I;
 					else
 						if (Func_(pf)) return *I;
@@ -1397,13 +1397,13 @@ struct MMap;
 
     template <typename TValue, typename TSize, typename T, class Function>
     inline bool equiDistantDistribution(
-        Buffer<TValue> &_clusterBuffer, unsigned _bufferSize, T const &me,
-        TSize _size, unsigned _pageSize,
+        Buffer<TValue> &_clusterBuffer, size_t _bufferSize, T const &me,
+        TSize _size, size_t _pageSize,
         Function const &Func_)
     {
 //IOREV _nodoc_
         ::std::cerr << "equiDistantDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
-        unsigned _pages         = enclosingBlocks(_size, (unsigned)_pageSize);
+        unsigned _pages         = enclosingBlocks(_size, _pageSize);
         if (!_pages) {
 			::std::cerr << "equiDistantDistribution: _pages is null!" << ::std::endl;
             return false;
@@ -1414,8 +1414,8 @@ struct MMap;
             _bufferSize = _pages;
         }
 
-        unsigned lastPageSize   = _size % _pageSize;
-        unsigned pages          = _pages;
+        size_t lastPageSize = _size % _pageSize;
+        unsigned pages      = _pages;
 
         if ((TSize)_bufferSize > _size)
             _bufferSize = _size;
@@ -1424,7 +1424,7 @@ struct MMap;
         PageBucketExtended<TValue> pb;
         pb.begin = _clusterBuffer.begin;
 
-        unsigned clusterSize = _bufferSize / pages;
+        size_t clusterSize = _bufferSize / pages;
         ::std::cerr << "equiDistantDistribution: pages=" << _pages << "\tclusterSize=" << clusterSize << ::std::endl;
         if (lastPageSize > 0 && clusterSize >= lastPageSize) {
             // last page bucket would get more memory than page would need
@@ -1436,7 +1436,7 @@ struct MMap;
         }
 
         if (pages) {
-            unsigned remainder = _bufferSize % pages;
+            size_t remainder = _bufferSize % pages;
             for(unsigned i = 0, numerator = 0; i < pages; ++i) {
                 pb.end = pb.begin + clusterSize;
                 if ((numerator += remainder) >= pages) {    // simple bresenham for distribution
@@ -1462,12 +1462,12 @@ struct MMap;
 
     template <typename TValue, typename TSize, typename T, class Function>
     inline unsigned equiDistantAlignedDistribution(
-        Buffer<TValue> &_clusterBuffer, unsigned aligning, unsigned _bufferSize, T const &me,
-        TSize _size, unsigned _pageSize,
+        Buffer<TValue> &_clusterBuffer, size_t aligning, size_t _bufferSize, T const &me,
+        TSize _size, size_t _pageSize,
         Function const &Func_)
     {
 //IOREV _nodoc_
-        unsigned _pages         = enclosingBlocks(_size, (unsigned)_pageSize);
+        unsigned _pages         = enclosingBlocks(_size, _pageSize);
         ::std::cerr << "equiDistantAlignedDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
         if (!_pages) {
 			::std::cerr << "equiDistantAlignedDistribution: _pages is null!" << ::std::endl;
@@ -1479,14 +1479,14 @@ struct MMap;
             _bufferSize = _pages;
         }
 
-        unsigned lastPageSize   = _size % _pageSize;
-        unsigned pages          = _pages;
+        size_t lastPageSize = _size % _pageSize;
+        unsigned pages      = _pages;
 
         if ((TSize)_bufferSize > _size)
             _bufferSize = _size;
 
-        unsigned clusterSize = _bufferSize / pages;
-        unsigned aclusterSize = (clusterSize / aligning) * aligning;
+        size_t clusterSize = _bufferSize / pages;
+        size_t aclusterSize = (clusterSize / aligning) * aligning;
         if (clusterSize - aclusterSize > aligning / 2)
             aclusterSize += aligning;
 

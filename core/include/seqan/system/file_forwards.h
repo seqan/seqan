@@ -119,6 +119,7 @@ template <typename TSpec> inline bool flush(File<Async<TSpec> > & me);       	//
 // printRequest
 
 inline void printRequest(aiocb &request, const char *_hint);       	// "core/include/seqan/file/file_async.h"(125)
+inline void printRequest(aiocb &request);       	// "core/include/seqan/file/file_async.h"(125)
 
 //____________________________________________________________________________
 // read
