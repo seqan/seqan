@@ -389,11 +389,11 @@ struct MMap;
 		bool			dirty;		// data needs to be written to disk before freeing
 
 		Buffer():
-            dirty(false),
-            pageNo(-1),
 			status(READY),
 			dataStatus(UNINITIALIZED),
-            priority(NORMAL_LEVEL) {}
+            priority(NORMAL_LEVEL),
+            pageNo(-1),
+            dirty(false) {}
 
         template <typename TPos>
 		inline TValue &
@@ -842,8 +842,8 @@ struct MMap;
             return false;
 	}
 
-	template <typename TValue, typename TFile> inline
-	bool writeBucket(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, size_t &pageOfs, TFile &file) 
+	template <typename TValue, typename TPageOfs, typename TFile> inline
+	bool writeBucket(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TPageOfs &pageOfs, TFile &file)
 	{
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
