@@ -252,18 +252,18 @@ namespace SEQAN_NAMESPACE_MAIN
 				*target = *source;
 				++source;
 			}
-            if (!(rest -= size(buffer))) source = ISource();
+            if (!(rest -= length(buffer))) source = ISource();
 			return buffer;
         }
 
         inline TBuffer& next() {
 			resize(buffer, _min(bufferSize, rest));
-			ITarget _end = buffer.begin + size(buffer);
+			ITarget _end = buffer.begin + length(buffer);
 			for(ITarget target = buffer.begin; target != _end; ++target) {
 				*target = *source;
 				++source;
 			}
-            if (!(rest -= size(buffer))) source = ISource();
+            if (!(rest -= length(buffer))) source = ISource();
 			return buffer;
         }
 
@@ -312,18 +312,18 @@ namespace SEQAN_NAMESPACE_MAIN
 				*target = *source;
 				++source;
 			}
-            if (!(rest -= size(buffer))) source = ISource();
+            if (!(rest -= length(buffer))) source = ISource();
 			return buffer;
         }
 
         inline TBuffer& next() {
 			resize(buffer, _min(bufferSize, rest));
-			ITarget _end = buffer.begin + size(buffer);
+			ITarget _end = buffer.begin + length(buffer);
 			for(ITarget target = buffer.begin; target != _end; ++target) {
 				*target = *source;
 				++source;
 			}
-            if (!(rest -= size(buffer))) source = ISource();
+            if (!(rest -= length(buffer))) source = ISource();
 			return buffer;
         }
 
