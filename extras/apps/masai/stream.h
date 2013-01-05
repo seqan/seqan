@@ -58,8 +58,8 @@ class Stream<FileStream<TValue, FileWriter> >
 {
 public:
     typedef File< Async<> >                             TFile;
-    typedef SimpleBuffer<TValue>                        TBuffer;
-    typedef PageFrame<TValue, TFile, Dynamic<> >        TPageFrame;
+    typedef Buffer<TValue>                              TBuffer;
+    typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
     typedef PageChain<TPageFrame>                       TPageChain;
     typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
 
@@ -165,8 +165,8 @@ class Stream<FileStream<TValue, MMapWriter> >
 {
 public:
     typedef File< Async<> >                             TFile;
-    typedef SimpleBuffer<TValue>                        TBuffer;
-    typedef PageFrame<TValue, TFile, Dynamic<> >        TPageFrame;
+    typedef Buffer<TValue>                              TBuffer;
+    typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
     typedef PageChain<TPageFrame>                       TPageChain;
     //        typedef String<TPageFrame*>                         TPageChain;
     typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
