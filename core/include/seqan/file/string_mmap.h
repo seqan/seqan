@@ -439,12 +439,12 @@ SEQAN_CHECKPOINT
 		typedef typename Size< String<TValue, MMap<TConfig> > >::Type TSize;
 
         bool result = true;
-        TSize old_capacity = capacity(me);
         TSize seq_length = length(me);
 
 #ifndef PLATFORM_WINDOWS
         // Windows doesn't allow to resize the file while having a mapped file segment
         // Thus, the following part is only supported on Linux/BSD/Mac OS
+        TSize old_capacity = capacity(me);
         if (me.data_begin && new_capacity > 0)
         {
             // if file gets bigger, resize first

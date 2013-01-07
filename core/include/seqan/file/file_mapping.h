@@ -99,6 +99,15 @@ enum FileMappingAdvise {
 ..include:seqan/file.h
 */
 
+#ifdef PLATFORM_WINDOWS
+static SECURITY_ATTRIBUTES FileMappingDefaultAttributes =
+{
+    sizeof(SECURITY_ATTRIBUTES),
+    NULL,
+    true
+};
+#endif
+
 template <typename TSpec = void>
 struct FileMapping
 {
@@ -115,13 +124,6 @@ struct FileMapping
 
 #ifdef PLATFORM_WINDOWS
     HANDLE      handle;
-
-    static SECURITY_ATTRIBUTES FileMappingDefaultAttributes =
-    {
-        sizeof(SECURITY_ATTRIBUTES),
-        NULL,
-        true
-    };
 #endif
 
     TFileSize   fileSize;
