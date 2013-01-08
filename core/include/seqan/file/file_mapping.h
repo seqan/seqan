@@ -291,6 +291,13 @@ length(FileMapping<TSpec> &mapping)
     return mapping.fileSize;
 }
 
+template <typename TSpec>
+inline typename Size<FileMapping<TSpec> >::Type
+length(FileMapping<TSpec> const &mapping)
+{
+    return mapping.fileSize;
+}
+
 template <typename TSpec, typename TSize>
 inline bool
 resize(FileMapping<TSpec> &mapping, TSize newFileSize)
@@ -385,6 +392,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappin
         flags,
         mapping.file.handle,
         fileOfs);
+//    std::cerr << "mmap(0,"<<size<<','<<prot<<','<<flags<<','<<mapping.file.handle<<','<<fileOfs<<")="<<addr<<std::endl;
 
     if (addr == MAP_FAILED)
         addr = NULL;
@@ -418,6 +426,8 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
     result = (UnmapViewOfFile(addr) != 0);
 #else
     result = (munmap(addr, size) == 0);
+//    std::cerr << "munmap("<<addr<<','<<size<<")="<<result<<std::endl;
+
 #endif
     if (!result)
         SEQAN_FAIL("unmapFileSegment failed: \"%s\"", strerror(errno));
@@ -433,6 +443,7 @@ remapFileSegment(FileMapping<TSpec> &mapping, void *oldAddr, TPos oldFileOfs, TS
     ignoreUnusedVariableWarning(mapping);
     ignoreUnusedVariableWarning(oldFileOfs);
     addr = mremap(oldAddr, oldSize, newSize, MREMAP_MAYMOVE);
+//    std::cerr << "mremap("<<oldAddr<<','<<oldSize<<','<<newSize<<','<<MREMAP_MAYMOVE<<")="<<addr<<std::endl;
     if (addr == MAP_FAILED)
         addr = NULL;
 #else
