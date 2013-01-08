@@ -117,6 +117,16 @@ namespace SEQAN_NAMESPACE_MAIN
     struct PoolParameters
     {
 
+#ifdef SEQAN_IS_32_BIT
+        // in 32bit mode at most 4GB are addressable
+        enum { DefaultMemBufferSize     = 384 * 1024*1024,      // low memory config [kB]
+               DefaultPageSize          = 32 * 1024,            // [kB]
+               DefaultBucketBufferSize  = 64 * 1024,            // [kB]
+               DefaultReadAheadBuffers  = 4,
+               DefaultWriteBackBuffers  = 4,
+               DefaultWriteBackBuckets  = 16,
+               DefaultAbsoluteSizes     = true };
+#else
         enum { DefaultMemBufferSize     = 8 * 1024*1024,        // max memory config [kB]
                DefaultPageSize          = 1 * 1024*1024,        // [kB]
                DefaultBucketBufferSize  = 2 * 1024*1024,        // [kB]
@@ -124,7 +134,7 @@ namespace SEQAN_NAMESPACE_MAIN
                DefaultWriteBackBuffers  = 4,
                DefaultWriteBackBuckets  = 16,
                DefaultAbsoluteSizes     = true };
-
+#endif
 
 /*
         enum { DefaultMemBufferSize     = 128 * 1024,           // normal memory config [kB]
@@ -176,7 +186,7 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-        
+
     template < typename TBuffer, typename THandler >
     inline TBuffer& processBuffer(TBuffer &h, THandler &) {
         return h;
