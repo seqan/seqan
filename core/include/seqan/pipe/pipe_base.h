@@ -557,7 +557,6 @@ SEQAN_CHECKPOINT
         typedef typename Iterator<String<TValue, TStringSpec>, Standard >::Type TDestIter;
         resize(dest, length(src));
         beginRead(src);
-        std::cout << length(src) << std::endl;
         for (TDestIter _cur = begin(dest, Standard()), _end = end(dest, Standard()); _cur != _end; ++_cur, ++src)
             *_cur = *src;
         endRead(src);
