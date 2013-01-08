@@ -336,6 +336,7 @@ inline bool
 adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TPos beginPos, TSize size)
 {
 #ifdef PLATFORM_WINDOWS
+    ignoreUnusedVariableWarning(advise);
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(beginPos);
     ignoreUnusedVariableWarning(size);
@@ -356,7 +357,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappin
 
 #ifdef PLATFORM_WINDOWS
 
-    DWORD access = ((mapping.openMode & OPEN_MASK) == OPEN_RDONLY) ? FILE_MAP_READ : FILE_MAP_ALL_ACCESS;
+    DWORD access = ((mode & OPEN_MASK) == OPEN_RDONLY) ? FILE_MAP_READ : FILE_MAP_ALL_ACCESS;
     LARGE_INTEGER largeSize;
     largeSize.QuadPart = size;          // 0 = map the whole file
 
@@ -368,8 +369,8 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappin
         size);                          // _In_     SIZE_T dwNumberOfBytesToMap
 #else
     int prot = 0;
-    if (mapping.openMode & OPEN_RDONLY) prot |= PROT_READ;
-    if (mapping.openMode & OPEN_WRONLY) prot |= PROT_WRITE;
+    if (mode & OPEN_RDONLY) prot |= PROT_READ;
+    if (mode & OPEN_WRONLY) prot |= PROT_WRITE;
 
     int flags = 0;
     if ((mode & MAP_COPYONWRITE) != 0)
@@ -413,6 +414,7 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 {
     bool result;
 #ifdef PLATFORM_WINDOWS
+    ignoreUnusedVariableWarning(size);
     result = (UnmapViewOfFile(addr) != 0);
 #else
     result = (munmap(addr, size) == 0);
