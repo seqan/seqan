@@ -379,8 +379,6 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
         value(it).range.i2 = saRange.i2;
     }
     
-    // NOTE(esiragusa): right range is already parent range (saRange.i2).
-
     // Update child repLen, lastChar.
     value(it).repLen++;
     value(it).lastChar = cLeft;
