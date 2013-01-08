@@ -227,15 +227,6 @@ SEQAN_CHECKPOINT
 
     template < typename TValue, typename TConfig >
 	inline typename Size<String<TValue, MMap<TConfig> > >::Type
-	capacity(String<TValue, MMap<TConfig> > & me)
-	{
-//IOREV
-SEQAN_CHECKPOINT
-		return length(me.mapping) / sizeof(TValue);
-	}
-
-    template < typename TValue, typename TConfig >
-	inline typename Size<String<TValue, MMap<TConfig> > >::Type
 	capacity(String<TValue, MMap<TConfig> > const & me) 
 	{
 //IOREV
@@ -436,7 +427,8 @@ SEQAN_CHECKPOINT
     inline bool 
     _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity) 
 	{
-		typedef typename Size< String<TValue, MMap<TConfig> > >::Type TSize;
+		typedef typename Size< String<TValue, MMap<TConfig> > >::Type   TSize;
+        typedef typename Size<typename TConfig::TFile>::Type            TFileSize;
 
         bool result = true;
         TSize seq_length = length(me);
@@ -451,7 +443,12 @@ SEQAN_CHECKPOINT
             if (old_capacity < new_capacity)
                 resize(me.mapping, new_capacity * sizeof(TValue));
 
-            me.data_begin = static_cast<TValue*>(remapFileSegment(me.mapping, me.data_begin, 0, old_capacity, new_capacity));
+            me.data_begin = static_cast<TValue*>(remapFileSegment(
+                me.mapping,
+                me.data_begin,
+                0,
+                (TFileSize)old_capacity * (TFileSize)sizeof(TValue),
+                (TFileSize)new_capacity * (TFileSize)sizeof(TValue)));
 
             // if file gets smaller, resize at last
             if (old_capacity > new_capacity)
@@ -562,7 +559,8 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 	template < typename TValue, typename TConfig >
-	inline void _ensureFileIsOpen(String<TValue, MMap<TConfig> > &me) 
+	inline void
+    _ensureFileIsOpen(String<TValue, MMap<TConfig> > &me)
 	{
 //IOREV
 		if (!me)
