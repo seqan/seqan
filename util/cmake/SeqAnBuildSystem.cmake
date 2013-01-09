@@ -225,6 +225,16 @@ macro (seqan_setup_library NAME)
                              ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan.h)
     file (GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*.h)
 
+    # Sort headers for Xcode, ...
+    if (HEADERS)
+        list (SORT HEADERS)
+    endif (HEADERS)
+
+    # Sort super-headers for Xcode, ...
+    if (SUPER_HEADERS)
+        list (SORT SUPER_HEADERS)
+    endif (SUPER_HEADERS)
+
     # Create source groups for Visual Studio (and possibly other IDEs).
     foreach (HEADER ${HEADERS})
         file (RELATIVE_PATH HEADER_REL ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan ${HEADER})
