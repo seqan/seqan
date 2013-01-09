@@ -358,8 +358,8 @@ template <typename TSpec, typename TPos, typename TSize>
 inline void *
 mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappingMode mode)
 {
-    SEQAN_ASSERT_EQ(OPEN_RDONLY, MAP_RDONLY);
-    SEQAN_ASSERT_EQ(OPEN_WRONLY, MAP_WRONLY);
+    SEQAN_ASSERT_EQ((int)OPEN_RDONLY, (int)MAP_RDONLY);
+    SEQAN_ASSERT_EQ((int)OPEN_WRONLY, (int)MAP_WRONLY);
 
     void *addr;
     if (size == 0)
