@@ -1708,7 +1708,8 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                 (*f).pageNo = TPageFrame::UNINITIALIZED;
             }
 //			::std::cerr << *f << ::std::endl;
-            if ((*f).begin) freePage(*f, me.file);
+            if ((*f).begin)
+                freePage(*f, me.file);
   		}
 	}
 

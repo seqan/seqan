@@ -1,3 +1,4 @@
+
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
@@ -198,9 +199,9 @@ struct MMap;
         allocate(me, buffer.begin, size);
         _setCapacity(buffer, size);
         resize(buffer, size);
-//		#ifdef SEQAN_VVERBOSE
-//			::std::cerr << "allocPage: " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
-//		#endif
+		#ifdef SEQAN_VVERBOSE
+			::std::cerr << "allocPage: " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
+		#endif
         return buffer.begin != NULL;
 	}
 
@@ -209,10 +210,10 @@ struct MMap;
     freePage(Buffer<TValue, TSpec> &buffer, T const & me)
     {
 //IOREV _nodoc_
-//		#ifdef SEQAN_VVERBOSE
-//			if ((void*)buffer.begin)
-//				::std::cerr << "freePage:  " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
-//		#endif
+		#ifdef SEQAN_VVERBOSE
+			if ((void*)buffer.begin)
+				::std::cerr << "freePage:  " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
+		#endif
 		deallocate(me, buffer.begin, capacity(buffer));
 		buffer.begin = NULL;
         resize(buffer, 0);
@@ -389,6 +390,8 @@ struct MMap;
 		bool			dirty;		// data needs to be written to disk before freeing
 
 		Buffer():
+            begin(NULL),
+            end(NULL),
 			status(READY),
 			dataStatus(UNINITIALIZED),
             priority(NORMAL_LEVEL),
@@ -511,7 +514,7 @@ struct MMap;
 		allocate(me, tmp, capacity(pf));
 		pf.begin = tmp;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "allocPage: " << ::std::hex << tmp << ::std::dec << ::std::endl;
+			::std::cerr << "allocPage: " << ::std::hex << &pf << '\t' << tmp << ::std::dec << ::std::endl;
 		#endif
 	}
 
@@ -521,7 +524,7 @@ struct MMap;
 //IOREV _nodoc_
 		#ifdef SEQAN_VVERBOSE
 			if ((void*)pf.begin)
-				::std::cerr << "freePage:  " << ::std::hex << (void*)pf.begin << ::std::dec << ::std::endl;
+				::std::cerr << "freePage:  " << ::std::hex << &pf << '\t' << (void*)pf.begin << ::std::dec << ::std::endl;
 		#endif
         nukeCopies(pf.begin);
 		deallocate(me, (TValue*)pf.begin, capacity(pf));
@@ -535,7 +538,7 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readPage:  " << ::std::hex << (void*)pf.begin;
+			::std::cerr << "readPage:  " << ::std::hex << &pf << '\t' << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
 		#endif
 		pf.dirty = false;
@@ -660,7 +663,7 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
+			::std::cerr << "writePage: " << ::std::hex << &pf << '\t' << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
 		#endif
 		pf.status = WRITING;
@@ -681,7 +684,7 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readPage:  " << ::std::hex << (void*)pf.begin;
+			::std::cerr << "readPage:  " << ::std::hex << &pf << '\t' << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
 		#endif
 		pf.dirty = false;
@@ -703,7 +706,7 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writePage: " << ::std::hex << (void*)pf.begin;
+			::std::cerr << "writePage: " << ::std::hex << &pf << '\t' << (void*)pf.begin;
 			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
 		#endif
 		pf.dirty = false;
@@ -1183,6 +1186,12 @@ struct MMap;
 			seqan::erase(pages, endPosition(pages) - 1);
 		}
 
+        inline void _print()
+        {
+            std::cout << std::endl;
+            for(TPos i = 0; i < FRAMES; ++i)
+			    std::cout << pages[i] << std::endl;
+        }
 
 		//////////////////////////////////////////////////////////////////////////////
 		// lru strategy interface
