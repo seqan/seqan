@@ -64,7 +64,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 4294967295);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue(getAnnotation(it).parentId));
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
