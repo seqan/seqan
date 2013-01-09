@@ -118,8 +118,8 @@ writeRecord(TStream & stream,
     if (options & LINEBREAKS)
     {
         // write stream character by character
-        typename Iterator<TSeqString>::Type it = begin(seq);
-        typename Iterator<TSeqString>::Type it_end = end(seq);
+        typename Iterator<TSeqString const, Standard>::Type it = begin(seq);
+        typename Iterator<TSeqString const, Standard>::Type it_end = end(seq);
         for (unsigned long l = 0; it < it_end; ++it)
         {
             res = streamPut(stream, *it);
