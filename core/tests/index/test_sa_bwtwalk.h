@@ -78,7 +78,8 @@ bool compare_sa(TSA1 &sa1, TSA2 &sa2) {
 // If 'saReference' is not empty, it is assumed to be the correct suffix array
 // and compared against.
 template < typename TText, typename TTag, typename TValue>
-bool check_sa_algorithm(TText& text, const False&) {
+bool check_sa_algorithm(TText& text, const False&)
+{
 	String<TValue> sa;
 	resize(sa, length(text));
 //	std::cout << "check_sa_algorithm<" << typeid(TTag).name() << "," << typeid(TValue).name() << ",False> ... " << std::flush;
@@ -91,15 +92,14 @@ bool check_sa_algorithm(TText& text, const False&) {
 // If 'saReference' is not empty, it is assumed to be the correct suffix array
 // and compared against.
 template < typename TText, typename TTag, typename TValue>
-bool check_sa_algorithm(TText& text, const True&) {
-	remove("sa.out");
-	String<TValue, External<> > sa("sa.out");
+bool check_sa_algorithm(TText& text, const True&)
+{
+	String<TValue, External<> > sa;
 	resize(sa, length(text));
 //	std::cout << "check_sa_algorithm<" << typeid(TTag).name() << "," << typeid(TValue).name() << ",True> ... " << std::flush;
 	createSuffixArray(sa, text, TTag());
 //	std::cout << "done" << std::endl;
 	bool ok = isSuffixArray(sa, text);
-	remove("sa.out");
 	return ok;
 }
 
