@@ -358,24 +358,29 @@ template <typename TSpec, typename TPos, typename TSize>
 inline void *
 mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappingMode mode)
 {
+    SEQAN_ASSERT_EQ(OPEN_RDONLY, MAP_RDONLY);
+    SEQAN_ASSERT_EQ(OPEN_WRONLY, MAP_WRONLY);
+
     void *addr;
     if (size == 0)
         return NULL;
+    mode = (FileMappingMode)(mode & (mapping.openMode & OPEN_RDWR));
 
 #ifdef PLATFORM_WINDOWS
 
     DWORD access = ((mode & OPEN_MASK) == OPEN_RDONLY) ? FILE_MAP_READ : FILE_MAP_ALL_ACCESS;
-    LARGE_INTEGER largeSize;
-    largeSize.QuadPart = size;          // 0 = map the whole file
+    LARGE_INTEGER largeOfs;
+    largeOfs.QuadPart = fileOfs;
 
     addr = MapViewOfFile(
         mapping.handle,                 // _In_     HANDLE hFileMappingObject,
         access,                         // _In_     DWORD dwDesiredAccess,
-        largeSize.HighPart,             // _In_     DWORD dwFileOffsetHigh,
-        largeSize.LowPart,              // _In_     DWORD dwFileOffsetLow,
-        size);                          // _In_     SIZE_T dwNumberOfBytesToMap
+        largeOfs.HighPart,              // _In_     DWORD dwFileOffsetHigh,
+        largeOfs.LowPart,               // _In_     DWORD dwFileOffsetLow,
+        size);                          // _In_     SIZE_T dwNumberOfBytesToMap (0 = map the whole file)
 #else
     int prot = 0;
+
     if (mode & OPEN_RDONLY) prot |= PROT_READ;
     if (mode & OPEN_WRONLY) prot |= PROT_WRITE;
 
