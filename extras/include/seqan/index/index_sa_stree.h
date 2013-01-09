@@ -410,7 +410,6 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
 
     TIndex const & index = container(it);
     TSA const & sa = indexSA(index);
-    TText const & text = indexText(index);
 
 #ifdef SEQAN_DEBUG
     std::cout << "current: " << value(it).range.i1 << " " << value(it).range.i2 << std::endl;
@@ -456,6 +455,7 @@ inline bool _goRight(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSp
         TSASize saLen = saRange.i2 - saRange.i1;
         TSearchTreeIterator node(saBegin, saLen);
 
+        TText const & text = indexText(index);
         TSAIterator upperBound = _upperBoundSA(text, node, cLeft, value(it).repLen);
 
         value(it).range.i2 = upperBound - begin(sa, Standard());
@@ -582,11 +582,10 @@ nodeUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec
         desc.range = back(it.history).range;
         desc.lastChar = back(it.history).lastChar;
         desc.repLen = value(it).repLen - 1;
-        typename Size<TIndex>::Type parentRight;
         if (length(it.history) >= 2)
-            parentRight = topPrev(it.history).range.i2;
+            desc.parentRight = topPrev(it.history).range.i2;
         else
-            parentRight = value(it).parentRight;
+            desc.parentRight = value(it).parentRight;
         return desc;
     } else
         return value(it);
