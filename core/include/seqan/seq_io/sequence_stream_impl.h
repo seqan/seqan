@@ -202,6 +202,11 @@ public:
 
             char buffer[4] = { '\0', '\0', '\0', '\0' };
             testStream.get(&buffer[0], 4);
+            if (testStream.eof())
+            {
+                _atEnd = true;
+                return;
+            }
             if (!testStream.good())
             {
                 _fileType = SeqIOFileType_::FILE_TYPE_ERROR;

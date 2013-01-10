@@ -271,6 +271,7 @@ public:
         _fileFormat = _impl->_fileFormat;
         _isGood = _impl->_isGood && (_fileType != SeqIOFileType_::FILE_TYPE_ERROR) &&
                 (_fileFormat != SeqIOFileFormat_::FILE_FORMAT_ERROR);
+        _atEnd = _impl->_atEnd;
     }
 };
 
