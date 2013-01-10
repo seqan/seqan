@@ -49,6 +49,14 @@ SEQAN_BEGIN_TESTSUITE(test_store)
     SEQAN_CALL_TEST(test_store_io_read_ucsc_known_genes);
     SEQAN_CALL_TEST(test_store_io_write_ucsc_known_genes);
 
+    // the gff format
+    SEQAN_CALL_TEST(test_store_io_read_gff);
+    SEQAN_CALL_TEST(test_store_io_write_gff);
+
+    // the gtf format
+    SEQAN_CALL_TEST(test_store_io_read_gtf);
+    SEQAN_CALL_TEST(test_store_io_write_gtf);
+
     SEQAN_CALL_TEST(test_store_io_sam);
 #if SEQAN_HAS_SAMTOOLS
     SEQAN_CALL_TEST(test_store_io_bam_read);
@@ -56,4 +64,3 @@ SEQAN_BEGIN_TESTSUITE(test_store)
 #endif  // #if SEQAN_HAS_SAMTOOLS
 }
 SEQAN_END_TESTSUITE
-

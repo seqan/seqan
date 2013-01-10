@@ -216,14 +216,14 @@ int main()
 ..concept:Concept.Stream
 ..cat:Input/Output
 ..summary:Write a block of bytes from a buffer into a stream.
-..signature:streamWriteChar(stream, source, count)
+..signature:streamWriteBlock(stream, source, count)
 ..param.stream:The stream object to write to.
 ...type:Concept.Stream
 ..param.source:The data to write to the stream.
 ...type:nolink:$char *$
 ..param.count:The number of bytes to write to the stream.
 ...type:nolink:$size_t$
-..returns:$int$ with error code, 0 on success.
+..returns:$int$ with the number of successfully written objects. 
 ..example.text:Copying data from a std::fstream into another std::fstream using SeqAn's stream adaption.
 ..example.code:
 #include <fstream>
