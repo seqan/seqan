@@ -28,10 +28,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // Read Gff
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TChar>
-inline bool
-_parseSkipEntryUntilWhitespace(TFile& file, TChar& c);
-
 template<typename TSpec, typename TConfig>
 inline void
 readAnnotationsFromGFF(FragmentStore<TSpec, TConfig> & me,
