@@ -191,7 +191,7 @@ jumpToPos(Stream<Bgzf> & stream,
         return false;  // Cannot seek to invalid reference.
     if (static_cast<unsigned>(refId) >= length(index._binIndices))
         return false;  // Cannot seek to invalid reference.
-    
+
     // ------------------------------------------------------------------------
     // Compute offset in BGZF file.
     // ------------------------------------------------------------------------
@@ -204,10 +204,15 @@ jumpToPos(Stream<Bgzf> & stream,
     // Retrieve the smallest required offset from the linear index.
     unsigned windowIdx = pos >> 14;  // Linear index consists of 16kb windows.
     __uint64 linearMinOffset = 0;
-    if (windowIdx > length(index._linearIndices[refId]))
-        linearMinOffset = back(index._linearIndices[refId]);
+    if (windowIdx >= length(index._linearIndices[refId]))
+    {
+        if (!empty(index._linearIndices[refId]))
+            linearMinOffset = back(index._linearIndices[refId]);
+    }
     else
+    {
         linearMinOffset = index._linearIndices[refId][windowIdx];
+    }
 
     // Combine candidate bins and smallest required offset from linear index into candidate offset.
     typedef std::set<__uint64> TOffsetCandidates;
@@ -227,6 +232,10 @@ jumpToPos(Stream<Bgzf> & stream,
     }
 
     // Search through candidate offsets, find smallest with a fitting alignment.
+    //
+    // Note that it is not necessarily the first.
+    //
+    // TODO(holtgrew): Can this be optimized similar to how bamtools does it?
     typedef typename TOffsetCandidates::const_iterator TOffsetCandidateIter;
     BamAlignmentRecord record;
     for (TOffsetCandidateIter candIt = offsetCandidates.begin(); candIt != offsetCandidates.end(); ++candIt)
@@ -246,8 +255,9 @@ jumpToPos(Stream<Bgzf> & stream,
             hasAlignments = true;
             if (candIt != offsetCandidates.begin())
                 --candIt;  // Against overlaps, logic taken from BamTools.
-            offset = *candIt;
-            break;
+            if (*candIt < offset)
+                offset = *candIt;
+            //break;
         }
     }
 
