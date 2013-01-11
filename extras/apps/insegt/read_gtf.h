@@ -28,6 +28,20 @@ namespace SEQAN_NAMESPACE_MAIN
 // Read Gtf
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TFile, typename TChar>
+inline bool
+_parseSkipEntryUntilWhitespace(TFile& file, TChar& c)
+{
+    //IOREV _duplicate_ _hasCRef_ there is similar functions; return value unclear
+    if (c== ' ' || c== '\t' || c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) return false;
+		
+    while (!_streamEOF(file)) {
+        c = _streamGet(file);
+        if (c== ' ' || c== '\t' || c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) break;
+    }
+    return true; 
+}
+
 template<typename TSpec, typename TConfig>
 inline void
 readAnnotationsFromGTF(FragmentStore<TSpec, TConfig> & me,
