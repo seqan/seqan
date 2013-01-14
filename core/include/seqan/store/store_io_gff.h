@@ -323,7 +323,7 @@ _readOneAnnotation(
         clear(ctx._value);
 
         // At end of line:  Skip EOL and break.
-        if (!atEnd(reader) && (value(reader) == '\r' or value(reader) == '\n'))
+        if (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
         {
             if (skipLine(reader) != 0)
                 return false;
