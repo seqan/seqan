@@ -557,11 +557,11 @@ inline __int64 positionInFile(BamStream const & bamIO)
 }
 
 // ----------------------------------------------------------------------------
-// Function jumpToPos()
+// Function jumpToRegion()
 // ----------------------------------------------------------------------------
 
 #if SEQAN_HAS_ZLIB
-inline bool jumpToPos(BamStream & bamIO, __int32 refId, __int32 pos, BamIndex<Bai> const & index)
+inline bool jumpToRegion(BamStream & bamIO, __int32 refId, __int32 pos, __int32 posEnd, BamIndex<Bai> const & index)
 {
     if (bamIO._format != BamStream::BAM)
         return false;  // Can only jump in BAM files.
@@ -569,7 +569,7 @@ inline bool jumpToPos(BamStream & bamIO, __int32 refId, __int32 pos, BamIndex<Ba
         return false;  // Can only jump when reading.
 
     BamReader_ * s = static_cast<BamReader_ *>(bamIO._reader.get());
-    return s->jumpToPos(refId, pos, index, bamIO.bamIOContext);
+    return s->jumpToRegion(refId, pos, posEnd, index, bamIO.bamIOContext);
 }
 #endif  // #if SEQAN_HAS_ZLIB
 

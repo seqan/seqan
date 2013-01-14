@@ -77,11 +77,11 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, stream, Bam()), 0);
 
     bool found = true;
-    SEQAN_ASSERT(jumpToPos(stream, found, bamIOContext, 0, 1, baiIndex));
+    SEQAN_ASSERT(jumpToRegion(stream, found, bamIOContext, 0, 1, 10, baiIndex));
     SEQAN_ASSERT(found);
-    SEQAN_ASSERT_NOT(jumpToPos(stream, found, bamIOContext, 1, 1, baiIndex));
-    SEQAN_ASSERT_NOT(found);
-    SEQAN_ASSERT_NOT(jumpToPos(stream, found, bamIOContext, 1, 100, baiIndex));
+    SEQAN_ASSERT(jumpToRegion(stream, found, bamIOContext, 0, 2, 100, baiIndex));
+    SEQAN_ASSERT(found);
+    SEQAN_ASSERT_NOT(jumpToRegion(stream, found, bamIOContext, 1, 1, 10, baiIndex));
     SEQAN_ASSERT_NOT(found);
 }
 

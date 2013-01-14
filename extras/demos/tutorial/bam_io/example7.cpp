@@ -7,9 +7,9 @@
 
 int main(int argc, char const ** argv)
 {
-    if (argc != 6)
+    if (argc != 7)
     {
-        std::cerr << "USAGE: " << argv[0] << " IN.bam IN.bam.bai REF POS COUNT\n";
+        std::cerr << "USAGE: " << argv[0] << " IN.bam IN.bam.bai REF BEGIN END COUNT\n";
         return 1;
     }
 
@@ -53,26 +53,32 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    // Translate POS argument to number, 1-based to 0-based.
-    int pos = 0;
-    if (!seqan::lexicalCast2(pos, argv[4]) || pos <= 0)
+    // Translate BEGIN and END arguments to number, 1-based to 0-based.
+    int beginPos = 0, endPos = 0;
+    if (!seqan::lexicalCast2(beginPos, argv[4]) || beginPos <= 0)
     {
-        std::cerr << "ERROR: Position " << argv[4] << " is invalid.\n";
+        std::cerr << "ERROR: Begin position " << argv[4] << " is invalid.\n";
         return 1;
     }
-    pos -= 1;  // 1-based to 0-based.
+    beginPos -= 1;  // 1-based to 0-based.
+    if (!seqan::lexicalCast2(endPos, argv[5]) || endPos <= 0)
+    {
+        std::cerr << "ERROR: End position " << argv[5] << " is invalid.\n";
+        return 1;
+    }
+    endPos -= 1;  // 1-based to 0-based.
 
     // Translate number of elements to print to number.
     int num = 0;
-    if (!seqan::lexicalCast2(num, argv[5]))
+    if (!seqan::lexicalCast2(num, argv[6]))
     {
-        std::cerr << "ERROR: Count " << argv[5] << " is invalid.\n";
+        std::cerr << "ERROR: Count " << argv[6] << " is invalid.\n";
         return 1;
     }
 
     // Jump the BGZF stream to this position.
     bool hasAlignments = false;
-    if (!jumpToPos(inStream, hasAlignments, context, rId, pos, baiIndex))
+    if (!jumpToRegion(inStream, hasAlignments, context, rId, beginPos, endPos, baiIndex))
     {
         std::cerr << "ERROR: Could not jump to " << argv[3] << ":" << argv[4] << "\n";
         return 1;
@@ -92,10 +98,10 @@ int main(int argc, char const ** argv)
         }
 
         // If we are on the next reference or at the end already then we stop.
-        if (record.rId == -1 || record.rId > rId)
+        if (record.rId == -1 || record.rId > rId || record.pos >= endPos)
             break;
         // If we are left of the selected position then we skip this record.
-        if (record.pos < pos)
+        if (record.pos < beginPos)
             continue;
 
         // Otherwise, we print it to the user.

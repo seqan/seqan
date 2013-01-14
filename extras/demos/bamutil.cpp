@@ -250,9 +250,11 @@ int _dumpRegion(TInStreamOrRecordReader & in, TOutStream & out, Bam const & /*ba
             return 1;
         }
         bool hasAlignments = false;
-        if (!jumpToPos(in, hasAlignments, context, refId, options.regions[i].i2, bamIndex))
+        int beginPos = options.regions[i].i2;
+        int endPos = options.regions[i].i3;
+        if (!jumpToRegion(in, hasAlignments, context, refId, beginPos, endPos, bamIndex))
         {
-            std::cerr << "[ERROR] Could not jump to " << refName << ":" << options.regions[i].i2 << std::endl;
+            std::cerr << "[ERROR] Could not jump to " << refName << ":" << beginPos << "-" << endPos << std::endl;
             return 1;
         }
         if (!hasAlignments)

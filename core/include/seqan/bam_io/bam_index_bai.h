@@ -136,15 +136,16 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function jumpToPos()
+// Function jumpToRegion()
 // ----------------------------------------------------------------------------
 
 /**
-.Function.BamIndex#jumpToPos
+.Function.BamIndex#jumpToRegion
 ..class:Class.BamIndex
 ..cat:BAM I/O
-..signature:jumpToPos(bgzfStream, hasAlignments, bamIOContext, refId, pos, bamIndex)
+..signature:jumpToRegion(bgzfStream, hasAlignments, bamIOContext, refId, pos, posEnd, bamIndex)
 ..summary:Seek in BAM BGZF stream using an index.
+..remark:Note that because of the structure of BAI indices, you cannot simply jump to a position and you have to jump to region.
 ..param.bgzfStream:The BGZF Stream to seek in.
 ...type:Spec.BGZF Stream
 ..param.refId:Reference ID to seek to.
@@ -153,7 +154,9 @@ public:
 ...type:nolink:$bool$
 ..param.bamIOContext:Context to use for loading alignments.
 ...type:Class.BamIOContext
-..param.pos:Zero-based position in the reference.
+..param.pos:Zero-based begin position in the reference.
+...type:nolink:$__int32$
+..param.pos:Zero-based (exclusive, C-style) end position in the reference.
 ...type:nolink:$__int32$
 ..param.bamIndex:The index to use.
 ...type:Class.BamIndex
@@ -179,12 +182,13 @@ _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 
 template <typename TNameStore, typename TNameStoreCache>
 inline bool
-jumpToPos(Stream<Bgzf> & stream,
-          bool & hasAlignments,
-          BamIOContext<TNameStore, TNameStoreCache> /*const*/ & bamIOContext,
-          __int32 refId,
-          __int32 pos,
-          BamIndex<Bai> const & index)
+jumpToRegion(Stream<Bgzf> & stream,
+             bool & hasAlignments,
+             BamIOContext<TNameStore, TNameStoreCache> /*const*/ & bamIOContext,
+             __int32 refId,
+             __int32 pos,
+             __int32 posEnd,
+             BamIndex<Bai> const & index)
 {
     hasAlignments = false;
     if (refId < 0)
@@ -197,9 +201,9 @@ jumpToPos(Stream<Bgzf> & stream,
     // ------------------------------------------------------------------------
     __uint64 offset = MaxValue<__uint64>::VALUE;
 
-    // Retrieve the candidate bin identifiers for [pos, pos+1).
+    // Retrieve the candidate bin identifiers for [pos, posEnd).
     String<__uint16> candidateBins;
-    _baiReg2bins(candidateBins, pos, pos + 1);
+    _baiReg2bins(candidateBins, pos, posEnd);
 
     // Retrieve the smallest required offset from the linear index.
     unsigned windowIdx = pos >> 14;  // Linear index consists of 16kb windows.
@@ -240,31 +244,28 @@ jumpToPos(Stream<Bgzf> & stream,
     BamAlignmentRecord record;
     for (TOffsetCandidateIter candIt = offsetCandidates.begin(); candIt != offsetCandidates.end(); ++candIt)
     {
-        int res = streamSeek(stream, *candIt, SEEK_SET);
-        if (res != 0)
+        if (streamSeek(stream, *candIt, SEEK_SET) != 0)
             return false;  // Error while seeking.
-        res = readRecord(record, bamIOContext, stream, Bam());
-        if (res != 0)
+        if (readRecord(record, bamIOContext, stream, Bam()) != 0)
             return false;  // Error while reading.
-        __int32 endPos = record.pos + getAlignmentLengthInRef(record);
-        // We perform a conversion to __uint32 such that we also stop correctly at the end of a BAM file where all the
-        // unaligned reads are.
-        if ((record.rId == refId && endPos >= pos) || ((__uint32)record.rId > (__uint32)refId))
-        {
-            // Found alignment.
-            hasAlignments = true;
-            if (candIt != offsetCandidates.begin())
-                --candIt;  // Against overlaps, logic taken from BamTools.
-            if (*candIt < offset)
-                offset = *candIt;
-            //break;
-        }
+
+        // std::cerr << "record.pos == " << record.pos << "\n";
+        // __int32 endPos = record.pos + getAlignmentLengthInRef(record);
+        if (record.rId != refId)
+            continue;  // Wrong contig.
+        if (record.pos >= posEnd)
+            continue;  // Cannot overlap with [pos, posEnd).
+
+        // Found an alignment.
+        hasAlignments = true;
+        offset = *candIt;
+        // std::cerr << "offset == " << offset << "\n";
+        break;
     }
 
     if (offset != MaxValue<__uint64>::VALUE)
     {
-        int res = streamSeek(stream, offset, SEEK_SET);
-        if (res != 0)
+        if (streamSeek(stream, offset, SEEK_SET) != 0)
             return false;  // Error while seeking.
     }
     // Finding no overlapping alignment is not an error, hasAlignments is false.
