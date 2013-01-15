@@ -266,6 +266,23 @@ _parseReadIdentifier(TFile & file, TString& str, TChar& c)
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TFile, typename TString, typename TChar>
+inline void
+_parseReadAlnum(TFile & file, TString& str, TChar& c)
+{
+//IOREV _nodoc_ _hasCRef_ _duplicate_ or just:  str = _parseReadIdentifier(file, c) ?
+	// Read identifier
+	appendValue(str, c, Generous());
+	while (!_streamEOF(file)) {
+		c = _streamGet(file);
+        if (!isalnum(c))
+            break;
+		appendValue(str, c, Generous());
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TFile, typename TChar>
 inline String<char>
 _parseReadWord(TFile & file, TChar& c)

@@ -462,3 +462,73 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
         }
     }
 }
+
+// Read AMOS and check for some basic properties.  Then, write out as SAM and verify with the expected result.
+SEQAN_DEFINE_TEST(test_store_io_read_amos)
+{
+    // Get path to input file.
+    seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
+    append(inPath, "/core/tests/store/toy.amos");
+    // Get path to temporary file.
+    seqan::CharString outPathSam = SEQAN_TEMP_FILENAME();
+    seqan::CharString outPathFasta = SEQAN_TEMP_FILENAME();
+
+    // Read in AMOS.
+    seqan::FragmentStore<> store;
+    std::fstream fAmosIn(toCString(inPath), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fAmosIn.good());
+    read(fAmosIn, store, seqan::Amos());
+
+    // Write out contigs and SAM file.
+    std::fstream fSamOut(toCString(outPathSam), std::ios::binary | std::ios::out);
+    write(fSamOut, store, seqan::Sam());
+    fSamOut.close();
+    std::fstream fFastaOut(toCString(outPathFasta), std::ios::binary | std::ios::out);
+    writeContigs(fFastaOut, store, seqan::Fasta());
+    fFastaOut.close();
+
+    // Compare result.
+    SEQAN_ASSERT_EQ(length(store.contigNameStore), 2u);
+    SEQAN_ASSERT_EQ(length(store.readNameStore), 11u);
+    SEQAN_ASSERT_EQ(length(store.matePairNameStore), 1u);
+    SEQAN_ASSERT_EQ(length(store.matePairStore), 1u);
+    SEQAN_ASSERT_EQ(length(store.alignedReadStore), 12u);
+
+    seqan::CharString goldPathSam = SEQAN_PATH_TO_ROOT();
+    append(goldPathSam, "/core/tests/store/amos_to_sam_result.sam");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathSam), toCString(goldPathSam)));
+    seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
+    append(goldPathFasta, "/core/tests/store/amos_to_sam_result.fasta");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
+}
+
+// Read SAM and write out as AMOS.  The resulting AMOS file is compared to a gold standard file.
+SEQAN_DEFINE_TEST(test_store_io_write_amos)
+{
+    // Get path to input files.
+    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
+    append(inPathSam, "/core/tests/store/toy.sam");
+    seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
+    append(inPathFasta, "/core/tests/store/toy.fa");
+    // Get path to temporary file.
+    seqan::CharString outPathAmos = SEQAN_TEMP_FILENAME();
+
+    // Read in SAM and FASTA.
+    seqan::FragmentStore<> store;
+    std::fstream fFastaIn(toCString(inPathFasta), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fFastaIn.good());
+    loadContigs(store, inPathFasta);
+    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fSamIn.good());
+    read(fSamIn, store, seqan::Sam());
+
+    // Write out AMOS file.
+    std::fstream fAmosOut(toCString(outPathAmos), std::ios::binary | std::ios::out);
+    write(fAmosOut, store, seqan::Amos());
+    fAmosOut.close();
+
+    // Compare result.
+    seqan::CharString goldPathAmos = SEQAN_PATH_TO_ROOT();
+    append(goldPathAmos, "/core/tests/store/sam_to_amos_result.amos");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathAmos), toCString(goldPathAmos)));
+}

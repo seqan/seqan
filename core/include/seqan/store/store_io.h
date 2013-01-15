@@ -151,10 +151,10 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
 */
 
 template<typename TFile, typename TSpec, typename TConfig>
-inline void 
+inline void
 read(TFile & file,
 	 FragmentStore<TSpec, TConfig>& fragStore,
-	 Amos) 
+	 Amos)
 {
 //IOREV
 	SEQAN_CHECKPOINT
@@ -174,9 +174,16 @@ read(TFile & file,
 
 	// All maps to mirror file ids to our ids
 	typedef std::map<TId, TSize> TIdMap;
+	// The following maps the library/fragment/read id from AMOS into the fragment store's ids.
 	TIdMap libIdMap;
 	TIdMap frgIdMap;
 	TIdMap readIdMap;
+	// For all paired reads (inferred from FRG), a mapping from the AMOS read id to the paired match id of the one
+	// alignment read from the AMOS file.  Note that this has the assumption that there is only one alignment per read
+	// in the AMOS file.
+	TIdMap readToPairMatchId;
+	// The id of the next pair match.
+	unsigned nextPairMatchId = 0;
 
 	// Parse the file and convert the internal ids
 	TValue c;
@@ -189,7 +196,7 @@ read(TFile & file,
 		if (c == '{') {
 			c = _streamGet(file);
 			String<char> blockIdentifier;
-			_parseReadIdentifier(file, blockIdentifier, c);
+			_parseReadAlnum(file, blockIdentifier, c);
 			_parseSkipLine(file, c);
 
 			// Library block
@@ -200,7 +207,7 @@ read(TFile & file,
 				String<char> eid;
 				while (c != '}') {
 					clear(fieldIdentifier);
-					_parseReadIdentifier(file, fieldIdentifier, c);
+					_parseReadAlnum(file, fieldIdentifier, c);
 					if (fieldIdentifier == "iid") {
 						c = _streamGet(file);
 						_id = _parseReadNumber(file, c);
@@ -235,7 +242,7 @@ read(TFile & file,
 				bool foundRds = false;
 				while (c != '}') {
 					clear(fieldIdentifier);
-					_parseReadIdentifier(file, fieldIdentifier, c);
+					_parseReadAlnum(file, fieldIdentifier, c);
 					if (fieldIdentifier == "iid") {
 						c = _streamGet(file);
 						_id = _parseReadNumber(file, c);
@@ -255,9 +262,13 @@ read(TFile & file,
 						foundRds = true;
 						c = _streamGet(file);
 						matePairEl.readId[0] = _parseReadNumber(file, c);
-						c = _streamGet(file);
+						c = _streamGet(file);  // Skip comma.
 						matePairEl.readId[1] = _parseReadNumber(file, c);
 						_parseSkipLine(file, c);
+						// Store mapping to pair match id.
+						readToPairMatchId[matePairEl.readId[0]] = nextPairMatchId;
+						readToPairMatchId[matePairEl.readId[1]] = nextPairMatchId;
+						nextPairMatchId += 1;
 					} else {
 						_parseSkipLine(file, c);
 					}
@@ -273,11 +284,12 @@ read(TFile & file,
 				String<char> fieldIdentifier;
 				String<char> eid;
 				String<char> qual;
-				TId matePairId = 0;
+				// If matePairId is not updated, this yields to a singleton read below.
+				TId matePairId = TReadStoreElement::INVALID_ID;
 				TReadSeq seq;
 				while (c != '}') {
 					clear(fieldIdentifier);
-					_parseReadIdentifier(file, fieldIdentifier, c);
+					_parseReadAlnum(file, fieldIdentifier, c);
 					if (fieldIdentifier == "iid") {
 						c = _streamGet(file);
 						_id = _parseReadNumber(file, c);
@@ -339,7 +351,7 @@ read(TFile & file,
 						String<TContigPos> gaps;
 						while (c != '}') {
 							clear(fdIdentifier);
-							_parseReadIdentifier(file, fdIdentifier, c);
+							_parseReadAlnum(file, fdIdentifier, c);
 							if (fdIdentifier == "src") {
 								c = _streamGet(file);
 								alignEl.readId = _parseReadNumber(file, c);
@@ -385,8 +397,8 @@ read(TFile & file,
 						if (offset != 0) appendValue(alignEl.gaps, TContigGapAnchor(offset, 0), Generous() );
 						// Internal gaps
 						typedef typename Iterator<String<TContigPos>, Standard>::Type TPosIter;
-						TPosIter posIt = begin(gaps, Standard() ); 
-						TPosIter posItEnd = end(gaps, Standard() );
+						TPosIter posIt = begin(gaps, Standard());
+						TPosIter posItEnd = end(gaps, Standard());
 						TContigPos lastGap = 0;
 						TSize gapLen = 0;
 						TSize totalGapLen = 0;
@@ -395,7 +407,7 @@ read(TFile & file,
 								++gapLen; ++totalGapLen;
 								++diff;
 								lastGap = value(posIt);
-							} 
+							}
 							else if (lastGap == value(posIt)) {
 								++gapLen; ++totalGapLen;
 								++diff;
@@ -410,13 +422,13 @@ read(TFile & file,
 						if (gapLen > 0) appendValue(alignEl.gaps, TContigGapAnchor(offset + lastGap, offset + lastGap + diff), Generous() );
 						// Clipped end
 						if ((clr1 < clr2) && (clr2 < static_cast<TContigPos>(lenRead))) {
-							diff -= (lenRead - clr2);				
+							diff -= (lenRead - clr2);
 							appendValue(alignEl.gaps, TContigGapAnchor(lenRead, lenRead + diff), Generous() );
 						} else if ((clr1 > clr2) && (clr2 > 0)) {
 							diff -= clr2;
 							appendValue(alignEl.gaps, TContigGapAnchor(lenRead, lenRead + diff), Generous() );
 						}
-						
+
 						// Set begin and end position
 						if (clr1 < clr2) {
 							alignEl.beginPos = offsetPos;
@@ -425,13 +437,13 @@ read(TFile & file,
 							alignEl.beginPos = offsetPos + totalGapLen + (clr1 - clr2);
 							alignEl.endPos = offsetPos;
 						}
-		
+
 						// Append new align fragment, note: contigId must still be set
 						alignEl.id = length(fragStore.alignedReadStore);
 						appendValue(fragStore.alignedReadStore, alignEl, Generous() );
 					} else {
 						clear(fieldIdentifier);
-						_parseReadIdentifier(file, fieldIdentifier, c);
+						_parseReadAlnum(file, fieldIdentifier, c);
 						if (fieldIdentifier == "iid") {
 							c = _streamGet(file);
 							//_id = _parseReadNumber(file, c);
@@ -479,9 +491,14 @@ read(TFile & file,
 				TPos gappedPos = 0;
 				bool gapOpen = false;
 				for(;seqIt != seqItEnd; goNext(seqIt), goNext(qualIt), ++gappedPos) {
-					if (value(seqIt) == gapChar) gapOpen = true;				
-					else {
-						if (gapOpen) {
+					if (value(seqIt) == gapChar)
+                    {
+					    gapOpen = true;
+                    }
+					else
+					{
+						if (gapOpen)
+						{
 							appendValue(contigEl.gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous() );
 							gapOpen = false;
 						}
@@ -491,21 +508,21 @@ read(TFile & file,
 						++ungappedPos;
 					}
 				}
-				if (gapOpen) appendValue(contigEl.gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous() );
+				if (gapOpen)
+				    appendValue(contigEl.gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous() );
 
 				// Set the contigId in all aligned reads
 				TSize toAligned = length(fragStore.alignedReadStore);
 				TId newContigId = length(fragStore.contigStore);
-				for(; fromAligned < toAligned; ++fromAligned) {
-					(value(fragStore.alignedReadStore, fromAligned)).contigId = newContigId;
-				}
+				for (; fromAligned < toAligned; ++fromAligned)
+					fragStore.alignedReadStore[fromAligned].contigId = newContigId;
 
 				// Insert the contig
 				appendValue(fragStore.contigStore, contigEl, Generous() );
 				appendValue(fragStore.contigNameStore, eid, Generous() );
 			} else {
 				_parseSkipLine(file, c);
-			}	
+			}
 		} else {
 			_parseSkipLine(file, c);
 		}
@@ -519,41 +536,65 @@ read(TFile & file,
 	for(;mateIt != mateItEnd; goNext(mateIt)) {
 		if (mateIt->libId != TMatePairElement::INVALID_ID) {
 			TIdMapIter libIdPos = libIdMap.find(mateIt->libId);
-			if (libIdPos != libIdMap.end()) mateIt->libId = libIdPos->second;
-			else mateIt->libId = TMatePairElement::INVALID_ID;
+			if (libIdPos != libIdMap.end())
+			    mateIt->libId = libIdPos->second;
+			else
+			    mateIt->libId = TMatePairElement::INVALID_ID;
 		}
 		if (mateIt->readId[0] != TMatePairElement::INVALID_ID) {
 			TIdMapIter readIdPos = readIdMap.find(mateIt->readId[0]);
-			if (readIdPos != readIdMap.end()) mateIt->readId[0] = readIdPos->second;
-			else mateIt->readId[0] = TMatePairElement::INVALID_ID;
+			if (readIdPos != readIdMap.end())
+			    mateIt->readId[0] = readIdPos->second;
+			else
+			    mateIt->readId[0] = TMatePairElement::INVALID_ID;
 		}
 		if (mateIt->readId[1]!= TMatePairElement::INVALID_ID) {
 			TIdMapIter readIdPos = readIdMap.find(mateIt->readId[1]);
-			if (readIdPos != readIdMap.end()) mateIt->readId[1] = readIdPos->second;
-			else mateIt->readId[0] = TMatePairElement::INVALID_ID;
+			if (readIdPos != readIdMap.end())
+			    mateIt->readId[1] = readIdPos->second;
+			else
+			    mateIt->readId[0] = TMatePairElement::INVALID_ID;
 		}
 	}
+
+	// Copy data from frgIdMap into the matePairId members of the readStore.
 	typedef typename Iterator<typename TFragmentStore::TReadStore>::Type TReadIter;
 	TReadIter readIt = begin(fragStore.readStore);
 	TReadIter readItEnd = end(fragStore.readStore);
-	for(;readIt != readItEnd; goNext(readIt)) {
-		if (readIt->matePairId != TReadStoreElement::INVALID_ID) {
+	for (;readIt != readItEnd; goNext(readIt))
+	{
+		if (readIt->matePairId != TReadStoreElement::INVALID_ID)
+		{
 			TIdMapIter mateIdPos = frgIdMap.find(readIt->matePairId);
-			if (mateIdPos != frgIdMap.end()) readIt->matePairId = mateIdPos->second;
-			else readIt->matePairId = TReadStoreElement::INVALID_ID;
+			if (mateIdPos != frgIdMap.end())
+			    readIt->matePairId = mateIdPos->second;
+			else
+			    readIt->matePairId = TReadStoreElement::INVALID_ID;
 		}
 	}
+
+	// Copy data from readIdMap into the pairMatchId entries of the alignedReadStore.
 	TId myPairMatchId = 0;  // Dummy variable to count the matches
 	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
 	TAlignIter alignIt = begin(fragStore.alignedReadStore);
 	TAlignIter alignItEnd = end(fragStore.alignedReadStore);
-	for(;alignIt != alignItEnd; goNext(alignIt)) {
-		if (alignIt->readId != TAlignedElement::INVALID_ID) {
+	for (;alignIt != alignItEnd; goNext(alignIt))
+	{
+		if (alignIt->readId != TAlignedElement::INVALID_ID)
+		{
 			TIdMapIter readIdPos = readIdMap.find(alignIt->readId);
-			if (readIdPos != readIdMap.end()) alignIt->readId = readIdPos->second;
-			else alignIt->readId = TAlignedElement::INVALID_ID;
+			if (readIdPos != readIdMap.end())
+            {
+                //SEQAN_ASSERT(readToPairMatchId.find(alignIt->readId) != readToPairMatchId.end());
+                if (readToPairMatchId.find(alignIt->readId) != readToPairMatchId.end())
+                    alignIt->pairMatchId = readToPairMatchId[alignIt->readId];
+			    alignIt->readId = readIdPos->second;
+            }
+			else
+            {
+			    alignIt->readId = TAlignedElement::INVALID_ID;
+            }
 		}
-		alignIt->pairMatchId = myPairMatchId++;
 	}
 }
 

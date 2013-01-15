@@ -53,6 +53,10 @@ SEQAN_BEGIN_TESTSUITE(test_store)
     SEQAN_CALL_TEST(test_store_io_read_gtf);
     SEQAN_CALL_TEST(test_store_io_write_gtf);
 
+    // Tests for the AMOS format.
+    SEQAN_CALL_TEST(test_store_io_read_amos);
+    SEQAN_CALL_TEST(test_store_io_write_amos);
+
     SEQAN_CALL_TEST(test_store_io_sam);
 }
 SEQAN_END_TESTSUITE
