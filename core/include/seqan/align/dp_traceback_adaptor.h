@@ -47,12 +47,12 @@ namespace seqan {
 template <typename TFile, typename TSeq0Value, typename TSeq1Value>
 inline void _writeTraceSegmentToFile(TFile & file, TSeq0Value const & seq0Val, TSeq1Value const & seq1Val)
 {
-    _streamPut(file, '(');
-    _streamPut(file, seq0Val);
-    _streamPut(file, ',');
-    _streamPut(file, seq1Val);
-    _streamPut(file, ')');
-    _streamPut(file, '\n');
+    streamPut(file, '(');
+    streamPut(file, seq0Val);
+    streamPut(file, ',');
+    streamPut(file, seq1Val);
+    streamPut(file, ')');
+    streamPut(file, '\n');
 }
 
 // ----------------------------------------------------------------------------
