@@ -73,7 +73,7 @@ void goNext(TFile & file, CGViz) {
 //IOREV _notinlined_ purpose not clear to me
 	SEQAN_CHECKPOINT;
     (void) file; // When compiled without assertions.
-	SEQAN_ASSERT_NOT(_streamEOF(file));
+	SEQAN_ASSERT_NOT(streamEof(file));
 	
 	return;
 }
@@ -84,174 +84,178 @@ void goNext(TFile & file, CGViz) {
 // write
 //////////////////////////////////////////////////////////////////////////////
 
+// Returns status code.
+
 template <typename TFile, typename TStringContainer, typename TSource, typename TSpec>
-void _writeImpl(TFile& target, Align<TSource, TSpec>& align, TStringContainer& ids, CGViz) {
-//IOREV _batchreading_ _notinlined_ actually writing not reading
-	SEQAN_CHECKPOINT
+int _writeImpl(TFile& target, Align<TSource, TSpec>& align, TStringContainer& ids, CGViz)
+{
+    typedef Align<TSource, TSpec> const TAlign;
+    typedef typename Row<TAlign>::Type TRow;
+    typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
+    typedef typename Position<TAlign>::Type TPosition;
+    TRowsPosition row_count = length(rows(align));
+    if (row_count < 2)
+        return 1;
 
-	typedef Align<TSource, TSpec> const TAlign;
-	typedef typename Row<TAlign>::Type TRow;
-	typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
-	typedef typename Position<TAlign>::Type TPosition;
-	TRowsPosition row_count = length(rows(align));
-	if (row_count < 2) return;
+    unsigned int pair=1;
+    unsigned int count=0;
+    for (TRowsPosition i=0;i<row_count-1;++i)
+    {
+        for (TRowsPosition j=i+1;j<row_count;++j)
+        {
+            
+            // Print header
+            streamPut(target, "{DATA dat"); 
+            streamPut(target, pair);
+            streamPut(target, '\n');
+            streamPut(target, "[__GLOBAL__] dimension=2:\n"); 
+                        
+            TPosition begin_ = beginPosition(cols(align));
+            TPosition end_ = endPosition(cols(align));
+        
+            bool match = false;
+            while(begin_ < end_)
+            {
+                if ((row(align, i)[begin_]==row(align, j)[begin_]) && (row(align, i)[begin_]!='-'))
+                {
+                    if (!match)
+                    {
+                        match = true;
+                        streamPut(target, toSourcePosition(row(align,i),begin_+1));
+                        streamPut(target, ' ');
+                        streamPut(target, toSourcePosition(row(align,j),begin_+1));
+                        streamPut(target, ' ');
+                    }
+                }
+                if ((row(align, i)[begin_]!=row(align, j)[begin_]) || (row(align, i)[begin_]=='-') ||
+                    (row(align, j)[begin_]=='-'))
+                {
+                    if (match)
+                    {
+                        streamPut(target, toSourcePosition(row(align,i),begin_));
+                        streamPut(target, ' ');
+                        streamPut(target, toSourcePosition(row(align,j),begin_));
+                        streamPut(target, '\n');
+                        match = false;
+                    }
+                }
+                begin_++;
+            }
+            if (match)
+            {
+                streamPut(target, toSourcePosition(row(align,i),begin_));
+                streamPut(target, ' ');
+                streamPut(target, toSourcePosition(row(align,j),begin_));
+                streamPut(target, '\n');
+                match = false;
+            }
+            streamPut(target, '}');
+            streamPut(target, '\n');
 
-	unsigned int pair=1;
-	unsigned int count=0;
-	for(TRowsPosition i=0;i<row_count-1;++i) {
-		for(TRowsPosition j=i+1;j<row_count;++j) {
-			
-			// Print header
-			_streamWrite(target, "{DATA dat"); 
-			_streamPutInt(target, pair);
-			_streamPut(target, '\n');
-			_streamWrite(target, "[__GLOBAL__] dimension=2:\n"); 
-						
-			TPosition begin_ = beginPosition(cols(align));
-			TPosition end_ = endPosition(cols(align));
-		
-			bool match = false;
-			while(begin_ < end_) {
-				if ((row(align, i)[begin_]==row(align, j)[begin_]) && (row(align, i)[begin_]!='-')) {
-					if (!match) {
-						match=true;
-						_streamPutInt(target, toSourcePosition(row(align,i),begin_+1));
-						_streamPut(target, ' ');
-						_streamPutInt(target, toSourcePosition(row(align,j),begin_+1));
-						_streamPut(target, ' ');
-					}
-				}
-				if ((row(align, i)[begin_]!=row(align, j)[begin_]) || (row(align, i)[begin_]=='-') || (row(align, j)[begin_]=='-')) {
-					if (match) {
-						_streamPutInt(target, toSourcePosition(row(align,i),begin_));
-						_streamPut(target, ' ');
-						_streamPutInt(target, toSourcePosition(row(align,j),begin_));
-						_streamPut(target, '\n');
-						match=false;
-					}
-				}
-				begin_++;
-			}
-			if (match) {
-				_streamPutInt(target, toSourcePosition(row(align,i),begin_));
-				_streamPut(target, ' ');
-				_streamPutInt(target, toSourcePosition(row(align,j),begin_));
-				_streamPut(target, '\n');
-				match=false;
-			}
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
+            // Write footer
+            streamPut(target, "{GLYPH Glyph");
+            streamPut(target, pair);
+            streamPut(target, '\n');
+            streamPut(target, "drawerName=Lines\n");
+            streamPut(target, "lineWidth=3\n");
+            streamPut(target, '}');
+            streamPut(target, '\n');
+            streamPut(target, "{PANE Pane");
+            streamPut(target, pair);
+            streamPut(target, '\n');
+            streamPut(target, "uLabel=");
+            streamPut(target, getValue(ids,i));
+            streamPut(target, '\n');
+            streamPut(target, "uStop=");
+            streamPut(target, length(source(row(align,i))));
+            streamPut(target, '\n');
+            streamPut(target, "vLabel=");
+            streamPut(target, getValue(ids,j));
+            streamPut(target, '\n');
+            streamPut(target, "vStop=");
+            streamPut(target, length(source(row(align,j))));
+            streamPut(target, '\n');
+            streamPut(target, '}');
+            streamPut(target, '\n');
+            streamPut(target, "{WINDOW Window");
+            streamPut(target, pair);
+            streamPut(target, '\n');
+            streamPut(target, '}');
+            streamPut(target, '\n');
+            streamPut(target, "{FEEDER Feeder<");
+            streamPut(target, pair);
+            streamPut(target, '>');
+            streamPut(target, ' ');
+            streamPut(target, count);
+            streamPut(target, ' ');
+            streamPut(target, count+1);
+            streamPut(target, '\n');
+            streamPut(target, '}');
+            streamPut(target, '\n');
+            ++count;
+            streamPut(target, "{THREADER Threader<");
+            streamPut(target, pair);
+            streamPut(target, '>');
+            streamPut(target, ' ');
+            streamPut(target, count);
+            streamPut(target, ' ');
+            streamPut(target, count+1);
+            streamPut(target, '\n');
+            streamPut(target, '}');
+            streamPut(target, '\n');
+            ++count;
+            streamPut(target, "{ANCHOR Anchor<");
+            streamPut(target, pair);
+            streamPut(target, '>');
+            streamPut(target, ' ');
+            streamPut(target, count);
+            streamPut(target, ' ');
+            streamPut(target, count+1);
+            streamPut(target, '\n');
+            streamPut(target, '}');
+            streamPut(target, '\n');
+            count+=2;
+            ++pair;
+        }
+    }
 
-			// Write footer
-			_streamWrite(target, "{GLYPH Glyph");
-			_streamPutInt(target, pair);
-			_streamPut(target, '\n');
-			_streamWrite(target, "drawerName=Lines\n");
-			_streamWrite(target, "lineWidth=3\n");
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
-			_streamWrite(target, "{PANE Pane");
-			_streamPutInt(target, pair);
-			_streamPut(target, '\n');
-			_streamWrite(target, "uLabel=");
-			_streamWrite(target, getValue(ids,i));
-			_streamPut(target, '\n');
-			_streamWrite(target, "uStop=");
-			_streamPutInt(target, length(source(row(align,i))));
-			_streamPut(target, '\n');
-			_streamWrite(target, "vLabel=");
-			_streamWrite(target, getValue(ids,j));
-			_streamPut(target, '\n');
-			_streamWrite(target, "vStop=");
-			_streamPutInt(target, length(source(row(align,j))));
-			_streamPut(target, '\n');
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
-			_streamWrite(target, "{WINDOW Window");
-			_streamPutInt(target, pair);
-			_streamPut(target, '\n');
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
-			_streamWrite(target, "{FEEDER Feeder<");
-			_streamPutInt(target, pair);
-			_streamPut(target, '>');
-			_streamPut(target, ' ');
-			_streamPutInt(target, count);
-			_streamPut(target, ' ');
-			_streamPutInt(target, count+1);
-			_streamPut(target, '\n');
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
-			++count;
-			_streamWrite(target, "{THREADER Threader<");
-			_streamPutInt(target, pair);
-			_streamPut(target, '>');
-			_streamPut(target, ' ');
-			_streamPutInt(target, count);
-			_streamPut(target, ' ');
-			_streamPutInt(target, count+1);
-			_streamPut(target, '\n');
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
-			++count;
-			_streamWrite(target, "{ANCHOR Anchor<");
-			_streamPutInt(target, pair);
-			_streamPut(target, '>');
-			_streamPut(target, ' ');
-			_streamPutInt(target, count);
-			_streamPut(target, ' ');
-			_streamPutInt(target, count+1);
-			_streamPut(target, '\n');
-			_streamPut(target, '}');
-			_streamPut(target, '\n');
-			count+=2;
-			++pair;
-		}
-	}
+    return streamError(target);
 }
 
 
 //____________________________________________________________________________
 
 template <typename TFile, typename TSource, typename TSpec>
-void write(TFile & file, Align<TSource, TSpec>& align, CGViz) {
-//IOREV _notinlined_
-	SEQAN_CHECKPOINT
-	_writeImpl(file, align, String<String<char> >(), CGViz());
+int write(TFile & file, Align<TSource, TSpec>& align, CGViz)
+{
+	return _writeImpl(file, align, String<String<char> >(), CGViz());
 }
 
 //____________________________________________________________________________
 
 template <typename TFile, typename TStringContainer, typename TSource, typename TSpec>
-void write(TFile & file, Align<TSource, TSpec> & align, TStringContainer& ids, CGViz) {
-//IOREV _notinlined_
-	SEQAN_CHECKPOINT
-	_writeImpl(file, align, ids, CGViz());
+int write(TFile & file, Align<TSource, TSpec> & align, TStringContainer& ids, CGViz)
+{
+    return _writeImpl(file, align, ids, CGViz());
 }
 
 
+// TODO(holtgrew): Is this still necessary? I believe this is a VS2005 issue.
 //VisualC++ const array bug workaround
 template <typename TFile, typename TStringContainer, typename TSource, typename TSpec>
-void write(TFile & file, Align<TSource, TSpec>* align, TStringContainer & ids, CGViz) {
-//IOREV _notinlined_
-	SEQAN_CHECKPOINT
-	_writeImpl(file, align, ids, CGViz());
+int write(TFile & file, Align<TSource, TSpec>* align, TStringContainer & ids, CGViz)
+{
+	return _writeImpl(file, align, ids, CGViz());
 }
 
 //____________________________________________________________________________
 
 template <typename TFile, typename TStringContainer, typename TSource, typename TSpec, typename TMeta>
-void write(TFile & file, Align<TSource, TSpec> & align, TStringContainer& ids, TMeta &, CGViz) {
-//IOREV _notinlined_
-	SEQAN_CHECKPOINT
-	_writeImpl(file, align, ids, CGViz());
+int write(TFile & file, Align<TSource, TSpec> & align, TStringContainer& ids, TMeta &, CGViz)
+{
+	return _writeImpl(file, align, ids, CGViz());
 }
 
-
-
-//////////////////////////////////////////////////////////////////////////////
-} //namespace SEQAN_NAMESPACE_MAIN
-
-//////////////////////////////////////////////////////////////////////////////
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

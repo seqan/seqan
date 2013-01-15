@@ -896,7 +896,13 @@ SEQAN_DEFINE_TEST(test_file_cgviz)
 	FILE * file_2 = fopen(buffer, "w");
 	write(file_2, align, str_ids1, CGViz());
 	fclose(file_2);
-    
+
+    //____________________________________________________________________________
+    // Compare resulting files.
+    CharString goldCGVizPath = SEQAN_PATH_TO_ROOT();
+    append(goldCGVizPath, "/core/tests/file/fasta_align_to_cgviz_result.txt");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(buffer), toCString(goldCGVizPath)));
+
     // To read this file in CGViz:
     // java -jar CGViz-1.0beta1.jar -i <data_file>
     //
