@@ -346,18 +346,20 @@ dumpAlignment(TFile & target, Align<TSource, TSpec> const & source)
 	// Print sequences
 	for(TRowsPosition i=0;i<row_count;++i) {
 		if (i == 0)
-			_streamWrite(target, "#Read:   ");
+			streamPut(target, "#Read:   ");
 		else
-			_streamWrite(target, "#Genome: ");
+			streamPut(target, "#Genome: ");
 		TRow& row_ = row(source, i);
 		typedef typename Iterator<typename Row<TAlign>::Type const>::Type TIter;
 		TIter begin1_ = iter(row_, begin_);
 		TIter end1_ = iter(row_, end_);
 		for (; begin1_ != end1_; ++begin1_) {
-			if (isGap(begin1_)) _streamPut(target, gapValue<char>());
-			else _streamPut(target, *begin1_);
+			if (isGap(begin1_))
+			    streamPut(target, gapValue<char>());
+			else
+			    streamPut(target, *begin1_);
 		}
-		_streamPut(target, '\n');
+		streamPut(target, '\n');
 	}
 }
 
@@ -885,7 +887,7 @@ void dumpMatches(
 				Dna5String	currGenome;
 				
 				// iterate over genome sequences
-				for(; !_streamEOF(gFile); ++curReadId)
+				for(; !streamEof(gFile); ++curReadId)
 				{
 					read(gFile, currGenome, Fasta());			// read Fasta sequence
 					while(it != itEnd && (*it).contigId == curReadId)
