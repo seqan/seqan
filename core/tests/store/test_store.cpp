@@ -39,10 +39,6 @@
 #include <seqan/basic.h>
 #include "test_store_io.h"
 
-#if SEQAN_HAS_SAMTOOLS
-#include "test_store_io_bam.h"
-#endif  // #if SEQAN_HAS_SAMTOOLS
-
 SEQAN_BEGIN_TESTSUITE(test_store)
 {
     // the UCSC knownGene format
@@ -58,9 +54,5 @@ SEQAN_BEGIN_TESTSUITE(test_store)
     SEQAN_CALL_TEST(test_store_io_write_gtf);
 
     SEQAN_CALL_TEST(test_store_io_sam);
-#if SEQAN_HAS_SAMTOOLS
-    SEQAN_CALL_TEST(test_store_io_bam_read);
-    SEQAN_CALL_TEST(test_store_io_bam_write);
-#endif  // #if SEQAN_HAS_SAMTOOLS
 }
 SEQAN_END_TESTSUITE

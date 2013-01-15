@@ -57,11 +57,6 @@ typedef Tag<Sam_> const Sam;
 // CIGAR struct
 //////////////////////////////////////////////////////////////////////////////
 
-#if SEQAN_HAS_SAMTOOLS
-    struct FromBam_;
-    typedef Tag<FromBam_> FromBam;
-#endif  // #if SEQAN_HAS_SAMTOOLS
-    
 /**
 .Class.CigarElement
 ..cat:Fragment Store
@@ -109,15 +104,6 @@ typedef Tag<Sam_> const Sam;
         CigarElement(TOperation o, TCount c):
             operation(o),
             count(c) {}
-
-#if SEQAN_HAS_SAMTOOLS
-        CigarElement(__uint32 bamCigarElement, FromBam const &)
-        {
-            SEQAN_ASSERT_LEQ(bamCigarElement & BAM_CIGAR_MASK, 8u);
-            operation = "MIDNSHP=X"[bamCigarElement & BAM_CIGAR_MASK];
-            count = bamCigarElement >> 4;
-        }
-#endif  // #if SEQAN_HAS_SAMTOOLS
     };
 
 template <typename TOperation, typename TCount>
