@@ -246,5 +246,29 @@ SEQAN_DEFINE_TEST(test_consensus_host_weightedconsensus_score)
     testConsensusHost<TScore>();
 }
 
+SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
+{
+    // Get path to input files.
+    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
+    append(inPathSam, "/core/tests/consensus/toy.sam");
+    // Get path to temporary file.
+    seqan::CharString outPathCgb = SEQAN_TEMP_FILENAME();
+
+    // Read in SAM and FASTA.
+    seqan::FragmentStore<> store;
+    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fSamIn.good());
+    read(fSamIn, store, seqan::Sam());
+
+    // Write out CGB file.
+    std::fstream fCgbOut(toCString(outPathCgb), std::ios::binary | std::ios::out);
+    _writeCeleraCgb(fCgbOut, store);
+    fCgbOut.close();
+
+    // Compare result.
+    seqan::CharString goldPathCgb = SEQAN_PATH_TO_ROOT();
+    append(goldPathCgb, "/core/tests/consensus/sam_to_cgb_result.cgb");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathCgb), toCString(goldPathCgb)));
+}
 
 #endif  // #ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_

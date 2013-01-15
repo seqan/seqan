@@ -1788,19 +1788,18 @@ _writeCeleraFrg(TFile& target,
 
 //////////////////////////////////////////////////////////////////////////////
 
+// Writes out the first contig only.
 
+// TODO(holtgrew): This is only used in seqcons, should it go into app?
 template<typename TFile, typename TSpec, typename TConfig>
-inline void 
+inline int
 _writeCeleraCgb(TFile& target,
-				FragmentStore<TSpec, TConfig>& fragStore) 
+				FragmentStore<TSpec, TConfig>& fragStore)
 {
-//IOREV _nodoc_
-	SEQAN_CHECKPOINT
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
 	typedef typename Id<TFragmentStore>::Type TId;
 	typedef typename TFragmentStore::TReadPos TReadPos;
-
 
 	// Write the first contig
 	TId contigId = 0;
@@ -1809,46 +1808,48 @@ _writeCeleraCgb(TFile& target,
 	sortAlignedReads(fragStore.alignedReadStore, SortBeginPos());
 
 	// Write Header
-	_streamWrite(target,"{IUM\nacc:0\nsrc:\ngen> @@ [0,0]\n.\ncov:0.000\nsta:X\nfur:X\nabp:0\nbbp:0\n");
-	_streamWrite(target,"len:");
-	_streamPutInt(target, length((value(fragStore.contigStore, contigId)).seq));
-	_streamPut(target, '\n');
-	_streamWrite(target,"cns:\n.\nqlt:\n.\nfor:0\n");
-	_streamWrite(target,"nfr:");
-	_streamPutInt(target, length(fragStore.readStore));
-	_streamPut(target, '\n');
+	streamPut(target, "{IUM\nacc:0\nsrc:\ngen> @@ [0,0]\n.\ncov:0.000\nsta:X\nfur:X\nabp:0\nbbp:0\n");
+	streamPut(target, "len:");
+	streamPut(target, length((value(fragStore.contigStore, contigId)).seq));
+	streamWriteChar(target, '\n');
+	streamPut(target, "cns:\n.\nqlt:\n.\nfor:0\n");
+	streamPut(target, "nfr:");
+	streamPut(target, length(fragStore.readStore));
+	streamPut(target, '\n');
 
 	// Write reads
 	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
 	TAlignIter alignIt = begin(fragStore.alignedReadStore);
 	TAlignIter alignItEnd = end(fragStore.alignedReadStore);
 	TSize offsetLeft = _min(alignIt->beginPos, alignIt->endPos);
-	for(;alignIt != alignItEnd; goNext(alignIt)) {
-		if (contigId != alignIt->contigId) continue;
-		_streamWrite(target,"{IMP\n");
-		_streamWrite(target,"typ:");
-		_streamPut(target, 'R');
-		_streamPut(target, '\n');
-		_streamWrite(target,"mid:");
-		_streamPutInt(target, alignIt->readId + 1);
-		_streamPut(target, '\n');
-		_streamWrite(target,"con:");
-		_streamPut(target, '0');
-		_streamPut(target, '\n');
-		_streamWrite(target,"pos:");
-		_streamPutInt(target, alignIt->beginPos - offsetLeft);
-		_streamPut(target, ',');
-		_streamPutInt(target, alignIt->endPos - offsetLeft);
-		_streamPut(target, '\n');
-		_streamWrite(target,"dln:0\n");
-		_streamWrite(target,"del:\n");
-		_streamWrite(target,"}\n");
+	for (;alignIt != alignItEnd; goNext(alignIt))
+    {
+		if (contigId != alignIt->contigId)
+            continue;
+		streamPut(target, "{IMP\n");
+		streamPut(target, "typ:");
+		streamPut(target, 'R');
+		streamPut(target, '\n');
+		streamPut(target, "mid:");
+		streamPut(target, alignIt->readId + 1);
+		streamPut(target, '\n');
+		streamPut(target, "con:");
+		streamPut(target, '0');
+		streamPut(target, '\n');
+		streamPut(target, "pos:");
+		streamPut(target, alignIt->beginPos - offsetLeft);
+		streamPut(target, ',');
+		streamPut(target, alignIt->endPos - offsetLeft);
+		streamPut(target, '\n');
+		streamPut(target, "dln:0\n");
+		streamPut(target, "del:\n");
+		streamPut(target, "}\n");
 	}
-	_streamWrite(target,"}\n");
+	streamPut(target, "}\n");
+
+    return streamError(target);
 }
 
-
-
-}// namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

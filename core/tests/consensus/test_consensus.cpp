@@ -60,11 +60,6 @@ SEQAN_BEGIN_TESTSUITE(test_consensus) {
     SEQAN_CALL_TEST(test_consensus_value_fractional_score);
     SEQAN_CALL_TEST(test_consensus_value_weightedconsensus_score);
 
-    // Yep, no tests here :(
-
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/consensus/consensus_base.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/consensus/consensus_library.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/consensus/consensus_realign.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/consensus/consensus_score.h");
+    SEQAN_CALL_TEST(test_consensus_write_celera_cgb);
 }
 SEQAN_END_TESTSUITE
