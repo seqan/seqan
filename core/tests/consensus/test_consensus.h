@@ -271,4 +271,57 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathCgb), toCString(goldPathCgb)));
 }
 
+SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
+{
+    // Get path to input files.
+    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
+    append(inPathSam, "/core/tests/consensus/toy.sam");
+    // Get path to temporary file.
+    seqan::CharString outPathFrg = SEQAN_TEMP_FILENAME();
+
+    // Read in SAM and FASTA.
+    seqan::FragmentStore<> store;
+    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fSamIn.good());
+    read(fSamIn, store, seqan::Sam());
+
+    // Write out FRG file.
+    std::fstream fFrgOut(toCString(outPathFrg), std::ios::binary | std::ios::out);
+    _writeCeleraFrg(fFrgOut, store);
+    fFrgOut.close();
+
+    // Compare result.
+    seqan::CharString goldPathFrg = SEQAN_PATH_TO_ROOT();
+    append(goldPathFrg, "/core/tests/consensus/sam_to_frg_result.frg");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFrg), toCString(goldPathFrg)));
+}
+
+SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
+{
+    // Get path to input files.
+    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
+    append(inPathSam, "/core/tests/consensus/toy.sam");
+    seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
+    append(inPathFasta, "/core/tests/consensus/toy.fa");
+    // Get path to temporary file.
+    seqan::CharString outPathFasta = SEQAN_TEMP_FILENAME();
+
+    // Read in SAM and FASTA.
+    seqan::FragmentStore<> store;
+    SEQAN_ASSERT(loadContigs(store, toCString(inPathFasta)));
+    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fSamIn.good());
+    read(fSamIn, store, seqan::Sam());
+
+    // Write out FASTA file.
+    std::fstream fFastaOut(toCString(outPathFasta), std::ios::binary | std::ios::out);
+    write(fFastaOut, store, seqan::FastaReadFormat());
+    fFastaOut.close();
+
+    // Compare result.
+    seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
+    append(goldPathFasta, "/core/tests/consensus/sam_to_fasta_read_result.fa");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
+}
+
 #endif  // #ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_

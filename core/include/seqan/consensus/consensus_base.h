@@ -1149,13 +1149,12 @@ typedef Tag<FastaReadFormat_> const FastaReadFormat;
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TSpec, typename TConfig>
-inline void 
+inline int
 write(TFile & file,
 	  FragmentStore<TSpec, TConfig>& fragStore,
 	  FastaReadFormat) 
 {
 //IOREV _nodoc_ what has this got to do with consensus? why is it here?
-	SEQAN_CHECKPOINT
 	// Basic types
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
@@ -1193,18 +1192,21 @@ write(TFile & file,
 			TSize window_end = column + winSize;
 			if (window_end >= len) window_end = len;
 			// Position
-			for(int i = 0; i<offset - 2; ++i) _streamPut(file,' ');
-			_streamWrite(file,"Pos: ");
-			_streamPutInt(file, column);
-			_streamPut(file,'\n');
+			for(int i = 0; i<offset - 2; ++i) streamWriteChar(file, ' ');
+			streamWriteBlock(file, "Pos: ", 5);
+			streamPut(file, column);
+			streamWriteChar(file, '\n');
 			// Ruler
-			for(int i = 0; i<offset + 3; ++i) _streamPut(file,' ');
+			for(int i = 0; i<offset + 3; ++i) streamWriteChar(file, ' ');
 			for(TSize local_col = 1; local_col<window_end - column + 1; ++local_col) {
-				if ((local_col % 10)==0) _streamPut(file, ':');
-				else if ((local_col % 5)==0) _streamPut(file, '.');
-				else _streamPut(file, ' ');
+				if ((local_col % 10)==0)
+                    streamWriteChar(file, ':');
+				else if ((local_col % 5)==0)
+                    streamWriteChar(file, '.');
+				else
+                    streamWriteChar(file, ' ');
 			}
-			_streamPut(file,'\n');
+			streamWriteChar(file, '\n');
 			// Matrix
 			for(TSize row = 0; row<maxCoverage; ++row) {
 				TSize tmp = row;
@@ -1213,36 +1215,40 @@ write(TFile & file,
 					tmp /= 10;
 					++off;
 				}
-				for(int i = 0; i<offset - off; ++i) _streamPut(file,' ');
-				_streamPutInt(file, row);
-				_streamPut(file,':');
-				_streamPut(file,' ');
+				for(int i = 0; i<offset - off; ++i) streamWriteChar(file, ' ');
+				streamPut(file, row);
+				streamWriteChar(file, ':');
+				streamWriteChar(file, ' ');
 				for(TSize local_col = column; local_col<window_end; ++local_col) {
-					_streamPut(file, mat[row * len + local_col]);
+					streamWriteChar(file, mat[row * len + local_col]);
 					if (mat[row * len + local_col] != '.') ++coverage[local_col];
 				}
-				_streamPut(file,'\n');
+				streamWriteChar(file, '\n');
 			}
-			_streamPut(file,'\n');
+			streamWriteChar(file, '\n');
 	
 			// Consensus
-			for(int i = 0; i<offset; ++i) _streamPut(file,' ');
-			_streamWrite(file,"C: ");
+			for(int i = 0; i<offset; ++i)
+                streamWriteChar(file, ' ');
+			streamWriteBlock(file, "C: ", 3);
 			for(unsigned int local_col = column; local_col<window_end; ++local_col, ++itCons) 
-				_streamPut(file, *itCons);
-			_streamPut(file,'\n');
-			for(int i = 0; i<offset-1; ++i) _streamPut(file,' ');
-			_streamWrite(file,">2: ");
+				streamWriteChar(file, *itCons);
+			streamWriteChar(file, '\n');
+			for(int i = 0; i<offset-1; ++i)
+                streamWriteChar(file, ' ');
+			streamWriteBlock(file, ">2: ", 4);
 			for(unsigned int local_col = column; local_col<window_end; ++local_col) {
-				if (coverage[local_col] > 2) _streamPut(file, gappedConsensus[local_col]);
-				else _streamPut(file, gapChar);
+				if (coverage[local_col] > 2)
+                    streamWriteChar(file, gappedConsensus[local_col]);
+				else
+                    streamWriteChar(file, gapChar);
 			}
-			_streamPut(file,'\n');
-			_streamPut(file,'\n');
+			streamWriteChar(file, '\n');
+			streamWriteChar(file, '\n');
 			column+=winSize;
 		}
-		_streamPut(file,'\n');
-		_streamPut(file,'\n');
+		streamWriteChar(file, '\n');
+		streamWriteChar(file, '\n');
 
 		// Print all aligned reads belonging to this contig
 
@@ -1273,29 +1279,34 @@ write(TFile & file,
 		for(TSize iCount = 0;alignIt != alignItEnd; ++alignIt, ++iCount) {
 
 			// Print all reads
-			_streamWrite(file,"typ:");
-			if (!noNamesPresent) {
-				_streamPut(file,'R');
-				_streamPutInt(file, iCount);
-			} else _streamWrite(file, fragStore.readNameStore[alignIt->readId]);
-			_streamPut(file,'\n');
-			_streamWrite(file,"seq:");
-			_streamWrite(file, fragStore.readSeqStore[alignIt->readId]);
-			_streamPut(file,'\n');
-			_streamWrite(file,"Pos:");
-			_streamPutInt(file, alignIt->beginPos);
-			_streamPut(file,',');
-			_streamPutInt(file, alignIt->endPos);
-			_streamPut(file,'\n');
+			streamWriteBlock(file, "typ:", 4);
+			if (!noNamesPresent)
+            {
+				streamWriteChar(file, 'R');
+				streamPut(file, iCount);
+			}
+            else
+            {
+                streamPut(file, fragStore.readNameStore[alignIt->readId]);
+            }
+			streamWriteChar(file, '\n');
+			streamWriteBlock(file, "seq:", 4);
+			streamPut(file, fragStore.readSeqStore[alignIt->readId]);
+			streamWriteChar(file, '\n');
+			streamWriteBlock(file, "Pos:", 4);
+			streamPut(file, alignIt->beginPos);
+			streamWriteChar(file, ',');
+			streamPut(file, alignIt->endPos);
+			streamWriteChar(file, '\n');
 #ifndef CELERA_OFFSET
 			TSize begClr = 0;
 			TSize endClr = 0;
 			getClrRange(fragStore, *alignIt, begClr, endClr);
-			_streamWrite(file,"clr:");
-			_streamPutInt(file, begClr);
-			_streamPut(file,',');
-			_streamPutInt(file, endClr);
-			_streamPut(file,'\n');
+			streamWriteBlock(file, "clr:", 4);
+			streamPut(file, begClr);
+			streamWriteChar(file, ',');
+			streamPut(file, endClr);
+			streamWriteChar(file, '\n');
 #endif
 			std::stringstream gapCoords;
 			TSize letterCount = 0;
@@ -1306,16 +1317,17 @@ write(TFile & file,
 					gapCoords << letterCount << ' ';
 				} else ++letterCount;
 			}
-			_streamWrite(file,"dln:");
-			_streamPutInt(file, gapCount);
-			_streamPut(file,'\n');
-			_streamWrite(file,"del:");
-			_streamWrite(file, gapCoords.str().c_str());
-			_streamPut(file,'\n');
-			_streamPut(file,'\n');
-
+			streamWriteBlock(file, "dln:", 4);
+			streamPut(file, gapCount);
+			streamWriteChar(file, '\n');
+			streamWriteBlock(file, "del:", 4);
+			streamWriteBlock(file, gapCoords.str().c_str(), gapCoords.str().size());
+			streamWriteChar(file, '\n');
+			streamWriteChar(file, '\n');
 		}
 	}
+
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1712,8 +1724,6 @@ _writeCeleraFrg(TFile& target,
 				FragmentStore<TSpec, TConfig>& fragStore) 
 {
 //IOREV _nodoc_ 
-
-	SEQAN_CHECKPOINT
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
 	typedef typename TFragmentStore::TReadPos TReadPos;
@@ -1738,50 +1748,50 @@ _writeCeleraFrg(TFile& target,
 	TReadIter readItEnd = end(fragStore.readStore);
 	bool noNamesPresent = (length(fragStore.readNameStore) == 0);
 	for(TSize idCount = 0;readIt != readItEnd; goNext(readIt), ++idCount) {
-		_streamWrite(target,"{FRG\n");
-		_streamWrite(target,"act:");
-		_streamPut(target, 'A');
-		_streamPut(target, '\n');
-		_streamWrite(target,"acc:");
-		_streamPutInt(target, idCount + 1);
-		_streamPut(target, '\n');
-		_streamWrite(target,"typ:");
-		_streamPut(target, 'R');
-		_streamPut(target, '\n');
+		streamPut(target, "{FRG\n");
+		streamPut(target, "act:");
+		streamPut(target, 'A');
+		streamPut(target, '\n');
+		streamPut(target, "acc:");
+		streamPut(target, idCount + 1);
+		streamPut(target, '\n');
+		streamPut(target, "typ:");
+		streamPut(target, 'R');
+		streamPut(target, '\n');
 		if (!noNamesPresent) {
-			_streamWrite(target,"src:\n");
-			_streamWrite(target, value(fragStore.readNameStore, idCount));
-			_streamWrite(target, "\n.\n");
+			streamPut(target, "src:\n");
+			streamPut(target, value(fragStore.readNameStore, idCount));
+			streamPut(target, "\n.\n");
 		}
-		_streamWrite(target,"etm:");
-		_streamPut(target, '0');
-		_streamPut(target, '\n');
-		_streamWrite(target,"seq:\n");
+		streamPut(target, "etm:");
+		streamPut(target, '0');
+		streamPut(target, '\n');
+		streamPut(target, "seq:\n");
 		typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
 		typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
 		TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
 		TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
 		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
-			if ((k % 70 == 0) && (k != 0)) _streamPut(target, '\n');
-			_streamPut(target, getValue(seqIt));
+			if ((k % 70 == 0) && (k != 0)) streamPut(target, '\n');
+			streamPut(target, getValue(seqIt));
 		}
-		_streamWrite(target, "\n.\n");
-		_streamWrite(target,"qlt:\n");
+		streamPut(target, "\n.\n");
+		streamPut(target, "qlt:\n");
 		seqIt = begin(value(fragStore.readSeqStore, idCount));
 		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
-			if ((k % 70 == 0) && (k != 0)) _streamPut(target, '\n');
+			if ((k % 70 == 0) && (k != 0)) streamPut(target, '\n');
 			Ascii c = ' ';
 			convertQuality(c, getQualityValue(value(seqIt)));
-			_streamPut(target, c);
+			streamPut(target, c);
 		}
-		_streamWrite(target, "\n.\n");
+		streamPut(target, "\n.\n");
 		// Note: Clear range does not have to be ordered, e.g. no indication for reverse complemented reads, this is happening in cgb records
-		_streamWrite(target,"clr:");
-		_streamPutInt(target, (value(clearStr, idCount)).i1);
-		_streamPut(target, ',');
-		_streamPutInt(target, (value(clearStr, idCount)).i2);
-		_streamPut(target, '\n');
-		_streamWrite(target,"}\n");
+		streamPut(target, "clr:");
+		streamPut(target, (value(clearStr, idCount)).i1);
+		streamPut(target, ',');
+		streamPut(target, (value(clearStr, idCount)).i2);
+		streamPut(target, '\n');
+		streamPut(target, "}\n");
 	}
 }
 

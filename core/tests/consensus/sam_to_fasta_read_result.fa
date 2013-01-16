@@ -1,0 +1,109 @@
+Pos: 0
+         .    :    .    :    .    :    .    :    .
+  0: ......TTAGATAAAGAGGATA-CTG..TTAGCT..CAGCGCCAT
+  1: ........AAAAGATAA-G-GGATAAA..................
+  2: ........AGCTAA.ATAGCT--------------CTCAGC....
+
+  C: AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT
+ >2: --------AGATAA-ATAGCTGTGCT-------------------
+
+
+
+typ:R0
+seq:TTAGATAAAGAGGATACTG
+Pos:6,26
+clr:0,19
+dln:1
+del:16 
+
+typ:R1
+seq:AAAAGATAAGGGATAAA
+Pos:8,27
+clr:0,17
+dln:2
+del:9 10 
+
+typ:R2
+seq:AGCTAA
+Pos:8,14
+clr:0,6
+dln:0
+del:
+
+typ:R3
+seq:ATAGCTCTCAGC
+Pos:15,41
+clr:0,12
+dln:14
+del:6 6 6 6 6 6 6 6 6 6 6 6 6 6 
+
+typ:R4
+seq:AGCTAA
+Pos:34,28
+clr:0,6
+dln:0
+del:
+
+typ:R5
+seq:ATGGCGCTG
+Pos:45,36
+clr:0,9
+dln:0
+del:
+
+Pos: 0
+         .    :    .    :    .    :    . 
+  0: AGGTTTTATAAAACAAATAA................
+  1: .GGTTTTATAAAACAAATAATT..............
+  2: .....TTATAAAACAAATAATTAAGTCTACA.....
+  3: .........CAAATAATTAAGTCTACAGAGCAAC..
+  4: ...........AATAATTAAGTCTACAGAGCAACT.
+  5: .............TAATTAAGTCTACAGAGCAACTA
+
+  C: AGGTTTTATAAAACAATTAAGTCTACAGAGCAACTA
+ >2: -----TTATAAAACAATTAAGTCTACAGAGCAAC--
+
+
+
+typ:R0
+seq:AGGTTTTATAAAACAAATAA
+Pos:0,20
+clr:0,20
+dln:0
+del:
+
+typ:R1
+seq:GGTTTTATAAAACAAATAATT
+Pos:1,22
+clr:0,21
+dln:0
+del:
+
+typ:R2
+seq:TTATAAAACAAATAATTAAGTCTACA
+Pos:5,31
+clr:0,26
+dln:0
+del:
+
+typ:R3
+seq:CAAATAATTAAGTCTACAGAGCAAC
+Pos:9,34
+clr:0,25
+dln:0
+del:
+
+typ:R4
+seq:AATAATTAAGTCTACAGAGCAACT
+Pos:11,35
+clr:0,24
+dln:0
+del:
+
+typ:R5
+seq:TAATTAAGTCTACAGAGCAACTA
+Pos:13,36
+clr:0,23
+dln:0
+del:
+
