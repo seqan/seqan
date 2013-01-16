@@ -540,13 +540,13 @@ inline void
 _writeOptName(TStream & target, CommandLineOption const & me)
 {
     //IOREV _notio_ irrelevant for iorev
-    _streamWrite(target, empty(me.shortName) ? "" : "-");
-    _streamWrite(target, me.shortName);
-    _streamWrite(target, (empty(me.shortName) || empty(me.longName)) ? "" : ", ");
+    streamPut(target, empty(me.shortName) ? "" : "-");
+    streamPut(target, me.shortName);
+    streamPut(target, (empty(me.shortName) || empty(me.longName)) ? "" : ", ");
     if (!empty(me.longName))
     {
-        _streamWrite(target, "--");
-        _streamWrite(target, me.longName);
+        streamPut(target, "--");
+        streamPut(target, me.longName);
     }
 }
 
@@ -570,11 +570,11 @@ inline void
 write(TStream & target, CommandLineOption const & me)
 {
     //IOREV _nodoc_ this specialization is not documented
-    _streamPut(target, '\t');
+    streamPut(target, '\t');
     _writeOptName(target, me);
-    _streamPut(target, '\t');
-    _streamPut(target, '\t');
-    _streamWrite(target, me.helpText);
+    streamPut(target, '\t');
+    streamPut(target, '\t');
+    streamPut(target, me.helpText);
 }
 
 // ----------------------------------------------------------------------------

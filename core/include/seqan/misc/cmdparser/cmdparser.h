@@ -491,8 +491,8 @@ _printStringSet(TStringSet const & set, TStream & target)
 {
     for (unsigned r = 0; r < length(set); ++r)
     {
-        _streamWrite(target, set[r]);
-        _streamPut(target, '\n');
+        streamPut(target, set[r]);
+        streamPut(target, '\n');
     }
 }
 
@@ -504,29 +504,29 @@ template <typename TStream>
 inline void
 _printUsage(CommandLineParser const & me, TStream & target)
 {
-    _streamWrite(target, "Usage: ");
+    streamPut(target, "Usage: ");
     if (empty(me._usageText))
     {
-        _streamWrite(target, me._appName);
-        _streamWrite(target, " [OPTION]... ");
+        streamPut(target, me._appName);
+        streamPut(target, " [OPTION]... ");
         for (unsigned r = 0; r < me._requiredArguments; ++r)
         {
-            _streamWrite(target, "<ARG");
-            _streamPutInt(target, r + 1);
-            _streamWrite(target, "> ");
+            streamPut(target, "<ARG");
+            streamPut(target, r + 1);
+            streamPut(target, "> ");
         }
-        _streamPut(target, '\n');
+        streamPut(target, '\n');
     }
     else
     {
         for (unsigned r = 0; r < length(me._usageText); ++r)
         {
             if (r)
-                _streamWrite(target, "       ");
-            _streamWrite(target, me._appName);
-            _streamPut(target, ' ');
-            _streamWrite(target, me._usageText[r]);
-            _streamPut(target, '\n');
+                streamPut(target, "       ");
+            streamPut(target, me._appName);
+            streamPut(target, ' ');
+            streamPut(target, me._usageText[r]);
+            streamPut(target, '\n');
         }
     }
 }
@@ -563,9 +563,9 @@ printShortHelp(CommandLineParser const & me, TStream & target)
 {
     _printTitle(me, target);
     _printUsage(me, target);
-    _streamWrite(target, "Try '");
-    _streamWrite(target, me._appName);
-    _streamWrite(target, " --help' for more information.\n");
+    streamPut(target, "Try '");
+    streamPut(target, me._appName);
+    streamPut(target, " --help' for more information.\n");
 }
 
 /*
@@ -616,9 +616,9 @@ inline void
 printHelp(CommandLineParser const & me, TStream & target)
 {
     _printTitle(me, target);
-    _streamPut(target, '\n');
+    streamPut(target, '\n');
     _printUsage(me, target);
-    _streamPut(target, '\n');
+    streamPut(target, '\n');
 
     for (unsigned o = 0; o < length(me.optionMap); ++o)
     {
@@ -630,51 +630,51 @@ printHelp(CommandLineParser const & me, TStream & target)
         {
             unsigned s = 0;
             for (; s < me._paddingLeft; ++s)
-                _streamPut(target, ' ');
+                streamPut(target, ' ');
 
             unsigned t1 = s + me._shortWidth;                           // first tab
             unsigned t2 = _max(t1 + me._longWidth, me._fullWidth) + 1;  // second tab (one extra space looks better)
 
             if (!empty(opt.shortName))
             {
-                _streamPut(target, '-');
-                _streamWrite(target, opt.shortName);
+                streamPut(target, '-');
+                streamPut(target, opt.shortName);
                 s += 1 + length(opt.shortName);
                 if (!empty(opt.longName))
                 {
-                    _streamPut(target, ',');
+                    streamPut(target, ',');
                     ++s;
                 }
                 else
                 {
-                    _streamWrite(target, argumentText(opt));
+                    streamPut(target, argumentText(opt));
                     s += length(argumentText(opt));
                 }
             }
 
             for (; s < t1; ++s)
-                _streamPut(target, ' ');
+                streamPut(target, ' ');
 
             if (!empty(opt.longName))
             {
-                _streamWrite(target, "--");
-                _streamWrite(target, opt.longName);
-                _streamWrite(target, argumentText(opt));
+                streamPut(target, "--");
+                streamPut(target, opt.longName);
+                streamPut(target, argumentText(opt));
                 s += 2 + length(opt.longName) + length(argumentText(opt));
             }
 
             for (; s < t2; ++s)
-                _streamPut(target, ' ');
+                streamPut(target, ' ');
         }
 
-        _streamWrite(target, opt.helpText);
+        streamPut(target, opt.helpText);
 
         if (isOptionMandatory(opt))
-            _streamWrite(target, "*");
+            streamPut(target, "*");
 
-        _streamPut(target, '\n');
+        streamPut(target, '\n');
     }
-    _streamPut(target, '\n');
+    streamPut(target, '\n');
 }
 
 /*
@@ -857,20 +857,20 @@ inline void
 _reportInvalidType(CommandLineParser const & me, CommandLineOption const & opt,
                    CharString const & val, TErrorStream & estream)
 {
-    _streamWrite(estream, me._appName);
-    _streamWrite(estream, ": \"");
-    _streamWrite(estream, val);
-    _streamWrite(estream, "\" is not a valid ");
+    streamPut(estream, me._appName);
+    streamPut(estream, ": \"");
+    streamPut(estream, val);
+    streamPut(estream, "\" is not a valid ");
 
     // there should be no other situation then those two
     if (isIntOption(opt))
-        _streamWrite(estream, "integer");
+        streamPut(estream, "integer");
     else if (isDoubleOption(opt))
-        _streamWrite(estream, "double");
+        streamPut(estream, "double");
 
-    _streamWrite(estream, " value for '");
+    streamPut(estream, " value for '");
     _writeOptName(estream, opt);
-    _streamWrite(estream, "'\n");
+    streamPut(estream, "'\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -882,12 +882,12 @@ inline void
 _reportMissingArgument(CommandLineParser const & me,
                        CommandLineOption const & opt, TErrorStream & estream)
 {
-    _streamWrite(estream, me._appName);
-    _streamWrite(estream, ": \'");
+    streamPut(estream, me._appName);
+    streamPut(estream, ": \'");
     _writeOptName(estream, opt);
-    _streamWrite(estream, "\' requires ");
-    _streamPutInt(estream, opt.argumentsPerOption);
-    _streamWrite(estream, " value(s)\n");
+    streamPut(estream, "\' requires ");
+    streamPut(estream, opt.argumentsPerOption);
+    streamPut(estream, " value(s)\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -899,10 +899,10 @@ inline void
 _reportInvalidOption(CommandLineParser const & me, CharString const & option,
                      TErrorStream & estream)
 {
-    _streamWrite(estream, me._appName);
-    _streamWrite(estream, ": invalid option '");
-    _streamWrite(estream, option);
-    _streamWrite(estream, "\'\n");
+    streamPut(estream, me._appName);
+    streamPut(estream, ": invalid option '");
+    streamPut(estream, option);
+    streamPut(estream, "\'\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -915,13 +915,13 @@ _reportValueNotInRange(CommandLineOption const & opt, CharString const & val,
                        TErrorStream & estream)
 {
     _writeOptName(estream, opt);
-    _streamWrite(estream, ": given argument \"");
-    _streamWrite(estream, val);
-    _streamWrite(estream, "\" is not in the required range [");
-    _streamWrite(estream, (opt.minValue != "" ? opt.minValue : "-inf"));
-    _streamWrite(estream, ":");
-    _streamWrite(estream, (opt.maxValue != "" ? opt.maxValue : "+inf"));
-    _streamWrite(estream, "]\n");
+    streamPut(estream, ": given argument \"");
+    streamPut(estream, val);
+    streamPut(estream, "\" is not in the required range [");
+    streamPut(estream, (opt.minValue != "" ? opt.minValue : "-inf"));
+    streamPut(estream, ":");
+    streamPut(estream, (opt.maxValue != "" ? opt.maxValue : "+inf"));
+    streamPut(estream, "]\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -936,20 +936,20 @@ _reportInvalidValue(CommandLineOption const & opt, CharString const & val,
     typedef Iterator<StringSet<CharString> const, Rooted>::Type TStringSetIter;
 
     _writeOptName(estream, opt);
-    _streamWrite(estream, ": given argument \"");
-    _streamWrite(estream, val);
-    _streamWrite(estream, "\" is not a valid value [");
+    streamPut(estream, ": given argument \"");
+    streamPut(estream, val);
+    streamPut(estream, "\" is not a valid value [");
     for (TStringSetIter valid = begin(opt.validValues);; )
     {
-        _streamWrite(estream, *valid);
+        streamPut(estream, *valid);
 
         goNext(valid);
         if (valid == end(opt.validValues))
             break;
         else
-            _streamWrite(estream, ", ");
+            streamPut(estream, ", ");
     }
-    _streamWrite(estream, "]\n");
+    streamPut(estream, "]\n");
 }
 
 // ----------------------------------------------------------------------------
@@ -962,20 +962,20 @@ _reportInvalidFileType(CommandLineOption const & opt, CharString const & val,
                        TErrorStream & estream)
 {
     _writeOptName(estream, opt);
-    _streamWrite(estream, ": given argument \"");
-    _streamWrite(estream, val);
-    _streamWrite(estream, "\" is not a valid file type [");
+    streamPut(estream, ": given argument \"");
+    streamPut(estream, val);
+    streamPut(estream, "\" is not a valid file type [");
     for (Iterator<StringSet<CharString> const, Rooted>::Type valid = begin(opt.validValues);; )
     {
-        _streamWrite(estream, *valid);
+        streamPut(estream, *valid);
 
         goNext(valid);
         if (valid == end(opt.validValues))
             break;
         else
-            _streamWrite(estream, ", ");
+            streamPut(estream, ", ");
     }
-    _streamWrite(estream, "]\n");
+    streamPut(estream, "]\n");
 }
 
 // ----------------------------------------------------------------------------
