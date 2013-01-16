@@ -1346,7 +1346,6 @@ _convertSimpleReadFile(TFile& file,
 					   bool moveToFront)
 {
 //IOREV _nodoc_ huge undocumented function, uses custom IO based on iostream and FILE* :S
-	SEQAN_CHECKPOINT
 	// Basic types
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Id<TFragmentStore>::Type TId;

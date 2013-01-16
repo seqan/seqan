@@ -23,20 +23,20 @@
 
 # Path variables
 directory = "./"
-readFile = "reads.fasta"				# Multi-fasta file with all reads
-fragmentFile = "reads.fastaF"				# All fragments where each fragment is a single read or 2 reads (for mate pairs)
-libraryFile = "reads.fastaL"				# All libraries or a dummy library if no mate pairs were simulated
-sourceFile = "reads.fastaS"				# The source sequence (or multiple sequences if haplotypes have been simulated)
+readFile = "simulated_reads.fasta"				# Multi-fasta file with all simulated_reads
+fragmentFile = "simulated_reads.fastaF"				# All fragments where each fragment is a single read or 2 simulated_reads (for mate pairs)
+libraryFile = "simulated_reads.fastaL"				# All libraries or a dummy library if no mate pairs were simulated
+sourceFile = "simulated_reads.fastaS"				# The source sequence (or multiple sequences if haplotypes have been simulated)
 
 # Basic parameters
 alphabet = c('A','C','G','T') # The source sequence alphabet
-seqLength = 100000		# Source sequence length
+seqLength = 1000		# Source sequence length
 sourceSeq = ""			# Source sequence, if empty a random sequence is siumlated
-numOfReads = 1250			# Number of reads to simulate	
+numOfReads = 10			# Number of reads to simulate	
 fixedReadLength = 0		# 0 = false, avgReadLength applies; 1 otherwise
 
 # Global error rate, fixedReadLength = 0
-avgReadLength = 800		# Average read length
+avgReadLength = 20		# Average read length
 errorPerBaseCall = 0.02		# Sequencing error rate for each base in a read (substitution or indels)
 
 # Or: Error distribution, fixedReadLength = 1
@@ -64,7 +64,7 @@ indelBaseRange = 4:6		# Indel size range
 
 # Mate-pairs parameters
 simulateMatePairs = 1		# 0 = no mate pairs are simulated, 1 = all reads are in a mate pair
-librarySizes = c(10000,20000)	# Mean library sizes for mate pairs
+librarySizes = c(50,100)	# Mean library sizes for mate pairs
 librarySd = c(10,20)		# Standard deviations for above library sizes
 
 # Path for reference file if generated.
