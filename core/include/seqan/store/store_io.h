@@ -574,7 +574,6 @@ read(TFile & file,
 	}
 
 	// Copy data from readIdMap into the pairMatchId entries of the alignedReadStore.
-	TId myPairMatchId = 0;  // Dummy variable to count the matches
 	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
 	TAlignIter alignIt = begin(fragStore.alignedReadStore);
 	TAlignIter alignItEnd = end(fragStore.alignedReadStore);
