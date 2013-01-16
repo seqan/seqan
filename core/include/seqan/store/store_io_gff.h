@@ -557,7 +557,7 @@ _writeCommonGffGtfInfo(
     TTargetStream & target,
     FragmentStore<TSpec, TConfig> & store,
     TAnnotation & annotation,
-    TId id)
+    TId /*id*/)
 {
 
     typedef FragmentStore<TSpec, TConfig>       TFragmentStore;
