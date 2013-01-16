@@ -35,6 +35,7 @@
 // ==========================================================================
 
 #include <cstdio>
+#include <sstream>
 
 #ifndef SEQAN_STREAM_ADAPT_CSTIO_H_
 #define SEQAN_STREAM_ADAPT_CSTIO_H_
@@ -340,10 +341,9 @@ template <typename TSource>
 inline int
 streamPut(FILE * stream, TSource const & source)
 {
-    int result = fprintf(stream, _streamPutChar(source), source);
-    if (result == -1)
-        return errno;
-    return 0;
+    std::stringstream tmp;
+    tmp << source;
+    return streamWriteBlock(stream, tmp.str().c_str(), tmp.str().size()) != tmp.str().size();
 }
 
 

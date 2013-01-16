@@ -337,7 +337,7 @@ SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
     seqan::FragmentStore<> store;
     std::fstream fFastaIn(toCString(inPathFasta), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(fFastaIn.good());
-    SEQAN_ASSERT(_convertSimpleReadFile(fFastaIn, store, filePath, false));
+    SEQAN_ASSERT_EQ(_convertSimpleReadFile(fFastaIn, store, filePath, false), 0);
 
     // Write out as SAM.
     std::fstream fSamOut(toCString(outPathSam), std::ios::binary | std::ios::out);

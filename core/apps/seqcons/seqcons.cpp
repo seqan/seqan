@@ -165,8 +165,7 @@ int loadFiles(TFragmentStore & fragStore, TSize & numberOfContigs, ConsensusOpti
         std::fstream strmReads(consOpt.readsfile.c_str(), std::fstream::in | std::fstream::binary);
 		bool moveToFront = false;
 		if (consOpt.noalign) moveToFront = true;
-		bool success = _convertSimpleReadFile(strmReads, fragStore, consOpt.readsfile, moveToFront);
-		if (!success)
+		if (_convertSimpleReadFile(strmReads, fragStore, consOpt.readsfile, moveToFront) != 0)
 			return 1;
 		numberOfContigs = 1;
 	} else if (!empty(consOpt.afgfile)) {

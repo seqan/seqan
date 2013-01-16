@@ -42,6 +42,7 @@
 #include <seqan/align.h>
 #include <seqan/graph_msa.h>
 #include <seqan/store.h>
+#include <seqan/seq_io.h>
 
 // Consensus tool
 #include <seqan/consensus/consensus_base.h>
