@@ -492,7 +492,7 @@ read(
 //IOREV _nodoc_
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 
-    if (_streamEOF(file))
+    if (streamEof(file))
         return;
 
     IOContextGff_<TFragmentStore> ctx;
