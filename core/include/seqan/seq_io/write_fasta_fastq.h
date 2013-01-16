@@ -103,15 +103,14 @@ writeRecord(TStream & stream,
             Fasta const & /*tag*/,
             unsigned const options)
 {
-    int res = streamPut(stream, '>');
+    int res = streamWriteChar(stream, '>');
     if (res)
         return res;
 
-    res = streamPut(stream, meta);
-    if (res)
-        return res;
+    if (streamWriteBlock(stream, &*begin(meta, Standard()), length(meta)) != length(meta))
+        return 1;
 
-    res = streamPut(stream, '\n');
+    res = streamWriteChar(stream, '\n');
     if (res)
         return res;
 
@@ -122,12 +121,12 @@ writeRecord(TStream & stream,
         typename Iterator<TSeqString const, Standard>::Type it_end = end(seq);
         for (unsigned long l = 0; it < it_end; ++it)
         {
-            res = streamPut(stream, *it);
+            res = streamWriteChar(stream, (char)*it);
             if (res)
                 return res;
             if (++l == 70)
             {
-                res = streamPut(stream, '\n');
+                res = streamWriteChar(stream, '\n');
                 l = 0;
                 if (res)
                     return res;
@@ -137,12 +136,13 @@ writeRecord(TStream & stream,
             return res;
     } else
     {
-        res = streamPut(stream, seq);
+        for (typename Iterator<TSeqString const, Rooted>::Type it = begin(seq, Rooted()); !atEnd(it); ++it)
+            res = streamWriteChar(stream, (char)*it);
         if (res)
             return res;
     }
 
-    res = streamPut(stream, '\n');
+    res = streamWriteChar(stream, '\n');
     return res;
 }
 
@@ -177,12 +177,12 @@ inline int _writeRecordFastq(TStream & stream, TSequence const & seq, TQualStrin
         typename Iterator<TSequence const>::Type it_end = end(seq);
         for (unsigned long l = 0; it < it_end; ++it)
         {
-            res = streamPut(stream, static_cast<char>('!' + getQualityValue(*it)));
+            res = streamWriteChar(stream, static_cast<char>('!' + getQualityValue(*it)));
             if (res)
                 return res;
             if (++l == 70)
             {
-                res = streamPut(stream, '\n');
+                res = streamWriteChar(stream, '\n');
                 l = 0;
                 if (res)
                     return res;
@@ -197,7 +197,7 @@ inline int _writeRecordFastq(TStream & stream, TSequence const & seq, TQualStrin
         typename Iterator<TSequence const>::Type it_end = end(seq);
         for (; it < it_end; ++it)
         {
-            res = streamPut(stream, static_cast<char>('!' + getQualityValue(*it)));
+            res = streamWriteChar(stream, static_cast<char>('!' + getQualityValue(*it)));
             if (res)
                 return res;
         }
@@ -220,12 +220,12 @@ inline int _writeRecordFastq(TStream & stream, TSequence const & seq, TQualStrin
                  i < length(seq);
                  ++i)
             {
-                res = streamPut(stream, char(126));
+                res = streamWriteChar(stream, char(126));
                 if (res)
                     return res;
                 if (++l == 70)
                 {
-                    res = streamPut(stream, '\n');
+                    res = streamWriteChar(stream, '\n');
                     l = 0;
                     if (res)
                         return res;
@@ -235,7 +235,7 @@ inline int _writeRecordFastq(TStream & stream, TSequence const & seq, TQualStrin
         {
             for (unsigned long i = 0; i < length(seq); ++i)
             {
-                res = streamPut(stream, char(33 + 40));
+                res = streamWriteChar(stream, char(33 + 40));
                 if (res)
                     return res;
             }
@@ -249,12 +249,12 @@ inline int _writeRecordFastq(TStream & stream, TSequence const & seq, TQualStrin
             typename Iterator<TQualString const>::Type it_end = end(qual);
             for (unsigned long l = 0; it < it_end; ++it)
             {
-                res = streamPut(stream, *it);
+                res = streamWriteChar(stream, (char)*it);
                 if (res)
                     return res;
                 if (++l == 70)
                 {
-                    res = streamPut(stream, '\n');
+                    res = streamWriteChar(stream, '\n');
                     l = 0;
                     if (res)
                         return res;
@@ -264,9 +264,8 @@ inline int _writeRecordFastq(TStream & stream, TSequence const & seq, TQualStrin
                 return res;
         } else
         {
-            res = streamPut(stream, qual);
-            if (res)
-                return res;
+            if (streamWriteBlock(stream, &*begin(qual, Standard()), length(qual)) != length(qual))
+                return 1;
         }
     }
     return 0;
@@ -285,15 +284,14 @@ writeRecord(TStream & stream,
             Fastq const & /*tag*/,
             unsigned const options)
 {
-    int res = streamPut(stream, '@');
+    int res = streamWriteChar(stream, '@');
     if (res)
         return res;
 
-    res = streamPut(stream, meta);
-    if (res)
-        return res;
+    if (streamWriteBlock(stream, &*begin(meta, Standard()), length(meta)) != length(meta))
+        return 1;
 
-    res = streamPut(stream, '\n');
+    res = streamWriteChar(stream, '\n');
     if (res)
         return res;
 
@@ -304,12 +302,12 @@ writeRecord(TStream & stream,
         typename Iterator<TSeqString const>::Type it_end = end(seq);
         for (unsigned long l = 0; it < it_end; ++it)
         {
-            res = streamPut(stream, *it);
+            res = streamWriteChar(stream, (char)*it);
             if (res)
                 return res;
             if (++l == 70)
             {
-                res = streamPut(stream, '\n');
+                res = streamWriteChar(stream, '\n');
                 l = 0;
                 if (res)
                     return res;
@@ -319,30 +317,29 @@ writeRecord(TStream & stream,
             return res;
     } else
     {
-        res = streamPut(stream, seq);
+        for (typename Iterator<TSeqString const, Rooted>::Type it = begin(seq, Rooted()); !atEnd(it); ++it)
+            res = streamWriteChar(stream, (char)*it);
         if (res)
             return res;
     }
 
-    res = streamPut(stream, "\n+");
-    if (res)
-        return res;
+    if (streamWriteBlock(stream, "\n+", 2) != 2)
+        return 1;
 
     if (options & WRITEQUALITIESMETA)
     {
-        res = streamPut(stream, meta);
-        if (res)
+        if (streamWriteBlock(stream, &*begin(meta, Standard()), length(meta)) != length(meta))
             return res;
     }
 
-    res = streamPut(stream, "\n");
+    res = streamWriteChar(stream, '\n');
     if (res)
         return res;
 
     res = _writeRecordFastq(stream, seq, qual, options, typename HasQualities<typename Value<TSeqString>::Type>::Type());
     if (res)
         return res;
-    res = streamPut(stream, '\n');
+    res = streamWriteChar(stream, '\n');
     return res;
 }
 
