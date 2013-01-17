@@ -197,6 +197,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
     std::fstream f(toCString(gffPath), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(f.good());
 
+    typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
+
     seqan::FragmentStore<> store;
 
     read(f, store, seqan::Gff());
@@ -209,7 +211,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 4294967295);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue<TId>());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -269,6 +271,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     std::fstream f(toCString(gffPath), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(f.good());
 
+    typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
+
     seqan::FragmentStore<> store;
 
     read(f, store, seqan::Gtf());
@@ -281,7 +285,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
     SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 4294967295);
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue<TId>());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
