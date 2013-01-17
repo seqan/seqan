@@ -37,6 +37,9 @@ target_link_libraries (param_chooser ${SEQAN_LIBRARIES})
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
+# Add binary for tests.
+add_executable (test_funcs_param_chooser test_param_chooser.cpp)
+
 # ----------------------------------------------------------------------------
 # Installation
 # ----------------------------------------------------------------------------
@@ -61,6 +64,9 @@ install (FILES LICENSE
 # ----------------------------------------------------------------------------
 # App Test
 # ----------------------------------------------------------------------------
+
+# Unit tests for the alignment free tests.
+add_test (NAME test_test_funcs_param_chooser COMMAND $<TARGET_FILE:test_funcs_param_chooser>)
 
 #seqan_add_app_test (param_chooser)
 
