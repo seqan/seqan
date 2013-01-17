@@ -84,7 +84,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -120,7 +120,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_horizontal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -147,7 +147,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_vertical_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -171,7 +171,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -277,7 +277,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -378,7 +378,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -424,7 +424,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -470,7 +470,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -517,7 +517,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -614,7 +614,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -711,7 +711,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -874,7 +874,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -910,7 +910,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -949,7 +949,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -988,7 +988,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -1027,7 +1027,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -1066,7 +1066,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
     DPCell_<int, LinearGaps> prevDiagonal;
@@ -1108,7 +1108,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -1158,7 +1158,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -1206,7 +1206,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -1254,7 +1254,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -1303,7 +1303,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;
@@ -1352,7 +1352,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
     using namespace seqan;
 
     typedef TraceBitMap_::TTraceValue TTraceValue;
-    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
 
     DPCell_<int, AffineGaps> activeCell;
     DPCell_<int, AffineGaps> prevDiagonal;

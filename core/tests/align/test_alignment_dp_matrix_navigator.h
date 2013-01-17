@@ -1469,7 +1469,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_contain
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_constructor)
 {
-    testAlignmentDPMatrixTraceNavigatorConstructorDefault(seqan::TracebackOn());
+    testAlignmentDPMatrixTraceNavigatorConstructorDefault(seqan::TracebackOn<seqan::GapsLeft>());
     testAlignmentDPMatrixTraceNavigatorConstructorDefault(seqan::TracebackOff());
 }
 
@@ -1485,7 +1485,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_u
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -1528,7 +1528,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigator;
 
     { // Case1: Band intersects with poit of origin.
         TDPMatrix dpMatrix;
@@ -1629,7 +1629,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -1980,7 +1980,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_assign
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpScoreMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpScoreMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -2002,7 +2002,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value)
     typedef Value<TDPMatrix>::Type TDPCell;
     typedef Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -2014,7 +2014,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value)
     assignValue(dpTraceMatrixNavigator, 20);
     SEQAN_ASSERT_EQ(value(dpTraceMatrixNavigator), 20);
 
-    const DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigatorConst(dpTraceMatrixNavigator);
+    const DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigatorConst(dpTraceMatrixNavigator);
     SEQAN_ASSERT_EQ(value(dpTraceMatrixNavigatorConst), 20);
 }
 
@@ -2027,7 +2027,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordi
     typedef typename Value<TDPMatrix>::Type TDPCell;
     typedef typename Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpScoreMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpScoreMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -2050,7 +2050,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_contai
     typedef typename Value<TDPMatrix>::Type TDPCell;
     typedef typename Iterator<TDPMatrix, Standard>::Type TIterator;
 
-    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigator;
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigator;
 
     TDPMatrix dpMatrix;
     setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
@@ -2061,7 +2061,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_contai
 
     SEQAN_ASSERT_EQ(&container(dpTraceMatrixNavigator), &dpMatrix);
 
-    const DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> dpTraceMatrixNavigatorConst(dpTraceMatrixNavigator);
+    const DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> dpTraceMatrixNavigatorConst(dpTraceMatrixNavigator);
     SEQAN_ASSERT_EQ(&container(dpTraceMatrixNavigatorConst), &dpMatrix);
 }
 

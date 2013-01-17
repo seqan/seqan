@@ -42,12 +42,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -127,12 +127,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -180,12 +180,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -235,12 +235,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -324,12 +324,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn>, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;

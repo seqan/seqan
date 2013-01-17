@@ -124,11 +124,25 @@ struct TraceBitMap_
 };
 
 // ----------------------------------------------------------------------------
-// Tag TracebackOn
+// Tag GapsLeft
 // ----------------------------------------------------------------------------
 
-struct TracebackOn_ {};
-typedef Tag<TracebackOn_> TracebackOn;
+struct GapsLeft_;
+typedef Tag<GapsLeft_> GapsLeft;
+
+// ----------------------------------------------------------------------------
+// Tag GapsRight
+// ----------------------------------------------------------------------------
+
+struct GapsRight_;
+typedef Tag<GapsRight_> GapsRight;
+
+// ----------------------------------------------------------------------------
+// Tag TracebackOn<TSpec>
+// ----------------------------------------------------------------------------
+
+template <typename TSpec = GapsLeft>
+struct TracebackOn {};
 
 // ----------------------------------------------------------------------------
 // Tag TracebackOff
@@ -257,12 +271,12 @@ template <typename T>
 struct IsTracebackEnabled_ :
     False {};
 
-template <>
-struct IsTracebackEnabled_<TracebackOn>:
+template <typename TGapsPlacement>
+struct IsTracebackEnabled_<TracebackOn<TGapsPlacement> >:
     True {};
 
-template <>
-struct IsTracebackEnabled_<TracebackOn const>:
+template <typename TGapsPlacement>
+struct IsTracebackEnabled_<TracebackOn<TGapsPlacement> const>:
     True {};
 
 template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>

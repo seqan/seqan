@@ -214,7 +214,7 @@ struct SetupAlignmentProfile_<SmithWaterman, TAlignConfig, TGapCosts, TTraceSwit
 template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
 struct SetupAlignmentProfile_<WatermanEggert, TAlignConfig, TGapCosts, TTraceSwitch>
 {
-    typedef DPProfile_<LocalAlignment_<SuboptimalAlignment>, TGapCosts, TracebackOn> Type;
+    typedef DPProfile_<LocalAlignment_<SuboptimalAlignment>, TGapCosts, TracebackOn<GapsLeft> > Type;
 };
 
 
@@ -250,12 +250,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOff>(), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOff>(), TDPProfile());
     }
 }
@@ -286,12 +286,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, AffineGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOff>(), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, LinearGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOff>(), TDPProfile());
     }
 }
@@ -402,12 +402,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
 }
@@ -439,12 +439,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, AffineGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, LinearGaps, TracebackOn>::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
         return _computeAlignment(traceSegments, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
 }

@@ -45,7 +45,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     using namespace seqan;
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -59,7 +59,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -73,7 +73,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, False, True, False> >, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, False, True, False> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -87,7 +87,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, False, True, False> >, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, False, True, False> >, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -101,7 +101,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -115,7 +115,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -129,7 +129,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -143,7 +143,7 @@ void testAlignmentDPProfileIsFreeEndGap()
     }
 
     {
-        typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsFreeEndGap_<TDPProfile, DPFirstRow>::VALUE;
         bool result1 = IsFreeEndGap_<TDPProfile, DPFirstColumn>::VALUE;
@@ -175,7 +175,7 @@ void testAlignmentDPProfileIsGlobal()
     using namespace seqan;
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsGlobalAlignment_<TDPProfile>::VALUE;
         bool result1 = IsGlobalAlignment_<GlobalAlignment_<> >::VALUE;
@@ -195,7 +195,7 @@ void testAlignmentDPProfileIsGlobal()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsGlobalAlignment_<TDPProfile>::VALUE;
         bool result1 = IsGlobalAlignment_<GlobalAlignment_<> >::VALUE;
@@ -220,7 +220,7 @@ void testAlignmentDPProfileIsLocal()
     using namespace seqan;
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsLocalAlignment_<TDPProfile>::VALUE;
         bool result1 = IsLocalAlignment_<GlobalAlignment_<> >::VALUE;
@@ -240,7 +240,7 @@ void testAlignmentDPProfileIsLocal()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsLocalAlignment_<TDPProfile>::VALUE;
         bool result1 = IsLocalAlignment_<GlobalAlignment_<> >::VALUE;
@@ -265,10 +265,10 @@ void testAlignmetnDPProfileIsTracebackEnabled()
     using namespace seqan;
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
 
         bool result0 = IsTracebackEnabled_<TDPProfile>::VALUE;
-        bool result1 = IsTracebackEnabled_<TracebackOn>::VALUE;
+        bool result1 = IsTracebackEnabled_<TracebackOn<GapsLeft> >::VALUE;
 
         SEQAN_ASSERT_EQ(result0, true);
         SEQAN_ASSERT_EQ(result1, true);
@@ -285,10 +285,10 @@ void testAlignmetnDPProfileIsTracebackEnabled()
     }
 
     {
-        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn> const TDPProfile;
+        typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > const TDPProfile;
 
         bool result0 = IsTracebackEnabled_<TDPProfile>::VALUE;
-        bool result1 = IsTracebackEnabled_<TracebackOn>::VALUE;
+        bool result1 = IsTracebackEnabled_<TracebackOn<GapsLeft> >::VALUE;
 
         SEQAN_ASSERT_EQ(result0, true);
         SEQAN_ASSERT_EQ(result1, true);

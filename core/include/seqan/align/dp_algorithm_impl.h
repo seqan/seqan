@@ -1319,7 +1319,7 @@ _computeAlignment(String<TTraceSegment> & traceSegments,
 
     resize(dpScoreMatrix);
     // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
-    if (IsSameType<TTraceFlag, TracebackOn>::VALUE)
+    if (IsSameType<TTraceFlag, TracebackOn<GapsLeft> >::VALUE || IsSameType<TTraceFlag, TracebackOn<GapsRight> >::VALUE)
         resize(dpTraceMatrix);
 
     TDPScoreMatrixNavigator dpScoreMatrixNavigator;
