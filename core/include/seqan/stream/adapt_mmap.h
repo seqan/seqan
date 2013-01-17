@@ -78,11 +78,11 @@ streamWriteChar(String<TValue, TSpec> & stream, TChar const & c)
 }
 
 // ----------------------------------------------------------------------------
-// Function streamWriteChar()
+// Function streamWriteBlock()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-inline int
+inline typename Size<String<TValue, TSpec> >::Type
 streamWriteBlock(String<TValue, TSpec> & stream, char const * ptr, unsigned count)
 {
     reserve(stream, length(stream) + count);
