@@ -76,7 +76,7 @@ public:
     virtual __int64 fileSize() const;
     virtual __int64 positionInFile() const;
 
-    bool jumpToRegion(__int32 refId, __int32 pos, __int32 endPos, BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context);
+    bool jumpToRegion(bool & hasAlignment, __int32 refId, __int32 pos, __int32 endPos, BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context);
     bool jumpToOrphans(BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context);
 };
 
@@ -184,11 +184,9 @@ inline __int64 BamReader_::positionInFile() const
 // Member Function BamReader_::jumpToRegion()
 // ----------------------------------------------------------------------------
 
-inline bool BamReader_::jumpToRegion(__int32 refId, __int32 pos, __int32 posEnd, BamIndex<Bai> const & index,
-                           BamIOContext<StringSet<CharString> > & context)
+inline bool BamReader_::jumpToRegion(bool & hasAlignments, __int32 refId, __int32 pos, __int32 posEnd,
+                                     BamIndex<Bai> const & index, BamIOContext<StringSet<CharString> > & context)
 {
-    bool hasAlignments = false;
-    (void) hasAlignments;
     return seqan::jumpToRegion(this->_stream, hasAlignments, context, refId, pos, posEnd, index);
 }
 

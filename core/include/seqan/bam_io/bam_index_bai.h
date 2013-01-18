@@ -210,8 +210,38 @@ jumpToRegion(Stream<Bgzf> & stream,
     __uint64 linearMinOffset = 0;
     if (windowIdx >= length(index._linearIndices[refId]))
     {
-        if (!empty(index._linearIndices[refId]))
+        // TODO(holtgrew): Can we simply always take case 1?
+
+        // This is the case were we want to jump in a non-existing window.
+        //
+        // If there are no linear indices for this reference then we use the linear min offset of the next
+        // reference that has an linear index.
+        if (empty(index._linearIndices[refId]))
+        {
+            for (unsigned i = refId; i < length(index._linearIndices); ++i)
+            {
+                if (!empty(index._linearIndices[i]))
+                {
+                    linearMinOffset = front(index._linearIndices[i]);
+                    if (linearMinOffset != 0u)
+                        break;
+                    for (unsigned j = 1; j < length(index._linearIndices[i]); ++j)
+                    {
+                        if (index._linearIndices[i][j] > linearMinOffset)
+                        {
+                            linearMinOffset = index._linearIndices[i][j];
+                            break;
+                        }
+                    }
+                    if (linearMinOffset != 0u)
+                        break;
+                }
+            }
+        }
+        else
+        {
             linearMinOffset = back(index._linearIndices[refId]);
+        }
     }
     else
     {
