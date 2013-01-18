@@ -869,6 +869,7 @@ getParamsFilename(TSStr & paramsfile, ParamChooserOptions & pm_options)
 
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): Remove!
 template<typename TFile, typename TChar>
 inline void
 _parse_readShape(TFile & file, TChar& c, CharString & str)
@@ -939,7 +940,7 @@ parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOpt
 		if(pm_options.verbose) ::std::cerr << "Loss rate file is empty!" << ::std::endl;
 		return false;
         }
-	if(c == 's') //header line
+	if(c == 'e') //header line
 	{
 		_parseSkipLine(file,c);
 		_parseSkipLine(file,c);
