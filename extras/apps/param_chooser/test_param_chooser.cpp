@@ -136,10 +136,55 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_int_file)
     SEQAN_ASSERT_IN_DELTA(qualDist[3], 0.00990099, 1.0e-07);
 }
 
+SEQAN_DEFINE_TEST(test_param_chooser_parse_read_gapped_params)
+{
+    seqan::ParamChooserOptions pmOptions;
+    pmOptions.totalN = 4;         // Read length.
+    pmOptions.verbose = false;
+    pmOptions.chooseOneGappedOnly = false;
+    pmOptions.chooseUngappedOnly = false;
+    pmOptions.minThreshold = 3;
+    pmOptions.optionLossRate = 0.01;
+    
+    seqan::RazerSOptions<> rOptions;
+
+    std::stringstream ss;
+    ss << "errors    shape               t        lossrate   PM\n"
+       << "\n"
+       << "0    11000000100100101        3        0          40895\n"
+       << "1    11000000100100101        2        0          492286\n"
+       << "2    11000000100100101        1        0.0293446  48417798\n"
+       << "3    11000000100100101        1        0.195237   48417798\n"
+       << "0    1111100001              10        0          40484\n"
+       << "1    1111100001               7        0.163535   48622\n"
+       << "1    1111100001               6        0.0497708  51290\n"
+       << "1    1111100001               5        0          61068\n"
+       << "1    1111101                  4        0          61068";
+
+    ss.seekg(0);
+    SEQAN_ASSERT(parseGappedParams(rOptions, ss, pmOptions));
+    SEQAN_ASSERT_EQ(rOptions.shape, "1111100001");
+    SEQAN_ASSERT_EQ(rOptions.threshold, 10);
+
+    pmOptions.chooseOneGappedOnly = true;
+    ss.clear();
+    ss.seekg(0);
+    SEQAN_ASSERT(parseGappedParams(rOptions, ss, pmOptions));
+    SEQAN_ASSERT_EQ(rOptions.shape, "1111100001");
+    SEQAN_ASSERT_EQ(rOptions.threshold, 10);
+
+    pmOptions.chooseUngappedOnly = true;
+    ss.clear();
+    ss.seekg(0);
+    SEQAN_ASSERT_NOT(parseGappedParams(rOptions, ss, pmOptions));
+}
+
 SEQAN_BEGIN_TESTSUITE(test_param_chooser)
 {
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_prb_file);
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_fastq_file);
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_fastq_int_file);
+
+    SEQAN_CALL_TEST(test_param_chooser_parse_read_gapped_params);
 }
 SEQAN_END_TESTSUITE
