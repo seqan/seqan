@@ -646,7 +646,7 @@ _bgzfDeflateBlock(Stream<Bgzf> & stream, int blockLength)
         status = deflate(&zs, Z_FINISH);
         if (status != Z_STREAM_END)
         {
-            deflateEnd(&zs);
+            status = deflateEnd(&zs);
             if (status == Z_OK)
             {
                 // Not enough space in buffer.  This can happen in the rare case the input doesn't compress enough.  We
