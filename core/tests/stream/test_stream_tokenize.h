@@ -140,6 +140,69 @@ SEQAN_DEFINE_TEST(test_stream_tokenizing_read_until_one_of)
     SEQAN_ASSERT_EQ(value(reader), '\r');
 }
 
+SEQAN_DEFINE_TEST(test_stream_tokenizing_read_digits)
+{
+    using namespace seqan;
+    typedef Stream<CharArray<char const *> > TStream;
+
+    char const * FILE_CONTENTS = "3456.7890";
+    TStream stream(FILE_CONTENTS, FILE_CONTENTS + strlen(FILE_CONTENTS));
+    RecordReader<TStream, SinglePass<> > reader(stream);
+    
+    CharString buf;
+    
+    SEQAN_ASSERT_EQ(readDigits(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, "3456");
+
+    goNext(reader);
+    clear(buf);
+
+    SEQAN_ASSERT_EQ(readDigits(buf, reader), EOF_BEFORE_SUCCESS);
+    SEQAN_ASSERT_EQ(buf, "7890");
+}
+
+SEQAN_DEFINE_TEST(test_stream_tokenizing_read_alpha_nums)
+{
+    using namespace seqan;
+    typedef Stream<CharArray<char const *> > TStream;
+
+    char const * FILE_CONTENTS = "3a4b5c6.7d8e9f0";
+    TStream stream(FILE_CONTENTS, FILE_CONTENTS + strlen(FILE_CONTENTS));
+    RecordReader<TStream, SinglePass<> > reader(stream);
+    
+    CharString buf;
+    
+    SEQAN_ASSERT_EQ(readAlphaNums(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, "3a4b5c6");
+
+    goNext(reader);
+    clear(buf);
+
+    SEQAN_ASSERT_EQ(readAlphaNums(buf, reader), EOF_BEFORE_SUCCESS);
+    SEQAN_ASSERT_EQ(buf, "7d8e9f0");
+}
+
+SEQAN_DEFINE_TEST(test_stream_tokenizing_read_float)
+{
+    using namespace seqan;
+    typedef Stream<CharArray<char const *> > TStream;
+
+    char const * FILE_CONTENTS = "3.456 -3.456";
+    TStream stream(FILE_CONTENTS, FILE_CONTENTS + strlen(FILE_CONTENTS));
+    RecordReader<TStream, SinglePass<> > reader(stream);
+    
+    CharString buf;
+    
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, "3.456");
+
+    goNext(reader);
+    clear(buf);
+
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), EOF_BEFORE_SUCCESS);
+    SEQAN_ASSERT_EQ(buf, "-3.456");
+}
+
 SEQAN_DEFINE_TEST(test_stream_tokenizing_read_until_tab_or_line_break)
 {
     using namespace seqan;

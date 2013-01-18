@@ -1284,11 +1284,17 @@ template <typename TStream, typename TPass, typename TBuffer>
 inline int
 readFloat(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 {
+    unsigned lenMinus = (value(reader) == '-' || value(reader) == '+');
+    if (lenMinus)
+    {
+        appendValue(buffer, value(reader));
+        goNext(reader);
+    }
     unsigned lenPre = length(buffer);
     int res = _readHelper(buffer, reader, Digit_(), false);
     if (res != 0)
         return res;
-    unsigned digitsBeforeDot = length(buffer) - lenPre;
+    unsigned digitsBeforeDot = length(buffer) - lenPre - lenMinus;
 
     if (value(reader) != '.')
         return 0;
