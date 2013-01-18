@@ -76,12 +76,16 @@ public:
     TDPMatrixPointer_ _ptrDataContainer;        // The pointer to the underlying Matrix.
     int _laneLeap;                              // Keeps track of the jump size from one column to another.
     TDPMatrixIterator _activeColIterator;       // The current column iterator.
+    int _lowerDiagonal;     // lower diagonal of the band if any
+    int _upperDiagonal;     // upper diagonal of the band if any
 
 
     DPMatrixNavigator_() :
         _ptrDataContainer(TDPMatrixPointer_(0)),
         _laneLeap(0),
-        _activeColIterator()
+        _activeColIterator(),
+        _lowerDiagonal(0),
+        _upperDiagonal(0)
     {}
 };
 
@@ -127,15 +131,17 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFl
         return;  // Leave navigator as is because it should never be used.
 
     navigator._ptrDataContainer = &dpMatrix;
+    navigator._lowerDiagonal = lowerDiagonal(band);
+    navigator._upperDiagonal = upperDiagonal(band);
 
     // Band begins within the first row.
-    if (lowerDiagonal(band) >= 0)
+    if (navigator._lowerDiagonal >= 0)
     {
         // The first cell of the first column starts at the last cell in the matrix of the current column.
         navigator._laneLeap = _min(length(dpMatrix, DPMatrixDimension_::VERTICAL), bandSize(band));
         navigator._activeColIterator = begin(dpMatrix, Standard()) + _dataLengths(dpMatrix)[DPMatrixDimension_::VERTICAL] - 1;
     }
-    else if (upperDiagonal(band) <= 0)  // Band begins within the first column.
+    else if (navigator._upperDiagonal <= 0)  // Band begins within the first column.
     {
         // The first cell starts at the beginning of the current column.
         navigator._laneLeap = 1;
@@ -145,7 +151,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFl
     {
         // First cell starts at position i, such that i + abs(lowerDiagonal) = length(seqV).
         TMatrixSize lengthVertical = length(dpMatrix, DPMatrixDimension_::VERTICAL);
-        int lastPos = _max(-static_cast<TSignedSize>(lengthVertical - 1), lowerDiagonal(band));
+        int lastPos = _max(-static_cast<TSignedSize>(lengthVertical - 1), navigator._lowerDiagonal);
         navigator._laneLeap = lengthVertical + lastPos;
         navigator._activeColIterator = begin(dpMatrix, Standard()) + navigator._laneLeap - 1;
     }
