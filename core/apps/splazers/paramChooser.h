@@ -30,6 +30,7 @@
 
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
+#include <seqan/seq_io.h>
 #include "razers.h"
 #include "readSimulator.h"
 
@@ -257,8 +258,11 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
         if (res != 0 && res != EOF_BEFORE_SUCCESS)
             return 1;
 	}
-	::std::cout << " Readcount = " << count[0] << "\t";
-	::std::cout << " kicked out " << kickout << " low quality reads." << std::endl;
+	if (pm_options.verbose)
+    {
+        ::std::cout << " Readcount = " << count[0] << "\t";
+        ::std::cout << " kicked out " << kickout << " low quality reads." << std::endl;
+    }
 
 	resize(avg,pm_options.totalN,(TFloat)0.0);
 	for(unsigned t = 0; t < pm_options.totalN; ++t)
@@ -273,7 +277,7 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
 
 
 template<typename TFile, typename TDistribution>
-void
+int
 qualityDistributionFromFastQFile(TFile & file, TDistribution & avg, ParamChooserOptions & pm_options)
 {
 //IOREV see comments in other paramChooser.h
@@ -283,28 +287,35 @@ qualityDistributionFromFastQFile(TFile & file, TDistribution & avg, ParamChooser
 	resize(qualitySum,pm_options.totalN,0);
 	resize(count,pm_options.totalN,0);
 
-	if (_streamEOF(file)) return;
+    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
 
-	signed char c = _streamGet(file);
-	_parseSkipWhitespace(file, c);
+    if (atEnd(reader))
+        return 1;
 
-	while (!_streamEOF(file))
-	{
-		_parseSkipLine2(file, c);
-		if (_streamEOF(file) || c != '+') continue;
+    seqan::CharString id, seq, qual;
+    while (!atEnd(reader))
+    {
+        if (readRecord(id, seq, qual, reader, seqan::Fastq()) != 0)
+        {
+            std::cerr << "ERROR reading FASTQ file!\n";
+            return 1;
+        }
 
-		_parseSkipLine2(file, c);
+        if (length(qual) < pm_options.totalN)
+        {
+            std::cerr << "ERROR: Expected at least " << pm_options.totalN << " bases, but have " << length(qual) << "\n";
+            return 1;
+        }
 
-		unsigned i = 0;
-		while (!(_streamEOF(file) || c == '\n' || c == '\r'))
-		{
-			qualitySum[i] += c - 33;
-			c = _streamGet(file);
-			++count[i];
-			if (++i == pm_options.totalN) break;
-		};
-	}
-	if(pm_options.verbose)::std::cout << " Readcount = " << count[0] << std::endl;
+        for (unsigned i = 0; i < pm_options.totalN; ++i)
+        {
+            qualitySum[i] += (qual[i] - 33);  // Solexa qualities.
+            ++count[i];
+        }
+    }
+
+	if(pm_options.verbose)
+        ::std::cout << " Readcount = " << count[0] << std::endl;
 
 	resize(avg,pm_options.totalN,(TFloat)0.0);
 	for(unsigned t = 0; t < pm_options.totalN; ++t)
@@ -314,10 +325,12 @@ qualityDistributionFromFastQFile(TFile & file, TDistribution & avg, ParamChooser
 		f = _convertPhredQual2ErrProb(f);
 		avg[t] = f;
 	}
+
+    return 0;
 }
 
 template<typename TFile, typename TDistribution>
-void
+int
 qualityDistributionFromFastQIntFile(TFile & file, TDistribution & avg, ParamChooserOptions & pm_options)
 {
 //IOREV see comments in other paramChooser.h
@@ -327,29 +340,38 @@ qualityDistributionFromFastQIntFile(TFile & file, TDistribution & avg, ParamChoo
 	resize(qualitySum,pm_options.totalN,0);
 	resize(count,pm_options.totalN,0);
 
-	if (_streamEOF(file)) return;
+    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
+    if (atEnd(reader) != 0)
+        return 1;
 
-	signed char c = _streamGet(file);
-	_parseSkipWhitespace(file, c);
-
-	while (!_streamEOF(file))
+    seqan::CharString buffer;
+	while (!atEnd(reader))
 	{
-		_parseSkipLine2(file, c);
-		if (_streamEOF(file) || c != '+') continue;
+        if (skipLine(reader) != 0 || skipLine(reader) != 0 || skipLine(reader) != 0)
+            return 1;
 
-		_parseSkipLine2(file, c);
+        for (unsigned i = 0; i != pm_options.totalN && !atEnd(reader); ++i)
+        {
+            clear(buffer);
+            double tmp = 0;
 
-		unsigned i = 0;
-		while (!(_streamEOF(file) || c == '\n' || c == '\r'))
-		{
-			int num = _parseReadNumber(file, c);
-			qualitySum[i] += num;
-			++count[i];
-			_parseSkipBlanks(file,c);
-			if (++i == pm_options.totalN) break;
-		};
+            if (skipBlanks(reader) != 0)
+                return 1;
+            int res = readFloat(buffer, reader);
+            if (res != 0 && !((res == EOF_BEFORE_SUCCESS) && (i + 1 == pm_options.totalN)))
+                return 1;
+            if (!lexicalCast2(tmp, buffer))
+                return 1;
+
+            qualitySum[i] += (int)tmp;
+            ++count[i];
+        }
+        int res = skipLine(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return 1;
 	}
-	::std::cout << " Readcount = " << count[0] << std::endl;
+    if (pm_options.verbose)
+        ::std::cout << " Readcount = " << count[0] << std::endl;
 
 	resize(avg,pm_options.totalN,(TFloat)0.0);
 	for(unsigned t = 0; t < pm_options.totalN; ++t)
@@ -359,6 +381,8 @@ qualityDistributionFromFastQIntFile(TFile & file, TDistribution & avg, ParamChoo
 		f = _convertPhredQual2ErrProb(f);
 		avg[t] = f;
 	}
+
+    return 0;
 }
 
 

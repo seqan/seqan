@@ -50,6 +50,7 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_prb_file)
 {
     seqan::ParamChooserOptions pmOptions;
     pmOptions.totalN = 4;         // Read length.
+    pmOptions.verbose = false;
     pmOptions.qualityCutoff = 10;  // Ignore reads with smaller average quality than threshold.
     
     seqan::String<double> qualDist;
@@ -69,8 +70,76 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_prb_file)
     SEQAN_ASSERT_IN_DELTA(qualDist[3], 0.00990099, 1.0e-07);
 }
 
+SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_file)
+{
+    seqan::ParamChooserOptions pmOptions;
+    pmOptions.totalN = 4;         // Read length.
+    pmOptions.verbose = false;
+    pmOptions.qualityCutoff = 10;  // Ignore reads with smaller average quality than threshold.
+    
+    seqan::String<double> qualDist;
+    
+    std::stringstream ss;
+    ss << "@1\n"
+       << "CGAT\n"
+       << "+\n"
+       << "II?5\n"
+       // << "@2\n"  // see prb test, but from FASTQ does not kick out bad reads
+       // << "CGAT\n"
+       // << "+\n"
+       // << "+!*+\n"
+       << "@3\n"
+       << "CGAT\n"
+       << "+\n"
+       << "II?5";
+    ss.seekg(0);
+    
+    SEQAN_ASSERT_EQ(qualityDistributionFromFastQFile(ss, qualDist, pmOptions), 0);
+    
+    SEQAN_ASSERT_EQ(length(qualDist), 4u);
+    SEQAN_ASSERT_IN_DELTA(qualDist[0], 9.999e-05, 1.0e-07);
+    SEQAN_ASSERT_IN_DELTA(qualDist[1], 9.999e-05, 1.0e-07);
+    SEQAN_ASSERT_IN_DELTA(qualDist[2], 0.000999001, 1.0e-07);
+    SEQAN_ASSERT_IN_DELTA(qualDist[3], 0.00990099, 1.0e-07);
+}
+
+SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_int_file)
+{
+    seqan::ParamChooserOptions pmOptions;
+    pmOptions.totalN = 4;         // Read length.
+    pmOptions.verbose = false;
+    pmOptions.qualityCutoff = 10;  // Ignore reads with smaller average quality than threshold.
+    
+    seqan::String<double> qualDist;
+    
+    std::stringstream ss;
+    ss << "@1\n"
+       << "CGAT\n"
+       << "+\n"
+       << "40 40 30 20\n"
+       // << "@2\n"  // see prb test, but from FASTQ does not kick out bad reads
+       // << "CGAT\n"
+       // << "+\n"
+       // << "+!*+\n"
+       << "@3\n"
+       << "CGAT\n"
+       << "+\n"
+       << "40 40 30 20";
+    ss.seekg(0);
+    
+    SEQAN_ASSERT_EQ(qualityDistributionFromFastQIntFile(ss, qualDist, pmOptions), 0);
+    
+    SEQAN_ASSERT_EQ(length(qualDist), 4u);
+    SEQAN_ASSERT_IN_DELTA(qualDist[0], 9.999e-05, 1.0e-07);
+    SEQAN_ASSERT_IN_DELTA(qualDist[1], 9.999e-05, 1.0e-07);
+    SEQAN_ASSERT_IN_DELTA(qualDist[2], 0.000999001, 1.0e-07);
+    SEQAN_ASSERT_IN_DELTA(qualDist[3], 0.00990099, 1.0e-07);
+}
+
 SEQAN_BEGIN_TESTSUITE(test_param_chooser)
 {
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_prb_file);
+    SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_fastq_file);
+    SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_fastq_int_file);
 }
 SEQAN_END_TESTSUITE
