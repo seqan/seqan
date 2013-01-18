@@ -29,6 +29,7 @@
 #include <errno.h>
 
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
 #include "razers.h"
 #include "readSimulator.h"
 
@@ -177,40 +178,53 @@ _convertSolexaQual2PhredQual(TValue sq)
 
 //compute average position dependent error distribution (assumes solexa qualtiy values in prb.txt format)
 template<typename TFile, typename TDistribution>
-void
+int
 qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOptions & pm_options)
 {
 //IOREV see comments in other paramChooser.h
 	typedef typename Value<TDistribution>::Type TFloat;
+
+    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
 
 	String<TFloat> qualitySum;
 	String<int> count;
 	resize(qualitySum,pm_options.totalN,(TFloat)0.0);
 	resize(count,pm_options.totalN,0);
 
-	if (_streamEOF(file)) return;
+    if (atEnd(reader))
+        return 0;  // Nothing to read.
 
-	char c = _streamGet(file);
-	_parseSkipWhitespace(file, c);
+    if (skipWhitespaces(reader) != 0)
+        return 1;
 
 	int kickout = 0;
 	String<int> tempReadQual;
 	resize(tempReadQual,pm_options.totalN);
 
-	while (!_streamEOF(file))
+    seqan::CharString buffer;
+    while (!atEnd(reader))
 	{
 		int avgReadQual = 0;
-		for (unsigned pos = 0; (!_streamEOF(file)) && (pos < pm_options.totalN); ++pos)
+		for (unsigned pos = 0; !atEnd(reader) && (pos < pm_options.totalN); ++pos)
 		{
-			_parseSkipBlanks(file,c);
-			int qualA = (int) _parseReadDouble(file,c);
-			_parseSkipBlanks(file,c);
-			int qualC = (int) _parseReadDouble(file,c);
-			_parseSkipBlanks(file,c);
-			int qualG = (int) _parseReadDouble(file,c);
-			_parseSkipBlanks(file,c);
-			int qualT = (int) _parseReadDouble(file,c);
-			int qual = _max( _max(qualA, qualC), _max(qualG, qualT) );
+            int quals[4] = {0, 0, 0, 0};
+
+            for (int i = 0; i < 4; ++i)
+            {
+                clear(buffer);
+                double tmp = 0;
+
+                if (skipBlanks(reader) != 0)
+                    return 1;
+                int res = readFloat(buffer, reader);
+                if (res != 0 && !((res == EOF_BEFORE_SUCCESS) && (pos + 1 == pm_options.totalN)))
+                    return 1;
+                if (!lexicalCast2(tmp, buffer))
+                    return 1;
+                quals[i] = (int)tmp;
+            }
+
+			int qual = std::max(std::max(quals[0], quals[1]), std::max(quals[2], quals[3]));
 
 			avgReadQual += qual;
 			tempReadQual[pos] = qual;
@@ -224,7 +238,9 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
 		if((int)(avgReadQual/pm_options.totalN) < pm_options.qualityCutoff) 
 		{
 			++kickout;
-			_parseSkipLine2(file, c);
+            int res = skipLine(reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return 1;
 			continue;
 		}
 		else{
@@ -237,7 +253,9 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
 		}
 //		::std::cout << ::std::endl;
 			
-		_parseSkipLine2(file, c);
+        int res = skipLine(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return 1;
 	}
 	::std::cout << " Readcount = " << count[0] << "\t";
 	::std::cout << " kicked out " << kickout << " low quality reads." << std::endl;
@@ -249,6 +267,8 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
  		f = _convertSolexaQual2ErrProb(f);
 		avg[t] = f;
 	}
+
+    return 0;
 }
 
 

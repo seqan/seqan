@@ -57,10 +57,10 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_prb_file)
     std::stringstream ss;
     ss << "40 -40 -40 -40    10 20 30 40    30 30 20 10    10 20 10 10\n"
        << "10 -40 -40 -40    10 10 0 10      9  0  0  0     5  5  5 10\n"
-       << "40 -40 -40 -40    10 20 30 40    30 30 20 10    10 20 10 10\n";
+       << "40 -40 -40 -40    10 20 30 40    30 30 20 10    10 20 10 10";
     ss.seekg(0);
     
-    qualityDistributionFromPrbFile(ss, qualDist, pmOptions);
+    SEQAN_ASSERT_EQ(qualityDistributionFromPrbFile(ss, qualDist, pmOptions), 0);
     
     SEQAN_ASSERT_EQ(length(qualDist), 4u);
     SEQAN_ASSERT_IN_DELTA(qualDist[0], 9.999e-05, 1.0e-07);
