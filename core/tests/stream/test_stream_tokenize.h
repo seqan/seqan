@@ -187,20 +187,44 @@ SEQAN_DEFINE_TEST(test_stream_tokenizing_read_float)
     using namespace seqan;
     typedef Stream<CharArray<char const *> > TStream;
 
-    char const * FILE_CONTENTS = "3.456 -3.456";
+    char const * FILE_CONTENTS = "3.456 -3.456 +3.456 .1e03 0.1e+03 0.1E-3 0e00";
     TStream stream(FILE_CONTENTS, FILE_CONTENTS + strlen(FILE_CONTENTS));
     RecordReader<TStream, SinglePass<> > reader(stream);
     
     CharString buf;
-    
+
+    // Floating point number without sign.
     SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
     SEQAN_ASSERT_EQ(buf, "3.456");
 
     goNext(reader);
     clear(buf);
 
-    SEQAN_ASSERT_EQ(readFloat(buf, reader), EOF_BEFORE_SUCCESS);
+    // Floating point number with signs.
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
     SEQAN_ASSERT_EQ(buf, "-3.456");
+    goNext(reader);
+    clear(buf);
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, "+3.456");
+
+    // Floating point number with scientific notation.
+    goNext(reader);
+    clear(buf);
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, ".1e03");
+    goNext(reader);
+    clear(buf);
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, "0.1e+03");
+    goNext(reader);
+    clear(buf);
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), 0);
+    SEQAN_ASSERT_EQ(buf, "0.1E-3");
+    goNext(reader);
+    clear(buf);
+    SEQAN_ASSERT_EQ(readFloat(buf, reader), EOF_BEFORE_SUCCESS);
+    SEQAN_ASSERT_EQ(buf, "0e00");
 }
 
 SEQAN_DEFINE_TEST(test_stream_tokenizing_read_until_tab_or_line_break)

@@ -1263,8 +1263,7 @@ readGraphs(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 .Function.readFloat
 ..cat:Input/Output
 ..summary:Read characters from stream as long as the number is a valid floating point numbers.
-..description:A floating point number matches either $"[digits]+.[digits]*"$ or $"[digits]"$ or $"[digits]*.[digits]+"$.
-..description:Scientific notation is currently not supported.
+..description:Supports normal floating point numbers and scientific notation.
 ..signature:readFloat(TBuffer & buffer, RecordReader<TStream, TPass> & recordReader)
 ..param.buffer:The buffer to write to
 ...type:Shortcut.CharString
@@ -1284,29 +1283,71 @@ template <typename TStream, typename TPass, typename TBuffer>
 inline int
 readFloat(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 {
-    unsigned lenMinus = (value(reader) == '-' || value(reader) == '+');
-    if (lenMinus)
+    if (atEnd(reader))
+        return EOF_BEFORE_SUCCESS;
+
+    // Read sign if any.
+    if (value(reader) == '+' || value(reader) == '-')
+        if (readNChars(buffer, reader, 1) != 0)
+            return 1;
+
+    if (atEnd(reader))
+        return EOF_BEFORE_SUCCESS;
+
+    int res = 0;
+
+    // Either read [0-9]+(\.[0-9]*)? or \.[0-9]+.
+    if (value(reader) == '.')
     {
-        appendValue(buffer, value(reader));
-        goNext(reader);
+        res = readNChars(buffer, reader, 1);
+        if (res != 0)
+            return res;
+        if (atEnd(reader))
+            return EOF_BEFORE_SUCCESS;
+        if (!isdigit(value(reader)))
+            return 1;
+        if ((res = readDigits(buffer, reader)) != 0)
+            return res;
     }
-    unsigned lenPre = length(buffer);
-    int res = _readHelper(buffer, reader, Digit_(), false);
-    if (res != 0)
-        return res;
-    unsigned digitsBeforeDot = length(buffer) - lenPre - lenMinus;
+    else
+    {
+        // A row of digits must follow.
+        if (!isdigit(value(reader)))
+            return 1;  // Invalid.
+        res = readDigits(buffer, reader);
+        // The input may end after these digits.
+        if (res == EOF_BEFORE_SUCCESS)
+            return 0;
+        if (res != 0)
+            return 1;
+        // Read \.[0-9]* block.
+        if (value(reader) == '.')
+        {
+            res = readNChars(buffer, reader, 1);
+            // The input may end after the dot.
+            if (res == EOF_BEFORE_SUCCESS)
+                return 0;
+            if (res != 0)
+                return 1;
+            if (isdigit(value(reader)))
+                if ((res = readDigits(buffer, reader)) != 0)
+                    return res;
+        }
+    }
 
-    if (value(reader) != '.')
+    if (value(reader) != 'e' && value(reader) != 'E')
         return 0;
+    if ((res = readNChars(buffer, reader, 1)) != 0)
+        return res;
+    if (value(reader) == '+' || value(reader) == '-')
+        if ((res = readNChars(buffer, reader, 1)) != 0)
+            return res;
+    if (!isdigit(value(reader)))
+        return 1;
+    if ((res = readDigits(buffer, reader)) != 0)
+        return res;
 
-    appendValue(buffer, value(reader));
-    goNext(reader);
-
-    if (digitsBeforeDot == 0u && !isdigit(value(reader)))
-        return 1;  // No digits before dot but no digit afterwards.
-
-    res = _readHelper(buffer, reader, Digit_(), false);
-    return res;
+    return 0;
 }
 
 /**
