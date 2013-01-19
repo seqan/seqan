@@ -491,6 +491,7 @@ inline TValueS getMinCov(TValueQ q, TValueS s, TValueT t)
 }
 
 
+// Returns number of newly read shapes, not status code.
 template<typename TShapes, typename TFile>
 int
 parseShapesFromFile(TShapes & shapeStrings,
@@ -498,18 +499,23 @@ parseShapesFromFile(TShapes & shapeStrings,
 			ParamChooserOptions &)
 {
 //IOREV see comments in other paramChooser.h
-	if (_streamEOF(file)) return 0;
-	
-	signed char c = _streamGet(file);
-	_parseSkipWhitespace(file, c);
+    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
 
-	while (!_streamEOF(file))
-	{
-		CharString shape;
-		_parse_readShape(file, c, shape);
-		appendValue(shapeStrings, shape);
-		_parseSkipLine2(file, c);
-	}
+    int res = 0;
+    while (!atEnd(reader))
+    {
+        if (skipWhitespaces(reader) != 0)
+            break;
+        seqan::CharString shape;
+        res = readDigits(shape, reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            break;
+        appendValue(shapeStrings, shape);
+        res = skipLine(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            break;
+    }
+
 	return length(shapeStrings);
 }
 
@@ -869,23 +875,6 @@ getParamsFilename(TSStr & paramsfile, ParamChooserOptions & pm_options)
 
 //////////////////////////////////////////////////////////////////////////////
 
-// TODO(holtgrew): Remove!
-template<typename TFile, typename TChar>
-inline void
-_parse_readShape(TFile & file, TChar& c, CharString & str)
-{
-//IOREV see comments in other paramChooser.h
-	// Read word
-	append(str, c);
-	while (!_streamEOF(file)) {
-		c = _streamGet(file);
-		if (!(c == '1' || c == '0')) break;
-		append(str, c);
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
 
 template<typename TShape>
 inline int
@@ -934,43 +923,78 @@ parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOpt
 		errorsWanted = pm_options.extrapolK;
 	}
 
-	char c = _streamGet(file);
-	if(_streamEOF(file))
-	{
+    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
+    if (atEnd(reader))
+    {
 		if(pm_options.verbose) ::std::cerr << "Loss rate file is empty!" << ::std::endl;
 		return false;
-        }
-	if(c == 'e') //header line
-	{
-		_parseSkipLine(file,c);
-		_parseSkipLine(file,c);
-	}
+    }
+
+    // Skip header lines.
+    if (value(reader) == 'e')
+        if (skipLine(reader) != 0 || skipLine(reader) != 0)
+            return false;
 	
 	bool atLeastOneFound = false;
-	while(!_streamEOF(file))
+    int res = 0;
+    seqan::CharString buffer;
+    while (!atEnd(reader))
 	{
-		unsigned numErrors = _parseReadNumber(file,c);
-		_parseSkipWhitespace(file,c);
+		unsigned numErrors = 0;
+        clear(buffer);
+        if (readDigits(buffer, reader) != 0)
+            return false;
+        if (!lexicalCast2(numErrors, buffer))
+            return false;
+        if (skipWhitespaces(reader) != 0)
+            return false;
 		if(numErrors != errorsWanted)
 		{
-			_parseSkipLine(file,c);
+            res = skipLine(reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return false;
 			continue;
 		}
 
 		CharString currShape;
-		_parse_readShape(file, c, currShape);
+        if (readDigits(currShape, reader) != 0)
+            return false;
 		if((pm_options.chooseUngappedOnly && numGaps(currShape)>0) || (pm_options.chooseOneGappedOnly && numGaps(currShape)>1))
 		{
-			_parseSkipLine(file,c); 
+            res = skipLine(reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return false;
 			continue;
 		}
-		_parseSkipWhitespace(file,c);
-		unsigned currThreshold = (unsigned)(_parseReadNumber(file,c) * extrapolFactor); //when extrapolating from shorter read lengths, threshold can be at least linearly increased
-		_parseSkipWhitespace(file,c);
+        if (skipWhitespaces(reader) != 0)
+            return false;
+        clear(buffer);
+        if (readDigits(buffer, reader) != 0)
+            return false;
+        unsigned tmp = 0;
+        if (!lexicalCast2(tmp, buffer))
+            return false;
+		unsigned currThreshold = (unsigned)(tmp * extrapolFactor); //when extrapolating from shorter read lengths, threshold can be at least linearly increased
+        if (skipWhitespaces(reader) != 0)
+            return false;
 
-		TFloat currLossrate = _parseReadEValue(file,c);
-		_parseSkipWhitespace(file,c);
-		unsigned currMeasure = _parseReadNumber(file,c); // potential matches measured on simulated reads
+		TFloat currLossrate = 0;
+        clear(buffer);
+        if (readFloat(buffer, reader) != 0)
+            return false;
+        if (!lexicalCast2(currLossrate, buffer))
+            return false;
+
+        if (skipWhitespaces(reader) != 0)
+            return false;
+
+		unsigned currMeasure = 0; // potential matches measured on simulated reads
+        clear(buffer);
+        res = readDigits(buffer, reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return false;
+        if (!lexicalCast2(currMeasure, buffer))
+            return false;
 
 		//std::cout << numErrors << "\t" << currShape << "\t" << currThreshold << "\t" << currLossrate << "\t" << currMeasure << std::endl;
 		if(currThreshold >= pm_options.minThreshold && currLossrate <= pm_options.optionLossRate /*&& val > bestSoFar*/)
@@ -992,7 +1016,9 @@ parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOpt
 						//next measure: threshold
 						if(thresholds[weight-1] > currThreshold) 
 						{
-							_parseSkipLine(file,c); 
+                            res = skipLine(reader);
+                            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                                return false;
 							continue;
 						}
 						else if(thresholds[weight-1] == currThreshold) undecided = true;
@@ -1000,7 +1026,9 @@ parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOpt
 						//if still undecided: next measure: span
 						if(undecided && length(shapes[weight-1]) > length(currShape))
 						{
-							_parseSkipLine(file,c); 
+                            res = skipLine(reader);
+                            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                                return false;
 							continue;
 						}
 						else if(undecided && length(shapes[weight-1]) < length(currShape)) undecided = false;
@@ -1008,7 +1036,9 @@ parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOpt
 						//if still undecided: next measure: lossrate
 						if(undecided && lossrates[weight-1] < currLossrate)
 						{
-							_parseSkipLine(file,c); 
+                            res = skipLine(reader);
+                            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                                return false;
 							continue;
 						}
 					}
@@ -1030,8 +1060,10 @@ parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOpt
 			
 			}
 		}
-		_parseSkipLine(file,c);
-
+        res = skipLine(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return false;
+        
         }
 	if(!atLeastOneFound)
 	{
@@ -1167,15 +1199,20 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
 				return false;
 			}
 			unsigned count = 0;
-			char c = _streamGet(file);
-			while(!_streamEOF(file) && count < pm_options.totalN)
-			{
-				_parseSkipWhitespace(file,c);
-				errorDistribution[count] = _parseReadEValue(file,c);// + (TFloat) 1.0/maxN;
-				++count;
-			}
+            seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(file);
+            for (; !atEnd(reader) && count < pm_options.totalN; ++count)
+            {
+                seqan::CharString buffer;
+                if (skipWhitespaces(reader) != 0)
+                    break;
+                int res = readFloat(buffer, reader);
+                if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                    break;
+                if (!lexicalCast2(errorDistribution[count], buffer))
+                    break;
+            }
 			file.close();
-			if(count != pm_options.totalN)
+			if(count != pm_options.totalN + 1)
 			{
 				::std::cerr << "Error distribution file must contain at least " << pm_options.totalN << " probability values (one value per line)." << std::endl;
 				return false;

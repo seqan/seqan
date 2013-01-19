@@ -136,7 +136,7 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_int_file)
     SEQAN_ASSERT_IN_DELTA(qualDist[3], 0.00990099, 1.0e-07);
 }
 
-SEQAN_DEFINE_TEST(test_param_chooser_parse_read_gapped_params)
+SEQAN_DEFINE_TEST(test_param_chooser_parse_gapped_params)
 {
     seqan::ParamChooserOptions pmOptions;
     pmOptions.totalN = 4;         // Read length.
@@ -179,12 +179,32 @@ SEQAN_DEFINE_TEST(test_param_chooser_parse_read_gapped_params)
     SEQAN_ASSERT_NOT(parseGappedParams(rOptions, ss, pmOptions));
 }
 
+SEQAN_DEFINE_TEST(test_param_parse_shapes_from_file)
+{
+    seqan::ParamChooserOptions pmOptions;
+
+    std::stringstream ss;
+    ss << "    11000000100100101        \n"
+       << "1111100001\n"
+       << "1111100001";
+    ss.seekg(0);
+
+    seqan::String<seqan::CharString> shapes;
+    SEQAN_ASSERT_EQ(parseShapesFromFile(shapes, ss, pmOptions), 3u);
+
+    SEQAN_ASSERT_EQ(length(shapes), 3u);
+    SEQAN_ASSERT_EQ(shapes[0], "11000000100100101");
+    SEQAN_ASSERT_EQ(shapes[1], "1111100001");
+    SEQAN_ASSERT_EQ(shapes[2], "1111100001");
+}
+
 SEQAN_BEGIN_TESTSUITE(test_param_chooser)
 {
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_prb_file);
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_fastq_file);
     SEQAN_CALL_TEST(test_param_chooser_quality_distribution_from_fastq_int_file);
 
-    SEQAN_CALL_TEST(test_param_chooser_parse_read_gapped_params);
+    SEQAN_CALL_TEST(test_param_chooser_parse_gapped_params);
+    SEQAN_CALL_TEST(test_param_parse_shapes_from_file);
 }
 SEQAN_END_TESTSUITE
