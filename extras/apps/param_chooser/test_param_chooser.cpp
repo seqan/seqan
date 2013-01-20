@@ -190,7 +190,7 @@ SEQAN_DEFINE_TEST(test_param_parse_shapes_from_file)
     ss.seekg(0);
 
     seqan::String<seqan::CharString> shapes;
-    SEQAN_ASSERT_EQ(parseShapesFromFile(shapes, ss, pmOptions), 3u);
+    SEQAN_ASSERT_EQ(parseShapesFromFile(shapes, ss, pmOptions), 3);
 
     SEQAN_ASSERT_EQ(length(shapes), 3u);
     SEQAN_ASSERT_EQ(shapes[0], "11000000100100101");
