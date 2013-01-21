@@ -19,6 +19,7 @@ Lesser General Public License for more details.
 #include <seqan/graph_msa.h>
 #include <seqan/modifier.h>
 #include <seqan/arg_parse.h>
+#include <seqan/stream.h>
 
 #include <iostream>
 #include <fstream>
@@ -29,39 +30,71 @@ using namespace seqan;
 //////////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TMat, typename TNames>
-inline void 
+inline int
 _readPhylipMatrix(TFile& file,
-				  TMat& matrix,
-				  TNames& names)
+                  TMat& matrix,
+                  TNames& names)
 {
 //IOREV can probably stay here since its too unimportant for the rest of seqan
-	typedef typename Value<TFile>::Type TValue;
-	typedef typename Value<TMat>::Type TDistance;
-	typedef typename Size<TMat>::Type TSize;
-	typedef typename Value<TNames>::Type TName;
-	typedef typename Iterator<TMat, Standard>::Type TMatIter;
+    typedef typename Value<TFile>::Type TValue;
+    typedef typename Value<TMat>::Type TDistance;
+    typedef typename Size<TMat>::Type TSize;
+    typedef typename Value<TNames>::Type TName;
+    typedef typename Iterator<TMat, Standard>::Type TMatIter;
 
-	// Parse the file and convert the internal ids
-	TValue c;
-	if (_streamEOF(file)) return;
-	else c = _streamGet(file);
-	while (!_streamEOF(file)) {
-		if (_streamEOF(file)) break;
-		_parseSkipWhitespace(file, c);
-		TSize nseq = _parseReadNumber(file, c);
-		_parseSkipWhitespace(file, c);
-		resize(matrix, nseq * nseq);
-		resize(names, nseq);
-		TMatIter it = begin(matrix, Standard());
-		for(TSize row = 0; row<nseq; ++row) {
-			_parseReadIdentifier(file, names[row], c);
-			_parseSkipWhitespace(file, c);
-			for(TSize col = 0; col<nseq; ++col, ++it) {
-				*it = _parseReadDouble(file, c);
-				_parseSkipWhitespace(file, c);
-			}
-		}
-	}
+    RecordReader<TFile, SinglePass<> > reader(file);
+
+    // Parse the file and convert the internal ids.
+    if (atEnd(reader))
+        return 1;
+    CharString buffer;
+    while (!atEnd(reader))
+    {
+        clear(buffer);
+        if (skipWhitespaces(reader) != 0)
+            return 1;  // Could not skip whitespaces.
+        if (readDigits(buffer, reader) != 0)
+            return 1;  // Could not read.
+        TSize nseq = 0;
+        if (!lexicalCast2(nseq, buffer))
+            return 1;  // Could not convert.
+        if (skipLine(reader) != 0)
+            return 1;  // Could not skip line.
+
+        resize(matrix, nseq * nseq);
+        resize(names, nseq);
+
+        TMatIter it = begin(matrix, Standard());
+        for (TSize row = 0; row < nseq; ++row)
+        {
+            if (readGraphs(names[row], reader) != 0)  // read name
+                return 1;
+            if (skipWhitespaces(reader) != 0)  // skip whitespace
+                return 1;
+            for (TSize col = 0; col < nseq; ++col, ++it)
+            {
+                clear(buffer);
+                int res = readFloat(buffer, reader);
+                if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                    return 1;  // Could not read.
+                if (!lexicalCast2(*it, buffer))
+                    return 1;  // Could not convert.
+
+                // Handling of allowing EOF without NL at end of file.
+                if (res != EOF_BEFORE_SUCCESS)
+                    res = skipWhitespaces(reader);
+                if (res != 0)
+                {
+                    if (res != EOF_BEFORE_SUCCESS)
+                        return 1;
+                    if (col + 1 == nseq && row + 1 == nseq)
+                        break;
+                }
+            }
+        }
+    }
+
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +169,11 @@ int main(int argc, const char *argv[])
         std::cerr << "Could not open file " << infile.c_str() << std::endl;
         return 1;
     }
-	_readPhylipMatrix(strmMat, matrix, names);	
+	if (_readPhylipMatrix(strmMat, matrix, names) != 0)
+	{
+	    std::cerr << "Could not read from " << infile.c_str() << std::endl;
+	    return 1;
+	}
 	fclose(strmMat);
 
 	// Create the tree
