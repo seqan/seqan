@@ -1261,6 +1261,7 @@ readGraphs(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 
 /**
 .Function.readFloat
+..class:Class.RecordReader
 ..cat:Input/Output
 ..summary:Read characters from stream as long as the number is a valid floating point numbers.
 ..description:Supports normal floating point numbers and scientific notation.
