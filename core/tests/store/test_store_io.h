@@ -481,7 +481,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
     seqan::FragmentStore<> store;
     std::fstream fAmosIn(toCString(inPath), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(fAmosIn.good());
-    read(fAmosIn, store, seqan::Amos());
+    int res = read(fAmosIn, store, seqan::Amos());
+    SEQAN_ASSERT_EQ(res, 0);
 
     // Write out contigs and SAM file.
     std::fstream fSamOut(toCString(outPathSam), std::ios::binary | std::ios::out);
@@ -528,7 +529,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
 
     // Write out AMOS file.
     std::fstream fAmosOut(toCString(outPathAmos), std::ios::binary | std::ios::out);
-    write(fAmosOut, store, seqan::Amos());
+    int res = write(fAmosOut, store, seqan::Amos());
+    SEQAN_ASSERT_EQ(res, 0);
     fAmosOut.close();
 
     // Compare result.

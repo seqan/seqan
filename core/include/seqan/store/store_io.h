@@ -147,17 +147,16 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
 ..param.fragStore:A fragment store. Currently @Tag.File Format.tag.Amos message file@ and @Tag.File Format.tag.Sam@ formats are supported.
 ...type:Class.FragmentStore
 ..param.tag.type:Tag.File Format.tag.Amos message file
+..returns:An $int$ value with a status code. $0$ on success, a non-$0$ value on failure.
 ..include:seqan/store.h
 */
 
 template<typename TFile, typename TSpec, typename TConfig>
-inline void
+inline int
 read(TFile & file,
 	 FragmentStore<TSpec, TConfig>& fragStore,
 	 Amos)
 {
-//IOREV
-	SEQAN_CHECKPOINT
 	// Basic types
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Id<TFragmentStore>::Type TId;
@@ -185,153 +184,249 @@ read(TFile & file,
 	// The id of the next pair match.
 	unsigned nextPairMatchId = 0;
 
-	// Parse the file and convert the internal ids
-	TValue c;
-	if (_streamEOF(file)) return;
-	else c = _streamGet(file);
-	while (!_streamEOF(file)) {
-		if (_streamEOF(file)) break;
+    RecordReader<TFile, SinglePass<> > reader(file);
 
+	// Parse the file and convert the internal ids
+    if (atEnd(reader))
+        return 1;
+
+    while (!atEnd(reader))
+    {
 		// New block?
-		if (c == '{') {
-			c = _streamGet(file);
+		if (value(reader) == '{')
+        {
+            goNext(reader);
 			String<char> blockIdentifier;
-			_parseReadAlnum(file, blockIdentifier, c);
-			_parseSkipLine(file, c);
+            if (readAlphaNums(blockIdentifier, reader) != 0)
+                return 1;
+            if (skipLine(reader) != 0)
+                return 1;
 
 			// Library block
-			if (blockIdentifier == "LIB") {
+			if (blockIdentifier == "LIB")
+            {
+                // The LIB block contains the mean template length/insert size and standard deviation thereof.  Besides
+                // the numeric id and (iid) a (external) name of the library (eid).
 				TLibraryStoreElement libEl;
 				TId _id = 0;
 				String<char> fieldIdentifier;
 				String<char> eid;
-				while (c != '}') {
+				while (!atEnd(reader) && value(reader) != '}')
+                {
 					clear(fieldIdentifier);
-					_parseReadAlnum(file, fieldIdentifier, c);
-					if (fieldIdentifier == "iid") {
-						c = _streamGet(file);
-						_id = _parseReadNumber(file, c);
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "eid") {
-						c = _streamGet(file);
-						while ((c != '\n') && (c != '\r')) {
-							appendValue(eid, c, Generous());
-							c = _streamGet(file);
-						}
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "mea") {
-						c = _streamGet(file);
-						libEl.mean = _parseReadDouble(file, c);
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "std") {
-						c = _streamGet(file);
-						libEl.std = _parseReadDouble(file, c);
-						_parseSkipLine(file, c);
-					} else {
-						_parseSkipLine(file, c);
+                    if (readAlphaNums(fieldIdentifier, reader) != 0)
+                        return 1;
+					if (fieldIdentifier == "iid")
+                    {
+                        goNext(reader);
+                        CharString buffer;
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(_id, buffer))
+                            return 1;
 					}
+                    else if (fieldIdentifier == "eid")
+                    {
+                        goNext(reader);
+                        if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
+                            return 1;
+					}
+                    else if (fieldIdentifier == "mea" || fieldIdentifier == "std")
+                    {
+                        goNext(reader);
+                        CharString buffer;
+                        if (readFloat(buffer, reader) != 0)
+                            return 1;
+                        if (fieldIdentifier == "mea" && !lexicalCast2(libEl.mean, buffer))
+                            return 1;
+                        if (fieldIdentifier == "std" && !lexicalCast2(libEl.std, buffer))
+                            return 1;
+					}
+                    // Always skip over the remainder of the line.
+                    if (skipLine(reader) != 0)
+                        return 1;
 				}
+
+                // Skip '}'.
+                if (!atEnd(reader))
+                {
+                    SEQAN_ASSERT_EQ(value(reader), '}');
+                    goNext(reader);
+                }
+
+                // Insert library information into the fragmentstore.
 				libIdMap.insert(std::make_pair(_id, length(fragStore.libraryStore)));
 				appendValue(fragStore.libraryStore, libEl, Generous() );
 				appendValue(fragStore.libraryNameStore, eid, Generous() );
-			} else if (blockIdentifier == "FRG") {  // Fragment block
+			}
+            else if (blockIdentifier == "FRG")
+            {
+                // The FRG block contains the parent library (lib), links to the paired sequencing reads (rds), internal
+                // id (iid) and external id (eid).
 				TMatePairElement matePairEl;
 				TId _id = 0;
 				String<char> fieldIdentifier;
 				String<char> eid;
+                CharString buffer;
 				bool foundRds = false;
-				while (c != '}') {
+				while (!atEnd(reader) && value(reader) != '}')
+                {
 					clear(fieldIdentifier);
-					_parseReadAlnum(file, fieldIdentifier, c);
-					if (fieldIdentifier == "iid") {
-						c = _streamGet(file);
-						_id = _parseReadNumber(file, c);
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "eid") {
-						c = _streamGet(file);
-						while ((c != '\n') && (c != '\r')) {
-							appendValue(eid, c, Generous() );
-							c = _streamGet(file);
-						}
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "lib") {
-						c = _streamGet(file);
-						matePairEl.libId = _parseReadNumber(file, c);
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "rds") {
+                    if (readAlphaNums(fieldIdentifier, reader) != 0)
+                        return 1;
+					if (fieldIdentifier == "iid")
+                    {
+                        goNext(reader);
+                        clear(buffer);
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(_id, buffer))
+                            return 1;
+					}
+                    else if (fieldIdentifier == "eid")
+                    {
+                        goNext(reader);
+                        if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
+                            return 1;
+					}
+                    else if (fieldIdentifier == "lib")
+                    {
+                        goNext(reader);
+                        clear(buffer);
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(matePairEl.libId, buffer))
+                            return 1;
+					}
+                    else if (fieldIdentifier == "rds")
+                    {
+                        goNext(reader);
 						foundRds = true;
-						c = _streamGet(file);
-						matePairEl.readId[0] = _parseReadNumber(file, c);
-						c = _streamGet(file);  // Skip comma.
-						matePairEl.readId[1] = _parseReadNumber(file, c);
-						_parseSkipLine(file, c);
+                        clear(buffer);
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(matePairEl.readId[0], buffer))
+                            return 1;
+                        goNext(reader);
+                        clear(buffer);
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(matePairEl.readId[1], buffer))
+                            return 1;
+
 						// Store mapping to pair match id.
 						readToPairMatchId[matePairEl.readId[0]] = nextPairMatchId;
 						readToPairMatchId[matePairEl.readId[1]] = nextPairMatchId;
 						nextPairMatchId += 1;
-					} else {
-						_parseSkipLine(file, c);
-					}
+                    }
+                    // Always skip over the remainder of the line.
+                    if (skipLine(reader) != 0)
+                        return 1;
 				}
+
+                // Skip '}'.
+                if (!atEnd(reader))
+                {
+                    SEQAN_ASSERT_EQ(value(reader), '}');
+                    goNext(reader);
+                }
+
 				// Only insert valid mate pairs
 				if (foundRds) {
 					frgIdMap.insert(std::make_pair(_id, length(fragStore.matePairStore)));
 					appendValue(fragStore.matePairStore, matePairEl, Generous() );
 					appendValue(fragStore.matePairNameStore, eid, Generous() );
 				}
-			} else if (blockIdentifier == "RED") {   // Read block
+			}
+            else if (blockIdentifier == "RED")  // Read block.
+            {
 				TId _id = 0;
 				String<char> fieldIdentifier;
 				String<char> eid;
 				String<char> qual;
+                CharString buffer;
 				// If matePairId is not updated, this yields to a singleton read below.
 				TId matePairId = TReadStoreElement::INVALID_ID;
 				TReadSeq seq;
-				while (c != '}') {
+                while (!atEnd(reader) && value(reader) != '}')
+                {
 					clear(fieldIdentifier);
-					_parseReadAlnum(file, fieldIdentifier, c);
-					if (fieldIdentifier == "iid") {
-						c = _streamGet(file);
-						_id = _parseReadNumber(file, c);
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "eid") {
-						c = _streamGet(file);
-						while ((c != '\n') && (c != '\r')) {
-							appendValue(eid, c, Generous() );
-							c = _streamGet(file);
-						}
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "frg") {
-						c = _streamGet(file);
-						matePairId = _parseReadNumber(file, c);
-						_parseSkipLine(file, c);
-					} else if (fieldIdentifier == "seq") {
-						c = _streamGet(file);
-						_parseSkipWhitespace(file, c);
-						while (c != '.') {
-							_parseReadSequenceData(file,c,seq);
-							_parseSkipWhitespace(file, c);
-						}
-					} else if (fieldIdentifier == "qlt") {
-						clear(qual);
-						c = _streamGet(file);
-						_parseSkipWhitespace(file, c);
-						while (c != '.') {
-							if ((c!=' ') && (c != '\t') && (c != '\n') && (c != '\r')) appendValue(qual, c, Generous() );
-							c = _streamGet(file);
-						}
-					} else {
-						_parseSkipLine(file, c);
+                    if (readAlphaNums(fieldIdentifier, reader) != 0)
+                        return 1;
+					if (fieldIdentifier == "iid")
+                    {
+                        goNext(reader);
+                        clear(buffer);
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(_id, buffer))
+                            return 1;
 					}
+                    else if (fieldIdentifier == "eid")
+                    {
+                        goNext(reader);
+                        if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
+                            return 1;
+					}
+                    else if (fieldIdentifier == "frg")
+                    {
+                        goNext(reader);
+                        clear(buffer);
+                        if (readDigits(buffer, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(matePairId, buffer))
+                            return 1;
+                    }
+                    else if (fieldIdentifier == "seq")
+                    {
+                        goNext(reader);
+                        clear(seq);
+                        if (skipWhitespaces(reader) != 0)
+                            return 1;
+                        while (!atEnd(reader) && value(reader) != '.')
+                        {
+                            if (readLetters(seq, reader) != 0)
+                                return 1;
+                            if (skipWhitespaces(reader) != 0)
+                                return 1;
+                        }
+                        // Skip '.'.
+                        if (!atEnd(reader))
+                        {
+                            SEQAN_ASSERT_EQ(value(reader), '.');
+                            goNext(reader);
+                        }
+                    }
+                    else if (fieldIdentifier == "qlt")
+                    {
+                        // TODO(holtgrew): Problematic if . part of qualities, need to count chars.
+                        goNext(reader);
+                        clear(qual);
+                        for (; !atEnd(reader) && value(reader) != '.'; goNext(reader))
+                            if (isgraph(value(reader)))
+                                appendValue(qual, value(reader));
+                    }
+                    // Always skip over the remainder of the line.
+                    if (skipLine(reader) != 0)
+                        return 1;
 				}
 				// Set quality
 				assignQualities(seq, qual);
+
+                // Skip '}'.
+                if (!atEnd(reader))
+                {
+                    SEQAN_ASSERT_EQ(value(reader), '}');
+                    goNext(reader);
+                }
 
 				// Insert the read
 				readIdMap.insert(std::make_pair(_id, length(fragStore.readStore)));
 				appendRead(fragStore, seq, matePairId);
 				appendValue(fragStore.readNameStore, eid, Generous() );
-			} else if (blockIdentifier == "CTG") {   // Contig block
+			}
+            else if (blockIdentifier == "CTG")  // Contig block
+            {
 				TContigElement contigEl;
 				TSize fromAligned = length(fragStore.alignedReadStore);
 				// TId _id = 0;
@@ -339,9 +434,13 @@ read(TFile & file,
 				String<char> eid;
 				String<char> contigSeq;
 				String<char> contigQual;
-				while (c != '}') {
+                String<char> buffer;
+				while (!atEnd(reader) && value(reader) != '}')
+                {
 					// Are we entering a TLE block
-					if (c == '{') {
+					if (value(reader) == '{')
+                    {
+                        goNext(reader);
 						TAlignedElement alignEl;
 						String<char> fdIdentifier;
 						typedef typename TFragmentStore::TContigPos TContigPos;
@@ -349,39 +448,83 @@ read(TFile & file,
 						TContigPos clr1 = 0;
 						TContigPos clr2 = 0;
 						String<TContigPos> gaps;
-						while (c != '}') {
+						while (!atEnd(reader) && value(reader) != '}')
+                        {
 							clear(fdIdentifier);
-							_parseReadAlnum(file, fdIdentifier, c);
-							if (fdIdentifier == "src") {
-								c = _streamGet(file);
-								alignEl.readId = _parseReadNumber(file, c);
-								_parseSkipLine(file, c);
+                            if (readAlphaNums(fdIdentifier, reader) != 0)
+                                return 1;
+							if (fdIdentifier == "src")
+                            {
+                                goNext(reader);
+                                clear(buffer);
+                                if (readDigits(buffer, reader) != 0)
+                                    return 1;
+                                if (!lexicalCast2(alignEl.readId, buffer))
+                                    return 1;
 							} else if (fdIdentifier == "off") {
-								c = _streamGet(file);
-								if (c != '-') offsetPos = _parseReadNumber(file, c);
-								else offsetPos = 0;
-								_parseSkipLine(file, c);
-							} else if (fdIdentifier == "clr") {
-								c = _streamGet(file);
-								clr1 = _parseReadNumber(file, c);
-								c = _streamGet(file);
-								clr2 = _parseReadNumber(file, c);
-								_parseSkipLine(file, c);
-							} else if (fdIdentifier == "gap") {
-								c = _streamGet(file);
-								_parseSkipWhitespace(file, c);
-								while (c != '.') {
-									if ((c!=' ') && (c != '\t') && (c != '\n') && (c != '\r')) {
-										TSize nextGap = _parseReadNumber(file, c);
-										appendValue(gaps, nextGap, Generous() );
-									}
-									c = _streamGet(file);
-								}
-							} else {
-								_parseSkipLine(file, c);
+                                goNext(reader);
+                                if (atEnd(reader))
+                                    return 1;
+                                if (value(reader) == '-')
+                                {
+                                    offsetPos = 0;
+                                }
+                                else
+                                {
+                                    clear(buffer);
+                                    if (readDigits(buffer, reader) != 0)
+                                        return 1;
+                                    if (!lexicalCast2(offsetPos, buffer))
+                                        return 1;
+                                }
 							}
+                            else if (fdIdentifier == "clr")
+                            {
+                                goNext(reader);
+                                clear(buffer);
+                                if (readDigits(buffer, reader) != 0)
+                                    return 1;
+                                if (!lexicalCast2(clr1, buffer))
+                                    return 1;
+                                goNext(reader);
+                                clear(buffer);
+                                if (readDigits(buffer, reader) != 0)
+                                    return 1;
+                                if (!lexicalCast2(clr2, buffer))
+                                    return 1;
+							}
+                            else if (fdIdentifier == "gap")
+                            {
+                                goNext(reader);
+                                if (skipWhitespaces(reader) != 0)
+                                    return 1;
+                                for (; !atEnd(reader) && value(reader) != '.'; goNext(reader))
+                                {
+                                    if (!isspace(value(reader)))
+                                    {
+                                        clear(buffer);
+                                        if (readDigits(buffer, reader) != 0)
+                                            return 1;
+                                        TSize nextGap;
+                                        if (!lexicalCast2(nextGap, buffer))
+                                            return 1;
+										appendValue(gaps, nextGap);
+                                    }
+                                }
+
+                                // Skip '.'.
+                                if (!atEnd(reader))
+                                {
+                                    SEQAN_ASSERT_EQ(value(reader), '.');
+                                    goNext(reader);
+                                }
+							}
+                            // Always skip over the remainder of the line.
+                            if (skipLine(reader) != 0)
+                                return 1;
 						}
-						_parseSkipLine(file, c);
+                        if (!atEnd(reader) && skipLine(reader) != 0)
+                            return 1;
 
 						// Get the length of the read
 						TId readId = (readIdMap.find(alignEl.readId))->second;
@@ -441,41 +584,59 @@ read(TFile & file,
 						// Append new align fragment, note: contigId must still be set
 						alignEl.id = length(fragStore.alignedReadStore);
 						appendValue(fragStore.alignedReadStore, alignEl, Generous() );
-					} else {
+					}
+                    else
+                    {
+                        // String<char> buffer;
 						clear(fieldIdentifier);
-						_parseReadAlnum(file, fieldIdentifier, c);
-						if (fieldIdentifier == "iid") {
-							c = _streamGet(file);
-							//_id = _parseReadNumber(file, c);
-							_parseSkipLine(file, c);
-						} else if (fieldIdentifier == "eid") {
-							c = _streamGet(file);
-							while ((c != '\n') && (c != '\r')) {
-								appendValue(eid, c, Generous() );
-								c = _streamGet(file);
-							}
-							_parseSkipLine(file, c);
-						} else if (fieldIdentifier == "seq") {
-							c = _streamGet(file);
-							_parseSkipWhitespace(file, c);
-							while (c != '.') {
-								do {
-									_parseReadSequenceData(file,c,contigSeq);
-								} while (c == '-');
-								_parseSkipWhitespace(file, c);
-							}
-						} else if (fieldIdentifier == "qlt") {
-							c = _streamGet(file);
-							_parseSkipWhitespace(file, c);
-							while (c != '.') {
-								if ((c!=' ') && (c != '\t') && (c != '\n') && (c != '\r')) {
-									appendValue(contigQual, c, Generous() );
-								}
-								c = _streamGet(file);
-							}
-						} else {
-							_parseSkipLine(file, c);
+                        if (readAlphaNums(fieldIdentifier, reader) != 0)
+                            return 1;
+						if (fieldIdentifier == "iid")
+                        {
+                            // goNext(reader);
+                            // clear(buffer);
+                            // if (readDigits(buffer, reader) != 0)
+                            //     return 1;
+                            // if (!lexicalCast2(_id, buffer))
+                            //     return 1;
 						}
+                        else if (fieldIdentifier == "eid")
+                        {
+                            goNext(reader);
+                            if (readUntilOneOf(eid, reader, '\n', '\r') != 0)
+                                return 1;
+						}
+                        else if (fieldIdentifier == "seq")
+                        {
+                            goNext(reader);
+                            if (skipWhitespaces(reader) != 0)
+                                return 1;
+                            while (!atEnd(reader) && value(reader) != '.')
+                            {
+                                if (readLetters(contigSeq, reader) != 0)
+                                    return 1;
+                                if (skipWhitespaces(reader) != 0)
+                                    return 1;
+                            }
+                            // Skip '.'.
+                            if (!atEnd(reader))
+                            {
+                                SEQAN_ASSERT_EQ(value(reader), '.');
+                                goNext(reader);
+                            }
+						}
+                        else if (fieldIdentifier == "qlt")
+                        {
+                            goNext(reader);
+                            // TODO(holtgrew): Problematic if . part of qualities, need to count chars.
+                            clear(contigQual);
+                            for (; !atEnd(reader) && value(reader) != '.'; goNext(reader))
+                                if (isgraph(value(reader)))
+                                    appendValue(contigQual, value(reader));
+						}
+                        // Always skip over the remainder of the line.
+                        if (skipLine(reader) != 0)
+                            return 1;
 					}
 				}
 
@@ -521,10 +682,12 @@ read(TFile & file,
 				appendValue(fragStore.contigStore, contigEl, Generous() );
 				appendValue(fragStore.contigNameStore, eid, Generous() );
 			} else {
-				_parseSkipLine(file, c);
+                if (skipLine(reader) != 0)
+                    return 1;
 			}
 		} else {
-			_parseSkipLine(file, c);
+            if (skipLine(reader) != 0)
+                return 1;
 		}
 	}
 
@@ -595,6 +758,8 @@ read(TFile & file,
             }
 		}
 	}
+
+    return 0;
 }
 
 
@@ -603,275 +768,379 @@ read(TFile & file,
 /**
 .Function.write
 ..cat:Fragment Store
-..signature:write(file, fragStore, tag)
+..signature:int write(file, fragStore, tag)
 ..param.fragStore:A fragment store.
 ...type:Class.FragmentStore
 ..param.tag.type:Tag.File Format.tag.Amos message file
+..returns:An $int$ with the status code. $0$ on success, non-$0$ on errors.
 ..include:seqan/store.h
 */
 
 template<typename TFile, typename TSpec, typename TConfig>
-inline void 
+inline int
 write(TFile & target,
 	  FragmentStore<TSpec, TConfig>& fragStore,
-	  Amos) 
+	  Amos)
 {
-//IOREV
-	SEQAN_CHECKPOINT
-	// Basic types
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-	typedef typename Id<TFragmentStore>::Type TId;
-	typedef typename Size<TFragmentStore>::Type TSize;
-	typedef typename Value<TFile>::Type TValue;
+    // Basic types
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+    typedef typename Id<TFragmentStore>::Type TId;
+    typedef typename Size<TFragmentStore>::Type TSize;
+    typedef typename Value<TFile>::Type TValue;
 
-	// All fragment store element types
-	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
-	typedef typename Value<typename TFragmentStore::TLibraryStore>::Type TLibraryStoreElement;
-	typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
-	typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
-	typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
+    // All fragment store element types
+    typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
+    typedef typename Value<typename TFragmentStore::TLibraryStore>::Type TLibraryStoreElement;
+    typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
+    typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
+    typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 
-	// Write Header
-	_streamWrite(target,"{UNV\niid:1\neid:seqan\ncom:\nafg file created with SeqAn\n.\n}\n");
-	
-	// Write Libraries
-	typedef typename Iterator<typename TFragmentStore::TLibraryStore, Standard>::Type TLibIter;
-	TLibIter libIt = begin(fragStore.libraryStore, Standard() );
-	TLibIter libItEnd = end(fragStore.libraryStore, Standard() );
-	bool noNamesPresent = (length(fragStore.libraryNameStore) == 0);
-	for(TSize idCount = 0;libIt != libItEnd; goNext(libIt), ++idCount) {
-		_streamWrite(target,"{LIB\n");
-		_streamWrite(target,"iid:");
-		_streamPutInt(target, idCount + 1);
-		_streamPut(target, '\n');
-		if (!noNamesPresent) {
-			_streamWrite(target,"eid:");
-			_streamWrite(target, value(fragStore.libraryNameStore, idCount));
-			_streamPut(target, '\n');
-		}
-		_streamWrite(target,"{DST\n");
-		_streamWrite(target,"mea:");
-		_streamPutFloat(target, libIt->mean);
-		_streamPut(target, '\n');
-		_streamWrite(target,"std:");
-		_streamPutFloat(target, libIt->std);
-		_streamPut(target, '\n');
-		_streamWrite(target,"}\n");	
-		_streamWrite(target,"}\n");
-	}
+    // Write Header
+    String<char> temp = "{UNV\niid:1\neid:seqan\ncom:\nafg file created with SeqAn\n.\n}\n";
+    if (streamWriteBlock(target, &temp[0], length(temp)) != length(temp))
+        return 1;
 
-	// Write Fragments / mate pairs
-	typedef typename Iterator<typename TFragmentStore::TMatePairStore, Standard>::Type TMateIter;
-	TMateIter mateIt = begin(fragStore.matePairStore, Standard() );
-	TMateIter mateItEnd = end(fragStore.matePairStore, Standard() );
-	noNamesPresent = (length(fragStore.matePairNameStore) == 0);
-	for(TSize idCount = 0;mateIt != mateItEnd; goNext(mateIt), ++idCount) {
-		_streamWrite(target,"{FRG\n");
-		_streamWrite(target,"iid:");
-		_streamPutInt(target, idCount + 1);
-		_streamPut(target, '\n');
-		if (!noNamesPresent) {
-			_streamWrite(target,"eid:");
-			_streamWrite(target, value(fragStore.matePairNameStore, idCount));
-			_streamPut(target, '\n');
-		}
-		_streamWrite(target,"lib:");
-		_streamPutInt(target, mateIt->libId + 1);
-		_streamPut(target, '\n');
-		if ((mateIt->readId[0] != TMatePairElement::INVALID_ID) && (mateIt->readId[1] != TMatePairElement::INVALID_ID)) {
-			_streamWrite(target,"rds:");
-			_streamPutInt(target, mateIt->readId[0] + 1);
-			_streamPut(target, ',');
-			_streamPutInt(target, mateIt->readId[1] + 1);
-			_streamPut(target, '\n');
-		}
-		_streamWrite(target,"}\n");
-	}
+    // Write Libraries
+    typedef typename Iterator<typename TFragmentStore::TLibraryStore, Standard>::Type TLibIter;
+    TLibIter libIt = begin(fragStore.libraryStore, Standard() );
+    TLibIter libItEnd = end(fragStore.libraryStore, Standard() );
+    bool noNamesPresent = (length(fragStore.libraryNameStore) == 0);
+    for(TSize idCount = 0;libIt != libItEnd; goNext(libIt), ++idCount) {
+        if (streamWriteBlock(target,"{LIB\n", 5) != 5)
+            return 1;
+        if (streamWriteBlock(target,"iid:", 4) != 4)
+            return 1;
+        if (streamPut(target, idCount + 1))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if (!noNamesPresent) {
+            if (streamWriteBlock(target,"eid:", 4) != 4)
+                return 1;
+            if (streamWriteBlock(target, &value(fragStore.libraryNameStore, idCount)[0], length(value(fragStore.libraryNameStore, idCount))) != length(value(fragStore.libraryNameStore, idCount)))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if (streamWriteBlock(target,"{DST\n", 5u) != 5u)
+            return 1;
+        if (streamWriteBlock(target,"mea:", 4u) != 4u)
+            return 1;
+        if (streamPut(target, libIt->mean))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if (streamWriteBlock(target,"std:", 4u) != 4u)
+            return 1;
+        if (streamPut(target, libIt->std))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if (streamWriteBlock(target,"}\n", 2u) != 2u)
+            return 1;
+        if (streamWriteBlock(target,"}\n", 2u) != 2u)
+            return 1;
+    }
 
-	// Get clear ranges
-	typedef Pair<typename TFragmentStore::TReadPos, typename TFragmentStore::TReadPos> TClrRange;
-	String<TClrRange> clrRange;
-	resize(clrRange, length(fragStore.readStore), TClrRange(0,0));
-	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore, Standard>::Type TAlignIter;
-	TAlignIter alignIt = begin(fragStore.alignedReadStore, Standard() );
-	TAlignIter alignItEnd = end(fragStore.alignedReadStore, Standard() );
-	for(;alignIt != alignItEnd; goNext(alignIt)) {
-		typename TFragmentStore::TReadPos begClr = 0;
-		typename TFragmentStore::TReadPos endClr = 0;
-		getClrRange(fragStore, value(alignIt), begClr, endClr);
-		value(clrRange, alignIt->readId) = TClrRange(begClr, endClr);
-	}
+    // Write Fragments / mate pairs
+    typedef typename Iterator<typename TFragmentStore::TMatePairStore, Standard>::Type TMateIter;
+    TMateIter mateIt = begin(fragStore.matePairStore, Standard() );
+    TMateIter mateItEnd = end(fragStore.matePairStore, Standard() );
+    noNamesPresent = (length(fragStore.matePairNameStore) == 0);
+    for(TSize idCount = 0;mateIt != mateItEnd; goNext(mateIt), ++idCount) {
+        if (streamWriteBlock(target,"{FRG\n", 5u) != 5u)
+            return 1;
+        if (streamWriteBlock(target,"iid:", 4u) != 4u)
+            return 1;
+        if (streamPut(target, idCount + 1))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if (!noNamesPresent) {
+            if (streamWriteBlock(target,"eid:", 4u) != 4u)
+                return 1;
+            if (streamWriteBlock(target, &value(fragStore.matePairNameStore, idCount)[0], length(value(fragStore.matePairNameStore, idCount))) != length(value(fragStore.matePairNameStore, idCount)))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if (streamWriteBlock(target,"lib:", 4u) != 4u)
+            return 1;
+        if (streamPut(target, mateIt->libId + 1))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if ((mateIt->readId[0] != TMatePairElement::INVALID_ID) && (mateIt->readId[1] != TMatePairElement::INVALID_ID)) {
+            if (streamWriteBlock(target,"rds:", 4u) != 4u)
+                return 1;
+            if (streamPut(target, mateIt->readId[0] + 1))
+                return 1;
+            if (streamWriteChar(target, ','))
+                return 1;
+            if (streamPut(target, mateIt->readId[1] + 1))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if (streamWriteBlock(target,"}\n", 2u) != 2u)
+            return 1;
+    }
 
-	// Write reads
-	typedef typename Iterator<typename TFragmentStore::TReadStore, Standard>::Type TReadIter;
-	TReadIter readIt = begin(fragStore.readStore, Standard() );
-	TReadIter readItEnd = end(fragStore.readStore, Standard() );
-	noNamesPresent = (length(fragStore.readNameStore) == 0);
-	for(TSize idCount = 0;readIt != readItEnd; ++readIt, ++idCount) {
-		_streamWrite(target,"{RED\n");
-		_streamWrite(target,"iid:");
-		_streamPutInt(target, idCount + 1);
-		_streamPut(target, '\n');
-		if (!noNamesPresent) {
-			_streamWrite(target,"eid:");
-			_streamWrite(target, value(fragStore.readNameStore, idCount));
-			_streamPut(target, '\n');
-		}
-		_streamWrite(target,"seq:\n");
-		typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
-		typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
-		TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
-		TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
-		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
-			if ((k % 60 == 0) && (k != 0)) _streamPut(target, '\n');
-			_streamPut(target, getValue(seqIt));
-		}
-		_streamWrite(target, "\n.\n");
-		_streamWrite(target,"qlt:\n");
-		seqIt = begin(value(fragStore.readSeqStore, idCount));
-		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
-			if ((k % 60 == 0) && (k != 0)) _streamPut(target, '\n');
-			Ascii c = ' ';
-			convertQuality(c, getQualityValue(value(seqIt)));
-			_streamPut(target, c);
-		}
-		_streamWrite(target, "\n.\n");
-		if (readIt->matePairId != TReadStoreElement::INVALID_ID) {
-			_streamWrite(target,"frg:");
-			_streamPutInt(target, readIt->matePairId + 1);
-			_streamPut(target, '\n');
-		}
-		if ((value(clrRange, idCount)).i1 != (value(clrRange, idCount)).i2) {
-			_streamWrite(target,"clr:");
-			_streamPutInt(target, (value(clrRange, idCount)).i1);
-			_streamPut(target, ',');
-			_streamPutInt(target, (value(clrRange, idCount)).i2);
-			_streamPut(target, '\n');
-		}
-		_streamWrite(target,"}\n");
-	}
+    // Get clear ranges
+    typedef Pair<typename TFragmentStore::TReadPos, typename TFragmentStore::TReadPos> TClrRange;
+    String<TClrRange> clrRange;
+    resize(clrRange, length(fragStore.readStore), TClrRange(0,0));
+    typedef typename Iterator<typename TFragmentStore::TAlignedReadStore, Standard>::Type TAlignIter;
+    TAlignIter alignIt = begin(fragStore.alignedReadStore, Standard() );
+    TAlignIter alignItEnd = end(fragStore.alignedReadStore, Standard() );
+    for(;alignIt != alignItEnd; goNext(alignIt)) {
+        typename TFragmentStore::TReadPos begClr = 0;
+        typename TFragmentStore::TReadPos endClr = 0;
+        getClrRange(fragStore, value(alignIt), begClr, endClr);
+        value(clrRange, alignIt->readId) = TClrRange(begClr, endClr);
+    }
 
-	// Sort aligned reads according to contigId
-	sortAlignedReads(fragStore.alignedReadStore, SortContigId());
+    // Write reads
+    typedef typename Iterator<typename TFragmentStore::TReadStore, Standard>::Type TReadIter;
+    TReadIter readIt = begin(fragStore.readStore, Standard() );
+    TReadIter readItEnd = end(fragStore.readStore, Standard() );
+    noNamesPresent = (length(fragStore.readNameStore) == 0);
+    for(TSize idCount = 0;readIt != readItEnd; ++readIt, ++idCount) {
+        if (streamWriteBlock(target,"{RED\n", 5u) != 5u)
+            return 1;
+        if (streamWriteBlock(target,"iid:", 4u) != 4u)
+            return 1;
+        if (streamPut(target, idCount + 1))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if (!noNamesPresent) {
+            if (streamWriteBlock(target,"eid:", 4u) != 4u)
+                return 1;
+            if (streamWriteBlock(target, &value(fragStore.readNameStore, idCount)[0], length(value(fragStore.readNameStore, idCount))) != length(value(fragStore.readNameStore, idCount)))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if (streamWriteBlock(target,"seq:\n", 5u) != 5u)
+            return 1;
+        typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
+        typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
+        TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
+        TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
+        for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
+            if ((k % 60 == 0) && (k != 0))
+                if (streamWriteChar(target, '\n'))
+                    return 1;
+            if (streamWriteChar(target, getValue(seqIt)))
+                    return 1;
+        }
+        if (streamWriteBlock(target, "\n.\n", 3u) != 3u)
+            return 1;
+        if (streamWriteBlock(target,"qlt:\n", 5u) != 5u)
+            return 1;
+        seqIt = begin(value(fragStore.readSeqStore, idCount));
+        for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
+            if ((k % 60 == 0) && (k != 0))
+                streamWriteChar(target, '\n');
+            Ascii c = ' ';
+            convertQuality(c, getQualityValue(value(seqIt)));
+            if (streamPut(target, c))
+                return 1;
+        }
+        if (streamWriteBlock(target, "\n.\n", 3u) != 3u)
+            return 1;
+        if (readIt->matePairId != TReadStoreElement::INVALID_ID) {
+            if (streamWriteBlock(target,"frg:", 4u) != 4u)
+                return 1;
+            if (streamPut(target, readIt->matePairId + 1))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if ((value(clrRange, idCount)).i1 != (value(clrRange, idCount)).i2) {
+            if (streamWriteBlock(target,"clr:", 4u) != 4u)
+                return 1;
+            if (streamPut(target, (value(clrRange, idCount)).i1))
+                return 1;
+            if (streamWriteChar(target, ','))
+                return 1;
+            if (streamPut(target, (value(clrRange, idCount)).i2))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if (streamWriteBlock(target,"}\n", 2u) != 2u)
+            return 1;
+    }
 
-	// Write Contigs
-	typedef typename Iterator<typename TFragmentStore::TContigStore, Standard>::Type TContigIter;
-	TContigIter contigIt = begin(fragStore.contigStore, Standard() );
-	TContigIter contigItEnd = end(fragStore.contigStore, Standard() );
-	alignIt = begin(fragStore.alignedReadStore);
-	alignItEnd = end(fragStore.alignedReadStore);
-	noNamesPresent = (length(fragStore.contigNameStore) == 0);
-	for(TSize idCount = 0;contigIt != contigItEnd; goNext(contigIt), ++idCount) {
-		_streamWrite(target,"{CTG\n");
-		_streamWrite(target,"iid:");
-		_streamPutInt(target, idCount + 1);
-		_streamPut(target, '\n');
-		if (!noNamesPresent) {
-			_streamWrite(target,"eid:");
-			_streamWrite(target, value(fragStore.contigNameStore, idCount));
-			_streamPut(target, '\n');
-		}
-		String<char> qlt;
-		_streamWrite(target,"seq:\n");
-		typedef typename Iterator<typename TFragmentStore::TContigSeq>::Type TContigIter;
-		TContigIter seqContigIt = begin(contigIt->seq);
-		TContigIter seqContigItEnd = end(contigIt->seq);
-		typedef typename Iterator<String<typename TFragmentStore::TContigGapAnchor> >::Type TGapsIter;
-		TGapsIter itGaps = begin(contigIt->gaps);
-		TGapsIter itGapsEnd = end(contigIt->gaps);
-		int diff = 0;
-		char gapChar = gapValue<char>();
-		typename TFragmentStore::TContigPos mySeqPos = 0;
-		TSize k = 0;
-		for(;itGaps != itGapsEnd; goNext(itGaps)) {
-			while (mySeqPos < itGaps->seqPos) {
-				if ((k % 60 == 0) && (k != 0)) _streamPut(target, '\n');
-				++k;
-				_streamPut(target, value(seqContigIt));
-				Ascii c = ' ';
-				convertQuality(c, getQualityValue(value(seqContigIt)));
-				appendValue(qlt, c, Generous() );
-				goNext(seqContigIt);++mySeqPos;
-			}
-			for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i) {
-				if ((k % 60 == 0) && (k != 0)) _streamPut(target, '\n');
-				++k;
-				_streamPut(target, gapChar);
-				appendValue(qlt, '0', Generous() );
-			}
-			diff = (itGaps->gapPos - itGaps->seqPos);
-		}
-		for(;seqContigIt != seqContigItEnd; goNext(seqContigIt)) {
-			if ((k % 60 == 0) && (k != 0)) _streamPut(target, '\n');
-			++k;
-			_streamPut(target, value(seqContigIt));
-			Ascii c = ' ';
-			convertQuality(c, getQualityValue(value(seqContigIt)));
-			appendValue(qlt, c, Generous() );
-		}
-		_streamWrite(target, "\n.\n");
-		_streamWrite(target,"qlt:\n");
-		for(TSize k = 0;k<length(qlt); k+=60) {
-			TSize endK = k + 60;
-			if (endK > length(qlt)) endK = length(qlt);
-			_streamWrite(target, infix(qlt, k, endK));
-			_streamPut(target, '\n');
-		}
-		_streamWrite(target, ".\n");
-		
-		while ((alignIt != alignItEnd) && (idCount < alignIt->contigId)) goNext(alignIt);
-		for(;(alignIt != alignItEnd) && (idCount == alignIt->contigId); goNext(alignIt)) {
-			_streamWrite(target,"{TLE\n");
-			_streamWrite(target,"src:");
-			_streamPutInt(target, alignIt->readId + 1);
-			_streamPut(target, '\n');
-			typedef typename Iterator<String<typename TFragmentStore::TReadGapAnchor> >::Type TReadGapsIter;
-			TReadGapsIter itGaps = begin(alignIt->gaps);
-			TReadGapsIter itGapsEnd = end(alignIt->gaps);
+    // Sort aligned reads according to contigId
+    sortAlignedReads(fragStore.alignedReadStore, SortContigId());
 
-			// Create the gaps string and the clear ranges
-			typename TFragmentStore::TReadPos lenRead = length(value(fragStore.readSeqStore, alignIt->readId));
-			TSize clr1 = 0;
-			TSize clr2 = lenRead;
-			// Create first clear range
-			if ((itGaps != itGapsEnd) && (itGaps->gapPos == 0)) clr1 = itGaps->seqPos;
-			int diff = clr1;
-			String<unsigned int> gaps;
-			for(;itGaps != itGapsEnd; goNext(itGaps)) {
-				for(int i = 0; i< diff - ((int) itGaps->seqPos - (int) itGaps->gapPos); ++i) {
-					appendValue(gaps, itGaps->seqPos - clr1, Generous() );
-				}
-				// Clipped sequence
-				if (diff - ((int) itGaps->seqPos - (int) itGaps->gapPos) < 0) {
-					clr2 = lenRead + diff - ((int) itGaps->seqPos - (int) itGaps->gapPos);
-				}
-				diff = ((int) itGaps->seqPos - (int) itGaps->gapPos);
-			}
-			if (alignIt->beginPos > alignIt->endPos) {
-				clr1 = lenRead - clr1;
-				clr2 = lenRead - clr2;
-			}
-			_streamWrite(target,"off:");
-			if (alignIt->beginPos < alignIt->endPos) _streamPutInt(target, alignIt->beginPos);
-			else _streamPutInt(target, alignIt->endPos);
-			_streamPut(target, '\n');
-			_streamWrite(target,"clr:");
-			_streamPutInt(target, clr1);
-			_streamPut(target, ',');
-			_streamPutInt(target, clr2);
-			_streamPut(target, '\n');
-			if (length(gaps)) {
-				_streamWrite(target,"gap:\n");
-				for(TSize z = 0;z<length(gaps); ++z) {
-					_streamPutInt(target, value(gaps, z));
-					_streamPut(target, '\n');
-				}
-				_streamWrite(target, ".\n");
-			}
-			_streamWrite(target,"}\n");
-		}
-		_streamWrite(target,"}\n");
-	}
+    // Write Contigs
+    typedef typename Iterator<typename TFragmentStore::TContigStore, Standard>::Type TContigIter;
+    TContigIter contigIt = begin(fragStore.contigStore, Standard() );
+    TContigIter contigItEnd = end(fragStore.contigStore, Standard() );
+    alignIt = begin(fragStore.alignedReadStore);
+    alignItEnd = end(fragStore.alignedReadStore);
+    noNamesPresent = (length(fragStore.contigNameStore) == 0);
+    for(TSize idCount = 0;contigIt != contigItEnd; goNext(contigIt), ++idCount) {
+        if (streamWriteBlock(target,"{CTG\n", 5u ) != 5u)
+            return 1;
+        if (streamWriteBlock(target,"iid:", 4u) != 4u)
+            return 1;
+        if (streamPut(target, idCount + 1))
+            return 1;
+        if (streamWriteChar(target, '\n'))
+            return 1;
+        if (!noNamesPresent) {
+            if (streamWriteBlock(target,"eid:", 4u) != 4u)
+                return 1;
+            if (streamWriteBlock(target, &value(fragStore.contigNameStore, idCount)[0], length(value(fragStore.contigNameStore, idCount))) != length(value(fragStore.contigNameStore, idCount)))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        String<char> qlt;
+        if (streamWriteBlock(target,"seq:\n", 5u) != 5u)
+            return 1;
+        typedef typename Iterator<typename TFragmentStore::TContigSeq>::Type TContigIter;
+        TContigIter seqContigIt = begin(contigIt->seq);
+        TContigIter seqContigItEnd = end(contigIt->seq);
+        typedef typename Iterator<String<typename TFragmentStore::TContigGapAnchor> >::Type TGapsIter;
+        TGapsIter itGaps = begin(contigIt->gaps);
+        TGapsIter itGapsEnd = end(contigIt->gaps);
+        int diff = 0;
+        char gapChar = gapValue<char>();
+        typename TFragmentStore::TContigPos mySeqPos = 0;
+        TSize k = 0;
+        for(;itGaps != itGapsEnd; goNext(itGaps)) {
+            while (mySeqPos < itGaps->seqPos) {
+                if ((k % 60 == 0) && (k != 0))
+                    if (streamWriteChar(target, '\n'))
+                        return 1;
+                ++k;
+                if (streamWriteChar(target, value(seqContigIt)))
+                    return 1;
+                Ascii c = ' ';
+                convertQuality(c, getQualityValue(value(seqContigIt)));
+                appendValue(qlt, c, Generous() );
+                goNext(seqContigIt);++mySeqPos;
+            }
+            for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i) {
+                if ((k % 60 == 0) && (k != 0))
+                    streamWriteChar(target, '\n');
+                ++k;
+                if (streamWriteChar(target, gapChar))
+                    return 1;
+                appendValue(qlt, '0', Generous() );
+            }
+            diff = (itGaps->gapPos - itGaps->seqPos);
+        }
+        for(;seqContigIt != seqContigItEnd; goNext(seqContigIt)) {
+            if ((k % 60 == 0) && (k != 0))
+                streamWriteChar(target, '\n');
+            ++k;
+            if (streamWriteChar(target, value(seqContigIt)))
+                return 1;
+            Ascii c = ' ';
+            convertQuality(c, getQualityValue(value(seqContigIt)));
+            appendValue(qlt, c, Generous() );
+        }
+        if (streamWriteBlock(target, "\n.\n", 3u ) != 3u)
+            return 1;
+        if (streamWriteBlock(target,"qlt:\n", 5u) != 5u)
+            return 1;
+        for(TSize k = 0;k<length(qlt); k+=60) {
+            TSize endK = k + 60;
+            if (endK > length(qlt))
+                endK = length(qlt);
+            if (streamWriteBlock(target, &infix(qlt, k, endK)[0], length(infix(qlt, k, endK))) != length(infix(qlt, k, endK)))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+        }
+        if (streamWriteBlock(target, ".\n", 2u) != 2u)
+            return 1;
+
+        while ((alignIt != alignItEnd) && (idCount < alignIt->contigId)) goNext(alignIt);
+        for(;(alignIt != alignItEnd) && (idCount == alignIt->contigId); goNext(alignIt)) {
+            if (streamWriteBlock(target,"{TLE\n", 5u) != 5u)
+                return 1;
+            if (streamWriteBlock(target,"src:", 4u) != 4u)
+                return 1;
+            if (streamPut(target, alignIt->readId + 1))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+            typedef typename Iterator<String<typename TFragmentStore::TReadGapAnchor> >::Type TReadGapsIter;
+            TReadGapsIter itGaps = begin(alignIt->gaps);
+            TReadGapsIter itGapsEnd = end(alignIt->gaps);
+
+            // Create the gaps string and the clear ranges
+            typename TFragmentStore::TReadPos lenRead = length(value(fragStore.readSeqStore, alignIt->readId));
+            TSize clr1 = 0;
+            TSize clr2 = lenRead;
+            // Create first clear range
+            if ((itGaps != itGapsEnd) && (itGaps->gapPos == 0)) clr1 = itGaps->seqPos;
+            int diff = clr1;
+            String<unsigned int> gaps;
+            for(;itGaps != itGapsEnd; goNext(itGaps)) {
+                for(int i = 0; i< diff - ((int) itGaps->seqPos - (int) itGaps->gapPos); ++i) {
+                    appendValue(gaps, itGaps->seqPos - clr1, Generous() );
+                }
+                // Clipped sequence
+                if (diff - ((int) itGaps->seqPos - (int) itGaps->gapPos) < 0) {
+                    clr2 = lenRead + diff - ((int) itGaps->seqPos - (int) itGaps->gapPos);
+                }
+                diff = ((int) itGaps->seqPos - (int) itGaps->gapPos);
+            }
+            if (alignIt->beginPos > alignIt->endPos) {
+                clr1 = lenRead - clr1;
+                clr2 = lenRead - clr2;
+            }
+            if (streamWriteBlock(target,"off:", 4u) != 4u)
+                return 1;
+            if (alignIt->beginPos < alignIt->endPos)
+            {
+                if (streamPut(target, alignIt->beginPos))
+                    return 1;
+            }
+            else
+            {
+                streamPut(target, alignIt->endPos);
+            }
+            if (streamWriteChar(target, '\n'))
+                return 1;
+            if (streamWriteBlock(target,"clr:", 4u) != 4u)
+                return 1;
+            if (streamPut(target, clr1))
+                return 1;
+            if (streamWriteChar(target, ','))
+                return 1;
+            if (streamPut(target, clr2))
+                return 1;
+            if (streamWriteChar(target, '\n'))
+                return 1;
+            if (length(gaps)) {
+                if (streamWriteBlock(target,"gap:\n", 5u) != 5u)
+                    return 1;
+                for(TSize z = 0;z<length(gaps); ++z) {
+                    if (streamPut(target, value(gaps, z)))
+                        return 1;
+                    if (streamWriteChar(target, '\n'))
+                        return 1;
+                }
+                if (streamWriteBlock(target, ".\n", 2u) != 2u)
+                    return 1;
+            }
+            if (streamWriteBlock(target,"}\n", 2u) != 2u)
+                return 1;
+        }
+        if (streamWriteBlock(target,"}\n", 2u) != 2u)
+            return 1;
+    }
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
