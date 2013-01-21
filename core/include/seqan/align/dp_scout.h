@@ -53,6 +53,17 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class DPScoutState_
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+class DPScoutState_;
+
+template <>
+class DPScoutState_<Default> : public Nothing  // empty member optimization
+{};
+
+// ----------------------------------------------------------------------------
 // Class DPScout_
 // ----------------------------------------------------------------------------
 
@@ -62,6 +73,8 @@ class DPScout_;
 /**
  * The default implementation of the dp scout simply stores one maximum
  * and its corresponding position.
+ *
+ * The state must be a Nothing and is left untouched and unused.
  */
 template <typename TScoreValue>
 class DPScout_<TScoreValue, Default>
@@ -70,7 +83,9 @@ public:
     TScoreValue _maxScore;          // The maximal score.
     unsigned int _maxHostPosition;  // The corrsponding host position within the underlying dp-matrix.
 
-    DPScout_() :
+    DPScout_() : _maxScore(MinValue<TScoreValue>::VALUE), _maxHostPosition(0) {}
+
+    DPScout_(DPScoutState_<Default> const & /*state*/) :
         _maxScore(MinValue<TScoreValue>::VALUE), _maxHostPosition(0) {}
 
     DPScout_(DPScout_ const & other) :
@@ -92,6 +107,19 @@ public:
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction ScoutSpecForAlignmentAlgorithm_
+// ----------------------------------------------------------------------------
+
+// Given an alignment algorithm tag such as GlobalAlignment_ or LocalAlignment_, returns the specialization tag for the
+// corresponding DPScout_ specialization.
+
+template <typename TAlignmentAlgorithm>
+struct ScoutSpecForAlignmentAlgorithm_
+{
+    typedef Default Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -102,14 +130,15 @@ public:
 /**
  * Tracks the new score, if it is the new maximum.
  */
-template <typename TScoreValue, typename TSpec, typename TPosition>
+template <typename TScoreValue, typename TSpec, typename TTraceMatrixNavigator>
 inline void
-_scoutBestScore(DPScout_<TScoreValue, TSpec> & dpScout, TScoreValue const & score, TPosition const & hostPosition)
+_scoutBestScore(DPScout_<TScoreValue, TSpec> & dpScout, TScoreValue const & score,
+                TTraceMatrixNavigator const & navigator)
 {
     if (score > dpScout._maxScore)
     {
         dpScout._maxScore = score;
-        dpScout._maxHostPosition = hostPosition;
+        dpScout._maxHostPosition = position(navigator);
     }
 }
 
