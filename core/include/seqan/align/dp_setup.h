@@ -620,7 +620,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       int lowerDiagonal,
                       int upperDiagonal,
                       TAlgoTag const & algoTag,
-                      TGapsTag const & gapsTag)
+                      TGapsTag const & /*ignored*/)
 {
     DPScoutState_<Default> noState;
     return _setUpAndRunAlignment(traceSegments, noState, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal, algoTag);
@@ -670,12 +670,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, AffineGaps, TracebackOn<TGapsTag> >::Type TDPProfile;
         return _computeAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, TAlignConfig, LinearGaps, TracebackOn<TGapsTag> >::Type TDPProfile;
         return _computeAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
 }
@@ -876,7 +876,7 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
                       int lowerDiagonal,
                       int upperDiagonal,
                       TAlgoTag const & algoTag,
-                      TGapsTag const & gapsTag)
+                      TGapsTag const & /*ignored*/)
 {
     DPScoutState_<Default> noState;
     return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, alignConfig, lowerDiagonal, upperDiagonal,
