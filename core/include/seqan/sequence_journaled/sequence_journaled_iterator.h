@@ -525,32 +525,34 @@ inline
 Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > &
 operator--(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
 {
-    switch (value(iterator._journalEntriesIterator).segmentSource) {
-        case SOURCE_ORIGINAL:
-            if (iterator._currentHostIt == iterator._hostSegmentBegin) {
-                --iterator._journalEntriesIterator;
-                _updateSegmentIteratorsLeft(iterator);
-            }
-            else
-                --iterator._currentHostIt;
-            break;
-        case SOURCE_PATCH:
-            if (iterator._currentInsertionBufferIt == iterator._insertionBufferSegmentBegin) {
-                --iterator._journalEntriesIterator;
-                _updateSegmentIteratorsLeft(iterator);
-            }
-            else
-                --iterator._currentInsertionBufferIt;
-            break;
-        default:
-        {
-            if (atEnd(iterator._journalEntriesIterator))
+    if (atEnd(iterator._journalEntriesIterator))
+    {
+        --iterator._journalEntriesIterator;
+        _updateSegmentIteratorsLeft(iterator);
+    }
+    else
+    {
+        switch (value(iterator._journalEntriesIterator).segmentSource) {
+            case SOURCE_ORIGINAL:
+                if (iterator._currentHostIt == iterator._hostSegmentBegin) {
+                    --iterator._journalEntriesIterator;
+                    _updateSegmentIteratorsLeft(iterator);
+                }
+                else
+                    --iterator._currentHostIt;
+                break;
+            case SOURCE_PATCH:
+                if (iterator._currentInsertionBufferIt == iterator._insertionBufferSegmentBegin) {
+                    --iterator._journalEntriesIterator;
+                    _updateSegmentIteratorsLeft(iterator);
+                }
+                else
+                    --iterator._currentInsertionBufferIt;
+                break;
+            default:
             {
-                --iterator._journalEntriesIterator;
-                _updateSegmentIteratorsLeft(iterator);
-            }
-            else
                 SEQAN_ASSERT_FAIL("Invalid segment source!");
+            }
         }
     }
     return iterator;
@@ -680,6 +682,14 @@ operator-=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
         return iterator;
     }
 
+    // Handle case when iterator is at positon at end
+    if (atEnd(iterator._journalEntriesIterator))
+    {
+        --iterator._journalEntriesIterator;
+        _updateSegmentIteratorsLeft(iterator);
+        --len;
+    }
+
     // Handle other case.
     typedef typename Size<TJournaledString>::Type TSize;
     while (len > 0) {
@@ -711,14 +721,7 @@ operator-=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
                 break;
             default:
             {
-                if (atEnd(iterator._journalEntriesIterator))
-                {
-                    --iterator._journalEntriesIterator;
-                    _updateSegmentIteratorsLeft(iterator);
-                    --len;
-                }
-                else
-                    SEQAN_ASSERT_FAIL("Invalid segment source!");
+                SEQAN_ASSERT_FAIL("Invalid segment source!");
             }
         }
     }
