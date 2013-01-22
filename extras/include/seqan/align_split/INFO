@@ -1,0 +1,12 @@
+Name: align_split
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2013, FU Berlin
+Status: under development
+Description: Dynamic programming based split alignment.
+ This module contains the implementation of the splitAlignment() function.
+ .
+ This function allows the so-called split alignment of one or two sequences
+ against a reference sequence.  This is very useful for the detection of
+ inserted sequence in the non-reference sequence.
