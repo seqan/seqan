@@ -48,39 +48,54 @@ using namespace std;
 using namespace seqan;
 
 
-template<typename TSpec>
-int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
+template<typename TOptions>
+int getGenomeFileNameList(CharString const & filename, StringSet<CharString> & genomeFileNames, TOptions const & options)
 {
-//IOREV could possibly be moved to fasta module
-    ::std::ifstream file;
-    file.open(toCString(filename),::std::ios_base::in | ::std::ios_base::binary);
+    std::ifstream file;
+    file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
     if(!file.is_open())
         return RAZERS_GENOME_FAILED;
 
-    char c = _streamGet(file);
-    if (c != '>' && c != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
-    {
-        if(options._debugLevel >=1)
-            ::std::cout << ::std::endl << "Reading multiple genome files:" <<::std::endl;
+    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > reader(file);
 
-        unsigned i = 1;
-        while(!_streamEOF(file))
+    CharString nameStr;
+    if (value(reader) != '>' && value(reader) != '@')
+    {
+        // If file does not start with a fasta header --> list of multiple reference genome files.
+        if(options._debugLevel >=1)
+            std::cout << std::endl << "Reading multiple genome files:" << std::endl;
+        /*      //locations of genome files are relative to list file's location
+         ::std::string tempGenomeFile(filename);
+         size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
+         if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
+         if (lastPos == tempGenomeFile.npos) lastPos = 0;
+         ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
+        unsigned i = 0;
+        for (; !atEnd(reader); ++i)
         {
-            _parseSkipWhitespace(file, c);
-            appendValue(genomeFileNames,_parseReadFilepath(file,c));
-            if(options._debugLevel >=2)
-                ::std::cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << ::std::endl;
-            ++i;
-            _parseSkipWhitespace(file, c);
+            clear(nameStr);
+            int res = skipWhitespaces(reader);
+            if (res == EOF_BEFORE_SUCCESS)
+                break;  // Done, no more file name.
+            if (res != 0)
+                return res;  // Error reading.
+            res = readGraphs(nameStr, reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return res;
+            appendValue(genomeFileNames,nameStr,Generous());
+            if(options._debugLevel >= 2)
+                std::cout << "Genome file #" << (i + 1) << ": " << genomeFileNames[length(genomeFileNames) - 1] << std::endl;
         }
         if(options._debugLevel >=1)
-            ::std::cout << i-1 << " genome files total." <<::std::endl;
+            std::cout << i << " genome files total." << std::endl;
     }
-    else		//if file starts with a fasta header --> regular one-genome-file input
-        appendValue(genomeFileNames,filename);
-    file.close();
-    return 0;
+    else
+    {
+        // If file starts with a fasta header --> regular one-genome-file input.
+        appendValue(genomeFileNames,filename,Generous());
+    }
 
+    return 0;
 }
 
 
