@@ -82,6 +82,21 @@ class RecordReader;
 // Metafunctions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Metafuction Position
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TSpec>
+struct Position<RecordReader<TStream, TSpec> >
+{
+    typedef typename Position<TStream>::Type Type;
+};
+
+template <typename TStream, typename TSpec>
+struct Position<RecordReader<TStream, TSpec> const> :
+            Position<RecordReader<TStream, TSpec> >
+{};
+
 // ============================================================================
 // Functions
 // ============================================================================

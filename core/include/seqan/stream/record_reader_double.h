@@ -77,6 +77,11 @@ public:
     int _passNo;
     char * _beginInFirst;
     bool _stayInOneBuffer; // needed for stream format detection
+    // In contrast to the SinglePass<> reader, we store the current position of the file in _position since it is more
+    // complex to do the computation otherwise.  This means more updates to _position, though.
+    typedef typename Position<TFile>::Type TPosition;
+    TPosition _position;  // Position in file.
+    TPosition _firstPassPos;  // Position of _firstPass call.
 
     enum {
         OK = 0,
@@ -86,7 +91,8 @@ public:
     RecordReader(TFile & file)
             : _file(file), _bufferSize(BUFSIZ), _current(0), _end(0),
               _currentBuffer(0), _currentBuffNo(0), _resultCode(0),
-              _passNo(0), _beginInFirst(0), _stayInOneBuffer(false)
+              _passNo(0), _beginInFirst(0), _stayInOneBuffer(false),
+              _position(0), _firstPassPos(0)
     {
         // resize(_buffer, _bufferSize);
     }
@@ -94,7 +100,8 @@ public:
     RecordReader(TFile & file, unsigned bufferSize)
             : _file(file), _bufferSize(bufferSize), _current(0), _end(0),
               _currentBuffer(0), _currentBuffNo(0), _resultCode(0),
-              _passNo(0), _beginInFirst(0), _stayInOneBuffer(false)
+              _passNo(0), _beginInFirst(0), _stayInOneBuffer(false),
+              _position(0), _firstPassPos(0)
     {
         // resize(_buffer, _bufferSize);
     }
@@ -192,6 +199,8 @@ template <typename TFile>
 void
 startFirstPass(RecordReader<TFile, DoublePass<> > & recordReader)
 {
+    // Store begin position of first pass.
+    recordReader._firstPassPos = recordReader._position;
     recordReader._passNo = 1;
     recordReader._beginInFirst = recordReader._current;
     // TODO(holtgrew_): Add assertion that previous second pass ended at same position.
@@ -253,6 +262,9 @@ template <typename TFile>
 void
 startSecondPass(RecordReader<TFile, DoublePass<> > & recordReader)
 {
+    // Set position back to first pass start position.
+    recordReader._position = recordReader._firstPassPos;
+    
     SEQAN_ASSERT_EQ(recordReader._passNo, 1);
     recordReader._passNo = 2;
     recordReader._currentBuffNo = 0;
@@ -260,6 +272,42 @@ startSecondPass(RecordReader<TFile, DoublePass<> > & recordReader)
     recordReader._current = recordReader._beginInFirst;
     // std::cerr << "recordReader._current = " << (void*)(recordReader._beginInFirst) << " [start second pass]" << std::endl;
     recordReader._end = end(*recordReader._currentBuffer, Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TFile>
+inline typename Position<TFile>::Type
+position(RecordReader<TFile, DoublePass<void> > const & recordReader)
+{
+    return recordReader._position;
+}
+
+// ----------------------------------------------------------------------------
+// Function setPosition()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+// This automatically starts the first pass at the position.
+template <typename TFile, typename TPosition>
+inline int
+setPosition(RecordReader<TFile, DoublePass<void> > & recordReader, TPosition pos)
+{
+    // Clear buffers, mark as unused.
+    append(recordReader._unusedBuffers, recordReader._usedBuffers);
+    clear(recordReader._usedBuffers);
+
+    // Seek to position in file.
+    int res = streamSeek(recordReader._file, pos, SEEK_SET);
+    if (res != 0)
+        return res;
+    recordReader._position = pos;
+    recordReader._current = recordReader._end = 0;
+    startFirstPass(recordReader);
+    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -332,6 +380,7 @@ goNext(RecordReader<TFile, DoublePass<> > & recordReader)
 
     // std::cerr << "recordReader._current += 1 == " << (void*)(recordReader._current) << std::endl;
     recordReader._current += 1;
+    recordReader._position += 1;
     // If there is more data in the buffer then we're done.
     if (recordReader._current != recordReader._end)
         return false;  // Has more data.

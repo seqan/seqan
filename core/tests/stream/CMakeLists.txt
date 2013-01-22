@@ -40,6 +40,7 @@ add_executable (test_stream
                test_stream_tokenize.h
                test_stream_generic.h
                test_stream_lexical_cast.h
+               test_stream_record_reader.h
                test_stream_bgzf.h)
 
 # Add dependencies found by find_package (SeqAn).

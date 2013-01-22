@@ -108,6 +108,31 @@ private:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TMMapString>
+inline typename Position<TMMapString>::Type
+position(RecordReader<TMMapString, SinglePass<Mapped> > const & recordReader)
+{
+    return recordReader._current - begin(recordReader._string, Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function setPosition()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TMMapString, typename TPosition>
+inline int
+setPosition(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader, TPosition pos)
+{
+    recordReader._current = iter(recordReader._string, pos, Standard());
+    return 0;
+}
+
+// ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
 

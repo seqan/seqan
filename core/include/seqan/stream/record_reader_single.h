@@ -77,6 +77,10 @@ public:
     TIter _current, _end;
     int _resultCode;
     bool _stayInOneBuffer;
+    // We have to store the position of the end of the currently loaded block in the file separately because std streams
+    // cannot tell their position if at end and clearing the eofbit leads to problems with atEnd().
+    typedef typename Position<TFile>::Type TPosition;
+    TPosition _position;  // Position in file.
 
     enum {
         OK = 0,
@@ -85,7 +89,7 @@ public:
 
     RecordReader(TFile & file)
             : _file(file), _bufferSize(BUFSIZ), _current(0), _end(0),
-              _resultCode(0), _stayInOneBuffer(false)
+              _resultCode(0), _stayInOneBuffer(false), _position(0)
     {
         resize(_buffer, _bufferSize);
         _refillBuffer(*this);
@@ -93,7 +97,7 @@ public:
 
     RecordReader(TFile & file, unsigned bufferSize)
             : _file(file), _bufferSize(bufferSize), _current(0), _end(0),
-              _resultCode(0), _stayInOneBuffer(false)
+              _resultCode(0), _stayInOneBuffer(false), _position(0)
     {
         resize(_buffer, _bufferSize);
         _refillBuffer(*this);
@@ -127,7 +131,9 @@ _refillBuffer(RecordReader<TFile, SinglePass<void> > & recordReader)
     if (streamEof(recordReader._file))
         return false;
     recordReader._current = begin(recordReader._buffer, Standard());
+    recordReader._position = streamTell(recordReader._file);
     size_t bytesRead = streamReadBlock(recordReader._current, recordReader._file, recordReader._bufferSize);
+    recordReader._position += bytesRead;
     if (bytesRead != recordReader._bufferSize) {
         // If we read fewer characters and the stream is not at its end then
         // there was an error reading the file.
@@ -144,6 +150,35 @@ _refillBuffer(RecordReader<TFile, SinglePass<void> > & recordReader)
     // std::cerr << "EOF? " << streamEof(recordReader._file) << std::endl;
 
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TFile>
+inline typename Position<TFile>::Type
+position(RecordReader<TFile, SinglePass<void> > const & recordReader)
+{
+    typename Position<TFile>::Type bufferedUnread = recordReader._end - recordReader._current;
+    return recordReader._position - bufferedUnread;
+}
+
+// ----------------------------------------------------------------------------
+// Function setPosition()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TFile, typename TPosition>
+inline int
+setPosition(RecordReader<TFile, SinglePass<void> > & recordReader, TPosition pos)
+{
+    int res = streamSeek(recordReader._file, pos, SEEK_SET);
+    if (res != 0)
+        return res;
+    _refillBuffer(recordReader);
+    return 0;
 }
 
 // ----------------------------------------------------------------------------

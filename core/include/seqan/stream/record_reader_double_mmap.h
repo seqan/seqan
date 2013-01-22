@@ -106,14 +106,51 @@ private:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TMMapString>
+inline typename Position<TMMapString>::Type
+position(RecordReader<TMMapString, DoublePass<Mapped> > const & recordReader)
+{
+    return recordReader._current - begin(recordReader._string, Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function setPosition()
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Document!
+template <typename TMMapString, typename TPosition>
+inline int
+setPosition(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader, TPosition pos)
+{
+    recordReader._current = iter(recordReader._string, pos, Standard());
+    startFirstPass(recordReader);
+    return 0;
+}
+
+// ----------------------------------------------------------------------------
 // Function startFirstPass()
 // ----------------------------------------------------------------------------
+
+template <typename T>
+void _startFirstPassMMapAdvise(T const & /*x*/)
+{}
+
+template <typename TValue, typename TConfig>
+void _startFirstPassMMapAdvise(String<TValue, MMap<TConfig> > & s)
+{
+    mmapAdvise(s, MAP_SEQUENTIAL);
+    
+}
 
 template <typename TMMapString>
 void
 startFirstPass(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
 {
-    mmapAdvise(recordReader._string, MAP_SEQUENTIAL);
+    _startFirstPassMMapAdvise(recordReader._string);
     recordReader._passNo = 1;
     recordReader._first = recordReader._current;
 }
