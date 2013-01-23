@@ -257,6 +257,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 		resize(myRead, length(fragStore.readSeqStore[alignIt->readId]), TProfileChar());
 		resize(bandConsensus, 2 * bandwidth + (alignIt->endPos - alignIt->beginPos), Generous());
 		TConsIter bandConsIt = begin(bandConsensus);
+		TConsIter bandConsItEnd = end(bandConsensus);
 		TConsIter myReadIt = begin(myRead);
 		TReadPos bandOffset = 0;
 		if (bandwidth < (TBandwidth) alignIt->beginPos) {
@@ -271,7 +272,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 		int increaseBandRight = 0;
 		int removedBeginPos = 0;
 		int removedEndPos = 0;
-		for (TReadPos iPos = bandOffset; iPos < alignIt->beginPos && itCons != itConsEnd; ++itCons, ++bandConsIt, ++itConsPos, ++iPos)
+		for (TReadPos iPos = bandOffset; iPos < alignIt->beginPos && itCons != itConsEnd && bandConsIt != bandConsItEnd; ++itCons, ++bandConsIt, ++itConsPos, ++iPos)
 			*bandConsIt = *itCons; // fill in positions left of readbegin
 		TSize itConsPosBegin = itConsPos;  // start position of read basically, right? if(itConsPosBegin != alignIt->beginPos) std::cout <<"nicht unbedingt gleich\n";
 		alignIt->beginPos = alignIt->endPos = 0; // So this read is discarded in all gap operations
@@ -307,7 +308,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 				clippedEndPos = diff - newDiff;
 				limit -= clippedEndPos;
 			}
-			for (; old < limit && itCons != itConsEnd && itRead != itReadEnd; ++old, ++itRead) {
+			for (; old < limit && itCons != itConsEnd && itRead != itReadEnd && bandConsIt != bandConsItEnd; ++old, ++itRead) {
                 //SEQAN_ASSERT_LT(itCons, itConsEnd);
 				--(*itCons).count[ordValue(*itRead)];
 				if (!empty(*itCons)) {
@@ -327,7 +328,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 				++itCons;
                 //SEQAN_ASSERT_LT(itRead, itReadEnd);
 			}
-			for (; diff < newDiff && itCons != itConsEnd; ++diff) {
+			for (; diff < newDiff && itCons != itConsEnd && bandConsIt != bandConsItEnd; ++diff) {
                 ++increaseBandRight; // deletion --> increaseBandRight, read has gaps here, consensus doesnt
 				//SEQAN_ASSERT_LT(itCons, itConsEnd);
 				--(*itCons).count[gapPos];
@@ -340,7 +341,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 			}
 		}
 		if (!clippedEndPos) {
-			for (; itRead!=itReadEnd && itCons != itConsEnd; ++itRead) {
+			for (; itRead!=itReadEnd && itCons != itConsEnd && bandConsIt != bandConsItEnd; ++itRead) {
 				//SEQAN_ASSERT_LT(itCons, itConsEnd);
                 //SEQAN_ASSERT_LT(itRead, itReadEnd);
 				--(*itCons).count[ordValue(*itRead)];  //subtract the read base to get bandConsensus wo myRead
@@ -366,7 +367,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
         //increaseBand = increaseBandLeft + increaseBandRight;
         
 		// Go further up to the bandwidth
-		for (TReadPos iPos = 0; ((itCons != itConsEnd) && (iPos < (TReadPos) bandwidth)); ++itCons, ++iPos, ++bandConsIt)
+		for (TReadPos iPos = 0; ((itCons != itConsEnd) && (iPos < (TReadPos) bandwidth)) && bandConsIt != bandConsItEnd; ++itCons, ++iPos, ++bandConsIt)
             *bandConsIt = *itCons;
 		resize(bandConsensus, bandConsIt - begin(bandConsensus, Standard()), Generous());
 		resize(myRead, myReadIt - begin(myRead, Standard()), Generous());
