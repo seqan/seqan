@@ -96,8 +96,6 @@ void testAlignmentDPMatrixTraceNavigatorConstructorDefault(TSpec const &)
     SEQAN_ASSERT_EQ(resultPointer, true);
     SEQAN_ASSERT_EQ(resultActiveColIter, true);
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
-    SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-    SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
 }
 
 void testAlignmentDPMatrixNavigatorScoreMarixSparseContructor()
@@ -1499,9 +1497,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_u
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 1);
-    SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-    SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
-    
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_unbanded)
@@ -1523,8 +1518,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
 
     SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
-    SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-    SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_banded)
@@ -1548,8 +1541,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 3);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 4);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, -4);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 3);
     }
 
     {
@@ -1564,8 +1555,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix2);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix2, Standard()), 7);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 8);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 7);
     }
 
     {
@@ -1580,8 +1569,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix3);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._activeColIterator - begin(dpMatrix3, Standard()), 0);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 1);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, -7);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
     }
 }
 
@@ -1605,8 +1592,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
 
         SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
     }
 
     {
@@ -1620,8 +1605,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
 
         SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix2);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
     }
 
     {
@@ -1635,8 +1618,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
 
         SEQAN_ASSERT_NEQ(dpTraceMatrixNavigator._ptrDataContainer, &dpMatrix3);
         SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._laneLeap, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._lowerDiagonal, 0);
-        SEQAN_ASSERT_EQ(dpTraceMatrixNavigator._upperDiagonal, 0);
     }
 }
 
