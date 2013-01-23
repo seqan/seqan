@@ -110,8 +110,8 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
 
 		explicit
         String(TSize size = 0):
-			data_begin(0),
-			data_end(0),
+			data_begin(NULL),
+			data_end(NULL),
 			advise(MAP_NORMAL)
         {
 			resize(*this, size);
@@ -119,8 +119,8 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
 
 		explicit
         String(TFile &_file):
-			data_begin(0),
-			data_end(0),
+			data_begin(NULL),
+			data_end(NULL),
 			advise(MAP_NORMAL)
         {
 			open(*this, _file);
@@ -128,8 +128,8 @@ See the @Memfunc.ExtString#String.constructor@ for more details.
 
 		explicit
         String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
-			data_begin(0),
-			data_end(0),
+			data_begin(NULL),
+			data_end(NULL),
 			advise(MAP_NORMAL)
         {
 			open(*this, fileName, openMode);
@@ -402,7 +402,6 @@ SEQAN_CHECKPOINT
                 return false;
             }
             adviseFileSegment(me.mapping, me.advise, me.data_begin, 0, length(me.mapping));
-            me.data_end = me.data_begin + new_capacity;
 		}
         else
 			resize(me.mapping, 0);
@@ -441,7 +440,7 @@ SEQAN_CHECKPOINT
         {
             // if file gets bigger, resize first
             if (old_capacity < new_capacity)
-                resize(me.mapping, new_capacity * sizeof(TValue));
+                resize(me.mapping, (TFileSize)new_capacity * (TFileSize)sizeof(TValue));
 
             me.data_begin = static_cast<TValue*>(remapFileSegment(
                 me.mapping,
@@ -452,7 +451,7 @@ SEQAN_CHECKPOINT
 
             // if file gets smaller, resize at last
             if (old_capacity > new_capacity)
-                resize(me.mapping, new_capacity * sizeof(TValue));
+                resize(me.mapping, (TFileSize)new_capacity * (TFileSize)sizeof(TValue));
 
             if (me.data_begin == NULL)
             {
@@ -468,6 +467,8 @@ SEQAN_CHECKPOINT
         result &= _map(me, new_capacity);
         if (me.data_begin != NULL)
             _setLength(me, seq_length);
+        else
+            me.data_begin = me.data_end;
         return result;
 	}
 
@@ -487,8 +488,12 @@ SEQAN_CHECKPOINT
     _allocateStorage(String<TValue, MMap<TConfig> > &me, TSize new_capacity) 
 	{
 //IOREV
-		TSize size = _computeSizeForCapacity(me, new_capacity);
-		_map(me, size);
+        typename Size< String<TValue, MMap<TConfig> > >::Type seq_length = length(me);
+		_map(me, _computeSizeForCapacity(me, new_capacity));
+        if (me.data_begin != NULL)
+            _setLength(me, seq_length);
+        else
+            me.data_begin = me.data_end;
 		return NULL;
 	}
 
@@ -606,13 +611,17 @@ SEQAN_CHECKPOINT
     close(String<TValue, MMap<TConfig> > &me) 
 	{
         typedef typename Size<typename TConfig::TFile>::Type TFileSize;
+
 		if (me)
 		{
+            TFileSize finalLen = (TFileSize)length(me) * (TFileSize)sizeof(TValue);
+
 			// close associated file
 			if (me.mapping.temporary)
 				cancel(me);
 
-			closeAndResize(me.mapping, (TFileSize)length(me) * (TFileSize)sizeof(TValue));
+            _unmap(me);
+			closeAndResize(me.mapping, finalLen);
 		}
 		return true;
     }
