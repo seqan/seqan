@@ -133,8 +133,12 @@ struct ScoutSpecForAlignmentAlgorithm_
 template <typename TScoreValue, typename TSpec, typename TTraceMatrixNavigator>
 inline void
 _scoutBestScore(DPScout_<TScoreValue, TSpec> & dpScout, TScoreValue const & score,
-                TTraceMatrixNavigator const & navigator)
+                TTraceMatrixNavigator const & navigator, bool isLastColumn = false,
+                bool isLastRow = false)
 {
+    (void)isLastColumn;
+    (void)isLastRow;
+
     if (score > dpScout._maxScore)
     {
         dpScout._maxScore = score;

@@ -80,8 +80,12 @@ typedef Tag<DPFinalColumn_> DPFinalColumn;
 // The TColumnProperty determines the property of the column (if it is initial, inner, or last column)
 // The TLocation determines how the column is organized in the matrix.
 // It can have the values: FullColumn, PartialColumnTop, PartialColumnMiddle, PartialColumnBottom.
-template <typename TColumnProperty, typename TLocation>
-struct MetaColumnDescriptor {};
+template <typename TColumnProperty_, typename TLocation_>
+struct MetaColumnDescriptor
+{
+    typedef TColumnProperty_ TColumnProperty;
+    typedef TLocation_ TLocation;
+};
 
 // ----------------------------------------------------------------------------
 // Tag FullColumn
