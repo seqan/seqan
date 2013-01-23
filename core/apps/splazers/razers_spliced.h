@@ -32,6 +32,7 @@
 #include <seqan/align.h>
 //#include <seqan/seeds.h>
 #include <seqan/seeds2.h>
+#include <seqan/bam_io.h>
 
 namespace SEQAN_NAMESPACE_MAIN
 {
@@ -186,6 +187,15 @@ struct LongestSuffix{};
 struct OrientationReverse{};
 struct OrientationForward{};
 
+// Trim after the first whitespace.
+void trimAfterSpace(seqan::CharString & s)
+{
+    unsigned i = 0;
+    for (; i < length(s); ++i)
+        if (isspace(s[i]))
+            break;
+    resize(s, i);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Load anchored reads from SAM file
@@ -226,78 +236,63 @@ bool loadReadsSam(
     //TReadName lastQname;
     //bool lastWasAnchored = false;
 	int kickoutcount = 0;
-	char c = _streamGet(file);
-	while ( !_streamEOF(file))
-	{
-        
-        // read fields of alignments line        
-        _parseSkipWhitespace(file, c);
+    RecordReader<std::ifstream, SinglePass<> > reader(file);
 
-		// Read the query name.  The letters until the first
-		// whitespace will be read into qname.  Then, we skip until we
-		// hit the first tab character.
-        TReadName qname;
-        _parseReadSamIdentifier(file, qname, c);
-        _parseSkipUntilChar(file, '\t', c);
+    // Setup name store, cache, and BAM I/O context.
+    typedef seqan::StringSet<seqan::CharString> TNameStore;
+    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
+    typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
+    TNameStore      nameStore;
+    TNameStoreCache nameStoreCache(nameStore);
+    TBamIOContext   bamIOContext(nameStore, nameStoreCache);
 
-		// read the flag
-        int flag;
-        flag = _parseReadNumber(file, c);
-        if(!((flag & 1) == 1 && (flag & 4) == 4))
-//		if(flag != 85 && flag != 101 && flag != 149 && flag != 165)
-		{
-            //lastFlag = flag;
-            //lastQname = qname;
-			_parseSkipLine(file,c); 
-			continue;
-		}
-        _parseSkipWhitespace(file, c);
-		bool reverse = (flag & (1 << 4)) == (1 << 4); // if reverse this read is expected to match downstream of its mate
-        int bitFlag = 0;	// has two bits
-		if(reverse) bitFlag +=2;	// first bits says whether reversed (or not ->0)
-		if((flag & (1 << 7)) == (1 << 7)) bitFlag +=1; // second bit says whether second mate (or first ->0)
+    // Read header.
+    BamHeader header;
+    if (readRecord(header, bamIOContext, reader, Sam()) != 0)
+    {
+        std::cerr << "ERROR: Could not read header from SAM file " << fileName << "\n";
+        return false;
+    }
 
-		// Read reference name.  Same behaviour as for query name:  Read up to
+    // Read records.
+    BamAlignmentRecord record;
+    while (!atEnd(reader))
+    {
+        if (readRecord(record, bamIOContext, reader, Sam()) != 0)
+        {
+            std::cerr << "ERROR: Problem while reading sam record from " << fileName << "\n";
+            return false;
+        }
+        if (record.rId == -1)
+            continue;  // Skip if orphan.
+
+        // Get the query name, remove everything after the first space.
+        TReadName qname = record.qName;
+        trimAfterSpace(qname);
+
+        // Evaluate flag.
+        if (!hasFlagMultiple(record) || !hasFlagUnmapped(record))
+            continue;  // Skip if not unmapped mate.
+        bool reverse = hasFlagRC(record); // if reverse this read is expected to match downstream of its mate
+        int bitFlag = 0;    // has two bits
+        if (reverse) bitFlag += 2;  // first bits says whether reversed (or not ->0)
+        if ((record.flag & (1 << 7)) == (1 << 7)) bitFlag +=1; // second bit says whether second mate (or first ->0)
+
+        // Read reference name.  Same behaviour as for query name:  Read up to
         // the first whitespace character and skip to next tab char.
-        String<char> chrname;
-		_parseReadSamIdentifier(file, chrname, c);
+        String<char> chrname = nameStore[record.rId];
         //need gnameToIdMap !!
-		_parseSkipUntilChar(file, '\t', c);
 
-		// read begin position
-        TContigPos beginPos;
-        beginPos = _parseReadNumber(file, c);
-        --beginPos; // Sam stores positions starting at 1 the fragment store starting at 0
-		_parseSkipWhitespace(file, c);
+        // Get read begin position.
+        TContigPos beginPos = record.pos;
 
-        // read map quality
-        _parseReadNumber(file, c);
-        _parseSkipWhitespace(file, c);
-
-		// read CIGAR
-        String<CigarElement<> > cigar;
-        _parseReadCigar(file, cigar, c);
-        _parseSkipWhitespace(file, c);
-        
-        // read mate reference name
-		CharString tmp;
-        _parseReadSamIdentifier(file, tmp, c);
-        _parseSkipWhitespace(file, c);
-
-		// read mate position
-        _parseReadNumber(file, c);
-        _parseSkipWhitespace(file, c);
-
-		// read iSize
-        _parseReadNumber(file, c);
-        _parseSkipWhitespace(file, c);
+        // Get CIGAR string.
+        String<CigarElement<> > cigar = record.cigar;
 
 		// read in sequence
-        String<Dna5Q> readSeq;
-        _parseReadDnaSeq(file, readSeq, c);
+        String<Dna5Q> readSeq = record.seq;
         SEQAN_ASSERT_GT(length(readSeq), 0u);
 		int readLength = (int)length(readSeq);
-        _parseSkipWhitespace(file, c);
 		if (countN)
 		{
 			int count = 0;
@@ -314,7 +309,7 @@ bool loadReadsSam(
 		}
 
 		// and associated qualities
-        _parseReadSeqQual(file, readSeq, c);
+        assignQualities(readSeq, record.qual);
 
 	
 		// now store the information
@@ -325,9 +320,6 @@ bool loadReadsSam(
 			)  //15578976
 			appendValue(fastaIDs, qname);	// append read name Fasta id
 		
-		
-		// read in Sam tags
-       	_parseSkipLine(file,c); 
 		
 //		if (options.trimLength > 0 && readLength > (unsigned)options.trimLength)
 //			resize(readSeq, options.trimLength);
@@ -2247,7 +2239,8 @@ int mapSplicedReads(
 		file.open(toCString(genomeFileNameList[filecount]), ::std::ios_base::in | ::std::ios_base::binary);
 		if (!file.is_open())
 			return RAZERS_GENOME_FAILED;
-	
+        RecordReader<std::ifstream, SinglePass<> > reader(file);
+
 		// remove the directory prefix of current genome file
 		::std::string genomeFile(toCString(genomeFileNameList[filecount]));
 		size_t lastPos = genomeFile.find_last_of('/') + 1;
@@ -2262,14 +2255,18 @@ int mapSplicedReads(
 		SEQAN_PROTIMESTART(find_time);
 
 		// iterate over genome sequences
-		for(; !_streamEOF(file); ++gseqNo)
+		for(; !atEnd(reader); ++gseqNo)
 		{
+            if (readRecord(id, genome, reader, Fasta()) != 0)
+            {
+                std::cerr << "ERROR: Problem reading sequence from " << genomeFileNameList[filecount] << "\n";
+                return 1;
+            }
 			if (options.genomeNaming == 0)
-			{
-				readShortID(file, id, Fasta());			// read Fasta id up to first whitespace
+            {
+                trimAfterSpace(id);
 				appendValue(genomeNames, id, Generous());
-			}
-			read(file, genome, Fasta());			// read Fasta sequence
+            }
 			
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
@@ -2285,7 +2282,6 @@ int mapSplicedReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		file.close();
 		++filecount;
 	}
 

@@ -161,19 +161,20 @@ def main(source_base, binary_base):
                           ph.outFile('se-adeno-reads%d_1_mml20-so%d_ep1_es1.stdout' % (rl, so)))])
             conf_list.append(conf)
 
-#        # Run in default anchored mode
-#        conf = app_tests.TestConf(
-#            program=path_to_program,
-#            redir_stdout=ph.outFile('pe-adeno-reads%d_2_default.stdout' % rl),
-#            args=['-an',
-#                  ph.inFile('adeno-genome.fa'),
-#                  ph.inFile('adeno-reads%d_1.sam' % rl),
-#                  '-o', ph.outFile('pe-adeno-reads%d_2_default.out' % rl)],
-#            to_diff=[(ph.inFile('pe-adeno-reads%d_2_default.out' % rl),
-#                      ph.outFile('pe-adeno-reads%d_2_default.out' % rl)),
-#                     (ph.inFile('pe-adeno-reads%d_2_default.stdout' % rl),
-#                      ph.outFile('pe-adeno-reads%d_2_default.stdout' % rl))])
-#        conf_list.append(conf)
+        # Run in default anchored mode
+        conf = app_tests.TestConf(
+            program=path_to_program,
+            redir_stdout=ph.outFile('anchored_adeno_example%d.stdout' % rl),
+            args=['-an',
+                  ph.inFile('adeno-genome.fa'),
+                  ph.inFile('adeno-reads-pe.sam'), # % rl),
+                  '-o', ph.outFile('anchored_adeno_example%d.out' % rl),
+                  '-ll', '300', '-le', '90'],
+            to_diff=[(ph.inFile('anchored_adeno_example%d.out' % rl),
+                      ph.outFile('anchored_adeno_example%d.out' % rl)),
+                     (ph.inFile('anchored_adeno_example%d.stdout' % rl),
+                      ph.outFile('anchored_adeno_example%d.stdout' % rl))])
+        conf_list.append(conf)
 
     # ============================================================
     # Execute the tests.
