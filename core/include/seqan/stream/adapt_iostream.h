@@ -301,6 +301,24 @@ streamWriteBlock(::std::ostream & stream, char const * source, size_t count)
 }
 
 // ----------------------------------------------------------------------------
+// Function streamTell()
+// ----------------------------------------------------------------------------
+
+inline Position< ::std::istream>::Type
+streamTell(::std::istream & stream)
+{
+    std::streampos x = stream.tellg();
+    return x;
+}
+
+inline Position< ::std::ostream>::Type
+streamTell(::std::ostream & stream)
+{
+    std::streampos x = stream.tellp();
+    return x;
+}
+
+// ----------------------------------------------------------------------------
 // Function streamPut()
 // ----------------------------------------------------------------------------
 
