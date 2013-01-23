@@ -29,7 +29,7 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
-add_executable (test_consensus test_consensus.cpp test_consensus.h)
+add_executable (test_consensus test_consensus.cpp test_consensus.h test_consensus_realign.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_consensus ${SEQAN_LIBRARIES})
