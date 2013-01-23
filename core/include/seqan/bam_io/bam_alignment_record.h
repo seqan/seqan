@@ -245,6 +245,7 @@ clear(BamAlignmentRecord & record)
 
 /**
 .Function.hasFlagMultiple
+..class:Class.BamAlignmentRecord
 ..cat:BAM I/O
 ..summary:Return true if a @Class.BamAlignmentRecord@ has the "multiple" flag set.
 ..signature:hasFlagMultiple(record)
@@ -276,6 +277,7 @@ hasFlagMultiple(BamAlignmentRecord const & record)
 
 /**
 .Function.hasFlagAllProper
+..class:Class.BamAlignmentRecord
 ..cat:BAM I/O
 ..summary:Return true if a @Class.BamAlignmentRecord@ has the "all properly aligned" flag set.
 ..signature:hasFlagAllProper(record)
