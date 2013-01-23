@@ -338,7 +338,7 @@ public:
             // Guess terminal screen width and set into layout.
             unsigned cols = 0, rows = 0;
             bool success = getTerminalSize(cols, rows);
-            screenWidth = success ? cols : defaultScreenWidth;
+            screenWidth = (success && cols > 0) ? cols : defaultScreenWidth;
             screenWidth = std::max(screenWidth, minimalScreenWidth);
             screenWidth = std::min(screenWidth, maximalScreenWidth);
             screenWidth -= rightPadding;
