@@ -1,0 +1,2 @@
+gi|9632547|ref|NC_002077.1|	razers	read	1350	1452	100	-	.	ID=adeno-reads100.fasta.000000004;unique;pairScore=98;libraryError=-1;split;cigar=69M3D31M
+gi|9632547|ref|NC_002077.1|	razers	read	2997	3092	100	-	.	ID=adeno-reads100.fasta.000000007;unique;pairScore=94;libraryError=-31;split;cigar=76M4I20M;mutations=77C,78A,79G,80C
