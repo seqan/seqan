@@ -306,6 +306,7 @@ _computeTrack(TDPScout & scout,
                  previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
                  previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
                  TColumnDescriptor(), FirstCell(), TDPProfile());
+
     TSeqVIterator iter = seqBegin;
     TSeqVIterator itEnd = (seqEnd - 1);
     // Compute the inner cells of the current track.
@@ -1303,8 +1304,9 @@ _computeAlignment(String<TTraceSegment> & traceSegments,
     TDPScoreMatrix dpScoreMatrix;
     TDPTraceMatrix dpTraceMatrix;
 
-    setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
-    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
+    // TODO(rmaerker): Check whether the matrix allocation can be reduced if upperDiagonal < 0?
+    setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(band)));
+    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(band)));
 
     if (IsSameType<TBandSwitch, BandOff>::VALUE)
     {
@@ -1344,7 +1346,6 @@ _computeAlignment(String<TTraceSegment> & traceSegments,
         return maxScore(dpScout);
 
 //    _printTracebackMatrix(dpTraceMatrix);
-
     _computeTraceback(traceSegments, dpTraceMatrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);
 
     return maxScore(dpScout);

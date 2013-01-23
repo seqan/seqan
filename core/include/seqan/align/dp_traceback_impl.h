@@ -55,15 +55,16 @@ namespace seqan {
 
 template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
           typename TDPBand, typename TGapCosts>
-void _doTracebackGoDiagonal(TTarget & target,
-                            TDPTraceMatrixNavigator & matrixNavigator,
-                            TTraceValue & traceValue,
-                            TTraceValue & lastTraceValue,
-                            TSize & fragmentLength,
-                            TPosition & seqHPos,
-                            TPosition & seqVPos,
-                            TDPBand const & band,
-                            TGapCosts const &)
+inline void
+_doTracebackGoDiagonal(TTarget & target,
+                       TDPTraceMatrixNavigator & matrixNavigator,
+                       TTraceValue & traceValue,
+                       TTraceValue & lastTraceValue,
+                       TSize & fragmentLength,
+                       TPosition & seqHPos,
+                       TPosition & seqVPos,
+                       TDPBand const & band,
+                       TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::DIAGONAL)) // the old trace value was not diagonal
     {
@@ -85,15 +86,16 @@ void _doTracebackGoDiagonal(TTarget & target,
 
 template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
           typename TDPBand, typename TGapCosts>
-void _doTracebackGoVertical(TTarget & target,
-                            TDPTraceMatrixNavigator & matrixNavigator,
-                            TTraceValue & traceValue,
-                            TTraceValue & lastTraceValue,
-                            TSize & fragmentLength,
-                            TPosition & seqHPos,
-                            TPosition & seqVPos,
-                            TDPBand const & band,
-                            TGapCosts const &)
+inline void
+_doTracebackGoVertical(TTarget & target,
+                       TDPTraceMatrixNavigator & matrixNavigator,
+                       TTraceValue & traceValue,
+                       TTraceValue & lastTraceValue,
+                       TSize & fragmentLength,
+                       TPosition & seqHPos,
+                       TPosition & seqVPos,
+                       TDPBand const & band,
+                       TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::VERTICAL)) // the old trace value was not diagonal
     {
@@ -118,7 +120,6 @@ void _doTracebackGoVertical(TTarget & target,
         ++fragmentLength;
         // Forbid continuing in vertical direction.
         traceValue = value(matrixNavigator) & TraceBitMap_::NO_VERTICAL_TRACEBACK;
-        SEQAN_ASSERT_NEQ(traceValue, +TraceBitMap_::NONE);
     }
     else
     {
@@ -135,15 +136,16 @@ void _doTracebackGoVertical(TTarget & target,
 
 template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
           typename TDPBand, typename TGapCosts>
-void _doTracebackMaxFromVertical(TTarget & target,
-                                 TDPTraceMatrixNavigator & matrixNavigator,
-                                 TTraceValue & traceValue,
-                                 TTraceValue & lastTraceValue,
-                                 TSize & fragmentLength,
-                                 TPosition & seqHPos,
-                                 TPosition & seqVPos,
-                                 TDPBand const & band,
-                                 TGapCosts const &)
+inline void
+_doTracebackMaxFromVertical(TTarget & target,
+                            TDPTraceMatrixNavigator & matrixNavigator,
+                            TTraceValue & traceValue,
+                            TTraceValue & lastTraceValue,
+                            TSize & fragmentLength,
+                            TPosition & seqHPos,
+                            TPosition & seqVPos,
+                            TDPBand const & band,
+                            TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::VERTICAL)) // the old trace value was not diagonal
     {
@@ -156,7 +158,6 @@ void _doTracebackMaxFromVertical(TTarget & target,
     ++fragmentLength;
     // Forbid continuing in vertical direction.
     traceValue = value(matrixNavigator) & TraceBitMap_::NO_VERTICAL_TRACEBACK;
-    SEQAN_ASSERT_NEQ(traceValue, +TraceBitMap_::NONE);
 }
 
 // ----------------------------------------------------------------------------
@@ -165,15 +166,16 @@ void _doTracebackMaxFromVertical(TTarget & target,
 
 template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
           typename TDPBand, typename TGapCosts>
-void _doTracebackGoHorizontal(TTarget & target,
-                              TDPTraceMatrixNavigator & matrixNavigator,
-                              TTraceValue & traceValue,
-                              TTraceValue & lastTraceValue,
-                              TSize & fragmentLength,
-                              TPosition & seqHPos,
-                              TPosition & seqVPos,
-                              TDPBand const & band,
-                              TGapCosts const &)
+inline void
+_doTracebackGoHorizontal(TTarget & target,
+                         TDPTraceMatrixNavigator & matrixNavigator,
+                         TTraceValue & traceValue,
+                         TTraceValue & lastTraceValue,
+                         TSize & fragmentLength,
+                         TPosition & seqHPos,
+                         TPosition & seqVPos,
+                         TDPBand const & band,
+                         TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::HORIZONTAL)) // the old trace value was not diagonal
     {
@@ -196,7 +198,6 @@ void _doTracebackGoHorizontal(TTarget & target,
         ++fragmentLength;
         // Forbid continuing in horizontal direction.
         traceValue = value(matrixNavigator) & TraceBitMap_::NO_HORIZONTAL_TRACEBACK;
-        SEQAN_ASSERT_NEQ(traceValue, +TraceBitMap_::NONE);
     }
     else
     {
@@ -214,15 +215,16 @@ void _doTracebackGoHorizontal(TTarget & target,
 
 template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
           typename TDPBand, typename TGapCosts>
-void _doTracebackMaxFromHorizontal(TTarget & target,
-                                   TDPTraceMatrixNavigator & matrixNavigator,
-                                   TTraceValue & traceValue,
-                                   TTraceValue & lastTraceValue,
-                                   TSize & fragmentLength,
-                                   TPosition & seqHPos,
-                                   TPosition & seqVPos,
-                                   TDPBand const & band,
-                                   TGapCosts const &)
+inline void
+_doTracebackMaxFromHorizontal(TTarget & target,
+                              TDPTraceMatrixNavigator & matrixNavigator,
+                              TTraceValue & traceValue,
+                              TTraceValue & lastTraceValue,
+                              TSize & fragmentLength,
+                              TPosition & seqHPos,
+                              TPosition & seqVPos,
+                              TDPBand const & band,
+                              TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::HORIZONTAL)) // the old trace value was not diagonal
     {
@@ -236,7 +238,6 @@ void _doTracebackMaxFromHorizontal(TTarget & target,
     ++fragmentLength;
     // Forbid continuing in horizontal direction.
     traceValue = value(matrixNavigator) & TraceBitMap_::NO_HORIZONTAL_TRACEBACK;
-    SEQAN_ASSERT_NEQ(traceValue, +TraceBitMap_::NONE);
 }
 
 // ----------------------------------------------------------------------------
