@@ -27,6 +27,7 @@
 
 #include <seqan/find.h>
 #include <seqan/index.h>
+#include <seqan/seq_io.h>
 
 #ifdef RAZERS_PARALLEL
 #include "tbb/spin_mutex.h"
@@ -1883,7 +1884,15 @@ void mapSingleReads(
 
 #endif
 
-
+// Trim after the first whitespace.
+void trimAfterSpace(seqan::CharString & s)
+{
+    unsigned i = 0;
+    for (; i < length(s); ++i)
+        if (isspace(s[i]))
+            break;
+    resize(s, i);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in many genome sequences (import from Fasta)
@@ -2001,21 +2010,25 @@ int mapSingleReads(
 		if (lastPos == genomeFile.npos) lastPos = 0;
 		::std::string genomeName = genomeFile.substr(lastPos);
 		
+        RecordReader<std::ifstream, SinglePass<> > reader(file);
 
 		CharString	id;
 		Dna5String	genome;
 		unsigned gseqNoWithinFile = 0;
 		// iterate over genome sequences
 		SEQAN_PROTIMESTART(find_time);
-		for(; !_streamEOF(file); ++gseqNo)
+		for(; !atEnd(reader); ++gseqNo)
 		{
+            if (readRecord(id, genome, reader, Fasta()) != 0)
+            {
+                std::cerr << "ERROR: Could not read genome from " << genomeFileNameList[filecount] << "\n";
+                return 1;
+            }
 			if (options.genomeNaming == 0)
 			{
-				//readID(file, id, Fasta());			// read Fasta id
-				readShortID(file, id, Fasta());			// read Fasta id up to first whitespace
+                trimAfterSpace(id);
 				appendValue(genomeNames, id, Generous());
 			}
-			read(file, genome, Fasta());			// read Fasta sequence
 			
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
@@ -2031,7 +2044,6 @@ int mapSingleReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		file.close();
 		++filecount;
 	}
 

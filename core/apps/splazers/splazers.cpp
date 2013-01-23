@@ -81,9 +81,10 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 	if(!file.is_open())
 		return RAZERS_GENOME_FAILED;
 
+    RecordReader<std::ifstream, SinglePass<> > reader(file);
+
 	clear(genomeFileNames);
-	char c = _streamGet(file);
-	if (c != '>' && c != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+	if (value(reader) != '>' && value(reader) != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
@@ -96,24 +97,34 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 		string filePrefix = tempGenomeFile.substr(0,lastPos);*/
 
 		unsigned i = 1;
-		while(!_streamEOF(file))
-		{ 
-			_parseSkipWhitespace(file, c);
-			appendValue(genomeFileNames,_parseReadFilepath(file,c));
+        while (!atEnd(reader))
+		{
+            if (skipWhitespaces(reader) != 0)
+                return 1;
+            CharString filePath;
+            int res = readGraphs(filePath, reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return 1;
+			appendValue(genomeFileNames, filePath);
 			//CharString currentGenomeFile(filePrefix);
-			//append(currentGenomeFile,_parseReadFilepath(file,c));
+            //CharString filePath;
+            //int res = readGraphs(filePath, reader);
+            //if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            //    return 1;
+			//append(currentGenomeFile, filePath);x
 			//appendValue(genomeFileNames,currentGenomeFile);
 			if(options._debugLevel >=2)
 				cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << endl;
 			++i;
-			_parseSkipWhitespace(file, c);
+            res = skipWhitespaces(reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return 1;
 		}
 		if(options._debugLevel >=1)
 			cout << i-1 << " genome files total." <<endl;
 	}
 	else		//if file starts with a fasta header --> regular one-genome-file input
 		appendValue(genomeFileNames, filename, Exact());
-	file.close();
 	return 0;
 
 }

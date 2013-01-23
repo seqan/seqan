@@ -187,16 +187,6 @@ struct LongestSuffix{};
 struct OrientationReverse{};
 struct OrientationForward{};
 
-// Trim after the first whitespace.
-void trimAfterSpace(seqan::CharString & s)
-{
-    unsigned i = 0;
-    for (; i < length(s); ++i)
-        if (isspace(s[i]))
-            break;
-    resize(s, i);
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Load anchored reads from SAM file
 template <typename TReadSet, typename TNameSet,typename TReadRegions, typename TRazerSOptions>

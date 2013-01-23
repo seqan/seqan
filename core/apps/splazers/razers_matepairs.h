@@ -1013,6 +1013,7 @@ int mapMatePairReads(
 		file.open(toCString(genomeFileNameList[filecount]), ::std::ios_base::in | ::std::ios_base::binary);
 		if (!file.is_open())
 			return RAZERS_GENOME_FAILED;
+        RecordReader<std::ifstream, SinglePass<> > reader(file);
 
 		// remove the directory prefix of current genome file
 		::std::string genomeFile(toCString(genomeFileNameList[filecount]));
@@ -1026,15 +1027,18 @@ int mapMatePairReads(
 		unsigned gseqNoWithinFile = 0;
 		// iterate over genome sequences
 		SEQAN_PROTIMESTART(find_time);
-		for(; !_streamEOF(file); ++gseqNo)
+		for(; !atEnd(reader); ++gseqNo)
 		{
+            if (readRecord(id, genome, reader, Fasta()) != 0)
+            {
+                std::cerr << "ERROR: Could not load genome from " << genomeFileNameList[filecount] << "\n";
+                return 1;
+            }
 			if (options.genomeNaming == 0)
 			{
-				//readID(file, id, Fasta());			// read Fasta id
-				readShortID(file, id, Fasta());			// read Fasta id up to first whitespace
+                trimAfterSpace(id);
 				appendValue(genomeNames, id, Generous());
 			}
-			read(file, genome, Fasta());			// read Fasta sequence
 			
 			gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
 			
@@ -1050,7 +1054,6 @@ int mapMatePairReads(
 
 		}
 		options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
-		file.close();
 		++filecount;
 	}
 
