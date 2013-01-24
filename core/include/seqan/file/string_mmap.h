@@ -405,6 +405,7 @@ SEQAN_CHECKPOINT
 		}
         else
 			resize(me.mapping, 0);
+        _setLength(me, new_capacity);
 		return true;
 	}
 
@@ -426,11 +427,10 @@ SEQAN_CHECKPOINT
     inline bool 
     _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity) 
 	{
-		typedef typename Size< String<TValue, MMap<TConfig> > >::Type   TSize;
-        typedef typename Size<typename TConfig::TFile>::Type            TFileSize;
+		typedef typename Size<String<TValue, MMap<TConfig> > >::Type	TSize;
+        typedef typename Size<typename TConfig::TFile>::Type			TFileSize;
 
         bool result = true;
-        TSize seq_length = length(me);
 
 #ifndef PLATFORM_WINDOWS
         // Windows doesn't allow to resize the file while having a mapped file segment
@@ -458,17 +458,11 @@ SEQAN_CHECKPOINT
                 me.data_end = NULL;
                 return false;
             }
-
-            _setLength(me, seq_length);
             return true;
         }
 #endif
         result &= _unmap(me);
         result &= _map(me, new_capacity);
-        if (me.data_begin != NULL)
-            _setLength(me, seq_length);
-        else
-            me.data_begin = me.data_end;
         return result;
 	}
 
@@ -488,12 +482,7 @@ SEQAN_CHECKPOINT
     _allocateStorage(String<TValue, MMap<TConfig> > &me, TSize new_capacity) 
 	{
 //IOREV
-        typename Size< String<TValue, MMap<TConfig> > >::Type seq_length = length(me);
 		_map(me, _computeSizeForCapacity(me, new_capacity));
-        if (me.data_begin != NULL)
-            _setLength(me, seq_length);
-        else
-            me.data_begin = me.data_end;
 		return NULL;
 	}
 
@@ -524,9 +513,11 @@ SEQAN_CHECKPOINT
     open(String<TValue, MMap<TConfig> > &me, const char *fileName, int openMode) 
 	{
 //IOREV
+        typedef typename Size< String<TValue, MMap<TConfig> > >::Type TSize;
+		
 		close(me);
 		if (open(me.mapping, fileName, openMode))
-			return _map(me, (size_t)(length(me.mapping) / sizeof(TValue)));
+			return _map(me, capacity(me));
 		return false;
     }
 
@@ -546,7 +537,7 @@ SEQAN_CHECKPOINT
 //IOREV
 		close(me);
 		if (open(me.mapping, file))
-			return _map(me, 0, size(me.file) / sizeof(TValue));
+			return _map(me, capacity(me));
 		return false;
     }
 
