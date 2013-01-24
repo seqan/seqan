@@ -961,7 +961,7 @@ struct MMap;
             return first == NULL;
         }
 
-        inline bool
+        inline unsigned
         size()
         {
             return frames;
