@@ -343,7 +343,7 @@ streamEof(Stream<BZ2File> & stream)
 
 // Always returns 0.
 
-inline typename Position<Stream<BZ2File> >::Type
+inline Position<Stream<BZ2File> >::Type
 streamTell(Stream<BZ2File> const & stream)
 {
     return 0;
