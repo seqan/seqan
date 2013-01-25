@@ -226,6 +226,7 @@ _readBuffer(Stream<FileStream<TMode, MMap<TConfig>, TValue> > &stream, TPageFram
     typedef typename TFileStream::TFile                         TFile;
     typedef typename Size<TFile>::Type                          TSize;
 
+    _setCapacity(pf, stream.pageSize);
     TSize size = stream.pageSize;
 
     // how to handle pages crossing/beyond the end of file
