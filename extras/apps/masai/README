@@ -80,7 +80,6 @@ We can build an index for a reference genome by running the command:
 
 This command loads the reference genome stored inside the DNA (multi-)Fasta 
 file called hg19.fasta, builds its suffix array index and writes it on disk.
-A path to temporary 
 
 On success the following file should be present in the current directory:
 
