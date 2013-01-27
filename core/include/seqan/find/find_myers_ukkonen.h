@@ -1052,7 +1052,7 @@ _patternInitSmallStateBanded(
 	// If errors exceeds cutOff it cannot reach maxErrors again.
 	
 	
-	typename Size<TFinder>::Type const columns = length(container(hostIterator(finder))) + state.leftClip;
+	typename Size<TFinder>::Type const columns = length(container(finder)) + state.leftClip;
     register unsigned cutOff = state.maxErrors;
 	if (columns > ndlLength)
 	{
@@ -1228,11 +1228,11 @@ SEQAN_CHECKPOINT
     typedef typename TState::TLargeState TLargeState;
 	typedef typename Value<TNeedle>::Type TValue;
 
-//	unsigned diagWidth = length(container(hostIterator(finder))) + state.leftClip - length(needle);
+//	unsigned diagWidth = length(container(finder)) + state.leftClip - length(needle);
 //	unsigned blockCount = diagWidth / state.MACHINE_WORD_SIZE + 1;
 	unsigned blockCount = 1;
 
-//    SEQAN_ASSERT_GEQ(length(container(hostIterator(finder))), length(needle));
+//    SEQAN_ASSERT_GEQ(length(container(finder)), length(needle));
 
 #ifdef SEQAN_DEBUG_MYERSBITVECTOR
     clear(state.DPMat);
@@ -1467,13 +1467,15 @@ template <
     typename TSpec, 
     typename TFinderCSP, 
     typename TPatternCSP,
-    typename TFindBeginPatternSpec
+    typename TFindBeginPatternSpec,
+	typename TDoPatternSearch
 >
 inline bool 
 _findMyersSmallPatternsBanded(
 	TFinder & finder, 
 	TNeedle const & needle,
-    PatternState_<TNeedle2, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, True, TFindBeginPatternSpec> > & state)
+    PatternState_<TNeedle2, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, True, TFindBeginPatternSpec> > & state,
+	TDoPatternSearch const)
 {
 SEQAN_CHECKPOINT
 	typedef PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>, True, TFindBeginPatternSpec> > TState;
@@ -1544,20 +1546,52 @@ SEQAN_CHECKPOINT
         ++col;
 #endif
 
-        if (errors <= maxErrors)
-        {
-            state.VP0 = VP;
-            state.VN0 = VN;
-            state.errors = errors;
-			_setFinderEnd(finder);
-			if (IsSameType<TSpec, FindPrefix>::VALUE)
-			{
-				_setFinderLength(finder, endPosition(finder));
-			}
-            return true;
-        }
+		if (TDoPatternSearch::VALUE)
+		{
+			// pattern search
+	        if (errors <= maxErrors)
+	        {
+	            state.VP0 = VP;
+	            state.VN0 = VN;
+	            state.errors = errors;
+				_setFinderEnd(finder);
+				if (IsSameType<TSpec, FindPrefix>::VALUE)
+				{
+					_setFinderLength(finder, endPosition(finder));
+				}
+	            return true;
+	        }
+		}
+		else
+		{
+			// edit distance
+		}
     }
+
+	if (!TDoPatternSearch::VALUE)
+	{
+		// edit distance
+	    state.errors = errors;
+	}
     return false;
+}
+
+template <typename TSeq1, typename TSeq2>
+inline unsigned 
+_computeEditDistanceBanded(
+	TSeq1 const &seq1,
+	TSeq2 const &seq2,
+	unsigned maxErrors)
+{
+	PatternState_<TSeq2, MyersUkkonenGlobalBanded> state;
+	state.maxErrors = maxErrors;
+	state.leftClip = (length(seq1) - length(seq2) + maxErrors) / 2;
+	typename Iterator<TSeq1 const, Rooted>::Type seq1Iter = begin(seq1, Rooted());
+	
+	if (!_patternInitSmallStateBanded(seq1Iter, seq2, state))
+		return maxErrors + 1;
+	_findMyersSmallPatternsBanded(seq1Iter, seq2, state, False());
+	return state.errors;
 }
 
 
@@ -1601,7 +1635,7 @@ inline bool find (TFinder & finder,
 
 	// distinguish between the version for needles not longer than one machineword and the version for longer needles
 	if (state.largeState == NULL) 
-		return _findMyersSmallPatternsBanded(finder, needle, state);
+		return _findMyersSmallPatternsBanded(finder, needle, state, True());
 //	else
 //		return _findMyersLargePatterns(finder, needle, state);
 	return false;
@@ -1645,7 +1679,7 @@ SEQAN_CHECKPOINT
 		prefix_begin_position = beginPosition(finder);
 	}
 
-	TSize haystack_length = length(container(hostIterator(finder)));
+	TSize haystack_length = length(container(finder));
 	// limit search width for prefix search
 	if (IsSameType<TSpec, FindPrefix>::VALUE)
 	{

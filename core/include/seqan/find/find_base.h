@@ -319,6 +319,15 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
+template <typename T>
+inline void
+_setFinderEnd(T &) {}
+
+template <typename T, typename TPosition>
+inline void
+_setFinderEnd(T &, TPosition) {}
+
+
 template <typename THaystack, typename TSpec>
 inline void
 _setFinderEnd(Finder<THaystack, TSpec> & me)
@@ -336,6 +345,10 @@ _setFinderEnd(Finder<THaystack, TSpec> & me,
 }
 
 //____________________________________________________________________________
+
+template <typename T, typename TSize>
+inline void
+_setFinderLength(T &, TSize) {}
 
 template <typename THaystack, typename TSpec, typename TSize>
 inline void
