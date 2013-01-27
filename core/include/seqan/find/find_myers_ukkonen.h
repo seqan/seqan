@@ -1585,7 +1585,7 @@ _computeEditDistanceBanded(
 {
 	PatternState_<TSeq2, MyersUkkonenGlobalBanded> state;
 	state.maxErrors = maxErrors;
-	state.leftClip = (length(seq1) - length(seq2) + maxErrors) / 2;
+	state.leftClip = (length(seq2) - length(seq1) + maxErrors) / 2;
 	typename Iterator<TSeq1 const, Rooted>::Type seq1Iter = begin(seq1, Rooted());
 	
 	if (!_patternInitSmallStateBanded(seq1Iter, seq2, state))
