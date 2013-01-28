@@ -147,6 +147,28 @@ struct StringSetPosition<StringSet<TString, TSpec> >
 };
 
 // --------------------------------------------------------------------------
+// Metafunction LengthSum
+// --------------------------------------------------------------------------
+
+template <typename TString>
+struct LengthSum
+{
+    typedef typename Size<TString>::Type Type;
+};
+
+template <typename TString, typename TSpec>
+struct LengthSum<StringSet<TString, TSpec> >
+{
+    typedef StringSet<TString, TSpec>                   TStringSet;
+    typedef typename StringSetLimits<TStringSet>::Type  TLimits;
+    typedef typename Value<TLimits>::Type               Type;
+};
+
+template <typename T>
+struct LengthSum<T const> :
+    public LengthSum<T> {};
+
+// --------------------------------------------------------------------------
 // Metafunction GetSequenceNo
 // --------------------------------------------------------------------------
 
@@ -1064,16 +1086,16 @@ _countNonZeroValues(String<TValue, TSpec> const & me, TPos i)
 // Function lengthSum()
 // --------------------------------------------------------------------------
 
-template < typename TString >
-inline typename Size<TString>::Type 
+template <typename TString>
+inline typename LengthSum<TString>::Type 
 lengthSum(TString const & me)
 {
     return length(me);
 }
 
-template < typename TString, typename TSpec >
-inline typename Value<typename StringSetLimits<StringSet< TString, TSpec > >::Type>::Type 
-lengthSum(StringSet< TString, TSpec > & me)
+template <typename TString, typename TSpec>
+inline typename LengthSum<StringSet<TString, TSpec> >::Type
+lengthSum(StringSet<TString, TSpec> & me)
 {
     if (!_validStringSetLimits(me))
         _refreshStringSetLimits(me);
@@ -1081,8 +1103,8 @@ lengthSum(StringSet< TString, TSpec > & me)
 }
 
 template < typename TString, typename TSpec >
-inline typename Value<typename StringSetLimits<StringSet< TString, TSpec > >::Type>::Type 
-lengthSum(StringSet< TString, TSpec > const & me)
+inline typename LengthSum<StringSet<TString, TSpec> >::Type
+lengthSum(StringSet<TString, TSpec> const & me)
 {
     if (!_validStringSetLimits(me))
         _refreshStringSetLimits(me);
