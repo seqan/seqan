@@ -2171,7 +2171,7 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 	inline typename Size<Index<TText, IndexQGram<TShapeSpec, TSpec> > >::Type
 	_qgramQGramCount(Index<TText, IndexQGram<TShapeSpec, TSpec> > const &index)
 	{
-        _qgramQGramCount(indexText(index), indexShape(index), getStepSize(index));
+        return _qgramQGramCount(indexText(index), indexShape(index), getStepSize(index));
 	}
 
 	template <typename TText, typename TShapeSpec, typename TSpec>
