@@ -191,6 +191,18 @@ struct Host< ModifiedString<THost, TSpec> const > {
 };
 
 
+
+template < typename THost, typename TSpec >
+struct Parameter_< ModifiedString<THost, TSpec> > {
+    typedef ModifiedString<THost, TSpec> Type;
+};
+
+template < typename THost, typename TSpec >
+struct Parameter_< ModifiedString<THost, TSpec> const > {
+    typedef ModifiedString<THost, TSpec> const Type;
+};
+
+
 ///.Metafunction.IsSequence.param.T.type:Class.ModifiedString
 
 template < typename THost, typename TSpec >
