@@ -882,7 +882,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ssize_t count = aio_return(&request);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
 
-#ifdef SEQAN_DEBUG
+//#ifdef SEQAN_DEBUG
         if (result != 0 || count != (ssize_t)request.aio_nbytes)
         {
             int errorNo = aio_error(&request);
@@ -894,7 +894,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 printRequest(request);
             }
         }
-#endif
+//#endif
 
 		return (result == 0) && (count == (ssize_t)request.aio_nbytes);
 	}

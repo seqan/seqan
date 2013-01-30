@@ -70,10 +70,10 @@ namespace seqan {
 ..include:seqan/basic.h
 */
 
-template <class Type1, class Type2>
+template <typename Type1, typename Type2>
 struct IsSameType : False {};
 
-template <class Type1>
+template <typename Type1>
 struct IsSameType<Type1, Type1> : True {};
 
 // ----------------------------------------------------------------------------

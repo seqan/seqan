@@ -816,8 +816,12 @@ template <typename TMode, typename TSpec, typename TValue>
 inline int
 close(Stream<FileStream<TMode, TSpec, TValue> > & stream)
 {
-    stream._stop();
-    return close(stream.file);
+    if (stream.file)
+    {
+        stream._stop();
+        return close(stream.file);
+    }
+    return true;
 }
 
 } // namespace seqan
