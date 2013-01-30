@@ -730,7 +730,7 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
 .Function.weaklyConnectedComponents:
 ..cat:Graph
 ..summary:Compute weakly connected components of a directed graph.
-..signature:stronglyConnectedComponents(g, components)
+..signature:weaklyConnectedComponents(g, components)
 ..param.g:In-parameter:A directed graph.
 ...type:Spec.Directed Graph
 ..param.components:Out-parameter:A property map.
