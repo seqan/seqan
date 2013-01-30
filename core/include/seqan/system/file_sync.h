@@ -128,7 +128,6 @@ namespace SEQAN_NAMESPACE_MAIN
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) 
 		{
             handle = _open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
-            //IOREV AFAICT _open is defined nowhere :S
 			if (handle == -1) {
 				if (!(openMode & OPEN_QUIET))
 					::std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << ::std::endl;
@@ -266,13 +265,13 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         virtual bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
-            handle = ::open(fileName, _getOFlag(openMode), S_IREAD | S_IWRITE);
+            handle = ::open(fileName, _getOFlag(openMode), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 			if (handle == -1 && errno == EINVAL) {	// fall back to cached access
 	            #ifdef SEQAN_DEBUG_OR_TEST_
 					if (!(openMode & OPEN_QUIET))
 						::std::cerr << "Warning: Direct access openening failed: " << fileName << "." << ::std::endl;
 				#endif			
-          	    handle = ::open(fileName, _getOFlag(openMode & ~OPEN_ASYNC), S_IREAD | S_IWRITE);
+          	    handle = ::open(fileName, _getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 			}
 			
 			if (handle == -1) {

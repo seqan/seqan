@@ -672,7 +672,7 @@ namespace SEQAN_NAMESPACE_MAIN
         virtual ~File() {}
         
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
-            handle = ::open(fileName, Base::_getOFlag(openMode & ~OPEN_ASYNC), S_IREAD | S_IWRITE);
+            handle = ::open(fileName, Base::_getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 			if (handle == -1) 
 			{
 				handleAsync = handle;
@@ -683,7 +683,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 			if (Base::_getOFlag(openMode | OPEN_ASYNC) & O_DIRECT) 
 			{
-				handleAsync = ::open(fileName, Base::_getOFlag(openMode | (OPEN_ASYNC & ~OPEN_CREATE)), S_IREAD | S_IWRITE);
+				handleAsync = ::open(fileName, Base::_getOFlag(openMode | (OPEN_ASYNC & ~OPEN_CREATE)), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 				if (handleAsync == -1 || errno == EINVAL) {	// fall back to cached access
 					#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
 						if (!(openMode & OPEN_QUIET))
