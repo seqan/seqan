@@ -481,6 +481,7 @@ public:
     typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
 
     static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
+//    static const unsigned pageSize = 4*1024;      // 1M entries per page
     static const unsigned numPages = 2;                // double-buffering
 
     TFile       file;
@@ -519,6 +520,11 @@ public:
         lastPageNo = -1;
         inChainNeedsHousekeeping = false;
         outChainNeedsHousekeeping = false;
+    }
+
+    inline void _printStats()
+    {
+        std::cout << "in: " << inChain.size() << "\tout:" << outChain.size() << "\tframe:" << (__uint64)framePtr << std::endl;
     }
 
     inline int _getNextFetchPageNo()
@@ -629,7 +635,6 @@ public:
         if (inChain.empty())
         {
             // we need more incoming buffers
-
             if (inChain.size() + outChain.size() < numPages)
             {
                 // we can afford to create new buffers

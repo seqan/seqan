@@ -412,7 +412,10 @@ namespace SEQAN_NAMESPACE_MAIN
     inline void resize(File<Sync<TSpec> > &me, TSize new_length)
 	{
 //IOREV _doc_ 
-		me.resize(new_length);
+		if (!me.resize(new_length))
+            SEQAN_FAIL(
+                "resize(%d, %d) failed: \"%s\"",
+                me.handle, new_length, strerror(errno));
     }
 
 #endif

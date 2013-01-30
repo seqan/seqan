@@ -347,7 +347,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
         if (me.error() == ERROR_NO_SYSTEM_RESOURCES) {  // read synchronoulsy instead
-            #ifdef SEQAN_DEBUG_OR_TEST_
+            #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
             	std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
             #endif
 			signal(request.xmitDone);
@@ -380,7 +380,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
         if (me.error() == ERROR_NO_SYSTEM_RESOURCES) {  // write synchronoulsy instead
-            #ifdef SEQAN_DEBUG_OR_TEST_
+            #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
             	std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
             #endif
 			signal(request.xmitDone);
@@ -685,13 +685,13 @@ namespace SEQAN_NAMESPACE_MAIN
 			{
 				handleAsync = ::open(fileName, Base::_getOFlag(openMode | (OPEN_ASYNC & ~OPEN_CREATE)), S_IREAD | S_IWRITE);
 				if (handleAsync == -1 || errno == EINVAL) {	// fall back to cached access
-					#ifdef SEQAN_DEBUG_OR_TEST_
+					#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
 						if (!(openMode & OPEN_QUIET))
 							std::cerr << "Warning: Direct access openening failed. \"" << ::strerror(errno) << '"' << std::endl;
 					#endif
 					handleAsync = handle;
 				}
-				#ifdef SEQAN_DEBUG_OR_TEST_
+				#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
 				    else
 						if (!(openMode & OPEN_QUIET))
 							std::cerr << "Direct access successfully initiated" << std::endl;
@@ -797,16 +797,16 @@ namespace SEQAN_NAMESPACE_MAIN
 		SEQAN_PROADD(SEQAN_PROIO, (request.aio_nbytes + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
 		int result = aio_read(&request);
         SEQAN_PROADD(SEQAN_PROIWAIT, SEQAN_PROTIMEDIFF(tw));
-        if (result) 
+        if (result != 0)
 		{
 			request.aio_nbytes = 0;
 			if (errno == EAGAIN) {  // read synchronoulsy instead
-#ifdef SEQAN_DEBUG_OR_TEST_
+#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
             	std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
 #endif
 				return readAt(me, memPtr, count, fileOfs);
 			}
-#ifdef SEQAN_DEBUG
+#if SEQAN_ENABLE_DEBUG
 			else
 				std::cerr << "aio_read failed (asyncReadAt). \"" << ::strerror(errno) << '"' << std::endl;
 #endif
@@ -837,17 +837,17 @@ namespace SEQAN_NAMESPACE_MAIN
 		SEQAN_PROADD(SEQAN_PROIO, (request.aio_nbytes + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
 		int result = aio_write(&request);
         SEQAN_PROADD(SEQAN_PROIWAIT, SEQAN_PROTIMEDIFF(tw));
-        if (result) 
+        if (result != 0)
 		{
 			request.aio_nbytes = 0;
             int errorNo = errno;
 			if (errorNo == EAGAIN) {  // write synchronoulsy instead
-#ifdef SEQAN_DEBUG_OR_TEST_
+#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
             	std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
 #endif
 				return writeAt(me, memPtr, count, fileOfs);
 			}
-#ifdef SEQAN_DEBUG
+#if SEQAN_ENABLE_DEBUG
 			else
 				std::cerr << "aio_write failed (asyncWriteAt): \"" << ::strerror(errno) << '"' << std::endl;
 #endif
@@ -879,11 +879,11 @@ namespace SEQAN_NAMESPACE_MAIN
 		aiocb * cblist = &request;
         SEQAN_PROTIMESTART(tw);
 		int result = aio_suspend(&cblist, 1, NULL);
-        ssize_t count = aio_return(&request);
+        ssize_t nbytes = aio_return(&request);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
 
-//#ifdef SEQAN_DEBUG
-        if (result != 0 || count != (ssize_t)request.aio_nbytes)
+//#if SEQAN_ENABLE_DEBUG
+        if (result != 0 || nbytes != (ssize_t)request.aio_nbytes)
         {
             int errorNo = aio_error(&request);
             if (errorNo != EINPROGRESS)
@@ -896,7 +896,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 //#endif
 
-		return (result == 0) && (count == (ssize_t)request.aio_nbytes);
+		return (result == 0) && (nbytes == (ssize_t)request.aio_nbytes);
 	}
 
 	inline bool waitFor(aiocb &request, long timeoutMilliSec, bool &inProgress)
@@ -926,13 +926,18 @@ namespace SEQAN_NAMESPACE_MAIN
 
         result = aio_error(&request);
         inProgress = (result == EINPROGRESS);
+        ssize_t nbytes;
+        
         if (inProgress)
             result = 0;
         else
-            result = (aio_return(&request) != (ssize_t)request.aio_nbytes);
+        {
+            nbytes = aio_return(&request);
+            result = (nbytes != (ssize_t)request.aio_nbytes);
+        }
 
-        #ifdef SEQAN_DEBUG
-			if (result)
+        #if SEQAN_ENABLE_DEBUG
+			if (result != 0)
             {
                 int errorNo = aio_error(&request);
                 if (errorNo != EINPROGRESS)
@@ -1065,7 +1070,10 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TSpec, typename TSize >
     inline void resize(File<Async<TSpec> > &me, TSize new_length) {
 //IOREV _doc_ 
-		me.resize(new_length);
+		if (!me.resize(new_length))
+            SEQAN_FAIL(
+                "resize(%d, %d) failed: \"%s\"",
+                me.handle, new_length, strerror(errno));
     }
 	
 
