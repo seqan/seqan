@@ -2000,10 +2000,10 @@ matchVerify(
 #endif
 
     int mismatchDelta, scoreInit;
-    int minScore = 0;
+    int minScore;
     if (IsSameType<TScoreMode, RazerSErrors>::VALUE)
     {
-        int minScore = verifier.options->errorCutOff[readId];
+        minScore = verifier.options->errorCutOff[readId];
         if (minScore == 0)
             return false;
 
