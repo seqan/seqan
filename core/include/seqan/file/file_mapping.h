@@ -276,7 +276,8 @@ inline bool
 closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
 {
     bool result = _unmapFile(mapping);
-    resize(mapping.file, newFileSize);
+    if (newFileSize != mapping.fileSize)
+        resize(mapping.file, newFileSize);
     if (mapping.ownFile)
         result &= close(mapping.file);
     _initialize(mapping);
@@ -302,6 +303,9 @@ template <typename TSpec, typename TSize>
 inline bool
 resize(FileMapping<TSpec> &mapping, TSize newFileSize)
 {
+    if (newFileSize == mapping.fileSize)
+        return true;
+
     bool result = _unmapFile(mapping);
     resize(mapping.file, newFileSize);
     mapping.fileSize = newFileSize;
