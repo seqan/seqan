@@ -175,6 +175,12 @@ _mapFile(FileMapping<TSpec> &mapping, TSize mappingSize)
 
     bool result = true;
 #ifdef PLATFORM_WINDOWS
+    if (mappingSize == 0)
+    {
+        mapping.handle = NULL;
+        return true;
+    }
+
     DWORD prot = ((mapping.openMode & OPEN_MASK) == OPEN_RDONLY) ? PAGE_READONLY : PAGE_READWRITE;
     LARGE_INTEGER largeSize;
     largeSize.QuadPart = mappingSize;   // 0 = map the whole file
@@ -190,16 +196,22 @@ _mapFile(FileMapping<TSpec> &mapping, TSize mappingSize)
     result &= (mapping.handle != NULL);
 
     if (mapping.handle == NULL)
-        SEQAN_FAIL("CreateFileMapping failed in resize: \"%s\"", strerror(errno));
+    {
+        LPVOID lpMsgBuf;
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+            NULL,
+            GetLastError(),
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+            (LPTSTR) &lpMsgBuf,
+            0,
+            NULL);
+    
+        SEQAN_FAIL("CreateFileMapping failed in resize: \"%s\"", lpMsgBuf /*strerror(GetLastError())*/);
+        LocalFree(lpMsgBuf);
+    }
 #endif
     return result;
-}
-
-template <typename TSpec>
-inline bool
-_mapFile(FileMapping<TSpec> &mapping)
-{
-    return _mapFile(mapping, 0);
 }
 
 template <typename TSpec>
@@ -210,9 +222,13 @@ _unmapFile(FileMapping<TSpec> &mapping)
 
     bool result = true;
 #ifdef PLATFORM_WINDOWS
-    result &= (CloseHandle(mapping.handle) != 0);
-    if (!result)
-        SEQAN_FAIL("CloseHandle failed in unmap: \"%s\"", strerror(errno));
+    if (mapping.handle != NULL)
+    {
+        result &= (CloseHandle(mapping.handle) != 0);
+        if (!result)
+            SEQAN_FAIL("CloseHandle failed in unmap: \"%s\"", strerror(errno));
+        mapping.handle = NULL;
+    }
 #endif
     return result;
 }
@@ -227,7 +243,7 @@ open(FileMapping<TSpec> &mapping, TFilename const &filename, TOpenMode const &op
     mapping.ownFile = true;
     mapping.temporary = false;
     mapping.fileSize = (result)? size(mapping.file) : 0ul;
-    result &= _mapFile(mapping);
+    result &= _mapFile(mapping, mapping.fileSize);
     return result;
 }
 
@@ -243,7 +259,7 @@ open(FileMapping<TSpec> &mapping, TFile const &file)
     if (mapping.file)
     {
         mapping.fileSize = size(mapping.file);
-        return _mapFile(mapping);
+        return _mapFile(mapping, mapping.fileSize);
     }
     return false;
 }

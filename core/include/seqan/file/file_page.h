@@ -1411,7 +1411,7 @@ struct MMap;
         Function const &Func_)
     {
 //IOREV _nodoc_
-        ::std::cerr << "equiDistantDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
+//        ::std::cerr << "equiDistantDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
         unsigned _pages         = enclosingBlocks(_size, _pageSize);
         if (!_pages) {
 			::std::cerr << "equiDistantDistribution: _pages is null!" << ::std::endl;
@@ -1434,7 +1434,7 @@ struct MMap;
         pb.begin = _clusterBuffer.begin;
 
         size_t clusterSize = _bufferSize / pages;
-        ::std::cerr << "equiDistantDistribution: pages=" << _pages << "\tclusterSize=" << clusterSize << ::std::endl;
+//        ::std::cerr << "equiDistantDistribution: pages=" << _pages << "\tclusterSize=" << clusterSize << ::std::endl;
         if (lastPageSize > 0 && clusterSize >= lastPageSize) {
             // last page bucket would get more memory than page would need
             // --> exclude from equi-size distribution
@@ -1477,7 +1477,7 @@ struct MMap;
     {
 //IOREV _nodoc_
         unsigned _pages         = enclosingBlocks(_size, _pageSize);
-        ::std::cerr << "equiDistantAlignedDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
+//        ::std::cerr << "equiDistantAlignedDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
         if (!_pages) {
 			::std::cerr << "equiDistantAlignedDistribution: _pages is null!" << ::std::endl;
             return 0;
@@ -1499,7 +1499,7 @@ struct MMap;
         if (clusterSize - aclusterSize > aligning / 2)
             aclusterSize += aligning;
 
-        ::std::cerr << "equiDistantAlignedDistribution: pages=" << _pages << "\tclusterSize=" << aclusterSize << ::std::endl;
+//        ::std::cerr << "equiDistantAlignedDistribution: pages=" << _pages << "\tclusterSize=" << aclusterSize << ::std::endl;
 
 		if (aclusterSize != 0) {
 

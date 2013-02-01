@@ -119,7 +119,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 #ifdef SEQAN_IS_32_BIT
         // in 32bit mode at most 4GB are addressable
-        enum { DefaultMemBufferSize     = 384 * 1024*1024,      // low memory config [kB]
+        enum { DefaultMemBufferSize     = 384 * 1024,      // low memory config [kB]
                DefaultPageSize          = 32 * 1024,            // [kB]
                DefaultBucketBufferSize  = 64 * 1024,            // [kB]
                DefaultReadAheadBuffers  = 4,
@@ -348,7 +348,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     allocPage(pf, pageSize, pool.file);
 
                 // set buffer size according to read size
-                std::cout << "poolsize="<<pool._size<<" pageno="<<pf.pageNo<<" pagesize="<<pageSize<<" resutl="<<pool.dataSize(pf.pageNo, pageSize)<<std::endl;
+//                std::cout << "poolsize="<<pool._size<<" pageno="<<pf.pageNo<<" pagesize="<<pageSize<<" resutl="<<pool.dataSize(pf.pageNo, pageSize)<<std::endl;
                 resize(pf, pool.dataSize(pf.pageNo, pageSize));
 
                 // read asynchronously (if possible) from disk
