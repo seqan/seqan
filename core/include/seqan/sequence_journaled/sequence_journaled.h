@@ -875,7 +875,7 @@ replace(String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTar
         TPositionBegin posBegin,
         TPositionEnd posEnd,
         TSource const & source,
-        Tag<TExpand> const & /*tag*/)
+        Tag<TExpand> /*tag*/)
 {
     SEQAN_CHECKPOINT;
     assignInfix(target, posBegin, posEnd, source);
@@ -888,7 +888,7 @@ replace(String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTar
         TPositionEnd posEnd,
         TSource const & source,
         typename Size<String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTargetBufferSpec> > >::Type limit,
-        Tag<TExpand> const & tag)
+        Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     typedef typename Iterator<TSource>::Type TSourceIterator;
@@ -911,7 +911,7 @@ replace(String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTar
         TPositionBegin posBegin,
         TPositionEnd posEnd,
         TSourceValue const * source,
-        Tag<TExpand> const & /*tag*/)
+        Tag<TExpand> /*tag*/)
 {
     SEQAN_CHECKPOINT;
     assignInfix(target, posBegin, posEnd, source);
@@ -925,7 +925,7 @@ replace(String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTar
         TPositionEnd posEnd,
         TSourceValue const * source,
         typename Size<String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTargetBufferSpec> > >::Type limit,
-        Tag<TExpand> const & tag)
+        Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     typedef TSourceValue const * TSourceIterator;

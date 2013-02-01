@@ -323,7 +323,7 @@ template<typename TValue, unsigned int SPACE, typename TSize2, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 resize(String<TValue, Block<SPACE> > & me,
     TSize2 new_length,
-    Tag<TExpand> const)
+    Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TValue, Block<SPACE> >           TBlockString;
@@ -379,7 +379,7 @@ inline typename Size< String<TValue, Block<SPACE> > >::Type
 reserve(
     String<TValue, Block<SPACE> >& me,
     TSize new_capacity,
-    Tag<TExpand> const tag)
+    Tag<TExpand> tag)
 {
 SEQAN_CHECKPOINT
     reserve(me.blocks, (new_capacity + SPACE - 1) / SPACE, tag);
@@ -392,7 +392,7 @@ template<typename TValue, unsigned int SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
 reserve(String<TValue, Block<SPACE> > & /*me*/,
     TSize new_capacity,
-    Tag<TExpand> const)
+    Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     return new_capacity;
@@ -407,7 +407,7 @@ inline void
 append(
     String<TValue, Block<SPACE> >& me,
     TSource const& source,
-    Tag<TExpand> const /*tag*/)
+    Tag<TExpand> /*tag*/)
 {
     SEQAN_CHECKPOINT;
     typedef typename Iterator<TSource const, Standard>::Type TIter;
@@ -426,7 +426,7 @@ inline void
 appendValue(
     String<TValue, Block<SPACE> >& me,
     TVal const& source,
-    Tag<TExpand> const tag)
+    Tag<TExpand> tag)
 {
     // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
     SEQAN_CHECKPOINT;

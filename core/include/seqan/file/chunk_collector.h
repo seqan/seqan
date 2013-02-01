@@ -366,20 +366,20 @@ template <typename TTargetValue, typename TTargetSpec, typename TSourceHost, typ
 inline void 
 assign(String<TTargetValue, TTargetSpec> & target,
 	   ChunkCollector_<TSourceHost> const & source,
-	   Tag<TExpand> const /*tag*/)
+	   Tag<TExpand> /*tag*/)
 {
 //IOREV
-	AssignChunkCollectorToString_<Tag<TExpand> const>::assign_(target, source);
+	AssignChunkCollectorToString_<Tag<TExpand> >::assign_(target, source);
 }
 template <typename TTargetValue, typename TTargetSpec, typename TSourceHost, typename TExpand>
 inline void 
 assign(String<TTargetValue, TTargetSpec> & target,
 	   ChunkCollector_<TSourceHost> const & source,
 	   typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-	   Tag<TExpand> const /*tag*/)
+	   Tag<TExpand> /*tag*/)
 {
 //IOREV
-	AssignChunkCollectorToString_<Tag<TExpand> const>::assign_(target, source, limit);
+	AssignChunkCollectorToString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
 
@@ -443,20 +443,20 @@ template <typename TTargetValue, typename TTargetSpec, typename TSourceHost, typ
 inline void 
 append(String<TTargetValue, TTargetSpec> & target,
 	   ChunkCollector_<TSourceHost> const & source,
-	   Tag<TExpand> const )
+	   Tag<TExpand> )
 {
 //IOREV
-	AppendChunkCollectorToString_<Tag<TExpand> const>::append_(target, source);
+	AppendChunkCollectorToString_<Tag<TExpand> >::append_(target, source);
 }
 template <typename TTargetValue, typename TTargetSpec, typename TSourceHost, typename TExpand>
 inline void 
 append(String<TTargetValue, TTargetSpec> & target,
 	   ChunkCollector_<TSourceHost> const & source,
 	   typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-	   Tag<TExpand> const )
+	   Tag<TExpand> )
 {
 //IOREV
-	AppendChunkCollectorToString_<Tag<TExpand> const>::append_(target, source, limit);
+	AppendChunkCollectorToString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -521,10 +521,10 @@ replace(String<TTargetValue, TTargetSpec> & target,
 		typename Size< String<TTargetValue, TTargetSpec> >::Type pos_begin,
 		typename Size< String<TTargetValue, TTargetSpec> >::Type pos_end,
 	   ChunkCollector_<TSourceHost> const & source,
-	   Tag<TExpand> const /*tag*/)
+	   Tag<TExpand> /*tag*/)
 {
 //IOREV
-	ReplaceChunkCollectorToString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source);
+	ReplaceChunkCollectorToString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
 template <typename TTargetValue, typename TTargetSpec, typename TSourceHost, typename TExpand>
@@ -534,10 +534,10 @@ replace(String<TTargetValue, TTargetSpec> & target,
 		typename Size< String<TTargetValue, TTargetSpec> >::Type pos_end,
 	   ChunkCollector_<TSourceHost> const & source,
 	   typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-	   Tag<TExpand> const /*tag*/)
+	   Tag<TExpand> /*tag*/)
 {
 //IOREV
-	ReplaceChunkCollectorToString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source, limit);
+	ReplaceChunkCollectorToString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -548,10 +548,10 @@ replace(TTargetValue * target,
 		size_t pos_begin,
 		size_t pos_end,
 		ChunkCollector_<TSourceHost> const & source,
-		Tag<TExpand> const /*tag*/)
+		Tag<TExpand> /*tag*/)
 {
 //IOREV
-	ReplaceChunkCollectorToString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source);
+	ReplaceChunkCollectorToString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
 template <typename TTargetValue, typename TSourceHost, typename TExpand>
@@ -561,10 +561,10 @@ replace(TTargetValue * target,
 		size_t pos_end,
 		ChunkCollector_<TSourceHost> const & source,
 		size_t limit,
-		Tag<TExpand> const /*tag*/)
+		Tag<TExpand> /*tag*/)
 {
 //IOREV
-	ReplaceChunkCollectorToString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source, limit);
+	ReplaceChunkCollectorToString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 //____________________________________________________________________________
 /*
@@ -574,9 +574,9 @@ replace(TTargetValue * target,
 		size_t pos_begin,
 		size_t pos_end,
 	   ChunkCollector_<TSourceHost> const & source,
-	   Tag<TExpand> const tag)
+	   Tag<TExpand> tag)
 {
-	ReplaceChunkCollectorToString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source);
+	ReplaceChunkCollectorToString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
 template <typename TTargetValue, typename TTargetSpec, typename TSourceHost, typename TExpand>
@@ -586,9 +586,9 @@ replace(String<TTargetValue, TTargetSpec> & target,
 		typename Size< String<TTargetValue, TTargetSpec> >::Type pos_end,
 	   ChunkCollector_<TSourceHost> const & source,
 	   typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-	   Tag<TExpand> const tag)
+	   Tag<TExpand> tag)
 {
-	ReplaceChunkCollectorToString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source, limit);
+	ReplaceChunkCollectorToString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 */
 //////////////////////////////////////////////////////////////////////////////

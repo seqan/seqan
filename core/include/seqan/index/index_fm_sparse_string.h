@@ -311,7 +311,7 @@ template <typename TFibreValueString, typename TSpec, typename TSize, typename T
 inline void resize(SparseString<TFibreValueString, TSpec> & string,
                    TSize const size,
                    TValue const value,
-                   Tag<TExpand> const tag)
+                   Tag<TExpand> tag)
 {
     if (value != DefaultValue<SparseString<TFibreValueString, TSpec> >::VALUE)
     {

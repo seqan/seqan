@@ -1006,7 +1006,7 @@ SEQAN_DEFINE_TEST(Lexical)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TTarget, typename TSource, typename TExpand>
-void Test_Assignments_Combinatoric(TTarget & target, TSource source, Tag<TExpand> const tag, size_t limit = ~0)
+void Test_Assignments_Combinatoric(TTarget & target, TSource source, Tag<TExpand> tag, size_t limit = ~0)
 {
 	// assign(target, source, tag);
 	// SEQAN_ASSERT_EQ(infix(source, 0, length(target)), target);

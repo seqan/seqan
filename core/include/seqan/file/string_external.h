@@ -1910,7 +1910,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     resize(
 	    String<TValue, External<TConfig> > &me,
 		TNewSize new_length,
-		Tag<TExpand> const expand)
+		Tag<TExpand> expand)
 	{
 //IOREV
 		typedef String<TValue, External<TConfig> >	TString;
@@ -1938,7 +1938,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     reserve(
 	    String<TValue, External<TConfig> > &me,
 		TSize new_capacity,
-		Tag<TExpand> const expand)
+		Tag<TExpand> expand)
 	{
 //IOREV
 		reserve(me.pager, enclosingBlocks(new_capacity, (unsigned)me.PAGE_SIZE), expand);
@@ -2004,7 +2004,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 	inline void
 	appendValue(String<TValue, External<TConfig> > &me, 
 				TValue const &Val_,
-				Tag<TExpand> const expand)
+				Tag<TExpand> expand)
 	{
 //IOREV
 		resize(me, me.data_size + 1, expand);
@@ -2074,7 +2074,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 	inline void
 	append(String<TValue, External<TConfig> > &target, 
 				TSource const &source,
-				Tag<TExpand> const expand)
+				Tag<TExpand> expand)
 	{
 //IOREV doc says, resize() my invalidate iterators, therefore it_target might be bogus
 		typedef String<TValue, External<TConfig> >					TTarget;
@@ -2096,7 +2096,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 	inline void
 	append(String<TValue, External<TConfig> > &target, 
 				TSourceValue * source,
-				Tag<TExpand> const expand)
+				Tag<TExpand> expand)
 	{
 //IOREV doc says, resize() my invalidate iterators, therefore it_target might be bogus
 		typedef String<TValue, External<TConfig> >					TTarget;
@@ -2148,7 +2148,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     inline void assign(
 		String<TValue, External<TConfig> > &target, 
 		TSource const &source, 
-		Tag<TExpand> const) 
+		Tag<TExpand>) 
 	{
 //IOREV
 		typedef String<TValue, External<TConfig> >					TTarget;
@@ -2172,7 +2172,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     inline void assign(
 		String<TValue, External<TConfig> > &target, 
 		TSourceValue * source,
-		Tag<TExpand> const) 
+		Tag<TExpand>) 
 	{
 //IOREV
 		typedef String<TValue, External<TConfig> >					TTarget;

@@ -276,7 +276,7 @@ template <typename TValue, unsigned int LENGTH, typename TExpand>
 inline size_t
 reserve(String<TValue, Array<LENGTH> > & me,
         size_t,
-        Tag<TExpand> const)
+        Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
     return capacity(me);

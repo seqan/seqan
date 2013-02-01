@@ -1328,7 +1328,7 @@ struct MMap;
 	inline void reserve(
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
 		unsigned Count_,
-		Tag<TExpand> const expand)
+		Tag<TExpand> expand)
 	{
 //IOREV
 		reserve(pageCont.pages, Count_, expand);

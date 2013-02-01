@@ -727,10 +727,10 @@ template<typename TValue, typename TSpec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 _clearSpace(String<TValue, TSpec> & me,
         TSize size,
-        Tag<TExpand> const &)
+        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringBase_<Tag<TExpand> const>::_clearSpace_(me, size);
+    return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
 template<typename TValue, typename TSpec, typename TSize, typename TExpand>
@@ -738,10 +738,10 @@ inline typename Size< String<TValue, TSpec> >::Type
 _clearSpace(String<TValue, TSpec> & me,
         TSize size,
         TSize limit,
-        Tag<TExpand> const &)
+        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringBase_<Tag<TExpand> const>::_clearSpace_(me, size, limit);
+    return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, limit);
 }
 
 template<typename TValue, typename TSpec, typename TSize, typename TPosition, typename TExpand>
@@ -750,10 +750,10 @@ _clearSpace(String<TValue, TSpec> & me,
             TSize size,
             TPosition pos_begin,
             TPosition pos_end,
-            Tag<TExpand> const &)
+            Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringBase_<Tag<TExpand> const>::_clearSpace_(me, size, pos_begin, pos_end);
+    return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
 template<typename TValue, typename TSpec, typename TSize, typename TPosition, typename TExpand>
@@ -763,10 +763,10 @@ _clearSpace(String<TValue, TSpec> & me,
             TPosition pos_begin,
             TPosition pos_end,
             TSize limit,
-            Tag<TExpand> const &)
+            Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringBase_<Tag<TExpand> const>::_clearSpace_(me, size, pos_begin, pos_end, limit);
+    return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
 }
 
 // ----------------------------------------------------------------------------
@@ -782,7 +782,7 @@ resizeSpace(String<TValue, TSpec> & me,
             TSize size,
             TBeginPosition pos_begin,
             TEndPosition pos_end,
-            Tag<TExpand> const & tag)
+            Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     typedef typename Size< String<TValue, TSpec> >::Type TSize_;
@@ -804,7 +804,7 @@ resizeSpace(String<TValue, TSpec> & me,
             TBeginPosition pos_begin,
             TEndPosition pos_end,
             TLimit limit,
-            Tag<TExpand> const & tag)
+            Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     typedef typename Size< String<TValue, TSpec> >::Type TSize_;
@@ -915,20 +915,20 @@ template<typename TTargetValue, typename TTargetSpec, typename TSource, typename
 inline void
 assign(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
-       Tag<TExpand> const &)
+       Tag<TExpand>)
 {
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AssignString_<Tag<TExpand> const>::assign_(target, source);
+    AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TSize, typename TExpand>
 inline void
 assign(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        TSize limit,
-       Tag<TExpand> const &)
+       Tag<TExpand>)
 {
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AssignString_<Tag<TExpand> const>::assign_(target, source, limit);
+    AssignString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
 // TODO(holtgrew): Still required with dropped VC++ 2003 support?
@@ -938,20 +938,20 @@ template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typ
 inline void
 assign(String<TTargetValue, TTargetSpec> & target,
        TSourceValue const * source,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AssignString_<Tag<TExpand> const>::assign_(target, source);
+    AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TSize, typename TExpand>
 inline void
 assign(String<TTargetValue, TTargetSpec> & target,
        TSourceValue const * source,
        TSize limit,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AssignString_<Tag<TExpand> const>::assign_(target, source, limit);
+    AssignString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
 // ----------------------------------------------------------------------------
@@ -1164,11 +1164,11 @@ template<typename TTargetValue, typename TTargetSpec, typename TSource, typename
 inline void
 append(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
-       Tag<TExpand> const &)
+       Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AppendString_<Tag<TExpand> const>::append_(target, source);
+    AppendString_<Tag<TExpand> >::append_(target, source);
 }
 
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TExpand>
@@ -1176,11 +1176,11 @@ inline void
 append(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-       Tag<TExpand> const &)
+       Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AppendString_<Tag<TExpand> const>::append_(target, source, limit);
+    AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
 // TODO(holtgrew): Still required with dropped VC++ 2003 support?
@@ -1190,11 +1190,11 @@ template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typ
 inline void
 append(String<TTargetValue, TTargetSpec> & target,
        TSourceValue * source,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AppendString_<Tag<TExpand> const>::append_(target, source);
+    AppendString_<Tag<TExpand> >::append_(target, source);
 }
 
 template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TExpand>
@@ -1202,11 +1202,11 @@ inline void
 append(String<TTargetValue, TTargetSpec> & target,
        TSourceValue * source,
        typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    AppendString_<Tag<TExpand> const>::append_(target, source, limit);
+    AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
 // ----------------------------------------------------------------------------
@@ -1247,10 +1247,10 @@ template <typename TTargetValue, typename TTargetSpec, typename TValue, typename
 inline void
 appendValue(String<TTargetValue, TTargetSpec> & me,
             TValue const & _value,
-            Tag<TExpand> const)
+            Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    AppendValueToString_<Tag<TExpand> const>::appendValue_(me, _value);
+    AppendValueToString_<Tag<TExpand> >::appendValue_(me, _value);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1285,10 +1285,10 @@ inline void
 insertValue(String<TTargetValue, TTargetSpec> & me,
             TPosition pos,
             TValue const & _value,
-            Tag<TExpand> const)
+            Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    InsertValueToString_<Tag<TExpand> const>::insertValue_(me, pos, _value);
+    InsertValueToString_<Tag<TExpand> >::insertValue_(me, pos, _value);
 }
 
 // ----------------------------------------------------------------------------
@@ -1366,11 +1366,11 @@ replace(String<TTargetValue, TTargetSpec> & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
         TSource const & source,
-        Tag<TExpand> const &)
+        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    ReplaceString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source);
+    ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
 template<typename TTargetValue, typename TTargetSpec, typename TPositionBegin, typename TPositionEnd, typename TSource, typename TExpand>
@@ -1380,11 +1380,11 @@ replace(String<TTargetValue, TTargetSpec> & target,
         TPositionEnd pos_end,
         TSource const & source,
         typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-        Tag<TExpand> const &)
+        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    ReplaceString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source, limit);
+    ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 
 // TODO(holtgrew): Still required with dropped VC++ 2003 support?
@@ -1396,11 +1396,11 @@ replace(String<TTargetValue, TTargetSpec> & target,
         TPositionBegin pos_begin,
         TPositionEnd pos_end,
         TSourceValue const * source,
-        Tag<TExpand> const &)
+        Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    ReplaceString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source);
+    ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
 template<typename TTargetValue, typename TTargetSpec, typename TPositionBegin, typename TPositionEnd, typename TSourceValue, typename TExpand>
@@ -1410,11 +1410,11 @@ replace(String<TTargetValue, TTargetSpec> & target,
         TPositionEnd pos_end,
         TSourceValue const * source,
         typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
-        Tag<TExpand> const &)
+        Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
     typedef String<TTargetValue, TTargetSpec> TTarget;
-    ReplaceString_<Tag<TExpand> const>::replace_(target, pos_begin, pos_end, source, limit);
+    ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 
 // ----------------------------------------------------------------------------
@@ -1603,7 +1603,7 @@ inline void
 _reserveStorage(
     String<TValue, TSpec> & seq,
     TSize_ new_capacity,
-    Tag<TExpand> const tag)
+    Tag<TExpand> tag)
 {
     typedef typename Size< String<TValue, TSpec> >::Type TSize;
 
@@ -1635,7 +1635,7 @@ inline typename Size< String<TValue, TSpec> >::Type
 reserve(
     String<TValue, TSpec> & seq,
     TSize_ new_capacity,
-    Tag<TExpand> const tag)
+    Tag<TExpand> tag)
 {
 SEQAN_CHECKPOINT
     _reserveStorage(seq, new_capacity, tag);
@@ -1732,10 +1732,10 @@ inline typename Size< String<TValue, TSpec> >::Type
 resize(
     String<TValue, TSpec> & me,
     TSize new_length,
-    Tag<TExpand> const)
+    Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return _Resize_String<Tag<TExpand> const>::resize_(me, new_length);
+    return _Resize_String<Tag<TExpand> >::resize_(me, new_length);
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TValue2, typename TExpand>
@@ -1743,10 +1743,10 @@ inline TSize
 resize(String<TValue, TSpec> & me,
      TSize new_length,
      TValue2 const & val,
-     Tag<TExpand> const)
+     Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return _Resize_String<Tag<TExpand> const>::resize_(me, new_length, val);
+    return _Resize_String<Tag<TExpand> >::resize_(me, new_length, val);
 }
 
 // ----------------------------------------------------------------------------

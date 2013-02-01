@@ -143,7 +143,7 @@ template <typename TString, typename TExpand >
 inline void appendValue(
     StringSet<TString, Dependent<Tight> > & me,
     TString const & obj,
-    Tag<TExpand> const & tag)
+    Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     typedef typename Position<StringSet<TString, Dependent<Tight> > >::Type TPos;

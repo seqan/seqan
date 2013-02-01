@@ -536,7 +536,7 @@ inline void _updateLastRank(RankSupportBitString<TSpec> & bitString)
 // ==========================================================================
 template <typename TSpec, typename TSize, typename TExpand>
 inline typename Size<RankSupportBitString<TSpec> >::Type
-reserve(RankSupportBitString<TSpec> & bitString, TSize const size, Tag<TExpand> const tag)
+reserve(RankSupportBitString<TSpec> & bitString, TSize const size, Tag<TExpand> tag)
 {
     typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<TRankSupportBitString, FibreBits>::Type          TFibreBits;
@@ -562,7 +562,7 @@ reserve(RankSupportBitString<TSpec> & bitString, TSize const size, Tag<TExpand> 
 */
 template <typename TSpec, typename TLength, typename TValue, typename TExpand>
 inline typename Size<RankSupportBitString<TSpec> >::Type
-resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue const _value, Tag<TExpand> const tag)
+resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue const _value, Tag<TExpand> tag)
 {
     typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<TRankSupportBitString, FibreBits>::Type          TFibreBits;
@@ -593,7 +593,7 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue co
 
 template <typename TSpec, typename TLength, typename TExpand>
 inline typename Size<RankSupportBitString<TSpec> >::Type
-resize(RankSupportBitString<TSpec> & bitString, TLength const _length, Tag<TExpand> const tag)
+resize(RankSupportBitString<TSpec> & bitString, TLength const _length, Tag<TExpand> tag)
 {
     return resize(bitString, _length, 0, tag);
 }

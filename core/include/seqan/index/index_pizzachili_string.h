@@ -207,13 +207,13 @@ inline void
 assign(
     String<TValue, PizzaChili<TSpec> >& target,
     TSource const& source,
-    Tag<TExpand> const
+    Tag<TExpand>
 ) {
 SEQAN_CHECKPOINT
     typedef String<TValue, PizzaChili<TSpec> > TTarget;
 
     target.owned = true;
-    AssignString_<Tag<TExpand> const>::assign_(target, source);
+    AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 
 template<typename TValue, typename TSpec, typename TSource, typename TExpand>
@@ -221,13 +221,13 @@ inline void
 assign(
     String<TValue, PizzaChili<TSpec> >& target,
     TSource const* source,
-    Tag<TExpand> const
+    Tag<TExpand>
 ) {
 SEQAN_CHECKPOINT
     typedef String<TValue, PizzaChili<TSpec> > TTarget;
 
     target.owned = true;
-    AssignString_<Tag<TExpand> const>::assign_(target, source);
+    AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 
 template<typename TValue, typename TSpec, typename TExpand>
@@ -235,7 +235,7 @@ inline void
 assign(
     String<TValue, PizzaChili<TSpec> >& target,
     String<TValue, PizzaChili<TSpec> > const& source,
-    Tag<TExpand> const
+    Tag<TExpand>
 ) {
 SEQAN_CHECKPOINT
     typedef String<TValue, PizzaChili<TSpec> > TTarget;
@@ -247,7 +247,7 @@ SEQAN_CHECKPOINT
         target.index_handle = source.index_handle;
     }
     else
-        AssignString_<Tag<TExpand> const>::assign_(target, source);
+        AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 
 //////////////////////////////////////////////////////////////////////////////

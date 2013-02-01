@@ -496,19 +496,19 @@ template <typename THost, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(Segment<THost, TSpec> & target,
        TSource & source,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source);
 }
 template <typename THost, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(Segment<THost, TSpec> & target,
        TSource const & source,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source);
 }
 
 template <typename THost, typename TSpec, typename TSource, typename TExpand>
@@ -516,20 +516,20 @@ inline void
 assign(Segment<THost, TSpec> & target,
        TSource & source,
        typename Size< Segment<THost, TSpec> >::Type limit,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source, limit);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source, limit);
 }
 template <typename THost, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(Segment<THost, TSpec> & target,
        TSource const & source,
        typename Size< Segment<THost, TSpec> >::Type limit,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source, limit);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
 //(for temporary targets)
@@ -538,19 +538,19 @@ template <typename THost, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(Segment<THost, TSpec> const & target,
        TSource & source,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source);
 }
 template <typename THost, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(Segment<THost, TSpec> const & target,
        TSource const & source,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source);
 }
 
 template <typename THost, typename TSpec, typename TSource, typename TExpand>
@@ -558,20 +558,20 @@ inline void
 assign(Segment<THost, TSpec> const & target,
        TSource & source,
        typename Size< Segment<THost, TSpec> >::Type limit,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source, limit);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source, limit);
 }
 template <typename THost, typename TSpec, typename TSource, typename TExpand>
 inline void
 assign(Segment<THost, TSpec> const & target,
        TSource const & source,
        typename Size< Segment<THost, TSpec> >::Type limit,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
 SEQAN_CHECKPOINT
-    AssignSegment_<Tag<TExpand> const>::assign_(target, source, limit);
+    AssignSegment_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -689,7 +689,7 @@ inline typename Size< Segment<THost, TSpec> >::Type
 resize(
     Segment<THost, TSpec> & me,
     TSize new_length,
-    Tag<TExpand> const)
+    Tag<TExpand>)
 {
     ignoreUnusedVariableWarning(new_length);
 

@@ -125,7 +125,7 @@ template <typename TString, typename TString2, typename TExpand >
 inline void appendValue(
     StringSet<TString, Owner<Default> > & me,
     TString2 const & obj,
-    Tag<TExpand> const & tag)
+    Tag<TExpand> tag)
 {
     if (_validStringSetLimits(me))
         appendValue(me.limits, lengthSum(me) + length(obj), tag);

@@ -118,7 +118,7 @@ template <typename TString, typename TExpand >
 inline void appendValue(
     StringSet<TString, Dependent<Generous> > & me,
     TString const & obj,
-    Tag<TExpand> const & tag)
+    Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     appendValue(me.limits, lengthSum(me) + length(obj), tag);

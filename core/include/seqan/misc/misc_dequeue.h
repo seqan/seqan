@@ -349,7 +349,7 @@ length(Dequeue<TValue, TSpec> const &me)
 
 template <typename TValue, typename TSpec, typename TSize_, typename TExpand>
 inline typename Size<Dequeue<TValue, TSpec> >::Type
-reserve(Dequeue<TValue, TSpec> &me, TSize_ new_capacity, Tag<TExpand> const tag)
+reserve(Dequeue<TValue, TSpec> &me, TSize_ new_capacity, Tag<TExpand> tag)
 {
 	typedef typename Size<Dequeue<TValue, TSpec> >::Type TSize;
 //	::std::cout << "resize to "<<new_capacity<<::std::endl;

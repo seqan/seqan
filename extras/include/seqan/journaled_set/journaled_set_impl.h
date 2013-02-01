@@ -136,7 +136,7 @@ value(StringSet<TString, Owner<JournaledSet> > const & me,
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TExpand>
 void appendValue(StringSet<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> >, Owner<JournaledSet> > & journalSet,
                  String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > const & newElement,
-                 Tag<TExpand> const & tag)
+                 Tag<TExpand> tag)
 {
     if (_validStringSetLimits(journalSet))
         appendValue(journalSet.limits, lengthSum(journalSet) + length(newElement), tag);
@@ -147,7 +147,7 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 void
 appendValue(StringSet<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> >, Owner<JournaledSet> > & journalSet,
         String<TValue, THostSpec> & newElement,
-        Tag<TExpand> const & tag)
+        Tag<TExpand> tag)
 {
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
 
@@ -162,7 +162,7 @@ template <typename TString, typename TString2, typename TExpand>
 void
 appendValue(StringSet<TString, Owner<JournaledSet> > & journalSet,
             TString2 const & newElement,
-            Tag<TExpand> const & tag)
+            Tag<TExpand> tag)
 {
     if (_validStringSetLimits(journalSet))
         appendValue(journalSet.limits, lengthSum(journalSet) + length(newElement), tag);

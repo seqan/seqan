@@ -78,17 +78,17 @@ or @Metafunction.DefaultOverflowExplicit@, depending on the kind of operation.
 ..include:seqan/sequence.h
 */
 struct TagInsist_;
-typedef Tag<TagInsist_> const Insist;
-typedef Tag<TagInsist_> const Tight;
+typedef Tag<TagInsist_> Insist;
+typedef Tag<TagInsist_> Tight;
 
 struct TagLimit_;
-typedef Tag<TagLimit_> const Limit;
+typedef Tag<TagLimit_> Limit;
 
 struct TagGenerous_;
-typedef Tag<TagGenerous_> const Generous;
+typedef Tag<TagGenerous_> Generous;
 
 struct TagExact_;
-typedef Tag<TagExact_> const Exact;
+typedef Tag<TagExact_> Exact;
 
 // ============================================================================
 // Metafunctions
@@ -1271,7 +1271,7 @@ inline void
 insert(T & me,
        TPosition pos,
        TSeq const & insertSeq,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     replace(me, pos, pos, insertSeq, Tag<TExpand>());
@@ -1282,7 +1282,7 @@ inline void
 insert(T const & me,
        TPosition pos,
        TSeq const & insertSeq,
-       Tag<TExpand> const)
+       Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     replace(me, pos, pos, insertSeq, Tag<TExpand>());
@@ -1470,7 +1470,7 @@ template <typename T, typename TSize, typename TExpand>
 inline typename Size<T>::Type
 _capacityReturned(T & me,
                   TSize,
-                  Tag<TExpand> const &)
+                  Tag<TExpand>)
 {
     return capacity(me);
 }
@@ -1515,7 +1515,7 @@ template <typename T, typename TSize, typename TExpand>
 inline typename Size<T>::Type
 reserve(T & me,
         TSize const & new_capacity,
-        Tag<TExpand> const & tag)
+        Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     return _capacityReturned(me, new_capacity, tag);

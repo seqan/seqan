@@ -1139,7 +1139,7 @@ length(StringSet<TString, TSpec > const & me)
 // TODO(rmaerker): This belongs to string_set_base.h. Move it!
 template <typename TString, typename TSpec, typename TSize, typename TExpand >
 inline typename Size<StringSet<TString, TSpec > >::Type
-resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> const & tag)
+resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> tag)
 {
     resize(me.limits, new_size + 1, tag);
     me.limitsValid = (new_size == 0);
@@ -1161,7 +1161,7 @@ template <typename TString, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<StringSet<TString, TSpec > >::Type
 reserve(StringSet<TString, TSpec > & me,
         TSize const & new_capacity,
-        Tag<TExpand> const & tag)
+        Tag<TExpand> tag)
 {
     reserve(me.limits, new_capacity + 1, tag);
     return reserve(me.strings, new_capacity, tag);

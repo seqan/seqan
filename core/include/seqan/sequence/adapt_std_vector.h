@@ -709,7 +709,7 @@ replace(std::vector<TChar, TAlloc> & target,
         typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_begin,
         typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_end,
         TSource & source,
-        Tag<TExpand> const tag)
+        Tag<TExpand> tag)
 {
     replace(target, position(pos_begin), position(pos_end), source, tag);
 }
@@ -722,7 +722,7 @@ replace(std::vector<TChar, TAlloc> & target,
         typename Iterator< std::vector<TChar, TAlloc>, Rooted>::Type pos_end,
         TSource & source,
         typename Size< std::vector<TChar, TAlloc> >::Type limit,
-        Tag<TExpand> const tag)
+        Tag<TExpand> tag)
 {
     replace(target,  position(pos_begin),  position(pos_end), source, tag);
 }
@@ -738,7 +738,7 @@ inline typename Size< std::vector<TChar, TAlloc> >::Type
 reserve(
     std::vector<TChar, TAlloc> & seq,
     TSize new_capacity,
-    Tag<TExpand> const & tag)
+    Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
     seq.reserve(new_capacity);
@@ -775,7 +775,7 @@ inline typename Size< std::vector<TChar,  TAlloc> >::Type
 resize(
     std::vector<TChar, TAlloc> & me,
     TSize new_length,
-    Tag<TExpand> const &)
+    Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     me.resize(new_length);
@@ -788,7 +788,7 @@ fill(
     std::vector<TChar, TAlloc> & me,
     TSize new_length,
     TChar const & val,
-    Tag<TExpand> const &)
+    Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     me.resize(new_length, val);

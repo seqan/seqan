@@ -258,7 +258,7 @@ template <typename TString, typename TString2, typename TExpand >
 inline void appendValue(
     StringSet<TString, Owner<ConcatDirect<void> > > & me,
     TString2 const & obj,
-    Tag<TExpand> const & tag)
+    Tag<TExpand> tag)
 {
     appendValue(me.limits, lengthSum(me) + length(obj), tag);
     append(me.concat, obj, tag);
@@ -268,7 +268,7 @@ template <typename TString, typename TDelimiter, typename TString2, typename TEx
 inline void appendValue(
     StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me,
     TString2 const & obj,
-    Tag<TExpand> const & tag)
+    Tag<TExpand> tag)
 {
     appendValue(me.limits, lengthSum(me) + length(obj) + 1, tag);
     append(me.concat, obj, tag);
@@ -285,7 +285,7 @@ inline void insertValue(
     StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me,
     TPos pos,
     TSequence const & seq,
-    Tag<TExpand> const tag)
+    Tag<TExpand> tag)
 {
     typedef StringSet<TString, Owner<ConcatDirect<TDelimiter> > > TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
@@ -357,7 +357,7 @@ length(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me)
 
 template <typename TString, typename TSpec, typename TSize, typename TExpand >
 inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
-resize(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TSize new_size, Tag<TExpand> const & tag)
+resize(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TSize new_size, Tag<TExpand> tag)
 {
     if (new_size < length(me.limits))
     {
@@ -376,7 +376,7 @@ template <typename TString, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
 reserve(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
         TSize const & new_capacity,
-        Tag<TExpand> const & tag)
+        Tag<TExpand> tag)
 {
     return reserve(me.limits, new_capacity + 1, tag) - 1;
 }
