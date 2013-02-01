@@ -145,19 +145,21 @@ The iterator starts in the root node by default.
 			_indexRequireTopDownIteration(_index);
 		}
 
-		Iter(Iter const &_origin):
+        template <typename TSpec2>
+		Iter(Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin):
 			index(&container(_origin)),
 			vDesc(value(_origin)),
-			_parentDesc(_origin._parentDesc) {}
+			_parentDesc(nodeUp(_origin)) {}
 
 //____________________________________________________________________________
 
+        template <typename TSpec2>
 		inline Iter const &
-		operator = (Iter const &_origin)
+		operator = (Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin)
 		{
 			index = &container(_origin);
-			vDesc = _origin.vDesc;
-			_parentDesc = _origin._parentDesc;
+			vDesc = value(_origin);
+			_parentDesc = nodeUp(_origin);
 			return *this;
 		}
 	};
