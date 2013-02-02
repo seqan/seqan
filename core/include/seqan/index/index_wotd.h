@@ -851,16 +851,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		if (!empty(it.history))
 		{
-			HistoryStackWotdModified_<TSize> const &entry = back(it.history);
+			HistoryStackWotdOriginal_<TSize> const &entry = back(it.history);
 			typename VertexDescriptor<TIndex>::Type desc;
 
 			desc.node = entry.node;
 			desc.parentRepLen = value(it).parentRepLen - entry.edgeLen;
 			desc.edgeLen = entry.edgeLen;
-			desc.range = entry.range;
 			TSize h = length(it.history) - 1;
 			if (h != 0) --h;
-			desc.parentRight = it.history[h].range.i2;	// copy right boundary of parent's range
 			return desc;
 		} else
 			return value(it);
