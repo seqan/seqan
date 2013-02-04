@@ -64,6 +64,15 @@ include (SeqAnLegacyBuildSystem)
 #endif (CMAKE_CXX_FLAGS)
 
 # ---------------------------------------------------------------------------
+# Enable /bigobj flag on Windows.
+# ---------------------------------------------------------------------------
+
+# We need the /bigobj switch on windows (for 64 bit builds only actually).
+if (MSVC)
+  add_definitions (/bigobj)
+endif (MSVC)
+
+# ---------------------------------------------------------------------------
 # Function add_executable (name [WIN32] [MACOSX_BUNDLE] [EXCLUDE_FROM_ALL]
 #                          source1 source2 ... sourceN)
 #

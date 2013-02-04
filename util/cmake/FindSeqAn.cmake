@@ -107,7 +107,6 @@
 # layout then you can switch this on by setting the following variable to ON.
 #
 #  SEQAN_USE_SEQAN_BUILD_SYSTEM
-#
 # ============================================================================
 
 include(FindPackageMessage)

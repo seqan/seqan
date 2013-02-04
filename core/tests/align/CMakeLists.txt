@@ -28,11 +28,6 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
-# We need the /bigobj switch on windows (for 64 bit builds only actually).
-if (MSVC)
-  add_definitions (/bigobj)
-endif (MSVC)
-
 # Update the list of file names below if you add source files to your test.
 add_executable (test_align
                test_align.cpp
