@@ -178,7 +178,7 @@ struct MMap;
     }
 
 	template <typename TValue, typename TFile, size_t PAGE_SIZE>
-    inline typename Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >::Type
+    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > >::Type
     length(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
     {
         return PAGE_SIZE;

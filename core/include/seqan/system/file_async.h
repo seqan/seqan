@@ -804,7 +804,12 @@ namespace SEQAN_NAMESPACE_MAIN
 #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
             	std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
 #endif
-				return readAt(me, memPtr, count, fileOfs);
+				bool success = readAt(me, memPtr, count, fileOfs);
+                if (!success)
+                    SEQAN_FAIL(
+                        "readAt(%d, %d, %d, %d) failed: \"%s\"",
+                        me.handle, (size_t)memPtr, count, fileOfs, strerror(errno));
+                return success;
 			}
 #if SEQAN_ENABLE_DEBUG
 			else
@@ -841,15 +846,23 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
 			request.aio_nbytes = 0;
             int errorNo = errno;
-			if (errorNo == EAGAIN) {  // write synchronoulsy instead
+			if (errorNo == EAGAIN)  // write synchronoulsy instead
+            {
 #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
             	std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
 #endif
-				return writeAt(me, memPtr, count, fileOfs);
+				bool success = writeAt(me, memPtr, count, fileOfs);
+                if (!success)
+                    SEQAN_FAIL(
+                        "writeAt(%d, %d, %d, %d) failed: \"%s\"",
+                        me.handle, (size_t)memPtr, count, fileOfs, strerror(errno));
+                return success;
 			}
 #if SEQAN_ENABLE_DEBUG
 			else
+            {
 				std::cerr << "aio_write failed (asyncWriteAt): \"" << ::strerror(errno) << '"' << std::endl;
+            }
 #endif
         }
         return result == 0;

@@ -172,7 +172,9 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     inline bool read(File<TSpec> & me, TValue *memPtr, TSize const count) 
 	{
 //IOREV
-		return me.read(memPtr, count * sizeof(TValue));
+        typedef typename Size<File<TSpec> >::Type TFileSize;
+        TFileSize nbytes = (TFileSize)count * (TFileSize)sizeof(TValue);
+		return me.read(memPtr, nbytes) == nbytes;
     }
     
 /**
@@ -194,7 +196,9 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     inline bool write(File<TSpec> & me, TValue const *memPtr, TSize const count) 
 	{
 //IOREV
-		return me.write(memPtr, count * sizeof(TValue));
+        typedef typename Size<File<TSpec> >::Type TFileSize;
+        TFileSize nbytes = (TFileSize)count * (TFileSize)sizeof(TValue);
+		return me.write(memPtr, nbytes) == nbytes;
     }
 
 /**
