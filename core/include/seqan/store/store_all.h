@@ -1067,6 +1067,27 @@ annotationGetValueByKey (
 		return "";
 }
 
+/**
+.Function.clearContigs
+..class:Class.FragmentStore
+..summary:Removes all contigs from a fragment store.
+..cat:Fragment Store
+..signature:clearContigs(store)
+..param.store:The fragment store.
+...type:Class.FragmentStore
+..remarks:This function clears the @Memvar.FragmentStore#contigStore@ and @Memvar.FragmentStore#contigNameStore@.
+..include:seqan/store.h
+*/
+
+template <typename TSpec, typename TConfig>
+inline void
+clearContigs(FragmentStore<TSpec, TConfig> &me)
+{
+	clear(me.contigStore);
+	clear(me.contigNameStore);
+	refresh(me.contigNameStoreCache);
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Read Store Accessors
@@ -1091,6 +1112,7 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
 	clear(me.readStore);
 	clear(me.readSeqStore);
 	clear(me.readNameStore);
+    refresh(me.readNameStoreCache);
 }
 
 /**
