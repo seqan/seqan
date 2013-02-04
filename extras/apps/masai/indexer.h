@@ -85,6 +85,9 @@ struct Indexer
 template <typename TGenomeIndex, typename TString>
 bool loadGenome(Indexer<TGenomeIndex> & indexer, TString const & genomeFile)
 {
+    clearContigs(indexer.store);
+    clear(indexer.genome);
+
     if (!loadContigs(indexer.store, genomeFile))
         return 0;
 
