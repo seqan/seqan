@@ -239,7 +239,8 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator & textI
         if (oldErrors == nfa.errors)
         {
             // TODO(esiragusa): goDown(nfaIt, Dna5) must be overloaded not to follow Ns.
-            if (ordValue(textLabel) < 4 && goDown(patternIt, textLabel))
+//            if (ordValue(textLabel) < 4 && goDown(patternIt, textLabel))
+            if (goDown(patternIt, textLabel))
             {
 #ifdef SEQAN_DEBUG
                 std::cout << "pattern:        " << textLabel << std::endl;
@@ -247,17 +248,17 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator & textI
                 std::cout << "errors:         " << static_cast<unsigned>(oldErrors) << std::endl;
 #endif
 
-                if (accept(nfa))
+                if (accept(nfa) || isLeaf(patternIt))
                     onMatch(nfa.delegate, textIt, patternIt, oldErrors);
                 else
                 {
-                    if (nfa.currentDepth >= 10)
-                        // TODO(esiragusa): Fix cast for BucketRefinement QGramIndex
-                        _search(static_cast<typename TTextIterator::TBase>(textIt), patternIt,
-                                nfa.patternsLength, nfa.errors,
-                                nfa.currentDepth, oldErrors,
-                                nfa.delegate);
-                    else
+//                    if (nfa.currentDepth >= 10)
+//                        // TODO(esiragusa): Fix cast for BucketRefinement QGramIndex
+//                        _search(static_cast<typename TTextIterator::TBase>(textIt), patternIt,
+//                                nfa.patternsLength, nfa.errors,
+//                                nfa.currentDepth, oldErrors,
+//                                nfa.delegate);
+//                    else
                         appendValue(nextStates, TState(patternIt, oldErrors));
                 }
             }
@@ -285,12 +286,13 @@ inline bool goNext(NFA_<TIndex, TErrors, TDelegate> & nfa, TTextIterator & textI
                     {
                         // The NFA moved into an acceptance state.
                         // NOTE(esiragusa): patternIt should be a leaf.
-                        if (accept(nfa))
+                        if (accept(nfa) || isLeaf(patternIt))
                             onMatch(nfa.delegate, textIt, patternIt, errors);
 
                         // The NFA moved into a non-acceptance state.
                         else
                         {
+                            // TODO(esiragusa): Debug this.
 //                            if (nfa.currentDepth >= 10)
 //                            {
 //                                if (errors > 0)
