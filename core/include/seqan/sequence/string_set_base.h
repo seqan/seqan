@@ -470,7 +470,7 @@ inline T2 getSeqOffset(Pair<T1, T2, TPack> const & pos, TLimitsString const &) {
 
 // n sequences (position type is Pair)
 template <typename T1, typename T2, typename TPack>
-inline T1 getSeqOffset(Pair<T1, T2, TPack> const & pos) {
+inline T2 getSeqOffset(Pair<T1, T2, TPack> const & pos) {
     return getValueI2(pos);
 }
 
