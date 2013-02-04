@@ -181,6 +181,32 @@ inline bool empty(LfTable<TOccTable, TPrefixSumTable> & lfTable)
 
 // ==========================================================================
 /**
+.Function.LfTable#createOccurrenceTable
+..class:Class.LfTable
+..cat:Index
+..signature:createOccurrenceTable(lfTable, text, sentinalSub, sentinalPos)
+..summary:This function creates the occurrence table data structure of a LF table.
+..param.lfTable:The LF table to be constructed.
+...type:Class.LfTable
+..param.text:The text of which the occurrence table is constructed
+...type:Class.String
+..param.sentinalSub:The character used to substitute the sentinel with.
+...type:Metafunction.Value type of String<TSpec>
+..param.sentinalPos:The position of the sentinal(s) in the text.
+...type:Class.String
+...type:Class.RankSupportBitString
+..returns:$bool$
+*/
+
+template <typename TText, typename TWaveletTreeSpec, typename TPrefixSumTable, typename TText2, typename TChar, typename TPos>
+inline bool createOccurrenceTable(LfTable<WaveletTree<TText, TWaveletTreeSpec>, TPrefixSumTable> & lfTable, TText2 & text, TChar dollarSub, TPos const & dollarPos)
+{
+    waveletTreeCreate(lfTable, text, dollarSub, dollarPos);
+    return true;
+}
+
+// ==========================================================================
+/**
 .Function.createLfTable
 ..summary:Creates the LF table
 ..signature:createLfTable(lfTable, text)
