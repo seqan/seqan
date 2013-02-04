@@ -45,7 +45,7 @@ namespace seqan {
 //////////////////////////////////////////////////////////////////////////////
 
 
-// Stream Modes    
+// Stream Modes
 struct WriteOnly
 {
     typedef False   Readable;
