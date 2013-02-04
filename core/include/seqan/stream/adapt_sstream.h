@@ -579,7 +579,6 @@ streamSeek(::std::ostringstream & stream, long int delta, int origin)
 inline Position< ::std::stringstream>::Type
 streamTell(::std::stringstream & stream)
 {
-    SEQAN_ASSERT_EQ(stream.tellp(), stream.tellg());
     std::streampos x = stream.tellp();
     return x;
 }
