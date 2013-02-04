@@ -599,7 +599,7 @@ struct MMap;
             SEQAN_FAIL(
                 "CreateFileMapping(%d, %d, 0, 0, 0) failed in mapReadPage: \"%s\"",
                 file.handle, access, strerror(errno));
-		#ifdef SEQAN_DEBUG
+		#if SEQAN_ENABLE_DEBUG
 			::std::cerr << "CreateFileMapping failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
 		#endif
 			return false;
