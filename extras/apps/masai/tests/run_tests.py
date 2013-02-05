@@ -162,7 +162,7 @@ def main(source_base, binary_base):
     for conf in conf_list:
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join(['masai'] + conf.args),
+        print ' '.join([conf.program] + conf.args),
         if res:
              print 'OK'
         else:
