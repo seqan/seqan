@@ -363,6 +363,19 @@ class RegexpReplaceTransform(object):
         return re.sub(self.needle, self.replacement, text)
 
 
+class UniqueTransform(object):
+    """Unique sort transformation on left and/or right files to diff."""
+
+    def __init__(self, left=True, right=True):
+        self.left = left
+        self.right = right
+
+    def apply(self, text, is_left):
+        if (is_left and not self.left) or (not is_left and not self.right):
+            return text  # Skip if no transform is to be applied.
+        return ''.join(sorted(set(text.splitlines(True))))
+
+
 def main(main_func):
     """Run main_func with the first and second positional parameter.""" 
     parser = optparse.OptionParser("usage: run_tests [options] SOURCE_ROOT_PATH BINARY_ROOT_PATH")
