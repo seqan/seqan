@@ -167,20 +167,22 @@ namespace SEQAN_NAMESPACE_MAIN
             return result != FALSE;
         }
 
-        inline bool read(void *memPtr, SizeType_ count) const {
+        inline DWORD read(void *memPtr, SizeType_ count) const {
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
-		    bool result = ReadFile(handle, memPtr, count, &_transferedBytes, NULL) != 0;
+			DWORD _transferedBytes;
+		    ReadFile(handle, memPtr, count, &_transferedBytes, NULL) != 0;
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-            return result;
+            return _transferedBytes;
         }
 
-        inline bool write(void const *memPtr, SizeType_ count) const {
+        inline DWORD write(void const *memPtr, SizeType_ count) const {
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
-		    bool result = WriteFile(handle, memPtr, count, &_transferedBytes, NULL) != 0;
+			DWORD _transferedBytes;
+		    WriteFile(handle, memPtr, count, &_transferedBytes, NULL) != 0;
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-            return result;
+            return _transferedBytes;
         }
 
 		inline FilePtr seek(FilePtr _pos, DWORD origin = FILE_BEGIN) {
