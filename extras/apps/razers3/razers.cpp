@@ -307,7 +307,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setAppName(parser, "razers3");
     setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "3.1 [" + rev.substr(11, rev.size() - 13) + "]");
+    setVersion(parser, "3.2 [" + rev.substr(11, rev.size() - 13) + "]");
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     // Need genome and reads (hg18.fa reads.fq)
