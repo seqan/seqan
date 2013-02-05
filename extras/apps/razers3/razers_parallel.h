@@ -438,8 +438,8 @@ writeBackToLocal(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore, TFi
 //             std::cerr << "((MASKING FROM " << tls.matches[beginPos].beginPos << " TO " << windowBegin + tls.options.windowSize << "))" << std::endl;
 // SEQAN_OMP_PRAGMA(critical)
 //         std::cerr << "thread " << omp_get_thread_num() << " (masking from " << beginPos << " to end=" << length(tls.matches) << ")" << std::endl;
-        // Do not mask duplicates if not in edit distance mode.
-        if (!IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE)
+        // Do not mask duplicates if not in edit distance mode and not using pigeonhole filter
+        if (!IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE && tls.options.threshold != 0)
             continue;
 
         // (2 c) Mask duplicates from beginPos to the end position.
@@ -501,7 +501,7 @@ writeBackToLocal(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore, TFi
 
         // if (tls.threadId == 0u && tls.options._debugLevel >= 3)
         //     fprintf(stderr, "[compact]");
-        if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE)
+        if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || tls.options.threshold == 0)
             maskDuplicates(tls.matches, tls.options, TRazerSMode());  // overlapping parallelograms cause duplicates
 
         compactMatches(tls.matches, tls.counts, tls.options, TRazerSMode(), tls, COMPACT);
@@ -671,8 +671,6 @@ void _mapSingleReadsParallelToContig(
 
 #ifdef RAZERS_PROFILE
         timelineEndTask(TASK_COPY_FINDER);
-#endif  // #ifdef RAZERS_PROFILE
-#ifdef RAZERS_PROFILE
         timelineBeginTask(TASK_FILTER);
 #endif  // #ifdef RAZERS_PROFILE
 
@@ -1097,7 +1095,8 @@ int _mapSingleReadsParallel(
     {
         for (unsigned i = 0; i < length(threadLocalStorages); ++i)
         {
-            if (IsSameType<TGapMode, RazerSGapped>::VALUE)
+            // remove duplicates when mapping with gaps or using pigeonhole filter
+            if (IsSameType<TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
                 maskDuplicates(threadLocalStorages[omp_get_thread_num()].matches, options, mode);
             Nothing nothing;
             CompactMatchesMode compactMode = useSequentialCompaction ? COMPACT_FINAL : COMPACT_FINAL_EXTERNAL;
@@ -1113,7 +1112,8 @@ int _mapSingleReadsParallel(
     {
 // TODO(holtgrew): We would really like to stop the additional masking step, the incremental masking SHOULD have taken care of this. Thus, the following should be ifndef and not ifdef.
 #ifndef RAZERS_DEFER_COMPACTION
-        if (IsSameType<TGapMode, RazerSGapped>::VALUE)
+        // remove duplicates when mapping with gaps or using pigeonhole filter
+        if (IsSameType<TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
             maskDuplicates(threadLocalStorages[omp_get_thread_num()].matches, options, mode);
 #endif  // #ifndef RAZERS_DEFER_COMPACTION
         Nothing nothing;

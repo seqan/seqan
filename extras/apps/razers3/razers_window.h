@@ -162,7 +162,7 @@ void _mapSingleReadsToContigWindow(
             if (length(blockStore.alignedReadStore) > options.compactThresh)
             {
                 TAlignedReadStoreSize oldSize = length(blockStore.alignedReadStore);
-                if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE)
+                if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
                     maskDuplicates(blockStore, mode);       // overlapping parallelograms cause duplicates
 
                 compactMatches(blockStore, cnts, options, mode, swiftPatternHandler, COMPACT);

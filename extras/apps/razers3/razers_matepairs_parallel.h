@@ -974,7 +974,7 @@ writeBackToLocal(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore, TFi
         typedef typename TFragmentStore::TAlignedReadStore TAlignedReadStore;
         typename Size<TAlignedReadStore>::Type oldSize = length(tls.matches);
 
-        if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE)
+        if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || tls.options.threshold == 0)
             maskDuplicates(tls.matches, tls.options, TRazerSMode());    // overlapping parallelograms cause duplicates
 
         FilterPatternLSetMaxErrorsWrapper<TThreadLocalStorage> wrapperL(tls);
@@ -1536,7 +1536,7 @@ int _mapMatePairReadsParallel(
     {
         for (unsigned i = 0; i < length(threadLocalStorages); ++i)
         {
-            if (IsSameType<TGapMode, RazerSGapped>::VALUE)
+            if (IsSameType<TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
                 maskDuplicates(threadLocalStorages[omp_get_thread_num()].matches, options, mode);
             Nothing nothing;
             CompactMatchesMode compactMode = useSequentialCompaction ? COMPACT_FINAL : COMPACT_FINAL_EXTERNAL;
@@ -1558,7 +1558,7 @@ int _mapMatePairReadsParallel(
     // (!useExternalSort).
     SEQAN_OMP_PRAGMA(parallel)
     {
-        if (IsSameType<TGapMode, RazerSGapped>::VALUE)
+        if (IsSameType<TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
             maskDuplicates(threadLocalStorages[omp_get_thread_num()].matches, options, mode);
         Nothing nothing;
         compactPairMatches(store, threadLocalStorages[omp_get_thread_num()].matches, cnts, options, nothing, nothing, COMPACT_FINAL);

@@ -984,7 +984,7 @@ void _mapMatePairReads(
                 if ((__int64)length(store.alignedReadStore) > options.compactThresh)
                 {
                     typename Size<TAlignedReadStore>::Type oldSize = length(store.alignedReadStore);
-                    if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE)
+                    if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
                         maskDuplicates(matches, options, mode);         // overlapping parallelograms cause duplicates
                     compactPairMatches(store, matches, cnts, options, filterPatternL, filterPatternR, COMPACT);
 
@@ -1128,7 +1128,7 @@ int _mapMatePairReads(
 
     double beginCopyTime = sysTime();
     // Final compact matches
-    if (IsSameType<TGapMode, RazerSGapped>::VALUE)
+    if (IsSameType<TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
         maskDuplicates(matches, options, mode);  // overlapping parallelograms cause duplicates
     compactPairMatches(store, matches, cnts, options, filterPatternL, filterPatternR, COMPACT_FINAL);
     // Write back to store.

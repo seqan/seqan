@@ -568,7 +568,7 @@ struct MatchVerifier
                     double beginTime = sysTime();
                     typename Size<TMatches>::Type oldSize = length(*matches);
 
-                    if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE)
+                    if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || options->threshold == 0)
                         maskDuplicates(*matches, *options, TRazerSMode());      // overlapping parallelograms cause duplicates
                     // SEQAN_ASSERT_MSG((back(*matches).endPos - back(*matches).beginPos == 100), "len == %d", int(m.endPos - m.beginPos));
 
@@ -1318,48 +1318,56 @@ void maskDuplicates(TMatches &, TIterator const itBegin, TIterator const itEnd, 
     typedef typename Value<TMatches>::Type  TMatch;
     typedef typename TMatch::TContigPos     TContigPos;
 
+    TContigPos  beginPos, endPos;
+    unsigned    contigId, readId;
+    char        orientation;
+    unsigned    masked;
+    TIterator   it;
+    double      beginTime = sysTime();
+
     //////////////////////////////////////////////////////////////////////////////
     // remove matches with equal ends
 
-    double beginTime = sysTime();
-#ifdef RAZERS_PROFILE
-    timelineBeginTask(TASK_SORT);
-#endif  // #ifdef RAZERS_PROFILE
-    if (options.libraryLength >= 0)
-        std::sort(itBegin, itEnd, LessRNoEndPosMP<TMatch>(options.libraryLength));
-    else
-        std::sort(itBegin, itEnd, LessRNoEndPos<TMatch>());
-    // sortAlignedReads(matches, TLessEndPos(TLessScore(store.alignQualityStore)));
-#ifdef RAZERS_PROFILE
-    timelineEndTask(TASK_SORT);
-#endif  // #ifdef RAZERS_PROFILE
-
-    TContigPos  beginPos = -1;
-    TContigPos  endPos = -1;
-    unsigned    contigId = TMatch::INVALID_ID;
-    unsigned    readId = TMatch::INVALID_ID;
-    char        orientation = '-';
-    unsigned    masked = 0;
-
-    TIterator it = itBegin;
-
-    for (; it != itEnd; ++it)
+    // we can skip one sort step in no-gap mode and with pigeonhole filter
+    if (IsSameType<typename TRazerSMode::TGapMode, RazerSGapped>::VALUE || options.threshold != 0)
     {
-        if ((*it).pairMatchId != TMatch::INVALID_ID && (it->readId & 1) != 0)
-            continue;                                                                   // remove only single reads or left mates
+#ifdef RAZERS_PROFILE
+        timelineBeginTask(TASK_SORT);
+#endif
+        if (options.libraryLength >= 0)
+            std::sort(itBegin, itEnd, LessRNoEndPosMP<TMatch>(options.libraryLength));
+        else
+            std::sort(itBegin, itEnd, LessRNoEndPos<TMatch>());
+#ifdef RAZERS_PROFILE
+        timelineEndTask(TASK_SORT);
+#endif
 
-        TContigPos itEndPos = _max((*it).beginPos, (*it).endPos);
-        if (endPos == itEndPos && orientation == (*it).orientation &&
-            contigId == (*it).contigId && readId == (*it).readId)
+        beginPos = -1;
+        endPos = -1;
+        contigId = TMatch::INVALID_ID;
+        readId = TMatch::INVALID_ID;
+        orientation = '-';
+        masked = 0;
+        it = itBegin;
+
+        for (; it != itEnd; ++it)
         {
-            (*it).orientation = '-';
-            masked += 1;
-            continue;
+            if ((*it).pairMatchId != TMatch::INVALID_ID && (it->readId & 1) != 0)
+                continue;                                                                   // remove only single reads or left mates
+
+            TContigPos itEndPos = _max((*it).beginPos, (*it).endPos);
+            if (endPos == itEndPos && orientation == (*it).orientation &&
+                contigId == (*it).contigId && readId == (*it).readId)
+            {
+                (*it).orientation = '-';
+                masked += 1;
+                continue;
+            }
+            readId = (*it).readId;
+            contigId = (*it).contigId;
+            endPos = itEndPos;
+            orientation = (*it).orientation;
         }
-        readId = (*it).readId;
-        contigId = (*it).contigId;
-        endPos = itEndPos;
-        orientation = (*it).orientation;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1378,8 +1386,12 @@ void maskDuplicates(TMatches &, TIterator const itBegin, TIterator const itEnd, 
     timelineEndTask(TASK_SORT);
 #endif  // #ifdef RAZERS_PROFILE
 
-    orientation = '-';
+    beginPos = -1;
+    endPos = -1;
     contigId = TMatch::INVALID_ID;
+    readId = TMatch::INVALID_ID;
+    orientation = '-';
+    masked = 0;
     it = itBegin;
 
     for (; it != itEnd; ++it)
@@ -3094,7 +3106,7 @@ int _mapSingleReads(
     double beginCopyTime = sysTime();
     // Final mask duplicates and compact matches.
     Nothing nothing;
-    if (IsSameType<TGapMode, RazerSGapped>::VALUE)
+    if (IsSameType<TGapMode, RazerSGapped>::VALUE || options.threshold == 0)
         maskDuplicates(matches, options, mode);
     compactMatches(matches, cnts, options, mode, nothing, COMPACT_FINAL);
     // Write back to store.
