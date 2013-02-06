@@ -66,7 +66,7 @@ namespace seqan {
 CharString buffer = "This is a text.";
 Stream<CharArray<char const *> > stream(&buffer[0], &buffer[0] + length(buffer));
 
-.Memvar.Char Array Stream#Stream
+.Memfunc.Char Array Stream#Stream
 ..summary:Constructor
 ..class:Spec.Char Array Stream
 ..signature:CharArrayStream(ptr, ptrEnd)

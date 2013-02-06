@@ -49,65 +49,16 @@ namespace SEQAN_NAMESPACE_MAIN
 	};
 
 /**
-.Tag.Preorder:
-..summary:Preorder depth-first search.
+.Tag.DFS Order
+..summary:Pre/postorder selection for depth-first search.
 ..cat:Index
-..signature:Preorder
-..remarks:When given as a second parameter in @Function.goNext@ the Suffix Tree is traversed in a preorder fashion (visit the node before its children).
-..see:Tag.Postorder
-..include:seqan/index.h
-*/
-
-/**
-.Tag.Postorder:
-..summary:Postorder depth-first search.
-..cat:Index
-..signature:Postorder
-..remarks:When given as a second parameter in @Function.goNext@ the Suffix Tree is traversed in a postorder fashion (visit the node after its children).
-..see:Tag.Preorder
-..include:seqan/index.h
-*/
-
-/**
-.Tag.PreorderEmptyEdges:
-..summary:Preorder depth-first search in a suffix tree with leaves for every suffix.
-..cat:Index
-..signature:PreorderEmptyEdges
-..remarks:When given as a second parameter in @Function.goNext@ the Suffix Tree is traversed in a preorder fashion (visit the node before its children).
-Empty edges are traversed also, i.e. for every suffix there is a leaf node representing it.
-..see:Tag.PostorderEmptyEdges
-..see:Tag.Preorder
-..include:seqan/index.h
-*/
-
-/**
-.Tag.PostorderEmptyEdges:
-..summary:Postorder depth-first search in a suffix tree with leaves for every suffix.
-..cat:Index
-..signature:PostorderEmptyEdges
-..remarks:When given as a second parameter in @Function.goNext@ the Suffix Tree is traversed in a postorder fashion (visit the node after its children).
-Empty edges are traversed also, i.e. for every suffix there is a leaf node representing it.
-..see:Tag.Postorder
-..include:seqan/index.h
-*/
-
-/**
-.Tag.EmptyEdges:
-..summary:Consider a suffix tree with leaves for every suffix.
-..cat:Index
-..signature:EmptyEdges
-..remarks:When given as a second parameter in @Function.goDown@, empty edges are traversed also, i.e. for every suffix there is a leaf node representing it.
-..see:Tag.HideEmptyEdges
-..include:seqan/index.h
-*/
-
-/**
-.Tag.HideEmptyEdges:
-..summary:Consider a suffix tree with no empty edges (default behaviour).
-..cat:Index
-..signature:HideEmptyEdges
-..remarks:When given as a second parameter in @Function.goDown@, only non-empty edges are traversed.
-..see:Tag.EmptyEdges
+..description:
+These tags are given to @Function.goNext@ and trigger post-order or pre-order traversal of a suffix tree.
+In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are also traversed.
+..tag.Preorder:Visit the node before its children.
+..tag.Postorder:Visit the node after its children.
+..tag.PreorderEmptyEdges:Visit the node before its children, visit empty edges.
+..tag.PostorderEmptyEdges:Visit the node after its children, visit empty edges.
 ..include:seqan/index.h
 */
 

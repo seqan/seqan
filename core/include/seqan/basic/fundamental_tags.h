@@ -135,8 +135,8 @@ String target(source, Move()); // source is moved to target
 std::cout << source; //nothing printed since source lost content
 std::cout << target; //"hello"
 ..see:Function.move
-.example.text:Move constructors are like copy-constructors. However, their argument is not const.
-.example.code:
+..example.text:Move constructors are like copy-constructors. However, their argument is not const.
+..example.code:
 class Klass
 {
 public:

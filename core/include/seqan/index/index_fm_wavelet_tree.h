@@ -178,7 +178,8 @@ struct Value<WaveletTree<StringSet<TText, TSetSpec> const, TSpec> > :
 ..signature:WaveletTree<TText, TSpec>
 ..param.TText:The value type of the text.
 ..param.TSpec:The wavelet tree specialisation.
-...tag:FmiDollarSubstituted
+...value:FmiDollarSubstituted
+...value:void
 ...default:void.
 ..include:seqan/index.h
 */

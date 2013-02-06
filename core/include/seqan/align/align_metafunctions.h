@@ -148,8 +148,8 @@ struct Row<T const>
 ..summary:Return type of @Function.stringSet@ function.
 ..signature:StringSetType<T>::Type
 ..param.T:Alignment data structure.
-..param.T.Type:Spec.Alignment Graph
-..param.T.Type:Class.Align
+..param.T.type:Spec.Alignment Graph
+..param.T.type:Class.Align
 ..returns.param.Type:A @Class.StringSet.string set@ type of a reference to a string set type.
 ..see:Function.stringSet
 ..include:seqan/align.h

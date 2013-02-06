@@ -177,10 +177,10 @@ The iterator starts in the root node by default.
 ...metafunction:Metafunction.Container
 ..implements:Concept.ForwardIteratorConcept
 ..param.TSpec:The specialization type. Specifies the depth-first search mode.
-...type:Tag.Preorder
-...type:Tag.PreorderEmptyEdges
-...type:Tag.Postorder
-...type:Tag.PostorderEmptyEdges
+...type:Tag.DFS Order.tag.Preorder
+...type:Tag.DFS Order.tag.PreorderEmptyEdges
+...type:Tag.DFS Order.tag.Postorder
+...type:Tag.DFS Order.tag.PostorderEmptyEdges
 ..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the suffix tree.
 Depending on the depth-first search mode the root is not the first DFS node. To go to the first DFS node use @Function.goBegin@.
 ..include:seqan/index.h

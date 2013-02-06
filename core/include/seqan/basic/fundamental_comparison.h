@@ -64,7 +64,7 @@ template <typename TValue> typename ValueSize<TValue>::Type ordValue(TValue cons
 ..signature:CompareType<T1, T2>::Type
 ..param.T1:Type of the left operand of a comparison.
 ..param.T2:Type of the right operand of a comparison.
-..return.Type:The Type in which the arguments are converted in order to compare them.
+..return.type:The Type in which the arguments are converted in order to compare them.
 ..remarks:Comparisons are for example operators like $==$ or $<$.
 ..remarks:Do not implement, implement @Metafunction.CompareTypeImpl@ instead.
 ..remarks.text:Note that there is no rule that guarantees that $CompareType<T1, T2>::Type$
@@ -81,7 +81,7 @@ comparisons that involve @Class.SimpleType@.
 ..signature:CompareType<T1, T2>::Type
 ..param.T1:Type of the left operand of a comparison.
 ..param.T2:Type of the right operand of a comparison.
-..return.Type:The Type in which the arguments are converted in order to compare them.
+..return.type:The Type in which the arguments are converted in order to compare them.
 ..see:Metafunction.CompareType
 ..include:seqan/basic.h
 */

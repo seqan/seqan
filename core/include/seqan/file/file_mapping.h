@@ -94,7 +94,7 @@ enum FileMappingAdvise {
 .Class.FileMapping:
 ..cat:File
 ..summary:A structure used by a @Class.FilePager@ to represent a file and its memory mapping.
-..FileMapping<TFile>
+..signature:FileMapping<TFile>
 ..param.TFile:The file type.
 ..include:seqan/file.h
 */

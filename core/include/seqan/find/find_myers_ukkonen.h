@@ -57,7 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...remarks:This could be @Tag.FindInfix@ for infix search or $FindPrefix$ for prefix search.
 ..param.TFindBeginPatternSpec:Specialization of @Class.Pattern@ used to find the begin of matches.
 ...default:@Metafunction.DefaultFindBeginPatternSpec@
-...metafunctin:@Metafunction.FindBeginPatternSpec@
+...metafunction:@Metafunction.FindBeginPatternSpec@
 ...remarks:This must be a finder for prefix search, e.g. @Spec.DPSearch|$DPSearch<TScore, FindPrefix>$@ or @Spec.Myers|$Myers<FindPrefix>$@.
 Specify $void$ to suppress prefix searching.
 ..remarks.text:The needle-length must be smaller than the highest number that can be stored in an unsigned int.

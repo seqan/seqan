@@ -49,9 +49,10 @@ struct FmiDollarSubstitutedDefault_;
 
 // WT = WaveletTree
 /**
-.Tag.WT
-..summary:Tag that specifies the @Spec.FMIndex@ to use a wavelet tree as the occurrence table.
+.Tag.Occurence Table
 ..cat:Index
+..summary:Tag for selecting the occurence table type in the @Spec.FMIndex@.
+..tag.WT:Tag that specifies the @Spec.FMIndex@ to use a wavelet tree as the occurrence table.
 */
 template <typename TSpec = void>
 class WT;
@@ -257,7 +258,7 @@ space efficient.
 ...type:Class.String
 ...type:Class.StringSet
 ..param.TOccSpec:Occurrence table specialisation.
-...type:Tag.WT
+...type:Tag.Occurence Table.tag.WT
 ...default.Class:WT<void>
 ..param.TSpec:FM index specialisation.
 ...type:Tag.CompressText

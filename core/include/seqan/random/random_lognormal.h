@@ -50,29 +50,19 @@ struct Normal;
 struct LogNormal {};
 
 /**
-.Tag.MuSigma
-..signature:MuSigma
-..summary:Tag to specify that the given parameters are mu and sigma of the underlying normal distribution for lognormal distributions.
+.Tag.Lognormal Construction:
+..summary:Specify parameters for lognormal distribution construction.
 ..cat:Random
 ..include:seqan/random.h
+..tag.MuSigma:
+...summary:Tag to specify that the given parameters are mu and sigma of the underlying normal distribution for lognormal distributions.
+..tag.MeanStdDev:
+...summary:Tag to specify that the given parameters are mean an standard deviation of the lognormal distribution.
 ..wiki:Tutorial/Randomness|Tutorial: Randomness
 ..see:Spec.Log-Normal Pdf
-..see:Tag.MeanStdDev
 */
 
 struct MuSigma {};
-
-/**
-.Tag.MeanStdDev
-..signature:MeanStdDev
-..summary:Tag to specify that the given parameters are mean an standard deviation of the lognormal distribution.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-..see:Spec.Log-Normal Pdf
-..see:Tag.MuSigma
-*/
-
 struct MeanStdDev {};
 
 // ===========================================================================
@@ -110,8 +100,8 @@ Log-normal PDFs can either be initialized by the mean and standard deviation of 
 ...type:nolink:double
 ..param.stdDev:Standard deviation of the log-normal distribution.
 ...type:nolink:double
-..see:Tag.MuSigma
-..see:Tag.MeanStdDev
+..see:Tag.Lognormal Construction.tag.MuSigma
+..see:Tag.Lognormal Construction.tag.MeanStdDev
 */
     Pdf(double mu, double sigma, MuSigma const &)
             : _normalDist(mu, sigma)

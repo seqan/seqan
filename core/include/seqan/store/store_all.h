@@ -89,7 +89,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...default:$Value<TNameStore>::Type$
 ...type:Shortcut.CharString
 
-.Memvar.NameStoreCache#NameStoreCache
+.Memfunc.NameStoreCache#NameStoreCache
 ..summary:Constructor
 ..signature:NameStoreCache<TNameStore, TName> (nameStore)
 ..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@

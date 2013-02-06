@@ -357,8 +357,8 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 ..returns:A type to store a position. 
 ...text:If $TObject$ is a @Class.String@, it is a single integer value. By default this is the @Metafunction.Size@ type of $TObject$.
 ...text:If $TObject$ is a @Class.StringSet@, it could be a single integer too (called global position, see @Spec.ConcatDirect@) or a @Class.Pair@ (called local position, see @Spec.Owner@).
-Currently SeqAn defaults to a local position for @Class.StringSet@ classes (index_base.h):
-...code:template < typename TString, typename TSpec >
+Currently SeqAn defaults to a local position for @Class.StringSet@ classes (index_base.h).
+..example.code:template < typename TString, typename TSpec >
 struct SAValue< StringSet<TString, TSpec> > {
 	typedef Pair<
 		typename Size< StringSet<TString, TSpec> >::Type,

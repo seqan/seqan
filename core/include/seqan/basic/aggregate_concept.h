@@ -51,12 +51,12 @@ namespace seqan {
 ..remarks:Stream output operators are not shown in the function list below, but required.
 ..remarks:Comparison operators are not shown in the function list below, but required.
 
-..Function.clear.concept:Concept.Aggregate
-..Function.value.concept:Concept.Aggregate
-..Function.assignValue.concept:Concept.Aggregate
+.Function.clear.concept:Concept.Aggregate
+.Function.value.concept:Concept.Aggregate
+.Function.assignValue.concept:Concept.Aggregate
 
-..Metafunction.LENGTH.concept:Concept.Aggregate
-..Metafunction.Value.concept:Concept.Aggregate
+.Metafunction.LENGTH.concept:Concept.Aggregate
+.Metafunction.Value.concept:Concept.Aggregate
  */
 
 /**
@@ -90,7 +90,7 @@ struct BitPacked;
 // ============================================================================
 
 /**
-.MakePacked
+.Metafunction.MakePacked
 ..cat:Aggregates
 ..summary:Return the corresponding packed type of a type.
 ..signature:MakePacked<TAggregate>

@@ -64,7 +64,6 @@ void assignValue(TDest &, TSource const &);
 ..signature:HasMoveConstructor<T>::Type
 ..signature:HasMoveConstructor<T>::VALUE
 ..param.T:Type to query for availability of move constructor.
-..rem
 ..include:seqan/basic.h
  */
 
