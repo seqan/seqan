@@ -453,7 +453,7 @@ maximumDistance(SeedSet<TValue, TSeedSpec, TSpecScoring, TSpec> &set)
 ..signature:qualityValue(set)
 ..param.set: The set of seeds.
 ...type:Class.SeedSet
-..resturns: The minimum length.
+..returns: The minimum length.
 ..include:seqan/seeds.h
 */
 template<typename TValue, typename TSeedSpec, typename TSpecScoring, typename TSpec>

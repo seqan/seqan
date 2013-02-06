@@ -99,7 +99,7 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
 
 // true if priority queue is empty 
 ///.Function.empty.param.object.type:Class.PriorityType
-///.Function.empty.clas:Class.PriorityType
+///.Function.empty.class:Class.PriorityType
 template <typename TValue, typename TLess>
 inline bool 
 empty(PriorityType<TValue, TLess, PriorityHeap> const & me) 

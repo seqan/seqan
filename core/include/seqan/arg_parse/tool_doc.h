@@ -693,7 +693,7 @@ public:
 // --------------------------------------------------------------------------
 
 /**
-.Function.append#Class.ToolDoc
+.Function.ToolDoc#append
 ..summary:Append two @Class.ToolDoc@ objects.
 ..cat:Miscellaneous
 ..signature:append(a, b)

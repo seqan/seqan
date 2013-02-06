@@ -358,7 +358,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.resizeVertexMap.type:Spec.IndexWotd
+///.Function.resizeVertexMap.param.index.type:Spec.IndexWotd
 ///.Function.resizeVertexMap.class:Spec.IndexWotd
 
 	template < typename TText, typename TIndexSpec, typename TPropertyMap >

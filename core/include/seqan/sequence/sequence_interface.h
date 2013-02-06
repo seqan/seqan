@@ -912,7 +912,7 @@ moveValue(T const & me,
 /**
 .Function.length:
 ..cat:Containers
-..concetp:Concept.Container
+..concept:Concept.Container
 ..summary:The number of items/characters.
 ..signature:Size length(object)
 ..param.object:A container.

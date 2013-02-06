@@ -213,13 +213,15 @@ struct QualityValueSize<DnaQ>
 };
 
 ///.Function.getQualityValue.param.c.type:Spec.DnaQ
+///.Function.getQualityValue.class:Spec.DnaQ
 
 inline int getQualityValue(DnaQ const & c) 
 {
     return c.value >> 2;
 }
 
-///.Function.assignQualityValue.c.type:Spec.DnaQ
+///.Function.assignQualityValue.param.c.type:Spec.DnaQ
+///.Function.assignQualityValue.class:Spec.DnaQ
 
 inline
 void assignQualityValue(DnaQ & c, int q)
@@ -345,7 +347,7 @@ inline int getQualityValue(Dna5Q const &c)
     return table[c.value];
 }
 
-///.Function.assignQualityValue.c.type:Spec.Dna5Q
+///.Function.assignQualityValue.param.c.type:Spec.Dna5Q
 ///.Function.assignQualityValue.class:Spec.Dna5Q
 
 inline

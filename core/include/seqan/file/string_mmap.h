@@ -594,8 +594,8 @@ SEQAN_CHECKPOINT
 		return true;
 	}
 //____________________________________________________________________________
-///.Function.flush.close.string.type:Spec.MMap String
-///.Function.flush.class:Spec.MMap String
+///.Function.close.param.string.type:Spec.MMap String
+///.Function.class:Spec.MMap String
 
 	template < typename TValue, typename TConfig >
     inline bool 

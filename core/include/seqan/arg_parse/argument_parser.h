@@ -526,7 +526,7 @@ inline bool _allArgumentsSet(ArgumentParser const & me)
 ..param.optionIdentifier:A std::string that is either the short or long name of the option.
 ..param.argNo:If the option is list, the $argNo$-th list element is returned.
 ..returns: $true$ if the requested option is set and has the requested type, $false$ otherwise.
-..remakrs:The value passed to the method (value) was only updated if the method returns $true$.
+..remarks:The value passed to the method (value) was only updated if the method returns $true$.
 ..include:seqan/arg_parse.h
 */
 
