@@ -120,6 +120,7 @@ public:
     typedef HistoryStackQGram_<TSize, TShape>                   Type;
 };
 
+// TODO(esiragusa): Uncomment this for BucketRefinement QGramIndex.
 //template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 //struct EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TSpec> > >
 //{
@@ -161,6 +162,7 @@ repLength(TIndex const &, VertexQGram<TSize, TShape> const & vDesc)
     return vDesc.repLen;
 }
 
+// TODO(esiragusa): Uncomment this for BucketRefinement QGramIndex.
 //template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSpec>
 //inline typename EdgeLabel<Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > >::Type
 //parentEdgeLabel(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
