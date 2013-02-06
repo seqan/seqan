@@ -66,9 +66,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 #ifdef PLATFORM_WINDOWS
 
-
-    static DWORD _transferedBytes;  // for reporting
-
 	template <typename TSpec>
 	class File<Async<TSpec> >
     {

@@ -319,7 +319,8 @@ template <typename TSpec, typename TSize>
 inline bool
 resize(FileMapping<TSpec> &mapping, TSize newFileSize)
 {
-    if (newFileSize == mapping.fileSize)
+    typedef typename Size<FileMapping<TSpec> >::Type TFileSize;
+    if ((TFileSize)newFileSize == mapping.fileSize)
         return true;
 
     bool result = _unmapFile(mapping);
