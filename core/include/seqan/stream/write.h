@@ -59,10 +59,10 @@ namespace seqan {
 /**
 .Function.writeRecord
 ..cat:Input/Output
-..summary:write one record (e.g. a single DNA-sequence and its meta data) to a @Concept.Stream@
+..summary:write one record (e.g. a single DNA-sequence and its meta data) to a @Concept.StreamConcept@
 ..signature:writeRecord(TStream & stream, <format specific>, TTag const &)
 ..param.stream:The Stream object to write to
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.format specific: possibly multiple fields (e.g. meta and sequence)
 ..param.TTag:The file format tag
 ..see:Function.write2
@@ -72,10 +72,10 @@ namespace seqan {
 /**
 .Function.write2
 ..cat:Input/Output
-..summary:writes an entire document to a @Concept.Stream@
+..summary:writes an entire document to a @Concept.StreamConcept@
 ..signature:write2(TStream & stream, <format specific>, TTag const &)
 ..param.stream:The Stream object to write to
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.format specific: possibly multiple StringSets (e.g. of meta and sequences)
 ..param.TTag:The file format tag
 ..status:Should be renamed to "write" once the old IO-Code is removed

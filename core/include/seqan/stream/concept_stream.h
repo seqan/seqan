@@ -48,7 +48,7 @@ namespace seqan {
 // ============================================================================
 
 /**
-.Concept.Stream
+.Concept.StreamConcept
 ..summary:Concept for I/O streams.
  */
 
@@ -100,12 +100,12 @@ typedef Tag<Tell_> Tell;
 
 /**
 .Metafunction.HasStreamFeature
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Query features of a stream type.
 ..signature:HasStreamFeature<TStream, TFeatureTag>::Type
 ..param.TStream:The stream type to query the property of.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.TFeatureTag:The feature tag.
 ...type:Tag.Stream Feature
 ..returns:Either $True$ or $False$.
@@ -122,14 +122,14 @@ struct HasStreamFeature;
 
 /**
 .Function.streamPeek
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Read next character from stream without advancing current position.
 ..signature:streamPeek(c, stream)
 ..param.c:The read character is written here.
 ...type:nolink:$char &$
 ..param.stream:The stream object to read from.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..returns:$int$, 0 on success, otherwise the error value from the underlying string system.
 ..remarks:Note that this might involve two calls into the stream library, e.g. for cstdio streams, it involves a call to both $getc()$ and $ungetc()$.
 ..see:Function.streamReadChar
@@ -137,39 +137,39 @@ struct HasStreamFeature;
 ..include:seqan/stream.h
 
 .Function.streamReadChar
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Read next character from stream and advance the current position.
 ..signature:streamReadChar(c, stream)
 ..param.c:The read character is written here.
 ...type:nolink:$char &$
 ..param.stream:The stream object to read from.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..returns:$int$, 0 on success, otherwise the error value from the underlying string system.
 ..see:Function.streamPeek
 ..see:Function.streamReadBlock
 ..include:seqan/stream.h
 
 .Function.streamEof
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
-..summary:Check end-of-file state of a @Concept.Stream@.
+..summary:Check end-of-file state of a @Concept.StreamConcept@.
 ..signature:streamReadChar(stream)
 ..param.stream:The stream object to read from.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..returns:$bool$, true if the stream is in end-of-file state, false otherwise.
 ..remarks:Note that the exact behaviour depends on the underlying implementation. With $FILE *$ streams, the stream can be in the end-of-file state from the point where the last character was read or from the point where the user tried to read beyond the end of the file.
 ..include:seqan/stream.h
 
 .Function.streamReadBlock
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Read a block of bytes into a buffer.
 ..signature:streamReadBlock(target, stream, maxLen)
 ..param.target:The buffer to read into. There has to be enough space for $maxLen$ bytes.
 ...type:nolink:$char *$
 ..param.stream:The stream to read from.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.maxLen:maximal number of characters to read.
 ...type:nolink:$size_t$
 ..returns:Number of read bytes.
@@ -200,12 +200,12 @@ int main()
 ..include:seqan/stream.h
 
 .Function.streamWriteChar
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Write one character to the stream.
 ..signature:streamWriteChar(stream, c)
 ..param.stream:The stream object to write to.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.c:The character to write to the stream.
 ...type:nolink:$char$
 ..returns:$int$ with error code, 0 on success.
@@ -213,12 +213,12 @@ int main()
 ..include:seqan/stream.h
 
 .Function.streamWriteBlock
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Write a block of bytes from a buffer into a stream.
 ..signature:streamWriteBlock(stream, source, count)
 ..param.stream:The stream object to write to.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.source:The data to write to the stream.
 ...type:nolink:$char *$
 ..param.count:The number of bytes to write to the stream.
@@ -250,50 +250,50 @@ int main()
 ..include:seqan/stream.h
 
 .Function.streamPut
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Write different types to stream
 ..signature:streamPut(stream, source)
 ..param.stream:The stream object to write to.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.source:The data to write to the stream.
 ...type:nolink:$char *$ (must be 0-terminated!)
 ...type:Shortcut.CharString
 ...type:nolink:String<char, *>
 ...type:nolink:numerical types ($int$, $double$ ...)
 ..returns:$int$ with an error code, 0 on success.
-..remarks:Implementation note: for some specializations of @Concept.Stream@ certain conversions take place through stringstream and a buffer of size 1023. It follows that the result of the conversion cannot be longer. However this should only effect numericals right now. If you still encounter truncated strings with another type, convert to $const char*$ manually before writing.
+..remarks:Implementation note: for some specializations of @Concept.StreamConcept@ certain conversions take place through stringstream and a buffer of size 1023. It follows that the result of the conversion cannot be longer. However this should only effect numericals right now. If you still encounter truncated strings with another type, convert to $const char*$ manually before writing.
 ..see:Function.streamWriteChar
 ..see:Function.streamWriteBlock
 ..include:seqan/stream.h
 
 .Function.streamFlush
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Flush the underlying stream.
 ..signature:streamFlush(stream)
 ..param.stream:The stream object to flush.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..returns:$int$ with an error code, 0 on success.
 ..include:seqan/stream.h
 
 .Function.streamError
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Return the stream's error code.
 ..signature:streamError(stream)
 ..param.stream:The stream object to query.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..returns:$int$ with an error code, 0 is used for "no errors."
 ..include:seqan/stream.h
 
 .Function.streamSeek
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Perform a seek operation on the stream.
 ..signature:streamSeek(stream, delta, origin)
 ..param.stream:The stream object to seek on.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.delta:The (relative) position.
 ...type:nolink:$long int$
 ..param.origin:Where to query from, we use the integers from <cstdio>.
@@ -304,12 +304,12 @@ int main()
 ..include:seqan/stream.h
 
 .Function.streamTell
-..concept:Concept.Stream
+..concept:Concept.StreamConcept
 ..cat:Input/Output
 ..summary:Get the position in the current stream.
 ..signature:streamTell(stream)
 ..param.stream:The stream object to query the current position for.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..returns:The position within the stream, of type @Metafunction.Position@.
 ..see:Function.streamSeek
 ..include:seqan/stream.h

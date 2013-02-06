@@ -51,11 +51,11 @@ namespace seqan {
 // ============================================================================
 
 /**
-.Concept.Hosted Type
+.Concept.HostedConcept Type
 ..summary:Concept for types that have a host.
 ..remarks:The functions of this concept assume that the hosted object exports a function $_dataHost$ that returns a reference to a holder type of $Host<T>::Type &$.
 
-.Metafunction.Host.concept:Concept.Hosted Type
+.Metafunction.Host.concept:Concept.HostedConcept Type
 */
 
 // ============================================================================
@@ -91,7 +91,7 @@ struct Host;
 ..param.object:The object query state of host of.
 ..returns:$bool$, $true$ if the host is empty, $false$ otherwise.
 ..see:Function.empty
-..concept:Concept.Hosted Type
+..concept:Concept.HostedConcept Type
 ..include:seqan/basic.h
  */
 
@@ -115,7 +115,7 @@ emptyHost(T const & me)
 ..param.object:The object query state of host of.
 ..returns:$bool$, $true$ if the host is dependent, $false$ otherwise.
 ..see:Function.dependent
-..concept:Concept.Hosted Type
+..concept:Concept.HostedConcept Type
 ..include:seqan/basic.h
  */
 
@@ -138,7 +138,7 @@ dependentHost(T const & me)
 ..signature:clearHost(object)
 ..param.object:The object to clear the host of.
 ..see:Function.clear
-..concept:Concept.Hosted Type
+..concept:Concept.HostedConcept Type
 ..include:seqan/basic.h
  */
 
@@ -164,7 +164,7 @@ clearHost(T & me)
 ...type:nolink:$Host<T>::Type const &$
 ..remarks:If $host$ is given then it is used for copy creation.  Otherwise, the default constructor is used.
 ..see:Function.create
-..concept:Concept.Hosted Type
+..concept:Concept.HostedConcept Type
 ..include:seqan/basic.h
  */
 
@@ -191,7 +191,7 @@ createHost(T & me,
 
 /// TODO(holtgrew): Move documentation here?
 
-///.Function.host.concept:Concept.Hosted Type
+///.Function.host.concept:Concept.HostedConcept Type
 
 template <typename T>
 inline typename Host<T>::Type &
@@ -217,7 +217,7 @@ host(T const & me)
 /// TODO(holtgrew): Move documentation here?
 
 ///.Function.setHost.param.object.type:nolink:$Host<T>::Type &$
-///.Function.setHost.concept:Concept.Hosted Type
+///.Function.setHost.concept:Concept.HostedConcept Type
 
 template <typename T, typename THost>
 inline void
@@ -250,7 +250,7 @@ setHost(T & me,
 ..param.host:The object to assign as host.
 ...type:nolink:$Host<T>::Type const &$
 ..see:Function.assign
-..concept:Concept.Hosted Type
+..concept:Concept.HostedConcept Type
 ..include:seqan/basic.h
  */
 
@@ -276,7 +276,7 @@ assignHost(T & me,
 ..param.host:The object to move-assign as host.
 ...type:nolink:$Host<T>::Type &$
 ..see:Function.move
-..concept:Concept.Hosted Type
+..concept:Concept.HostedConcept Type
 ..include:seqan/basic.h
  */
 

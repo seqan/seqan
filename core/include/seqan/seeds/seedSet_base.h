@@ -505,7 +505,7 @@ qualityValue(SeedSet<TValue, TSeedSpec, TSpecScoring, TSpec> &set)
 ..param.set:The set to which the new seed sould be added.
 ...type:Class.SeedSet
 ..param.container: Content is copied to set.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ..param.begin: Iterator pointing to the first value to add.
 ..param.end: Iterator pointing just behind the last value to add.
 ..param.tag: The algorithm that should be used to add the new @Class.Seed@.
@@ -1620,7 +1620,7 @@ _findSeedsMerge(SeedSet<TValue, TSeedSpec, const Tag<Scoring_Scheme<TQualityFact
 ..signature:extendSeeds(container, scoreDropOff, scoreMatrix, query, database, direction, tag)
 ..signature:extendSeeds(begin, end, scoreDropOff, scoreMatrix, query, database, direction, tag)
 ..param.container: The container with the @Class.Seed@ objects to extend.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ..param.begin: Iterator pointing to the first value to add.
 ..param.end: Iterator pointing just behind the last value to add.
 ..param.query: The query sequence.

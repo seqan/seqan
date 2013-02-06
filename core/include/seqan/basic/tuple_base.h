@@ -64,7 +64,7 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
 /**
 .Class.Tuple:
 ..cat:Aggregates
-..concept:Concept.Aggregate
+..concept:Concept.AggregateConcept
 ..summary:A plain fixed-length string.
 ..signature:Tuple<T, SIZE[, TSpec]>
 ..param.T:The value type, that is the type of characters stored in the tuple.

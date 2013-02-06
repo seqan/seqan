@@ -1068,8 +1068,8 @@ namespace SEQAN_NAMESPACE_MAIN
         return me.size();
     }
 
-///.Function.Pipelining#front.param.object.type:Class.Pool
-///.Function.Pipelining#front.class:Class.Pool
+///.Function.Pipe#front.param.object.type:Class.Pool
+///.Function.Pipe#front.class:Class.Pool
 
     template < typename TValue, typename TSpec >
 	inline typename Value< Pool<TValue, TSpec> >::Type const & front(Pool<TValue, TSpec> &me) {

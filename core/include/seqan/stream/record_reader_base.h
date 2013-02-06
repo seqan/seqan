@@ -59,9 +59,9 @@ struct DoublePass {};
 ..cat:Input/Output
 ..summary:Buffer management for streams.
 ..signature:RecordReader<TStream, TSpec>
-..param.TStream:The @Concept.Stream@ type to work on.
+..param.TStream:The @Concept.StreamConcept@ type to work on.
 ..param.TSpec:The record reader specialization to chose.
-..see:Concept.Stream
+..see:Concept.StreamConcept
 ..include:seqan/stream.h
 
 .Memfunc.RecordReader#RecordReader

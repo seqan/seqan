@@ -539,7 +539,7 @@ _skiplistFind(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.map#find:
+.Function.Map#find:
 ..cat:Map
 ..summary:Find a value in a map. 
 ..signature:Iterator find(map, key)
@@ -551,7 +551,7 @@ _skiplistFind(Map<TValue, Skiplist<TSpec> > & me,
 ..returns:An iterator to the first value in $map$ of the given key, if there is any.
 An iterator to the fist value in $map$ with key > $key$, otherwise
 ...metafunction:Metafunction.Iterator
-..see:Function.map#value
+..see:Function.Map#value
 ..include:seqan/map.h
 */
 
@@ -618,7 +618,7 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
 //creates entry if necessary
 
 /**
-.Function.map#value:
+.Function.Map#value:
 ..cat:Map
 ..summary:Returns a value given a key. 
 ..signature:Reference find(map, key)
@@ -632,8 +632,8 @@ Otherwise, a new value that is inserted to $map$.
 ...metafunction:Metafunction.Reference
 ..remarks:
 ...note:Do not change the key of a value in the map.
-..see:Function.map#find
-..see:Function.map#insert
+..see:Function.Map#find
+..see:Function.Map#insert
 ..include:seqan/map.h
 */
 
@@ -668,7 +668,7 @@ value(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.map#cargo:
+.Function.Map#cargo:
 ..cat:Map
 ..summary:Returns a cargo given a key. 
 ..signature:Cargo find(map, key)
@@ -680,9 +680,9 @@ value(Map<TValue, Skiplist<TSpec> > & me,
 ..returns:The cargo of the first value in $map$ of the given key, if there is any.
 Otherwise, the cargo of a new value that is inserted to $map$.
 ...metafunction:Metafunction.Cargo
-..see:Function.map#value
-..see:Function.map#find
-..see:Function.map#insert
+..see:Function.Map#value
+..see:Function.Map#find
+..see:Function.Map#insert
 ..include:seqan/map.h
 */
 
@@ -697,7 +697,7 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.map#insert:
+.Function.Map#insert:
 ..cat:Map
 ..summary:Insert new value into map. 
 ..signature:insert(map, value)
@@ -715,8 +715,8 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
 If there is already a value of that key in $map$, the value of this element is changed to $cargo$.
 ...text:If $value$ is specified, and there is already a value in map of that key, than
 the cargo of this value is changed to @Function.cargo.cargo(value)@.
-...text:Use @Function.map#add@ instead to insert multiple values of the same key
-..see:Function.map#add
+...text:Use @Function.Map#add@ instead to insert multiple values of the same key
+..see:Function.Map#add
 ..include:seqan/map.h
 */
 
@@ -740,7 +740,7 @@ insert(Map<TValue, Skiplist<TSpec> > & me,
 //multiple key insert
 
 /**
-.Function.map#add:
+.Function.Map#add:
 ..cat:Map
 ..summary:Insert another value into a multi map.
 ..signature:add(map, value)
@@ -808,7 +808,7 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.map#erase:
+.Function.Map#erase:
 ..cat:Map
 ..summary:Removes a value from a map. 
 ..signature:erase(map, key)
@@ -821,9 +821,9 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
 ..param.iterator:An iterator to a value in $map$.
 ...metafunction:Metafunction.Iterator
 ..remarks:Removes the first value in $map$ of the given key, if there is any.
-...text:Use @Function.map#eraseAll@ to remove all values of the given key in a multi map.
-..see:Function.map#add
-..see:Function.map#insert
+...text:Use @Function.Map#eraseAll@ to remove all values of the given key in a multi map.
+..see:Function.Map#add
+..see:Function.Map#insert
 ..include:seqan/map.h
 */
 
@@ -853,7 +853,7 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.map#eraseAll:
+.Function.Map#eraseAll:
 ..cat:Map
 ..summary:Removes a value from a map. 
 ..signature:eraseAll(map, key)
@@ -863,9 +863,9 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
 ..param.key:The key of a value in $map$.
 ...metafunction:Metafunction.Key
 ..remarks:Removes all values in $map$ of the given key, if there is any.
-..see:Function.map#add
-..see:Function.map#insert
-..see:Function.map#erase
+..see:Function.Map#add
+..see:Function.Map#insert
+..see:Function.Map#erase
 ..include:seqan/map.h
 */
 
@@ -999,7 +999,7 @@ mapValue(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.map#hasKey:
+.Function.Map#hasKey:
 ..cat:Map
 ..summary:Determines whether a map contains a value given key. 
 ..signature:hasKey(map, key)

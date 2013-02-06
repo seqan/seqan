@@ -51,8 +51,8 @@ namespace seqan {
 .Class.Stream
 ..cat:Input/Output
 ..signature:Stream<TSpec>
-..summary:Abstract base class to fulfill the @Concept.Stream@ concept.
-..concept:Concept.Stream
+..summary:Abstract base class to fulfill the @Concept.StreamConcept@ concept.
+..concept:Concept.StreamConcept
 ..include:seqan/stream.h
  */
 

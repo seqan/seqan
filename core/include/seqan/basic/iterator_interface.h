@@ -85,11 +85,11 @@ typedef Tag<Standard_> const Standard;
 /**
 .Metafunction.DefaultIteratorSpec:
 ..hidefromindex
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..summary:Specifies default kind of iterator.
 ..signature:DefaultIteratorSpec<T>::Type
 ..param.T:Container type for which the default iterator spec is determined.
-...concept:Concept.Container
+...concept:Concept.ContainerConcept
 ..returns.param.Type:Iterator spec of $T$.
 ..see:Metafunction.Iterator
 ..include:seqan/basic.h
@@ -108,11 +108,11 @@ struct DefaultIteratorSpec
 /**
 .Metafunction.DefaultGetIteratorSpec:
 ..hidefromindex
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..summary:Specifies default kind of iterator returned by functions.
 ..signature:DefaultGetIteratorSpec<T>::Type
 ..param.T:Container type for which the spec is determined.
-...concept:Concept.Container
+...concept:Concept.ContainerConcept
 ..returns.param.Type:Iterator spec of $T$.
 ..remarks:This metafunction returns the iterator spec of iterators that are returned by functions like
 @Function.begin@, @Function.end@, or @Function.iter@.
@@ -133,12 +133,12 @@ struct DefaultGetIteratorSpec
 
 /**
 .Metafunction.Iterator:
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..cat:Iteration
 ..summary:Type of iterator objects that are used to traverse the container.
 ..signature:Iterator<T, TSpec>::Type
 ..param.T:Type for which the iterator type is determined.
-...concept:Concept.Container
+...concept:Concept.ContainerConcept
 ...type:Class.Iter
 ..param.TSpec:Specifies an @Tag.Iterator Spec.iterator spec@.
 ...default:The default iterator spec is given by @Metafunction.DefaultIteratorSpec@.
@@ -238,7 +238,7 @@ value(T const & me)
 ..signature:GetValue getValue(object)
 ..param.object:An object that holds a value or points to a value.
 ...type:Class.Iter
-...concept:Concept.IteratorAssociated
+...concept:Concept.IteratorAssociatedConcept
 ..see:Metafunction.GetValue
 ..include:seqan/basic.h
 */
@@ -408,7 +408,7 @@ container(T me)
 /**
 .Function.position
 ..class:Class.Iter
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..summary:Position of an iterator.
 ..cat:Iteration
 ..signature:Position position(iterator [, container])
@@ -416,7 +416,7 @@ container(T me)
 ...type:Class.Iter
 ...concept:Concept.RootedRandomAccessIteratorConcept
 ..param.container:A container.
-...concept:Concept.Container
+...concept:Concept.ContainerConcept
 ...remarks:If $iterator$ implements @Concept.RootedIteratorConcept@, then $container$ is optional.
 ...remarks:If $container$ is specified, $iterator$ must be a container of $container$.
 ..returns:The position of the value in the container $iterator$ points to.
@@ -449,7 +449,7 @@ position(TIterator const & it,
 /**
 .Function.atBegin
 ..class:Class.Iter
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Determines whether an iterator is at the beginning position.
@@ -513,7 +513,7 @@ atBegin(T const & it)
 /**
 .Function.atEnd
 ..class:Class.Iter
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Determines whether an iterator is at the end position.
@@ -590,7 +590,7 @@ atEnd(T const & it)
 /**
 .Function.goBegin
 ..class:Class.Iter
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Iterates to the first position of a container.
@@ -600,7 +600,7 @@ atEnd(T const & it)
 ...concept:Concept.RootedIteratorConcept
 ...text:$iterator$ is set to the position of the first item in $container$.
 ..param.container:Container of $iterator$.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional,
 otherwise $container$ is required.
 ..remarks:This function is equivalent to $iterator = begin(container)$.
@@ -645,7 +645,7 @@ goBegin(TIterator & it)
 /**
 .Function.goEnd
 ..class:Class.Iter
-..concept:Concept.Container
+..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Iterates to the last position of a container.
@@ -655,7 +655,7 @@ goBegin(TIterator & it)
 ...concept:Concept.RootedIteratorConcept
 ...text:$iterator$ is set to the position behin the last item in $container$.
 ..param.container:Container of $iterator$.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional,
 otherwise $container$ is required.
 ..remarks:This function is equivalent to $iterator = end(container)$.

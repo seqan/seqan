@@ -962,7 +962,7 @@ SEQAN_CHECKPOINT
 }
 
 /**
-.Function.blast#getAlignment
+.Function.BlastHsp#getAlignment
 ..cat:Blast
 ..summary:Turns a HSP from a Blast search into an Alignment object.
 ..signature:getAlignment(hsp,alignment)
@@ -1055,7 +1055,7 @@ SEQAN_CHECKPOINT
 
 
 /**
-.Function.blast#getAlignment
+.Function.BlastHsp#getAlignment
 ..cat:Blast
 ..signature:getAlignment(hsp,alignment,id0,id1)
 ..param.id0:The Id of the query sequence in the StringSet of the Alignment Graph.
@@ -1478,7 +1478,7 @@ SEQAN_CHECKPOINT
 }
 
 /**
-.Function.Blast#getBlastMatchScore:
+.Function.BlastHsp#getBlastMatchScore:
 ..cat:Blast
 ..summary:The Smith-Waterman score associated with a Blast HSP.
 ..signature:getBlastMatchScore(object);

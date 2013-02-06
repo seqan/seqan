@@ -86,8 +86,8 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
 ..cat:Iterators
 ..summary:Iterator that allows dereferenced reading.
 ..baseconcept:Concept.IteratorAssociatedTypesConcept
-..baseconcept:Concept.CopyConstructible
-..baseconcept:Concept.EqualityComparable
+..baseconcept:Concept.CopyConstructibleConcept
+..baseconcept:Concept.EqualityComparableConcept
 ..signature:InputIteratorConcept<T>
 ..see:Concept.BasicOutputIteratorConcept
 ..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
@@ -141,7 +141,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
 ..cat:Iterators
 ..summary:Iterator that allows dereferenced writing.
 ..baseconcept:Concept.IteratorAssociatedTypesConcept
-..baseconcept:Concept.CopyConstructible
+..baseconcept:Concept.CopyConstructibleConcept
 ..signature:OutputIteratorConcept<T>
 ..see:Concept.InputIteratorConcept
 ..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
@@ -191,7 +191,7 @@ SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
 ..cat:Iterators
 ..summary:Iterator that allows passing over a linear sequence multiple times.
 ..baseconcept:Concept.InputIteratorConcept
-..baseconcept:Concept.DefaultConstructible
+..baseconcept:Concept.DefaultConstructibleConcept
 ..signature:ForwardIteratorConcept<T>
 ..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
 ..include:seqan/basic.h
@@ -296,7 +296,7 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
 ..cat:Iterators
 ..summary:An iterator allowing random access.
 ..baseconcept:Concept.BidirectionalIteratorConcept
-..baseconcept:Concept.LessThanComparable
+..baseconcept:Concept.LessThanComparableConcept
 ..signature:RandomAccessIteratorConcept<T>
 ..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
 ..include:seqan/basic.h
@@ -357,7 +357,7 @@ SEQAN_CONCEPT_REFINE(RandomAccessIteratorConcept, (T), (BidirectionalIteratorCon
 ..cat:Iterators
 ..summary:A @Concept.RandomAccessIteratorConcept@ that allows assignable derefentiation.
 ..baseconcept:Concept.BidirectionalIteratorConcept
-..baseconcept:Concept.LessThanComparable
+..baseconcept:Concept.LessThanComparableConcept
 ..signature:RandomAccessIteratorConcept<T>
 ..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
 ..example.text:The following expressions should be valid.

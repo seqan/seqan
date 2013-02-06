@@ -387,8 +387,8 @@ _sprintfValue(char * buf, double val)
 ..cat:Input/Output
 ..class:Spec.Score Matrix
 ..signature:write(stream, scoreMatrix[, meta])
-..param.stream:A @Concept.Stream@ to write to.
-...type:Concept.Stream
+..param.stream:A @Concept.StreamConcept@ to write to.
+...type:Concept.StreamConcept
 ..param.scoreMatrix:The matrix to write out.
 ...type:Spec.Score Matrix
 ..param.meta:Optional description.

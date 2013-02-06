@@ -375,7 +375,7 @@ SEQAN_CHECKPOINT
         return countSequences(me.in1);
     }
 /**
-.Function.Pipelining#front
+.Function.Pipe#front
 ..class:Class.Pipe
 ..cat:Pipelining
 ..summary:Gets the first element of the remaining stream.
@@ -384,7 +384,7 @@ SEQAN_CHECKPOINT
 ...type:Class.Pipe
 ..returns:The first element of the remaining input stream.
 Return type is $Value<TObject>::Type$ for $object$ type $TObject$.
-..remarks:@Function.Pipelining#front@ or @Function.pop@ can only be called within a read process surrounded by @Function.beginRead@ and @Function.endRead@.
+..remarks:@Function.Pipe#front@ or @Function.pop@ can only be called within a read process surrounded by @Function.beginRead@ and @Function.endRead@.
 ..see:Function.pop
 ..include:seqan/pipe.h
 */
@@ -406,8 +406,8 @@ SEQAN_CHECKPOINT
 ...type:Class.Pipe
 ..param.ref:Reference to the result. Result type is $Value<TObject>::Type$ for $object$ type $TObject$.
 ...remarks:Returns the first element of the remaining input stream.
-..remarks:In contrast to @Function.Pipelining#front@ this function also steps one element further.
-..remarks:@Function.Pipelining#front@ or @Function.pop@ can only be called within a read process surrounded by @Function.beginRead@ and @Function.endRead@.
+..remarks:In contrast to @Function.Pipe#front@ this function also steps one element further.
+..remarks:@Function.Pipe#front@ or @Function.pop@ can only be called within a read process surrounded by @Function.beginRead@ and @Function.endRead@.
 ..DISABLED.see:Function.top
 ..include:seqan/pipe.h
 */

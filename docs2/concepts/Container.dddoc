@@ -1,32 +1,32 @@
-.Concept.Container:
+.Concept.ContainerConcept:
 ..summary:Object that contains other objects.
 
 
-.Metafunction.Value.concept:Concept.Container
-.Metafunction.GetValue.concept:Concept.Container
-.Metafunction.Reference.concept:Concept.Container
-.Metafunction.Size.concept:Concept.Container
-.Metafunction.Position.concept:Concept.Container
+.Metafunction.Value.concept:Concept.ContainerConcept
+.Metafunction.GetValue.concept:Concept.ContainerConcept
+.Metafunction.Reference.concept:Concept.ContainerConcept
+.Metafunction.Size.concept:Concept.ContainerConcept
+.Metafunction.Position.concept:Concept.ContainerConcept
 
 
-.Function.assign.concept:Concept.Container
-.Function.append.concept:Concept.Container
-.Function.replace.concept:Concept.Container
+.Function.assign.concept:Concept.ContainerConcept
+.Function.append.concept:Concept.ContainerConcept
+.Function.replace.concept:Concept.ContainerConcept
 
-.Function.assignValue.concept:Concept.Container
-.Function.appendValue.concept:Concept.Container
-.DISABLED.Function.replaceValue.concept:Concept.Container
+.Function.assignValue.concept:Concept.ContainerConcept
+.Function.appendValue.concept:Concept.ContainerConcept
+.DISABLED.Function.replaceValue.concept:Concept.ContainerConcept
 
-.Function.value.concept:Concept.Container
-.Function.getValue.concept:Concept.Container
-.Function.assignValue.concept:Concept.Container
-.Function.moveValue.concept:Concept.Container
+.Function.value.concept:Concept.ContainerConcept
+.Function.getValue.concept:Concept.ContainerConcept
+.Function.assignValue.concept:Concept.ContainerConcept
+.Function.moveValue.concept:Concept.ContainerConcept
 
-.Function.begin.concept:Concept.Container
-.Function.beginPosition.concept:Concept.Container
-.Function.end.concept:Concept.Container
-.Function.endPosition.concept:Concept.Container
-.Function.empty.concept:Concept.Container
-.Function.length.concept:Concept.Container
-.Function.capacity.concept:Concept.Container
+.Function.begin.concept:Concept.ContainerConcept
+.Function.beginPosition.concept:Concept.ContainerConcept
+.Function.end.concept:Concept.ContainerConcept
+.Function.endPosition.concept:Concept.ContainerConcept
+.Function.empty.concept:Concept.ContainerConcept
+.Function.length.concept:Concept.ContainerConcept
+.Function.capacity.concept:Concept.ContainerConcept
 

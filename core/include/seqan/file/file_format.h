@@ -246,7 +246,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.Fileformat#read:
+.Function.FileFormat#read:
 ..cat:Input/Output
 ..summary:Loads a record from file.
 ..signature:read(file, data [, meta], format)
@@ -351,7 +351,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.Fileformat#write:
+.Function.FileFormat#write:
 ..class:Adaption."std::iostream"
 ..cat:Input/Output
 ..summary:Writes to stream.

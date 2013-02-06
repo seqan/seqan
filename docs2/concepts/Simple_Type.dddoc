@@ -1,4 +1,4 @@
-.Concept.Simple Type:
+.Concept.SimpleConcept Type:
 ..summary:Object that does not need constructors, destructors or copy assignment operators.
 ..description:
 All POD ("plain old data") types are simple types, but some simple types are not POD types, e.g. the subclasses of @Class.SimpleType@.

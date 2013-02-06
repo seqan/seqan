@@ -68,7 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN
 by using external memory (e.g. Hard disk, Network storage, ...) via a @Class.File@ object.
 Sequences of nearly arbitrary size can be accessed even larger than the logically addressable memory,
 i.e. they can in particular contain more than 2^32 elements on a 32bit system (see Tag.ExternalConfigLarge).
-See the @Memfunc.ExtString#String.constructor@ for more details.
+See the @Memfunc.External String#String@ constructor for more details.
 ..remarks:This String also supports fast appending and removing of values at the end (see @Spec.Block String@, @Function.appendValue@)
 ..remarks:The External String implements a LRU mechanism to swap out pages.
 The External String's @Metafunction.Iterator@ detects a forward or backward iteration and asynchronously prefetches pages that
@@ -1138,7 +1138,7 @@ you should think of using @Tag.ExternalConfig@.
 		String(String const &) { SEQAN_ASSERT_FAIL("Aborted attempt to copy a String<..,External<..> >"); }  // TODO(holtgrew): Actually, this should be an ABORT
 
 /**
-.Memfunc.ExtString#String:
+.Memfunc.External String#String:
 ..class:Spec.External String
 ..summary:Constructor
 ..signature:String<TValue, External<TConfig> > ()

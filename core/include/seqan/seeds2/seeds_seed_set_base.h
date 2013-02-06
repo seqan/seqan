@@ -255,7 +255,7 @@ class SeedSet;
 ..param.set:The set to which the new seed sould be added.
 ...type:Class.SeedSet
 ..param.container: Content is copied to set.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ..param.begin: Iterator pointing to the first value to add.
 ..param.end: Iterator pointing just behind the last value to add.
 ..param.tag: The algorithm that should be used to add the new @Class.Seed@.

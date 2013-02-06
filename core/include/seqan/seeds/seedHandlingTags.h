@@ -78,7 +78,7 @@ struct BLOCK_SIZE
 };
 
 /**
-.Tag.SeedSet
+.Tag.SeedSet Tags
 ..cat:Seed Handling
 ..summary: Tags for the behaviour of a SeedSet
 ..tag.DefaultScore: 

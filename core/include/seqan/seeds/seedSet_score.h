@@ -1834,9 +1834,9 @@ _findSeedsMerge(SeedSet<TValue, TSeedSpec, TScoringSpec, TSpec> &set,
 ..signature:extendSeedsScore(container, scores, scoreDropOff, scoreMatrix, query, database, direction, tag)
 ..signature:extendSeedsScore(begin, end, itScores, scoreDropOff, scoreMatrix, query, database, direction, tag)
 ..param.container: The container with the @Class.Seed@ objects to extend.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ..param.scores: A container with the scores of the seeds. The scores will be increased by the score of the extension. It can be omitted if the seeds container is a @Class.SeedSet@ with scores.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ..param.itScore: Iterator pointing to the first seeds score. The scores will be increased by the score of the extension.
 ..param.begin: Iterator pointing to the first value to add.
 ..param.end: Iterator pointing just behind the last value to add.

@@ -62,7 +62,7 @@ struct PositionIterator;
 ..see:Metafunction.Position
 ..include:seqan/basic.h
 
-.Memfunc.PositionIterator#Iter:
+.Memfunc.Position Iterator#Iter:
 ..class:Spec.Position Iterator
 ..summary:Constructor
 ..signature:Iter()

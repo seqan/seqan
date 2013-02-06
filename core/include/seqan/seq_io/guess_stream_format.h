@@ -86,8 +86,8 @@ typedef TagSelector<SeqStreamFormats>       AutoSeqStreamFormat;
 ..cat:Input/Output
 ..summary:manipulates a @Class.RecordReader@ -Object so that it operates only on one buffer
 ..signature:LimitRecordReaderInScope<TStream, TSpec>
-..param.TStream:The @Concept.Stream@ of the @Class.RecordReader@.
-...type:Concept.Stream
+..param.TStream:The @Concept.StreamConcept@ of the @Class.RecordReader@.
+...type:Concept.StreamConcept
 ..param.TSpec:The specialization of the @Class.RecordReader@.
 ...type:Class.RecordReader
 ..see:Class.RecordReader

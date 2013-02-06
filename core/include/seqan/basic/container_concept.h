@@ -59,10 +59,10 @@ typedef Tag<Standard_> const Standard;
 template <typename TContainer, typename TSpec> struct Iterator;
 
 /**
-.Concept.Container
-..baseconcept:Concept.Assignable
-..baseconcept:Concept.DefaultConstructible
-..baseconcept:Concept.CopyConstructible
+.Concept.ContainerConcept
+..baseconcept:Concept.AssignableConcept
+..baseconcept:Concept.DefaultConstructibleConcept
+..baseconcept:Concept.CopyConstructibleConcept
 ..signature:ContainerConcept
 ..summary:Concept for mutable containers.
 ..include:seqan/basic.h
@@ -131,8 +131,8 @@ struct ContainerConcept :
 };
 
 /**
-.Concept.Sequence
-..baseconcept:Concept.Container
+.Concept.SequenceConcept
+..baseconcept:Concept.ContainerConcept
 ..summary:Concept for sequences.
 ..include:seqan/basic.h
 */

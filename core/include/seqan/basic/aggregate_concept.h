@@ -46,17 +46,17 @@ namespace seqan {
 // ============================================================================
 
 /**
-.Concept.Aggregate
+.Concept.AggregateConcept
 ..summary:Aggregate types contain a fixed number of fixed-size values.
 ..remarks:Stream output operators are not shown in the function list below, but required.
 ..remarks:Comparison operators are not shown in the function list below, but required.
 
-.Function.clear.concept:Concept.Aggregate
-.Function.value.concept:Concept.Aggregate
-.Function.assignValue.concept:Concept.Aggregate
+.Function.clear.concept:Concept.AggregateConcept
+.Function.value.concept:Concept.AggregateConcept
+.Function.assignValue.concept:Concept.AggregateConcept
 
-.Metafunction.LENGTH.concept:Concept.Aggregate
-.Metafunction.Value.concept:Concept.Aggregate
+.Metafunction.LENGTH.concept:Concept.AggregateConcept
+.Metafunction.Value.concept:Concept.AggregateConcept
  */
 
 /**

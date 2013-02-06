@@ -146,7 +146,7 @@ parentAllocator(Allocator<SimpleAlloc<TParentAllocator> > & me)
 ..signature:clear(allocator)
 ..param.allocator:Allocator object.
 ...type:Class.Allocator
-...concept:Concept.Allocator
+...concept:Concept.AllocatorConcept
 ..remarks:This function deallocates all memory blocks 
 that was allocated using @Function.allocate@ for $allocator$.
 The memory is not pooled but directly passed back to the heap manager.

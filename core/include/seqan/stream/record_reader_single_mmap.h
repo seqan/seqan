@@ -59,7 +59,7 @@ namespace seqan {
 ..general:Spec.Single-Pass RecordReader
 ..summary:Record reader specialization for single-pass reading from memory mapped files.
 ..signature:RecordReader<TStream, SinglePass<Mapped> >
-..param.TStream:The @Concept.Stream@ type to work on.
+..param.TStream:The @Concept.StreamConcept@ type to work on.
 ..remarks:This record reader does not have any buffers but uses the memory mapped string directly.
 ..remarks:Is not default or copy constructable.
 ..remarks:The buffer size is the granularity in which @Function.mmapAdvise@ will be called.

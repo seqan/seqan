@@ -66,7 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..returns:A file format object instance that represents the determined file format.
 ...type:Class.FileFormat
 ..remarks:The $data$-argument is used here as a tag to determine the type of the target.
-..see:Function.Fileformat#read
+..see:Function.FileFormat#read
 ..see:Tag.File Format
 ..include:seqan/file.h
 */

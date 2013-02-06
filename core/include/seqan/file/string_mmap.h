@@ -87,7 +87,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks:The MMap String enables to access sequences larger than the available physical memory (RAM) by using
 external memory (e.g. Hard disk, Network storage, ...) mapped into memory.
 The size of the string is limited by external memory and the logical address space (4GB on a 32bit OS).
-See the @Memfunc.ExtString#String.constructor@ for more details.
+See the @Memfunc.External String#String@ constructor for more details.
 ..remarks:This String also supports fast appending and removing of values at the end (see @Spec.Block String@, @Function.appendValue@)
 ..include:seqan/file.h
 */

@@ -52,7 +52,7 @@ namespace seqan {
 /*
 .Adaption.IO stream
 ..cat:Input / Output
-..summary:Adaption from $fstream$, $ifstream$ and $ofstream$ to the @Concept.Stream@ concept.
+..summary:Adaption from $fstream$, $ifstream$ and $ofstream$ to the @Concept.StreamConcept@ concept.
 ..include:seqan/stream.h
  */
 

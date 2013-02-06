@@ -82,7 +82,7 @@ typedef Tag<Bam_> Bam;
 ...type:Class.BamIOContext
 ..param.stream:The stream to read from (for BAM).
 ...remarks:BAM data can be read from any stream. For the proper decompression (from compressed BAM, the default) use @Spec.BGZF Stream@.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.tag:Format to read @Class.BamHeader@ from.
 ...type:Tag.Sam
 ...type:Tag.Bam

@@ -58,7 +58,7 @@ namespace seqan {
 // ============================================================================
 
 /**
-.Concept.DefaultConstructible
+.Concept.DefaultConstructibleConcept
 ..cat:Basic
 ..summary:A type with a default constructor.
 ..signature:DefaultConstructible<T>
@@ -69,8 +69,8 @@ namespace seqan {
 T()
 T a;
 ..include:seqan/basic.h
-..see:Concept.Assignable
-..see:Concept.CopyConstructible
+..see:Concept.AssignableConcept
+..see:Concept.CopyConstructibleConcept
 */
 
 SEQAN_CONCEPT(DefaultConstructible,(T))
@@ -83,7 +83,7 @@ SEQAN_CONCEPT(DefaultConstructible,(T))
 };
 
 /**
-.Concept.Destructible
+.Concept.DestructibleConcept
 ..cat:Basic
 ..summary:A type with a destructor.
 ..signature:Destructible<T>
@@ -94,7 +94,7 @@ SEQAN_CONCEPT(DefaultConstructible,(T))
 T()
 T a;
 ..include:seqan/basic.h
-..see:Concept.DefaultConstructible
+..see:Concept.DefaultConstructibleConcept
 */
 
 SEQAN_CONCEPT(Destructible, (T))
@@ -106,7 +106,7 @@ SEQAN_CONCEPT(Destructible, (T))
 };
 
 /**
-.Concept.Assignable
+.Concept.AssignableConcept
 ..cat:Basic
 ..summary:A type with an assignment operator.
 ..signature:Assignable<T>
@@ -117,8 +117,8 @@ SEQAN_CONCEPT(Destructible, (T))
 a = b;  // a, b are of type T
 ..include:seqan/basic.h
 
-.Function.assign.concept:Concept.Assignable
-.Function.operator=.concept:Concept.Assignable
+.Function.assign.concept:Concept.AssignableConcept
+.Function.operator=.concept:Concept.AssignableConcept
 */
 
 // TODO(holtgrew): Test availability of assign() function?
@@ -147,7 +147,7 @@ private:
 };
 
 /**
-.Concept.CopyConstructible
+.Concept.CopyConstructibleConcept
 ..cat:Basic
 ..summary:A type with a copy-constructor.
 ..signature:CopyConstructible<T>
@@ -210,7 +210,7 @@ void requireBooleanExpr(const T& t)
 }
 
 /**
-.Concept.EqualityComparable
+.Concept.EqualityComparableConcept
 ..cat:Comparisons
 ..summary:A type that can be equality compared.
 ..signature:EqualityComparable<T>
@@ -241,7 +241,7 @@ private:
 };
 
 /**
-.Concept.LessThanComparable
+.Concept.LessThanComparableConcept
 ..cat:Comparisons
 ..summary:A type that can be less-than compared.
 ..signature:LessThanComparable<T>
@@ -258,7 +258,7 @@ $a<b$ \Rightarrow $\not b<a$ (antisymmetry)\nl
 $a<b$ and $b<c$ \Rightarrow $a<c$ (transitivity)
 ..include:seqan/basic.h
 
-.Function.operator<.concept:Concept.LessThanComparable
+.Function.operator<.concept:Concept.LessThanComparableConcept
 */
 
 SEQAN_CONCEPT(LessThanComparable,(T))
@@ -272,11 +272,11 @@ private:
 };
 
 /**
-.Concept.Comparable
+.Concept.ComparableConcept
 ..cat:Comparisons
 ..summary:A type that can be compared.
 ..signature:Comparable<T>
-..baseconcept:Concept.LessThanComparable
+..baseconcept:Concept.LessThanComparableConcept
 ..remarks:
 ...text:Expects instances of type $T$ to be comparable. Comparison operators must return boolean convertible values.
 ..example.text:Valid expressions:
@@ -290,12 +290,12 @@ $a<b$ \Leftrightarrow $b>a$\nl
 $a<=b$ \Leftrightarrow $b>=a$\nl
 $a<=b$ \Leftrightarrow $a<b$ or ($a<=b$ and $a>=b$)
 ..include:seqan/basic.h
-..see:Concept.EqualityComparable
-..see:Concept.LessThanComparable
+..see:Concept.EqualityComparableConcept
+..see:Concept.LessThanComparableConcept
 
-.Function.operator<=.concept:Concept.Comparable
-.Function.operator>.concept:Concept.Comparable
-.Function.operator>=.concept:Concept.Comparable
+.Function.operator<=.concept:Concept.ComparableConcept
+.Function.operator>.concept:Concept.ComparableConcept
+.Function.operator>=.concept:Concept.ComparableConcept
 */
 
 // This is equiaent to SGI STL's LessThanComparable.
@@ -459,8 +459,8 @@ struct IsIntegral : IsInteger<T> {};
 /**
 .Concept.IntegerConcept
 ..cat:Basic
-..baseconcept:Concept.Comparable
-..baseconcept:Concept.EqualityComparable
+..baseconcept:Concept.ComparableConcept
+..baseconcept:Concept.EqualityComparableConcept
 ..summary:An integral type.
 ..signature:IntegerConcept<T>
 ..remarks:

@@ -60,7 +60,7 @@ namespace seqan {
 .Function.readRecord
 ..class:Class.RecordReader
 ..cat:Input/Output
-..summary:reads one record (e.g. a single DNA-sequence and its meta data) from a @Concept.Stream@, by the means of @Class.RecordReader@
+..summary:reads one record (e.g. a single DNA-sequence and its meta data) from a @Concept.StreamConcept@, by the means of @Class.RecordReader@
 ..signature:readRecord(<format specific>, TRecordReader & reader, TTag const &)
 ..param.<format specific>: possibly multiple fields (e.g. meta and sequence)
 ..param.reader:The reader object to read from
@@ -75,7 +75,7 @@ namespace seqan {
 .Function.read2
 ..class:Class.RecordReader
 ..cat:Input/Output
-..summary:reads an entire document from a @Concept.Stream@, by the means of @Class.RecordReader@
+..summary:reads an entire document from a @Concept.StreamConcept@, by the means of @Class.RecordReader@
 ..signature:read2(<format specific>, TRecordReader & reader, TTag const &)
 ..param.<format specific>: possibly multiple StringSets (e.g. of meta and sequences)
 ..param.reader:The reader object to read from

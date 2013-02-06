@@ -52,7 +52,7 @@ namespace seqan {
 /**
 .Class.Triple:
 ..cat:Aggregates
-..concept:Concept.Aggregate
+..concept:Concept.AggregateConcept
 ..summary:Stores three arbitrary objects.
 ..signature:Triple<T1[, T2[, T3[, TSpec]]]>
 ..param.T1:The type of the first object.

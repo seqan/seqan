@@ -61,7 +61,7 @@ _refillBuffer(RecordReader<TFile, SinglePass<void> > & recordReader);
 ..general:Class.RecordReader
 ..summary:Record reader specialization for single-pass reading.
 ..signature:RecordReader<TStream, SinglePass<void> >
-..param.TStream:The @Concept.Stream@ type to work on.
+..param.TStream:The @Concept.StreamConcept@ type to work on.
 ..remarks:Is not default or copy constructable.
 ..include:seqan/stream.h
  */

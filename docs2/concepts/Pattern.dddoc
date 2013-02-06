@@ -1,11 +1,11 @@
-.Concept.Pattern:
+.Concept.PatternConcept:
 ..summary:Object that stores information about the @glos:Needle|needle@ of a search.
-..see:Concept.Finder
+..see:Concept.FinderConcept
 
 
-.Metafunction.Needle.concept:Concept.Pattern
+.Metafunction.Needle.concept:Concept.PatternConcept
 
-.Function.needle.concept:Concept.Pattern
-.Function.setNeedle.concept:Concept.Pattern
+.Function.needle.concept:Concept.PatternConcept
+.Function.setNeedle.concept:Concept.PatternConcept
 
 

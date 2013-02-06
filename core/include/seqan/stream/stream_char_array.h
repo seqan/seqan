@@ -53,7 +53,7 @@ namespace seqan {
 .Spec.Char Array Stream
 ..cat:Input / Output
 ..general:Class.Stream
-..summary:Thin wrapper around $char *$ to the @Concept.Stream|Stream@ concept.
+..summary:Thin wrapper around $char *$ to the @Concept.StreamConcept|Stream@ concept.
 ..signature:Stream<CharArray<TPointer> >
 ..param.TPointer:Specification of the pointer type to work on.
 ...type:nolink:$char *$, $char const *$.

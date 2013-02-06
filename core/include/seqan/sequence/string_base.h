@@ -65,7 +65,7 @@ Strings can be used to store arbitrary values and can be used for large biologic
 ..param.TSpec:The specializing type.
 ...metafunction:Metafunction.Spec
 ...default:$Alloc<>$, see @Spec.Alloc String@.
-..implements:Concept.Container
+..implements:Concept.ContainerConcept
 ..include:seqan/sequence.h
 */
 

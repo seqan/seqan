@@ -44,10 +44,10 @@ namespace SEQAN_NAMESPACE_MAIN
 ..cat:Modifier
 ..signature:ModifiedString<THost[, TSpec]>
 ..param.THost:Original sequence type.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ..param.TSpec:The modifier type.
 ...metafunction:Metafunction.Spec
-..implements:Concept.Container
+..implements:Concept.ContainerConcept
 ..remarks:$THost$ can also be a modified string, so you can create custom strings by combining predefined ones.
 ..include:seqan/modifier.h
 */

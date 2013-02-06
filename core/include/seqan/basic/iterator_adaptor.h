@@ -67,7 +67,7 @@ struct AdaptorIterator;
 ..remarks.text:Adaptor iterators can implicitly converted to $TIterator$.
 ..include:seqan/basic.h
 
-.Memfunc.AdaptorIterator#Iter:
+.Memfunc.Adaptor Iterator#Iter:
 ..class:Spec.Adaptor Iterator
 ..summary:Constructor
 ..signature:Iter()

@@ -548,7 +548,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..cat:Modifier
 ..signature:reverse(object)
 ..param.object:The object/container whose elements to reverse.
-...type:Concept.Container
+...type:Concept.ContainerConcept
 ...type:Adaption.std::list
 ..include:seqan/modifier.h
 */

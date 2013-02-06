@@ -49,9 +49,9 @@ namespace seqan {
 /**
 .Concept.AlphabetConcept
 ..cat:Alphabets
-..baseconcept:Concept.Assignable
-..baseconcept:Concept.DefaultConstructible
-..baseconcept:Concept.CopyConstructible
+..baseconcept:Concept.AssignableConcept
+..baseconcept:Concept.DefaultConstructibleConcept
+..baseconcept:Concept.CopyConstructibleConcept
 ..summary:Natural container value.
 ..include:seqan/basic.h
 ..example.text:Valid expressions ($v$ is of type $T$):
@@ -105,7 +105,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 ..cat:Alphabets
 ..summary:Totally strict ordered alphabet.
 ..baseconcept:Concept.AlphabetConcept
-..baseconcept:Concept.Comparable
+..baseconcept:Concept.ComparableConcept
 ..summary:Ordered alphabet value.
 ..include:seqan/basic.h
 

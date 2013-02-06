@@ -59,11 +59,11 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 
 /**
 .Class.Gaps
-..implements:Concept.Sequence
+..implements:Concept.SequenceConcept
 ..summary:Efficient storage of gaps for a sequence.
 ..signature:Gaps<TSequence, TSpec>
 ..description:
-Gaps wrap a @Concept.Sequence@ and allows to (1) insert gaps into the sequence and (2) select an infix of the gapped sequence (clipping).
+Gaps wrap a @Concept.SequenceConcept@ and allows to (1) insert gaps into the sequence and (2) select an infix of the gapped sequence (clipping).
 The gaps are not inserted into the underlying sequence (source) but stored separately.
 Using the clipping is optional and meant for selecting parts of the alignment as a part of the result of a local alignment algorithm.
 ..description.image:gaps_illustration|Illustration of Gaps object and positions with clipping.
@@ -79,7 +79,7 @@ All (clipped) view positions have the clipping begin position subtracted from th
 ..description:
 
 ..param.TSequence:The type of the underlying sequence.
-...type:Concept.Sequence
+...type:Concept.SequenceConcept
 ..param.TSpec:Specialization tag.
 ..include:seqan/align.h
  */
@@ -906,7 +906,7 @@ sourceSegment(Gaps<TSequence, TSpec> & gaps)
 ..signature:void assignSource(gaps, sequence)
 ..param.gaps:The @Class.Gaps@ object to assign the source of.
 ...type:Class.Gaps
-..param.sequence:The @Concept.Sequence@ to assign as the source.
+..param.sequence:The @Concept.SequenceConcept@ to assign as the source.
 ...type:Metafunction.Source
 ..remarks:This will copy $sequence$ into the source of $gaps$.
 ..returns:$void$
@@ -936,7 +936,7 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
 ..signature:void setSource(gaps, sequence)
 ..param.gaps:The @Class.Gaps@ object to set the source of.
 ...type:Class.Gaps
-..param.sequence:The @Concept.Sequence@ to set as the source.
+..param.sequence:The @Concept.SequenceConcept@ to set as the source.
 ...type:Metafunction.Source
 ..remarks:This will avoid copying if possible.
 ..returns:$void$
