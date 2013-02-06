@@ -305,6 +305,8 @@ class TplDocsCreator(object):
             ##     continue  # Skip those that are not to appear in search.
             summary = ''
             if node.children.has_key('summary') and node.children['summary'].texts:
+                if not ':' in node.children['summary'].texts[0]:
+                    continue
                 summary = self.html_helper.translateMarkup(node.children['summary'].texts[0].split(':', 1)[1])
                 summary = summary.replace('&amp;', '&').replace('&quot;', '"')
                 summary = re.sub('<.*?>', '', summary)
