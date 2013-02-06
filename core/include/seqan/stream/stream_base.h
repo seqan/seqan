@@ -84,7 +84,7 @@ class Stream;
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
-///.Function.atEnd.iterator.type:Class.Stream
+///.Function.atEnd.param.iterator.type:Class.Stream
 ///.Function.atEnd.class:Class.Stream
 
 template <typename TSpec>

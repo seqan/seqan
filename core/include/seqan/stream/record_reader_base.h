@@ -141,7 +141,7 @@ struct Position<RecordReader<TStream, TSpec> const> :
 .Function.atEnd
 ..class:Class.RecordReader
 ..cat:Input/Output
-..summaryDISABLED:Returns $true$ if there is no more data to be read.
+..summary:Returns $true$ if there is no more data to be read.
 ..signature:atEnd(recordReader)
 ..param.recordReader:The @Class.RecordReader@ to query the state of.
 ...type:Class.RecordReader
