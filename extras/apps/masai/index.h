@@ -315,22 +315,15 @@ typedef Index<TReadSeqStore, IndexWotd<> >              TReadsWotd;
 // ----------------------------------------------------------------------------
 
 //typedef Index<TReadSeqStore, TQGramBaseIndex>                 TReadsBaseQGram;
-//typedef Index<TReadSeqStore, IndexSa<InfixSegment> >          TReadsInfixSa;
 //typedef Index<TReadSeqStore, TQGramBucketRefinementIndex>     TReadsQGram;
 //
 //namespace seqan
 //{
-//    template <>
-//    struct Fibre<TReadsBaseQGram, FibreDir>
-//    {
-//        typedef String<unsigned int, DefaultIndexStringSpec<TReadsBaseQGram>::Type >   Type;
-//    };
-//
-//    template <>
-//    struct Fibre<TReadsInfixSa, FibreSA>
-//    {
-//        typedef Segment<Fibre<TReadsBaseQGram, FibreSA>::Type const, InfixSegment>           Type;
-//    };
+//template <>
+//struct Fibre<TReadsBaseQGram, FibreDir>
+//{
+//    typedef String<unsigned int, DefaultIndexStringSpec<TReadsBaseQGram>::Type >   Type;
+//};
 //}
 
 // ----------------------------------------------------------------------------
