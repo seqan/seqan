@@ -76,9 +76,7 @@ $row(align, 0)$ is the horizontal one in the alignment matrix alignment, $row(al
 ...type:Class.Gaps
 ..param.gapsV:Vertical gapped sequenc in alignment matrix.
 ...type:Class.Gaps
-..param.frags
-String of @Class.Fragment@ objects.
-The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the vertical one.
+..param.frags:String of @Class.Fragment@ objects.  The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the vertical one.
 ..param.alignmentGraph:
 @Spec.Alignment Graph@ object to store the alignment in.
 ...type:Spec.Alignment Graph
