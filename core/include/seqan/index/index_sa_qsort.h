@@ -45,16 +45,16 @@ namespace SEQAN_NAMESPACE_MAIN
 	struct SuffixLess_ : 
 		public ::std::binary_function < TSAValue, TSAValue, bool >
     {
-		typedef typename Iterator<TText, Standard>::Type TIter;
+		typedef typename Iterator<TText const, Standard>::Type TIter;
 		TIter _begin, _end;
 
-		SuffixLess_(TText &text): 
+		SuffixLess_(TText const &text):
 			_begin(begin(text, Standard())),
 			_end(end(text, Standard())) {}
 
 		// skip the first <offset> characters
 		template <typename TSize>
-		SuffixLess_(TText &text, TSize offset): 
+		SuffixLess_(TText const &text, TSize offset):
 			_begin(begin(text, Standard()) + offset),
 			_end(end(text, Standard())) {}
 
@@ -80,14 +80,16 @@ namespace SEQAN_NAMESPACE_MAIN
 	};
 
 	// compare two suffices of a given text
-    template < typename TSAValue, typename TText, typename TSetSpec >
-	struct SuffixLess_<TSAValue, StringSet<TText, TSetSpec> > : 
+    template < typename TSAValue, typename TString, typename TSetSpec >
+	struct SuffixLess_<TSAValue, StringSet<TString, TSetSpec> const > :
 		public ::std::binary_function < TSAValue, TSAValue, bool >
     {
-		typename Size<TText>::Type _offset;
-		TText const &_text;
+        typedef StringSet<TString, TSetSpec> const TText;
+        
+		typename Size<TString>::Type _offset;
+		TText &_text;
 
-		SuffixLess_(TText &text): 
+		SuffixLess_(TText &text):
 			_text(text) {}
 			
 		// skip the first <offset> characters
@@ -98,7 +100,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		
 		inline bool operator() (TSAValue const a, TSAValue const b) const 
 		{
-			typedef typename Iterator<TText>::Type TIter;
+			typedef typename Iterator<TString const, Standard>::Type TIter;
 			if (a == b) return false;
 			TIter itA = begin(getValue(_text, getSeqNo(a)), Standard()) + getSeqOffset(a);
 			TIter itB = begin(getValue(_text, getSeqNo(b)), Standard()) + getSeqOffset(b);
@@ -173,14 +175,15 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template < typename TSA,
-               typename TText,
+               typename TString,
 			   typename TSSetSpec >
     inline void createSuffixArray(
 		TSA &SA,
-		StringSet< TText, TSSetSpec > const &s,
+		StringSet< TString, TSSetSpec > const &s,
 		SAQSort const &)
 	{
 	SEQAN_CHECKPOINT
+        typedef StringSet< TString, TSSetSpec > TText;
 		typedef typename Size<TSA>::Type TSize;
 		typedef typename Iterator<TSA, Standard>::Type TIter;
 
@@ -189,7 +192,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		for(unsigned j = 0; j < length(s); ++j)
 		{
 			TSize len = length(s[j]);
-			for(TSize i = 0; i < len; ++i)
+			for(TSize i = 0; i < len; ++i, ++it)
 				*it = Pair<unsigned, TSize>(j, i);
 		}
 
