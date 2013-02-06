@@ -391,7 +391,8 @@ _bgzfLoadBlockFromCache(Stream<Bgzf> & stream, __int64 blockAddress)
     stream._blockLength = it->second->size;
 
     // Copy data from cache into uncompressed block buffer.
-    memcpy(&stream._uncompressedBlock[0], &it->second->block[0], length(it->second->block));
+    if (!empty(it->second->block))
+        memcpy(&stream._uncompressedBlock[0], &it->second->block[0], length(it->second->block));
 
     // Seek to end of cached block in the underlying file.
     seek(stream._file, it->second->endOffset, SEEK_SET);
