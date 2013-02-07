@@ -168,7 +168,7 @@ namespace SEQAN_NAMESPACE_MAIN
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
 			DWORD _transferedBytes;
-		    ReadFile(handle, memPtr, count, &_transferedBytes, NULL) != 0;
+		    ReadFile(handle, memPtr, count, &_transferedBytes, NULL);
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
             return _transferedBytes;
         }
@@ -177,7 +177,7 @@ namespace SEQAN_NAMESPACE_MAIN
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
 			DWORD _transferedBytes;
-		    WriteFile(handle, memPtr, count, &_transferedBytes, NULL) != 0;
+		    WriteFile(handle, memPtr, count, &_transferedBytes, NULL);
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
             return _transferedBytes;
         }
