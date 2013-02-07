@@ -1,0 +1,10 @@
+Name: searchjoin
+Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+Maintainer: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+License: BSD
+Copyright: 2008-2013, FU Berlin
+Status: stable
+Description: String Similarity Search/Join.
+Implementation of scalable algorithms for optimal string similarity search and join.
+.
+Our methods are variations of those applied in Masai, our recently published tool for mapping high-throughput DNA sequencing data with unpreceded speed and accuracy. The key features of our approach are filtration with approximate seeds and methods for multiple backtracking. Approximate seeds, compared to exact seeds, increase filtration specificity while preserving sensitivity. Multiple backtracking amortizes the cost of searching a large set of seeds. Combined together, these two methods significantly speed up string similarity search and join operations.

@@ -50,14 +50,16 @@
 // ===========================================================================
 
 #include <seqan/index/index_sa_stree.h>
+#include <seqan/index/index_sa_truncated.h>
+
 #include <seqan/index/index_qgram_stree.h>
 #include <seqan/index/index_qgram_bucketrefinement.h>
 
 // ===========================================================================
-// Backtracking Finder.
+// Backtracking Finders.
 // ===========================================================================
 
 #include <seqan/index/find_backtracking.h>
-
+#include <seqan/index/find_backtracking_exp.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_INDEX_H_
