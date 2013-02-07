@@ -221,14 +221,16 @@ unsigned myIdx = 0;
 bool keyFound = findTagKey(myIdx, "SN", record);
 */
 
+template <typename TKeyName>
 inline bool
-findTagKey(unsigned & idx, CharString const & key, BamHeaderRecord const & record)
+findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
 {
     typedef BamHeaderRecord::TTags const TTags;
-    typedef Iterator<TTags, Rooted>::Type TIterator;
+    typedef Iterator<TTags, Standard>::Type TIterator;
 
     idx = 0;
-    for (TIterator it = begin(record.tags, Rooted()); !atEnd(it); goNext(it), ++idx)
+    TIterator itEnd = end(record.tags, Standard());
+    for (TIterator it = begin(record.tags, Standard()); it != itEnd; goNext(it), ++idx)
         if (it->i1 == key)
             return true;
 
@@ -270,13 +272,56 @@ getTagValue(CharString & value, unsigned idx, BamHeaderRecord const & record)
     return true;
 }
 
+template <typename TKeyName>
 inline bool
-getTagValue(CharString & value, CharString const & key, BamHeaderRecord const & record)
+getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord const & record)
 {
     unsigned idx = 0;
     if (!findTagKey(idx, key, record))
         return false;
     return getTagValue(value, idx, record);
+}
+
+/**
+.Function.setTagValue
+..cat:BAM I/O
+..summary:Set tag value of a @Class.BamHeaderRecord@ or @Class.BamTagsDict@.
+..signature:setTagValue(idx, tagValue, record)
+..signature:setTagValue(key, tagValue, record)
+..param.idx:The index of the tag whose value should be set.
+...type:nolink:$unsigned$
+..param.key:The name of tag whose value should be set.
+...type:Shortcut.CharString
+..param.tagValue:The new tag value.
+...type:Shortcut.CharString
+..param.record:The record to query.
+...type:Class.BamHeaderRecord
+..include:seqan/bam_io.h
+..example.code:
+setTagValue("SN", "chr1", record);
+..see:Function.findTagKey
+*/
+
+inline void
+setTagValue(unsigned idx, CharString const & value, BamHeaderRecord & record)
+{
+    if (idx >= length(record.tags))
+        return;
+    record.tags[idx].i2 = value;
+}
+
+template <typename TKeyName>
+inline void
+setTagValue(TKeyName const & key, CharString const & value, BamHeaderRecord & record)
+{
+    unsigned idx = 0;
+    if (!findTagKey(idx, key, record))
+    {
+        idx = length(record.tags);
+        resize(record.tags, idx + 1);
+        record.tags[idx].i1 = key;
+    }
+    setTagValue(idx, value, record);
 }
 
 // ----------------------------------------------------------------------------
@@ -285,31 +330,79 @@ getTagValue(CharString & value, CharString const & key, BamHeaderRecord const & 
 
 // TODO(holtgrew): Document me! Test me!
 
+
+inline bool
+searchRecord(unsigned & recordIdx,
+             BamHeader const & header,
+             BamHeaderRecordType recordType,
+             unsigned startIdx)
+{
+    for (recordIdx = startIdx; recordIdx < length(header.records); ++recordIdx)
+    {
+        if (header.records[recordIdx].type == recordType)
+            return true;
+    }
+    return false;
+}
+
+inline bool
+searchRecord(unsigned & recordIdx,
+             BamHeader const & header,
+             BamHeaderRecordType recordType)
+{
+    return searchRecord(recordIdx, header, recordType, 0);
+}
+
 inline BamSortOrder
 getSortOrder(BamHeader const & header)
 {
-    for (unsigned i = 0; i < length(header.records); ++i)
+    CharString soString;    
+    for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_FIRST, recIdx); ++recIdx)
     {
-        if (header.records[i].type != BAM_HEADER_FIRST)
-            continue;  // not @HD header
-        unsigned idx = 0;
-        if (!findTagKey(idx, "SO", header.records[i]))
-            continue;  // SO tag not found.
-        CharString soString;
-        if (!getTagValue(soString, CharString("SO"), header.records[i]))
-            continue;
-
-        if (soString == "unsorted")
-            return BAM_SORT_UNSORTED;
-        else if (soString == "queryname")
-            return BAM_SORT_QUERYNAME;
-        else if (soString == "coordinate")
-            return BAM_SORT_COORDINATE;
-        else
-            return BAM_SORT_UNKNOWN;
+        if (getTagValue(soString, "SO", header.records[recIdx]))
+        {
+            if (soString == "unsorted")
+                return BAM_SORT_UNSORTED;
+            else if (soString == "")
+                return BAM_SORT_QUERYNAME;
+            else if (soString == "")
+                return BAM_SORT_COORDINATE;
+            else
+                return BAM_SORT_UNKNOWN;
+        }        
     }
-
     return BAM_SORT_UNKNOWN;
+}
+
+inline void
+setSortOrder(BamHeader & header, BamSortOrder sortOrder)
+{
+    for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_FIRST, recIdx); ++recIdx)
+    {
+        unsigned idx = 0;
+        if (findTagKey(idx, "SO", header.records[recIdx]))
+        {
+            CharString soString;
+            switch (sortOrder)
+            {
+                case BAM_SORT_UNSORTED:
+                    soString = "unsorted";
+                    break;
+
+                case BAM_SORT_QUERYNAME:
+                    soString = "queryname";
+                    break;
+
+                case BAM_SORT_COORDINATE:
+                    soString = "coordinate";
+                    break;
+                    
+                default:
+                    soString = "unknown";
+            }
+            setTagValue(idx, soString, header.records[recIdx]);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------

@@ -49,19 +49,20 @@ namespace seqan {
 
 /**
 .Tag.Sam
-..cat:Fragment Store
+..cat:BAM I/O
 ..signature:Sam
 ..summary:Tag for identifying the SAM format.
-..include:seqan/store.h
+..include:seqan/bam_io.h
+..see:Tag.Bam
 */
+
+struct Sam_;
+typedef Tag<Sam_> const Sam;
 
 enum SamTokenizeErrors_
 {
     SAM_INVALID_RECORD = 2048
 };
-
-// struct Sam_;
-// typedef Tag<Sam_> Sam;
 
 struct SamHeader_;
 typedef Tag<SamHeader_> SamHeader;

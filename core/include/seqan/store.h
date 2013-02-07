@@ -38,6 +38,8 @@
 #include <seqan/align.h>
 #include <seqan/file.h>
 #include <seqan/parallel.h>
+#include <seqan/bam_io.h>
+#include <seqan/misc/misc_name_store_cache.h>
 
 #include <sstream>
 #include <algorithm>

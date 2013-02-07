@@ -45,14 +45,15 @@
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
-#include <seqan/store.h>
 #include <seqan/align.h>
+#include <seqan/misc/misc_name_store_cache.h>
 
 // ===========================================================================
 // Data Structures & Conversion.
 // ===========================================================================
 
 #include <seqan/bam_io/bam_io_context.h>
+#include <seqan/bam_io/cigar.h>
 #include <seqan/bam_io/bam_alignment_record.h>
 #include <seqan/bam_io/bam_header_record.h>
 #include <seqan/bam_io/bam_sam_conversion.h>
