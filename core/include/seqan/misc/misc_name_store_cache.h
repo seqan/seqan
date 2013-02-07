@@ -233,9 +233,10 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
     // (weese:)
     // To avoid local variables to copy the name into we use a member in context.
     // However, changing the NameStoreCache per query is not thread-safe and the user might not notice it.
-    // To avoid pitfalls, we introduce a critical section.
-    SEQAN_OMP_PRAGMA(critical(nameStoreFind))
+    // To avoid pitfalls, we should introduce a critical section.
+    //SEQAN_OMP_PRAGMA(critical (nameStoreFind))
     {
+
         context.name = name;
         it = set.find(maxValue<TId>());
     }
