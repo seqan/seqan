@@ -182,4 +182,22 @@ inline bool close(Writer<TDb, TDbQuery, TSpec> & writer)
     return close(writer.stream);
 }
 
+template <typename TDb>
+inline bool close(Writer<TDb, TDb, Join> & writer)
+{
+    typedef typename Size<TDb>::Type            TDbSize;
+    typedef typename MakeSigned<TDbSize>::Type  TDbSSize;
+
+    TDbSSize dbSize = (TDbSSize)length(writer.db.text);
+
+    // Add reflexive closures to the join results.
+    for (TDbSSize dbId = 0; dbId < dbSize; ++dbId)
+        _writeRecord(writer.stream, writer.db.ids[dbId], writer.db.ids[dbId]);
+
+    SEQAN_OMP_PRAGMA(atomic)
+    writer.recordsCount += dbSize;
+
+    return close(writer.stream);
+}
+
 #endif  // #ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_WRITER_H_
