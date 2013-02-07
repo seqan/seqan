@@ -41,7 +41,7 @@
 
 namespace seqan {
 
-namespace exp {
+namespace ext {
 
 // ============================================================================
 // Forwards
