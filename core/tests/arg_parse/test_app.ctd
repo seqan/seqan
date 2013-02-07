@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool>
+	<name>test_app</name>
+	<version>0.1.0</version>
+	<description><![CDATA[This is a test-app..]]></description>
+	<manual><![CDATA[test_app.]]></manual>
+	<docurl>Direct links in docs</docurl>
+	<category>SeqAn/Testing</category>
+	<cli>
+		<clielement optionIdentifier="--double" isList="false">
+			<mapping referenceName="test_app.double" />
+		</clielement>
+		<clielement optionIdentifier="--integer" isList="false">
+			<mapping referenceName="test_app.integer" />
+		</clielement>
+		<clielement optionIdentifier="--string" isList="true">
+			<mapping referenceName="test_app.string" />
+		</clielement>
+		<clielement optionIdentifier="--in" isList="false">
+			<mapping referenceName="test_app.in" />
+		</clielement>
+		<clielement optionIdentifier="--out" isList="false">
+			<mapping referenceName="test_app.out" />
+		</clielement>
+	</cli>
+	<PARAMETERS  version="1.4" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_4.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<NODE name="test_app" description="This is a test-app.">
+			<ITEM name="double" value="" type="double" description="set a double option"  />
+			<ITEM name="integer" value="" type="int" description="set an integer option"  />
+			<ITEMLIST name="string" type="string" description="set a string option" >
+			</ITEMLIST>
+			<ITEM name="in" value="" type="string" description="set an input file" tags="input file"  />
+			<ITEM name="out" value="" type="string" description="set an output file" tags="output file"  />
+		</NODE>
+	</PARAMETERS>
+</tool>

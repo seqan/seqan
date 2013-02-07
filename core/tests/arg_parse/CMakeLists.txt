@@ -35,7 +35,8 @@ add_executable (test_arg_parse
                test_arg_parse.h
                test_arg_parse_argument.h
                test_arg_parse_option.h
-               test_argument_parser.h)
+               test_argument_parser.h
+               test_arg_parse_ctd_support.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_arg_parse ${SEQAN_LIBRARIES})

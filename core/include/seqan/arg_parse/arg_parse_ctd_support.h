@@ -112,29 +112,42 @@ _getOptionName(ArgParseOption const & opt)
 }
 
 // ----------------------------------------------------------------------------
-// Function _addMinMaxRestrictions()
+// Function _getRestrictions()
 // ----------------------------------------------------------------------------
-
 inline void
-_addMinMaxRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const & opt)
+_getRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const & opt)
 {
+    // we only extract non-file restrictions
+    if (isOutputFileArgument(opt) || isInputFileArgument(opt))
+        return;
 
-    std::string minMaxRestriction = "";
-    if (opt.minValue != "")
+    if (length(opt.validValues) != 0)
     {
-        append(minMaxRestriction, opt.minValue);
-        append(minMaxRestriction, ":");
+        for (std::vector<std::string>::const_iterator valid = opt.validValues.begin();
+             valid != opt.validValues.end();
+             ++valid)
+        {
+            appendValue(restrictions, *valid);
+        }
     }
-    if (opt.maxValue != "")
+    else
     {
-        if (minMaxRestriction == "")
+        std::string minMaxRestriction = "";
+        if (opt.minValue != "")
+        {
+            append(minMaxRestriction, opt.minValue);
             append(minMaxRestriction, ":");
-        append(minMaxRestriction, opt.maxValue);
+        }
+        if (opt.maxValue != "")
+        {
+            if (minMaxRestriction == "")
+                append(minMaxRestriction, ":");
+            append(minMaxRestriction, opt.maxValue);
+        }
+
+        if (minMaxRestriction != "")
+            appendValue(restrictions, minMaxRestriction);
     }
-
-    if (minMaxRestriction != "")
-        appendValue(restrictions, minMaxRestriction);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -142,25 +155,21 @@ _addMinMaxRestrictions(std::vector<std::string> & restrictions, ArgParseArgument
 // ----------------------------------------------------------------------------
 
 inline void
-_addValidValuesRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const & opt)
+_getSupportedFormats(std::vector<std::string> & supported_formats, ArgParseArgument const & opt)
 {
+    // we check only file arguments
+    if (!(isOutputFileArgument(opt) || isInputFileArgument(opt)))
+        return;
+
     if (length(opt.validValues) != 0)
     {
         for (std::vector<std::string>::const_iterator valid = opt.validValues.begin();
              valid != opt.validValues.end();
              ++valid)
         {
-            // for files we set *.(Name of the format)
-            if (isOutputFileArgument(opt) || isInputFileArgument(opt))
-            {
-                std::string filetype = "*.";
-                append(filetype, *valid);
-                appendValue(restrictions, filetype);
-            }
-            else
-            {
-                appendValue(restrictions, *valid);
-            }
+            std::string filetype = "*.";
+            append(filetype, *valid);
+            appendValue(supported_formats, filetype);
         }
     }
 }
@@ -190,13 +199,13 @@ std::string _indent(const int currentIndent)
     return indent;
 }
 
-void _writeCLIElement(std::ofstream & ctdfile, int currentIndent, std::string const & optionIdentifier, std::string const & ref_name, bool isList)
+void _writeCLIElement(std::ostream & ctdfile, int currentIndent, std::string const & optionIdentifier, std::string const & ref_name, bool isList)
 {
     ctdfile << _indent(currentIndent)
             << "<clielement optionIdentifier=\"" << optionIdentifier
             << "\" isList=\"" << (isList ? "true" : "false") << "\">\n";
 
-    ctdfile << _indent(currentIndent + 1) << "<mapping ref_name=\"" << ref_name << "\" />\n";
+    ctdfile << _indent(currentIndent + 1) << "<mapping referenceName=\"" << ref_name << "\" />\n";
 
     ctdfile << _indent(currentIndent) << "</clielement>\n";
 }
@@ -209,35 +218,24 @@ void _writeCLIElement(std::ofstream & ctdfile, int currentIndent, std::string co
 .Function.writeCTD
 ..summary:Exports the app's interface description to a .ctd file.
 ..cat:Miscellaneous
-..signature:writeCTD(parser)
+..signature:writeCTD(parser [, ctdfile])
 ..param.parser:The @Class.ArgumentParser@ object.
 ...type:Class.ArgumentParser
+..param.ctdfile:The stream where the ctd file will be written to. If non is given the function writes it to the file given in the write-ctd parameter.
+..param.parser:The @Class.ArgumentParser@ object.
 ..returns:$true$ if the ctd file could be created correctly, $false$ otherwise.
 ..include:seqan/arg_parse.h
 */
 
 inline bool
-writeCTD(ArgumentParser const & me)
+writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 {
     typedef ArgumentParser::TOptionMap::const_iterator   TOptionMapIterator;
     typedef ArgumentParser::TArgumentMap::const_iterator TArgumentMapIterator;
     typedef ArgumentParser::TArgumentMapSize TArgumentMapSize;
 
-    // create file [appname].ctd in working directory
-    std::string ctdfilename;
-    getOptionValue(ctdfilename, me, "write-ctd");
-
-    std::ofstream ctdfile;
-    ctdfile.open(toCString(ctdfilename));
-
-    if (!ctdfile.is_open())
-    {
-        std::cerr << getAppName(me) << ": Unable to create ctd file: " << ctdfilename << std::endl;
-        return false;
-    }
-
     ctdfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    ctdfile << "<tool status=\"external\">\n";
+    ctdfile << "<tool>\n";
 
     int currentIndent = 1;
 
@@ -284,8 +282,8 @@ writeCTD(ArgumentParser const & me)
     }
 
     ctdfile << _indent(--currentIndent) << "</cli>\n";
-    ctdfile << _indent(currentIndent++) << "<PARAMETERS version=\"1.3\" xsi:noNamespaceSchemaLocation=\"http://open-ms.sourceforge.net/schemas/Param_1_3.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
-    ctdfile << _indent(currentIndent++) << "<NODE name=\"" << toolname << "\" description=\"???\">\n";
+    ctdfile << _indent(currentIndent++) << "<PARAMETERS  version=\"1.4\" xsi:noNamespaceSchemaLocation=\"http://open-ms.sourceforge.net/schemas/Param_1_4.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
+    ctdfile << _indent(currentIndent++) << "<NODE name=\"" << toolname << "\" description=\"" << xmlEscape(getShortDescription(me)) << "\">\n";
 
     for (TOptionMapIterator optionMapIterator = me.optionMap.begin();
          optionMapIterator != me.optionMap.end();
@@ -326,19 +324,27 @@ writeCTD(ArgumentParser const & me)
 
         // set up restrictions
         std::vector<std::string> restrictions;
-        _addValidValuesRestrictions(restrictions, opt);
-        _addMinMaxRestrictions(restrictions, opt);
+        _getRestrictions(restrictions, opt);
 
+        // set up supported formats
+        std::vector<std::string> supported_formats;
+        _getSupportedFormats(supported_formats, opt);
 
         if (isListArgument(opt))
         {
             ctdfile << _indent(currentIndent)
                     << "<ITEMLIST " << "name=\"" << xmlEscape(optionName) << "\" "
                     << "type=\"" << type << "\" "
-                    << "description=\"" << xmlEscape(_toHTML(opt._helpText)) << "\" "
-                    << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" "
-                    << "restrictions=\"" << xmlEscape(_join(restrictions, ",")) << "\""
-                    << ">\n";
+                    << "description=\"" << xmlEscape(_toHTML(opt._helpText)) << "\" ";
+
+            if (!empty(tags))
+                ctdfile << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" ";
+            if (!empty(restrictions))
+                ctdfile << "restrictions=\"" << xmlEscape(_join(restrictions, ",")) << "\" ";
+            if (!empty(supported_formats))
+                ctdfile << "supported_formats=\"" << xmlEscape(_join(supported_formats, ",")) << "\" ";
+
+            ctdfile << ">\n";
 
             for (size_t i = 0; i < opt.defaultValue.size(); ++i)
             {
@@ -352,10 +358,16 @@ writeCTD(ArgumentParser const & me)
                     << "<ITEM " << "name=\"" << xmlEscape(optionName) << "\" "
                     << "value=\"" << xmlEscape(_join(opt.defaultValue, ",")) << "\" "
                     << "type=\"" << type << "\" "
-                    << "description=\"" << xmlEscape(_toHTML(opt._helpText)) << "\" "
-                    << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" "
-                    << "restrictions=\"" << xmlEscape(_join(restrictions, ",")) << "\""
-                    << "/>\n";
+                    << "description=\"" << xmlEscape(_toHTML(opt._helpText)) << "\" ";
+
+            if (!empty(tags))
+                ctdfile << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" ";
+            if (!empty(restrictions))
+                ctdfile << "restrictions=\"" << xmlEscape(_join(restrictions, ",")) << "\" ";
+            if (!empty(supported_formats))
+                ctdfile << "supported_formats=\"" << xmlEscape(_join(supported_formats, ",")) << "\" ";
+
+            ctdfile << " />\n";
         }
     }
 
@@ -391,23 +403,51 @@ writeCTD(ArgumentParser const & me)
 
         // set up restrictions
         std::vector<std::string> restrictions;
-        _addValidValuesRestrictions(restrictions, arg);
-        _addMinMaxRestrictions(restrictions, arg);
+        _getRestrictions(restrictions, arg);
 
+        // set up supported formats
+        std::vector<std::string> supported_formats;
+        _getSupportedFormats(supported_formats, arg);
 
         ctdfile << _indent(currentIndent)
                 << "<ITEM" << (isListArgument(arg) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\" "
                 << (isListArgument(arg) ? " " : "value=\"\" ")
                 << "type=\"" << type << "\" "
-                << "description=\"" << xmlEscape(_toHTML(arg._helpText)) << "\" " // it will be "" in most cases but we try
-                << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" "
-                << "restrictions=\"" << xmlEscape(_join(restrictions, ",")) << "\""
-                << "/>\n";
+                << "description=\"" << xmlEscape(_toHTML(arg._helpText)) << "\" "; // it will be "" in most cases but we try
+        if (!empty(tags))
+            ctdfile << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" ";
+        if (!empty(restrictions))
+            ctdfile << "restrictions=\"" << xmlEscape(_join(restrictions, ",")) << "\" ";
+        if (!empty(supported_formats))
+            ctdfile << "supported_formats=\"" << xmlEscape(_join(supported_formats, ",")) << "\" ";
+
+        ctdfile << " />\n";
     }
 
     ctdfile << _indent(--currentIndent) << "</NODE>\n";
     ctdfile << _indent(--currentIndent) << "</PARAMETERS>\n";
     ctdfile << "</tool>" << std::endl;
+
+    return true;
+}
+
+inline bool
+writeCTD(ArgumentParser const & me)
+{
+    // create file [appname].ctd in working directory
+    std::string ctdfilename;
+    getOptionValue(ctdfilename, me, "write-ctd");
+
+    std::ofstream ctdfile;
+    ctdfile.open(toCString(ctdfilename));
+
+    if (!ctdfile.is_open())
+    {
+        std::cerr << getAppName(me) << ": Unable to create ctd file: " << ctdfilename << std::endl;
+        return false;
+    }
+
+    writeCTD(me, ctdfile);
 
     ctdfile.close();
     return true;

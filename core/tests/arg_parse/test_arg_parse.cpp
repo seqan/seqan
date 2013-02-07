@@ -42,6 +42,7 @@
 #include "test_arg_parse_argument.h"
 #include "test_arg_parse_option.h"
 #include "test_argument_parser.h"
+#include "test_arg_parse_ctd_support.h"
 
 using namespace seqan;
 
@@ -132,5 +133,8 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     // conversion tests
     SEQAN_CALL_TEST(test_isDouble);
     SEQAN_CALL_TEST(test_isInt);
+
+    // ctd tests
+    SEQAN_CALL_TEST(test_arg_parse_ctd_support);
 }
 SEQAN_END_TESTSUITE
