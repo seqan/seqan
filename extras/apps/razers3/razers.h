@@ -274,6 +274,9 @@ struct RazerSOptions
     static String<unsigned char>                errorCutOff;        // ignore matches with >=errorCutOff errors
     static TPreprocessing                       forwardPatterns;
 
+    CharString commandLine;
+    std::string version;
+
     StringSet<CharString, Owner<ConcatDirect<> > > outputFormatList;
 
     RazerSOptions()

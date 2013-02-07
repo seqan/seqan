@@ -299,7 +299,7 @@ inline void whichMacros()
     std::cerr << std::endl;
 }
 
-void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & options, ParamChooserOptions const & pm_options)
+void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, ParamChooserOptions const & pm_options)
 {
     string rev  = "$Revision$";
     string date = "$Date$";
@@ -307,7 +307,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setAppName(parser, "razers3");
     setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "3.2 [" + rev.substr(11, rev.size() - 13) + "]");
+    options.version = "3.2 [" + rev.substr(11, rev.size() - 13) + "]";
+    setVersion(parser, options.version);
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     // Need genome and reads (hg18.fa reads.fq)
@@ -803,6 +804,14 @@ int main(int argc, const char * argv[])
         }
     }
 #endif
+
+    if (argc > 1)
+        options.commandLine = argv[1];
+    for (int i = 2; i < argc; ++i)
+    {
+        appendValue(options.commandLine, ' ');
+        append(options.commandLine, argv[i]);
+    }
 
     int result = mapReads(genomeFileNames, readFileNames, options);
     if (result != 0)

@@ -28,6 +28,7 @@
 
 #include "razers.h"
 #include <seqan/align.h>
+#include <seqan/bam_io.h>
 
 #include "parallel_store.h"
 
@@ -1328,13 +1329,37 @@ int dumpMatches(
 ////			printAlignment(std::cout, layout, store, 1, 0, 2000, 0, 100);
 //
 //			write(file, store, Sam());
+        {
+            typedef FragmentStore<TFSSpec, TFSConfig>           TFragmentStore;
+            typedef typename TFragmentStore::TContigNameStore   TContigNameStore;
+            typedef BamIOContext<TContigNameStore>              TBamIOContext;
 
-        _writeHeader(file, store, Sam());
-        if (options.dontShrinkAlignments)
-            _writeAlignments(file, store, Sam(), FunctorGlobalEditDistAlign());
-        else
-            _writeAlignments(file, store, Sam(), FunctorSemiGlobalGotohAlign(scoreType));
+            TBamIOContext context(store.contigNameStore, store.contigNameStoreCache);
 
+            // 1. write header
+            BamHeader header;
+
+            // fill header with information from fragment store.
+            _fillHeader(header, store);
+            setSortOrder(header, BAM_SORT_COORDINATE);
+
+            for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_PROGRAM, recIdx); ++recIdx)
+            {
+                setTagValue("ID", "razers3", header.records[recIdx]);
+                setTagValue("VN", options.version, header.records[recIdx]);
+                setTagValue("PN", "razers3", header.records[recIdx]);
+                setTagValue("CL", options.commandLine, header.records[recIdx]);
+            }
+
+            // write header to target.
+            write2(file, header, context, Sam());
+
+            // 2. write aligments
+            if (options.dontShrinkAlignments)
+                _writeAlignments(file, store, Sam(), FunctorGlobalEditDistAlign());
+            else
+                _writeAlignments(file, store, Sam(), FunctorSemiGlobalGotohAlign(scoreType));
+        }
         break;
 
     case 5:     // AFG
