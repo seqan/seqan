@@ -183,9 +183,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse output format.
     getOutputFormat(options, parser);
 
-    // Parse output format.
-    getOutputFormat(options, parser);
-
     // Parse output file.
     getOutputFile(options.mappedReadsFile, options, parser, options.readsFile, "");
 
