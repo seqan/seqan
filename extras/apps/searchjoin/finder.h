@@ -814,3 +814,4 @@ void execute(DbFinder<TText, TIndex, Query, TDelegate, Online> & dbFinder)
 }
 
 #endif  // #ifndef SANDBOX_ESIRAGUSA_APPS_SEARCHJOIN_DBFINDER_H_
+
