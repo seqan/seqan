@@ -1622,12 +1622,8 @@ _reserveStorage(
         arrayConstructCopy(old_array, old_array + seq_length, begin(seq, Standard()));
         arrayDestruct(old_array, old_array + seq_length);
         _deallocateStorage(seq, old_array, old_capacity);
-        _setLength(seq, seq_length);
     }
-    else
-    {
-        _setLength(seq, seq_length);
-    }
+    _setLength(seq, seq_length);
 }
 
 template <typename TValue, typename TSpec, typename TSize_, typename TExpand>
