@@ -72,9 +72,9 @@ An @Class.Align@ object that stores the alignment.
 The number of rows must be 2 and the sequences must have already been set.
 $row(align, 0)$ is the horizontal one in the alignment matrix alignment, $row(align, 1)$ is the vertical one.
 ...type:Class.Align
-..param.gapsH:Horizontal gapped sequenc in alignment matrix.
+..param.gapsH:Horizontal gapped sequence in alignment matrix.
 ...type:Class.Gaps
-..param.gapsV:Vertical gapped sequenc in alignment matrix.
+..param.gapsV:Vertical gapped sequence in alignment matrix.
 ...type:Class.Gaps
 ..param.frags:String of @Class.Fragment@ objects.  The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the vertical one.
 ..param.alignmentGraph:
