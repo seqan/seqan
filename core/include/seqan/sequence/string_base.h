@@ -1624,8 +1624,8 @@ _reserveStorage(
         _deallocateStorage(seq, old_array, old_capacity);
         _setLength(seq, seq_length);
     }
-    else if (!old_capacity)
-    {//new buffer created and the string had no buffer yet
+    else
+    {
         _setLength(seq, seq_length);
     }
 }
