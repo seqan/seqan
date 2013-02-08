@@ -1,6 +1,6 @@
 @HD	VN:1.4	SO:unsorted
-@SQ	SN:random_sequence	LN:1000000
 @PG	ID:SeqAn
+@SQ	SN:random_sequence	LN:1000000
 read.000000085	0	random_sequence	13243	255	36M	*	0	0	GTCAGTTCAGCTTAAGCGCATTCATGCTCCCCTACC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:26A9	XE:i:1	XS:i:0	XI:i:0
 read.000000082	16	random_sequence	18313	255	36M	*	0	0	CAACGAATGCAGAGCAAGTGAATTGATGTCTAGATA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36	XE:i:0	XS:i:0	XI:i:0
 read.000000048	16	random_sequence	26312	255	36M	*	0	0	TCCGCGATCAGTGCAAACCACACCCCAGGTAACATC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:36	XE:i:0	XS:i:0	XI:i:0

@@ -1,6 +1,6 @@
 @HD	VN:1.4	SO:unsorted
-@SQ	SN:random_sequence	LN:1000000
 @PG	ID:SeqAn
+@SQ	SN:random_sequence	LN:1000000
 read.000000035	0	random_sequence	10092	255	24M1D22M1D3M4D35M1D50M1D44M	*	0	0	GGTCCAAGTATTCCTGTCAGAGCGTAGGGTCTTGGCCCGTATCTCTGGTGTTGCCCTCCTCATATTGGCGTTTTAACTGCCGGGTAAGAGGTGGGTTACACTTACCGTTAAGAGCATCGTTCGTCCTGGTTTGTCCCAACAATCCAAGCAGATTTAATATGATGTCGTCGTCCAGCCT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:24T22G3CTAC35T50C44	XE:i:4	XS:i:0	XI:i:0
 read.000000054	16	random_sequence	54838	255	122M1I79M	*	0	0	CCTATTTCTATTGGTCTTTAGGCCCGTGTGTCGTGTTAAACGTCCAAGTGATCATCGGACAGCCGATGGCCGGGGATTTGCGCGTACCGTAGATTAAAGACGGAAGACCGATCGCTGAGCGGAAGTCAAGCGCGGACCTGTGATCTATCCTAGTATCCACCGAGGCGCTCCAATCCAAGCCCCCTCGCATCCATCTATTGTA	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:201	XE:i:1	XS:i:0	XI:i:0
 read.000000068	16	random_sequence	62693	255	182M1D9M	*	0	0	TCATCCCCCCAGTTCTCGCGATTTCTTCCTCACGGGAAATGATTCGTACCAGAACTTATGATCGTTCCATTTGTGAAACAACATAGATAATGCCATGCCTCAGCTGACCTATGGCAGGCGAAGTTCGATGGACATGTAAGCGCGGTCACCGTTCTAACAAGTCTAACTACGTTGCAGGCTTGGTCCTTGAT	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:0	MD:Z:182A9	XE:i:1	XS:i:0	XI:i:0
