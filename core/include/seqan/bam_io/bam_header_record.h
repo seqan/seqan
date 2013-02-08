@@ -263,18 +263,23 @@ bool keyFound = getTagValue(tagValue, "SN", record);
 ..see:Function.findTagKey
 */
 
-inline bool
-getTagValue(CharString & value, unsigned idx, BamHeaderRecord const & record)
+template <typename TId>
+SEQAN_FUNC_ENABLE_IF(
+    IsInteger<TId>,
+    bool)
+inline getTagValue(CharString & value, TId idx, BamHeaderRecord const & record)
 {
-    if (idx >= length(record.tags))
+    if ((unsigned)idx >= length(record.tags))
         return false;
     value = record.tags[idx].i2;
     return true;
 }
 
 template <typename TKeyName>
-inline bool
-getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord const & record)
+SEQAN_FUNC_ENABLE_IF(
+    IsSequence<TKeyName>,
+    bool)
+inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord const & record)
 {
     unsigned idx = 0;
     if (!findTagKey(idx, key, record))
@@ -302,8 +307,11 @@ setTagValue("SN", "chr1", record);
 ..see:Function.findTagKey
 */
 
-inline void
-setTagValue(unsigned idx, CharString const & value, BamHeaderRecord & record)
+template <typename TId>
+SEQAN_FUNC_ENABLE_IF(
+    IsInteger<TId>,
+    void)
+inline setTagValue(TId idx, CharString const & value, BamHeaderRecord & record)
 {
     if (idx >= length(record.tags))
         return;
@@ -311,8 +319,10 @@ setTagValue(unsigned idx, CharString const & value, BamHeaderRecord & record)
 }
 
 template <typename TKeyName>
-inline void
-setTagValue(TKeyName const & key, CharString const & value, BamHeaderRecord & record)
+SEQAN_FUNC_ENABLE_IF(
+    IsSequence<TKeyName>,
+    void)
+inline setTagValue(TKeyName const & key, CharString const & value, BamHeaderRecord & record)
 {
     unsigned idx = 0;
     if (!findTagKey(idx, key, record))
