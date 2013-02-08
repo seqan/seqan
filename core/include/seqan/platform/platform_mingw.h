@@ -65,3 +65,9 @@ typedef unsigned __int8 __uint8;
 #  define SEQAN_CXX11_STANDARD
 #endif
 
+#ifdef __CUDACC__
+#define SEQAN_FUNC inline __device__ __host__
+#else
+#define SEQAN_FUNC inline
+#endif
+

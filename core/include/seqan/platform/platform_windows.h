@@ -133,3 +133,10 @@ inline T round(T const & x)
 #ifndef ftello
 #define ftello(fp) ftell(fp)
 #endif  // #ifndef ftello
+
+#ifdef __CUDACC__
+#define SEQAN_FUNC inline __device__ __host__
+#else
+#define SEQAN_FUNC inline
+#endif
+
