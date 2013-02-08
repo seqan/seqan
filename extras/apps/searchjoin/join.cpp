@@ -34,7 +34,14 @@
 // This file contains the join application.
 // ==========================================================================
 
-#define _GLIBCXX_PARALLEL
+#ifdef _OPENMP
+    #define _GLIBCXX_PARALLEL
+    #include <omp.h>
+#else
+    #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
+        #pragma message("OpenMP not found! Shared-memory parallelization will be disabled in join tool.")
+    #endif  // #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
+#endif
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -44,10 +51,6 @@
 #include "db.h"
 #include "finder.h"
 #include "writer.h"
-
-#ifndef _OPENMP
-#pragma message("OpenMP not found! Shared-memory parallelization will be disabled.")
-#endif
 
 using namespace seqan;
 
