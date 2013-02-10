@@ -661,7 +661,7 @@ public:
         it = framePtr->begin;
         itEnd = framePtr->end;
 
-        if (TMode::Writable::VALUE && (itEnd - it < pageSize))
+        if (TMode::Writable::VALUE && (unsigned)(itEnd - it) < pageSize)
             itEnd = it + pageSize;
 
         return result;
