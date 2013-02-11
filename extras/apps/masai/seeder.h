@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// This file contains the Extender class.
+// This file contains the Seeder class.
 // ==========================================================================
 
 #ifndef SEQAN_EXTRAS_MASAI_SEEDER_H_
