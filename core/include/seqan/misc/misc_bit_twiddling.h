@@ -195,12 +195,13 @@ clearBits(TWord & word)
 ..see:Function.clearAllBits
  */
 
-template <typename TWord>
+template <typename TWord, typename TIndex>
 inline
 bool
-isBitSet(TWord const & word, unsigned index)
+isBitSet(TWord const & word, TIndex index)
 {
-    return (word & (1u << index)) != static_cast<TWord>(0);
+    typedef typename MakeUnsigned<TWord>::Type TUnsignedWord;
+    return (word & (TUnsignedWord(1) << index)) != static_cast<TWord>(0);
 }
 
 // ----------------------------------------------------------------------------
