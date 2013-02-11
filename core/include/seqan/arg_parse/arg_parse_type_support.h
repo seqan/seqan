@@ -71,7 +71,9 @@ inline bool _tryCast(TTarget & dest, TString const source)
 template <typename TTarget, typename TString>
 inline TTarget _cast(TString const s)
 {
-    TTarget dst;
+    // We are sing additional braces here for "most vexing parse" resolution
+    // when enforcing default initialization also for built-in types.
+    TTarget dst((TTarget()));
     std::istringstream stream(toCString(s));
     bool result = (!(stream >> dst).fail()) && (stream.rdbuf()->in_avail() == 0);
     SEQAN_CHECK(result, "could not cast %s", toCString(s));
