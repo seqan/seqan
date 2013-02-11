@@ -504,6 +504,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathSam), toCString(goldPathSam)));
     seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
     append(goldPathFasta, "/core/tests/store/amos_to_sam_result.fasta");
+
+
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
 }
 
