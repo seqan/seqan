@@ -385,7 +385,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappin
     void *addr;
     if (size == 0)
         return NULL;
-    mode = (FileMappingMode)(mode & (mapping.openMode & OPEN_RDWR));
+    mode = (FileMappingMode)(mode & (mapping.openMode & OPEN_MASK));
 
 #ifdef PLATFORM_WINDOWS
 
@@ -402,8 +402,8 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappin
 #else
     int prot = 0;
 
-    if (mode & OPEN_RDONLY) prot |= PROT_READ;
-    if (mode & OPEN_WRONLY) prot |= PROT_WRITE;
+    if (mode & MAP_RDONLY) prot |= PROT_READ;
+    if (mode & MAP_WRONLY) prot |= PROT_WRITE;
 
     int flags = 0;
     if ((mode & MAP_COPYONWRITE) != 0)

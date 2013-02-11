@@ -616,7 +616,7 @@ inline void posLocalize(Pair<T1, T2, TPack> & result, TPosition const & pos, Not
 // global_position and limits_string -> local_position
 template <typename TResult, typename TSize, typename TSpec, typename TPosition>
 inline void posLocalize(TResult & result, TPosition const & pos, String<TSize, TSpec> const & limits) {
-    typedef typename Iterator<String<TSize> const, Standard>::Type TIter;
+    typedef typename Iterator<String<TSize, TSpec> const, Standard>::Type TIter;
     TIter _begin = begin(limits, Standard());
     TIter _upper = ::std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
     result.i1 = difference(_begin, _upper);
