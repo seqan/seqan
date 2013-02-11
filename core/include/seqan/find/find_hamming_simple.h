@@ -80,7 +80,7 @@ public:
     Pattern() : maxDistance(-1), distance(0), matchNFlags(0) {}
 
     template <typename TNeedle2>
-    Pattern(const TNeedle2 &ndl, int k = -1) : matchNFlags(0) {
+    Pattern(const TNeedle2 &ndl, int k = -1) : maxDistance(-1), distance(0), matchNFlags(0) {
         SEQAN_CHECKPOINT;
         setHost(*this, ndl, k);
     }
