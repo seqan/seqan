@@ -109,19 +109,25 @@
 // The DP Scout
 #include <seqan/align/dp_scout.h>
 
-// The DP Value
+// Stores the score value of a particular cell in the dp matrix.
+// If affine gap costs are selected one cell stores the three values
+// for all three dp matrices.
 #include <seqan/align/dp_cell.h>
 #include <seqan/align/dp_cell_linear.h>
 #include <seqan/align/dp_cell_affine.h>
 
-// The Trace Segment
+// Stores the actual trace segment that was detected during traceback.
+// The trace segments can be adapted into any alignment representation
+// form.
 #include <seqan/align/dp_trace_segment.h>
+#include <seqan/align/dp_traceback_adaptor.h>
 
+// Ensures the backwards compatibility for the global interfaces of the
+// alignment algorithms. Based on the called function this selects the
+// correct parameters for the new alignment module.
 #include <seqan/align/dp_setup.h>
 
-// the DP algorithms.
-
-// The DP recursion formula
+// Implements the different recursion formula of the alignment algorithms.
 #include <seqan/align/dp_formula.h>
 #include <seqan/align/dp_formula_linear.h>
 #include <seqan/align/dp_formula_affine.h>
@@ -130,34 +136,26 @@
 // certain cell for different profiles.
 #include <seqan/align/dp_meta_info.h>
 
-// The DP Matrix
+// Actual matrix to store the values. Uses the matrix_base.h definitions
+// as a host.
 #include <seqan/align/dp_matrix.h>
 #include <seqan/align/dp_matrix_sparse.h>
 
+// The navigator that based on the selected profile and band chooses the
+// correct way to navigate through the matrix.
 #include <seqan/align/dp_matrix_navigator.h>
 #include <seqan/align/dp_matrix_navigator_score_matrix.h>
 #include <seqan/align/dp_matrix_navigator_score_matrix_sparse.h>
 #include <seqan/align/dp_matrix_navigator_trace_matrix.h>
 
-// Everything that is needed to set up the alignment
-#include <seqan/align/dp_setup.h>
-
-#include <seqan/align/dp_traceback_adaptor.h>
+// The actual implementations of the traceback and the dynamic programming that
+// is used by all different alignment algorithms.
 #include <seqan/align/dp_traceback_impl.h>
 #include <seqan/align/dp_algorithm_impl.h>
 
 //################################################################################
 // Old module
 //################################################################################
-
-
-// The global alignment algorithm are implemented in a straightforward fashion:
-// We simply have unbanded and banded variants of both the Needleman-Wunsch and
-// Gotoh's algorithm.
-//#include <seqan/align/global_alignment_needleman_wunsch_impl.h>
-//#include <seqan/align/global_alignment_banded_needleman_wunsch_impl.h>
-//#include <seqan/align/global_alignment_gotoh_impl.h>
-//#include <seqan/align/global_alignment_banded_gotoh_impl.h>
 
 // Also, we have an implementation of Hirschberg's algorithm to compute
 // alignments.
@@ -172,6 +170,7 @@
 // Implementations of the local alignment algorithms with declumping.  We also
 // use them for the localAlignment() calls and return the best local alignment
 // only.
+// TODO(rmaerker): Replace this with a new implementation based on the new alignment module.
 #include <seqan/align/local_alignment_waterman_eggert_impl.h>
 #include <seqan/align/local_alignment_banded_waterman_eggert_impl.h>
 
