@@ -184,9 +184,6 @@
 // Alignment Algorithm Interfaces
 // ============================================================================
 
-// Documentation for alignment algorithms.
-#include <seqan/align/alignment_algorithm_interface.h>
-
 // The front-end functions for global alignments.
 #include <seqan/align/global_alignment_unbanded.h>
 #include <seqan/align/global_alignment_banded.h>

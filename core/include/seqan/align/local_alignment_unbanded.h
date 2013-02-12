@@ -56,6 +56,86 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function localAlignment()
+// ----------------------------------------------------------------------------
+
+/**
+.Function.localAlignment
+..summary:Computes the best pairwise local alignment using the Smith-Waterman algorithm.
+..cat:Alignments
+..signature:localAlignment(align,          scoringScheme, [lowerDiag, upperDiag])
+..signature:localAlignment(gapsH, gapsV,   scoringScheme, [lowerDiag, upperDiag])
+..signature:localAlignment(fragmentString, scoringScheme, [lowerDiag, upperDiag])
+..param.align:
+An @Class.Align@ object that stores the alignment.
+The number of rows must be 2 and the sequences must have already been set.
+$align[0]$ is the horizontal one in the alignment matrix alignment, $align[1]$ is the vertical one.
+...type:Class.Align
+..param.gapsH:Horizontal gapped sequence in alignment matrix.
+...type:Class.Gaps
+..param.gapsV:Vertical gapped sequence in alignment matrix.
+...type:Class.Gaps
+..param.fragmentString
+String of @Class.Fragment@ objects.
+The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the vertical one.
+..param.scoringScheme:
+The scoring scheme to use for the alignment.
+Note that the user is responsible for ensuring that the scoring scheme is compatible with $algorithmTag$.
+...type:Class.Score
+..param.lowerDiag:Optional lower diagonal.
+...type:nolink:$int$
+..param.upperDiag:Optional upper diagonal.
+...type:nolink:$int$
+..returns:An integer with the alignment score, as given by the @Metafunction.Value@ metafunction of the @Class.Score@ type.
+..remarks:The Waterman-Eggert algorithm (local alignment with declumping) is available through the @Class.LocalAlignmentEnumerator@ class.
+..remarks:
+When using @Class.Gaps@ and @Class.Align@ objects, only parts (i.e. one infix) of each sequence will be aligned.
+This will be presented to the user by setting the clipping begin and end position of the gaps (the rows in the case of @Class.Align@ objects).
+When using @Class.Fragment@ strings, these parts of the sequences will not appear in any fragment.
+..remarks:
+There exist multiple overloads for this function with two configuration dimensions.
+..remarks:
+First, you can select the type of the target storing the alignment.
+This can be either an @Class.Align@ object, two @Class.Gaps@ objects, or a string of @Class.Fragment@ objects.
+@Class.Align@ objects provide an interface to tabular alignments with the restriction of all rows having the same type.
+Using two @Class.Gaps@ objects has the advantage that you an align sequences with different types, for example @Shortcut.DnaString@ and @Shortcut.Dna5String@.
+Using @Class.Fragment@ strings is useful for collecting many pairwise alignments, for example in the construction of @Spec.Alignment Graph|Alignment Graphs@ for multiple-sequence alignments (MSA).
+..remarks:
+Second, you can optionally give a band for the alignment using $lowerDiag$ and $upperDiag$.
+The center diagonal has index $0$, the $i$th diagonal below has index $-i$, the $i$th above has index $i$.
+..remarks:
+The examples below show some common use cases.
+..example.text:Local alignment of two sequences using an @Class.Align@ object.
+..example.code:
+Dna5String seqH = "CGATT";
+Dna5String seqV = "CGAAATT";
+
+Align<Dna5String> align;
+resize(rows(align), 2);
+assignSource(row(align, 0), seqH);
+assignSource(row(align, 0), seqV);
+Score<int, Simple> scoringScheme(2, -1, -2);
+
+int result = localAlignment(align, scoringScheme);
+..example.text:Local banded alignment of two sequences using two @Class.Gaps@ objects.
+..example.code:
+Dna5String seqH = "CGATT";
+Gaps<Dna5String, ArrayGaps> gapsH(seqH);
+DnaString seqV = "CGAAATT";
+Gaps<Dna5String, AnchorGaps<> > gapsV(seqV);
+
+Score<int, Simple> scoringScheme(5, -3, -1, -5);
+
+int result = localAlignment(gapsH, gapsV, scoringScheme, -2, 2);
+..see:Function.globalAlignment
+..see:Class.LocalAlignmentEnumerator
+..include:seqan/align.h
+..wiki:Tutorial/Alignments
+..cite:Smith TF, Waterman, MS: Identification of Common Molecular Subsequences. J Mol Biol 1981, 147(1):195-7.
+.
+*/
+
+// ----------------------------------------------------------------------------
 // Function localAlignment()                                  [unbanded, Align]
 // ----------------------------------------------------------------------------
 
