@@ -792,7 +792,7 @@ _bandedChainAlignment(
 
 
 /**
-.Function.bandedChainAlignment:
+.Internal.Function.bandedChainAlignment:
 ..summary:Calculates a banded alignment around a chain of seeds. 
 ..cat:Seed Handling
 ..signature:bandedChainAlignment(seedChain, k, alignment, scoreMatrix);

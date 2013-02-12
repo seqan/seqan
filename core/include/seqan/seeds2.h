@@ -84,6 +84,13 @@
 #include <seqan/seeds2/align_dynprog_banded_affine.h>
 
 // Banded chain alignment.
+#include <seqan/seeds2/banded_chain_alignment_profile.h>
+#include <seqan/seeds2/banded_chain_alignment_scout.h>
+#include <seqan/seeds2/banded_chain_alignment_traceback.h>
+#include <seqan/seeds2/banded_chain_alignment_impl.h>
+#include <seqan/seeds2/banded_chain_alignment.h>
+
+// TODO(rmaerker): Remove old algorithm.
 #include <seqan/seeds2/align_chain_banded.h>
 
 // Global chaining algorithms
