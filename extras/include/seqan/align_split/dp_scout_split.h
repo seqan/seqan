@@ -77,11 +77,11 @@ public:
  * The default implementation of the dp scout simply stores one maximum
  * and its corresponding position.
  */
-template <typename TScoreValue>
-class DPScout_<TScoreValue, SplitAlignmentScout> : public DPScout_<TScoreValue, Default>
+template <typename TDPCell>
+class DPScout_<TDPCell, SplitAlignmentScout> : public DPScout_<TDPCell, Default>
 {
 public:
-    typedef DPScout_<TScoreValue, Default> TParent;
+    typedef DPScout_<TDPCell, Default> TParent;
 
     DPScoutState_<SplitAlignmentScout> * state;
 
@@ -107,25 +107,26 @@ public:
 /**
  * Tracks the new score, if it is the new maximum.
  */
-template <typename TScoreValue, typename TTraceMatrixNavigator>
+template <typename TDPCell, typename TTraceMatrixNavigator>
 inline void
-_scoutBestScore(DPScout_<TScoreValue, SplitAlignmentScout> & dpScout, TScoreValue const & score,
+_scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout, TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator, bool isLastColumn = false, bool isLastRow = false)
 {
+    typedef typename Value<TDPCell>::Type TScoreValue;
     // Note that the underlying matrix has the coordinates flipped.  We use posH/posV as we would in pairwise alignments
     // and thus this is the reverse from the matrix representation.
     unsigned posH = coordinate(navigator, +DPMatrixDimension_::HORIZONTAL);
     // unsigned posV = coordinate(navigator, +DPMatrixDimension_::VERTICAL);
 
     int & i = dpScout.state->splitScore[posH];
-    i = std::max(i, score);
+    i = std::max(i, _scoreOfCell(activeCell));
 
     // We track only the last row for the best traceback score.
     if (isLastColumn || isLastRow)
     {
-        typedef DPScout_<TScoreValue, SplitAlignmentScout> TDPScout;
+        typedef DPScout_<TDPCell, SplitAlignmentScout> TDPScout;
         typedef typename TDPScout::TParent TParent;
-        _scoutBestScore(static_cast<TParent &>(dpScout), score, navigator);
+        _scoutBestScore(static_cast<TParent &>(dpScout), activeCell, navigator);
     }
 }
 

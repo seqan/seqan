@@ -267,13 +267,13 @@ void _reverseTrace(String<TraceSegment_<TPosition, TSize>, TSpec> & trace)
 
     if (empty(trace))
         return;
-    TPosition lengthH = getEndHorizontal(front(trace));
-    TPosition lengthV = getEndVertical(front(trace));
+    TPosition lengthH = _getEndHorizontal(front(trace));
+    TPosition lengthV = _getEndVertical(front(trace));
 
     for (TTraceIter it = begin(trace, Rooted()); !atEnd(it); goNext(it))
     {
-        it->_horizontalBeginPos = lengthH - getEndHorizontal(*it);
-        it->_verticalBeginPos = lengthV - getEndVertical(*it);
+        it->_horizontalBeginPos = lengthH - _getEndHorizontal(*it);
+        it->_verticalBeginPos = lengthV - _getEndVertical(*it);
     }
     reverse(trace);
 }
