@@ -45,7 +45,9 @@ add_executable (test_seeds2
                test_seeds_seed_diagonal.h
                test_seeds_seed_set_base.h
                test_seeds_seed_set_unordered.h
-               test_seeds_seed_simple.h)
+               test_seeds_seed_simple.h
+               test_align_banded_chain_impl.h
+               test_banded_chain_alignment_interface.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_seeds2 ${SEQAN_LIBRARIES})
