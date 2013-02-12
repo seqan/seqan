@@ -31,7 +31,12 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// This file contains the join application.
+// This appication performs String Similarity Join over Edit Distance
+// on a database of DNA reads or Geographical names.
+//
+// Siragusa, E., Weese D., & Reinert, K. (2013).
+// Scalable String Similarity Search/Join with Approximate Seeds and Multiple Backtracking.
+// EDBT/ICDT ’13, March 18 – 22 2013, Genoa, Italy
 // ==========================================================================
 
 #ifdef _OPENMP

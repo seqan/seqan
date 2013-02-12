@@ -506,7 +506,7 @@ template <typename TText, typename TTextIndexSpec, typename TPattern, typename T
 inline bool
 _moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
                           Backtracking<TDistance, TSpec> > & finder,
-               TStage const & /* tag */)
+                   TStage const & /* tag */)
 {
     // Go down in text and pattern.
     return goDown(back(finder.textStack)) && goDown(back(finder.patternStack));
@@ -517,7 +517,7 @@ template <typename TText, typename TTextIndexSpec, typename TPattern, typename T
 inline bool
 _moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
                           Backtracking<HammingDistance, TSpec> > & finder,
-               StageExact_ const & /* tag */)
+                   StageExact_ const & /* tag */)
 {
     typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
@@ -541,7 +541,7 @@ template <typename TText, typename TTextIndexSpec, typename TPattern, typename T
 inline bool
 _moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
                           Backtracking<EditDistance, TSpec> > & finder,
-               StageInitial_ const & /* tag */)
+                   StageInitial_ const & /* tag */)
 {
     // Go down in pattern.
     return goDown(back(finder.patternStack));
@@ -552,7 +552,7 @@ template <typename TText, typename TTextIndexSpec, typename TPattern, typename T
 inline bool
 _moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
                           Backtracking<EditDistance, TSpec> > & finder,
-               StageLower_ const & /* tag */)
+                   StageLower_ const & /* tag */)
 {
     // Go down in text.
     return goDown(back(finder.textStack));
@@ -600,7 +600,7 @@ template <typename TText, typename TTextIndexSpec, typename TPattern, typename T
           typename TDistance, typename TSpec, typename TStage>
 inline bool
 _moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                   Backtracking<TDistance, TSpec> > & finder,
+                           Backtracking<TDistance, TSpec> > & finder,
                     TStage const & /* tag */)
 {
     // Try to go right in the pattern.

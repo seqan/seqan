@@ -929,6 +929,7 @@ void _buildSA(TIndexSAFibre & sa,
 // ----------------------------------------------------------------------------
 // Function build()                                                   [DbIndex]
 // ----------------------------------------------------------------------------
+// NOTE(esiragusa): Build a trie of Db using QGram bucket sort.
 
 //template <typename TDb, typename TIndexText, typename TShape, typename TIndexSpec, typename TSpec>
 //void build(DbIndex<TDb, Index<TIndexText, IndexQGram<TShape, TIndexSpec> >, TSpec> & dbIndex)

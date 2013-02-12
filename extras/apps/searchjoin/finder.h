@@ -724,6 +724,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
     }
 }
 
+// NOTE(esiragusa): This is computing exact join using a dfs traversal.
 //namespace seqan
 //{
 //    struct SAInfix;
