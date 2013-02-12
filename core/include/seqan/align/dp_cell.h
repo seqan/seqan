@@ -149,6 +149,44 @@ _scoreOfCell(DPCell_<TScoreValue, TGapCosts> const & dpValue)
     return dpValue._score;
 }
 
+// ----------------------------------------------------------------------------
+// Function verticalScore()
+// ----------------------------------------------------------------------------
+
+// Returns the score of the matrix for vertical-gaps of the given cell.
+template <typename TScoreValue, typename TGapSpec>
+inline typename  Reference<DPCell_<TScoreValue, TGapSpec> >::Type
+_verticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & dpCell)
+{
+	return dpCell._score;
+}
+
+template <typename TScoreValue, typename TGapSpec>
+inline typename  Reference<DPCell_<TScoreValue, TGapSpec> const>::Type
+_verticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
+{
+	return dpCell._score;
+}
+
+// ----------------------------------------------------------------------------
+// Function horizontalScore()
+// ----------------------------------------------------------------------------
+
+// Returns the score of the matrix for horizontal-gaps of the given cell.
+template <typename TScoreValue, typename TGapSpec>
+inline typename  Reference<DPCell_<TScoreValue, TGapSpec> >::Type
+_horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & dpCell)
+{
+    return dpCell._score;
+}
+
+template <typename TScoreValue, typename TGapSpec>
+inline typename  Reference<DPCell_<TScoreValue, TGapSpec> const>::Type
+_horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
+{
+	return dpCell._score;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_H_

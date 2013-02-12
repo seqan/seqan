@@ -252,12 +252,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn<TGapsTag> >::Type TDPProfile;
         return _computeAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, DPBand_<BandOff>(), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn<TGapsTag> >::Type TDPProfile;
         return _computeAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, DPBand_<BandOff>(), TDPProfile());
     }
 }

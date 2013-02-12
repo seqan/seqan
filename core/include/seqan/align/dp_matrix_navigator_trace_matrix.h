@@ -247,7 +247,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TT
     ++dpNavigator._activeColIterator;
 }
 
-// If we are in banded case and are the band crosses the last row, we have to update
+// If we are in banded case and the band crosses the last row, we have to update
 // the additional leap for the current track.
 template <typename TValue, typename TTraceFlag, typename TColumnType>
 inline void
@@ -283,46 +283,48 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TT
 // Function _traceHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraceFlag, typename TBandFlag>
+template <typename TValue, typename TTraceFlag>
 inline void
 _traceHorizontal(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> & dpNavigator,
-                 DPBand_<TBandFlag> const &)
+                 bool isBandShift)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
-    if (IsSameType<TBandFlag, BandOff>::VALUE)
-        dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::HORIZONTAL];
-    else
+    if (isBandShift)
         dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::HORIZONTAL] - 1;
+    else
+        dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::HORIZONTAL];
+
 }
 
 // ----------------------------------------------------------------------------
 // Function _traceDiagonal()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraceFlag, typename TBandFlag>
+template <typename TValue, typename TTraceFlag>
 inline void
 _traceDiagonal(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> & dpNavigator,
-               DPBand_<TBandFlag> const &)
+               bool isBandShift)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
-    if (IsSameType<TBandFlag, BandOff>::VALUE)
-        dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::HORIZONTAL] + 1;
-    else
+    if (isBandShift)
         dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::HORIZONTAL];
+    else
+        dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::HORIZONTAL] + 1;
+
 }
 
 // ----------------------------------------------------------------------------
 // Function _traceVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraceFlag, typename TBandFlag>
+template <typename TValue, typename TTraceFlag>
 inline void
 _traceVertical(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> & dpNavigator,
-               DPBand_<TBandFlag> const &)
+               bool /*isBandShift*/)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
@@ -336,14 +338,29 @@ _traceVertical(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix
 
 template <typename TValue, typename TTraceFlag, typename TPosition>
 inline void
-setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> & dpNavigator,
+_setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> & dpNavigator,
               TPosition const & hostPosition)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;
 
-    typedef typename Iterator<DPMatrix_<TValue, FullDPMatrix> >::Type TIterator;
+    dpNavigator._activeColIterator = begin(*dpNavigator._ptrDataContainer, Standard()) + hostPosition;
+}
 
+
+// Sets the host position based on the given horizontal and vertical position. Note that the horizontal and
+// vertical positions must correspond to the correct size of the underlying matrix.
+// For banded matrices the vertical dimension might not equal the length of the vertical sequence.
+template <typename TValue, typename TTraceFlag, typename TPositionH, typename TPositionV>
+inline void
+_setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> & dpNavigator,
+              TPositionH const & horizontalPosition,
+              TPositionV const & verticalPosition)
+{
+    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+        return;
+
+    TPositionH  hostPosition = horizontalPosition * _dataFactors(container(dpNavigator))[+DPMatrixDimension_::HORIZONTAL] + verticalPosition;
     dpNavigator._activeColIterator = begin(*dpNavigator._ptrDataContainer, Standard()) + hostPosition;
 }
 

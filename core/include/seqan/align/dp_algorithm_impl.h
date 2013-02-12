@@ -277,7 +277,7 @@ _computeCell(TDPScout & scout,
         bool isLastRow = And<IsSameType<TCellDescriptor, LastCell>,
                              Or<IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>,
                                 IsSameType<typename TColumnDescriptor::TLocation, FullColumn> > >::VALUE;
-        _scoutBestScore(scout, _scoreOfCell(activeCell), traceMatrixNavigator, isLastColumn, isLastRow);
+        _scoutBestScore(scout, activeCell, traceMatrixNavigator, isLastColumn, isLastRow);
     }
 }
 
@@ -310,11 +310,13 @@ _computeTrack(TDPScout & scout,
                  previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
                  previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
                  TColumnDescriptor(), FirstCell(), TDPProfile());
+//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << " \t";
+//	std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << " \t";
 
     TSeqVIterator iter = seqBegin;
     TSeqVIterator itEnd = (seqEnd - 1);
     // Compute the inner cells of the current track.
-    for (; iter != itEnd; ++iter)  // He will out of scope....
+    for (; iter != itEnd; ++iter)
     {
         // Set the iterator to the next cell within the track.
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
@@ -325,6 +327,8 @@ _computeTrack(TDPScout & scout,
                      previousCellVertical(dpScoreMatrixNavigator), seqHValue,
                      sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                      TColumnDescriptor(), InnerCell(), TDPProfile());
+//        std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << " \t";
+//        std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << " \t";
     }
     // Set the iterator to the last cell of the track.
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
@@ -335,6 +339,9 @@ _computeTrack(TDPScout & scout,
                  previousCellVertical(dpScoreMatrixNavigator), seqHValue,
                  sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                  TColumnDescriptor(), LastCell(), TDPProfile());
+
+//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << std::endl;
+//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << std::endl;
 }
 
 // TODO(rmaerker): Debug code!
@@ -554,7 +561,7 @@ _computeBandedAlignment(TDPScout & scout,
                      MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
         // we might need to additionally track this point.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, PartialColumnTop> >, FirstCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, true, false);
         return;
     }
     if (seqHIterEndColumnBottom == begin(seqH))
@@ -571,7 +578,7 @@ _computeBandedAlignment(TDPScout & scout,
                      MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell(), TDPProfile());
         // We might need to additionally track this point.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom> >, LastCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, false, true);
         return;
     }
 
@@ -606,7 +613,7 @@ _computeBandedAlignment(TDPScout & scout,
                      MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
         // we might need to additionally track this point.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, PartialColumnTop> >, FirstCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, false, false);
     }
     else  // Upper diagonal >= 0 and lower Diagonal < 0
     if (lowerDiagonal(band) <= -seqVlength)      // The band is bounded by the top and bottom of the matrix.
@@ -646,7 +653,7 @@ _computeBandedAlignment(TDPScout & scout,
         // We might want to track the current cell here, since this is the first cell that crosses the bottom but is
         // not part of the FullColumn tracks.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >, LastCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator, false, true);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, false, true);
         for (; seqHIter != seqHIterEndColumnMiddle; ++seqHIter)
         {
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
@@ -672,7 +679,7 @@ _computeBandedAlignment(TDPScout & scout,
         {
             if (lowerDiagonal(band) + seqVlength < seqHlength)
             {
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator, false, true);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, false, true);
             }
         }
 
@@ -708,7 +715,7 @@ _computeBandedAlignment(TDPScout & scout,
                      MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), FirstCell(), TDPProfile());
         // We might need to additionally track this point.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom> >, LastCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator, false, true);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, false, true);
     }
     else if (seqHIter == end(seqH) - 1) // Case 2: The band ends somewhere in the final column of the matrix.
     {
@@ -728,7 +735,7 @@ _computeBandedAlignment(TDPScout & scout,
                          MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom>(), FirstCell(), TDPProfile());
             // we might need to additionally track this point.
             if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom> >, LastCell>::VALUE)
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator, true, true);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, true, true);
         }
         else  // Case2b: At least two cells intersect between the band and the matrix in the final column of the matrix.
         {
@@ -754,7 +761,7 @@ _computeBandedAlignment(TDPScout & scout,
                                       seqVBegin, seqVEnd, scoringScheme,
                                       MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), dpProfile);
                         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >, LastCell>::VALUE)
-                            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator, true, true);
+                            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, true, true);
                     }
                     else
                         _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
@@ -779,7 +786,7 @@ _computeBandedAlignment(TDPScout & scout,
                                       seqVBegin, seqVEnd, scoringScheme,
                                       MetaColumnDescriptor<DPFinalColumn, PartialColumnMiddle>(), dpProfile);
                         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom> >, LastCell>::VALUE)
-                            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator, true, true);
+                            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, true, true);
                     }
                     else
                     {
@@ -1168,13 +1175,13 @@ _computeHammingDistance(TDPScout & scout,
         if (upperDiagonal(band) == -seqVlength)
         {
             if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >, LastCell>::VALUE)
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
             return;
         }
         else
         {
             if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >, InnerCell>::VALUE)
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
         }
     }
     else if (lowerDiagonal(band) > 0)
@@ -1182,19 +1189,19 @@ _computeHammingDistance(TDPScout & scout,
         if (lowerDiagonal(band) == seqHlength)
         {
             if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >, FirstCell>::VALUE)
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
             return;
         }
         else
         {
             if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >, FirstCell>::VALUE)
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
         }
     }
     else
     {
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >, FirstCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
     }
 
     TDPCell prevDiagonal = value(dpScoreMatrixNavigator);
@@ -1213,7 +1220,7 @@ _computeHammingDistance(TDPScout & scout,
                                   sequenceEntryForScore(scoringScheme, seqV, position(itV)),
                                   scoringScheme, RecursionDirectionDiagonal(), TDPProfile()));
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >, InnerCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
         prevDiagonal = value(dpScoreMatrixNavigator);
         ++itH;
         ++itV;
@@ -1237,15 +1244,15 @@ _computeHammingDistance(TDPScout & scout,
         if (itV == itVEnd)   // Is in the last cell of final column
         {
             if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >, LastCell>::VALUE)
-                _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+                _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
         }
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >, LastCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
     }
     else
     {
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >, InnerCell>::VALUE)
-            _scoutBestScore(scout, _scoreOfCell(value(dpScoreMatrixNavigator)), dpTraceMatrixNavigator);
+            _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator);
     }
 }
 
@@ -1275,10 +1282,10 @@ void _printTracebackMatrix(TTraceMatrix & dpTraceMatrix)
 // Function _computeAligmnment()
 // ----------------------------------------------------------------------------
 
-template <typename TTraceSegment, typename TScoutState, typename TSequenceH, typename TSequenceV, typename TScoreScheme,
+template <typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV, typename TScoreScheme,
           typename TBandSwitch, typename TAlignmentAlgorithm, typename TGapCosts, typename TTraceFlag>
 inline typename Value<TScoreScheme>::Type
-_computeAlignment(String<TTraceSegment> & traceSegments,
+_computeAlignment(TTraceTarget & traceSegments,
                   TScoutState & scoutState,
                   TSequenceH const & seqH,
                   TSequenceV const & seqV,
@@ -1298,7 +1305,7 @@ _computeAlignment(String<TTraceSegment> & traceSegments,
     typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> TDPTraceMatrixNavigator;
 
     typedef typename ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm>::Type TDPScoutSpec;
-    typedef DPScout_<TScoreValue, TDPScoutSpec> TDPScout;
+    typedef DPScout_<TDPScoreValue, TDPScoutSpec> TDPScout;
 
     typedef typename Size<TSequenceH>::Type TSizeSeqH;
     typedef typename Size<TSequenceV>::Type TSizeSeqV;
@@ -1352,15 +1359,15 @@ _computeAlignment(String<TTraceSegment> & traceSegments,
         return maxScore(dpScout);
 
 //    _printTracebackMatrix(dpTraceMatrix);
-    _computeTraceback(traceSegments, dpTraceMatrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);
+    _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
 
     return maxScore(dpScout);
 }
 
-template <typename TTraceSegment, typename TSequenceH, typename TSequenceV, typename TScoreScheme, typename TBandSwitch,
+template <typename TTraceTarget, typename TSequenceH, typename TSequenceV, typename TScoreScheme, typename TBandSwitch,
           typename TAlignmentAlgorithm, typename TGapCosts, typename TTraceFlag>
 inline typename Value<TScoreScheme>::Type
-_computeAlignment(String<TTraceSegment> & traceSegments,
+_computeAlignment(TTraceTarget & traceSegments,
                   TSequenceH const & seqH,
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,

@@ -76,12 +76,13 @@ class DPScout_;
  *
  * The state must be a Nothing and is left untouched and unused.
  */
-template <typename TScoreValue>
-class DPScout_<TScoreValue, Default>
+template <typename TDPCell>
+class DPScout_<TDPCell, Default>
 {
 public:
+    typedef typename Value<TDPCell>::Type TScoreValue;
     TScoreValue _maxScore;          // The maximal score.
-    unsigned int _maxHostPosition;  // The corrsponding host position within the underlying dp-matrix.
+    unsigned int _maxHostPosition;  // The corresponding host position within the underlying dp-matrix.
 
     DPScout_() : _maxScore(MinValue<TScoreValue>::VALUE), _maxHostPosition(0) {}
 
@@ -120,6 +121,18 @@ struct ScoutSpecForAlignmentAlgorithm_
     typedef Default Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction ScoutStateSpecForScout_
+// ----------------------------------------------------------------------------
+
+// Given an dp scout this meta-function returns the appropriate specialization for the scout state.
+
+template <typename TScout>
+struct ScoutStateSpecForScout_
+{
+    typedef Default Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -127,21 +140,22 @@ struct ScoutSpecForAlignmentAlgorithm_
 // ----------------------------------------------------------------------------
 // Function _scoutBestScore()
 // ----------------------------------------------------------------------------
-/**
- * Tracks the new score, if it is the new maximum.
- */
-template <typename TScoreValue, typename TSpec, typename TTraceMatrixNavigator>
+
+// Tracks the new score, if it is the new maximum.
+template <typename TDPCell, typename TSpec, typename TTraceMatrixNavigator>
 inline void
-_scoutBestScore(DPScout_<TScoreValue, TSpec> & dpScout, TScoreValue const & score,
-                TTraceMatrixNavigator const & navigator, bool isLastColumn = false,
+_scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                bool isLastColumn = false,
                 bool isLastRow = false)
 {
     (void)isLastColumn;
     (void)isLastRow;
 
-    if (score > dpScout._maxScore)
+    if (_scoreOfCell(activeCell) > dpScout._maxScore)
     {
-        dpScout._maxScore = score;
+        dpScout._maxScore = _scoreOfCell(activeCell);
         dpScout._maxHostPosition = position(navigator);
     }
 }
@@ -149,12 +163,11 @@ _scoutBestScore(DPScout_<TScoreValue, TSpec> & dpScout, TScoreValue const & scor
 // ----------------------------------------------------------------------------
 // Function maxScore()
 // ----------------------------------------------------------------------------
-/**
- * Returns the current maximal score.
- */
-template <typename TScoreValue, typename TScoutSpec>
-inline TScoreValue const
-maxScore(DPScout_<TScoreValue, TScoutSpec> const & dpScout)
+
+// Returns the current maximal score.
+template <typename TDPCell, typename TScoutSpec>
+inline typename Value<TDPCell>::Type const
+maxScore(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 {
     return dpScout._maxScore;
 }
@@ -163,13 +176,10 @@ maxScore(DPScout_<TScoreValue, TScoutSpec> const & dpScout)
 // Function maxHostPosition()
 // ----------------------------------------------------------------------------
 
-/**
- * Returns the host position that holds the current maximum score.
- */
-
-template <typename TScoreValue, typename TScoutSpec>
+// Returns the host position that holds the current maximum score.
+template <typename TDPCell, typename TScoutSpec>
 inline unsigned int
-maxHostPosition(DPScout_<TScoreValue, TScoutSpec> const & dpScout)
+maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 {
     return dpScout._maxHostPosition;
 }

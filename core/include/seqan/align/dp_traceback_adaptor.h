@@ -94,8 +94,8 @@ _adaptTraceSegmentsTo(Gaps<TSourceHorizontal, TGapsSpecHorizontal> & gapsHorizon
 
     // we build the gap structure here.
     // set the clipped begin position of the alignment.
-    setBeginPosition(gapsHorizontal, getBeginHorizontal(value(srcIter))); // begin of source
-    setBeginPosition(gapsVertical, getBeginVertical(value(srcIter)));
+    setBeginPosition(gapsHorizontal, _getBeginHorizontal(value(srcIter))); // begin of source
+    setBeginPosition(gapsVertical, _getBeginVertical(value(srcIter)));
 
     TIteratorHorizontal it0 = begin(gapsHorizontal);
     TIteratorVertical it1 = begin(gapsVertical);
@@ -143,13 +143,13 @@ _adaptTraceSegmentsTo(Graph<Alignment<TStringSet, TCargo, TSpec> > & g,
 
     // insert leading gaps
     TTraceSegment traceBegin = traceSegments[length(traceSegments) - 1];
-    if (getBeginVertical(traceBegin) != 0)
+    if (_getBeginVertical(traceBegin) != 0)
     {
-        addVertex(g, seqVId, 0, getBeginVertical(traceBegin));
+        addVertex(g, seqVId, 0, _getBeginVertical(traceBegin));
     }
-    if (getBeginHorizontal(traceBegin) != 0)
+    if (_getBeginHorizontal(traceBegin) != 0)
     {
-        addVertex(g, seqHId, 0, getBeginHorizontal(traceBegin));
+        addVertex(g, seqHId, 0, _getBeginHorizontal(traceBegin));
     }
 
 
@@ -175,15 +175,15 @@ _adaptTraceSegmentsTo(Graph<Alignment<TStringSet, TCargo, TSpec> > & g,
 
     // insert trailing gaps
     TTraceSegment traceEnd = traceSegments[0];
-    if (getEndVertical(traceEnd) != length(value(stringSet(g), idToPosition(stringSet(g), seqVId))))
+    if (_getEndVertical(traceEnd) != length(value(stringSet(g), idToPosition(stringSet(g), seqVId))))
     {
-        addVertex(g, seqVId, getEndVertical(traceEnd),
-                  length(value(stringSet(g), idToPosition(stringSet(g), seqVId))) - getEndVertical(traceEnd));
+        addVertex(g, seqVId, _getEndVertical(traceEnd),
+                  length(value(stringSet(g), idToPosition(stringSet(g), seqVId))) - _getEndVertical(traceEnd));
     }
-    if (getEndHorizontal(traceEnd) != length(value(stringSet(g), idToPosition(stringSet(g), seqHId))))
+    if (_getEndHorizontal(traceEnd) != length(value(stringSet(g), idToPosition(stringSet(g), seqHId))))
     {
-        addVertex(g, seqHId, getEndHorizontal(traceEnd),
-                  length(value(stringSet(g), idToPosition(stringSet(g), seqHId))) - getEndHorizontal(traceEnd));
+        addVertex(g, seqHId, _getEndHorizontal(traceEnd),
+                  length(value(stringSet(g), idToPosition(stringSet(g), seqHId))) - _getEndHorizontal(traceEnd));
     }
 }
 

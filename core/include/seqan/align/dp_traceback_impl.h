@@ -38,6 +38,7 @@
 #define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
 
 // TODO(holtgrew): GapsRight traceback is currently untested.
+// TODO(rmaerker): Change Tracback to TraceConfig<TGapsPlacement, TAllPaths, TAllOptimal> | TraceBackOff
 
 namespace seqan {
 
@@ -50,56 +51,163 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class TracebackCoordinator_
+// ----------------------------------------------------------------------------
+
+class TracebackCoordinator_
+{
+public:
+    int _currColumn;
+    int _currRow;
+    int _endColumn;
+    int _endRow;
+    int _breakpoint1;      // Breakpoint to start differnt tracking
+    int _breakpoint2;      // Breakpoint to start differnt tracking
+    bool _isInBand;
+
+    template <typename TBandFlag>
+    TracebackCoordinator_(int currColumn, int currRow, DPBand_<TBandFlag> const & band, int seqHSize, int seqVSize)
+        : _currColumn(currColumn),
+          _currRow(currRow),
+          _endColumn(0),
+          _endRow(0),
+          _breakpoint1(0),
+          _breakpoint2(0),
+          _isInBand(false)
+    {
+        _initTracebackCoordinator(*this, band, seqHSize, seqVSize);
+    }
+
+    template <typename TBandFlag>
+    TracebackCoordinator_(int currColumn, int currRow, int endColumn, int endRow, DPBand_<TBandFlag> const & band,
+                          int seqHSize, int seqVSize)
+        : _currColumn(currColumn),
+          _currRow(currRow),
+          _endColumn(endColumn),
+          _endRow(endRow),
+          _breakpoint1(0),
+          _breakpoint2(0),
+          _isInBand(false)
+    {
+        _initTracebackCoordinator(*this, band, seqHSize, seqVSize);
+    }
+};
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction PreferGapsAtEnd_
+// ----------------------------------------------------------------------------
+
+// Checks whether the gaps at the end should be preferred over a matching area.
+template <typename TDPProfile>
+struct PreferGapsAtEnd_ : False{};
+
+template <typename TAlgorithm, typename TTracebackSpec>
+struct PreferGapsAtEnd_<DPProfile_<TAlgorithm, AffineGaps, TTracebackSpec > > : True{};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _hasReachedEnd()
+// ----------------------------------------------------------------------------
+
+inline bool
+_hasReachedEnd(TracebackCoordinator_ const & coordinator)
+{
+    return coordinator._currColumn <= coordinator._endColumn || coordinator._currRow <= coordinator._endRow;
+}
+
+// ----------------------------------------------------------------------------
+// Function _initTracebackCoordinator()
+// ----------------------------------------------------------------------------
+
+template <typename TBandFlag>
+inline void
+_initTracebackCoordinator(TracebackCoordinator_ & coordinator,
+                          DPBand_<TBandFlag> const & band,
+                          int seqHSize,
+                          int seqVSize)
+{
+    if (IsSameType<TBandFlag, BandOn>::VALUE)
+    {
+        if (lowerDiagonal(band) >= 0)
+            coordinator._currColumn += lowerDiagonal(band);
+        if (coordinator._currColumn > upperDiagonal(band))
+            coordinator._currRow += coordinator._currColumn - upperDiagonal(band);
+        if (coordinator._endColumn > upperDiagonal(band))
+            coordinator._endRow += coordinator._endColumn - upperDiagonal(band);
+
+        coordinator._breakpoint1 = _min(seqHSize, _max(0, upperDiagonal(band)));
+        coordinator._breakpoint2 = _min(seqHSize, _max(0, seqVSize + lowerDiagonal(band)));
+        coordinator._isInBand = true;
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function _isInBand()
+// ----------------------------------------------------------------------------
+
+inline bool
+_isInBand(TracebackCoordinator_ const & coordinator)
+{
+    if (!coordinator._isInBand)
+        return coordinator._isInBand;
+    return (coordinator._currColumn > coordinator._breakpoint1 || coordinator._currColumn <= coordinator._breakpoint2);
+}
+
+
+// ----------------------------------------------------------------------------
 // Function _doTracebackGoDiagonal()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
-          typename TDPBand, typename TGapCosts>
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TGapCosts>
 inline void
 _doTracebackGoDiagonal(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
                        TTraceValue & traceValue,
                        TTraceValue & lastTraceValue,
                        TSize & fragmentLength,
-                       TPosition & seqHPos,
-                       TPosition & seqVPos,
-                       TDPBand const & band,
+                       TracebackCoordinator_ & tracebackCoordinator,
                        TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::DIAGONAL)) // the old trace value was not diagonal
     {
-        _recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+        _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength,
+                       lastTraceValue);
         
         lastTraceValue = TraceBitMap_::DIAGONAL;
         fragmentLength = 0;
     }
-    --seqHPos;
-    --seqVPos;
-    _traceDiagonal(matrixNavigator, band);
-    ++fragmentLength;
+    _traceDiagonal(matrixNavigator, _isInBand(tracebackCoordinator));
     traceValue = value(matrixNavigator);
+    --tracebackCoordinator._currColumn;
+    --tracebackCoordinator._currRow;
+    ++fragmentLength;
 }
 
 // ----------------------------------------------------------------------------
 // Function _doTracebackGoVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
-          typename TDPBand, typename TGapCosts>
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TGapCosts>
 inline void
 _doTracebackGoVertical(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
                        TTraceValue & traceValue,
                        TTraceValue & lastTraceValue,
                        TSize & fragmentLength,
-                       TPosition & seqHPos,
-                       TPosition & seqVPos,
-                       TDPBand const & band,
+                       TracebackCoordinator_ & tracebackCoordinator,
                        TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::VERTICAL)) // the old trace value was not diagonal
     {
-        _recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+        _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength,
+                       lastTraceValue);
 
         lastTraceValue = TraceBitMap_::VERTICAL;
         fragmentLength = 0;
@@ -107,26 +215,26 @@ _doTracebackGoVertical(TTarget & target,
     // We are in a vertical gap. So continue after we reach the end of the vertical gap.
     if (IsSameType<TGapCosts, AffineGaps>::VALUE)
     {
-        while (!(traceValue & TraceBitMap_::VERTICAL_OPEN) && (seqVPos != 1))
+        while (!(traceValue & TraceBitMap_::VERTICAL_OPEN) && (tracebackCoordinator._currRow != 1))
         {
-            --seqVPos;
-            _traceVertical(matrixNavigator, band);
-            ++fragmentLength;
+            _traceVertical(matrixNavigator, _isInBand(tracebackCoordinator));
             traceValue = value(matrixNavigator);
+            --tracebackCoordinator._currRow;
+            ++fragmentLength;
         }
         // We have to ensure, that we do not continue in vertical direction if we reached a vertical_open sign.
-        --seqVPos;
-        _traceVertical(matrixNavigator, band);
-        ++fragmentLength;
+        _traceVertical(matrixNavigator, _isInBand(tracebackCoordinator));
         // Forbid continuing in vertical direction.
         traceValue = value(matrixNavigator) & TraceBitMap_::NO_VERTICAL_TRACEBACK;
+        --tracebackCoordinator._currRow;
+        ++fragmentLength;
     }
     else
     {
-        --seqVPos;
-        _traceVertical(matrixNavigator, band);
-        ++fragmentLength;
+        _traceVertical(matrixNavigator, _isInBand(tracebackCoordinator));
         traceValue = value(matrixNavigator);
+        --tracebackCoordinator._currRow;
+        ++fragmentLength;
     }
 }
 
@@ -134,127 +242,117 @@ _doTracebackGoVertical(TTarget & target,
 // Function _doTracebackMaxFromVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
-          typename TDPBand, typename TGapCosts>
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TGapCosts>
 inline void
 _doTracebackMaxFromVertical(TTarget & target,
                             TDPTraceMatrixNavigator & matrixNavigator,
                             TTraceValue & traceValue,
                             TTraceValue & lastTraceValue,
                             TSize & fragmentLength,
-                            TPosition & seqHPos,
-                            TPosition & seqVPos,
-                            TDPBand const & band,
+                            TracebackCoordinator_ & tracebackCoordinator,
                             TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::VERTICAL)) // the old trace value was not diagonal
     {
-        _recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+        _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength,
+                       lastTraceValue);
         lastTraceValue = TraceBitMap_::VERTICAL;
         fragmentLength = 0;
     }
-    --seqVPos;
-    _traceVertical(matrixNavigator, band);
-    ++fragmentLength;
+    _traceVertical(matrixNavigator, _isInBand(tracebackCoordinator));
     // Forbid continuing in vertical direction.
     traceValue = value(matrixNavigator) & TraceBitMap_::NO_VERTICAL_TRACEBACK;
+    --tracebackCoordinator._currRow;
+    ++fragmentLength;
 }
 
 // ----------------------------------------------------------------------------
 // Function _doTracebackGoHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
-          typename TDPBand, typename TGapCosts>
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TGapCosts>
 inline void
 _doTracebackGoHorizontal(TTarget & target,
                          TDPTraceMatrixNavigator & matrixNavigator,
                          TTraceValue & traceValue,
                          TTraceValue & lastTraceValue,
                          TSize & fragmentLength,
-                         TPosition & seqHPos,
-                         TPosition & seqVPos,
-                         TDPBand const & band,
+                         TracebackCoordinator_ & tracebackCoordinator,
                          TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::HORIZONTAL)) // the old trace value was not diagonal
     {
-        _recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+        _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength,
+                       lastTraceValue);
 
         lastTraceValue = TraceBitMap_::HORIZONTAL;
         fragmentLength = 0;
     }
     if (IsSameType<TGapCosts, AffineGaps>::VALUE)
     {
-        while (!(traceValue & TraceBitMap_::HORIZONTAL_OPEN) && (seqHPos != 1))
+        while (!(traceValue & TraceBitMap_::HORIZONTAL_OPEN) && (tracebackCoordinator._currColumn != 1))
         {
-            --seqHPos;
-            _traceHorizontal(matrixNavigator, band);
-            ++fragmentLength;
+            _traceHorizontal(matrixNavigator, _isInBand(tracebackCoordinator));
             traceValue = value(matrixNavigator);
+            --tracebackCoordinator._currColumn;
+            ++fragmentLength;
         }
-        --seqHPos;
-        _traceHorizontal(matrixNavigator, band);
-        ++fragmentLength;
+        _traceHorizontal(matrixNavigator, _isInBand(tracebackCoordinator));
         // Forbid continuing in horizontal direction.
         traceValue = value(matrixNavigator) & TraceBitMap_::NO_HORIZONTAL_TRACEBACK;
+        --tracebackCoordinator._currColumn;
+        ++fragmentLength;
     }
     else
     {
-        --seqHPos;
-        _traceHorizontal(matrixNavigator, band);
-        ++fragmentLength;
+        _traceHorizontal(matrixNavigator, _isInBand(tracebackCoordinator));
         traceValue = value(matrixNavigator);
+        --tracebackCoordinator._currColumn;
+        ++fragmentLength;
     }
 }
-
 
 // ----------------------------------------------------------------------------
 // Function _doTracebackMaxFromHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
-          typename TDPBand, typename TGapCosts>
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TGapCosts>
 inline void
 _doTracebackMaxFromHorizontal(TTarget & target,
                               TDPTraceMatrixNavigator & matrixNavigator,
                               TTraceValue & traceValue,
                               TTraceValue & lastTraceValue,
                               TSize & fragmentLength,
-                              TPosition & seqHPos,
-                              TPosition & seqVPos,
-                              TDPBand const & band,
+                              TracebackCoordinator_ & tracebackCoordinator,
                               TGapCosts const &)
 {
     if (!(lastTraceValue & TraceBitMap_::HORIZONTAL)) // the old trace value was not diagonal
     {
-        _recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+        _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength,
+                       lastTraceValue);
         lastTraceValue = TraceBitMap_::HORIZONTAL;
         fragmentLength = 0;
     }
-
-    --seqHPos;
-    _traceHorizontal(matrixNavigator, band);
-    ++fragmentLength;
+    _traceHorizontal(matrixNavigator, _isInBand(tracebackCoordinator));
     // Forbid continuing in horizontal direction.
     traceValue = value(matrixNavigator) & TraceBitMap_::NO_HORIZONTAL_TRACEBACK;
+    --tracebackCoordinator._currColumn;
+    ++fragmentLength;
 }
 
 // ----------------------------------------------------------------------------
 // Function _doTraceback()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TPosition,
-          typename TDPBand, typename TGapCosts, typename TIsGapsLeft>
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TTraceValue, typename TSize, typename TGapCosts,
+          typename TIsGapsLeft>
 inline void
 _doTraceback(TTarget & target,
              TDPTraceMatrixNavigator & matrixNavigator,
              TTraceValue & traceValue,
              TTraceValue & lastTraceValue,
              TSize & fragmentLength,
-             TPosition & seqHPos,
-             TPosition & seqVPos,
-             TDPBand const & band,
+             TracebackCoordinator_ & tracebackCoordinator,
              TGapCosts const & gapsCost,
              TIsGapsLeft const & /*isGapsLeft*/)
 {
@@ -262,23 +360,23 @@ _doTraceback(TTarget & target,
     {
         if (traceValue & TraceBitMap_::DIAGONAL)
         {
-            _doTracebackGoDiagonal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackGoDiagonal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }  // In case of Gotoh we prefer the longest possible way in this direction.
         else if (traceValue & TraceBitMap_::VERTICAL)
         {
-            _doTracebackGoVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackGoVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }
         else if (traceValue & TraceBitMap_::MAX_FROM_VERTICAL_MATRIX)
         {
-            _doTracebackMaxFromVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackMaxFromVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }
         else if (traceValue & TraceBitMap_::HORIZONTAL)
         {
-            _doTracebackGoHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackGoHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }
         else if (traceValue & TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX)
         {
-            _doTracebackMaxFromHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackMaxFromHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }  // In case of Gotoh we prefer the longest possible way in this direction.
         else // the trace back is either NONE or something else
         {
@@ -293,23 +391,23 @@ _doTraceback(TTarget & target,
     {
         if (traceValue & TraceBitMap_::VERTICAL)
         {
-            _doTracebackGoVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackGoVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }
         else if (traceValue & TraceBitMap_::MAX_FROM_VERTICAL_MATRIX)
         {
-            _doTracebackMaxFromVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackMaxFromVertical(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }
         else if (traceValue & TraceBitMap_::HORIZONTAL)
         {
-            _doTracebackGoHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackGoHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }
         else if (traceValue & TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX)
         {
-            _doTracebackMaxFromHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackMaxFromHorizontal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }  // In case of Gotoh we prefer the longest possible way in this direction.
         else if (traceValue & TraceBitMap_::DIAGONAL)
         {
-            _doTracebackGoDiagonal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, band, gapsCost);
+            _doTracebackGoDiagonal(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, gapsCost);
         }  // In case of Gotoh we prefer the longest possible way in this direction.
         else // the trace back is either NONE or something else
         {
@@ -322,19 +420,47 @@ _doTraceback(TTarget & target,
     }
 }
 
+template <typename TTraceValue, typename TDPProfile>
+inline TTraceValue
+_retrieveInitialTraceDirection(TTraceValue & traceValue, TDPProfile const & /*dpProfile*/)
+{
+    if (PreferGapsAtEnd_<TDPProfile>::VALUE)
+    {
+        if (traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX))
+        {
+            traceValue &= (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+            return TraceBitMap_::VERTICAL;
+        }
+        else if (traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX))
+        {
+            traceValue &= (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+            return TraceBitMap_::HORIZONTAL;
+        }
+        return TraceBitMap_::DIAGONAL;
+    }
+
+    if (traceValue & TraceBitMap_::DIAGONAL)
+        return TraceBitMap_::DIAGONAL;
+    else if (traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX))
+        return  TraceBitMap_::VERTICAL;
+    else if (traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX))
+        return TraceBitMap_::HORIZONTAL;
+    return TraceBitMap_::NONE;
+}
+
 // ----------------------------------------------------------------------------
 // Function _computeTraceback()
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TDPTraceMatrixNavigator, typename THostPosition, typename TSequenceH, typename TSequenceV,
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TSequenceH, typename TSequenceV,
           typename TBandFlag, typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
 void _computeTraceback(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
-                       THostPosition const & hostPosition,
+                       unsigned  maxHostPosition,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPBand_<TBandFlag> const & band,
-                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const &)
+                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
 {
     typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
     typedef typename Size<TContainer>::Type TSize;
@@ -352,93 +478,59 @@ void _computeTraceback(TTarget & target,
     TSignedSize seqHSize = length(seqH);
     TSignedSize seqVSize = length(seqV);
 
-    TSize fragmentLength = 0;
-    // compute the sequence position:
-    setToPosition(matrixNavigator, hostPosition);
-    TSignedPosition currColumn = coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL);
-    TSignedPosition currRow = coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL);
+    // Set the navigator to the position where the maximum was found.
+    _setToPosition(matrixNavigator, maxHostPosition);
 
-    SEQAN_ASSERT_LEQ(currColumn, seqHSize);
-    SEQAN_ASSERT_LEQ(currRow, seqVSize);
+    SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL), seqHSize);
+    SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL), seqVSize);
 
     TTraceValue traceValue = value(matrixNavigator);
-    TTraceValue lastTraceValue = TraceBitMap_::NONE;
+    TTraceValue lastTraceValue = _retrieveInitialTraceDirection(traceValue, dpProfile);
 
-    // we need to change the tb value here.
-    if (IsSameType<TGapCosts, LinearGaps>::VALUE)
-    {
-        if (traceValue & TraceBitMap_::DIAGONAL)
-            lastTraceValue = TraceBitMap_::DIAGONAL;
-        else if (traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX))
-            lastTraceValue = TraceBitMap_::VERTICAL;
-        else if (traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX))
-            lastTraceValue = TraceBitMap_::HORIZONTAL;
-    }
-    else
-    {
-        lastTraceValue = TraceBitMap_::DIAGONAL;
-        if (traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX))
-        {
-            traceValue &= (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
-            lastTraceValue = TraceBitMap_::VERTICAL;
-        }
-        else if (traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX))
-        {
-            traceValue &= (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
-            lastTraceValue = TraceBitMap_::HORIZONTAL;
-        }
-    }
-
-    // Correct the coordinates in banded case.
-    TSignedPosition firstStop = 0;
-    TSignedPosition secondStop = 0;
-
-    if (IsSameType<TBandFlag, BandOn>::VALUE)
-    {
-        if (lowerDiagonal(band) >= 0)
-            currColumn += lowerDiagonal(band);
-        if (currColumn > upperDiagonal(band))
-            currRow += currColumn - upperDiagonal(band);
-
-        firstStop = _min(seqHSize, _max(0, upperDiagonal(band)));
-        secondStop = _min(seqHSize, _max(0, static_cast<int>(seqVSize) + lowerDiagonal(band)));
-    }
+    TracebackCoordinator_ tracebackCoordinator(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL),
+                                               coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL),
+                                               band, seqHSize, seqVSize);
 
     if (IsGlobalAlignment_<TAlgorithm>::VALUE)
     {
-        if (currRow != seqVSize)
-            _recordSegment(target, seqHSize, currRow, seqVSize - currRow, +TraceBitMap_::VERTICAL);
-        if (currColumn != seqHSize)
-            _recordSegment(target, currColumn, currRow, seqHSize - currColumn, +TraceBitMap_::HORIZONTAL);  // if positions lie in middle of matrix, we go with manhatten distance to this point.
+        if (tracebackCoordinator._currRow != seqVSize)
+            _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
+                           +TraceBitMap_::VERTICAL);
+        if (tracebackCoordinator._currColumn != seqHSize)
+            _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, seqHSize -
+                           tracebackCoordinator._currColumn, +TraceBitMap_::HORIZONTAL);
     }
 
-    if (firstStop > secondStop)  // In this case we have to divide the traceback into three parts, which have different distances to the previous cells.
-    {
-        while (currColumn > firstStop && currRow > 0 && traceValue != TraceBitMap_::NONE)
-            _doTraceback(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, currColumn, currRow, band, TGapCosts(), TIsGapsLeft());
+    TSize fragmentLength = 0;
+    while (!_hasReachedEnd(tracebackCoordinator) && traceValue != TraceBitMap_::NONE)
+        _doTraceback(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, TGapCosts(), TIsGapsLeft());
 
-        while (currColumn > secondStop && currRow > 0 && traceValue != TraceBitMap_::NONE)
-            _doTraceback(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, currColumn, currRow, DPBand_<BandOff>(), TGapCosts(), TIsGapsLeft());
-
-        while (currColumn > 0 && currRow > 0 && traceValue != TraceBitMap_::NONE)
-            _doTraceback(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, currColumn, currRow, band, TGapCosts(), TIsGapsLeft());
-
-    }
-    else  // This is the standard case for unbanded and small banded alignments.
-        while (currColumn > 0 && currRow > 0 && traceValue != TraceBitMap_::NONE)
-            _doTraceback(target, matrixNavigator, traceValue, lastTraceValue, fragmentLength, currColumn, currRow, band, TGapCosts(), TIsGapsLeft());
 
     // Record last detected fragment.
-    _recordSegment(target, currColumn, currRow, fragmentLength, lastTraceValue);
+    _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength, lastTraceValue);
     if (IsGlobalAlignment_<TAlgorithm>::VALUE)
     {
-        // Record trailing gaps if any.
-        if (currRow != 0)
-            _recordSegment(target, 0, 0, currRow, +TraceBitMap_::VERTICAL);
-        if (currColumn != 0)
-            _recordSegment(target, 0, 0, currColumn, +TraceBitMap_::HORIZONTAL);
+        // Record leading gaps if any.
+        if (tracebackCoordinator._currRow != 0)
+            _recordSegment(target, 0, 0, tracebackCoordinator._currRow, +TraceBitMap_::VERTICAL);
+        if (tracebackCoordinator._currColumn != 0)
+            _recordSegment(target, 0, 0, tracebackCoordinator._currColumn, +TraceBitMap_::HORIZONTAL);
     }
+}
 
+// Needed as a delegation method to allow invocation of both methods with host position and dpScout.
+template <typename TTarget, typename TDPTraceMatrixNavigator, typename TDPCell, typename TScoutSpec,
+          typename TSequenceH, typename TSequenceV, typename TBandFlag, typename TAlgorithm, typename TGapCosts,
+          typename TTracebackSpec>
+void _computeTraceback(TTarget & target,
+                       TDPTraceMatrixNavigator & matrixNavigator,
+                       DPScout_<TDPCell, TScoutSpec> const & dpScout,
+                       TSequenceH const & seqH,
+                       TSequenceV const & seqV,
+                       DPBand_<TBandFlag> const & band,
+                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec> const & dpProfile)
+{
+    _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);
 }
 
 }  // namespace seqan

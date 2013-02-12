@@ -136,37 +136,37 @@ struct Size<TraceSegment_<TPosition, TSize> const>:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function getBeginHorizontal()
+// Function _getBeginHorizontal()
 // ----------------------------------------------------------------------------
 
 // The begin position of the segment in horizontal dimension.
 template <typename TPosition, typename TSize>
 inline TPosition
-getBeginHorizontal(TraceSegment_<TPosition, TSize> const & traceSegment)
+_getBeginHorizontal(TraceSegment_<TPosition, TSize> const & traceSegment)
 {
     return traceSegment._horizontalBeginPos;
 }
 
 // ----------------------------------------------------------------------------
-// Function getBeginVertical()
+// Function _getBeginVertical()
 // ----------------------------------------------------------------------------
 
 // The begin position of the segment in vertical dimension.
 template <typename TPosition, typename TSize>
 inline TPosition
-getBeginVertical(TraceSegment_<TPosition, TSize> const & traceSegment)
+_getBeginVertical(TraceSegment_<TPosition, TSize> const & traceSegment)
 {
     return traceSegment._verticalBeginPos;
 }
 
 // ----------------------------------------------------------------------------
-// Function getEndHorizontal()
+// Function _getEndHorizontal()
 // ----------------------------------------------------------------------------
 
 // The end position of the segment in horizontal dimension.
 template <typename TPosition, typename TSize>
 inline TPosition
-getEndHorizontal(TraceSegment_<TPosition, TSize> const & traceSegment)
+_getEndHorizontal(TraceSegment_<TPosition, TSize> const & traceSegment)
 {
     if (traceSegment._traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::DIAGONAL))
     {
@@ -176,19 +176,31 @@ getEndHorizontal(TraceSegment_<TPosition, TSize> const & traceSegment)
 }
 
 // ----------------------------------------------------------------------------
-// Function getEndVertical()
+// Function _getEndVertical()
 // ----------------------------------------------------------------------------
 
 // The end position of the segment in vertical dimension.
 template <typename TPosition, typename TSize>
 inline TPosition
-getEndVertical(TraceSegment_<TPosition, TSize> const & traceSegment)
+_getEndVertical(TraceSegment_<TPosition, TSize> const & traceSegment)
 {
     if (traceSegment._traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::DIAGONAL))
     {
         return traceSegment._verticalBeginPos + traceSegment._length;
     }
     return traceSegment._verticalBeginPos;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getTraceValue()
+// ----------------------------------------------------------------------------
+
+// The end position of the segment in vertical dimension.
+template <typename TPosition, typename TSize>
+inline typename TraceSegment_<TPosition, TSize>::TTraceValue
+_getTraceValue(TraceSegment_<TPosition, TSize> const & traceSegment)
+{
+    return traceSegment._traceValue;
 }
 
 // ----------------------------------------------------------------------------
@@ -202,6 +214,20 @@ length(TraceSegment_<TPosition, TSize> const & traceSegment)
 {
     return traceSegment._length;
 }
+
+// ----------------------------------------------------------------------------
+// Function _setLength()
+// ----------------------------------------------------------------------------
+
+// The length of the segment.
+template <typename TPosition, typename TSize>
+inline void
+_setLength(TraceSegment_<TPosition, TSize> & traceSegment, TSize newLength)
+{
+    traceSegment._length = newLength;
+}
+
+
 
 // ----------------------------------------------------------------------------
 // Function _translateTraceValue()
@@ -287,10 +313,10 @@ inline bool operator!=(TraceSegment_<TPosition, TSize> const & left, TraceSegmen
 // and the corrsponding trace value.
 //
 // The first parameter is the container the segment is recorded to.
-template <typename TTraceSegments, typename TPosition, typename TSize, typename TTraceValue>
+template <typename TTraceSegments, typename TPositionH, typename TPositionV, typename TSize, typename TTraceValue>
 inline void _recordSegment(TTraceSegments & traceSegments,
-                           TPosition const & horizontalBeginPos,
-                           TPosition const & verticalBeginPos,
+                           TPositionH const & horizontalBeginPos,
+                           TPositionV const & verticalBeginPos,
                            TSize const & segmentLength,
                            TTraceValue const & traceValue)
 {

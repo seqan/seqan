@@ -314,43 +314,53 @@ struct IsFreeEndGap_<LocalAlignment_<TLocalSpec>, TDPSide>:
     True
 {};
 
+template <typename TFreeEndGaps, typename TDPSide>
+struct IsFreeEndGap_<GlobalAlignment_<TFreeEndGaps> const, TDPSide>:
+    IsFreeEndGap_<TFreeEndGaps, TDPSide>
+{};
+
+template <typename TFreeEndGaps, typename TDPSide>
+struct IsFreeEndGap_<GlobalAlignment_<TFreeEndGaps>, TDPSide>:
+    IsFreeEndGap_<TFreeEndGaps const, TDPSide>
+{};
+
 template <typename TFirstColumn, typename TLastRow, typename TLastColumn>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<True, TFirstColumn, TLastRow, TLastColumn> >, DPFirstRow>:
+struct IsFreeEndGap_<FreeEndGaps_<True, TFirstColumn, TLastRow, TLastColumn>, DPFirstRow>:
     True
 {};
 
 template <typename TFirstColumn, typename TLastRow, typename TLastColumn>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<True, TFirstColumn, TLastRow, TLastColumn> > const, DPFirstRow>:
+struct IsFreeEndGap_<FreeEndGaps_<True, TFirstColumn, TLastRow, TLastColumn> const, DPFirstRow>:
     True
 {};
 
 template <typename TFirstRow, typename TLastRow, typename TLastColumn>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<TFirstRow, True, TLastRow, TLastColumn> >, DPFirstColumn>:
+struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, True, TLastRow, TLastColumn>, DPFirstColumn>:
     True
 {};
 
 template <typename TFirstRow, typename TLastRow, typename TLastColumn>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<TFirstRow, True, TLastRow, TLastColumn> > const, DPFirstColumn>:
+struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, True, TLastRow, TLastColumn> const, DPFirstColumn>:
     True
 {};
 
 template <typename TFirstRow, typename TFirstColumn, typename TLastColumn>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<TFirstRow, TFirstColumn, True, TLastColumn> >, DPLastRow>:
+struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, True, TLastColumn>, DPLastRow>:
     True
 {};
 
 template <typename TFirstRow, typename TFirstColumn, typename TLastColumn>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<TFirstRow, TFirstColumn, True, TLastColumn> > const, DPLastRow>:
+struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, True, TLastColumn> const, DPLastRow>:
     True
 {};
 
 template <typename TFirstRow, typename TFirstColumn, typename TLastRow>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True> >, DPLastColumn>:
+struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True>, DPLastColumn>:
     True
 {};
 
 template <typename TFirstRow, typename TFirstColumn, typename TLastRow>
-struct IsFreeEndGap_<GlobalAlignment_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True> > const, DPLastColumn>:
+struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True> const, DPLastColumn>:
     True
 {};
 
