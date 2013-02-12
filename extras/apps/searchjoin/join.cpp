@@ -78,12 +78,14 @@ struct Options
     unsigned        seedLength;
 
     bool            online;
+    bool            hugeDb;
 
     Options() :
         threadsCount(8),
         maxErrors(0),
         seedLength(0),
-        online(false)
+        online(false),
+        hugeDb(false)
     {}
 };
 
@@ -129,6 +131,9 @@ void setupArgumentParser(ArgumentParser & parser)
     setValidValues(parser, "input-type", "dna geo");
     setRequired(parser, "input-type", true);
 
+    // Add huge db option.
+    addOption(parser, ArgParseOption("g", "huge", "Required if the db contains more than 16M entries."));
+
     // Add output file option.
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file.", ArgParseOption::STRING));
     setRequired(parser, "output-file", false);
@@ -167,6 +172,9 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse input type.
     getOptionValue(options.inputType, parser, "input-type");
+
+    // Parse huge db option.
+    options.hugeDb = isSet(parser, "huge");
 
     // Parse output file.
     getOptionValue(options.resultsFile, parser, "output-file");
@@ -223,6 +231,22 @@ int runJoiner(Options & options, TText const & /* tag */, TIndex const & /* tag 
         return 1;
     }
     finish = sysTime();
+
+    // Check database.
+    if (IsSameType<TDbDnaSaSmall, TIndex>::VALUE || IsSameType<TDbGeoSaSmall, TIndex>::VALUE)
+    {
+        if (length(db.text) >= Power<2, 24>::VALUE)
+        {
+            std::cerr << "Please specify the option '--huge'" << std::endl;
+            return 1;
+        }
+        if (db.maxLength >= Power<2, 8>::VALUE)
+        {
+            std::cerr << "Database strings are too long" << std::endl;
+            return 1;
+        }
+    }
+    
     std::cout << finish - start << " sec" << std::endl;
     std::cout << "Database entries:\t\t\t" << length(db.text) << std::endl;
     std::cout << "Min length:\t\t\t\t" << db.minLength << std::endl;
@@ -283,14 +307,29 @@ int mainWithOptions(Options & options)
         }
         else
         {
-            if (options.maxErrors == 0)
-                return runJoiner(options, TDbDna(), TDbDnaSa(), Exact());
+            if (options.hugeDb)
+            {
+                if (options.maxErrors == 0)
+                    return runJoiner(options, TDbDna(), TDbDnaSaHuge(), Exact());
+                else
+                {
+                    if (options.threadsCount > 1)
+                        return runJoiner(options, TDbDna(), TDbDnaSaHuge(), Parallel());
+                    else
+                        return runJoiner(options, TDbDna(), TDbDnaSaHuge(), Nothing());
+                }
+            }
             else
             {
-                if (options.threadsCount > 1)
-                    return runJoiner(options, TDbDna(), TDbDnaSa(), Parallel());
+                if (options.maxErrors == 0)
+                    return runJoiner(options, TDbDna(), TDbDnaSaSmall(), Exact());
                 else
-                    return runJoiner(options, TDbDna(), TDbDnaSa(), Nothing());
+                {
+                    if (options.threadsCount > 1)
+                        return runJoiner(options, TDbDna(), TDbDnaSaSmall(), Parallel());
+                    else
+                        return runJoiner(options, TDbDna(), TDbDnaSaSmall(), Nothing());
+                }
             }
         }
     }
@@ -302,14 +341,29 @@ int mainWithOptions(Options & options)
         }
         else
         {
-            if (options.maxErrors == 0)
-                return runJoiner(options, TDbGeo(), TDbGeoSa(), Exact());
+            if (options.hugeDb)
+            {
+                if (options.maxErrors == 0)
+                    return runJoiner(options, TDbGeo(), TDbGeoSaHuge(), Exact());
+                else
+                {
+                    if (options.threadsCount > 1)
+                        return runJoiner(options, TDbGeo(), TDbGeoSaHuge(), Parallel());
+                    else
+                        return runJoiner(options, TDbGeo(), TDbGeoSaHuge(), Nothing());
+                }
+            }
             else
             {
-                if (options.threadsCount > 1)
-                    return runJoiner(options, TDbGeo(), TDbGeoSa(), Parallel());
+                if (options.maxErrors == 0)
+                    return runJoiner(options, TDbGeo(), TDbGeoSaSmall(), Exact());
                 else
-                    return runJoiner(options, TDbGeo(), TDbGeoSa(), Nothing());
+                {
+                    if (options.threadsCount > 1)
+                        return runJoiner(options, TDbGeo(), TDbGeoSaSmall(), Parallel());
+                    else
+                        return runJoiner(options, TDbGeo(), TDbGeoSaSmall(), Nothing());
+                }
             }
         }
     }

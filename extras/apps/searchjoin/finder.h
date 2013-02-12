@@ -198,15 +198,27 @@ struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact>
 namespace seqan {
 namespace ext {
 template <typename TBacktracking>
-struct PatternIterator_<TDbDnaSa, TBacktracking>
+struct PatternIterator_<TDbDnaSaSmall, TBacktracking>
 {
-    typedef typename Iterator<TDbDnaSa, TopDown<Truncated<Preorder> > >::Type  Type;
+    typedef typename Iterator<TDbDnaSaSmall, TopDown<Truncated<Preorder> > >::Type  Type;
 };
 
 template <typename TBacktracking>
-struct PatternIterator_<TDbGeoSa, TBacktracking>
+struct PatternIterator_<TDbGeoSaSmall, TBacktracking>
 {
-    typedef typename Iterator<TDbGeoSa, TopDown<Truncated<Preorder> > >::Type  Type;
+    typedef typename Iterator<TDbGeoSaSmall, TopDown<Truncated<Preorder> > >::Type  Type;
+};
+
+template <typename TBacktracking>
+struct PatternIterator_<TDbDnaSaHuge, TBacktracking>
+{
+    typedef typename Iterator<TDbDnaSaHuge, TopDown<Truncated<Preorder> > >::Type  Type;
+};
+
+template <typename TBacktracking>
+struct PatternIterator_<TDbGeoSaHuge, TBacktracking>
+{
+    typedef typename Iterator<TDbGeoSaHuge, TopDown<Truncated<Preorder> > >::Type  Type;
 };
 }
 }

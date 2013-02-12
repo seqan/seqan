@@ -79,12 +79,14 @@ struct Options
 
     bool            online;
     bool            noWait;
-
+    bool            hugeDb;
+    
     Options() :
         threadsCount(8),
         seedLength(0),
         online(false),
-        noWait(false)
+        noWait(false),
+        hugeDb(false)
     {}
 };
 
@@ -150,6 +152,9 @@ void setupArgumentParser(ArgumentParser & parser)
     setValidValues(parser, "input-type", "dna geo");
     setRequired(parser, "input-type", true);
 
+    // Add huge db option.
+    addOption(parser, ArgParseOption("g", "huge", "Required if the db contains more than 16M entries."));
+
     // Add output file option.
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file.", ArgParseOption::STRING));
     setRequired(parser, "output-file", false);
@@ -192,6 +197,9 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse input type.
     getOptionValue(options.inputType, parser, "input-type");
 
+    // Parse huge db option.
+    options.hugeDb = isSet(parser, "huge");
+
     // Parse output file.
     getOptionValue(options.resultsFile, parser, "output-file");
 
@@ -212,7 +220,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndex, typename TSpec>
-int runSearcher(Options & options, TText const & /* tag */, TIndex const & /* tag */, TSpec /* tag */)
+int runSearcher(Options & options, TText const & /* tag */, TIndex const & /* tag */, TSpec /* tag */, Nothing const & /* tag */)
 {
     typedef Db<TText>                                       TDb;
     typedef Db<TText, Query>                                TDbQuery;
@@ -241,6 +249,22 @@ int runSearcher(Options & options, TText const & /* tag */, TIndex const & /* ta
         return 1;
     }
     finish = sysTime();
+
+    // Check database.
+    if (IsSameType<TDbDnaSaSmall, TIndex>::VALUE || IsSameType<TDbGeoSaSmall, TIndex>::VALUE)
+    {
+        if (length(db.text) >= Power<2, 24>::VALUE)
+        {
+            std::cerr << "Please specify the option '--huge'" << std::endl;
+            return 1;
+        }
+        if (db.maxLength >= Power<2, 8>::VALUE)
+        {
+            std::cerr << "Database strings are too long" << std::endl;
+            return 1;
+        }
+    }
+
     std::cout << finish - start << " sec" << std::endl;
     std::cout << "Database entries:\t\t\t" << length(db.text) << std::endl;
     std::cout << "Min length:\t\t\t\t" << db.minLength << std::endl;
@@ -314,11 +338,9 @@ int runSearcher(Options & options, TText const & /* tag */, TIndex const & /* ta
     return 0;
 }
 
-template <typename TSpec>
-int runSearcher(Options & options, TDbGeo const & /* tag */, TDbGeoSa const & /* tag */, TSpec const & /* tag */)
+template <typename TText, typename TSpec, typename TIndex>
+int runSearcher(Options & options, TText const & /* tag */, TIndex const & /* tag */, TSpec /* tag */, Online /* tag */)
 {
-    typedef TDbGeo                                          TText;
-    typedef TDbGeoSa                                        TIndex;
     typedef Db<TText>                                       TDb;
     typedef Db<TText, Query>                                TDbQuery;
     typedef Writer<TDb, TDbQuery, Search>                   TWriter;
@@ -351,6 +373,22 @@ int runSearcher(Options & options, TDbGeo const & /* tag */, TDbGeoSa const & /*
     }
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
+
+    // Check database.
+    if (IsSameType<TDbDnaSaSmall, TIndex>::VALUE || IsSameType<TDbGeoSaSmall, TIndex>::VALUE)
+    {
+        if (length(db.text) >= Power<2, 24>::VALUE)
+        {
+            std::cerr << "Please specify the option '--huge'" << std::endl;
+            return 1;
+        }
+        if (db.maxLength >= Power<2, 8>::VALUE)
+        {
+            std::cerr << "Database strings are too long." << std::endl;
+            return 1;
+        }
+    }
+
     std::cout << "Database entries:\t\t\t" << length(db.text) << std::endl;
     std::cout << "Min length:\t\t\t\t" << db.minLength << std::endl;
     std::cout << "Avg length:\t\t\t\t" << db.avgLength << std::endl;
@@ -462,28 +500,48 @@ int mainWithOptions(Options & options)
     {
         if (options.online)
         {
-            return runSearcher(options, TDbDna(), Nothing(), Online());
+            return runSearcher(options, TDbDna(), Nothing(), Online(), Nothing());
         }
         else
         {
-            if (options.threadsCount > 1)
-                return runSearcher(options, TDbDna(), TDbDnaSa(), Parallel());
+            if (options.hugeDb)
+            {
+                if (options.threadsCount > 1)
+                    return runSearcher(options, TDbDna(), TDbDnaSaHuge(), Parallel(), Nothing());
+                else
+                    return runSearcher(options, TDbDna(), TDbDnaSaHuge(), Nothing(), Nothing());
+            }
             else
-                return runSearcher(options, TDbDna(), TDbDnaSa(), Nothing());
+            {
+                if (options.threadsCount > 1)
+                    return runSearcher(options, TDbDna(), TDbDnaSaSmall(), Parallel(), Nothing());
+                else
+                    return runSearcher(options, TDbDna(), TDbDnaSaSmall(), Nothing(), Nothing());
+            }
         }
     }
     else if (isEqual(options.inputType, "geo"))
     {
         if (options.online)
         {
-            return runSearcher(options, TDbGeo(), Nothing(), Online());
+            return runSearcher(options, TDbGeo(), Nothing(), Online(), Nothing());
         }
         else
         {
-            if (options.threadsCount > 1)
-                return runSearcher(options, TDbGeo(), TDbGeoSa(), Parallel());
+            if (options.hugeDb)
+            {
+                if (options.threadsCount > 1)
+                    return runSearcher(options, TDbGeo(), TDbGeoSaHuge(), Parallel(), Online());
+                else
+                    return runSearcher(options, TDbGeo(), TDbGeoSaHuge(), Nothing(), Online());
+            }
             else
-                return runSearcher(options, TDbGeo(), TDbGeoSa(), Nothing());
+            {
+                if (options.threadsCount > 1)
+                    return runSearcher(options, TDbGeo(), TDbGeoSaSmall(), Parallel(), Online());
+                else
+                    return runSearcher(options, TDbGeo(), TDbGeoSaSmall(), Nothing(), Online());
+            }
         }
     }
     else

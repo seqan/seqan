@@ -55,6 +55,12 @@ using namespace seqan;
 // Database Basic Types
 // ----------------------------------------------------------------------------
 
+struct SmallDb_;
+typedef Tag<SmallDb_>                           SmallDb;
+
+struct HugeDb_;
+typedef Tag<HugeDb_>                            HugeDb;
+
 struct StringOfMaxSize256_;
 typedef Tag<StringOfMaxSize256_>                StringOfMaxSize256;
 
@@ -111,44 +117,76 @@ struct StringSetLimits<TDbGeo>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Database Suffix Array Value Type Definition
+// Database Suffix Array Type Definitions
 // ----------------------------------------------------------------------------
+
+typedef Index<TDbDna, IndexSa<SmallDb> >            TDbDnaSaSmall;
+typedef Index<TDbGeo, IndexSa<SmallDb> >            TDbGeoSaSmall;
+
+typedef Index<TDbDna, IndexSa<HugeDb> >             TDbDnaSaHuge;
+typedef Index<TDbGeo, IndexSa<HugeDb> >             TDbGeoSaHuge;
 
 namespace seqan
 {
 template <>
-struct SAValue<TDbDna>
+struct Fibre<TDbDnaSaSmall, FibreSA>
 {
-    typedef Pair<Size<TDbDna>::Type, SAValue<TDbDnaString>::Type, BitPacked<24, 8> >    Type;
+    typedef String<Pair<unsigned int, unsigned char, BitPacked<24, 8> >, DefaultIndexStringSpec<TDbDnaSaSmall>::Type> Type;
 };
 
 template <>
-struct SAValue<TDbGeo>
+struct Fibre<TDbGeoSaSmall, FibreSA>
 {
-    typedef Pair<Size<TDbGeo>::Type, SAValue<TDbGeoString>::Type, BitPacked<24, 8> >    Type;
+    typedef String<Pair<unsigned int, unsigned char, BitPacked<24, 8> >, DefaultIndexStringSpec<TDbGeoSaSmall>::Type> Type;
+};
+
+template <>
+struct Fibre<TDbDnaSaHuge, FibreSA>
+{
+    typedef String<Pair<unsigned int, unsigned char, Pack>, DefaultIndexStringSpec<TDbDnaSaHuge>::Type> Type;
+};
+
+template <>
+struct Fibre<TDbGeoSaHuge, FibreSA>
+{
+    typedef String<Pair<unsigned int, unsigned char, Pack>, DefaultIndexStringSpec<TDbDnaSaHuge>::Type> Type;
 };
 }
 
 // ----------------------------------------------------------------------------
-// Database Suffix Array Type Definitions
+// Database Shape Length Definitions
 // ----------------------------------------------------------------------------
 
-typedef Index<TDbDna, IndexSa<> >                   TDbDnaSa;
-typedef Index<TDbGeo, IndexSa<> >                   TDbGeoSa;
+//template <typename TText>
+//struct ShapeLength
+//{
+//    static const unsigned VALUE = MaxValue<typename Size<TText>::Type>::VALUE;
+//};
+//
+//template <>
+//struct ShapeLength<TDbDna>
+//{
+//    static const unsigned VALUE = 10u;
+//};
+//
+//template <>
+//struct ShapeLength<TDbGeo>
+//{
+//    static const unsigned VALUE = 3u;
+//};
 
 // ----------------------------------------------------------------------------
 // Database QGram Index with Bucket Refinement Type Definitions
 // ----------------------------------------------------------------------------
 
-typedef UngappedShape<10>                               TShapeDna;
-typedef UngappedShape<3>                                TShapeGeo;
-typedef IndexQGram<TShapeDna, BucketRefinement>         TDbDnaQGramSpec;
-typedef IndexQGram<TShapeGeo, BucketRefinement>         TDbGeoQGramSpec;
-//typedef IndexQGram<TShapeDna>                           TDbDnaQGramSpec;
-//typedef IndexQGram<TShapeGeo>                           TDbGeoQGramSpec;
-
-typedef Index<TDbDna, TDbDnaQGramSpec>                  TDbDnaQGram;
-typedef Index<TDbGeo, TDbGeoQGramSpec>                  TDbGeoQGram;
+//typedef UngappedShape<10>                               TShapeDna;
+//typedef UngappedShape<3>                                TShapeGeo;
+//
+//typedef IndexQGram<TShapeDna, BucketRefinement>         TDbDnaQGramSpec;
+//typedef IndexQGram<TShapeGeo, BucketRefinement>         TDbGeoQGramSpec;
+//
+//typedef Index<TDbDna, TDbDnaQGramSpec>                  TDbDnaQGram;
+//typedef Index<TDbGeo, TDbGeoQGramSpec>                  TDbGeoQGram;
 
 //namespace seqan
 //{
