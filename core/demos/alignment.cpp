@@ -9,7 +9,6 @@ int main()
 {
 	using namespace seqan;
 	typedef Value<Gaps<Dna5String, ArrayGaps> >::Type TValue;
-	/*
 	using namespace seqan;
 
 ///Two DNA sequences that shall be aligned.
@@ -48,6 +47,5 @@ int main()
     score = globalAlignment(alignment_graph, scoringScheme, Gotoh());
     std::cout << "Score = " << score << std::endl;
     std::cout << alignment_graph << std::endl;
-	*/
     return 0;
 }
