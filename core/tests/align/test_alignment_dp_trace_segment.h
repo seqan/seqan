@@ -211,10 +211,10 @@ void testAlignmentTracebackTraceSegmentGetBeginHorizontal()
     traceSegm._verticalBeginPos = 12;
     traceSegm._length = 7;
 
-    SEQAN_ASSERT_EQ(getBeginHorizontal(traceSegm), 5);
+    SEQAN_ASSERT_EQ(_getBeginHorizontal(traceSegm), 5);
 
     traceSegm._horizontalBeginPos = 7;
-    SEQAN_ASSERT_EQ(getBeginHorizontal(traceSegm), 7);
+    SEQAN_ASSERT_EQ(_getBeginHorizontal(traceSegm), 7);
 }
 
 void testAlignmentTracebackTraceSegmentGetBeginVertical()
@@ -229,10 +229,10 @@ void testAlignmentTracebackTraceSegmentGetBeginVertical()
     traceSegm._verticalBeginPos = 12;
     traceSegm._length = 7;
 
-    SEQAN_ASSERT_EQ(getBeginVertical(traceSegm), 12);
+    SEQAN_ASSERT_EQ(_getBeginVertical(traceSegm), 12);
 
     traceSegm._verticalBeginPos = 7;
-    SEQAN_ASSERT_EQ(getBeginVertical(traceSegm), 7);
+    SEQAN_ASSERT_EQ(_getBeginVertical(traceSegm), 7);
 }
 
 void testAlignmentTracebackTraceSegmentGetEndHorizontal()
@@ -248,10 +248,10 @@ void testAlignmentTracebackTraceSegmentGetEndHorizontal()
     traceSegm._length = 7;
     traceSegm._traceValue = +TraceBitMap_::HORIZONTAL;
 
-    SEQAN_ASSERT_EQ(getEndHorizontal(traceSegm), 12);
+    SEQAN_ASSERT_EQ(_getEndHorizontal(traceSegm), 12);
 
     traceSegm._traceValue = +TraceBitMap_::VERTICAL;
-    SEQAN_ASSERT_EQ(getEndHorizontal(traceSegm), 5);
+    SEQAN_ASSERT_EQ(_getEndHorizontal(traceSegm), 5);
 }
 
 void testAlignmentTracebackTraceSegmentGetEndVertical()
@@ -267,10 +267,10 @@ void testAlignmentTracebackTraceSegmentGetEndVertical()
     traceSegm._length = 7;
     traceSegm._traceValue = +TraceBitMap_::VERTICAL;
 
-    SEQAN_ASSERT_EQ(getEndVertical(traceSegm), 19);
+    SEQAN_ASSERT_EQ(_getEndVertical(traceSegm), 19);
 
     traceSegm._traceValue = +TraceBitMap_::HORIZONTAL;
-    SEQAN_ASSERT_EQ(getEndVertical(traceSegm), 12);
+    SEQAN_ASSERT_EQ(_getEndVertical(traceSegm), 12);
 }
 
 void testAlignmentTracebackTraceSegmentTranslateTraceValue()

@@ -83,42 +83,57 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     DnaString str0 = "ACG";
     DnaString str1 = "ACG";
 
-    _computeTraceback(target, navigator, 15, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 15;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 1u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
 
     clear(target);
-    _computeTraceback(target, navigator, 14, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    dpScout._maxHostPosition = 14;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 3u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 2, 1, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 2, 3, +TraceBitMap_::HORIZONTAL));
     SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 2, +TraceBitMap_::VERTICAL));
 
     clear(target);
-    _computeTraceback(target, navigator, 13, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    dpScout._maxHostPosition = 13;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 4u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 1, 2, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(2, 1, 1, +TraceBitMap_::HORIZONTAL));
     SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 0, 1, +TraceBitMap_::DIAGONAL));
     SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::HORIZONTAL));
 
     clear(target);
-    _computeTraceback(target, navigator, 12, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    dpScout._maxHostPosition = 12;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 2u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 0, 3, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 3, +TraceBitMap_::HORIZONTAL));
 
     clear(target);
-    _computeTraceback(target, navigator, 11, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    dpScout._maxHostPosition = 11;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 4u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 3, 1, +TraceBitMap_::HORIZONTAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(2, 1, 2, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[2], TTraceSegment(1, 0, 1, +TraceBitMap_::DIAGONAL));
     SEQAN_ASSERT_EQ(target[3], TTraceSegment(0, 0, 1, +TraceBitMap_::HORIZONTAL));
 
     clear(target);
-    _computeTraceback(target, navigator, 7, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    dpScout._maxHostPosition = 7;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 3u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(1, 3, 2, +TraceBitMap_::HORIZONTAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 1, 2, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
 
     clear(target);
-    _computeTraceback(target, navigator, 3, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    dpScout._maxHostPosition = 3;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    SEQAN_ASSERT_EQ(length(target), 2u);
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 3, 3, +TraceBitMap_::HORIZONTAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 3, +TraceBitMap_::VERTICAL));
 }
@@ -168,7 +183,9 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
     DnaString str0 = "ACG";
     DnaString str1 = "ACG";
 
-    _computeTraceback(target, navigator, 15, str0, str1, DPBand_<BandOff>(), TDPProfile());
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 15;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::DIAGONAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 2, 1, +TraceBitMap_::HORIZONTAL));
@@ -222,7 +239,9 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
     DnaString str0 = "ACGT";
     DnaString str1 = "ACGT";
 
-    _computeTraceback(target, navigator, 13, str0, str1, DPBand_<BandOn>(-1, 1), TDPProfile());
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 13;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOn>(-1, 1), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 3, 1, +TraceBitMap_::DIAGONAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(3, 2, 1, +TraceBitMap_::VERTICAL));
@@ -312,7 +331,9 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     DnaString str0 = "ACGTAC";
     DnaString str1 = "ACGTAC";
 
-    _computeTraceback(target, navigator, 46, str0, str1, DPBand_<BandOn>(-4, 4), TDPProfile());
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 46;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOn>(-4, 4), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(6, 3, 3, +TraceBitMap_::VERTICAL));
     SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 3, 5, +TraceBitMap_::HORIZONTAL));
@@ -353,7 +374,9 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
     DnaString str0 = "ACG";
     DnaString str1 = "ACG";
 
-    _computeTraceback(target, navigator, 3, str0, str1, DPBand_<BandOn>(0, 0), TDPProfile());
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 3;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOn>(0, 0), TDPProfile());
 
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
 }
