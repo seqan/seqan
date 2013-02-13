@@ -157,12 +157,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // Test DPBand.
     // ----------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_dp_band_off_constructor);
     SEQAN_CALL_TEST(test_dp_band_on_constructor);
-    SEQAN_CALL_TEST(test_dp_band_off_lower_diagonal);
-    SEQAN_CALL_TEST(test_dp_band_off_upper_diagonal);
-    SEQAN_CALL_TEST(test_dp_band_off_set_lower_diagonal);
-    SEQAN_CALL_TEST(test_dp_band_off_set_upper_diagonal);
     SEQAN_CALL_TEST(test_dp_band_on_lower_diagonal);
     SEQAN_CALL_TEST(test_dp_band_on_upper_diagonal);
     SEQAN_CALL_TEST(test_dp_band_on_set_lower_diagonal);

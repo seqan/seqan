@@ -83,13 +83,6 @@ template <>
 struct DPBand_<BandOff>
 {
     typedef int TPosition;
-
-    int _lowerDiagonal;
-    int _upperDiagonal;
-
-    DPBand_() :
-        _lowerDiagonal(0), _upperDiagonal(0)
-    {}
 };
 
 // ----------------------------------------------------------------------------
