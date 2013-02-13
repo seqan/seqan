@@ -241,20 +241,20 @@ void _computeTraceback(TTarget & target,
     typedef DPScout_<TDPCell, TScoutSpec> TDPScout_;
     typedef typename TDPScout_::TScoutState TScoutState_;
     typedef typename TScoutState_::TInitCell TInitCell;
-    typedef typename TScoutState_::TInitializationCellSet TInitializationCellSet;
-    typedef typename TInitializationCellSet::iterator TSetIterator;
 	typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
 	typedef typename Size<TContainer>::Type TSize;
+	typedef typename MakeSigned<TSize>::Type TSignedSize;
 	typedef typename Position<TContainer>::Type TPosition;
 	typedef typename MakeSigned<TPosition>::Type TSignedPosition;
-	typedef typename MakeSigned<TSize>::Type TSignedSize;
+    typedef typename Size<TSequenceH>::Type TSizeSeqH;
+    typedef typename Size<TSequenceV>::Type TSizeSeqV;
 	typedef typename TraceBitMap_::TTraceValue TTraceValue;
 
 	if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
 		return;
 
-	TSignedSize seqHSize = length(seqH);
-	TSignedSize seqVSize = length(seqV);
+	TSizeSeqH seqHSize = length(seqH);
+	TSizeSeqV seqVSize = length(seqV);
 
     // Determine whether or not we place gaps to the left.
     typedef typename If<IsSameType<TTracebackSpec, TracebackOn<GapsLeft> >, True, False>::Type TIsGapsLeft;
@@ -269,11 +269,11 @@ void _computeTraceback(TTarget & target,
     TTraceValue traceValue = value(matrixNavigator);
     TTraceValue lastTraceValue = _retrieveInitialTraceDirection(traceValue, dpProfile);
 
-    TracebackCoordinator_ tracebackCoordinator(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL),
-                                               coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL),
-                                               dpScout._dpScoutStatePtr->_horizontalNextGridOrigin,
-                                               dpScout._dpScoutStatePtr->_verticalNextGridOrigin,
-                                               band, seqHSize, seqVSize);
+    TracebackCoordinator_<TPosition> tracebackCoordinator(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL),
+                                                          coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL),
+                                                          dpScout._dpScoutStatePtr->_horizontalNextGridOrigin,
+                                                          dpScout._dpScoutStatePtr->_verticalNextGridOrigin,
+                                                          band, seqHSize, seqVSize);
 
     // Record trailing gaps if any.
     if (IsSameType<TDPMatrixLocation, BandedChainFinalDPMatrix>::VALUE)
@@ -294,8 +294,17 @@ void _computeTraceback(TTarget & target,
     while(!_hasReachedEnd(tracebackCoordinator) && traceValue != +TraceBitMap_::NONE)
         _doTraceback(tmp, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, TGapCosts(), TIsGapsLeft());
 
-    TSignedPosition horizontalInitPos = tracebackCoordinator._currColumn - tracebackCoordinator._endColumn;
-    TSignedPosition verticalInitPos = tracebackCoordinator._currRow - tracebackCoordinator._endRow;
+    // TODO(rmaerker): The currColumn or row actually can exceed the endColumn or row in affine case.
+    // A more cleaner implementation would stop at the endCol or endRow and simply adapts the trace for the
+    // particular current cell to continue the trace in the correct direction if it was within a horizontal
+    // or vertical gap. Because the actual value does not necessarily stores a horizontal or vertical gap
+    // if the maximum for this cell evolved from a different direction. Therefore we could implement kind of an
+    // state that is reported whenever we stopped the traceback while beeing within a vertical or horizontal gap
+    // for affine gap costs.
+    TSignedPosition horizontalInitPos = static_cast<TSignedPosition>(tracebackCoordinator._currColumn) -
+                                        static_cast<TSignedPosition>(tracebackCoordinator._endColumn);
+    TSignedPosition verticalInitPos = static_cast<TSignedPosition>(tracebackCoordinator._currRow) -
+                                      static_cast<TSignedPosition>(tracebackCoordinator._endRow);
 
     bool insertResult;
     if (verticalInitPos <= 0)
@@ -325,8 +334,8 @@ void _computeTraceback(TTarget & target,
 
     if (IsSameType<TDPMatrixLocation, BandedChainInitialDPMatrix>::VALUE)
     {
-        TSignedSize currCol = coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL);
-        TSignedSize currRow = coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL);
+        TPosition currCol = coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL);
+        TPosition currRow = coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL);
 
         // Correct the row position.
         if (IsSameType<TBandFlag, BandOn>::VALUE)
@@ -335,9 +344,9 @@ void _computeTraceback(TTarget & target,
                     if (currCol < tracebackCoordinator._breakpoint2)
                         currRow -= length(container(matrixNavigator), +DPMatrixDimension_::VERTICAL) - 1 + lowerDiagonal(band) - currCol;
         // Record leading gaps if any.
-        if (currRow != 0)
+        if (currRow != 0u)
             _recordSegment(target, 0, 0, currRow, +TraceBitMap_::VERTICAL);
-        if (currCol != 0)
+        if (currCol != 0u)
             _recordSegment(target, 0, 0, currCol, +TraceBitMap_::HORIZONTAL);
     }
 }

@@ -1089,7 +1089,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     verticalNextGridOrigin = _max(0,
         static_cast<TSignedPosition>(getEndVertical(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
         static_cast<TSignedPosition>(verticalBandShift) - static_cast<TSignedPosition>(gridBegin.i2) -
-        _max(0, static_cast<TSignedPosition>(getEndHorizontal(currentSeed)) + bandExtension - static_cast<TSignedSize>(length(seqH))));
+        _max(0, static_cast<TSignedPosition>(getEndHorizontal(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqH))));
 
     infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     infixV = infix(seqV, gridBegin.i2, gridEnd.i2);

@@ -88,7 +88,7 @@ public:
     String<TDPCell> _verticalInitNextMatrix;
     TInitializationCellSet _nextInitializationCells;
 
-    DPScoutState_() : _horizontalNextGridOrigin(0), _verticalNextGridOrigin(0)
+    DPScoutState_() : _horizontalNextGridOrigin(0u), _verticalNextGridOrigin(0u)
     {}
 
 };
