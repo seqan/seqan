@@ -330,8 +330,9 @@ void setUpArgumentParser(ArgumentParser & parser)
     setShortDescription(parser, "A Read Simulator");
     setVersion(parser, "0.1.1");
     setDate(parser, "July 27, 2012");
+    setCategory(parser, "Simulation");
 
-    addDescription(parser, "Use 'random' for the SEQUENCE file name to generate it randomly.");
+    addDescription(parser, "Use 'random.fasta' for the SEQUENCE file name to generate it randomly.");
 
     addSection(parser, "Main Options");
     
@@ -351,7 +352,8 @@ void setUpArgumentParser(ArgumentParser & parser)
     addOption(parser, ArgParseOption("snN", "source-no-N", "If set then no Ns are generated in the random source sequence."));
     addOption(parser, ArgParseOption("f",  "forward-only", "Simulate from forward strand only."));
     addOption(parser, ArgParseOption("r",  "reverse-only", "Simulate from reverse strand only."));
-    addOption(parser, ArgParseOption("o",  "output-file", "Write results to PARAM.fasta file instead of SEQUENCE.reads.fasta.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("o",  "output-file", "Write results to PARAM.fasta file instead of SEQUENCE.reads.fasta.", ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output-file", "fasta fa fastq fq");
     addOption(parser, ArgParseOption("sq", "simulate-qualities", "Simulate qualities, generate FASTQ instead of FASTA."));
     addOption(parser, ArgParseOption("i", "include-read-information", "Include additional read information in reads file."));
     addOption(parser, ArgParseOption("v", "verbose", "Verbosity mode."));
@@ -393,9 +395,10 @@ void setUpArgumentParser(ArgumentParser & parser)
 	addListItem(parser, "1", "Add zero-based slash-suffix, i.e. names will end on '/0' and '/1'");
 	addListItem(parser, "2", "Add one-based slash-suffix, i.e. names will end on '/1' and '/2'");
 
-    // Need reads type and {SEQUENCE.fasta, random}.
+    // Need reads type and {SEQUENCE.fasta, random.fasta}.
     addArgument(parser, ArgParseArgument(ArgParseArgument::STRING));
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    setValidValues(parser, 1, "fasta fa");
 }
 
 // Parse command line for global options and perform some checks.
@@ -460,7 +463,7 @@ parseArgumentsAndCheck(TOptions & options,
     // First argument is "illumina", second one name of reference file.
     getArgumentValue(referenceFilename, parser, 1);
 
-    if (referenceFilename == "random")
+    if (referenceFilename == "random.fasta")
         options.useRandomSequence = true;
 
     return parseArgumentsAndCheckModelSpecific(options, parser);
