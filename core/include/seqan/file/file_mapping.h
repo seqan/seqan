@@ -375,9 +375,9 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
 #endif
 }
 
-template <typename TSpec, typename TPos, typename TSize>
+template <typename TSpec, typename TPos, typename TSize, typename TFileMappingMode>
 inline void *
-mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappingMode mode)
+mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, TFileMappingMode mode)
 {
     SEQAN_ASSERT_EQ((int)OPEN_RDONLY, (int)MAP_RDONLY);
     SEQAN_ASSERT_EQ((int)OPEN_WRONLY, (int)MAP_WRONLY);
@@ -424,7 +424,9 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, FileMappin
         addr = NULL;
 #endif
     if (addr == NULL)
-        SEQAN_FAIL("mapFileSegment failed: \"%s\"", strerror(errno));
+    {
+        SEQAN_FAIL("mapFileSegment(%i,%i,%i) failed (filesize=%i): \"%s\"", fileOfs, size, mode, seqan::size(mapping.file), strerror(errno));
+    }
     return addr;
 }
 
@@ -456,7 +458,7 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 
 #endif
     if (!result)
-        SEQAN_FAIL("unmapFileSegment failed: \"%s\"", strerror(errno));
+        SEQAN_FAIL("unmapFileSegment(%x,%i) failed: \"%s\"", (unsigned long)addr, size, strerror(errno));
     return result;
 }
 
