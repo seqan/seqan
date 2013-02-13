@@ -78,11 +78,13 @@ public:
     {}
 
     // The assignment operator.
-    DPCell_<TScoreValue, LinearGaps> &
-    operator=(DPCell_<TScoreValue, LinearGaps> const & other)
+    DPCell_ &
+    operator=(DPCell_ const & other)
     {
         if (this != &other)
             _score = other._score;
+            _horizontalScore = other._horizontalScore;
+            _verticalScore = other._verticalScore;
         return *this;
     }
 
@@ -92,7 +94,6 @@ public:
         _score = score;
         return *this;
     }
-
 };
 
 // ============================================================================
