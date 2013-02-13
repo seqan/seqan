@@ -66,22 +66,22 @@ namespace seqan {
 ..remarks:Sequence names are not stored in LocalMatch objects but in the @Class.LocalMatchStore@ they belong to.
 ..see:Class.LocalMatchStore
 ..include:seqan/parse_lm.h
-.Memvar.Local Match#subjectId
+.Memvar.LocalMatch#subjectId
 ..summary:The id of the subject.
 ..class:Class.LocalMatch
-.Memvar.Local Match#subjectBeginPos
+.Memvar.LocalMatch#subjectBeginPos
 ..summary:Begin position of local match in the subject.
 ..class:Class.LocalMatch
-.Memvar.Local Match#subjectEndPos
+.Memvar.LocalMatch#subjectEndPos
 ..summary:End position of local match in the subject.
 ..class:Class.LocalMatch
-.Memvar.Local Match#queryId
+.Memvar.LocalMatch#queryId
 ..summary:The id of the query.
 ..class:Class.LocalMatch
-.Memvar.Local Match#queryBeginPos
+.Memvar.LocalMatch#queryBeginPos
 ..summary:Begin position of local match in the query.
 ..class:Class.LocalMatch
-.Memvar.Local Match#queryEndPos
+.Memvar.LocalMatch#queryEndPos
 ..summary:End position of local match in the query.
 ..class:Class.LocalMatch
  */

@@ -75,7 +75,7 @@ $align[0]$ is the horizontal one in the alignment matrix alignment, $align[1]$ i
 ...type:Class.Gaps
 ..param.gapsV:Vertical gapped sequence in alignment matrix.
 ...type:Class.Gaps
-..param.fragmentString
+..param.fragmentString:
 String of @Class.Fragment@ objects.
 The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the vertical one.
 ..param.scoringScheme:

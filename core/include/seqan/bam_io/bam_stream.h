@@ -91,7 +91,7 @@ for (unsigned i = 0; i < length(record); ++i)
     writeRecord(bamIO, records[i]);
 ..include:seqan/bam_io.h
 
-.Memfunc.BamStream#BamStream
+.Memfunc.BamStream#BamStream:
 ..class:Class.BamStream
 ..description:See documentation of @Class.BamStream@ for more information.
 ..summary:Constructor
@@ -106,7 +106,7 @@ for (unsigned i = 0; i < length(record); ++i)
 ...type:Enum.BamStream\colon\colonFormat
 ...default:@Enum.BamStream\colon\colonFormat.value.AUTO@
 
-.Memvar.BamStream#header
+.Memvar.BamStream#header:
 ..class:Class.BamStream
 ..type:BamHeader
 ..summary:The @Class.BamHeader@ of the @Class.BamStream@ object.
@@ -121,7 +121,7 @@ When reading SAM files, any header will be read upon opening the file.
 Note that there is a special case when reading SAM records:
 If there is no header, or records refer to reference sequences that are previously unknown when reading SAM then a new entry is added to @Memvar.BamHeader#sequenceInfos@.\
 
-.Memvar.BamStream#bamIOContext
+.Memvar.BamStream#bamIOContext:
 ..class:Class.BamStream
 ..summary:The @Class.BamIOContext@ object to use for reading and writing @Class.BamAlignmentRecord@s.
 ..description:
@@ -129,13 +129,13 @@ When reading, the $bamIOContext$ will be updated automatically.
 When reading SAM, new reference sequences can be introduced "on the fly" when a new sequence appears.
 When writing, the $bamIOContext$ is automatically filled/reset when the first record is written.
 
-.Enum.BamStream\colon\colonOperationMode
+.Enum.BamStream\colon\colonOperationMode:
 ..summary:Select the operation mode of a @Class.BamStream@.
 ..value.READ:Open stream for reading.
 ..value.WRITE:Open stream for writing.
 ..include:seqan/bam_io.h
 
-.Enum.BamStream\colon\colonFormat
+.Enum.BamStream\colon\colonFormat:
 ..summary:Select the format to use for reading/writing.
 ..value.AUTO:Auto-detect format from file content on reading and from the file name on writing. If Auto-detection fails, SAM is used.
 ..value.SAM:Force reading/writing of SAM.
