@@ -39,11 +39,6 @@
 
 #include <seqan/seeds2.h>  // Include module under test.
 
-#include "test_align_chain_banded.h"
-#include "test_align_dynprog_affine.h"
-#include "test_align_dynprog_banded_affine.h"
-#include "test_align_dynprog_banded_linear.h"
-#include "test_align_dynprog_linear.h"
 #include "test_basic_iter_indirect.h"
 #include "test_seeds_combination.h"
 #include "test_seeds_extension.h"
@@ -175,7 +170,7 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
     // 
     // SEQAN_CALL_TEST(test_seeds_extension_gapped_xdrop_extension_chained);
 
-    // Tests for the new banded chain alignment algorithm.
+    // Tests for the banded chain alignment algorithm.
     SEQAN_CALL_TEST(test_banded_chain_alignment_empty_set_linear);
     SEQAN_CALL_TEST(test_banded_chain_alignment_empty_set_affine);
     SEQAN_CALL_TEST(test_banded_chain_alignment_one_seed_linear);
@@ -241,39 +236,7 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score);
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_scores);
 
-    // Tests for the banded chain alignment algorithms.
-//    SEQAN_CALL_TEST(test_align_chain_banded_compute_upper_left_overlap);
-//    SEQAN_CALL_TEST(test_align_chain_banded_compute_lower_right_overlap);
-    //SEQAN_CALL_TEST(test_align_chain_banded_align_linear);
-    // TODO(holtgrew): Not testing banded chain alignment with affine gap costs for now.
-    // SEQAN_CALL_TEST(test_align_chain_banded_align_affine);
-
-//    // Tests for the classic NW dynamic programming.
-//    SEQAN_CALL_TEST(test_align_dynprog_linear_resize_matrix);
-//    SEQAN_CALL_TEST(test_align_dynprog_linear_init_gutter_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_linear_init_gutter_not_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_linear_fill_matrix);
-//    //SEQAN_CALL_TEST(test_align_dynprog_linear_traceback);
-//    // Tests for the banded NW dynamic programming.
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_linear_resize_matrix);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_linear_init_gutter_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_linear_init_gutter_not_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_linear_fill_matrix);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_linear_traceback);
-//
-//    // Tests for the classic Gotoh dynamic programming.
-//    SEQAN_CALL_TEST(test_align_dynprog_affine_resize_matrix);
-//    SEQAN_CALL_TEST(test_align_dynprog_affine_init_gutter_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_affine_init_gutter_not_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_affine_fill_matrix);
-//    //SEQAN_CALL_TEST(test_align_dynprog_affine_traceback);
-//    // Tests for the banded Gotoh dynamic programming.
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_affine_resize_matrix);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_affine_init_gutter_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_affine_init_gutter_not_free);
-//    SEQAN_CALL_TEST(test_align_dynprog_banded_affine_fill_matrix);
-//    //SEQAN_CALL_TEST(test_align_dynprog_banded_affine_traceback);
-//
+// TODO(rmaerker): What has to be done here?
 //    // Test global chaining of seeds.
 //    SEQAN_CALL_TEST(test_seeds_global_chaining_sparse_length);
 }

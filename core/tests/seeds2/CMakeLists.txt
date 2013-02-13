@@ -31,11 +31,6 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_seeds2
                test_seeds2.cpp
-               test_align_chain_banded.h
-               test_align_dynprog_affine.h
-               test_align_dynprog_banded_affine.h
-               test_align_dynprog_banded_linear.h
-               test_align_dynprog_linear.h
                test_basic_iter_indirect.h
                test_seeds_combination.h
                test_seeds_extension.h
