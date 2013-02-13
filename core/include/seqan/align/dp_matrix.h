@@ -338,7 +338,7 @@ struct Iterator<DPMatrix_<TValue, TMatrixSpec>, Rooted const>
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
     typedef typename  _DataHost<TDPMatrix_>::Type TDataMatrix_;
-    typedef typename Iterator<TDataMatrix_, Standard>::Type Type;
+    typedef typename Iterator<TDataMatrix_, Rooted>::Type Type;
 };
 
 template <typename TValue, typename TMatrixSpec>
@@ -346,7 +346,7 @@ struct Iterator<DPMatrix_<TValue, TMatrixSpec> const, Rooted const>
 {
     typedef DPMatrix_<TValue, TMatrixSpec> TDPMatrix_;
     typedef typename  _DataHost<TDPMatrix_>::Type TDataMatrix_;
-    typedef typename Iterator<TDataMatrix_ const, Standard>::Type Type;
+    typedef typename Iterator<TDataMatrix_ const, Rooted>::Type Type;
 };
 
 // ============================================================================
