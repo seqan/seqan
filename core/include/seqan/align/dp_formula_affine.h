@@ -34,8 +34,8 @@
 // Defines the recursion functions when dealing with affine gap functions.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
 
 namespace seqan {
 
@@ -400,4 +400,4 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_

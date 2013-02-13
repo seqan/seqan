@@ -36,8 +36,8 @@
 // cells needed for the recursion formula.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
 
 namespace seqan {
 
@@ -323,4 +323,4 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_

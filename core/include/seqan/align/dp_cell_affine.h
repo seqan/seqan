@@ -35,8 +35,8 @@
 // values for the three matrices: diagonal, vertical and horizontal.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
 
 namespace seqan {
 
@@ -156,4 +156,4 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_

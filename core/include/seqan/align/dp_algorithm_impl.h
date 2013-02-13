@@ -130,8 +130,8 @@
 // sequence to determine there orientation within the matrix.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
 
 namespace seqan {
 
@@ -1380,4 +1380,4 @@ _computeAlignment(TTraceTarget & traceSegments,
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_

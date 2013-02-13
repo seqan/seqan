@@ -34,8 +34,8 @@
 // Defines the methods to compute the score when using linear gap costs.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_LINEAR_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_LINEAR_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_LINEAR_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_LINEAR_H_
 
 namespace seqan {
 
@@ -300,4 +300,4 @@ _computeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_LINEAR_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_LINEAR_H_

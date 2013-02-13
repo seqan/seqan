@@ -37,8 +37,8 @@
 // the maximal score, e.g., for the split breakpoint computation.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
 
 namespace seqan {
 
@@ -182,4 +182,4 @@ maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_

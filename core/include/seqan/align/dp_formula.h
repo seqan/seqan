@@ -34,8 +34,8 @@
 // Defines the recursion formula for the dp-alignment algorithms.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 
 namespace seqan {
 
@@ -195,4 +195,4 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_

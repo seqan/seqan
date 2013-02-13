@@ -34,8 +34,8 @@
 // Implements the traceback algorithm.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
 
 // TODO(holtgrew): GapsRight traceback is currently untested.
 // TODO(rmaerker): Change Tracback to TraceConfig<TGapsPlacement, TAllPaths, TAllOptimal> | TraceBackOff
@@ -556,4 +556,4 @@ void _computeTraceback(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_

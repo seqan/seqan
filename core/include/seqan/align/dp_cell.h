@@ -37,8 +37,8 @@
 // scores necessary for the affine gap function.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
 
 namespace seqan {
 
@@ -189,4 +189,4 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_H_

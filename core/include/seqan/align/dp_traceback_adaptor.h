@@ -35,8 +35,8 @@
 // alignment representing structure.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_ADAPTOR_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_ADAPTOR_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_ADAPTOR_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_ADAPTOR_H_
 
 namespace seqan {
 
@@ -339,4 +339,4 @@ _adaptTraceSegmentsTo(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & matc
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_ADAPTOR_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_ADAPTOR_H_

@@ -38,8 +38,8 @@
 // All classes are only used on a meta-level.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
 
 namespace seqan {
 
@@ -448,4 +448,4 @@ struct TrackingEnabled_<TDPMetaColumn, LastCell>:
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_

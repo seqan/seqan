@@ -44,8 +44,8 @@
 // ==========================================================================
 
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
 
 namespace seqan {
 
@@ -226,4 +226,4 @@ container(DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> const & 
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
