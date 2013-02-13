@@ -169,7 +169,7 @@ int result = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -2, 2);
 ..see:Function.localAlignment
 ..see:Function.globalAlignmentScore
 ..include:seqan/align.h
-..wiki:Tutorial/Alignments
+..wiki:Tutorial/PairwiseSequenceAlignment
 ..cite:Needleman SB, Wunsch CD: A general method applicable to the search for similarities in the amino acid sequence of two proteins. J Mol Biol 1970, 48(3): 443-53.
 ..cite:Gotoh O: An improved algorithm for matching biological sequences. J Mol Biol 1982, 162(3):705-8
 .
@@ -500,6 +500,7 @@ Note that Myers' bit-vector algorithm does not compute an alignment (only in the
 The same limitations to algorithms as in @Function.globalAlignment@ apply.
 Furthermore, the $MyersBitVector$ and $MyersHirschberg$ variants can only be used without any other parameter.
 ..see:Function.globalAlignment
+..wiki:Tutorial/PairwiseSequenceAlignment
 */
 
 // ----------------------------------------------------------------------------

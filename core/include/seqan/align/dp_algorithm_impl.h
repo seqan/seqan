@@ -516,7 +516,7 @@ _computeBandedAlignment(TDPScout & scout,
     // Now we have the problem of not knowing when we are in the last cell.
 
     // ============================================================================
-    // PREPREOCESSING
+    // PREPROCESSING
     // ============================================================================
     TSignedSizeSeqH seqHlength = static_cast<TSignedSizeSeqH>(length(seqH));
     TSignedSizeSeqH seqVlength = static_cast<TSignedSizeSeqV>(length(seqV));

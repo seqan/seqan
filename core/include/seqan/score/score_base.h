@@ -69,7 +69,7 @@ struct Value<Score<TValue, TSpec> > {
 ..cat:Alignments
 ..class:Class.Score
 ..signature:SequenceEntryForScore<TScore, TSequence>::Type
-..summary:Returns representation type for an character of a/position in a sequence.
+..summary:Returns representation type for a character of a position in a sequence.
 ..description:This is used for unified interfaces for position dependent and independent scores.
 ..param.TScore:The score type to use.
 ...type:Class.Score

@@ -39,8 +39,8 @@
 // function, or enables or disables the trace-back function.
 // ==========================================================================
 
-#ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
-#define SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
 
 namespace seqan {
 
@@ -62,7 +62,7 @@ template <typename TInitGapsHorizontal = False, typename TInitGapsVertical = Fal
 struct FreeEndGaps_ {};
 
 // ----------------------------------------------------------------------------
-// Class SplitBreakpoint
+// Class SplitBreakpointAlignment
 // ----------------------------------------------------------------------------
 // TODO(rmaerker): maybe in a different header
 // Used to specify the global alignment for split breakpoint computation.
@@ -81,7 +81,7 @@ template <typename TSpec = FreeEndGaps_<> >
 struct GlobalAlignment_;
 
 // ----------------------------------------------------------------------------
-// Class SplitBreakpoint
+// Class SuboptimalAlignment
 // ----------------------------------------------------------------------------
 
 // TODO(rmaerker): maybe in a different header
@@ -188,7 +188,7 @@ struct DPFirstRow_;
 typedef Tag<DPFirstRow_> DPFirstRow;
 
 // ----------------------------------------------------------------------------
-// Tag DPFirsColumn
+// Tag DPFirstColumn
 // ----------------------------------------------------------------------------
 
 struct DPFirstColumn_;
@@ -370,4 +370,4 @@ struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True> const
 
 }  // namespace seqan
 
-#endif  // #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_

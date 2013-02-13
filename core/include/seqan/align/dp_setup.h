@@ -238,8 +238,6 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const &,
                       TGapsTag const &)
 {
-    typedef typename Position<TSequenceH const>::Type TPosH;
-    typedef typename Position<TSequenceV const>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -316,8 +314,6 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const &,
                       TGapsTag const &)
 {
-    typedef typename Position<TSequenceH const>::Type TPosH;
-    typedef typename Position<TSequenceV const>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -401,8 +397,6 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
 {
     typedef String<TAlphabetH, TSpecH> const TSequenceH;
     typedef String<TAlphabetV, TSpecV> const TSequenceV;
-    typedef typename Position<TSequenceH>::Type TPosH;
-    typedef typename Position<TSequenceV>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -481,8 +475,6 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     typedef AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> TAlignConfig;
     typedef String<TAlphabetH, TSpecH> const TSequenceH;
     typedef String<TAlphabetV, TSpecV> const TSequenceV;
-    typedef typename Position<TSequenceH>::Type TPosH;
-    typedef typename Position<TSequenceV>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -569,8 +561,6 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const &,
                       TGapsTag const &)
 {
-    typedef typename Position<TSequenceH const>::Type TPosH;
-    typedef typename Position<TSequenceV const>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -656,8 +646,6 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const &,
                       TGapsTag const &)
 {
-    typedef typename Position<TSequenceH const>::Type TPosH;
-    typedef typename Position<TSequenceV const>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -747,8 +735,6 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
 {
     typedef String<TAlphabetH, TSpecH> const TSequenceH;
     typedef String<TAlphabetV, TSpecV> const TSequenceV;
-    typedef typename Position<TSequenceH>::Type TPosH;
-    typedef typename Position<TSequenceV>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -821,8 +807,6 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     typedef AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> TAlignConfig;
     typedef String<TAlphabetH, TSpecH> const TSequenceH;
     typedef String<TAlphabetV, TSpecV> const TSequenceV;
-    typedef typename Position<TSequenceH>::Type TPosH;
-    typedef typename Position<TSequenceV>::Type TPosV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;

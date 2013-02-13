@@ -31,9 +31,10 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// This container is used to store the traceback in a common structure such
-// that we can easiely adapt them afterwards in the user-definde structure,
-// such as Align or AlignmentGraph objects.
+// 
+// The TraceSegment structure is used to store the traceback in a common
+// structure such that we can easiely adapt them afterwards in the
+// user-defined structure, such as Align or AlignmentGraph objects.
 // ==========================================================================
 
 #ifndef SANDBOX_RMAERKER_INCLUDE_SEQAN_ALIGN_DP_TRACE_SEGMENT_H_
@@ -65,7 +66,7 @@ public:
     TPosition _horizontalBeginPos;      // the begin position in horizontal dimension
     TPosition _verticalBeginPos;        // the begin position in vertical dimension
     TSize _length;                      // the length of the segment
-    TTraceValue _traceValue;            // the corrsponding value
+    TTraceValue _traceValue;            // the trace direction
 
     TraceSegment_() :
         _horizontalBeginPos(0), _verticalBeginPos(0), _length(0), _traceValue(+TraceBitMap_::NONE){}

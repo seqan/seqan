@@ -130,7 +130,7 @@ int result = localAlignment(gapsH, gapsV, scoringScheme, -2, 2);
 ..see:Function.globalAlignment
 ..see:Class.LocalAlignmentEnumerator
 ..include:seqan/align.h
-..wiki:Tutorial/Alignments
+..wiki:Tutorial/PairwiseSequenceAlignment
 ..cite:Smith TF, Waterman, MS: Identification of Common Molecular Subsequences. J Mol Biol 1981, 147(1):195-7.
 .
 */

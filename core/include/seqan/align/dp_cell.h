@@ -111,7 +111,7 @@ struct DPCellDefaultInfinity
 template <typename T>
 const int DPCellDefaultInfinity<T>::VALUE = MinValue<int>::VALUE;
 
-// We use the min value of the score type and shift at two bits to the left.  This way we can use "inifinty" without
+// We use the min value of the score type and shift it one bits to the left.  This way we can use "infinity" without
 // checking for it during the computation.
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
@@ -120,7 +120,7 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
 };
 
 template <typename TScoreValue, typename TGapCostFunction>
-const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE = MinValue<TScoreValue>::VALUE / 2;
+const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE = MinValue<TScoreValue>::VALUE >> 1;
 
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const>:
@@ -144,9 +144,9 @@ _scoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell)
 
 template <typename TScoreValue, typename TGapCosts>
 inline typename Reference<DPCell_<TScoreValue, TGapCosts> const>::Type
-_scoreOfCell(DPCell_<TScoreValue, TGapCosts> const & dpValue)
+_scoreOfCell(DPCell_<TScoreValue, TGapCosts> const & dpCell)
 {
-    return dpValue._score;
+    return dpCell._score;
 }
 
 // ----------------------------------------------------------------------------

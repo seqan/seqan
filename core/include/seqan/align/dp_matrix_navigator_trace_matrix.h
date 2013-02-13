@@ -33,10 +33,10 @@
 // ==========================================================================
 // This specialization is used to navigate through the traceback matrix
 // of any standard dp-alignment algorithm. The DPTraceMatrix gets the
-// traceback flag TracebackOn or TracebackOff. An traceback is only computed
+// traceback flag TracebackOn or TracebackOff. A traceback is only computed
 // if the traceback is switched on. If this is not the case, the void
 // functions will be compiled as no-op functions, while in functions that try
-// to access a value of the underlying matrix via the navigator a assertion
+// to access a value of the underlying matrix via the navigator an assertion
 // is thrown.
 // ==========================================================================
 

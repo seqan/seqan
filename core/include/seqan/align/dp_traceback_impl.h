@@ -62,8 +62,8 @@ public:
     TPosition _currRow;
     TPosition _endColumn;
     TPosition _endRow;
-    TPosition _breakpoint1;      // Breakpoint to start differnt tracking
-    TPosition _breakpoint2;      // Breakpoint to start differnt tracking
+    TPosition _breakpoint1;      // Breakpoint to start different tracking
+    TPosition _breakpoint2;      // Breakpoint to start different tracking
     bool _isInBand;
 
     template <typename TBandFlag, typename TSizeH, typename TSizeV>

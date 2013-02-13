@@ -73,7 +73,7 @@ template <typename TSpec>
 struct DPBand_ {};
 
 // ----------------------------------------------------------------------------
-// Class DPBand_                                                       [BandOff]
+// Class DPBand_                                                      [BandOff]
 // ----------------------------------------------------------------------------
 
 // The specialization when using no band.
@@ -93,7 +93,7 @@ struct DPBand_<BandOff>
 };
 
 // ----------------------------------------------------------------------------
-// Class DPBand_                                                        [BandOn]
+// Class DPBand_                                                       [BandOn]
 // ----------------------------------------------------------------------------
 
 // The specialization when using a band.

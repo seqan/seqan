@@ -91,7 +91,7 @@ struct DPMatrixDimension_
 // Class DPMatrix_
 // ----------------------------------------------------------------------------
 
-// The dp matrix used to as a score matrix and as a trace-back matrix.
+// The dp matrix used as a score matrix and as a trace-back matrix.
 template <typename TValue, typename TMatrixSpec>
 class DPMatrix_
 {};
@@ -158,7 +158,7 @@ struct DefaultScoreMatrixSpec_<LocalAlignment_<WatermanEggert> >
 // ----------------------------------------------------------------------------
 
 // Returns the type of the underlying matrix.
-template <typename TDPMatix>
+template <typename TDPMatrix>
 struct _DataHost {};
 
 template <typename TValue, typename TMatrixSpec>

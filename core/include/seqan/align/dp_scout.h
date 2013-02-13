@@ -46,8 +46,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -70,12 +68,10 @@ class DPScoutState_<Default> : public Nothing  // empty member optimization
 template <typename TScoreValue, typename TSpec>
 class DPScout_;
 
-/**
- * The default implementation of the dp scout simply stores one maximum
- * and its corresponding position.
- *
- * The state must be a Nothing and is left untouched and unused.
- */
+// The default implementation of the dp scout simply stores one maximum
+// and its corresponding position.
+//
+// The state must be a Nothing and is left untouched and unused.
 template <typename TDPCell>
 class DPScout_<TDPCell, Default>
 {
