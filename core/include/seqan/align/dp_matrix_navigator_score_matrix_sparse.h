@@ -141,7 +141,7 @@ _init(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, Navig
 }
 
 // ----------------------------------------------------------------------------
-// Function _goNextCell                                             [FirstCell]
+// Function _goNextCell()        [DPInitialColumn, PartialColumnTop, FirstCell]
 // ----------------------------------------------------------------------------
 
 template <typename TValue>
@@ -153,6 +153,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     // no-op
 }
 
+// ----------------------------------------------------------------------------
+// Function _goNextCell()              [DPInitialColumn, FullColumn, FirstCell]
+// ----------------------------------------------------------------------------
+
 template <typename TValue>
 inline void
 _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & /*dpNavigator*/,
@@ -162,6 +166,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     // no-op
 }
 
+// ----------------------------------------------------------------------------
+// Function _goNextCell()                          [DPInitialColumn, FirstCell]
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TColumnLocation>
 inline void
 _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & /*dpNavigator*/,
@@ -170,6 +178,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
 {
     // no-op
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell()                         [PartialColumnTop, FirstCell]
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnType>
 inline void
@@ -183,6 +195,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
 }
 
+// ----------------------------------------------------------------------------
+// Function _goNextCell()                               [FullColumn, FirstCell]
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TColumnType>
 inline void
 _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
@@ -192,6 +208,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
     dpNavigator._prevCellHorizontal = value(dpNavigator._activeColIterator);
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell()                                           [FirstCell]
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnType, typename TColumnLocation>
 inline void
@@ -206,7 +226,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
 }
 
 // ----------------------------------------------------------------------------
-// Function _goNextCell                                             [InnerCell]
+// Function _goNextCell                            [DPInitialColumn, InnerCell]
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnLocation>
@@ -219,6 +239,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     ++dpNavigator._activeColIterator;
 }
 
+// ----------------------------------------------------------------------------
+// Function _goNextCell                [DPInitialColumn, FullColumn, InnerCell]
+// ----------------------------------------------------------------------------
+
 template <typename TValue>
 inline void
 _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
@@ -228,6 +252,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
     ++dpNavigator._activeColIterator;
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                             [InnerCell]
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnType, typename TColumnLocation>
 inline void
@@ -240,6 +268,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
     ++dpNavigator._activeColIterator;
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                 [FullColumn, InnerCell]
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnType>
 inline void
@@ -253,7 +285,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
 }
 
 // ----------------------------------------------------------------------------
-// Function _goNextCell                                              [LastCell]
+// Function _goNextCell                             [DPInitialColumn, LastCell]
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnLocation>
@@ -266,6 +298,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     ++dpNavigator._activeColIterator;
 }
 
+// ----------------------------------------------------------------------------
+// Function _goNextCell        [DPInitialColumn, PartialColumnBottom, LastCell]
+// ----------------------------------------------------------------------------
+
 template <typename TValue>
 inline void
 _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
@@ -275,6 +311,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
     ++dpNavigator._activeColIterator;
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                 [DPInitialColumn, FullColumn, LastCell]
+// ----------------------------------------------------------------------------
 
 template <typename TValue>
 inline void
@@ -286,6 +326,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     ++dpNavigator._activeColIterator;
 }
 
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                              [LastCell]
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TColumnType, typename TColumnLocation>
 inline void
 _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
@@ -296,6 +340,10 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
     ++dpNavigator._activeColIterator;
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                         [PartialColumnBottom, LastCell]
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TColumnType>
 inline void
@@ -309,6 +357,11 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, DPScoreMatrix,
     ++dpNavigator._activeColIterator;
     ++dpNavigator._laneLeap;
 }
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                  [FullColumn, LastCell]
+// ----------------------------------------------------------------------------
+
 
 template <typename TValue, typename TColumnType>
 inline void

@@ -62,8 +62,8 @@ public:
     TPosition _currRow;
     TPosition _endColumn;
     TPosition _endRow;
-    TPosition _breakpoint1;      // Breakpoint to start different tracking
-    TPosition _breakpoint2;      // Breakpoint to start different tracking
+    TPosition _breakpoint1;      // First breakpoint where banded trace switches to unbanded trace.
+    TPosition _breakpoint2;      // Second breakpoint where unbanded trace switches back to banded trace. Only if begin of upper diagonal is bigger than end of lower diagonal.
     bool _isInBand;
 
     template <typename TBandFlag, typename TSizeH, typename TSizeV>
