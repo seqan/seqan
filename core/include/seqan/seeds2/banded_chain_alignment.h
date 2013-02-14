@@ -73,7 +73,7 @@ $row(align, 0)$ is the horizontal sequence in the alignment matrix, $row(align, 
 ...type:Class.Gaps
 ..param.gapsV:Vertical gapped sequence in alignment matrix.
 ...type:Class.Gaps
-..param.frags
+..param.frags:
 String of @Class.Fragment@ objects.
 The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the vertical one.
 ..param.alignmentGraph:

@@ -174,9 +174,9 @@ class SeedSet;
 ///.Metafunction.Iterator.param.T:Class.SeedSet
 ///.Metafunction.Iterator.class:Class.SeedSet
 /**
-.Metafunction.Seed:
+.Metafunction.SeedValue:
 ..summary:Return the type of the underlying seed.
-..signature:Seed<TSeedSet>::Value
+..signature:SeedValue<TSeedSet>::Value
 ..param.TSeedSet:The SeedSet to retrieve the seed type from.
 ..include:seqan/seeds.h
 */
