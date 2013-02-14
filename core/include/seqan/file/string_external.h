@@ -63,7 +63,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...type:Tag.ExternalConfig
 ...type:Tag.ExternalConfigLarge
 ...type:Tag.ExternalConfigSize
-...default:@Tag.ExternalConfig@
+...default:@Tag.ExternalConfigLarge@
 ..remarks:The External String enables to access sequences larger than the available internal memory (RAM)
 by using external memory (e.g. Hard disk, Network storage, ...) via a @Class.File@ object.
 Sequences of nearly arbitrary size can be accessed even larger than the logically addressable memory,
@@ -142,7 +142,7 @@ you should think of using @Tag.ExternalConfig@.
     // pipes use the size type 
     // uint64 blows up your suffix arrays, lcp-tables, ...
     template < typename TFile_ = File<>,				// default file type
-               unsigned PAGE_SIZE_ = 1 * 1024 * 1024,	// 1MTypes per default
+               unsigned PAGE_SIZE_ = 4 * 1024 * 1024,	// 1MTypes per default
 			   unsigned FRAMES_ = 2 >					// simultanous frames
     struct ExternalConfigLarge {
 //IOREV contains warning in code comments, need to investigate
@@ -186,7 +186,7 @@ you should think of using @Tag.ExternalConfig@.
         enum { FRAMES = FRAMES_ };
     };
 
-    template < typename TConfig = ExternalConfig<> >
+    template < typename TConfig = ExternalConfigLarge<> >
     struct External {};
 //IOREV
 
