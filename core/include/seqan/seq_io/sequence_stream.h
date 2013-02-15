@@ -577,8 +577,8 @@ int readBatch(StringSet<TId, TIdSpec> & ids,
 .Function.SequenceStream#readAll
 ..class:Class.SequenceStream
 ..summary:Read all sequence records from a @Class.SequenceStream@ object.
-..signature:int readAll(ids, seqs, seqIO, num)
-..signature:int readRecord(ids, seqs, quals, seqIO, num)
+..signature:int readAll(ids, seqs, seqIO)
+..signature:int readRecord(ids, seqs, quals, seqIO)
 ..param.ids:The identifiers of the sequence are written here.
 ...type:nolink:@Class.StringSet@ of @Shortcut.CharString@.
 ..param.seq:The sequence of the record is written here.
@@ -590,7 +590,7 @@ int readBatch(StringSet<TId, TIdSpec> & ids,
 ...type:Class.SequenceStream
 ..returns:An integer, $0$ on success, $1$ on errors.
 ...type:nolink:$int$
-..example:Read the first sequences of a FASTA file, up to ten.
+..example:Read the sequences of a FASTA file.
 ..example.code:
 int main()
 {
