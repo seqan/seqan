@@ -439,6 +439,10 @@ _doTraceback(TTarget & target,
     }
 }
 
+// ----------------------------------------------------------------------------
+// Function _retrieveInitialTraceDirection()
+// ----------------------------------------------------------------------------
+
 template <typename TTraceValue, typename TDPProfile>
 inline TTraceValue
 _retrieveInitialTraceDirection(TTraceValue & traceValue, TDPProfile const & /*dpProfile*/)

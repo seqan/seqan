@@ -118,7 +118,7 @@ inline bool operator<(DPCell_<TScoreValueLeft, AffineGaps> const & left,
 }
 
 // ----------------------------------------------------------------------------
-// Function verticalScore()
+// Function _verticalScoreOfCell()
 // ----------------------------------------------------------------------------
 
 // Returns the score of the matrix for vertical-gaps of the given cell.
@@ -137,7 +137,19 @@ _verticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 }
 
 // ----------------------------------------------------------------------------
-// Function horizontalScore()
+// Function _setVerticalScoreOfCell()
+// ----------------------------------------------------------------------------
+
+// Returns the score of the matrix for vertical-gaps of the given cell.
+template <typename TScoreValue>
+inline void
+_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue newVerticalScore)
+{
+    dpCell._verticalScore = newVerticalScore;
+}
+
+// ----------------------------------------------------------------------------
+// Function _horizontalScoreOfCell()
 // ----------------------------------------------------------------------------
 
 // Returns the score of the matrix for horizontal-gaps of the given cell.
@@ -153,6 +165,18 @@ inline typename  Reference<DPCell_<TScoreValue, AffineGaps> const>::Type
 _horizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 {
     return dpCell._horizontalScore;
+}
+
+// ----------------------------------------------------------------------------
+// Function _setHorizontalScoreOfCell()
+// ----------------------------------------------------------------------------
+
+// Returns the score of the matrix for vertical-gaps of the given cell.
+template <typename TScoreValue>
+inline void
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue newHorizontalScore)
+{
+    dpCell._horizontalScore = newHorizontalScore;
 }
 
 }  // namespace seqan

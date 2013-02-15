@@ -131,7 +131,7 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const>:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function score
+// Function _scoreOfCell
 // ----------------------------------------------------------------------------
 
 // Returns the score value for a given cell.
@@ -150,7 +150,18 @@ _scoreOfCell(DPCell_<TScoreValue, TGapCosts> const & dpCell)
 }
 
 // ----------------------------------------------------------------------------
-// Function verticalScore()
+// Function _setScoreOfCell
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapCosts>
+inline void
+_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore)
+{
+    dpCell._score = newScore;
+}
+
+// ----------------------------------------------------------------------------
+// Function _verticalScoreOfCell()
 // ----------------------------------------------------------------------------
 
 // Returns the score of the matrix for vertical-gaps of the given cell.
@@ -158,18 +169,30 @@ template <typename TScoreValue, typename TGapSpec>
 inline typename  Reference<DPCell_<TScoreValue, TGapSpec> >::Type
 _verticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & dpCell)
 {
-	return dpCell._score;
+    return dpCell._score;
 }
 
 template <typename TScoreValue, typename TGapSpec>
 inline typename  Reference<DPCell_<TScoreValue, TGapSpec> const>::Type
 _verticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 {
-	return dpCell._score;
+    return dpCell._score;
 }
 
 // ----------------------------------------------------------------------------
-// Function horizontalScore()
+// Function _setVerticalScoreOfCell()
+// ----------------------------------------------------------------------------
+
+// Returns the score of the matrix for vertical-gaps of the given cell.
+template <typename TScoreValue, typename TGapSpec>
+inline void
+_setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/)
+{
+    // no-op
+}
+
+// ----------------------------------------------------------------------------
+// Function _horizontalScoreOfCell()
 // ----------------------------------------------------------------------------
 
 // Returns the score of the matrix for horizontal-gaps of the given cell.
@@ -185,6 +208,18 @@ inline typename  Reference<DPCell_<TScoreValue, TGapSpec> const>::Type
 _horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 {
 	return dpCell._score;
+}
+
+// ----------------------------------------------------------------------------
+// Function _setHorizontalScoreOfCell()
+// ----------------------------------------------------------------------------
+
+// Returns the score of the matrix for vertical-gaps of the given cell.
+template <typename TScoreValue, typename TGapSpec>
+inline void
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue /*newHorizontalScore*/)
+{
+    // no-op
 }
 
 }  // namespace seqan
