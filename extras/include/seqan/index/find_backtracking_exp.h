@@ -188,19 +188,10 @@ struct NextStage_<Backtracking<EditDistance, TSpec>, StageLower_>
 // ----------------------------------------------------------------------------
 // Class Finder
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): Rename Finder as Finder and move it somewhere else.
+// TODO(esiragusa): Move Finder somewhere else.
 
 template <typename TText, typename TPattern, typename TDelegate, typename TSpec = void>
 struct Finder {};
-
-// ----------------------------------------------------------------------------
-// Class FinderDelegate
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): Move FinderDelegate somewhere else.
-
-template <typename TText, typename TPattern, typename TSpec = void>
-struct FinderDelegate
-{};
 
 // ----------------------------------------------------------------------------
 // Tag for backtracking specializations
@@ -226,7 +217,6 @@ struct StageExact_ {};
 // ----------------------------------------------------------------------------
 // Class Backtracking
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): Rename Backtracking as Backtracking.
 
 template <typename TDistance = HammingDistance, typename TSpec = BacktrackingSemiGlobal>
 struct Backtracking {};
@@ -274,14 +264,120 @@ struct Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, 
 // Function _min3()
 // ----------------------------------------------------------------------------
 
-template <typename TScore>
-inline TScore
-_min3(TScore a, TScore b, TScore c)
+template <typename TValue>
+inline TValue
+_min3(TValue a, TValue b, TValue c)
 {
-    TScore m = a;
+    TValue m = a;
     if (m > b) m = b;
     if (m > c) m = c;
     return m;
+}
+
+// ----------------------------------------------------------------------------
+// Function _updateVertexScore()
+// ----------------------------------------------------------------------------
+
+template <typename TVertexScore>
+inline void
+_updateVertexScore(TVertexScore current,
+                   TVertexScore const previous,
+                   StageInitial_ const & /* tag */)
+{
+    // Update last cell.
+    // C[i,0] = C[i-1,0] + 1 [Upper]
+    back(current) = back(previous) + 1;
+}
+
+template <typename TVertexScore, typename TTextValue, typename TPatternIterator, typename TStage>
+inline void
+_updateVertexScore(TVertexScore current,
+                   TVertexScore const previous,
+                   TTextValue textChar,
+                   TPatternIterator patternIt,
+                   TStage const & /* tag */)
+{
+    typedef typename Iterator<TVertexScore, Standard>::Type         TVertexScoreIterator;
+    typedef typename Iterator<TVertexScore const, Standard>::Type   TVertexScoreConstIterator;
+    typedef typename Value<TVertexScore>::Type                      TScore;
+    
+    TVertexScoreIterator currentIt = begin(current, Standard());
+    TVertexScoreIterator columnEnd = end(current, Standard());
+    TVertexScoreConstIterator previousIt = begin(previous, Standard());
+
+    // Update first cell.
+    if (IsSameType<TStage, StageUpper_>::VALUE)
+    {
+        // C[0,j] = C[0,j-1] + 1 [Left]
+        value(currentIt) = value(previousIt) + 1;
+    }
+    else
+    {
+        TScore score = ordEqual(textChar, value(patternIt)) ? 0 : 1;
+
+        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1 } [Diagonal, Left]
+        value(currentIt) = _min(value(previousIt) + score, value(previousIt + 1) + 1);
+        
+        ++previousIt;
+        ++patternIt;
+    }
+
+    // Update central cells.
+    for (++currentIt; currentIt != columnEnd - 1; ++currentIt, ++previousIt, ++patternIt)
+    {
+        TScore score = ordEqual(textChar, value(patternIt)) ? 0 : 1;
+
+        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1, C[i,j-1] + 1 } [Diagonal, Left, Upper]
+        value(currentIt) = _min3(value(previousIt) + score, value(previousIt + 1) + 1, value(currentIt - 1) + 1);
+    }
+
+    // Update last cell.
+    if (IsSameType<TStage, StageLower_>::VALUE)
+    {
+        TScore score = ordEqual(textChar, value(patternIt)) ? 0 : 1;
+
+        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1, C[i,j-1] + 1 } [Diagonal, Left, Upper]
+        value(currentIt) = _min3(value(previousIt) + score, value(previousIt + 1) + 1, value(currentIt - 1) + 1);
+        
+        ++previousIt;
+    }
+    else
+    {
+        TScore score = ordEqual(textChar, value(patternIt)) ? 0 : 1;
+
+        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i,j-1] + 1 } [Diagonal, Upper]
+        value(currentIt) = _min(value(previousIt) + score, value(currentIt - 1) + 1);
+    }
+
+    // Assert end of columns.
+    SEQAN_ASSERT_EQ(currentIt + 1, end(current, Standard()));
+    SEQAN_ASSERT_EQ(previousIt + 1, end(previous, Standard()));
+}
+
+template <typename TVertexScore, typename TTextValue, typename TPatternValue>
+inline void
+_updateVertexScore(TVertexScore current,
+                   TVertexScore const previous,
+                   TTextValue textChar,
+                   TPatternValue patternChar,
+                   StageFinal_ const & /* tag */)
+{
+    typedef typename Iterator<TVertexScore, Standard>::Type         TVertexScoreIterator;
+    typedef typename Iterator<TVertexScore const, Standard>::Type   TVertexScoreConstIterator;
+    typedef typename Value<TVertexScore>::Type                      TScore;
+
+    TVertexScoreIterator currentIt = begin(current, Standard());
+    TVertexScoreConstIterator previousIt = begin(previous, Standard());
+
+    // Update last cell.
+    TScore score = ordEqual(textChar, patternChar) ? 0 : 1;
+
+    // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1 } [Diagonal, Left]
+    value(currentIt) = _min(value(previousIt) + score, value(previousIt + 1) + 1);
+
+    // Assert end of columns.
+    SEQAN_ASSERT_EQ(currentIt + 1, end(current, Standard()));
+    SEQAN_ASSERT_EQ(previousIt + 2, end(previous, Standard()));
 }
 
 // ----------------------------------------------------------------------------
@@ -300,20 +396,6 @@ copyBackAndResize(StringSet<TString, TSSetSpec> & stringSet, TDelta delta)
 
     // Resize concat.
     resize(stringSet.concat, length(stringSet.concat) + delta);
-}
-
-// ----------------------------------------------------------------------------
-// Function onMatch()                                          [FinderDelegate]
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TPattern, typename TSpec, typename TFinderSpec>
-inline void
-onMatch(FinderDelegate<TText, TPattern, TSpec> & /* delegate */,
-        Finder<TText, TPattern, FinderDelegate<TText, TPattern, TSpec>, TFinderSpec> const & finder)
-{
-    std::cout << "score:          " << static_cast<unsigned>(getScore(finder)) << std::endl;
-    std::cout << "text:           " << representative(back(finder.textStack)) << std::endl;
-    std::cout << "pattern:        " << representative(back(finder.patternStack)) << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -363,7 +445,7 @@ inline void
 _initScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
                   Backtracking<TDistance, TSpec> > & finder)
 {
-    typedef Backtracking<TDistance, TSpec>             TBacktracking;
+    typedef Backtracking<TDistance, TSpec>              TBacktracking;
     typedef typename Score_<TBacktracking>::Type        TScore;
 
     // Push zero.
@@ -376,7 +458,7 @@ inline void
 _initScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
                   Backtracking<EditDistance, TSpec> > & finder)
 {
-    typedef Backtracking<EditDistance, TSpec>          TBacktracking;
+    typedef Backtracking<EditDistance, TSpec>           TBacktracking;
     typedef typename Score_<TBacktracking>::Type        TScore;
 
     // Push a column with one zero cell.
@@ -758,7 +840,7 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                     Backtracking<HammingDistance, TSpec> > & finder,
              TStage const & /* tag */)
 {
-    typedef Backtracking<HammingDistance, TSpec>   TBacktracking;
+    typedef Backtracking<HammingDistance, TSpec>    TBacktracking;
     typedef typename Score_<TBacktracking>::Type    TScore;
 
     // Compute score of text and pattern.
@@ -785,13 +867,7 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                     Backtracking<EditDistance, TSpec> > & finder,
              StageInitial_ const & /* tag */)
 {
-    typedef Backtracking<EditDistance, TSpec>                      TBacktracking;
-    typedef typename VertexScore_<TBacktracking>::Type              TVertexScore;
-
-    TVertexScore column = back(finder.scoreStack);
-
-    // Add one error to the last cell of the current column.
-    back(column) = value(column, length(column) - 2) + 1;
+    _updateVertexScore(back(finder.scoreStack), value(finder.scoreStack, length(finder.scoreStack) - 2), StageInitial_());
 }
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
@@ -801,60 +877,20 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                     Backtracking<EditDistance, TSpec> > & finder,
              StageUpper_ const & /* tag */)
 {
-    typedef Backtracking<EditDistance, TSpec>                               TBacktracking;
-    typedef typename VertexScore_<TBacktracking>::Type                      TVertexScore;
-    typedef typename Iterator<TVertexScore, Standard>::Type                 TIterator;
-    typedef typename Score_<TBacktracking>::Type                            TScore;
-
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename EdgeLabel<TTextIterator>::Type                         TTextLabel;
-
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
     typedef typename Fibre<TPatternIndex, FibreText>::Type const            TPatternFibreText;
     typedef typename Infix<TPatternFibreText>::Type                         TPatternRepr;
     typedef typename Iterator<TPatternRepr, Standard>::Type                 TPatternReprIterator;
 
-    // Get current and previous column.
-    TVertexScore column = back(finder.scoreStack);
-    TVertexScore previous = value(finder.scoreStack, length(finder.scoreStack) - 2);
-
-    TIterator columnIt = begin(column, Standard());
-    TIterator columnEnd = end(column, Standard());
-    TIterator previousIt = begin(previous, Standard());
-
-    // Assert length of columns.
-    SEQAN_ASSERT_EQ(length(column), length(previous) + 1);
-
-    // Get last text symbol.
-    TTextLabel text = parentEdgeLabel(back(finder.textStack));
-
     // Get pattern read so far.
     TPatternRepr pattern = representative(back(finder.patternStack));
     TPatternReprIterator patternIt = begin(pattern, Standard());
 
-    // Initialize first cell.
-    value(columnIt) = value(previousIt) + 1;
-
-    // Update central cells.
-    for (++columnIt; columnIt != columnEnd - 1; ++columnIt, ++previousIt, ++patternIt)
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1, C[i,j-1] + 1 } [Diagonal, Left, Upper]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min3(value(previousIt) + score, value(previousIt + 1) + 1, value(columnIt - 1) + 1);
-    }
-
-    // Update last cell.
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i,j-1] + 1 } [Diagonal, Upper]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min(value(previousIt) + score, value(columnIt - 1) + 1);
-    }
-
-    // Assert end of columns and pattern.
-    SEQAN_ASSERT_EQ(columnIt + 1, end(column, Standard()));
-    SEQAN_ASSERT_EQ(previousIt + 1, end(previous, Standard()));
-    SEQAN_ASSERT_EQ(patternIt + 1, end(pattern, Standard()));
+    _updateVertexScore(back(finder.scoreStack),
+                       value(finder.scoreStack, length(finder.scoreStack) - 2),
+                       parentEdgeLabel(back(finder.textStack)),
+                       patternIt,
+                       StageUpper_());
 }
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
@@ -864,64 +900,20 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                     Backtracking<EditDistance, TSpec> > & finder,
              StageDiagonal_ const & /* tag */)
 {
-    typedef Backtracking<EditDistance, TSpec>                               TBacktracking;
-    typedef typename VertexScore_<TBacktracking>::Type                      TVertexScore;
-    typedef typename Iterator<TVertexScore, Standard>::Type                 TIterator;
-    typedef typename Score_<TBacktracking>::Type                            TScore;
-
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename EdgeLabel<TTextIterator>::Type                         TTextLabel;
-
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
     typedef typename Fibre<TPatternIndex, FibreText>::Type const            TPatternFibreText;
     typedef typename Infix<TPatternFibreText>::Type                         TPatternRepr;
     typedef typename Iterator<TPatternRepr, Standard>::Type                 TPatternReprIterator;
 
-    // Get current and previous column.
-    TVertexScore column = back(finder.scoreStack);
-    TVertexScore previous = value(finder.scoreStack, length(finder.scoreStack) - 2);
-
-    TIterator columnIt = begin(column, Standard());
-    TIterator columnEnd = end(column, Standard());
-    TIterator previousIt = begin(previous, Standard());
-
-    // Assert length of columns.
-    SEQAN_ASSERT_EQ(length(column), length(previous));
-
-    // Get last text symbol.
-    TTextLabel text = parentEdgeLabel(back(finder.textStack));
-
     // Get last 2k + 1 pattern symbols.
     TPatternRepr pattern = representative(back(finder.patternStack));
     TPatternReprIterator patternIt = end(pattern, Standard()) - (2 * finder.maxScore + 1);
 
-    // Update first cell.
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1 } [Diagonal, Left]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min(value(previousIt) + score, value(previousIt + 1) + 1);
-    }
-
-    // Update central cells.
-    for (++columnIt, ++previousIt, ++patternIt; columnIt != columnEnd - 1; ++columnIt, ++previousIt, ++patternIt)
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1, C[i,j-1] + 1 } [Diagonal, Left, Upper]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min3(value(previousIt) + score, value(previousIt + 1) + 1, value(columnIt - 1) + 1);
-    }
-
-    // Update last cell.
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i,j-1] + 1 } [Diagonal, Upper]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min(value(previousIt) + score, value(columnIt - 1) + 1);
-    }
-
-    // Assert end of columns and pattern.
-    SEQAN_ASSERT_EQ(columnIt + 1, end(column, Standard()));
-    SEQAN_ASSERT_EQ(previousIt + 1, end(previous, Standard()));
-    SEQAN_ASSERT_EQ(patternIt + 1, end(pattern, Standard()));
+    _updateVertexScore(back(finder.scoreStack),
+                       value(finder.scoreStack, length(finder.scoreStack) - 2),
+                       parentEdgeLabel(back(finder.textStack)),
+                       patternIt,
+                       StageDiagonal_());
 }
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
@@ -931,56 +923,20 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                     Backtracking<EditDistance, TSpec> > & finder,
              StageLower_ const & /* tag */)
 {
-    typedef Backtracking<EditDistance, TSpec>                               TBacktracking;
-    typedef typename VertexScore_<TBacktracking>::Type                      TVertexScore;
-    typedef typename Iterator<TVertexScore, Standard>::Type                 TIterator;
-    typedef typename Score_<TBacktracking>::Type                            TScore;
-
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename EdgeLabel<TTextIterator>::Type                         TTextLabel;
-
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
     typedef typename Fibre<TPatternIndex, FibreText>::Type const            TPatternFibreText;
     typedef typename Infix<TPatternFibreText>::Type                         TPatternRepr;
     typedef typename Iterator<TPatternRepr, Standard>::Type                 TPatternReprIterator;
 
-    // Get current and previous column.
-    TVertexScore column = back(finder.scoreStack);
-    TVertexScore previous = value(finder.scoreStack, length(finder.scoreStack) - 2);
-
-    TIterator columnIt = begin(column, Standard());
-    TIterator columnEnd = end(column, Standard());
-    TIterator previousIt = begin(previous, Standard());
-
-    // Assert length of columns.
-    SEQAN_ASSERT_EQ(length(column), length(previous) - 1);
-
-    // Get last text symbol.
-    TTextLabel text = parentEdgeLabel(back(finder.textStack));
-
-    // Get last 2k + 1 pattern symbols.
+    // Get last pattern symbols.
     TPatternRepr pattern = representative(back(finder.patternStack));
-    TPatternReprIterator patternIt = end(pattern, Standard()) - (length(column));
+    TPatternReprIterator patternIt = end(pattern, Standard()) - (length(back(finder.scoreStack)));
 
-    // Update first cell.
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1 } [Diagonal, Left]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min(value(previousIt) + score, value(previousIt + 1) + 1);
-    }
-
-    // Update central cells.
-    for (++columnIt, ++previousIt, ++patternIt; columnIt != columnEnd; ++columnIt, ++previousIt, ++patternIt)
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1, C[i,j-1] + 1 } [Diagonal, Left, Upper]
-        TScore score = ordEqual(text, value(patternIt)) ? 0 : 1;
-        value(columnIt) = _min3(value(previousIt) + score, value(previousIt + 1) + 1, value(columnIt - 1) + 1);
-    }
-
-    // Assert end of columns and pattern.
-    SEQAN_ASSERT_EQ(columnIt, end(column, Standard()));
-    SEQAN_ASSERT_EQ(previousIt + 1, end(previous, Standard()));
+    _updateVertexScore(back(finder.scoreStack),
+                       value(finder.scoreStack, length(finder.scoreStack) - 2),
+                       parentEdgeLabel(back(finder.textStack)),
+                       patternIt,
+                       StageLower_());
 }
 
 template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
@@ -990,43 +946,11 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                     Backtracking<EditDistance, TSpec> > & finder,
              StageFinal_ const & /* tag */)
 {
-    typedef Backtracking<EditDistance, TSpec>                               TBacktracking;
-    typedef typename VertexScore_<TBacktracking>::Type                      TVertexScore;
-    typedef typename Iterator<TVertexScore, Standard>::Type                 TIterator;
-    typedef typename Score_<TBacktracking>::Type                            TScore;
-
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename EdgeLabel<TTextIterator>::Type                         TTextLabel;
-
-    typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
-    typedef typename PatternIterator_<TPatternIndex, TBacktracking>::Type   TPatternIterator;
-    typedef typename EdgeLabel<TPatternIterator>::Type                      TPatternLabel;
-
-    // Get last text and pattern symbols.
-    TTextLabel text = parentEdgeLabel(back(finder.textStack));
-    TTextLabel pattern = parentEdgeLabel(back(finder.patternStack));
-
-    // Get current and previous column.
-    TVertexScore column = back(finder.scoreStack);
-    TVertexScore previous = value(finder.scoreStack, length(finder.scoreStack) - 2);
-
-    TIterator columnIt = begin(column, Standard());
-    TIterator previousIt = begin(previous, Standard());
-
-    // Assert length of columns.
-    SEQAN_ASSERT_EQ(length(column), length(previous) - 1);
-
-    // Update last cell.
-    {
-        // C[i,j] = min { C[i-1,j-1] + d(t,p), C[i-1,j] + 1 } [Diagonal, Left]
-        TScore score = ordEqual(text, pattern) ? 0 : 1;
-        value(columnIt) = _min(value(previousIt) + score, value(previousIt + 1) + 1);
-    }
-
-    // Assert end of columns and pattern.
-    SEQAN_ASSERT_EQ(columnIt + 1, end(column, Standard()));
-    SEQAN_ASSERT_EQ(previousIt + 2, end(previous, Standard()));
+    _updateVertexScore(back(finder.scoreStack),
+                       value(finder.scoreStack, length(finder.scoreStack) - 2),
+                       parentEdgeLabel(back(finder.textStack)),
+                       parentEdgeLabel(back(finder.patternStack)),
+                       StageFinal_());
 }
 
 // ----------------------------------------------------------------------------
