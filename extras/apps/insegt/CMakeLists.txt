@@ -72,7 +72,14 @@ install (FILES example/annoOutput.gff
 # App Test
 # ----------------------------------------------------------------------------
 
-#seqan_add_app_test (insegt)
+# Add app tests if Python interpreter could be found.
+if(PYTHONINTERP_FOUND)
+  add_test(NAME app_test_insegt COMMAND ${PYTHON_EXECUTABLE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR})
+endif(PYTHONINTERP_FOUND)
+
+seqan_add_app_test (insegt)
 
 # ----------------------------------------------------------------------------
 # CPack Install

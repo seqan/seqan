@@ -1,0 +1,10 @@
+test_chromosome	HsAbstractV46	region	75	374	.	+	.	ID=ENSG00000146556-16;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	525	599	.	+	.	ID=ENSG00000146556-17;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	750	1049	.	+	.	ID=ENSG00000146556-18;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	1200	1349	.	+	.	ID=ENSG00000146556-19;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	75	390	.	+	.	ID=ENSG00000146556-1;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	500	599	.	+	.	ID=ENSG00000146556-2;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	75	599	.	+	.	ID=ENSG00000146556-3;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	525	585	.	+	.	ID=ENSG00000146556-4;ParentID=ENSG00000146556
+test_chromosome	HsAbstractV46	region	750	1349	.	-	.	ID=5;
+test_chromosome	HsAbstractV46	region	750	1100	.	+	.	ID=ENSG00000146556-6;ParentID=ENSG00000146556
