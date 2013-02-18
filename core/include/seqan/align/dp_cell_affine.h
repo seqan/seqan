@@ -143,7 +143,7 @@ _verticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue>
 inline void
-_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue newVerticalScore)
+_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore)
 {
     dpCell._verticalScore = newVerticalScore;
 }
@@ -174,7 +174,7 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> const & dpCell)
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue>
 inline void
-_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue newHorizontalScore)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore)
 {
     dpCell._horizontalScore = newHorizontalScore;
 }

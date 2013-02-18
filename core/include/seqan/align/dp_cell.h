@@ -217,7 +217,7 @@ _horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 // Returns the score of the matrix for vertical-gaps of the given cell.
 template <typename TScoreValue, typename TGapSpec>
 inline void
-_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue /*newHorizontalScore*/)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newHorizontalScore*/)
 {
     // no-op
 }
