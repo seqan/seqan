@@ -162,9 +162,9 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
     if (IsLocalAlignment_<TDPProfile>::VALUE)
         if (activeCell._score <= 0)
         {
-            _setScoreOfCell(activeCell, 0);
-            _setHorizontalScoreOfCell(activeCell, 0);
-            _setVerticalScoreOfCell(activeCell, 0);
+            _setScoreOfCell(activeCell, static_cast<TScoreValue>(0));
+            _setHorizontalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
+            _setVerticalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
             return TraceBitMap_::NONE;
         }
 
