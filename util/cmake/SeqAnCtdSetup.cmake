@@ -97,6 +97,10 @@ add_custom_target (prepare_ctd_payload_tmp_bin
                    # Make sure that all binaries that we want to have CTDs for are built.
                    DEPENDS ${SEQAN_CTD_EXECUTABLES})
 
+# Add directory for CTD files.
+add_custom_target (target_ctd_mkdir
+                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH})
+
 # For each white-listed executable in SEQAN_CTD_EXECUTABLES, get its path and
 # (1) copy it into the temporary payload directory's bin subdirectory, and (2)
 # create a target target_ctd_ctds_${EXECUTABLE} that the CTD creation target
@@ -105,12 +109,13 @@ foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
   # Get platform-dependent executable path.
   set (_BINARY_PATH "${SEQAN_BIN_DIR}/${_BINARY}")
   if (WIN32)
-    set (_BINARY_PATH "${_BINARY_PATH}.exe)")
+    set (_BINARY_PATH "${_BINARY_PATH}.exe")
   endif ()
   add_custom_command (TARGET prepare_ctd_payload_tmp_bin POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy ${_BINARY_PATH} ${PAYLOAD_TMP_BIN_PATH})
+                      COMMAND ${CMAKE_COMMAND} -E copy "${_BINARY_PATH}" "${PAYLOAD_TMP_BIN_PATH}")
   add_custom_target (target_ctd_ctds_${_BINARY}
-                     COMMAND ${_BINARY_PATH} --write-ctd ${CTD_PATH}/${_BINARY}.ctd)
+                     COMMAND ${_BINARY_PATH} --write-ctd "${CTD_PATH}/${_BINARY}.ctd"
+                     DEPENDS target_ctd_mkdir)
   list (APPEND PREPARE_CTD_CTDS_TARGETS target_ctd_ctds_${_BINARY})
 endforeach ()
 
@@ -146,14 +151,14 @@ set (_ZIP_NAME "binaries_${SEQAN_PLATFORM}_${SEQAN_SYSTEM_WORDSIZE}.zip")
 set (_ZIP_PATH "${PAYLOAD_PATH}")
 add_custom_target (prepare_ctd_payload
                    # rm -rf
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${_ZIP_PATH}
-                   COMMAND ${CMAKE_COMMAND} -E remove_directory ${_ZIP_PATH}
+                   COMMAND ${CMAKE_COMMAND} -E make_directory "${_ZIP_PATH}"
+                   COMMAND ${CMAKE_COMMAND} -E remove_directory "${_ZIP_PATH}"
                    # mkdir
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${_ZIP_PATH}
+                   COMMAND ${CMAKE_COMMAND} -E make_directory "${_ZIP_PATH}"
                    # compress
-                   COMMAND ${Java_JAR_EXECUTABLE} cfvM ${_ZIP_PATH}/${_ZIP_NAME} -C ${PAYLOAD_TMP_PATH} .
+                   COMMAND ${Java_JAR_EXECUTABLE} cfvM "${_ZIP_PATH}/${_ZIP_NAME}" -C "${PAYLOAD_TMP_PATH}" .
                    # remove temporary files
-                   COMMAND ${CMAKE_COMMAND} -E remove_directory ${PAYLOAD_TMP_PATH}
+                   COMMAND ${CMAKE_COMMAND} -E remove_directory "${PAYLOAD_TMP_PATH}"
                    DEPENDS prepare_ctd_payload_tmp_bin)
 
 # ============================================================================
@@ -166,14 +171,14 @@ add_custom_target (prepare_ctd_payload
 
 add_custom_target (prepare_ctd_static_files
                    COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/COPYRIGHT ${WORKFLOW_PLUGIN_DIR}
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/DESCRIPTION ${WORKFLOW_PLUGIN_DIR}
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/LICENSE ${WORKFLOW_PLUGIN_DIR}
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml ${WORKFLOW_PLUGIN_DIR}/descriptors)
+                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/COPYRIGHT" "${WORKFLOW_PLUGIN_DIR}"
+                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/DESCRIPTION" "${WORKFLOW_PLUGIN_DIR}"
+                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/LICENSE" "${WORKFLOW_PLUGIN_DIR}"
+                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml" "${CTD_PATH}")
 
 add_custom_target (prepare_ctd_icons
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}/icons
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons ${WORKFLOW_PLUGIN_DIR}/icons)
+                   COMMAND ${CMAKE_COMMAND} -E make_directory "${WORKFLOW_PLUGIN_DIR}/icons"
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons" "${WORKFLOW_PLUGIN_DIR}/icons")
 
 # ----------------------------------------------------------------------------
 # Configure plugin.properties.
@@ -186,8 +191,6 @@ if (Subversion_FOUND)
   Subversion_WC_INFO (${_SEQAN_SOURCE_DIR} SEQAN)
   string(REGEX REPLACE "^([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+).*"
     "\\1\\2\\3\\4\\5" SEQAN_LAST_CHANGE_DATE "${SEQAN_WC_LAST_CHANGED_DATE}")
-  message (STATUS "SEQAN_LAST_CHANGE_DATE ${SEQAN_LAST_CHANGE_DATE}")
-  message (STATUS "SEQAN_VERSION_STRING ${SEQAN_VERSION_STRING}")
   set (CF_SEQAN_VERSION ${SEQAN_VERSION_STRING}.${SEQAN_LAST_CHANGE_DATE})
 else ()
   set (CF_SEQAN_VERSION "${SEQAN_VERSION_STRING}")
@@ -196,9 +199,9 @@ endif ()
 # Configure the file.
 add_custom_target (prepare_ctd_properties
                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH}
-                   COMMAND ${CMAKE_COMMAND} -DSEQAN_SOURCE_DIR=${CMAKE_SOURCE_DIR} -DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}
-                                            -DCF_SEQAN_VERSION=${CF_SEQAN_VERSION}
-                                            -P ${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake)
+                   COMMAND ${CMAKE_COMMAND} "-DSEQAN_SOURCE_DIR=${CMAKE_SOURCE_DIR}" "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
+                                            "-DCF_SEQAN_VERSION=${CF_SEQAN_VERSION}"
+                                            -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake")
 
 # ----------------------------------------------------------------------------
 # Create *.ctd files.
