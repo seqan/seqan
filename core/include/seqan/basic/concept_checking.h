@@ -72,6 +72,15 @@ namespace seqan {
 #  define SEQAN_STATIC_ASSERT_BOOL_CAST(x) (bool)(x)
 //#endif
 
+//
+// If the compiler warns about unused typedefs then enable this:
+//
+#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
+#  define SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE __attribute__((unused))
+#else
+#  define SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE
+#endif
+
 #ifdef SEQAN_CXX11_STANDARD
 #  define SEQAN_STATIC_ASSERT( B ) static_assert(B, #B)
 #else
@@ -150,7 +159,7 @@ template<int x> struct static_assert_test{};
 #define SEQAN_STATIC_ASSERT( B ) \
    typedef static_assert_test<\
       sizeof(STATIC_ASSERTION_FAILURE< SEQAN_STATIC_ASSERT_BOOL_CAST( B ) >)>\
-         SEQAN_JOIN(seqan_static_assert_typedef_, __LINE__)
+         SEQAN_JOIN(seqan_static_assert_typedef_, __LINE__) SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE
 #endif
 /*
 #else
@@ -221,7 +230,7 @@ struct concept_check_<void(*)(Model)>
 #  define SEQAN_CONCEPT_ASSERT_FN( ModelFnPtr )             \
     typedef ::seqan::detail::instantiate<          \
     &::seqan::requirement_<ModelFnPtr>::failed>    \
-      SEQAN_PP_CAT(seqan_concept_check,__LINE__)
+      SEQAN_PP_CAT(seqan_concept_check,__LINE__) SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE
 
 // ---------------------------------------------------------------------------
 // ==> boost/concept/assert.hpp <==
@@ -372,7 +381,7 @@ struct requirement_<void(*)(Model)>
 #  define SEQAN_CONCEPT_ASSERT_FN( ModelFnPtr )             \
     typedef ::seqan::detail::instantiate<          \
     &::seqan::requirement_<ModelFnPtr>::failed>    \
-      SEQAN_PP_CAT(seqan_concept_check,__LINE__)
+      SEQAN_PP_CAT(seqan_concept_check,__LINE__) SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE
 
 // ---------------------------------------------------------------------------
 // ==> boost/concept_check/detail/requires.hpp <==
