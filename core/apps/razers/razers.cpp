@@ -37,6 +37,8 @@
   #define RAZERS_MATEPAIRS
 #endif
 
+#include <cctype>
+
 #include <seqan/platform.h>
 #ifdef PLATFORM_WINDOWS
 	#define SEQAN_DEFAULT_TMPDIR "C:\\TEMP\\"
@@ -299,7 +301,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("", "unique", "Output only unique best matches (-m 1 -dr 0 -pa)."));
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output", "razers eland fa fasta gff");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -308,6 +311,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("pa", "purge-ambiguous", "Purge reads with more than <\\fImax-hits\\fP> best matches."));
     addOption(parser, ArgParseOption("dr", "distance-range", "Only consider matches with at most NUM more errors compared to the best. Default: output all.", ArgParseOption::INTEGER));
     addOption(parser, ArgParseOption("of", "output-format", "Set output format.", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "output-format", "0");
     setMinValue(parser, "output-format", "0");
     setMaxValue(parser, "output-format", "3");
     addOption(parser, ArgParseOption("gn", "genome-naming", "Select how genomes are named (see Naming section below).", ArgParseOption::INTEGER));
@@ -387,11 +391,11 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 
     addTextSection(parser, "Formats, Naming, Sorting, and Coordinate Schemes");
 
-    addText(parser, "RazerS supports various output formats. Please use the \\fB-of\\fP option with one of the following numbers:");
-	addListItem(parser, "0", "Razer format");
-	addListItem(parser, "1", "Enhanced Fasta format");
-	addListItem(parser, "2", "Eland format");
-	addListItem(parser, "3", "Gff format");
+    addText(parser, "RazerS supports various output formats. The output format is detected automatically from the file suffix and can be enforced using the \\fB-of\\fP setting. The file suffix is given in parantheses. Format 0 is the fallback.");
+	addListItem(parser, "0", "Razer format (.razers)");
+	addListItem(parser, "1", "Enhanced Fasta format (.fa, .fasta)");
+	addListItem(parser, "2", "Eland format (.eland)");
+	addListItem(parser, "3", "Gff format (.gff)");
 
     addText(parser, "");
     addText(parser, "By default, reads and contigs are referred by their Fasta ids given in the input files. "
@@ -463,8 +467,6 @@ extractOptions(
     if (isSet(parser, "distance-range"))
         options.distanceRange++;
     getOptionValue(options.dumpAlignment, parser, "alignment");
-    getOptionValue(options.output, parser, "output");
-    getOptionValue(options.outputFormat, parser, "output-format");
     getOptionValue(options.sortOrder, parser, "sort-order");
     getOptionValue(options.genomeNaming, parser, "genome-naming");
     getOptionValue(options.readNaming, parser, "read-naming");
@@ -518,6 +520,37 @@ extractOptions(
     resize(readFileNames, _min(getArgumentValueCount(parser, 1), maxReadFiles), Exact());
     for (unsigned i = 0; i < length(readFileNames); ++i)
         getArgumentValue(readFileNames[i], parser, 1, i);
+
+    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
+    if (isSet(parser, "output"))
+    {
+        getOptionValue(options.output, parser, "output");
+    }
+    else
+    {
+        options.output = readFileNames[0];
+        append(options.output, ".razers");
+    }
+    if (isSet(parser, "output-format"))
+    {
+        getOptionValue(options.outputFormat, parser, "output-format");
+    }
+    else
+    {
+        // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+        CharString tmp = options.output;
+        toLower(tmp);
+
+        if (endsWith(tmp, ".razers"))
+            options.outputFormat = 0;
+        else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+            options.outputFormat = 1;
+        else if (endsWith(tmp, ".eland"))
+            options.outputFormat = 2;
+        else if (endsWith(tmp, ".gff"))
+            options.outputFormat = 3;
+    }
+
 
 	if (isSet(parser, "shape"))
 	{

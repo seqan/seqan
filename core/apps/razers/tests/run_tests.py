@@ -59,9 +59,9 @@ def main(source_base, binary_base):
             args=['--low-memory',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl,),
-                  '-o', ph.outFile('se-adeno-reads%d_1.out' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1.out' % rl)),
+                  '-o', ph.outFile('se-adeno-reads%d_1.razers' % rl)],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1.razers' % rl),
+                      ph.outFile('se-adeno-reads%d_1.razers' % rl)),
                      (ph.inFile('se-adeno-reads%d_1.stdout' % rl),
                       ph.outFile('se-adeno-reads%d_1.stdout' % rl))])
         conf_list.append(conf)
@@ -74,9 +74,9 @@ def main(source_base, binary_base):
                   '-id',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
-                  '-o', ph.outFile('se-adeno-reads%d_1-id.out' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1-id.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1-id.out' % rl)),
+                  '-o', ph.outFile('se-adeno-reads%d_1-id.razers' % rl)],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1-id.razers' % rl),
+                      ph.outFile('se-adeno-reads%d_1-id.razers' % rl)),
                      (ph.inFile('se-adeno-reads%d_1-id.stdout' % rl),
                       ph.outFile('se-adeno-reads%d_1-id.stdout' % rl))])
         conf_list.append(conf)
@@ -90,9 +90,9 @@ def main(source_base, binary_base):
                       '-id', o,
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-id%s.out' % (rl, o))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-id%s.out' % (rl, o)),
-                          ph.outFile('se-adeno-reads%d_1-id%s.out' % (rl, o))),
+                      '-o', ph.outFile('se-adeno-reads%d_1-id%s.razers' % (rl, o))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-id%s.razers' % (rl, o)),
+                          ph.outFile('se-adeno-reads%d_1-id%s.razers' % (rl, o))),
                          (ph.inFile('se-adeno-reads%d_1-id%s.stdout' % (rl, o)),
                           ph.outFile('se-adeno-reads%d_1-id%s.stdout' % (rl, o)))])
             conf_list.append(conf)
@@ -106,25 +106,25 @@ def main(source_base, binary_base):
                       '-id', '-i', str(i),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-id-i%d.out' % (rl, i))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-i%d.out' % (rl, i)),
-                          ph.outFile('se-adeno-reads%d_1-id-i%d.out' % (rl, i))),
+                      '-o', ph.outFile('se-adeno-reads%d_1-id-i%d.razers' % (rl, i))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-i%d.razers' % (rl, i)),
+                          ph.outFile('se-adeno-reads%d_1-id-i%d.razers' % (rl, i))),
                          (ph.inFile('se-adeno-reads%d_1-id-i%d.stdout' % (rl, i)),
                           ph.outFile('se-adeno-reads%d_1-id-i%d.stdout' % (rl, i)))])
             conf_list.append(conf)
             
         # Compute with different output formats.
-        for of in [0, 1, 2, 3]:
+        for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff']):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)),
                 args=['--low-memory',
-                      '-id', '-of', str(of),
+                      '-id',
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-id-of%d.out' % (rl, of))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-of%d.out' % (rl, of)),
-                          ph.outFile('se-adeno-reads%d_1-id-of%d.out' % (rl, of))),
+                      '-o', ph.outFile('se-adeno-reads%d_1-id-of%d.%s' % (rl, of, suffix))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-of%d.%s' % (rl, of, suffix)),
+                          ph.outFile('se-adeno-reads%d_1-id-of%d.%s' % (rl, of, suffix))),
                          (ph.inFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)),
                           ph.outFile('se-adeno-reads%d_1-id-of%d.stdout' % (rl, of)))])
             conf_list.append(conf)
@@ -138,9 +138,9 @@ def main(source_base, binary_base):
                       '-id', '-so', str(so),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-id-so%d.out' % (rl, so))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-so%d.out' % (rl, so)),
-                          ph.outFile('se-adeno-reads%d_1-id-so%d.out' % (rl, so))),
+                      '-o', ph.outFile('se-adeno-reads%d_1-id-so%d.razers' % (rl, so))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-id-so%d.razers' % (rl, so)),
+                          ph.outFile('se-adeno-reads%d_1-id-so%d.razers' % (rl, so))),
                          (ph.inFile('se-adeno-reads%d_1-id-so%d.stdout' % (rl, so)),
                           ph.outFile('se-adeno-reads%d_1-id-so%d.stdout' % (rl, so)))])
             conf_list.append(conf)
@@ -159,9 +159,9 @@ def main(source_base, binary_base):
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   ph.inFile('adeno-reads%d_2.fa' % rl),
-                  '-o', ph.outFile('pe-adeno-reads%d_2.out' % rl)],
-            to_diff=[(ph.inFile('pe-adeno-reads%d_2.out' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.out' % rl)),
+                  '-o', ph.outFile('pe-adeno-reads%d_2.razers' % rl)],
+            to_diff=[(ph.inFile('pe-adeno-reads%d_2.razers' % rl),
+                      ph.outFile('pe-adeno-reads%d_2.razers' % rl)),
                      (ph.inFile('pe-adeno-reads%d_2.stdout' % rl),
                       ph.outFile('pe-adeno-reads%d_2.stdout' % rl))])
         conf_list.append(conf)
@@ -175,9 +175,9 @@ def main(source_base, binary_base):
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   ph.inFile('adeno-reads%d_2.fa' % rl),
-                  '-o', ph.outFile('pe-adeno-reads%d_2-id.out' % rl)],
-            to_diff=[(ph.inFile('pe-adeno-reads%d_2-id.out' % rl),
-                      ph.outFile('pe-adeno-reads%d_2-id.out' % rl)),
+                  '-o', ph.outFile('pe-adeno-reads%d_2-id.razers' % rl)],
+            to_diff=[(ph.inFile('pe-adeno-reads%d_2-id.razers' % rl),
+                      ph.outFile('pe-adeno-reads%d_2-id.razers' % rl)),
                      (ph.inFile('pe-adeno-reads%d_2-id.stdout' % rl),
                       ph.outFile('pe-adeno-reads%d_2-id.stdout' % rl))])
         conf_list.append(conf)
@@ -192,9 +192,9 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-id%s.out' % (rl, o))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id%s.out' % (rl, o)),
-                          ph.outFile('pe-adeno-reads%d_2-id%s.out' % (rl, o))),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-id%s.razers' % (rl, o))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id%s.razers' % (rl, o)),
+                          ph.outFile('pe-adeno-reads%d_2-id%s.razers' % (rl, o))),
                          (ph.inFile('pe-adeno-reads%d_2-id%s.stdout' % (rl, o)),
                           ph.outFile('pe-adeno-reads%d_2-id%s.stdout' % (rl, o)))])
             conf_list.append(conf)
@@ -209,26 +209,26 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-id-i%d.out' % (rl, i))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-i%d.out' % (rl, i)),
-                          ph.outFile('pe-adeno-reads%d_2-id-i%d.out' % (rl, i))),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-id-i%d.razers' % (rl, i))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-i%d.razers' % (rl, i)),
+                          ph.outFile('pe-adeno-reads%d_2-id-i%d.razers' % (rl, i))),
                          (ph.inFile('pe-adeno-reads%d_2-id-i%d.stdout' % (rl, i)),
                           ph.outFile('pe-adeno-reads%d_2-id-i%d.stdout' % (rl, i)))])
             conf_list.append(conf)
             
         # Compute with different output formats.
-        for of in [0, 1, 2, 3]:
+        for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff']):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)),
                 args=['--low-memory',
-                      '-id', '-of', str(of),
+                      '-id',
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-id-of%d.out' % (rl, of))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-of%d.out' % (rl, of)),
-                          ph.outFile('pe-adeno-reads%d_2-id-of%d.out' % (rl, of))),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-id-of%d.%s' % (rl, of, suffix))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-of%d.%s' % (rl, of, suffix)),
+                          ph.outFile('pe-adeno-reads%d_2-id-of%d.%s' % (rl, of, suffix))),
                          (ph.inFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)),
                           ph.outFile('pe-adeno-reads%d_2-id-of%d.stdout' % (rl, of)))])
             conf_list.append(conf)
@@ -243,9 +243,9 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-id-so%d.out' % (rl, so))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-so%d.out' % (rl, so)),
-                          ph.outFile('pe-adeno-reads%d_2-id-so%d.out' % (rl, so))),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-id-so%d.razers' % (rl, so))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-id-so%d.razers' % (rl, so)),
+                          ph.outFile('pe-adeno-reads%d_2-id-so%d.razers' % (rl, so))),
                          (ph.inFile('pe-adeno-reads%d_2-id-so%d.stdout' % (rl, so)),
                           ph.outFile('pe-adeno-reads%d_2-id-so%d.stdout' % (rl, so)))])
             conf_list.append(conf)
