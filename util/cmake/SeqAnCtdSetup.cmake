@@ -155,6 +155,8 @@ add_custom_target (prepare_ctd_payload
                    COMMAND ${CMAKE_COMMAND} -E remove_directory "${_ZIP_PATH}"
                    # mkdir
                    COMMAND ${CMAKE_COMMAND} -E make_directory "${_ZIP_PATH}"
+                   # create empty binaries.ini
+                   COMMAND ${CMAKE_COMMAND} -E touch "${PAYLOAD_TMP_PATH}/binaries.ini"
                    # compress
                    COMMAND ${Java_JAR_EXECUTABLE} cfvM "${_ZIP_PATH}/${_ZIP_NAME}" -C "${PAYLOAD_TMP_PATH}" .
                    # remove temporary files

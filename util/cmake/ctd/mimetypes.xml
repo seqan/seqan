@@ -1,8 +1,11 @@
 <mimetypes xmlns="http://www.ball-project.org/mimetypes">
  <mimetype name="FASTA" binary="false" ext="FASTA" description="FASTA"/>
- <mimetype name="FASTA" binary="false" ext="FA" description="FASTA"/> 
- <mimetype name="FASTQ" binary="false" ext="FQ" description="FASTQ"/> 
- <mimetype name="FASTQ" binary="false" ext="FASTQ" description="FASTQ"/>  
- <mimetype name="MASIC" binary="false" ext="masic" description="MASIC"/>   
- <mimetype name="MASIC" binary="false" ext="mas" description="MASIC"/> 
+ <mimetype name="FASTA" binary="false" ext="FA" description="FASTA"/>
+ <mimetype name="FASTQ" binary="false" ext="FQ" description="FASTQ"/>
+ <mimetype name="FASTQ" binary="false" ext="FASTQ" description="FASTQ"/>
+ <mimetype name="MASIC" binary="false" ext="masic" description="MASIC"/>
+ <mimetype name="MASIC" binary="false" ext="mas" description="MASIC"/>
+ <mimetype name="GFF" binary="false" ext="gff" description="General Feature Format"/>
+ <mimetype name="RAZERS" binary="false" ext="razers" description="RazerS read mapping format"/>
+ <mimetype name="ELAND" binary="false" ext="eland" description="ELAND read mapping format"/>
 </mimetypes>
