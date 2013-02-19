@@ -1,0 +1,15 @@
+# the package of the plugin
+pluginPackage=de.seqan
+
+# the name of the plugin
+pluginName=SeqAn
+
+# the version of the plugin
+pluginVersion=@CF_SEQAN_VERSION@
+
+# the path (starting from KNIMEs Community Nodes node)
+nodeRepositoyRoot=community
+
+
+executor=com.genericworkflownodes.knime.execution.impl.LocalToolExecutor
+commandGenerator=com.genericworkflownodes.knime.execution.impl.CLICommandGenerator

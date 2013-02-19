@@ -78,7 +78,8 @@ if (NOT CMAKE_BUILD_TYPE)
          FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-#message (STATUS "CMAKE_BUILD_TYPE == ${CMAKE_BUILD_TYPE}")
+# Clear CTD executable list, will be set on reconfiguration.
+set (SEQAN_CTD_EXECUTABLES CACHE INTERNAL "Global list of executables for workflow integration.")
 
 # ===========================================================================
 # Setup Modules and Find Packages.
@@ -135,6 +136,12 @@ include (package)
 # ===========================================================================
 
 #include (FeatureSummary)
+
+# ===========================================================================
+# Setup Common Tool Description for Generic Workflow Nodes
+# ===========================================================================
+
+include (SeqAnCtdSetup)
 
 # ===========================================================================
 # Legacy Build System Warning

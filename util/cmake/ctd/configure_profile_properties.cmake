@@ -1,0 +1,1 @@
+configure_file (${SEQAN_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in ${WORKFLOW_PLUGIN_DIR}/plugin.properties)

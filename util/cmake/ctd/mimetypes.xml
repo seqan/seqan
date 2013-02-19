@@ -1,0 +1,8 @@
+<mimetypes xmlns="http://www.ball-project.org/mimetypes">
+ <mimetype name="FASTA" binary="false" ext="FASTA" description="FASTA"/>
+ <mimetype name="FASTA" binary="false" ext="FA" description="FASTA"/> 
+ <mimetype name="FASTQ" binary="false" ext="FQ" description="FASTQ"/> 
+ <mimetype name="FASTQ" binary="false" ext="FASTQ" description="FASTQ"/>  
+ <mimetype name="MASIC" binary="false" ext="masic" description="MASIC"/>   
+ <mimetype name="MASIC" binary="false" ext="mas" description="MASIC"/> 
+</mimetypes>
