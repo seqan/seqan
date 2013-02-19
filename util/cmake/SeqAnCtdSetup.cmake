@@ -139,7 +139,7 @@ else ()
   message (FATAL_ERROR "Unknown platform name ${SEQAN_PLATFORM}")
 endif ()
 
-if (SEQAN_SYSTEM_PROCESSOR MATCHES ".*64.*")
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
   set (SEQAN_SYSTEM_WORDSIZE "64")
 else ()
   set (SEQAN_SYSTEM_WORDSIZE "32")
