@@ -255,7 +255,9 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    setValidValues(parser, 0, "fa fasta fq fastq");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    setValidValues(parser, 1, "fa fasta fq fastq");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
 #ifdef RAZERS_MATEPAIRS
@@ -310,10 +312,6 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("a", "alignment", "Dump the alignment for each match (only \\fIrazer\\fP or \\fIfasta\\fP format)."));
     addOption(parser, ArgParseOption("pa", "purge-ambiguous", "Purge reads with more than <\\fImax-hits\\fP> best matches."));
     addOption(parser, ArgParseOption("dr", "distance-range", "Only consider matches with at most NUM more errors compared to the best. Default: output all.", ArgParseOption::INTEGER));
-    addOption(parser, ArgParseOption("of", "output-format", "Set output format.", ArgParseOption::INTEGER));
-    setDefaultValue(parser, "output-format", "0");
-    setMinValue(parser, "output-format", "0");
-    setMaxValue(parser, "output-format", "3");
     addOption(parser, ArgParseOption("gn", "genome-naming", "Select how genomes are named (see Naming section below).", ArgParseOption::INTEGER));
     setMinValue(parser, "genome-naming", "0");
     setMaxValue(parser, "genome-naming", "1");
@@ -531,26 +529,19 @@ extractOptions(
         options.output = readFileNames[0];
         append(options.output, ".razers");
     }
-    if (isSet(parser, "output-format"))
-    {
-        getOptionValue(options.outputFormat, parser, "output-format");
-    }
-    else
-    {
-        // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
-        CharString tmp = options.output;
-        toLower(tmp);
 
-        if (endsWith(tmp, ".razers"))
-            options.outputFormat = 0;
-        else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
-            options.outputFormat = 1;
-        else if (endsWith(tmp, ".eland"))
-            options.outputFormat = 2;
-        else if (endsWith(tmp, ".gff"))
-            options.outputFormat = 3;
-    }
+    // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+    CharString tmp = options.output;
+    toLower(tmp);
 
+    if (endsWith(tmp, ".razers"))
+        options.outputFormat = 0;
+    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+        options.outputFormat = 1;
+    else if (endsWith(tmp, ".eland"))
+        options.outputFormat = 2;
+    else if (endsWith(tmp, ".gff"))
+        options.outputFormat = 3;
 
 	if (isSet(parser, "shape"))
 	{
