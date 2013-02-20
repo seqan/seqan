@@ -224,10 +224,9 @@ globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 	typedef typename Value<TScore>::Type TScoreValue;
 	typedef typename Size<TStringSet>::Type TSize;
 	typedef Graph<Alignment<TStringSet, TSize> > TGraph;
-	typedef typename Id<TGraph>::Type TId;
+	//typedef typename Id<TGraph>::Type TId;
 	typedef double TDistanceValue;
-	
-	
+
 	// Initialize alignment object
 	clear(gAlign);
 	assignStringSet(gAlign, sequenceSet);
@@ -376,8 +375,8 @@ inline void
 globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 				   TScore const& scoreObject)
 {
-	typedef typename Value<TStringSet>::Type TString;
-	typedef typename Value<TString>::Type TAlphabet;
+	//typedef typename Value<TStringSet>::Type TString;
+	//typedef typename Value<TString>::Type TAlphabet;
 	TStringSet sequenceSet = stringSet(gAlign);
 	String<String<char> > sequenceNames;
 	resize(sequenceNames, length(sequenceSet), String<char>("tmpName"));
@@ -453,9 +452,9 @@ void
 _debugRefinedMatches(TGraph& g)
 {
 	typedef typename Id<TGraph>::Type TId;
-	typedef typename Size<TGraph>::Type TSize;
+	//typedef typename Size<TGraph>::Type TSize;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	
+
 	std::cout << "Refined matches" << std::endl;
 	TEdgeIterator it_tmp(g);
 	for(;!atEnd(it_tmp);++it_tmp) {

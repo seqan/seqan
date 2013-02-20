@@ -788,7 +788,7 @@ void testSequenceInsert(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    //typedef typename Value<TString>::Type TValue;
 
     // Test of inserting an empty string.
     TString string1 = "";
@@ -809,7 +809,7 @@ void testSequenceInsertValue(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    //typedef typename Value<TString>::Type TValue;
 
     // Test of inserting into an empty string.
     TString string = "";

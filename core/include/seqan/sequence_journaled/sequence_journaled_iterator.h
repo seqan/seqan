@@ -750,9 +750,6 @@ typename Difference<TJournaledString>::Type
 operator-(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & it1,
           Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & it2)
 {
-    SEQAN_CHECKPOINT;
-
-    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIter;
     typedef typename Difference<TJournaledString>::Type TResult;
 
     // First, handle the cases where it1 or it2 are at the end.

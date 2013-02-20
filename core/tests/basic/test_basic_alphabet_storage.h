@@ -61,7 +61,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_bits_per_value_metafunction)
 {
     using namespace seqan;
 
-    typedef BitsPerValue<int> TBitsPerValue;  // Check existance.
+    typedef BitsPerValue<int> TBitsPerValue SEQAN_UNUSED_TYPEDEF;  // Check existance.
 
     SEQAN_ASSERT_EQ(+BitsPerValue<LongStruct_>::VALUE, 128u);
 }
@@ -70,7 +70,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_value_size_metafunction)
 {
     using namespace seqan;
 
-    typedef ValueSize<int> TValueSize;  // Check existance.
+    typedef ValueSize<int> TValueSize SEQAN_UNUSED_TYPEDEF;  // Check existance.
 
     SEQAN_ASSERT_EQ(+ValueSize<LongStruct_>::VALUE, 42u);
 }
@@ -90,7 +90,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_bytes_per_value_metafunction)
 {
     using namespace seqan;
 
-    typedef BytesPerValue<int> TBitsPerValue;  // Check existance.
+    typedef BytesPerValue<int> TBitsPerValue SEQAN_UNUSED_TYPEDEF;  // Check existance.
 
     SEQAN_ASSERT_EQ(+BytesPerValue<LongStruct_>::VALUE, 16);
 }

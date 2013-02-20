@@ -42,7 +42,6 @@ void Test_VertexIterator() {
 // Graph InternalVertexIterator
 	typedef Graph<TGraphType> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	
 	TGraph g;
 	TVertexDescriptor v0 = addVertex(g);
@@ -105,7 +104,6 @@ void Test_TreeInternalVertexIterator() {
 // Tree InternalVertexIterator
 	typedef Graph<Tree<void> > TTree;
 	typedef VertexDescriptor<TTree>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TTree>::Type TEdgeDescriptor;
 	typedef Size<TTree>::Type TSize;
 	
 	TTree gV;
@@ -143,7 +141,6 @@ void Test_OutEdgeIterator() {
 // Graph InternalOutEdgeIterator
 	typedef Graph<TGraphType> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	
 	TGraph g;
 	TVertexDescriptor v0 = addVertex(g);
@@ -215,7 +212,6 @@ void Test_EdgeIterator() {
 // Graph InternalEdgeIterator
 	typedef Graph<TGraphType> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	
 	TGraph g;
 	TVertexDescriptor v0 = addVertex(g);
@@ -295,7 +291,6 @@ void Test_AdjacencyIterator() {
 // Graph InternalAdjacencyIterator
 	typedef Graph<TGraphType> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	
 	TGraph g;
 	TVertexDescriptor v0 = addVertex(g);
@@ -360,9 +355,6 @@ void Test_BfsIter() {
 //____________________________________________________________________________
 // Graph BfsIterator
 	typedef Graph<TGraphType> TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Size<TGraph>::Type TSize;
 
 	//Create the graph
 	TGraph g;
@@ -400,9 +392,6 @@ void Test_BfsIter() {
 void Test_BfsIterator() {
 //____________________________________________________________________________
 // Graph InternalBfsIterator
-	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
-	typedef Size<Graph<> >::Type TSize;
 
 	//Create the graph
 	Graph<> g;
@@ -469,9 +458,9 @@ void Test_DfsPreorderIter() {
 //____________________________________________________________________________
 // Graph DfsIterator
 	typedef Graph<TGraphType> TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Size<TGraph>::Type TSize;
+	//typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+	//typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef typename Size<TGraph>::Type TSize;
 
 	//Create the graph
 	TGraph g;
@@ -510,9 +499,9 @@ void Test_DfsPreorderIter() {
 void Test_DfsPreorderIterator() {
 //____________________________________________________________________________
 // Graph DfsIterator
-	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
-	typedef Size<Graph<> >::Type TSize;
+	//typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef Size<Graph<> >::Type TSize;
 
 	//Create the graph
 	Graph<> g;

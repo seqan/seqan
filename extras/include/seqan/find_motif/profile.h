@@ -112,7 +112,7 @@ convertSetOfPatternsToProfile(TProfile & profile,
 {
 //IOREV _notio_
 	typedef typename Value<TStrings>::Type TString;
-	typedef typename Value<TProfile>::Type TFrequencyDistribution;
+	//typedef typename Value<TProfile>::Type TFrequencyDistribution;
 
 	typename Size<TString>::Type l = length(l_mers[0]);
 	resize(profile, l);

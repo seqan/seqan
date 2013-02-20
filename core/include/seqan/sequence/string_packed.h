@@ -757,7 +757,6 @@ struct ClearSpaceStringPacked_
 //              - avoid double moving of the rest-part if "resize" allocates a new block
 
         typedef typename Size<T>::Type TSize;
-        typedef typename Iterator<T, Standard>::Type TIterator;
 
         TSize old_length = length(seq);
         TSize old_size = end - start;

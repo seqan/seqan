@@ -985,7 +985,7 @@ void testSegmentIter(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    //typedef typename Value<TString>::Type TValue;
 
     TString string = "ACGTACGTACGT";
 
@@ -1042,7 +1042,7 @@ void testSegmentLength(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    //typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
     typedef Segment<TString, SuffixSegment> TSuffix;
@@ -1062,7 +1062,7 @@ void testSegmentMoveValue(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    //typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
     typedef Segment<TString, SuffixSegment> TSuffix;

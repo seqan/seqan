@@ -1258,8 +1258,6 @@ int simulateReadsMain(FragmentStore<MyFragmentStoreConfig> & fragmentStore,
                       ModelParameters<TReadsTag> const & parameters) {
     typedef FragmentStore<MyFragmentStoreConfig> TFragmentStore;
     typedef Value<TFragmentStore::TMatePairStore>::Type TMatePairStoreElement;
-    typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type	TAlignedElement;
-    typedef typename TAlignedElement::TGapAnchors								TReadGapAnchors;
 
     if (options.verbose)
         std::cerr << "Simulating reads..." << std::endl;

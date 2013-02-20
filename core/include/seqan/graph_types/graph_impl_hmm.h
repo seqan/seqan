@@ -255,13 +255,8 @@ clearEdges(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline void
-clearVertices(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g) 
+clearVertices(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
 {
-	SEQAN_CHECKPOINT
-	typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-
 	g.data_begin = 0;
 	g.data_end = 0;
 	clear(g.data_emission);
@@ -523,18 +518,14 @@ write(TFile & target,
 	  Raw)
 {
 //IOREV _nodoc_
-	SEQAN_CHECKPOINT
 	typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TAlphabet>::Type TSize;
 	typedef typename EdgeType<TGraph>::Type TEdgeStump;
 	typedef typename Iterator<String<TEdgeStump*>, Standard>::Type TIterConst;
 	TSize alph_size = ValueSize<TAlphabet>::VALUE;
 
-
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Iterator<String<TCargo> const, Standard>::Type TEmisIter;
-	
-	
+
 	// Alphabet
 	streamPut(target,"Alphabet:\n");
 	streamPut(target,'{');
@@ -914,9 +905,6 @@ getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 					   TVertexDescriptor const state,
 					   TAlphabet const symbol)
 {
-	SEQAN_CHECKPOINT
-
-	typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TAlphabet>::Type TSize;
 	return g.data_emission[state * (TSize) ValueSize<TAlphabet>::VALUE + ordValue(symbol)];
 }
@@ -944,9 +932,6 @@ emissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 					TVertexDescriptor const state,
 					TAlphabet const symbol)
 {
-	SEQAN_CHECKPOINT
-
-	typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TAlphabet>::Type TSize;
 	return g.data_emission[state * (TSize) ValueSize<TAlphabet>::VALUE + ordValue(symbol)];
 }
@@ -976,9 +961,6 @@ assignEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 						  TAlphabet const symbol,
 						  TEmisProb const eProb)
 {
-	SEQAN_CHECKPOINT
-
-	typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TAlphabet>::Type TSize;
 	g.data_emission[state * (TSize) ValueSize<TAlphabet>::VALUE + ordValue(symbol)] = (TCargo) eProb;
 }

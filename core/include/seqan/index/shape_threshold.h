@@ -909,11 +909,11 @@ void computeQGramFilteringSensitivity(
 	bool optionMinOutput)
 {
 	typedef typename Value<TLossString>::Type		TFloat;
-	typedef typename Value<TLogErrorDistr>::Type	TProbValue;
+	//typedef typename Value<TLogErrorDistr>::Type	TProbValue;
 	typedef typename Value<TStateString>::Type		TState;
 
 	typedef String<TFloat>							TMatrixCol;
-	typedef String<int>								TIntCol;
+	//typedef String<int>								TIntCol;
 
 	SEQAN_ASSERT_EQ((length(logError) % 4), 0u);
 

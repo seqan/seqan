@@ -445,14 +445,14 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
     // typedef typename Value<TAlignedReadStore>::Type			TAlignedRead;
     // typedef typename Value<TAlignQualityStore>::Type		TAlignQuality;
     typedef typename TThreadLocalStorage::TReadSet TReadSet;
-    typedef Index<TReadSet, IndexQGram<TShape>  >   TReadIndex;
+    //typedef Index<TReadSet, IndexQGram<TShape>  >   TReadIndex;
     // typedef typename Id<TAlignedRead>::Type					TId;
 
     typedef typename TFragmentStore::TContigSeq             TGenome;
     typedef typename Size<TGenome>::Type                    TSize;
     typedef typename Position<TGenome>::Type                TGPos;
     typedef typename MakeSigned_<TGPos>::Type               TSignedGPos;
-    typedef typename Infix<TGenome>::Type                   TGenomeInf;
+    //typedef typename Infix<TGenome>::Type                   TGenomeInf;
 
     typedef typename Iterator<THitString, Standard>::Type THitStringIter;
 
@@ -910,7 +910,7 @@ writeBackToLocal(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore, TFi
     if (tls.threadId == 0u && tls.options._debugLevel >= 3)
         fprintf(stderr, "[writeback]");
     typedef typename Size<typename TFragmentStore::TAlignedReadStore>::Type TAlignedReadStoreSize;
-    typedef ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore, TFilterFinderL, TFilterFinderR, TFilterPattern, TShape, TOptions, TCounts, TRazerSMode> > TThreadLocalStorage;
+    //typedef ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore, TFilterFinderL, TFilterFinderR, TFilterPattern, TShape, TOptions, TCounts, TRazerSMode> > TThreadLocalStorage;
 
     // Compute new length for the matches.
     TAlignedReadStoreSize oldSize = length(tls.matches);
@@ -1026,29 +1026,29 @@ void _mapMatePairReadsParallel(
     TRazerSMode                       const & /*mode*/)
 {
     typedef FragmentStore<TFSSpec, TFSConfig>               TFragmentStore;
-    typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
-    typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
-    typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
-    typedef typename Value<TMatePairStore>::Type            TMatePair;
-    typedef typename Value<TAlignedReadStore>::Type         TAlignedRead;
-    typedef typename Value<TAlignQualityStore>::Type        TAlignQuality;
+    //typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
+    //typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
+    //typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
+    //typedef typename Value<TMatePairStore>::Type            TMatePair;
+    //typedef typename Value<TAlignedReadStore>::Type         TAlignedRead;
+    //typedef typename Value<TAlignQualityStore>::Type        TAlignQuality;
     typedef typename Value<TThreadLocalStorages>::Type TThreadLocalStorage;
-    typedef typename TThreadLocalStorage::TReadSet TReadSet;
-    typedef typename TThreadLocalStorage::TShape TShape;
-    typedef Index<TReadSet, IndexQGram<TShape>  >   TReadIndex;
-    typedef typename Id<TAlignedRead>::Type                 TId;
+    //typedef typename TThreadLocalStorage::TReadSet TReadSet;
+    //typedef typename TThreadLocalStorage::TShape TShape;
+    //typedef Index<TReadSet, IndexQGram<TShape>  >   TReadIndex;
+    //typedef typename Id<TAlignedRead>::Type                 TId;
 
     typedef typename TFragmentStore::TContigSeq             TGenome;
-    typedef typename Size<TGenome>::Type                    TSize;
+    //typedef typename Size<TGenome>::Type                    TSize;
     typedef typename Position<TGenome>::Type                TGPos;
     typedef typename MakeSigned_<TGPos>::Type               TSignedGPos;
-    typedef typename Infix<TGenome>::Type                   TGenomeInf;
+    //typedef typename Infix<TGenome>::Type                   TGenomeInf;
 
     typedef TRazerSOptions TOptions;
 
     typedef typename Value<TThreadLocalStorages>::Type TThreadLocalStorage;
     typedef typename TThreadLocalStorage::TMatches TMatches;
-    typedef typename Value<TMatches>::Type TMatch;
+    //typedef typename Value<TMatches>::Type TMatch;
 
     // FILTRATION
     typedef typename TThreadLocalStorage::TFilterFinderL    TFilterFinderL;
@@ -1056,19 +1056,19 @@ void _mapMatePairReadsParallel(
     typedef typename TThreadLocalStorage::TFilterPattern    TFilterPattern;
 
     // MATE-PAIR FILTRATION
-    typedef Pair<__int64, TMatch>   TDequeueValue;
-    typedef Dequeue<TDequeueValue>                          TDequeue;
-    typedef typename TDequeue::TIter                        TDequeueIterator;
+    //typedef Pair<__int64, TMatch>   TDequeueValue;
+    //typedef Dequeue<TDequeueValue>                          TDequeue;
+    //typedef typename TDequeue::TIter                        TDequeueIterator;
 
     // VERIFICATION
-    typedef MatchVerifier<
-        TFragmentStore,
-        TMatches,
-        TRazerSOptions,
-        TRazerSMode,
-        TFilterPattern,
-        TCounts
-        > TVerifier;
+    //typedef MatchVerifier<
+    //    TFragmentStore,
+    //    TMatches,
+    //    TRazerSOptions,
+    //    TRazerSMode,
+    //    TFilterPattern,
+    //    TCounts
+    //    > TVerifier;
 
     typedef typename TFilterFinderL::THitString THitString;
     typedef Job<PairedVerification<TMatches, TFragmentStore, THitString, TOptions, TFilterPattern> > TVerificationJob;
@@ -1382,7 +1382,7 @@ int _mapMatePairReadsParallel(
 #endif
 
     typedef Pattern<TIndex, TFilterSpec>                TFilterPattern; // filter
-    typedef Pattern<TRead const, MyersUkkonen>          TMyersPattern;  // verifier
+    //typedef Pattern<TRead const, MyersUkkonen>          TMyersPattern;  // verifier
 
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef Finder<TContigSeq, TFilterSpec>             TFilterFinderL;

@@ -98,14 +98,14 @@ _verify(Verifier<TText, TSpec> & verifier,
         typename Size<Db<TText, TSpec> >::Type queryId,
         TDelegate & delegate)
 {
-    typedef Db<TText> /* const */                           TDb;
-    typedef typename Size<TDb>::Type                        TDbSize;
+    //typedef Db<TText> /* const */                           TDb;
+    //typedef typename Size<TDb>::Type                        TDbSize;
     typedef typename Value<TText>::Type                     TTextReference;
     typedef typename Size<TTextReference>::Type             TTextSize;
     typedef typename Size<TTextReference>::Type             TErrors;
-    typedef Finder<TTextReference>                          TFinder;
-    typedef MyersUkkonenGlobalBanded                        TAlgorithmSpec;
-    typedef PatternState_<TTextReference, TAlgorithmSpec>   TPatternState;
+    //typedef Finder<TTextReference>                          TFinder;
+    //typedef MyersUkkonenGlobalBanded                        TAlgorithmSpec;
+    //typedef PatternState_<TTextReference, TAlgorithmSpec>   TPatternState;
 
     // Get texts from database.
     TTextReference text1 = verifier.db.text[dbId];

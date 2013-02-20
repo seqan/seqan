@@ -106,9 +106,6 @@ void testAlignmentDPMatrixDataLengths()
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
 
-    typedef _DataHost<TDPMatrix>::Type TDataHost;
-    typedef _DataHost<TDPMatrixConst>::Type TDataHostConst;
-
     TDPMatrix dpMatrix;
 
     value(dpMatrix._dataHost).data_lengths[0] = 10;
@@ -128,9 +125,6 @@ void testAlignmentDPMatrixDataFactors()
 
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
-
-    typedef _DataHost<TDPMatrix>::Type TDataHost;
-    typedef _DataHost<TDPMatrixConst>::Type TDataHostConst;
 
     TDPMatrix dpMatrix;
 
@@ -800,7 +794,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value)
     using namespace seqan;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
-    typedef typename Host<DPMatrix_<char, SparseDPMatrix> >::Type THostMatrix;
 
     setLength(dpMatrix, +DPMatrixDimension_::HORIZONTAL, 3);
     setLength(dpMatrix, +DPMatrixDimension_::VERTICAL, 4);

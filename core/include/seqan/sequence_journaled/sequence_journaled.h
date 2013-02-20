@@ -890,9 +890,6 @@ replace(String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTar
         typename Size<String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTargetBufferSpec> > >::Type limit,
         Tag<TExpand> tag)
 {
-    SEQAN_CHECKPOINT;
-    typedef typename Iterator<TSource>::Type TSourceIterator;
-    
     // Possibly only shorten target if limit is too small.
     if (posBegin > static_cast<TPositionBegin>(limit)) {
         assignInfix(target, limit, length(target), infix(source, 0, 0));
@@ -927,9 +924,6 @@ replace(String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTar
         typename Size<String<TTargetValue, Journaled<TTargetHostSpec, TTargetJournalSpec, TTargetBufferSpec> > >::Type limit,
         Tag<TExpand> tag)
 {
-    SEQAN_CHECKPOINT;
-    typedef TSourceValue const * TSourceIterator;
-    
     // Possibly only shorten target if limit is too small.
     if (posBegin > static_cast<TPositionBegin>(limit)) {
         assignInfix(target, limit, length(target), infix(source, 0, 0));

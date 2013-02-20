@@ -82,11 +82,8 @@ _addStringToTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 				 TKeyword const& str,
 				 TPos const& keywordIndex)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Size<TKeyword>::Type TSize;
 
 	TVertexDescriptor current = getRoot(g);
 	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
@@ -139,10 +136,8 @@ createTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 		   TTerminalStateMap& terminalStateMap,
 		   TKeywords const& keywords)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Position<TKeywords>::Type TPos;
 	TVertexDescriptor root = addVertex(g);
 	assignRoot(g,root);
@@ -179,10 +174,8 @@ createTrieOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 					TTerminalStateMap& terminalStateMap,
 					TKeywords const& keywords)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Position<TKeywords>::Type TPos;
 	TVertexDescriptor root = addVertex(g);
 	assignRoot(g,root);

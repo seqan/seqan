@@ -83,30 +83,23 @@ struct AlignIntervalsStoreElement
 ///////////////////////////////////////////////////////////////////////////////
 template<typename TAlignIntervalsStore, typename TSpec, typename TConfig >
 inline void
-buildAlignIntervalsStore(TAlignIntervalsStore & alignIntervalsStore, 			
-                         FragmentStore<TSpec, TConfig> & me, const unsigned & thresholdGaps)  						
-{	
+buildAlignIntervalsStore(TAlignIntervalsStore & alignIntervalsStore,
+                         FragmentStore<TSpec, TConfig> & me, const unsigned & thresholdGaps)
+{
 	typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore 	TAlignedReadStore;
-	typedef typename FragmentStore<TSpec, TConfig>::TContigStore 		TContigStore;
-	typedef typename FragmentStore<TSpec, TConfig>::TReadGapAnchor 		TReadGapAnchor;
-	typedef typename FragmentStore<TSpec, TConfig>::TContigGapAnchor 	TContigGapAnchor;
-	typedef typename Value<TAlignedReadStore>::Type 			TAlignedReadStoreElement;
-	
-	typedef typename Value<TAlignIntervalsStore>::Type	 		TAlignIntervalsStoreElement;
-	typedef typename TAlignIntervalsStoreElement::TIntervals 		TIntervals;
 
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type 		TAlignIter;
 	typedef typename Iterator<TAlignIntervalsStore>::Type 			TAlignIntervalsStoreIter;
-	
+
 	if (!empty(me.alignedReadStore))
 	{
 		resize(alignIntervalsStore, length(me.alignedReadStore));
-	
+
 		TAlignIntervalsStoreIter it = begin(alignIntervalsStore);
 
 		TAlignIter itAlign = begin(me.alignedReadStore);
 		TAlignIter itAlignEnd = end(me.alignedReadStore);
-		
+
 		// get matched intervals for each aligned read
 		for ( ; itAlign != itAlignEnd; goNext(itAlign), goNext(it))
 		{

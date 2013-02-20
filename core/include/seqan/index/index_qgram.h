@@ -1448,8 +1448,8 @@ The resulting tables must have appropriate size before calling this function.
             QGramLessOffset_<typename Value<TSA>::Type, TText const>(text, newQ - oldQ, oldQ));
 	}
 
-	template < 
-		typename TSA, 
+	template <
+		typename TSA,
 		typename TDir,
 		typename TText,
 		typename TSize1,
@@ -1461,8 +1461,7 @@ The resulting tables must have appropriate size before calling this function.
 		TSize1 oldQ,
 		TSize2 newQ)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Size<TSA>::Type                        TSize;
+		//typedef typename Size<TSA>::Type                        TSize;
 		typedef typename Iterator<TSA, Standard>::Type          TIter;
 		typedef typename Iterator<TDir const, Standard>::Type   TDirIter;
 
@@ -1470,8 +1469,8 @@ The resulting tables must have appropriate size before calling this function.
 
 		if (length(dir) < 2) {
 			::std::sort(
-				begin(sa, Standard()), 
-				end(sa, Standard()), 
+				begin(sa, Standard()),
+				end(sa, Standard()),
 				QGramLess_<typename Value<TSA>::Type, TText const>(text, newQ));
 			return;
 		}
@@ -1487,8 +1486,8 @@ The resulting tables must have appropriate size before calling this function.
 			itBktEnd = itBegin + *dirIt;
 			if (itBktEnd - itBktBegin < 2) continue;
 			::std::sort(
-				itBktBegin, 
-				itBktEnd, 
+				itBktBegin,
+				itBktEnd,
 				QGramLessOffset_<typename Value<TSA>::Type, TText const>(text, newQ - oldQ, oldQ));
 		}
 	}
@@ -1602,9 +1601,8 @@ The resulting tables must have appropriate size before calling this function.
 		TShape shape,
 		TStepSize stepSize)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TString const, Standard>::Type	TIterator;
-		typedef typename Iterator<TDir, Standard>::Type				TDirIterator;
+		//typedef typename Iterator<TDir, Standard>::Type				TDirIterator;
 		typedef typename Value<TShape>::Type						TValue;
 		typedef typename Size<TString>::Type						TSize;
 
@@ -2117,7 +2115,6 @@ std::cout << "start write\n";
 start = omp_get_wtime();
 #endif
 
-        typedef typename Value<TMapTuples>::Type TMapperValue;
         for (; !eof(tupler); ++tupler)
         {
             TSize bktNo = getBucket(bucketMap, hash(shape, getValueI2(*tupler))) + 1;
@@ -2216,12 +2213,10 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 
 	template <typename TText, typename TShapeSpec, typename TSpec>
 	inline bool indexCreate(
-		Index<TText, IndexQGram<TShapeSpec, TSpec> > &index, 
-		FibreDir, 
+		Index<TText, IndexQGram<TShapeSpec, TSpec> > &index,
+		FibreDir,
 		Default const)
 	{
-		typedef Index<TText, IndexQGram<TShapeSpec, TSpec> > TIndex;
-
 		resize(indexDir(index), _fullDirLength(index), Exact());
 		createQGramIndexDirOnly(indexDir(index), indexBucketMap(index), indexText(index), indexShape(index), getStepSize(index));
 		return true;

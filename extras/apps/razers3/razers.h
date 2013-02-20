@@ -1601,7 +1601,7 @@ void compactMatches(
     double beginTime = sysTime();
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename Iterator<TMatches, Standard>::Type TIterator;
-    typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
+    //typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
 
     unsigned readNo = -1;
     unsigned hitCount = 0;
@@ -1765,7 +1765,7 @@ void compactMatches(
 {
     typedef typename Value<TMatches>::Type                      TMatch;
     typedef typename Iterator<TMatches, Standard>::Type         TIterator;
-    typedef RazerSMode<RazerSGlobal, TGapMode, RazerSQuality<RazerSMAQ>, TMatchNPolicy> TRazerSMode;
+    //typedef RazerSMode<RazerSGlobal, TGapMode, RazerSQuality<RazerSMAQ>, TMatchNPolicy> TRazerSMode;
 
     unsigned readNo = -1;
 
@@ -2153,13 +2153,13 @@ matchVerify(
         return false;
 
     typedef Segment<TGenome, InfixSegment>                  TGenomeInfix;
-    typedef typename Prefix<TRead const>::Type              TReadPrefix;
+    typedef typename Prefix<TRead const>::Type              TReadPrefix SEQAN_UNUSED_TYPEDEF;
     typedef typename Position<TGenomeInfix>::Type           TPosition;
     typedef typename MakeSigned_<TPosition>::Type           TDistance;
 
     // find read match end
     typedef Finder<TGenomeInfix>                            TMyersFinder;
-    typedef typename TMatchVerifier::TOptions::TMyersPattern TMyersPattern;
+    typedef typename TMatchVerifier::TOptions::TMyersPattern TMyersPattern SEQAN_UNUSED_TYPEDEF;
     typedef typename TMatchVerifier::TPatternState          TPatternState;
 
     // find read match begin
@@ -3046,11 +3046,11 @@ int _mapSingleReads(
     TFilterSpec)
 {
     typedef FragmentStore<TFSSpec, TFSConfig>           TFragmentStore;
-    typedef typename TFragmentStore::TReadSeqStore      TReadSeqStore;
+    //typedef typename TFragmentStore::TReadSeqStore      TReadSeqStore;
     typedef Pattern<TReadIndex, TFilterSpec>            TFilterPattern; // filter
 
-    typedef typename Value<TReadSeqStore>::Type const   TRead;
-    typedef Pattern<TRead, MyersUkkonen>                TMyersPattern;  // verifier
+    //typedef typename Value<TReadSeqStore>::Type const   TRead;
+    //typedef Pattern<TRead, MyersUkkonen>                TMyersPattern;  // verifier
     // typedef Pattern<TRead, Myers<FindInfix, False, void> >	TMyersPattern;	// verifier
 
     typedef typename TFragmentStore::TContigSeq TContigSeq;
@@ -3308,10 +3308,10 @@ int _mapReads(
     TShape const & shape,
     TRazerSMode                       const & mode)
 {
-    typedef FragmentStore<TFSSpec, TFSConfig>           TFragmentStore;
-    typedef typename TFragmentStore::TReadSeqStore      TReadSeqStore;
-    typedef typename Value<TReadSeqStore>::Type         TRead;
-    typedef Pattern<TRead const, MyersUkkonen>          TMyersPattern;  // verifier
+    //typedef FragmentStore<TFSSpec, TFSConfig>           TFragmentStore;
+    //typedef typename TFragmentStore::TReadSeqStore      TReadSeqStore;
+    //typedef typename Value<TReadSeqStore>::Type         TRead;
+    //typedef Pattern<TRead const, MyersUkkonen>          TMyersPattern;  // verifier
 
 
     options.dRange = options.scoreDistanceRange;

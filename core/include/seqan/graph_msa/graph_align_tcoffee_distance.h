@@ -76,23 +76,22 @@ typedef Tag<KmerDistance_> const KmerDistance;
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
-inline void 
+inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 				  TMatrix& distanceMatrix,
 				  LibraryDistance)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Id<TGraph>::Type TId;
+	//typedef typename Id<TGraph>::Type TId;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+	//typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Value<TMatrix>::Type TValue;
 
 	// Initialization
 	clear(distanceMatrix);
-	TStringSet& str = stringSet(g);	
+	TStringSet& str = stringSet(g);
 	TSize nseq = length(str);
 	resize(distanceMatrix, nseq * nseq, 0);
 
@@ -136,23 +135,22 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix, typename TSize, typename TAlphabet>
-inline void 
+inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 				  TMatrix& distanceMatrix,
 				  TSize ktup,
 				  TAlphabet,
 				  KmerDistance)
 {
-	SEQAN_CHECKPOINT
-	typedef typename Value<TMatrix>::Type TValue;
+	//typedef typename Value<TMatrix>::Type TValue;
 	typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
 
 	getKmerSimilarityMatrix(stringSet(g), distanceMatrix, ktup, TAlphabet());
-	
+
 	// Similarity to distance conversion
 	TMatrixIterator matIt = begin(distanceMatrix, Standard());
 	TMatrixIterator endMatIt = end(distanceMatrix, Standard());
-	for(;matIt != endMatIt;++matIt) 
+	for(;matIt != endMatIt;++matIt)
 		*matIt = SEQAN_DISTANCE_UNITY - (*matIt);
 }
 

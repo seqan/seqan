@@ -443,7 +443,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	{
 //IOREV_notio_
 		typedef Index<TText, IndexWotd<TIndexSpec> >	TIndex;
-		typedef typename Size<TIndex>::Type				TSize;
 
 		TIndex const &index = container(it);
 		if (dirAt(value(it).node, index) & index.LEAF)
@@ -1139,8 +1138,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Iterator<TSA, Standard>::Type			TSAIterator;
 		typedef typename Iterator<TCounter, Standard>::Type		TCntIterator;
 		typedef typename Size<TText>::Type						TSize;
-		typedef typename Value<TText>::Type						TValue;
-		
+
 		StringSet<TText, TSpec> const &stringSet = indexText(index);
 		TCounter &occ = index.tempOcc;
 		TCounter &bound = index.tempBound;
@@ -1385,7 +1383,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Iterator<TTempSA, Standard>::Type			TTempSAIterator;
 		typedef typename Iterator<TCounter, Standard>::Type			TCntIterator;
 		typedef typename Size<TText>::Type							TTextSize;
-		typedef typename Value<TText>::Type							TValue;
 
 		StringSet<TText, TSpec> const &stringSet = indexText(index);
 		TTempSA const &tempSA = index.tempSA;

@@ -40,7 +40,7 @@
 // Test existence of metafunction Host<>.
 SEQAN_DEFINE_TEST(test_basic_hosted_type_interface_metafunction_host)
 {
-    typedef seqan::Host<int> THost;
+    typedef seqan::Host<int> THost SEQAN_UNUSED_TYPEDEF;
 }
 
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_

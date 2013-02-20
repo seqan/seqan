@@ -293,8 +293,6 @@ namespace impl {
 template <typename TText, typename TSpec>
 inline bool
 indexCreate(Index<TText, PizzaChili<TSpec> >& me, PizzaChiliCompressed const) {
-SEQAN_CHECKPOINT
-    typedef typename PizzaChiliCodeProvider<TSpec>::Type TCodeProvider;
     typedef
         typename RemoveConst_<
             typename Index<TText, PizzaChili<TSpec> >::TValue
@@ -318,12 +316,10 @@ SEQAN_CHECKPOINT
 template <typename TText, typename TSpec, typename TOtherText>
 inline void
 setIndexText(Index<TText, PizzaChili<TSpec> >& me, TOtherText& text) {
-SEQAN_CHECKPOINT
-    typedef typename PizzaChiliCodeProvider<TSpec>::Type TCodeProvider;
-    typedef
-        typename RemoveConst_<
-            typename Value<TOtherText>::Type
-        >::Type alph_t;
+    //typedef
+    //    typename RemoveConst_<
+    //        typename Value<TOtherText>::Type
+    //    >::Type alph_t;
     clear(me);
 
     /*

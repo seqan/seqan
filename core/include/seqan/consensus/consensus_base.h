@@ -172,9 +172,6 @@ _loadContigReads(StringSet<TValue, Owner<TStrSpec> >& strSet,
 	typedef typename Size<TFragmentStore>::Type TSize;
 	typedef typename TFragmentStore::TReadPos TReadPos;
 
-	// All fragment store element types
-	typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
-	typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 
 	// Sort aligned reads according to contig id
 	sortAlignedReads(fragStore.alignedReadStore, SortContigId());
@@ -331,7 +328,6 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
 				 TSize2 contigId,
 				 TSize& coverage)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	String<TSize> slot;
 	return convertAlignment(fragStore, mat, contigId, coverage, slot);
 }
@@ -725,7 +721,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
 	typedef typename TFragmentStore::TReadPos TReadPos;
 	typedef typename TFragmentStore::TContigPos TContigPos;
 	typedef typename TFragmentStore::TContigGapAnchor TContigGapAnchor;
-	typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
+	//typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
 	sortAlignedReads(fragStore.alignedReadStore, SortContigId());
 	TAlignIter alignIt = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
@@ -1159,7 +1155,7 @@ write(TFile & file,
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
 	typedef typename TFragmentStore::TContigPos TContigPos;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef char TMultiReadChar;
 	TMultiReadChar gapChar = gapValue<TMultiReadChar>();
 
@@ -1350,7 +1346,7 @@ _convertSimpleReadFile(TFile& file,
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Id<TFragmentStore>::Type TId;
 	typedef typename Size<TFragmentStore>::Type TSize;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef typename TFragmentStore::TContigPos TPos;
 	typedef typename TFragmentStore::TReadSeq TReadSeq;
 
@@ -1826,7 +1822,7 @@ _writeCeleraFrg(TFile& target,
 		streamPut(target, '\n');
 		streamPut(target, "seq:\n");
 		typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
-		typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
+		//typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
 		TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
 		TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
 		for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
@@ -1867,7 +1863,7 @@ _writeCeleraCgb(TFile& target,
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
 	typedef typename Id<TFragmentStore>::Type TId;
-	typedef typename TFragmentStore::TReadPos TReadPos;
+	//typedef typename TFragmentStore::TReadPos TReadPos;
 
 	// Write the first contig
 	TId contigId = 0;

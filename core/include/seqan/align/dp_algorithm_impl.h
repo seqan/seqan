@@ -432,9 +432,6 @@ _computeUnbandedAlignment(TDPScout & scout,
                           TScoringScheme const & scoringScheme,
                           DPProfile_<TAlignmentAlgo, TGapCosts, TTraceFlag> const & dpProfile)
 {
-    typedef typename Position<TSequenceH>::Type TPositionH;
-    typedef typename Value<TSequenceH>::Type TSeqHValue;
-    typedef typename Value<TSequenceV>::Type TSeqVValue;
     typedef typename Iterator<TSequenceH const, Rooted>::Type TConstSeqHIterator;
     typedef typename Iterator<TSequenceV const, Rooted>::Type TConstSeqVIterator;
 
@@ -505,8 +502,6 @@ _computeBandedAlignment(TDPScout & scout,
                         DPProfile_<TAlignmentAlgo, TGapCosts, TTraceFlag> const & dpProfile)
 {
     typedef DPProfile_<TAlignmentAlgo, TGapCosts, TTraceFlag> TDPProfile;
-    typedef typename Value<TSequenceH>::Type TSeqHValue;
-    typedef typename Value<TSequenceV>::Type TSeqVValue;
     typedef typename MakeSigned<typename Size<TSequenceH>::Type>::Type TSignedSizeSeqH;
     typedef typename MakeSigned<typename Size<TSequenceV>::Type>::Type TSignedSizeSeqV;
     typedef typename Iterator<TSequenceH const, Rooted>::Type TConstSeqHIterator;
@@ -1306,9 +1301,6 @@ _computeAlignment(TTraceTarget & traceSegments,
 
     typedef typename ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm>::Type TDPScoutSpec;
     typedef DPScout_<TDPScoreValue, TDPScoutSpec> TDPScout;
-
-    typedef typename Size<TSequenceH>::Type TSizeSeqH;
-    typedef typename Size<TSequenceV>::Type TSizeSeqV;
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
     if (!_isValidDPSettings(seqH, seqV, band, dpProfile))

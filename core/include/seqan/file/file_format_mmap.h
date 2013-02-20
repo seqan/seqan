@@ -254,7 +254,6 @@ After calling this function, the StringSet length is the number of sequence frag
     {
 //IOREV _doc_
         typedef String<TValue, TSpec>                               TString;
-        typedef StringSet<TString, TStringSetSpec>                  TStringSet;
         typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
         clear(me.limits);
@@ -528,7 +527,6 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
     {
         //IOREV
         typedef String<TValue, TSpec>                               TString;
-        typedef StringSet<TString, TStringSetSpec>                  TStringSet;
         typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
         clear(me.limits);
@@ -845,7 +843,6 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
 	{
 //IOREV
 		typedef String<TValue, TSpec>                               TString;
-		typedef StringSet<TString, TStringSetSpec>                  TStringSet;
 		typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
 		clear(me.limits);
@@ -1007,7 +1004,6 @@ typedef Tag<TagRaw_> const Raw; //IOREV
     {
 //IOREV _doc_
         typedef String<TValue, TSpec>                               TString;
-        typedef StringSet<TString, TStringSetSpec>                  TStringSet;
         typedef typename Iterator<TString const, Standard>::Type	TIterator;
 
         clear(me.limits);

@@ -62,17 +62,17 @@ void testAlignGapsMetafunctions(TGapsSpec const & /*spec*/)
     // checking.
 
     // Hosted Type metafunctions.
-    typedef typename Source<TGaps>::Type             TSource;
+    typedef typename Source<TGaps>::Type             TSource           SEQAN_UNUSED_TYPEDEF;
 
     // Sequence metafunctions.
-    typedef typename Difference<TGaps>::Type         TDifference;
-    typedef typename GetValue<TGaps>::Type           TGetValue;
-    typedef typename Iterator<TGaps, Rooted>::Type   TRootedIterator;
-    typedef typename Iterator<TGaps, Standard>::Type TStandardIterator;
-    typedef typename Position<TGaps>::Type           TPosition;
-    typedef typename Reference<TGaps>::Type          TReference;
-    typedef typename Size<TGaps>::Type               TSize;
-    typedef typename Value<TGaps>::Type              TValue;
+    typedef typename Difference<TGaps>::Type         TDifference       SEQAN_UNUSED_TYPEDEF;
+    typedef typename GetValue<TGaps>::Type           TGetValue         SEQAN_UNUSED_TYPEDEF;
+    typedef typename Iterator<TGaps, Rooted>::Type   TRootedIterator   SEQAN_UNUSED_TYPEDEF;
+    typedef typename Iterator<TGaps, Standard>::Type TStandardIterator SEQAN_UNUSED_TYPEDEF;
+    typedef typename Position<TGaps>::Type           TPosition         SEQAN_UNUSED_TYPEDEF;
+    typedef typename Reference<TGaps>::Type          TReference        SEQAN_UNUSED_TYPEDEF;
+    typedef typename Size<TGaps>::Type               TSize             SEQAN_UNUSED_TYPEDEF;
+    typedef typename Value<TGaps>::Type              TValue            SEQAN_UNUSED_TYPEDEF;
 }
 
 // --------------------------------------------------------------------------
@@ -562,7 +562,6 @@ void testAlignGapsSequenceInterfaceUngapped(TGapsSpec const & /*spec*/)
 
     typedef Dna5String                              TString;
     typedef Gaps<TString, TGapsSpec>                TGaps;
-    typedef typename Iterator<TGaps, Rooted>::Type  TGapsIter;
 
     TString seq("ACGT");
     TGaps gaps(seq);
@@ -595,7 +594,6 @@ void testAlignGapsSequenceInterfaceGapsCenter(TGapsSpec const & /*spec*/)
 
     typedef Dna5String                              TString;
     typedef Gaps<TString, TGapsSpec>                TGaps;
-    typedef typename Iterator<TGaps, Rooted>::Type  TGapsIter;
 
     TString seq("ACGT");
     TGaps gaps(seq);
@@ -631,7 +629,6 @@ void testAlignGapsSequenceInterfaceGapsLeading(TGapsSpec const & /*spec*/)
 
     typedef Dna5String                              TString;
     typedef Gaps<TString, TGapsSpec>                TGaps;
-    typedef typename Iterator<TGaps, Rooted>::Type  TGapsIter;
 
     TString seq("ACGT");
     TGaps gaps(seq);

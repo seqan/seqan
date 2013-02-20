@@ -1471,9 +1471,6 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_linear_banded)
 
     AlignConfig<false, true, false, true> alignConfig;
 
-    typedef StringSet<Dna5String, Dependent<> > TStringSet;
-    typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
-
     // More or less simple alignment.
     {
         DnaString strH = "AAAAAATTTTTTTTG";

@@ -258,10 +258,6 @@ compare_(Lexical<TSpec> & lexical,
 		 TLeft & left,
 		 TRight & right)
 {
-SEQAN_CHECKPOINT
-	typedef typename Value<TLeft>::Type TLeftValue;
-	typedef typename Value<TRight>::Type TRightValue;
-
 	typename Iterator<TLeft, Standard>::Type left_it = begin(left, Standard());
 	typename Size<TLeft>::Type left_length = length(left);
 	typename Iterator<TRight, Standard>::Type right_it = begin(right, Standard());

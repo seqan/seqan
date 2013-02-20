@@ -77,8 +77,8 @@ namespace SEQAN_NAMESPACE_MAIN {
 		TText const &s,
 		Shawarma<DeepShallow> const)
 	{
-		typedef typename Value<TText>::Type	TValue;
-		typedef typename Value<TSA>::Type	TSAValue;
+		typedef typename Value<TText>::Type	TValue   SEQAN_TYPEDEF_FOR_DEBUG;
+		typedef typename Value<TSA>::Type	TSAValue SEQAN_TYPEDEF_FOR_DEBUG;
 
 		SEQAN_ASSERT_EQ(sizeof(TValue), sizeof(unsigned char));
 		SEQAN_ASSERT_EQ(sizeof(TSAValue), sizeof(int));

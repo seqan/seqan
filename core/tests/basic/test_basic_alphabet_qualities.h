@@ -59,7 +59,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_quality_value_size_metafunction)
     using namespace seqan;
 
     // Make sure the symbol exist.
-    typedef QualityValueSize<int> TQualityValueSize;
+    typedef QualityValueSize<int> TQualityValueSize SEQAN_UNUSED_TYPEDEF;
     
     SEQAN_ASSERT_EQ(+(QualityValueSize<char>::VALUE), 256);  // TODO(holtgrew): Possibly remove default implementation.
     SEQAN_ASSERT_EQ(+(QualityValueSize<MyType_ const>::VALUE), 3);

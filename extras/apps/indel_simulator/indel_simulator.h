@@ -1128,7 +1128,7 @@ int simulateIndels(
 	
 	typedef typename Value<TGenomeSet>::Type 		TGenome;
 	typedef typename Value<TGenome>::Type 			TAlphabet;
-	typedef typename Value<TGenomeIDs>::Type 		TGenomeID;
+	//typedef typename Value<TGenomeIDs>::Type 		TGenomeID;
 	typedef Dna TSimAlphabet;
 	
 	typedef ::std::map<int,IndelInfo> TIndelMap;

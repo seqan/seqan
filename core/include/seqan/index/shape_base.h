@@ -333,8 +333,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	inline typename Value< Shape<TValue, SimpleShape> >::Type
 	hash(Shape<TValue, SimpleShape> &me, TIter it)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
 		typedef typename Size< Shape<TValue, SimpleShape> >::Type	TSize;
 
 		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
@@ -351,10 +350,9 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	inline void
 	hashInit(Shape<TValue, SimpleShape> &me, TIter it)
 	{
-        SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
 		typedef typename Size< Shape<TValue, SimpleShape> >::Type	TSize;
-        
+
 		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
         me.leftChar = 0;
@@ -364,7 +362,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 			me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
 		}
 	}
-    
+
 //____________________________________________________________________________
 // fixed ungapped shapes
 
@@ -389,9 +387,8 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(Shape<TValue, UngappedShape<q> > &me, TIter it)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
-		typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type     TSize;
+		//typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
+		//typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type     TSize;
 
 		me.hValue = ordValue(me.leftChar = *it);
 		return me.hValue = _hashFixedShape(me.hValue, it, TValue(), UngappedShape<q>());
@@ -401,16 +398,15 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hashInit(Shape<TValue, UngappedShape<q> > &me, TIter it)
 	{
-        SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
-		typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type	TSize;
-        
+		//typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
+		//typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type	TSize;
+
         me.leftChar = 0;
 		me.hValue = ordValue(*it);
 
         if (q > 1)
             me.hValue = _hashFixedShape(me.hValue, it, TValue(), UngappedShape<q-1>());
-        
+
 		return me.hValue;
     }
 
@@ -418,8 +414,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 	inline typename Value< Shape<TValue, TSpec> >::Type
 	hash(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
 
 		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
@@ -524,8 +519,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 	inline typename Value< Shape<TValue, TSpec> >::Type
 	hashUpper(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
 
 		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
@@ -603,8 +597,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 	inline typename Value< Shape<TValue, TSpec> >::Type
 	hash2(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
 
 		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 

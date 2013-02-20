@@ -432,8 +432,8 @@ void _pruneSA(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index)
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline bool _implantSa(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
 {
-    typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
-    typedef typename Value<TIndex>::Type                                TAlphabet;
+    //typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
+    //typedef typename Value<TIndex>::Type                                TAlphabet;
 
     if (repLength(it._topIterator) < weight(indexShape(container(it._topIterator))))
         return false;
@@ -481,8 +481,8 @@ inline void goRoot(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
 template <typename TText, typename TShapeSpec, typename TSpec>
 inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >, VSTree<TopDown<TSpec> > > & it)
 {
-    typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
-    typedef Pair<typename Size<TIndex>::Type>                           TSARange;
+    //typedef Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >     TIndex;
+    //typedef Pair<typename Size<TIndex>::Type>                           TSARange;
 
     if (_atTop(it))
     {

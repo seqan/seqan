@@ -267,7 +267,7 @@ getErrorDistribution(
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Iterator<TRow>::Type TIter;
 
-	typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
+	//typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
 	typedef typename Position<TAlign>::Type TPosition;
 
 	typename Iterator<TAlignedReadStore, Standard>::Type	it = begin(store.alignedReadStore, Standard());
@@ -496,10 +496,10 @@ void dumpMatches(
 	typedef typename TFragmentStore::TContigPos						TContigPos;
 	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
-	typedef typename Id<TAlignedRead>::Type							TId;
+	//typedef typename Id<TAlignedRead>::Type							TId;
 	typedef typename GetValue<TAlignQualityStore>::Type				TQuality;
-	typedef typename Value<TGenomeSet>::Type						TGenome;
-	typedef typename TFragmentStore::TContigPos						TGPos;
+	//typedef typename Value<TGenomeSet>::Type						TGenome;
+	//typedef typename TFragmentStore::TContigPos						TGPos;
 
 	if (options.outputFormat == 2)
 	{

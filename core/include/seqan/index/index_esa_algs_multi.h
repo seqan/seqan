@@ -398,11 +398,11 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename SAValue<TSTree>::Type		TSAValue;
 		typedef FractionHeader_<TSize>				TFractionHeader;
 		typedef Pair<TValue, TFractionHeader>		TFraction;
-		typedef typename Set<TFraction>::Type		TFractionSet;
+		//typedef typename Set<TFraction>::Type		TFractionSet;
 
 		typedef FractionCompound_<TValue, TSize>	TCompound;
-		typedef Pair<unsigned, TCompound>			TCompoundPair;
-		typedef typename Set<TCompoundPair>::Type	TSet;
+		//typedef Pair<unsigned, TCompound>			TCompoundPair;
+		//typedef typename Set<TCompoundPair>::Type	TSet;
 
 		push(it.setStack);
 

@@ -52,8 +52,8 @@ namespace seqan{
 		SEQAN_ASSERT_NOT(empty(source));
 			// define some basic types
 		typedef typename Value< TSource >::Type FragType;
-		typedef typename Weight< FragType >::Type WeightType;
-		typedef typename Key< FragType >::Type PositionType;
+		//typedef typename Weight< FragType >::Type WeightType;
+		//typedef typename Key< FragType >::Type PositionType;
 		typedef typename Size< FragType >::Type SizeType;
 		typedef typename TSpec::Type SpecType;
 

@@ -84,7 +84,7 @@ readRecord(TLocalMatchStore & store,
            StellarGff const & /*tag*/)
 {
     typedef typename TLocalMatchStore::TPosition TPosition;
-    typedef typename TLocalMatchStore::TPosition TId;
+    //typedef typename TLocalMatchStore::TPosition TId;
     
     // Read line.
     CharString buffer;

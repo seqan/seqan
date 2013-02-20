@@ -198,11 +198,9 @@ SEQAN_CHECKPOINT
 
 
 template <typename TFinder, typename TNeedle, typename TSpec>
-inline bool 
-find(TFinder & finder, Pattern<TNeedle, Bfam<TSpec> > & me) 
+inline bool
+find(TFinder & finder, Pattern<TNeedle, Bfam<TSpec> > & me)
 {
-	SEQAN_CHECKPOINT
-	
 	if (empty(finder)) {
 		_patternInit(me);
 		_setFinderLength(finder, length(needle(me)));
@@ -216,7 +214,6 @@ find(TFinder & finder, Pattern<TNeedle, Bfam<TSpec> > & me)
 	typedef Graph<Automaton<TAlphabet> > TOracle;
 	typedef typename Size<TNeedle>::Type TSize;
 	typedef typename VertexDescriptor<TOracle>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TOracle>::Type TEdgeDescriptor;
 	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
 	while (position(finder) <= me.haystackLength - me.needleLength) {
 		TVertexDescriptor current = getRoot(me.automaton);

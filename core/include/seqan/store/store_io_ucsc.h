@@ -93,9 +93,6 @@ struct IOContextUcsc_
 template <typename TFragmentStore, typename TSpec>
 inline void clear(IOContextUcsc_<TFragmentStore, TSpec> & ctx)
 {
-    typedef typename TFragmentStore::TAnnotationStore   TAnnotationStore;
-    typedef typename Value<TAnnotationStore>::Type      TAnnotation;
-
     clear(ctx.transName);
     clear(ctx.contigName);
     clear(ctx.exonBegin);
@@ -119,7 +116,6 @@ _readOneAnnotation(
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TAnnotationStore   TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type      TAnnotation;
-    typedef typename TAnnotation::TId                   TId;
 
     clear(ctx);
 

@@ -264,10 +264,10 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
 template <typename TString, typename TAlphabetBG, typename TValue>
 void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> & backgroundModel, TString const & sequence, unsigned k)
 {
-    typedef typename Value<TString>::Type                   TAlphabet;
-    typedef typename UnmaskedAlphabet_<TAlphabet>::Type     TUnmaskedAlphabet;
+    //typedef typename Value<TString>::Type                   TAlphabet;
+    //typedef typename UnmaskedAlphabet_<TAlphabet>::Type     TUnmaskedAlphabet;
     typedef typename Iterator<TString const, Rooted>::Type  TIterator;
-    typedef typename Iterator<String<int>, Rooted>::Type    TIteratorInt;
+    //typedef typename Iterator<String<int>, Rooted>::Type    TIteratorInt;
     typedef typename Position<TIterator>::Type              TPosition;
     typedef Shape<TAlphabetBG, SimpleShape>                 TShape;
 
@@ -670,7 +670,7 @@ template <typename TString>
 void calculatePeriodicity(String<int> & periodicity, TString const & word1, TString const & word2)
 {
     typedef typename Value<TString>::Type                   TAlphabet;
-    typedef typename Iterator<TString const, Rooted>::Type  TIterator;
+    //typedef typename Iterator<TString const, Rooted>::Type  TIterator;
     typedef typename Size<TString>::Type                    TSize;
 
     TSize length1 = length(word1);
@@ -726,7 +726,7 @@ template <typename TString>
 void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TString const & word2)
 {
     typedef typename Value<TString>::Type                   TAlphabet;
-    typedef typename Iterator<TString const, Rooted>::Type  TIterator;
+    //typedef typename Iterator<TString const, Rooted>::Type  TIterator;
     typedef typename Size<TString>::Type                    TSize;
 
     TSize length1 = length(word1);

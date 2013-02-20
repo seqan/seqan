@@ -573,14 +573,9 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me,
 template <typename TNeedle, typename TFinder, typename TMultiFinder>
 void _patternInit(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, TFinder &)
 {
-SEQAN_CHECKPOINT
-  typedef typename Position<TNeedle>::Type TPosition;
-  typedef unsigned TScore;
-  typedef Pattern<TNeedle,MyersUkkonen> TVerifier;
-
   unsigned k = me.limit + 1;
   unsigned plen = me.needleLength / k; //::std::floor(static_cast<double>(me.needleLength)/static_cast<double>(k));
-  
+
   // reset
   clear(me.splitted_needles);
   clear(me.range_table);

@@ -71,7 +71,7 @@ template <typename TText, typename TShapeSpec, typename TIndexSpec, typename TSp
 inline typename Size<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> > >::Type
 repLength(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<Stretched<TSpec> > > > const & it)
 {
-    typedef Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >   TIndex;
+    //typedef Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >   TIndex;
 
     if (isLeaf(it))
         return suffixLength(saAt(value(it).range.i1, container(it)), container(it));

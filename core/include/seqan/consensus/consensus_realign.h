@@ -554,7 +554,7 @@ reAlign(FragmentStore<TSpec, TConfig>& fragStore,
 	typedef typename Value<typename TFragmentStore::TReadSeq>::Type TStoreAlphabet;
 	typedef typename BaseAlphabet<TStoreAlphabet>::Type TAlphabet;
 	typedef typename Value<TAlignedReadStore>::Type TAlignedElement;
-	typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadElement;
+	//typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadElement;
 
     // double beginTime, endTime;
     

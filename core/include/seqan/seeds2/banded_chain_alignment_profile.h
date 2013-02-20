@@ -226,8 +226,8 @@ _setupAndRunBandedChainAlignment(StringSet<String<TTraceSegment>, TStringSetSpec
                                  unsigned bandExtension,
                                  TGapsPlacement const &)
 {
-    typedef typename Position<TSequenceH const>::Type TPosH;
-    typedef typename Position<TSequenceV const>::Type TPosV;
+    //typedef typename Position<TSequenceH const>::Type TPosH;
+    //typedef typename Position<TSequenceV const>::Type TPosV;
     typedef AlignConfig<TFirstRow, TFirstColumn, TLastColumn, TLastRow, TACSpec> TAlignConfig;
     typedef Score<TScoreValue, TScoreSpecAnchor> TScoringSchemeAnchor;
     typedef Score<TScoreValue, TScoreSpecGap> TScoringSchemeGap;

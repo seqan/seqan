@@ -134,7 +134,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_vector)
     // Test const iterator.
     {
 		std::vector<int> const vec(2,100);
-        typedef Iterator<std::vector<int> const>::Type TIterator;
+        //typedef Iterator<std::vector<int> const>::Type TIterator;
 		
         std::vector<int> vecCopy;
 		vecCopy.resize(2);
@@ -148,7 +148,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_vector)
     // Test non-const iterator.
     {
 		std::vector<int> vec(2,100);
-        typedef Iterator<std::vector<int> >::Type TIterator;
+        //typedef Iterator<std::vector<int> >::Type TIterator;
 		
         std::vector<int> vecCopy;
 		vecCopy.resize(2);
@@ -720,7 +720,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_list)
     // Test with const container.
     {
         typedef std::list<TElement> TList;
-        typedef Iterator<TList>::Type TIterator;
+        //typedef Iterator<TList>::Type TIterator;
 
         // Prepare list...
         TList mutableList;        

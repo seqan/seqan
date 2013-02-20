@@ -260,11 +260,9 @@ inline void
 _initializeAlphabetConversionTable(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > * buf,
 								   TSource const &)
 {
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
-
 	//assure that the conversion from TSource to THost is possible
 //	AlphabetConversionTable_<THost, TSource>::initialize();
-	
+
 	//copy the conversion table for converting TSouce => THost
 	//maybe, if there is no CHAR in TSource, the entry for CHAR is overwritten now
 	for (int i = InternalValueSize_<TSource>::VALUE; i > 0; )
@@ -282,7 +280,7 @@ struct ConvertImplModExpand_
 {
 	//default implementation for large source types
 	template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
-	inline 
+	inline
 	static typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
 	_convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
 		TSource const & source_)
@@ -371,11 +369,9 @@ inline void
 _initializeAlphabetConversionTable(TTarget * buf,
 								   ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const &)
 {
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
-
 	//assure that the conversion from THost to TTarget is possible
-	AlphabetConversionTable_<TTarget, THost>::initialize(); 
-	
+	AlphabetConversionTable_<TTarget, THost>::initialize();
+
 	//copy the conversion table for converting THost => TTarget
 	for (int i = InternalValueSize_<THost>::VALUE; i > 0; )
 	{
@@ -392,11 +388,9 @@ inline void
 _initializeAlphabetOrdTable(TTarget * buf,
 							ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const &)
 {
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
-
 	//assure that the conversion from THost to TTarget is possible
-	AlphabetOrdTable_<THost>::initialize(); 
-	
+	AlphabetOrdTable_<THost>::initialize();
+
 	//copy the conversion table for converting THost => TTarget
 	for (int i = InternalValueSize_<THost>::VALUE; i > 0; )
 	{

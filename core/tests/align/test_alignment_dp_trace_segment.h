@@ -171,7 +171,6 @@ void testAlignmentTracebackRecordTrace(TTarget & target)
     using namespace seqan;
 
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
-    typedef typename Value<TTarget>::Type TValue;
 
     TTraceValue tv1 = TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL;
     TTraceValue tv2 = TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL;

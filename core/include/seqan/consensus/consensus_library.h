@@ -111,19 +111,18 @@ struct _LessTripel :
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TBegEndPos, typename TSize, typename TPairList, typename TPos, typename TSpec2>
-inline void 
+inline void
 selectPairsAssembly(StringSet<TString, TSpec> const& str,
 			       TBegEndPos const& begEndPos,
-			       TSize bandwidth,							
+			       TSize bandwidth,
 			       TPairList& pList,
 			       String<Pair<TPos, TPos>, TSpec2>& dList)
 {
-	SEQAN_CHECKPOINT
 	typedef String<Pair<TPos, TPos>, TSpec2>  TDistanceList;
-	typedef StringSet<TString, TSpec> TStringSet;
+	//typedef StringSet<TString, TSpec> TStringSet;
 	typedef Pair<TPos, TPos> TDiagPair;
 	typedef typename Value<TPairList>::Type TPair;
-	typedef typename Iterator<TPairList, Standard>::Type TPairIter;
+	//typedef typename Iterator<TPairList, Standard>::Type TPairIter;
 	typedef typename Iterator<TBegEndPos, Standard>::Type TBegEndIter;
 
 	// Initialization
@@ -337,10 +336,9 @@ selectPairsAllAgainstAll(StringSet<TString, TSpec> const& str,
 				         TSize lookAround,
 				         TPairList& pList,
 				         String<Pair<TPos, TPos>, TSpec2>& dList)
-{	
-	SEQAN_CHECKPOINT	
-	typedef String<Pair<TPos, TPos>, TSpec2>  TDistanceList;
-	typedef StringSet<TString, TSpec> TStringSet;
+{
+	//typedef String<Pair<TPos, TPos>, TSpec2>  TDistanceList;
+	//typedef StringSet<TString, TSpec> TStringSet;
 	typedef Pair<TPos, TPos> TDiagPair;
 	typedef typename Value<TPairList>::Type TPair;
 	typedef typename Iterator<TBegEndPos, Standard>::Type TBegEndIter;

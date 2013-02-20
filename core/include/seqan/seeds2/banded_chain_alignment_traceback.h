@@ -243,7 +243,7 @@ void _computeTraceback(TTarget & target,
     typedef typename TScoutState_::TInitCell TInitCell;
 	typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
 	typedef typename Size<TContainer>::Type TSize;
-	typedef typename MakeSigned<TSize>::Type TSignedSize;
+	//typedef typename MakeSigned<TSize>::Type TSignedSize;
 	typedef typename Position<TContainer>::Type TPosition;
 	typedef typename MakeSigned<TPosition>::Type TSignedPosition;
     typedef typename Size<TSequenceH>::Type TSizeSeqH;

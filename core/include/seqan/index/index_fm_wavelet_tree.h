@@ -651,8 +651,8 @@ inline void _fillWaveletTree(WaveletTree<TText, TWaveletTreeSpec> & tree,
     typedef typename Fibre<TFibreRankSupportBitString, FibreBits>::Type                     TFibreBitString;
     typedef typename Size<TFibreBitString>::Type                                            TSize;
     typedef typename Fibre<WaveletTree<TText, TWaveletTreeSpec>, FibreTreeStructure>::Type  TWaveletTreeStructure;
-    typedef typename Value<TText>::Type                                                     TChar;
-    typedef typename MakeUnsigned<TChar>::Type                                              TUChar;
+    //typedef typename Value<TText>::Type                                                     TChar;
+    //typedef typename MakeUnsigned<TChar>::Type                                              TUChar;
 
     resize(tree.bitStrings, _length(tree.waveletTreeStructure));
 
@@ -784,7 +784,7 @@ inline bool openDollarInformation(
     String<char> name;
 
     typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<TSpec> > >::Type TChar;
-    typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<TSpec> >, FibreDollarPosition>::Type TDollarString;
+    //typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<TSpec> >, FibreDollarPosition>::Type TDollarString;
 
     String<TChar> dollarSub;
     
@@ -852,7 +852,7 @@ inline bool saveDollarInformation(
 {
     String<char> name;
 
-    typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > > >::Type TChar;
+    //typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > > >::Type TChar;
     typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<SingleDollar<TSpec> > >, FibreDollarPosition>::Type TDollarString;
 
     String<Pair<__int64, TDollarString, Pack> > dollarValues;
@@ -871,7 +871,7 @@ inline bool saveDollarInformation(
     String<char> name;
 
     typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<TSpec> > >::Type TChar;
-    typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<TSpec> >, FibreDollarPosition>::Type TDollarString;
+    //typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<TSpec> >, FibreDollarPosition>::Type TDollarString;
 
     String<TChar> dollarSub;
     appendValue(dollarSub, tree.dollarSubstitute);

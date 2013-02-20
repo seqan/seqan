@@ -425,7 +425,6 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     }
 
     TReadGaps readGaps(readSeq, alignedRead.gaps);
-    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps2;
     // TContigGaps  contigGaps2(contig.seq, contig.gaps);
     // if (i == 4)
     //     printf("It's it!\n");

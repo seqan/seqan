@@ -1310,7 +1310,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 	{
 		typedef Index<TText, IndexEsa<TIndexSpec> >		TIndex;
 		typedef Iter<TIndex, VSTree< BottomUp<TSpec> > >	TIter;
-		typedef typename VertexDescriptor<TIndex>::Type		TVertexDesc;
+		//typedef typename VertexDescriptor<TIndex>::Type		TVertexDesc;
 		typedef typename Size<TIndex>::Type					TSize;
 		typedef	Pair<TSize>									TStackEntry;
 

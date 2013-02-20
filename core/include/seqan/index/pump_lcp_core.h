@@ -221,7 +221,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Size<TTextInput>::Type				TSize;
 		typedef typename BufReadHandler<TTextInput>::Type	TBufReader;
 
-		typedef typename Value<typename Value<typename Value<TInvertedSAInput>::Type, 2>::Type>::Type TPair;
+		//typedef typename Value<typename Value<typename Value<TInvertedSAInput>::Type, 2>::Type>::Type TPair;
 
         SEQAN_PROSET(SEQAN_PRODEPTH, 0);
 		TSize rest = length(textIn);
@@ -241,7 +241,7 @@ namespace SEQAN_NAMESPACE_MAIN
         //TSize _olaps = 0;
         //char *seenISA = new bool[n];
         //memset(seenISA, 0, length(invertedSAIn));
-		
+
         #ifdef SEQAN_DEBUG_INDEX
             TSize n = rest;
             TSize lcpMax = 0, lcpAvrg = 0, lcpNumer = 0, sigma = 1;	// for lcpMax, lcpMean, |Sigma|

@@ -286,7 +286,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSA const &SA)
 	{
 		typedef typename Value<TBWT>::Type		TValue;
-		typedef typename GetValue<TSA>::Type	TSAValue;
 		typedef typename Size<TSA>::Type		TSize;
 
 		TSize n = lengthSum(s);

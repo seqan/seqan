@@ -263,9 +263,6 @@ template <typename TAnchor, typename TSource, typename TGapAnchors, typename TId
 inline void
 _getAnchor(TAnchor & anchor, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TIdx idx)
 {
-    typedef typename Value<TGapAnchors>::Type TGapAnchor;
-    typedef typename Position<TGapAnchor>::Type TPos;
-
     if (idx > (TIdx)length(_dataAnchors(me)))
     {
         _assignSourceLength(anchor.seqPos, me);
@@ -363,9 +360,6 @@ inline bool
 isGap(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition clippedViewPos)
 {
     // TODO(holtgrew): Implement without iterator?
-    typedef Gaps<TSequence, AnchorGaps<TGapAnchors> > TGaps;
-    typedef typename Iterator<TGaps>::Type TIter;
-
     return isGap(iter(gaps, clippedViewPos));
 }
 
@@ -412,9 +406,6 @@ inline typename Size<Gaps<TSequence, AnchorGaps<TGapAnchors> > >::Type
 removeGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps, TPosition clippedViewPos, TCount count)
 {
     // TODO(holtgrew): Implement without iterator?
-    typedef Gaps<TSequence, AnchorGaps<TGapAnchors> > TGaps;
-    typedef typename Iterator<TGaps const>::Type TIter;
-
     return removeGaps(iter(gaps, clippedViewPos), count);
 }
 

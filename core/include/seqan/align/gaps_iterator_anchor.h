@@ -261,8 +261,6 @@ template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
 countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 {
-	typedef typename Size<TGaps>::Type TGapsSize;
-
 	if (!isGap(me))
 		return 0;
     if (me.nextAnchor.gapPos > me.viewEnd.gapPos)
@@ -425,10 +423,9 @@ insertGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me,
 {
 	TGapAnchors & anchors = _dataAnchors(*me.data_container);
 	typedef typename Iterator<TGapAnchors, Standard>::Type TIter;
-	typedef typename Value<TGapAnchors>::Type TGapAnchor;
 
 	if (size <= 0) return;
-	
+
 	// insert a new anchor
 	if (!isGap(me))
 	{
@@ -617,7 +614,6 @@ inline void
 _goToGapAnchorIterator(T & me, TPos pos)
 {
 	typedef typename T::TGapAnchors	TGapAnchors;
-	typedef typename T::TGapAnchor	TGapAnchor;
 	typedef typename Position<typename Value<TGapAnchors>::Type >::Type TAnchorPos;
 
 	if (_helperIsNegative(pos, typename IsSameType<TPos, typename MakeSigned_<TPos>::Type>::Type()))
@@ -632,8 +628,10 @@ _goToGapAnchorIterator(T & me, TPos pos)
 				if (anchors[me.anchorIdx].gapPos == (TAnchorPos)pos && anchors[me.anchorIdx].seqPos != (TAnchorPos)me.seqLength)
 					++me.anchorIdx;
 		}
-		else 
+		else
+        {
 			me.anchorIdx = (pos < (TPos)me.seqLength)? 0: 1;
+        }
 	}
 	_getAnchor(me.prevAnchor, *me.data_container, me.anchorIdx);
 	_getAnchor(me.nextAnchor, *me.data_container, me.anchorIdx + 1);

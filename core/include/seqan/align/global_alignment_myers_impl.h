@@ -76,7 +76,6 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
     typedef String<TAlphabetH, TSpecH> const TSequenceH;
     typedef String<TAlphabetV, TSpecV> const TSequenceV;
 
-	typedef typename Value<TSequenceH>::Type TTextAlphabet;
 	typedef typename Value<TSequenceV>::Type TPatternAlphabet;
 	typedef typename Size<TSequenceH>::Type  TSourceSize;
 
@@ -86,7 +85,7 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
 	TSourceSize len_x = length(x);
 	unsigned int pos = 0;
 
-	// init variables 
+	// init variables
 	unsigned int len_y = length(y);
 	int score = (-1)*len_y;
 	unsigned int patternAlphabetSize = ValueSize<TPatternAlphabet>::VALUE;

@@ -427,7 +427,7 @@ _alignNeedlemanWunschMatrix(SVGFile& svg,
 {
 SEQAN_CHECKPOINT
 	typedef typename Size<TStringSet>::Type TSize;
-	typedef typename Value<TTrace>::Type TTraceValue;
+	//typedef typename Value<TTrace>::Type TTraceValue;
 
 	// TraceBack values
 	const int Diagonal = 0; 

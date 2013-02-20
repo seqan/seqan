@@ -112,7 +112,7 @@ void
 transformCoordinates(TFragmentStore &fragmentStore, TContigPos startCoord, TOptions&)
 {
     typedef typename TFragmentStore::TAlignedReadStore          TMatches;
-    typedef typename Value<TMatches>::Type                      TMatch;
+    //typedef typename Value<TMatches>::Type                      TMatch;
     typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
     
     TMatchIt mIt        = begin(fragmentStore.alignedReadStore,Standard());
@@ -150,7 +150,7 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
     typedef typename Value<TMatches>::Type                      TMatch;
     typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
     typedef typename Id<TFragmentStore>::Type                   TId;
-    typedef typename Value<TReadClips>::Type                    TPair;
+    //typedef typename Value<TReadClips>::Type                    TPair;
 
     SEQAN_ASSERT_EQ(length(fragmentStore.readSeqStore),length(fragmentStore.alignQualityStore));
 
@@ -225,13 +225,13 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
 {
     typedef StringSet<String<Dna5Q>, Owner<ConcatDirect<> > >    TFalseType;
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
-    typedef typename Value<TMatches>::Type              TMatch;
+    //typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type                TRead;
-    typedef typename TFragmentStore::TContigStore       TGenomeSet;
-    typedef typename Value<TGenomeSet>::Type            TGenome;
+    //typedef typename Value<TReads>::Type                TRead;
+    //typedef typename TFragmentStore::TContigStore       TGenomeSet;
+    //typedef typename Value<TGenomeSet>::Type            TGenome;
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
     
@@ -308,7 +308,7 @@ addReadQualityToMatches(TFragmentStore  &fragmentStore,
                         TOptions &)
 {
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
-    typedef typename Value<TMatches>::Type                  TMatch;
+    //typedef typename Value<TMatches>::Type                  TMatch;
     typedef typename TFragmentStore::TReadSeqStore          TReads;
     typedef typename Value<TReads>::Type                    TRead;
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
@@ -600,10 +600,10 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 {
     
     typedef FragmentStore<SnpStoreSpec_>            TFragmentStore;
-    typedef typename TFragmentStore::TReadSeq       TReadSeq;               // TRead
+    //typedef typename TFragmentStore::TReadSeq       TReadSeq;               // TRead
     typedef typename TFragmentStore::TContigSeq     TContigSeq;             // TGenome
     //typedef typename Position<TReadSeq>::Type     TReadPos;               // TPos
-    typedef typename TFragmentStore::TReadPos       TReadPos;               // TPos
+    //typedef typename TFragmentStore::TReadPos       TReadPos;               // TPos
     //typedef typename Position<TContigSeq>::Type       TContigPos;             // TContigPos
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TAlignedReadStore  TAlignedReadStore;      // TMatches
@@ -618,7 +618,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     typedef String<String<TContigPos > >            TPositions;
     typedef typename Iterator<String<TContigPos > >::Type TPosIterator;
     typedef ::std::map<CharString,unsigned>         TGenomeMap;
-    typedef typename TGenomeMap::iterator           TMapIter;
+    //typedef typename TGenomeMap::iterator           TMapIter;
     typedef String<unsigned>                TReadCounts;
     typedef String<Pair<int,int> >              TReadClips;
     typedef StringSet<String<Pair<char,int> > >     TReadCigars;

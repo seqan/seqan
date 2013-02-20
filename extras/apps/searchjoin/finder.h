@@ -408,7 +408,7 @@ onMatch(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder,
     typedef typename seqan::ext::TextIterator_<TIndex, TBacktracking>::Type     TTextIterator;
     typedef typename seqan::ext::PatternIterator_<TIndex, TBacktracking>::Type  TPatternIterator;
     typedef typename Size<TIndex>::Type                                         TSize;
-    typedef typename Size<TText>::Type                                          TErrors;
+    //typedef typename Size<TText>::Type                                          TErrors;
     typedef typename Fibre<TIndex, FibreSA>::Type const                         TSAFibre;
     typedef typename Infix<TSAFibre>::Type                                      TOccurrences;
 

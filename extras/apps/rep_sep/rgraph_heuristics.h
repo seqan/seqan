@@ -65,8 +65,8 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
     typedef ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> RGraph;
     typedef typename SelectGraph_< RGraph >::Type  TGraph;
     typedef typename VertexDescriptor<TGraph>::Type             TVertexDescriptor;
-    typedef typename EdgeDescriptor<TGraph>::Type               TEdgeDescriptor;
-    typedef typename Iterator<TGraph, OutEdgeIterator>::Type    TOutEdgeIterator;
+    //typedef typename EdgeDescriptor<TGraph>::Type               TEdgeDescriptor;
+    //typedef typename Iterator<TGraph, OutEdgeIterator>::Type    TOutEdgeIterator;
     typedef typename Iterator<TGraph, VertexIterator>::Type     TVertexIter;
     typedef typename Value<TComponentList>::Type            TComponent;
 
@@ -224,7 +224,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
     typedef typename SelectGraph_< RGraph >::Type  TGraph;
     typedef typename VertexDescriptor<TGraph>::Type             TVertexDescriptor;
     typedef typename EdgeDescriptor<TGraph>::Type               TEdgeDescriptor;
-    typedef typename Iterator<TGraph, OutEdgeIterator>::Type    TOutEdgeIterator;
+    //typedef typename Iterator<TGraph, OutEdgeIterator>::Type    TOutEdgeIterator;
     typedef typename Iterator<TGraph, EdgeIterator>::Type       TEdgeIterator;
     typedef typename Iterator<TGraph, VertexIterator>::Type     TVertexIterator;
     typedef typename Value<TComponentList>::Type TComponent;
@@ -233,7 +233,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
     typedef unsigned TSize;
 
     typedef ::std::set<TVertexDescriptor>         TVisitedSet;    
-    typedef ::std::map<double, TVertexDescriptor> TBestMatchMap;
+    //typedef ::std::map<double, TVertexDescriptor> TBestMatchMap;
 
     TVisitedSet visitedVertices;
     TSize vertexCount = numVertices(me);

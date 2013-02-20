@@ -237,7 +237,7 @@ template <typename TSpec, typename TPos>
 inline typename Value<typename Fibre<RankSupportBitString<TSpec>, FibreSuperBlocks>::Type>::Type
 _getRankInBlock(RankSupportBitString<TSpec> const & bitString, TPos const pos)
 {
-    typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
+    //typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
 
@@ -316,7 +316,7 @@ for (unsigned i = 0; i < length(bitString); ++i)
 template <typename TSpec, typename TPos>
 inline bool getBit(RankSupportBitString<TSpec> const & bitString, TPos const pos)
 {
-    typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
+    //typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
    
@@ -624,7 +624,7 @@ updateRanks_(bitString);
 template <typename TSpec, typename TPos>
 inline void setBit(RankSupportBitString<TSpec> & bitString, TPos pos)
 {
-    typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
+    //typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
 
@@ -635,7 +635,7 @@ inline void setBit(RankSupportBitString<TSpec> & bitString, TPos pos)
 template <typename TSpec, typename TPos>
 inline void clearBit(RankSupportBitString<TSpec> & bitString, TPos pos)
 {
-    typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
+    //typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
 

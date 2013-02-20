@@ -188,7 +188,6 @@ write(TFile & target,
 //IOREV _nodoc_
 	typedef Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename EdgeType<TGraph>::Type TEdge;
 	typedef typename Size<TAlphabet>::Type TSize;
 	TSize table_length = ValueSize<TAlphabet>::VALUE;
@@ -223,11 +222,9 @@ getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
 			 TVertexDescriptor vertex,
 			 TCharacters const& chars)
 {
-	SEQAN_CHECKPOINT;
 	SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
 	typedef Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > TGraph;
 	typedef typename EdgeType<TGraph>::Type TEdgeStump;
-	typedef typename Size<TAlphabet>::Type TSize;
 	TEdgeStump* ed = findEdge(g, vertex, getValue(chars, 0));
 	if (getCargo(ed) == suffix(chars, 1)) {
 		return getTarget(ed);

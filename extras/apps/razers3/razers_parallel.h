@@ -580,9 +580,9 @@ void _mapSingleReadsParallelToContig(
     typedef typename Value<TReadSeqStore>::Type const               TRead;
     typedef StringSet<TRead>                                        TReadSet;
     typedef Index<TReadSet, IndexQGram<TShape, OpenAddressing> >    TIndex;         // q-gram index
-    typedef typename Size<TReadSeqStore>::Type                      TSize;
+    //typedef typename Size<TReadSeqStore>::Type                      TSize;
 
-    typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
+    //typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;
     typedef RazerSOptions<TSpec> TOptions;
 
     typedef typename Value<TThreadLocalStorages>::Type TThreadLocalStorage;
@@ -972,10 +972,10 @@ int _mapSingleReadsParallel(
     typedef typename Value<TReadSeqStore>::Type const               TRead;
     typedef StringSet<TRead>                                        TReadSet;
     typedef Index<TReadSet, IndexQGram<TShape, OpenAddressing> >    TIndex;         // q-gram index
-    typedef typename Size<TReadSeqStore>::Type                      TSize;
+    //typedef typename Size<TReadSeqStore>::Type                      TSize;
 
     typedef Pattern<TIndex, TFilterSpec>                            TFilterPattern;
-    typedef Pattern<TRead, MyersUkkonen>                            TMyersPattern;  // verifier
+    //typedef Pattern<TRead, MyersUkkonen>                            TMyersPattern;  // verifier
     typedef RazerSOptions<TSpec> TOptions;
 
     typedef RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy> TRazerSMode;

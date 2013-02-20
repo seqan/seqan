@@ -66,7 +66,6 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
                                          std::ostream & outputStream,
                                          std::ostream & errorStream)
 {
-    typedef ArgumentParser::TOptionMapSize   TOptionPosition;
     typedef ArgumentParser::TArgumentMapSize TArgumentPosition;
 
     TArgumentPosition currentArgument = 0;

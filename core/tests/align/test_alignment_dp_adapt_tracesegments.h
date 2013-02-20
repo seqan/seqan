@@ -164,7 +164,6 @@ void testAlign2TracebackRecordTrace(TTarget & target)
 {
     using namespace seqan;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
-    typedef typename Value<TTarget>::Type TValue;
 
     TTraceValue tv1 = TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL;
     TTraceValue tv2 = TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL;
@@ -283,7 +282,6 @@ void testAlign2TraceAdaptorAdaptAlign()
     String<char> seq0 = "AAAACCCCGGGG";
     String<char> seq1 = "AAAACCCCGGGG";
 
-    typedef Row<Align<String<char> > >::Type TRow;
     Align<String<char> > align;
 
     resize(rows(align), 2);

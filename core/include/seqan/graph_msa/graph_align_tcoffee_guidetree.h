@@ -475,15 +475,14 @@ _upgmaTreeMerge(TMatrix& mat,
 
 template<typename TCargo, typename TSpec, typename TActive, typename TEdgeDescriptor>
 inline void
-_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph, 
+_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 				TActive const&,
 				TEdgeDescriptor best,
-				UpgmaMax) 
+				UpgmaMax)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Undirected<TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+	//typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
 	TVertexDescriptor s = sourceVertex(pairGraph,best);
@@ -512,12 +511,11 @@ inline void
 _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph, 
 				TActive const&,
 				TEdgeDescriptor best,
-				UpgmaMin) 
+				UpgmaMin)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Undirected<TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+	//typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
 	TVertexDescriptor s = sourceVertex(pairGraph,best);
@@ -547,16 +545,15 @@ _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 				TEdgeDescriptor best,
 				UpgmaWeightAvg) 
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Undirected<TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+	//typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
 	TCargo infCargo = _getInfinity<TCargo>();
 	TVertexDescriptor s = sourceVertex(pairGraph,best);
 	TVertexDescriptor t = targetVertex(pairGraph,best);
-	
+
 	for(TOutEdgeIterator outIt(pairGraph, s);!atEnd(outIt);goNext(outIt)) {
 		if (targetVertex(outIt) == t) continue;
 		TEdgeDescriptor e1 = value(outIt);
@@ -583,16 +580,15 @@ _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 				TEdgeDescriptor best,
 				UpgmaAvg) 
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Undirected<TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+	//typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
 	TCargo infCargo = _getInfinity<TCargo>();
 	TVertexDescriptor s = sourceVertex(pairGraph,best);
 	TVertexDescriptor t = targetVertex(pairGraph,best);
-	
+
 	for(TOutEdgeIterator outIt(pairGraph, s);!atEnd(outIt);goNext(outIt)) {
 		if (targetVertex(outIt) == t) continue;
 		TEdgeDescriptor e1 = value(outIt);
@@ -624,9 +620,8 @@ upgmaTree(String<TStringValue, TStringSpec>& mat,
 	typedef typename Size<TGraph>::Type TSize;
 	typedef String<TStringValue, TStringSpec> TMatrix;
 	typedef typename Value<TMatrix>::Type TValue;
-	typedef typename Iterator<TMatrix>::Type TMatrixIter;
-	
-	
+	//typedef typename Iterator<TMatrix>::Type TMatrixIter;
+
 	// First initialization
 	TSize nseq = (TSize) std::sqrt((double)length(mat));
 	clearVertices(g);

@@ -579,7 +579,6 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 	{
 		typedef Index<TText, IndexWotd<Dfi<TPredHull, TPred> > >	TIndex;
 		typedef typename Value<TIndex>::Type							TValue;
-		typedef typename TIndex::TBase									TBase;
 
 		resize(index.childEntry, (unsigned) ValueSize<TValue>::VALUE);
 		if (empty(index.ds)) {

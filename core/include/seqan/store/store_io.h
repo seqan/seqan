@@ -161,7 +161,7 @@ read(TFile & file,
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Id<TFragmentStore>::Type TId;
 	typedef typename Size<TFragmentStore>::Type TSize;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef typename TFragmentStore::TReadSeq TReadSeq;
 
 	// All fragment store element types
@@ -784,16 +784,16 @@ write(TFile & target,
 {
     // Basic types
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-    typedef typename Id<TFragmentStore>::Type TId;
+    //typedef typename Id<TFragmentStore>::Type TId;
     typedef typename Size<TFragmentStore>::Type TSize;
-    typedef typename Value<TFile>::Type TValue;
+    //typedef typename Value<TFile>::Type TValue;
 
     // All fragment store element types
-    typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
-    typedef typename Value<typename TFragmentStore::TLibraryStore>::Type TLibraryStoreElement;
+    //typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
+    //typedef typename Value<typename TFragmentStore::TLibraryStore>::Type TLibraryStoreElement;
     typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
     typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
-    typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
+    //typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 
     // Write Header
     String<char> temp = "{UNV\niid:1\neid:seqan\ncom:\nafg file created with SeqAn\n.\n}\n";
@@ -925,7 +925,6 @@ write(TFile & target,
         if (streamWriteBlock(target,"seq:\n", 5u) != 5u)
             return 1;
         typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
-        typedef typename Value<typename TFragmentStore::TReadSeq>::Type TAlphabet;
         TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
         TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
         for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {
@@ -1313,13 +1312,11 @@ bool lockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
 	typedef FragmentStore<TSpec, TConfig>				TFragmentStore;
 	typedef typename TFragmentStore::TContigStore		TContigStore;
-	typedef typename TFragmentStore::TContigFileStore	TContigFileStore;
 	typedef typename Value<TContigStore>::Type			TContig;
-	typedef typename Value<TContigFileStore>::Type		TContigFile;
-	
+
 	if ((TId)length(store.contigStore) <= _id) return false;
 	TContig &contig = store.contigStore[_id];
-	
+
 	if (contig.usage++ > 0 || !empty(contig.seq)) return true;
 	return loadContig(store, _id);
 }
@@ -1463,10 +1460,6 @@ Mate pairs are stored internally in an "interleaved" mode, i.e. a read is read f
 template <typename TFSSpec, typename TFSConfig, typename TFileName>
 bool loadReads(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fileName)
 {
-	typedef FragmentStore<TFSSpec, TFSConfig>			TFragmentStore;
-	typedef typename TFragmentStore::TContigFileStore	TContigFileStore;
-	typedef typename Value<TContigFileStore>::Type		TContigFile;
-
 	MultiSeqFile multiSeqFile;
 	if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
 		return false;
@@ -1507,10 +1500,6 @@ bool loadReads(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fileName)
 template <typename TFSSpec, typename TFSConfig, typename TFileName>
 bool loadReads(FragmentStore<TFSSpec, TFSConfig> & store, TFileName & fileNameL, TFileName & fileNameR)
 {
-	typedef FragmentStore<TFSSpec, TFSConfig>			TFragmentStore;
-	typedef typename TFragmentStore::TContigFileStore	TContigFileStore;
-	typedef typename Value<TContigFileStore>::Type		TContigFile;
-
 	MultiSeqFile multiSeqFileL, multiSeqFileR;
 	if (!open(multiSeqFileL.concat, toCString(fileNameL), OPEN_RDONLY))
 		return false;

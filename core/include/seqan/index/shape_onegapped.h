@@ -177,10 +177,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template <typename TValue, typename TIter>
 	inline typename Value< Shape<TValue, OneGappedShape> >::Type
-	hash(Shape<TValue, OneGappedShape> &me, TIter it)	
+	hash(Shape<TValue, OneGappedShape> &me, TIter it)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
 		typedef typename Size< Shape<TValue, OneGappedShape> >::Type	TSize;
 
 		SEQAN_ASSERT_GT(me.blockLen1, 0u);
@@ -200,12 +199,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template <typename TValue, typename TIter>
 	inline typename Value< Shape<TValue, OneGappedShape> >::Type
-	hashInit(Shape<TValue, OneGappedShape> &me, TIter it)	
+	hashInit(Shape<TValue, OneGappedShape> &me, TIter it)
 	{
-        SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
 		typedef typename Size< Shape<TValue, OneGappedShape> >::Type	TSize;
-        
+
 		SEQAN_ASSERT_GT(me.blockLen1, 0u);
 
         me.leftChar = 0;
@@ -226,8 +224,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	inline typename Value< Shape<TValue, OneGappedShape> >::Type
 	hash(Shape<TValue, OneGappedShape> &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
 		TSize blockLen1 = me.blockLen1;
 		TSize blockLen2 = me.blockLen2;
 
@@ -246,7 +243,7 @@ namespace SEQAN_NAMESPACE_MAIN
 				else
 					blockLen2 = charsLeft - (blockLen1 + me.gapLen);
 		}
-		
+
 		me.hValue = ordValue(me.leftChar = *it);
 		for(TSize i = 1; i < blockLen1; ++i) {
 			goNext(it);
@@ -268,8 +265,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	inline typename Value< Shape<TValue, OneGappedShape> >::Type
 	hashUpper(Shape<TValue, OneGappedShape> &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
 		TSize blockLen1 = me.blockLen1;
 		TSize blockLen2 = me.blockLen2;
 
@@ -312,8 +308,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	inline typename Value< Shape<TValue, OneGappedShape> >::Type
 	hashNext(Shape<TValue, OneGappedShape> &me, TIter &_it)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, OneGappedShape> >::Type	THValue;
 		TIter it(_it);
 
 		SEQAN_ASSERT_GT(me.blockLen1, 0u);

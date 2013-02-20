@@ -165,7 +165,7 @@ struct SgipHash<std::vector<TValue> >
 {
     size_t operator()(std::vector<TValue> const & s) const
     {
-        typedef typename std::vector<TValue>::iterator TIterator;
+        //typedef typename std::vector<TValue>::iterator TIterator;
         size_t i = 0;
         size_t sum = 0;
         size_t len = s.size();
@@ -226,7 +226,7 @@ struct SgipEqualTo<std::vector<TValue> >
 {
     bool operator()(std::vector<TValue> const & s1, std::vector<TValue> const & s2) const
     {
-        typedef std::vector<TValue> TString;
+        //typedef std::vector<TValue> TString;
         if (s1.size() != s2.size())
             return false;
 
@@ -451,7 +451,7 @@ void _getDistanceMatrixBfs(seqan::Graph<seqan::Undirected<TCargo, TSpec> > const
     typedef typename VertexDescriptor<TGraph>::Type         TVertexDescriptor;
     typedef typename Iterator<TGraph, VertexIterator>::Type TIterator;
     typedef typename Size<TMatrix>::Type                    TSize;
-    typedef typename Value<TMatrix>::Type                   TString;
+    //typedef typename Value<TMatrix>::Type                   TString;
 
     TSize len = numVertices(graph);
     TMatrix predmap;
@@ -495,7 +495,7 @@ void _caculateDegreeMap(
     typedef Graph<Directed<> >                                                      TGraph;
     typedef typename VertexDescriptor<TGraph>::Type                                 TVertexDescriptor;
     typedef typename Iterator<TGraph, VertexIterator>::Type                         TIterator;
-    typedef typename std::tr1::unordered_map<TVertexDescriptor, TValue>::size_type  THElement;
+    //typedef typename std::tr1::unordered_map<TVertexDescriptor, TValue>::size_type  THElement;
     typedef typename std::multimap<TKey, TVertexDescriptor, TSpec>::value_type      TMElement;
 
     for (TIterator it(graph); !atEnd(it); goNext(it))
@@ -520,7 +520,7 @@ void _getRefinement(
     )
 {
     using namespace seqan;
-    typedef typename Iterator<String<TValue> >::Type TIterator;
+    //typedef typename Iterator<String<TValue> >::Type TIterator;
     typedef typename Size<String<TEntry> >::Type     TSize;
     TSize     len, i, j, vi, vj;
     len = length(vertexorder);
@@ -547,11 +547,11 @@ template <typename TString, typename TXMap, typename TMatrix, typename TDMap>
 bool _getHeuristicList(TString & rset, TXMap & cand, TMatrix & dismat, TString & heuristicString, TDMap & degreemap)
 {
     using namespace seqan;
-    typedef typename TString::iterator TIterator;
+    //typedef typename TString::iterator TIterator;
     typedef typename TXMap::iterator TIter;
     typedef typename TXMap::key_type T;
     typedef std::tr1::unordered_map<TString, T, SgipHash<TString>, SgipEqualTo<TString> > THMap;
-    typedef typename THMap::size_type TValue;
+    //typedef typename THMap::size_type TValue;
 
     TIter itEnd = cand.end();
     size_t max_capacity(0);
@@ -624,7 +624,7 @@ template <typename TValue, typename TCandMap, typename TMatrix, typename THMap, 
     typedef typename TCandMap::iterator              TIterator;
     typedef std::vector<TValue>                      TVector;
     typedef typename std::vector<TValue>::iterator   TVIterator;
-    typedef typename THMap::key_type                 TKey;
+    //typedef typename THMap::key_type                 TKey;
     typedef typename THMap::iterator                 TMIterator;
     typedef typename Iterator<String<TValue> >::Type TStrIterator;
 
@@ -755,11 +755,11 @@ void _createParityMap(
     using namespace seqan;
     typedef VertexDescriptor<Graph<Directed<> > >::Type                               TVertexDescriptor;
     typedef std::vector<TVertexDescriptor>                                            TString;
-    typedef typename Iterator<TString, Rooted>::Type                                  TStrIterator;
+    //typedef typename Iterator<TString, Rooted>::Type                                  TStrIterator;
     typedef typename std::multimap<TValue, TVertexDescriptor, TSpec>::iterator        TMapIterator;
-    typedef typename std::tr1::unordered_map<TVertexDescriptor, TString>::size_type   TPair;
+    //typedef typename std::tr1::unordered_map<TVertexDescriptor, TString>::size_type   TPair;
     typedef String<bool>                                                              TProperties;
-    typedef Iterator<TProperties>::Type                                               TProIterator;
+    //typedef Iterator<TProperties>::Type                                               TProIterator;
     TProperties visitedRecord;
     unsigned int numVer = numVertices(graph);
 
@@ -845,7 +845,7 @@ bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
     typedef bool                                                           TFlag;
     typedef Graph<TSpec>                                                   TGraph;
     typedef typename VertexDescriptor<TGraph>::Type                        TVertexDescriptor;
-    typedef typename Iterator<TGraph, VertexIterator>::Type                TIterator;
+    //typedef typename Iterator<TGraph, VertexIterator>::Type                TIterator;
     typedef String<TVertexDescriptor>                                      TString;
     typedef SgipDegreeDir_<TVertexDescriptor>                              TDegree_dir;
     typedef LessCompare_<TDegree_dir>                                      _Less;

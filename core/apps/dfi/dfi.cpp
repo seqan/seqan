@@ -514,8 +514,6 @@ int runDFI(
 	index.ds = ds;
 
 	// database lookup table
-	typedef typename Fibre<TIndex, FibreSA>::Type TSA;
-	typedef typename Iterator<TSA, Standard>::Type TSAIter;
 	String<unsigned>	dbLookup;
 	String<bool>		seen;
 	DfiEntry_			entry;
@@ -572,6 +570,8 @@ int runDFI(
 		{
 #ifdef DEBUG_ENTROPY
 			// count frequencies (debug)
+	        typedef typename Fibre<TIndex, FibreSA>::Type TSA;
+	        typedef typename Iterator<TSA, Standard>::Type TSAIter;
 			TSAIter oc = begin(indexSA(index), Standard()) + (*mit).range.i1;
 			TSAIter ocEnd = begin(indexSA(index), Standard()) + (*mit).range.i2;
 			arrayFill(begin(seen, Standard()), end(seen, Standard()), false);

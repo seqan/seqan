@@ -354,8 +354,6 @@ inline
 bool
 atEnd(Iter<TJournalEntries, JournalEntriesIterSpec<UnbalancedTree> > & iterator)
 {
-    SEQAN_CHECKPOINT;
-    typedef Iter<TJournalEntries, JournalEntriesIterSpec<UnbalancedTree> > TIterator;
     return (iterator._currentNode == 0) || (!hasParent(iterator) && (iterator._iterationDirection == DIRECTION_UP_RIGHT));
 }
 

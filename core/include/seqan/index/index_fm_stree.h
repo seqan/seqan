@@ -375,8 +375,8 @@ inline bool _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VST
                           TString const & string,
                           TSize & lcp)
 {
-    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-    typedef typename Value<TIndex>::Type                        TAlphabet;
+    //typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
+    //typedef typename Value<TIndex>::Type                        TAlphabet;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
     lcp = 0;

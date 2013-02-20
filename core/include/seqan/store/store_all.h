@@ -698,16 +698,13 @@ _storeAppendContig (
 // correct Id in the variable using to qname to identify it
 
 template <typename TSpec, typename TConfig, typename TId, typename TName, typename TTypeId>
-inline void 
+inline void
 _storeAppendAnnotationName (
-	FragmentStore<TSpec, TConfig> & fragStore, 
+	FragmentStore<TSpec, TConfig> & fragStore,
 	TId & annotationId,
 	TName & annotationName,
     TTypeId typeId)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
-
 	if (!empty(annotationName) && getIdByName(fragStore.annotationNameStore, annotationName, annotationId, fragStore.annotationNameStoreCache))
     {
         do
@@ -744,9 +741,6 @@ _storeAppendType (
 	TId & typeId, 
 	TName & annotationType)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
-	
 	if (!getIdByName(fragStore.annotationTypeStore, annotationType, typeId, fragStore.annotationTypeStoreCache))
 	{
 		// if the annotation type name is not in the store yet
@@ -766,9 +760,6 @@ _storeAppendKey (
 	TId & keyId,
 	TName & annotationKey)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
-	
 	if (!getIdByName(fragStore.annotationKeyStore, annotationKey, keyId, fragStore.annotationKeyStoreCache))
 	{
 		// if the key name is not in the store yet
@@ -1646,12 +1637,12 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 {
 	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
 
-	typedef typename TFragmentStore::TReadStore						TReadStore;
-	typedef typename TFragmentStore::TReadSeqStore					TReadSeqStore;
+	//typedef typename TFragmentStore::TReadStore						TReadStore;
+	//typedef typename TFragmentStore::TReadSeqStore					TReadSeqStore;
 	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
 	typedef typename TFragmentStore::TContigStore					TContigStore;
 
-	typedef typename Value<TReadStore>::Type						TRead;
+	//typedef typename Value<TReadStore>::Type						TRead;
 	typedef typename Value<TContigStore>::Type						TContig;
 	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
 
@@ -1659,7 +1650,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
 	typedef typename Id<TAlignedRead>::Type							TId;
 	typedef typename TFragmentStore::TContigPos						TContigPos;
-	
+
 	typedef typename TContig::TContigSeq							TContigSeq;
 	typedef Align<TReadSeq, ArrayGaps>								TAlign;
 	typedef Gaps<TReadSeq, ArrayGaps>								TGaps;
@@ -1982,13 +1973,13 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
 
 	// stores
-	typedef typename TFragmentStore::TReadStore						TReadStore;
+	//typedef typename TFragmentStore::TReadStore						TReadStore;
 	typedef typename TFragmentStore::TReadSeqStore					TReadSeqStore;
 	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
 	typedef typename TFragmentStore::TContigStore					TContigStore;
 
 	// store elements
-	typedef typename Value<TReadStore>::Type						TRead;
+	//typedef typename Value<TReadStore>::Type						TRead;
 	typedef typename Value<TReadSeqStore>::Type						TReadSeq;
 	typedef typename Value<TContigStore>::Type						TContig;
 	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
@@ -1996,21 +1987,17 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
 	typedef typename Id<TAlignedRead>::Type							TId;
 	typedef typename TFragmentStore::TContigPos						TContigPos;
-	
-	typedef typename TContig::TContigSeq							TContigSeq;
-	typedef Align<TReadSeq, ArrayGaps>								TAlign;
-	typedef Gaps<TReadSeq, ArrayGaps>								TGaps;
 
 	// gap structures
 	typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename TContig::TGapAnchors> >			TContigGapsGlobal;
 	typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename Value<TContigGapsString>::Type> >	TContigGapsPW;
 	typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >			TReadGaps;
-	
+
 	// gap iterators
 	typedef typename Iterator<TContigGapsGlobal>::Type								TContigGlobalIter;	
 	typedef typename Iterator<TContigGapsPW>::Type									TContigPWIter;
 	typedef typename Iterator<TReadGaps>::Type										TReadIter;
-	
+
 	// sort matches by increasing begin positions
 	sortAlignedReads(store.alignedReadStore, SortBeginPos());
 	sortAlignedReads(store.alignedReadStore, SortContigId());

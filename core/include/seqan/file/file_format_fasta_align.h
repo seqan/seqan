@@ -175,15 +175,14 @@ void read(TFile & file, Align<TSource, TSpec> & align, FastaAlign const &) {
 	// Resize alignment data structure
 	TSize numRows=length(beg_end_length);
 	resize(rows(align), numRows);	//rows
-		
-	typedef Align<TSource, TSpec> TAlign;
-	typedef typename Row<TAlign>::Type TRow;
-	
+
+	//typedef Align<TSource, TSpec> TAlign;
+
 	for(TSize i=0;i<numRows;++i) {
 		TSize begin = beg_end_length[i].i1;
 //		TSize end = beg_end_length[i].i2;
 		count = beg_end_length[i].i3;
-		
+
 		//Reserve space
         TSource buffer;
         resize(buffer, count);
@@ -192,10 +191,10 @@ void read(TFile & file, Align<TSource, TSpec> & align, FastaAlign const &) {
 		// createSource(row(align,i));
 		// resize(source(row(align,i)),count);
 		// if (length(source(row(align,i))) < count) {
-		// 	count = length(source(row(align,i)));
+		//	count = length(source(row(align,i)));
 		// }
 		// setClippedEndPosition(row(align,i),count);
-		
+
 		//Read sequence
 		_streamSeekG(file, begin);
 
@@ -299,16 +298,15 @@ void _writeImpl(TFile & file, Align<TSource, TSpec> const & align, TStringContai
 	typedef Align<TSource, TSpec> const TAlign;
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
-	typedef typename Position<TAlign>::Type TPosition;
 	TRowsPosition row_count = length(rows(align));
 
 	for(TRowsPosition i=0;i<row_count;++i) {
-		TRow & row_ = row(align, i);	
-	
+		TRow & row_ = row(align, i);
+
 		typedef typename Iterator<typename Row<TAlign>::Type const, Standard>::Type TIter;
 		TIter begin_ = iter(row_, beginPosition(cols(align)));
 		TIter end_ = iter(row_, endPosition(cols(align)));
-	
+
 		_streamPut(file, '>');
 		_streamWrite(file, getValue(ids,i));
 		_streamPut(file, '\n');

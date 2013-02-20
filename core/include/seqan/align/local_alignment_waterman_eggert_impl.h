@@ -215,12 +215,11 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
 {
 	// typedefs
 	typedef Matrix<TScoreValue> TMatrix;
-	typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Position<TMatrix>::Type TMatrixPosition;
 	typedef Iter<TMatrix,PositionIterator> TMatrixIterator;
 
 	typedef typename Iterator<TStringH const, Rooted>::Type TStringIteratorH;
-	typedef typename Value<TStringH const>::Type TValueH;
+	//typedef typename Value<TStringH const>::Type TValueH;
 	typedef typename Iterator<TStringV const, Rooted>::Type TStringIteratorV;
 	typedef typename Value<TStringV const>::Type TValueV;
 
@@ -330,14 +329,14 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
 {
 //-------------------------------------------------------------------------
 //typedefs
-	typedef typename LocalAlignmentFinder<TScoreValue>::TMatrixPosition TMatrixPosition;
+	//typedef typename LocalAlignmentFinder<TScoreValue>::TMatrixPosition TMatrixPosition;
     typedef typename LocalAlignmentFinder<TScoreValue>::TMatrix         TMatrix;
 	typedef Iter<TMatrix, PositionIterator>                             TMatrixIterator;
 
     typedef Gaps<TSequenceH, TGapsSpecH>                TGapsH;
     typedef typename Iterator<TGapsH, Rooted>::Type     TGapsHIter;
     typedef typename Iterator<TSequenceH, Rooted>::Type TSequenceHIter;
-    typedef typename Value<TSequenceH>::Type            TValueH;
+    //typedef typename Value<TSequenceH>::Type            TValueH;
 
     typedef Gaps<TSequenceV, TGapsSpecV>                TGapsV;
     typedef typename Iterator<TGapsV, Rooted>::Type     TGapsVIter;
@@ -704,8 +703,6 @@ _smithWaterman(Gaps<TSourceH, TGapsSpecH> & gapsH,
                Score<TScoreValue, TScoreSpec> const & score_, 
                TScoreValue cutoff)
 {
-	typedef LocalAlignmentFinder<TScoreValue> TFinder;
-
     // TODO(holtgrew): This sourceSegment() stuff is confusing... Do we *really* need this?
     // Clear gaps and clipping from result Gaps structures.
     clearGaps(gapsH);

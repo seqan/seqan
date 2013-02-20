@@ -286,7 +286,6 @@ assign(Map<TValue, Skiplist<TSpec> > & target,
 	typedef SkiplistPath<TValue, TSpec> TPath;
 	typedef SkiplistElement<TValue, TSpec> TElement;
 	typedef typename Iterator<TSkiplist>::Type TIterator;
-	typedef typename Value<TSkiplist>::Type TValue2;
 
 	clear(target);
 
@@ -605,7 +604,6 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
 					   SkiplistElement<TValue, TSpec> & el,
 					   unsigned char height)
 {
-	typedef SkiplistElement<TValue, TSpec> TElement;
 	typedef SkiplistPath<TValue, TSpec> TPath;
 
 	TPath path;
@@ -763,7 +761,6 @@ inline void
 add(Map<TValue, Skiplist<TSpec> > & me,
 	TValue2 const & _value)
 {
-	typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 	typedef SkiplistElement<TValue, TSpec> TElement;
 
 	unsigned char height = _skiplistCreateHeight(me);

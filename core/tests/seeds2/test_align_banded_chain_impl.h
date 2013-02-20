@@ -46,7 +46,7 @@ void testBandedChainAlignmentEmptyChain(TGapCosts const &)
 {
     using namespace seqan;
 
-    typedef Seed<Simple> TSeed;
+    //typedef Seed<Simple> TSeed;
     typedef SeedSet<Simple, Unordered> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
 

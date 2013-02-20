@@ -90,7 +90,6 @@ template <typename TFile, typename TStringContainer, typename TSource, typename 
 int _writeImpl(TFile& target, Align<TSource, TSpec>& align, TStringContainer& ids, CGViz)
 {
     typedef Align<TSource, TSpec> const TAlign;
-    typedef typename Row<TAlign>::Type TRow;
     typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
     typedef typename Position<TAlign>::Type TPosition;
     TRowsPosition row_count = length(rows(align));
@@ -103,16 +102,15 @@ int _writeImpl(TFile& target, Align<TSource, TSpec>& align, TStringContainer& id
     {
         for (TRowsPosition j=i+1;j<row_count;++j)
         {
-            
             // Print header
-            streamPut(target, "{DATA dat"); 
+            streamPut(target, "{DATA dat");
             streamPut(target, pair);
             streamPut(target, '\n');
-            streamPut(target, "[__GLOBAL__] dimension=2:\n"); 
-                        
+            streamPut(target, "[__GLOBAL__] dimension=2:\n");
+
             TPosition begin_ = beginPosition(cols(align));
             TPosition end_ = endPosition(cols(align));
-        
+
             bool match = false;
             while(begin_ < end_)
             {

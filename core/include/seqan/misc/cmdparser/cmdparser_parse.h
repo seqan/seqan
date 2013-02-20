@@ -63,7 +63,6 @@ namespace seqan {
 template <typename TErrorStream>
 bool parse(CommandLineParser & me, int argc, const char * argv[], TErrorStream & estream)
 {
-    typedef Size<String<CommandLineOption> >::Type TOptionPosition;
     // if the appName wasn't set .. parse from command line
     if (empty(me._appName))
         me._appName = _parseAppName(argv[0]);

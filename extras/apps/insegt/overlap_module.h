@@ -37,11 +37,11 @@ getIdsForRead(TAnnoIds & ids, FragmentStore<TSpec, TConfig> & me, TIntervalTree 
 	typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore 	TAnnotationStore;
 	typedef typename Value<TAnnotationStore>::Type 				TAnnotationStoreElement;
 	typedef typename TAnnotationStoreElement::TId 				TId;
-	typedef typename Value<TIntervals>::Type 				TInterval;
+	//typedef typename Value<TIntervals>::Type 				TInterval;
 	typedef 	 String<TId> 						TResult;
 	typedef typename Iterator<TIntervals >::Type 				TIntervalIter;
 	typedef typename Iterator<StringSet<TResult > >::Type			TResultIter;
-	typedef typename Iterator<TResult >::Type				TIdIter;
+	//typedef typename Iterator<TResult >::Type				TIdIter;
 	
 	static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
 	

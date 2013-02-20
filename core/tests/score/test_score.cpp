@@ -672,7 +672,6 @@ void testScoreSequenceEntryForScore()
 {
     typedef Score<int, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TEntry1;
-    typedef typename SequenceEntryForScore<TScoringScheme, Dna5String>::Type TEntry2;
 
     DnaString seq1 = "ACGTACG";
     Dna5String seq2 = "ACGTNACNA";

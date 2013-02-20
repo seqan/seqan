@@ -573,13 +573,12 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 					 TScores& scores,
 					 LcsLibrary)
 {
-	SEQAN_CHECKPOINT
 	typedef StringSet<TString, Dependent<TSpec> > TStringSet;
 	typedef String<TSize2, TSpec2> TPairList;
 	typedef typename Size<TStringSet>::Type TSize;
 	typedef typename Id<TStringSet>::Type TId;
-	typedef typename Value<TSegmentMatches>::Type TFragment;
-	typedef typename Value<TScores>::Type TScoreValue;
+	//typedef typename Value<TSegmentMatches>::Type TFragment;
+	//typedef typename Value<TScores>::Type TScoreValue;
 	typedef typename Iterator<TPairList, Standard>::Type TPairIter;
 
 	// Pairwise longest common subsequence
@@ -614,7 +613,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores, typename TAlphabet, typename TSize>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 					 TSegmentMatches& matches,
 					 TScores& scores,
@@ -622,14 +621,13 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 					 TAlphabet,
 					 KmerLibrary)
 {
-	SEQAN_CHECKPOINT
-	typedef StringSet<TString, Dependent<TSpec> > TStringSet;
+	//typedef StringSet<TString, Dependent<TSpec> > TStringSet;
 	typedef typename Value<TScores>::Type TScoreValue;
 	typedef typename Value<TSegmentMatches>::Type TFragment;
-	typedef typename Id<TStringSet>::Type TId;
+	//typedef typename Id<TStringSet>::Type TId;
 	typedef String<TSize> TTupelString;
 	typedef String<TTupelString> TTupelStringSet;
-	
+
 	// Initialization
 	TSize nseq = length(str);
 	TSize alphabet_size = ValueSize<TAlphabet>::VALUE;
@@ -710,10 +708,9 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 					 TScores& scores,
 					 LocalPairwiseLibrary)
 {
-	SEQAN_CHECKPOINT
 	typedef StringSet<TString, Dependent<TSpec> > TStringSet;
 	typedef String<TSize2, TSpec2> TPairList;
-	typedef typename Size<TStringSet>::Type TSize;
+	//typedef typename Size<TStringSet>::Type TSize;
 	typedef typename Id<TStringSet>::Type TId;
 	typedef typename Iterator<TPairList, Standard>::Type TPairIter;
 

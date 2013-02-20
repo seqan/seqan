@@ -236,7 +236,7 @@ value(String<TValue, TSpec> & me,
       TPos const & pos)
 {
     SEQAN_CHECKPOINT;
-    typedef typename Position< String<TValue, TSpec> >::Type TStringPos;
+    typedef typename Position< String<TValue, TSpec> >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
 }
@@ -247,7 +247,7 @@ value(String<TValue, TSpec> const & me,
       TPos const & pos)
 {
     SEQAN_CHECKPOINT;
-    typedef typename Position< String<TValue, TSpec> const >::Type TStringPos;
+    typedef typename Position< String<TValue, TSpec> const >::Type TStringPos SEQAN_TYPEDEF_FOR_DEBUG;
     SEQAN_ASSERT_LT_MSG(static_cast<TStringPos>(pos), static_cast<TStringPos>(length(me)), "Trying to access an element behind the last one!");
     return *(begin(me, Standard()) + pos);
 }
@@ -837,7 +837,6 @@ inline void
 assign(String<TTargetValue, TTargetSpec> & target,
        TSource & source)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
     assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
@@ -847,7 +846,6 @@ inline void
 assign(String<TTargetValue, TTargetSpec> & target,
        TSource const & source)
 {
-    SEQAN_CHECKPOINT;
     typedef String<TTargetValue, TTargetSpec> TTarget;
     assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
@@ -917,7 +915,6 @@ assign(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        Tag<TExpand>)
 {
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 template<typename TTargetValue, typename TTargetSpec, typename TSource, typename TSize, typename TExpand>
@@ -927,7 +924,6 @@ assign(String<TTargetValue, TTargetSpec> & target,
        TSize limit,
        Tag<TExpand>)
 {
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AssignString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
@@ -940,7 +936,6 @@ assign(String<TTargetValue, TTargetSpec> & target,
        TSourceValue const * source,
        Tag<TExpand>)
 {
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AssignString_<Tag<TExpand> >::assign_(target, source);
 }
 template<typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TSize, typename TExpand>
@@ -950,7 +945,6 @@ assign(String<TTargetValue, TTargetSpec> & target,
        TSize limit,
        Tag<TExpand>)
 {
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AssignString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
@@ -1166,8 +1160,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        TSource const & source,
        Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AppendString_<Tag<TExpand> >::append_(target, source);
 }
 
@@ -1179,7 +1171,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
@@ -1193,7 +1184,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AppendString_<Tag<TExpand> >::append_(target, source);
 }
 
@@ -1205,7 +1195,6 @@ append(String<TTargetValue, TTargetSpec> & target,
        Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     AppendString_<Tag<TExpand> >::append_(target, source, limit);
 }
 
@@ -1368,8 +1357,6 @@ replace(String<TTargetValue, TTargetSpec> & target,
         TSource const & source,
         Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
@@ -1382,8 +1369,6 @@ replace(String<TTargetValue, TTargetSpec> & target,
         typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
         Tag<TExpand>)
 {
-    SEQAN_CHECKPOINT;
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 
@@ -1398,8 +1383,6 @@ replace(String<TTargetValue, TTargetSpec> & target,
         TSourceValue const * source,
         Tag<TExpand>)
 {
-SEQAN_CHECKPOINT
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source);
 }
 
@@ -1412,8 +1395,6 @@ replace(String<TTargetValue, TTargetSpec> & target,
         typename Size< String<TTargetValue, TTargetSpec> >::Type limit,
         Tag<TExpand>)
 {
-SEQAN_CHECKPOINT
-    typedef String<TTargetValue, TTargetSpec> TTarget;
     ReplaceString_<Tag<TExpand> >::replace_(target, pos_begin, pos_end, source, limit);
 }
 

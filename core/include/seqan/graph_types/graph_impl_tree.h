@@ -463,20 +463,18 @@ removeVertex(Graph<Tree<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename EdgeDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
-addEdge(Graph<Tree<TCargo, TSpec> >& g, 
-		TVertexDescriptor const parent, 
-		TVertexDescriptor const child) 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename EdgeDescriptor<Graph<Tree<TCargo, TSpec> > >::Type
+addEdge(Graph<Tree<TCargo, TSpec> >& g,
+		TVertexDescriptor const parent,
+		TVertexDescriptor const child)
 {
-	SEQAN_CHECKPOINT;
 	SEQAN_ASSERT(idInUse(g.data_id_managerV, parent));
 	SEQAN_ASSERT(idInUse(g.data_id_managerV, child));
 	SEQAN_ASSERT(findEdge(g, parent, child) == 0); // No multi-graphs as trees!!!
 
 	typedef Graph<Tree<TCargo, TSpec> > TGraph;
 	typedef typename EdgeType<TGraph>::Type TEdgeStump;
-	typedef typename Id<TGraph>::Type TId;
 
 	TEdgeStump* edge_ptr;
 	allocate(g.data_allocator, edge_ptr, 1);
@@ -759,11 +757,8 @@ inline void
 assignRoot(Graph<Tree<TCargo, TSpec> >& g,
 		   TVertexDescriptor const vertex)
 {
-	SEQAN_CHECKPOINT
 	SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
 
-	typedef Graph<Tree<TCargo, TSpec> > TGraph;
-	
 	g.data_root = vertex;
 	g.data_parent[vertex] = getNil<TVertexDescriptor>();
 }
@@ -1093,10 +1088,7 @@ collectLeaves(Graph<Tree<TCargo, TSpec> > const& g,
 			  TVertexDescriptor const root,
 			  TGroup& group)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Tree<TCargo, TSpec> > TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Id<TGraph>::Type TId;
 	typedef typename Iterator<TGraph, AdjacencyIterator>::Type TAdjacencyIterator;
 
 	if (isLeaf(g, root)) appendValue(group, root, Generous());

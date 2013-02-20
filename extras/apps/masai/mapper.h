@@ -437,9 +437,9 @@ bool _mapReads(Mapper<TSpec> & mapper,
                TErrors /* errorsLossy */,
                KBest const & /*tag*/)
 {
-    typedef Seeding<>                           TSeeding;
-    typedef TSeeding::TSeeds                    TSeeds;
-    typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
+    //typedef Seeding<>                           TSeeding;
+    //typedef TSeeding::TSeeds                    TSeeds;
+    //typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
     TReadSeqSize readsLength = _readsLength(mapper);
     TReadSeqSize seedLength  = mapper.seedLength;
@@ -477,9 +477,9 @@ bool _mapReads(Mapper<TSpec> & mapper,
                TErrors /* errorsLossy */,
                AnyBest const & /*tag*/)
 {
-    typedef Seeding<>                           TSeeding;
-    typedef TSeeding::TSeeds                    TSeeds;
-    typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
+    //typedef Seeding<>                           TSeeding;
+    //typedef TSeeding::TSeeds                    TSeeds;
+    //typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
     TReadSeqSize readsLength = _readsLength(mapper);
     TReadSeqSize seedLength  = mapper.seedLength;

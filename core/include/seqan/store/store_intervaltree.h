@@ -49,7 +49,6 @@ inline void
 createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO)
 {
 	typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore 	TAnnotationStore;
-	typedef typename FragmentStore<TSpec, TConfig>::TContigPos 		TContigPos;
 	typedef typename Value<TAnnotationStore>::Type 				TAnnotationStoreElement;
 	typedef typename TAnnotationStoreElement::TId 				TId;
 	typedef typename Iterator<TAnnotationStore>::Type 			TAnnotationIterator;

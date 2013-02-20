@@ -829,7 +829,6 @@ addSeed(SeedSet<TValue, TSeedSpec, const Tag<Scoring_Scheme<TQualityFactor, TGap
 {
 	SEQAN_CHECKPOINT
 	typedef typename Size<String<TValue, Block<BLOCK_SIZE<SeedSet<TValue, TSeedSpec, const Tag<Scoring_Scheme<TQualityFactor, TGapCosts, void> >, TSpec> >::Value> > >::Type TSize;
-	typedef Seed<TValue, TSeedSpec> * pSeed;
 	typedef typename std::multimap<TValue,TSize >::iterator TIterator;
 	TIterator tmpIt = _findSeedsMerge(set, leftDim0(seed), leftDim1(seed),length(seed), gapDistance);
 	bool change = false;
@@ -861,7 +860,6 @@ addSeed(SeedSet<TValue, SimpleSeed, const Tag<Scoring_Scheme<TQualityFactor, TGa
 {
 	SEQAN_CHECKPOINT
 	typedef typename Size<String<TValue, Block<BLOCK_SIZE<SeedSet<TValue, SimpleSeed, const Tag<Scoring_Scheme<TQualityFactor, TGapCosts, void> >, TSpec> >::Value> > >::Type TSize;
-	typedef Seed<TValue, SimpleSeed> * pSeed;
 	typedef typename std::multimap<TValue,TSize >::iterator TIterator;
 	TIterator tmpIt = _findSeedsMerge(set, qlPos, dlPos, qrPos-qlPos+1, gapDistance);
 	bool change = false;

@@ -563,7 +563,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Value<TText>::Type TValue;
         typedef String<TSize, Alloc<> > TBuffer;
 		typedef typename Iterator<TSA, Standard>::Type TSAIter;
-		typedef typename Iterator<TBuffer, Standard>::Type TBufferIter;
+		//typedef typename Iterator<TBuffer, Standard>::Type TBufferIter;
 		typedef typename Iterator<TText const, Standard>::Type TValueIter;
 
 		SEQAN_ASSERT(IsContiguous<TText>::VALUE == true);
@@ -579,7 +579,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		TSize _n[7];
 		TSize _o[7];
-	    
+
 		_n[0] = n/7;
 		_o[0] = n%7;
 		TSize j = n + 6;

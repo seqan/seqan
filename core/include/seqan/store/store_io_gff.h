@@ -190,7 +190,6 @@ _readOneAnnotation(
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TAnnotationStore   TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type      TAnnotation;
-    typedef typename TAnnotation::TId                   TId;
 
     clear(ctx);
 

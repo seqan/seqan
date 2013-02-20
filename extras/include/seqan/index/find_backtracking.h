@@ -678,7 +678,7 @@ void setHost(Pattern<TNeedle, Backtracking<TDistance, TBacktrackingSpec> > & me,
 {
     typedef TNeedle                                     TPrefix;
     typedef PrefixAligner<TPrefix, TDistance>           TPrefixAligner;
-    typedef typename State<TPrefix, TDistance>::Type    TState;
+    //typedef typename State<TPrefix, TDistance>::Type    TState;
 
     SEQAN_ASSERT_NOT(empty(needle));
     setValue(me.data_host, needle);
@@ -710,7 +710,7 @@ void setHost(Pattern<Index<TNeedle, TSpec>, Backtracking<TDistance, TBacktrackin
 
     typedef typename EdgeLabel<TIndexIterator>::Type                    TPrefix;
     typedef PrefixAligner<TPrefix, TDistance>                           TPrefixAligner;
-    typedef typename State<TPrefix, TDistance>::Type                    TState;
+    //typedef typename State<TPrefix, TDistance>::Type                    TState;
 
     // TODO(esiragusa): Update index holder
     setValue(me.data_host, index);
@@ -1001,7 +1001,7 @@ _backtrack(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktracking
     typedef Index<TNeedle, TNeedleSpec>                                 TNeedleIndex;
     typedef typename Iterator<TNeedleIndex, TopDown<> >::Type           TNeedleIndexIterator;
     typedef typename EdgeLabel<TNeedleIndexIterator>::Type              TPrefix;
-    typedef typename Size<TNeedleIndex>::Type                           TPrefixSize;
+    //typedef typename Size<TNeedleIndex>::Type                           TPrefixSize;
 
     typedef typename State<TNeedle, TDistance>::Type                    TState;
 

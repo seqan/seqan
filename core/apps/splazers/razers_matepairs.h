@@ -642,7 +642,7 @@ void mapMatePairReads(
 	// FILTRATION
 	typedef Finder<TGenome, Swift<TSwiftSpec> >				TSwiftFinderL;
 	typedef Finder<TGenomeInf, Swift<TSwiftSpec> >			TSwiftFinderR;
-	typedef Pattern<TReadIndex, Swift<TSwiftSpec> >			TSwiftPattern;
+	//typedef Pattern<TReadIndex, Swift<TSwiftSpec> >			TSwiftPattern;
 
 	// MATE-PAIR FILTRATION
 	typedef Pair<__int64,TMatch>							TDequeueValue;

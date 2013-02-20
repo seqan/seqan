@@ -93,7 +93,6 @@ struct Cargo<Index<TStringSet, IndexQGram<TShape, TSpec> > >
 template <typename TStringSet, typename TShape, typename TSpec>
 inline bool _qgramDisableBuckets(Index<TStringSet, IndexQGram<TShape, TSpec> > & index)
 {
-    typedef Index<TStringSet, IndexQGram<TShape, TSpec> >   TReadIndex;
     typedef typename Fibre<TStringSet, QGramDir>::Type      TDir;
     typedef typename Iterator<TDir, Standard>::Type         TDirIterator;
     typedef typename Value<TDir>::Type                      TSize;

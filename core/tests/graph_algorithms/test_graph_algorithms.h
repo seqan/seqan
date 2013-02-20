@@ -231,7 +231,7 @@ void Test_BreadthFirstSearch() {
 // Breadth-First Search
 	typedef Graph<Undirected<> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef Size<TGraph>::Type TSize;
 
 	//Number of edges
@@ -274,7 +274,7 @@ void Test_DepthFirstSearch() {
 //____________________________________________________________________________
 // Depth-First Search
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -320,7 +320,7 @@ void Test_TopologicalSort() {
 //____________________________________________________________________________
 // Topological Sort
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -356,7 +356,7 @@ void Test_StronglyConnectedComponents() {
 // Strongly-Connected-Components
 
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -392,7 +392,7 @@ void Test_ConnectedComponents() {
 
 	typedef Graph<Undirected<> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef Size<TGraph>::Type TSize;
 
 	//Number of edges
@@ -425,7 +425,7 @@ void Test_PrimsAlgorithm() {
 // Prim's algorithm
 	typedef Graph<Undirected<> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef Size<TGraph>::Type TSize;
 
 	//Number of edges
@@ -464,7 +464,7 @@ void Test_KruskalsAlgorithm() {
 // Kruskal's algorithm
 	typedef Graph<Undirected<> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef Size<TGraph>::Type TSize;
 
 	//Number of edges
@@ -558,7 +558,7 @@ void Test_DagShortestPath() {
 //____________________________________________________________________________
 // DAG-Shortest Paths
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -601,7 +601,7 @@ void Test_BellmanFord() {
 // Bellman-Ford
 
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -644,7 +644,7 @@ void Test_Dijkstra() {
 // Dijkstra
 
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -686,7 +686,7 @@ void Test_AllPairsShortestPath() {
 // All-Pairs Shortest Path
 
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -769,7 +769,7 @@ void Test_FloydWarshall() {
 // Floyd Warshall
 
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -853,7 +853,7 @@ void Test_TransitiveClosure() {
 // Transitive Closure
 
 	typedef VertexDescriptor<Graph<> >::Type TVertexDescriptor;
-	typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<Graph<> >::Type TEdgeDescriptor;
 	typedef Size<Graph<> >::Type TSize;
 
 	//Number of edges
@@ -895,7 +895,7 @@ void Test_FordFulkerson() {
 // Ford-Fulkerson
 	typedef Graph<Directed<> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef Size<TGraph>::Type TSize;
 
@@ -929,8 +929,8 @@ void Test_PathGrowingAlgorithm() {
 // Path growing algorithm
 	typedef Graph<Undirected<> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef Size<TGraph>::Type TSize;
 
 	//Number of edges
@@ -1073,7 +1073,7 @@ void Test_HmmAlgorithms() {
 	typedef Size<TAlphabet>::Type TSize;
 	typedef Graph<Hmm<TAlphabet, TProbability> > THmm;
 	typedef VertexDescriptor<THmm>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<THmm>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<THmm>::Type TEdgeDescriptor;
 	TSize alph_size = ValueSize<TAlphabet>::VALUE;
 	
 	Dna dnaA = Dna('A');

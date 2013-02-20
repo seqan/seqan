@@ -462,9 +462,9 @@ inline bool _pigeonholeProcessQGram(
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
 	THValue hash)
 {
-	typedef Pattern<TIndex, Pigeonhole<TSpec> >         TPattern;
-	typedef typename TFinder::THstkPos					THstkPos;
-    
+	//typedef Pattern<TIndex, Pigeonhole<TSpec> >         TPattern;
+	//typedef typename TFinder::THstkPos					THstkPos;
+
     typedef typename Fibre<TIndex, QGramSA>::Type       TSA;
     typedef typename Iterator<TSA, Standard>::Type      TSAIter;
     typedef typename TFinder::TPigeonholeHit            THit;
@@ -810,8 +810,8 @@ _nextNonRepeatRange(
 	TFinder &finder,
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-	typedef typename TFinder::TRepeat		TRepeat;
-	typedef typename Value<TRepeat>::Type	TPos;
+	//typedef typename TFinder::TRepeat		TRepeat;
+	//typedef typename Value<TRepeat>::Type	TPos;
 
 	if (finder.curRepeat == finder.endRepeat) return false;
 
@@ -846,8 +846,8 @@ _firstNonRepeatRange(
 	TFinder &finder,
 	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-	typedef typename TFinder::TRepeat		TRepeat;
-	typedef typename Value<TRepeat>::Type	TPos;
+	//typedef typename TFinder::TRepeat		TRepeat;
+	//typedef typename Value<TRepeat>::Type	TPos;
 
 	finder.curRepeat = begin(finder.data_repeats, Standard());
 	finder.endRepeat = end(finder.data_repeats, Standard());

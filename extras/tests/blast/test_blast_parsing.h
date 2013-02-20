@@ -57,8 +57,8 @@ void Test_BlastStoreReport() {
 	typedef typename Iterator<TBlastReport,HitIterator>::Type THitIterator;
 	typedef typename Iterator<TBlastHit,HspIterator>::Type THspIterator;
 
-	typedef StringSet<String<AminoAcid>,Dependent<> > TStringSet;
- 	typedef Graph<Alignment<TStringSet> > TAliGraph;
+	//typedef StringSet<String<AminoAcid>,Dependent<> > TStringSet;
+ 	//typedef Graph<Alignment<TStringSet> > TAliGraph;
 	
 	char buffer[1024];
 	strcpy(buffer, SEQAN_PATH_TO_ROOT());
@@ -196,8 +196,8 @@ void Test_BlastStoreReportBasic() {
 	typedef typename Iterator<TBlastReport,HitIterator>::Type THitIterator;
 	typedef typename Iterator<TBlastHit,HspIterator>::Type THspIterator;
 
-	typedef StringSet<String<AminoAcid>,Dependent<> > TStringSet;
- 	typedef Graph<Alignment<TStringSet> > TAliGraph;
+	//typedef StringSet<String<AminoAcid>,Dependent<> > TStringSet;
+ 	//typedef Graph<Alignment<TStringSet> > TAliGraph;
 	
 	char buffer[1024];
 	strcpy(buffer, SEQAN_PATH_TO_ROOT());
@@ -282,7 +282,7 @@ void Test_BlastParsing(BlastN)
 	typedef typename Hit<TBlastReport>::Type TBlastHit;
 	typedef typename Iterator<TBlastReport,HitIterator>::Type THitIterator;
 	typedef typename Iterator<TBlastHit,HspIterator>::Type THspIterator;
-	typedef typename Size<TBlastReport>::Type TSize;
+	//typedef typename Size<TBlastReport>::Type TSize;
 
 	typedef StringSet<String<Dna>,Dependent<> > TStringSet;
  	typedef Graph<Alignment<TStringSet> > TAliGraph;
@@ -379,7 +379,7 @@ void Test_BlastParsing(BlastP) {
 	typedef typename Hit<TBlastReport>::Type TBlastHit;
 	typedef typename Iterator<TBlastReport,HitIterator>::Type THitIterator;
 	typedef typename Iterator<TBlastHit,HspIterator>::Type THspIterator;
-	typedef typename Size<TBlastReport>::Type TSize;
+	//typedef typename Size<TBlastReport>::Type TSize;
 
 	typedef StringSet<String<AminoAcid>,Dependent<> > TStringSet;
  	typedef Graph<Alignment<TStringSet> > TAliGraph;
@@ -499,7 +499,7 @@ void Test_BlastParsingBasic(BlastN)
 	typedef typename Hit<TBlastReport>::Type TBlastHit;
 	typedef typename Iterator<TBlastReport,HitIterator>::Type THitIterator;
 	typedef typename Iterator<TBlastHit,HspIterator>::Type THspIterator;
-	typedef typename Size<TBlastReport>::Type TSize;
+	//typedef typename Size<TBlastReport>::Type TSize;
 
 	typedef StringSet<String<Dna>,Dependent<> > TStringSet;
  	typedef Graph<Alignment<TStringSet> > TAliGraph;
@@ -597,7 +597,7 @@ void Test_BlastParsingBasic(BlastP) {
 	typedef typename Hit<TBlastReport>::Type TBlastHit;
 	typedef typename Iterator<TBlastReport,HitIterator>::Type THitIterator;
 	typedef typename Iterator<TBlastHit,HspIterator>::Type THspIterator;
-	typedef typename Size<TBlastReport>::Type TSize;
+	//typedef typename Size<TBlastReport>::Type TSize;
 
 	typedef StringSet<String<AminoAcid>,Dependent<> > TStringSet;
  	typedef Graph<Alignment<TStringSet> > TAliGraph;

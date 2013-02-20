@@ -460,8 +460,6 @@ struct MMap;
     inline const char *
     _pageFrameStatusString(Buffer<TValue, PageFrame<TFile, TSpec> > const &pf)
     {
-        typedef Buffer<TValue, PageFrame<TFile, TSpec> > TPage;
-
         switch (pf.status)
         {
 			case READY:
@@ -557,7 +555,6 @@ struct MMap;
 	template <typename TValue, typename TFile, typename TSpec> inline
 	bool unmapPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &)
 	{
-		typedef typename Position<TFile>::Type TPos;
         if (pf.begin)
         {
 #ifdef PLATFORM_WINDOWS

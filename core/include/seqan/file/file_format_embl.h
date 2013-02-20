@@ -353,18 +353,15 @@ readLineType(String<TValue,TSpec> & meta,
 
 {
 //IOREV
-SEQAN_CHECKPOINT
-
-	//this function is meant to be used for two letter codes only 
+	//this function is meant to be used for two letter codes only
 	SEQAN_ASSERT(length(key)==2); ;
 
 	typedef typename Iterator<String<TValue,TSpec>,Standard>::Type TIterator;
-	typedef typename Position<String<TValue,TSpec> >::Type TPosition;
 
 	clear(data);
 	if(empty(meta))
 		return;
-	
+
 	TIterator it = begin(meta,Standard());
 	TIterator end_it = end(meta,Standard());
 
@@ -422,15 +419,11 @@ readFeature(TString & str,
 
 {
 //IOREV
-SEQAN_CHECKPOINT
-
 	typedef typename Iterator<TString,Standard>::Type TIterator;
-	typedef typename Position<TString>::Type TPosition;
 
 	clear(data);
 	if(empty(str) || start_pos >= length(str))
 		return 0;
-	
 	TIterator it = iter(str,start_pos,Standard());
 	TIterator end_it = end(str,Standard());
 

@@ -144,8 +144,6 @@ extendSeed(Seed<Simple, TConfig> & seed,
 {
     // For match extension of Simple Seeds, we can simply update the
     // begin and end values in each dimension.
-	SEQAN_CHECKPOINT;
-
     typedef Seed<Simple, TConfig> TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Size<TSeed>::Type TSize;
@@ -672,11 +670,6 @@ extendSeed(Seed<Simple, TConfig> & seed,
 {
     // For gapped X-drop extension of Simple Seeds, we can simply
     // update the begin and end values in each dimension as well as the diagonals.
-	SEQAN_CHECKPOINT;
-
-    typedef Seed<Simple, TConfig> TSeed;
-    typedef typename Position<TSeed>::Type TPosition;
-    typedef typename Size<TSeed>::Type TSize;
 
     // The algorithm only works for linear gap scores < 0, mismatch scores < 0
     // and match scores > 0.

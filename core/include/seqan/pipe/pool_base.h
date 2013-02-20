@@ -781,7 +781,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // this is not a real resize
         void resize(size_type _newSize) {
-			typedef typename Size<File>::Type TFSize;
+			typedef typename Size<File>::Type TFSize SEQAN_UNUSED_TYPEDEF;
             if (_newSize == _size) return;
 
             _freeHandlers();	// if you forgot to call endRead/endWrite we have no trouble

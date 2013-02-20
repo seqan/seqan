@@ -87,7 +87,7 @@ parseContig(FragmentStore<TSpec, TConfig> const& fragStore,
     typedef typename Value<TCandidateColumn>::Type TAssignedReadChar;
 
 	// All fragment store element types
-    typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
+    //typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
     typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 
     // 

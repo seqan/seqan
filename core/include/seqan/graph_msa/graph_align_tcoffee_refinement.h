@@ -135,13 +135,13 @@ scoreGapExtendHorizontal(
 	TSeq2 const&)
 {
 	typedef typename Size<TSeq1>::Type TSize;
-	typedef typename Value<TSeq1>::Type TAlphabet1; 
-	typedef typename Value<TSeq2>::Type TAlphabet2; 
+	typedef typename Value<TSeq1>::Type TAlphabet1;
+	//typedef typename Value<TSeq2>::Type TAlphabet2;
 	typedef typename SourceValue<TAlphabet1>::Type TSourceValue;
-	
+
 	// Last character is a gap
 	// std::cout << seq1[pos1] << std::endl;
-	
+
 	TSize alph_size = ValueSize<TSourceValue>::VALUE;
 	TValue n1 = 0;
 	for(TSize i = 0; i < alph_size; ++i) n1 += seq1[pos1].count[i];
@@ -161,15 +161,15 @@ scoreGapOpenHorizontal(
 	TSeq2 const &)
 {
 	typedef typename Size<TSeq1>::Type TSize;
-	typedef typename Value<TSeq1>::Type TAlphabet1; 
-	typedef typename Value<TSeq2>::Type TAlphabet2; 
+	typedef typename Value<TSeq1>::Type TAlphabet1;
+	//typedef typename Value<TSeq2>::Type TAlphabet2;
 	typedef typename SourceValue<TAlphabet1>::Type TSourceValue;
 
 	TSize alph_size = ValueSize<TSourceValue>::VALUE;
 	TValue n1 = 0;
 	for(TSize i = 0; i < alph_size+1; ++i) n1 += seq1[pos1].count[i];
 	TSize newGapOpen = n1;
-	if ((pos1) && (seq1[pos1 - 1].count[alph_size] < seq1[pos1].count[alph_size])) { 
+	if ((pos1) && (seq1[pos1 - 1].count[alph_size] < seq1[pos1].count[alph_size])) {
 		newGapOpen -= (seq1[pos1].count[alph_size] - seq1[pos1 - 1].count[alph_size]);
 	} else if (!pos1) {
 		newGapOpen -= seq1[pos1].count[alph_size];
@@ -189,13 +189,13 @@ scoreGapExtendVertical(
 	TSeq2 const & seq2)
 {
 	typedef typename Size<TSeq1>::Type TSize;
-	typedef typename Value<TSeq1>::Type TAlphabet1; 
-	typedef typename Value<TSeq2>::Type TAlphabet2; 
+	typedef typename Value<TSeq1>::Type TAlphabet1;
+	//typedef typename Value<TSeq2>::Type TAlphabet2;
 	typedef typename SourceValue<TAlphabet1>::Type TSourceValue;
-	
+
 	// Last character is a gap
 	// std::cout << seq2[pos2] << std::endl;
-	
+
 	TSize alph_size = ValueSize<TSourceValue>::VALUE;
 	TValue n2 = 0;
 	for(TSize j = 0; j < alph_size; ++j) n2 += seq2[pos2].count[j];
@@ -215,8 +215,8 @@ scoreGapOpenVertical(
 	TSeq2 const & seq2)
 {
 	typedef typename Size<TSeq1>::Type TSize;
-	typedef typename Value<TSeq1>::Type TAlphabet1; 
-	typedef typename Value<TSeq2>::Type TAlphabet2; 
+	typedef typename Value<TSeq1>::Type TAlphabet1;
+	//typedef typename Value<TSeq2>::Type TAlphabet2;
 	typedef typename SourceValue<TAlphabet1>::Type TSourceValue;
 
 	TSize alph_size = ValueSize<TSourceValue>::VALUE;
@@ -242,10 +242,10 @@ score(Score<TValue, ProfileProfileScore<TScoreMember> > const & me,
 	  TSeq2 const &seq2)
 {
 	typedef typename Size<TSeq1>::Type TSize;
-	typedef typename Value<TSeq1>::Type TAlphabet1; 
-	typedef typename Value<TSeq2>::Type TAlphabet2; 
+	typedef typename Value<TSeq1>::Type TAlphabet1;
+	//typedef typename Value<TSeq2>::Type TAlphabet2;
 	typedef typename SourceValue<TAlphabet1>::Type TSourceValue;
-	
+
 	// Last character is a gap
 	//std::cout << seq1[pos1] << std::endl;
 	//std::cout << seq2[pos2] << std::endl;

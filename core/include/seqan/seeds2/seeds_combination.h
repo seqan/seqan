@@ -211,11 +211,6 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
               Nothing const & /*sequence1*/,
               SimpleChain const &)
 {
-    SEQAN_CHECKPOINT;
-
-    typedef Seed<Simple, TSeedConfig> TSeed;
-    typedef typename Position<TSeed>::Type TPosition;
-
     _updateSeedsScoreSimpleChain(seed, other, scoringScheme);
     _updateSeedsCoordinatesMergeOrSimpleChain(seed, other);
 }

@@ -488,8 +488,6 @@ void _computeTraceback(TTarget & target,
     typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
     typedef typename Size<TContainer>::Type TSize;
     typedef typename Position<TContainer>::Type TPosition;
-    typedef typename MakeSigned<TPosition>::Type TSignedPosition;
-    typedef typename MakeSigned<TSize>::Type TSignedSize;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef typename Size<TSequenceH>::Type TSizeH;
     typedef typename Size<TSequenceV>::Type TSizeV;

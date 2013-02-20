@@ -283,7 +283,7 @@ struct LessPairScore :
         typedef typename Value<TReadStore>::Type            TRead;
         typedef typename Value<TAlignedReadStore>::Type     TAlignedRead;
         typedef typename Value<TAlignQualityStore>::Type    TQual;
-        typedef typename Id<TRead>::Type                    TId;
+        //typedef typename Id<TRead>::Type                    TId;
 
         // pair number
         if (b.readId == TAlignedRead::INVALID_ID) return false;
@@ -605,12 +605,12 @@ void _mapMatePairReads(
     typedef FragmentStore<TFSSpec, TFSConfig>               TFragmentStore;
     typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
     typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
-    typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
+    //typedef typename TFragmentStore::TAlignQualityStore     TAlignQualityStore;
     typedef typename Value<TMatePairStore>::Type            TMatePair;
     typedef typename Value<TAlignedReadStore>::Type         TAlignedRead;
-    typedef typename Value<TAlignQualityStore>::Type        TAlignQuality;
+    //typedef typename Value<TAlignQualityStore>::Type        TAlignQuality;
     typedef typename Fibre<TReadIndex, FibreText>::Type TReadSet;
-    typedef typename Id<TAlignedRead>::Type                 TId;
+    //typedef typename Id<TAlignedRead>::Type                 TId;
 
     typedef typename TFragmentStore::TContigSeq             TGenome;
     typedef typename Size<TGenome>::Type                    TSize;
@@ -1044,10 +1044,10 @@ int _mapMatePairReads(
     typedef Index<TReadSet, IndexQGram<TShape, OpenAddressing> >    TIndex;
 #endif
 
-    typedef typename If<
-        IsSameType<TGapMode, RazerSGapped>,
-        SwiftSemiGlobal,
-        SwiftSemiGlobalHamming>::Type           TSwiftSpec;
+    //typedef typename If<
+    //    IsSameType<TGapMode, RazerSGapped>,
+    //    SwiftSemiGlobal,
+    //    SwiftSemiGlobalHamming>::Type           TSwiftSpec;
     typedef Pattern<TIndex, TFilterSpec>                TFilterPattern; // filter
 
     typedef typename TFragmentStore::TContigSeq TContigSeq;

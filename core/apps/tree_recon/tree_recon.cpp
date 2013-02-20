@@ -36,10 +36,10 @@ _readPhylipMatrix(TFile& file,
                   TNames& names)
 {
 //IOREV can probably stay here since its too unimportant for the rest of seqan
-    typedef typename Value<TFile>::Type TValue;
-    typedef typename Value<TMat>::Type TDistance;
+    //typedef typename Value<TFile>::Type TValue;
+    //typedef typename Value<TMat>::Type TDistance;
     typedef typename Size<TMat>::Type TSize;
-    typedef typename Value<TNames>::Type TName;
+    //typedef typename Value<TNames>::Type TName;
     typedef typename Iterator<TMat, Standard>::Type TMatIter;
 
     RecordReader<TFile, SinglePass<> > reader(file);

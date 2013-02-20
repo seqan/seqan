@@ -657,7 +657,6 @@ isGap(Gaps<TSequence, ArrayGaps> const & gaps, TPosition clippedViewPos)
 {
     typedef Gaps<TSequence, ArrayGaps>     TGaps;
     typedef typename Position<TGaps>::Type TGapsPosition;
-    typedef typename TGaps::TArray_        TArray;
     typedef typename TGaps::TArrayPos_     TArrayPos;
     typedef typename Position<TSequence>::Type TSeqPos;
 
@@ -700,7 +699,6 @@ inline void
 clearClipping(Gaps<TSequence, ArrayGaps> & gaps)
 {
     typedef Gaps<TSequence, ArrayGaps>     TGaps;
-    typedef typename TGaps::TArray_        TArray;
     typedef typename TGaps::TArrayPos_     TArrayPos;
 
     gaps._sourceBeginPos = 0;

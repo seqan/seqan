@@ -52,7 +52,7 @@ SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_merge_chained)
     using namespace seqan;
 
     typedef Seed<ChainedSeed> TSeed;
-    typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
+    //typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
 
     // Case: Is Mergeable, partial overlap.
     {
@@ -104,7 +104,7 @@ SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_simple_chaining_chain
     using namespace seqan;
 
     typedef Seed<ChainedSeed> TSeed;
-    typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
+    //typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
 
     // Case: Chaineable.
     {
@@ -131,7 +131,7 @@ SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_simple_chaos_chaining
 {
     using namespace seqan;
     typedef Seed<ChainedSeed> TSeed;
-    typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
+    //typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
 
     // Case: Chaineable.
     {

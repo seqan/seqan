@@ -83,7 +83,7 @@ readRecord(TLocalMatchStore & store,
            LastzGeneral const & /*tag*/)
 {
     typedef typename TLocalMatchStore::TPosition TPosition;
-    typedef typename TLocalMatchStore::TPosition TId;
+    //typedef typename TLocalMatchStore::TPosition TId;
     
     if (atEnd(recordReader))
         return 1;

@@ -209,9 +209,6 @@ assign(
     TSource const& source,
     Tag<TExpand>
 ) {
-SEQAN_CHECKPOINT
-    typedef String<TValue, PizzaChili<TSpec> > TTarget;
-
     target.owned = true;
     AssignString_<Tag<TExpand> >::assign_(target, source);
 }
@@ -223,9 +220,6 @@ assign(
     TSource const* source,
     Tag<TExpand>
 ) {
-SEQAN_CHECKPOINT
-    typedef String<TValue, PizzaChili<TSpec> > TTarget;
-
     target.owned = true;
     AssignString_<Tag<TExpand> >::assign_(target, source);
 }
@@ -237,9 +231,6 @@ assign(
     String<TValue, PizzaChili<TSpec> > const& source,
     Tag<TExpand>
 ) {
-SEQAN_CHECKPOINT
-    typedef String<TValue, PizzaChili<TSpec> > TTarget;
-
     target.owned = true;
 
     if (source.index_handle != 0) {

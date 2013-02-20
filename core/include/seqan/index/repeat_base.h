@@ -195,10 +195,11 @@ findRepeats(repeats, text, 3);
 	{
 		typedef typename Value<TRepeatStore>::Type	TRepeat;
 		typedef typename Iterator<TString const>::Type	TIterator;
-		typedef typename Value<TString>::Type		TValue;
 		typedef typename Size<TString>::Type		TSize;
 
 #if SEQAN_ENABLE_PARALLELISM
+		typedef typename Value<TString>::Type		TValue;
+
         if (length(text) > (TSize)(omp_get_max_threads() * 2 * minRepeatLen)) {
             // std::cerr << ">>> PARALLEL WABOOGIE!" << std::endl;
             // std::cerr << "omp_get_max_threads() == " << omp_get_max_threads() << std::endl;

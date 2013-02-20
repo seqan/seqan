@@ -1340,7 +1340,6 @@ int main(int argc, char const ** argv)
     std::cerr << "\n____COMPARING ALIGNMENTS WITH INTERVALS_______________________________________\n\n";
 
     startTime = sysTime();
-    typedef Position<String<int> >::Type TPos;
     // The result will be a list of ids to entries in witStore.
     int res = 0;
     RabemaStats result(options.maxError);

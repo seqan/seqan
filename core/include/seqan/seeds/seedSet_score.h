@@ -404,7 +404,6 @@ addSeed(SeedSet<TValue, SimpleSeed, TScoringSpec, TSpec> &set,
     typedef typename Size<String<TValue, Block<BLOCK_SIZE<SeedSet<TValue, SimpleSeed, TScoringSpec, TSpec> >::Value> > >::Type TSize;
     typedef typename QualityFactor<TScoringSpec>::Type TQuality;
    
-	//Seed<TValue, SimpleSeed>* pSeed;
     TSize position = obtainID(set.manager);
     if (set.manager.change)
 		raiseMemory(set.scoreMap);
@@ -539,7 +538,6 @@ addSeed(SeedSet<TValue, TSeedSpec, TScoringSpec, TSpec> &set,
 {
     SEQAN_CHECKPOINT
     typedef typename Size<String<TValue, Block<BLOCK_SIZE<SeedSet<TValue, TSeedSpec, TScoringSpec, TSpec> >::Value> > >::Type TSize;
-    typedef Seed<TValue, TSeedSpec> * pSeed;
     typename std::multimap<TValue,TSize >::iterator tmpIt = _findSeedsMerge(set, leftDim0(seed), leftDim1(seed), length(seed), score, gapDistance);
     typedef typename GapCosts<TScoringSpec>::Type TGapCosts;
     typedef typename QualityFactor<TScoringSpec>::Type TQualityFactor;
@@ -571,7 +569,6 @@ addSeed(SeedSet<TValue, SimpleSeed, TScoringSpec, TSpec> &set,
 {
     SEQAN_CHECKPOINT
     typedef typename Size<String<TValue, Block<BLOCK_SIZE<SeedSet<TValue, SimpleSeed, TScoringSpec, TSpec> >::Value> > >::Type TSize;
-    typedef Seed<TValue, SimpleSeed> * pSeed;
     typedef typename GapCosts<TScoringSpec>::Type TGapCosts;
     typedef typename std::multimap<TValue,TSize >::iterator TIterator;
     typedef typename QualityFactor<TScoringSpec>::Type TQualityFactor;

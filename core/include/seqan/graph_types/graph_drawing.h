@@ -153,15 +153,13 @@ inline void
 _createNodeAttributes(Graph<TSpec> const& g,
 					  TNodeAttributes& nodeMap)
 {
-	SEQAN_CHECKPOINT
     typedef Graph<TSpec> TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	resizeVertexMap(g, nodeMap);
 
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
 	TConstIter it(g);
 	for(;!atEnd(it);++it) {
-		std::ostringstream outs; 
+		std::ostringstream outs;
 		outs << "label = \"";
 		outs << *it;
 		outs << "\"";
@@ -181,7 +179,6 @@ _createNodeAttributes(Graph<TSpec> const& g,
 					  TNameMap const& nameMap)
 {
     typedef Graph<TSpec> TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	resizeVertexMap(g, nodeMap);
 
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
@@ -204,9 +201,7 @@ inline void
 _createEmptyEdgeAttributes(Graph<TSpec> const& g,
 						   TEdgeAttributes& edgeMap)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	resizeEdgeMap(g, edgeMap);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
@@ -223,7 +218,6 @@ inline void
 _createEdgeAttributes(Graph<Directed<TCargo, TSpec> > const& g,
 					  TEdgeAttributes& edgeMap)
 {
-	SEQAN_CHECKPOINT
 	_createEmptyEdgeAttributes(g,edgeMap);
 }
 
@@ -252,12 +246,11 @@ _createEdgeAttributes(Graph<Tree<void, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TCargo, typename TSpec, typename TEdgeAttributes>
-inline void 
+inline void
 _createEdgeAttributes(Graph<Tree<TCargo, TSpec> > const& g,
 					  TEdgeAttributes& edgeMap)
 {
 	typedef Graph<Tree<TCargo, TSpec> > TGraph;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	resizeEdgeMap(g, edgeMap);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
@@ -267,7 +260,7 @@ _createEdgeAttributes(Graph<Tree<TCargo, TSpec> > const& g,
 		outs << "label = \"";
 		outs << (TCargo) getCargo(*itEd);
 		outs << "\"";
-		append(property(edgeMap, *itEd), outs.str().c_str());		
+		append(property(edgeMap, *itEd), outs.str().c_str());
 	}
 }
 
@@ -488,17 +481,16 @@ _writeEdgeType(TFile & file,
 ..include:seqan/graph_types.h
  */
 template <typename TFile, typename TSpec, typename TNodeAttributes, typename TEdgeAttributes>
-void 
-write(TFile & file, 
+void
+write(TFile & file,
 	  Graph<TSpec> const& g,
 	  TNodeAttributes const& nodeMap,
 	  TEdgeAttributes const& edgeMap,
-	  DotDrawing) 
+	  DotDrawing)
 {
 //IOREV _doc_ _batchreading_
 	typedef Graph<TSpec> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 
 	_writeGraphType(file,g,DotDrawing());
 	streamPut(file, " G {\n");
@@ -902,12 +894,11 @@ void read(TFile & file,
 		  Graph<TSpec>& g,
 		  TNodeAttributes& nodeMap,
 		  TEdgeAttributes& edgeMap,
-		  DotDrawing) 
+		  DotDrawing)
 {
     // TODO(holtgrew): Could be adapted to use RecordReader for parsing.
 	typedef Graph<TSpec> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Position<TFile>::Type TPosition;
 	typedef typename Value<TFile>::Type TValue;
 	typedef std::map<String<TValue>, TVertexDescriptor> TMap;
 	TMap nodeIdMap;
@@ -916,7 +907,7 @@ void read(TFile & file,
 	String<TValue> stmt;
 	while (!streamEOF(file)) {
         streamReadChar(c, file);
-		
+
 		if (c == ';') _processStatement(g,stmt, nodeMap, edgeMap, nodeIdMap);
 		else if ((c == '\n') ||
 				(c == '\r')) {

@@ -953,7 +953,7 @@ void maskDuplicates(TMatches &matches, TOptions & options)
 template < typename TMatches, typename TCounts >
 void countMatches(TMatches &matches, TCounts &cnt)
 {
-	typedef typename Value<TMatches>::Type					TMatch;
+	//typedef typename Value<TMatches>::Type					TMatch;
 	typedef typename Iterator<TMatches, Standard>::Type		TIterator;
 	typedef typename Value<TCounts>::Type					TRow;
 	typedef typename Value<TRow>::Type						TValue;
@@ -1030,7 +1030,7 @@ void compactMatches(TMatches &matches, TCounts &
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
 	if(options.maqMapping) compactMatches(matches, cnts,options,compactFinal,swift,true);
 #endif
-	typedef typename Value<TMatches>::Type					TMatch;
+	//typedef typename Value<TMatches>::Type					TMatch;
 	typedef typename Iterator<TMatches, Standard>::Type		TIterator;
 	
 #ifdef RAZERS_MICRO_RNA
@@ -1670,7 +1670,7 @@ void mapSingleReads(
 	
 	// FILTRATION
 	typedef Finder<TGenome, Swift<TSwiftSpec> >				TSwiftFinder;
-	typedef Pattern<TReadIndex, Swift<TSwiftSpec> >			TSwiftPattern;
+	//typedef Pattern<TReadIndex, Swift<TSwiftSpec> >			TSwiftPattern;
 
 	// iterate all genomic sequences
 	if (options._debugLevel >= 1)

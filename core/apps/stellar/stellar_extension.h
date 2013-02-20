@@ -185,7 +185,6 @@ longestEpsMatch(String<ExtensionEndPosition<TLength> > const & possEndsLeft,
 				TLength const alignErr,
 				TSize const matchMinLength,
 				TEps const epsilon) {
-SEQAN_CHECKPOINT
 	typedef ExtensionEndPosition<TLength> TEnd;
 	typedef typename Iterator<String<TEnd> >::Type	TIterator;
 
@@ -415,7 +414,6 @@ _fillMatrixBestEndsRight(TMatrix & matrixRight,
 						 TSeed & seed,
 						 TSeed & seedOld,
 						 TScore const & scoreMatrix) {
-SEQAN_CHECKPOINT
 	typedef Segment<TSequence, InfixSegment> TInfix;
 
 	TInfix infixA(host(a), getEndDim0(seedOld), getEndDim0(seed));
@@ -441,8 +439,7 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
 								 TDiagonal const diagL,
 								 TDiagonal const diagU)
 {
-	SEQAN_CHECKPOINT
-	typedef typename Value<TStringSet>::Type TString;
+	//typedef typename Value<TStringSet>::Type TString;
 	typedef typename Id<TStringSet>::Type TId;
 	typedef typename Size<TTrace>::Type TSize;
 	typedef typename Value<TTrace>::Type TTraceValue;
@@ -450,7 +447,7 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
 	// Traceback values
 	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
 
-	// Initialization	
+	// Initialization
 	TId id1 = positionToId(const_cast<TStringSet&>(str), 0);
 	TId id2 = positionToId(const_cast<TStringSet&>(str), 1);
 	TSize lo_row = (diagU <= 0) ? -1 * diagU : 0;
@@ -544,9 +541,7 @@ _tracebackLeft(TMatrix const & matrixLeft,
 			   TPos const endLeftA,
 			   TPos const endLeftB,
 			   TAlign & align) {
-SEQAN_CHECKPOINT
 	typedef Segment<TSequence, InfixSegment>			TInfix;
-	typedef typename Iterator<String<TraceBack> >::Type	TIterator;
 
 	StringSet<TInfix> str;
 	TInfix infixA(host(a), getBeginDim0(seed), getBeginDim0(seedOld));
@@ -591,13 +586,11 @@ _tracebackRight(TMatrix const & matrixRight,
 			   TPos const endRightA,
 			   TPos const endRightB,
 			   TAlign & align) {
-SEQAN_CHECKPOINT
 	typedef Segment<TSequence, InfixSegment>			TInfix;
-	typedef typename Iterator<String<TraceBack> >::Type	TIterator;
 
 	TInfix infixA(host(a), getEndDim0(seedOld), getEndDim0(seed));
 	TInfix infixB(host(b), getEndDim1(seedOld), getEndDim1(seed));
-		
+
 	StringSet<TInfix> str;
 	appendValue(str, infixA);
 	appendValue(str, infixB);

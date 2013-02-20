@@ -958,13 +958,8 @@ template <typename TValue>
 inline typename Reference<Holder<TValue, Tristate> >::Type
 value(Holder<TValue, Tristate> & me)
 {
-    SEQAN_CHECKPOINT;
-    typedef Holder<TValue, Tristate> THolder;
-
     if (empty(me))
-    {
         create(me);
-    }
 
     return _dataValue(me);
 }
@@ -991,8 +986,6 @@ inline void
 assignValue(Holder<TValue, Tristate> & me,
             TSource const & value_)
 {
-    SEQAN_CHECKPOINT;
-    typedef typename Value<Holder<TValue, Tristate> >::Type THostValue;
     if (empty(me)) {
         create(me, value_);
     } else {

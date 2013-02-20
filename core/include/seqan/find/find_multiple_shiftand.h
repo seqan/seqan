@@ -229,14 +229,10 @@ void setHost (Pattern<TNeedle, MultipleShiftAnd> & me, TNeedle2 & needle)
 
 
 template <typename TNeedle>
-inline void _patternInit (Pattern<TNeedle, MultipleShiftAnd> & me) 
+inline void _patternInit (Pattern<TNeedle, MultipleShiftAnd> & me)
 {
-SEQAN_CHECKPOINT
-	typedef unsigned int TWord;
-
-	if (me.prefSufMatch != 0) {
+	if (me.prefSufMatch != 0)
 		deallocate(me, me.prefSufMatch, me.blockCount);
-	}
 	allocate (me, me.prefSufMatch, me.blockCount);
 	arrayFill (me.prefSufMatch, me.prefSufMatch + me.blockCount, 0);
 	me.data_keyword.clear();

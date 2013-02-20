@@ -127,13 +127,13 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TOutGraph;
 	typedef typename Size<TFragmentString>::Type TSize;
 	typedef typename Id<TOutGraph>::Type TId;
-	typedef typename EdgeDescriptor<TOutGraph>::Type TEdgeDescriptor;
+	//typedef typename EdgeDescriptor<TOutGraph>::Type TEdgeDescriptor;
 	typedef typename VertexDescriptor<TOutGraph>::Type TVertexDescriptor;
-	
+
 	// Initialization
 	clearVertices(outGraph);
 	TStringSet& strSet = stringSet(outGraph);
-	
+
 	// Segment-match refinement
 	matchRefinement(matches,strSet,outGraph);
 
@@ -173,15 +173,14 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 					Graph<Alignment<TStringSet, TCargo, TSpec> >& outGraph,
 					FrequencyCounting)
 {
-	SEQAN_CHECKPOINT
-	typedef String<TFragment, TSpec1> TFragmentString;
-	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TOutGraph;
-	typedef typename Size<TFragmentString>::Type TSize;
-	
+	//typedef String<TFragment, TSpec1> TFragmentString;
+	//typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TOutGraph;
+	//typedef typename Size<TFragmentString>::Type TSize;
+
 	// Initialization
 	clearVertices(outGraph);
 	TStringSet& strSet = stringSet(outGraph);
-	
+
 	// Segment-match refinement
 	matchRefinement(matches,strSet,outGraph);
 }
@@ -330,12 +329,11 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline void 
 tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Size<TGraph>::Type TSize;
+	//typedef typename Size<TGraph>::Type TSize;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	
+
 	// Store all edges
 	typedef std::pair<TVertexDescriptor, TVertexDescriptor> TNewEdge;
 	typedef std::map<TNewEdge, TCargo> TEdgeMap;
@@ -906,8 +904,7 @@ alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 					String<TSize>& numPairs,
 					TSize& len)
 {
-	SEQAN_CHECKPOINT
-	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
+	//typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename Value<TScore>::Type TScoreValue;
 	typedef typename Value<typename Value<TStringSet>::Type>::Type TAlphabet;
 	TSize alphSize = ValueSize<TAlphabet>::VALUE;
@@ -1028,7 +1025,7 @@ convertAlignment(Align<TSource, TSpec2> const& align,
 				 Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign)
 {
 	typedef Align<TSource, TSpec2> const TAlign;
-	typedef typename Value<TSource>::Type TAlphabet;
+	//typedef typename Value<TSource>::Type TAlphabet;
 	typedef typename Size<TAlign>::Type TSize;
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Iterator<TRow, Standard>::Type TRowIterator;

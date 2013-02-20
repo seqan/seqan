@@ -44,8 +44,7 @@ void Test_ExternalProperty() {
 	typedef Graph<TGraphType> TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Size<TGraph>::Type TSize;
-	
+
 	TGraph g;
 	TVertexDescriptor v0 = addVertex(g);
 	TVertexDescriptor v1 = addVertex(g);

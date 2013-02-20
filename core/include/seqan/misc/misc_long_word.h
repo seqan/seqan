@@ -296,7 +296,6 @@ bool operator==(LongWord<StaticWidth<LENGTH> > const & a, LongWord<StaticWidth<L
 template <unsigned LENGTH>
 bool operator!=(LongWord<StaticWidth<LENGTH> > const & a, LongWord<StaticWidth<LENGTH> > const & b) {
     SEQAN_CHECKPOINT;
-    typedef LongWord<StaticWidth<LENGTH> > TLongWord;
     // TODO(holtgrew): Roll out loop?
 //     for (unsigned i = 0; i < TLongWord::UNSIGNED_COUNT; ++i) {
 //         if (a._data[i] == b._data[i]) {
@@ -836,8 +835,7 @@ TStream & operator<<(TStream & stream, seqan::LongWord<seqan::DynamicWidth> cons
         unsigned x = a[a._length - 1 - i];
         stream << x;
     }
-    typedef seqan::LongWord<seqan::DynamicWidth> TLongWord;
-    stream << "  ( ";
+    //typedef seqan::LongWord<seqan::DynamicWidth> TLongWord;
     for (size_t i = 0; i < a._unsignedCount(); ++i) {
         stream << a._data[i] << " ";
     }

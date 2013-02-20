@@ -211,13 +211,12 @@ _createTreesForAllSequences(String<TGraph> & gs,
                            TSeqMap & seq_map,
 						   TValue numSequences)
 {
-SEQAN_CHECKPOINT
-	typedef typename Value<TAlignmentString>::Type TAlignment;
+	//typedef typename Value<TAlignmentString>::Type TAlignment;
 //	typedef TAlignment* TCargo;
 	typedef Pair<unsigned,unsigned,BitPacked<31,1> > TCargo;
 	typedef IntervalAndCargo<int,TCargo> TInterval;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	
+	//typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+
 	//std::cout <<"create interval trees...";
 	// clock_t start, finish1;
 	// double duration;
@@ -455,7 +454,7 @@ SEQAN_CHECKPOINT
 	_makeRefinedGraphNodes(all_nodes,seqs,ali_g);
 
 	//add annotation to nodes
-	typedef typename Value<TAnnoString>::Type TAnnotation;
+	//typedef typename Value<TAnnoString>::Type TAnnotation;
 	//typedef typename Value<TAnnotation>::Type TLabel;
 	typedef char TLabel;
 	String<String<TLabel> > pm;
@@ -501,12 +500,10 @@ SEQAN_CHECKPOINT
 	typedef Graph<Directed<void,WithoutEdgeId> > TGraph;
 	typedef IntervalTreeNode<TInterval> TNode;
 	typedef String<TNode> TPropertyMap;
-	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef String<TCargo> TList;
 	typedef typename std::set<TValue>::iterator TSetIterator;
 	typedef typename Cargo<typename Value<TPropertyMap>::Type>::Type TAlignmentPointer;
 	typedef typename Iterator<String<TAlignmentPointer>, Rooted>::Type TSegmentIterator;
-	
+
 
 	////////////////////////////////////////////////////////////////
 	TValue numSequences = length(seq);
@@ -519,7 +516,7 @@ SEQAN_CHECKPOINT
 	String<TGraph> gs;
 	String<TPropertyMap> pms;
 	_createTreesForAllSequences(gs, pms, alis, seq, seq_map, numSequences);
-	
+
 	////////////////////////////////////////////////////////////////
 	//do refinement
 	//std::cout <<"refining..."<<std::flush;

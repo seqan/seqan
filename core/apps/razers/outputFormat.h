@@ -195,7 +195,7 @@ getErrorDistribution(
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Iterator<TRow>::Type TIter;
 
-	typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
+	//typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
 	typedef typename Position<TAlign>::Type TPosition;
 
 	typename Iterator<TMatches, Standard>::Type	it = begin(matches, Standard());
@@ -525,9 +525,9 @@ void dumpMatches(
 	RazerSOptions<TSpec> &options)
 {
 	typedef typename Value<TMatches>::Type		TMatch;
-	typedef typename Value<TReads>::Type		TRead;
-	typedef typename Value<TGenomeSet>::Type	TGenome;
-	typedef typename TMatch::TGPos				TGPos;
+	//typedef typename Value<TReads>::Type		TRead;
+	//typedef typename Value<TGenomeSet>::Type	TGenome;
+	//typedef typename TMatch::TGPos				TGPos;
 
 	if (options.outputFormat == 2)
 	{

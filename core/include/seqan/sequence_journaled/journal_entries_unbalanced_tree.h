@@ -334,7 +334,7 @@ findInJournalEntries(JournalEntries<TCargo, UnbalancedTree> const & journalEntri
                      typename Position<TCargo>::Type const & pos) {
     SEQAN_CHECKPOINT;
     typedef JournalEntries<TCargo, UnbalancedTree> TJournalEntries;
-    typedef typename TJournalEntries::TNode TNode;
+    typedef typename TJournalEntries::TNode TNode SEQAN_TYPEDEF_FOR_DEBUG;
     typedef typename Iterator<TJournalEntries, Standard>::Type TIterator;
 
     TIterator result;
@@ -568,7 +568,6 @@ void recordInsertion(JournalEntries<TCargo, UnbalancedTree> & tree,
     typedef typename Iterator<TJournalEntries>::Type TIterator;
     typedef typename TJournalEntries::TNode TNode;
     typedef typename Position<TNode>::Type TPos;
-    typedef typename Size<TNode>::Type TSize;
 
     SEQAN_ASSERT(checkStructure(tree._root));
     SEQAN_ASSERT(checkOrder(tree._root));

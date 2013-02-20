@@ -53,10 +53,10 @@ void _alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix,
                               AFScore<D2Star> const & score)
 {
 
-    typedef typename Iterator<TStringSet const>::Type             TIteratorSet;
-    typedef typename Iterator<StringSet<String<double> > >::Type  TIteratorSetDouble;
+    //typedef typename Iterator<TStringSet const>::Type             TIteratorSet;
+    //typedef typename Iterator<StringSet<String<double> > >::Type  TIteratorSetDouble;
 
-    typedef Matrix<TValue, 2> TMatrix;
+    //typedef Matrix<TValue, 2> TMatrix;
 
     unsigned seqNumber = length(sequenceSet);
 

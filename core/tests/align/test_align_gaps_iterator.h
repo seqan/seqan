@@ -57,12 +57,12 @@ void testAlignGapsIteratorMetafunctions(TGapsSpec const & /*spec*/)
     // checking.
 
     // Sequence metafunctions.
-    typedef typename Difference<TIter>::Type         TDifference;
-    typedef typename GetValue<TIter>::Type           TGetValue;
-    typedef typename Position<TIter>::Type           TPosition;
-    typedef typename Reference<TIter>::Type          TReference;
-    typedef typename Size<TIter>::Type               TSize;
-    typedef typename Value<TIter>::Type              TValue;
+    typedef typename Difference<TIter>::Type         TDifference SEQAN_UNUSED_TYPEDEF;
+    typedef typename GetValue<TIter>::Type           TGetValue   SEQAN_UNUSED_TYPEDEF;
+    typedef typename Position<TIter>::Type           TPosition   SEQAN_UNUSED_TYPEDEF;
+    typedef typename Reference<TIter>::Type          TReference  SEQAN_UNUSED_TYPEDEF;
+    typedef typename Size<TIter>::Type               TSize       SEQAN_UNUSED_TYPEDEF;
+    typedef typename Value<TIter>::Type              TValue      SEQAN_UNUSED_TYPEDEF;
 }
 
 // Check that dereferencing works.

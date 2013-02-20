@@ -219,14 +219,13 @@ getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TConte
 }
 
 template<typename TNameStore, typename TName, typename TPos, typename TCNameStore, typename TCName>
-inline bool 
+inline bool
 getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
 {
-    typedef Iterator<StringSet<CharString> >::Type TNameStoreIter;
     typedef typename Position<TNameStore const>::Type TId;
     typedef NameStoreCache<TCNameStore, TCName> const TNameStoreCache;
     typedef typename TNameStoreCache::TSet TSet;
-    
+
     TSet const &set = context.nameSet;
     typename TSet::const_iterator it;
 

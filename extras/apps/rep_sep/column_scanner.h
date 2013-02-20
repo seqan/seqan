@@ -60,15 +60,15 @@ bool isCandidate(FragmentStore<TSpec, TConfig> const& fragStore,
 
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
-	typedef typename TFragmentStore::TReadPos TReadPos;
+	//typedef typename TFragmentStore::TReadPos TReadPos;
     
     // must be triplet
     typedef typename Value<TCandidateColumn>::Type TAssignedReadChar;
     typedef typename Value<TAssignedReadChar, 1>::Type TConsensusAlphabet;
 
 	// All fragment store element types
-	typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
-	typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
+	//typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
+	//typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
     
 
 #ifdef REPSEP_DEBUG_COLUMN_SCANNER

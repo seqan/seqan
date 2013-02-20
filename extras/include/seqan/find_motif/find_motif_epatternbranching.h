@@ -527,7 +527,7 @@ bestNeighbors(TIntSet & neighbors,
 
 	typedef typename Value<TStrings>::Type TString;
 	typedef typename Value<TString>::Type TValue;
-	typedef String<int> TIntArray;
+	//typedef String<int> TIntArray;
 	typedef typename Position<TString>::Type TPos;
 	Shape<TValue> shape(l);
 	typename Size<TStrings>::Type t = length(dataset);

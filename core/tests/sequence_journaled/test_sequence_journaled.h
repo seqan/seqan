@@ -1050,9 +1050,6 @@ template <typename TStringJournalSpec>
 void testJournaledStringReplace(TStringJournalSpec const &)
 {
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
-    typedef typename Prefix<TJournaledString>::Type TPrefix;
-    typedef typename Suffix<TJournaledString>::Type TSuffix;
-    typedef typename Infix<TJournaledString>::Type TInfix;
 
     CharString charStr = "test";
 

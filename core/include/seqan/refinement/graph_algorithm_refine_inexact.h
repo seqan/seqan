@@ -168,8 +168,8 @@ SEQAN_CHECKPOINT
 	typedef typename Iterator<TAlignmentString, Rooted>::Type TAliIterator;
 	typedef typename VertexDescriptor<TAliGraph>::Type TVertexDescriptor;
 	typedef typename EdgeDescriptor<TAliGraph>::Type TEdgeDescriptor;
-	typedef typename Cargo<TAliGraph>::Type TCargo;
-  
+	//typedef typename Cargo<TAliGraph>::Type TCargo;
+
         TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
 	//make edges
 	TAliIterator ali_it = begin(alis);

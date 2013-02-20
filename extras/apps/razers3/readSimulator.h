@@ -132,18 +132,18 @@ void simulateReads(
     double forwardProb,
     bool verbose = false)
 {
-    typedef typename Value<TReadSet>::Type              TRead;
+    //typedef typename Value<TReadSet>::Type              TRead;
     typedef typename Value<TGenomeSet>::Type            TGenome;
-    typedef typename Infix<TGenome>::Type               TGenomeInfix;
-    typedef ModifiedString<TGenomeInfix, ModReverse>    TGenomeInfixRev;
-    typedef ModifiedString<TRead, ModReverse>           TReadRev;
+    //typedef typename Infix<TGenome>::Type               TGenomeInfix;
+    //typedef ModifiedString<TGenomeInfix, ModReverse>    TGenomeInfixRev;
+    //typedef ModifiedString<TRead, ModReverse>           TReadRev;
 
-    typedef Finder<TGenomeInfix>                        TMyersFinder;
-    typedef Pattern<TRead, MyersUkkonen>                TMyersPattern;
+    //typedef Finder<TGenomeInfix>                        TMyersFinder;
+    //typedef Pattern<TRead, MyersUkkonen>                TMyersPattern;
 
 //	typedef Finder<TGenomeInfix>						TMyersFinderRev;
-    typedef Finder<TGenomeInfixRev>                     TMyersFinderRev;
-    typedef Pattern<TReadRev, MyersUkkonenGlobal>       TMyersPatternRev;
+    //typedef Finder<TGenomeInfixRev>                     TMyersFinderRev;
+    //typedef Pattern<TReadRev, MyersUkkonenGlobal>       TMyersPatternRev;
 
 //	mtRandInit();
 //	typedef TGenome TRevComp;

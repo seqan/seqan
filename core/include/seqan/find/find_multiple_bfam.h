@@ -152,8 +152,6 @@ template <typename TNeedle, typename TAutomaton, typename TNeedle2>
 void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
 						TNeedle2 const & needle_)
 {
-SEQAN_CHECKPOINT
-	typedef typename Iterator<TNeedle, Standard>::Type TNeedleIterator;
 	typedef typename Value<TNeedle>::Type TKeyword;
 	typedef typename Value<TKeyword>::Type TValue;
 	typedef typename Size<TKeyword>::Type TSize;

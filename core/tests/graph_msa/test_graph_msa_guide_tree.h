@@ -98,7 +98,7 @@ Test_UpgmaGuideTree(int seed) {
 		resize(distMatrix, n * n, 0);
 		TSize all = (n * (n - 1)) / 2;
 		typedef std::set<double> TDistanceSet;
-		typedef TDistanceSet::iterator TSetIt;
+		//typedef TDistanceSet::iterator TSetIt;
 		TDistanceSet distances;
 		String<double> myDist;
 		typedef Iterator<String<double> >::Type TStringIter;

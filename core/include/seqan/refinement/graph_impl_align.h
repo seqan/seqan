@@ -548,13 +548,11 @@ addVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVD>
-inline void 
-removeVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g, 
-			 TVD const v) 
+inline void
+removeVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+			 TVD const v)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Id<TGraph>::Type TIdType;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename TGraph::TKey_ TKey;
 	typedef typename TGraph::TPosToVertexMap_ TPosToVertexMap;
@@ -708,9 +706,7 @@ write(TFile & target,
 	  Raw)
 {
 //IOREV _nodoc_ specialization not documented (at least not obviously)
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Id<TGraph>::Type TIdType;
 	typedef typename Size<TGraph>::Type TSize;
 	typedef typename TGraph::TFragmentInfo_ TSegment;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -960,18 +956,16 @@ inline void
 write(TFile & file,
 	  Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	  TNames const& names,
-	  CgVizFormat) 
+	  CgVizFormat)
 {
 //IOREV _nodoc_ specialization not documented
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 	typedef typename Id<TGraph>::Type TId;
-	typedef FragmentInfo<TId, TSize> TSegment;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename EdgeType<TGraph>::Type TEdgeStump;
 	typedef typename Iterator<String<TEdgeStump*> const, Rooted>::Type TIterConst;
-	
+
 	TStringSet& str = stringSet(g);
 	TSize nseq = length(str);
 
@@ -1202,8 +1196,6 @@ label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 {
 	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Id<TGraph>::Type TIdType;
-	typedef typename Size<TGraph>::Type TSize;
 	typedef typename TGraph::TFragmentInfo_ TSegment;
 	TSegment seg = getProperty(g.data_fragment, v);
 	//std::cout << seg.data_seq_id << ",";
@@ -1433,17 +1425,13 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 ..see:Function.getLastCoveredPosition
 ..include:seqan/refinement.h
 */
-template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId> 
-inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
+inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 						TSeqId const id)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Id<TGraph>::Type TIdType;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename EdgeType<TGraph>::Type TEdgeStump;
 	typedef typename TGraph::TPosToVertexMap_ TPosToVertexMap;
 
 
@@ -1478,17 +1466,13 @@ getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ..see:Function.getFirstCoveredPosition
 ..include:seqan/refinement.h
 */
-template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId> 
-inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
+inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 					   TSeqId id)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Id<TGraph>::Type TIdType;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename EdgeType<TGraph>::Type TEdgeStump;
 	typedef typename TGraph::TPosToVertexMap_ TPosToVertexMap;
 
 	TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
@@ -1647,12 +1631,11 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename Value<TMatrix>::Type TValue;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Size<TGraph>::Type TSize;
 	typedef typename Id<TGraph>::Type TIdType;
 	typedef typename TGraph::TPosToVertexMap_ TPosToVertexMap;
 	typedef std::map<unsigned int, unsigned int> TComponentLength;
-	
+
 	// Strongly Connected Components, topological sort, and length of each component
 	String<unsigned int> component;
 	String<unsigned int> order;
@@ -1709,7 +1692,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TValue, typename TSpec1, typename TStringSet, typename TCargo, typename TSpec2> 
+template<typename TValue, typename TSpec1, typename TStringSet, typename TCargo, typename TSpec2>
 inline bool
 convertAlignment(String<TValue, TSpec1> const& mat,
 				 Graph<Alignment<TStringSet, TCargo, TSpec2> >& g)
@@ -1717,8 +1700,6 @@ convertAlignment(String<TValue, TSpec1> const& mat,
 	typedef String<TValue, TSpec1> TMatrix;
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec2> > TGraph;
 	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Value<TStringSet>::Type TSequence;
-	typedef typename Value<TSequence>::Type TAlphabet;
 	typedef typename Iterator<TMatrix, Standard>::Type TMatIter;
 	clearVertices(g);
 	TValue gapChar = gapValue<TValue>();
@@ -1770,7 +1751,6 @@ rebuildGraph(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 	// Initialization
 	typedef Fragment<> TFragment;
 	typedef String<TFragment> TFragmentString;
-	typedef typename Iterator<TFragmentString>::Type TFragmentStringIter;
 	TFragmentString matches;
 	TSize nseq = length(stringSet(g));
 
@@ -1778,7 +1758,7 @@ rebuildGraph(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 	typedef std::pair<TSize, TSize> TResiduePair;
 	typedef std::set<TResiduePair> TResiduePairSet;
 	String<TResiduePairSet> resPair;
-	resize(resPair, nseq * nseq);	
+	resize(resPair, nseq * nseq);
 	TEdgeIterator itE(g);
 	for(;!atEnd(itE);++itE) {
 		TVertexDescriptor sV = sourceVertex(itE);
@@ -1872,7 +1852,6 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
 	typedef typename Iterator<TString const, Standard>::Type TStringIter;
 	typedef typename Iterator<TString, Standard>::Type TSIter;
 	typedef typename Iterator<TVertexSet const, Standard>::Type TVertexSetIter;
-	typedef typename Iterator<TVertexSet, Standard>::Type TIter;	
 
 	// Create the alignment sequence
 	TSize numMatches = length(positions);
@@ -2000,7 +1979,6 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename Size<TGraph>::Type TSize;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef typename Value<TString>::Type TVertexSet;
 
@@ -2070,7 +2048,6 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 	// Walk through str2 and fill in the weights of the actual edges
 	typedef String<TCargo> TWeights;
-	typedef typename Iterator<TWeights>::Type TWeightsIter;
 	TWeights weights;
 	resize(weights, length(slotToPos), 0);
 	itStr2 = begin(str2, Standard());

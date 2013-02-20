@@ -88,9 +88,6 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 {
     using namespace seqan;
 
-    typedef typename BamHeader::TSequenceInfo TSequenceInfo;
-    typedef typename BamHeaderRecord::TTag    TTag;
-
     // Create input.
 
     StringSet<CharString> contigNameStore;

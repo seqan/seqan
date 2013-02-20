@@ -117,7 +117,6 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
 
 	// The trace-back graph
 	typedef Graph<Directed<void, WithoutEdgeId> > TGraph;
-	typedef Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	TGraph g;
 

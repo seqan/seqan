@@ -51,7 +51,7 @@ using namespace seqan;
 template <typename TMap>
 void Test_STLSet() 
 {
-	typedef typename Value<TMap>::Type TValue;
+	//typedef typename Value<TMap>::Type TValue;
 	typedef typename Iterator<TMap>::Type TIterator;
 
 	TMap map;
@@ -104,7 +104,7 @@ void Test_STLSet()
 template <typename TMap>
 void Test_NoCargo_Single() 
 {
-	typedef typename Value<TMap>::Type TValue;
+	//typedef typename Value<TMap>::Type TValue;
 	typedef typename Iterator<TMap>::Type TIterator;
 
 	TMap map;
@@ -315,8 +315,8 @@ void Test_Cargo_Single()
 template <typename TMap>
 void Test_Cargo_Multiple() 
 {
-	typedef typename Value<TMap>::Type TValue;
-	typedef typename Iterator<TMap>::Type TIterator;
+	//typedef typename Value<TMap>::Type TValue;
+	//typedef typename Iterator<TMap>::Type TIterator;
 
 	TMap map;
 

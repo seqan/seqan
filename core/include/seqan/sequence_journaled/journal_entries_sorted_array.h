@@ -261,11 +261,8 @@ void recordInsertion(JournalEntries<TCargo, SortedArray> & tree,
                      typename Position<TCargo>::Type physicalBeginPos,
                      typename Size<TCargo>::Type len)
 {
-    SEQAN_CHECKPOINT;
-    typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos;
     typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
-    typedef JournalEntryLtByVirtualPos<TPos, TSize> TCmp;
 
 	//std::cerr << __FILE__ << ":" << __LINE__ << " -- INSERT(" << virtualPosition << ", " << physicalBeginPos << ", " << len << ")" << std::endl;
     //std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
@@ -346,7 +343,6 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
     typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos;
     typedef typename Iterator<String<TCargo>, Standard>::Type TIter;
-    typedef JournalEntryLtByVirtualPos<TPos, TSize> TCmp;
 //	std::cerr << __FILE__ << ":" << __LINE__ << " -- ERASE(" << pos << ", " << posEnd << ")" << std::endl;
 //    std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
 

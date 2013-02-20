@@ -686,15 +686,15 @@ int readMatchesFromGFF_Batch(
     typedef typename Value<TMatches>::Type          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore     TMatchQualities;
     typedef typename Value<TMatchQualities>::Type       TMatchQuality;
-    typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type            TRead;
+    //typedef typename TFragmentStore::TReadSeqStore      TReads;
+    //typedef typename Value<TReads>::Type            TRead;
     typedef typename TFragmentStore::TReadStore     TReadStore;
     typedef typename Value<TReadStore>::Type        TReadStoreElement;
     typedef typename Value<TCigarStr>::Type         TCigar;
-    typedef typename Value<TReads>::Type            TRead;
-    typedef typename TFragmentStore::TContigStore       TGenomeSet;
+    //typedef typename Value<TReads>::Type            TRead;
+    //typedef typename TFragmentStore::TContigStore       TGenomeSet;
     typedef typename Id<TFragmentStore>::Type       TId;
-    typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
+    //typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
     
     
     if(length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
@@ -1368,11 +1368,11 @@ int readMatchesFromSamBam_Batch(
     typedef typename Value<TReads>::Type            TRead;
     typedef typename TFragmentStore::TReadStore     TReadStore;
     typedef typename Value<TReadStore>::Type        TReadStoreElement;
-    typedef typename Value<TCigarStr>::Type         TCigar;
+    //typedef typename Value<TCigarStr>::Type         TCigar;
     typedef typename Value<TReads>::Type            TRead;
-    typedef typename TFragmentStore::TContigStore       TGenomeSet;
+    //typedef typename TFragmentStore::TContigStore       TGenomeSet;
     typedef typename Id<TFragmentStore>::Type       TId;
-    typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
+    //typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
     
     
     if(length(fragmentStore.readSeqStore)!=length(fragmentStore.alignQualityStore))
@@ -2057,7 +2057,7 @@ getHomoProbs(THomoTable & cnks,
             )
 {
 
-    typedef typename Value<THomoTable>::Type TValue;
+    //typedef typename Value<THomoTable>::Type TValue;
     typedef typename Value< typename Value<TQStrings>::Type >::Type TQuality;
     
 #ifdef SNPSTORE_DEBUG_CANDPOS
@@ -2217,8 +2217,8 @@ void
 getMismatchMutations(TAlign & align, TString & mutations)
 {
     
-    typedef typename Source<TAlign>::Type TSource;
-    typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
+    //typedef typename Source<TAlign>::Type TSource;
+    //typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
 
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
@@ -2395,15 +2395,15 @@ void dumpVariantsRealignBatchWrap(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore     TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
-    typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type            TRead;
-    typedef typename TFragmentStore::TContigStore       TContigStore;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename TFragmentStore::TReadSeqStore      TReads;
+    //typedef typename Value<TReads>::Type            TRead;
+    //typedef typename TFragmentStore::TContigStore       TContigStore;
     typedef typename TFragmentStore::TContigPos         TContigPos;
-    typedef typename Value<TContigStore>::Type      TContig;
-    typedef typename TFragmentStore::TContigSeq         TContigSeq;
+    //typedef typename Value<TContigStore>::Type      TContig;
+    //typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
-    
+ 
     
     TMatches &matches       = fragmentStore.alignedReadStore;
     TMatchQualities &matchQualities = fragmentStore.alignQualityStore;
@@ -2995,15 +2995,15 @@ template<typename TFragmentStore, typename TStr>
 void
 _dumpMatches(TFragmentStore &fragmentStore, TStr str)
 {
-    typedef typename TFragmentStore::TAlignedReadStore          TMatches;
-    typedef typename Value<TMatches>::Type                      TMatch;
-    typedef typename TFragmentStore::TAlignQualityStore         TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type               TMatchQuality;
-    typedef typename TFragmentStore::TReadSeqStore              TReads;
-    typedef typename Value<TReads>::Type                        TRead;
-    typedef typename Iterator<TReads,Standard>::Type            TReadIt;
-    typedef typename Iterator<TMatchQualities,Standard>::Type   TMatchQIt;
-    typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
+    //typedef typename TFragmentStore::TAlignedReadStore          TMatches;
+    //typedef typename Value<TMatches>::Type                      TMatch;
+    //typedef typename TFragmentStore::TAlignQualityStore         TMatchQualities;
+    //typedef typename Value<TMatchQualities>::Type               TMatchQuality;
+    //typedef typename TFragmentStore::TReadSeqStore              TReads;
+    //typedef typename Value<TReads>::Type                        TRead;
+    //typedef typename Iterator<TReads,Standard>::Type            TReadIt;
+    //typedef typename Iterator<TMatchQualities,Standard>::Type   TMatchQIt;
+    //typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
     
     std::cout << "Length of matches = " << length(fragmentStore.alignedReadStore)  << "\n";
     std::cout << "Length of reads   = " << length(fragmentStore.readSeqStore)  << "\n";
@@ -3038,9 +3038,9 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
 {
 // fragment store types
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
-    typedef typename Value<TMatches>::Type              TMatch;
+    //typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
     typedef typename TFragmentStore::TReadSeqStore      TReads;
@@ -3052,12 +3052,12 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
 
     typedef typename TFragmentStore::TContigStore       TContigStore;
     typedef typename Value<TContigStore>::Type          TContig;
-    typedef typename TFragmentStore::TContigPos         TContigPos;
+    //typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
 
     typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
-    typedef Gaps<TRead, AnchorGaps<typename TMatch::TGapAnchors> >          TReadGaps;
-    typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
+    //typedef Gaps<TRead, AnchorGaps<typename TMatch::TGapAnchors> >          TReadGaps;
+    //typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
     typedef typename Iterator<String<typename TFragmentStore::TReadGapAnchor>, Standard>::Type TReadGapsIter;
 
 // profile types
@@ -3310,7 +3310,7 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
     typedef typename TFragmentStore::TReadSeqStore      TReads;
@@ -3323,12 +3323,12 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
 
     typedef typename TFragmentStore::TContigStore       TContigStore;
     typedef typename Value<TContigStore>::Type          TContig;
-    typedef typename TFragmentStore::TContigPos         TContigPos;
+    //typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
 
     typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
-    typedef Gaps<TRead, AnchorGaps<typename TMatch::TGapAnchors> >          TReadGaps;
-    typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
+    //typedef Gaps<TRead, AnchorGaps<typename TMatch::TGapAnchors> >          TReadGaps;
+    //typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
     typedef typename Iterator<String<typename TFragmentStore::TReadGapAnchor>, Standard>::Type TReadGapsIter;
 
 // profile types
@@ -3787,7 +3787,7 @@ void dumpVariantsRealignBatch(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
     typedef typename TFragmentStore::TReadSeqStore      TReads;
@@ -4580,9 +4580,9 @@ void dumpSNPsBatch(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type                TRead;
+    //typedef typename Value<TReads>::Type                TRead;
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
@@ -4878,8 +4878,8 @@ void
 getIndels(TAlign & align,TString &insertions, TString &deletions, TPosition begin_, TPosition end_)
 {
     
-    typedef typename Source<TAlign>::Type TSource;
-    typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
+    //typedef typename Source<TAlign>::Type TSource;
+    //typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
     
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
@@ -5506,8 +5506,8 @@ void dumpCopyNumberPolymorphismsBatch(
 {
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
-    typedef typename TFragmentStore::TReadSeqStore          TReads;
-    typedef typename Value<TReads>::Type                TRead;
+    //typedef typename TFragmentStore::TReadSeqStore          TReads;
+    //typedef typename Value<TReads>::Type                TRead;
     typedef typename Iterator<TMatches, Standard>::Type TMatchIterator;
 
     // matches need to be ordered accordign to genome position
@@ -5588,13 +5588,13 @@ void dumpPositionsRealignBatchWrap(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type          TMatch;
     typedef typename TFragmentStore::TAlignQualityStore     TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
-    typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type            TRead;
-    typedef typename TFragmentStore::TContigStore       TContigStore;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename TFragmentStore::TReadSeqStore      TReads;
+    //typedef typename Value<TReads>::Type            TRead;
+    //typedef typename TFragmentStore::TContigStore       TContigStore;
     typedef typename TFragmentStore::TContigPos         TContigPos;
-    typedef typename Value<TContigStore>::Type      TContig;
-    typedef typename TFragmentStore::TContigSeq         TContigSeq;
+    //typedef typename Value<TContigStore>::Type      TContig;
+    //typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
     
     
@@ -5733,20 +5733,20 @@ void dumpPositionsRealignBatch(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
 
     typedef typename TFragmentStore::TReadSeqStore      TReads;
     typedef typename Value<TReads>::Type                TRead;
 
-    typedef typename TFragmentStore::TContigStore       TContigStore;
-    typedef typename Value<TContigStore>::Type          TContig;
+    //typedef typename TFragmentStore::TContigStore       TContigStore;
+    //typedef typename Value<TContigStore>::Type          TContig;
     typedef typename TFragmentStore::TContigPos         TContigPos;
-    typedef typename TFragmentStore::TContigSeq         TContigSeq;
+    //typedef typename TFragmentStore::TContigSeq         TContigSeq;
 
-    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
+    //typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
     typedef Gaps<TRead, AnchorGaps<typename TMatch::TGapAnchors> >          TReadGaps;
-    typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
+    //typedef typename Iterator<TContigGaps>::Type                            TContigGapIter;
     typedef typename Iterator<TReadGaps>::Type                              TReadGapIter;
     
     
@@ -6044,9 +6044,9 @@ void dumpPosBatch(
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
     typedef typename TFragmentStore::TAlignQualityStore TMatchQualities;
-    typedef typename Value<TMatchQualities>::Type       TMatchQuality;
+    //typedef typename Value<TMatchQualities>::Type       TMatchQuality;
     typedef typename TFragmentStore::TReadSeqStore      TReads;
-    typedef typename Value<TReads>::Type                TRead;
+    //typedef typename Value<TReads>::Type                TRead;
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;

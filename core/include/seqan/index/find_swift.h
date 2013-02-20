@@ -614,8 +614,8 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
 {
     typedef Pattern<TIndex, Swift<TSpec> >                      TPattern;
     typedef typename Size<TIndex>::Type                         TSize;
-    typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
-    typedef typename Iterator<TSA, Standard>::Type              TSAIter;
+    //typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
+    //typedef typename Iterator<TSA, Standard>::Type              TSAIter;
     typedef typename TPattern::TBucket                          TBucket;
     typedef typename TBucket::TSize                             TBucketSize;
     typedef typename TPattern::TBucketParams                    TBucketParams;
@@ -935,7 +935,7 @@ inline bool _swiftMultiProcessQGram(
 {
     typedef Pattern<TIndex, Swift<TSpec> >                      TPattern;
 
-    typedef typename Size<TIndex>::Type                         TSize;
+    //typedef typename Size<TIndex>::Type                         TSize;
     typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
     typedef typename Iterator<TSA, Standard>::Type              TSAIter;
     typedef typename TPattern::TBucketString                    TBucketString;
@@ -943,27 +943,27 @@ inline bool _swiftMultiProcessQGram(
     typedef typename Value<TBucketString>::Type                 TBucket;
     typedef typename TBucket::TShortSize                        TShortSize;
     typedef typename TPattern::TBucketParams                    TBucketParams;
-    typedef typename FindResult<TFinder, TPattern>::Type        THit;
-    
+    //typedef typename FindResult<TFinder, TPattern>::Type        THit;
+
     TIndex const &index = host(pattern);
-    
+
     // create an iterator over the positions of the q-gram occurences in pattern
     TSAIter saBegin = begin(indexSA(index), Standard());
     TSAIter occ = saBegin + indexDir(index)[getBucket(index.bucketMap, hash)];
     TSAIter occEnd = saBegin + indexDir(index)[getBucket(index.bucketMap, hash) + 1];
     TBucketIter bktBegin = begin(pattern.buckets, Standard());
     Pair<unsigned> ndlPos;
-    
+
 /*  std::cerr<<"\t["<<(occEnd-occ)<<"]"<< std::flush;
-    
+
     if ((occEnd-occ)>100)
     {
         std::cerr<<" ";
         for(int i=0;i<length(indexShape(host(pattern)));++i)
             std::cerr<<*(hostIterator(hostIterator(finder))+i);
     }
-*/  
-    
+*/
+
     // iterate over all q-gram occurences and do the processing
     __int64 curPos = finder.curPos + pattern.finderPosOffset;
     for(; occ != occEnd; ++occ)
@@ -1643,20 +1643,19 @@ _printDots(Finder<THaystack, Swift<TSpec> > &finder)
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 _nextNonRepeatRange(
     TFinder &finder,
     Pattern<TIndex, Swift<TSpec> > &pattern)
 {
-    typedef typename TFinder::TRepeat       TRepeat;
-    typedef typename Value<TRepeat>::Type   TPos;
+    //typedef typename TFinder::TRepeat       TRepeat;
 
     if (finder.curRepeat == finder.endRepeat) return false;
 
-    do 
+    do
     {
         finder.startPos = (*finder.curRepeat).endPosition;
-        if (++finder.curRepeat == finder.endRepeat) 
+        if (++finder.curRepeat == finder.endRepeat)
         {
             finder.endPos = length(host(finder));
             if (finder.startPos + length(pattern.shape) > finder.endPos)
@@ -1679,13 +1678,12 @@ _nextNonRepeatRange(
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
-inline bool 
+inline bool
 _firstNonRepeatRange(
     TFinder &finder,
     Pattern<TIndex, Swift<TSpec> > &pattern)
 {
-    typedef typename TFinder::TRepeat       TRepeat;
-    typedef typename Value<TRepeat>::Type   TPos;
+    //typedef typename TFinder::TRepeat       TRepeat;
 
     finder.curRepeat = begin(finder.data_repeats, Standard());
     finder.endRepeat = end(finder.data_repeats, Standard());
@@ -1748,8 +1746,7 @@ find(
     double errorRate,
     TSize minLength)
 {
-    typedef typename Fibre<TIndex, QGramShape>::Type    TShape;
-    typedef typename Value<TShape>::Type                THashValue;
+    //typedef typename Fibre<TIndex, QGramShape>::Type    TShape;
 
     if (empty(finder)) 
     {
@@ -1940,24 +1937,23 @@ windowFindBegin(
 ..include:seqan/index.h
 */
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
-inline bool 
+inline bool
 windowFindNext(
     Finder<THaystack, Swift<TSpec> > &finder,
-    Pattern<TIndex, Swift<TSpec> > &pattern, 
+    Pattern<TIndex, Swift<TSpec> > &pattern,
     TSize finderWindowLength
     )
 {
     SEQAN_CHECKPOINT
-    
+
     typedef typename Fibre<TIndex, QGramShape>::Type    TShape;
-    typedef typename Value<TShape>::Type                THashValue;
-    
+
     typedef Finder<THaystack, Swift<TSpec> >            TFinder;
     typedef typename TFinder::THstkPos                  THstkPos;
-    
+
     // all previous matches reported -> search new ones
     clear(finder.hits);
-    
+
     THstkPos windowEnd = finder.windowStart + finderWindowLength;
 
     // iterate over all non-repeat regions within the window
@@ -1965,20 +1961,20 @@ windowFindNext(
     {
         THstkPos nonRepeatEnd = finder.endPos - length(pattern.shape) + 1;
         THstkPos localEnd = _min(windowEnd, nonRepeatEnd);
-        
+
         // filter a non-repeat region within the window
         if (finder.curPos < localEnd)
         {
             TShape &shape = pattern.shape;
             _swiftMultiProcessQGram(finder, pattern, hash(shape, hostIterator(hostIterator(finder))));
-            
+
             for (++finder.curPos, ++finder; finder.curPos < localEnd; ++finder.curPos, ++finder){
-                _swiftMultiProcessQGram(finder, pattern, hashNext(shape, hostIterator(hostIterator(finder))));          
+                _swiftMultiProcessQGram(finder, pattern, hashNext(shape, hostIterator(hostIterator(finder))));
             }
         }
-        
+
         if (pattern.params.printDots) _printDots(finder);
-        
+
         if (finder.curPos >= nonRepeatEnd)
             if (!_nextNonRepeatRange(finder, pattern))
             {

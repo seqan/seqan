@@ -323,10 +323,10 @@ SEQAN_DEFINE_TEST(GraphMatchRefine)
 //	for(unsigned i = 0; i < length(matches); ++i)
 //		printMatch(matches[i]);
 	// Re7finement
-	typedef Infix<TString>::Type TInfix;
+	//typedef Infix<TString>::Type TInfix;
 	typedef StringSet<TString, Dependent<> > TAlignmentStringSet;
 	typedef Graph<Alignment<TAlignmentStringSet> > TAliGraph;
-	typedef VertexDescriptor<TAliGraph>::Type TVD;
+	//typedef VertexDescriptor<TAliGraph>::Type TVD;
 	TAlignmentStringSet aliStr;
 	for(TId i = 0; i<length(str); ++i) {
 		assignValueById(aliStr, str, i);
@@ -819,7 +819,7 @@ SEQAN_DEFINE_TEST(GraphMatchRefinement_Problem)
 	typedef String<char> TString;
 	typedef StringSet<TString> TStringSet;
 	//typedef StringSet<TString, Dependent<> > TAlignmentStringSet;
-	typedef Graph<Alignment<TStringSet> > TAlign;
+	//typedef Graph<Alignment<TStringSet> > TAlign;
 	typedef Fragment<> TFragment;
 	typedef String<TFragment> TFragString;
 

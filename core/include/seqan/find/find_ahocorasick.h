@@ -133,14 +133,11 @@ template <typename TNeedle>
 inline void
 _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
 {
-	SEQAN_CHECKPOINT
-	typedef typename Size<TNeedle>::Type TSize;
 	typedef typename Position<TNeedle>::Type TPosition;
 	typedef typename Value<TNeedle>::Type TKeyword;
 	typedef typename Value<TKeyword>::Type TAlphabet;
 	typedef Graph<Automaton<TAlphabet> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
 
 	// Create regular trie
@@ -259,13 +256,11 @@ position(Pattern<TNeedle, AhoCorasick> & me)
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder, Pattern<TNeedle, AhoCorasick> & me) {
-	SEQAN_CHECKPOINT
-	typedef typename Size<TNeedle>::Type TSize;
 	typedef typename Value<TNeedle>::Type TKeyword;
 	typedef typename Value<TKeyword>::Type TAlphabet;
 	typedef Graph<Automaton<TAlphabet> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	
+
 	if (empty(finder)) {
 		_patternInit(me);
 		_finderSetNonEmpty(finder);

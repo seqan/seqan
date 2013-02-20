@@ -252,16 +252,14 @@ allocate(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me,
 // ----------------------------------------------------------------------------
 
 template <size_t SIZE, size_t MAX_COUNT, typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
-inline void 
+inline void
 deallocate(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me,
-           TValue * data, 
+           TValue * data,
            TSize count,
            Tag<TUsage> const tag_)
 {
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT_GT(count, 0);
-
-    typedef Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > TAllocator;
 
     if ((sizeof(TValue) != SIZE) || (static_cast<size_t>(count) > MAX_COUNT))
     {//no blocking

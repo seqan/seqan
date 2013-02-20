@@ -229,7 +229,6 @@ assignValueById(StringSet<TString, Dependent<Tight> >& me,
     SEQAN_CHECKPOINT;
     typedef StringSet<TString, Dependent<Tight> > TStringSet;
     typedef typename TStringSet::TIdPosMap::const_iterator TIter;
-    typedef typename Size<TStringSet>::Type TSize;
     typedef typename Id<TStringSet>::Type TId;
 
     if (me.lastId < (TId) id) me.lastId = (TId) (id + 1);

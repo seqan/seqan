@@ -241,6 +241,31 @@ int main(int argc, char const ** argv)
 #define SEQAN_ENABLE_CHECKPOINTS 0 // SEQAN_ENABLE_TESTING
 #endif  // #ifndef SEQAN_ENABLE_CHECKPOINTS
 
+/**
+.Macro.SEQAN_TYPEDEF_FOR_DEBUG
+..cat:Testing & Debugging
+..summary: When using typedefs that are only used in debug mode then they have to be marked with macro.
+..signature:SEQAN_TYPEDEF_FOR_DEBUG
+..example.code:
+typedef int TInt SEQAN_TYPEDEF_FOR_DEBUG;
+*/
+#if !SEQAN_ENABLE_DEBUG
+#  if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
+#    define SEQAN_TYPEDEF_FOR_DEBUG __attribute__((unused))
+#  else
+#    define SEQAN_TYPEDEF_FOR_DEBUG
+#  endif
+#else
+#  define SEQAN_TYPEDEF_FOR_DEBUG
+#endif
+
+// TODO(holtgrew): This one is for profiling and in tests.
+#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
+#  define SEQAN_UNUSED_TYPEDEF __attribute__((unused))
+#else
+#  define SEQAN_UNUSED_TYPEDEF
+#endif
+
 namespace seqan {
 
 // SEQAN_CXX_FLAGS_ contains the compiler flags, SEQAN_CXX_FLAGS is a string

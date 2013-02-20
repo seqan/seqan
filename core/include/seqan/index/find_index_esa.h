@@ -520,7 +520,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TQuery &query,
         typename Difference<TText>::Type parentRepLen = 0)
 	{	// find first element not before query, using operator<
-		typedef typename Difference<TText>::Type			TDiff;
+		//typedef typename Difference<TText>::Type			TDiff;
 		typedef typename Suffix<TText>::Type				TSuffix;
 		typedef typename Iterator<TSuffix, Standard>::Type	TTextIter;
 		typedef typename Iterator<TQuery, Standard>::Type	TQueryIter;
@@ -622,7 +622,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TQuery &query,
         typename Difference<TText>::Type parentRepLen = 0)
 	{	// find first element that query is before, using operator<
-		typedef typename Difference<TText>::Type			TDiff;
+		//typedef typename Difference<TText>::Type			TDiff;
 		typedef typename Suffix<TText>::Type				TSuffix;
 		typedef typename Iterator<TSuffix, Standard>::Type	TTextIter;
 		typedef typename Iterator<TQuery, Standard>::Type	TQueryIter;
@@ -724,7 +724,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TQuery &query,
         typename Difference<TText>::Type parentRepLen = 0)
 	{	// find range equivalent to query, using operator<
-		typedef typename Difference<TText>::Type			TDiff;
+		//typedef typename Difference<TText>::Type			TDiff;
 		typedef typename Suffix<TText>::Type				TSuffix;
 		typedef typename Iterator<TSuffix, Standard>::Type	TTextIter;
 		typedef typename Iterator<TQuery, Standard>::Type	TQueryIter;

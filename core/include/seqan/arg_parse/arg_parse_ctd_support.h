@@ -231,7 +231,6 @@ inline bool
 writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 {
     typedef ArgumentParser::TOptionMap::const_iterator   TOptionMapIterator;
-    typedef ArgumentParser::TArgumentMap::const_iterator TArgumentMapIterator;
     typedef ArgumentParser::TArgumentMapSize TArgumentMapSize;
 
     ctdfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";

@@ -513,8 +513,6 @@ SEQAN_CHECKPOINT
     open(String<TValue, MMap<TConfig> > &me, const char *fileName, int openMode) 
 	{
 //IOREV
-        typedef typename Size< String<TValue, MMap<TConfig> > >::Type TSize;
-		
 		close(me);
 		if (open(me.mapping, fileName, openMode))
 			return _map(me, capacity(me));

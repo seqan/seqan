@@ -1177,8 +1177,6 @@ template<typename TIntervals, typename TIntervalPointers>
 void
 _makePointerInterval(TIntervals & intervals, TIntervalPointers & interval_pointers)
 {
-SEQAN_CHECKPOINT
-	typedef typename Value<TIntervalPointers>::Type TIntervalPointer;
 	typedef typename Iterator<TIntervals, Standard>::Type TIntervalIterator;
 	typedef typename Iterator<TIntervalPointers, Standard>::Type TIntervalPointerIterator;
 
@@ -1545,12 +1543,8 @@ findIntervals(
     TValue query_end,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
-
     typedef Graph<TSpec> const TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TPropertyMap>::Type TProperty;
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
     resize(result,0);
 

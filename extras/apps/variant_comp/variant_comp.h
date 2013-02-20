@@ -756,7 +756,7 @@ int compareSnps(
 	TOptions 			&options)	  	  // options
 {
 	
-	typedef typename Value<TSnpSet>::Type    TSnp;
+	//typedef typename Value<TSnpSet>::Type    TSnp;
 	typedef typename Iterator<TSnpSet>::Type TSnpIt;
 
 	::std::ostringstream fileName;

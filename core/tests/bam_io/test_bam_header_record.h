@@ -55,7 +55,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_typedefs)
 {
     using namespace seqan;
 
-    typedef BamHeader::TSequenceInfo TSequenceInfo;
+    typedef BamHeader::TSequenceInfo TSequenceInfo SEQAN_UNUSED_TYPEDEF;
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_class)
@@ -69,10 +69,10 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_typedefs)
 {
     using namespace seqan;
 
-    typedef BamHeaderRecord::TTagName  TTagName;
-    typedef BamHeaderRecord::TTagValue TTagValue;
-    typedef BamHeaderRecord::TTag      TTag;
-    typedef BamHeaderRecord::TTags     TTags;
+    typedef BamHeaderRecord::TTagName  TTagName  SEQAN_UNUSED_TYPEDEF;
+    typedef BamHeaderRecord::TTagValue TTagValue SEQAN_UNUSED_TYPEDEF;
+    typedef BamHeaderRecord::TTag      TTag      SEQAN_UNUSED_TYPEDEF;
+    typedef BamHeaderRecord::TTags     TTags     SEQAN_UNUSED_TYPEDEF;
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_find_tag_key)

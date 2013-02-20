@@ -95,7 +95,7 @@ void testConsensusValue()
     using namespace seqan;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
-    typedef typename Value<DnaString>::Type TDnaStringValue;
+    //typedef typename Value<DnaString>::Type TDnaStringValue;
 
     DnaString seq = "ACGTACGTAC";
 
@@ -112,7 +112,7 @@ void testConsensusPosition()
     using namespace seqan;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
-    typedef typename Value<DnaString>::Type TDnaStringValue;
+    //typedef typename Value<DnaString>::Type TDnaStringValue;
     typedef typename Position<DnaString>::Type TPosition;
 
     DnaString seq = "ACGTACGTAC";
@@ -130,7 +130,7 @@ void testConsensusHost()
     using namespace seqan;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
-    typedef typename Value<DnaString>::Type TDnaStringValue;
+    //typedef typename Value<DnaString>::Type TDnaStringValue;
 
     DnaString seq = "ACGTACGTAC";
 

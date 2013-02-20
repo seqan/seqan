@@ -773,7 +773,6 @@ operator<<(TStream & stream, Gaps<TSource, TSpec> const & gaps)
 {
     typedef Gaps<TSource, TSpec> const             TGaps;
     typedef typename Iterator<TGaps, Rooted>::Type TIter;
-    typedef typename Value<TGaps>::Type            TGappedAlphabet;
 
     for (TIter it = begin(gaps, Rooted()); !atEnd(it); goNext(it))
     {
@@ -783,7 +782,7 @@ operator<<(TStream & stream, Gaps<TSource, TSpec> const & gaps)
         else
             stream << convert<char>(*it);
     }
-    
+
     return stream;
 }
 

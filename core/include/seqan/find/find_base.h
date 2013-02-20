@@ -479,8 +479,6 @@ template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
 infix(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
-	typedef typename Infix<THaystack>::Type TInfix;
 	return infix(haystack(me), beginPosition(me), endPosition(me));
 }
 
@@ -488,8 +486,6 @@ template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack const>::Type
 infix(Finder<THaystack, TSpec> const & me)
 {
-SEQAN_CHECKPOINT
-	typedef typename Infix<THaystack const>::Type TInfix;
 	return infix(haystack(me), beginPosition(me), endPosition(me));
 }
 

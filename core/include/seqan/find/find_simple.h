@@ -113,12 +113,10 @@ void setHost (Pattern<TNeedle, Simple> & me,
 
 
 template <typename TFinder, typename TNeedle>
-inline bool find(TFinder & finder, 
-				 Pattern<TNeedle, Simple> & me) 
+inline bool find(TFinder & finder,
+				 Pattern<TNeedle, Simple> & me)
 {
-SEQAN_CHECKPOINT
 	typedef typename Haystack<TFinder>::Type THaystack;
-	typedef typename Size<THaystack>::Type TSize;
 	typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
 
 	if (empty(finder))

@@ -273,8 +273,8 @@ _qgramDisableBuckets(Index<StringSet<DnaString>, IndexQGram<Shape<Dna, UngappedS
 SEQAN_DEFINE_TEST(testUngappedQGramIndexMulti)
 {
     typedef StringSet<DnaString>                    TStrings;
-	typedef SAValue<TStrings>::Type                 TSAValue;
-    typedef String<TSAValue>                        TPos;
+	//typedef SAValue<TStrings>::Type                 TSAValue;
+    //typedef String<TSAValue>                        TPos;
     typedef Shape<Dna, UngappedShape<3> >           TShape;
     typedef Index<TStrings, IndexQGram<TShape> >    TIndex;
     

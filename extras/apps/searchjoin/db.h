@@ -757,8 +757,8 @@ void build(DbIndex<Index<TText, TIndexSpec>, TDbIndexSpec> & dbIndex,
            Db<TText, TDbSpec> /* const */ & db,
            TSpec)
 {
-    typedef Db<TText, TDbSpec>                              TDb;
-    typedef typename Value<TText>::Type                     TTextReference;
+    //typedef Db<TText, TDbSpec>                              TDb;
+    //typedef typename Value<TText>::Type                     TTextReference;
     typedef typename Size<TText>::Type                      TTextSize;
     typedef Index<TText, TIndexSpec>                        TIndex;
     typedef typename Value<TIndex>::Type                    TIndexAlphabet;
@@ -858,7 +858,7 @@ void buildQuery(DbIndex<Index<TText, IndexSa<TIndexSpec> >, Query> & dbIndex,
     typedef Db<TText, TDbSpec>                              TDb;
     typedef typename Size<TDb>::Type                        TDbSize;
     typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
-    typedef typename Fibre<TIndex, FibreSA>::Type           TIndexSAFibre;
+    //typedef typename Fibre<TIndex, FibreSA>::Type           TIndexSAFibre;
     typedef typename Size<TText>::Type                      TTextSize;
     typedef TTextSize                                       TErrors;
 

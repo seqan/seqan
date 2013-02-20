@@ -46,15 +46,11 @@ _chainToAlignmentGotoh(TContainer const &seedChain,
 						Score< TScore, Simple> const &scoreMatrix)
 {
     typedef typename Infix<typename Source<TAlign>::Type>::Type TString;    //Sequence in an align object
-	typedef typename Size<TString>::Type TSize;								//Size of the string
 	typedef typename Iterator<const TContainer, Standard>::Type TIterator;	//Iterator for the seed chain
-	typedef typename Value<TContainer>::Type TSeed;							//Type of Seed
-	typedef typename Value<TSeed>::Type TPosition;
+	//typedef typename Value<TContainer>::Type TSeed;							//Type of Seed
 	typedef String<TScore> TScoreString;
 	typedef Matrix<TScore> TMatrix;
-	typedef Iter<TMatrix, PositionIterator > TMatrixIterator;
 	typedef ::std::vector< ::std::map<TValue,Pair<TValue, TAlign> > > TAlignVector;
-	typedef typename ::std::map<TValue, Pair<TValue, TAlign> >::iterator TMapIterator;
 	
 	TScoreString score_str_diag;
 	TScoreString score_str_vert;
@@ -138,7 +134,7 @@ _bandedGotoh(Matrix<TScoreValue, DIMENSION> & matrix_diag,
 	typedef typename Iterator<TMatrix, Rooted>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables
@@ -892,11 +888,11 @@ SEQAN_CHECKPOINT
 
 	typedef Matrix<TScoreValue, DIMENSION> TMatrix;
 
-	typedef typename Size<TMatrix>::Type TSize;
+	//typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Iterator<TMatrix, PositionIterator>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables
@@ -1197,11 +1193,11 @@ _gotoh2(Matrix<TScoreValue, DIMENSION> & matrix_diag,		//edit matrix
 	typedef Matrix<TScoreValue, DIMENSION> TMatrix;
 	typedef typename Size<TMatrix> ::Type TValue;
 
-	typedef typename Size<TMatrix>::Type TSize;
+	//typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Iterator<TMatrix, PositionIterator>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables
@@ -1441,11 +1437,11 @@ SEQAN_CHECKPOINT
 
 	typedef Matrix<TScoreValue, DIMENSION> TMatrix;
 
-	typedef typename Size<TMatrix>::Type TSize;
+	//typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Iterator<TMatrix, PositionIterator>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables

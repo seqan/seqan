@@ -106,18 +106,18 @@ typedef Tag<NewickFormat_> const NewickFormat;
 
 
 template<typename TFile, typename TFragment, typename TSpec, typename TScoreValue, typename TSpec2, typename TNames>
-void 
+void
 read(TFile & file,
 	 String<TFragment, TSpec>& matches,
 	 String<TScoreValue, TSpec2>& scores,
 	 TNames const& names,
-	 TCoffeeLib) 
+	 TCoffeeLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
 	typedef typename Size<TFragment>::Type TSize;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef typename Value<TNames>::Type TName;
-	
+
 	// We will use this RecordReader object for reading the file.
 	RecordReader<TFile, SinglePass<> > reader(file);
 	CharString buffer;
@@ -254,8 +254,8 @@ read(TFile & file,
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
 	typedef typename Size<TNames>::Type TSize;
-	typedef typename Position<TFile>::Type TPosition;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Position<TFile>::Type TPosition;
+	//typedef typename Value<TFile>::Type TValue;
 
     CharString buffer;
     RecordReader<TFile, SinglePass<> > reader(file);
@@ -302,7 +302,7 @@ void write(TFile & file,
 	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Value<TStringSet>::Type TString;
 	typedef typename Size<TStringSet>::Type TSize;
 	
@@ -385,9 +385,9 @@ read(TFile & file,
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
 	SEQAN_CHECKPOINT
-	typedef typename Size<TNames>::Type TSize;
-	typedef TSize TWord;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Size<TNames>::Type TSize;
+	//typedef TSize TWord;
+	//typedef typename Value<TFile>::Type TValue;
 
     CharString buffer;
     RecordReader<TFile, SinglePass<> > reader(file);
@@ -442,8 +442,8 @@ _collectSegmentMatches(String<TValue, TSpec2> const& mat,
 	TValue gapChar = gapValue<TValue>();
 
 	// Create the anchor graph
-	typedef String<TFragment, TSpec> TFragmentString;
-	typedef typename Iterator<TFragmentString>::Type TFragmentStringIter;
+	//typedef String<TFragment, TSpec> TFragmentString;
+	//typedef typename Iterator<TFragmentString>::Type TFragmentStringIter;
 	typedef std::pair<TSize, TSize> TResiduePair;
 	typedef std::set<TResiduePair> TResiduePairSet;
 	String<TResiduePairSet> resPair;
@@ -611,7 +611,7 @@ read(TFile & file,
 //IOREV _nodoc_ specialization not documented
 	SEQAN_CHECKPOINT
 	typedef typename Size<TNames>::Type TSize;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef typename Value<TNames>::Type TName;
 	
 	// Map the names to slots
@@ -711,8 +711,8 @@ void write(TFile & file,
 	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Value<TStringSet>::Type TString;
+	//typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef typename Value<TStringSet>::Type TString;
 	typedef typename Size<TStringSet>::Type TSize;
 	
 	TStringSet& str = stringSet(g);
@@ -841,7 +841,7 @@ read(TFile & file,
 //IOREV _nodoc_ specialization not documented
 	SEQAN_CHECKPOINT
 	typedef typename Size<TNames>::Type TSize;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef typename Value<TNames>::Type TName;
 
     CharString buffer;
@@ -931,11 +931,11 @@ read(TFile & file,
 //IOREV _nodoc_ _notinlined_ specialization not documented
 	typedef Graph<Tree<TCargo, TSpec> > TGuideTree;
 	typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGuideTree>::Type TEdgeDescriptor;
-	typedef typename Size<TGuideTree>::Type TSize;
+	//typedef typename EdgeDescriptor<TGuideTree>::Type TEdgeDescriptor;
+	//typedef typename Size<TGuideTree>::Type TSize;
 	typedef typename Id<TGuideTree>::Type TId;
-	typedef typename Position<TFile>::Type TPosition;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Position<TFile>::Type TPosition;
+	//typedef typename Value<TFile>::Type TValue;
 	typedef typename Value<TNames>::Type TName;
 	TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
 
@@ -1129,10 +1129,10 @@ write(TFile & file,
 	  NewickFormat) 
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
-	typedef Graph<Tree<TCargo, TSpec> > TGuideTree;
-	typedef typename Size<TGuideTree>::Type TSize;
-	typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
-	
+	//typedef Graph<Tree<TCargo, TSpec> > TGuideTree;
+	//typedef typename Size<TGuideTree>::Type TSize;
+	//typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
+
 	String<char> myNewickString;
 	_buildNewickString(guideTree, names, myNewickString, getRoot(guideTree), collapseRoot);
 	streamPut(file, myNewickString);

@@ -195,10 +195,9 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 	// saves the score value that will be returned
 	TScoreValue score,total_score = 0;
 
-	typedef typename Value<TSequenceH>::Type TTextAlphabet;
 	typedef typename Value<TSequenceV>::Type TPatternAlphabet;
 	typedef typename Size<TSequenceH>::Type  TStringSize;
-	
+
 	typedef typename Iterator<TSequenceH const, Rooted>::Type TSequenceHIterator;
 	typedef typename Iterator<TSequenceV const, Rooted>::Type TSequenceVIterator;
     typedef Gaps<TSequenceH, TGapsSpecH> TGapsH;

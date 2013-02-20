@@ -78,11 +78,8 @@ _addLetterToOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 				   TPropertyMap& supplyState,
 				   TChar const c)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Size<TGraph>::Type TSize;
 	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
 	TVertexDescriptor newState = addVertex(g);
 	TVertexDescriptor pred = newState - 1;
@@ -185,14 +182,11 @@ createSetOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 				TTerminalStateMap& terminalStateMap,
 				TKeywords const& keywords)
 {
-SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Position<TKeywords>::Type TPos;
 	typedef typename Value<TKeywords>::Type TKeyword;
 	typedef typename Iterator<TKeyword, Standard>::Type TIterator;
-	typedef typename Value<TKeywords>::Type TValue;
 
 	createTrie(g, terminalStateMap, keywords);
 

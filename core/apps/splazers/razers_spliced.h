@@ -198,7 +198,7 @@ bool loadReadsSam(
 	TRazerSOptions &options)
 {
 	typedef typename Value<TReadRegions>::Type	TRegion;
-	typedef typename Value<TReadSet>::Type		TRead;
+	//typedef typename Value<TReadSet>::Type		TRead;
 	typedef typename Value<TNameSet>::Type		TReadName;
 	//typedef typename Value<TRegion,2>::Type		TContigPos;
 	typedef typename Value<TRegion,2>::Type		TFlagPos;
@@ -567,8 +567,8 @@ int
 countErrorsInAlign(TAlign & align, TPosition end_)
 {
 	
-	typedef typename Source<TAlign>::Type TSource;
-	typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
+	//typedef typename Source<TAlign>::Type TSource;
+	//typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
 
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
@@ -901,9 +901,9 @@ matchVerify(
 {
 	
 	typedef Segment<TGenome, InfixSegment>                  TGenomeInfix;
-	typedef typename Size<TGenomeInfix>::Type               TSize;
-	typedef typename Value<TGenomeInfix>::Type              TDna;
-	typedef typename Position<TGenomeInfix>::Type           TPosition;
+	//typedef typename Size<TGenomeInfix>::Type               TSize;
+	//typedef typename Value<TGenomeInfix>::Type              TDna;
+	//typedef typename Position<TGenomeInfix>::Type           TPosition;
 	typedef typename Value<TReadSet>::Type 			TRead;
 	typedef typename Iterator<TGenomeInfix, Standard>::Type	TGenomeIterator;
 	typedef typename Infix<TRead>::Type 			TReadInf;
@@ -1010,9 +1010,9 @@ matchVerify(
 {
 
 	typedef Segment<TGenome, InfixSegment>                  TGenomeInfix;
-	typedef typename Size<TGenomeInfix>::Type               TSize;
-	typedef typename Value<TGenomeInfix>::Type              TDna;
-	typedef typename Position<TGenomeInfix>::Type           TPosition;
+	//typedef typename Size<TGenomeInfix>::Type               TSize;
+	//typedef typename Value<TGenomeInfix>::Type              TDna;
+	//typedef typename Position<TGenomeInfix>::Type           TPosition;
 	typedef typename Value<TReadSet>::Type 			TRead;
 	typedef typename Iterator<TGenomeInfix, Standard>::Type	TGenomeIterator;
 	typedef typename Infix<TRead>::Type 			TReadInf;
@@ -1987,8 +1987,8 @@ findBestSplitPosition(TLongerSegment &longSeg,
 #endif
 
 	// usually, both types should be the same, but you never know...
-	typedef typename Iterator<TLongerSegment const>::Type TLongIterator;
-	typedef typename Iterator<TShorterSegment const>::Type TShortIterator;
+	//typedef typename Iterator<TLongerSegment const>::Type TLongIterator;
+	//typedef typename Iterator<TShorterSegment const>::Type TShortIterator;
 	typedef typename Size<TShorterSegment const>::Type TShortSize;
 	typedef typename Size<TLongerSegment const>::Type TLongSize;
 
@@ -2389,8 +2389,8 @@ void mapSplicedReads(
 	//typedef Finder<TGenome, Swift<TSwiftSpec> >		TSwiftFinderL;
 	typedef Finder<TGenomeInf, Swift<TSwiftSpec> >		TSwiftFinderL;
 	typedef Finder<TGenomeInf, Swift<TSwiftSpec> >	TSwiftFinderR;
-	typedef Pattern<TReadIndexL, Swift<TSwiftSpec> >	TSwiftPatternL;
-	typedef Pattern<TReadIndexR, Swift<TSwiftSpec> >	TSwiftPatternR;
+	//typedef Pattern<TReadIndexL, Swift<TSwiftSpec> >	TSwiftPatternL;
+	//typedef Pattern<TReadIndexR, Swift<TSwiftSpec> >	TSwiftPatternR;
 	
 	typedef Pair<__int64, TMatch>				TDequeueValue;
 	typedef Dequeue<TDequeueValue>				TDequeue;

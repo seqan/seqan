@@ -732,7 +732,7 @@ template <typename TFragmentStore, typename TCounts>
 void countMatches(TFragmentStore &store, TCounts &cnt)
 {
 	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename TFragmentStore::TAlignQualityStore				TAlignQualityStore;
+	//typedef typename TFragmentStore::TAlignQualityStore				TAlignQualityStore;
 	
 	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TIterator;
@@ -802,7 +802,7 @@ template < typename TFragmentStore, typename TSpec, typename TSwift >
 void compactMatches(TFragmentStore &store, RazerSOptions<TSpec> &options, TSwift & swift)
 {
 	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename TFragmentStore::TAlignQualityStore				TAlignQualityStore;
+	//typedef typename TFragmentStore::TAlignQualityStore				TAlignQualityStore;
 	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TIterator;
 

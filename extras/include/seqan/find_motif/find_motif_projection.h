@@ -585,7 +585,7 @@ _filteringStep(TBucketAr & buckets,
 
 	typedef typename Value<TStrings>::Type TString;
 	typedef typename Value<TString>::Type TValue;
-	typedef typename Value<TBucketAr>::Type TBucket;
+	//typedef typename Value<TBucketAr>::Type TBucket;
 	typename Iterator<TStrings>::Type ds_iter = begin(dataset);
 	typename Size<TArray>::Type ar_size = length(count_ar);
 	Shape<TValue> shape(l); //to compute hash value of l-mer x
@@ -1059,7 +1059,7 @@ _getLMersWithTheLargestLikelihoodRatio(TStrings & l_mers,
     SEQAN_CHECKPOINT;
 
 	typedef typename Value<TStrings>::Type TString;
-	typedef typename Position<TStrings>::Type TPos1;
+	//typedef typename Position<TStrings>::Type TPos1;
 	typedef typename Position<TString>::Type TPos2;
 	typename Size<TStrings>::Type t = (dataset_end-dataset_start);
 	resize(l_mers, t);

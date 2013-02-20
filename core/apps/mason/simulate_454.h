@@ -190,8 +190,6 @@ unsigned pickReadLength(TRNG & rng, Options<LS454Reads> const & options)
 template <typename TRNG, typename TContig>
 void buildSimulationInstructions(ReadSimulationInstruction<LS454Reads> & inst, TRNG & rng, unsigned readLength, TContig const & contig, ModelParameters<LS454Reads> const & parameters, Options<LS454Reads> const & options)
 {
-    typedef Iterator<String<Dna5>, Standard>::Type TIterator;
-    
     if (inst.endPos == inst.beginPos)
         return;
 

@@ -399,12 +399,11 @@ You can simply use them with $Shape<TValue, ShapePatternHunter>$ for example.
 
 	template <typename TValue, typename TIter>
 	inline typename Value< Shape<TValue, GenericShape> >::Type
-	hash(Shape<TValue, GenericShape> &me, TIter it)	
+	hash(Shape<TValue, GenericShape> &me, TIter it)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, GenericShape> >::Type	THValue;
+		//typedef typename Value< Shape<TValue, GenericShape> >::Type	THValue;
 		typedef typename Size< Shape<TValue, GenericShape> >::Type	TSize;
-		
+
 		SEQAN_ASSERT_GT((unsigned)me.weight, 0u);
 
 		me.hValue = ordValue((TValue)*it);
@@ -420,10 +419,9 @@ You can simply use them with $Shape<TValue, ShapePatternHunter>$ for example.
 	inline typename Value< Shape<TValue, GappedShape<TSpec> > >::Type
 	hash(Shape<TValue, GappedShape<TSpec> > &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, GappedShape<TSpec> > >::Type	THValue;
+		//typedef typename Value< Shape<TValue, GappedShape<TSpec> > >::Type	THValue;
 
-		if (charsLeft >= (TSize)me.span) 
+		if (charsLeft >= (TSize)me.span)
 			return hash(me, it);
 
 		SEQAN_ASSERT_GT((unsigned)me.weight, 0u);
@@ -452,8 +450,7 @@ You can simply use them with $Shape<TValue, ShapePatternHunter>$ for example.
 	inline typename Value< Shape<TValue, GappedShape<TSpec> > >::Type
 	hashUpper(Shape<TValue, GappedShape<TSpec> > &me, TIter it, TSize charsLeft)
 	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, GappedShape<TSpec> > >::Type	THValue;
+		//typedef typename Value< Shape<TValue, GappedShape<TSpec> > >::Type	THValue;
 
 		if (charsLeft >= (TSize)me.span) {
 			hash(me, it);

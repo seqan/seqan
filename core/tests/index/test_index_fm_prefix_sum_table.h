@@ -208,7 +208,7 @@ template <typename TPrefixSumTable>
 void prefixSumTableGetValue(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -226,7 +226,7 @@ template <typename TPrefixSumTable>
 void _prefixSumTableInsertDollar(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -246,7 +246,7 @@ template <typename TPrefixSumTable>
 void prefixSumTableLength(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -259,7 +259,7 @@ template <typename TPrefixSumTable>
 void prefixSumTablePrefixSum(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -275,7 +275,7 @@ template <typename TPrefixSumTable>
 void prefixSumTableResize(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -289,7 +289,7 @@ template <typename TPrefixSumTable>
 void prefixSumTableSetPrefixSum(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -304,7 +304,7 @@ template <typename TPrefixSumTable>
 void prefixSumTableValue(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";
@@ -320,7 +320,7 @@ template <typename TPrefixSumTable>
 void prefixSumTableOpenSave(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
-    typedef typename MakeUnsigned<TChar>::Type TUChar;
+    //typedef typename MakeUnsigned<TChar>::Type TUChar;
     typedef String<TChar> TText;
 
     TText text = "ACGT";

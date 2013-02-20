@@ -150,7 +150,7 @@ template< typename TText>
 void generatePattern(StringSet<TText> & pattern, StringSet<TText> const & text)
 {
 
-    typedef typename Value<TText>::Type TChar;
+    //typedef typename Value<TText>::Type TChar;
     unsigned patternLength = 1000;
 
     Rng<MersenneTwister> rng(SEED);
@@ -177,7 +177,7 @@ template <typename TText, typename TIndexSpec, typename TOptimization>
 void fmIndexConstructor(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
-	typedef Index<TText, IndexEsa<> > TIndexEsa;
+	//typedef Index<TText, IndexEsa<> > TIndexEsa;
 	typedef typename Value<TText>::Type TChar;
 
     {
@@ -241,11 +241,11 @@ template <typename TText, typename TIndexSpec, typename TOptimization>
 void fmIndexClear(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
-	typedef typename Value<TText>::Type TChar;
-	typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
-	typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
+	//typedef typename Value<TText>::Type TChar;
+	//typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
+	//typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
 
-	typedef Index<TText, IndexEsa<> > TIndexEsa;
+	//typedef Index<TText, IndexEsa<> > TIndexEsa;
 
     {
         TIndex fmIndex;
@@ -275,7 +275,7 @@ void _fmIndexDetermineDollarSubstitute(Index<TText, FMIndex<TIndexSpec, TOptimiz
 	typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
 	typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
 
-	typedef Index<TText, IndexEsa<> > TIndexEsa;
+	//typedef Index<TText, IndexEsa<> > TIndexEsa;
 
 	TText text;
 	generateText(text);
@@ -302,11 +302,11 @@ template <typename TText, typename TIndexSpec, typename TOptimization>
 void fmIndexEmpty(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
-	typedef typename Value<TText>::Type TChar;
-	typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
-	typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
+	//typedef typename Value<TText>::Type TChar;
+	//typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
+	//typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
 
-	typedef Index<TText, IndexEsa<> > TIndexEsa;
+	//typedef Index<TText, IndexEsa<> > TIndexEsa;
 
     {
         TIndex fmIndex;
@@ -328,9 +328,9 @@ template <typename TText, typename TIndexSpec, typename TOptimization>
 void fmIndexFindFirstIndex_(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
-	typedef typename Value<TText>::Type TChar;
-	typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
-	typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
+	//typedef typename Value<TText>::Type TChar;
+	//typedef typename Fibre<TIndex, FibreLfTable>::Type TLfTable;
+	//typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
 
 	typedef Index<TText, IndexEsa<> > TIndexEsa;
 
@@ -355,7 +355,7 @@ template <typename TText, typename TIndexSpec, typename TOptimization>
 void fmIndexGetFibre(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
-	typedef Index<TText, IndexEsa<> > TIndexEsa;
+	//typedef Index<TText, IndexEsa<> > TIndexEsa;
 
 	TText text;
 	generateText(text);
@@ -447,7 +447,7 @@ template <typename TText, typename TIndexSpec, typename TOptimization>
 void fmIndexOpenSave(Index<TText, FMIndex<TIndexSpec, TOptimization> > /*tag*/)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TOptimization> > TIndex;
-	typedef Index<TText, IndexEsa<> > TIndexEsa;
+	//typedef Index<TText, IndexEsa<> > TIndexEsa;
 	typedef typename Value<TIndex>::Type TAlphabet;
     typedef String<TAlphabet> TString;
 

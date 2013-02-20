@@ -112,7 +112,7 @@ inline void
 _scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout, TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator, bool isLastColumn = false, bool isLastRow = false)
 {
-    typedef typename Value<TDPCell>::Type TScoreValue;
+    //typedef typename Value<TDPCell>::Type TScoreValue;
     // Note that the underlying matrix has the coordinates flipped.  We use posH/posV as we would in pairwise alignments
     // and thus this is the reverse from the matrix representation.
     unsigned posH = coordinate(navigator, +DPMatrixDimension_::HORIZONTAL);

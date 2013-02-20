@@ -2394,7 +2394,6 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_linear)
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
     typedef Fragment<unsigned> TFragment;
     typedef String<TFragment>  TFragmentString;
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
 
 

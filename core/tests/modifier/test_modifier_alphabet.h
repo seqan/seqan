@@ -122,7 +122,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_enumerate) {
 SEQAN_DEFINE_TEST(test_modifier_alphabet_convert) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
-    typedef ModifiedAlphabet<Dna5, ModExpand<'-'> > TDna5WithGap;
+    ///typedef ModifiedAlphabet<Dna5, ModExpand<'-'> > TDna5WithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
 
     // Call convertImpl() directly.
@@ -179,7 +179,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_eq) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
+    //typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
 
     // TODO(holtgrew): Should that many alphabets be comparable?
     // TODO(holtgrew): Does not compile with Dna instead of Dna5 here.
@@ -241,7 +241,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_neq) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
+    //typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
 
     // TODO(holtgrew): Should that many alphabets be comparable?
     // TODO(holtgrew): Does not compile with Dna instead of Dna5 here.
@@ -303,7 +303,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_lt) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
+    //typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
 
     // TODO(holtgrew): Should that many alphabets be comparable?
     // TODO(holtgrew): Does not compile with Dna instead of Dna5 here.
@@ -355,7 +355,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_gt) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
+    //typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
 
     // TODO(holtgrew): Should that many alphabets be comparable?
     // TODO(holtgrew): Does not compile with Dna instead of Dna5 here.
@@ -407,7 +407,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_leq) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
+    //typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
 
     // TODO(holtgrew): Should that many alphabets be comparable?
     // TODO(holtgrew): Does not compile with Dna instead of Dna5 here.
@@ -470,7 +470,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_geq) {
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
+    //typedef ModifiedAlphabet<TDnaWithX, ModExpand<'Y'> > TDnaWithXY;
 
     // TODO(holtgrew): Should that many alphabets be comparable?
     // TODO(holtgrew): Does not compile with Dna instead of Dna5 here.

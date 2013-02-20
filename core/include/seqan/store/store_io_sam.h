@@ -55,7 +55,6 @@ namespace SEQAN_NAMESPACE_MAIN
     {
 //IOREV _nodoc_ _hasCRef_ could be simplified by using other _is or _parse calls
         typedef typename Value<TCigarString>::Type  TCigarElement;
-        typedef typename TCigarElement::TOperation  TOperation;
         typedef typename TCigarElement::TCount      TCount;
 
         clear(cigar);
@@ -420,7 +419,6 @@ namespace SEQAN_NAMESPACE_MAIN
         FragStoreImportFlags const & importFlags)
     {
 //IOREV not sure if recordreading or batchreading
-        typedef Value<FILE>::Type TValue;
         typedef FragmentStore<TSpec, TConfig> TFragmentStore;
         typedef typename TFragmentStore::TContigPos TContigPos;
         typedef typename Id<TFragmentStore>::Type TId;
@@ -519,7 +517,6 @@ namespace SEQAN_NAMESPACE_MAIN
         // even if there exists previous entries without
         typedef FragmentStore<TSpec, TConfig> TFragmentStore;
         typedef typename TFragmentStore::TAlignQualityStore TAlignQualityStore;
-        typedef typename TFragmentStore::TNameStore TNameStore;
         typedef typename TFragmentStore::TReadSeqStore TReadSeqStore;
         typedef typename Size<TReadSeqStore>::Type TReadSeqStoreSize;
         typedef typename Value<TAlignQualityStore>::Type TAlignQuality;
@@ -643,27 +640,26 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef FragmentStore<TSpec, TConfig>                                       TFragmentStore;
         typedef FragStoreSAMContext<TFragStore>                                     TSAMContext;
         typedef typename Id<TFragmentStore>::Type                                   TId;
-        typedef typename Size<TFragmentStore>::Type                                 TSize;
-        
+        //typedef typename Size<TFragmentStore>::Type                                 TSize;
+
         // All fragment store element types
-        typedef typename Value<typename TFragmentStore::TContigStore>::Type         TContigElement;
-        typedef typename Value<typename TFragmentStore::TLibraryStore>::Type        TLibraryStoreElement;
+        //typedef typename Value<typename TFragmentStore::TContigStore>::Type         TContigElement;
+        //typedef typename Value<typename TFragmentStore::TLibraryStore>::Type        TLibraryStoreElement;
         typedef typename Value<typename TFragmentStore::TMatePairStore>::Type       TMatePairElement;
-        typedef typename Value<typename TFragmentStore::TReadStore>::Type           TReadStoreElement;
+        //typedef typename Value<typename TFragmentStore::TReadStore>::Type           TReadStoreElement;
         typedef typename Value<typename TFragmentStore::TAlignQualityStore>::Type   TAlignQualityElement;
-        
+
         // Type for sequence in readstore
-        typedef typename Value<typename TFragmentStore::TReadSeqStore>::Type        TReadSeqStoreElement;
         typedef typename TFragmentStore::TReadSeq                                   TReadSeq;
-        
+
         // Type for gap anchor
         typedef typename TFragmentStore::TContigPos                                 TContigPos;
         typedef Gaps<Nothing, AnchorGaps<typename TSAMContext::TContigAnchorGaps> > TContigGapsPW;
-        
+
         // Type to temporarily store information about match mates
         typedef typename Value<TMatchMateInfos>::Type                               TMatchMateInfo;
-        
-        // read fields of alignments line        
+
+        // read fields of alignments line
         _parseSkipWhitespace(file, c);
 
         // Read the query name.  The letters until the first
@@ -932,18 +928,15 @@ _fillHeader(BamHeader & header,
         typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
 
         typedef typename TFragmentStore::TReadStore                     TReadStore;
-        typedef typename TFragmentStore::TReadSeqStore                  TReadSeqStore;
         typedef typename TFragmentStore::TAlignedReadStore              TAlignedReadStore;
         typedef typename TFragmentStore::TContigStore                   TContigStore;
         typedef typename TFragmentStore::TReadSeq                       TReadSeq;
 
         typedef typename Value<TReadStore>::Type                        TRead;
-        typedef typename Size<TReadStore>::Type                         TSize;
-        typedef typename Value<TReadSeqStore>::Type                     TReadSeqStored;
+        //typedef typename Size<TReadStore>::Type                         TSize;
         typedef typename Value<TContigStore>::Type                      TContig;
         typedef typename Value<TAlignedReadStore>::Type                 TAlignedRead;
 
-        typedef typename TContig::TContigSeq                            TContigSeq;
         typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignIter;
         typedef typename Iterator<TReadSeq, Standard>::Type             TReadSeqIter;
         typedef typename Id<TAlignedRead>::Type                         TId;

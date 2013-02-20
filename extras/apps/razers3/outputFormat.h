@@ -223,7 +223,7 @@ getErrorDistribution(
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Iterator<TRow>::Type TIter;
 
-    typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
+    //typedef typename Position<typename Rows<TAlign>::Type>::Type TRowsPosition;
     typedef typename Position<TAlign>::Type TPosition;
 
     typename Iterator<TAlignedReadStore, Standard>::Type    it = begin(store.alignedReadStore, Standard());
@@ -657,9 +657,9 @@ int dumpMatches(
     typedef typename Value<TContigFileStore>::Type                  TContigFile;
 
     typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
-    typedef typename Id<TAlignedRead>::Type                         TId;
+    //typedef typename Id<TAlignedRead>::Type                         TId;
     typedef typename GetValue<TAlignQualityStore>::Type             TQuality;
-    typedef typename TFragmentStore::TContigPos                     TGPos;
+    //typedef typename TFragmentStore::TContigPos                     TGPos;
     typedef BinFunctorDefault<TAlignQualityStore, TRazerSMode>      TBinFunctor;
 
     if (options.outputFormat == 2)  // Eland format

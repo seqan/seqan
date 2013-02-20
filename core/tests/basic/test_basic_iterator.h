@@ -965,7 +965,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_constructors)
     using namespace seqan;
 
     typedef Iter<int *, PositionIterator> TIterator;
-    typedef Iter<int *, AdaptorIterator<int *> > TIterator2;
+    //typedef Iter<int *, AdaptorIterator<int *> > TIterator2;
 
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 

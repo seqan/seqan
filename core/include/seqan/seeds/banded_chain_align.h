@@ -95,16 +95,16 @@ _chainToAlignmentNeedlemanWunsch(TContainer const &seedChain,
 						Score< TScore, Simple> const &scoreMatrix)
 {
     typedef typename Infix<typename Source<TAlign>::Type>::Type TString;    //Sequence in an align object
-	typedef typename Size<TString>::Type TSize;								//Size of the string
+	//typedef typename Size<TString>::Type TSize;								//Size of the string
 	typedef typename Iterator<const TContainer, Standard>::Type TIterator;	//Iterator for the seed chain
-	typedef typename Value<TContainer>::Type TSeed;							//Type of Seed
-	typedef typename Value<TSeed>::Type TPosition;
+	//typedef typename Value<TContainer>::Type TSeed;							//Type of Seed
+	//typedef typename Value<TSeed>::Type TPosition;
 	typedef String<TScore> TScoreString;
 	typedef Matrix<TScore> TMatrix;
-	typedef Iter<TMatrix, PositionIterator > TMatrixIterator;
+	//typedef Iter<TMatrix, PositionIterator > TMatrixIterator;
 	typedef ::std::vector< ::std::map<TValue,Pair<TValue, TAlign> > > TAlignVector;
-	typedef typename ::std::map<TValue, Pair<TValue, TAlign> >::iterator TMapIterator;
-	
+	//typedef typename ::std::map<TValue, Pair<TValue, TAlign> >::iterator TMapIterator;
+
 	TScoreString score_str;
 	TAlignVector alignmentVector;
 
@@ -157,7 +157,7 @@ _constructAlignment(::std::vector< ::std::map<TValue,Pair<TValue, TAlign> > >con
 {
 	typedef typename ::std::map<TValue,Pair<TValue, TAlign> >::const_iterator TIterator;
 	typedef typename Row<TAlign>::Type TRow;
-	typedef typename Iterator<TRow, Standard>::Type TTargetIterator;
+	//typedef typename Iterator<TRow, Standard>::Type TTargetIterator;
 	typedef typename Row<TAlign2>::Type TRow2;
 	typedef typename Iterator<TRow2, Standard>::Type TTargetIterator2;
 
@@ -207,7 +207,7 @@ _bandedNeedlemanWunsch(Matrix<TScoreValue, DIMENSION> & matrix_,
 	typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables
@@ -1014,11 +1014,11 @@ _needlemanWunschRectangle(Matrix<TScoreValue, DIMENSION> & matrix_,			//edit mat
 SEQAN_CHECKPOINT
 	typedef Matrix<TScoreValue, DIMENSION> TMatrix;
 
-	typedef typename Size<TMatrix>::Type TSize;
+	//typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Iterator<TMatrix, PositionIterator>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables
@@ -1280,11 +1280,11 @@ SEQAN_CHECKPOINT
 
 	typedef Matrix<TScoreValue, DIMENSION> TMatrix;
 
-	typedef typename Size<TMatrix>::Type TSize;
+	//typedef typename Size<TMatrix>::Type TSize;
 	typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
+	//typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables

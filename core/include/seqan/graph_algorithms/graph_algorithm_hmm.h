@@ -624,20 +624,17 @@ generateSequence(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TAlphabet, typename TProbability, typename TSpec,typename TEmissionCounter, typename TTransitionCounter>
-inline void 
+inline void
 _parameterEstimator(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
 					 TEmissionCounter const& emission,
 					 TTransitionCounter const& transition)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
 	typedef typename Size<TGraph>::Type TSize;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef typename Value<TTransitionCounter>::Type TCounterValue;
-	
+
 	// Initialization
 	TSize alphSize = ValueSize<TAlphabet>::VALUE;
 	TCounterValue pseudoCount = (TCounterValue) 1.0;
@@ -666,13 +663,10 @@ estimationWithStates(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
 					 TSequenceSet& sequences,
 					 TStateSeqSet& states)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 	typedef typename Value<TStateSeqSet>::Type TStateSeq;
 	typedef typename Value<TStateSeq>::Type TState;
-	typedef typename Value<TSequenceSet>::Type TSequence;
-	typedef typename Value<TSequence>::Type TChar;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 
 	// Initialization
@@ -809,19 +803,14 @@ randomizeHmm(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
 ///////////////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlphabet, typename TProbability, typename TSpec, typename TSequence, typename TSize>
-inline TProbability 
+inline TProbability
 _baumWelchAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec > >& hmm,
 					 StringSet<TSequence> const& seqSet,
 					 TSize maxIter,
 					 TProbability epsilon)
 {
-	
-	SEQAN_CHECKPOINT
 	typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef String<TProbability> TCountString;
 

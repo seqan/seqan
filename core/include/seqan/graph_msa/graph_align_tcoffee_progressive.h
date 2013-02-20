@@ -349,17 +349,17 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	//strm.open("Z:\\my_graph.dot", std::ios_base::out | std::ios_base::trunc);
 	//write(strm,matchGraph,DotDrawing());
 	//strm.close();
-	
+
 	TCargo val = weightedBipartiteMatching(matchGraph, vertexMap, weights, edges);
-	
+
 	// Retrieve the aligned segments
-	TSize seqsInStr1 = length(str1[0]);	 
-	TSize seqsInStr2 = length(str2[0]);	
+	TSize seqsInStr1 = length(str1[0]);
+	TSize seqsInStr2 = length(str2[0]);
 	typedef typename Value<TString>::Type TVertexSet;
-	typedef typename Iterator<TString const, Rooted>::Type TStringIter;
-	typedef typename Iterator<TString, Rooted>::Type TSIter;
+	//typedef typename Iterator<TString const, Rooted>::Type TStringIter;
+	//typedef typename Iterator<TString, Rooted>::Type TSIter;
 	typedef typename Iterator<TVertexSet const, Rooted>::Type TVertexSetIter;
-	typedef typename Iterator<TVertexSet, Rooted>::Type TIter;	
+	//typedef typename Iterator<TVertexSet, Rooted>::Type TIter;
 	clear(align);
 	// Retrieve all matches
 	String<bool> matchedVertices;
@@ -369,7 +369,7 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	TEdgesIter itEdgesEnd = end(edges);
 	for(;itEdges != itEdgesEnd; ++itEdges) {
 		TSize i = (value(itEdges)).i1;
-		TSize j = (value(itEdges)).i2 - m; 
+		TSize j = (value(itEdges)).i2 - m;
 		value(matchedVertices, i) = true;
 		value(matchedVertices, m+j) = true;
 		TVertexSet tmp;
@@ -422,17 +422,17 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TGuideTree, typename TVertexDescriptor, typename TSequence>
-inline void 
+inline void
 _recursiveProgressiveMatching(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 							  TGuideTree& tree,
 							  TVertexDescriptor const root,
 							  TSequence& alignSeq)
 {
-	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Id<TGraph>::Type TId;
+	//typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
+	//typedef typename Size<TGraph>::Type TSize;
+	//typedef typename Id<TGraph>::Type TId;
 	typedef typename Iterator<TGuideTree, AdjacencyIterator>::Type TAdjacencyIterator;
-	typedef typename Iterator<TGuideTree, DfsPreorder>::Type TDfsPreorderIterator;
+	//typedef typename Iterator<TGuideTree, DfsPreorder>::Type TDfsPreorderIterator;
 
 	if(isLeaf(tree, root)) {
 		_buildLeafString(g, root, alignSeq);
@@ -463,15 +463,15 @@ _recursiveProgressiveMatching(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TGuideTree, typename TEdgeMap, typename TOutGraph>
-inline void 
+inline void
 progressiveMatching(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 					TGuideTree& tree,
 					TEdgeMap& edgeMap,
 					TOutGraph& gOut,
-					TEdgeMap& edgeMapOut)			 
+					TEdgeMap& edgeMapOut)
 {
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Size<TGraph>::Type TSize;
+	//typedef typename Size<TGraph>::Type TSize;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef String<TVertexDescriptor> TVertexString;
 	typedef String<TVertexString> TSegmentString;

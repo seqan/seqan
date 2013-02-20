@@ -55,7 +55,6 @@ SEQAN_CHECKPOINT
 	typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables
@@ -309,7 +308,6 @@ SEQAN_CHECKPOINT
 	typedef typename Iterator<TMatrix, Rooted>::Type TMatrixIterator;
 
 	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
-	typedef typename Value<TString const>::Type TAlphabet;
 
 	//-------------------------------------------------------------------------
 	//define some variables

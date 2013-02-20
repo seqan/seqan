@@ -78,8 +78,8 @@ _parseBlastHit(TFile & file,
 {
 //IOREV
 	typedef typename Position<TFile>::Type TPosition;
-	typedef BlastHit<TBlastSpec,StreamReport<TFile> > TBlastHit;
-	typedef typename Hsp<TBlastHit>::Type TBlastHsp;
+	//typedef BlastHit<TBlastSpec,StreamReport<TFile> > TBlastHit;
+	//typedef typename Hsp<TBlastHit>::Type TBlastHsp;
 
 	String<char> pword;
 	int pint;

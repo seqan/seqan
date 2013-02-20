@@ -102,7 +102,6 @@ template <typename TIter>
 inline bool
 _checkColinearity(TIter currIter)
 {
-    typedef typename Value<TIter>::Type TSeed;
     TIter nextIter = currIter;
     ++nextIter;
 
@@ -755,7 +754,7 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     typedef typename MakeSigned<TSeedPosition>::Type TSignedPosition;
     typedef typename Size<TSeed const>::Type TSeedSize;
     typedef typename MakeSigned<TSeedSize>::Type TSignedSize;
-    typedef typename Value<TTraceSet>::Type TTraceArray;
+    //typedef typename Value<TTraceSet>::Type TTraceArray;
     typedef typename Value<TScoreScheme>::Type TScore;
     typedef Pair<TSeedPosition, TSeedPosition> TGridPoint;
 
@@ -964,7 +963,7 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
     typedef typename MakeSigned<TSize>::Type TSignedSize;
     typedef typename Position<TSeed const>::Type TPosition;
     typedef typename MakeSigned<TPosition>::Type TSignedPosition;
-    typedef DPBand_<BandOn> TBand;
+    //typedef DPBand_<BandOn> TBand;
     typedef typename Value<TScoreScheme>::Type TScore;
     typedef Pair<TPosition, TPosition> TGridPoint;
 
@@ -1026,8 +1025,8 @@ _finishBandedChain(TTraceSet & globalTraceSet,
                    TScoreScheme const & scoreSchemeGap,
                    DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TGapsPlacement> > const & dpProfile)
 {
-    typedef typename Position<TSeqH const>::Type TPosH;
-    typedef typename Position<TSeqV const>::Type TPosV;
+    //typedef typename Position<TSeqH const>::Type TPosH;
+    //typedef typename Position<TSeqV const>::Type TPosV;
     typedef typename Position<TSeed const>::Type TPosition;
     typedef typename MakeSigned<TPosition>::Type TSignedPosition;
     typedef typename Size<TSeed const>::Type TSize;
@@ -1155,7 +1154,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec,
                              TracebackOn<TGapsPlacement> > const & profile)
 {
-    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec, TracebackOn<TGapsPlacement> > TAlignmentProfile;
+    //typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec, TracebackOn<TGapsPlacement> > TAlignmentProfile;
 
     typedef typename Position<TSequenceH>::Type TPosH;
     typedef typename Position<TSequenceV>::Type TPosV;

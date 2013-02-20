@@ -43,8 +43,8 @@
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_metafunctions)
 {
-    typedef seqan::MaxValue<int> TMaxValue;
-    typedef seqan::MinValue<int> TMinValue;
+    typedef seqan::MaxValue<int> TMaxValue SEQAN_UNUSED_TYPEDEF;
+    typedef seqan::MinValue<int> TMinValue SEQAN_UNUSED_TYPEDEF;
 }
 
 // Now, test that the forwards for minValue() and maxValue() work correctly.

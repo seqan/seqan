@@ -164,10 +164,10 @@ template<typename TStringSet>
 inline void
 createCombinations(TStringSet &tupleSet, TStringSet &annoIds)
 {
-	typedef typename Value<TStringSet>::Type 	TString;
-	typedef typename Value<TString>::Type		TId;
+	//typedef typename Value<TStringSet>::Type 	TString;
+	//typedef typename Value<TString>::Type		TId;
 	typedef typename Iterator<TStringSet>::Type 	TStringSetIter;
-	typedef typename Iterator<TString>::Type	TStringIter;
+	//typedef typename Iterator<TString>::Type	TStringIter;
 	
 	if (!empty(annoIds))
 	{
@@ -261,7 +261,7 @@ template<typename TList>
 inline bool
 interSec(TList &result, const TList &list1, const TList  &list2)
 {
-	typedef typename Value<TList>::Type TValue;
+	//typedef typename Value<TList>::Type TValue;
 	typedef typename Iterator<TList>::Type TIter;
 	
 	resize(result, length(list1));

@@ -394,7 +394,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 	
 	TScoreValue total_score=0;
 
-    typedef typename Value<TSequenceH>::Type TValueH;
     typedef typename Value<TSequenceV>::Type TValueV;
 
 	typedef typename Size<TSequenceH>::Type TStringSize;
@@ -408,7 +407,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 	TGapsHIter target_0 = begin(gapsH);
 	TGapsVIter target_1 = begin(gapsV);
 
-	typedef typename Size<Matrix<TScoreValue> >::Type TSize;
 	typedef typename Iterator<Matrix<TScoreValue> >::Type TMatrixIterator;
 
 	TValueV v;

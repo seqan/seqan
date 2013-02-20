@@ -267,7 +267,6 @@ void Test_Directed() {
 //____________________________________________________________________________
 //Graph without edge cargo and without edge ids
 	typedef Directed<void, WithoutEdgeId> TEdges3;
-	typedef VertexDescriptor<Graph<TEdges3> >::Type TVertexDescriptor3;
 	typedef EdgeDescriptor<Graph<TEdges3> >::Type TEdgeDescriptor3;
 
 	Graph<TEdges3> g3;
@@ -511,7 +510,6 @@ void Test_Undirected() {
 //____________________________________________________________________________
 //Graph without edge cargo and without edge ids
 	typedef Undirected<void, WithoutEdgeId> TEdges3;
-	typedef VertexDescriptor<Graph<TEdges3> >::Type TVertexDescriptor3;
 	typedef EdgeDescriptor<Graph<TEdges3> >::Type TEdgeDescriptor3;
 
 	Graph<TEdges3> g3;
@@ -535,8 +533,6 @@ void Test_Undirected() {
 //____________________________________________________________________________
 // Undirected graph iterators
 	typedef Graph<Undirected<> > TGraphIter;
-	typedef VertexDescriptor<TGraphIter>::Type TVertexDescriptorIter;
-	typedef EdgeDescriptor<TGraphIter>::Type TEdgeDescriptorIter;
 	
 	TGraphIter gIter;
 	addVertex(gIter);addVertex(gIter);addVertex(gIter);addVertex(gIter);
@@ -966,7 +962,6 @@ void Test_Automaton() {
 //____________________________________________________________________________
 // Automaton - Different alphabet
 	typedef VertexDescriptor<Graph<Automaton<char> > >::Type VertexDescriptorType;
-	typedef EdgeDescriptor<Graph<Automaton<char> > >::Type EdgeDescriptorType;
 	Graph<Automaton<char> > automaton;
 	VertexDescriptorType rootVertex = addVertex(automaton); // A = 0
 	addVertex(automaton); // B = 1
@@ -1019,9 +1014,7 @@ void Test_Automaton() {
 
 	// Additional cargo
 	typedef Graph<Automaton<Dna, short> > TGraph9;
-	typedef VertexDescriptor<TGraph9>::Type TVertexDescriptor9;
 	typedef EdgeDescriptor<TGraph9>::Type TEdgeDescriptor9;
-	typedef Size<TGraph9>::Type TSize9;
 
 	TGraph9 g9;
 	addVertex(g9);

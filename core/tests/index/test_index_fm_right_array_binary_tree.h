@@ -65,7 +65,7 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
 	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
@@ -133,7 +133,7 @@ void waveletTreeStructureClear(TRightArrayBinaryTree & /*tag*/)
 	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
@@ -158,7 +158,7 @@ void waveletTreeStructureEmpty(TRightArrayBinaryTree & /*tag*/)
 	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
 	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
@@ -181,9 +181,9 @@ template <typename TRightArrayBinaryTree>
 void waveletTreeStructureGetFibre(TRightArrayBinaryTree & /*tag*/)
 {
 	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
-	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
+	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
@@ -201,9 +201,9 @@ template <typename TRightArrayBinaryTree>
 void waveletTreeStructureLength(TRightArrayBinaryTree & /*tag*/)
 {
 	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
-	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
+	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
@@ -222,8 +222,8 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 {
 	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
 	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	{
 		TRightArrayBinaryTree waveletTreeStructure;
@@ -252,10 +252,10 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureOpenSave(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
-	typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+	//typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
+	//typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
+	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 	
     TRightArrayBinaryTree waveletTreeStructure;

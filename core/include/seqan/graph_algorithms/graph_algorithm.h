@@ -101,10 +101,7 @@ breadthFirstSearch(Graph<TSpec> const& g,
 					 TPredecessorMap& predecessor, 
 					 TDistanceMap& distance)
 {
-//IOREV _notio_
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Value<TPredecessorMap>::Type TPredVal;
 	typedef typename Value<TDistanceMap>::Type TDistVal;
@@ -214,10 +211,8 @@ depthFirstSearch(Graph<TSpec> const& g,
 				   TDiscoveryTimeMap& disc,
 				   TFinishingTimeMap& finish)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Value<TPredecessorMap>::Type TPredVal;
@@ -227,7 +222,7 @@ depthFirstSearch(Graph<TSpec> const& g,
 	resizeVertexMap(g,disc);
 	resizeVertexMap(g,finish);
 	TPredVal nilPred = getNil<TVertexDescriptor>();
-		
+
 	String<bool> tokenMap;
 	resizeVertexMap(g, tokenMap);
 	TVertexIterator it(g);
@@ -329,20 +324,17 @@ typename Size<Graph<TSpec> >::Type
 stronglyConnectedComponents(Graph<TSpec> const& g_source,
 							  TComponents& components)
 {
-	SEQAN_CHECKPOINT
-
 	// Initialization
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Value<TComponents>::Type TCompVal;
 	resizeVertexMap(g_source,components);
 	String<TSize> predMap;
 	String<TSize> discoveryTimeMap;
 	String<TSize> finishingTimeMap;
-	
+
 	// Dfs
 	depthFirstSearch(g_source, predMap, discoveryTimeMap, finishingTimeMap);
 
@@ -475,10 +467,7 @@ typename Size<Graph<TSpec> >::Type
 connectedComponents(Graph<TSpec> const& g_source,
 					 TComponents& components)
 {
-	SEQAN_CHECKPOINT
-
 	typedef typename Size<Graph<TSpec> >::Type TSize;
-	typedef typename Iterator<Graph<TSpec>, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
 	typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
 	clear(components);
@@ -683,10 +672,7 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
 				   TWeightMap const & weight,
 				   TEdges & edges)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Value<TWeightMap>::Type TWeight;
 
@@ -948,12 +934,9 @@ dagShortestPath(Graph<TSpec> const& g,
 				  TPredecessorMap& predecessor,
 				  TDistanceMap& distance)
 {
-	SEQAN_CHECKPOINT
-	typedef typename EdgeDescriptor<Graph<TSpec> >::Type TEdgeDescriptor;
-	typedef typename Iterator<Graph<TSpec>, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef typename Iterator<String<TVertexDescriptor>, Rooted>::Type TStringIterator;
-	
+
 	// Initialization
 	resizeVertexMap(g,predecessor);
 	resizeVertexMap(g,distance);
@@ -1005,18 +988,17 @@ The out parameters are only valid if the algorithm returns true.
 ..include:seqan/graph_algorithms.h
 */
 template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
-bool 
+bool
 bellmanFordAlgorithm(Graph<TSpec> const& g,
 					   TVertexDescriptor const source,
 					   TWeightMap const& weight,
-					   TPredecessorMap& predecessor, 
+					   TPredecessorMap& predecessor,
 					   TDistanceMap& distance)
 {
 	SEQAN_CHECKPOINT
 	typedef typename Size<Graph<TSpec> >::Type TSize;
 
 	// Initialization
-	typedef typename EdgeDescriptor<Graph<TSpec> >::Type TEdgeDescriptor;
 	typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 	resizeVertexMap(g,predecessor);
@@ -1078,20 +1060,18 @@ bellmanFordAlgorithm(Graph<TSpec> const& g,
 ..include:seqan/graph_algorithms.h
 */
 template<typename TSpec, typename TVertexDescriptor, typename TWeightMap, typename TPredecessorMap, typename TDistanceMap>
-void 
+void
 dijkstra(Graph<TSpec> const& g,
 		 TVertexDescriptor const source,
 		 TWeightMap const& weight,
-		 TPredecessorMap& predecessor, 
+		 TPredecessorMap& predecessor,
 		 TDistanceMap& distance)
 {
-	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
-	typedef typename Size<TGraph>::Type TSize;
 	typedef typename Value<TDistanceMap>::Type TDistVal;
 	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-	
+
 	// Initialization
 	resizeVertexMap(g,predecessor);
 	resizeVertexMap(g,distance);
@@ -1433,13 +1413,12 @@ floydWarshallAlgorithm(Graph<TSpec> const& g,
 ..include:seqan/graph_algorithms.h
 */
 template<typename TSpec, typename TMatrix>
-void 
+void
 transitiveClosure(Graph<TSpec> const& g,
 				   TMatrix& closure)
 {
 	SEQAN_CHECKPOINT
 	typedef typename Size<TMatrix>::Type TSize;
-	typedef typename Value<TMatrix>::Type TMatrixVal;
 
 	// Initialize first closure matrix
 	getAdjacencyMatrix(g,closure);
@@ -1586,7 +1565,6 @@ fordFulkersonAlgorithm(Graph<TSpec> const& g,
 	SEQAN_CHECKPOINT
 	typedef Graph<TSpec> TGraph;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
 	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 	typedef typename Value<TFlowMap>::Type TFlow;

@@ -444,7 +444,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphOutput)
 
 	typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
 	typedef VertexDescriptor<TAlignmentGraph>::Type TVD;
-	typedef EdgeDescriptor<TAlignmentGraph>::Type TED;
+	//typedef EdgeDescriptor<TAlignmentGraph>::Type TED;
 	
 	TStringSet str;
 	TString str0("Garfieldthelastfatcat");
@@ -779,7 +779,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_OutEdgeIteratorAlignment)
 	typedef StringSet<TString, Dependent<> > TStringSet;
 	typedef Graph<Alignment<TStringSet> > TGraph;
 	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+	//typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 
 	TString str1 = "aa";
 	TString str2 = "ac";

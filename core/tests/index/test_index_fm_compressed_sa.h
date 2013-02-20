@@ -221,9 +221,9 @@ template <typename TIndex>
 void compressedSaOpenSave(TIndex & /*tag*/)
 {
     typedef typename Fibre<TIndex, FibreText>::Type TText;
-    typedef typename SAValue<TText>::Type TSAValue;
+    //typedef typename SAValue<TText>::Type TSAValue;
 
-    typedef String<TSAValue> TSAString;
+    //typedef String<TSAValue> TSAString;
 
     TText text;
     generateText(text, 1000);

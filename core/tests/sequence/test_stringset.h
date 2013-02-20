@@ -139,8 +139,8 @@ void Test_StringSet_Concat()
 template <typename TStringSet>
 void Test_StringSetIdHolder() {
 	typedef	typename Id<TStringSet>::Type TId;
-	typedef StringSet<String<char>, Dependent<Tight> > TSetTight;
-	typedef StringSet<String<char>, Dependent<Generous> > TSetGenerous;
+	//typedef StringSet<String<char>, Dependent<Tight> > TSetTight;
+	//typedef StringSet<String<char>, Dependent<Generous> > TSetGenerous;
 
 	TStringSet str;
 	String<char> bla("a");

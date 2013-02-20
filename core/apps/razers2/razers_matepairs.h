@@ -240,12 +240,12 @@ bool loadReads(
 			typename Value<typename TFragmentStore::TAlignedReadStore>::Type const &b) const 
 		{
 			typedef typename TFragmentStore::TReadStore			TReadStore;
-			typedef typename TFragmentStore::TAlignedReadStore	TAlignedReadStore;
+			typedef typename TFragmentStore::TAlignedReadStore	TAlignedReadStore SEQAN_TYPEDEF_FOR_DEBUG;
 			typedef typename TFragmentStore::TAlignQualityStore	TAlignQualityStore;
 			typedef typename Value<TReadStore>::Type			TRead;
-			typedef typename Value<TAlignedReadStore>::Type		TAlignedRead;
+			typedef typename Value<TAlignedReadStore>::Type		TAlignedRead SEQAN_TYPEDEF_FOR_DEBUG;
 			typedef typename Value<TAlignQualityStore>::Type	TQual;
-			typedef typename Id<TRead>::Type					TId;
+			//typedef typename Id<TRead>::Type					TId;
 
 			// pair number
 			TRead const &ra = store.readStore[a.readId];
@@ -395,7 +395,7 @@ void mapMatePairReads(
 	typedef typename Value<TAlignedReadStore>::Type			TAlignedRead;
 	typedef typename Value<TAlignQualityStore>::Type		TAlignQuality;
 	typedef typename Fibre<TReadIndex, FibreText>::Type	TReadSet;
-	typedef typename Id<TAlignedRead>::Type					TId;
+	//typedef typename Id<TAlignedRead>::Type					TId;
 
 	typedef typename Size<TGenome>::Type					TSize;
 	typedef typename Position<TGenome>::Type				TGPos;

@@ -33,8 +33,8 @@ void construct(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
 {
     // fragmentstore typedefs
   	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-    typedef typename Size<TFragmentStore>::Type TSize;
-    typedef typename TFragmentStore::TReadPos TReadPos;
+    //typedef typename Size<TFragmentStore>::Type TSize;
+    //typedef typename TFragmentStore::TReadPos TReadPos;
 
     typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
     TAlignIter alignItBegin = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
@@ -153,9 +153,9 @@ void scoreGraph_(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> &
     (void)fragStore;
     (void)contigId;
 
-    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-    typedef typename Size<TFragmentStore>::Type TSize;
-    typedef typename TFragmentStore::TReadPos TReadPos;
+    //typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+    //typedef typename Size<TFragmentStore>::Type TSize;
+    //typedef typename TFragmentStore::TReadPos TReadPos;
 
     typedef typename SelectGraph_< ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> >::Type TGraphInternal;
     

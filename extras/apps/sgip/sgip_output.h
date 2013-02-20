@@ -234,7 +234,7 @@ void outputMap(std::tr1::unordered_map<TKey, TValue> & map, CheckMap const &)
 {
     using namespace seqan;
     typedef typename std::tr1::unordered_map<TKey, TValue>::iterator TIterator;
-    typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
+    //typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
     TIterator itEnd = map.end();
     for (; it != itEnd; it++)
@@ -247,7 +247,7 @@ void outputMap(std::tr1::unordered_map<TKey, TValue> & map, DegreeMap const &)
 {
     using namespace seqan;
     typedef typename std::tr1::unordered_map<TKey, TValue>::iterator TIterator;
-    typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
+    //typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
     TIterator itEnd = map.end();
     for (; it != itEnd; it++)
