@@ -209,7 +209,7 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
+  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /EHsc")
   add_definitions (-DNOMINMAX)
 endif (WIN32)
 
