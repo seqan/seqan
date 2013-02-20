@@ -870,8 +870,8 @@ getAlignment(TBlastHsp & hsp,
 {
 SEQAN_CHECKPOINT
 
-	typedef Align<TSource, TSpec> TAlign;
-	typedef typename Row<TAlign>::Type TRow;
+	//typedef Align<TSource, TSpec> TAlign;
+	//typedef typename Row<TAlign>::Type TRow;
 
 	typedef Pair<unsigned int, unsigned int> TPosLen;
 

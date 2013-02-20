@@ -79,7 +79,7 @@ _parseReadQueryAndDBName(TFile & file,
 //IOREV
 SEQAN_CHECKPOINT
 	typedef typename Position<TFile>::Type TPosition;
-	typedef typename Value<TFile>::Type TValue;
+	//typedef typename Value<TFile>::Type TValue;
 
 	TChar c_before = c;
 	TPosition act_pos = _streamTellG(file);
