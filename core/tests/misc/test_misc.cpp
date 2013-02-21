@@ -46,7 +46,6 @@
 #include <seqan/misc/misc_base.h>
 #include <seqan/misc/misc_cmdparser.h>
 #include <seqan/misc/misc_dequeue.h>
-#include <seqan/misc/misc_long_word.h>
 #include <seqan/misc/misc_map.h>
 #include <seqan/misc/misc_random.h>
 #include <seqan/misc/misc_set.h>
@@ -55,7 +54,6 @@
 #include <seqan/misc/priority_type_heap.h>
 #include <seqan/misc/misc_terminal.h>
 
-#include "test_misc_long_word.h"
 #include "test_misc_interval_tree.h"
 #include "test_misc_accumulators.h"
 #include "test_misc_edit_environment.h"
@@ -98,10 +96,6 @@ SEQAN_DEFINE_TEST(test_misc_terminal_get_terminal_size)
 
 SEQAN_BEGIN_TESTSUITE(test_misc) {
     //     SEQAN_CALL_TEST(test_misc_random);
-
-    SEQAN_CALL_TEST(test_misc_long_word_native_interface);
-    SEQAN_CALL_TEST(test_misc_long_word_static_interface);
-    SEQAN_CALL_TEST(test_misc_long_word_dynamic_interface);
 
     SEQAN_CALL_TEST(test_misc_terminal_get_terminal_size);
 
