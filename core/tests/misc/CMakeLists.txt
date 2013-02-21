@@ -34,7 +34,6 @@ add_executable (test_misc
                test_misc_accumulators.h
                test_misc_interval_tree.h
                test_misc_bit_twiddling.h
-               test_misc_long_word.h
                test_misc_edit_environment.h)
 target_link_libraries (test_misc ${SEQAN_LIBRARIES})
 
