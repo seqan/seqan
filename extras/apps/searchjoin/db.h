@@ -882,7 +882,7 @@ void buildQuery(DbIndex<Index<TText, IndexSa<TIndexSpec> >, Query> & dbIndex,
     std::cout << "Seed errors:\t\t\t\t";
     std::copy(begin(dbIndex.errors, Standard()),
               end(dbIndex.errors, Standard()),
-              std::ostream_iterator<unsigned>(std::cout, ", "));
+              std::ostream_iterator<TDbSize>(std::cout, ", "));
     std::cout << std::endl;
 
     // Resize indices.
