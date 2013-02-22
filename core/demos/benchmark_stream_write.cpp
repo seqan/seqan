@@ -97,7 +97,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         before = sysTime();
         std::cerr << "Writing with new IO (no linebreaks, fstream) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta(), 0);
+            writeRecord(file, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
         file.close();
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
@@ -114,7 +114,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         before = sysTime();
         std::cerr << "Writing with new IO (no linebreaks, MMAP) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(mmapString, metas[i], seqs[i], Fasta(), 0);
+            writeRecord(mmapString, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
         close(mmapString);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
@@ -129,7 +129,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         before = sysTime();
         std::cerr << "Writing with new IO (no linebreaks,  cstdio) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta(), 0);
+            writeRecord(file, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
         fclose(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
@@ -146,7 +146,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         before = sysTime();
         std::cerr << "Writing with new IO (with linebreaks, fstream) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta(), LINEBREAKS);
+            writeRecord(file, metas[i], seqs[i], Fasta());
         file.close();
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
@@ -163,7 +163,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         before = sysTime();
         std::cerr << "Writing with new IO (with linebreaks, MMAP) .... to " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(mmapString, metas[i], seqs[i], Fasta(), LINEBREAKS);
+            writeRecord(mmapString, metas[i], seqs[i], Fasta());
         close(mmapString);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
@@ -178,7 +178,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         before = sysTime();
         std::cerr << "Writing with new IO (with linebreaks, cstdio) .... " << std::flush;
         for (int i = 0; i < 4; ++i)
-            writeRecord(file, metas[i], seqs[i], Fasta(), LINEBREAKS);
+            writeRecord(file, metas[i], seqs[i], Fasta());
         fclose(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n"<< std::flush;
