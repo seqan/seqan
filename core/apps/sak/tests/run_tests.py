@@ -53,7 +53,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
+#              '-ll', '1000',
               '-o', ph.outFile('adeno.all.out')],
         to_diff=[(ph.inFile('adeno.all.out'),
                   ph.outFile('adeno.all.out'))])
@@ -62,7 +62,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
+#              '-ll', '1000',
               '-s', '1',
               '-o', ph.outFile('adeno.seq1.out')],
         to_diff=[(ph.inFile('adeno.seq1.out'),
@@ -72,8 +72,8 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
-              '-ss', '1', '2',
+#              '-ll', '1000',
+              '-ss', '1-2',
               '-o', ph.outFile('adeno.seq1-2.out')],
         to_diff=[(ph.inFile('adeno.seq1-2.out'),
                   ph.outFile('adeno.seq1-2.out'))])
@@ -82,7 +82,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
+#              '-ll', '1000',
               '-s', '3',
               '-o', ph.outFile('adeno.seq3.out')],
         to_diff=[(ph.inFile('adeno.seq3.out'),
@@ -92,7 +92,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
+#              '-ll', '1000',
               '-sn', 'gi|9626621',
               '-o', ph.outFile('adeno.sn.out')],
         to_diff=[(ph.inFile('adeno.sn.out'),
@@ -102,9 +102,9 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
+#              '-ll', '1000',
               '-s', '1',
-              '-i', '5', '25',
+              '-i', '5-25',
               '-o', ph.outFile('adeno.s1i5-25.out')],
         to_diff=[(ph.inFile('adeno.s1i5-25.out'),
                   ph.outFile('adeno.s1i5-25.out'))])
@@ -113,9 +113,9 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
-              '-ss', '1', '2',
-              '-i', '5', '25',
+#              '-ll', '1000',
+              '-ss', '1-2',
+              '-i', '5-25',
               '-o', ph.outFile('adeno.s1-2i5-25.out')],
         to_diff=[(ph.inFile('adeno.s1-2i5-25.out'),
                   ph.outFile('adeno.s1-2i5-25.out'))])
@@ -124,7 +124,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
-              '-ll', '1000',
+#              '-ll', '1000',
               '-s', '1',
               '-rc',
               '-o', ph.outFile('adeno.s1rc.out')],

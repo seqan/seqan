@@ -651,7 +651,7 @@ int readAll(StringSet<TId, TIdSpec> & ids,
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord()
+// Function readRecord()
 // ----------------------------------------------------------------------------
 
 /**
@@ -696,6 +696,10 @@ int main()
 ..include:seqan/seq_io.h
 */
 
+// ----------------------------------------------------------------------------
+// Function writeRecord()
+// ----------------------------------------------------------------------------
+
 /**
 .Function.SequenceStream#writeRecord
 ..class:Class.SequenceStream
@@ -703,8 +707,8 @@ int main()
 ..description:
 The record is appended to the file if you have written out any previously.
 When writing out @Spec.Dna5@, qualities are automatically taken from the sequence characters.
-..signature:int writeRecord(seqIO, id, seq)
-..signature:int writeRecord(seqIO, id, seq, qual)
+..signature:int writeRecord(seqIO, id, seq, [options])
+..signature:int writeRecord(seqIO, id, seq, qual, [options])
 ..param.seqIO:The @Class.SequenceStream@ object to write to.
 ...type:Class.SequenceStream
 ..param.id:The identifier to write.
@@ -714,6 +718,8 @@ When writing out @Spec.Dna5@, qualities are automatically taken from the sequenc
 ..param.quals:The qualities to write out.
 ...type:Shortcut.CharString
 ...remarks:If the sequence has no qualities, @Function.clear@ is called on $quals$ to indicate this.
+..param.options:The configuration for writing FASTA and FASTQ files.
+...type:Class.SequenceOutputOptions
 ..returns:An integer, $0$ on success, $1$ on errors.
 ...type:nolink:$int$
 ..example:Write out two sequences to a FASTQ file.
@@ -747,14 +753,43 @@ template <typename TId, typename TSequence, typename TQualities>
 int writeRecord(SequenceStream & seqIO,
                 TId const & id,
                 TSequence const & seq,
-                TQualities const & qual)
+                TQualities const & qual,
+                SequenceOutputOptions const & options)
 {
     int res = 0;
 
     if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTA)
-        res = seqIO._impl->writeRecord(id, seq, Fasta());
+        res = seqIO._impl->writeRecord(id, seq, Fasta(), options);
     else if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTQ)
-        res = seqIO._impl->writeRecord(id, seq, qual, Fastq());
+        res = seqIO._impl->writeRecord(id, seq, qual, Fastq(), options);
+    else
+        res = 1;
+
+    seqIO._isGood = seqIO._impl->_isGood;
+    return res;
+}
+
+template <typename TId, typename TSequence, typename TQualities>
+int writeRecord(SequenceStream & seqIO,
+                TId const & id,
+                TSequence const & seq,
+                TQualities const & qual)
+{
+    return writeRecord(seqIO, id, seq, qual, SequenceOutputOptions());
+}
+
+template <typename TId, typename TSequence>
+int writeRecord(SequenceStream & seqIO,
+                TId const & id,
+                TSequence const & seq,
+                SequenceOutputOptions const & options)
+{
+    int res = 0;
+
+    if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTA)
+        res = seqIO._impl->writeRecord(id, seq, Fasta(), options);
+    else if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTQ)
+        res = seqIO._impl->writeRecord(id, seq, Fastq(), options);
     else
         res = 1;
 
@@ -767,17 +802,7 @@ int writeRecord(SequenceStream & seqIO,
                 TId const & id,
                 TSequence const & seq)
 {
-    int res = 0;
-
-    if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTA)
-        res = seqIO._impl->writeRecord(id, seq, Fasta());
-    else if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTQ)
-        res = seqIO._impl->writeRecord(id, seq, Fastq());
-    else
-        res = 1;
-
-    seqIO._isGood = seqIO._impl->_isGood;
-    return res;
+    return writeRecord(seqIO, id, seq, SequenceOutputOptions());
 }
 
 // ----------------------------------------------------------------------------
@@ -802,6 +827,8 @@ When writing out @Spec.Dna5@, qualities are automatically taken from the sequenc
 ..param.quals:Qualities to write out. Optional.
 ...type:nolink:@Class.StringSet@ of @Shortcut.CharString@.
 ...remarks:Qualities are ignored if the file format does not suppor them.  If none are given for FASTQ, score 40 is written out for all.
+..param.options:The configuration for writing FASTA and FASTQ files.
+...type:Class.SequenceOutputOptions
 ..returns:An integer, $0$ on success, $1$ on errors.
 ...type:nolink:$int$
 ..example:Write out all sequences.
@@ -833,14 +860,44 @@ template <typename TId, typename TIdSpec, typename TSequence, typename TSeqSpec,
 int writeAll(SequenceStream & seqIO,
              StringSet<TId, TIdSpec> const & ids,
              StringSet<TSequence, TSeqSpec> const & seqs,
-             StringSet<TQualities, TQualSpec> const & quals)
+             StringSet<TQualities, TQualSpec> const & quals,
+             SequenceOutputOptions const & options)
 {
     int res = 0;
 
     if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTA)
-        res = seqIO._impl->writeAll(ids, seqs, Fasta());
+        res = seqIO._impl->writeAll(ids, seqs, Fasta(), options);
     else if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTQ)
-        res = seqIO._impl->writeAll(ids, seqs, quals, Fastq());
+        res = seqIO._impl->writeAll(ids, seqs, quals, Fastq(), options);
+    else
+        res = 1;
+
+    seqIO._isGood = seqIO._impl->_isGood;
+    return res;
+}
+
+template <typename TId, typename TIdSpec, typename TSequence, typename TSeqSpec, typename TQualities,
+          typename TQualSpec>
+int writeAll(SequenceStream & seqIO,
+             StringSet<TId, TIdSpec> const & ids,
+             StringSet<TSequence, TSeqSpec> const & seqs,
+             StringSet<TQualities, TQualSpec> const & quals)
+{
+    return writeAll(seqIO, ids, seqs, quals, SequenceOutputOptions());
+}
+
+template <typename TId, typename TIdSpec, typename TSequence, typename TSeqSpec>
+int writeAll(SequenceStream & seqIO,
+             StringSet<TId, TIdSpec> const & ids,
+             StringSet<TSequence, TSeqSpec> const & seqs,
+             SequenceOutputOptions const & options)
+{
+    int res = 0;
+
+    if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTA)
+        res = seqIO._impl->writeAll(ids, seqs, Fasta(), options);
+    else if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTQ)
+        res = seqIO._impl->writeAll(ids, seqs, Fastq(), options);
     else
         res = 1;
 
@@ -853,17 +910,7 @@ int writeAll(SequenceStream & seqIO,
              StringSet<TId, TIdSpec> const & ids,
              StringSet<TSequence, TSeqSpec> const & seqs)
 {
-    int res = 0;
-
-    if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTA)
-        res = seqIO._impl->writeAll(ids, seqs, Fasta());
-    else if (seqIO._fileFormat == SeqIOFileFormat_::FILE_FORMAT_FASTQ)
-        res = seqIO._impl->writeAll(ids, seqs, Fastq());
-    else
-        res = 1;
-
-    seqIO._isGood = seqIO._impl->_isGood;
-    return res;
+    return writeAll(seqIO, ids, seqs, SequenceOutputOptions());
 }
 
 }  // namespace seqan

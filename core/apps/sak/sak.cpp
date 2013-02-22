@@ -1,483 +1,541 @@
-/*==========================================================================
-  SeqAn - The Library for Sequence Analysis
-  http://www.seqan.de 
-  ===========================================================================
-  Copyright (C) 2007-2010
-  
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 3 of the License, or (at your option) any later version.
-  
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  Lesser General Public License for more details.
-  
-  ===========================================================================
-  Author: David Weese <david.weese@fu-berlin.de>
-  ===========================================================================
-  Swiss Army Knife tool... It slices and dices and makes the laundry!
+// ==========================================================================
+//                                  SAK
+// ==========================================================================
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
+//       its contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+// DAMAGE.
+//
+// ==========================================================================
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// ==========================================================================
+// Swiss Army Knife tool... "It slices, it dices and it makes the laundry!"
+//
+// Rewrite of the original sak tool.
+// ==========================================================================
 
-  This tool allows to cut sequences and parts of sequences out of sequence
-  files.  It supports all formats supported by the AutoSeqFormat class from
-  SeqAn, including FASTA, FASTQ and QSeq (Illumina format).
-
-
-  Usage: sak [OPTION]... <SOURCE SEQUENCE FILE>
-
-  Main Options:
-    -o,  --output FILE              set output filename (default: use stdout)
-    -q,  --qual                     enable Fastq output (default: Fasta)
-    -h,  --help                     print this help
-
-  Extract Options:
-    -s,  --sequence NUM             select a single sequence by index
-    -sn, --sequence-name NAME       select a single sequence by name
-    -ss, --sequences START END      select sequences (default: select all)
-    -i,  --infix START END          extract infix
-    -rc, --revcomp                  reverse complement
-    -l,  --max-length               maximal number of sequence characters to
-                                    write out
-		-ll, --line-length              maximal characters per output line
-  ===========================================================================*/
-
-#include <fstream>
-#include <iostream>
-#include <limits>
 #include <sstream>
 
+#include <seqan/arg_parse.h>
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
-#include <seqan/file.h>
 #include <seqan/sequence.h>
-//#include "../library/apps/razers/mmap_fasta.h"
+#include <seqan/stream.h>
+#include <seqan/seq_io.h>
 
-using namespace std;
-using namespace seqan;
+// --------------------------------------------------------------------------
+// Class SakOptions
+// --------------------------------------------------------------------------
 
-//____________________________________________________________________________
-// Global Parameters
-
-	int			optionSeqStart = 0;
-	int			optionSeqEnd = MaxValue<int>::VALUE;
-	int			optionInfStart = 0;
-	int			optionInfEnd = -1;
-	bool		optionRevComp = false;
-	const char	*optionOutput = NULL;
-	bool		optionFastQ = false;
-    bool        optionSeqNameSet = false;
-    CharString  optionSeqName = "";
-    int         optionMaxLength = -1;
-    unsigned    optionLineLength = 200;
-
-	typedef Dna5 TAlphabet;
-	typedef String<TAlphabet> TSeqString;
-
-//____________________________________________________________________________
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Load multi-Fasta sequences
-template <typename TSeqSet, typename TQuals, typename TIDs>
-bool loadSeqs(TSeqSet &seqs, TQuals &quals, TIDs &ids, const char *fileName)
+struct SakOptions
 {
-	MultiFasta multiFasta;
-	if (!open(multiFasta.concat, fileName, OPEN_RDONLY)) return false;
+    // Verbosity level.  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
+    int verbosity;
 
-	AutoSeqFormat format;
-	guessFormat(multiFasta.concat, format);	
-	split(multiFasta, format);
+    // Path to FASTA/FASTQ file.
+    seqan::CharString inFastxPath;
 
-	int seqCount = length(multiFasta);
+    // Path to output file.
+    seqan::CharString outPath;
 
-	if (optionSeqEnd > seqCount) optionSeqEnd = seqCount;
-	if (optionSeqStart < 0) optionSeqStart = 0;
+    // Whether or not to print FASTQ to output.
+    bool outFastq;
 
-    if (optionSeqNameSet) {
-        clear(seqs);
-        clear(quals);
-        clear(ids);
-        for (unsigned i = 0; i < length(multiFasta); ++i) {
-            CharString thisName;
-            assignSeqId(thisName, multiFasta[i], format);
-            if (optionSeqName == infix(thisName, 0, length(optionSeqName))) {
-                resize(seqs, 1, Exact());
-                assignSeq(seqs[0], multiFasta[i], format);
-                resize(ids, 1, Exact());
-                assignSeqId(ids[0], multiFasta[i], format);
-                resize(quals, 1, Exact());
-                resize(quals[0], length(seqs[0]), 33 + 80);
-                assignQual(quals[0], multiFasta[i], format);
-                return true;
-            }
-        }
-    } else {
-        if (optionSeqStart < optionSeqEnd)
+    // Set if one sequence is to be retrieved.
+    seqan::String<__uint64> seqIndices;
+
+    // Set if multiple sequences are to be retrieved.
+    seqan::String<seqan::Pair<__uint64> > seqIndexRanges;
+
+    // Set if output is to be limited to an infix.
+    __uint64 seqInfixBegin;
+    __uint64 seqInfixEnd;
+
+    // Whether or not to reverse-complement the result.
+    bool reverseComplement;
+
+    // Maximal length of sequence characters to print.
+    __uint64 maxLength;
+
+    // Prefix of read names to output if not empty.
+    seqan::CharString readPattern;
+
+    // Line length configuration etc.
+    seqan::SequenceOutputOptions seqOutOptions;
+
+    SakOptions() :
+        verbosity(1),
+        outFastq(false),
+        seqInfixBegin(seqan::maxValue<__uint64>()),
+        seqInfixEnd(seqan::maxValue<__uint64>()),
+        reverseComplement(false),
+        maxLength(seqan::maxValue<__uint64>())
+    {}
+};
+
+// --------------------------------------------------------------------------
+// Function parseRange()
+// --------------------------------------------------------------------------
+
+template <typename TNum>
+bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeStr)
+{
+    seqan::Stream<seqan::CharArray<char const *> > stream(begin(rangeStr, seqan::Standard()),
+                                                          end(rangeStr, seqan::Standard()));
+    seqan::RecordReader<seqan::Stream<seqan::CharArray<char const *> >, seqan::SinglePass<> > reader(stream);
+
+    // Parse out begin position.
+    seqan::CharString buffer;
+    while (!atEnd(reader) && value(reader) != '-')
+    {
+        if (!isdigit(value(reader)) && value(reader) != ',')
+            return false;  // Error parsing.
+
+        if (isdigit(value(reader)))
+            appendValue(buffer, value(reader));
+        goNext(reader);
+    }
+    if (empty(buffer))
+        return false;
+
+    if (!lexicalCast2(beginPos, buffer))
+        return false;
+
+    if (atEnd(reader))
+        return true;
+
+    goNext(reader);  // Skip '-'.
+
+    // Parse out end position.
+    clear(buffer);
+    while (!atEnd(reader))
+    {
+        if (!isdigit(value(reader)) && value(reader) != ',')
+            return false;  // Error parsing.
+
+        if (isdigit(value(reader)))
+            appendValue(buffer, value(reader));
+        goNext(reader);
+    }
+    if (empty(buffer))
+        return false;
+
+    if (!lexicalCast2(endPos, buffer))
+        return false;
+
+    if (endPos < beginPos)
+        return false;
+
+    return true;
+}
+
+// --------------------------------------------------------------------------
+// Function parseArgs()
+// --------------------------------------------------------------------------
+
+seqan::ArgumentParser::ParseResult
+parseArgs(SakOptions & options,
+          int argc,
+          char const ** argv)
+{
+    seqan::ArgumentParser parser("sak");
+    setShortDescription(parser, "Slicing and dicing of FASTA/FASTQ files..");
+    setVersion(parser, "0.2");
+    setDate(parser, "November 2012");
+
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fIIN.{fa,fq}\\fP");
+    addDescription(parser, "\"It slices, it dices and it makes the laundry!\"");
+    addDescription(parser, "Rewrite of the original SAK tool by Manuel Holtgrewe.");
+
+    // The only argument is the input file.
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+
+    // TODO(holtgrew): I want a custom help text!
+    // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
+    addOption(parser, seqan::ArgParseOption("v", "verbose", "Verbose, log to STDERR."));
+    hideOption(parser, "verbose");
+    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Very verbose, log to STDERR."));
+    hideOption(parser, "very-verbose");
+
+    addSection(parser, "Output Options");
+    addOption(parser, seqan::ArgParseOption("o", "out-path",
+                                            "Path to the resulting file.  If omitted, result is printed to stdout.",
+                                            seqan::ArgParseOption::OUTPUTFILE, "FASTX"));
+    addOption(parser, seqan::ArgParseOption("q", "qual", "Write output as FASTQ file."));
+    addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
+    addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
+                                            seqan::ArgParseOption::INTEGER, "LEN"));
+
+    addSection(parser, "Filter Options");
+    addOption(parser, seqan::ArgParseOption("s", "sequence", "Select the given sequence for extraction by 0-based index.",
+                                            seqan::ArgParseOption::INTEGER, "NUM", true));
+    addOption(parser, seqan::ArgParseOption("sn", "sequence-name", "Select sequence with name prefix being \\fINAME\\fP.",
+                                            seqan::ArgParseOption::STRING, "NAME", true));
+    addOption(parser, seqan::ArgParseOption("ss", "sequences",
+                                            "Select sequences \\fIfrom\\fP-\\fIto\\fP where \\fIfrom\\fP and \\fIto\\fP "
+                                            "are 0-based indices.",
+                                            seqan::ArgParseArgument::STRING, "RANGE", true));
+    addOption(parser, seqan::ArgParseOption("i", "infix",
+                                            "Select characters \\fIfrom\\fP-\\fIto\\fP where \\fIfrom\\fP and \\fIto\\fP "
+                                            "are 0-based indices.",
+                                            seqan::ArgParseArgument::STRING, "RANGE", true));
+
+    addOption(parser, seqan::ArgParseOption("ll", "line-length",
+                                            "Set line length in output file.  See section \\fILine Length\\fP for details.",
+                                            seqan::ArgParseArgument::INTEGER, "LEN", true));
+    setMinValue(parser, "line-length", "-1");
+
+    addTextSection(parser, "Line Length");
+    addText(parser,
+            "You can use the setting \\fB--line-length\\fP for setting the resulting line length.  By default, "
+            "sequences in FASTA files are written with at most 70 characters per line and sequences in FASTQ files are "
+            "written without any line breaks.  The quality sequence in FASTQ file is written in the same way as the "
+            "residue sequence.");
+    addText(parser,
+            "The default is selected with a \\fB--line-length\\fP value of \\fI-1\\fP and line breaks can be disabled "
+            "with a value of \\fI0\\fP.");
+
+    addTextSection(parser, "Usage Examples");
+    addListItem(parser, "\\fBsak\\fP \\fB-s\\fP \\fI10\\fP \\fIIN.fa\\fP",
+                "Cut out 11th sequence from \\fIIN.fa\\fP and write to stdout as FASTA.");
+    addListItem(parser, "\\fBsak\\fP \\fB-q\\fP \\fB-ss\\fP \\fI10-12\\fP \\fB-ss\\fP \\fI100-200\\fP \\fIIN.fq\\fP",
+                "Cut out 11th up to and including 12th and 101th up to and including 199th sequence from \\fIIN.fq\\fP "
+                "and write to stdout as FASTQ.");
+
+    seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
+
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res;
+
+    getArgumentValue(options.inFastxPath, parser, 0);
+
+    options.outFastq = isSet(parser, "qual");
+
+    if (isSet(parser, "out-path"))
+        getOptionValue(options.outPath, parser, "out-path");
+
+    if (isSet(parser, "verbose"))
+        options.verbosity = 2;
+    if (isSet(parser, "very-verbose"))
+        options.verbosity = 3;
+
+    if (isSet(parser, "sequence"))
+    {
+        std::vector<std::string> sequenceIds = getOptionValues(parser, "sequence");
+        for (unsigned i = 0; i < seqan::length(sequenceIds); ++i)
         {
-            resize(seqs, optionSeqEnd - optionSeqStart, Exact());
-            resize(ids, optionSeqEnd - optionSeqStart, Exact());
-            resize(quals, optionSeqEnd - optionSeqStart, Exact());
-            for(int i = 0, j = optionSeqStart; j < optionSeqEnd; ++i, ++j)
+            unsigned idx = 0;
+            if (!seqan::lexicalCast2(idx, sequenceIds[i]))
             {
-                assignSeq(seqs[i], multiFasta[j], format);		// read Genome sequence
-                assignSeqId(ids[i], multiFasta[j], format);		// read Genome ids
-                resize(quals[i], length(seqs[i]), 33 + 80);
-                assignQual(quals[i], multiFasta[j], format);	// read qualities
+                std::cerr << "ERROR: Invalid sequence index " << sequenceIds[i] << "\n";
+                return seqan::ArgumentParser::PARSE_ERROR;
             }
+            appendValue(options.seqIndices, idx);
         }
     }
 
-	return (seqCount > 0);
-}
-
-template < 
-	typename TStream, 
-	typename TId >
-void dumpFastaId(
-	TStream &out,
-	TId &id)
-{
-  /*
-	unsigned size = length(id);
-	for (unsigned i = 0; i < size; ++i)
-		if (id[i] == ' ')
-		{
-			size = i;
-			break;
-		}
-	out << infix(id, 0, size) << endl;
-	*/
-	out << id << endl;
-}
-
-template < 
-	typename TStream, 
-	typename TSeq >
-void dumpFastaSeq(
-	TStream &out,
-    int n,
-	TSeq const &seq)
-{
-    if (n == -1) {
-        out << seq << endl;
-    } else {
-        SEQAN_ASSERT_GEQ(n, 0);
-        unsigned size = _min(length(seq), static_cast<unsigned>(n));
-        //n -= size;
-        out << infix(seq, 0, size) << endl;
+    if (isSet(parser, "sequences"))
+    {
+        std::vector<std::string> sequenceRanges = getOptionValues(parser, "sequences");
+        seqan::CharString buffer;
+        for (unsigned i = 0; i < seqan::length(sequenceRanges); ++i)
+        {
+            seqan::Pair<__uint64> range;
+            if (!parseRange(range.i1, range.i2, sequenceRanges[i]))
+            {
+                std::cerr << "ERROR: Invalid range " << sequenceRanges[i] << "\n";
+                return seqan::ArgumentParser::PARSE_ERROR;
+            }
+            appendValue(options.seqIndexRanges, range);
+        }
     }
+
+    if (isSet(parser, "infix"))
+    {
+        seqan::CharString buffer;
+        getOptionValue(buffer, parser, "infix");
+        if (!parseRange(options.seqInfixBegin, options.seqInfixEnd, buffer))
+        {
+            std::cerr << "ERROR: Invalid range " << buffer << "\n";
+            return seqan::ArgumentParser::PARSE_ERROR;
+        }
+    }
+
+    options.reverseComplement = isSet(parser, "revcomp");
+
+    if (isSet(parser, "max-length"))
+        getOptionValue(options.maxLength, parser, "max-length");
+
+    if (isSet(parser, "sequence-name"))
+        getOptionValue(options.readPattern, parser, "sequence-name");
+
+    getOptionValue(options.seqOutOptions.lineLength, parser, "line-length");
+
+    return res;
 }
 
+// ---------------------------------------------------------------------------
+// Function yesNo()
+// ---------------------------------------------------------------------------
 
-template < 
-	typename TReadSet, 
-	typename TReadIDs >
-void saveFasta(
-	TReadSet const &readSet,		// generated read sequences
-	TReadIDs const &readIDs)		// corresponding Fasta ids
+char const * yesNo(bool b)
 {
-	ostream *out = &cout;
-	ofstream file;
-	
-	if (optionOutput != NULL)
-	{
-		file.open(optionOutput, ios_base::out | ios_base::trunc);
-		if (!file.is_open()) {
-			cerr << "Failed to open output file" << endl;
-			return;
-		}
-		else
-			cout << "Writing sequences to " << optionOutput << "\n";
-		out = &file;
-	}
-
-	unsigned reads = length(readSet);
-	for(unsigned i = 0; i < reads && optionMaxLength != 0; ++i)
-	{
-		(*out) << '>';
-		dumpFastaId(*out, readIDs[i]);
-		unsigned len = length(readSet[i]);
-		if (optionMaxLength != -1 && len > (unsigned)optionMaxLength)
-			len = optionMaxLength;
-		for(unsigned j = 0; j < len; j += optionLineLength)
-			dumpFastaSeq(*out, min(optionLineLength, len - j), suffix(readSet[i],j));
-	}
-	
-	file.close();
+    if (b)
+        return "YES";
+    else
+        return "NO";
 }
 
-template < 
-	typename TReadSet,
-	typename TQualSet,
-	typename TReadIDs >
-void saveFastq(
-	TReadSet const &readSet,		// generated read sequences
-	TQualSet const &qualSet,		// qualities
-	TReadIDs const &readIDs)		// corresponding Fasta ids
+// ---------------------------------------------------------------------------
+// Function main()
+// ---------------------------------------------------------------------------
+
+int main(int argc, char const ** argv)
 {
-	ostream *out = &cout;
-	ofstream file;
-	
-	if (optionOutput != NULL)
-	{
-		file.open(optionOutput, ios_base::out | ios_base::trunc);
-		if (!file.is_open()) {
-			cerr << "Failed to open output file" << endl;
-			return;
-		}
-		else
-			cout << "Writing reads to " << optionOutput << "\n";
-		out = &file;
-	}
+    double startTime = 0;
 
-	unsigned reads = length(readSet);
-	for(unsigned i = 0; i < reads && optionMaxLength != 0; ++i)
-	{
-        int tmp = optionMaxLength;
-		(*out) << '@';
-		dumpFastaId(*out, readIDs[i]);
-		dumpFastaSeq(*out, optionMaxLength, readSet[i]);
-		(*out) << '+';
-		dumpFastaId(*out, readIDs[i]);
-		dumpFastaSeq(*out, tmp, qualSet[i]);
-	}
-	
-	file.close();
-}
+    // Parse command line.
+    SakOptions options;
+    seqan::ArgumentParser::ParseResult res = parseArgs(options, argc, argv);
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;  // 1 on errors, 0 otherwise
 
-//////////////////////////////////////////////////////////////////////////////
-// Print usage
-void printHelp(int, const char *[], bool longHelp = false) 
-{
-	cerr << "************************" << endl;
-	cerr << "*** Swiss Army Knife ***" << endl;
-	cerr << "************************" << endl << endl;
-	cerr << "Usage: sak [OPTION]... <SOURCE SEQUENCE FILE>" << endl;
-	cerr << "\n";
-	if (longHelp) {
-		cerr << endl << "Main Options:" << endl;
-		cerr << "  -o,  --output FILE            \t" << "set output filename (default: use stdout)" << endl;
-		cerr << "  -q,  --qual                   \t" << "enable Fastq output (default: Fasta)" << endl;
-		cerr << "  -h,  --help                   \t" << "print this help" << endl;
-		cerr << endl << "Extract Options:" << endl;
-		cerr << "  -s,  --sequence NUM           \t" << "select a single sequence by index" << endl;
-        cerr << "  -sn, --sequence-name NAME     \t" << "select a single sequence by name" << endl;
-		cerr << "  -ss, --sequences START END    \t" << "select sequences (default: select all)" << endl;
-		cerr << "  -i,  --infix START END        \t" << "extract infix" << endl;
-		cerr << "  -rc, --revcomp                \t" << "reverse complement" << endl;
-		cerr << "  -l,  --max-length             \t" << "maximal number of sequence characters" << endl;
-		cerr << "  -ll, --line-length            \t" << "maximal characters per output line" << endl;
-	} else {
-		cerr << "Try 'sak --help' for more information." << endl;
-	}
-}
+    // -----------------------------------------------------------------------
+    // Show options.
+    // -----------------------------------------------------------------------
+    if (options.verbosity >= 2)
+    {
+        std::cerr << "____OPTIONS___________________________________________________________________\n"
+                  << "\n"
+                  << "VERBOSITY    " << options.verbosity << "\n"
+                  << "IN           " << options.inFastxPath << "\n"
+                  << "OUT          " << options.outPath << "\n"
+                  << "FASTQ OUT    " << yesNo(options.outFastq) << "\n"
+                  << "INFIX BEGIN  " << options.seqInfixBegin << "\n"
+                  << "INFIX END    " << options.seqInfixEnd << "\n"
+                  << "MAX LEN      " << options.maxLength << "\n"
+                  << "READ PATTERN " << options.readPattern << "\n"
+                  << "REVCOMP      " << yesNo(options.reverseComplement) << "\n"
+                  << "SEQUENCES\n";
+        for (unsigned i = 0; i < length(options.seqIndices); ++i)
+            std::cerr << "  SEQ  " << options.seqIndices[i] << "\n";
+        for (unsigned i = 0; i < length(options.seqIndexRanges); ++i)
+            std::cerr << "  SEQS " << options.seqIndexRanges[i].i1 << "-" << options.seqIndexRanges[i].i2 << "\n";
+    }
 
+    // -----------------------------------------------------------------------
+    // Open Files.
+    // -----------------------------------------------------------------------
+    std::ostream * outPtr = &std::cout;
+    std::fstream inStream;
+    if (!empty(options.inFastxPath))
+    {
+        inStream.open(toCString(options.inFastxPath), std::ios::binary | std::ios::in);
+        if (!inStream.good())
+        {
+            std::cerr << "ERROR: Could not open input file " << options.inFastxPath << "\n";
+            return 1;
+        }
+    }
+    std::fstream outStream;
+    if (!empty(options.outPath))
+    {
+        outStream.open(toCString(options.outPath), std::ios::binary | std::ios::out);
+        if (!outStream.good())
+        {
+            std::cerr << "ERROR: Could not open output file " << options.outPath << "\n";
+            return 1;
+        }
+        outPtr = &outStream;
+    }
 
-//////////////////////////////////////////////////////////////////////////////
-// Main part
-int main(int argc, const char *argv[])
-{
-	unsigned fnameCount = 0;
-	const char *fname[2] = { "" , "" };
-	
-	// Command line parsing
-	for(int arg = 1; arg < argc; ++arg) {
-		if (argv[arg][0] == '-') {
-			// parse option
+    // Compute index of last sequence to write if any.
+    __uint64 endIdx = seqan::maxValue<__uint64>();
+    for (unsigned i = 0; i < length(options.seqIndices); ++i)
+        if (endIdx == seqan::maxValue<__uint64>() || endIdx > options.seqIndices[i] + 1)
+            endIdx = options.seqIndices[i] + 1;
+    for (unsigned i = 0; i < length(options.seqIndexRanges); ++i)
+        if (endIdx == seqan::maxValue<__uint64>() || endIdx > options.seqIndexRanges[i].i2)
+            endIdx = options.seqIndexRanges[i].i2;
+    if (options.verbosity >= 2)
+        std::cerr << "Sequence end idx: " << endIdx << "\n";
 
-			if (strcmp(argv[arg], "-s") == 0 || strcmp(argv[arg], "--sequence") == 0) {
-				if (arg + 1 < argc) {
-					++arg;
-					istringstream istr(argv[arg]);
-					istr >> optionSeqStart;
-					if (!istr.fail())
-					{
-						if (optionSeqStart < 0)
-							cerr << "sequence number must be a value >=0" << endl << endl;
-						else
-						{
-							optionSeqEnd = optionSeqStart + 1;
-							continue;
-						}
-					}
-				}
-				printHelp(argc, argv);
-				return 0;
-			}
+    // -----------------------------------------------------------------------
+    // Read and Write Filtered.
+    // -----------------------------------------------------------------------
+    startTime = sysTime();
+    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inStream);
+    seqan::AutoSeqStreamFormat tagSelector;
+    if (!checkStreamFormat(reader, tagSelector) || (tagSelector.tagId != 1 && tagSelector.tagId != 2))
+    {
+        std::cerr << "ERROR: Could not determine input format!\n";
+        return 1;
+    }
 
-            if (strcmp(argv[arg], "-sn") == 0 || strcmp(argv[arg], "--sequence-name") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-                    optionSeqNameSet = true;
-                    optionSeqName = argv[arg];
-                    continue;
+    unsigned idx = 0;
+    __uint64 charsWritten = 0;
+    seqan::CharString id;
+    seqan::CharString seq;
+    seqan::CharString quals;
+    while (!atEnd(reader) && charsWritten < options.maxLength && idx < endIdx)
+    {
+        if (tagSelector.tagId == 1)
+        {
+            // FASTA.
+            if (readRecord(id, seq, reader, seqan::Fasta()) != 0)
+            {
+                std::cerr << "ERROR: Reading record!\n";
+                return 1;
+            }
+            if (options.outFastq)
+                resize(quals, length(seq), 'I');
+        }
+        else
+        {
+            // FASTQ
+            if (readRecord(id, seq, quals, reader, seqan::Fastq()) != 0)
+            {
+                std::cerr << "ERROR: Reading record!\n";
+                return 1;
+            }
+        }
+
+        // Check whether to write out sequence.
+        bool writeOut = false;
+        if (empty(options.seqIndices) && empty(options.seqIndexRanges))
+            writeOut = true;
+        // One of options.seqIndices.
+        if (!writeOut)
+        {
+            for (unsigned i = 0; i < length(options.seqIndices); ++i)
+            {
+                if (options.seqIndices[i] == idx)
+                {
+                    writeOut = true;
+                    break;
                 }
             }
-
-			if (strcmp(argv[arg], "-ss") == 0 || strcmp(argv[arg], "--sequences") == 0) {
-				if (arg + 2 < argc) {
-					++arg;
-					istringstream istr(argv[arg]);
-					istr >> optionSeqStart;
-					++arg;
-					if (!istr.fail())
-					{
-						if (optionSeqStart < 0)
-							cerr << "first sequence number must be a value >=0" << endl << endl;
-						else
-						{
-							istringstream istr(argv[arg]);
-							if (!istr.fail())
-							{
-								istr >> optionSeqEnd;
-								if (optionSeqEnd < 0)
-									cerr << "last sequence number must be a value >=0" << endl << endl;
-								else
-								{
-									++optionSeqEnd;
-									continue;
-								}
-							}
-						}
-					}
-				}
-				printHelp(argc, argv);
-				return 0;
-			}
-
-			if (strcmp(argv[arg], "-i") == 0 || strcmp(argv[arg], "--infix") == 0) {
-				if (arg + 2 < argc) {
-					++arg;
-					istringstream istr(argv[arg]);
-					istr >> optionInfStart;
-					++arg;
-					if (!istr.fail())
-					{
-						if (optionInfStart < 0)
-							cerr << "infix start a value >=0" << endl << endl;
-						else
-						{
-							istringstream istr(argv[arg]);
-							if (!istr.fail())
-							{
-								istr >> optionInfEnd;
-								if (optionInfEnd < 0)
-									cerr << "infix end a value >=0" << endl << endl;
-								else
-									continue;
-							}
-						}
-					}
-				}
-				printHelp(argc, argv);
-				return 0;
-			}
-
-			if (strcmp(argv[arg], "-rc") == 0 || strcmp(argv[arg], "--revcomp") == 0) {
-				optionRevComp = true;
-				continue;
-			}
-
-			if (strcmp(argv[arg], "-q") == 0 || strcmp(argv[arg], "--qual") == 0) {
-				optionFastQ = true;
-				continue;
-			}
-
-			if (strcmp(argv[arg], "-o") == 0 || strcmp(argv[arg], "--output") == 0) {
-				if (arg + 1 == argc) {
-					printHelp(argc, argv);
-					return 0;
-				}
-				++arg;
-				optionOutput = argv[arg];
-				continue;
-			}
-
-			if (strcmp(argv[arg], "-ll") == 0 || strcmp(argv[arg], "--line-length") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-					istringstream istr(argv[arg]);
-					istr >> optionLineLength;
-                    continue;
+        }
+        // One of options.seqIndexRanges.
+        if (!writeOut)
+        {
+            for (unsigned i = 0; i < length(options.seqIndexRanges); ++i)
+            {
+                if (idx >= options.seqIndexRanges[i].i1 && idx < options.seqIndexRanges[i].i2)
+                {
+                    writeOut = true;
+                    break;
                 }
-			}
- 
-            if (strcmp(argv[arg], "-l") == 0 || strcmp(argv[arg], "--max-length") == 0) {
-                if (arg + 1 < argc) {
-                    ++arg;
-					istringstream istr(argv[arg]);
-					istr >> optionMaxLength;
-                    continue;
+            }
+        }
+        // Name pattern matches.
+        if (!writeOut && !empty(options.readPattern))
+        {
+            unsigned l = length(options.readPattern);
+            if (l > length(id))
+                l = length(id);
+            if (prefix(id, l) == prefix(options.readPattern, l))
+                writeOut = true;
+        }
+
+        // Write out if we want this.
+        if (writeOut)
+        {
+            // Get begin and end index of infix to write out.
+            __uint64 infixBegin = 0;
+            if (options.seqInfixBegin != seqan::maxValue<__uint64>())
+                infixBegin = options.seqInfixBegin;
+            if (infixBegin > length(seq))
+                infixBegin = length(seq);
+            __uint64 infixEnd = length(seq);
+            if (options.seqInfixEnd < length(seq))
+                infixEnd = options.seqInfixEnd;
+            if (infixEnd < infixBegin)
+                infixEnd = infixBegin;
+            if (options.verbosity >= 3)
+                std::cerr << "INFIX\tbegin:" << infixBegin << "\tend:" << infixEnd << "\n";
+
+            if (options.reverseComplement)
+            {
+                seqan::Dna5String seqCopy = seq;
+                reverseComplement(seqCopy);
+                reverse(quals);
+                infixEnd = length(seq) - infixEnd;
+                infixBegin = length(seq) - infixBegin;
+                std::swap(infixEnd, infixBegin);
+
+                if (options.outFastq)
+                {
+                    if (writeRecord(*outPtr, id, infix(seqCopy, infixBegin, infixEnd),
+                                    infix(quals, infixBegin, infixEnd), seqan::Fastq(),
+                                    options.seqOutOptions) != 0)
+                    {
+                        std::cerr << "ERROR: Writing record!\n";
+                        return 1;
+                    }
                 }
-			}
-            
-			if (strcmp(argv[arg], "-h") == 0 || strcmp(argv[arg], "--help") == 0) {
-				// print help
-				printHelp(argc, argv, true);
-				return 0;
-			}
-		}
-		else {
-			// parse file name
-			if (fnameCount == 1) {
-				printHelp(argc, argv);
-				return 1;
-			}
-			fname[fnameCount++] = argv[arg];
-		}
-	}
-	if (fnameCount < 1) {
-		printHelp(argc, argv);
-		return 0;
-	}
-	
-//____________________________________________________________________________
-// input
+                else
+                {
+                    if (writeRecord(*outPtr, id, infix(seqCopy, infixBegin, infixEnd), seqan::Fasta(),
+                                    options.seqOutOptions) != 0)
+                    {
+                        std::cerr << "ERROR: Writing record!\n";
+                        return 1;
+                    }
+                }
+            }
+            else
+            {
+                if (options.outFastq)
+                {
+                    if (writeRecord(*outPtr, id, infix(seq, infixBegin, infixEnd),
+                                    infix(quals, infixBegin, infixEnd), seqan::Fastq(),
+                                    options.seqOutOptions) != 0)
+                    {
+                        std::cerr << "ERROR: Writing record!\n";
+                        return 1;
+                    }
+                }
+                else
+                {
+                    if (writeRecord(*outPtr, id, infix(seq, infixBegin, infixEnd), seqan::Fasta(),
+                                    options.seqOutOptions) != 0)
+                    {
+                        std::cerr << "ERROR: Writing record!\n";
+                        return 1;
+                    }
+                }
+            }
+        }
 
-	StringSet<TSeqString>	seqsIn, seqsOut;
-	StringSet<CharString>	qualsIn, qualsOut;
-	StringSet<CharString>	seqNamesIn, seqNamesOut;	// genome names, taken from the Fasta file
+        // Advance counter idx.
+        idx += 1;
+    }
 
-	if (!loadSeqs(seqsIn, qualsIn, seqNamesIn, fname[0]))
-	{
-		cerr << "Failed to open file" << fname[0] << endl;
-		return 0;
-	}
-//	cout << lengthSum(seqsIn) << " bps of " << length(seqsIn) << " source sequence loaded." << endl;
+    if (options.verbosity >= 2)
+        std::cerr << "Took " << (sysTime() - startTime) << " s\n";
 
-//____________________________________________________________________________
-// data processing
-
-	resize(seqsOut, length(seqsIn));
-	resize(qualsOut, length(qualsIn));
-	for (unsigned i = 0; i < length(seqsIn); ++i)
-	{
-		unsigned end = optionInfEnd;
-		if (end > length(seqsIn[i]))
-			end = length(seqsIn[i]);
-
-		if (optionInfStart < (int)length(seqsIn[i]))
-		{
-			seqsOut[i] = infix(seqsIn[i], optionInfStart, end);
-			if (optionRevComp)
-				reverseComplement(seqsOut[i]);
-            qualsOut[i] = infix(qualsIn[i], optionInfStart, end);
-			if (optionRevComp)
-				reverse(qualsOut[i]);
-		}
-	}
-	seqNamesOut = seqNamesIn;
-
-//____________________________________________________________________________
-// output
-
-	if (optionFastQ)
-		saveFastq(seqsOut, qualsOut, seqNamesOut);
-	else
-		saveFasta(seqsOut, seqNamesOut);
-	
-//____________________________________________________________________________
-
-	return 0;
+    return 0;
 }

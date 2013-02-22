@@ -41,6 +41,18 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # Installation
 # ----------------------------------------------------------------------------
 
+# Generate text and man page information with sak_doc target.
+add_custom_command (OUTPUT README.sak.txt
+                    COMMAND sak --export-help=txt > README.sak.txt
+                    DEPENDS sak)
+add_custom_command (OUTPUT sak.1
+                    COMMAND sak --export-help=man > sak.1
+                    DEPENDS sak)
+add_custom_target (sak_doc DEPENDS README.sak.txt sak.1)
+
+# Build documentation on installation.
+install (CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" --build ${CMAKE_BINARY_DIR} --target sak_doc)")
+
 # Set variables for installing, depending on the selected build type.
 if (NOT SEQAN_PREFIX_SHARE_DOC)
   seqan_setup_install_vars (sak)
@@ -54,7 +66,10 @@ install (TARGETS sak
 # ${PREFIX}/share/doc/sak for SeqAn release builds.
 install (FILES LICENSE
                README
+               ${CMAKE_CURRENT_BINARY_DIR}/README.sak.txt
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/sak.1
+         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/man)
 
 # ----------------------------------------------------------------------------
 # App Test

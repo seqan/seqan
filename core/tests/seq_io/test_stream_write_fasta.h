@@ -75,8 +75,8 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fasta_nolinebreaks)
     Dna5String seq1 = "CGATN";
     Dna5String seq2 = "CCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTNCCCAAATTTN";
     
-    SEQAN_ASSERT_EQ(writeRecord(outStream, meta1, seq1, Fasta(), 0), 0);
-    SEQAN_ASSERT_EQ(writeRecord(outStream, meta2, seq2, Fasta(), 0), 0);
+    SEQAN_ASSERT_EQ(writeRecord(outStream, meta1, seq1, Fasta(), SequenceOutputOptions(0)), 0);
+    SEQAN_ASSERT_EQ(writeRecord(outStream, meta2, seq2, Fasta(), SequenceOutputOptions(0)), 0);
     streamPut(outStream, '\0');
 
     char const * EXPECTED =
@@ -162,8 +162,8 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fastq_linebreaks_qualmeta)
     CharString qual1 = "!!!!!";
     CharString qual2 = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 
-    SEQAN_ASSERT_EQ(writeRecord(outStream, meta1, seq1, qual1, Fastq(), WRITEQUALITIESMETA | LINEBREAKS), 0);
-    SEQAN_ASSERT_EQ(writeRecord(outStream, meta2, seq2, qual2, Fastq(), WRITEQUALITIESMETA | LINEBREAKS), 0);
+    SEQAN_ASSERT_EQ(writeRecord(outStream, meta1, seq1, qual1, Fastq(), SequenceOutputOptions(70, true)), 0);
+    SEQAN_ASSERT_EQ(writeRecord(outStream, meta2, seq2, qual2, Fastq(), SequenceOutputOptions(70, true)), 0);
     streamPut(outStream, '\0');
 
     char const * EXPECTED =

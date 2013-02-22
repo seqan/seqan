@@ -858,26 +858,27 @@ public:
     // These two template functions implement the writing of one record-by-record writing.
 
     template <typename TId, typename TSequence, typename TQualities, typename TFormatTag>
-    int writeRecord(TId const & id, TSequence const & seq, TQualities const & qual, TFormatTag const & tag)
+    int writeRecord(TId const & id, TSequence const & seq, TQualities const & qual, TFormatTag const & tag,
+                    SequenceOutputOptions const & options)
     {
         int res = 0;
 
         switch (_fileType)
         {
         case SeqIOFileType_::FILE_TYPE_TEXT:
-            res = seqan::writeRecord(*_mmapString, id, seq, qual, tag);
+            res = seqan::writeRecord(*_mmapString, id, seq, qual, tag, options);
             break;      // end of case
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
         case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
-            res = seqan::writeRecord(*_gzStream, id, seq, qual, tag);
+            res = seqan::writeRecord(*_gzStream, id, seq, qual, tag, options);
             break;      // end of case
 
 #endif // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
         case SeqIOFileType_::FILE_TYPE_BZ2:
-            res = seqan::writeRecord(*_bz2Stream, id, seq, qual, tag);
+            res = seqan::writeRecord(*_bz2Stream, id, seq, qual, tag, options);
             break;      // end of case
 
 #endif  // #if SEQAN_HAS_BZIP2
@@ -890,26 +891,27 @@ public:
     }
 
     template <typename TId, typename TSequence, typename TFormatTag>
-    int writeRecord(TId const & id, TSequence const & seq, TFormatTag const & tag)
+    int writeRecord(TId const & id, TSequence const & seq, TFormatTag const & tag,
+                    SequenceOutputOptions const & options)
     {
         int res = 0;
 
         switch (_fileType)
         {
         case SeqIOFileType_::FILE_TYPE_TEXT:
-            res = seqan::writeRecord(*_mmapString, id, seq, tag);
+            res = seqan::writeRecord(*_mmapString, id, seq, tag, options);
             break;      // end of case
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
         case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
-            res = seqan::writeRecord(*_gzStream, id, seq, tag);
+            res = seqan::writeRecord(*_gzStream, id, seq, tag, options);
             break;      // end of case
 
 #endif // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
         case SeqIOFileType_::FILE_TYPE_BZ2:
-            res = seqan::writeRecord(*_bz2Stream, id, seq, tag);
+            res = seqan::writeRecord(*_bz2Stream, id, seq, tag, options);
             break;      // end of case
 
 #endif  // #if SEQAN_HAS_BZIP2
@@ -932,26 +934,27 @@ public:
     int writeAll(StringSet<TId, TIdSpec> const & ids,
                  StringSet<TSequence, TSeqSpec> const & seqs,
                  StringSet<TQualities, TQualSpec> const & quals,
-                 TFormatTag const & tag)
+                 TFormatTag const & tag,
+                 SequenceOutputOptions const & options)
     {
         int res = 0;
 
         switch (_fileType)
         {
         case SeqIOFileType_::FILE_TYPE_TEXT:
-            res = seqan::write2(*_mmapString, ids, seqs, quals, tag);
+            res = seqan::write2(*_mmapString, ids, seqs, quals, tag, options);
             break;      // end of case
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
         case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
-            res = seqan::write2(*_gzStream, ids, seqs, quals, tag);
+            res = seqan::write2(*_gzStream, ids, seqs, quals, tag, options);
             break;      // end of case
 
 #endif // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
         case SeqIOFileType_::FILE_TYPE_BZ2:
-            res = seqan::write2(*_bz2Stream, ids, seqs, quals, tag);
+            res = seqan::write2(*_bz2Stream, ids, seqs, quals, tag, options);
             break;      // end of case
 
 #endif  // #if SEQAN_HAS_BZIP2
@@ -966,7 +969,8 @@ public:
     template <typename TId, typename TIdSpec, typename TSequence, typename TSeqSpec, typename TFormatTag>
     int writeAll(StringSet<TId, TIdSpec> const & ids,
                  StringSet<TSequence, TSeqSpec> const & seqs,
-                 TFormatTag const & tag)
+                 TFormatTag const & tag,
+                 SequenceOutputOptions const & options)
     {
         int res = 0;
         TId id;
@@ -975,19 +979,19 @@ public:
         switch (_fileType)
         {
         case SeqIOFileType_::FILE_TYPE_TEXT:
-            res = seqan::write2(*_mmapString, ids, seqs, tag);
+            res = seqan::write2(*_mmapString, ids, seqs, tag, options);
             break;      // end of case
 
 #if SEQAN_HAS_ZLIB
         case SeqIOFileType_::FILE_TYPE_GZ:
         case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
-            res = seqan::write2(*_gzStream, ids, seqs, tag);
+            res = seqan::write2(*_gzStream, ids, seqs, tag, options);
             break;      // end of case
 
 #endif // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
         case SeqIOFileType_::FILE_TYPE_BZ2:
-            res = seqan::write2(*_bz2Stream, ids, seqs, tag);
+            res = seqan::write2(*_bz2Stream, ids, seqs, tag, options);
             break;      // end of case
 
 #endif  // #if SEQAN_HAS_BZIP2
