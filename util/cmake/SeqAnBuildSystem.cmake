@@ -435,6 +435,7 @@ macro (seqan_build_demos_develop PREFIX)
     find_package (SeqAn REQUIRED)
 
     # Add flags for SeqAn.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
