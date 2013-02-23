@@ -129,7 +129,7 @@ public:
 
     operator char()
     {
-        typedef typename Size<ProfileChar>::Type maxIndex = _getMaxIndex(*this);
+        typename Size<ProfileChar>::Type maxIndex = _getMaxIndex(*this);
         return (maxIndex == ValueSize<ProfileChar>::VALUE - 1) ? gapValue<char>() : (char) TValue(maxIndex);
     }
 };
@@ -278,6 +278,7 @@ inline TSourceCount
 _totalCount(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 {
     typedef ProfileChar<TSourceValue, TSourceCount, TSourceSpec> TProfileChar;
+    typedef typename Size<TProfileChar>::Type TSize;
     TSourceCount totalCount = source.count[0];
     for (TSize i = 1; i < ValueSize<TProfileChar>::VALUE; ++i)
         totalCount += source.count[i];
