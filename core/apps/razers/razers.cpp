@@ -256,8 +256,10 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
     setValidValues(parser, 0, "fa fasta fq fastq");
+    setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
     setValidValues(parser, 1, "fa fasta fq fastq");
+    setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
 #ifdef RAZERS_MATEPAIRS
@@ -389,11 +391,11 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 
     addTextSection(parser, "Formats, Naming, Sorting, and Coordinate Schemes");
 
-    addText(parser, "RazerS supports various output formats. The output format is detected automatically from the file suffix and can be enforced using the \\fB-of\\fP setting. The file suffix is given in parantheses. Format 0 is the fallback.");
-	addListItem(parser, "0", "Razer format (.razers)");
-	addListItem(parser, "1", "Enhanced Fasta format (.fa, .fasta)");
-	addListItem(parser, "2", "Eland format (.eland)");
-	addListItem(parser, "3", "Gff format (.gff)");
+    addText(parser, "RazerS supports various output formats. The output format is detected automatically from the file name suffix.");
+	addListItem(parser, ".razers", "Razer format");
+	addListItem(parser, ".fa, .fasta", "Enhanced Fasta format");
+	addListItem(parser, ".eland", "Eland format");
+	addListItem(parser, ".gff", "GFF format");
 
     addText(parser, "");
     addText(parser, "By default, reads and contigs are referred by their Fasta ids given in the input files. "
@@ -403,7 +405,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addListItem(parser, "2", "Use the read sequence (only for short reads!).");
 
     addText(parser, "");
-    addText(parser, "The way matches are sorted in the result file can be changed with the \\fB-so\\fP option for the following formats: "
+    addText(parser, "The way matches are sorted in the output file can be changed with the \\fB-so\\fP option for the following formats: "
                     "\\fBrazer\\fP, \\fBfasta\\fP, \\fBsam\\fP, and \\fBamos\\fP. Primary and secondary sort keys are:");
     addListItem(parser, "0", "1. read number, 2. genome position");
     addListItem(parser, "1", "1. genome position, 2. read number");
