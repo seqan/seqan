@@ -28,8 +28,23 @@
 
 #include <seqan/bam_io.h>
 #include <seqan/stream.h>
+#include <seqan/arg_parse.h>
 
 #include "sorting.h"
+
+struct Options
+{
+    // Disable checking for sortedness.  The hard requirement is on being clustered by read name and not being sorted.
+    bool dontCheckSorting;
+
+    // Input SAM file.
+    seqan::CharString inputFile;
+    // Output SAM file.
+    seqan::CharString outputFile;
+
+    Options() : dontCheckSorting(false)
+    {}
+};
 
 int fixRecords(seqan::String<seqan::BamAlignmentRecord> & records)
 {
@@ -134,25 +149,63 @@ int fixRecords(seqan::String<seqan::BamAlignmentRecord> & records)
     return 0;
 }
 
+seqan::ArgumentParser::ParseResult
+parseCommandLine(Options & options, int argc, char const ** argv)
+{
+    // Setup ArgumentParser.
+    seqan::ArgumentParser parser("rabema_preprae_sam");
+
+    // Set short description, version, and date.
+    setShortDescription(parser, "Prepare SAM For Rabema");
+    setVersion(parser, "1.2");
+    setDate(parser, "February 2013");
+
+    // Define usage line and long description.
+    addUsageLine(parser, "\\fB-i\\fP \\fIIN.sam\\fP \\fB-o\\fP \\fIOUT.sam\\fP");
+    addDescription(parser, "Prepare SAM file for usage with RABEMA.");
+
+    // Define Options.
+    addOption(parser, seqan::ArgParseOption(
+            "i", "in-file", "Path to the input file.",
+            seqan::ArgParseArgument::INPUTFILE, "IN.sam"));
+    setValidValues(parser, "in-file", "sam");
+    setRequired(parser, "in-file");
+
+    addOption(parser, seqan::ArgParseOption(
+            "o", "out-file", "Path to the output file.",
+            seqan::ArgParseArgument::OUTPUTFILE, "OUT.sam"));
+    setValidValues(parser, "out-file", "sam");
+    setRequired(parser, "out-file");
+
+    addOption(parser, seqan::ArgParseOption("", "dont-check-sorting", "Do not check sortedness."));
+
+    // Parse command line.
+    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+
+    // Only extract  options if the program will continue after parseCommandLine()
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res;
+
+    // Extract option values.
+    getOptionValue(options.inputFile, parser, "in-file");
+    getOptionValue(options.outputFile, parser, "out-file");
+    options.dontCheckSorting = isSet(parser, "dont-check-sorting");
+
+    return seqan::ArgumentParser::PARSE_OK;
+}
+
 int main(int argc, char const ** argv)
 {
     using namespace seqan;
 
-    // Whether or not to check sanity check when sorting.
-    bool dontCheckSorting = false;
-
-    // Check arguments.
-    if (argc < 2 || argc > 3)
-    {
-        std::cerr << "USAGE: parepare_sam IN.sam [--dont-check-sorting] > FIXED.sam\n";
-        return 1;
-    }
-
-    if (argc == 3 && seqan::CharString(argv[2]) == seqan::CharString("--dont-check-sorting"))
-        dontCheckSorting = true;
+    // Parse command line.
+    Options options;
+    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
 
     // Open SAM file for reading.
-    std::ifstream inSam(argv[1], std::ios::in | std::ios::binary);
+    std::ifstream inSam(toCString(options.inputFile), std::ios::in | std::ios::binary);
     if (!inSam.good())
     {
         std::cerr << "Could not open file " << argv[1] << " for reading.\n";
@@ -175,7 +228,14 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    write2(std::cout, header, context, Sam());
+    std::ofstream outSam(toCString(options.outputFile), std::ios::out | std::ios::binary);
+    if (!outSam.good())
+    {
+        std::cerr << "Could not open file " << options.outputFile << " for writing.\n";
+        return 1;
+    }
+
+    write2(outSam, header, context, Sam());
 
     // Read file in chunks, one for each query name.
     String<BamAlignmentRecord> records;
@@ -191,7 +251,7 @@ int main(int argc, char const ** argv)
         if (!empty(records) && record.qName != back(records).qName)
         {
             // Sanity check for sorting.
-            if (!dontCheckSorting && !empty(record) && lessThanSamtoolsQueryName(record.qName, back(records).qName))
+            if (!options.dontCheckSorting && !empty(record) && lessThanSamtoolsQueryName(record.qName, back(records).qName))
             {
                 std::cerr << "ERROR: " << record.qName << " succeeds " << back(records).qName << " in SAM file.\n"
                           << "File must be sorted by query name.\n"
@@ -205,7 +265,7 @@ int main(int argc, char const ** argv)
                 return 1;
             }
             for (unsigned i = 0; i < length(records); ++i)
-                write2(std::cout, records[i], context, Sam());
+                write2(outSam, records[i], context, Sam());
             clear(records);
         }
 
@@ -217,7 +277,7 @@ int main(int argc, char const ** argv)
         return 1;
     }
     for (unsigned i = 0; i < length(records); ++i)
-        write2(std::cout, records[i], context, Sam());
+        write2(outSam, records[i], context, Sam());
 
     return 0;
 }

@@ -101,6 +101,13 @@ install (FILES LICENSE
 seqan_add_app_test (rabema)
 
 # ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable razers in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} rabema_prepare_sam rabema_build_gold_standard rabema_evaluate CACHE INTERNAL "")
+
+# ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
 

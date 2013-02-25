@@ -65,15 +65,15 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_prepare,
-        redir_stdout=ph.outFile('gold-adeno-hamming-08.by_qname.sam'),
-        args=[ph.inFile('gold-adeno-hamming-08.sam')],
+        args=['-i', ph.inFile('gold-adeno-hamming-08.sam'),
+              '-o', ph.outFile('gold-adeno-hamming-08.by_qname.sam')],
         to_diff=[(ph.inFile('gold-adeno-hamming-08.by_qname.sam'),
                   ph.outFile('gold-adeno-hamming-08.by_qname.sam'))])
     conf_list.append(conf)
     conf = app_tests.TestConf(
         program=path_to_prepare,
-        redir_stdout=ph.outFile('gold-adeno-edit-08.by_qname.sam'),
-        args=[ph.inFile('gold-adeno-edit-08.sam')],
+        args=['-i', ph.inFile('gold-adeno-edit-08.sam'),
+              '-o', ph.outFile('gold-adeno-edit-08.by_qname.sam')],
         to_diff=[(ph.inFile('gold-adeno-edit-08.by_qname.sam'),
                   ph.outFile('gold-adeno-edit-08.by_qname.sam'))])
     conf_list.append(conf)

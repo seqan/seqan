@@ -26,12 +26,12 @@ ${RAZERS} -vv -of 4 -ds -i 96 -id -o razers2-adeno-edit-04.sam    adeno-genome.f
 # Prepare SAM.
 # ============================================================
 
-${RABEMA_PREPARE} gold-adeno-hamming-08.sam > gold-adeno-hamming-08.by_qname.sam
+${RABEMA_PREPARE} -i gold-adeno-hamming-08.sam -o gold-adeno-hamming-08.by_qname.sam
 samtools view -Sb gold-adeno-hamming-08.by_qname.sam > gold-adeno-hamming-08.by_qname.bam
 samtools sort gold-adeno-hamming-08.by_qname.bam gold-adeno-hamming-08.by_coordinate
 samtools view gold-adeno-hamming-08.by_coordinate.bam > gold-adeno-hamming-08.by_coordinate.sam
-${RABEMA_PREPARE} gold-adeno-edit-08.sam > gold-adeno-edit-08.by_qname.sam
-samtools view -Sb gold-adeno-edit-08.by_qname.sam > gold-adeno-edit-08.by_qname.bam
+${RABEMA_PREPARE} -i gold-adeno-edit-08.sam > gold-adeno-edit-08.by_qname.sam
+samtools view -Sb gold-adeno-edit-08.by_qname.sam -o gold-adeno-edit-08.by_qname.bam
 samtools sort gold-adeno-edit-08.by_qname.bam gold-adeno-edit-08.by_coordinate
 samtools view gold-adeno-edit-08.by_coordinate.bam > gold-adeno-edit-08.by_coordinate.sam
 
