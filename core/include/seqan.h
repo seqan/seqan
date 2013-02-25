@@ -41,7 +41,6 @@
 #include <seqan/arg_parse.h>
 #include <seqan/bam_io.h>
 #include <seqan/basic.h>
-#include <seqan/blast.h>
 #include <seqan/chaining.h>
 #include <seqan/consensus.h>
 #include <seqan/file.h>
