@@ -30,7 +30,7 @@ for rl in 36 100; do
     for pair in 0.razers 1.fa 2.eland 3.gff; do
         of=$(echo $pair | sed 's/\..*$//g')
         suffix=$(echo $pair | sed 's/^.\.//g')
-        ${RAZERS} -of ${of} -id adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-id-of${of}.${suffix} > se-adeno-reads${rl}_1-id-of${of}.stdout
+        ${RAZERS} -id adeno-genome.fa adeno-reads${rl}_1.fa -o se-adeno-reads${rl}_1-id-of${of}.${suffix} > se-adeno-reads${rl}_1-id-of${of}.stdout
     done
 
     # Run with different match ordering.
@@ -63,7 +63,7 @@ for rl in 36 100; do
     for pair in 0.razers 1.fa 2.eland 3.gff; do
         of=$(echo $pair | sed 's/\..*$//g')
         suffix=$(echo $pair | sed 's/^.\.//g')
-        ${RAZERS} -of ${of} -id adeno-genome.fa adeno-reads${rl}_1.fa adeno-reads${rl}_2.fa -o pe-adeno-reads${rl}_2-id-of${of}.${suffix} > pe-adeno-reads${rl}_2-id-of${of}.stdout
+        ${RAZERS} -id adeno-genome.fa adeno-reads${rl}_1.fa adeno-reads${rl}_2.fa -o pe-adeno-reads${rl}_2-id-of${of}.${suffix} > pe-adeno-reads${rl}_2-id-of${of}.stdout
     done
 
     # Run with different match ordering.
