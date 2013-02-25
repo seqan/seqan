@@ -240,7 +240,24 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 
     std::string toolname(toCString(xmlEscape(getAppName(me))));
 
-    ctdfile << _indent(currentIndent) << "<name>" << toolname << "</name>\n";
+    // remove "_" in the tool name and make the following letter uppercase
+    std::string class_name;
+    bool upcase = true;
+    for (unsigned i = 0; i < toolname.size(); ++i)
+    {
+        if (toolname[i] == '_')
+        {
+            upcase = true;
+            continue;
+        }
+        class_name.push_back(toolname[i]);
+        if (upcase)
+            class_name[class_name.size() - 1] = toupper(toolname[i]);
+        upcase = false;
+    }
+
+    ctdfile << _indent(currentIndent) << "<name>" << class_name << "</name>\n";
+    ctdfile << _indent(currentIndent) << "<executableName>" << toolname << "</executableName>\n";
     ctdfile << _indent(currentIndent) << "<version>" << xmlEscape(getVersion(me)) << "</version>\n";
     ctdfile << _indent(currentIndent) << "<description><![CDATA[" << xmlEscape(getShortDescription(me)) << ".]]></description>\n";
     ctdfile << _indent(currentIndent) << "<manual><![CDATA[" << xmlEscape(getAppName(me)) << ".]]></manual>\n"; // TODO(aiche): as soon as we have a more sophisticated documentation embedded into the CmdParser, we should at this here
