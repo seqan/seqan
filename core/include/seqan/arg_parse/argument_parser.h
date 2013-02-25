@@ -857,6 +857,40 @@ inline void setValidValues(ArgumentParser & me,
     setValidValues(getArgument(me, argumentPosition), values);
 }
 
+// ----------------------------------------------------------------------------
+// Function setHelpText()
+// ----------------------------------------------------------------------------
+
+/**
+.Function.setHelpText
+..class:Class.ArgumentParser
+..signature:setHelpText(parser,optionName,text)
+..signature:setHelpText(parser,argumentPosition,text)
+..param.parser:The @Class.ArgumentParser@ object.
+...type:Class.ArgumentParser
+..param.optionName:The identifier of the command line option.
+..param.argumentPosition:The index of the argument in the argument list.
+..param.text:A $std::string$ describing the option or argument.
+*/
+
+inline void setHelpText(ArgumentParser & me,
+                        std::string const & name,
+                        std::string const & text)
+{
+    SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
+    setHelpText(getOption(me, name), text);
+}
+
+inline void setHelpText(ArgumentParser & me,
+                        unsigned argumentPosition,
+                        std::string const & text)
+{
+    SEQAN_CHECK(me.argumentList.size() > argumentPosition,
+                "Argument Parser has only %d arguments.",
+                me.argumentList.size());
+    setHelpText(getArgument(me, argumentPosition), text);
+}
+
 }  // namespace seqan
 
 #endif // SEQAN_CORE_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_

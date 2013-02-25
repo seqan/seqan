@@ -554,6 +554,23 @@ inline void setValidValues(ArgParseArgument & me, std::string const & valuesStri
     setValidValues(me, values);
 }
 
+/**
+.Function.setHelpText
+..class:Class.ArgParseArgument
+..summary:Sets the set of allowed values of a @Class.ArgParseArgument@ object.
+..cat:Miscellaneous
+..signature:setHelpText(argument,values)
+..param.argument:The @Class.ArgParseArgument@ object.
+...type:Class.ArgParseArgument
+..param.values:A std::string describing the argument.
+..include:seqan/arg_parse.h
+*/
+
+inline void setHelpText(ArgParseArgument & me, std::string const & text)
+{
+    me._helpText = text;
+}
+
 // ----------------------------------------------------------------------------
 // Helper Function _isInInterval()
 // ----------------------------------------------------------------------------
