@@ -437,9 +437,16 @@ _parseOptions(ArgumentParser & parser, TOptions & options)
 
     // output options
     getOptionValue(options.outputFile, parser, "out");
-    getOptionValue(options.outputFormat, parser, "outFormat");
     getOptionValue(options.disabledQueriesFile, parser, "outDisabled");
     getOptionValue(options.noRT, parser, "no-rt");
+
+    CharString tmp = options.outputFile; 
+    toLower(tmp); 
+    
+    if (endsWith(tmp, ".gff")) 
+        options.outputFormat = "gff";
+    else if (endsWith(tmp, ".txt"))
+        options.outputFormat = "txt";
 
     // main options
     getOptionValue(options.qGram, parser, "kmer");
@@ -484,6 +491,7 @@ void _setParser(ArgumentParser & parser)
     setShortDescription(parser, "the SwifT Exact LocaL AligneR");
     setDate(parser, "October 2012");
     setVersion(parser, "1.3");
+    setCategory(parser, "Local Alignment");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIFASTA FILE 1\\fP> <\\fIFASTA FILE 2\\fP>");
 
@@ -503,7 +511,7 @@ void _setParser(ArgumentParser & parser)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2"));
     setValidValues(parser, 1, "fa fasta");  // allow only fasta files as input
 
-    addSection(parser, "Main Options:");
+    addSection(parser, "Main Options");
 
     addOption(parser, ArgParseOption("e", "epsilon", "Maximal error rate (max 0.25).", ArgParseArgument::DOUBLE));
     setDefaultValue(parser, "e", "0.05");
@@ -520,7 +528,7 @@ void _setParser(ArgumentParser & parser)
     setValidValues(parser, "a", "dna dna5 rna rna5 protein char");
     addOption(parser, ArgParseOption("v", "verbose", "Set verbosity mode."));
 
-    addSection(parser, "Filtering Options:");
+    addSection(parser, "Filtering Options");
 
     addOption(parser, ArgParseOption("k", "kmer", "Length of the q-grams (max 32).", ArgParseArgument::INTEGER));
     setMinValue(parser, "k", "1");
@@ -536,7 +544,7 @@ void _setParser(ArgumentParser & parser)
     setMinValue(parser, "c", "0");
     setMaxValue(parser, "c", "1");
 
-    addSection(parser, "Verification Options:");
+    addSection(parser, "Verification Options");
 
     addOption(parser, ArgParseOption("x", "xDrop", "Maximal x-drop for extension.", ArgParseArgument::DOUBLE));
     setDefaultValue(parser, "x", "5");
@@ -560,14 +568,11 @@ void _setParser(ArgumentParser & parser)
                                      "space.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "s", "500");
 
-    addSection(parser, "Output Options:");
+    addSection(parser, "Output Options");
 
     addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUTFILE));
     setValidValues(parser, "o", "gff txt");
     setDefaultValue(parser, "o", "stellar.gff");
-    addOption(parser, ArgParseOption("of", "outFormat", "Output format: GFF or TXT", ArgParseArgument::STRING));
-    setDefaultValue(parser, "of", "gff");
-    setValidValues(parser, "of", "gff txt");
     addOption(parser, ArgParseOption("od", "outDisabled",
                                      "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUTFILE));
     setValidValues(parser, "outDisabled", "fa FASTA");

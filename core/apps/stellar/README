@@ -1,6 +1,6 @@
               *** STELLAR - the SwifT Exact LocaL AligneR ***
                  http://www.seqan.de/projects/stellar.html
-                              April, 2012
+                              February, 2013
 
 ---------------------------------------------------------------------------
 Table of Contents
@@ -242,13 +242,9 @@ the command line:
   [ -o FILE ],  [ --out FILE ]
 
   Change the output filename to FILE. The default name of the output file
-  is "stellar.gff".
+  is "stellar.gff". Currently, the formats "gff" and "txt" are supported.
+  See Sect. 4 for details.
 
-  [ -of STR ],  [ --outFormat STR ]
-
-  Set the output format for the local alignments. Currently, only the
-  optinos gff and txt are available. See section 4.
-  
   [ -od FILE ],  [ --outDisabled FILE ]
 
   Change the name of the output file disabled query sequences are written 

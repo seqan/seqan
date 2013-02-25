@@ -70,6 +70,13 @@ install (FILES example/NC_001474.fasta
 
 seqan_add_app_test (stellar)
 
+# ---------------------------------------------------------------------------- 
+# Setup Common Tool Description for Generic Workflow Nodes 
+# ---------------------------------------------------------------------------- 
+
+# Include executable stellar in CTD structure. 
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} stellar CACHE INTERNAL "")
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
