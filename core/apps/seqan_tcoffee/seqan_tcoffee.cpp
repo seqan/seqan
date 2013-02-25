@@ -336,6 +336,8 @@ _setUpArgumentParser(ArgumentParser & parser)
 
     addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUTFILE));
     setDefaultValue(parser, "outfile", "out.fasta");
+    setValidValues(parser, "outfile", "fasta msf"); 
+
 
   //  addOption(parser, ArgParseOption("f", "format", "Format of the output.", ArgParseArgument::STRING));
  //   setValidValues(parser, "format", "fasta msf");
@@ -404,6 +406,8 @@ _setUpArgumentParser(ArgumentParser & parser)
             parser,
             ArgParseOption("i", "infile", "Name of the alignment file <\\fIFASTA FILE\\fP>",
                            ArgParseArgument::INPUTFILE));
+            setValidValues(parser, "infile", "fa FA Fa fasta FASTA");  // allow only fasta files as input
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////
