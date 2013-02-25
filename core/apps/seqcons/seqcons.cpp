@@ -1,6 +1,6 @@
 /*==========================================================================
                SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de 
+                         http://www.seqan.de
   ============================================================================
   Copyright (C) 2007
 
@@ -58,9 +58,9 @@ int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
 	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::STRING, "<Sam file>"));
 	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::STRING, "<FASTA contigs file>"));
 	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::STRING, "<Filename>"));
+	setValidValues(parser, "outfile", "afg seqan afg am");
 	setDefaultValue(parser, "outfile", "align.txt");
-	addOption(parser, ArgParseOption("f", "format", "output format", ArgParseArgument::STRING, "afg", "[seqan | afg | sam]"));
-	setDefaultValue(parser, "format", "afg");
+
 	addOption(parser, ArgParseOption("m", "method", "alignment method", ArgParseArgument::STRING, "realign", "[realign | msa]"));
 	setDefaultValue(parser, "method", "realign");
 	addOption(parser, ArgParseOption("b", "bandwidth", "bandwidth", ArgParseArgument::INTEGER, "<Int>"));
@@ -109,19 +109,22 @@ int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
     if (empty(consOpt.samfile) && !empty(consOpt.contigsfile))
         std::cerr << "WARNING: Contigs specified by input is not FASTA, ignoring --contigs parameters." << std::endl;
 
-	String<char> optionVal;
-	getOptionValue(optionVal, parser, "format");
-	if (optionVal == "seqan")
+    // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+    CharString tmp = consOpt.outfile;
+    toLower(tmp);
+
+    if (endsWith(tmp, ".seqan"))
         consOpt.output = 0;
-	else if (optionVal == "afg")
+    else if (endsWith(tmp, ".afg"))
         consOpt.output = 1;
-	else if (optionVal == "frg")
+    else if (endsWith(tmp, ".frg"))
         consOpt.output = 2;
-	else if (optionVal == "cgb")
+    else if (endsWith(tmp, ".cgb"))
         consOpt.output = 3;
-	else if (optionVal == "sam")
+    else if (endsWith(tmp, ".sam"))
         consOpt.output = 4;
 
+    String<char> optionVal;
 	getOptionValue(optionVal, parser, "method");
 	if (optionVal == "realign")
         consOpt.method = 0;

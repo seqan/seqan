@@ -64,6 +64,14 @@ install (FILES LICENSE
 #seqan_add_app_test (seqcons)
 
 # ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable seqcons in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} seqcons CACHE INTERNAL "")
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
 
