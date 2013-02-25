@@ -53,13 +53,13 @@ int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
 
 
 	addSection(parser, "Main Options:");
-	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::STRING, "<FASTA reads file>"));
-	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::STRING, "<AMOS afg file>"));
-	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::STRING, "<Sam file>"));
-	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::STRING, "<FASTA contigs file>"));
-	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::STRING, "<Filename>"));
-	setValidValues(parser, "outfile", "afg seqan afg am");
-	setDefaultValue(parser, "outfile", "align.txt");
+	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::INPUTFILE, "<FASTA reads file>"));
+	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::INPUTFILE, "<AMOS afg file>"));
+	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::INPUTFILE, "<Sam file>"));
+	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::INPUTFILE, "<FASTA contigs file>"));
+	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::OUTPUTFILE, "<Filename>"));
+	setValidValues(parser, "outfile", "afg seqan cgb sam");
+	setDefaultValue(parser, "outfile", "align.sam");
 
 	addOption(parser, ArgParseOption("m", "method", "alignment method", ArgParseArgument::STRING, "realign", "[realign | msa]"));
 	setDefaultValue(parser, "method", "realign");
