@@ -135,13 +135,25 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
     // Set main options
     getOptionValue(msaOpt.seqfile, parser, "seq");
     getOptionValue(msaOpt.outfile, parser, "outfile");
+    
+    // replace with autodetect
+    if(endsWith(msaOpt.outfile,".fasta")){
+        msaOpt.outputFormat = 0;
+    }
+    if(endsWith(msaOpt.outfile,".msf")){
+        msaOpt.outputFormat = 1;
+    }
+    
     String<char> optionVal;
-    getOptionValue(optionVal, parser, "format");
+    
+ /*   getOptionValue(optionVal, parser, "format");
     if (optionVal == "fasta")
         msaOpt.outputFormat = 0;
     else if (optionVal == "msf")
         msaOpt.outputFormat = 1;
-
+*/
+    // *********************************************
+    
     // Set segment match generation options
     ::std::string tmpVal;
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "method"); ++optNo)
@@ -306,7 +318,8 @@ _setUpArgumentParser(ArgumentParser & parser)
 {
     _addVersion(parser);
     setDate(parser, "July 2012");
-
+    setAppName(parser,"seqan-tcoffee");
+    
     setShortDescription(parser, "Multiple sequence alignment");
 
     addUsageLine(parser, "-s <\\fIFASTA FILE\\fP> [\\fIOPTIONS\\fP]");
@@ -324,9 +337,9 @@ _setUpArgumentParser(ArgumentParser & parser)
     addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUTFILE));
     setDefaultValue(parser, "outfile", "out.fasta");
 
-    addOption(parser, ArgParseOption("f", "format", "Format of the output.", ArgParseArgument::STRING));
-    setValidValues(parser, "format", "fasta msf");
-    setDefaultValue(parser, "format", "fasta");
+  //  addOption(parser, ArgParseOption("f", "format", "Format of the output.", ArgParseArgument::STRING));
+ //   setValidValues(parser, "format", "fasta msf");
+ //   setDefaultValue(parser, "format", "fasta");
 
     addSection(parser, "Segment Match Generation Options:");
     addOption(parser,
