@@ -235,7 +235,11 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    setValidValues(parser, 0, "fa fasta fq fastq");
+    setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    setValidValues(parser, 1, "fa fasta fq fastq");
+    setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
 #ifdef RAZERS_MATEPAIRS
@@ -281,7 +285,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("", "unique", "Output only unique best matches (-m 1 -dr 0 -pa)."));
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output", "razers eland fa fasta gff");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -289,9 +294,6 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("a", "alignment", "Dump the alignment for each match (only \\fIrazer\\fP or \\fIfasta\\fP format)."));
     addOption(parser, ArgParseOption("pa", "purge-ambiguous", "Purge reads with more than <\\fImax-hits\\fP> best matches."));
     addOption(parser, ArgParseOption("dr", "distance-range", "Only consider matches with at most NUM more errors compared to the best. Default: output all.", ArgParseOption::INTEGER));
-    addOption(parser, ArgParseOption("of", "output-format", "Set output format.", ArgParseOption::INTEGER));
-    setMinValue(parser, "output-format", "0");
-    setMaxValue(parser, "output-format", "5");
 
     addOption(parser, ArgParseOption("gn", "genome-naming", "Select how genomes are named (see Naming section below).", ArgParseOption::INTEGER));
     setMinValue(parser, "genome-naming", "0");
@@ -334,13 +336,13 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
 
     addTextSection(parser, "Formats, Naming, Sorting, and Coordinate Schemes");
 
-    addText(parser, "RazerS 2 supports various output formats. Please use the \\fB-of\\fP option with one of the following numbers:");
-	addListItem(parser, "0", "Razer format");
-	addListItem(parser, "1", "Enhanced Fasta format");
-	addListItem(parser, "2", "Eland format");
-	addListItem(parser, "3", "Gff format");
-	addListItem(parser, "4", "Sam format");
-	addListItem(parser, "5", "Amos AFG format");
+    addText(parser, "RazerS 2 supports various output formats. The output format is detected automatically from the file name suffix.");
+	addListItem(parser, ".razers", "Razer format");
+	addListItem(parser, ".fa, .fasta", "Enhanced Fasta format");
+	addListItem(parser, ".eland", "Eland format");
+	addListItem(parser, ".gff", "GFF format");
+	addListItem(parser, ".sam", "SAM format");
+	addListItem(parser, ".afg", "Amos AFG format");
 
     addText(parser, "");
     addText(parser, "By default, reads and contigs are referred by their Fasta ids given in the input files. "
@@ -351,7 +353,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addListItem(parser, "3", "Use the Fasta id, do NOT append /L or /R for mate pairs.");
 
     addText(parser, "");
-    addText(parser, "The way matches are sorted in the result file can be changed with the \\fB-so\\fP option for the following formats: "
+    addText(parser, "The way matches are sorted in the output file can be changed with the \\fB-so\\fP option for the following formats: "
                     "\\fBrazer\\fP, \\fBfasta\\fP, \\fBsam\\fP, and \\fBamos\\fP. Primary and secondary sort keys are:");
     addListItem(parser, "0", "1. read number, 2. genome position");
     addListItem(parser, "1", "1. genome position, 2. read number");
@@ -415,8 +417,6 @@ extractOptions(
     if (isSet(parser, "distance-range"))
         options.distanceRange++;
     getOptionValue(options.dumpAlignment, parser, "alignment");
-    getOptionValue(options.output, parser, "output");
-    getOptionValue(options.outputFormat, parser, "output-format");
     getOptionValue(options.sortOrder, parser, "sort-order");
     getOptionValue(options.genomeNaming, parser, "genome-naming");
     getOptionValue(options.readNaming, parser, "read-naming");
@@ -446,6 +446,35 @@ extractOptions(
 		options.forward = true;
 		options.reverse = true;
 	}
+
+    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
+    if (isSet(parser, "output"))
+    {
+        getOptionValue(options.output, parser, "output");
+    }
+    else
+    {
+        options.output = readFileNames[0];
+        append(options.output, ".razers");
+    }
+
+    // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+    CharString tmp = options.output;
+    toLower(tmp);
+
+    if (endsWith(tmp, ".razers"))
+        options.outputFormat = 0;
+    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+        options.outputFormat = 1;
+    else if (endsWith(tmp, ".eland"))
+        options.outputFormat = 2;
+    else if (endsWith(tmp, ".gff"))
+        options.outputFormat = 3;
+    else if (endsWith(tmp, ".sam"))
+        options.outputFormat = 4;
+    else if (endsWith(tmp, ".afg"))
+        options.outputFormat = 5;
+
     // don't append /L/R in SAM mode
     if (!isSet(parser, "read-naming") && options.outputFormat == 4)
         options.readNaming = 3;
