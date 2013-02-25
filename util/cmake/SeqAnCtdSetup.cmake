@@ -99,6 +99,7 @@ add_custom_target (prepare_ctd_payload_tmp_bin
 
 # Add directory for CTD files.
 add_custom_target (target_ctd_mkdir
+                   COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}
                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH})
 
 # For each white-listed executable in SEQAN_CTD_EXECUTABLES, get its path and
