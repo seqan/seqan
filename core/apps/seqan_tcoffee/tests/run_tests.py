@@ -55,9 +55,9 @@ def main(source_base, binary_base):
         conf = app_tests.TestConf(
             program=path_to_program,
             args=['-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.out' % fname)],
-            to_diff=[(ph.inFile('%s.out' % fname),
-                      ph.outFile('%s.out' % fname))])
+                  '-o', ph.outFile('%s.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.fasta' % fname),
+                      ph.outFile('%s.fasta' % fname))])
         conf_list.append(conf)
 
     # Run with explicit alphabet.
@@ -66,9 +66,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-a', 'protein',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.protein.out' % fname)],
-            to_diff=[(ph.inFile('%s.protein.out' % fname),
-                      ph.outFile('%s.protein.out' % fname))])
+                  '-o', ph.outFile('%s.protein.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.protein.fasta' % fname),
+                      ph.outFile('%s.protein.fasta' % fname))])
         conf_list.append(conf)
 
         # Run with different segment match generation options.  We run
@@ -80,9 +80,9 @@ def main(source_base, binary_base):
                 program=path_to_program,
                 args=['-m', m,
                       '-s', ph.inFile('%s.fa' % fname),
-                      '-o', ph.outFile('%s.m%s.out' % (fname, m))],
-                to_diff=[(ph.inFile('%s.m%s.out' % (fname, m)),
-                          ph.outFile('%s.m%s.out' % (fname, m)))])
+                      '-o', ph.outFile('%s.m%s.fasta' % (fname, m))],
+                to_diff=[(ph.inFile('%s.m%s.fasta' % (fname, m)),
+                          ph.outFile('%s.m%s.fasta' % (fname, m)))])
             conf_list.append(conf)
         m1 = 'global'
         m2 = 'local'
@@ -91,9 +91,9 @@ def main(source_base, binary_base):
             args=['-m', m1,
                   '-m', m2,
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2))],
-            to_diff=[(ph.inFile('%s.m%s.m%s.out' % (fname, m1, m2)),
-                      ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2)))])
+                  '-o', ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2))],
+            to_diff=[(ph.inFile('%s.m%s.m%s.fasta' % (fname, m1, m2)),
+                      ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2)))])
         conf_list.append(conf)
         m1 = 'local'
         m2 = 'overlap'
@@ -102,9 +102,9 @@ def main(source_base, binary_base):
             args=['-m', m1,
                   '-m', m2,
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2))],
-            to_diff=[(ph.inFile('%s.m%s.m%s.out' % (fname, m1, m2)),
-                      ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2)))])
+                  '-o', ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2))],
+            to_diff=[(ph.inFile('%s.m%s.m%s.fasta' % (fname, m1, m2)),
+                      ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2)))])
         conf_list.append(conf)
         
         m1 = 'overlap'
@@ -114,9 +114,9 @@ def main(source_base, binary_base):
             args=['-m', m1,
                   '-m', m2,
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2))],
-            to_diff=[(ph.inFile('%s.m%s.m%s.out' % (fname, m1, m2)),
-                      ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2)))])
+                  '-o', ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2))],
+            to_diff=[(ph.inFile('%s.m%s.m%s.fasta' % (fname, m1, m2)),
+                      ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2)))])
         m1 = 'global'
         m2 = 'lcs'        
         conf = app_tests.TestConf(
@@ -124,9 +124,9 @@ def main(source_base, binary_base):
             args=['-m', m1,
                   '-m', m2,
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2))],
-            to_diff=[(ph.inFile('%s.m%s.m%s.out' % (fname, m1, m2)),
-                      ph.outFile('%s.m%s.m%s.out' % (fname, m1, m2)))])
+                  '-o', ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2))],
+            to_diff=[(ph.inFile('%s.m%s.m%s.fasta' % (fname, m1, m2)),
+                      ph.outFile('%s.m%s.m%s.fasta' % (fname, m1, m2)))])
 
     # Run with different match files variations.
     # TODO
@@ -137,33 +137,33 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-g', '-20',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.g-20.out' % fname)],
-            to_diff=[(ph.inFile('%s.g-20.out' % fname),
-                      ph.outFile('%s.g-20.out' % fname))])
+                  '-o', ph.outFile('%s.g-20.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.g-20.fasta' % fname),
+                      ph.outFile('%s.g-20.fasta' % fname))])
         conf_list.append(conf)
         conf = app_tests.TestConf(
             program=path_to_program,
             args=['-e', '-5',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.e-5.out' % fname)],
-            to_diff=[(ph.inFile('%s.e-5.out' % fname),
-                      ph.outFile('%s.e-5.out' % fname))])
+                  '-o', ph.outFile('%s.e-5.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.e-5.fasta' % fname),
+                      ph.outFile('%s.e-5.fasta' % fname))])
         conf_list.append(conf)
         conf = app_tests.TestConf(
             program=path_to_program,
             args=['-ms', '10',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.ms10.out' % fname)],
-            to_diff=[(ph.inFile('%s.ms10.out' % fname),
-                      ph.outFile('%s.ms10.out' % fname))])
+                  '-o', ph.outFile('%s.ms10.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.ms10.fasta' % fname),
+                      ph.outFile('%s.ms10.fasta' % fname))])
         conf_list.append(conf)
         conf = app_tests.TestConf(
             program=path_to_program,
             args=['-mm', '-8',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.mm-8.out' % fname)],
-            to_diff=[(ph.inFile('%s.mm-8.out' % fname),
-                      ph.outFile('%s.mm-8.out' % fname))])
+                  '-o', ph.outFile('%s.mm-8.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.mm-8.fasta' % fname),
+                      ph.outFile('%s.mm-8.fasta' % fname))])
         conf_list.append(conf)
 
     # Run with matrix file.
@@ -172,9 +172,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-ma', ph.inFile('VTML200I'),
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.maVTML200.out' % fname)],
-            to_diff=[(ph.inFile('%s.maVTML200.out' % fname),
-                      ph.outFile('%s.maVTML200.out' % fname))])
+                  '-o', ph.outFile('%s.maVTML200.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.maVTML200.fasta' % fname),
+                      ph.outFile('%s.maVTML200.fasta' % fname))])
         conf_list.append(conf)
 
     # Run with manual guide tree.
@@ -183,9 +183,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-u', ph.inFile('%s.newick' % fname),
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.u.out' % fname)],
-            to_diff=[(ph.inFile('%s.u.out' % fname),
-                      ph.outFile('%s.u.out' % fname))])
+                  '-o', ph.outFile('%s.u.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.u.fasta' % fname),
+                      ph.outFile('%s.u.fasta' % fname))])
         conf_list.append(conf)
 
     # Run with different guide tree building options.
@@ -195,19 +195,19 @@ def main(source_base, binary_base):
                 program=path_to_program,
                 args=['-b', b,
                       '-s', ph.inFile('%s.fa' % fname),
-                      '-o', ph.outFile('%s.b%s.out' % (fname, b))],
-                to_diff=[(ph.inFile('%s.b%s.out' % (fname, b)),
-                          ph.outFile('%s.b%s.out' % (fname, b)))])
+                      '-o', ph.outFile('%s.b%s.fasta' % (fname, b))],
+                to_diff=[(ph.inFile('%s.b%s.fasta' % (fname, b)),
+                          ph.outFile('%s.b%s.fasta' % (fname, b)))])
             conf_list.append(conf)
 
     # Run alignment evaluation.
     for fname in ['1aab', '1ad2', '2trx']:
         conf = app_tests.TestConf(
             program=path_to_program,
-            args=['-i', ph.inFile('%s.out' % fname)],
-            redir_stdout=ph.outFile('%s.i.out' % fname),
-            to_diff=[(ph.inFile('%s.i.out' % fname),
-                      ph.outFile('%s.i.out' % fname))])
+            args=['-i', ph.inFile('%s.fasta' % fname)],
+            redir_stdout=ph.outFile('%s.i.fasta' % fname),
+            to_diff=[(ph.inFile('%s.i.fasta' % fname),
+                      ph.outFile('%s.i.fasta' % fname))])
         conf_list.append(conf)
 
     # ============================================================
@@ -220,9 +220,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-a', 'dna',
                   '-s', ph.inFile('adeno%d.fa' % i),
-                  '-o', ph.outFile('adeno%d.out' % i)],
-            to_diff=[(ph.inFile('adeno%d.out' % i),
-                      ph.outFile('adeno%d.out' % i))])
+                  '-o', ph.outFile('adeno%d.fasta' % i)],
+            to_diff=[(ph.inFile('adeno%d.fasta' % i),
+                      ph.outFile('adeno%d.fasta' % i))])
         conf_list.append(conf)
 
     # ============================================================
@@ -235,9 +235,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-a', 'rna',
                   '-s', ph.inFile('adeno%d-rna.fa' % i),
-                  '-o', ph.outFile('adeno%d-rna.out' % i)],
-            to_diff=[(ph.inFile('adeno%d-rna.out' % i),
-                      ph.outFile('adeno%d-rna.out' % i))])
+                  '-o', ph.outFile('adeno%d-rna.fasta' % i)],
+            to_diff=[(ph.inFile('adeno%d-rna.fasta' % i),
+                      ph.outFile('adeno%d-rna.fasta' % i))])
         conf_list.append(conf)
     
     # Execute the tests.
