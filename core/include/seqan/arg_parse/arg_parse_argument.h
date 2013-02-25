@@ -559,10 +559,10 @@ inline void setValidValues(ArgParseArgument & me, std::string const & valuesStri
 ..class:Class.ArgParseArgument
 ..summary:Sets the set of allowed values of a @Class.ArgParseArgument@ object.
 ..cat:Miscellaneous
-..signature:setHelpText(argument,values)
+..signature:setHelpText(argument,text)
 ..param.argument:The @Class.ArgParseArgument@ object.
 ...type:Class.ArgParseArgument
-..param.values:A std::string describing the argument.
+..param.text:A std::string describing the argument.
 ..include:seqan/arg_parse.h
 */
 
