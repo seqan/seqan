@@ -51,7 +51,7 @@
 #include "razers_matepairs.h"
 #endif
 
-
+#include <cctype>
 #include <iostream>
 #include <sstream>
 
@@ -286,7 +286,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
     addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", "razers eland fa fasta gff");
+    setValidValues(parser, "output", "razers eland fa fasta gff sam afg");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
