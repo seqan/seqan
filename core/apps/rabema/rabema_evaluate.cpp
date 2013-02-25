@@ -981,8 +981,8 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     seqan::ArgumentParser parser("rabema_evaluate");
     setShortDescription(parser, "RABEMA Evaluation");
-    setVersion(parser, "1.1beta");
-    setDate(parser, "May 2012");
+    setVersion(parser, "1.2");
+    setDate(parser, "February 2013");
 
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB--reference\\fP \\fIREF.fa\\fP \\fB--in-gsi\\fP \\fIIN.gsi\\fP "
@@ -1007,19 +1007,25 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     //                                         seqan::ArgParseArgument::STRING, false, "GSI"));
     // setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
-                                            seqan::ArgParseArgument::STRING, "FASTA"));
+                                            seqan::ArgParseArgument::INPUTFILE, "FASTA"));
+    setValidValues(parser, "reference", "fa fasta");
     setRequired(parser, "reference", true);
     addOption(parser, seqan::ArgParseOption("g", "in-gsi",
                                             "Path to load gold standard intervals from. If compressed using gzip, "
                                             "the file will be decompressed on the fly.",
-                                            seqan::ArgParseArgument::STRING, "GSI"));
+                                            seqan::ArgParseArgument::INPUTFILE, "GSI"));
     setRequired(parser, "in-gsi", true);
+    setValidValues(parser, "in-gsi", "gsi gsi.gz");  // GSI (Gold Standard Intervals) Format only.
+
     addOption(parser, seqan::ArgParseOption("s", "in-sam", "Path to load the read mapper SAM output from.",
-                                            seqan::ArgParseArgument::STRING, "SAM"));
+                                            seqan::ArgParseArgument::INPUTFILE, "SAM"));
+    setValidValues(parser, "in-sam", "sam");
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper BAM output from.",
-                                            seqan::ArgParseArgument::STRING, "BAM"));
+                                            seqan::ArgParseArgument::INPUTFILE, "BAM"));
+    setValidValues(parser, "in-bam", "bam");
     addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
-                                            seqan::ArgParseArgument::STRING, "TSV"));
+                                            seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
+    setValidValues(parser, "out-tsv", "tsv");
 
     addSection(parser, "Benchmark Parameters");
     addOption(parser, seqan::ArgParseOption("", "oracle-mode",

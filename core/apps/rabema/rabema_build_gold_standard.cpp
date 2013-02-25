@@ -980,8 +980,8 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     seqan::ArgumentParser parser("rabema_build_gold_standard");
     setShortDescription(parser, "RABEMA Gold Standard Builder");
-    setVersion(parser, "1.1beta");
-    setDate(parser, "May 2012");
+    setVersion(parser, "1.2");
+    setDate(parser, "February 2013");
 
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB--out-gsi\\fP \\fIOUT.gsi\\fP \\fB--reference\\fP \\fIREF.fa\\fP "
@@ -1001,16 +1001,19 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     addSection(parser, "Input / Output");
     addOption(parser, seqan::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
-                                            seqan::ArgParseArgument::STRING, "GSI"));
+                                            seqan::ArgParseArgument::OUTPUTFILE, "GSI"));
+    setValidValues(parser, "out-gsi", "gsi gsi.gz");
     setRequired(parser, "out-gsi", true);
-    addOption(parser, seqan::ArgParseOption("z", "gzip-gsi", "Compress GSI output using gzip."));
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
-                                            seqan::ArgParseArgument::STRING, "FASTA"));
+                                            seqan::ArgParseArgument::INPUTFILE, "FASTA"));
     setRequired(parser, "reference", true);
+    setValidValues(parser, "reference", "fa fasta");
     addOption(parser, seqan::ArgParseOption("s", "in-sam", "Path to load the \"perfect\" SAM file from.",
-                                            seqan::ArgParseArgument::STRING, "SAM"));
+                                            seqan::ArgParseArgument::INPUTFILE, "SAM"));
+    setValidValues(parser, "in-sam", "sam");
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" BAM file from.",
-                                            seqan::ArgParseArgument::STRING, "BAM"));
+                                            seqan::ArgParseArgument::INPUTFILE, "BAM"));
+    setValidValues(parser, "in-bam", "bam");
 
     addSection(parser, "Gold Standard Parameters");
     addOption(parser, seqan::ArgParseOption("", "oracle-mode",
@@ -1113,7 +1116,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
         getOptionValue(options.inSamPath, parser, "in-sam");
     if (isSet(parser, "in-bam"))
         getOptionValue(options.inBamPath, parser, "in-bam");
-    options.compressGsi = isSet(parser, "gzip-gsi");
+    options.compressGsi = endsWith(options.outGsiPath, ".gsi.gz");
 
     return res;
 }
