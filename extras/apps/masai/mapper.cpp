@@ -345,8 +345,7 @@ int main(int argc, char const ** argv)
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
-    if (res == seqan::ArgumentParser::PARSE_OK)
-        return mainWithOptions(options);
-    else
-        return res;
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
+    return mainWithOptions(options);
 }
