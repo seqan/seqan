@@ -353,6 +353,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
     addOption(parser, ArgParseOption("o", "output", "Mapping result filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output", "razers eland fa fasta gff sam afg");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
