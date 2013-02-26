@@ -119,7 +119,7 @@ _verify(Verifier<TText, TSpec> & verifier,
     {
         SEQAN_OMP_PRAGMA(atomic)
         verifier.lengthFilter++;
-        
+
         return false;
     }
 
@@ -140,7 +140,7 @@ _verify(Verifier<TText, TSpec> & verifier,
     }
 
     delegate(dbId, queryId);
-    
+
     return true;
 }
 

@@ -101,7 +101,7 @@ void setupArgumentParser(ArgumentParser & parser)
 {
     std::string rev  = "$Revision: 13234 $";
     std::string date = "$Date: 2013-02-04 18:08:44 +0100 (Mon, 04 Feb 2013) $";
-    
+
     setAppName(parser, "join");
     setShortDescription(parser, "Masai Join");
     setCategory(parser, "Databases");
@@ -246,7 +246,7 @@ int runJoiner(Options & options, TText const & /* tag */, TIndex const & /* tag 
             return 1;
         }
     }
-    
+
     std::cout << finish - start << " sec" << std::endl;
     std::cout << "Database entries:\t\t\t" << length(db.text) << std::endl;
     std::cout << "Min length:\t\t\t\t" << db.minLength << std::endl;

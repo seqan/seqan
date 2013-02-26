@@ -690,7 +690,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
 	{
         size_t bktBegin = dir[i - 1];
         size_t bktEnd = dir[i];
-        
+
         // We need at least 2 suffixes.
 		if (bktBegin + 2 > bktEnd)
             continue;
@@ -726,7 +726,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
             runBegin = i;
             seqNo1 = getSeqNo(sa[runBegin]);
         }
-        
+
         if (runBegin + 1 < bktEnd)
         {
             for (unsigned j = runBegin; j < bktEnd; ++j)

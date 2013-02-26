@@ -80,7 +80,7 @@ struct Options
     bool            online;
     bool            noWait;
     bool            hugeDb;
-    
+
     Options() :
         threadsCount(8),
         seedLength(0),
@@ -126,7 +126,7 @@ void setupArgumentParser(ArgumentParser & parser)
 {
     std::string rev  = "$Revision: 13233 $";
     std::string date = "$Date: 2013-02-01 12:37:43 +0100 (Fri, 01 Feb 2013) $";
-    
+
     setAppName(parser, "search");
     setShortDescription(parser, "Masai Search");
     setCategory(parser, "Databases");
@@ -296,7 +296,7 @@ int runSearcher(Options & options, TText const & /* tag */, TIndex const & /* ta
     }
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
-    
+
     std::cout << "Queries count:\t\t\t\t" << length(query.text) << std::endl;
     std::cout << "Min length:\t\t\t\t" << query.minLength << std::endl;
     std::cout << "Avg length:\t\t\t\t" << query.avgLength << std::endl;

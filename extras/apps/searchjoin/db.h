@@ -262,7 +262,7 @@ struct Db
     typedef StringSet<CharString, TIdsSpec>         TIds;
     typedef typename Size<TText>::Type              TTextSize;
     typedef TTextSize                               TErrors;
-    
+
     TText       text;
     TIds        ids;
 
@@ -294,7 +294,7 @@ struct Db<TText, Query>
     TTextSize   minLength;
     TTextSize   maxLength;
     TTextSize   avgLength;
-    
+
     String<TErrors> errors;
 
     TErrors     minErrors;
@@ -470,7 +470,7 @@ _parseText(DbParser<TDb, Query> & parser, TReader & reader)
 
     // Skip delim.
     goNext(reader);
-    
+
     return true;
 }
 
@@ -538,7 +538,7 @@ bool load(Db<TText, TSpec> & db, TFileName const & fileName)
     db.avgLength = length(db.text.concat) / length(db.text);
 
     _updateErrors(db);
-    
+
     return true;
 }
 
@@ -744,7 +744,7 @@ TSeedLength countSeeds(TCounts & seedCounts,
     }
 
     resize(seedCounts, maxSeedErrors + 1);
-    
+
     return seedLength;
 }
 
