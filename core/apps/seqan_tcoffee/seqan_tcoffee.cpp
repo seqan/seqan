@@ -177,19 +177,16 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         }
     }
     
-    for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "matches"); ++optNo)
+    for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "libraries"); ++optNo)
     {
-        getOptionValue(tmpVal, parser, "matches", optNo);
+        getOptionValue(tmpVal, parser, "libraries", optNo);
         if(endsWith(tmpVal,".blast"))
             appendValue(msaOpt.blastfiles, tmpVal);
-        else
-            if(endsWith(tmpVal,".mummer"))
+        else if(endsWith(tmpVal,".mummer"))
                 appendValue(msaOpt.mummerfiles, tmpVal);
-            else
-                if(endsWith(tmpVal,".lib"))
+            else if(endsWith(tmpVal,".lib"))
                     appendValue(msaOpt.libfiles, tmpVal);
-                else
-                    if(endsWith(tmpVal,".aln"))
+                else if(endsWith(tmpVal,".aln"))
                         appendValue(msaOpt.alnfiles, tmpVal);
     }
     
@@ -377,7 +374,8 @@ _setUpArgumentParser(ArgumentParser & parser)
     
     setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
 
- /*   addOption(parser,
+    // code before KNIME adaption
+    /*   addOption(parser,
               ArgParseOption("bl", "blast", "Name of \\fIBLAST\\fP match file. "
                              "To select multiple \\fIBLAST\\fP files recall this option with different arguments.",
       addOption(parser,
@@ -393,7 +391,7 @@ _setUpArgumentParser(ArgumentParser & parser)
             ArgParseOption("li", "lib", "Name of \\fIT-Coffee\\fP library. "
                            "To select multiple \\fIT-Coffee\\fP libraries recall this option with different arguments.",
                            ArgParseArgument::INPUTFILE, "", true));
-  */
+     */
 
     addSection(parser, "Scoring Options:");
     addOption(parser, ArgParseOption("g", "gop", "gap open penalty", ArgParseArgument::INTEGER));
