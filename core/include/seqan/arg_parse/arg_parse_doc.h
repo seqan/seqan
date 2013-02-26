@@ -672,7 +672,7 @@ inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharStri
             append(title, ":");
             addSubSection(toolDoc, title);
         }
-        else if (!isVisible(opt))
+        else if (!isHidden(opt))
         {
             // Build list item term.
             std::string term;

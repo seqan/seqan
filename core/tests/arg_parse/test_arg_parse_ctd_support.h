@@ -58,7 +58,9 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addOption(parser, seqan::ArgParseOption("s", "string", "set a string option", seqan::ArgParseArgument::STRING, "", true));
     addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUTFILE));
     addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUTFILE));
-
+    addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will be advanced in the ctd", seqan::ArgParseArgument::STRING));
+    hideOption(parser, "hi");
+    
     // export ctd
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".ctd");

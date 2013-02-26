@@ -23,6 +23,9 @@
 		<clielement optionIdentifier="--out" isList="false">
 			<mapping referenceName="test_app.out" />
 		</clielement>
+		<clielement optionIdentifier="--hidden" isList="false">
+			<mapping referenceName="test_app.hidden" />
+		</clielement>
 	</cli>
 	<PARAMETERS  version="1.4" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_4.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="test_app" description="This is a test-app.">
@@ -32,6 +35,7 @@
 			</ITEMLIST>
 			<ITEM name="in" value="" type="string" description="set an input file" tags="input file"  />
 			<ITEM name="out" value="" type="string" description="set an output file" tags="output file"  />
+			<ITEM name="hidden" value="" type="string" description="a hidden option - will be advanced in the ctd" tags="advanced"  />
 		</NODE>
 	</PARAMETERS>
 </tool>

@@ -337,6 +337,10 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         {
             appendValue(tags, "required");
         }
+        if (isHidden(opt))
+        {
+            appendValue(tags, "advanced");
+        }
 
         // set up restrictions
         std::vector<std::string> restrictions;

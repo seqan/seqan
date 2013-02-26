@@ -203,22 +203,22 @@ inline bool isBooleanOption(ArgParseOption const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function isVisible()
+// Function isHidden()
 // ----------------------------------------------------------------------------
 
 /**
-.Function.isVisible
+.Function.isHidden
 ..class:Class.ArgParseOption
-..summary:Returns whether option is visible on the help screen. Default is true.
+..summary:Returns whether option is hidden on the help screen. Default is false.
 ..cat:Miscellaneous
-..signature:isHiddenOption(option)
+..signature:isHidden(option)
 ..param.option:The @Class.ArgParseOption@ object.
 ...type:Class.ArgParseOption
-..returns:$true$ if the option is shown on the help screen.
+..returns:$true$ if the option is hidden on the help screen.
 ..include:seqan/arg_parse.h
 */
 
-inline bool isVisible(ArgParseOption const & me)
+inline bool isHidden(ArgParseOption const & me)
 {
     return me._isHidden;
 }
