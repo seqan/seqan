@@ -10,6 +10,7 @@ Table of Contents
   4.   Output Format
   5.   Examples
   6.   Contact
+  7.   References
 
 ------------------------------------------------------------------------------
 1. Overview
@@ -527,7 +528,7 @@ alignments as this way has established to be the defacto standard.
 See http://samtools.sourceforge.net/ for more details.
 
 ------------------------------------------------------------------------------
-4.6. AMOS Output Format 
+4.6. AMOS Output Format
 ------------------------------------------------------------------------------
 
 The AMOS assembly format (aka AFG format) is used by the AMOS assembler and
@@ -544,15 +545,22 @@ details.
 To map single-end reads with 4% error rate using 12 threads call:
 
  razers3 -i 96 -tc 12 -o map.result hg18.fa reads.fq
-  
+
 To map paired-end reads with up to 6% errors, 95% sensitivity, 12 threads, and
 only output aligned pairs with an outer distance of 200-360bp call:
-  
+
  razers3 -i 94 -rr 95 -tc 12 -ll 280 --le 80 -o map.result hg18.fa r1.fq r2.fq
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 6. Contact
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 
 For questions or comments, contact:
   David Weese <weese@inf.fu-berlin.de>
+
+------------------------------------------------------------------------------
+7. References
+------------------------------------------------------------------------------
+
+Weese, D., Holtgrewe M., & Reinert, K. (2012). RazerS 3: Faster, fully
+sensitive read mapping. Bioinformatics, 28(20), 2592–2599.

@@ -12,7 +12,8 @@ Table of Contents
   4.   Output Format
   5.   Example
   6.   Contact
-  
+  7.   References
+
 ---------------------------------------------------------------------------
 1. Overview
 ---------------------------------------------------------------------------
@@ -37,8 +38,8 @@ There are precompiled executables for various platforms:
   dfi32    dfi for GNU Linux x86
   dfi      dfi for GNU Linux x86-64
   dfiOSX   dfi for Mac OS X on Intel
-  
-DFI is distributed with SeqAn - The C++ Sequence Analysis Library (see 
+
+DFI is distributed with SeqAn - The C++ Sequence Analysis Library (see
 http://www.seqan.de). To compile DFI on your system do the following:
 
   1)  Download the latest snapshot of SeqAn
@@ -66,7 +67,7 @@ was dumped.
 3. Usage
 ---------------------------------------------------------------------------
 
-To get a short usage description of DFI, you can execute dfi -h or 
+To get a short usage description of DFI, you can execute dfi -h or
 dfi --help.
 
 Usage: dfi [OPTION]... --minmax  <min_1> <max_1> <database 1> ...
@@ -126,3 +127,11 @@ bab
 For questions or comments, contact:
   David Weese <david.weese@fu-berlin.de>
   Marcel H. Schulz <marcel.schulz@molgen.mpg.de>
+
+---------------------------------------------------------------------------
+7. References
+---------------------------------------------------------------------------
+
+Weese, D., Schulz, M. H. (2008). Efficient String Mining under Constraints
+via the Deferred Frequency Index. In: Proceedings of the 8th Industrial
+Conference on Data Mining (ICDM’08), LNAI 5077, Springer, pp 374-388.

@@ -10,6 +10,7 @@ Table of Contents
   4.   Output Format
   5.   Example
   6.   Contact
+  7.   References
 
 ---------------------------------------------------------------------------
 1. Overview
@@ -499,3 +500,12 @@ altering the sort-order with the -so option.
 For questions or comments, contact:
   David Weese <weese@inf.fu-berlin.de>
   Anne-Katrin Emde <emde@inf.fu-berlin.de>
+
+---------------------------------------------------------------------------
+7. References
+---------------------------------------------------------------------------
+
+Weese, D., Emde, A.-K., Rausch, T., Döring, A., & Reinert, K. (2009).
+RazerS – Fast read mapping with sensitivity control. Genome Research, 19(9),
+1646–1654.
+
