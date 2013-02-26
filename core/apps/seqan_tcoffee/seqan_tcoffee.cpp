@@ -176,7 +176,24 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
             appendValue(msaOpt.method, 3);
         }
     }
-
+    
+    for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "matches"); ++optNo)
+    {
+        getOptionValue(tmpVal, parser, "matches", optNo);
+        if(endsWith(tmpVal,".blast"))
+            appendValue(msaOpt.blastfiles, tmpVal);
+        else
+            if(endsWith(tmpVal,".mummer"))
+                appendValue(msaOpt.mummerfiles, tmpVal);
+            else
+                if(endsWith(tmpVal,".lib"))
+                    appendValue(msaOpt.libfiles, tmpVal);
+                else
+                    if(endsWith(tmpVal,".aln"))
+                        appendValue(msaOpt.alnfiles, tmpVal);
+    }
+    
+/*
     for (unsigned int optNo = 0; optNo < getOptionValueCount(parser, "blast"); ++optNo)
     {
         getOptionValue(tmpVal, parser, "blast", optNo);
@@ -200,7 +217,8 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         getOptionValue(tmpVal, parser, "aln", optNo);
         appendValue(msaOpt.alnfiles, tmpVal);
     }
-
+*/
+    
 // Set scoring options
     msaOpt.sc = scMat;
     getOptionValue(msaOpt.sc.data_gap_open, parser, "gop");
@@ -353,10 +371,16 @@ _setUpArgumentParser(ArgumentParser & parser)
     addDefaultValue(parser, "method", "local");
 
     addOption(parser,
+              ArgParseOption("l", "libraries", "Name of match file. "
+                             "To select multiple files recall this option with different arguments.",
+                             ArgParseArgument::INPUTFILE, "", true));
+    
+    setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
+
+ /*   addOption(parser,
               ArgParseOption("bl", "blast", "Name of \\fIBLAST\\fP match file. "
                              "To select multiple \\fIBLAST\\fP files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
-    addOption(parser,
+      addOption(parser,
               ArgParseOption("mu", "mummer", "Name of \\fIMUMmer\\fP match file. "
                              "To select multiple \\fIMUMmer\\fP files recall this option with different arguments.",
                              ArgParseArgument::INPUTFILE, "", true));
@@ -369,6 +393,7 @@ _setUpArgumentParser(ArgumentParser & parser)
             ArgParseOption("li", "lib", "Name of \\fIT-Coffee\\fP library. "
                            "To select multiple \\fIT-Coffee\\fP libraries recall this option with different arguments.",
                            ArgParseArgument::INPUTFILE, "", true));
+  */
 
     addSection(parser, "Scoring Options:");
     addOption(parser, ArgParseOption("g", "gop", "gap open penalty", ArgParseArgument::INTEGER));
