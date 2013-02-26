@@ -1,0 +1,17 @@
+Name: Faster, fully sensitive read mapping
+Author: David Weese <david.weese@fu-berlin.de>
+Maintainer: David Weese <david.weese@fu-berlin.de>
+License: GPL v3
+Copyright: 2009-2013, FU Berlin
+Status: mature
+Homepage: http://seqan.de/projects/razers
+Description: RazerS 3 is a tool for mapping millions of short genomic reads
+ onto a reference genome. It was designed with focus on mapping next-generation
+ sequencing reads onto whole DNA genomes. RazerS 3 searches for matches of reads
+ with a percent identity above a given threshold (-i X), whereby it detects
+ alignments with mismatches as well as gaps.
+ .
+ See the project website and README file for more information.
+ .
+ Weese, D., Holtgrewe M., & Reinert, K. (2012). RazerS 3: Faster, fully sensitive
+ read mapping. Bioinformatics, 28(20), 2592–2599.

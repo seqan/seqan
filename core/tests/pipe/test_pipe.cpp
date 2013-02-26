@@ -55,7 +55,7 @@ const size_t MAX_SIZE = 1u << 20;
 
 
 template <typename TStringSpec>
-void testExternalString(unsigned maxSize = 16*1024*1024) 
+void testExternalString(unsigned maxSize = 32*1024*1024)
 {
 	typedef String<unsigned, TStringSpec> TExtString;
     typedef typename Iterator<TExtString const, Standard>::Type TIter;
