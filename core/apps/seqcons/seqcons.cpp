@@ -39,7 +39,7 @@ _setVersion(ArgumentParser & parser)
 	setDate(parser, "Nov 21, 2012");
 }
 
-int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
+seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
 {
     // Setup ArgumentParser.
     seqan::ArgumentParser parser("seqcons");
@@ -83,21 +83,13 @@ int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
 	addOption(parser, ArgParseOption("rm", "rmethod", "realign method", ArgParseArgument::STRING, "[nw | gotoh]"));
 	setDefaultValue(parser, "rmethod", "gotoh");
 
-	if (argc == 1)
-	{
-		printShortHelp(parser, std::cerr);	// print short help and exit
-		return 1;
-	}
-
     // Parse command line.
     seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
 
     // If parsing was not successful then exit with code 1 if there were errors.
     // Otherwise, exit with code 0 (e.g. help was printed).
     if (res != seqan::ArgumentParser::PARSE_OK)
-    {
-        return res;// == seqan::ArgumentParser::PARSE_ERROR;
-    }
+        return res;
 
 	// Main options
 	getOptionValue(consOpt.readsfile, parser, "reads");
@@ -153,7 +145,7 @@ int parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])
         consOpt.rmethod = 0;
 	else if (optionVal == "gotoh")
         consOpt.rmethod = 1;
-    return 0;
+    return seqan::ArgumentParser::PARSE_OK;
 
 }
 
@@ -240,9 +232,10 @@ int main(int argc, const char *argv[]) {
 	// Command line parsing
 	ArgumentParser parser;
 	ConsensusOptions consOpt;
-    int ret = parseCommandLine(consOpt, argc, argv);
-    if (ret != 0)
-        return ret;
+
+    seqan::ArgumentParser::ParseResult res = parseCommandLine(consOpt, argc, argv);
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
 
 	// Create a new fragment store
 	typedef FragmentStore<> TFragmentStore;
@@ -251,7 +244,7 @@ int main(int argc, const char *argv[]) {
 
 	// Load the reads and layout positions
 	TSize numberOfContigs = 0;
-    ret = loadFiles(fragStore, numberOfContigs, consOpt);
+    int ret = loadFiles(fragStore, numberOfContigs, consOpt);
 
 	// Multi-realignment desired or just conversion of the input
 	if (!consOpt.noalign) {
