@@ -333,7 +333,8 @@ _setUpArgumentParser(ArgumentParser & parser)
 {
     _addVersion(parser);
     setDate(parser, "July 2012");
-    setAppName(parser,"seqan-tcoffee");
+    setAppName(parser,"seqan_tcoffee");
+    setCategory(parser, "Sequence Alignment");
     
     setShortDescription(parser, "Multiple sequence alignment");
 
