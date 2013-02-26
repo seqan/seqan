@@ -101,7 +101,7 @@ seqan_add_app_test (razers3)
 # ----------------------------------------------------------------------------
 
 # Include executable razers in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} razers2 CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} razers3 CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
