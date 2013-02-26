@@ -59,6 +59,7 @@ typedef double TFloat;
         TFloat      growthRate;
         double      entropy;
         bool        maximal;
+        CharString  output;
 
         DFIOptions()
         {
@@ -487,7 +488,8 @@ int runDFI(
 	TFileNames		const &fileNames,
 	TParamPredHull	paramPredHull,
 	TParamPred		paramPred,
-	bool			maximal)
+	bool			maximal,
+    DFIOptions      const &options)
 {
 	typedef String<TAlphabet, Alloc<> >								TString;
 	typedef StringSet<TString>										TStringSet;
@@ -533,7 +535,17 @@ int runDFI(
 
 	TIter it(index);
 	goBegin(it);
-	
+
+    std::streambuf *buf;
+    std::ofstream of;
+    if (!empty(options.output))
+    {
+        of.open(toCString(options.output));
+        buf = of.rdbuf();
+    }
+    else
+        buf = cout.rdbuf();
+    std::ostream out(buf);
 	
 	if (maximal)
 	{
@@ -594,24 +606,24 @@ int runDFI(
 #endif
 			{
 #ifdef DEBUG_ENTROPY
-				cout << left << setw(14) << H << "[";
+				out << left << setw(14) << H << "[";
 				for (unsigned i = 0; i < length(entry.freq); ++i)
-					cout << right << setw(6) << entry.freq[i];
-				cout << "]      \"";
+					out << right << setw(6) << entry.freq[i];
+				out << "]      \"";
 #endif
-				cout << infix(
+				out << infix(
 					mySet[getSeqNo((*mit).lPos)], 
 					getSeqOffset((*mit).lPos),
 					getSeqOffset((*mit).lPos) + (*mit).len);
 #ifdef DEBUG_ENTROPY
-				cout << "\"";
+				out << "\"";
 				freqSumLast = freqSum;
 #endif
-				cout << endl;
+				out << endl;
 			}
 		}
 	} 
-	else 
+	else
 	{
 		for (; !atEnd(it); goNext(it))
 		{
@@ -639,19 +651,19 @@ int runDFI(
 					
 				double H = entrp.getEntropy(entry);
 				if (H <= 0.0) H = 0.0;
-				cout << left << setw(14) << H << "[";
+				out << left << setw(14) << H << "[";
 				for (unsigned i = 0; i < length(entry.freq); ++i)
-					cout << right << setw(6) << entry.freq[i];
-				cout << "]      \"";
+					out << right << setw(6) << entry.freq[i];
+				out << "]      \"";
 #endif
-				cout << infix(
+				out << infix(
 	                mySet[getSeqNo(lPos)],
 	                getSeqOffset(lPos),
 	                getSeqOffset(lPos) + l);
 #ifdef DEBUG_ENTROPY
-			cout << "\"";
+			out << "\"";
 #endif
-			cout << endl;
+			out << endl;
 			}
 		}
 	}
@@ -671,6 +683,8 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
+    setValidValues(parser, 0, "fa fasta fq fastq raw");
+    setHelpText(parser, 0, "A database file in either Fasta/Fastq or Raw (one string per line) format.");
 
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --minmax <\\fImin_1\\fP> <\\fImax_1\\fP> ... --minmax <\\fImin_m\\fP> <\\fImax_m\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --support <\\fIrho_s\\fP> --growth  <\\fIrho_g\\fP> <\\fIdatabase 1\\fP> <\\fIdatabase 2\\fP>");
@@ -700,6 +714,8 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setMaxValue(parser, "entropy", "1");
 
     addSection(parser, "Input/Output Options");
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUTFILE));
+    setValidValues(parser, "output", "txt");
     addOption(parser, ArgParseOption("a", "alphabet", "Specify database alphabet.", ArgParseOption::STRING));
     setValidValues(parser, "alphabet", "dna protein char");
     setDefaultValue(parser, "alphabet", "char");
@@ -787,6 +803,12 @@ extractOptions(
 			cerr << "Please specify at least 2 databases." << endl;
 	}
 
+    // Get output file name from command line if set.  Otherwise, output to stdout
+    if (isSet(parser, "output"))
+    {
+        getOptionValue(options.output, parser, "output");
+    }
+
     return (stop) ? ArgumentParser::PARSE_ERROR : ArgumentParser::PARSE_OK;
 }
 
@@ -819,23 +841,23 @@ int main(int argc, const char *argv[])
 		case 0:
 			switch (options.alphabet)
 			{
-				case 0: return runDFI<PredMinFreq, PredMaxFreq, unsigned char> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal);
-				case 1: return runDFI<PredMinFreq, PredMaxFreq, AminoAcid> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal);
-				case 2: return runDFI<PredMinFreq, PredMaxFreq, Dna> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal);
+				case 0: return runDFI<PredMinFreq, PredMaxFreq, unsigned char> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal, options);
+				case 1: return runDFI<PredMinFreq, PredMaxFreq, AminoAcid> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal, options);
+				case 2: return runDFI<PredMinFreq, PredMaxFreq, Dna> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal, options);
 			}
 		case 1:
 			switch (options.alphabet)
 			{
-				case 0: return runDFI<PredMinSupp, PredEmerging, unsigned char> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal);
-				case 1: return runDFI<PredMinSupp, PredEmerging, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal);
-				case 2: return runDFI<PredMinSupp, PredEmerging, Dna> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal);
+				case 0: return runDFI<PredMinSupp, PredEmerging, unsigned char> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal, options);
+				case 1: return runDFI<PredMinSupp, PredEmerging, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal, options);
+				case 2: return runDFI<PredMinSupp, PredEmerging, Dna> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal, options);
 			}
 		case 2:
 			switch (options.alphabet)
 			{
-				case 0: return runDFI<PredMinAllSupp, PredEntropy, unsigned char> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal);
-				case 1: return runDFI<PredMinAllSupp, PredEntropy, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal);
-				case 2: return runDFI<PredMinAllSupp, PredEntropy, Dna> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal);
+				case 0: return runDFI<PredMinAllSupp, PredEntropy, unsigned char> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal, options);
+				case 1: return runDFI<PredMinAllSupp, PredEntropy, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal, options);
+				case 2: return runDFI<PredMinAllSupp, PredEntropy, Dna> (getArgumentValues(parser, 0), options.minSupp, options.entropy, options.maximal, options);
 			}
 	}
 	cerr << "Please choose a mining problem." << endl;
