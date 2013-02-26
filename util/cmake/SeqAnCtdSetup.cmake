@@ -116,7 +116,7 @@ foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
                       COMMAND ${CMAKE_COMMAND} -E copy "${_BINARY_PATH}" "${PAYLOAD_TMP_BIN_PATH}")
   add_custom_target (target_ctd_ctds_${_BINARY}
                      COMMAND ${_BINARY_PATH} --write-ctd "${CTD_PATH}/${_BINARY}.ctd"
-                     DEPENDS target_ctd_mkdir)
+                     DEPENDS target_ctd_mkdir ${_BINARY})
   list (APPEND PREPARE_CTD_CTDS_TARGETS target_ctd_ctds_${_BINARY})
 endforeach ()
 
