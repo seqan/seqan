@@ -720,19 +720,13 @@ int dumpMatches(
     resize(rows(align), 2);
 
     std::ofstream file;
-    CharString fileName = options.output;
-    if (empty(fileName))
-    {
-        fileName = readFName;
-        append(fileName, ".result");
-    }
 
     String<char, MMap<> > fileMM;
     if (options.outputFormat == 0)
-        open(fileMM, toCString(fileName), OPEN_RDWR | OPEN_CREATE);  //use fast mmap strings for format 0
+        open(fileMM, toCString(options.output), OPEN_RDWR | OPEN_CREATE);  //use fast mmap strings for format 0
     else
     {
-        file.open(toCString(fileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+        file.open(toCString(options.output), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
         if (!file.is_open())
         {
             std::cerr << "Failed to open output file" << std::endl;

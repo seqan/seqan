@@ -313,7 +313,11 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 
     // Need genome and reads (hg18.fa reads.fq)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    setValidValues(parser, 0, "fa fasta fq fastq");
+    setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    setValidValues(parser, 1, "fa fasta fq fastq");
+    setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
 #ifdef RAZERS_MATEPAIRS
@@ -328,7 +332,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addDescription(parser, "Input to RazerS 3 is a reference genome file and either one file with single-end reads "
                            "or two files containing left or right mates of paired-end reads. ");
 
-    addDescription(parser, "(c) Copyright 2009-2012 by David Weese.");
+    addDescription(parser, "(c) Copyright 2009-2013 by David Weese.");
 
     addSection(parser, "Main Options");
     addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
@@ -348,7 +352,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addOption(parser, ArgParseOption("", "unique", "Output only unique best matches (-m 1 -dr 0 -pa)."));
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
-    addOption(parser, ArgParseOption("o", "output", "Mapping result filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Mapping result filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -363,9 +367,6 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 #endif
 
     addSection(parser, "Output Format Options");
-    addOption(parser, ArgParseOption("of", "output-format", "Select output format.", ArgParseOption::STRING));
-    setValidValues(parser, "output-format", "razer fasta eland gff sam amos");
-    setDefaultValue(parser, "output-format", options.outputFormatList[options.outputFormat]);
     addOption(parser, ArgParseOption("a", "alignment", "Dump the alignment for each match (only \\fIrazer\\fP or \\fIfasta\\fP format)."));
     addOption(parser, ArgParseOption("pa", "purge-ambiguous", "Purge reads with more than <\\fImax-hits\\fP> best matches."));
     addOption(parser, ArgParseOption("dr", "distance-range", "Only consider matches with at most NUM more errors compared to the best. Default: output all.", ArgParseOption::INTEGER));
@@ -475,7 +476,16 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     setDefaultValue(parser, "match-histo-start-threshold", options.matchHistoStartThreshold);
 #endif
 
-    addTextSection(parser, "Naming, Sorting, and Coordinate Schemes");
+    addTextSection(parser, "Formats, Naming, Sorting, and Coordinate Schemes");
+
+    addText(parser, "RazerS 2 supports various output formats. The output format is detected automatically from the file name suffix.");
+	addListItem(parser, ".razers", "Razer format");
+	addListItem(parser, ".fa, .fasta", "Enhanced Fasta format");
+	addListItem(parser, ".eland", "Eland format");
+	addListItem(parser, ".gff", "GFF format");
+	addListItem(parser, ".sam", "SAM format");
+	addListItem(parser, ".afg", "Amos AFG format");
+
     addText(parser, "By default, reads and contigs are referred by their Fasta ids given in the input files. "
                     "With the \\fB-gn\\fP and \\fB-rn\\fP options this behaviour can be changed:");
     addListItem(parser, "0", "Use Fasta id.");
@@ -484,8 +494,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addListItem(parser, "3", "Use the Fasta id, do NOT append /L or /R for mate pairs.");
 
     addText(parser, "");
-    addText(parser, "The way matches are sorted in the result file can be changed with the \\fB-so\\fP option for the following formats: "
-                    "\\fBrazer\\fP, \\fBfasta\\fP, \\fBsam\\fP, and \\fBamos\\fP. Primary and secondary sort keys are:");
+    addText(parser, "The way matches are sorted in the output file can be changed with the \\fB-so\\fP option for the following formats: "
+                    "\\fBrazers\\fP, \\fBfasta\\fP, \\fBsam\\fP, and \\fBafg\\fP. Primary and secondary sort keys are:");
     addListItem(parser, "0", "1. read number, 2. genome position");
     addListItem(parser, "1", "1. genome position, 2. read number");
 
@@ -498,10 +508,10 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 
     addTextSection(parser, "Examples");
     addListItem(parser,
-                "\\fBrazers3\\fP \\fB-i\\fP \\fB96\\fP \\fB-tc\\fP \\fB12\\fP \\fB-o\\fP \\fBmapped.result\\fP \\fBhg18.fa\\fP \\fBreads.fq\\fP",
+                "\\fBrazers3\\fP \\fB-i\\fP \\fB96\\fP \\fB-tc\\fP \\fB12\\fP \\fB-o\\fP \\fBmapped.razers\\fP \\fBhg18.fa\\fP \\fBreads.fq\\fP",
                 "Map single-end reads with 4% error rate using 12 threads.");
     addListItem(parser,
-                "\\fBrazers3\\fP \\fB-i\\fP \\fB94\\fP \\fB-rr\\fP \\fB95\\fP \\fB-tc\\fP \\fB12\\fP \\fB-ll\\fP \\fB280\\fP \\fB--le\\fP \\fB80\\fP \\fB-o\\fP \\fBmapped.result\\fP \\fBhg18.fa\\fP \\fBreads_1.fq\\fP \\fBreads_2.fq\\fP",
+                "\\fBrazers3\\fP \\fB-i\\fP \\fB94\\fP \\fB-rr\\fP \\fB95\\fP \\fB-tc\\fP \\fB12\\fP \\fB-ll\\fP \\fB280\\fP \\fB--le\\fP \\fB80\\fP \\fB-o\\fP \\fBmapped.razers\\fP \\fBhg18.fa\\fP \\fBreads_1.fq\\fP \\fBreads_2.fq\\fP",
                 "Map paired-end reads with up to 6% errors, 95% sensitivity, 12 threads, and only output aligned pairs with an outer distance of 200-360bp.");
 }
 
@@ -546,13 +556,36 @@ extractOptions(
     if (isSet(parser, "distance-range"))
         options.scoreDistanceRange++;
     getOptionValue(options.dumpAlignment, parser, "alignment");
-    getOptionValue(options.output, parser, "output");
-    CharString outputFormatStr;
-    getOptionValue(outputFormatStr, parser, "output-format");
-    for (options.outputFormat = 0; options.outputFormat < length(options.outputFormatList); ++options.outputFormat)
-        if (outputFormatStr == options.outputFormatList[options.outputFormat])
-            break;
-    SEQAN_ASSERT_LT(options.outputFormat, length(options.outputFormatList));
+
+
+    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
+    if (isSet(parser, "output"))
+    {
+        getOptionValue(options.output, parser, "output");
+    }
+    else
+    {
+        options.output = readFileNames[0];
+        append(options.output, ".razers");
+    }
+
+    // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+    CharString tmp = options.output;
+    toLower(tmp);
+
+    if (endsWith(tmp, ".razers"))
+        options.outputFormat = 0;
+    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+        options.outputFormat = 1;
+    else if (endsWith(tmp, ".eland"))
+        options.outputFormat = 2;
+    else if (endsWith(tmp, ".gff"))
+        options.outputFormat = 3;
+    else if (endsWith(tmp, ".sam"))
+        options.outputFormat = 4;
+    else if (endsWith(tmp, ".afg"))
+        options.outputFormat = 5;
+
     getOptionValue(options.sortOrder, parser, "sort-order");
     getOptionValue(options.genomeNaming, parser, "genome-naming");
     getOptionValue(options.readNaming, parser, "read-naming");

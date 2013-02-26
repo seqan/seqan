@@ -683,8 +683,8 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
-    setValidValues(parser, 0, "fa fasta fq fastq raw");
-    setHelpText(parser, 0, "A database file in either Fasta/Fastq or Raw (one string per line) format.");
+    setValidValues(parser, 0, "fa fasta fq fastq txt");
+    setHelpText(parser, 0, "Database files in Fasta/Fastq or text format (lines are strings).");
 
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --minmax <\\fImin_1\\fP> <\\fImax_1\\fP> ... --minmax <\\fImin_m\\fP> <\\fImax_m\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --support <\\fIrho_s\\fP> --growth  <\\fIrho_g\\fP> <\\fIdatabase 1\\fP> <\\fIdatabase 2\\fP>");

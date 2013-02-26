@@ -51,7 +51,6 @@
 #include "razers_matepairs.h"
 #endif
 
-#include <cctype>
 #include <iostream>
 #include <sstream>
 

@@ -198,7 +198,7 @@ struct RazerSOptions
     bool        computeGlobal;          // compute global alignment in SAM output
 
     // filtration parameters
-    std::string shape;                // shape (e.g. 11111111111)
+    std::string shape;                  // shape (e.g. 11111111111)
     int         threshold;              // threshold (minimal threshold, 0 activates pigeonhole mode)
     int         tabooLength;            // taboo length
     int         repeatLength;           // repeat length threshold
@@ -234,17 +234,17 @@ struct RazerSOptions
     double      timeLoadFiles;          // time for loading input files
     double      timeMapReads;           // time for mapping reads
     double      timeDumpResults;        // time for dumping the results
-    double      timeBuildQGramIndex;      // time for q-gram index building.
-    double      timeCompactMatches;         // time for compacting reads
+    double      timeBuildQGramIndex;    // time for q-gram index building.
+    double      timeCompactMatches;     // time for compacting reads
     double      timeMaskDuplicates;     // time spent masking duplicates
-    double      timeFsCopy;     // time spent copying alignments back into the fragment store
+    double      timeFsCopy;             // time spent copying alignments back into the fragment store
     double      timeFiltration;
     double      timeVerification;
 
     bool        maqMapping;
     int         absMaxQualSumErrors;
 
-    bool        lowMemory;          // set maximum shape weight to 13 to limit size of q-gram index
+    bool        lowMemory;              // set maximum shape weight to 13 to limit size of q-gram index
     bool        fastaIdQual;            // hidden option for special fasta+quality format we use
 
     // misc
@@ -276,8 +276,6 @@ struct RazerSOptions
 
     CharString commandLine;
     std::string version;
-
-    StringSet<CharString, Owner<ConcatDirect<> > > outputFormatList;
 
     RazerSOptions()
     {
@@ -348,7 +346,6 @@ struct RazerSOptions
 #ifdef RAZERS_OPENADDRESSING
         loadFactor = 1.6;
 #endif
-        strSplit(outputFormatList, "razer fasta eland gff sam amos");
     }
 
 };

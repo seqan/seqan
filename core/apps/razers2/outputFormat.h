@@ -563,14 +563,7 @@ void dumpMatches(
 	resize(rows(align), 2);
 
 	std::ofstream file;
-	CharString fileName = options.output;
-	if (empty(fileName))
-	{
-		fileName = readFName;
-		append(fileName, ".result");
-	}
-
-	file.open(toCString(fileName), std::ios_base::out | std::ios_base::trunc);
+	file.open(toCString(options.output), std::ios_base::out | std::ios_base::trunc);
 	if (!file.is_open()) {
 		std::cerr << "Failed to open output file" << std::endl;
 		return;
