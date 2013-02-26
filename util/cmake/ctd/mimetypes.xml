@@ -9,4 +9,7 @@
  <mimetype name="RAZERS" binary="false" ext="razers" description="RazerS read mapping format"/>
  <mimetype name="ELAND" binary="false" ext="eland" description="ELAND read mapping format"/>
  <mimetype name="MASAI" binary="true" ext="raw" description="Masai read mapping format"/>
+ <mimetype name="SAM" binary="true" ext="sam" description="SAM Sequence Alignment and Mapping Format"/>
+ <mimetype name="BAM" binary="true" ext="sam" description="BAM Binary Sequence Alignment and Mapping Format"/>
+ <mimetype name="AFG" binary="true" ext="afg" description="AMOS Assembly Container"/>
 </mimetypes>
