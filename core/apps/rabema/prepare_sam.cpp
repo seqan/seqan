@@ -153,7 +153,7 @@ seqan::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("rabema_preprae_sam");
+    seqan::ArgumentParser parser("rabema_prepare_sam");
 
     // Set short description, version, and date.
     setShortDescription(parser, "Prepare SAM For Rabema");
