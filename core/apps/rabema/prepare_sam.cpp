@@ -159,6 +159,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setShortDescription(parser, "Prepare SAM For Rabema");
     setVersion(parser, "1.2");
     setDate(parser, "February 2013");
+    setCategory(parser, "Benchmarking");
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-i\\fP \\fIIN.sam\\fP \\fB-o\\fP \\fIOUT.sam\\fP");

@@ -982,6 +982,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     setShortDescription(parser, "RABEMA Gold Standard Builder");
     setVersion(parser, "1.2");
     setDate(parser, "February 2013");
+    setCategory(parser, "Benchmarking");
 
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB--out-gsi\\fP \\fIOUT.gsi\\fP \\fB--reference\\fP \\fIREF.fa\\fP "

@@ -983,6 +983,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     setShortDescription(parser, "RABEMA Evaluation");
     setVersion(parser, "1.2");
     setDate(parser, "February 2013");
+    setCategory(parser, "Benchmarking");
 
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB--reference\\fP \\fIREF.fa\\fP \\fB--in-gsi\\fP \\fIIN.gsi\\fP "
