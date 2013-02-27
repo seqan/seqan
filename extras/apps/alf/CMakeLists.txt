@@ -65,6 +65,13 @@ install (FILES example/small.fasta
 #seqan_add_app_test (alf)
 
 # ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+	
+# Include executable seqan_tcoffee in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} alf CACHE INTERNAL "")
+
+# ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
 

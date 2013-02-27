@@ -15,4 +15,6 @@
  <mimetype name="DIST" binary="true" ext="dist" description="PHYLIP Formatted Distance Matrix"/>
  <mimetype name="DOT" binary="true" ext="dot" description="GraphViz DOT Graph Format"/>
  <mimetype name="NEWICK" binary="true" ext="newick" description="NEWICK Tree Format"/>
+ <mimetype name="ALFTSV" binary="true" ext="alf.tsv" description="ALF output format"/>
+ <mimetype name="TXT" binary="true" ext="txt" description="Text"/>
 </mimetypes>

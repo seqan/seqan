@@ -64,6 +64,7 @@ int main(int argc, const char * argv[])
     setShortDescription(parser, "Alignment free sequence comparison");
     setVersion(parser, "1.1");
     setDate(parser, "January 5, 2012");
+    setCategory(parser, "Sequence Comparison");
 
     // Usage line and description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-i\\fP \\fIIN.FASTA\\fP [\\fB-o\\fP \\fIOUT.TXT\\fP]");
@@ -73,8 +74,10 @@ int main(int argc, const char * argv[])
     // Options Section: Input / Output parameters.
     addSection(parser, "Input / Output");
     addOption(parser, seqan::ArgParseOption("i", "input-file", "Name of the multi-FASTA input file.", seqan::ArgParseArgument::INPUTFILE));
+    setValidValues(parser, "input-file", "fa fasta");
     setRequired(parser, "input-file");
     addOption(parser, seqan::ArgParseOption("o", "output-file", "Name of the file to which the tab-delimtied matrix with pairwise scores will be written to.  Default is to write to stdout.", seqan::ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "output-file", "alf.tsv");
 
     addSection(parser, "General Algorithm Parameters");
     addOption(parser, seqan::ArgParseOption("m", "method", "Select method to use.", seqan::ArgParseArgument::STRING, "METHOD"));
@@ -95,6 +98,7 @@ int main(int argc, const char * argv[])
     addOption(parser, seqan::ArgParseOption("mmw", "mismatch-weight", "Real-valued weight of counts for words with mismatches.", seqan::ArgParseArgument::DOUBLE, "WEIGHT"));
     setDefaultValue(parser, "mismatch-weight", "0.1");
     addOption(parser, seqan::ArgParseOption("kwf", "k-mer-weights-file", "Print k-mer weights for every sequence to this file if given.", seqan::ArgParseArgument::OUTPUTFILE, "FILE.TXT"));
+    setValidValues(parser, "k-mer-weights-file", "txt");
 
     addTextSection(parser, "Contact and References");
     addListItem(parser, "For questions or comments, contact:", "Jonathan Goeke <goeke@molgen.mpg.de>");
