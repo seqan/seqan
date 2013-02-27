@@ -65,6 +65,13 @@ install (FILES example/example.dist
 seqan_add_app_test (tree_recon)
 
 # ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+	
+# Include executable seqan_tcoffee in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} tree_recon CACHE INTERNAL "")
+
+# ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
 

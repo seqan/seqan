@@ -110,6 +110,7 @@ int main(int argc, const char *argv[])
     setShortDescription(parser, "Tree reconstruction");
     setVersion(parser, "1.02");
     setDate(parser, "July 17, 2012");
+    setCategory(parser, "Phylogeneny");
 
     // Usage line and description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-m\\fP \\fIIN.DIST\\fP");
@@ -118,11 +119,10 @@ int main(int argc, const char *argv[])
 	addSection(parser, "Input / Output");
     addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUTFILE, "FILE"));
     setRequired(parser, "matrix");
+    setValidValues(parser, "matrix", "dist");
 	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUTFILE, "FILE"));
     setDefaultValue(parser, "out-file", "tree.dot");
-	addOption(parser, seqan::ArgParseOption("f", "format", "The output format.", seqan::ArgParseArgument::STRING, "FORMAT"));
-    setValidValues(parser, "format", "dot newick");
-    setDefaultValue(parser, "format", "dot");
+    setValidValues(parser, "out-file", "dot newick");
 
     addSection(parser, "Algorithm Options");
     addOption(parser, seqan::ArgParseOption("b", "build", "Tree building method. \\fInj\\fP: neighbour-joining, \\fImin\\fP: UPGMA single linkage, \\fImax\\fP: UPGMA complete linkage, \\fIavg\\fP: UPGMA average linkage, \\fIwavg\\fP: UPGMA weighted average linkage.  Neighbour-joining creates an unrooted tree.  We root that tree at the least joined pair.", seqan::ArgParseArgument::STRING, "METHOD"));
@@ -137,7 +137,7 @@ int main(int argc, const char *argv[])
     seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
     // Only extract  options if the program will continue after parseCommandLine()
     if (res != seqan::ArgumentParser::PARSE_OK)
-        return res;
+        return res == seqan::ArgumentParser::PARSE_ERROR;
 
 	// Tree reconstruction
 	typedef double TDistanceValue;
@@ -158,7 +158,12 @@ int main(int argc, const char *argv[])
 	else if (meth == "avg") build = 3;
 	else if (meth == "wavg") build = 4;
 	String<char> format;
-	getOptionValue(format, parser, "format");
+	String<char> tmp = outfile;
+    toLower(tmp);
+    if (endsWith(tmp, ".dot"))
+        format = "dot";
+    else
+        format = "newick";
 
 	// Read the distance matrix
 	String<TName> names;
