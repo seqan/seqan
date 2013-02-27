@@ -169,10 +169,13 @@
 #include <seqan/index/index_fm_compressed_sa.h>
 #include <seqan/index/index_fm_compressed_sa_iterator.h>
 #include <seqan/index/index_fm_prefix_sum_table.h>
-#include <seqan/index/index_fm_lf_table.h>
 #include <seqan/index/index_fm_right_array_binary_tree.h>
 #include <seqan/index/index_fm_right_array_binary_tree_iterator.h>
-#include <seqan/index/index_fm_wavelet_tree.h>
+// #include <seqan/index/index_fm_wavelet_tree.h>
+#include <seqan/index/index_fm_rank_dictionary_wt.h>
+#include <seqan/index/index_fm_rank_dictionary_bms.h>
+#include <seqan/index/index_fm_sentinal_rank_dictionary.h>
+#include <seqan/index/index_fm_lf_table.h>
 #include <seqan/index/index_fm.h>
 #include <seqan/index/index_fm_stree.h>
 
