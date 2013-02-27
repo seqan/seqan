@@ -177,6 +177,7 @@ add_custom_target (prepare_ctd_static_files
                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/COPYRIGHT" "${WORKFLOW_PLUGIN_DIR}"
                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/DESCRIPTION" "${WORKFLOW_PLUGIN_DIR}"
                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/LICENSE" "${WORKFLOW_PLUGIN_DIR}"
+                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH}
                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml" "${CTD_PATH}")
 
 add_custom_target (prepare_ctd_icons

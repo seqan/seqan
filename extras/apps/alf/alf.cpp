@@ -109,7 +109,7 @@ int main(int argc, const char * argv[])
     seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
     // Only extract  options if the program will continue after parseCommandLine()
     if (res != seqan::ArgumentParser::PARSE_OK)
-        return res;
+        return (res == seqan::ArgumentParser::PARSE_ERROR);
 
     // Declare all parameters
     String<char> kmerWeightsFileTmp;
