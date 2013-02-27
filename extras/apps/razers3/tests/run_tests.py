@@ -46,6 +46,15 @@ def main(source_base, binary_base):
     # was generated in generate_outputs.sh.
     conf_list = []
 
+    # We prepare a list of transforms to apply to the output files.  This is
+    # used to strip the input/output paths from the programs' output to
+    # make it more canonical and host independent.
+    ph.outFile('-')  # To ensure that the out path is set.
+    transforms = [
+        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'extras/apps/razers3/tests') + os.sep, '', right=True),
+        app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True)
+        ]
+
     # ============================================================
     # Run Adeno Single-End Tests
     # ============================================================
@@ -118,9 +127,11 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix))],
                 to_diff=[(ph.inFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix)),
-                          ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix))),
+                          ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix)),
+                          transforms),
                          (ph.inFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
-                          ph.outFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)))])
+                          ph.outFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
+                          transforms)])
             conf_list.append(conf)
 
         # Compute with different sort orders.
@@ -205,7 +216,7 @@ def main(source_base, binary_base):
             conf_list.append(conf)
 
         # Compute with different output formats.
-        for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff']):
+        for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff', 'sam', 'afg']):
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
@@ -214,9 +225,11 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-reads%d_2.fa' % rl),
                       '-o', ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix))],
                 to_diff=[(ph.inFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix)),
-                          ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix))),
+                          ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix)),
+                          transforms),
                          (ph.inFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
-                          ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)))])
+                          ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
+                          transforms)])
             conf_list.append(conf)
 
         # Compute with different sort orders.
