@@ -147,7 +147,7 @@ you should think of using @Tag.ExternalConfig@.
     struct ExternalConfigLarge {
 //IOREV contains warning in code comments, need to investigate
         typedef TFile_ TFile;
-        typedef typename Size<TFile_>::Type TSize;
+        typedef typename MakeUnsigned<typename Size<TFile_>::Type>::Type TSize;
         enum { PAGE_SIZE = PAGE_SIZE_ };
         enum { FRAMES = FRAMES_ };
     };
