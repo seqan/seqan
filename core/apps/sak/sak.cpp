@@ -164,13 +164,17 @@ parseArgs(SakOptions & options,
     setShortDescription(parser, "Slicing and dicing of FASTA/FASTQ files..");
     setVersion(parser, "0.2");
     setDate(parser, "November 2012");
+    setCategory(parser, "Utilities");
 
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fIIN.{fa,fq}\\fP");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] [\\B-o\\fP \\fIOUT.{fa,fq}\\fP] \\fIIN.{fa,fq}\\fP");
     addDescription(parser, "\"It slices, it dices and it makes the laundry!\"");
     addDescription(parser, "Rewrite of the original SAK tool by Manuel Holtgrewe.");
 
     // The only argument is the input file.
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+
+    // Only FASTA and FASTQ files are allowed as input.
+    setValidValues(parser, 0, "fa fasta fq fastq");
 
     // TODO(holtgrew): I want a custom help text!
     // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
@@ -181,9 +185,10 @@ parseArgs(SakOptions & options,
 
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path",
-                                            "Path to the resulting file.  If omitted, result is printed to stdout.",
+                                            "Path to the resulting file.  If omitted, result is printed to stdout. "
+                                            "Use files ending in \\fI.fq\\fP or \\fI.\\fP to write out FASTQ.",
                                             seqan::ArgParseOption::OUTPUTFILE, "FASTX"));
-    addOption(parser, seqan::ArgParseOption("q", "qual", "Write output as FASTQ file."));
+    setValidValues(parser, "out-path", "fa fasta fq fastq");
     addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
     addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
                                             seqan::ArgParseOption::INTEGER, "LEN"));
@@ -204,7 +209,7 @@ parseArgs(SakOptions & options,
 
     addOption(parser, seqan::ArgParseOption("ll", "line-length",
                                             "Set line length in output file.  See section \\fILine Length\\fP for details.",
-                                            seqan::ArgParseArgument::INTEGER, "LEN", true));
+                                            seqan::ArgParseArgument::INTEGER, "LEN", false));
     setMinValue(parser, "line-length", "-1");
 
     addTextSection(parser, "Line Length");
@@ -220,9 +225,9 @@ parseArgs(SakOptions & options,
     addTextSection(parser, "Usage Examples");
     addListItem(parser, "\\fBsak\\fP \\fB-s\\fP \\fI10\\fP \\fIIN.fa\\fP",
                 "Cut out 11th sequence from \\fIIN.fa\\fP and write to stdout as FASTA.");
-    addListItem(parser, "\\fBsak\\fP \\fB-q\\fP \\fB-ss\\fP \\fI10-12\\fP \\fB-ss\\fP \\fI100-200\\fP \\fIIN.fq\\fP",
+    addListItem(parser, "\\fBsak\\fP \\fB-ss\\fP \\fI10-12\\fP \\fB-ss\\fP \\fI100-200\\fP \\fIIN.fq\\fP",
                 "Cut out 11th up to and including 12th and 101th up to and including 199th sequence from \\fIIN.fq\\fP "
-                "and write to stdout as FASTQ.");
+                "and write to stdout as FASTA.");
 
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
@@ -231,7 +236,9 @@ parseArgs(SakOptions & options,
 
     getArgumentValue(options.inFastxPath, parser, 0);
 
-    options.outFastq = isSet(parser, "qual");
+    seqan::CharString tmp;
+    getOptionValue(tmp, parser, "out-path");
+    options.outFastq = (!empty(tmp) && (endsWith(tmp, ".fq") || endsWith(tmp, ".fastq")));
 
     if (isSet(parser, "out-path"))
         getOptionValue(options.outPath, parser, "out-path");

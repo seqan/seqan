@@ -78,6 +78,13 @@ install (FILES ${CMAKE_CURRENT_BINARY_DIR}/sak.1
 seqan_add_app_test (sak)
 
 # ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+	
+# Include executable seqan_tcoffee in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} sak CACHE INTERNAL "")
+
+# ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
 
