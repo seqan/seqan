@@ -70,7 +70,6 @@ seqan_add_app_test (seqan_tcoffee)
 	
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} seqan_tcoffee CACHE INTERNAL "")
-	
 
 # ----------------------------------------------------------------------------
 # CPack Install
