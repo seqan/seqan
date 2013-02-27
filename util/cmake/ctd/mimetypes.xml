@@ -12,4 +12,7 @@
  <mimetype name="SAM" binary="true" ext="sam" description="SAM Sequence Alignment and Mapping Format"/>
  <mimetype name="BAM" binary="true" ext="sam" description="BAM Binary Sequence Alignment and Mapping Format"/>
  <mimetype name="AFG" binary="true" ext="afg" description="AMOS Assembly Container"/>
+ <mimetype name="DIST" binary="true" ext="dist" description="PHYLIP Formatted Distance Matrix"/>
+ <mimetype name="DOT" binary="true" ext="dot" description="GraphViz DOT Graph Format"/>
+ <mimetype name="NEWICK" binary="true" ext="newick" description="NEWICK Tree Format"/>
 </mimetypes>
