@@ -63,6 +63,10 @@ typedef Tag<FibreEntries_> const FibreEntries;
 // Metafunctions
 // ==========================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction GetValue
+// ----------------------------------------------------------------------------
+
 template <typename TChar, typename TSpec>
 struct GetValue<PrefixSumTable<TChar, TSpec> >
 {
@@ -77,7 +81,9 @@ struct GetValue<PrefixSumTable<TChar, TSpec> const>
     typedef typename Value<TEntries>::Type Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction clear
+// ----------------------------------------------------------------------------
 template <typename TChar, typename TSpec>
 struct Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>
 {
@@ -90,7 +96,10 @@ struct Fibre<PrefixSumTable<TChar, TSpec> const, FibreEntries>
     typedef String<unsigned> const Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Size
+// ----------------------------------------------------------------------------
+
 template <typename TChar, typename TSpec>
 struct Size<PrefixSumTable<TChar, TSpec> >
 {
@@ -98,7 +107,10 @@ struct Size<PrefixSumTable<TChar, TSpec> >
     typedef typename Size<TEntries>::Type Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Infix
+// ----------------------------------------------------------------------------
+
 template <typename TChar, typename TSpec>
 struct Infix<PrefixSumTable<TChar, TSpec> >
 {
@@ -113,7 +125,10 @@ struct Infix<PrefixSumTable<TChar, TSpec> const>
     typedef typename Infix<TEntries>::Type Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction CharacterValue
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 struct CharacterValue;
 
@@ -131,7 +146,10 @@ struct CharacterValue<PrefixSumTable<TChar, TSpec> const>
     typedef TUChar Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Reference
+// ----------------------------------------------------------------------------
+
 template <typename TChar, typename TSpec>
 struct Reference<PrefixSumTable<TChar, TSpec> >
 {
@@ -144,7 +162,10 @@ struct Reference<PrefixSumTable<TChar, TSpec> const>
     typedef typename Value<PrefixSumTable<TChar, TSpec> >::Type const & Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
 template <typename TChar, typename TSpec>
 struct Value<PrefixSumTable<TChar, TSpec> >
 {
@@ -162,11 +183,16 @@ struct Value<PrefixSumTable<TChar, TSpec> const>
 // ==========================================================================
 // Classes
 // ==========================================================================
+
+// ----------------------------------------------------------------------------
+// Class PrefixSumTable
+// ----------------------------------------------------------------------------
+
 /**
 .Class.PrefixSumTable:
 ..cat:Index
-..summary:PrefixSumTable is a data structure storing for each character x of 
-the alphabet how many smaller than x are in a given text.
+..summary:The prefix-sum table is a data structure which stores for each character the number of smaller lexicographic 
+smaller characters in a given text.
 ..signature:PrefixSumTable<TChar, TSpec>
 ..param.TChar:The character type
 ..param.TSpec:A specialisation tag.
@@ -218,21 +244,37 @@ public:
 // ==========================================================================
 // Functions
 // ==========================================================================
-///.Function.clear.param.object.type:Class.PrefixSumTable
-///.Function.clear.class:Class.PrefixSumTable
-template <typename TChar, typename TSpec>
+
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
+/**
+.Function.PrefixSumTable#clear
+..class:Class.PrefixSumTable
+..summary:Clears the prefix sum table.
+..signature:clear(prefixSumTable)
+..param.prefixSumTable:The prefix sum table to be cleared.
+...type:Class.LfTable
+..include:seqan/index.h
+*/
+
+    template <typename TChar, typename TSpec>
 inline void clear(PrefixSumTable<TChar, TSpec> & prefixSumTable)
 {
     clear(prefixSumTable.entries);
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
 /**
-.Function.createPrefixSumTable
+.Function.PrefixSumTable#createPrefixSumTable
+..class:Class.PrefixSumTable
 ..summary:Creates the prefix sum table
 ..signature:createPrefixSumTable(prefixSumTable, text)
 ..param.prefixSumTable:The prefix sum table to be constructed.
-...type:Class.PrefixSumTable.
+...type:Class.PrefixSumTable
 ..param.text:The underlying text.
 ...type.class:String
 ...type.class:StringSet
@@ -263,31 +305,41 @@ inline void createPrefixSumTable(PrefixSumTable<TChar, TSpec> & prefixSumTable, 
     setPrefixSum(prefixSumTable, sum, alpSize);
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getAlphabetSize
+// ----------------------------------------------------------------------------
+
 /**
-.Function.getAlphabetSize
+.Function.PrefixSumTable#getAlphabetSize
+..class:Class.PrefixSumTable
 ..summary:Returns the number of different characters in the prefix sum table.
 ..signature:getAlphabetSize(prefixSumTable)
 ..param.prefixSumTable:A prefix sum table.
 ...type:Class.PrefixSumTable.
 ..include:seqan/index.h
 */
+
 template <typename TChar, typename TSpec>
 unsigned getAlphabetSize(PrefixSumTable<TChar, TSpec> const & pst)
 {
     return length(pst.entries) - 1;
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getCharacterPosition
+// ----------------------------------------------------------------------------
+
 /**
-.Function.getCharacterPosition
+.Function.PrefixSumTable#getCharacterPosition
+..class:Class.PrefixSumTable
 ..summary:Returns the position of a given character within the prefix sum table.
 ..signature:getCharacterPosition(prefixSumTable, character)
 ..param.prefixSumTable:A prefix sum table.
-...type:Class.PrefixSumTable.
+...type:Class.PrefixSumTable
 ..param.character:A character.
 ..include:seqan/index.h
 */
+
 // TODO(esiragusa): Remove TDummy specialization.
 template <typename TDummy, typename TChar>
 inline unsigned getCharacterPosition(TDummy const & /*tag*/, TChar character)
@@ -295,16 +347,19 @@ inline unsigned getCharacterPosition(TDummy const & /*tag*/, TChar character)
     return ordValue(character);
 }
 
-// ==========================================================================
 template <typename TChar, typename TSpec, typename TChar2>
 inline unsigned getCharacterPosition(PrefixSumTable<TChar, TSpec> const & /*tag*/, TChar2 character)
 {
     return ordValue(static_cast<TChar>(character));
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getCharacter
+// ----------------------------------------------------------------------------
+
 /**
 .Function.PrefixSumTable#getCharacter
+..class:Class.PrefixSumTable
 ..summary:Returns the character of a given position within the prefix sum table.
 ..signature:getCharacter(prefixSumTable, pos)
 ..param.prefixSumTable:A prefix sum table.
@@ -313,6 +368,7 @@ inline unsigned getCharacterPosition(PrefixSumTable<TChar, TSpec> const & /*tag*
 ...type:Concept.UnsignedIntegerConcept
 ..include:seqan/index.h
 */
+
 template <typename TChar, typename TSpec, typename TPos>
 inline typename CharacterValue<PrefixSumTable<TChar, TSpec> const>::Type
 getCharacter(PrefixSumTable<TChar, TSpec> const & /*tag*/, TPos const pos)
@@ -320,7 +376,12 @@ getCharacter(PrefixSumTable<TChar, TSpec> const & /*tag*/, TPos const pos)
     return static_cast<TChar>(pos);
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function _getPivotPosition
+// ----------------------------------------------------------------------------
+
+// This function returns the position of the character which ensures that the sum of occurrences of the characters from
+// beginPos to the computed pos and the sum of occurrences from the computed pos to endPos are about the same.
 template <typename TChar, typename TSpec, typename TBeginPos, typename TEndPos>
 unsigned _getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos beginPos, TEndPos endPos)
 {
@@ -357,9 +418,13 @@ unsigned _getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos b
     return pivotPos;
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getPrefixSum
+// ----------------------------------------------------------------------------
+
 /**
-.Function.getPrefixSum
+.Function.PrefixSumTable#getPrefixSum
+..class:Class.PrefixSumTable
 ..summary:Returns the prefix sum of a given position. 
 ..signature:getPrefixSum(prefixSumTable, pos)
 ..param.prefixSumTable:A prefix sum table.
@@ -368,6 +433,7 @@ unsigned _getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos b
 ...type:Concept.UnsignedIntegerConcept
 ..include:seqan/index.h
 */
+
 template <typename TChar, typename TSpec, typename TPos>
 typename Value<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type
 getPrefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
@@ -375,7 +441,22 @@ getPrefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return getValue(pst, pos);
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getValue
+// ----------------------------------------------------------------------------
+
+/**
+.Function.PrefixSumTable#getPrefixSum
+..class:Class.PrefixSumTable
+..summary:Returns the prefix sum of a given position. 
+..signature:getValue(prefixSumTable, pos)
+..param.prefixSumTable:A prefix sum table.
+...type:Class.PrefixSumTable
+..param.pos:A position.
+...type:Concept.UnsignedIntegerConcept
+..include:seqan/index.h
+*/
+
 template <typename TChar, typename TSpec, typename TPos>
 inline typename GetValue<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type
 getValue(PrefixSumTable<TChar, TSpec> & pst, TPos const pos)
@@ -390,24 +471,25 @@ getValue(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return pst.entries[pos];
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getFibre
+// ----------------------------------------------------------------------------
+
 /**
 .Function.PrefixSumTable#getFibre:
-..summary:Returns a specific fibre of a container.
-..signature:getFibre(container, fibreTag)
+..class:Class.PrefixSumTable
+..summary:Returns a specific fibre of a prefix-sum table.
+..signature:getFibre(prefixSumTable, fibreTag)
 ..class:Class.PrefixSumTable
 ..cat:Index
-..param.container:The container holding the fibre.
+..param.prefixSumTable:The container holding the fibre.
 ...type:Class.PrefixSumTable
 ..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
 ...type:Tag.PrefixSumTable Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
-..example.code:
-Index< String<char> > index_esa("tobeornottobe");
-
-String<char> & text = getFibre(indexEsa, EsaText());
 */
+
 template <typename TChar, typename TSpec>
 inline typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type const &
 getFibre(PrefixSumTable<TChar, TSpec> const & pst, FibreEntries const /*tag*/)
@@ -422,16 +504,35 @@ getFibre(PrefixSumTable<TChar, TSpec> & pst, FibreEntries const /*tag*/)
     return pst.entries;
 }
 
-// ==========================================================================
-template <typename TChar, typename TSpec, typename TNumDollar>
-void _insertDollar(PrefixSumTable<TChar, TSpec> & pst, TNumDollar const numDollar)
+// ----------------------------------------------------------------------------
+// Function _insertSentinel
+// ----------------------------------------------------------------------------
+
+template <typename TChar, typename TSpec, typename TNumSentinel>
+void _insertSentinel(PrefixSumTable<TChar, TSpec> & pst, TNumSentinel const numSentinel)
 {
     for (unsigned i = 0; i < length(pst); ++i)
-        prefixSum(pst, i) = getPrefixSum(pst, i) + numDollar;
+        prefixSum(pst, i) = getPrefixSum(pst, i) + numSentinel;
 }
 
-// ==========================================================================
-///.Function.length.param.type:Class.PrefixSumTable
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
+/**
+.Function.PrefixSumTable#length
+..class:Class.PrefixSumTable
+..summary:Returns the number of different characters in the prefix-sum table.
+..signature:length(lfTable)
+..param.lfTable:The prefix-sum table.
+...type:Class.LfTable
+..returns:Returns the number of different characters in the prefix-sum table.
+...type:Metafunction.Size
+...remarks:If the type of the characters of the prefix-sum table consists of more than 8 bit only the characters
+actually occurring in the original text are accounted for when calling length.
+..include:seqan/index.h
+*/
+
 template <typename TChar, typename TSpec>
 inline typename Size<PrefixSumTable<TChar, TSpec> >::Type
 length(PrefixSumTable<TChar, TSpec> const & pst)
@@ -439,9 +540,13 @@ length(PrefixSumTable<TChar, TSpec> const & pst)
     return length(pst.entries);
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
 /**
-.Function.prefixSum
+.Function.PrefixSumTable#prefixSum
+..class:Class.PrefixSumTable
 ..summary:Returns a reference to the entry of the prefix sum table of a given position. 
 ..signature:prefixSum(prefixSumTable, pos)
 ..param.prefixSumTable:A prefix sum table.
@@ -450,6 +555,7 @@ length(PrefixSumTable<TChar, TSpec> const & pst)
 ...type:Concept.UnsignedIntegerConcept
 ..include:seqan/index.h
 */
+
 template <typename TChar, typename TSpec, typename TPos>
 typename Value<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type &
 prefixSum(PrefixSumTable<TChar, TSpec>&pst, TPos const pos)
@@ -464,8 +570,23 @@ prefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return value(pst, pos);
 }
 
-// ==========================================================================
-///.Function.resize.param.type:Class.PrefixSumTable
+// ----------------------------------------------------------------------------
+// Function resize
+// ----------------------------------------------------------------------------
+
+/**
+.Function.PrefixSumTable#resize
+..class:Class.PrefixSumTable
+..summary:Resize the prefix sum table to be able to store more or less characters. 
+..signature:resize(prefixSumTable, size [,value])
+..param.prefixSumTable:A prefix sum table.
+...type:Class.PrefixSumTable
+..param.size:The new size.
+...type:Concept.UnsignedIntegerConcept
+..param.value:The value to be used to initialize the new storage.
+..include:seqan/index.h
+*/
+
 template <typename TChar, typename TSpec, typename TSize>
 inline void resize(PrefixSumTable<TChar, TSpec> & pst, TSize size)
 {
@@ -478,10 +599,14 @@ inline void resize(PrefixSumTable<TChar, TSpec> & pst, TSize size, TValue value)
     resize(pst.entries, size, value);
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
 /**
 .Function.setPrefixSum
-..summary:Returns a reference to the entry of the prefix sum table of a given position. 
+..class:Class.PrefixSumTable
+..summary:Returns a reference to the entry of the prefix-sum table of a given position. 
 ..signature:setPrefixSum(prefixSumTable, value, pos)
 ..param.prefixSumTable:A prefix sum table.
 ...type:Class.PrefixSumTable
@@ -497,8 +622,10 @@ inline void setPrefixSum(PrefixSumTable<TChar, TSpec> & pst, TValue value, TPos 
     pst.entries[pos] = value;
 }
 
-// ==========================================================================
-///.Function.value.param.type:Class.PrefixSumTable
+// ----------------------------------------------------------------------------
+// Function value
+// ----------------------------------------------------------------------------
+
 template <typename TChar, typename TSpec, typename TPos>
 inline typename Value<typename Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>::Type>::Type &
 value(PrefixSumTable<TChar, TSpec>&pst, TPos const pos)
@@ -513,12 +640,28 @@ value(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
     return pst.entries[pos];
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
 /**
-.Function.open
-..param.object:
-...type:Class.LfTable
+.Function.PrefixSumTable#open
+..class:Class.PrefixSumTable
+..summary:This functions loads a prefix-sum table from disk.
+..signature:open(prefixSumTable, filename [, openMode])
+..param.prefixSumTable:The prefix-sum table.
+...type:Class.PrefixSumTable
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
+
 template <typename TChar, typename TSpec>
 inline bool open(
     PrefixSumTable<TChar, TSpec> & pst,
@@ -542,12 +685,28 @@ inline bool open(
 {
     return open(pst, fileName, DefaultOpenMode<PrefixSumTable<TChar, TSpec> >::VALUE);
 }
+// ----------------------------------------------------------------------------
+// Function save
+// ----------------------------------------------------------------------------
 
 /**
-.Function.save
-..param.object:
-...type:Class.LfTable
+.Function.PrefixSumTable#save
+..class:Class.PrefixSumTable
+..summary:This functions saves a prefix-sum table to disk.
+..signature:save(prefixSumTable, filename [, openMode])
+..param.prefixSumTable:The prefix-sum table.
+...type:Class.PrefixSumTable
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
+
 template <typename TChar, typename TSpec>
 inline bool save(
     PrefixSumTable<TChar, TSpec> const & pst,

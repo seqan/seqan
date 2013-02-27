@@ -41,7 +41,6 @@
 #include "test_index_fm_prefix_sum_table.h"
 #include "test_index_fm_right_array_binary_tree.h"
 #include "test_index_fm_right_array_binary_tree_iterator.h"
-#include "test_index_fm_wavelet_tree.h"
 #include "test_index_fm_sparse_string.h"
 #include "test_index_fm_compressed_sa.h"
 #include "test_index_fm_compressed_sa_iterator.h"
@@ -55,7 +54,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(test_rsbs_getBuPos);
     SEQAN_CALL_TEST(test_rsbs_getSBuPos);
     SEQAN_CALL_TEST(test_rsbs_getPosInBu);
-    SEQAN_CALL_TEST(test_rsbs_getSetBit);
+    SEQAN_CALL_TEST(test_rsbs_isBitSet);
     SEQAN_CALL_TEST(test_rsbs_append_value);
     SEQAN_CALL_TEST(test_rsbs_rank);
     SEQAN_CALL_TEST(test_rsbs_update_ranks_);
@@ -70,12 +69,12 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(prefix_sum_table_get_alphabet_size);
     SEQAN_CALL_TEST(prefix_sum_table_get_character_position);
     SEQAN_CALL_TEST(prefix_sum_table_get_character);
-    SEQAN_CALL_TEST(prefix_sum_table_determine_dollar_substitute);
+    SEQAN_CALL_TEST(prefix_sum_table_determine_sentinel_substitute);
     SEQAN_CALL_TEST(prefix_sum_table_get_pivot_position);
     SEQAN_CALL_TEST(prefix_sum_table_prefix_sum);
     SEQAN_CALL_TEST(prefix_sum_table_get_value);
     SEQAN_CALL_TEST(prefix_sum_table_length);
-    SEQAN_CALL_TEST(prefix_sum_table_insert_dollar_);
+    SEQAN_CALL_TEST(prefix_sum_table_insert_sentinel_);
     SEQAN_CALL_TEST(prefix_sum_table_resize);
     SEQAN_CALL_TEST(prefix_sum_table_set_prefix_sum);
     SEQAN_CALL_TEST(prefix_sum_table_value);
@@ -110,17 +109,6 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_position_);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_right_child_pos_);
 
-    SEQAN_CALL_TEST(test_wavelet_tree_clear);
-    SEQAN_CALL_TEST(test_wavelet_tree_constructor);
-    SEQAN_CALL_TEST(test_wavelet_tree_dollar_position);
-    SEQAN_CALL_TEST(test_wavelet_tree_dollar_substitute);
-    SEQAN_CALL_TEST(test_wavelet_tree_empty);
-    SEQAN_CALL_TEST(test_wavelet_tree_get_character);
-    SEQAN_CALL_TEST(test_wavelet_tree_get_fibre);
-    SEQAN_CALL_TEST(test_wavelet_tree_get_occ);
-    SEQAN_CALL_TEST(test_wavelet_tree_fill_wavelet_tree_);
-    SEQAN_CALL_TEST(test_wavelet_tree_open_save);
-
     SEQAN_CALL_TEST(sparse_string_get_value);
     SEQAN_CALL_TEST(sparse_string_clear_length_resize);
     SEQAN_CALL_TEST(sparse_string_empty);
@@ -128,7 +116,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     
     SEQAN_CALL_TEST(compressed_sa_clear_length_resize);
     SEQAN_CALL_TEST(compressed_sa_empty);
-    SEQAN_CALL_TEST(compressed_sa_compressed_sa_create);
+    SEQAN_CALL_TEST(compressed_sa_create_compressed_sa);
     SEQAN_CALL_TEST(compressed_sa_get_fibre);
     SEQAN_CALL_TEST(compressed_sa_get_next_pos_);
     SEQAN_CALL_TEST(compressed_sa_set_lf_table);
@@ -142,7 +130,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
 
     SEQAN_CALL_TEST(test_fm_index_constructor);
     SEQAN_CALL_TEST(test_fm_index_clear);
-    SEQAN_CALL_TEST(test_fm_index_determine_dollar_substitute_);
+    SEQAN_CALL_TEST(test_fm_index_determine_sentinel_substitute_);
     SEQAN_CALL_TEST(test_fm_index_empty);
     SEQAN_CALL_TEST(test_fm_index_find_first_index_);
     SEQAN_CALL_TEST(test_fm_index_get_fibre);
@@ -155,11 +143,8 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(fm_index_iterator_go_right);
     SEQAN_CALL_TEST(fm_index_iterator_go_up);
     SEQAN_CALL_TEST(fm_index_iterator_representative);
-//    SEQAN_CALL_TEST(fm_index_iterator_path_label);
     SEQAN_CALL_TEST(fm_index_iterator_is_root);
     SEQAN_CALL_TEST(fm_index_iterator_count_occurrences);
     SEQAN_CALL_TEST(fm_index_iterator_range);
 }
 SEQAN_END_TESTSUITE
-
-

@@ -63,6 +63,10 @@ class CompressedSA;
 // Metafunctions
 // ==========================================================================
 
+// ----------------------------------------------------------------------------
+// Metafunction Fibre
+// ----------------------------------------------------------------------------
+
 template <typename TSparseString, typename TLfTable, typename TSpec>
 struct Fibre<CompressedSA<TSparseString, TLfTable, TSpec>, FibreSparseString>
 {
@@ -75,7 +79,10 @@ struct Fibre<CompressedSA<TSparseString, TLfTable, TSpec> const, FibreSparseStri
     typedef TSparseString Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Reference
+// ----------------------------------------------------------------------------
+
 template <typename TSparseString, typename TLfTable, typename TSpec>
 struct Reference<CompressedSA<TSparseString, TLfTable, TSpec> >
 {
@@ -90,7 +97,10 @@ struct Reference<const CompressedSA<TSparseString, TLfTable, TSpec> >
     typedef typename Value<CompressedSA<TSparseString, TLfTable, TSpec> >::Type /*const*/ Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
 template <typename TSparseString, typename TLfTable, typename TSpec>
 struct Value<CompressedSA<TSparseString, TLfTable, TSpec> >
 {
@@ -113,6 +123,10 @@ TPos _addGapDistance(TPos const & value, TOffSet const & offSet);
 
 template <typename TSeqId, typename TSpec, typename TPos, typename TOffSet>
 Pair<TSeqId, TPos> _addGapDistance(Pair<TSeqId, TPos, TSpec> const & value, TOffSet const & offSet);
+
+// ----------------------------------------------------------------------------
+// Class CompressedSA
+// ----------------------------------------------------------------------------
 
 /**
 .Class.CompressedSA:
@@ -157,7 +171,7 @@ public:
         TIndicatorString const & indicatorString = getFibre(sparseString, FibreIndicatorString());
         TPos counter = 0;
 
-        while (!getBit(indicatorString, pos))
+        while (!isBitSet(indicatorString, pos))
         {
             pos = lfMapping(*lfTable, pos);
             ++counter;
@@ -170,7 +184,7 @@ public:
     {
         TIndicatorString const & indicatorString = getFibre(sparseString, FibreIndicatorString());
         TPos counter = 0;
-        while (!getBit(indicatorString, pos))
+        while (!isBitSet(indicatorString, pos))
         {
             pos = lfMapping(*lfTable, pos);
             ++counter;
@@ -189,13 +203,17 @@ public:
 // ==========================================================================
 // Functions
 // ==========================================================================
+
+// ----------------------------------------------------------------------------
+// Function _addGapDistance
+// ----------------------------------------------------------------------------
+
 template <typename TPos, typename TOffSet>
 TPos _addGapDistance(TPos const & value, TOffSet const & offSet)
 {
     return value + offSet;
 }
 
-// ==========================================================================
 template <typename TSeqId, typename TSpec, typename TPos, typename TOffSet>
 Pair<TSeqId, TPos> _addGapDistance(Pair<TSeqId, TPos, TSpec> const & value, TOffSet const & offSet)
 {
@@ -263,9 +281,9 @@ inline bool entryStored(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
 // ==========================================================================
 // This function creates a compressed suffix array using a normal one.
 /**
-.Function.compressedSaCreate
+.Function.CompressedSA#createCompressedSa
 ..summary:This functions creates a compressed suffix array with a specified compression factor.
-..signature:void compressedSaCreate(compressedSA, completeSA, compressionFactor [,offset])
+..signature:void createCompressedSa(compressedSA, completeSA, compressionFactor [,offset])
 ..param.compressedSA:The compressed suffix array
 ...type:Class.CompressedSA
 ..param.completeSA:A complete suffix array containing all values
@@ -276,7 +294,7 @@ inline bool entryStored(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
 ..include:seqan/index.h
 */
 template <typename TSparseString, typename TLfTable, typename TSpec, typename TSA, typename TCompression, typename TSize>
-void compressedSaCreate(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, 
+void createCompressedSa(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, 
         TSA const & sa,
         TCompression const compressionFactor, 
         TSize offset)
@@ -310,7 +328,7 @@ void compressedSaCreate(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
     saIt = begin(sa, Standard());
     for (TSASize pos = offset, counter = 0; saIt != saItEnd; ++saIt, ++pos)
     {
-        if (getBit(indicatorString, pos))
+        if (isBitSet(indicatorString, pos))
         {
             assignValue(compressedSA.sparseString.valueString, counter, getValue(saIt));
             ++counter;
@@ -319,9 +337,9 @@ void compressedSaCreate(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
 }
 
 template <typename TSparseString, typename TLfTable, typename TSpec, typename TSA, typename TCompression>
-void compressedSaCreate(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, TSA const & completeSA, TCompression const compressionFactor)
+void createCompressedSa(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, TSA const & completeSA, TCompression const compressionFactor)
 {
-    compressedSaCreate(compressedSA, completeSA, compressionFactor, 0);
+    createCompressedSa(compressedSA, completeSA, compressionFactor, 0);
 }
 
 // ==========================================================================
@@ -365,7 +383,7 @@ inline bool _getNextPos(CompressedSA<TSparseString, TLfTable, TSpec> const & com
     typedef typename Fibre<TSparseString, FibreIndicatorString>::Type TIndicatorString;
     TIndicatorString const & indicatorString = compressedSA.sparseString.indicatorString;
 
-    if (getBit(indicatorString, pos))
+    if (isBitSet(indicatorString, pos))
     {
         return true;
     }

@@ -43,11 +43,18 @@ namespace seqan {
 // prefix-sum table are stored.
 // ==========================================================================
 
-template <typename TText, typename TSpec>
+// ==========================================================================
+// Forwards
+// ==========================================================================
+
+template <typename TValue>
 class WaveletTree;
 
-template <typename TSpec>
-struct FmiDollarSubstituted;
+template<typename TValue> 
+class RankDictionary;
+
+template<typename TRankDirectorySpec, typename TSpec> 
+class SentinelRankDictionary;
 
 /**
 .Tag.LF Table Fibres
@@ -64,19 +71,30 @@ struct FmiDollarSubstituted;
 */
 struct FibreOccTable_;
 struct FibrePrefixSumTable_;
-struct FibreDollarPosition_;
-
 
 typedef Tag<FibreOccTable_> const FibreOccTable;
 typedef Tag<FibrePrefixSumTable_> const FMTablePrefixSumTable;
-typedef Tag<FibreDollarPosition_> const FibreDollarPosition;
 
 template <typename TOccTable, typename TPrefixSumTable>
 struct LfTable;
 
 // ==========================================================================
-//Metafunctions
+// Tags
 // ==========================================================================
+
+struct FibreRankDictionary_;
+typedef Tag<FibreRankDictionary_> const FibreRankDictionary;
+
+struct FibreSentinentalPosition_;
+typedef Tag<FibreSentinentalPosition_> const FibreSentinentalPosition;
+
+// ==========================================================================
+// Metafunctions
+// ==========================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction Fibre
+// ----------------------------------------------------------------------------
 
 template <typename TOccTable, typename TPrefixSumTable>
 struct Fibre<LfTable<TOccTable, TPrefixSumTable>, FibreOccTable>
@@ -90,7 +108,6 @@ struct Fibre<LfTable<TOccTable, TPrefixSumTable> const, FibreOccTable>
     typedef TOccTable const Type;
 };
 
-// ==========================================================================
 template <typename TOccTable, typename TPrefixSumTable>
 struct Fibre<LfTable<TOccTable, TPrefixSumTable>, FMTablePrefixSumTable>
 {
@@ -103,7 +120,10 @@ struct Fibre<LfTable<TOccTable, TPrefixSumTable> const, FMTablePrefixSumTable>
     typedef TPrefixSumTable const Type;
 };
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Metafunction Reference
+// ----------------------------------------------------------------------------
+
 template <typename TOccTable, typename TPrefixSumTable>
 struct Reference<LfTable<TOccTable, TPrefixSumTable> >
 {
@@ -113,6 +133,10 @@ struct Reference<LfTable<TOccTable, TPrefixSumTable> >
 // ==========================================================================
 // Classes
 // ==========================================================================
+
+// ----------------------------------------------------------------------------
+// Class LfTable
+// ----------------------------------------------------------------------------
 
 /**
 .Class.LfTable:
@@ -160,8 +184,20 @@ struct LfTable
 // Functions
 // ==========================================================================
 
-///.Function.clear.param.object.type:Class.LfTable
-///.Function.clear.class:Class.LfTable
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
+/**
+.Function.LfTable#clear
+..class:Class.LfTable
+..summary:Clears the LF table.
+..signature:clear(lfTable)
+..param.lfTable:The LF table to be cleared.
+...type:Class.LfTable
+..include:seqan/index.h
+*/
+
 template <typename TOccTable, typename TPrefixSumTable>
 inline void clear(LfTable<TOccTable, TPrefixSumTable> & lfTable)
 {
@@ -169,9 +205,22 @@ inline void clear(LfTable<TOccTable, TPrefixSumTable> & lfTable)
     clear(lfTable.prefixSumTable);
 }
 
-// ==========================================================================
-///.Function.empty.param.object.type:Class.LfTable
-///.Function.empty.class:Class.LfTable
+// ----------------------------------------------------------------------------
+// Function empty
+// ----------------------------------------------------------------------------
+
+/**
+.Function.LfTable#empty
+..class:Class.LfTable
+..summary:Clears the LF table.
+..signature:empty(lfTable)
+..param.lfTable:The LF table to be cleared.
+...type:Class.LfTable
+..returns:$true$ if the LF table is empty, $false$ otherwise.
+...type:$bool$
+..include:seqan/index.h
+*/
+
 template <typename TOccTable, typename TPrefixSumTable>
 inline bool empty(LfTable<TOccTable, TPrefixSumTable> & lfTable)
 {
@@ -179,33 +228,10 @@ inline bool empty(LfTable<TOccTable, TPrefixSumTable> & lfTable)
            && empty(lfTable.prefixSumTable);
 }
 
-// ==========================================================================
-/**
-.Function.LfTable#createOccurrenceTable
-..class:Class.LfTable
-..cat:Index
-..signature:createOccurrenceTable(lfTable, text, sentinalSub, sentinalPos)
-..summary:This function creates the occurrence table data structure of a LF table.
-..param.lfTable:The LF table to be constructed.
-...type:Class.LfTable
-..param.text:The text of which the occurrence table is constructed
-...type:Class.String
-..param.sentinalSub:The character used to substitute the sentinel with.
-...type:Metafunction.Value type of String<TSpec>
-..param.sentinalPos:The position of the sentinal(s) in the text.
-...type:Class.String
-...type:Class.RankSupportBitString
-..returns:$bool$
-*/
+// ----------------------------------------------------------------------------
+// Function createLfTable
+// ----------------------------------------------------------------------------
 
-template <typename TText, typename TWaveletTreeSpec, typename TPrefixSumTable, typename TText2, typename TChar, typename TPos>
-inline bool createOccurrenceTable(LfTable<WaveletTree<TText, TWaveletTreeSpec>, TPrefixSumTable> & lfTable, TText2 & text, TChar dollarSub, TPos const & dollarPos)
-{
-    waveletTreeCreate(lfTable, text, dollarSub, dollarPos);
-    return true;
-}
-
-// ==========================================================================
 /**
 .Function.createLfTable
 ..summary:Creates the LF table
@@ -214,14 +240,17 @@ inline bool createOccurrenceTable(LfTable<WaveletTree<TText, TWaveletTreeSpec>, 
 ...type:Class.LfTable.
 ..param.text:The underlying text
 ...type:Class.String
+..returns:$true$ on successes, $false$ otherwise.
+...type:$bool$
 ..include:seqan/index.h
 */
-template <typename TPrefixSumTable, typename TText, typename TDollarSpec, typename TText2>
-inline bool createLfTable(LfTable<WaveletTree<TText, FmiDollarSubstituted<TDollarSpec> >, TPrefixSumTable> & lfTable, TText2 const text)
+
+template <typename TValue, typename TSpec, typename TPrefixSumTable, typename TText>
+inline bool createLfTable(LfTable<SentinelRankDictionary<RankDictionary<WaveletTree<TValue> >, TSpec>, TPrefixSumTable> & lfTable, TText const text)
 {
-    typedef typename SAValue<TText2>::Type   TSAValue;
-    typedef typename Value<WaveletTree<TText, FmiDollarSubstituted<TDollarSpec> > >::Type     TAlphabet;
-    typedef typename Fibre<WaveletTree<TText, FmiDollarSubstituted<TDollarSpec> >, FibreDollarPosition>::Type TDollarPos;
+    typedef typename SAValue<TText>::Type   TSAValue;
+    typedef TValue                          TAlphabet;
+    typedef typename Fibre<SentinelRankDictionary<RankDictionary<WaveletTree<TValue> >, TSpec>, FibreSentinentalPosition>::Type TDollarPos;
 
     String<TSAValue> sa;
     resize(sa, length(text));
@@ -249,7 +278,10 @@ inline bool createLfTable(LfTable<WaveletTree<TText, FmiDollarSubstituted<TDolla
     return true;
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function getFibre
+// ----------------------------------------------------------------------------
+
 /**
 .Function.LfTable#getFibre:
 ..summary:Returns a specific fibre of a container.
@@ -262,11 +294,8 @@ inline bool createLfTable(LfTable<WaveletTree<TText, FmiDollarSubstituted<TDolla
 ...type:Tag.LF Table Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
-..example.code:
-Index< String<char> > index_esa("tobeornottobe");
-
-String<char> & text = getFibre(indexEsa, EsaText());
 */
+
 template <typename TOccTable, typename TPrefixSumTable>
 inline typename Fibre<LfTable<TOccTable, TPrefixSumTable>, FMTablePrefixSumTable>::Type &
 getFibre(LfTable<TOccTable, TPrefixSumTable>&lfTable, FMTablePrefixSumTable)
@@ -295,34 +324,56 @@ getFibre(LfTable<TOccTable, TPrefixSumTable> const & lfTable, FibreOccTable )
     return lfTable.occTable;
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function lfMapping
+// ----------------------------------------------------------------------------
+
 /**
-.Function.lfMapping:
-..summary:Returns the position of the character L[c] in F.
+.Function.LfTable#lfMapping:
+..summary:Returns the position of an character at a specified position of L in F. L corresponds to the last column of 
+the sorted cyclic rotations of the original text, while F correspond to the first column.
 ..cat:Index
 ..signature:lfMapping(lfTable, pos)
 ..param.lfTable:The @Class.LfTable@ holding the occurrence and prefix sum table.
 ...type:Class.LfTable
 ..param.pos:The position in L
 ..returns:Returns the position of the character L[c] in F. The returned position is of the same type as pos.
+...type:Type of pos.
 ..include:seqan/index.h
 */
+
 template <typename TLfTable, typename TPos>
 inline TPos lfMapping(TLfTable & lfTable,
                       TPos pos)
 {
     typedef typename Fibre<TLfTable, FibreOccTable>::Type TOccTable;
     typedef typename Value<TOccTable>::Type TChar;
-    TChar c = getCharacter(lfTable.occTable, pos);
-    return countOccurrences(lfTable.occTable, c, pos) + getPrefixSum(lfTable.prefixSumTable, getCharacterPosition(lfTable.prefixSumTable, c)) - 1;
+    TChar c = getValue(lfTable.occTable, pos);
+    return countOccurrences(getFibre(lfTable, FibreOccTable()), c, pos) + getPrefixSum(lfTable.prefixSumTable, getCharacterPosition(lfTable.prefixSumTable, c)) - 1;
 }
 
-// ==========================================================================
+// ----------------------------------------------------------------------------
+// Function open
+// ----------------------------------------------------------------------------
+
 /**
-.Function.open
-..param.object:
+.Function.LfTable#open
+..class:Class.LfTable
+..summary:This functions loads a LF table from disk.
+..signature:open(lfTable, filename [, openMode])
+..param.dictionary:The lfTable.
 ...type:Class.LfTable
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
+
 template <typename TOccTable, typename TPrefixSumTable>
 inline bool open(
     LfTable<TOccTable, TPrefixSumTable> & lfTable,
@@ -348,12 +399,24 @@ inline bool open(
     return open(lfTable, fileName, DefaultOpenMode<LfTable<TOccTable, TPrefixSumTable> >::VALUE);
 }
 
-// ==========================================================================
 /**
-.Function.save
-..param.object:
+.Function.LfTable#save
+..class:Class.LfTable
+..summary:This functions saves a LF table to disk.
+..signature:save(lfTable, filename [, openMode])
+..param.lfTable:The dictionary.
 ...type:Class.LfTable
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
+
 template <typename TOccTable, typename TPrefixSumTable>
 inline bool save(
     LfTable<TOccTable, TPrefixSumTable> const & lfTable,
@@ -361,6 +424,7 @@ inline bool save(
     int openMode)
 {
     String<char> name;
+
     name = fileName;
     if (!save(getFibre(lfTable, FibreOccTable()), toCString(name), openMode))
     {

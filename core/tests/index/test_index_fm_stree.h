@@ -56,7 +56,6 @@ void fmIndexIteratorConstuctor(TIter & /*tag*/)
 	goDown(esaIt);
 
 	TIndex fmIndex(text, 10);
-
 	TIter it(fmIndex);
 
 	SEQAN_ASSERT_EQ(isRoot(it), true);
@@ -248,26 +247,6 @@ void fmIndexIteratorRepresentative(TIter & /*tag*/)
     }
 }
 
-
-template <typename TIter>
-void fmIndexIteratorPathLabel(TIter & /*tag*/)
-{
-    typedef typename Container<TIter>::Type TIndex;
-    typedef typename Fibre<TIndex, FibreText>::Type TText;
-
-	TText text = "ACGACG";
-	TIndex fmIndex(text);
-	
-    {
-        TIter it(fmIndex);
-
-        SEQAN_ASSERT_EQ(pathLabel(it), "");
-        SEQAN_ASSERT_EQ(goDown(it, "GCAGCA"), true);
-        SEQAN_ASSERT_EQ(pathLabel(it), "GCAGCA");
-    }
-}
-
-
 template <typename TIter>
 void fmIndexIteratorCountOccurrences(TIter & /*tag*/)
 {
@@ -343,9 +322,9 @@ SEQAN_DEFINE_TEST(fm_index_iterator_constuctor)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    //typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
-    //typedef TopDown<> TIterSpec;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
+    typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "AAA";
@@ -376,8 +355,8 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_down)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<> >, void> TDefaultIndex;
-    //typedef FMIndex<WT<FmiDollarSubstituted<> >, CompressText> TCompressedIndex;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
@@ -421,8 +400,8 @@ SEQAN_DEFINE_TEST(fm_index_iterator_is_leaf)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    //typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
@@ -454,8 +433,8 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_right)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
@@ -487,9 +466,9 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_up)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    //typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
-    //typedef TopDown<> TIterSpec;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
+    typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
@@ -510,9 +489,9 @@ SEQAN_DEFINE_TEST(fm_index_iterator_representative)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    //typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
-    //typedef TopDown<> TIterSpec;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
+    typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
@@ -523,35 +502,13 @@ SEQAN_DEFINE_TEST(fm_index_iterator_representative)
         fmIndexIteratorRepresentative(dnaTag);
     }
 }
-SEQAN_DEFINE_TEST(fm_index_iterator_path_label)
-{
-    using namespace seqan;
-
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
-    //typedef TopDown<> TIterSpec;
-    typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
-
-    DnaString genome = "A";
-    {
-        Index<DnaString,TDefaultIndex> index(genome);
-        Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-        fmIndexIteratorPathLabel(dnaTag);
-    }
-
-    {
-        Index<DnaString,TCompressedIndex> index(genome);
-        Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-        fmIndexIteratorPathLabel(dnaTag);
-    }
-}
 
 SEQAN_DEFINE_TEST(fm_index_iterator_is_root)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
@@ -583,43 +540,43 @@ SEQAN_DEFINE_TEST(fm_index_iterator_count_occurrences)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<> >, void> TDefaultIndex;
-    typedef FMIndex<WT<FmiDollarSubstituted<> >, CompressText> TCompressedIndex;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
    
     
     {
-         DnaString genome = "A";
+        DnaString genome;
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
         fmIndexIteratorCountOccurrences(dnaTag);
     }
     {
-         DnaString genome = "A";
+        DnaString genome;
         Index<DnaString,TCompressedIndex> index(genome);
         Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
         fmIndexIteratorCountOccurrences(dnaTag);
     }
     {
-         DnaString genome = "A";
+        DnaString genome;
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
         fmIndexIteratorCountOccurrences(dnaTag);
     }
     {
-         DnaString genome = "A";
+        DnaString genome;
         Index<DnaString,TCompressedIndex> index(genome);
         Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
         fmIndexIteratorCountOccurrences(dnaTag);
     }
-    {
-         StringSet<DnaString> genome;
-        Index<StringSet<DnaString>,TDefaultIndex> index(genome);
-        Iterator<Index<StringSet<DnaString>,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-        fmIndexIteratorCountOccurrences(dnaTag);
-    }
+//     {
+//         StringSet<DnaString> genome;
+//         Index<StringSet<DnaString>,TDefaultIndex> index(genome);
+//         Iterator<Index<StringSet<DnaString>,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag;
+//         fmIndexIteratorCountOccurrences(dnaTag);
+//     }
 
 }
 
@@ -627,8 +584,8 @@ SEQAN_DEFINE_TEST(fm_index_iterator_range)
 {
     using namespace seqan;
 
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, void> TDefaultIndex;
-    typedef FMIndex<WT<FmiDollarSubstituted<SingleDollar<void> > >, CompressText> TCompressedIndex;
+    typedef FMIndex<WT<>, void> TDefaultIndex;
+    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
@@ -659,4 +616,5 @@ SEQAN_DEFINE_TEST(fm_index_iterator_range)
 
 
 #endif // TEST_FM_INDEX_ITERATOR_BETA_H_
+
 

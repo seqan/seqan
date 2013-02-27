@@ -73,9 +73,15 @@ add_executable (test_index_fm
 			    test_index_fm_right_array_binary_tree_iterator.h
 			    test_index_fm_right_array_binary_tree.h
 			    test_index_fm_sparse_string.h
-			    test_index_fm_stree.h
-			    test_index_fm_wavelet_tree.h)
+			    test_index_fm_stree.h)
 target_link_libraries (test_index_fm ${SEQAN_LIBRARIES})
+
+add_executable (test_index_fm_wt
+                test_index_fm_rank_dictionary.cpp
+			    test_index_fm_rank_dictionary.h
+			    test_index_fm_sentinel_rank_dictionary.h)
+target_link_libraries (test_index_fm_wt ${SEQAN_LIBRARIES})
+
 
 # GCC < 4.5 segfaults when compiling the test_index_stree_iterators test.
 # Enable if the compiler is not GCC or the version is >= 4.5.

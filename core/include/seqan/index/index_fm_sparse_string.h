@@ -217,7 +217,7 @@ inline bool empty(SparseString<TFibreValueString, TSpec> const & string)
 template <typename TFibreValueString, typename TSpec, typename TPos>
 inline bool _isContained(SparseString<TFibreValueString, TSpec> const & string, TPos const & pos)
 {
-    return getBit(getFibre(string, FibreIndicatorString()), pos);
+    return isBitSet(getFibre(string, FibreIndicatorString()), pos);
 }
 
 ///.Function.assignValue.param.type:Class.SparseString
@@ -311,7 +311,7 @@ template <typename TFibreValueString, typename TSpec, typename TSize, typename T
 inline void resize(SparseString<TFibreValueString, TSpec> & string,
                    TSize const size,
                    TValue const value,
-                   Tag<TExpand> tag)
+                   Tag<TExpand> const tag)
 {
     if (value != DefaultValue<SparseString<TFibreValueString, TSpec> >::VALUE)
     {

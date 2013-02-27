@@ -169,7 +169,7 @@ void prefixSumTableGetPivotPosition(TPrefixSumTable & /*tag*/)
 }
 
 template <typename TPrefixSumTable>
-void prefixSumTableDetermineDollarSubstitute(TPrefixSumTable & /*tag*/)
+void prefixSumTableDetermineSentinelSubstitute(TPrefixSumTable & /*tag*/)
 {
     typedef typename RemoveConst<TPrefixSumTable>::Type TNonConstPrefixSumTable;
 	typedef typename CharacterValue<TNonConstPrefixSumTable>::Type TChar;
@@ -178,28 +178,28 @@ void prefixSumTableDetermineDollarSubstitute(TPrefixSumTable & /*tag*/)
 		String<TChar> text = "ACGTNACGTNACGTNNN";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		_determineDollarSubstitute(prefixSumTable, character);
+		_determineSentinelSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('A'));
 	}
 	{
 		String<TChar> text = "AGTNAGTNAGTNNN";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		_determineDollarSubstitute(prefixSumTable, character);
+		_determineSentinelSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('A'));
 	}
 	{
 		String<TChar> text = "ACGTNAGTNAGTNNN";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		_determineDollarSubstitute(prefixSumTable, character);
+		_determineSentinelSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('C'));
 	}
 	{
 		String<TChar> text = "ACGTNACGTNACGT";
 		TPrefixSumTable prefixSumTable(text);
 		TChar character;
-		_determineDollarSubstitute(prefixSumTable, character);
+		_determineSentinelSubstitute(prefixSumTable, character);
 		SEQAN_ASSERT_EQ(character, TChar('N'));
 	}
 }
@@ -223,7 +223,7 @@ void prefixSumTableGetValue(TPrefixSumTable & /*tag*/)
 
 
 template <typename TPrefixSumTable>
-void _prefixSumTableInsertDollar(TPrefixSumTable & /*tag*/)
+void _prefixSumTableInsertSentinel(TPrefixSumTable & /*tag*/)
 {
     typedef typename CharacterValue<TPrefixSumTable>::Type TChar;
     //typedef typename MakeUnsigned<TChar>::Type TUChar;
@@ -234,11 +234,11 @@ void _prefixSumTableInsertDollar(TPrefixSumTable & /*tag*/)
 
     TPrefixSumTable const pstConst = pst;
 
-    unsigned numDollar = 10;
-    _insertDollar(pst, numDollar);
+    unsigned numSentinel = 10;
+    _insertSentinel(pst, numSentinel);
 
     for (unsigned i = 0; i < length(pst); ++i)
-        SEQAN_ASSERT_EQ(getPrefixSum(pst, i), getPrefixSum(pstConst, i) + numDollar);
+        SEQAN_ASSERT_EQ(getPrefixSum(pst, i), getPrefixSum(pstConst, i) + numSentinel);
 }
 
 
@@ -396,15 +396,15 @@ SEQAN_DEFINE_TEST(prefix_sum_table_get_pivot_position)
     //prefixSumTableGetPivotPosition(constTag);
 }
 
-SEQAN_DEFINE_TEST(prefix_sum_table_determine_dollar_substitute)
+SEQAN_DEFINE_TEST(prefix_sum_table_determine_sentinel_substitute)
 {
     using namespace seqan;
 
     PrefixSumTable<Dna5, void> tag;
-    prefixSumTableDetermineDollarSubstitute(tag);
+    prefixSumTableDetermineSentinelSubstitute(tag);
 
     PrefixSumTable<Dna5, void> const constTag;
-    prefixSumTableDetermineDollarSubstitute(constTag);
+    prefixSumTableDetermineSentinelSubstitute(constTag);
 }
 
 SEQAN_DEFINE_TEST(prefix_sum_table_get_value)
@@ -415,12 +415,12 @@ SEQAN_DEFINE_TEST(prefix_sum_table_get_value)
     prefixSumTableGetValue(tag);
 }
 
-SEQAN_DEFINE_TEST(prefix_sum_table_insert_dollar_)
+SEQAN_DEFINE_TEST(prefix_sum_table_insert_sentinel_)
 {
     using namespace seqan;
 
     PrefixSumTable<Dna5, void> tag;
-    _prefixSumTableInsertDollar(tag);
+    _prefixSumTableInsertSentinel(tag);
 }
 
 SEQAN_DEFINE_TEST(prefix_sum_table_length)

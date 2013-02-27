@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                    rsbs
+//                               fm_index_beta
 // ==========================================================================
 // Copyright (c) 2006-2011, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,39 +29,19 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Your Name <your.email@example.net>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_INDEX_FM_RANK_SUPPORT_BIT_STRING_ITERATOR_H_
-#define TEST_INDEX_FM_RANK_SUPPORT_BIT_STRING_ITERATOR_H_
+#include <seqan/basic.h>
+#include <seqan/file.h>
 
-using namespace seqan;
+#include "test_index_fm.h"
+#include "test_index_fm_rank_dictionary.h"
+#include "test_index_fm_sentinel_rank_dictionary.h"
 
-SEQAN_DEFINE_TEST(test_rsbs_iterator_get_value)
-{
-    unsigned length_ = 1000;
-    String<unsigned> controlString;
-    resize(controlString, length_);
-
-    Rng<MersenneTwister> rng(SEED);
-    controlString[0] = pickRandomNumber(rng) % 2;
-
-    for (unsigned i = 1; i < length_; ++i)
-    {
-        controlString[i] = pickRandomNumber(rng) % 2;
-    }
-
-    typedef RankSupportBitString<void> TRankSupportBitString;
-    TRankSupportBitString bitString(controlString);
-    Iterator<RankSupportBitString<void> >::Type defaultIt = begin(bitString);
-
-    for (unsigned i = 0; i < length(bitString); ++i)
-    {
-        SEQAN_ASSERT(isBitSet(bitString, i) == getValue(defaultIt));
-        SEQAN_ASSERT(isBitSet(bitString, i) == getValue(defaultIt, Bit()));
-        SEQAN_ASSERT(getRank(bitString, i) == getValue(defaultIt, Rank()));
-        ++defaultIt;
-    }
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
 }
 
-#endif  // TEST_INDEX_FM_RANK_SUPPORT_BIT_STRING_H_
+

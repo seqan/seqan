@@ -86,7 +86,7 @@ void compressedSaEmpty(TCompressedSA & /*tag*/)
 }
 
 template <typename TCompressedSA>
-void compressedSaCompressedSaCreate(TCompressedSA & /*tag*/)
+void compressedSaCreateCompressedSa(TCompressedSA & /*tag*/)
 { 
     TCompressedSA compressedSA;
 
@@ -103,7 +103,7 @@ void compressedSaCompressedSaCreate(TCompressedSA & /*tag*/)
     appendValue(fullSA, 7);
     appendValue(fullSA, 3);
 
-    compressedSaCreate(compressedSA, fullSA, 3u);
+    createCompressedSa(compressedSA, fullSA, 3u);
 
     SEQAN_ASSERT_EQ(length(getFibre(getFibre(compressedSA, FibreSparseString()), FibreValueString())), 4u);
 
@@ -116,16 +116,16 @@ void compressedSaCompressedSaCreate(TCompressedSA & /*tag*/)
 
     TIndicatorString & indicatorString = getFibre(getFibre(compressedSA, FibreSparseString()), FibreIndicatorString());
 
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 0), false);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 1), false);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 2), true);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 3), false);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 4), false);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 5), true);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 6), false);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 7), true);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 8), false);
-    SEQAN_ASSERT_EQ(getBit(indicatorString, 9), true);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 0), false);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 1), false);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 2), true);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 3), false);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 4), false);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 5), true);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 6), false);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 7), true);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 8), false);
+    SEQAN_ASSERT_EQ(isBitSet(indicatorString, 9), true);
 }
 
 template <typename TCompressedSA>
@@ -162,11 +162,9 @@ void _compressedSaGetNextPos(TIndex & /*tag*/)
     TCompressedSA & compressedSA = getFibre(index, FibreSA());
     TOccTable occTable = getFibre(getFibre(index, FibreLfTable()), FibreOccTable());
 
-    //static_cast<Nothing>(occTable);
-
     for(unsigned i = 1; i < length(text); ++i)
     {
-        if (!dollarPosition(occTable, i))
+        if (!sentinelPosition(occTable, i))
         {
             pos = i;
             pos2 = pos;
@@ -268,13 +266,13 @@ SEQAN_DEFINE_TEST(compressed_sa_empty)
     compressedSaEmpty(tag);
 }
 
-SEQAN_DEFINE_TEST(compressed_sa_compressed_sa_create)
+SEQAN_DEFINE_TEST(compressed_sa_create_compressed_sa)
 {
     using namespace seqan;
 
     CompressedSA<SparseString<String<unsigned int>, void >, CharString, void> tag;
 
-    compressedSaCompressedSaCreate(tag);
+    compressedSaCreateCompressedSa(tag);
 }
 
 SEQAN_DEFINE_TEST(compressed_sa_get_fibre)
@@ -293,7 +291,7 @@ SEQAN_DEFINE_TEST(compressed_sa_get_next_pos_)
     typedef Dna TChar;
     typedef String<TChar> TText;
 
-    Index<TText, FMIndex<WT<FmiDollarSubstituted<> >, void > > tag;
+    Index<TText, FMIndex<WT<>, void > > tag;
 
     _compressedSaGetNextPos(tag);
 }
@@ -314,7 +312,7 @@ SEQAN_DEFINE_TEST(compressed_sa_value_access)
     typedef Dna TChar;
     typedef String<TChar> TText;
 
-    Index<TText, FMIndex<WT<FmiDollarSubstituted<> >, void > > tag;
+    Index<TText, FMIndex<WT<>, void > > tag;
 
     compressedSaValueAccess(tag);
 
@@ -327,7 +325,7 @@ SEQAN_DEFINE_TEST(compressed_sa_open_save)
     typedef Dna TChar;
     typedef String<TChar> TText;
 
-    Index<TText, FMIndex<WT<FmiDollarSubstituted<> >, void > > tag;
+    Index<TText, FMIndex<WT<>, void > > tag;
 
     compressedSaOpenSave(tag);
 

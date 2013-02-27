@@ -130,13 +130,13 @@ typedef Tag<Rank_>  const Rank;
 template <typename TSpec>
 inline bool getValue(Iter<RankSupportBitString<TSpec>, PositionIterator> const & it)
 {
-    return getBit(value(it), position(it));
+    return isBitSet(value(it), position(it));
 }
 
 template <typename TSpec>
 inline bool getValue(Iter<RankSupportBitString<TSpec>, PositionIterator> & it)
 {
-    return getBit(value(it), position(it));
+    return isBitSet(value(it), position(it));
 }
 
 template <typename TSpec>

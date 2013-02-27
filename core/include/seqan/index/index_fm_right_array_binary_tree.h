@@ -40,8 +40,17 @@ namespace seqan {
 // ==========================================================================
 // Forwards
 // ==========================================================================
-template <typename TText, typename TSpec>
+template <typename TOccTable, typename TPrefixSumTable>
+struct LfTable;
+
+template <typename TValue>
 class WaveletTree;
+
+template<typename TValue> 
+class RankDictionary;
+
+template<typename TRankDictionarySpec, typename TSpec> 
+class SentinelRankDictionary;
 
 struct FibreTreeStructure_;
 typedef Tag<FibreTreeStructure_> const FibreTreeStructure;
@@ -150,7 +159,7 @@ public:
         treeVertieces(),
         minCharValue()
     {
-        computeTree(*this,
+        createRightArrayBinaryTree(*this,
                                     text);
     }
 
@@ -177,9 +186,9 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
 
 // ==========================================================================
 /**
-.Function.computeTree
+.Function.createRightArrayBinaryTree
 ..summary:Computes the wavelet tree structure of a text.
-..signature:computeTree(waveletTreeStructure, text)
+..signature:createRightArrayBinaryTree(waveletTreeStructure, text)
 ..param.waveletTreeStructure:A wavelet tree structure.
 ...type:Class.RightArrayBinaryTree
 ..param.text:A text.
@@ -193,7 +202,7 @@ computeRightArrayBinaryTree(genome);
 */
 // This function computes the wavelet tree structure.
 template <typename TChar, typename TSpec, typename TBorderString, typename TPrefixSumTable, typename TIterSpec>
-inline void computeTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
+inline void createRightArrayBinaryTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
                                         TBorderString & borderString,
                                         TPrefixSumTable & pst)
 {
@@ -219,7 +228,7 @@ inline void computeTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it
 // ==========================================================================
 // This function computes the wavelet tree structure.
 template <typename TChar, typename TSpec, typename TIterSpec, typename TPrefixSumTable>
-inline void computeTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
+inline void createRightArrayBinaryTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
                                         TPrefixSumTable & pst)
 {
     typedef RightArrayBinaryTree<TChar, TSpec> TRightArrayBinaryTree;
@@ -229,27 +238,27 @@ inline void computeTree(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it
     String<Pair<unsigned> > borderString;
     appendValue(borderString, Pair<unsigned>(0, alpSize - 1));
     _resize(waveletTreeStructure, 1);
-    computeTree(it, borderString, pst);
+    createRightArrayBinaryTree(it, borderString, pst);
 }
 
 // This function computes the wavelet tree structure contained in the lfTable.
-template <typename TSpec, typename TPrefixSumTable, typename TText>
-inline void computeTree(LfTable<WaveletTree<TText, TSpec>, TPrefixSumTable> & lfTable)
+template < typename TValue, typename TSpec, typename TPrefixSumTable>
+inline void createRightArrayBinaryTree(LfTable<SentinelRankDictionary<RankDictionary<WaveletTree<TValue> >, TSpec>, TPrefixSumTable> & lfTable)
 {
-    typedef typename Fibre<WaveletTree<TText, TSpec>, FibreTreeStructure>::Type TRightArrayBinaryTree;
-    TRightArrayBinaryTree & rightArrayBinaryTree = lfTable.occTable.waveletTreeStructure;
+    typedef typename Fibre<RankDictionary<WaveletTree<TValue> >, FibreTreeStructure>::Type TRightArrayBinaryTree;
+    TRightArrayBinaryTree & rightArrayBinaryTree = lfTable.occTable.rankDictionary.waveletTreeStructure;
 
     typename Iterator<TRightArrayBinaryTree, TopDown<ParentLinks<void> > >::Type it(rightArrayBinaryTree, 0u);
-    computeTree(it, lfTable.prefixSumTable);
+    createRightArrayBinaryTree(it, lfTable.prefixSumTable);
 }
 
 template <typename TChar, typename TSpec, typename TText>
-inline void computeTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TText const & text)
+inline void createRightArrayBinaryTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TText const & text)
 {
     PrefixSumTable<TChar, void> pst(text);
 
     typename Iterator<RightArrayBinaryTree<TChar, TSpec>, TopDown<ParentLinks<> > >::Type it(waveletTreeStructure, 0u);
-    computeTree(it, pst);
+    createRightArrayBinaryTree(it, pst);
 }
 
 // ==========================================================================
@@ -277,10 +286,6 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
 ...type:Tag.RightArrayBinaryTree Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
-..example.code:
-Index< String<char> > index_esa("tobeornottobe");
-
-String<char> & text = getFibre(indexEsa, EsaText());
 */
 template <typename TChar, typename TSpec>
 inline typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type &
@@ -322,9 +327,21 @@ inline void _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize si
 
 // ==========================================================================
 /**
-.Function.open
-..param.object:
+.Function.RightArrayBinaryTree#open
+..class:Class.RightArrayBinaryTree
+..summary:This functions loads a @Class.RightArrayBinaryTree@ from disk.
+..signature:open(rightArrayBinaryTree, filename [, openMode])
+..param.dictionary:The rightArrayBinaryTree.
 ...type:Class.RightArrayBinaryTree
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
 template <typename TChar, typename TSpec>
 inline bool open(
@@ -351,9 +368,21 @@ inline bool open(
 
 // ==========================================================================
 /**
-.Function.save
-..param.object:
+.Function.RightArrayBinaryTree#save
+..class:Class.RightArrayBinaryTree
+..summary:This functions saves a @Class.RightArrayBinaryTree@ to disk.
+..signature:save(rightArrayBinaryTree, filename [, openMode])
+..param.dictionary:The rightArrayBinaryTree.
 ...type:Class.RightArrayBinaryTree
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
 template <typename TChar, typename TSpec>
 inline bool save(
@@ -363,7 +392,6 @@ inline bool save(
 {
     String<char> name;
 
-    //TODO (singer): use if not
     String<TChar> minString;
     appendValue(minString, treeStructure.minCharValue);
     name = fileName;    append(name, ".rtv");   if (!save(getFibre(treeStructure, FibreTreeStructureEncoding()), toCString(name), openMode)) return false;

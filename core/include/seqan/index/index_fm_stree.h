@@ -226,7 +226,7 @@ inline bool _isLeaf(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TS
                     VSTreeIteratorTraits<TDfsOrder, True> const)
 {
     return (value(it).range.i1 + 1 >= value(it).range.i2 &&
-            value(it).range.i1 == getDollarPosition(container(it).lfTable.occTable));
+            value(it).range.i1 == _getSentinelPosition(container(it).lfTable.occTable));
 }
 
 template <typename TText, typename TSetSpec, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDfsOrder>
@@ -241,7 +241,7 @@ inline bool _isLeaf(Iter<Index<StringSet<TText, TSetSpec>, FMIndex<TOccSpec, TIn
                     VSTreeIteratorTraits<TDfsOrder, True> const)
 {
     return (value(it).range.i1 + 1 >= value(it).range.i2 &&
-            dollarPosition(getFibre(getFibre(container(it), FibreLfTable()), FibreOccTable()), value(it).range.i1));
+            sentinelPosition(getFibre(getFibre(container(it), FibreLfTable()), FibreOccTable()), value(it).range.i1));
 }
 
 // ----------------------------------------------------------------------------

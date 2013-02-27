@@ -150,11 +150,25 @@ struct RankSupportBitString
         _length(0)
     {}
 
-    template <typename TString>
-    RankSupportBitString(TString const & input) :
+    // TODO(singer): Use concept sequence when available
+    template <typename TValue, typename TStringSpec>
+    RankSupportBitString(String<TValue, TStringSpec> const & input) :
         _length(length(input))
     {
-        typedef typename Iterator<TString const>::Type TIter_;
+        typedef typename Iterator<String<TValue, TStringSpec> const>::Type TIter_;
+
+        resize(*this, _length);
+        typename Position<RankSupportBitString>::Type i = 0;
+        for (TIter_ it = begin(input, Standard()); it != end(input, Standard()); ++it, ++i)
+            setBitTo(*this, i, getValue(it));
+        _updateRanks(*this);
+    }
+    
+    template <typename THost, typename TStringSpec>
+    RankSupportBitString(Segment<THost, TStringSpec> const & input) :
+        _length(length(input))
+    {
+        typedef typename Iterator<Segment<THost, TStringSpec> const>::Type TIter_;
 
         resize(*this, _length);
         typename Position<RankSupportBitString>::Type i = 0;
@@ -291,9 +305,9 @@ getRank(RankSupportBitString<TSpec> const & bitString, TPos const pos)
 
 // ==========================================================================
 /**
-.Function.getBit
-..summary:Returns whether a specified bit is set or not.
-..signature:getBit(bitString, pos)
+.Function.isSetBit
+..summary:Returns whether the bit with the given index is set to 1.
+..signature:isSetBit(bitString, pos)
 ..param.bitString:The bit string.
 ...type:Class.RankSupportBitString
 ..param.pos:Position of the bit.
@@ -309,18 +323,20 @@ mark all 'a's
 ...
 
 for (unsigned i = 0; i < length(bitString); ++i)
-    if(getBit(bitString, i))
+    if(isSetBit(bitString, i))
         std::cout << "a found at: " << i << std::endl;
 */
 
 template <typename TSpec, typename TPos>
-inline bool getBit(RankSupportBitString<TSpec> const & bitString, TPos const pos)
+inline bool isBitSet(RankSupportBitString<TSpec> const & bitString, TPos const pos)
 {
     //typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
     typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
    
-    return (bitString.bits[_getBlockPos(bitString, pos)] & ((TFibreBitsValue)1u << _getPosInBlock(bitString, pos))) != (TFibreBitsValue)0;
+
+    return isBitSet(bitString.bits[_getBlockPos(bitString, pos)], _getPosInBlock(bitString, pos));
+//     return (bitString.bits[_getBlockPos(bitString, pos)] & ((TFibreBitsValue)1u << _getPosInBlock(bitString, pos))) != (TFibreBitsValue)0;
 }
 
 // ==========================================================================
@@ -536,7 +552,7 @@ inline void _updateLastRank(RankSupportBitString<TSpec> & bitString)
 // ==========================================================================
 template <typename TSpec, typename TSize, typename TExpand>
 inline typename Size<RankSupportBitString<TSpec> >::Type
-reserve(RankSupportBitString<TSpec> & bitString, TSize const size, Tag<TExpand> tag)
+reserve(RankSupportBitString<TSpec> & bitString, TSize const size, Tag<TExpand> const tag)
 {
     typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<TRankSupportBitString, FibreBits>::Type          TFibreBits;
@@ -562,7 +578,7 @@ reserve(RankSupportBitString<TSpec> & bitString, TSize const size, Tag<TExpand> 
 */
 template <typename TSpec, typename TLength, typename TValue, typename TExpand>
 inline typename Size<RankSupportBitString<TSpec> >::Type
-resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue const _value, Tag<TExpand> tag)
+resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue const _value, Tag<TExpand> const tag)
 {
     typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
     typedef typename Fibre<TRankSupportBitString, FibreBits>::Type          TFibreBits;
@@ -593,7 +609,7 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, TValue co
 
 template <typename TSpec, typename TLength, typename TExpand>
 inline typename Size<RankSupportBitString<TSpec> >::Type
-resize(RankSupportBitString<TSpec> & bitString, TLength const _length, Tag<TExpand> tag)
+resize(RankSupportBitString<TSpec> & bitString, TLength const _length, Tag<TExpand> const tag)
 {
     return resize(bitString, _length, 0, tag);
 }

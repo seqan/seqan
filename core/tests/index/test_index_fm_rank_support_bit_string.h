@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_rsbs_getPosInBu)
 
 
 // A test for strings.
-SEQAN_DEFINE_TEST(test_rsbs_getSetBit)
+SEQAN_DEFINE_TEST(test_rsbs_isBitSet)
 {
     unsigned _length = 100000;
     RankSupportBitString<> bitString;
@@ -166,7 +166,7 @@ SEQAN_DEFINE_TEST(test_rsbs_getSetBit)
     {
         controlBitString[i] = pickRandomNumber(rng) % 2;
         setBitTo(bitString, i, controlBitString[i]);
-        SEQAN_ASSERT_EQ(getBit(bitString, i), controlBitString[i]);
+        SEQAN_ASSERT_EQ(isBitSet(bitString, i), controlBitString[i]);
     }
 }
 
@@ -185,7 +185,7 @@ SEQAN_DEFINE_TEST(test_rsbs_append_value)
         controlBitString[i] = pickRandomNumber(rng) % 2;
         appendValue(bitString, controlBitString[i]);
         SEQAN_ASSERT_EQ(length(bitString), i + 1);
-        SEQAN_ASSERT_EQ(getBit(bitString, i), controlBitString[i]);
+        SEQAN_ASSERT_EQ(isBitSet(bitString, i), controlBitString[i]);
     }
 }
 
