@@ -123,8 +123,11 @@ seqan_add_app_test (masai)
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
 
-# Include executable masai_mapper in CTD structure.
+# Include all executables in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} masai_indexer CACHE INTERNAL "")
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} masai_mapper CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} masai_output_se CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} masai_output_pe CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
