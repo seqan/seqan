@@ -40,22 +40,14 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/stream.h>
 
 #include "tags.h"
 #include "store.h"
-#include "indexer.h"
 #include "matches.h"
 //#include "verifier.h"
-#include "extender.h"
-#include "stream.h"
-#include "writer.h"
+//#include "extender.h"
 
 using namespace seqan;
-
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -65,73 +57,30 @@ using namespace seqan;
 // Class Pairer
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void>
+template <typename TReads, typename TDelegate, typename TSpec = void>
 struct Pairer
 {
-    typedef Indexer<Nothing>    TIndexer;
+    typedef MatchStore<>    TMatchStore;
 
-    TFragmentStore      store;
-    TIndexer            indexer;
-
-    unsigned            readsCount;
+    Holder<TReads>      reads;
+    TMatchStore         _storeLeft;
+    TMatchStore         _storeRight;
+    TDelegate           & delegate;
     unsigned long       pairsCount;
-
-    bool                writeCigar;
-    bool                dumpResults;
-
     unsigned            libraryLength;
     unsigned            libraryError;
 
-    // TODO(esiragusa): Remove writeCigar from Pairer members.
-    Pairer(unsigned libraryLength, unsigned libraryError, bool writeCigar = true, bool dumpResults = true) :
-        indexer(store),
-        readsCount(0),
+    Pairer(TDelegate & delegate, unsigned libraryLength, unsigned libraryError) :
+        delegate(delegate),
         pairsCount(0),
-        writeCigar(writeCigar),
-        dumpResults(dumpResults),
         libraryLength(libraryLength),
         libraryError(libraryError)
     {}
 };
 
 // ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function loadReads()                                                [Pairer]
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TString>
-bool loadReads(Pairer<TSpec> & pairer, TString const & readsLeftFile, TString const & readsRightFile)
-{
-    // TODO(esiragusa): Use loadReads() from store.h
-    if (!loadReads(pairer.store, readsLeftFile, readsRightFile))
-        return false;
-
-    pairer.readsCount = length(pairer.store.readSeqStore);
-
-    _loadReadsRC(pairer);
-
-    return true;
-}
-
-template <typename TSpec>
-bool _loadReadsRC(Pairer<TSpec> & pairer)
-{
-    for (TReadSeqStoreSize readId = 0; readId < pairer.readsCount; ++readId)
-    {
-        TReadSeq & read = pairer.store.readSeqStore[readId];
-        appendValue(pairer.store.readSeqStore, read);
-        reverseComplement(back(pairer.store.readSeqStore));
-    }
-
-    return true;
-}
 
 // ----------------------------------------------------------------------------
 // Function readIdToPairId()
@@ -149,240 +98,86 @@ TReadId readIdToPairId(TReadId readId, RightFile)
     return readId * 2 + 1;
 }
 
-/*
-template <typename TSpec, typename TString, typename TErrors, typename TDistance>
-bool mateMappedReads(Pairer<TSpec> & pairer,
-                     TString const & mappedReadsLeftFile,
-                     TString const & mappedPairsFile,
-                     TErrors errors,
-                     TDistance, Raw)
-{
-    typedef String<Match<>, TStream>                        TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
-    typedef Verifier<TMatchWriter, TDistance>               TVerifier;
-
-//    typedef Extender<TMatchWriter, TDistance>               TExtender;
-//    typedef Verifier<TExtender, TDistance, Filter<void> >   TVerifier;
-
-    TWriterStream file;
-    if (pairer.dumpResults)
-        open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE);
-
-    TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
-    TVerifier verifier(pairer.store, writer, pairer.libraryLength, pairer.libraryError);
-
-//    TExtender extender(pairer.store, writer, pairer.readsCount, 0, true);
-//    extender.minErrorsPerRead = 0;
-//    extender.maxErrorsPerRead = errors;
-//
-//    TVerifier verifier(pairer.store, extender, pairer.libraryLength, pairer.libraryError);
-    verifier.maxErrorsPerRead = errors;
-
-    mateMappedReads(pairer, mappedReadsLeftFile, verifier);
-
-//    std::cout << "Pairs:\t\t\t\t" << verifier.pairsCount << std::endl;
-
-    return true;
-}
-
-template <typename TSpec, typename TString, typename TErrors, typename TDistance>
-bool mateMappedReads(Pairer<TSpec> & pairer,
-                     TString const & mappedReadsLeftFile,
-                     TString const & mappedPairsFile,
-                     TErrors errors,
-                     TDistance, Sam)
-{
-    typedef String<char, TStream>                           TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
-    typedef Verifier<TMatchWriter, TDistance>               TVerifier;
-
-    TWriterStream file;
-    if (pairer.dumpResults)
-        open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE);
-
-    TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
-    TVerifier verifier(pairer.store, writer, pairer.libraryLength, pairer.libraryError);
-    verifier.maxErrorsPerRead = errors;
-
-    // TODO(esiragusa):Remove writeCigar from members.
-    writer.writeCigar = pairer.writeCigar;
-
-    mateMappedReads(pairer, mappedReadsLeftFile, verifier);
-
-//    std::cout << "Pairs:\t\t\t\t" << verifier.pairsCount << std::endl;
-
-    return true;
-}
-
-template <typename TSpec, typename TString, typename TMatchesDelegate>
-bool mateMappedReads(Pairer<TSpec> & pairer,
-                     TString const & mappedReadsLeftFile,
-                     TMatchesDelegate & matchesDelegate)
-{
-    typedef Match<>                  TMatch;
-    typedef MatchStore<TMatch>       TMatchStore;
-    typedef String<TMatch>           TMatches;
-
-    TMatchStore storeLeft;
-
-    if (!open(storeLeft, mappedReadsLeftFile))
-        return false;
-
-    TMatches matchesLeft;
-
-    if (!getNext(storeLeft, matchesLeft))
-        return false;
-
-    do
-    {
-        removeDuplicateMatches(matchesLeft);
-        _matePair(pairer, matchesLeft, matchesDelegate);
-    }
-    while (getNext(storeLeft, matchesLeft));
-
-    close(storeLeft);
-
-    return true;
-}
-
-template <typename TSpec, typename TRecordSpec, typename TStringSpec, typename TMatchesDelegate>
-inline void _matePair(Pairer<TSpec> &,
-                      String<Match<TRecordSpec>, TStringSpec> const & matchesLeft,
-                      TMatchesDelegate & matchesDelegate)
-{
-    typedef Match<TRecordSpec>                              TMatch;
-    typedef String<TMatch, TStringSpec>                     TMatches;
-    typedef typename Iterator<TMatches, Standard>::Type     TIterator;
-
-    TIterator matchesIt = begin(matchesLeft, Standard());
-    TIterator matchesEnd = end(matchesLeft, Standard());
-
-    preprocessMate(matchesDelegate, (*matchesIt).readId);
-
-    for (; matchesIt != matchesEnd; ++matchesIt)
-        onMatch(matchesDelegate, *matchesIt);
-}
-*/
-
 // ----------------------------------------------------------------------------
-// Function mateMappedReads()                                          [Pairer]
+// Function open()                                                     [Pairer]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString, typename TDistance>
-bool mateMappedReads(Pairer<TSpec> & pairer,
-                     TString const & mappedReadsLeftFile,
-                     TString const & mappedReadsRightFile,
-                     TString const & mappedPairsFile,
-                     TDistance const & /*tag*/,
-                     Raw const & /*tag*/)
+template <typename TReads, typename TDelegate, typename TSpec, typename TString>
+bool open(Pairer<TReads, TDelegate, TSpec> & sorter, TString const & mappedReadsLeftFile, TString const & mappedReadsRightFile)
 {
-    typedef External<ExternalConfigLarge<> >            TStream;
-    typedef String<Match<>, TStream>                    TWriterStream;
-//    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
-
-    TWriterStream file;
-    
-    if (pairer.dumpResults)
-        if (!open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE))
-            return false;
-
-    TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
-
-    _mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);
-
-    std::cout << "Pairs:\t\t\t\t" << pairer.pairsCount << std::endl;
-
-    return true;
+    return open(sorter._storeLeft, mappedReadsLeftFile) && open(sorter._storeRight, mappedReadsRightFile);
 }
 
-template <typename TSpec, typename TString, typename TDistance>
-bool mateMappedReads(Pairer<TSpec> & pairer,
-                     TString const & mappedReadsLeftFile,
-                     TString const & mappedReadsRightFile,
-                     TString const & mappedPairsFile,
-                     TDistance const & /*tag*/,
-                     Sam const & /*tag*/)
+// ----------------------------------------------------------------------------
+// Function close()                                                    [Pairer]
+// ----------------------------------------------------------------------------
+
+template <typename TReads, typename TDelegate, typename TSpec>
+bool close(Pairer<TReads, TDelegate, TSpec> & pairer)
 {
-    typedef External<ExternalConfigLarge<> >            TStream;
-    typedef String<char, TStream>                       TWriterStream;
-//    typedef Stream<FileStream<char, MMapWriter> >       TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Sam> TMatchWriter;
-
-    TWriterStream file;
-    
-    if (pairer.dumpResults)
-        if (!open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE))
-            return false;
-
-    TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
-
-    // TODO(esiragusa): Remove writeCigar from members.
-    writer.writeCigar = pairer.writeCigar;
-
-    _mateMappedReads(pairer, mappedReadsLeftFile, mappedReadsRightFile, writer);
-
-    std::cout << "Pairs:\t\t\t\t" << pairer.pairsCount << std::endl;
-
-    return true;
+    return close(pairer._storeLeft) && close(pairer._storeRight);
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function setReads()                                                 [Pairer]
+// ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString, typename TMatchesDelegate>
-bool _mateMappedReads(Pairer<TSpec> & pairer,
-                      TString const & mappedReadsLeftFile,
-                      TString const & mappedReadsRightFile,
-                      TMatchesDelegate & matchesDelegate)
+template <typename TReads, typename TDelegate, typename TSpec>
+void setReads(Pairer<TReads, TDelegate, TSpec> & pairer, TReads & reads)
 {
-    typedef Match<>                  TMatch;
-    typedef MatchStore<TMatch>       TMatchStore;
-    typedef String<TMatch>           TMatches;
+    setValue(pairer.reads, reads);
+}
 
-    TMatchStore storeLeft;
-    TMatchStore storeRight;
+// ----------------------------------------------------------------------------
+// Function getReads()                                                 [Pairer]
+// ----------------------------------------------------------------------------
 
-    if (!open(storeLeft, mappedReadsLeftFile))
-        return false;
+template <typename TReads, typename TDelegate, typename TSpec>
+inline typename Reference<TReads>::Type
+getReads(Pairer<TReads, TDelegate, TSpec> & pairer)
+{
+    return value(pairer.reads);
+}
 
-    if (!open(storeRight, mappedReadsRightFile))
-    {
-        close(storeLeft);
-        return false;
-    }
+// ----------------------------------------------------------------------------
+// Function pair()                                                     [Pairer]
+// ----------------------------------------------------------------------------
+
+template <typename TReads, typename TDelegate, typename TSpec>
+void pair(Pairer<TReads, TDelegate, TSpec> & pairer)
+{
+//    typedef Pairer<TReads, TDelegate, TSpec>        TPairer;
+//    typedef typename TPairer::TMatchStore   TMatchStore;
+//    typedef typename TMatchStore::TMatches  TMatches;
+    typedef String<Match<> >                TMatches;
 
     TMatches matchesLeft;
     TMatches matchesRight;
 
-    if (!getNext(storeLeft, matchesLeft) || !getNext(storeRight, matchesRight))
-        return false;
+    if (!getNext(pairer._storeLeft, matchesLeft) || !getNext(pairer._storeRight, matchesRight)) return;
 
     do
     {
-        while (front(matchesLeft).readId > front(matchesRight).readId && getNext(storeRight, matchesRight)) ;
+        while (front(matchesLeft).readId > front(matchesRight).readId && getNext(pairer._storeRight, matchesRight)) ;
 
         if (front(matchesLeft).readId == front(matchesRight).readId)
         {
             removeDuplicateMatches(matchesLeft);
             removeDuplicateMatches(matchesRight);
-            _matePair(pairer, matchesLeft, matchesRight, matchesDelegate);
+            _matePair(pairer, matchesLeft, matchesRight);
         }
     }
-    while (getNext(storeLeft, matchesLeft));
-
-    close(storeRight);
-    close(storeLeft);
-
-    return true;
+    while (getNext(pairer._storeLeft, matchesLeft));
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function _matePair()                                                [Pairer]
+// ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TRecordSpec, typename TStringSpec, typename TMatchesDelegate>
-inline void _matePair(Pairer<TSpec> & pairer,
+template <typename TReads, typename TDelegate, typename TSpec, typename TRecordSpec, typename TStringSpec>
+inline void _matePair(Pairer<TReads, TDelegate, TSpec> & pairer,
                       String<Match<TRecordSpec>, TStringSpec> const & matchesLeft,
-                      String<Match<TRecordSpec>, TStringSpec> const & matchesRight,
-                      TMatchesDelegate & matchesDelegate)
+                      String<Match<TRecordSpec>, TStringSpec> const & matchesRight)
 {
     typedef Match<TRecordSpec>                                      TMatch;
     typedef MatchIterator<TMatch, TStringSpec>                      TMatchIterator;
@@ -431,8 +226,7 @@ inline void _matePair(Pairer<TSpec> & pairer,
                     _matePair(pairer,
                               matchesLeftFwdBegin, matchesLeftFwdEnd,
                               matchesRightRevBegin, matchesRightRevEnd,
-                              LeftFile(), RightFile(),
-                              matchesDelegate);
+                              LeftFile(), RightFile());
 //
 //                    std::cout << "==================" << std::endl;
                 }
@@ -446,8 +240,7 @@ inline void _matePair(Pairer<TSpec> & pairer,
                     _matePair(pairer,
                               matchesRightFwdBegin, matchesRightFwdEnd,
                               matchesLeftRevBegin, matchesLeftRevEnd,
-                              RightFile(), LeftFile(),
-                              matchesDelegate);
+                              RightFile(), LeftFile());
 //
 //                    std::cout << "==================" << std::endl;
                 }
@@ -458,15 +251,16 @@ inline void _matePair(Pairer<TSpec> & pairer,
     }
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function _matePair()                                                [Pairer]
+// ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TIterator, typename TMateFwd, typename TMateRev, typename TMatchesDelegate>
-inline void _matePair(Pairer<TSpec> & pairer,
+template <typename TReads, typename TDelegate, typename TSpec, typename TIterator, typename TMateFwd, typename TMateRev>
+inline void _matePair(Pairer<TReads, TDelegate, TSpec> & pairer,
                       TIterator mateFwdBegin, TIterator mateFwdEnd,
                       TIterator mateRevBegin, TIterator mateRevEnd,
-                      TMateFwd const &,
-                      TMateRev const &,
-                      TMatchesDelegate & matchesDelegate)
+                      TMateFwd const & /* tag */,
+                      TMateRev const & /* tag */)
 {
     typedef Match<> TMatch;
 
@@ -474,7 +268,7 @@ inline void _matePair(Pairer<TSpec> & pairer,
 
     SEQAN_ASSERT_NEQ(mateFwdBegin, mateFwdEnd);
     unsigned mateFwdId = readIdToPairId((*mateFwdBegin).readId, TMateFwd());
-    TReadSeqSize mateFwdLength = length(pairer.store.readSeqStore[mateFwdId]);
+    TReadSeqSize mateFwdLength = length(getSeqs(getReads(pairer))[mateFwdId]);
 
     TIterator mateFwdIt = mateFwdBegin;
 
@@ -516,14 +310,129 @@ inline void _matePair(Pairer<TSpec> & pairer,
             mateFwd.readId = readIdToPairId((*mateFwdQueueIt).readId, TMateFwd());
             mateRev.readId = readIdToPairId((*mateRevIt).readId, TMateRev());
 
-            onMatch(matchesDelegate, mateFwd, mateRev);
+            onMatch(pairer.delegate, mateFwd, mateRev);
 
-//            onMatch(matchesDelegate, *mateFwdQueueIt, *mateRevIt);
+//            onMatch(pairer.delegate, *mateFwdQueueIt, *mateRevIt);
         }
 
         // Empty mateFwd queue.
 //        if (mateFwdTailIt == mateFwdHeadIt) continue;
     }
 }
+
+/*
+template <typename TReads, typename TDelegate, typename TSpec, typename TString, typename TErrors, typename TDistance>
+bool mateMappedReads(Pairer<TReads, TDelegate, TSpec> & pairer,
+                     TString const & mappedReadsLeftFile,
+                     TString const & mappedPairsFile,
+                     TErrors errors,
+                     TDistance, Raw)
+{
+    typedef String<Match<>, TStream>                        TWriterStream;
+    typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
+    typedef Verifier<TMatchWriter, TDistance>               TVerifier;
+
+//    typedef Extender<TMatchWriter, TDistance>               TExtender;
+//    typedef Verifier<TExtender, TDistance, Filter<void> >   TVerifier;
+
+    TWriterStream file;
+    if (pairer.dumpResults)
+        open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE);
+
+    TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
+    TVerifier verifier(pairer.store, writer, pairer.libraryLength, pairer.libraryError);
+
+//    TExtender extender(pairer.store, writer, pairer.readsCount, 0, true);
+//    extender.minErrorsPerRead = 0;
+//    extender.maxErrorsPerRead = errors;
+//
+//    TVerifier verifier(pairer.store, extender, pairer.libraryLength, pairer.libraryError);
+    verifier.maxErrorsPerRead = errors;
+
+    mateMappedReads(pairer, mappedReadsLeftFile, verifier);
+
+//    std::cout << "Pairs:\t\t\t\t" << verifier.pairsCount << std::endl;
+
+    return true;
+}
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TString, typename TErrors, typename TDistance>
+bool mateMappedReads(Pairer<TReads, TDelegate, TSpec> & pairer,
+                     TString const & mappedReadsLeftFile,
+                     TString const & mappedPairsFile,
+                     TErrors errors,
+                     TDistance, Sam)
+{
+    typedef String<char, TStream>                           TWriterStream;
+    typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
+    typedef Verifier<TMatchWriter, TDistance>               TVerifier;
+
+    TWriterStream file;
+    if (pairer.dumpResults)
+        open(file, toCString(mappedPairsFile), OPEN_RDWR | OPEN_CREATE);
+
+    TMatchWriter writer(file, pairer.store, pairer.readsCount, pairer.dumpResults);
+    TVerifier verifier(pairer.store, writer, pairer.libraryLength, pairer.libraryError);
+    verifier.maxErrorsPerRead = errors;
+
+    // TODO(esiragusa):Remove writeCigar from members.
+    writer.writeCigar = pairer.writeCigar;
+
+    mateMappedReads(pairer, mappedReadsLeftFile, verifier);
+
+//    std::cout << "Pairs:\t\t\t\t" << verifier.pairsCount << std::endl;
+
+    return true;
+}
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TString>
+bool mateMappedReads(Pairer<TReads, TDelegate, TSpec> & pairer,
+                     TString const & mappedReadsLeftFile,
+                     TMatchesDelegate & matchesDelegate)
+{
+    typedef Match<>                  TMatch;
+    typedef MatchStore<TMatch>       TMatchStore;
+    typedef String<TMatch>           TMatches;
+
+    TMatchStore storeLeft;
+
+    if (!open(storeLeft, mappedReadsLeftFile))
+        return false;
+
+    TMatches matchesLeft;
+
+    if (!getNext(storeLeft, matchesLeft))
+        return false;
+
+    do
+    {
+        removeDuplicateMatches(matchesLeft);
+        _matePair(pairer, matchesLeft, matchesDelegate);
+    }
+    while (getNext(storeLeft, matchesLeft));
+
+    close(storeLeft);
+
+    return true;
+}
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TRecordSpec, typename TStringSpec>
+inline void _matePair(Pairer<TReads, TDelegate, TSpec> &,
+                      String<Match<TRecordSpec>, TStringSpec> const & matchesLeft,
+                      TMatchesDelegate & matchesDelegate)
+{
+    typedef Match<TRecordSpec>                              TMatch;
+    typedef String<TMatch, TStringSpec>                     TMatches;
+    typedef typename Iterator<TMatches, Standard>::Type     TIterator;
+
+    TIterator matchesIt = begin(matchesLeft, Standard());
+    TIterator matchesEnd = end(matchesLeft, Standard());
+
+    preprocessMate(matchesDelegate, (*matchesIt).readId);
+
+    for (; matchesIt != matchesEnd; ++matchesIt)
+        onMatch(, *matchesIt);
+}
+*/
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_PAIRER_H_

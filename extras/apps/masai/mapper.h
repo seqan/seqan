@@ -39,18 +39,12 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
-#include <seqan/stream.h>
 
 #include "tags.h"
 #include "store.h"
-#include "index.h"
-#include "indexer.h"
-#include "manager.h"
-#include "stream.h"
-#include "writer.h"
-#include "extender.h"
 #include "seeder.h"
+#include "extender.h"
+#include "manager.h"
 
 using namespace seqan;
 
@@ -63,43 +57,56 @@ using namespace seqan;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class Mapper
+// Class ReadMapperConfig
 // ----------------------------------------------------------------------------
 
-// TODO(esiragusa):Use typename TGenomeIndex instead of TSpec.
-template <typename TSpec = void>
-struct Mapper
+template <typename TDistance_       = EditDistance,
+          typename TStrategy_       = AnyBest,
+          typename TBacktracking_   = MultipleBacktracking>
+struct ReadMapperConfig
 {
-    typedef Indexer<TSpec>  TIndexer;
-
-    TFragmentStore      store;
-    TIndexer            indexer;
-
-    unsigned            readsCount;
-    TReadSeqSize        seedLength;
-
-    bool                writeCigar;
-    bool                verifyHits;
-    bool                dumpResults;
-
-    // TODO(esiragusa):Remove writeCigar from Mapper members.
-    Mapper(TReadSeqSize seedLength, bool writeCigar = true, bool verifyHits = true, bool dumpResults = true) :
-        indexer(store),
-        readsCount(0),
-        seedLength(seedLength),
-        writeCigar(writeCigar),
-        verifyHits(verifyHits),
-        dumpResults(dumpResults)
-    {}
+	typedef TDistance_          TDistance;
+	typedef TStrategy_          TStrategy;
+    typedef TBacktracking_      TBacktracking;
 };
 
 // ----------------------------------------------------------------------------
-// Class Seeding
+// Class Mapper
 // ----------------------------------------------------------------------------
 
-// TODO(esiragusa): refactor class Seeding.
+template <typename TReads, typename TDelegate, typename TSpec = void, typename TConfig = ReadMapperConfig<> >
+struct Mapper
+{
+    typedef MatchManager<TDelegate, typename TConfig::TStrategy>            TManager;
+    typedef Extender<TManager, typename TConfig::TDistance>                 TExtender;
+    typedef Seeder<TManager, TExtender, typename TConfig::TBacktracking>    TSeeder;
+
+    Holder<TReads>      reads;
+    TDelegate           & delegate;
+    TManager            _manager;
+    TExtender           _extender;
+    TSeeder             _seeder;
+    TReadSeqSize        _seedLength;
+
+    Mapper(TReads & reads, TDelegate & delegate, bool disableExtender = false) :
+        reads(reads),
+        delegate(delegate),
+        _manager(delegate, reads.readsCount),
+        _extender(value(reads._store), _manager, reads.readsCount, disableExtender),
+        _seeder(value(reads._store), _manager, _extender),
+        _seedLength(0)
+    {
+        _seeder.readsCount = reads.readsCount;
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Class Seeding_
+// ----------------------------------------------------------------------------
+
+// TODO(esiragusa): Remove class Seeding_
 template <typename TErrors = unsigned char, typename TSpec = void>
-struct Seeding
+struct Seeding_
 {
     typedef Pair<TReadSeqSize, TErrors> TSeed;
     typedef String<TSeed>               TSeeds;
@@ -107,12 +114,11 @@ struct Seeding
     TSeeds          seeds;
     TReadSeqSize    seedLength;
 
-    Seeding(TReadSeqSize readLength, TErrors errors, TReadSeqSize seedLength) :
+    Seeding_(TReadSeqSize readLength, TErrors errors, TReadSeqSize seedLength) :
         seedLength(seedLength)
     {
         _computeSeeds(*this, readLength, errors);
     }
-
 };
 
 // ============================================================================
@@ -123,11 +129,15 @@ struct Seeding
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function _computeSeeds()                                          [Seeding_]
+// ----------------------------------------------------------------------------
+
 template <typename TErrors, typename TSpec>
-void _computeSeeds(Seeding<TErrors, TSpec> & seeding, TReadSeqSize readLength, TErrors errors)
+void _computeSeeds(Seeding_<TErrors, TSpec> & seeding, TReadSeqSize readLength, TErrors errors)
 {
-    typedef Seeding<TErrors, TSpec>   TSeeding;
-    typedef typename TSeeding::TSeed  TSeed;
+    typedef Seeding_<TErrors, TSpec>   TSeeding_;
+    typedef typename TSeeding_::TSeed  TSeed;
 
     clear(seeding.seeds);
 
@@ -159,138 +169,81 @@ void _computeSeeds(Seeding<TErrors, TSpec> & seeding, TReadSeqSize readLength, T
 }
 
 // ----------------------------------------------------------------------------
-// Function loadReads()                                                [Mapper]
+// Function setSeedLength()                                            [Mapper]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString, typename TOutputFormat>
-bool loadReads(Mapper<TSpec> & mapper, TString const & readsFile, TOutputFormat const & /* tag */)
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TSize>
+void setSeedLength(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TSize seedLength)
 {
-    typedef typename IsSameType<TOutputFormat, Tag<Sam_> >::Type   TUseReadStore;
-    typedef typename IsSameType<TOutputFormat, Tag<Sam_> >::Type   TUseReadNameStore;
-
-    if (!loadReads(mapper.store, readsFile, TUseReadStore(), TUseReadNameStore()))
-        return false;
-
-    mapper.readsCount = length(mapper.store.readSeqStore);
-
-    _loadReadsRC(mapper);
-
-    return true;
+    mapper._seedLength = seedLength;
+    mapper._extender.seedLength = seedLength;
 }
 
-template <typename TSpec>
-bool _loadReadsRC(Mapper<TSpec> & mapper)
-{
-    for (TReadSeqStoreSize readId = 0; readId < mapper.readsCount; ++readId)
-    {
-        TReadSeq & read = mapper.store.readSeqStore[readId];
-        appendValue(mapper.store.readSeqStore, read);
-        reverseComplement(back(mapper.store.readSeqStore));
-    }
+// ----------------------------------------------------------------------------
+// Function setReads()                                                 [Mapper]
+// ----------------------------------------------------------------------------
 
-    return true;
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig>
+void setReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TReads & reads)
+{
+    setValue(mapper.reads, reads);
+
+    mapper._seeder.readsCount = reads.readsCount;
+    mapper._extender.readsCount = reads.readsCount;
+    mapper._manager.readsCount = reads.readsCount;
+
+//    setReads(mapper._seeder, reads);
+//    setReads(mapper._extender, reads);
+//    setReads(mapper._manager, reads);
 }
 
-template <typename TSpec>
-TReadSeqSize _readsLength(Mapper<TSpec> const & mapper)
+// ----------------------------------------------------------------------------
+// Function getReads()                                                 [Mapper]
+// ----------------------------------------------------------------------------
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig>
+inline typename Reference<TReads>::Type
+getReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper)
 {
-    // TODO(esiragusa): Check if reads length differ. Check if read store is empty.
-    return length(mapper.store.readSeqStore[0]);
+    return value(mapper.reads);
 }
+
+// ----------------------------------------------------------------------------
+// Function unmappedReads()                                            [Mapper]
+// ----------------------------------------------------------------------------
+
+//template <typename TReads, typename TDelegate, typename TSpec, typename TConfig>
+//void unmappedReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper)
+//{
+//}
 
 // ----------------------------------------------------------------------------
 // Function mapReads()                                                 [Mapper]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString, typename TErrors, typename TDistance, typename TStrategy, typename TMultiple>
-bool mapReads(Mapper<TSpec> & mapper,
-              TString const & mappedReadsFile,
-              TErrors errors,
-              TErrors errorsLossy,
-              TDistance const & /*tag*/,
-              TStrategy const & /*tag*/,
-              TMultiple const & /*tag*/,
-              Sam const & /*tag*/)
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void mapReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors)
 {
-    typedef Match<>                                         TMatch;
-    typedef Stream<FileStream<char, MMapWriter> >           TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Sam>      TMatchWriter;
-    typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
-    typedef Extender<TMatchManager, TDistance>              TExtender;
-    typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
-
-    TWriterStream file;
-    
-    if (mapper.dumpResults)
-        if (!open(file, toCString(mappedReadsFile), OPEN_RDWR | OPEN_CREATE))
-            return false;
-
-    TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
-    TMatchManager manager(writer, mapper.readsCount);
-    TExtender extender(mapper.store, manager, mapper.readsCount, mapper.seedLength, mapper.verifyHits);
-    TSeeder seeder(mapper.store, manager, extender);
-    seeder.readsCount = mapper.readsCount;
-
-    // TODO(esiragusa):Remove writeCigar from mapper members.
-    writer.writeCigar = mapper.writeCigar;
-
-    _mapReads(mapper, seeder, manager, errors, errorsLossy, TStrategy());
-
-    return true;
+//    mapper._extender.genome = genomeIndex.genome;
+    _mapReads(mapper, genomeIndex, errors, typename TConfig::TStrategy());
 }
 
-template <typename TSpec, typename TString, typename TErrors, typename TDistance, typename TStrategy, typename TMultiple>
-bool mapReads(Mapper<TSpec> & mapper,
-              TString const & mappedReadsFile,
-              TErrors errors,
-              TErrors errorsLossy,
-              TDistance const & /*tag*/,
-              TStrategy const & /*tag*/,
-              TMultiple const & /*tag*/,
-              Raw const & /*tag*/)
-{
-    typedef Match<>                                         TMatch;
-    typedef Stream<FileStream<Match<>, MMapWriter> >        TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Raw>      TMatchWriter;
-    typedef MatchManager<TMatch, TMatchWriter, TStrategy>   TMatchManager;
-    typedef Extender<TMatchManager, TDistance>              TExtender;
-    typedef Seeder<TMatchManager, TExtender, TMultiple>     TSeeder;
+// ----------------------------------------------------------------------------
+// Function _mapReads()                                           [Mapper<All>]
+// ----------------------------------------------------------------------------
 
-    TWriterStream file;
-    
-    if (mapper.dumpResults)
-        if (!open(file, toCString(mappedReadsFile), OPEN_RDWR | OPEN_CREATE))
-            return false;
-
-    TMatchWriter writer(file, mapper.store, mapper.readsCount, mapper.dumpResults);
-    TMatchManager manager(writer, mapper.readsCount);
-    TExtender extender(mapper.store, manager, mapper.readsCount, mapper.seedLength, mapper.verifyHits);
-    TSeeder seeder(mapper.store, manager, extender);
-    seeder.readsCount = mapper.readsCount;
-
-    _mapReads(mapper, seeder, manager, errors, errorsLossy, TStrategy());
-
-    return true;
-}
-
-// ============================================================================
-
-template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper,
-               TSeeder & seeder,
-               TManager & manager,
-               TErrors errors,
-               TErrors /* errorsLossy */,
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void _mapReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors,
                All const & /*tag*/)
 {
-    typedef Seeding<>                           TSeeding;
-    typedef TSeeding::TSeeds                    TSeeds;
+    typedef Seeding_<>                          TSeeding_;
+    typedef TSeeding_::TSeeds                   TSeeds;
     typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
-    TSeeding seeding(_readsLength(mapper), errors, mapper.seedLength);
+    TSeeding_ seeding(avgSeqLength(getReads(mapper)), errors, mapper._seedLength);
 
-    seeder.hitsDelegate.minErrorsPerRead = 0;
-    seeder.hitsDelegate.maxErrorsPerRead = errors;
+    mapper._extender.minErrorsPerRead = 0;
+    mapper._extender.maxErrorsPerRead = errors;
 
     unsigned position = 0;
     TSeedsIterator seedsEnd = end(seeding.seeds, Standard());
@@ -299,67 +252,60 @@ bool _mapReads(Mapper<TSpec> & mapper,
 
     for (TSeedsIterator seedsIt = begin(seeding.seeds, Standard()); seedsIt != seedsEnd; ++seedsIt)
     {
-        find(seeder, mapper.indexer.genomeIndex,
+        find(mapper._seeder, genomeIndex.index,
              getValueI1(*seedsIt), getValueI2(*seedsIt),
              position, position + 1,
              HammingDistance());
 
         // TODO(esiragusa):Compute minErrorsPerRead from seeds.
-//        seeder.hitsDelegate.minErrorsPerRead += getValueI2(*seedsIt);
-        seeder.hitsDelegate.minErrorsPerRead++;
+//        mapper._extender.minErrorsPerRead += getValueI2(*seedsIt);
+        mapper._extender.minErrorsPerRead++;
 
         ++position;
     }
 
-    std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-    std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
-
-    return true;
+    std::cout << "Hits:\t\t\t\t" << mapper._seeder.hitsCount << std::endl;
+    std::cout << "Matches:\t\t\t" << mapper._manager.matchesCount << std::endl;
 }
 
-template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper,
-               TSeeder & seeder,
-               TManager & manager,
-               TErrors errors,
-               TErrors /* errorsLossy */,
+// ----------------------------------------------------------------------------
+// Function _mapReads()                                       [Mapper<AllBest>]
+// ----------------------------------------------------------------------------
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void _mapReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors,
                AllBest const & /*tag*/)
 {
-    _mapReadsByStratum(mapper, seeder, manager, std::min(errors, (TErrors)1), AllBest());
+    _mapReadsByStratum(mapper, genomeIndex, std::min(errors, (TErrors)1), AllBest());
 
     if (errors > 1)
     {
-        manager.errors = 2;
-        _mapReadsBySeed(mapper, seeder, manager, errors, AllBest());
+        mapper._manager.errors = 2;
+        _mapReadsBySeed(mapper, genomeIndex, errors, AllBest());
     }
-
-    return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
-bool _mapReadsBySeed(Mapper<TSpec> & mapper,
-                     TSeeder & seeder,
-                     TManager & manager,
-                     TErrors errors,
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void _mapReadsBySeed(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors,
                      AllBest const & /*tag*/)
 {
-    typedef Seeding<>                           TSeeding;
-    typedef TSeeding::TSeeds                    TSeeds;
+    typedef Seeding_<>                          TSeeding_;
+    typedef TSeeding_::TSeeds                   TSeeds;
     typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
-    TSeeding seeding(_readsLength(mapper), errors, mapper.seedLength);
+    TSeeding_ seeding(avgSeqLength(getReads(mapper)), errors, mapper._seedLength);
 
-    seeder.hitsDelegate.minErrorsPerRead = 0;
-    seeder.hitsDelegate.maxErrorsPerRead = errors;
+    mapper._extender.minErrorsPerRead = 0;
+    mapper._extender.maxErrorsPerRead = errors;
 
     unsigned position = 0;
     TSeedsIterator seedsEnd = end(seeding.seeds, Standard());
 
     for (TSeedsIterator seedsIt = begin(seeding.seeds, Standard()); seedsIt != seedsEnd; ++seedsIt)
     {
-        std::cout << "Errors:\t\t\t\t" << seeder.hitsDelegate.minErrorsPerRead << std::endl;
+        std::cout << "Errors:\t\t\t\t" << mapper._extender.minErrorsPerRead << std::endl;
 
-        find(seeder, mapper.indexer.genomeIndex,
+        find(mapper._seeder, genomeIndex.index,
              getValueI1(*seedsIt), getValueI2(*seedsIt),
              position, position + 1,
              HammingDistance());
@@ -367,49 +313,44 @@ bool _mapReadsBySeed(Mapper<TSpec> & mapper,
         ++position;
 
         // TODO(esiragusa):Compute minErrorsPerRead from seeds.
-//        seeder.hitsDelegate.minErrorsPerRead += getValueI2(*seedsIt);
-        seeder.hitsDelegate.minErrorsPerRead++;
+//        mapper._extender.minErrorsPerRead += getValueI2(*seedsIt);
+        mapper._extender.minErrorsPerRead++;
 
-        std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+        std::cout << "Hits:\t\t\t\t" << mapper._seeder.hitsCount << std::endl;
+        std::cout << "Matches:\t\t\t" << mapper._manager.matchesCount << std::endl;
 
-//        manager.errors += getValueI2(*seedsIt);
-//        raiseErrorThreshold(manager);
-        manager.errors = std::max((TErrors)manager.errors, (TErrors)position);
+//        mapper._manager.errors += getValueI2(*seedsIt);
+//        raiseErrorThreshold(mapper._manager);
+        mapper._manager.errors = std::max((TErrors)(mapper._manager.errors), (TErrors)position);
     }
-
-    return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
-bool _mapReadsByStratum(Mapper<TSpec> & mapper,
-                        TSeeder & seeder,
-                        TManager & manager,
-                        TErrors errors,
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void _mapReadsByStratum(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors,
                         AllBest const & /*tag*/)
 {
-    typedef Seeding<>                           TSeeding;
-    typedef TSeeding::TSeeds                    TSeeds;
+    typedef Seeding_<>                          TSeeding_;
+    typedef TSeeding_::TSeeds                   TSeeds;
     typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
-    seeder.hitsDelegate.minErrorsPerRead = 0;
-    seeder.hitsDelegate.maxErrorsPerRead = 0;
+    mapper._extender.minErrorsPerRead = 0;
+    mapper._extender.maxErrorsPerRead = 0;
 
     for (TErrors errors_ = 0; errors_ <= errors; ++errors_)
     {
         std::cout << "Errors:\t\t\t\t" << errors_ << std::endl;
 
-        TReadSeqSize readsLength_ = _readsLength(mapper);
-        TReadSeqSize seedLength_ = std::max(mapper.seedLength, readsLength_ / (errors_ + 1));
+        TReadSeqSize readsLength_ = avgSeqLength(getReads(mapper));
+        TReadSeqSize seedLength_ = std::max(mapper._seedLength, readsLength_ / (errors_ + 1));
 
-        TSeeding seeding(readsLength_, errors_, seedLength_);
+        TSeeding_ seeding(readsLength_, errors_, seedLength_);
 
         unsigned position = 0;
         TSeedsIterator seedsEnd = end(seeding.seeds, Standard());
 
         for (TSeedsIterator seedsIt = begin(seeding.seeds, Standard()); seedsIt != seedsEnd; ++seedsIt)
         {
-            find(seeder, mapper.indexer.genomeIndex,
+            find(mapper._seeder, genomeIndex.index,
                  getValueI1(*seedsIt), getValueI2(*seedsIt),
                  position, position + 1,
                  HammingDistance());
@@ -417,32 +358,30 @@ bool _mapReadsByStratum(Mapper<TSpec> & mapper,
             ++position;
         }
 
-        seeder.hitsDelegate.minErrorsPerRead++;
-        seeder.hitsDelegate.maxErrorsPerRead++;
+        mapper._extender.minErrorsPerRead++;
+        mapper._extender.maxErrorsPerRead++;
 
-        raiseErrorThreshold(manager);
+        raiseErrorThreshold(mapper._manager);
 
-        std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+        std::cout << "Hits:\t\t\t\t" << mapper._seeder.hitsCount << std::endl;
+        std::cout << "Matches:\t\t\t" << mapper._manager.matchesCount << std::endl;
     }
-
-    return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper,
-               TSeeder & seeder,
-               TManager & manager,
-               TErrors errors,
-               TErrors /* errorsLossy */,
+// ----------------------------------------------------------------------------
+// Function _mapReads()                                         [Mapper<KBest>]
+// ----------------------------------------------------------------------------
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void _mapReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors,
                KBest const & /*tag*/)
 {
-    //typedef Seeding<>                           TSeeding;
-    //typedef TSeeding::TSeeds                    TSeeds;
+    //typedef Seeding_<>                          TSeeding_;
+    //typedef TSeeding_::TSeeds                   TSeeds;
     //typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
-    TReadSeqSize readsLength = _readsLength(mapper);
-    TReadSeqSize seedLength  = mapper.seedLength;
+    TReadSeqSize readsLength = avgSeqLength(getReads(mapper));
+    TReadSeqSize seedLength  = mapper._seedLength;
     TReadSeqSize seedCount   = readsLength / seedLength;
     TErrors stratumDelta     = seedCount - 1;
 
@@ -455,34 +394,32 @@ bool _mapReads(Mapper<TSpec> & mapper,
 
         std::cout << "Seed:\t\t\t\t(" << seedLength << "," << seedErrors_ << ")" << std::endl;
 
-        seeder.hitsDelegate.minErrorsPerRead = seed;
-        seeder.hitsDelegate.maxErrorsPerRead = std::min(errors, errors_ + stratumDelta);
+        mapper._extender.minErrorsPerRead = seed;
+        mapper._extender.maxErrorsPerRead = std::min(errors, errors_ + stratumDelta);
 
-        find(seeder, mapper.indexer.genomeIndex, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
+        find(mapper._seeder, genomeIndex.index, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
 
-        std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+        std::cout << "Hits:\t\t\t\t" << mapper._seeder.hitsCount << std::endl;
+        std::cout << "Matches:\t\t\t" << mapper._manager.matchesCount << std::endl;
 
-        raiseErrorThreshold(manager);
+        raiseErrorThreshold(mapper._manager);
     }
-
-    return true;
 }
 
-template <typename TSpec, typename TSeeder, typename TManager, typename TErrors>
-bool _mapReads(Mapper<TSpec> & mapper,
-               TSeeder & seeder,
-               TManager & manager,
-               TErrors errors,
-               TErrors /* errorsLossy */,
+// ----------------------------------------------------------------------------
+// Function _mapReads()                                       [Mapper<AnyBest>]
+// ----------------------------------------------------------------------------
+
+template <typename TReads, typename TDelegate, typename TSpec, typename TConfig, typename TGenomeIndex, typename TErrors>
+void _mapReads(Mapper<TReads, TDelegate, TSpec, TConfig> & mapper, TGenomeIndex & genomeIndex, TErrors errors,
                AnyBest const & /*tag*/)
 {
-    //typedef Seeding<>                           TSeeding;
-    //typedef TSeeding::TSeeds                    TSeeds;
+    //typedef Seeding_<>                          TSeeding_;
+    //typedef TSeeding_::TSeeds                   TSeeds;
     //typedef Iterator<TSeeds, Standard>::Type    TSeedsIterator;
 
-    TReadSeqSize readsLength = _readsLength(mapper);
-    TReadSeqSize seedLength  = mapper.seedLength;
+    TReadSeqSize readsLength = avgSeqLength(getReads(mapper));
+    TReadSeqSize seedLength  = mapper._seedLength;
     TReadSeqSize seedCount   = readsLength / seedLength;
     TErrors stratumDelta     = seedCount - 1;
 
@@ -495,29 +432,27 @@ bool _mapReads(Mapper<TSpec> & mapper,
 
         std::cout << "Seed:\t\t\t\t(" << seedLength << "," << seedErrors_ << ")" << std::endl;
 
-        seeder.hitsDelegate.minErrorsPerRead = seed;
-        seeder.hitsDelegate.maxErrorsPerRead = std::min(errors, errors_ + stratumDelta);
+        mapper._extender.minErrorsPerRead = seed;
+        mapper._extender.maxErrorsPerRead = std::min(errors, errors_ + stratumDelta);
 
-//        if (seeder.hitsDelegate.maxErrorsPerRead == errors)
-//            seeder.hitsDelegate.maxErrorsPerRead = errorsLossy;
+//        if (mapper._extender.maxErrorsPerRead == errors)
+//            mapper._extender.maxErrorsPerRead = errorsLossy;
 
-        find(seeder, mapper.indexer.genomeIndex, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
+        find(mapper._seeder, genomeIndex.index, seedLength, seedErrors_, seed, seed + 1, HammingDistance());
 
-        std::cout << "Hits:\t\t\t\t" << seeder.hitsCount << std::endl;
-        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+        std::cout << "Hits:\t\t\t\t" << mapper._seeder.hitsCount << std::endl;
+        std::cout << "Matches:\t\t\t" << mapper._manager.matchesCount << std::endl;
 
-        raiseErrorThreshold(manager);
+        raiseErrorThreshold(mapper._manager);
     }
 
 //    for (TErrors errors_ = errors + 1; errors_ <= errorsLossy; ++errors_)
 //    {
 //        std::cout << "Errors:\t\t\t\t" << errors_ << std::endl;
-//        std::cout << "Matches:\t\t\t" << manager.matchesCount << std::endl;
+//        std::cout << "Matches:\t\t\t" << mapper._manager.matchesCount << std::endl;
 //
-//        raiseErrorThreshold(manager);
+//        raiseErrorThreshold(mapper._manager);
 //    }
-
-    return true;
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_MASAI_MAPPER_H_

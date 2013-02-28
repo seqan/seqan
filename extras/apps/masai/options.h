@@ -311,7 +311,7 @@ void setOutputFile(ArgumentParser & parser)
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
                                      Default: use the reads filename and guess the extension.",
                                      ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output-file", "raw sam");
+//    setValidValues(parser, "output-file", "raw sam");
 }
 
 // ----------------------------------------------------------------------------

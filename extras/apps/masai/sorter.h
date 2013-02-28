@@ -40,20 +40,11 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/stream.h>
 
-#include "tags.h"
 #include "store.h"
-#include "indexer.h"
 #include "matches.h"
-#include "writer.h"
-#include "stream.h"
 
 using namespace seqan;
-
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -63,178 +54,80 @@ using namespace seqan;
 // Class Sorter
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void>
+template <typename TDelegate, typename TSpec = void>
 struct Sorter
 {
-    typedef Indexer<Nothing>    TIndexer;
+    typedef MatchStore<>    TMatchStore;
 
-    TFragmentStore      store;
-    TIndexer            indexer;
-
-    unsigned            readsCount;
+    TMatchStore         _store;
+    TDelegate           & delegate;
     unsigned long       matchesCount;
 
-    bool                writeCigar;
-    bool                dumpResults;
-
-    unsigned            matchesPerRead;
-
-    // TODO(esiragusa): Remove writeCigar from Sorter members.
-    Sorter(unsigned matchesPerRead, bool writeCigar = true, bool dumpResults = true) :
-        indexer(store),
-        readsCount(0),
-        matchesCount(0),
-        writeCigar(writeCigar),
-        dumpResults(dumpResults),
-        matchesPerRead(matchesPerRead)
+    Sorter(TDelegate & delegate) :
+        _store(),
+        delegate(delegate),
+        matchesCount(0)
     {}
 };
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function loadReads()                                                [Sorter]
+// Function open()                                                     [Sorter]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString>
-bool loadReads(Sorter<TSpec> & sorter, TString const & readsFile)
+template <typename TDelegate, typename TSpec, typename TString>
+bool open(Sorter<TDelegate, TSpec> & sorter, TString const & mappedReadsFile)
 {
-    // TODO(esiragusa): Use loadReads() from store.h
-    if (!loadReads(sorter.store, readsFile))
-        return false;
-
-    sorter.readsCount = length(sorter.store.readSeqStore);
-
-    _loadReadsRC(sorter);
-
-    return true;
-}
-
-template <typename TSpec>
-bool _loadReadsRC(Sorter<TSpec> & sorter)
-{
-    for (TReadSeqStoreSize readId = 0; readId < sorter.readsCount; ++readId)
-    {
-        TReadSeq & read = sorter.store.readSeqStore[readId];
-        appendValue(sorter.store.readSeqStore, read);
-        reverseComplement(back(sorter.store.readSeqStore));
-    }
-
-    return true;
+    return open(sorter._store, mappedReadsFile);
 }
 
 // ----------------------------------------------------------------------------
-// Function sortMappedReads()                                          [Sorter]
+// Function close()                                                    [Sorter]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TString, typename TDistance>
-bool sortMappedReads(Sorter<TSpec> & sorter,
-                     TString const & mappedReadsFile,
-                     TString const & sortedReadsFile,
-                     TDistance const & /*tag*/,
-                     Raw const & /*tag*/)
+template <typename TDelegate, typename TSpec>
+bool close(Sorter<TDelegate, TSpec> & sorter)
 {
-    typedef External<ExternalConfigLarge<> >            TStream;
-    typedef String<Match<>, TStream>                    TWriterStream;
-//    typedef Stream<FileStream<Match<>, MMapWriter> >    TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Raw>  TMatchWriter;
-
-    TWriterStream file;
-
-    if (sorter.dumpResults)
-        if (!open(file, toCString(sortedReadsFile), OPEN_RDWR | OPEN_CREATE))
-            return false;
-
-    TMatchWriter writer(file, sorter.store, sorter.readsCount, sorter.dumpResults);
-
-    _sortMappedReads(sorter, mappedReadsFile, writer);
-
-    return true;
+    return close(sorter._store);
 }
 
-template <typename TSpec, typename TString, typename TDistance>
-bool sortMappedReads(Sorter<TSpec> & sorter,
-                     TString const & mappedReadsFile,
-                     TString const & sortedReadsFile,
-                     TDistance const & /*tag*/,
-                     Sam const & /*tag*/)
+// ----------------------------------------------------------------------------
+// Function sort()                                                     [Sorter]
+// ----------------------------------------------------------------------------
+
+template <typename TDelegate, typename TSpec>
+void sort(Sorter<TDelegate, TSpec> & sorter, unsigned matchesPerRead)
 {
-    typedef External<ExternalConfigLarge<> >            TStream;
-    typedef String<char, TStream>                       TWriterStream;
-//    typedef Stream<FileStream<char, MMapWriter> >       TWriterStream;
-    typedef MatchWriter<TWriterStream, TDistance, Sam>  TMatchWriter;
-
-    TWriterStream file;
-
-    if (sorter.dumpResults)
-        if (!open(file, toCString(sortedReadsFile), OPEN_RDWR | OPEN_CREATE))
-            return false;
-
-    TMatchWriter writer(file, sorter.store, sorter.readsCount, sorter.dumpResults);
-
-    // TODO(esiragusa): Remove writeCigar from members.
-    writer.writeCigar = sorter.writeCigar;
-
-    _sortMappedReads(sorter, mappedReadsFile, writer);
-
-    return true;
-}
-
-// ============================================================================
-
-template <typename TSpec, typename TString, typename TMatchesDelegate>
-bool _sortMappedReads(Sorter<TSpec> & sorter,
-                      TString const & mappedReadsFile,
-                      TMatchesDelegate & matchesDelegate)
-{
-    typedef Match<>                  TMatch;
-    typedef MatchStore<TMatch>       TMatchStore;
-    typedef String<TMatch>           TMatches;
-
-    TMatchStore store;
-
-    if (!open(store, mappedReadsFile))
-        return false;
+//    typedef Sorter<TDelegate, TSpec>        TSorter;
+//    typedef typename TSorter::TMatchStore   TMatchStore;
+//    typedef typename TMatchStore::TMatches  TMatches;
+    typedef String<Match<> >                TMatches;
 
     TMatches matches;
 
-    if (!getNext(store, matches))
-        return false;
-
-//    unsigned long allMatches = 0;
-//    unsigned long nonDuplicatedMatches = 0;
-
-    do
+    while (getNext(sorter._store, matches))
     {
-//        allMatches += length(matches);
         removeDuplicateMatches(matches);
-//        nonDuplicatedMatches += length(matches);
 
-        if (sorter.matchesPerRead < MaxValue<unsigned>::VALUE)
+        if (matchesPerRead < MaxValue<unsigned>::VALUE)
             sortByErrors(matches);
 
-        _processMatch(sorter, matches, matchesDelegate);
+        _delegateMatches(sorter, matches, matchesPerRead);
     }
-    while (getNext(store, matches));
-
-    close(store);
-
-//    std::cout << "All Matches: " << allMatches << std::endl;
-//    std::cout << "Non Duplicated: " << nonDuplicatedMatches << std::endl;
-
-    return true;
 }
 
-template <typename TSpec, typename TRecordSpec, typename TStringSpec, typename TMatchesDelegate>
-inline void _processMatch(Sorter<TSpec> & sorter,
-                          String<Match<TRecordSpec>, TStringSpec> const & matches,
-                          TMatchesDelegate & matchesDelegate)
+// ----------------------------------------------------------------------------
+// Function _delegateMatches()                                         [Sorter]
+// ----------------------------------------------------------------------------
+
+template <typename TDelegate, typename TSpec, typename TRecordSpec, typename TStringSpec>
+inline void
+_delegateMatches(Sorter<TDelegate, TSpec> & sorter,
+                 String<Match<TRecordSpec>, TStringSpec> const & matches,
+                 unsigned matchesPerRead)
 {
     typedef Match<TRecordSpec>                              TMatch;
     typedef String<TMatch, TStringSpec>                     TMatches;
@@ -245,8 +138,8 @@ inline void _processMatch(Sorter<TSpec> & sorter,
 
     unsigned matchesCount = 0;
 
-    for (; matchesIt != matchesEnd && matchesCount < sorter.matchesPerRead; ++matchesIt, ++matchesCount)
-        onMatch(matchesDelegate, *matchesIt);
+    for (; matchesIt != matchesEnd && matchesCount < matchesPerRead; ++matchesIt, ++matchesCount)
+        onMatch(sorter.delegate, *matchesIt);
 
     sorter.matchesCount += matchesCount;
 }

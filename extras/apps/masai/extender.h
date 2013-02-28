@@ -69,20 +69,19 @@ struct Extender
     TReadSeqSize            maxErrorsPerRead;
     TReadSeqSize            seedLength;
 
-    bool                    verifyHits;
+    bool                    disabled;
 
     Extender(TFragmentStore & store,
              TMatchesDelegate & matchesDelegate,
              TReadSeqStoreSize readsCount,
-             TReadSeqSize seedLength,
-             bool verifyHits) :
+             bool disabled = false) :
         store(store),
         matchesDelegate(matchesDelegate),
         readsCount(readsCount),
         minErrorsPerRead(0),
         maxErrorsPerRead(0),
-        seedLength(seedLength),
-        verifyHits(verifyHits)
+        seedLength(0),
+        disabled(disabled)
     {
         _init(*this);
     }
@@ -108,9 +107,8 @@ struct Extender<TMatchesDelegate, EditDistance, TSpec>:
     Extender(TFragmentStore & store,
              TMatchesDelegate & matchesDelegate,
              TReadSeqStoreSize readsCount,
-             TReadSeqSize seedLength,
-             bool verifyHits) :
-        TBase(store, matchesDelegate, readsCount, seedLength, verifyHits)
+             bool disabled = false) :
+        TBase(store, matchesDelegate, readsCount, disabled)
     {}
 };
 
@@ -122,6 +120,7 @@ struct Extender<TMatchesDelegate, EditDistance, TSpec>:
 // Functions
 // ============================================================================
 
+// TODO(esiragusa): Move this into Genome class.
 template <typename TMatchesDelegate, typename TDistance, typename TSpec>
 inline void _init(Extender<TMatchesDelegate, TDistance, TSpec> & extender)
 {
@@ -130,6 +129,7 @@ inline void _init(Extender<TMatchesDelegate, TDistance, TSpec> & extender)
         appendValue(extender.contigSizes, length(extender.store.contigStore[contigId].seq));
 }
 
+// TODO(esiragusa): Remove this.
 template <typename TMatchesDelegate, typename TDistance, typename TSpec>
 inline bool _fixReverseComplemented(Extender<TMatchesDelegate, TDistance, TSpec> & extender, TReadSeqStoreSize & readId)
 {
@@ -157,7 +157,7 @@ inline bool onSeedHit(Extender<TMatchesDelegate, HammingDistance, TSpec> & exten
 {
     typedef Segment<TReadSeq, InfixSegment>                 TReadInfix;
 
-    if (!extender.verifyHits)
+    if (extender.disabled)
         return false;
 
     TReadSeqSize errors = seedErrors;
@@ -254,7 +254,7 @@ inline bool onSeedHit(Extender<TMatchesDelegate, EditDistance, TSpec> & extender
 {
     typedef Segment<TReadSeq, InfixSegment> TReadInfix;
 
-    if (!extender.verifyHits)
+    if (extender.disabled)
         return false;
 
     TReadSeqSize errors = seedErrors;

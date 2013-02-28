@@ -34,11 +34,13 @@
 // This file contains the masai_indexer application.
 // ==========================================================================
 
+#define SEQAN_EXTRAS_MASAI_DISABLE_MMAP
+
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
 #include "options.h"
-#include "indexer.h"
+#include "index.h"
 
 using namespace seqan;
 
@@ -67,6 +69,10 @@ struct Options : public MasaiOptions
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function setupArgumentParser()                              [ArgumentParser]
+// ----------------------------------------------------------------------------
+
 void setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
     setAppName(parser, "masai_indexer");
@@ -91,6 +97,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setTmpFolder(parser);
 }
 
+// ----------------------------------------------------------------------------
+// Function parseCommandLine()                                        [Options]
+// ----------------------------------------------------------------------------
+
 ArgumentParser::ParseResult
 parseCommandLine(Options & options, ArgumentParser & parser, int argc, char const ** argv)
 {
@@ -114,19 +124,25 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function runIndexer()
+// ----------------------------------------------------------------------------
 
-template <typename TGenomeIndex>
-int executeIndexer(Options & options)
+template <typename TIndex>
+int runIndexer(Options & options)
 {
-    TFragmentStore          store;
-    Indexer<TGenomeIndex>   indexer(store);
+    typedef Genome<>                        TGenome;
+    typedef GenomeIndex<TGenome, TIndex>    TGenomeIndex;
+
+    TFragmentStore      store;
+    TGenome             genome(store);
+    TGenomeIndex        genomeIndex(genome);
 
     double start, finish;
 
     std::cout << "Loading genome:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadGenome(indexer, options.genomeFile))
+    if (!load(genome, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
@@ -136,13 +152,13 @@ int executeIndexer(Options & options)
 
     std::cout << "Building genome index:\t\t" << std::flush;
     start = sysTime();
-    indexGenome(indexer);
+    build(genomeIndex);
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
 
     std::cout << "Dumping genome index:\t\t" << std::flush;
     start = sysTime();
-    if (!dumpIndexedGenome(indexer, options.genomeIndexFile))
+    if (!dump(genomeIndex, options.genomeIndexFile))
     {
         std::cerr << "Error while dumping genome index" << std::endl;
         return 1;
@@ -153,26 +169,34 @@ int executeIndexer(Options & options)
     return 0;
 }
 
-int mainWithOptions(Options & options)
+// ----------------------------------------------------------------------------
+// Functions configure*()
+// ----------------------------------------------------------------------------
+
+int configureIndex(Options & options)
 {
     switch (options.genomeIndexType)
     {
     case Options::INDEX_ESA:
-        return executeIndexer<TGenomeEsa>(options);
+        return runIndexer<TGenomeEsa>(options);
 
     case Options::INDEX_SA:
-        return executeIndexer<TGenomeSa>(options);
+        return runIndexer<TGenomeSa>(options);
 
     case Options::INDEX_QGRAM:
-        return executeIndexer<TGenomeQGram>(options);
+        return runIndexer<TGenomeQGram>(options);
 
     case Options::INDEX_FM:
-        return executeIndexer<TGenomeFM>(options);
+        return runIndexer<TGenomeFM>(options);
 
     default:
         return 1;
     }
 }
+
+// ----------------------------------------------------------------------------
+// Function main()
+// ----------------------------------------------------------------------------
 
 int main(int argc, char const ** argv)
 {
@@ -182,8 +206,8 @@ int main(int argc, char const ** argv)
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
-    if (res == seqan::ArgumentParser::PARSE_OK)
-        return mainWithOptions(options);
-    else
-        return res;
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
+
+    return configureIndex(options);
 }

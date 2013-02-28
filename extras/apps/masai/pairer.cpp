@@ -39,6 +39,7 @@
 
 #include "options.h"
 #include "pairer.h"
+#include "writer.h"
 
 using namespace seqan;
 
@@ -68,7 +69,7 @@ struct Options : public MasaiOptions
     unsigned    libraryLength;
     unsigned    libraryError;
 
-    bool        dumpResults;
+    bool        noDump;
 
     Options() :
         MasaiOptions(),
@@ -78,11 +79,13 @@ struct Options : public MasaiOptions
         mismatchesOnly(false),
         libraryLength(220),
         libraryError(50),
-        dumpResults(true)
+        noDump(true)
     {}
 };
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function setupArgumentParser()                              [ArgumentParser]
+// ----------------------------------------------------------------------------
 
 void setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
@@ -134,6 +137,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("nd", "no-dump", "Do not dump results."));
 }
 
+// ----------------------------------------------------------------------------
+// Function parseCommandLine()                                        [Options]
+// ----------------------------------------------------------------------------
+
 ArgumentParser::ParseResult
 parseCommandLine(Options & options, ArgumentParser & parser, int argc, char const ** argv)
 {
@@ -169,27 +176,37 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOutputFile(options.mappedPairsFile, options, parser, options.readsLeftFile, "_pe");
 
     // Parse debug options.
-    options.dumpResults = !isSet(parser, "no-dump");
+    options.noDump = isSet(parser, "no-dump");
 
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function runPairer()
+// ----------------------------------------------------------------------------
 
-template <typename TDistance, typename TFormat>
-int runPairer(Options & options)
+template <typename TDistance, typename TFormat, typename TReadsConfig>
+int runPairer(Options & options, TReadsConfig const & /* config */)
 {
-    typedef Pairer<>    TPairer;
+    typedef Genome<void>                                                        TGenome;
+    typedef Reads<PairedEnd, TReadsConfig>                                      TReads;
+    typedef ReadsLoader<PairedEnd, TReadsConfig>                                TReadsLoader;
+    typedef Writer<TGenome, TReads, TFormat, TDistance>                         TWriter;
+    typedef Pairer<TReads, TWriter>                                             TPairer;
 
-    // TODO(esiragusa): Remove outputCigar from Pairer members.
-    TPairer pairer(options.libraryLength, options.libraryError, options.outputCigar, options.dumpResults);
+    TFragmentStore      store;
+    TGenome             genome(store);
+    TReads              reads(store);
+    TReadsLoader        readsLoader(reads);
+    TWriter             writer(genome, options.noDump);
+    TPairer             pairer(writer, options.libraryLength, options.libraryError);
 
     double start, finish;
 
-    // Loading genome.
+    // Load genome.
     std::cout << "Loading genome:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadGenome(pairer.indexer, options.genomeFile))
+    if (!load(genome, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
@@ -197,38 +214,81 @@ int runPairer(Options & options)
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
 
-    // Loading reads.
+    // Open reads file.
+    start = sysTime();
+    if (!open(readsLoader, options.readsLeftFile, options.readsRightFile))
+    {
+        std::cerr << "Error while opening reads file" << std::endl;
+        return 1;
+    }
+
+    // Open matches files.
+    if (!open(pairer, options.mappedReadsLeftFile, options.mappedReadsRightFile))
+    {
+        std::cerr << "Error while opening matches file" << std::endl;
+        return 1;
+    }
+
+    // Open output file.
+    if (!open(writer, options.mappedPairsFile))
+    {
+        std::cerr << "Error while opening output file" << std::endl;
+        return 1;
+    }
+
+    // Configure writer.
+    writeAlignments(writer, options.outputCigar);
+
+    // Reserve space for reads.
+    reserve(reads);
+
+    // Load all reads.
     std::cout << "Loading reads:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadReads(pairer, options.readsLeftFile, options.readsRightFile))
-    {
-        std::cerr << "Error while loading reads" << std::endl;
-        return 1;
-    }
+    load(readsLoader);
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
-    std::cout << "Reads count:\t\t\t" << pairer.readsCount << std::endl;
+    std::cout << "Reads count:\t\t\t" << reads.readsCount << std::endl;
 
-    // Pairing reads.
-    std::cout << "Pairing reads:\t\t\t" << std::flush;
+    // Pass reads to writer.
+    setReads(writer, reads);
+
+    // Pass reads to pairer.
+    setReads(pairer, reads);
+
+    // Pair matches.
+    std::cout << "Pairing matches:\t\t" << std::flush;
     start = sysTime();
-//    mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedPairsFile,
-//                            options.errorsPerRead, TDistance(), TFormat());
-    if (!mateMappedReads(pairer, options.mappedReadsLeftFile, options.mappedReadsRightFile,
-                         options.mappedPairsFile, TDistance(), TFormat()))
-    {
-        std::cerr << "Error while writing results" << std::endl;
-        return 1;
-    }
+    pair(pairer);
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
-
     std::cout << "Pairs count:\t\t\t" << pairer.pairsCount << std::endl;
+
+    // Close output file.
+    close(writer);
+
+    // Close matches file.
+    close(pairer);
+
+    // Close reads file.
+    close(readsLoader);
 
     return 0;
 }
 
-// ============================================================================
+template <typename TDistance, typename TFormat>
+int runPairer(Options & options)
+{
+    typedef typename IsSameType<TFormat, Sam>::Type                         TUseReadStore;
+    typedef typename IsSameType<TFormat, Sam>::Type                         TUseReadNameStore;
+    typedef ReadsConfig<TUseReadStore, TUseReadNameStore>                   TReadsConfig;
+
+    return runPairer<TDistance, TFormat>(options, TReadsConfig());
+}
+
+// ----------------------------------------------------------------------------
+// Functions configure*()
+// ----------------------------------------------------------------------------
 
 template <typename TDistance>
 int configureOutputFormat(Options & options)
@@ -250,13 +310,17 @@ int configureOutputFormat(Options & options)
     }
 }
 
-int mainWithOptions(Options & options)
+int configureDistance(Options & options)
 {
     if (options.mismatchesOnly)
         return configureOutputFormat<HammingDistance>(options);
     else
         return configureOutputFormat<EditDistance>(options);
 }
+
+// ----------------------------------------------------------------------------
+// Function main()
+// ----------------------------------------------------------------------------
 
 int main(int argc, char const ** argv)
 {
@@ -266,8 +330,8 @@ int main(int argc, char const ** argv)
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
-    if (res == seqan::ArgumentParser::PARSE_OK)
-        return mainWithOptions(options);
-    else
-        return res;
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
+
+    return configureDistance(options);
 }

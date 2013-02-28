@@ -40,17 +40,15 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your application.
 add_executable (masai_indexer indexer.cpp
-                             indexer.h
-                             index.h
                              store.h
+                             index.h
                              options.h)
 
 add_executable (masai_mapper mapper.cpp
                             mapper.h
                             tags.h
-                            index.h
                             store.h
-                            indexer.h
+                            index.h
                             seeder.h
                             extender.h
                             manager.h
@@ -60,8 +58,6 @@ add_executable (masai_mapper mapper.cpp
                             options.h
                             index/index_qgram_stretched.h
                             index/find_backtracking_stretched.h
-                            index/find_backtracking_bfs.h
-                            index/find_backtracking_dfs.h
                             store/store_io.h
                             store/store_io_sam.h)
 
@@ -69,7 +65,6 @@ add_executable (masai_output_se sorter.cpp
                                sorter.h
                                tags.h
                                store.h
-                               indexer.h
                                matches.h
                                stream.h
                                writer.h
@@ -81,7 +76,6 @@ add_executable (masai_output_pe pairer.cpp
                                pairer.h
                                tags.h
                                store.h
-                               indexer.h
                                matches.h
                                stream.h
                                writer.h

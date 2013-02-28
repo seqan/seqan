@@ -39,6 +39,7 @@
 
 #include "options.h"
 #include "sorter.h"
+#include "writer.h"
 
 using namespace seqan;
 
@@ -65,7 +66,7 @@ struct Options : public MasaiOptions
     bool        mismatchesOnly;
     unsigned    matchesPerRead;
 
-    bool        dumpResults;
+    bool        noDump;
 
     Options() :
         MasaiOptions(),
@@ -74,11 +75,17 @@ struct Options : public MasaiOptions
 //        errorsPerRead(5),
         mismatchesOnly(false),
         matchesPerRead(MaxValue<unsigned>::VALUE),
-        dumpResults(true)
+        noDump(false)
     {}
 };
 
 // ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function setupArgumentParser()                              [ArgumentParser]
+// ----------------------------------------------------------------------------
 
 void setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
@@ -124,6 +131,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("nd", "no-dump", "Do not dump results."));
 }
 
+// ----------------------------------------------------------------------------
+// Function parseCommandLine()                                        [Options]
+// ----------------------------------------------------------------------------
+
 ArgumentParser::ParseResult
 parseCommandLine(Options & options, ArgumentParser & parser, int argc, char const ** argv)
 {
@@ -156,27 +167,37 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOutputFile(options.sortedReadsFile, options, parser, options.readsFile, "_se");
 
     // Parse debug options.
-    options.dumpResults = !isSet(parser, "no-dump");
+    options.noDump = isSet(parser, "no-dump");
 
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function runSorter()
+// ----------------------------------------------------------------------------
 
-template <typename TDistance, typename TFormat>
-int runSorter(Options & options)
+template <typename TDistance, typename TFormat, typename TReadsConfig>
+int runSorter(Options & options, TReadsConfig const & /* config */)
 {
-    typedef Sorter<>    TSorter;
+    typedef Genome<void>                                                        TGenome;
+    typedef Reads<void, TReadsConfig>                                           TReads;
+    typedef ReadsLoader<void, TReadsConfig>                                     TReadsLoader;
+    typedef Writer<TGenome, TReads, TFormat, TDistance>                         TWriter;
+    typedef Sorter<TWriter>                                                     TSorter;
 
-    // TODO(esiragusa): Remove outputCigar from Sorter members.
-    TSorter sorter(options.matchesPerRead, options.outputCigar, options.dumpResults);
+    TFragmentStore      store;
+    TGenome             genome(store);
+    TReads              reads(store);
+    TReadsLoader        readsLoader(reads);
+    TWriter             writer(genome, options.noDump);
+    TSorter             sorter(writer);
 
     double start, finish;
 
-    // Loading genome.
+    // Load genome.
     std::cout << "Loading genome:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadGenome(sorter.indexer, options.genomeFile))
+    if (!load(genome, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
@@ -184,35 +205,78 @@ int runSorter(Options & options)
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
 
-    // Loading reads.
+    // Open reads file.
+    start = sysTime();
+    if (!open(readsLoader, options.readsFile))
+    {
+        std::cerr << "Error while opening reads file" << std::endl;
+        return 1;
+    }
+
+    // Open matches file.
+    if (!open(sorter, options.mappedReadsFile))
+    {
+        std::cerr << "Error while opening matches file" << std::endl;
+        return 1;
+    }
+
+    // Open output file.
+    if (!open(writer, options.sortedReadsFile))
+    {
+        std::cerr << "Error while opening output file" << std::endl;
+        return 1;
+    }
+
+    // Configure writer.
+    writeAlignments(writer, options.outputCigar);
+
+    // Reserve space for reads.
+    reserve(reads);
+
+    // Load all reads.
     std::cout << "Loading reads:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadReads(sorter, options.readsFile))
-    {
-        std::cerr << "Error while loading reads" << std::endl;
-        return 1;
-    }
+    load(readsLoader);
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
-    std::cout << "Reads count:\t\t\t" << sorter.readsCount << std::endl;
+    std::cout << "Reads count:\t\t\t" << reads.readsCount << std::endl;
 
-    // Sorting mapped reads.
+    // Pass reads to writer.
+    setReads(writer, reads);
+
+    // Sort matches.
     std::cout << "Sorting matches:\t\t" << std::flush;
     start = sysTime();
-    if (!sortMappedReads(sorter, options.mappedReadsFile, options.sortedReadsFile, TDistance(), TFormat()))
-    {
-        std::cerr << "Error while writing results" << std::endl;
-        return 1;
-    }
+    sort(sorter, options.matchesPerRead);
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
-
     std::cout << "Matches count:\t\t\t" << sorter.matchesCount << std::endl;
+
+    // Close output file.
+    close(writer);
+
+    // Close matches file.
+    close(sorter);
+
+    // Close reads file.
+    close(readsLoader);
 
     return 0;
 }
 
-// ============================================================================
+template <typename TDistance, typename TFormat>
+int runSorter(Options & options)
+{
+    typedef typename IsSameType<TFormat, Sam>::Type                         TUseReadStore;
+    typedef typename IsSameType<TFormat, Sam>::Type                         TUseReadNameStore;
+    typedef ReadsConfig<TUseReadStore, TUseReadNameStore>                   TReadsConfig;
+
+    return runSorter<TDistance, TFormat>(options, TReadsConfig());
+}
+
+// ----------------------------------------------------------------------------
+// Functions configure*()
+// ----------------------------------------------------------------------------
 
 template <typename TDistance>
 int configureOutputFormat(Options & options)
@@ -234,13 +298,17 @@ int configureOutputFormat(Options & options)
     }
 }
 
-int mainWithOptions(Options & options)
+int configureDistance(Options & options)
 {
     if (options.mismatchesOnly)
         return configureOutputFormat<HammingDistance>(options);
     else
         return configureOutputFormat<EditDistance>(options);
 }
+
+// ----------------------------------------------------------------------------
+// Function main()
+// ----------------------------------------------------------------------------
 
 int main(int argc, char const ** argv)
 {
@@ -250,8 +318,8 @@ int main(int argc, char const ** argv)
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
-    if (res == seqan::ArgumentParser::PARSE_OK)
-        return mainWithOptions(options);
-    else
-        return res;
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
+
+    return configureDistance(options);
 }

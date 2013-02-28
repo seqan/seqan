@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/find.h>
+#include <seqan/pipe.h>
 
 #include "store.h"
 
@@ -140,7 +140,7 @@ struct MatchIterator
 // Class MatchStore
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchStoreString = External<>, typename TSpec = void>
+template <typename TMatchStoreString = External<>, typename TSpec = void, typename TMatch = Match<TSpec> >
 struct MatchStore
 {
     typedef String<TMatch, TMatchStoreString>       TMatches;
@@ -261,8 +261,8 @@ inline void onMatch(TMatchesDelegate & matchesDelegate, Match<TSpec> const & mat
 // Function open()                                                 [MatchStore]
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchStoreString, typename TSpec, typename TString>
-inline bool open(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TString const & file)
+template <typename TMatchStoreString, typename TSpec, typename TMatch, typename TString>
+inline bool open(MatchStore<TMatchStoreString, TSpec, TMatch> & store, TString const & file)
 {
     if (!open(store.matches, toCString(file), OPEN_RDONLY))
         return false;
@@ -278,8 +278,8 @@ inline bool open(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TString c
 // Function close()                                                [MatchStore]
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchStoreString, typename TSpec>
-inline bool close(MatchStore<TMatch, TMatchStoreString, TSpec> & store)
+template <typename TMatchStoreString, typename TSpec, typename TMatch>
+inline bool close(MatchStore<TMatchStoreString, TSpec, TMatch> & store)
 {
     endRead(store.sorterPool);
 
@@ -290,8 +290,8 @@ inline bool close(MatchStore<TMatch, TMatchStoreString, TSpec> & store)
 // Function getNext()                                              [MatchStore]
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchStoreString, typename TSpec, typename TMatches>
-inline bool getNext(MatchStore<TMatch, TMatchStoreString, TSpec> & store, TMatches & matches)
+template <typename TMatchStoreString, typename TSpec, typename TMatch, typename TMatches>
+inline bool getNext(MatchStore<TMatchStoreString, TSpec, TMatch> & store, TMatches & matches)
 {
     TMatch match;
 

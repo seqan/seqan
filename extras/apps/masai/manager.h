@@ -60,51 +60,50 @@ using namespace seqan;
 // Class MatchManager
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchesDelegate, typename TSpec = void>
+template <typename TDelegate, typename TSpec = void, typename TMatch = Match<TSpec> >
 struct MatchManager
 {
-    TMatchesDelegate & matchesDelegate;
-
+    TDelegate               & delegate;
     TReadSeqStoreSize       readsCount;
     unsigned long           matchesCount;
 
-    MatchManager(TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount) :
-        matchesDelegate(matchesDelegate),
+    MatchManager(TDelegate & delegate, TReadSeqStoreSize readsCount) :
+        delegate(delegate),
         readsCount(readsCount),
         matchesCount(0)
     {}
 };
 
-template <typename TMatch, typename TMatchesDelegate>
-struct MatchManager<TMatch, TMatchesDelegate, AllBest>:
-    public MatchManager<TMatch, TMatchesDelegate>
+template <typename TDelegate, typename TMatch>
+struct MatchManager<TDelegate, AllBest, TMatch> :
+    public MatchManager<TDelegate, void, TMatch>
 {
-    typedef MatchManager<TMatch, TMatchesDelegate>  TBase;
+    typedef MatchManager<TDelegate, void, TMatch>       TBase;
 
     unsigned                    errors;
     String<unsigned char>       minErrors;
 
-    MatchManager(TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount) :
-        TBase(matchesDelegate, readsCount),
+    MatchManager(TDelegate & delegate, TReadSeqStoreSize readsCount) :
+        TBase(delegate, readsCount),
         errors(0)
     {
         resize(minErrors, readsCount, MaxValue<unsigned char>::VALUE, Exact());
     }
 };
 
-template <typename TMatch, typename TMatchesDelegate>
-struct MatchManager<TMatch, TMatchesDelegate, KBest>:
-    public MatchManager<TMatch, TMatchesDelegate>
+template <typename TDelegate, typename TMatch>
+struct MatchManager<TDelegate, KBest, TMatch>:
+    public MatchManager<TDelegate, void, TMatch>
 {
-    typedef MatchManager<TMatch, TMatchesDelegate>  TBase;
-    typedef String<TMatch>                          TMatches;
+    typedef MatchManager<TDelegate, void, TMatch>       TBase;
+    typedef String<TMatch>                              TMatches;
 
     unsigned                    errors;
     String<unsigned char>       minErrors;
     String<TMatches>            matches;
 
-    MatchManager(TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount) :
-        TBase(matchesDelegate, readsCount),
+    MatchManager(TDelegate & delegate, TReadSeqStoreSize readsCount) :
+        TBase(delegate, readsCount),
         errors(0)
     {
         resize(minErrors, readsCount, MaxValue<unsigned char>::VALUE, Exact());
@@ -113,18 +112,18 @@ struct MatchManager<TMatch, TMatchesDelegate, KBest>:
     }
 };
 
-template <typename TMatch, typename TMatchesDelegate>
-struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
-    public MatchManager<TMatch, TMatchesDelegate>
+template <typename TDelegate, typename TMatch>
+struct MatchManager<TDelegate, AnyBest, TMatch>:
+    public MatchManager<TDelegate, void, TMatch>
 {
-    typedef MatchManager<TMatch, TMatchesDelegate>  TBase;
-    typedef String<TMatch>                          TMatches;
+    typedef MatchManager<TDelegate, void, TMatch>       TBase;
+    typedef String<TMatch>                              TMatches;
 
     unsigned                    errors;
     TMatches                    matches;
 
-    MatchManager(TMatchesDelegate & matchesDelegate, TReadSeqStoreSize readsCount) :
-        TBase(matchesDelegate, readsCount),
+    MatchManager(TDelegate & delegate, TReadSeqStoreSize readsCount) :
+        TBase(delegate, readsCount),
         errors(0)
     {
         TMatch match;
@@ -145,9 +144,9 @@ struct MatchManager<TMatch, TMatchesDelegate, AnyBest>:
 // Function _fixReverseComplement()                              [MatchManager]
 // ----------------------------------------------------------------------------
 
-// NOTE(esiragusa): This should be done outside of Manager, i.e. in Seeder.
-template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
-inline TReadId _fixReverseComplement(MatchManager<TMatch, TMatchesDelegate, TSpec> const & manager, TReadId readId)
+// TODO(esiragusa): Remove this.
+template <typename TDelegate, typename TSpec, typename TMatch, typename TReadId>
+inline TReadId _fixReverseComplement(MatchManager<TDelegate, TSpec, TMatch> const & manager, TReadId readId)
 {
     // Deal with reverse complemented reads.
     return (readId < manager.readsCount) ? readId : readId - manager.readsCount;
@@ -157,9 +156,9 @@ inline TReadId _fixReverseComplement(MatchManager<TMatch, TMatchesDelegate, TSpe
 // Function onMatch()                                            [MatchManager]
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchesDelegate, typename TSpec,
+template <typename TDelegate, typename TSpec, typename TMatch,
           typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
-inline void onMatch(MatchManager<TMatch, TMatchesDelegate, TSpec> & manager,
+inline void onMatch(MatchManager<TDelegate, TSpec, TMatch> & manager,
                     TContigId contigId,
                     TContigPos beginPos,
                     TContigPos endPos,
@@ -168,15 +167,15 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, TSpec> & manager,
                     bool reverseComplemented)
 {
     // Call matches delegate.
-    onMatch(manager.matchesDelegate, contigId, beginPos, endPos, readId, errors, reverseComplemented);
+    onMatch(manager.delegate, contigId, beginPos, endPos, readId, errors, reverseComplemented);
 
     // Increment matches counters.
     manager.matchesCount++;
 }
 
-template <typename TMatch, typename TMatchesDelegate,
+template <typename TDelegate, typename TMatch,
           typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
-inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AllBest> & manager,
+inline void onMatch(MatchManager<TDelegate, AllBest, TMatch> & manager,
                     TContigId contigId,
                     TContigPos beginPos,
                     TContigPos endPos,
@@ -188,7 +187,7 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AllBest> & manager,
     if (errors <= manager.minErrors[readId])
     {
         // Call matches delegate.
-        onMatch(manager.matchesDelegate, contigId, beginPos, endPos, readId, errors, reverseComplemented);
+        onMatch(manager.delegate, contigId, beginPos, endPos, readId, errors, reverseComplemented);
 
         // Increment matches counters.
         manager.matchesCount++;
@@ -200,9 +199,9 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AllBest> & manager,
     // Otherwise this match is superfluous.
 }
 
-template <typename TMatch, typename TMatchesDelegate,
+template <typename TDelegate, typename TMatch,
           typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
-inline void onMatch(MatchManager<TMatch, TMatchesDelegate, KBest> & manager,
+inline void onMatch(MatchManager<TDelegate, KBest, TMatch> & manager,
                     TContigId contigId,
                     TContigPos beginPos,
                     TContigPos endPos,
@@ -216,7 +215,7 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, KBest> & manager,
         if (errors <= manager.errors)
         {
             // Call matches delegate.
-            onMatch(manager.matchesDelegate, contigId, beginPos, endPos, readId, errors, reverseComplemented);
+            onMatch(manager.delegate, contigId, beginPos, endPos, readId, errors, reverseComplemented);
 
             // Increment matches counters.
             manager.matchesCount++;
@@ -235,9 +234,9 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, KBest> & manager,
     // Otherwise this match is superfluous.
 }
 
-template <typename TMatch, typename TMatchesDelegate,
+template <typename TDelegate, typename TMatch,
 typename TContigId, typename TContigPos, typename TReadId, typename TErrors>
-inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
+inline void onMatch(MatchManager<TDelegate, AnyBest, TMatch> & manager,
                     TContigId contigId,
                     TContigPos beginPos,
                     TContigPos endPos,
@@ -254,7 +253,7 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
         if (errors == manager.errors)
         {
             // Call matches delegate.
-            onMatch(manager.matchesDelegate, manager.matches[readId]);
+            onMatch(manager.delegate, manager.matches[readId]);
 
             // Increment matches counters.
             manager.matchesCount++;
@@ -266,28 +265,28 @@ inline void onMatch(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager,
 // Function isDisabled()                                         [MatchManager]
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, TSpec> const &, TReadId)
+template <typename TDelegate, typename TSpec, typename TMatch, typename TReadId>
+inline bool isDisabled(MatchManager<TDelegate, TSpec, TMatch> const &, TReadId)
 {
     return false;
 }
 
-template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AllBest> const & manager, TReadId readId)
+template <typename TDelegate, typename TMatch, typename TReadId>
+inline bool isDisabled(MatchManager<TDelegate, AllBest, TMatch> const & manager, TReadId readId)
 {
     // Reads with at least one match in lower strata are disabled.
     return manager.minErrors[_fixReverseComplement(manager, readId)] < manager.errors;
 }
 
-template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, KBest> const & manager, TReadId readId)
+template <typename TDelegate, typename TMatch, typename TReadId>
+inline bool isDisabled(MatchManager<TDelegate, KBest, TMatch> const & manager, TReadId readId)
 {
     // Reads with at least one best match are disabled.
     return manager.minErrors[_fixReverseComplement(manager, readId)] <= manager.errors;
 }
 
-template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & manager, TReadId readId)
+template <typename TDelegate, typename TMatch, typename TReadId>
+inline bool isDisabled(MatchManager<TDelegate, AnyBest, TMatch> const & manager, TReadId readId)
 {
     // Reads with at least one best match are disabled.
     return manager.matches[_fixReverseComplement(manager, readId)].errors <= manager.errors;
@@ -297,15 +296,15 @@ inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & m
 // Function minErrors()                                          [MatchManager]
 // ----------------------------------------------------------------------------
 
-//template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
-//inline unsigned char minErrors(MatchManager<TMatch, TMatchesDelegate, TSpec> const &, TReadId)
+//template <typename TDelegate, typename TSpec, typename TMatch, typename TReadId>
+//inline unsigned char minErrors(MatchManager<TDelegate, TSpec, TMatch> const &, TReadId)
 //{
 //    // TODO
 //    return 0;
 //}
 //
-//template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-//inline unsigned char minErrors(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & manager, TReadId readId)
+//template <typename TDelegate, typename TMatch, typename TReadId>
+//inline unsigned char minErrors(MatchManager<TDelegate, AnyBest, TMatch> const & manager, TReadId readId)
 //{
 //    return manager.matches[_fixReverseComplement(manager, readId)].errors + 1;
 //}
@@ -314,15 +313,15 @@ inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & m
 // Function maxErrors()                                          [MatchManager]
 // ----------------------------------------------------------------------------
 
-//template <typename TMatch, typename TMatchesDelegate, typename TSpec, typename TReadId>
-//inline unsigned char maxErrors(MatchManager<TMatch, TMatchesDelegate, TSpec> const &, TReadId)
+//template <typename TDelegate, typename TSpec, typename TMatch, typename TReadId>
+//inline unsigned char maxErrors(MatchManager<TDelegate, TSpec, TMatch> const &, TReadId)
 //{
 //    // TODO
 //    return 0;
 //}
 //
-//template <typename TMatch, typename TMatchesDelegate, typename TReadId>
-//inline unsigned char maxErrors(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & manager, TReadId readId)
+//template <typename TDelegate, typename TMatch, typename TReadId>
+//inline unsigned char maxErrors(MatchManager<TDelegate, AnyBest, TMatch> const & manager, TReadId readId)
 //{
 //    // TODO
 //    return 0;
@@ -332,19 +331,19 @@ inline bool isDisabled(MatchManager<TMatch, TMatchesDelegate, AnyBest> const & m
 // Function raiseErrorThreshold()                                [MatchManager]
 // ----------------------------------------------------------------------------
 
-template <typename TMatch, typename TMatchesDelegate, typename TSpec>
-inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, TSpec> &)
+template <typename TDelegate, typename TSpec, typename TMatch>
+inline void raiseErrorThreshold(MatchManager<TDelegate, TSpec, TMatch> &)
 {}
 
-template <typename TMatch, typename TMatchesDelegate>
-inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AllBest> & manager)
+template <typename TDelegate, typename TMatch>
+inline void raiseErrorThreshold(MatchManager<TDelegate, AllBest, TMatch> & manager)
 {
     // Increment error threshold.
     manager.errors++;
 }
 
-template <typename TMatch, typename TMatchesDelegate>
-inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, KBest> & manager)
+template <typename TDelegate, typename TMatch>
+inline void raiseErrorThreshold(MatchManager<TDelegate, KBest, TMatch> & manager)
 {
     typedef String<TMatch>                                  TMatches;
     typedef typename Iterator<TMatches, Standard>::Type     TMatchesIterator;
@@ -358,7 +357,7 @@ inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, KBest> & 
             continue;
 
         // Call matches delegate.
-        onMatch(manager.matchesDelegate, *matchesIt);
+        onMatch(manager.delegate, *matchesIt);
 
         // Increment matches counter.
         manager.matchesCount++;
@@ -375,8 +374,8 @@ inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, KBest> & 
     shrinkToFit(manager.matches[manager.errors]);
 }
 
-template <typename TMatch, typename TMatchesDelegate>
-inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AnyBest> & manager)
+template <typename TDelegate, typename TMatch>
+inline void raiseErrorThreshold(MatchManager<TDelegate, AnyBest, TMatch> & manager)
 {
     typedef String<TMatch>                                  TMatches;
     typedef typename Iterator<TMatches, Standard>::Type     TMatchesIterator;
@@ -392,7 +391,7 @@ inline void raiseErrorThreshold(MatchManager<TMatch, TMatchesDelegate, AnyBest> 
         if ((*matchesIt).errors == manager.errors)
         {
             // Call matches delegate.
-            onMatch(manager.matchesDelegate, *matchesIt);
+            onMatch(manager.delegate, *matchesIt);
 
             // Increment matches counter.
             manager.matchesCount++;

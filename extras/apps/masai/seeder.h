@@ -41,6 +41,8 @@
 #include <seqan/sequence.h>
 #include <seqan/find.h>
 
+#include "index.h"
+
 using namespace seqan;
 
 // ============================================================================

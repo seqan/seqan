@@ -38,7 +38,9 @@
 #include <seqan/sequence.h>
 
 #include "options.h"
+#include "index.h"
 #include "mapper.h"
+#include "writer.h"
 
 using namespace seqan;
 
@@ -56,6 +58,7 @@ struct Options : public MasaiOptions
     CharString  genomeIndexFile;
     IndexType   genomeIndexType;
     CharString  readsFile;
+    int         mappingBlock;
 
     CharString  mappedReadsFile;
     OutputFormat outputFormat;
@@ -63,31 +66,36 @@ struct Options : public MasaiOptions
 
     MappingMode mappingMode;
     unsigned    errorsPerRead;
-    unsigned    errorsLossy;
     unsigned    seedLength;
     bool        mismatchesOnly;
 
-    bool        verifyHits;
-    bool        dumpResults;
-    bool        multipleBacktracking;
+    bool        noVerify;
+    bool        noDump;
+    bool        noMultiple;
 
     Options() :
         MasaiOptions(),
         genomeIndexType(INDEX_SA),
+        mappingBlock(MaxValue<int>::VALUE),
         outputFormat(RAW),
         outputCigar(true),
         mappingMode(ANY_BEST),
         errorsPerRead(5),
-        errorsLossy(0),
         seedLength(33),
         mismatchesOnly(false),
-        verifyHits(true),
-        dumpResults(true),
-        multipleBacktracking(true)
+        noVerify(false),
+        noDump(false),
+        noMultiple(false)
     {}
 };
 
 // ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function setupArgumentParser()                              [ArgumentParser]
+// ----------------------------------------------------------------------------
 
 void setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
@@ -111,17 +119,14 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setValidValues(parser, "mapping-mode", options.mappingModeList);
     setDefaultValue(parser, "mapping-mode", options.mappingModeList[options.mappingMode]);
 
+    addOption(parser, ArgParseOption("mb", "mapping-block", "Maximum number of reads to be mapped at once.", ArgParseOption::INTEGER));
+    setMinValue(parser, "mapping-block", "10000");
+    setDefaultValue(parser, "mapping-block", options.mappingBlock);
+
     addOption(parser, ArgParseOption("e", "errors", "Maximum number of errors per read.", ArgParseOption::INTEGER));
     setMinValue(parser, "errors", "0");
     setMaxValue(parser, "errors", "32");
     setDefaultValue(parser, "errors", options.errorsPerRead);
-
-//    addOption(parser, ArgParseOption("el", "errors-lossy",
-//                                     "Maximum number of errors per read to report. For any-best mode only.",
-//                                     ArgParseOption::INTEGER));
-//    setMinValue(parser, "errors-lossy", "0");
-//    setMaxValue(parser, "errors-lossy", "32");
-//    setDefaultValue(parser, "errors-lossy", options.errorsLossy);
 
     addOption(parser, ArgParseOption("sl", "seed-length", "Minimum seed length.", ArgParseOption::INTEGER));
     setMinValue(parser, "seed-length", "10");
@@ -150,6 +155,10 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("nm", "no-multiple", "Disable multiple backtracking."));
 }
 
+// ----------------------------------------------------------------------------
+// Function parseCommandLine()                                        [Options]
+// ----------------------------------------------------------------------------
+
 ArgumentParser::ParseResult
 parseCommandLine(Options & options, ArgumentParser & parser, int argc, char const ** argv)
 {
@@ -167,10 +176,11 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse mapping mode.
     getOptionValue(options.mappingMode, parser, "mapping-mode", options.mappingModeList);
 
+    // Parse mapping block.
+    getOptionValue(options.mappingBlock, parser, "mapping-block");
+
     // Parse mapping options.
     getOptionValue(options.errorsPerRead, parser, "errors");
-//    getOptionValue(options.errorsLossy, parser, "errors-lossy");
-    options.errorsLossy = std::max(options.errorsLossy, options.errorsPerRead);
     getOptionValue(options.seedLength, parser, "seed-length");
     options.mismatchesOnly = isSet(parser, "no-gaps");
 
@@ -187,42 +197,52 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOutputFile(options.mappedReadsFile, options, parser, options.readsFile, "");
 
     // Parse debug options.
-    options.verifyHits = !isSet(parser, "no-verify");
-    options.dumpResults = !isSet(parser, "no-dump");
-    options.multipleBacktracking = !isSet(parser, "no-multiple");
+    options.noVerify = isSet(parser, "no-verify");
+    options.noDump = isSet(parser, "no-dump");
+    options.noMultiple = isSet(parser, "no-multiple");
 
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-// ============================================================================
+// ----------------------------------------------------------------------------
+// Function runMapper()
+// ----------------------------------------------------------------------------
 
-template <typename TStrategy, typename TDistance, typename TFormat, typename TBacktracking, typename TIndex>
-int runMapper(Options & options)
+template <typename TIndex, typename TFormat, typename TMapperConfig, typename TReadsConfig>
+int runMapper(Options & options, TMapperConfig const & /* config */, TReadsConfig const & /* config */)
 {
-    // TODO(esiragusa): Use typename TGenomeIndex instead of TSpec.
-    typedef Mapper<TIndex>    TMapper;
+    typedef Genome<void>                                                            TGenome;
+    typedef GenomeIndex<TGenome, TIndex>                                            TGenomeIndex;
+    typedef Reads<void, TReadsConfig>                                               TReads;
+    typedef ReadsLoader<void, TReadsConfig>                                         TReadsLoader;
+    typedef Writer<TGenome, TReads, TFormat, typename TMapperConfig::TDistance>     TWriter;
+    typedef Mapper<TReads, TWriter, void, TMapperConfig>                            TMapper;
 
-    // TODO(esiragusa): Remove writeCigar from Mapper members.
-    TMapper mapper(options.seedLength, options.outputCigar, options.verifyHits, options.dumpResults);
+    TFragmentStore      store;
+    TGenome             genome(store);
+    TGenomeIndex        genomeIndex(genome);
+    TReads              reads(store);
+    TReadsLoader        readsLoader(reads);
+    TWriter             writer(genome, options.noDump);
+//    TMapper             mapper(writer, options.noVerify);
 
     double start, finish;
 
-    // Loading genome.
+    // Load genome.
     std::cout << "Loading genome:\t\t\t" << std::flush;
     start = sysTime();
-    if (!loadGenome(mapper.indexer, options.genomeFile))
+    if (!load(genome, options.genomeFile))
     {
         std::cerr << "Error while loading genome" << std::endl;
         return 1;
     }
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
-//	std::cout << "Contigs count:\t\t\t" << mapper.indexer.contigsCount << std::endl;
 
-    // Loading genome index.
+    // Load genome index.
     std::cout << "Loading genome index:\t\t" << std::flush;
     start = sysTime();
-    if (!loadGenomeIndex(mapper.indexer, options.genomeIndexFile))
+    if (!load(genomeIndex, options.genomeIndexFile))
     {
         std::cout << "Error while loading genome index" << std::endl;
         return 1;
@@ -230,112 +250,169 @@ int runMapper(Options & options)
     finish = sysTime();
     std::cout << finish - start << " sec" << std::endl;
 
-    // Loading reads.
-    std::cout << "Loading reads:\t\t\t" << std::flush;
+    // Open reads file.
     start = sysTime();
-    if (!loadReads(mapper, options.readsFile, TFormat()))
+    if (!open(readsLoader, options.readsFile))
     {
-        std::cerr << "Error while loading reads" << std::endl;
+        std::cerr << "Error while opening reads file" << std::endl;
         return 1;
     }
-    finish = sysTime();
-    std::cout << finish - start << " sec" << std::endl;
-    std::cout << "Reads count:\t\t\t" << mapper.readsCount << std::endl;
 
-    // Mapping reads.
-    start = sysTime();
-    if (!mapReads(mapper, options.mappedReadsFile, options.errorsPerRead, options.errorsLossy,
-                  TDistance(), TStrategy(), TBacktracking(), TFormat()))
+    // Open output file.
+    if (!open(writer, options.mappedReadsFile))
     {
-        std::cerr << "Error while writing results" << std::endl;
+        std::cerr << "Error while opening output file" << std::endl;
         return 1;
     }
-    finish = sysTime();
-    std::cout << "Mapping time:\t\t\t" << std::flush;
-    std::cout << finish - start << " sec" << std::endl;
+
+    // Configure writer.
+    writeAlignments(writer, options.outputCigar);
+
+    // Reserve space for reads.
+    if (options.mappingBlock < MaxValue<int>::VALUE)
+        reserve(reads, options.mappingBlock);
+    else
+        reserve(reads);
+
+    // Process reads in blocks.
+    while (!atEnd(readsLoader))
+    {
+        // Load reads.
+        std::cout << "Loading reads:\t\t\t" << std::flush;
+        if (!load(readsLoader, options.mappingBlock))
+        {
+            std::cerr << "Error while loading reads" << std::endl;
+            return 1;
+        }
+        finish = sysTime();
+        std::cout << finish - start << " sec" << std::endl;
+        std::cout << "Reads count:\t\t\t" << reads.readsCount << std::endl;
+
+        // Pass reads to writer.
+        setReads(writer, reads);
+
+        // Configure mapper.
+        TMapper mapper(reads, writer, options.noVerify);
+        setSeedLength(mapper, options.seedLength);
+        setReads(mapper, reads);
+
+        // Map reads.
+        start = sysTime();
+        mapReads(mapper, genomeIndex, options.errorsPerRead);
+        finish = sysTime();
+        std::cout << "Mapping time:\t\t\t" << std::flush;
+        std::cout << finish - start << " sec" << std::endl;
+
+        // Clear mapped reads.
+        clear(reads);
+    }
+
+    // Close output file.
+    close(writer);
+
+    // Close reads file.
+    close(readsLoader);
 
     return 0;
 }
 
-// ============================================================================
-
-template <typename TStrategy, typename TDistance, typename TFormat, typename TBacktracking>
-int configureGenomeIndex(Options & options)
+template <typename TIndex, typename TFormat, typename TDistance, typename TStrategy, typename TBacktracking>
+int runMapper(Options & options)
 {
-    switch (options.genomeIndexType)
+    typedef ReadMapperConfig<TDistance, TStrategy, MultipleBacktracking>    TMapperConfig;
+
+    typedef typename IsSameType<TFormat, Sam>::Type                         TUseReadStore;
+    typedef typename IsSameType<TFormat, Sam>::Type                         TUseReadNameStore;
+    typedef ReadsConfig<TUseReadStore, TUseReadNameStore>                   TReadsConfig;
+
+    return runMapper<TIndex, TFormat>(options, TMapperConfig(), TReadsConfig());
+}
+
+// ----------------------------------------------------------------------------
+// Functions configure*()
+// ----------------------------------------------------------------------------
+
+template <typename TIndex, typename TFormat, typename TDistance, typename TStrategy>
+int configureMapperBacktracking(Options & options)
+{
+    if (options.noMultiple)
+        return runMapper<TIndex, TFormat, TDistance, TStrategy, SingleBacktracking>(options);
+    else
+        return runMapper<TIndex, TFormat, TDistance, TStrategy, MultipleBacktracking>(options);
+}
+
+template <typename TIndex, typename TFormat, typename TDistance>
+int configureMapperStrategy(Options & options)
+{
+    switch (options.mappingMode)
     {
-    case Options::INDEX_ESA:
-        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeEsa>(options);
+    case Options::ANY_BEST:
+        return configureMapperBacktracking<TIndex, TFormat, TDistance, AnyBest>(options);
 
-    case Options::INDEX_SA:
-        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeSa>(options);
+    case Options::ALL_BEST:
+        return configureMapperBacktracking<TIndex, TFormat, TDistance, AllBest>(options);
 
-//    case Options::INDEX_QGRAM:
-//        return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeQGram>(options);
-
-        case Options::INDEX_FM:
-            return runMapper<TStrategy, TDistance, TFormat, TBacktracking, TGenomeFM>(options);
+    case Options::ALL:
+        return configureMapperBacktracking<TIndex, TFormat, TDistance, All>(options);
 
     default:
         return 1;
     }
 }
 
-template <typename TStrategy, typename TDistance, typename TFormat>
-int configureBacktracking(Options & options)
+template <typename TIndex, typename TFormat>
+int configureMapperDistance(Options & options)
 {
-    if (options.multipleBacktracking)
-        return configureGenomeIndex<TStrategy, TDistance, TFormat, MultipleBacktracking>(options);
+    if (options.mismatchesOnly)
+        return configureMapperStrategy<TIndex, TFormat, HammingDistance>(options);
     else
-        return configureGenomeIndex<TStrategy, TDistance, TFormat, SingleBacktracking>(options);
+        return configureMapperStrategy<TIndex, TFormat, EditDistance>(options);
 }
 
-template <typename TStrategy, typename TDistance>
+template <typename TIndex>
 int configureOutputFormat(Options & options)
 {
     switch (options.outputFormat)
     {
     case Options::RAW:
-        return configureBacktracking<TStrategy, TDistance, Raw>(options);
+        return configureMapperDistance<TIndex, Raw>(options);
 
     case Options::SAM:
-        return configureBacktracking<TStrategy, TDistance, Sam>(options);
+        return configureMapperDistance<TIndex, Sam>(options);
 
     case Options::SAM_NO_CIGAR:
         options.outputCigar = false;
-        return configureBacktracking<TStrategy, TDistance, Sam>(options);
+        return configureMapperDistance<TIndex, Sam>(options);
 
     default:
         return 1;
     }
 }
 
-template <typename TStrategy>
-int configureDistance(Options & options)
+int configureGenomeIndex(Options & options)
 {
-    if (options.mismatchesOnly)
-        return configureOutputFormat<TStrategy, HammingDistance>(options);
-    else
-        return configureOutputFormat<TStrategy, EditDistance>(options);
-}
-
-int mainWithOptions(Options & options)
-{
-    switch (options.mappingMode)
+    switch (options.genomeIndexType)
     {
-    case Options::ANY_BEST:
-        return configureDistance<AnyBest>(options);
+        case Options::INDEX_ESA:
+            return configureOutputFormat<TGenomeEsa>(options);
 
-    case Options::ALL_BEST:
-        return configureDistance<AllBest>(options);
+        case Options::INDEX_SA:
+            return configureOutputFormat<TGenomeSa>(options);
 
-    case Options::ALL:
-        return configureDistance<All>(options);
+//    case Options::INDEX_QGRAM:
+//        return configureOutputFormat<TGenomeQGram>(options);
 
-    default:
-        return 1;
+        case Options::INDEX_FM:
+            return configureOutputFormat<TGenomeFM>(options);
+
+        default:
+            return 1;
     }
 }
+
+// ----------------------------------------------------------------------------
+// Function main()
+// ----------------------------------------------------------------------------
 
 int main(int argc, char const ** argv)
 {
@@ -347,5 +424,6 @@ int main(int argc, char const ** argv)
 
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res == seqan::ArgumentParser::PARSE_ERROR;
-    return mainWithOptions(options);
+
+    return configureGenomeIndex(options);
 }
