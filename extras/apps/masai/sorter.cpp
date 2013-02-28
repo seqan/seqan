@@ -122,8 +122,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addSection(parser, "Output Options");
 
     setTmpFolder(parser);
-    setOutputFile(parser);
-    setOutputFormat(parser, options);
+    setOutputFile(parser, options);
+    addOption(parser, ArgParseOption("nc", "no-cigar", "Do not output CIGAR string. This only affects SAM output."));
 
 
     addSection(parser, "Debug Options");
@@ -160,11 +160,12 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     // Parse tmp folder.
     getTmpFolder(options, parser);
 
-    // Parse output format.
-    getOutputFormat(options, parser);
-
     // Parse output file.
     getOutputFile(options.sortedReadsFile, options, parser, options.readsFile, "_se");
+
+    // Parse output format.
+    getOutputFormat(options, options.mappedReadsFile);
+    options.outputCigar = !isSet(parser, "no-cigar");
 
     // Parse debug options.
     options.noDump = isSet(parser, "no-dump");
@@ -287,10 +288,6 @@ int configureOutputFormat(Options & options)
         return runSorter<TDistance, Raw>(options);
 
     case Options::SAM:
-        return runSorter<TDistance, Sam>(options);
-
-    case Options::SAM_NO_CIGAR:
-        options.outputCigar = false;
         return runSorter<TDistance, Sam>(options);
 
     default:

@@ -72,7 +72,7 @@ struct MasaiOptions
 
     enum OutputFormat
     {
-        RAW, SAM, SAM_NO_CIGAR
+        RAW, SAM
     };
 
     TList       indexTypeList;
@@ -93,10 +93,8 @@ struct MasaiOptions
 
         outputFormatList.push_back("raw");
         outputFormatList.push_back("sam");
-        outputFormatList.push_back("sam-no-cigar");
 
         outputFormatExtensions.push_back("raw");
-        outputFormatExtensions.push_back("sam");
         outputFormatExtensions.push_back("sam");
     }
 };
@@ -157,6 +155,17 @@ trimExtension(TString & string)
 }
 
 // ----------------------------------------------------------------------------
+// Function getExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+Segment<TString, SuffixSegment>
+getExtension(TString & string)
+{
+    return suffix(string, lastOf(string, '.') + 1);
+}
+
+// ----------------------------------------------------------------------------
 // Function getPath()
 // ----------------------------------------------------------------------------
 
@@ -187,6 +196,26 @@ getFilename(TString & string)
 }
 
 // ----------------------------------------------------------------------------
+// Function getOptionEnum()
+// ----------------------------------------------------------------------------
+
+template <typename TOption, typename TString, typename TOptionsList>
+void getOptionEnum(TOption & option,
+                   TString const & optionStr,
+                   TOptionsList & optionsList)
+{
+    typedef typename Iterator<TOptionsList, Standard>::Type TOptionsIterator;
+
+    TOptionsIterator optionsBegin = begin(optionsList, Standard());
+    TOptionsIterator optionsEnd = end(optionsList, Standard());
+
+    TOptionsIterator optionType = std::find(optionsBegin, optionsEnd, optionStr);
+
+    SEQAN_ASSERT(optionType != optionsEnd);
+    option = TOption(optionType - optionsBegin);
+}
+
+// ----------------------------------------------------------------------------
 // Function getOptionValue()
 // ----------------------------------------------------------------------------
 
@@ -196,19 +225,12 @@ void getOptionValue(TOption & option,
                     TString const & optionName,
                     TOptionsList & optionsList)
 {
-    typedef typename Iterator<TOptionsList, Standard>::Type TOptionsIterator;
     typedef typename Value<TOptionsList>::Type              TOptionString;
-
-    TOptionsIterator optionsBegin = begin(optionsList, Standard());
-    TOptionsIterator optionsEnd = end(optionsList, Standard());
 
     TOptionString optionStr;
     getOptionValue(optionStr, parser, optionName);
 
-    TOptionsIterator optionType = std::find(optionsBegin, optionsEnd, optionStr);
-
-    SEQAN_ASSERT(optionType != optionsEnd);
-    option = TOption(optionType - optionsBegin);
+    return getOptionEnum(option, optionStr, optionsList);
 }
 
 // ----------------------------------------------------------------------------
@@ -281,37 +303,28 @@ void getIndexPrefix(TOptions & options, ArgumentParser const & parser)
 }
 
 // ----------------------------------------------------------------------------
-// Function setOutputFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void setOutputFormat(ArgumentParser & parser, TOptions const & options)
-{
-    addOption(parser, ArgParseOption("of", "output-format", "Select the output format.", ArgParseOption::STRING));
-    setValidValues(parser, "output-format", options.outputFormatList);
-    setDefaultValue(parser, "output-format", options.outputFormatList[options.outputFormat]);
-}
-
-// ----------------------------------------------------------------------------
 // Function getOutputFormat()
 // ----------------------------------------------------------------------------
 
-template <typename TOptions>
-void getOutputFormat(TOptions & options, ArgumentParser const & parser)
+template <typename TOptions, typename TString>
+void getOutputFormat(TOptions & options, TString const & outputFile)
 {
-    getOptionValue(options.outputFormat, parser, "output-format", options.outputFormatList);
+    TString outputExtension = getExtension(outputFile);
+    typename TOptions::TString outputFormatExtension(toCString(outputExtension));
+    getOptionEnum(options.outputFormat, outputFormatExtension, options.outputFormatList);
 }
 
 // ----------------------------------------------------------------------------
 // Function setOutputFile()
 // ----------------------------------------------------------------------------
 
-void setOutputFile(ArgumentParser & parser)
+template <typename TOptions>
+void setOutputFile(ArgumentParser & parser, TOptions const & options)
 {
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
-                                     Default: use the reads filename and guess the extension.",
+                                     Default: use the reads filename prefix.",
                                      ArgParseOption::OUTPUTFILE));
-//    setValidValues(parser, "output-file", "raw sam");
+    setValidValues(parser, "output-file", options.outputFormatExtensions);
 }
 
 // ----------------------------------------------------------------------------
