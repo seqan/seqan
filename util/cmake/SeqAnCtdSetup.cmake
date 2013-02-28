@@ -78,58 +78,60 @@ set (PAYLOAD_TMP_PATH ${WORKFLOW_PLUGIN_DIR}/payload.tmp)
 set (PAYLOAD_TMP_BIN_PATH ${PAYLOAD_TMP_PATH}/bin)
 
 # ============================================================================
-# Targets for preparing payload
+# Creating directory structure.
 # ============================================================================
 
-# ----------------------------------------------------------------------------
-# Targets for creating payload "bin" dir
-# ----------------------------------------------------------------------------
+# Create directory: workflow_plugin_dir
+add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR})
+# Create directory: workflow_plugin_dir/icons
+add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/icons
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}/icons
+                    DEPENDS ${WORKFLOW_PLUGIN_DIR})
+# Create directory: workflow_plugin_dir/descriptors
+add_custom_command (OUTPUT ${CTD_PATH}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}
+                    DEPENDS ${WORKFLOW_PLUGIN_DIR})
+# Create directory: workflow_plugin_dir/payload
+add_custom_command (OUTPUT ${PAYLOAD_PATH}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${PAYLOAD_PATH}
+                    DEPENDS ${WORKFLOW_PLUGIN_DIR})
 
-# Target for creating the CTD output directories.  Triggers building of CTD
-# executables through dependency.
-add_custom_target (prepare_ctd_payload_tmp_bin
-                   # These two commands are equivalent to rm -rf.
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${PAYLOAD_TMP_PATH}
-                   COMMAND ${CMAKE_COMMAND} -E remove_directory ${PAYLOAD_TMP_PATH}
-                   # Create payload directory.
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${PAYLOAD_TMP_PATH}
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${PAYLOAD_TMP_BIN_PATH}
-                   # Make sure that all binaries that we want to have CTDs for are built.
-                   DEPENDS ${SEQAN_CTD_EXECUTABLES})
+# Create directory: workflow_plugin_dir/payload.tmp
+add_custom_command (OUTPUT ${PAYLOAD_TMP_PATH}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${PAYLOAD_TMP_PATH}
+                    DEPENDS ${WORKFLOW_PLUGIN_DIR})
+# Create directory: workflow_plugin_dir/payload.tmp/bin
+add_custom_command (OUTPUT ${PAYLOAD_TMP_BIN_PATH}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${PAYLOAD_TMP_BIN_PATH}
+                    DEPENDS ${PAYLOAD_TMP_PATH})
 
-# Add directory for CTD files.
-add_custom_target (target_ctd_mkdir
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH})
+# ============================================================================
+# Creating payload data.
+# ============================================================================
 
-# For each white-listed executable in SEQAN_CTD_EXECUTABLES, get its path and
-# (1) copy it into the temporary payload directory's bin subdirectory, and (2)
-# create a target target_ctd_ctds_${EXECUTABLE} that the CTD creation target
-# below will depend on (through the list PREPARE_CTD_CTDS_TARGETS).
+# Binaries.
 foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
-  # Get platform-dependent executable path.
+  set (_TARGET ${_BINARY})
   set (_BINARY_PATH "${SEQAN_BIN_DIR}/${_BINARY}")
   if (WIN32)
+    set (_BINARY "${_BINARY}.exe")
     set (_BINARY_PATH "${_BINARY_PATH}.exe")
   endif ()
-  add_custom_command (TARGET prepare_ctd_payload_tmp_bin POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy "${_BINARY_PATH}" "${PAYLOAD_TMP_BIN_PATH}")
-  add_custom_target (target_ctd_ctds_${_BINARY}
-                     COMMAND ${_BINARY_PATH} --write-ctd "${CTD_PATH}/${_BINARY}.ctd"
-                     DEPENDS target_ctd_mkdir ${_BINARY})
-  list (APPEND PREPARE_CTD_CTDS_TARGETS target_ctd_ctds_${_BINARY})
+
+  list (APPEND TMP_PAYLOAD_FILES "${PAYLOAD_TMP_BIN_PATH}/${_BINARY}")
+  add_custom_command (OUTPUT ${PAYLOAD_TMP_BIN_PATH}/${_BINARY}
+                      COMMAND ${CMAKE_COMMAND} -E copy "${_BINARY_PATH}" "${PAYLOAD_TMP_BIN_PATH}/${_BINARY}"
+                      DEPENDS ${_TARGET} 
+                              ${PAYLOAD_TMP_BIN_PATH})
 endforeach ()
 
-# NOTE: When adding lib, share, etc. directories to payload, add targets
-# following the pattern for the binary files and register as dependency
-# everywhere below.
+# binaries.ini file.
+add_custom_command (OUTPUT "${PAYLOAD_TMP_PATH}/binaries.ini"
+                    COMMAND ${CMAKE_COMMAND} -E touch ${PAYLOAD_TMP_PATH}/binaries.ini
+                    DEPENDS ${PAYLOAD_TMP_PATH})
 
-# ----------------------------------------------------------------------------
-# Targets for creating payload archive
-# ----------------------------------------------------------------------------
-
-# Get system name and word size for the payload archive name.
-
+# Create the payload binary ZIP file.
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set (SEQAN_PLATFORM "lnx")
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -146,80 +148,71 @@ else ()
   set (SEQAN_SYSTEM_WORDSIZE "32")
 endif ()
 
-# We use the jar command for creating the payload files in a platform independent manner.
-
 set (_ZIP_NAME "binaries_${SEQAN_PLATFORM}_${SEQAN_SYSTEM_WORDSIZE}.zip")
 set (_ZIP_PATH "${PAYLOAD_PATH}")
-add_custom_target (prepare_ctd_payload
-                   # rm -rf
-                   COMMAND ${CMAKE_COMMAND} -E make_directory "${_ZIP_PATH}"
-                   COMMAND ${CMAKE_COMMAND} -E remove_directory "${_ZIP_PATH}"
-                   # mkdir
-                   COMMAND ${CMAKE_COMMAND} -E make_directory "${_ZIP_PATH}"
-                   # create empty binaries.ini
-                   COMMAND ${CMAKE_COMMAND} -E touch "${PAYLOAD_TMP_PATH}/binaries.ini"
-                   # compress
-                   COMMAND ${Java_JAR_EXECUTABLE} cfvM "${_ZIP_PATH}/${_ZIP_NAME}" -C "${PAYLOAD_TMP_PATH}" .
-                   # remove temporary files
-                   COMMAND ${CMAKE_COMMAND} -E remove_directory "${PAYLOAD_TMP_PATH}"
-                   DEPENDS prepare_ctd_payload_tmp_bin)
+add_custom_command (OUTPUT ${_ZIP_PATH}/${_ZIP_NAME}
+                    COMMAND ${Java_JAR_EXECUTABLE} cfvM ${_ZIP_PATH}/${_ZIP_NAME} -C ${PAYLOAD_TMP_PATH} .
+                    DEPENDS ${PAYLOAD_PATH}
+                            ${TMP_PAYLOAD_FILES}
+                            ${PAYLOAD_TMP_PATH}/binaries.ini)
 
 # ============================================================================
-# Targets for creating Eclipse plugin files.
+# CTDs and other descriptors contents.
 # ============================================================================
 
-# ----------------------------------------------------------------------------
-# Copy static files (LICENSE etc.)
-# ----------------------------------------------------------------------------
+# descriptors/mimetypes.xml
+add_custom_command (OUTPUT ${CTD_PATH}/mimetypes.xml
+                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml"
+                                                     "${CTD_PATH}/mimetypes.xml"
+                    DEPENDS ${CTD_PATH}
+                            ${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml)
+list (APPEND DESCRIPTOR_FILES ${CTD_PATH}/mimetypes.xml)
 
-add_custom_target (prepare_ctd_static_files
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}
-                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/COPYRIGHT" "${WORKFLOW_PLUGIN_DIR}"
-                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/DESCRIPTION" "${WORKFLOW_PLUGIN_DIR}"
-                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/LICENSE" "${WORKFLOW_PLUGIN_DIR}"
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH}
-                   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml" "${CTD_PATH}")
+# *.ctd
+foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
+  set (_BINARY_PATH "${SEQAN_BIN_DIR}/${_BINARY}")
+  if (WIN32)
+    set (_BINARY_PATH "${_BINARY_PATH}.exe")
+  endif ()
 
-add_custom_target (prepare_ctd_icons
-                   COMMAND ${CMAKE_COMMAND} -E make_directory "${WORKFLOW_PLUGIN_DIR}/icons"
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons" "${WORKFLOW_PLUGIN_DIR}/icons")
-
-# ----------------------------------------------------------------------------
-# Configure plugin.properties.
-# ----------------------------------------------------------------------------
-
-# If possible, get latest change date from SeqAn SVN.
-find_package(Subversion)
-if (Subversion_FOUND)
-  file (TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" _SEQAN_SOURCE_DIR)
-  Subversion_WC_INFO (${_SEQAN_SOURCE_DIR} SEQAN)
-  string(REGEX REPLACE "^([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+).*"
-    "\\1\\2\\3\\4\\5" SEQAN_LAST_CHANGE_DATE "${SEQAN_WC_LAST_CHANGED_DATE}")
-  set (CF_SEQAN_VERSION ${SEQAN_VERSION_STRING}.${SEQAN_LAST_CHANGE_DATE})
-else ()
-  set (CF_SEQAN_VERSION "${SEQAN_VERSION_STRING}")
-endif ()
-
-# Configure the file.
-add_custom_target (prepare_ctd_properties
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH}
-                   COMMAND ${CMAKE_COMMAND} "-DSEQAN_SOURCE_DIR=${CMAKE_SOURCE_DIR}" "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
-                                            "-DCF_SEQAN_VERSION=${CF_SEQAN_VERSION}"
-                                            -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake")
-
-# ----------------------------------------------------------------------------
-# Create *.ctd files.
-# ----------------------------------------------------------------------------
-
-add_custom_target (prepare_ctd_ctds
-                   DEPENDS ${PREPARE_CTD_CTDS_TARGETS})
+  add_custom_command (OUTPUT ${CTD_PATH}/${_BINARY}.ctd
+                      COMMAND ${_BINARY_PATH} --write-ctd "${CTD_PATH}/${_BINARY}.ctd"
+                      DEPENDS ${_CTD_PATH}
+                              ${_BINARY})
+  list (APPEND DESCRIPTOR_FILES ${CTD_PATH}/${_BINARY}.ctd)
+endforeach ()
 
 # ============================================================================
-# Top-level target
+# Static Files.
 # ============================================================================
 
-# Depends on all targets for preparing the workflow plugin.
+# Static files in plugin root.
+foreach (_FILE COPYRIGHT DESCRIPTION LICENSE)
+  add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/${_FILE}
+                      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/${_FILE}"
+                                                       "${WORKFLOW_PLUGIN_DIR}/${_FILE}"
+                      DEPENDS ${WORKFLOW_PLUGIN_DIR}
+                              ${CMAKE_SOURCE_DIR}/util/cmake/ctd/${_FILE})
+  list (APPEND STATIC_FILES ${WORKFLOW_PLUGIN_DIR}/${_FILE})
+endforeach ()
+
+# Icon files.
+foreach (_FILE category.png splash.png)
+  add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/icons/${_FILE}
+                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons/${FILE}
+                                                       ${WORKFLOW_PLUGIN_DIR}/icons/${_FILE}
+                      DEPENDS ${WORKFLOW_PLUGIN_DIR}/icons
+                              ${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons/${FILE})
+  list (APPEND ICON_FILES ${WORKFLOW_PLUGIN_DIR}/icons/${_FILE})
+endforeach ()
+
+# ============================================================================
+# Master target.
+# ============================================================================
 
 add_custom_target (prepare_workflow_plugin
-                   DEPENDS prepare_ctd_payload prepare_ctd_static_files
-                           prepare_ctd_properties prepare_ctd_ctds prepare_ctd_icons)
+                   DEPENDS ${DESCRIPTOR_FILES}
+                           ${STATIC_FILES}
+                           ${ICON_FILES}
+                           ${_ZIP_PATH}/${_ZIP_NAME})
+
