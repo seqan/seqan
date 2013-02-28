@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Andreas Gogol-Döring <andreas.doering@mdc-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Global (future: generic) tag definitions.
 // ==========================================================================
@@ -208,28 +209,6 @@ struct TagList
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction TagListValue
-// ----------------------------------------------------------------------------
-
-
-// TODO(holtgrew): Document me!
-
-template <typename TList, int i>
-struct TagListValue;
-
-template <typename TTag, typename TSubList>
-struct TagListValue<TagList<TTag, TSubList>, 1>
-{
-    typedef TTag Type;
-};
-
-template <typename TTag, typename TSubList, int I>
-struct TagListValue<TagList<TTag, TSubList>, I>
-{
-    typedef typename TagListValue<TSubList, I - 1>::Type Type;
-};
-
-// ----------------------------------------------------------------------------
 // Class TagSelector
 // ----------------------------------------------------------------------------
 
@@ -331,10 +310,11 @@ typedef Tag<Blat_> Blat;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction LENGTH;  For TagList.
+// Metafunction LENGTH for TagLists
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Is this defined here or is it just a forward?
+// (weese): This is the definition.
 
 ///.Metafunction.LENGTH.param.T.type:Tag.TagList
 
@@ -355,6 +335,88 @@ struct LENGTH<TagList<TTag, TSubList> >
 {
     enum { VALUE = LENGTH<TSubList>::VALUE + 1 };
 };
+
+// ----------------------------------------------------------------------------
+// Metafunction TagListValue
+// ----------------------------------------------------------------------------
+
+/**
+.Metafunction.TagListValue:
+..cat:Basic
+..summary:A metafunction to retrieve a tag from a @Tag.TagList@.
+..signature:TagListValue<TTagList, tagId>
+..param.TTagList:A tag list.
+...type:Tag.TagList
+..param.tagId:An index of a @Page.Glossary.Tag@ in the tag list. This value must in 0..@Metafunction.LENGTH@$<TTagList>::VALUE-1$.
+...type:nolink:int
+..cat:Basic
+..include:seqan/basic.h
+*/
+
+template <typename TList, int i>
+struct TagListValue;
+
+template <typename TTag, typename TSubList>
+struct TagListValue<TagList<TTag, TSubList>, 1>
+{
+    typedef TTag Type;
+};
+
+template <typename TTag, typename TSubList, int I>
+struct TagListValue<TagList<TTag, TSubList>, I>
+{
+    typedef typename TagListValue<TSubList, I - 1>::Type Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction TagListGetIndex
+// ----------------------------------------------------------------------------
+
+/**
+.Metafunction.TagListGetIndex:
+..cat:Basic
+..summary:A metafunction to retrieve the index of a tag in the @Tag.TagList@.
+..signature:TagListGetIndex<TTagList, TTag>
+..param.TTagList:A tag list.
+...remarks:For a @Class.TagSelector@ the underlying @Tag.TagList@ is used.
+...type:Tag.TagList
+...type:Class.TagSelector
+..param.TTag:A tag to retrieve the index of.
+...type:Tag.Tag
+..return:The index of $TTag$ in the tag list $TTagList$. If $TTag$ is not contained $-1$ is returned.
+...remarks:This meta-function can be used to test whether the value of a @Class.TagSelector@ equals a specific tag.
+...type:nolink:int
+..cat:Basic
+..include:seqan/basic.h
+..example.code:
+AutoSeqStreamFormat format;
+if (format.tagId == TagListGetIndex<AutoSeqStreamFormat, Fasta>::VALUE)
+{
+    // do something specific to Fasta format
+}
+*/
+
+template <typename TList, typename TTag>
+struct TagListGetIndex
+{
+    enum { VALUE = -1 };
+};
+
+template <typename TTag, typename TSubList>
+struct TagListGetIndex<TagList<TTag, TSubList>, TTag>
+{
+    enum { VALUE = 1 };
+};
+
+template <typename TTag, typename TSubList, typename TOtherTag>
+struct TagListGetIndex<TagList<TTag, TSubList>, TOtherTag>
+{
+    enum { VALUE = TagListGetIndex<TSubList, TOtherTag>::VALUE + 1 };
+};
+
+template <typename TTagList, int I>
+struct TagListValue<TagSelector<TTagList>, I>:
+    public TagListValue<TTagList, I> {};
 
 // ============================================================================
 // Functions
