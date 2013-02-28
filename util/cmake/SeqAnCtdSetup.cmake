@@ -74,7 +74,7 @@ set (PAYLOAD_PATH ${WORKFLOW_PLUGIN_DIR}/payload)
 
 # We will create the contents of the payload directory temporarily within the
 # output directory.
-set (PAYLOAD_TMP_PATH ${WORKFLOW_PLUGIN_DIR}/payload.tmp)
+set (PAYLOAD_TMP_PATH ${CMAKE_BINARY_DIR}/CMakeFiles/payload.tmp)
 set (PAYLOAD_TMP_BIN_PATH ${PAYLOAD_TMP_PATH}/bin)
 
 # ============================================================================
@@ -90,7 +90,7 @@ add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/icons
                     DEPENDS ${WORKFLOW_PLUGIN_DIR})
 # Create directory: workflow_plugin_dir/descriptors
 add_custom_command (OUTPUT ${CTD_PATH}
-                    COMMAND ${CMAKE_COMMAND} -E make_directory ${WORKFLOW_PLUGIN_DIR}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CTD_PATH}
                     DEPENDS ${WORKFLOW_PLUGIN_DIR})
 # Create directory: workflow_plugin_dir/payload
 add_custom_command (OUTPUT ${PAYLOAD_PATH}
@@ -183,6 +183,31 @@ foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
 endforeach ()
 
 # ============================================================================
+# Eclipse Plugin Files.
+# ============================================================================
+
+# If possible, get latest change date from SeqAn SVN.
+find_package(Subversion)
+if (Subversion_FOUND)
+  file (TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" _SEQAN_SOURCE_DIR)
+  Subversion_WC_INFO (${_SEQAN_SOURCE_DIR} SEQAN)
+  string(REGEX REPLACE "^([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+).*"
+    "\\1\\2\\3\\4\\5" SEQAN_LAST_CHANGE_DATE "${SEQAN_WC_LAST_CHANGED_DATE}")
+  set (CF_SEQAN_VERSION ${SEQAN_VERSION_STRING}.${SEQAN_LAST_CHANGE_DATE})
+else ()
+  set (CF_SEQAN_VERSION "${SEQAN_VERSION_STRING}")
+endif ()
+
+# plugin.properties
+add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/plugin.properties
+                    COMMAND ${CMAKE_COMMAND} "-DSEQAN_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+                                             "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
+                                             "-DCF_SEQAN_VERSION=${CF_SEQAN_VERSION}"
+                                             -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake"
+                    DEPENDS ${WORKFLOW_PLUGIN_DIR}
+                            ${CMAKE_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in)
+
+# ============================================================================
 # Static Files.
 # ============================================================================
 
@@ -199,7 +224,7 @@ endforeach ()
 # Icon files.
 foreach (_FILE category.png splash.png)
   add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/icons/${_FILE}
-                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons/${FILE}
+                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons/${_FILE}
                                                        ${WORKFLOW_PLUGIN_DIR}/icons/${_FILE}
                       DEPENDS ${WORKFLOW_PLUGIN_DIR}/icons
                               ${CMAKE_SOURCE_DIR}/util/cmake/ctd/icons/${FILE})
@@ -214,5 +239,6 @@ add_custom_target (prepare_workflow_plugin
                    DEPENDS ${DESCRIPTOR_FILES}
                            ${STATIC_FILES}
                            ${ICON_FILES}
+                           ${WORKFLOW_PLUGIN_DIR}/plugin.properties
                            ${_ZIP_PATH}/${_ZIP_NAME})
 
