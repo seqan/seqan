@@ -44,7 +44,7 @@ template <typename TOccTable, typename TPrefixSumTable>
 struct LfTable;
 
 template <typename TValue>
-class WaveletTree;
+struct WaveletTree;
 
 template<typename TValue> 
 class RankDictionary;

@@ -81,14 +81,15 @@ This interval and some extra information constitute the @Metafunction.VertexDesc
 .Spec.TopDown Iterator:
 ..cat:Index
 ..general:Spec.VSTree Iterator
-..summary:Iterator for suffix trees that can go down and right beginning from the root.
+..summary:Iterator for virtual trees that can go down and right beginning from the root.
 ..signature:Iterator<TContainer, TopDown<TSpec> >::Type
 ..signature:Iter<TContainer, VSTree< TopDown<TSpec> > >
 ..param.TContainer:Type of the container that can be iterated.
 ...type:Spec.IndexEsa
 ...metafunction:Metafunction.Container
 ..param.TSpec:The specialization type.
-..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the suffix tree.
+..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the virtual tree.
+..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 ..include:seqan/index.h
 
 .Memfunc.TopDown Iterator#Iterator
@@ -102,7 +103,8 @@ The iterator starts in the root node by default.
 ..param.iterator:Another TopDown iterator. (copy constructor)
 ...type:Spec.TopDown Iterator
 ...type:Spec.TopDownHistory Iterator
-..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the suffix tree.
+..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the virtual tree.
+..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 */
 
 
@@ -169,7 +171,7 @@ The iterator starts in the root node by default.
 .Spec.TopDownHistory Iterator:
 ..cat:Index
 ..general:Spec.TopDown Iterator
-..summary:Iterator for suffix trees that can go down, right, and up. Supports depth-first search.
+..summary:String tree iterator that can go down, right, and up. Supports depth-first search.
 ..signature:Iterator<TContainer, TopDown< ParentLinks<TSpec> > >::Type
 ..signature:Iter<TContainer, VSTree< TopDown< ParentLinks<TSpec> > > >
 ..param.TContainer:Type of the container that can be iterated.
@@ -181,8 +183,9 @@ The iterator starts in the root node by default.
 ...type:Tag.DFS Order.tag.PreorderEmptyEdges
 ...type:Tag.DFS Order.tag.Postorder
 ...type:Tag.DFS Order.tag.PostorderEmptyEdges
-..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the suffix tree.
+..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the string tree.
 Depending on the depth-first search mode the root is not the first DFS node. To go to the first DFS node use @Function.goBegin@.
+..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 ..include:seqan/index.h
 
 .Memfunc.TopDownHistory Iterator#Iterator
@@ -193,7 +196,8 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ..param.index:An index object.
 ..param.iterator:Another TopDownHistory iterator. (copy constructor)
 ...type:Spec.TopDownHistory Iterator
-..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the suffix tree.
+..remarks:If not copy-constructed the @Spec.Spec.TopDownHistory@ starts in the root node of the suffix tree.
+..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 */
 
 	template < typename TVSTreeIter >
@@ -1033,7 +1037,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..cat:Index
 ..signature:representative(iterator)
 ..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
+..param.iterator:An iterator of a string tree.
 ...type:Spec.VSTree Iterator
 ..returns:An @Spec.InfixSegment@ of the text of an index (see @Tag.ESA Index Fibres.EsaText@).
 If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaText>::Type const>::Type$.

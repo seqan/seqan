@@ -48,7 +48,7 @@ namespace seqan {
 // ==========================================================================
 
 template <typename TValue>
-class WaveletTree;
+struct WaveletTree;
 
 template<typename TValue> 
 class RankDictionary;

@@ -186,7 +186,7 @@ for @Class.Index@ based substring searches.
 ...type:Class.Index
 ..param.TSpec:Tag to specify the fibre.
 ..returns:Fibre type.
-..remarks:Some containers, such as @Class.Index@, Class.WaveletTree or WaveletTreeStructure, can be seen as a bundle consisting of various fibres. Because not every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables. The fibre interface was designed to unify the access to the members of the different fibres.
+..remarks:Some containers, such as @Class.Index@, can be seen as a bundle consisting of various fibres. Because not every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables. The fibre interface was designed to unify the access to the members of the different fibres.
 To get a reference or the type of a specific fibre use @Function.getFibre@ or @Metafunction.Fibre@.		
 ..remarks:A @Metafunction.Fibre@ does not need to be a real container. It can also be a view (see @Tag.ESA Index Fibres.EsaRawText@).
 ..include:seqan/index.h
