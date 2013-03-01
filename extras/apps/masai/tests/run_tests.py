@@ -25,6 +25,9 @@ transforms = [
 	app_tests.RegexpReplaceTransform("[0-9\.\-e]+ sec", "0.0 sec")
 ]
 
+defaultFormat = 'raw'
+samFormat = 'sam'
+
 def getMapperConf(ph, path_to_program, rl, optionName, optionValue):
     return app_tests.TestConf(
                 program=path_to_program,
@@ -32,9 +35,9 @@ def getMapperConf(ph, path_to_program, rl, optionName, optionValue):
                 args=['-'+optionName, str(optionValue),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-%s%s.out' % (rl, optionName, optionValue))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-%s%s.out' % (rl, optionName, optionValue)),
-                          ph.outFile('se-adeno-reads%d_1-%s%s.out' % (rl, optionName, optionValue))),
+                      '-o', ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat)),
+                          ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat))),
                          (ph.inFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
                           ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
                           transforms)])
@@ -101,9 +104,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('se-adeno-reads%d_1.stdout' % rl),
             args=[ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
-                  '-o', ph.outFile('se-adeno-reads%d_1.out' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1.out' % rl),
+                  '-o', ph.outFile('se-adeno-reads%d_1.out.%s' % (rl, defaultFormat))],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1.out.%s' % (rl, defaultFormat)),
+                      ph.outFile('se-adeno-reads%d_1.out.%s' % (rl, defaultFormat)),
                       'md5'),
                      (ph.inFile('se-adeno-reads%d_1.stdout' % rl),
                       ph.outFile('se-adeno-reads%d_1.stdout' % rl),
@@ -130,11 +133,21 @@ def main(source_base, binary_base):
             optionName='e'
             conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
 
-        # Run with different output formats.
-        for optionValue in ['sam', 'sam-no-cigar']:
-            optionName='of'
-            conf_list.append(getMapperConf(ph, path_to_mapper, rl, optionName, optionValue))
-
+        # Run with sam output format.
+        conf = app_tests.TestConf(
+            program=path_to_mapper,
+            redir_stdout=ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, 'of', samFormat)),
+            args=[ph.inFile('adeno-genome.fa'),
+                  ph.inFile('adeno-reads%d_1.fa' % rl),
+                  '-o', ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat))],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat)),
+                      ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat)),
+                      'md5'),
+                     (ph.inFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, 'of', samFormat)),
+                      ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, 'of', samFormat)),
+                      transforms)])
+        conf_list.append(conf)
+        
         # Run without gaps.
         conf = app_tests.TestConf(
             program=path_to_mapper,
@@ -142,9 +155,9 @@ def main(source_base, binary_base):
             args=[ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   '--no-gaps',
-                  '-o', ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1-nogaps.out' % rl),
-                      ph.outFile('se-adeno-reads%d_1-nogaps.out' % rl),
+                  '-o', ph.outFile('se-adeno-reads%d_1-nogaps.out.%s' % (rl, defaultFormat))],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1-nogaps.out.%s' % (rl, defaultFormat)),
+                      ph.outFile('se-adeno-reads%d_1-nogaps.out.%s' % (rl, defaultFormat)),
                       'md5'),
                      (ph.inFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
                       ph.outFile('se-adeno-reads%d_1-nogaps.stdout' % rl),
