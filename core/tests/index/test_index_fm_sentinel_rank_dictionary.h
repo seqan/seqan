@@ -139,7 +139,7 @@ void sentinelDictionarySentinelPosition(TRankDictionary & /*tag*/)
     SEQAN_ASSERT_EQ(_getSentinelPosition(sentinelDictionary), length(text));
 
     setSentinelPosition(sentinelDictionary, 2u);
-    SEQAN_ASSERT_EQ(_getSentinelPosition(sentinelDictionary), 2);
+    SEQAN_ASSERT_EQ(_getSentinelPosition(sentinelDictionary), 2u);
 }
     
 template <typename TRankDictionary>
@@ -148,7 +148,9 @@ void sentinelDictionarySentinelPosition(SentinelRankDictionary<TRankDictionary, 
 	String<typename Value<SentinelRankDictionary<TRankDictionary, Sentinels> >::Type> text = "ACGTNACGTNACGTN";
 	SentinelRankDictionary<TRankDictionary, Sentinels> sentinelDictionary(text);
 
-    SEQAN_ASSERT_EQ(_getSentinelPosition(sentinelDictionary), "");
+    String<unsigned> sentinelPos;
+
+    SEQAN_ASSERT_EQ(_getSentinelPosition(sentinelDictionary), sentinelPos);
 
     RankSupportBitString<> bitString;
     resize(bitString, length(text), 0);

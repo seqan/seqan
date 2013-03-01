@@ -76,11 +76,11 @@ add_executable (test_index_fm
 			    test_index_fm_stree.h)
 target_link_libraries (test_index_fm ${SEQAN_LIBRARIES})
 
-add_executable (test_index_fm_wt
+add_executable (test_index_fm_rank_dictionary
                 test_index_fm_rank_dictionary.cpp
 			    test_index_fm_rank_dictionary.h
 			    test_index_fm_sentinel_rank_dictionary.h)
-target_link_libraries (test_index_fm_wt ${SEQAN_LIBRARIES})
+target_link_libraries (test_index_fm_rank_dictionary ${SEQAN_LIBRARIES})
 
 
 # GCC < 4.5 segfaults when compiling the test_index_stree_iterators test.
