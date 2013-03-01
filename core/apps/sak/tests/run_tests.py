@@ -54,9 +54,9 @@ def main(source_base, binary_base):
         program=path_to_program,
         args=[ph.inFile('adeno.fasta'),
 #              '-ll', '1000',
-              '-o', ph.outFile('adeno.all.out')],
-        to_diff=[(ph.inFile('adeno.all.out'),
-                  ph.outFile('adeno.all.out'))])
+              '-o', ph.outFile('adeno.all.fa')],
+        to_diff=[(ph.inFile('adeno.all.fa'),
+                  ph.outFile('adeno.all.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -64,9 +64,9 @@ def main(source_base, binary_base):
         args=[ph.inFile('adeno.fasta'),
 #              '-ll', '1000',
               '-s', '1',
-              '-o', ph.outFile('adeno.seq1.out')],
-        to_diff=[(ph.inFile('adeno.seq1.out'),
-                  ph.outFile('adeno.seq1.out'))])
+              '-o', ph.outFile('adeno.seq1.fa')],
+        to_diff=[(ph.inFile('adeno.seq1.fa'),
+                  ph.outFile('adeno.seq1.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -74,9 +74,9 @@ def main(source_base, binary_base):
         args=[ph.inFile('adeno.fasta'),
 #              '-ll', '1000',
               '-ss', '1-2',
-              '-o', ph.outFile('adeno.seq1-2.out')],
-        to_diff=[(ph.inFile('adeno.seq1-2.out'),
-                  ph.outFile('adeno.seq1-2.out'))])
+              '-o', ph.outFile('adeno.seq1-2.fa')],
+        to_diff=[(ph.inFile('adeno.seq1-2.fa'),
+                  ph.outFile('adeno.seq1-2.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -84,9 +84,9 @@ def main(source_base, binary_base):
         args=[ph.inFile('adeno.fasta'),
 #              '-ll', '1000',
               '-s', '3',
-              '-o', ph.outFile('adeno.seq3.out')],
-        to_diff=[(ph.inFile('adeno.seq3.out'),
-                  ph.outFile('adeno.seq3.out'))])
+              '-o', ph.outFile('adeno.seq3.fa')],
+        to_diff=[(ph.inFile('adeno.seq3.fa'),
+                  ph.outFile('adeno.seq3.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -94,9 +94,9 @@ def main(source_base, binary_base):
         args=[ph.inFile('adeno.fasta'),
 #              '-ll', '1000',
               '-sn', 'gi|9626621',
-              '-o', ph.outFile('adeno.sn.out')],
-        to_diff=[(ph.inFile('adeno.sn.out'),
-                  ph.outFile('adeno.sn.out'))])
+              '-o', ph.outFile('adeno.sn.fa')],
+        to_diff=[(ph.inFile('adeno.sn.fa'),
+                  ph.outFile('adeno.sn.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -105,9 +105,9 @@ def main(source_base, binary_base):
 #              '-ll', '1000',
               '-s', '1',
               '-i', '5-25',
-              '-o', ph.outFile('adeno.s1i5-25.out')],
-        to_diff=[(ph.inFile('adeno.s1i5-25.out'),
-                  ph.outFile('adeno.s1i5-25.out'))])
+              '-o', ph.outFile('adeno.s1i5-25.fa')],
+        to_diff=[(ph.inFile('adeno.s1i5-25.fa'),
+                  ph.outFile('adeno.s1i5-25.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -116,9 +116,9 @@ def main(source_base, binary_base):
 #              '-ll', '1000',
               '-ss', '1-2',
               '-i', '5-25',
-              '-o', ph.outFile('adeno.s1-2i5-25.out')],
-        to_diff=[(ph.inFile('adeno.s1-2i5-25.out'),
-                  ph.outFile('adeno.s1-2i5-25.out'))])
+              '-o', ph.outFile('adeno.s1-2i5-25.fa')],
+        to_diff=[(ph.inFile('adeno.s1-2i5-25.fa'),
+                  ph.outFile('adeno.s1-2i5-25.fa'))])
     conf_list.append(conf)
 
     conf = app_tests.TestConf(
@@ -127,9 +127,9 @@ def main(source_base, binary_base):
 #              '-ll', '1000',
               '-s', '1',
               '-rc',
-              '-o', ph.outFile('adeno.s1rc.out')],
-        to_diff=[(ph.inFile('adeno.s1rc.out'),
-                  ph.outFile('adeno.s1rc.out'))])
+              '-o', ph.outFile('adeno.s1rc.fa')],
+        to_diff=[(ph.inFile('adeno.s1rc.fa'),
+                  ph.outFile('adeno.s1rc.fa'))])
     conf_list.append(conf)
 
     # Execute the tests.
