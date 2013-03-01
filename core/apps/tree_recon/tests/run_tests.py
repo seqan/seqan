@@ -48,9 +48,9 @@ def main(source_base, binary_base):
         conf = app_tests.TestConf(
             program=path_to_program,
             args=['-m', ph.inFile('example%d.dist' % i),
-                  '-o', ph.outFile('example%d.out' % i)],
-            to_diff=[(ph.inFile('example%d.out' % i),
-                      ph.outFile('example%d.out' % i))])
+                  '-o', ph.outFile('example%d.dot' % i)],
+            to_diff=[(ph.inFile('example%d.dot' % i),
+                      ph.outFile('example%d.dot' % i))])
         conf_list.append(conf)
     for i in [1, 2, 3]:
         for b in ['nj', 'min', 'max', 'avg', 'wavg']:
@@ -60,19 +60,18 @@ def main(source_base, binary_base):
                 program=path_to_program,
                 args=['-b', b,
                       '-m', ph.inFile('example%d.dist' % i),
-                      '-o', ph.outFile('example%d.%s.out' % (i, b))],
-                to_diff=[(ph.inFile('example%d.%s.out' % (i, b)),
-                          ph.outFile('example%d.%s.out' % (i, b)))])
+                      '-o', ph.outFile('example%d.%s.dot' % (i, b))],
+                to_diff=[(ph.inFile('example%d.%s.dot' % (i, b)),
+                          ph.outFile('example%d.%s.dot' % (i, b)))])
             conf_list.append(conf)
     for i in [1, 2, 3]:
         for f in ['dot', 'newick']:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                args=['-f', f,
-                      '-m', ph.inFile('example%d.dist' % i),
-                      '-o', ph.outFile('example%d.%s.out' % (i, f))],
-                to_diff=[(ph.inFile('example%d.%s.out' % (i, f)),
-                          ph.outFile('example%d.%s.out' % (i, f)))])
+                args=['-m', ph.inFile('example%d.dist' % i),
+                      '-o', ph.outFile('example%d.%s' % (i, f))],
+                to_diff=[(ph.inFile('example%d.%s' % (i, f)),
+                          ph.outFile('example%d.%s' % (i, f)))])
             conf_list.append(conf)
     
     # Execute the tests.

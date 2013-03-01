@@ -19,15 +19,15 @@ done
 # Run with all building method options.
 for i in 1 2 3; do
     for b in nj min max avg wavg; do
-        echo ${TREE_RECON} -m example${i}.dist -b ${b} -o example${i}.${b}.out
-        ${TREE_RECON} -m example${i}.dist -b ${b} -o example${i}.${b}.out
+        echo ${TREE_RECON} -m example${i}.dist -b ${b} -o example${i}.${b}.newick
+        ${TREE_RECON} -m example${i}.dist -b ${b} -o example${i}.${b}.newick
     done
 done
 
 # Run with all output formats
 for i in 1 2 3; do
     for f in dot newick; do
-        echo ${TREE_RECON} -m example${i}.dist -f ${f} -o example${i}.${f}.out
-        ${TREE_RECON} -m example${i}.dist -f ${f} -o example${i}.${f}.out
+        echo ${TREE_RECON} -m example${i}.dist -o example${i}.${f}
+        ${TREE_RECON} -m example${i}.dist -o example${i}.${f}
     done
 done
