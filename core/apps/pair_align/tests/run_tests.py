@@ -56,9 +56,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             redir_stdout=ph.outFile('%s.stdout' % fname),
             args=['-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.out' % fname)],
-            to_diff=[(ph.inFile('%s.out' % fname),
-                      ph.outFile('%s.out' % fname)),
+                  '-o', ph.outFile('%s.fasta' % fname)],
+            to_diff=[(ph.inFile('%s_out.fasta' % fname),
+                      ph.outFile('%s.fasta' % fname)),
                      (ph.inFile('%s.stdout' % fname),
                       ph.outFile('%s.stdout' % fname))])
         conf_list.append(conf)
@@ -69,10 +69,10 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-a', 'protein',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.protein.out' % fname)],
+                  '-o', ph.outFile('%s.protein.fasta' % fname)],
             redir_stdout=ph.outFile('%s.protein.stdout' % fname),
-            to_diff=[(ph.inFile('%s.protein.out' % fname),
-                      ph.outFile('%s.protein.out' % fname)),
+            to_diff=[(ph.inFile('%s.protein_out.fasta' % fname),
+                      ph.outFile('%s.protein.fasta' % fname)),
                      (ph.inFile('%s.protein.stdout' % fname),
                       ph.outFile('%s.protein.stdout' % fname))])
         conf_list.append(conf)
@@ -85,9 +85,9 @@ def main(source_base, binary_base):
                 redir_stdout=ph.outFile('%s.m%s.stdout' % (fname, m)),
                 args=['-m', m,
                       '-s', ph.inFile('%s.fa' % fname),
-                      '-o', ph.outFile('%s.m%s.out' % (fname, m))],
-                to_diff=[(ph.inFile('%s.m%s.out' % (fname, m)),
-                          ph.outFile('%s.m%s.out' % (fname, m))),
+                      '-o', ph.outFile('%s.m%s.fasta' % (fname, m))],
+                to_diff=[(ph.inFile('%s.m%s_out.fasta' % (fname, m)),
+                          ph.outFile('%s.m%s.fasta' % (fname, m))),
                          (ph.inFile('%s.m%s.stdout' % (fname, m)),
                           ph.outFile('%s.m%s.stdout' % (fname, m)))])
             conf_list.append(conf)
@@ -99,9 +99,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.g-20.stdout' % fname),
             args=['-g', '-20',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.g-20.out' % fname)],
-            to_diff=[(ph.inFile('%s.g-20.out' % fname),
-                      ph.outFile('%s.g-20.out' % fname)),
+                  '-o', ph.outFile('%s.g-20.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.g-20_out.fasta' % fname),
+                      ph.outFile('%s.g-20.fasta' % fname)),
                      (ph.inFile('%s.g-20.stdout' % fname),
                       ph.outFile('%s.g-20.stdout' % fname))])
         conf_list.append(conf)
@@ -110,9 +110,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.e-5.stdout' % fname),
             args=['-e', '-5',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.e-5.out' % fname)],
-            to_diff=[(ph.inFile('%s.e-5.out' % fname),
-                      ph.outFile('%s.e-5.out' % fname)),
+                  '-o', ph.outFile('%s.e-5.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.e-5_out.fasta' % fname),
+                      ph.outFile('%s.e-5.fasta' % fname)),
                      (ph.inFile('%s.e-5.stdout' % fname),
                       ph.outFile('%s.e-5.stdout' % fname))])
         conf_list.append(conf)
@@ -121,9 +121,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.ms10.stdout' % fname),
             args=['-ms', '10',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.ms10.out' % fname)],
-            to_diff=[(ph.inFile('%s.ms10.out' % fname),
-                      ph.outFile('%s.ms10.out' % fname)),
+                  '-o', ph.outFile('%s.ms10.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.ms10_out.fasta' % fname),
+                      ph.outFile('%s.ms10.fasta' % fname)),
                      (ph.inFile('%s.ms10.stdout' % fname),
                       ph.outFile('%s.ms10.stdout' % fname))])
         conf_list.append(conf)
@@ -132,9 +132,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.mm-8.stdout' % fname),
             args=['-mm', '-8',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.mm-8.out' % fname)],
-            to_diff=[(ph.inFile('%s.mm-8.out' % fname),
-                      ph.outFile('%s.mm-8.out' % fname)),
+                  '-o', ph.outFile('%s.mm-8.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.mm-8_out.fasta' % fname),
+                      ph.outFile('%s.mm-8.fasta' % fname)),
                      (ph.inFile('%s.mm-8.stdout' % fname),
                       ph.outFile('%s.mm-8.stdout' % fname))])
         conf_list.append(conf)
@@ -146,9 +146,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.maVTML200.stdout' % fname),
             args=['-ma', ph.inFile('VTML200I'),
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.maVTML200.out' % fname)],
-            to_diff=[(ph.inFile('%s.maVTML200.out' % fname),
-                      ph.outFile('%s.maVTML200.out' % fname)),
+                  '-o', ph.outFile('%s.maVTML200.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.maVTML200_out.fasta' % fname),
+                      ph.outFile('%s.maVTML200.fasta' % fname)),
                      (ph.inFile('%s.maVTML200.stdout' % fname),
                       ph.outFile('%s.maVTML200.stdout' % fname))])
         conf_list.append(conf)
@@ -160,9 +160,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.lo5.stdout' % fname),
             args=['-lo', '5',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.lo5.out' % fname)],
-            to_diff=[(ph.inFile('%s.lo5.out' % fname),
-                      ph.outFile('%s.lo5.out' % fname)),
+                  '-o', ph.outFile('%s.lo5.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.lo5_out.fasta' % fname),
+                      ph.outFile('%s.lo5.fasta' % fname)),
                      (ph.inFile('%s.lo5.stdout' % fname),
                       ph.outFile('%s.lo5.stdout' % fname))])
         conf_list.append(conf)
@@ -171,9 +171,9 @@ def main(source_base, binary_base):
             redir_stdout=ph.outFile('%s.hi5.stdout' % fname),
             args=['-hi', '5',
                   '-s', ph.inFile('%s.fa' % fname),
-                  '-o', ph.outFile('%s.hi5.out' % fname)],
-            to_diff=[(ph.inFile('%s.hi5.out' % fname),
-                      ph.outFile('%s.hi5.out' % fname)),
+                  '-o', ph.outFile('%s.hi5.fasta' % fname)],
+            to_diff=[(ph.inFile('%s.hi5_out.fasta' % fname),
+                      ph.outFile('%s.hi5.fasta' % fname)),
                      (ph.inFile('%s.hi5.stdout' % fname),
                       ph.outFile('%s.hi5.stdout' % fname))])
         conf_list.append(conf)
@@ -187,9 +187,9 @@ def main(source_base, binary_base):
                 redir_stdout=ph.outFile('%s.c%s.stdout' % (fname, c)),
                 args=['-c', c,
                       '-s', ph.inFile('%s.fa' % fname),
-                      '-o', ph.outFile('%s.c%s.out' % (fname, c))],
-                to_diff=[(ph.inFile('%s.c%s.out' % (fname, c)),
-                          ph.outFile('%s.c%s.out' % (fname, c))),
+                      '-o', ph.outFile('%s.c%s.fasta' % (fname, c))],
+                to_diff=[(ph.inFile('%s.c%s_out.fasta' % (fname, c)),
+                          ph.outFile('%s.c%s.fasta' % (fname, c))),
                          (ph.inFile('%s.c%s.stdout' % (fname, c)),
                           ph.outFile('%s.c%s.stdout' % (fname, c)))])
             conf_list.append(conf)
@@ -204,9 +204,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-a', 'dna',
                   '-s', ph.inFile('adeno%d.fa' % i),
-                  '-o', ph.outFile('adeno%d.out' % i)],
-            to_diff=[(ph.inFile('adeno%d.out' % i),
-                      ph.outFile('adeno%d.out' % i))])
+                  '-o', ph.outFile('adeno%d.fasta' % i)],
+            to_diff=[(ph.inFile('adeno%d_out.fasta' % i),
+                      ph.outFile('adeno%d.fasta' % i))])
         conf_list.append(conf)
 
     # ============================================================
@@ -219,9 +219,9 @@ def main(source_base, binary_base):
             program=path_to_program,
             args=['-a', 'rna',
                   '-s', ph.inFile('adeno%d-rna.fa' % i),
-                  '-o', ph.outFile('adeno%d-rna.out' % i)],
-            to_diff=[(ph.inFile('adeno%d-rna.out' % i),
-                      ph.outFile('adeno%d-rna.out' % i))])
+                  '-o', ph.outFile('adeno%d-rna.fasta' % i)],
+            to_diff=[(ph.inFile('adeno%d-rna_out.fasta' % i),
+                      ph.outFile('adeno%d-rna.fasta' % i))])
         conf_list.append(conf)
     
     # Execute the tests.

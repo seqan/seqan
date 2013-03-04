@@ -38,7 +38,7 @@ struct Options
     seqan::CharString outputFile;
     seqan::CharString alphabet;
     seqan::CharString method;
-    seqan::CharString format;
+    int outputFormat;
     int gop;
     int gex;
     seqan::CharString matrix;
@@ -190,10 +190,6 @@ _initAlignParams(Options const & options, TScore& sc) {
     else if (meth == "gotoh") method = 1;
     else if (meth == "sw") method = 2;
     else if (meth == "lcs") method = 3;
-    unsigned int outputFormat = 0;
-    String<char> format = options.format;
-    if (format == "fasta") outputFormat = 0;
-    else if (format == "msf") outputFormat = 1;
     int low = 0;
     int high = 0;
     bool banded = false;
@@ -216,41 +212,41 @@ _initAlignParams(Options const & options, TScore& sc) {
     if (!empty(config))
     {
         if (config == "tttt")
-            pairwise_align<TAlphabet, AlignConfig<true, true, true, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "tttf")
-            pairwise_align<TAlphabet, AlignConfig<true, true, true, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "ttft")
-            pairwise_align<TAlphabet, AlignConfig<true, true, false, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "ttff")
-            pairwise_align<TAlphabet, AlignConfig<true, true, false, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "tftt")
-            pairwise_align<TAlphabet, AlignConfig<true, false, true, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "tftf")
-            pairwise_align<TAlphabet, AlignConfig<true, false, true, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "tfft")
-            pairwise_align<TAlphabet, AlignConfig<true, false, false, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "tfff")
-            pairwise_align<TAlphabet, AlignConfig<true, false, false, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "fttt")
-            pairwise_align<TAlphabet, AlignConfig<false, true, true, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "fttf")
-            pairwise_align<TAlphabet, AlignConfig<false, true, true, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "ftft")
-            pairwise_align<TAlphabet, AlignConfig<false, true, false, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "ftff")
-            pairwise_align<TAlphabet, AlignConfig<false, true, false, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "fftt")
-            pairwise_align<TAlphabet, AlignConfig<false, false, true, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "fftf")
-            pairwise_align<TAlphabet, AlignConfig<false, false, true, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "ffft")
-            pairwise_align<TAlphabet, AlignConfig<false, false, false, true> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
         else if (config == "ffff")
-            pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
     }
     else
     {
-        pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, outputFormat, outfile);
+        pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
     }
 }
 
@@ -342,6 +338,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-s\\fP \\fIIN.fa\\fP");
+	setCategory(parser, "Sequence Alignment");
     addDescription(parser,
                    "The program allows to align two sequences using dyamic programming alignment algorithms while "
                    "tweaking various parameters.");
@@ -361,9 +358,11 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setDefaultValue(parser, "method", "gotoh");
     addOption(parser, seqan::ArgParseOption("o", "outfile", "Output filename.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
     setDefaultValue(parser, "outfile", "out.fasta");
-    addOption(parser, seqan::ArgParseOption("f", "format", "Output format.", seqan::ArgParseOption::STRING));
-    setValidValues(parser, "format", "fasta msf");
-    setDefaultValue(parser, "format", "fasta");
+	setValidValues(parser, "outfile", "fa fasta msf");
+	//TODO(rmaerker): We removed this option. The file format is derived from the outfile format.
+    //addOption(parser, seqan::ArgParseOption("f", "format", "Output format.", seqan::ArgParseOption::STRING));
+    //setValidValues(parser, "format", "fa fasta msf");
+    //setDefaultValue(parser, "format", "fasta");
 
     addSection(parser, "Scoring Options");
     addOption(parser, seqan::ArgParseOption("g", "gop", "Gap open penalty.", seqan::ArgParseOption::INTEGER, "INT"));
@@ -402,9 +401,17 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     getOptionValue(options.inputFile, parser, "seq");
     getOptionValue(options.outputFile, parser, "outfile");
+	// Guess file format based on extension of file.
+	CharString tmp = options.outputFile;
+	if (endsWith(tmp, ".fa") || endsWith(tmp, "fasta"))
+	    options.outputFormat = 0;
+	else if (endsWith(tmp, ".msf"))
+	    options.outputFormat = 1;
+
     getOptionValue(options.alphabet, parser, "alphabet");
     getOptionValue(options.method, parser, "method");
-    getOptionValue(options.format, parser, "format");
+
+    //getOptionValue(options.format, parser, "format");
     getOptionValue(options.gop, parser, "gop");
     getOptionValue(options.gex, parser, "gex");
     getOptionValue(options.matrix, parser, "matrix");
