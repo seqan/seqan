@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,43 +29,28 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_STORE_H
-#define SEQAN_HEADER_STORE_H
 
 #include <seqan/basic.h>
-#include <seqan/sequence.h>
-#include <seqan/align.h>
 #include <seqan/file.h>
-#include <seqan/parallel.h>
-#include <seqan/bam_io.h>
-#include <seqan/misc/misc_name_store_cache.h>
 
-#include <sstream>
-#include <algorithm>
-#include <set>
+#include "test_gff_io.h"
 
-#include <../../extras/include/seqan/gff_io.h>
 
-//////////////////////////////////////////////////////////////////////////////
-// FRAGMENT STORE SUB-CONTAINERS
-//////////////////////////////////////////////////////////////////////////////
+SEQAN_BEGIN_TESTSUITE(test_gff_io)
+{
+    // gff tests
+	SEQAN_CALL_TEST(test_store_io_read_record_gff);
+	SEQAN_CALL_TEST(test_store_io_read_record_context_gff);
+	SEQAN_CALL_TEST(test_store_io_write_record_gff);
+	SEQAN_CALL_TEST(test_store_io_write_record_context_gff);
 
-#include <seqan/store/store_base.h>
-#include <seqan/store/store_read.h>
-#include <seqan/store/store_matepair.h>
-#include <seqan/store/store_library.h>
-#include <seqan/store/store_contig.h>
-#include <seqan/store/store_align.h>
-#include <seqan/store/store_annotation.h>
-#include <seqan/store/store_all.h>
-
-#include <seqan/store/store_align_intervals.h>
-#include <seqan/store/store_intervaltree.h>
-
-#include <seqan/store/store_io.h>
-#include <seqan/store/store_io_sam.h>
-#include <seqan/store/store_io_gff.h>
-#include <seqan/store/store_io_ucsc.h>
-
-#endif //#ifndef SEQAN_HEADER_...
+	//gtf tests
+	SEQAN_CALL_TEST(test_store_io_read_record_gtf);
+	SEQAN_CALL_TEST(test_store_io_read_record_context_gtf);
+	SEQAN_CALL_TEST(test_store_io_write_record_gtf);
+	SEQAN_CALL_TEST(test_store_io_write_record_context_gtf);
+}
+SEQAN_END_TESTSUITE

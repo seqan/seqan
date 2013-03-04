@@ -1,0 +1,8 @@
+Name: seqan-gff_io
+Author: Jochen Singer <jochen.singer@fu-berlin.de>
+Maintainer: Jochen Singer <jochen.singer@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2012, FU Berlin
+Status: under development
+Description: Gff and Gtf record I/O code.
+This module contains code for streaming through Gff and Gtf files.

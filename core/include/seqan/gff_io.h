@@ -1,7 +1,7 @@
 // ==========================================================================
-//                 SeqAn - The Library for Sequence Analysis
+//                                   gff_io
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,43 +29,28 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Your Name <your.email@example.net>
+// ==========================================================================
+// Facade header for module gff_io.
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_STORE_H
-#define SEQAN_HEADER_STORE_H
+#ifndef CORE_INCLUDE_SEQAN_GFF_IO_H_
+#define CORE_INCLUDE_SEQAN_GFF_IO_H_
+
+// ===========================================================================
+// Prerequisites.
+// ===========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/sequence.h>
-#include <seqan/align.h>
 #include <seqan/file.h>
-#include <seqan/parallel.h>
-#include <seqan/bam_io.h>
+#include <seqan/sequence.h>
 #include <seqan/misc/misc_name_store_cache.h>
 
-#include <sstream>
-#include <algorithm>
-#include <set>
+// ===========================================================================
+// First Header Group.
+// ===========================================================================
 
-#include <../../extras/include/seqan/gff_io.h>
+#include <../../core/include/seqan/gff_io/gff_io_context.h>
+#include <../../core/include/seqan/gff_io/gff_io_base.h>
 
-//////////////////////////////////////////////////////////////////////////////
-// FRAGMENT STORE SUB-CONTAINERS
-//////////////////////////////////////////////////////////////////////////////
-
-#include <seqan/store/store_base.h>
-#include <seqan/store/store_read.h>
-#include <seqan/store/store_matepair.h>
-#include <seqan/store/store_library.h>
-#include <seqan/store/store_contig.h>
-#include <seqan/store/store_align.h>
-#include <seqan/store/store_annotation.h>
-#include <seqan/store/store_all.h>
-
-#include <seqan/store/store_align_intervals.h>
-#include <seqan/store/store_intervaltree.h>
-
-#include <seqan/store/store_io.h>
-#include <seqan/store/store_io_sam.h>
-#include <seqan/store/store_io_gff.h>
-#include <seqan/store/store_io_ucsc.h>
-
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // CORE_INCLUDE_SEQAN_GFF_IO_H_

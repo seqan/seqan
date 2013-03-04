@@ -37,92 +37,6 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
-/**
-.Tag.File Format.tag.Gff:
-    Gff annotation file.
-..include:seqan/store.h
-*/
-struct TagGff_;
-typedef Tag<TagGff_> const Gff;
-
-/**
-// .Tag.File Format.tag.Gtf:
-    Gtf annotation file.
-..include:seqan/store.h
-*/
-struct TagGtf_;
-typedef Tag<TagGtf_> const Gtf;
-
-// Returns an error code, i.e. == 0 for OK, != 0 for error.
-template <typename TReader, typename TKeyString, typename TValueString>
-inline int
-_parseReadGffKeyValue(TReader & reader, TKeyString & key, TValueString & outValue)
-{
-    char c = value(reader);
-    if (c == ' ' || c == '\t' || c == '\n' || c == '=')
-        return 1;
-
-    for (; !atEnd(reader); goNext(reader))
-    {
-        c = value(reader);
-        if (c == ' ' || c == '\t' || c == '\n' || c == '=')
-            break;
-        appendValue(key, c);
-    }
-    if (skipWhitespaces(reader) != 0)
-        return 1;
-
-    if (value(reader) == '=')
-    {
-        goNext(reader);
-        if (skipWhitespaces(reader) != 0)
-            return 1;
-
-        if (atEnd(reader))
-            return 1;
-    }
-
-    // Handle the case of a string literal.
-    if (value(reader) == '"')
-    {
-        goNext(reader);
-        // Append all characters in the literal to outValue until the first line
-        // break or the closing '"'.
-        for (; !atEnd(reader); goNext(reader))
-        {
-            if (value(reader) == '\n')
-                return 1;
-
-            if (value(reader) == '"')
-            {
-                goNext(reader);
-                break;
-            }
-            appendValue(outValue, value(reader));
-        }
-        // Go over the trailing simicolon and any trailing space.
-        while (!atEnd(reader) && (value(reader) == ';' || value(reader) == ' '))
-            goNext(reader);
-    }
-    else
-    {
-        // Read until the first semicolon, return at whitespace.
-        for (; !atEnd(reader); goNext(reader))
-        {
-            if (isspace(value(reader)))
-                return 0;
-
-            if (value(reader) == ';')
-                break;
-            appendValue(outValue, value(reader));
-        }
-        // Skip semicolon and spaces if any.
-        while (!atEnd(reader) && (value(reader) == ';' || value(reader) == ' '))
-            goNext(reader);
-    }
-    return 0;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 // Read Gff
 //////////////////////////////////////////////////////////////////////////////
@@ -180,11 +94,11 @@ inline void clear(IOContextGff_<TFragmentStore, TSpec> & ctx)
 //
 // reads in one annotation line from a Gff file
 
-template <typename TRecordReader, typename TFragmentStore, typename TSpec>
-inline bool
+template <typename TFragmentStore, typename TSpec>
+inline void
 _readOneAnnotation(
-    TRecordReader & reader,
-    IOContextGff_<TFragmentStore, TSpec> & ctx)
+    IOContextGff_<TFragmentStore, TSpec> & ctx,
+    GffRecord const & record)
 {
 //IOREV _nodoc_ _hasCRef_
     typedef typename TFragmentStore::TContigPos         TContigPos;
@@ -194,102 +108,31 @@ _readOneAnnotation(
     clear(ctx);
 
     // read column 1: contig name
-    // The letters until the first whitespace will be read.
-    // Then, we skip until we hit the first tab character.
-    if (readUntilWhitespace(ctx.contigName, reader))
-        return false;
-
-    if (!empty(ctx.contigName) && ctx.contigName[0] == '#')
-    {
-        if (skipLine(reader))
-            return false;
-
-        return false;
-    }
-    if (skipWhitespaces(reader))
-        return false;
+    ctx.contigName = record.seqID;
 
     // skip column 2
-    if (skipUntilWhitespace(reader) || skipBlanks(reader))
-        return false;
-
     // read column 3: type
-    if (readUntilWhitespace(ctx.typeName, reader))
-        return false;
+    ctx.typeName = record.type;
 
-    if (skipWhitespaces(reader))
-        return false;
-
-    // read column 4: begin position
-    String<char> temp;
-    if (readDigits(temp, reader))
-        return false;
-
-    if (length(temp) > 0u)
-    {
-        if (!lexicalCast2(ctx.annotation.beginPos, temp))
-            return false;
-
-        --ctx.annotation.beginPos;
-    }
-    else
-    {
-        ctx.annotation.beginPos = TAnnotation::INVALID_POS;
-        if (skipUntilWhitespace(reader))
-            return false;
-    }
-    if (skipBlanks(reader))
-        return false;
-
-    // read column 5: end position
-    clear(temp);
-    if (readDigits(temp, reader))
-        return false;
-
-    if (length(temp) > 0u)
-    {
-        if (!lexicalCast2(ctx.annotation.endPos, temp))
-            return false;
-    }
-    else
-    {
-        ctx.annotation.endPos = TAnnotation::INVALID_POS;
-        if (skipUntilWhitespace(reader))
-            return false;
-    }
-    if (skipBlanks(reader))
-        return false;
-
+    // read column 4 and 5: begin and endposition
+    ctx.annotation.beginPos = record.beginPos;
+    ctx.annotation.endPos = record.endPos;
 
     // skip column 6
-    if (skipUntilWhitespace(reader) || skipBlanks(reader))
-        return false;
-
     // read column 7: orientation
-    clear(temp);
-    if (readUntilWhitespace(temp, reader))
-        return false;
-
-    if (temp == "-")
+    if (record.strand == '-')
     {
         TContigPos tmp = ctx.annotation.beginPos;
         ctx.annotation.beginPos = ctx.annotation.endPos;
         ctx.annotation.endPos = tmp;
     }
-    if (skipBlanks(reader))
-        return false;
 
     // skip column 8
-    if (skipUntilWhitespace(reader) || skipBlanks(reader))
-        return false;
-
     // read column 9: name
-    while (!atEnd(reader))
+    for (unsigned i = 0; i < length(record.tagName); ++i)
     {
-        // Read next key/value pair.
-        if (_parseReadGffKeyValue(reader, ctx._key, ctx._value) != 0)
-            return false;
-
+        ctx._key = record.tagName[i];
+        ctx._value = record.tagValue[i];
         if (ctx._key == "ID")
         {
             ctx.annotationName = ctx._value;
@@ -320,17 +163,7 @@ _readOneAnnotation(
 
         clear(ctx._key);
         clear(ctx._value);
-
-        // At end of line:  Skip EOL and break.
-        if (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
-        {
-            if (skipLine(reader) != 0)
-                return false;
-
-            break;
-        }
     }
-    return true;
 }
 
 template <typename TAnnotation>
@@ -468,7 +301,6 @@ _storeOneAnnotation(
         gene.parentId = 0;
         gene.typeId = TFragmentStore::ANNO_GENE;
         _adjustParent(gene, ctx.annotation);
-//		std::cout<<"gene_name "<<ctx.gtfGeneName<<"  transcript_name  " << ctx.gtfTranscriptName<<std::endl;
 
         if (!empty(ctx.gtfGeneName))
             annotationAssignValueByKey(fragStore, gene, "gene_name", ctx.gtfGeneName);
@@ -488,7 +320,6 @@ read(
     FragmentStore<TSpec, TConfig> & fragStore,
     Gff)
 {
-//IOREV _nodoc_
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 
     if (streamEof(file))
@@ -501,11 +332,14 @@ read(
     refresh(fragStore.annotationTypeStoreCache);
 
     RecordReader<TFile, SinglePass<> > reader(file);
-
+    GffRecord record;
     while (!atEnd(reader))
     {
-        if (_readOneAnnotation(reader, ctx))
+        if (!readRecord(record, reader, Gff()))
+        {
+            _readOneAnnotation(ctx, record);
             _storeOneAnnotation(fragStore, ctx);
+        }
     }
     _storeClearAnnoBackLinks(fragStore.annotationStore);
     _storeCreateAnnoBackLinks(fragStore.annotationStore);
@@ -519,7 +353,6 @@ read(
     FragmentStore<TSpec, TConfig> & fragStore,
     Gtf)
 {
-//IOREV _nodoc_ how do Gtf and Gff compare? nodoc for gtf
     read(file, fragStore, Gff());
 }
 
@@ -527,33 +360,11 @@ read(
 // Write Gff
 //////////////////////////////////////////////////////////////////////////////
 
-// This function checks if the string to be written contains a semicolon. If
-// this is the case parenthesis are written around the string.
-// Returns false on success.
-template <typename TTargetStream, typename TString>
-inline bool
-_writeSemicolonSensitive(TTargetStream & target, TString & temp)
-{
-    if (std::find(begin(temp), end(temp), ';') != end(temp))
-    {
-        if (streamWriteChar(target, '"') ||
-            streamWriteBlock(target, &temp[0], length(temp)) < length(temp) ||
-            streamWriteChar(target, '"'))
-            return true;
-    }
-    else
-    {
-        if (streamWriteBlock(target, &temp[0], length(temp)) < length(temp))
-            return true;
-    }
-    return false;
-}
-
 // This function write the information that are equal for gff and gtf files.
-template <typename TTargetStream, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
-inline bool
+template <typename TSpec, typename TConfig, typename TAnnotation, typename TId>
+inline void
 _writeCommonGffGtfInfo(
-    TTargetStream & target,
+    GffRecord & record,
     FragmentStore<TSpec, TConfig> & store,
     TAnnotation & annotation,
     TId /*id*/)
@@ -567,87 +378,50 @@ _writeCommonGffGtfInfo(
     {
         if (length(store.contigNameStore[annotation.contigId]) > 0u)
         {
-            if (streamWriteBlock(target, &(store.contigNameStore[annotation.contigId])[0], length(store.contigNameStore[annotation.contigId])) < length(store.contigNameStore[annotation.contigId]))
-                return false;
+            record.seqID = store.contigNameStore[annotation.contigId];
         }
     }
-    if (streamWriteChar(target, '\t'))
-        return false;
 
     // skip column 2: source
-    if (streamWriteBlock(target, ".\t", 2) < 2u)
-        return false;
+    record.source = ".";
 
     // write column 3: type
     if (annotation.typeId < length(store.annotationTypeStore))
     {
         if (length(store.annotationTypeStore[annotation.typeId]) > 0u)
         {
-            if (streamWriteBlock(target, &(store.annotationTypeStore[annotation.typeId])[0], length(store.annotationTypeStore[annotation.typeId])) < length(store.annotationTypeStore[annotation.typeId]))
-                return false;
+            record.type = store.annotationTypeStore[annotation.typeId];
         }
 
     }
-    if (streamWriteChar(target, '\t'))
-        return false;
 
     TContigPos beginPos = annotation.beginPos;
     TContigPos endPos = annotation.endPos;
-    char orienation = '+';
+    char orientation = '+';
     if (endPos < beginPos)
     {
         TContigPos tmp = beginPos;
         beginPos = endPos;
         endPos = tmp;
-        orienation = '-';
+        orientation = '-';
     }
 
     // write column 4: begin position
     if (beginPos != TAnnotation::INVALID_POS)
     {
-        if (streamPut(target, beginPos + 1))
-            return false;
+        record.beginPos = beginPos;
     }
-    else
-    {
-        if (streamWriteChar(target, '.'))
-            return false;
-    }
-    if (streamWriteChar(target, '\t'))
-        return false;
-
 
     // write column 5: end position
     if (endPos != TAnnotation::INVALID_POS)
     {
-        if (streamPut(target, endPos))
-            return false;
+        record.endPos = endPos;
     }
-    else
-    {
-        if (streamWriteChar(target, '.'))
-            return false;
-    }
-    if (streamWriteChar(target, '\t'))
-        return false;
 
     // skip column 6: score
-    if (streamWriteBlock(target, ".\t", 2) < 2u)
-        return false;
 
     // write column 7: orientation
-    if (streamWriteChar(target, orienation))
-        return false;
-
-    if (streamWriteChar(target, '\t'))
-        return false;
-
-    // skip column 8: frame
-    if (streamWriteBlock(target, ".\t", 2) < 2u)
-        return false;
-
-    return true;
-
+    record.strand = orientation;
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
@@ -663,8 +437,9 @@ _writeOneAnnotation(
     if (id == 0)
         return false;
 
-    if (!_writeCommonGffGtfInfo(target, store, annotation, id))
-        return false;
+    GffRecord record;
+
+    _writeCommonGffGtfInfo(record, store, annotation, id);
 
     // write column 9: group
     // write column 9.1: annotation id
@@ -672,67 +447,34 @@ _writeOneAnnotation(
     String<char> temp;
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
-        temp = getAnnoName(store, id);
+        appendValue(record.tagValue, getAnnoName(store, id));
     }
     else if (annotation.lastChildId != TAnnotation::INVALID_ID)
     {
-        temp = getAnnoUniqueName(store, id);
+        appendValue(record.tagValue, getAnnoUniqueName(store, id));
     }
 
-    if (length(temp) > 0)
+    if (length(record.tagValue[0]) > 0)
     {
-        if (streamWriteBlock(target, "ID=", 3u) < 3u)
-            return false;
-
-        if (_writeSemicolonSensitive(target, temp))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "ID");
     }
 
     // write column 9.2: parent id
     if (store.annotationStore[annotation.parentId].typeId > 1)  // ignore root/deleted nodes
     {
-        if (semicolon)
-            if (streamWriteChar(target, ';'))
-                return false;
-
-        if (streamWriteBlock(target, "Parent=", 7u) < 7u)
-            return false;
-
-        String<char> temp = getAnnoUniqueName(store, annotation.parentId);
-        if (_writeSemicolonSensitive(target, temp))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "Parent");
+        appendValue(record.tagValue, getAnnoUniqueName(store, annotation.parentId));
     }
 
     // write column 9.3-...: key, value pairs
     for (unsigned keyId = 0; keyId < length(annotation.values); ++keyId)
         if (!empty(annotation.values[keyId]))
         {
-            if (semicolon)
-                if (streamWriteChar(target, ';'))
-                    return false;
-
-            String<char> temp = store.annotationKeyStore[keyId];
-            if (_writeSemicolonSensitive(target, temp))
-                return false;
-
-            if (streamWriteChar(target, '='))
-                return false;
-
-            temp = annotation.values[keyId];
-            if (_writeSemicolonSensitive(target, temp))
-                return false;
-
-            semicolon = true;
+            appendValue(record.tagName, store.annotationKeyStore[keyId]);
+            appendValue(record.tagValue, annotation.values[keyId]);
         }
 
-    if (streamWriteChar(target, '\n'))
-        return false;
-
-    return true;
+    return writeRecord(target, record, Gff());
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
@@ -749,11 +491,11 @@ _writeOneAnnotation(
     if (annotation.typeId <= TFragmentStore::ANNO_MRNA)
         return false;
 
-    if (!_writeCommonGffGtfInfo(target, store, annotation, id))
-        return false;
+    GffRecord record;
+
+    _writeCommonGffGtfInfo(record, store, annotation, id);
 
     // write column 9: group
-    bool semicolon = false;
 
     // step up until we reach a transcript
     TId transcriptId = annotation.parentId;
@@ -768,79 +510,27 @@ _writeOneAnnotation(
     CharString tmpStr;
     if (geneId < length(store.annotationStore) && annotationGetValueByKey(store, store.annotationStore[geneId], "gene_name", tmpStr))
     {
-        if (semicolon)
-            if (streamWriteBlock(target, "; ", 2) < 2u)
-                return false;
-
-        if (streamWriteBlock(target, "gene_name \"", 11u) < 11u)
-            return false;
-
-        if (streamWriteBlock(target, &tmpStr[0], length(tmpStr)) < length(tmpStr))
-            return false;
-
-        if (streamWriteChar(target, '"'))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "gene_name");
+        appendValue(record.tagValue, tmpStr);
     }
     if (transcriptId < length(store.annotationStore) && annotationGetValueByKey(store, store.annotationStore[transcriptId], "transcript_name", tmpStr))
     {
-        if (semicolon)
-            if (streamWriteBlock(target, "; ", 2) < 2u)
-                return false;
-
-        if (streamWriteBlock(target, "transcript_name \"", 17u) < 11u)
-            return false;
-
-        if (streamWriteBlock(target, &tmpStr[0], length(tmpStr)) < length(tmpStr))
-            return false;
-
-        if (streamWriteChar(target, '"'))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "transcript_name");
+        appendValue(record.tagValue, tmpStr);
     }
 
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
-        if (semicolon)
-            if (streamWriteBlock(target, "; ", 2) < 2u)
-                return false;
-
-        if (streamWriteBlock(target, "ID \"", 3u) < 11u)
-            return false;
-
-        String<char> temp = getAnnoName(store, id);
-        if (streamWriteBlock(target, &temp[0], length(temp)) < length(temp))
-            return false;
-
-        if (streamWriteChar(target, '"'))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "ID");
+        appendValue(record.tagValue, getAnnoName(store, id));
     }
 
     // write key, value pairs
     for (unsigned keyId = 0; keyId < length(annotation.values); ++keyId)
         if (!empty(annotation.values[keyId]))
         {
-            if (semicolon)
-                if (streamWriteBlock(target, "; ", 2) < 2u)
-                    return false;
-
-            if (streamWriteBlock(target, &(store.annotationKeyStore[keyId])[0], length(store.annotationKeyStore[keyId])) < length(store.annotationKeyStore[keyId]))
-                return false;
-
-            if (streamWriteBlock(target, " \"", 2u) < 2u)
-                return false;
-
-            if (streamWriteBlock(target, &(annotation.values[keyId])[0], length(annotation.values[keyId])) < length(annotation.values[keyId]))
-                return false;
-
-            if (streamWriteChar(target, '"'))
-                return false;
-
-            semicolon = true;
+            appendValue(record.tagName, store.annotationKeyStore[keyId]);
+            appendValue(record.tagValue, annotation.values[keyId]);
         }
 
     // The GTF format version 2.2 requires the keys gene_id and transcript_id to be the last keys of line
@@ -848,50 +538,17 @@ _writeOneAnnotation(
 
     if (geneId < length(store.annotationStore))
     {
-        if (semicolon)
-            if (streamWriteBlock(target, "; ", 2) < 2u)
-                return false;
-
-        if (streamWriteBlock(target, "gene_id \"", 9u) < 9u)
-            return false;
-
-        String<char> temp = getAnnoUniqueName(store, geneId);
-        if (streamWriteBlock(target, &temp[0], length(temp)) < length(temp))
-            return false;
-
-        if (streamWriteChar(target, '"'))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "gene_id");
+        appendValue(record.tagValue, getAnnoUniqueName(store, geneId));
     }
 
     if (transcriptId < length(store.annotationStore))
     {
-        if (semicolon)
-            if (streamWriteBlock(target, "; ", 2) < 2u)
-                return false;
-
-        if (streamWriteBlock(target, "transcript_id \"", 15u) < 15u)
-            return false;
-
-        String<char> temp = getAnnoUniqueName(store, transcriptId);
-        if (streamWriteBlock(target, &temp[0], length(temp)) < length(temp))
-            return false;
-
-        if (streamWriteChar(target, '"'))
-            return false;
-
-        semicolon = true;
+        appendValue(record.tagName, "transcript_id");
+        appendValue(record.tagValue, getAnnoUniqueName(store, transcriptId));
     }
 
-    if (semicolon)
-        if (streamWriteChar(target, ';'))
-            return false;
-
-    if (streamWriteChar(target, '\n'))
-        return false;
-
-    return true;
+    return writeRecord(target, record, Gtf());
 }
 
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TFormat>

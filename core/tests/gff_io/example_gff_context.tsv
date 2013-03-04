@@ -1,0 +1,3 @@
+A	.	mRNA	1300	9000	.	+	.	ID=mrna0001;Name="sonichedgehog;hehe"
+AA	.	exon	1300	1500	.	+	.	ID=exon00001;Parent=mrn a0001;Name
+AAA	.	exon	1050	1500	.	+	.	ID=exon00002;Name;Parent=mrna0001
