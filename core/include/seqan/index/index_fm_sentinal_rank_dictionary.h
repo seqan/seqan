@@ -652,8 +652,6 @@ inline bool _openSentinelInformation(
     String<char> name;
 
     typedef typename Value<SentinelRankDictionary<TRankDictionary, Sentinels> >::Type TChar;
-    typedef typename Fibre<SentinelRankDictionary<TRankDictionary, Sentinels>, FibreSentinelPosition>::Type TSentinelString;
-
     String<TChar> sentinelSub;
     
     name = fileName;    append(name, ".drs"); if (!open(sentinelSub, toCString(name), openMode)) return false;
@@ -736,8 +734,6 @@ inline bool _saveSentinelInformation(
     String<char> name;
 
     typedef typename Value<SentinelRankDictionary<TRankDictionary, Sentinels> >::Type TChar;
-    typedef typename Fibre<SentinelRankDictionary<TRankDictionary, Sentinels>, FibreSentinelPosition>::Type TSentinelString;
-
     String<TChar> sentinelSub;
     appendValue(sentinelSub, dictionary.sentinelSubstitute);
 

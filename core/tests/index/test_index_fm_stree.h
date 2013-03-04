@@ -78,11 +78,6 @@ void fmIndexIteratorConstuctor(TIter & /*tag*/)
 	SEQAN_ASSERT_EQ(repLength(it), 1u);
 	SEQAN_ASSERT_EQ(goDown(it), true);
 	SEQAN_ASSERT_EQ(goDown(it), true);
-	SEQAN_ASSERT_EQ(goUp(it), true);
-	SEQAN_ASSERT_EQ(representative(it), "AT");
-	SEQAN_ASSERT_EQ(goUp(it), true);
-	SEQAN_ASSERT_EQ(representative(it), "T");
-	
 }
 
 template <typename TIter>
@@ -329,26 +324,26 @@ SEQAN_DEFINE_TEST(fm_index_iterator_constuctor)
 
     DnaString genome = "AAA";
     
-//     {
-//         Index<DnaString,TDefaultIndex> index(genome);
-//         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorConstuctor(dnaTag);
-//     }
-//     {
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorConstuctor(dnaTag);
-//     }
+    {
+        Index<DnaString,TDefaultIndex> index(genome);
+        Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
+        fmIndexIteratorConstuctor(dnaTag);
+    }
+    {
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
+        fmIndexIteratorConstuctor(dnaTag);
+    }
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
         fmIndexIteratorConstuctor(dnaTag);
     }
-//     {
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorConstuctor(dnaTag);
-//     }
+    {
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
+        fmIndexIteratorConstuctor(dnaTag);
+    }
 }
 
 SEQAN_DEFINE_TEST(fm_index_iterator_go_down)
@@ -367,11 +362,11 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_down)
         fmIndexIteratorGoDown(dnaTag);
     }
     {
-//                 DnaString genome;
-// 
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorGoDown(dnaTag);
+                DnaString genome;
+
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
+        fmIndexIteratorGoDown(dnaTag);
     }
     {
                 DnaString genome;
@@ -381,19 +376,12 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_down)
         fmIndexIteratorGoDown(dnaTag);
     }
     {
-//                 DnaString genome;
-// 
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorGoDown(dnaTag);
+                DnaString genome;
+
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
+        fmIndexIteratorGoDown(dnaTag);
     }
-//     {        
-//         StringSet<DnaString> genome;
-// 
-//         Index<StringSet<DnaString>,TDefaultIndex> index(genome);
-//         Iterator<Index<StringSet<DnaString>,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorGoDown(dnaTag);
-//     }
 }
 
 SEQAN_DEFINE_TEST(fm_index_iterator_is_leaf)
@@ -412,21 +400,21 @@ SEQAN_DEFINE_TEST(fm_index_iterator_is_leaf)
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
         fmIndexIteratorIsLeaf(dnaTag);
     }
-//     {
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorIsLeaf(dnaTag);
-//     }
+    {
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TIterSpec>::Type dnaTag(index);
+        fmIndexIteratorIsLeaf(dnaTag);
+    }
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
         fmIndexIteratorIsLeaf(dnaTag);
     }
-//     {
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorIsLeaf(dnaTag);
-//     }
+    {
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
+        fmIndexIteratorIsLeaf(dnaTag);
+    }
 }
 
 SEQAN_DEFINE_TEST(fm_index_iterator_go_right)
@@ -468,7 +456,6 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_up)
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef FMIndex<WT<>, CompressText> TCompressedIndex;
-    typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
@@ -478,11 +465,11 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_up)
         Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
         fmIndexIteratorGoUp(dnaTag);
     }
-//     {
-//         Index<DnaString,TCompressedIndex> index(genome);
-//         Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
-//         fmIndexIteratorGoUp(dnaTag);
-//     }
+    {
+        Index<DnaString,TCompressedIndex> index(genome);
+        Iterator<Index<DnaString,TCompressedIndex>, TParentLinksIterSpec>::Type dnaTag(index);
+        fmIndexIteratorGoUp(dnaTag);
+    }
 }
 
 SEQAN_DEFINE_TEST(fm_index_iterator_representative)
@@ -490,8 +477,6 @@ SEQAN_DEFINE_TEST(fm_index_iterator_representative)
     using namespace seqan;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
-    typedef FMIndex<WT<>, CompressText> TCompressedIndex;
-    typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";

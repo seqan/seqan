@@ -362,7 +362,6 @@ inline void _createBwTable(TBwt & bwt, TSentinelPosition & sentinelPos, TText co
 {
 	//typedefs
 	typedef typename GetValue<TSA>::Type                    TSAValue;
-	typedef typename Size<TSA>::Type                        TSize;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
     typedef typename Iterator<TBwt, Standard>::Type         TBwtIter;
 
@@ -479,8 +478,6 @@ _findFirstIndex(Finder<Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >,
 		        TPattern const & pattern, FinderFMIndex const &)
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TFMISpeedEnhancement> >    TIndex;
-	typedef typename Fibre<TIndex, FibreSA>::Type                       TCompressedSA;
-	typedef typename Iterator<TCompressedSA const>::Type                TIterator;
 
 	TIndex & index = haystack(finder);
 
@@ -584,7 +581,6 @@ inline void _getFrequencies(TFreq & freq,
 						    StringSet<TText, TSetSpec> const & text)
 {
 	typedef typename Value<TText>::Type TChar;
-	typedef typename Value<TFreq>::Type TFreqValue;
 	resize(freq, ValueSize<TChar>::VALUE, 0);
 
     typedef typename Size<TText>::Type TSize;
@@ -599,8 +595,6 @@ inline void _getFrequencies(TFreq & freq,
 		   	   	   	   	   TText const & text)
 {
 	typedef typename Value<TText>::Type TChar;
-	typedef typename Value<TFreq>::Type TFreqValue;
-
 	resize(freq, ValueSize<TChar>::VALUE, 0);
 
     typedef typename Size<TText>::Type TSize;
@@ -619,9 +613,6 @@ inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TS
 {
 	typedef Index<TText, FMIndex<TIndexSpec, TSpec> > TIndex;
 	typedef typename Fibre<TIndex, FibreSA>::Type TCompressedSA;
-	typedef typename Fibre<TCompressedSA, FibreSparseString>::Type TSparseString;
-	typedef typename Fibre<TSparseString, FibreIndicatorString>::Type TIndicatorString;
-	typedef typename Size<TCompressedSA>::Type TSize;
 
     // TODO(singer): If there is a lfTable we do not need the Skew7
 	// create the fulle sa

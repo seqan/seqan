@@ -330,13 +330,7 @@ for (unsigned i = 0; i < length(bitString); ++i)
 template <typename TSpec, typename TPos>
 inline bool isBitSet(RankSupportBitString<TSpec> const & bitString, TPos const pos)
 {
-    //typedef RankSupportBitString<TSpec>                                     TRankSupportBitString;
-    typedef typename Fibre<RankSupportBitString<TSpec>, FibreBits>::Type    TFibreBits;
-    typedef typename Value<TFibreBits>::Type                                TFibreBitsValue;
-   
-
     return isBitSet(bitString.bits[_getBlockPos(bitString, pos)], _getPosInBlock(bitString, pos));
-//     return (bitString.bits[_getBlockPos(bitString, pos)] & ((TFibreBitsValue)1u << _getPosInBlock(bitString, pos))) != (TFibreBitsValue)0;
 }
 
 // ==========================================================================
