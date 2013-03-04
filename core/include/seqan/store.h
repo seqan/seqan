@@ -45,7 +45,7 @@
 #include <algorithm>
 #include <set>
 
-#include <../../extras/include/seqan/gff_io.h>
+#include <seqan/gff_io.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // FRAGMENT STORE SUB-CONTAINERS
