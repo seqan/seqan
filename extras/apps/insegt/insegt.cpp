@@ -33,7 +33,10 @@ struct InsegtOptions
 {
 	CharString nameSAM;
 	CharString nameGFF;
-	CharString outputPath;
+	CharString readOutputFileName;
+	CharString annoOutputFileName;
+	CharString tupleOutputFileName;
+	CharString tupleFusionOutputFileName;
 	unsigned nTuple;
 	unsigned offsetInterval;
 	unsigned thresholdGaps;
@@ -46,7 +49,6 @@ struct InsegtOptions
 	bool gtf;
 
     InsegtOptions() :
-        outputPath(""),
         nTuple(2),
         offsetInterval(5),
         thresholdGaps(5),
@@ -79,17 +81,29 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
                    "(single-end or paired-end) by using gene-annotations.");
     // We require two arguments.
     addDescription(parser, "Input to INSEGT is a SAM file containing the alignments and"
-                          " a file containing the annotations of the reference genome, either in GFF or GTF format (the latter has additionally to be specified with option 'z').");
-    addArgument(parser, ArgParseArgument(
-        ArgParseArgument::INPUTFILE, "IN"));
-    addArgument(parser, ArgParseArgument(
-        ArgParseArgument::INPUTFILE, "IN"));
-
+                          " a file containing the annotations of the reference genome, either in GFF or GTF format.");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    setValidValues(parser, 0, "sam");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    setValidValues(parser, 1, "gff gtf");
     // Define Options -- Section Modification Options
 
     addSection(parser, "Options: ");
-    addOption(parser, ArgParseOption("p", "output-path", "Path for output-files.", ArgParseArgument::STRING, "TEXT")); 
-    setDefaultValue(parser, "output-path", "");
+    addOption(parser, ArgParseOption("ro", "read-output", "Output filename for read-output, which contains the mapped annotations followed by their parent annotation.", ArgParseArgument::OUTPUTFILE)); 
+    //setDefaultValue(parser, "read-output", "readOutput.gff");
+    setValidValues(parser, "read-output", "gff");
+    addOption(parser, ArgParseOption("ao", "anno-output", "Output filename for anno-output, which contains the annotations similar to the GFF input and additionally the counts of the mapped reads and the normalized expression levels in RPKM.", ArgParseArgument::OUTPUTFILE)); 
+    //setDefaultValue(parser, "anno-output", "annoOutput.gff");
+    setValidValues(parser, "anno-output", "gff");
+    addOption(parser, ArgParseOption("to", "tuple-output", "Output filename for tuple-output, which contains exon tuples connected by reads or matepairs.", ArgParseArgument::OUTPUTFILE)); 
+    //setDefaultValue(parser, "tuple-output", "tupleOutput.gff");
+    setValidValues(parser, "tuple-output", "gff");
+    // Check for gene fusions: currently disabled for KNIME
+    addOption(parser, ArgParseOption("fo", "fusion-output", "Output filename for fusion-output, which contains exon tuple of gene fusions (Advanced option, currently no output port for KNIME).", ArgParseArgument::STRING)); 
+    //setDefaultValue(parser, "fusion-output", "tupleFusionOutput.gff");
+    setValidValues(parser, "fusion-output", "gff");
+    //hideOption(parser, "fo");
+
     addOption(parser, ArgParseOption("n", "ntuple", "ntuple", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "ntuple", "2");
     addOption(parser, ArgParseOption("o", "offset-interval", "Offset to short alignment-intervals for search.", ArgParseArgument::INTEGER, "INT"));
@@ -103,8 +117,7 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     addOption(parser, ArgParseOption("m", "max-tuple", "Create only maxTuple (which are spanned by the whole read)."));
     addOption(parser, ArgParseOption("e", "exact-ntuple", "Create only Tuple of exact length n. By default all tuple up to the given length are computed (if -m is set, -e will be ignored)."));
     addOption(parser, ArgParseOption("u", "unknown-orientation", "Orientation of reads is unknown."));
-    addOption(parser, ArgParseOption("f", "fusion-genes", "Check for fusion genes and create separate output for matepair tuple."));
-    addOption(parser, ArgParseOption("z", "gtf-format", "GTF format as input for annotations (instead of GFF format)."));
+    //addOption(parser, ArgParseOption("f", "fusion-genes", "Check for fusion genes and create separate output for matepair tuple."));
 
     // Add Examples Section.
     addTextSection(parser, "Examples");
@@ -128,8 +141,20 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     // Extract option values.
     getArgumentValue(options.nameSAM, parser, 0);
     getArgumentValue(options.nameGFF, parser, 1);
+    if (endsWith(options.nameGFF, ".gff"))
+        options.gtf = false;
+    else if (endsWith(options.nameGFF, ".gtf"))
+        options.gtf = true;
+    else 
+    {
+        std::cerr << "ERROR: Input format of annotation file must be either GFF or GTF!\n";
+        return ArgumentParser::PARSE_ERROR;
+    }
 
-    getOptionValue(options.outputPath, parser, "output-path");
+    getOptionValue(options.readOutputFileName, parser, "read-output");
+    getOptionValue(options.annoOutputFileName, parser, "anno-output");
+    getOptionValue(options.tupleOutputFileName, parser, "tuple-output");
+    getOptionValue(options.tupleFusionOutputFileName, parser, "fusion-output");
     getOptionValue(options.nTuple, parser, "ntuple");
     getOptionValue(options.offsetInterval, parser, "offset-interval");
     getOptionValue(options.thresholdGaps, parser, "threshold-gaps");
@@ -139,9 +164,8 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     options.maxTuple = isSet(parser, "max-tuple");
     options.exact_nTuple = isSet(parser, "exact-ntuple");
     options.unknownO = isSet(parser, "unknown-orientation");
-    options.fusion = isSet(parser, "fusion-genes");
-    options.gtf = isSet(parser, "gtf-format");
 
+    options.fusion = isSet(parser, "fusion-output");
     // If were selected then this is an error.
     if (options.maxTuple && options.exact_nTuple)
     {
@@ -171,7 +195,7 @@ int main( int argc, const char *argv[] )
 		options.exact_nTuple = 0;	// not both possible: maxTuple is prefered over exact_nTuple and n
 	}
 
-	ngsOverlapper(options.nameSAM, options.nameGFF, options.outputPath, options.nTuple, options.exact_nTuple, options.thresholdGaps, options.offsetInterval, options.thresholdCount, options.thresholdRPKM, options.unknownO, options.fusion, options.gtf);
+	ngsOverlapper(options);
 	return 0;
 }
 

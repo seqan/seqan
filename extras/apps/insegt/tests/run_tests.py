@@ -54,7 +54,9 @@ def main(source_base, binary_base):
     # test you want to run.
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=['-p', ph.outFile('default_'),
+        args=['-ro', ph.outFile('default_readOutput.gff'),
+              '-ao', ph.outFile('default_annoOutput.gff'),
+              '-to', ph.outFile('default_tupleOutput.gff'),
               ph.inFile('alignments.sam'),
               ph.inFile('annotations.gff')],
         to_diff=[(ph.inFile('default_annoOutput.gff'),
@@ -67,7 +69,10 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=['-c', str(2), '-p', ph.outFile('threshold-count2_'),
+        args=['-c', str(2), 
+              '-ro', ph.outFile('threshold-count2_readOutput.gff'),
+              '-ao', ph.outFile('threshold-count2_annoOutput.gff'),
+              '-to', ph.outFile('threshold-count2_tupleOutput.gff'),
               ph.inFile('alignments.sam'),
               ph.inFile('annotations.gff')],
         to_diff=[(ph.inFile('threshold-count2_annoOutput.gff'),
@@ -80,7 +85,10 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=['-n', str(3), '-p', ph.outFile('ntuple3_'),
+        args=['-n', str(3), 
+              '-ro', ph.outFile('ntuple3_readOutput.gff'),
+              '-ao', ph.outFile('ntuple3_annoOutput.gff'),
+              '-to', ph.outFile('ntuple3_tupleOutput.gff'),
               ph.inFile('alignments.sam'),
               ph.inFile('annotations.gff')],
         to_diff=[(ph.inFile('ntuple3_annoOutput.gff'),
@@ -93,7 +101,10 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=['-m', '-p', ph.outFile('max-tuple_'),
+        args=['-m', 
+              '-ro', ph.outFile('max-tuple_readOutput.gff'),
+              '-ao', ph.outFile('max-tuple_annoOutput.gff'),
+              '-to', ph.outFile('max-tuple_tupleOutput.gff'),
               ph.inFile('alignments.sam'),
               ph.inFile('annotations.gff')],
         to_diff=[(ph.inFile('max-tuple_annoOutput.gff'),
@@ -106,7 +117,10 @@ def main(source_base, binary_base):
 
     conf = app_tests.TestConf(
         program=path_to_program,
-        args=['-e', '-p', ph.outFile('exact-ntuple_'),
+        args=['-e', 
+              '-ro', ph.outFile('exact-ntuple_readOutput.gff'),
+              '-ao', ph.outFile('exact-ntuple_annoOutput.gff'),
+              '-to', ph.outFile('exact-ntuple_tupleOutput.gff'),
               ph.inFile('alignments.sam'),
               ph.inFile('annotations.gff')],
         to_diff=[(ph.inFile('exact-ntuple_annoOutput.gff'),

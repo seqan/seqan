@@ -795,15 +795,9 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
 //////////////////////////////////////////////////////////////////////////////
 /// NGS Overlapper main function
 //////////////////////////////////////////////////////////////////////////////
-
+template<typename TOptions>
 inline bool
-ngsOverlapper(CharString const &nameSAM, CharString const &nameGFF, CharString const &outputPath,
-	      unsigned tupleValue, bool exact_nTuple,
-	      unsigned thresholdGaps, unsigned offsetInterval,
-	      unsigned thresholdCount, double thresholdRPKM,
-	      bool unknownO,
-	      bool fusion,
-	      bool gtf)
+ngsOverlapper(TOptions &options)
 {	
 	FragmentStore<> me;
 #ifdef DEBUG_OVERLAP_MODULE
@@ -815,19 +809,19 @@ ngsOverlapper(CharString const &nameSAM, CharString const &nameGFF, CharString c
 #endif 
 	// read aligned reads in FragmentStore from Sam files
 	std::fstream fileSAM;
-	fileSAM.open(toCString(nameSAM), std::ios_base::in | std::ios_base::binary);
+	fileSAM.open(toCString(options.nameSAM), std::ios_base::in | std::ios_base::binary);
 	if(!fileSAM.is_open()) return false;
 	read(fileSAM, me, Sam());
 	fileSAM.close();
 
 	// readAnnotations from Gff or Gtf:
-	if (gtf == 0)
+	if (options.gtf == 0)
 	{
 #ifdef DEBUG_OVERLAP_MODULE
 		SEQAN_PROTIMESTART(find2_time);	
 		std::cout << "load Gff..." << std::endl;
 #endif 
-		readAnnotationsFromGFF(me, toCString(nameGFF));
+		readAnnotationsFromGFF(me, toCString(options.nameGFF));
 	}
 	else
 	{
@@ -835,14 +829,14 @@ ngsOverlapper(CharString const &nameSAM, CharString const &nameGFF, CharString c
 		SEQAN_PROTIMESTART(find2_time);	
 		std::cout << "load Gff..." << std::endl;
 #endif 
-		readAnnotationsFromGTF(me, toCString(nameGFF));
+		readAnnotationsFromGTF(me, toCString(options.nameGFF));
 	}
 
 	// create IntervalTreeStore:
 #ifdef DEBUG_OVERLAP_MODULE
 	SEQAN_PROTIMESTART(find3_time);
 #endif 
-	createIntervalTreeStore(me, unknownO);
+	createIntervalTreeStore(me, options.unknownO);
 #ifdef DEBUG_OVERLAP_MODULE
 	std::cout << "create intervalTreeStores from annotationStore took: \t" << SEQAN_PROTIMEDIFF(find3_time) << " seconds" << std::endl;
 #endif 
@@ -856,10 +850,10 @@ ngsOverlapper(CharString const &nameSAM, CharString const &nameGFF, CharString c
 
 
 	// get results with additional check for transfusion genes (will be changed later additionally) 
-	if (fusion == 1)
-		getResults_Fusion(readAnnoStore, annoCountStore, tupleCountStore, tupleCountStore_Fusion, me, tupleValue, exact_nTuple, offsetInterval, thresholdGaps, unknownO);
+	if (options.fusion == 1)
+		getResults_Fusion(readAnnoStore, annoCountStore, tupleCountStore, tupleCountStore_Fusion, me, options.nTuple, options.exact_nTuple, options.offsetInterval, options.thresholdGaps, options.unknownO);
 	else // get normal results:
-		getResults(readAnnoStore, annoCountStore, tupleCountStore, me, tupleValue, exact_nTuple, offsetInterval, thresholdGaps, unknownO);
+		getResults(readAnnoStore, annoCountStore, tupleCountStore, me, options.nTuple, options.exact_nTuple, options.offsetInterval, options.thresholdGaps, options.unknownO);
 	
 	
 	// normalize:
@@ -867,40 +861,32 @@ ngsOverlapper(CharString const &nameSAM, CharString const &nameGFF, CharString c
 	Map<Pair<unsigned, bool> > 	mapO;
 	normalizeAnnoCounts(annoNormStore, mapO, annoCountStore, me);
 	normalizeTupleCounts(tupleCountStore, me);
-	if (fusion == 1)
+	if (options.fusion == 1)
 		normalizeTupleCounts_Fusion(tupleCountStore_Fusion, me);
 
 
 	// output:
-	CharString pathReadOutput = outputPath;
-	append(pathReadOutput, "readOutput.gff");
 	std::fstream readOutput;
-	readOutput.open(toCString(pathReadOutput), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+	readOutput.open(toCString(options.readOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
 	createReadCountGFF(readOutput, readAnnoStore, me);
 	readOutput.close();
 	
-	CharString pathAnnoOutput = outputPath;
-	append(pathAnnoOutput, "annoOutput.gff");
 	std::fstream annoOutput;
-	annoOutput.open(toCString(pathAnnoOutput), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+	annoOutput.open(toCString(options.annoOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
 	createAnnoCountGFF(annoOutput, annoCountStore, annoNormStore, me, mapO);
 	annoOutput.close();
 	
-	CharString pathTupleOutput = outputPath;
-	append(pathTupleOutput, "tupleOutput.gff");
 	std::fstream tupleOutput;
-	tupleOutput.open(toCString(pathTupleOutput), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
-	createTupleCountGFF(tupleOutput, tupleCountStore, me, thresholdCount, thresholdRPKM);
+	tupleOutput.open(toCString(options.tupleOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+	createTupleCountGFF(tupleOutput, tupleCountStore, me, options.thresholdCount, options.thresholdRPKM);
 	tupleOutput.close();
 
 	// additional output, if fusion genes were checked
-	if (fusion == 1)
+	if (options.fusion == 1)
 	{
-		CharString pathTupleOutput_Fusion = outputPath;
-		append(pathTupleOutput_Fusion, "tupleOutput_Fusion.gff");
 		std::fstream tupleOutput_Fusion;
-		tupleOutput_Fusion.open(toCString(pathTupleOutput_Fusion), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
-		createTupleCountGFF_Fusion(tupleOutput_Fusion, tupleCountStore_Fusion, me, thresholdCount, thresholdRPKM);
+		tupleOutput_Fusion.open(toCString(options.tupleFusionOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+		createTupleCountGFF_Fusion(tupleOutput_Fusion, tupleCountStore_Fusion, me, options.thresholdCount, options.thresholdRPKM);
 		tupleOutput_Fusion.close();
 	}
 

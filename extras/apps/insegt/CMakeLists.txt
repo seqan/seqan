@@ -81,6 +81,13 @@ endif(PYTHONINTERP_FOUND)
 
 seqan_add_app_test (insegt)
 
+# ---------------------------------------------------------------------------- 
+# Setup Common Tool Description for Generic Workflow Nodes 
+# ---------------------------------------------------------------------------- 
+ 
+# Include executable razers in CTD structure. 
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} insegt CACHE INTERNAL "") 
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
