@@ -311,6 +311,8 @@ _storeOneAnnotation(
     }
 }
 
+///.Function.read.param.tag.type:Tag.File Format.tag.Gff
+///.Function.read.param.tag.type:Tag.File Format.tag.Gtf
 template <typename TFile, typename TSpec, typename TConfig>
 inline void
 read(
