@@ -102,8 +102,6 @@ _readOneAnnotation(
 {
 //IOREV _nodoc_ _hasCRef_
     typedef typename TFragmentStore::TContigPos         TContigPos;
-    typedef typename TFragmentStore::TAnnotationStore   TAnnotationStore;
-    typedef typename Value<TAnnotationStore>::Type      TAnnotation;
 
     clear(ctx);
 
