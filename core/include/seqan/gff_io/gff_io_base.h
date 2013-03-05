@@ -722,7 +722,7 @@ writeRecord(TStream & stream, GffRecord & record, TTag const tag)
         return 1;
 
     // write column 4: begin position
-    if (record.beginPos != -1)
+    if (record.beginPos != (unsigned)-1)
     {
         if (streamPut(stream, record.beginPos + 1))
             return 1;
@@ -738,7 +738,7 @@ writeRecord(TStream & stream, GffRecord & record, TTag const tag)
 
 
     // write column 5: end position
-    if (record.endPos != -1)
+    if (record.endPos != (unsigned)-1)
     {
         if (streamPut(stream, record.endPos))
             return 1;

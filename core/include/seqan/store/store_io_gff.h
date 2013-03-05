@@ -443,7 +443,6 @@ _writeOneAnnotation(
 
     // write column 9: group
     // write column 9.1: annotation id
-    bool semicolon = false;
     String<char> temp;
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
