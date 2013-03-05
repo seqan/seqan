@@ -93,28 +93,8 @@ struct Spec<Proxy<TSpec> const>
 // Metafunction CompareType
 // ----------------------------------------------------------------------------
 
-template <typename TSpec1, typename TSpec2>
-struct CompareType<Proxy<TSpec1>, Proxy<TSpec2> >
-{
-    typedef typename Value<Proxy<TSpec1> >::Type TValue1;
-    typedef typename RemoveConst_<TValue1>::Type TValue1_NoConst;
-
-    typedef typename Value<Proxy<TSpec2> >::Type TValue2;
-    typedef typename RemoveConst_<TValue2>::Type TValue2_NoConst;
-
-    typedef typename CompareType<TValue1_NoConst, TValue2_NoConst>::Type Type;
-};
-
 template <typename TSpec, typename T>
 struct CompareType<Proxy<TSpec>, T>
-{
-    typedef typename Value<Proxy<TSpec> >::Type TValue;
-    typedef typename RemoveConst_<TValue>::Type TValue_NoConst;
-    typedef typename CompareType<TValue_NoConst, T>::Type Type;
-};
-
-template <typename T, typename TSpec>
-struct CompareType<T, Proxy<TSpec> >
 {
     typedef typename Value<Proxy<TSpec> >::Type TValue;
     typedef typename RemoveConst_<TValue>::Type TValue_NoConst;

@@ -64,7 +64,7 @@ struct AdaptorIterator;
 ..param.TContainer:Type of the container that can be iterated by $TIterator$.
 ...remarks:Use @Metafunction.Container@ to get the container type for a given iterator.
 ..param.TIterator:Type of the iterator that is adapted to @Concept.RootedIteratorConcept@.
-..remarks.text:Adaptor iterators can implicitly be converted to $TIterator$.
+..remarks.text:Adaptor iterators can implicitly converted to $TIterator$.
 ..include:seqan/basic.h
 
 .Memfunc.Adaptor Iterator#Iter:
@@ -244,7 +244,7 @@ setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
 ..signature:hostIterator(object)
 ..param.object:Object to return host iterator for.
 ...type:Spec.Adaptor Iterator
-..returns:Reference to the iterator that is adapted by $object$.
+..returns:Container of the given object.
  */
 
 template <typename TContainer, typename TIterator, typename TSpec>

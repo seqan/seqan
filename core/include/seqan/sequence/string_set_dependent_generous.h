@@ -161,7 +161,7 @@ value(StringSet<TString, Dependent<Generous> >& me, TPos pos)
     unsigned i = _findIthNonZeroValue(me.strings, pos);
     if (i <length(me.strings))
         return *me.strings[i];
-    static TString tmp("");
+    static TString tmp = "";
     return tmp;
 }
 
@@ -173,7 +173,7 @@ value(StringSet<TString, Dependent<Generous> > const & me, TPos pos)
     unsigned i = _findIthNonZeroValue(me.strings, pos);
     if (i < length(me.strings))
         return *me.strings[i];
-    static TString tmp("");
+    static TString tmp = "";
     return tmp;
 }
 
@@ -189,7 +189,7 @@ getValueById(StringSet<TString, Dependent<Generous> >& me,
     SEQAN_CHECKPOINT;
     if (me.strings[id])
         return *me.strings[id];
-    static TString tmp("");
+    static TString tmp = "";
     return tmp;
 }
 

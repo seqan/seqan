@@ -225,7 +225,7 @@ getValueById(StringSet<TString, Owner<TSpec> >& me,
 {
     SEQAN_CHECKPOINT;
     if (id < (TId) length(me)) return value(me, id);
-    static TString tmp("");
+    static TString tmp = "";
     return tmp;
 }
 
