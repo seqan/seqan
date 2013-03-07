@@ -381,6 +381,7 @@ void sentinelRankDictionaryOpenSave(TRankDictionary & /*tag*/)
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     TRankDictionary sentinelRankDictionary(text);
+    sentinelRankDictionary.sentinelSubstitute = 'A';
     save(sentinelRankDictionary, toCString(tempFilename));
 
     TRankDictionary sentinelRankDictionaryOpen;
