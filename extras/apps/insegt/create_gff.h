@@ -256,7 +256,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 		{
 			if (getValue(itAnno).beginPos <= getValue(itAnno).endPos)
 			{
-				_streamPutInt(annoOutput, getValue(itAnno).beginPos +1);
+				_streamPutInt(annoOutput, getValue(itAnno).beginPos);
 				_streamPut(annoOutput, '\t');
 				_streamPutInt(annoOutput, getValue(itAnno).endPos);
 				_streamPut(annoOutput, '\t');
@@ -267,7 +267,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 			{
 				_streamPutInt(annoOutput, getValue(itAnno).endPos);
 				_streamPut(annoOutput, '\t');
-				_streamPutInt(annoOutput, getValue(itAnno).beginPos +1);
+				_streamPutInt(annoOutput, getValue(itAnno).beginPos);
 				_streamPut(annoOutput, '\t');
 				_streamPutInt(annoOutput, getValue(itCount));
 				_streamWrite(annoOutput, "\t-\t.\t");
