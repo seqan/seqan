@@ -166,20 +166,20 @@ struct Value<SentinelRankDictionary<TRankDictionary, TSpec> const> :
 ..include:seqan/index.h
 */
 
-template <typename TText, typename TTag>
+template <typename TLength, typename TTag>
 TTag
-_setDefaultSentinelPosition(TText const & text, TTag const & /*tag*/)
+_setDefaultSentinelPosition(TLength const _length, TTag const & /*tag*/)
 {
-    return length(text);
+    return _length;
 }
 
-template <typename TText, typename TBitStringSpec>
+template <typename TLength, typename TBitStringSpec>
 RankSupportBitString<TBitStringSpec>
-_setDefaultSentinelPosition(TText const & text, RankSupportBitString<TBitStringSpec> const & /*tag*/)
+_setDefaultSentinelPosition(TLength const _length, RankSupportBitString<TBitStringSpec> const & /*tag*/)
 {
 
     RankSupportBitString<TBitStringSpec> bitString;
-    resize(bitString, length(text), 0);
+    resize(bitString, _length, 0);
     return bitString;
 }
 
@@ -195,7 +195,7 @@ public:
     TChar sentinelSubstitute;
 
     SentinelRankDictionary() :
-        sentinelPosition(),
+        sentinelPosition(_setDefaultSentinelPosition(length(text), TSentinelPosition())),
         sentinelSubstitute()
     {}
    
@@ -203,14 +203,14 @@ public:
     template <typename TValue, typename TStringSpec>
     SentinelRankDictionary(String<TValue, TStringSpec> const & text) :
         rankDictionary(text),
-        sentinelPosition(_setDefaultSentinelPosition(text, TSentinelPosition())),
+        sentinelPosition(_setDefaultSentinelPosition(length(text), TSentinelPosition())),
         sentinelSubstitute()
     {}
     
     template <typename THost, typename TSegmentSpec>
     SentinelRankDictionary(Segment<THost, TSegmentSpec> const & text) :
         rankDictionary(text),
-        sentinelPosition(_setDefaultSentinelPosition(text, TSentinelPosition())),
+        sentinelPosition(_setDefaultSentinelPosition(length(text), TSentinelPosition())),
         sentinelSubstitute()
     {}
 

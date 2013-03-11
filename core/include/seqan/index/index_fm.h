@@ -654,7 +654,7 @@ inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & ind
 
 	String<TAlphabet> bwt;
 	resize(bwt, index.n);
-	TSentinelPosition sentinelPos;
+	TSentinelPosition sentinelPos = _setDefaultSentinelPosition(length(bwt), TSentinelPosition());
 
 	_createBwTable(bwt, sentinelPos, text, sa, sentinelSub);
 
