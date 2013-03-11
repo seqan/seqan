@@ -60,10 +60,10 @@ namespace seqan {
 .Function.bandedChainAlignment
 ..summary:Computes the best global pairwise alignment between two sequences given a non-empty seed chain.
 ..cat:Alignments
-..signature:bandedChainAlignment(align,          seedChain, scoringScheme1, [scoringScheme2,] [alignConfig,] [bandExtension])
-..signature:bandedChainAlignment(gapsH, gapsV,   seedChain, scoringScheme1, [scoringScheme2,] [alignConfig,] [bandExtension])
-..signature:bandedChainAlignment(frags, strings, seedChain, scoringScheme1, [scoringScheme2,] [alignConfig,] [bandExtension])
-..signature:bandedChainAlignment(alignmentGraph, seedChain, scoringScheme1, [scoringScheme2,] [alignConfig,] [bandExtension])
+..signature:bandedChainAlignment(align,          seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
+..signature:bandedChainAlignment(gapsH, gapsV,   seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
+..signature:bandedChainAlignment(frags, strings, seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
+..signature:bandedChainAlignment(alignmentGraph, seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
 ..param.align:
 An @Class.Align@ object that stores the alignment.
 The number of rows must be 2 and the sequences must have already been set.
