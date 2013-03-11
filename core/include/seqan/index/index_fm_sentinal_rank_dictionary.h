@@ -195,7 +195,7 @@ public:
     TChar sentinelSubstitute;
 
     SentinelRankDictionary() :
-        sentinelPosition(_setDefaultSentinelPosition(length(text), TSentinelPosition())),
+        sentinelPosition(_setDefaultSentinelPosition(0u, TSentinelPosition())),
         sentinelSubstitute()
     {}
    
