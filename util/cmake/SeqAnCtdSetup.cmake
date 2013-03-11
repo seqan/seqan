@@ -188,7 +188,7 @@ endforeach ()
 
 # If possible, get latest change date from SeqAn SVN.
 find_package(Subversion)
-if (Subversion_FOUND)
+if (Subversion_FOUND AND EXISTS ${_SEQAN_SOURCE_DIR}/.svn)
   file (TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" _SEQAN_SOURCE_DIR)
   Subversion_WC_INFO (${_SEQAN_SOURCE_DIR} SEQAN)
   string(REGEX REPLACE "^([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+).*"
