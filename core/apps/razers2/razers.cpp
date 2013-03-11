@@ -446,17 +446,6 @@ extractOptions(
 		options.reverse = true;
 	}
 
-    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
-    if (isSet(parser, "output"))
-    {
-        getOptionValue(options.output, parser, "output");
-    }
-    else
-    {
-        options.output = readFileNames[0];
-        append(options.output, ".razers");
-    }
-
     // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
     CharString tmp = options.output;
     toLower(tmp);
@@ -488,6 +477,17 @@ extractOptions(
     resize(readFileNames, _min(getArgumentValueCount(parser, 1), maxReadFiles), Exact());
     for (unsigned i = 0; i < length(readFileNames); ++i)
         getArgumentValue(readFileNames[i], parser, 1, i);
+
+    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
+    if (isSet(parser, "output"))
+    {
+        getOptionValue(options.output, parser, "output");
+    }
+    else
+    {
+        options.output = readFileNames[0];
+        append(options.output, ".razers");
+    }
 
 	if (isSet(parser, "shape"))
 	{
