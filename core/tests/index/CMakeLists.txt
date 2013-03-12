@@ -38,10 +38,22 @@ add_executable (test_index_crosscompare_char
                 test_crosscompare.h)
 target_link_libraries (test_index_crosscompare_char ${SEQAN_LIBRARIES})
 
+# We need an additional TU for the DFI test otherwise GCC 4.7 warns in 32 bit mode.
+add_executable (test_index_crosscompare_char_dfi
+                test_index_crosscompare_char_dfi.cpp
+                test_crosscompare.h)
+target_link_libraries (test_index_crosscompare_char_dfi ${SEQAN_LIBRARIES})
+
 add_executable (test_index_crosscompare_dna
                 test_index_crosscompare_dna.cpp
                 test_crosscompare.h)
 target_link_libraries (test_index_crosscompare_dna ${SEQAN_LIBRARIES})
+
+# We need an additional TU for the DFI test otherwise GCC 4.7 warns in 32 bit mode.
+add_executable (test_index_crosscompare_dna_dfi
+                test_index_crosscompare_dna_dfi.cpp
+                test_crosscompare.h)
+target_link_libraries (test_index_crosscompare_dna_dfi ${SEQAN_LIBRARIES})
 
 add_executable (test_index_qgram
                 test_index_qgram.cpp
@@ -108,7 +120,9 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 add_test (NAME test_test_index_creation COMMAND $<TARGET_FILE:test_index_creation>)
 add_test (NAME test_test_index_crosscompare_char COMMAND $<TARGET_FILE:test_index_crosscompare_char>)
+add_test (NAME test_test_index_crosscompare_char_dfi COMMAND $<TARGET_FILE:test_index_crosscompare_char_dfi>)
 add_test (NAME test_test_index_crosscompare_dna COMMAND $<TARGET_FILE:test_index_crosscompare_dna>)
+add_test (NAME test_test_index_crosscompare_dna_dfi COMMAND $<TARGET_FILE:test_index_crosscompare_dna_dfi>)
 add_test (NAME test_test_index_qgram COMMAND $<TARGET_FILE:test_index_qgram>)
 add_test (NAME test_test_index_sa_bwtwalk COMMAND $<TARGET_FILE:test_index_sa_bwtwalk>)
 add_test (NAME test_test_index_shapes COMMAND $<TARGET_FILE:test_index_shapes>)

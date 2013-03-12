@@ -161,12 +161,24 @@ void crossIndicesDna()
 SEQAN_DEFINE_TEST(testIndexCrossCompareChar)
 {
 	crossIndicesChar<IndexEsa<>, IndexWotd<> >();
+	// crossIndicesChar<IndexWotd<>, IndexWotd<Dfi<> > >();
+}
+
+SEQAN_DEFINE_TEST(testIndexCrossCompareCharDfi)
+{
+	// crossIndicesChar<IndexEsa<>, IndexWotd<> >();
 	crossIndicesChar<IndexWotd<>, IndexWotd<Dfi<> > >();
 }
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareDna)
 {
 	crossIndicesDna<IndexEsa<>, IndexWotd<> >();
+	// crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
+}
+
+SEQAN_DEFINE_TEST(testIndexCrossCompareDnaDfi)
+{
+	// crossIndicesDna<IndexEsa<>, IndexWotd<> >();
 	crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
 }
 
