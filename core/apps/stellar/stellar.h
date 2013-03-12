@@ -430,8 +430,8 @@ SEQAN_CHECKPOINT
 template<typename TInfix, typename TEpsilon, typename TSize, typename TDelta,
          typename TDrop, typename TSize1, typename TSource, typename TId>
 void
-verifySwiftHit(Segment<TInfix, InfixSegment> const & a,
-			   Segment<TInfix, InfixSegment> const & b,
+verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
+			   Segment<TInfix, InfixSegment> const & infV,
 			   TEpsilon eps,
 			   TSize minLength,
 			   TDrop /*xDrop*/,
@@ -450,20 +450,20 @@ SEQAN_CHECKPOINT
     // define a scoring scheme
     typedef int TScore;
     TScore match = 1;
-    TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(a)));
+    TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(infH)));
     Score<TScore> scoreMatrix(match, mismatchIndel, mismatchIndel);
 
     // diagonals for banded alignment
     __int64 upperDiag = 0;
-    __int64 lowerDiag = endPosition(a) - (__int64)endPosition(b) - beginPosition(a) + beginPosition(b);
-    if (beginPosition(b) == 0) upperDiag = lowerDiag + delta;
-    if (endPosition(b) == endPosition(host(b))) lowerDiag = -(__int64)delta;
+    __int64 lowerDiag = endPosition(infH) - (__int64)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
+    if (beginPosition(infV) == 0) upperDiag = lowerDiag + delta;
+    if (endPosition(infV) == endPosition(host(infV))) lowerDiag = -(__int64)delta;
 
 	// banded alignment on parallelogram
 	Align<TSegment> bandedAlign;
     resize(rows(bandedAlign), 2);
-    assignSource(row(bandedAlign, 0), a);
-    assignSource(row(bandedAlign, 1), b);
+    assignSource(row(bandedAlign, 0), infH);
+    assignSource(row(bandedAlign, 1), infV);
 	globalAlignment(bandedAlign, scoreMatrix, lowerDiag, upperDiag, NeedlemanWunsch());
 
 	longestEpsMatch(bandedAlign, minLength, eps);
@@ -471,19 +471,19 @@ SEQAN_CHECKPOINT
 	// integrate alignment in object of type TAlign
 	TAlign align;
 	resize(rows(align), 2);
-	setSource(row(align, 0), host(host(a)));
-	setSource(row(align, 1), host(host(b)));
+	setSource(row(align, 0), host(host(infH)));
+	setSource(row(align, 1), host(host(infV)));
 	integrateAlign(align, bandedAlign);
 
     // TODO(holtgrew): The following has not been adapted to the new clipping interface yet!
 	// set begin and end positions of align
     SEQAN_FAIL("TODO(bkehr): Adapt to new clipping interface!");
-	setClippedBeginPosition(row(align, 0), beginPosition(a) + clippedBeginPosition(row(bandedAlign, 0)));
-	setClippedBeginPosition(row(align, 1), beginPosition(b) + beginPosition(host(b)) + clippedBeginPosition(row(bandedAlign, 1)));
+	setClippedBeginPosition(row(align, 0), beginPosition(infH) + clippedBeginPosition(row(bandedAlign, 0)));
+	setClippedBeginPosition(row(align, 1), beginPosition(infV) + beginPosition(host(infV)) + clippedBeginPosition(row(bandedAlign, 1)));
 	setBeginPosition(row(align, 0), 0);
 	setBeginPosition(row(align, 1), 0);
-	setClippedEndPosition(row(align, 0), beginPosition(a) + clippedEndPosition(row(bandedAlign, 0)));
-	setClippedEndPosition(row(align, 1), beginPosition(b) + beginPosition(host(b)) + clippedEndPosition(row(bandedAlign, 1)));
+	setClippedEndPosition(row(align, 0), beginPosition(infH) + clippedEndPosition(row(bandedAlign, 0)));
+	setClippedEndPosition(row(align, 1), beginPosition(infV) + beginPosition(host(infV)) + clippedEndPosition(row(bandedAlign, 1)));
 
 	if ((TSize)length(row(align, 0)) < minLength)
 		return;
@@ -498,8 +498,8 @@ SEQAN_CHECKPOINT
 template<typename TInfix, typename TEpsilon, typename TSize, typename TDelta,
          typename TDrop, typename TSize1, typename TSource, typename TId>
 void
-verifySwiftHit(Segment<TInfix, InfixSegment> const & a,
-			   Segment<TInfix, InfixSegment> const & b,
+verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
+			   Segment<TInfix, InfixSegment> const & infV,
 			   TEpsilon eps,
 			   TSize minLength,
 			   TDrop xDrop,
@@ -518,32 +518,32 @@ SEQAN_CHECKPOINT
     // define a scoring scheme
     typedef int TScore;
     TScore match = 1;
-    TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(a)));
+    TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(infH)));
     Score<TScore> scoreMatrix(match, mismatchIndel, mismatchIndel);
     TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), minValue<TScore>()+1);
 
     // diagonals for banded alignment
     __int64 upperDiag = 0;
-    __int64 lowerDiag = endPosition(a) - (__int64)endPosition(b) - beginPosition(a) + beginPosition(b);
-    if (beginPosition(b) == 0) upperDiag = lowerDiag + delta;
-    if (endPosition(b) == endPosition(host(b))) lowerDiag = -(__int64)delta;
+    __int64 lowerDiag = endPosition(infH) - (__int64)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
+    if (beginPosition(infV) == 0) upperDiag = lowerDiag + delta;
+    if (endPosition(infV) == endPosition(host(infV))) lowerDiag = -(__int64)delta;
 
 	// banded alignment on parallelogram
 	Align<TSegment> bandedAlign;
     resize(rows(bandedAlign), 2);
-    assignSource(row(bandedAlign, 0), a);
-    assignSource(row(bandedAlign, 1), b);
+    assignSource(row(bandedAlign, 0), infH);
+    assignSource(row(bandedAlign, 1), infV);
 	globalAlignment(bandedAlign, scoreMatrix, lowerDiag, upperDiag, NeedlemanWunsch());
 
 	// create alignment object for the complete sequences
 	TAlign align;
 	resize(rows(align), 2);
-	setSource(row(align, 0), host(host(a)));
-	setSource(row(align, 1), host(host(b)));
+	setSource(row(align, 0), host(host(infH)));
+	setSource(row(align, 1), host(host(infV)));
 
 	// extend alignment and obtain longest contained eps-match
 	// TODO: something is wrong here, e.g. extract around seed, but also something else
-	if (!_extendAndExtract(bandedAlign, scoreDropOff, scoreMatrix, a, b, EXTEND_BOTH, minLength, eps, align))
+	if (!_extendAndExtract(bandedAlign, scoreDropOff, scoreMatrix, infH, infV, EXTEND_BOTH, minLength, eps, align))
 		return;
 
 	// insert eps-match in matches string
@@ -557,8 +557,8 @@ SEQAN_CHECKPOINT
 template<typename TInfix, typename TEpsilon, typename TSize, typename TDelta, typename TDrop,
          typename TSize1, typename TId, typename TSource, typename TTag>
 void
-verifySwiftHit(Segment<TInfix, InfixSegment> const & a,
-               Segment<TInfix, InfixSegment> const & b,
+verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
+               Segment<TInfix, InfixSegment> const & infV,
                TEpsilon eps,
                TSize minLength,
                TDrop xDrop,
@@ -575,9 +575,9 @@ SEQAN_CHECKPOINT
 	typedef typename StellarMatch<TSource, TId>::TAlign TAlign;
 
     TSize maxLength = 1000000000;
-    if ((TSize)length(a) > maxLength) {
-        std::cerr << "Warning: SWIFT hit <" << beginPosition(a) << "," << endPosition(a);
-        std::cerr << "> , <" << beginPosition(b) << "," << endPosition(b);
+    if ((TSize)length(infH) > maxLength) {
+        std::cerr << "Warning: SWIFT hit <" << beginPosition(infH) << "," << endPosition(infH);
+        std::cerr << "> , <" << beginPosition(infV) << "," << endPosition(infV);
 		std::cerr << "> too long. Verification skipped.\n" << std::flush;
         return;
     }
@@ -585,7 +585,7 @@ SEQAN_CHECKPOINT
     // define a scoring scheme
     typedef int TScore;
     TScore match = 1;
-    TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(a)));
+    TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(infH)));
     Score<TScore> scoreMatrix(match, mismatchIndel, mismatchIndel);
     TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), minValue<TScore>()+1);
 
@@ -597,23 +597,23 @@ SEQAN_CHECKPOINT
 
     // diagonals for banded local alignment
     __int64 upperDiag = 0;
-    __int64 lowerDiag = endPosition(a) - (__int64)endPosition(b) - beginPosition(a) + beginPosition(b);
-	if (beginPosition(b) == 0) {
-		if (endPosition(b) == endPosition(host(b))) {
+    __int64 lowerDiag = endPosition(infH) - (__int64)endPosition(infV) - beginPosition(infH) + beginPosition(infV);
+	if (beginPosition(infV) == 0) {
+		if (endPosition(infV) == endPosition(host(infV))) {
 			// TODO: is it possible to get a smaller band in this case?
 			upperDiag = delta;
 			lowerDiag = -(__int64)delta;
 		} else
 			upperDiag = lowerDiag + delta;
-	} else if (endPosition(b) == endPosition(host(b)))
+	} else if (endPosition(infV) == endPosition(host(infV)))
 		lowerDiag = -(__int64)delta;
 
 	// banded local alignment
     LocalAlignmentEnumerator<Score<TScore>, Banded> enumerator(scoreMatrix, lowerDiag, upperDiag, minScore);
 	Align<TSegment> localAlign;
     resize(rows(localAlign), 2);
-    assignSource(row(localAlign, 0), a);
-    assignSource(row(localAlign, 1), b);
+    assignSource(row(localAlign, 0), infH);
+    assignSource(row(localAlign, 1), infV);
 
     while (nextLocalAlignment(localAlign, enumerator)) {
 	// while (localAlignment(localAlign, finder, scoreMatrix, minScore, lowerDiag, upperDiag, BandedWatermanEggert())) {
@@ -630,8 +630,8 @@ SEQAN_CHECKPOINT
 			// create alignment object for the complete sequences
 			TAlign align;
 			resize(rows(align), 2);
-			setSource(row(align, 0), host(host(a)));
-			setSource(row(align, 1), host(host(b)));
+			setSource(row(align, 0), host(host(infH)));
+			setSource(row(align, 1), host(host(infV)));
 
             // determine extension direction
             ExtensionDirection direction;
@@ -641,14 +641,14 @@ SEQAN_CHECKPOINT
             else direction = EXTEND_NONE;
 
 			// extend alignment and obtain longest contained eps-match
-			if (!_extendAndExtract(*aliIt, scoreDropOff, scoreMatrix, a, b, direction, minLength, eps, align)) {
+			if (!_extendAndExtract(*aliIt, scoreDropOff, scoreMatrix, infH, infV, direction, minLength, eps, align)) {
 				aliIt++;
 				continue;
 			}
 
             // insert eps-match in matches string
 			StellarMatch<TSource, TId> m(align, databaseId, dbStrand);
-      length(m);  // DEBUG: Contains assertion on clipping.
+            length(m);  // DEBUG: Contains assertion on clipping.
             if(!_insertMatch(matches, m, minLength, disableThresh, compactThresh, numMatches)) return;
             ++aliIt;
         }

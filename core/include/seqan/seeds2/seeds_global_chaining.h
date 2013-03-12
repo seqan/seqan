@@ -70,45 +70,52 @@ typedef Tag<SparseChaining_> SparseChaining;
 ..signature:chainSeedsGlobally(target, seedSet, tag)
 ..include:seqan/seeds2.h
 */
-template <typename TTargetContainer, typename TSeedSpec, typename TSeedSetSpec, typename TSeedConfig>
+template <typename TTargetContainer, typename TSeedSpec, typename TSeedSetSpec>
 void
 chainSeedsGlobally(
         TTargetContainer & target,
-        SeedSet<TSeedSpec, TSeedSetSpec, TSeedConfig> const & seedSet,
+        SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
         SparseChaining const &)
 {
-    SEQAN_CHECKPOINT;
-
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, TSeedConfig> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Size<TSeed>::Type TSize;
-    typedef typename TSeedSet::THighQualitySeeds const THighQualitySeeds;
-    typedef typename THighQualitySeeds::const_iterator THighQualitySeedsIterator;
+
+    // -----------------------------------------------------------------------
+    // Preparation
+    // -----------------------------------------------------------------------
+
+    // We copy over the seeds from the seed set into an array of seeds.  We can then directly reference seed by their
+    // index in this array which is simpler than handling iterators into the std::set<> of the seed set.
+    String<TSeed> seeds;
+    resize(seeds, length(seedSet));
+    std::copy(seedSet._seeds.begin(), seedSet._seeds.end(), begin(seeds, Standard()));
 
     // -----------------------------------------------------------------------
     // Step 1: Generate the sorted list of interval points.
     // -----------------------------------------------------------------------
-    // This list is I in Gusfield's description.  An interval point is
-    // a triple of (dimension 0 border value, is start point, pointer
-    // to seed it belongs to).
-    typedef Triple<TPosition, bool, TSeed *> TIntervalPoint;
+
+    // This list is I in Gusfield's description.  An interval point is a triple of (dimension 0 border value, is start
+    // point, pointer to seed it belongs to).
+    typedef Triple<TPosition, bool, unsigned> TIntervalPoint;
     typedef String<TIntervalPoint> TIntervalPoints;
     typedef typename Iterator<TIntervalPoints, Standard>::Type TIntervalPointsIterator;
 
     TIntervalPoints intervalPoints;
     // std::cout << ",--- high quality seeds" << std::endl;
     // TODO(holtgrew): Using something dense here for qualities and predecessors should be faster but requires seeds to be available by consecutive ids.
-    std::map<TSeed *, TSize> qualityOfChainEndingIn;
-    std::map<TSeed *, TSeed *> predecessor;
-    for (THighQualitySeedsIterator it = seedSet._highQualitySeeds.begin(), itEnd = seedSet._highQualitySeeds.end(); it != itEnd; ++it) {
-        // Since we use gap space, we have to use "false" for end
-        // points so the lexical ordering gives us what the sparse
-        // chaining algorithm expects.
+    std::map<unsigned, TSize> qualityOfChainEndingIn;
+    std::map<unsigned, unsigned> predecessor;
+    for (unsigned i = 0; i < length(seeds); ++i)
+    {
+        // Since we use gap space, we have to use "false" for end points so the lexical ordering gives us what the
+        // sparse chaining algorithm expects.
         // std::cout << "| " << **it << std::endl;
-        qualityOfChainEndingIn[*it] = getSeedSize(**it);
-        appendValue(intervalPoints, TIntervalPoint(getBeginDim0(**it), true, *it));
-        appendValue(intervalPoints, TIntervalPoint(getEndDim0(**it), false, *it));
+        qualityOfChainEndingIn[i] = seedSize(seeds[i]);
+        predecessor[i] = maxValue<unsigned>();
+        appendValue(intervalPoints, TIntervalPoint(beginPositionH(seeds[i]), true, i));
+        appendValue(intervalPoints, TIntervalPoint(endPositionH(seeds[i]), false, i));
     }
     // std::cout << "`--" << std::endl;
     std::sort(begin(intervalPoints, Standard()), end(intervalPoints, Standard()));
@@ -124,7 +131,7 @@ chainSeedsGlobally(
     // We build a list of "intermediate solutions".  Each such
     // solution is represented by the triple (end position in dim1,
     // value of best chain so far, last seed of the chain).
-    typedef Triple<TPosition, TSize, TSeed *> TIntermediateSolution;
+    typedef Triple<TPosition, TSize, unsigned> TIntermediateSolution;
     typedef std::multiset<TIntermediateSolution> TIntermediateSolutions;
     typedef typename TIntermediateSolutions::iterator TIntermediateSolutionsIterator;
 
@@ -132,10 +139,10 @@ chainSeedsGlobally(
     TIntermediateSolutions intermediateSolutions;
     for (TIntervalPointsIterator it = begin(intervalPoints), itEnd = end(intervalPoints); it != itEnd; ++it) {
         // The seed belonging ot the interval point is seed k.
-        TSeed const & seedK = value(value(it).i3);
+        TSeed const & seedK = seeds[it->i3];
 
-        // std::cout << "Processing interval point (" << value(it).i1 << ", " << value(it).i2 << ", " << value(it).i3 << ")" << std::endl;
-        if (value(it).i2) {  // Is is begin point.
+        // std::cout << "Processing interval point (" << it->i1 << ", " << it->i2 << ", " << it->i3 << ")" << std::endl;
+        if (it->i2) {  // Is is begin point.
             // Find the closest seed (in dimension 1) to seed k with an
             // entry in intermediateSolutions whose end coordinate in
             // dimension 1 is <= the begin coordinate in dimension 1
@@ -145,12 +152,12 @@ chainSeedsGlobally(
             // *first* one that compares greater than the reference
             // one.  Searching for the this one and decrementing the
             // result iterator gives the desired result.
-            TIntermediateSolution referenceSolution(getBeginDim1(seedK), 0, 0);
-            // std::cout << "    intermediateSolutions.upper_bound(" << getBeginDim1(seedK) << ")" << std::endl;
+            TIntermediateSolution referenceSolution(beginPositionV(seedK), 0, maxValue<unsigned>());
+            // std::cout << "    intermediateSolutions.upper_bound(" << beginPositionV(seedK) << ")" << std::endl;
             TIntermediateSolutionsIterator itJ = intermediateSolutions.upper_bound(referenceSolution);
             if (itJ == intermediateSolutions.begin()) {
                 if (intermediateSolutions.size() > 0 &&
-                    intermediateSolutions.rbegin()->i1 <= getBeginDim1(seedK)) {
+                    intermediateSolutions.rbegin()->i1 <= beginPositionV(seedK)) {
                     itJ = intermediateSolutions.end();
                     --itJ;
                 } else {
@@ -160,14 +167,14 @@ chainSeedsGlobally(
                 SEQAN_ASSERT_GT(intermediateSolutions.size(), 0u);  // TODO(holtgrew): Remove this assertion?
                 --itJ;
             }
-            // std::cout << "     --> " << value(itJ->i3) << std::endl;
+            // std::cout << "     --> " << seeds[itJ->i3] << std::endl;
             // Now, we have found such a seed j.
-            SEQAN_ASSERT_LEQ(getEndDim1(value(itJ->i3)), getEndDim1(seedK));
+            SEQAN_ASSERT_LEQ(endPositionV(seeds[itJ->i3]), endPositionV(seedK));
             // Update the intermediate solution value for k and set predecessor.
-            qualityOfChainEndingIn[value(it).i3] += itJ->i2;
-            // std::cout << "  UPDATE qualityOfChainEndingIn[" << value(it).i3 << "] == " << qualityOfChainEndingIn[value(it).i3] << std::endl;
-            predecessor[value(it).i3] = itJ->i3;
-            // std::cout << "         predecessor[" << value(it).i3 << "] == " << itJ->i3 << std::endl;
+            qualityOfChainEndingIn[it->i3] += itJ->i2;
+            // std::cout << "  UPDATE qualityOfChainEndingIn[" << it->i3 << "] == " << qualityOfChainEndingIn[it->i3] << std::endl;
+            predecessor[it->i3] = itJ->i3;
+            // std::cout << "         predecessor[" << it->i3 << "] == " << itJ->i3 << std::endl;
         } else {  // Is end point.
             // Search for the first triple in intermediateSolutions
             // where the end coordinate in dimension 1 is >= end
@@ -177,26 +184,26 @@ chainSeedsGlobally(
             // We work with upper_bound here which gives us the first
             // value that is > so we have to work around this to get
             // >= again...
-            SEQAN_ASSERT_GT(getEndDim1(seedK), 0u);
-            TIntermediateSolution referenceSolution(getEndDim1(seedK), 0, 0);
+            SEQAN_ASSERT_GT(endPositionV(seedK), 0u);
+            TIntermediateSolution referenceSolution(endPositionV(seedK), 0, maxValue<unsigned>());
             TIntermediateSolutionsIterator itSol = intermediateSolutions.upper_bound(referenceSolution);
             if (itSol == intermediateSolutions.end()) {
                 // None found.  Insert a new triple for seed k.
-                TIntermediateSolution sol(getEndDim1(seedK), qualityOfChainEndingIn[value(it).i3], value(it).i3);
+                TIntermediateSolution sol(endPositionV(seedK), qualityOfChainEndingIn[it->i3], it->i3);
                 // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ") " << __LINE__ << std::endl;
                 intermediateSolutions.insert(sol);
             } else {
                 // Found this intermediate solution.
-                SEQAN_ASSERT_GEQ(itSol->i1, getEndDim1(seedK));
-                TSeed const & seedJ = value(itSol->i3);
+                SEQAN_ASSERT_GEQ(itSol->i1, endPositionV(seedK));
+                TSeed const & seedJ = seeds[itSol->i3];
                 // Possibly start a new chain at k if the end1 is
                 // before the end1 of the chain ending in j or they
                 // end at the same coordinate in dim1 but k already
                 // has a higher quality than the whole chaing ending
                 // at j.
-                if (getEndDim1(seedJ) > getEndDim1(seedK) ||
-                    (getEndDim1(seedJ) == getEndDim1(seedK) && qualityOfChainEndingIn[value(it).i3] > itSol->i2)) {
-                    TIntermediateSolution sol(getEndDim1(seedK), qualityOfChainEndingIn[value(it).i3], value(it).i3);
+                if (endPositionV(seedJ) > endPositionV(seedK) ||
+                    (endPositionV(seedJ) == endPositionV(seedK) && qualityOfChainEndingIn[it->i3] > itSol->i2)) {
+                    TIntermediateSolution sol(endPositionV(seedK), qualityOfChainEndingIn[it->i3], it->i3);
                     // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ")" << __LINE__  << std::endl;
                     intermediateSolutions.insert(sol);
                 }
@@ -208,7 +215,7 @@ chainSeedsGlobally(
             while (itDel != itDelEnd) {
                 TIntermediateSolutionsIterator ptr = itDel;
                 ++itDel;
-                if (qualityOfChainEndingIn[value(it).i3] > ptr->i2) {
+                if (qualityOfChainEndingIn[it->i3] > ptr->i2) {
                     // std::cout << "  ERASE (" << ptr->i1 << ", " << ptr->i2 << ", " << ptr->i3 << ")" << std::endl;
                     intermediateSolutions.erase(ptr);
                 }
@@ -223,9 +230,10 @@ chainSeedsGlobally(
     // -----------------------------------------------------------------------
     // TODO(holtgrew): We could use two different algorithms for target containers that are strings and those that are lists.
     clear(target);
-    TSeed *next = intermediateSolutions.rbegin()->i3;
-    while (next != static_cast<TSeed *>(0)) {
-        appendValue(target, *next);
+    unsigned next = intermediateSolutions.rbegin()->i3;
+    while (next != maxValue<unsigned>())
+    {
+        appendValue(target, seeds[next]);
         next = predecessor[next];
     }
     reverse(target);
@@ -245,8 +253,8 @@ chainSeedsGlobally(
         ++it;
         for (; it != itEnd; ++it) {
             // std::cout << *it << std::endl;
-            SEQAN_ASSERT_LEQ(getEndDim0(*itPrevious), getBeginDim0(*it));
-            SEQAN_ASSERT_LEQ(getEndDim1(*itPrevious), getBeginDim1(*it));
+            SEQAN_ASSERT_LEQ(endPositionH(*itPrevious), beginPositionH(*it));
+            SEQAN_ASSERT_LEQ(endPositionV(*itPrevious), beginPositionV(*it));
             itPrevious = it;
         }
     }

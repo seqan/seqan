@@ -48,7 +48,7 @@ SEQAN_DEFINE_TEST(test_seeds_global_chaining_sparse_length)
 {
     using namespace seqan;
 
-    typedef SeedSet<Simple, Unordered, DefaultSeedSetConfig> TSeedSet;
+    typedef SeedSet<Simple, Unordered> TSeedSet;
     typedef Value<TSeedSet>::Type TSeed;
     typedef String<TSeed> TSeedChain;
 

@@ -210,12 +210,20 @@ struct Reference<Iter<TContainer, StdIteratorAdaptor> >
 };
 
 template <typename TContainer>
+struct Reference<Iter<TContainer, StdIteratorAdaptor> const> :
+        Reference<Iter<TContainer, StdIteratorAdaptor> > {};
+
+template <typename TContainer>
 struct Reference<Iter<TContainer const, StdIteratorAdaptor> >
 {
     typedef TContainer const TContainer_;
     typedef typename TContainer::const_iterator TIterator_;
     typedef typename std::iterator_traits<TIterator_>::reference Type;
 };
+
+template <typename TContainer>
+struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
+        Reference<Iter<TContainer const, StdIteratorAdaptor> > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction StdContainerIterator
@@ -284,6 +292,24 @@ value(Iter<TContainer, StdIteratorAdaptor> & me)
 template <typename TContainer>
 inline typename Reference<Iter<TContainer, StdIteratorAdaptor> const>::Type 
 value(Iter<TContainer, StdIteratorAdaptor> const & me)
+{
+    return *(me.data_iterator);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator*()
+// ----------------------------------------------------------------------------
+
+template <typename TContainer>
+inline typename Reference<Iter<TContainer, StdIteratorAdaptor> >::Type 
+operator*(Iter<TContainer, StdIteratorAdaptor> & me)
+{
+    return *(me.data_iterator);
+}
+
+template <typename TContainer>
+inline typename Reference<Iter<TContainer, StdIteratorAdaptor> const>::Type 
+operator*(Iter<TContainer, StdIteratorAdaptor> const & me)
 {
     return *(me.data_iterator);
 }

@@ -41,107 +41,21 @@
 namespace seqan {
 
 // ===========================================================================
+// Forwards
+// ===========================================================================
+
+// TODO(holtgrew): Add DiagonalSorted as default specialization.
+
+struct Unordered_;
+typedef Tag<Unordered_> Unordered;
+
+// ===========================================================================
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-struct MinSeedSize_;
-typedef Tag<MinSeedSize_> MinSeedSize;
-
-struct MinScore_;
-typedef Tag<MinScore_> MinScore;
-
-// TODO(holtgrew): Put configs and mixins into their own header.
-// TODO(holtgrew): Add metafunctions for mixin classes?
-
-struct DefaultSeedSetConfig
-{
-    typedef DefaultSeedConfig TSeedConfig;
-    typedef Nothing TQualityThreshold;
-    typedef Nothing TQualityThresholdMixin;
-};
-
-// TODO(holtgrew): Rename _qualityReached to _qualityAboveThreshold
-// Quality is always reached for seed sets without a quality threshold.
-template <typename TSeed, typename TSeedSet>
-bool _qualityReached(TSeed const & /*seed*/, TSeedSet const & /*seedSet*/, Nothing const &)
-{
-    SEQAN_CHECKPOINT;
-    return true;
-}
-
-template <typename TSize>
-struct MinSeedSizeMixin_
-{
-    TSize _minSeedSizeThreshold;
-
-    MinSeedSizeMixin_() : _minSeedSizeThreshold(MinValue<TSize>::VALUE) {}
-};
-
-template <typename TSeedSet, typename TSize>
-void setMinSeedSizeThreshold(TSeedSet & seedSet, TSize const & size)
-{
-    SEQAN_CHECKPOINT;
-    seedSet._minSeedSizeThreshold = size;
-}
-
-template <typename TSize>
-TSize getMinSeedSizeThreshold(MinSeedSizeMixin_<TSize> const & mixin)
-{
-    SEQAN_CHECKPOINT;
-    return mixin._minSeedSizeThreshold;
-}
-
-template <typename TSeed, typename TSeedSet>
-bool _qualityReached(TSeed const & seed, TSeedSet const & seedSet, MinSeedSize const &)
-{
-    SEQAN_CHECKPOINT;
-    return getSeedSize(seed) >= getMinSeedSizeThreshold(seedSet);
-}
-
-struct DefaultSeedSetConfigLength
-{
-    typedef DefaultSeedConfig TSeedConfig;
-    typedef MinSeedSize TQualityThreshold;
-    typedef MinSeedSizeMixin_<TSeedConfig::TSize> TQualityThresholdMixin;
-};
-
-template <typename TScore>
-struct MinScoreMixin_
-{
-    TScore _minScoreThreshold;
-    MinScoreMixin_() : _minScoreThreshold(MinValue<TScore>::VALUE) {}
-};
-
-template <typename TSeedSet, typename TScore>
-void setMinScoreThreshold(TSeedSet & seedSet, TScore const & score)
-{
-    SEQAN_CHECKPOINT;
-    seedSet._minScoreThreshold = score;
-}
-
-template <typename TScore>
-TScore getMinScoreThreshold(MinScoreMixin_<TScore> const & mixin)
-{
-    SEQAN_CHECKPOINT;
-    return mixin._minScoreThreshold;
-}
-
-
-template <typename TSeed, typename TSeedSet>
-bool _qualityReached(TSeed const & seed, TSeedSet const & seedSet, MinScore const &)
-{
-    SEQAN_CHECKPOINT;
-    return getScore(seed) >= getMinScoreThreshold(seedSet);
-}
-
-
-struct DefaultSeedSetConfigScore
-{
-    typedef DefaultSeedConfigScore TSeedConfig;
-    typedef MinScore TQualityThreshold;
-    typedef MinScoreMixin_<TSeedConfig::TScoreValue> TQualityThresholdMixin;
-};
-
+// ---------------------------------------------------------------------------
+// Class SeedSet
+// ---------------------------------------------------------------------------
 
 /**
 .Class.SeedSet:
@@ -154,7 +68,8 @@ struct DefaultSeedSetConfigScore
 ..param.TSeedConfig:Configuration for the seeds.  Sensible defaults are chosen based on the other template parameters.
 ..include:seqan/seeds.h
 */
-template <typename TSeedSpec, typename TSpec, typename TSeedSetConfig = DefaultSeedSetConfig>
+
+template <typename TSeedSpec, typename TSpec = Unordered>
 class SeedSet;
 
 // ===========================================================================
@@ -173,20 +88,6 @@ class SeedSet;
 ///.Metafunction.Reference.class:Class.SeedSet
 ///.Metafunction.Iterator.param.T:Class.SeedSet
 ///.Metafunction.Iterator.class:Class.SeedSet
-/**
-.Metafunction.SeedValue:
-..summary:Return the type of the underlying seed.
-..signature:SeedValue<TSeedSet>::Value
-..param.TSeedSet:The SeedSet to retrieve the seed type from.
-..include:seqan/seeds.h
-*/
-/**
-.Metafunction.ScoringScheme:
-..summary:Return the type of the seed set's scorings cheme.
-..signature:ScoringScheme<TSeedSet>::Value
-..param.TSeedSet:The SeedSet to retrieve the scoring scheme type from.
-..include:seqan/seeds.h
-*/
 
 // ===========================================================================
 // Functions
@@ -264,18 +165,100 @@ class SeedSet;
 ..include:seqan/seeds2.h
 */
 
+// ---------------------------------------------------------------------------
+// Function minScore()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.minScore:
+..summary:Returns the threshold to distinguish between high-scoring and low-scoring seeds.
+..cat:Seed Handling
+..signature:minScore(set)
+..class:Class.SeedSet
+..param.set:The set for which the threshold is set.
+...type:Class.SeedSet
+...remarks: If the score of a seed is higher than the given threshold, then it is virtually put
+into a container storing the high-scoring seeds which can be iterated separately.
+..see:setMinScore
+..include:seqan/seeds2.h
+*/
+
+template <typename TSeedSpec, typename TSeedSetSpec>
+typename SeedScore<typename Value<SeedSet<TSeedSpec, TSeedSetSpec> >::Type >::Type
+minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
+{
+    return seedSet._minScore;
+}
+
+// ---------------------------------------------------------------------------
+// Function setMinScore()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.setMinScore:
+..summary:Sets the threshold at which seeds are considered high-scoring.
+..cat:Seed Handling
+..signature:setMinScore(set, score)
+..class:Class.SeedSet
+..param.set:The seed set for which the threshold is to be set.
+...type:Class.SeedSet
+..param.score:The new threshold to set.
+...remarks: If the score of a seed is higher than the given threshold, then it is virtually put
+into a container storing the high-scoring seeds which can be iterated separately.
+..see:minScore
+..include:seqan/seeds2.h
+*/
+
+template <typename TSeedSpec, typename TSeedSetSpec, typename TScoreValue>
+void setMinScore(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TScoreValue val)
+{
+    seedSet._minScore = val;
+}
+
+// ---------------------------------------------------------------------------
+// Function minSeedSize()
+// ---------------------------------------------------------------------------
+
+template <typename TSeedSpec, typename TSeedSetSpec>
+typename Size<typename Value<SeedSet<TSeedSpec, TSeedSetSpec> >::Type >::Type
+minSeedSize(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
+{
+    return seedSet._minSeedSize;
+}
+
+// ---------------------------------------------------------------------------
+// Function setMinSeedSize()
+// ---------------------------------------------------------------------------
+
+template <typename TSeedSpec, typename TSeedSetSpec, typename TSize>
+void setMinSeedSize(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TSize siz)
+{
+    seedSet._minSeedSize = siz;
+}
+
+// ---------------------------------------------------------------------------
+// Helper Function _qualityReached()
+// ---------------------------------------------------------------------------
+
+template <typename TSeedSpec, typename TSeedSetSpec, typename TSeedConfig>
+inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
+                            Seed<TSeedSpec, TSeedConfig> const & seed)
+{
+    return score(seed) >= minScore(seedSet) && seedSize(seed) >= minSeedSize(seedSet);
+}
+
 // Debugging / TikZ Output
 
-template <typename TStream, typename TQuerySequence, typename TDatabaseSequence, typename TSeedSetSpec, typename TSeedSpec, typename TSeedConfig>
+template <typename TStream, typename TQuerySequence, typename TDatabaseSequence, typename TSeedSetSpec, typename TSeedSpec>
 inline void
 __write(TStream & stream,
        TQuerySequence & sequence0,
        TDatabaseSequence & sequence1,
-       SeedSet<TSeedSpec, TSeedSetSpec, TSeedConfig> const & seedSet,
+       SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
        Tikz_ const &)
 {
 //IOREV _nodoc_ specialization not documented
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, TSeedConfig> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
 
     stream << "\\begin{tikzpicture}[" << std::endl
            << "    seed/.style={very thick}," << std::endl

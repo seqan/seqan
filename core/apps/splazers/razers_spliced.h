@@ -792,25 +792,25 @@ extendMatch(TReadSet &readSet, TSize rseqNo, TInf & inf, TMatch &m, TOptions &op
     typedef typename Prefix<typename Value<TReadSet>::Type >::Type TQueryPrefix;
     typedef typename Prefix<TInf>::Type TDatabasePrefix;
 
-    TQueryPrefix queryPrefix = prefix(readSet[rseqNo], getBeginDim0(seed));
-    TDatabasePrefix databasePrefix = prefix(inf, getBeginDim1(seed));
+    TQueryPrefix queryPrefix = prefix(readSet[rseqNo], beginPositionH(seed));
+    TDatabasePrefix databasePrefix = prefix(inf, beginPositionV(seed));
     extScore = _extendSeedGappedXDropOneDirection(seed, queryPrefix, databasePrefix, EXTEND_LEFT, scoreMatrix, scoreDropOff);
     
 //	m.gBegin = leftDim1(seed) + beginPosition(inf);
 //	m.mScore = rightDim0(seed) - leftDim0(seed) + 1;
 
-	m.gBegin = getBeginDim1(seed) + beginPosition(inf);
-	m.mScore = getEndDim0(seed) - getBeginDim0(seed);
+	m.gBegin = beginPositionV(seed) + beginPosition(inf);
+	m.mScore = endPositionH(seed) - beginPositionH(seed);
 	m.editDist -= extScore;
 
 #ifdef RAZERS_DEBUG
-	::std::cout << " lDim0: " << getBeginDim0(seed) << ::std::endl;
-	::std::cout << " lDim1: " << getBeginDim1(seed) << ::std::endl;
-	::std::cout << " rDim0: " << getEndDim0(seed) << ::std::endl;
-	::std::cout << " rDim1: " << getEndDim1(seed) << ::std::endl;
+	::std::cout << " lDim0: " << beginPositionH(seed) << ::std::endl;
+	::std::cout << " lDim1: " << beginPositionV(seed) << ::std::endl;
+	::std::cout << " rDim0: " << endPositionH(seed) << ::std::endl;
+	::std::cout << " rDim1: " << endPositionV(seed) << ::std::endl;
 	::std::cout << " scoreDropOff: "<<scoreDropOff << ::std::endl;
-	::std::cout << " readInf: "<< infix(readSet[rseqNo],getBeginDim0(seed),getEndDim0(seed)+1) << ::std::endl;
-	::std::cout << " gInfInf: "<< infix(inf,getBeginDim1(seed),getEndDim1(seed)+1) << ::std::endl;
+	::std::cout << " readInf: "<< infix(readSet[rseqNo],beginPositionH(seed),endPositionH(seed)+1) << ::std::endl;
+	::std::cout << " gInfInf: "<< infix(inf,beginPositionV(seed),endPositionV(seed)+1) << ::std::endl;
 	::std::cout << " read: "<< readSet[rseqNo] << ::std::endl;
 	::std::cout << " gInf: "<< inf << ::std::endl;
 #endif
@@ -854,26 +854,26 @@ extendMatch(TReadSet &readSet, TSize rseqNo, TInf & inf, TMatch &m, TOptions &op
     typedef typename Suffix<typename Value<TReadSet>::Type >::Type TQuerySuffix;
     typedef typename Suffix<TInf>::Type TDatabaseSuffix;
 
-    TQuerySuffix querySuffix = suffix(readSet[rseqNo], getEndDim0(seed));
-    TDatabaseSuffix databaseSuffix = suffix(inf, getEndDim1(seed));
+    TQuerySuffix querySuffix = suffix(readSet[rseqNo], endPositionH(seed));
+    TDatabaseSuffix databaseSuffix = suffix(inf, endPositionV(seed));
     extScore = _extendSeedGappedXDropOneDirection(seed, querySuffix, databaseSuffix, EXTEND_RIGHT, scoreMatrix, scoreDropOff);
 
 
 	//extendSeedScore(seed,extScore,scoreDropOff,scoreMatrix, readSet[rseqNo],inf,1,GappedXDrop());
 	//m.gEnd = rightDim1(seed) + 1 + beginPosition(inf);
 	//m.mScore = rightDim0(seed) - leftDim0(seed) + 1;
-	m.gEnd = getEndDim1(seed)  + beginPosition(inf);
-	m.mScore = getEndDim0(seed) - getBeginDim0(seed);
+	m.gEnd = endPositionV(seed)  + beginPosition(inf);
+	m.mScore = endPositionH(seed) - beginPositionH(seed);
 	m.editDist -= extScore;
 
 #ifdef RAZERS_DEBUG
-	::std::cout << " lDim0: " << getBeginDim0(seed) << ::std::endl;
-	::std::cout << " lDim1: " << getBeginDim1(seed) << ::std::endl;
-	::std::cout << " rDim0: " << getEndDim0(seed) << ::std::endl;
-	::std::cout << " rDim1: " << getEndDim1(seed) << ::std::endl;
+	::std::cout << " lDim0: " << beginPositionH(seed) << ::std::endl;
+	::std::cout << " lDim1: " << beginPositionV(seed) << ::std::endl;
+	::std::cout << " rDim0: " << endPositionH(seed) << ::std::endl;
+	::std::cout << " rDim1: " << endPositionV(seed) << ::std::endl;
 	::std::cout << " scoreDropOff: "<<scoreDropOff << ::std::endl;
-	::std::cout << " readInf: "<< infix(readSet[rseqNo],getBeginDim0(seed),getEndDim0(seed)) << ::std::endl;
-	::std::cout << " gInfInf: "<< infix(inf,getBeginDim1(seed),getEndDim1(seed)) << ::std::endl;
+	::std::cout << " readInf: "<< infix(readSet[rseqNo],beginPositionH(seed),endPositionH(seed)) << ::std::endl;
+	::std::cout << " gInfInf: "<< infix(inf,beginPositionV(seed),endPositionV(seed)) << ::std::endl;
 	::std::cout << " read: "<< readSet[rseqNo] << ::std::endl;
 	::std::cout << " gInf: "<< inf << ::std::endl;
 #endif

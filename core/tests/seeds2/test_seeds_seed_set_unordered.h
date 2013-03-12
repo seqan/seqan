@@ -56,14 +56,14 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
         TSeed s(1, 2, 3, 5);
 
         // Check values from construction.
-        SEQAN_ASSERT_EQ(1u, getBeginDim0(s));
-        SEQAN_ASSERT_EQ(2u, getBeginDim1(s));
-        SEQAN_ASSERT_EQ(3u, getEndDim0(s));
-        SEQAN_ASSERT_EQ(5u, getEndDim1(s));
-        SEQAN_ASSERT_EQ(1, getLowerDiagonal(s));
-        SEQAN_ASSERT_EQ(2, getUpperDiagonal(s));
-        SEQAN_ASSERT_EQ(1, getStartDiagonal(s));
-        SEQAN_ASSERT_EQ(2, getEndDiagonal(s));
+        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+        SEQAN_ASSERT_EQ(3u, endPositionH(s));
+        SEQAN_ASSERT_EQ(5u, endPositionV(s));
+        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
+        SEQAN_ASSERT_EQ(2, upperDiagonal(s));
+        SEQAN_ASSERT_EQ(1, startDiagonal(s));
+        SEQAN_ASSERT_EQ(2, endDiagonal(s));
     }
     { // Construct from ChainedSeed object.
         typedef Seed<ChainedSeed> TSeed2;
@@ -72,14 +72,14 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
         TSeed s(s2);
 
         // Check values from construction.
-        SEQAN_ASSERT_EQ(1u, getBeginDim0(s));
-        SEQAN_ASSERT_EQ(4u, getEndDim0(s));
-        SEQAN_ASSERT_EQ(2u, getBeginDim1(s));
-        SEQAN_ASSERT_EQ(5u, getEndDim1(s));
-        SEQAN_ASSERT_EQ(1, getLowerDiagonal(s));
-        SEQAN_ASSERT_EQ(1, getUpperDiagonal(s));
-        SEQAN_ASSERT_EQ(1, getStartDiagonal(s));
-        SEQAN_ASSERT_EQ(1, getEndDiagonal(s));
+        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+        SEQAN_ASSERT_EQ(4u, endPositionH(s));
+        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+        SEQAN_ASSERT_EQ(5u, endPositionV(s));
+        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
+        SEQAN_ASSERT_EQ(1, upperDiagonal(s));
+        SEQAN_ASSERT_EQ(1, beginDiagonal(s));
+        SEQAN_ASSERT_EQ(1, endDiagonal(s));
     }
 }
 

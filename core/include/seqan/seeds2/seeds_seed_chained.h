@@ -43,19 +43,24 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
+// ---------------------------------------------------------------------------
+// Class Chained Seed
+// ---------------------------------------------------------------------------
+
 struct Chained_;
 typedef Tag<Chained_> ChainedSeed;  // TODO(holtgrew): Chained already taken as template in file. Maybe prefer non-parameterized types for simpler names.
 
 /**
-.Spec.ChainedSeed
-..summary:Describes a seed with start and end position2 and diagonal upper and lower bounds. Additionaly diagonal segments
-between start and end position2 are stored.
+.Spec.Chained Seed
 ..cat:Seed Handling
+..summary:Describes a seed with start and end position2 and diagonal upper and lower bounds.
+..description:Additionaly diagonal segments between start and end position2 are stored.
 ..general:Class.Seed
 ..signature:Seed<TPosition, ChainedSeed>
 ..param.TPosition:The type of number that schuld be used. Must have negative numbers (e.g. int/long).
-.Memfunc.ChainedSeed#Seed:
-..class:Spec.ChainedSeed
+
+.Memfunc.Chained Seed#Seed
+..class:Spec.Chained Seed
 ..summary:Constructor
 ..signature: Seed<TPosition, ChainedSeed> ()
 ..signature: Seed<TPosition, ChainedSeed> (qStartPos, dStartPos, length)
@@ -64,33 +69,31 @@ between start and end position2 are stored.
 ..param.length: Length of the seed.
 ..include:seqan/seeds.h
 */
+
 template <typename TConfig>
 class Seed<ChainedSeed, TConfig>
-        : public TConfig::TScoreMixin
 {
 public:
     typedef typename TConfig::TPosition TPosition;
     typedef typename TConfig::TSize TSize;
     typedef typename TConfig::TDiagonal TDiagonal;
-
-    typedef typename TConfig::TScoreMixin TScoreMixin;
+    typedef typename TConfig::TScoreValue TScoreValue;
 
     typedef SeedDiagonal<TPosition, TSize> TSeedDiagonal;
 
-    ::std::list<TSeedDiagonal> _seedDiagonals;
+    std::list<TSeedDiagonal> _seedDiagonals;
     TDiagonal _lowerDiagonal;
     TDiagonal _upperDiagonal;
 
-    Seed() : TScoreMixin(), _lowerDiagonal(0), _upperDiagonal(0)
-    { SEQAN_CHECKPOINT; }
+    TScoreValue _score;
 
-    Seed(TPosition beginDim0, TPosition beginDim1, TPosition seedLength)
-            : TScoreMixin(),
-              _lowerDiagonal(beginDim1 - beginDim0),
-              _upperDiagonal(beginDim1 - beginDim0)
+    Seed() : _lowerDiagonal(0), _upperDiagonal(0), _score(0)
+    {}
+
+    Seed(TPosition beginPositionH, TPosition beginPositionV, TPosition seedLength) :
+            _lowerDiagonal(beginPositionH - beginPositionV), _upperDiagonal(beginPositionH - beginPositionV), _score(0)
     {
-        SEQAN_CHECKPOINT;
-        appendValue(_seedDiagonals, TSeedDiagonal(beginDim0, beginDim1, seedLength));
+        appendValue(_seedDiagonals, TSeedDiagonal(beginPositionH, beginPositionV, seedLength));
     }
 };
 
@@ -98,8 +101,21 @@ public:
 // Metafunctions
 // ===========================================================================
 
-///.Metafunction.Value.param.T:Spec.ChainedSeed
-///.Metafunction.Value.class:Spec.ChainedSeed
+// ---------------------------------------------------------------------------
+// Metafunction Value
+// ---------------------------------------------------------------------------
+
+/**
+.Metafunction.Chained Seed#Value
+..cat:Seed Handling
+..class:Spec.Chained Seed
+..summary:The seed diagonal type.
+..signature:Value<TSeed>::Type
+..param.TSeed:The seed to query for its diagonal object type.
+...type:Spec.Chained Seed
+..include:seqan/seeds.h
+*/
+
 template <typename TConfig>
 struct Value<Seed<ChainedSeed, TConfig> >
 {
@@ -120,38 +136,21 @@ struct Value<Seed<ChainedSeed, TConfig> const>
     typedef SeedDiagonal<TPosition_, TSize_> const Type;
 };
 
-///.Metafunction.Size.param.T:Spec.ChainedSeed
-///.Metafunction.Size.class:Spec.ChainedSeed
-template <typename TConfig>
-struct Size<Seed<ChainedSeed, TConfig> >
-{
-    typedef typename TConfig::TSize Type;
-};
+// ---------------------------------------------------------------------------
+// Metafunction Reference
+// ---------------------------------------------------------------------------
 
-template <typename TConfig>
-struct Size<Seed<ChainedSeed, TConfig> const>
-        : Size<Seed<ChainedSeed, TConfig> > {};
+/**
+.Metafunction.Chained Seed#Reference
+..cat:Seed Handling
+..class:Spec.Chained Seed
+..summary:The seed diagonal reference type.
+..signature:Reference<TSeed>::Type
+..param.TSeed:The seed to query for its seed diagonal reference type.
+...type:Spec.Chained Seed
+..include:seqan/seeds.h
+*/
 
-///.Metafunction.Iterator.param.T:Spec.ChainedSeed
-///.Metafunction.Iterator.class:Spec.ChainedSeed
-template <typename TConfig>
-struct Iterator<Seed<ChainedSeed, TConfig>, Standard>
-{
-    typedef Seed<ChainedSeed, TConfig> TSeed_;
-    typedef typename Value<TSeed_>::Type TSeedDiagonal_;
-    typedef typename ::std::list<TSeedDiagonal_>::iterator Type;
-};
-
-template <typename TConfig>
-struct Iterator<Seed<ChainedSeed, TConfig> const, Standard>
-{
-    typedef Seed<ChainedSeed, TConfig> TSeed_;
-    typedef typename Value<TSeed_>::Type TSeedDiagonal_;
-    typedef typename ::std::list<TSeedDiagonal_>::const_iterator Type;
-};
-
-///.Metafunction.Reference.param.T:Spec.ChainedSeed
-///.Metafunction.Reference.class:Spec.ChainedSeed
 template <typename TConfig>
 struct Reference<Seed<ChainedSeed, TConfig> >
 {
@@ -168,9 +167,45 @@ struct Reference<Seed<ChainedSeed, TConfig> const>
     typedef TSeedDiagonal_ const & Type;
 };
 
+// ---------------------------------------------------------------------------
+// Metafunction Iterator
+// ---------------------------------------------------------------------------
+
+/**
+.Metafunction.Chained Seed#Iterator
+..cat:Seed Handling
+..class:Spec.Chained Seed
+..summary:The seed diagonal iterator type.
+..signature:Iterator<TSeed, Tag>::Type
+..param.TSeed:The seed to query for its seed diagonal iterator type.
+...type:Spec.Chained Seed
+..param.Tag:The tag to select the iterator type with.
+..include:seqan/seeds.h
+*/
+
+template <typename TConfig>
+struct Iterator<Seed<ChainedSeed, TConfig>, Standard>
+{
+    typedef Seed<ChainedSeed, TConfig> TSeed_;
+    typedef typename Value<TSeed_>::Type TSeedDiagonal_;
+    typedef typename ::std::list<TSeedDiagonal_>::iterator Type;
+};
+
+template <typename TConfig>
+struct Iterator<Seed<ChainedSeed, TConfig> const, Standard>
+{
+    typedef Seed<ChainedSeed, TConfig> TSeed_;
+    typedef typename Value<TSeed_>::Type TSeedDiagonal_;
+    typedef typename ::std::list<TSeedDiagonal_>::const_iterator Type;
+};
+
 // ===========================================================================
 // Functions
 // ===========================================================================
+
+// ---------------------------------------------------------------------------
+// Debug Function operator<<()
+// ---------------------------------------------------------------------------
 
 template <typename TStream, typename TConfig>
 inline TStream &
@@ -189,60 +224,90 @@ operator<<(TStream & stream, Seed<ChainedSeed, TConfig> const & seed)
     return stream;
 }
 
+// ---------------------------------------------------------------------------
+// Function operator==()
+// ---------------------------------------------------------------------------
+
+// TODO(holtgrew): Documentation comes through concept.
+
 template <typename TConfig>
 inline bool
 operator==(Seed<ChainedSeed, TConfig> const & a, Seed<ChainedSeed, TConfig> const & b)
 {
-    SEQAN_CHECKPOINT;
     return a._seedDiagonals == b._seedDiagonals &&
             a._upperDiagonal == b._upperDiagonal &&
             a._lowerDiagonal == b._lowerDiagonal;
 }
 
-template <typename TConfig>
-inline typename Position<Seed<ChainedSeed, TConfig> >::Type
-getBeginDim0(Seed<ChainedSeed, TConfig> const & seed)
-{
-	SEQAN_CHECKPOINT;
-	return front(seed._seedDiagonals).beginDim0;
-}
+// ---------------------------------------------------------------------------
+// Function beginPositionH()
+// ---------------------------------------------------------------------------
 
 template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
-getEndDim0(Seed<ChainedSeed, TConfig> const & seed)
+beginPositionH(Seed<ChainedSeed, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
-	return back(seed._seedDiagonals).beginDim0 + back(seed._seedDiagonals).length;
+	return front(seed._seedDiagonals).beginPositionH;
 }
+
+// ---------------------------------------------------------------------------
+// Function endPositionH()
+// ---------------------------------------------------------------------------
 
 template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
-getBeginDim1(Seed<ChainedSeed, TConfig> const & seed)
+endPositionH(Seed<ChainedSeed, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
-	return front(seed._seedDiagonals).beginDim1;
+	return back(seed._seedDiagonals).beginPositionH + back(seed._seedDiagonals).length;
 }
+
+// ---------------------------------------------------------------------------
+// Function beginPositionV()
+// ---------------------------------------------------------------------------
 
 template <typename TConfig>
 inline typename Position<Seed<ChainedSeed, TConfig> >::Type
-getEndDim1(Seed<ChainedSeed, TConfig> const & seed)
+beginPositionV(Seed<ChainedSeed, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
-	return back(seed._seedDiagonals).beginDim1 + back(seed._seedDiagonals).length;
+	return front(seed._seedDiagonals).beginPositionV;
 }
+
+// ---------------------------------------------------------------------------
+// Function endPositionV()
+// ---------------------------------------------------------------------------
+
+template <typename TConfig>
+inline typename Position<Seed<ChainedSeed, TConfig> >::Type
+endPositionV(Seed<ChainedSeed, TConfig> const & seed)
+{
+	return back(seed._seedDiagonals).beginPositionV + back(seed._seedDiagonals).length;
+}
+
+// ---------------------------------------------------------------------------
+// Function length()
+// ---------------------------------------------------------------------------
 
 /**
-.Function.length.param.object.type:Spec.ChainedSeed
-.Function.length.class:Spec.ChainedSeed
-..include:seqan/seeds2.h
+.Function.Chained Seed#length
+..summary:Returns the number of diagonals in the chained seed.
+..signature:TSize length(seed)
+..class:Spec.ChainedSeed
+..param.seed:The seed to query.
+...type:Spec.ChainedSeed
+..returns:The number of diagonals in the chained seed.
+..include:seqan/seeds.h
 */
+
 template <typename TConfig>
 inline typename Size<Seed<ChainedSeed, TConfig> >::Type
 length(Seed<ChainedSeed, TConfig> const & seed)
 {
-    SEQAN_CHECKPOINT;
     return length(seed._seedDiagonals);
 }
+
+// ---------------------------------------------------------------------------
+// Function appendDiagonal()
+// ---------------------------------------------------------------------------
 
 /**
 .Function.appendDiagonal
@@ -255,22 +320,27 @@ length(Seed<ChainedSeed, TConfig> const & seed)
 ..param.diag: The diagonal to add.
 ...type:Class.SeedDiagonal
 ...remarks: A diagonal consists of three values: 1: start in 1. sequence, 2: start in 2. sequence, 3: length of match
-..include:seqan/seeds2.h
+..include:seqan/seeds.h
 */
+
 template <typename TConfig>
 inline void
 appendDiagonal(Seed<ChainedSeed, TConfig> & seed,
                typename Value<Seed<ChainedSeed, TConfig> >::Type const & diagonal)
 {
-    SEQAN_CHECKPOINT;
-
-    if (length(seed) > 0) {
-        SEQAN_ASSERT_LEQ(back(seed._seedDiagonals).beginDim0 + back(seed._seedDiagonals).length, diagonal.beginDim0);
-        SEQAN_ASSERT_LEQ(back(seed._seedDiagonals).beginDim1 + back(seed._seedDiagonals).length, diagonal.beginDim1);
+    // TODO(holtgrew): Add empty().
+    if (length(seed) > 0)
+    {
+        SEQAN_ASSERT_LEQ(back(seed._seedDiagonals).beginPositionH + back(seed._seedDiagonals).length, diagonal.beginPositionH);
+        SEQAN_ASSERT_LEQ(back(seed._seedDiagonals).beginPositionV + back(seed._seedDiagonals).length, diagonal.beginPositionV);
     }
 
     appendValue(seed._seedDiagonals, diagonal);
 }
+
+// ---------------------------------------------------------------------------
+// Function truncateDiagonals()
+// ---------------------------------------------------------------------------
 
 /**
 .Function.truncateDiagonals
@@ -281,28 +351,34 @@ appendDiagonal(Seed<ChainedSeed, TConfig> & seed,
 ..param.seed: The seed to which the diagonal should be added.
 ...type:Spec.ChainedSeed
 ..param.first: Iterator the first diagonal to remove.
-..include:seqan/seeds2.h
+..include:seqan/seeds.h
 */
+
 template <typename TConfig>
 inline void
 truncateDiagonals(Seed<ChainedSeed, TConfig> & seed,
                   typename Iterator<Seed<ChainedSeed, TConfig> >::Type const & first)
 {
-    SEQAN_CHECKPOINT;
-    // TODO(holtgrew): Add erase() to std::list adaptors?
+     // TODO(holtgrew): Add erase() to std::list adaptors?
     seed._seedDiagonals.erase(first, seed._seedDiagonals.end());
 }
 
+// ---------------------------------------------------------------------------
+// Function begin()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.begin.param.object.type:Spec.ChainedSeed
+.Function.Chained Seed#begin
+..summary:Returns an iterator to the beginning of the seed digonals.
 ..class:Spec.ChainedSeed
-..include:seqan/seeds2.h
+..signature:TIterator begin(seed, tag)
+..include:seqan/seeds.h
 */
+
 template <typename TConfig>
 inline typename Iterator<Seed<ChainedSeed, TConfig> >::Type
 begin(Seed<ChainedSeed, TConfig> & seed, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     return seed._seedDiagonals.begin();
 }
 
@@ -310,20 +386,51 @@ template <typename TConfig>
 inline typename Iterator<Seed<ChainedSeed, TConfig> const>::Type
 begin(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     return seed._seedDiagonals.begin();
 }
 
+// ---------------------------------------------------------------------------
+// Function end()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.front.param.object.type:Spec.ChainedSeed
+.Function.Chained Seed#end
+..summary:Returns an iterator to the end of the seed diagonals.
 ..class:Spec.ChainedSeed
-..include:seqan/seeds2.h
+..signature:TIterator end(seed, tag)
+..include:seqan/seeds.h
 */
+
+template <typename TConfig>
+inline typename Iterator<Seed<ChainedSeed, TConfig> >::Type
+end(Seed<ChainedSeed, TConfig> & seed, Standard const &)
+{
+    return seed._seedDiagonals.end();
+}
+
+template <typename TConfig>
+inline typename Iterator<Seed<ChainedSeed, TConfig> const>::Type
+end(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
+{
+    return seed._seedDiagonals.end();
+}
+
+// ---------------------------------------------------------------------------
+// Function front()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Chained Seed#front
+..summary:Returns a reference to the first seed diagonal.
+..class:Spec.ChainedSeed
+..signature:TReference front(seed)
+..include:seqan/seeds.h
+*/
+
 template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> >::Type
 front(Seed<ChainedSeed, TConfig> & seed)
 {
-    SEQAN_CHECKPOINT;
     return front(seed._seedDiagonals);
 }
 
@@ -331,15 +438,21 @@ template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> const>::Type
 front(Seed<ChainedSeed, TConfig> const & seed)
 {
-    SEQAN_CHECKPOINT;
     return front(seed._seedDiagonals);
 }
 
+// ---------------------------------------------------------------------------
+// Function back()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.back.param.container.type:Spec.ChainedSeed
+.Function.Chained Seed#back
+..summary:Returns a reference to the last seed diagonal.
 ..class:Spec.ChainedSeed
-..include:seqan/seeds2.h
+..signature:TReference back(seed)
+..include:seqan/seeds.h
 */
+
 template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> >::Type
 back(Seed<ChainedSeed, TConfig> & seed)
@@ -356,61 +469,9 @@ back(Seed<ChainedSeed, TConfig> const & seed)
     return back(seed._seedDiagonals);
 }
 
-/**
-.Function.end.param.object.type:Spec.ChainedSeed
-..class:Spec.ChainedSeed
-..include:seqan/seeds2.h
-*/
-template <typename TConfig>
-inline typename Iterator<Seed<ChainedSeed, TConfig> >::Type
-end(Seed<ChainedSeed, TConfig> & seed, Standard const &)
-{
-    SEQAN_CHECKPOINT;
-    return seed._seedDiagonals.end();
-}
-
-template <typename TConfig>
-inline typename Iterator<Seed<ChainedSeed, TConfig> const>::Type
-end(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
-{
-    SEQAN_CHECKPOINT;
-    return seed._seedDiagonals.end();
-}
-
-// Basic Functions
-
-template <typename TConfig>
-void
-move(Seed<ChainedSeed, TConfig> & target, Seed<ChainedSeed, TConfig> & source)
-{
-    SEQAN_CHECKPOINT;
-    std::swap(target._seedDiagonals, source._seedDiagonals);
-    target._lowerDiagonal = source._lowerDiagonal;
-    target._upperDiagonal = source._upperDiagonal;
-    _assignScoreMixin(target, source, typename HasScore<Seed<Simple, TConfig> >::Type());
-}
-
-template <typename TConfig>
-void
-assign(Seed<ChainedSeed, TConfig> & target, Seed<ChainedSeed, TConfig> const & source)
-{
-    SEQAN_CHECKPOINT;
-    assign(target._seedDiagonals, source._seedDiagonals);
-    target._lowerDiagonal = source._lowerDiagonal;
-    target._upperDiagonal = source._upperDiagonal;
-    _assignScoreMixin(target, source, typename HasScore<Seed<Simple, TConfig> >::Type());
-}
-
-template <typename TConfig>
-void
-assign(Seed<ChainedSeed, TConfig> & target, Seed<ChainedSeed, TConfig> & source)
-{
-    SEQAN_CHECKPOINT;
-    typedef Seed<ChainedSeed, TConfig> TSeed;
-    assign(target, const_cast<TSeed const &>(source));
-}
-
-// Debug Output
+// ---------------------------------------------------------------------------
+// Debug Function
+// ---------------------------------------------------------------------------
 
 template <typename TStream, typename TConfig>
 inline void

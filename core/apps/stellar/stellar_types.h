@@ -66,7 +66,7 @@ struct StellarOptions {
         alphabet = "dna5";
         noRT = false;
 
-		qGram = (unsigned)-1;
+		qGram = seqan::maxValue<unsigned>();
 		epsilon = 0.05;
 		minLength = 100;
 		xDrop = 5;
@@ -74,7 +74,7 @@ struct StellarOptions {
 		forward = true;
 		reverse = true;
 		fastOption = "exact";		// exact verification
-		disableThresh = (unsigned)-1;
+		disableThresh = seqan::maxValue<unsigned>();
 		compactThresh = 500;
 		numMatches = 50;
 		maxRepeatPeriod = 1;

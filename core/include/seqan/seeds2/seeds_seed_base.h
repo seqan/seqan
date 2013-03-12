@@ -43,23 +43,9 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-// Mixin member for mixing in scores into seeds.
-template <typename TScore>
-struct ScoreMixin_
-{
-    TScore _score;
-};
-
-/**
-.Tag.Seed Specs
-..summary:Specialization tags for @Class.Seed@.
-..cat:Seed Handling
-..tag.Simple:Simple seed that only stores coordinates of the begin end end point and the diagonals.
-..tag.Chained:Seed that stores the dot-plot diagonals (i.e. matches) that the seed consists of.
-..see:Spec.SimpleSeed
-..see:Spec.ChainedSeed
-..include:seqan/seeds.h
-*/
+// ---------------------------------------------------------------------------
+// Class DefaultSeedConfig
+// ---------------------------------------------------------------------------
 
 // Default configuration for seeds without score.
 struct DefaultSeedConfig
@@ -67,21 +53,12 @@ struct DefaultSeedConfig
     typedef size_t TPosition;
     typedef size_t TSize;
     typedef MakeSigned_<size_t>::Type TDiagonal;
-    typedef False THasScore;
-    typedef Nothing TScoreValue;
-    typedef Nothing TScoreMixin;
+    typedef int TScoreValue;
 };
 
-// Default configuration for seeds with score.
-struct DefaultSeedConfigScore
-{
-    typedef size_t TPosition;
-    typedef size_t TSize;
-    typedef MakeSigned_<size_t>::Type TDiagonal;
-    typedef True THasScore;
-    typedef int TScoreValue;
-    typedef ScoreMixin_<int> TScoreMixin;
-};
+// ---------------------------------------------------------------------------
+// Class Seed
+// ---------------------------------------------------------------------------
 
 /**
 .Class.Seed:
@@ -91,7 +68,8 @@ struct DefaultSeedConfigScore
 ..param.TSpec:The seed specialization type.
 ..param.TConfig:The configuration object to use for this seed.
 ..include:seqan/seeds.h
- */
+*/
+
 template <typename TSpec, typename TConfig = DefaultSeedConfig>
 class Seed;
 
@@ -99,8 +77,21 @@ class Seed;
 // Metafunctions
 // ===========================================================================
 
-///.Metafunction.Position.param.T:type:Class.Seed
-///.Metafunction.Position.class:Class.Seed
+// ---------------------------------------------------------------------------
+// Metafunction Position
+// ---------------------------------------------------------------------------
+
+/**
+.Metafunction.Seed#Position
+..cat:Seed Handling
+..class:Class.Seed
+..summary:The position type of a @Class.Seed@.
+..signature:Position<TSeed>::Type
+..param.TSeed:The seed to query for its position type.
+...type:Class.Seed
+..include:seqan/seeds.h
+*/
+
 template <typename TSpec, typename TConfig>
 struct Position<Seed<TSpec, TConfig> >
 {
@@ -108,11 +99,25 @@ struct Position<Seed<TSpec, TConfig> >
 };
 
 template <typename TSpec, typename TConfig>
-struct Position<Seed<TSpec, TConfig> const>
-        : Position<Seed<TSpec, TConfig> > {};
+struct Position<Seed<TSpec, TConfig> const> : Position<Seed<TSpec, TConfig> >
+{};
 
-///Metafunction.Size.param.T:type:Class.Seed
-///Metafunction.Size.class:Class.Seed
+// ---------------------------------------------------------------------------
+// Metafunction Size
+// ---------------------------------------------------------------------------
+
+/**
+.Metafunction.Seed#Size
+..cat:Seed Handling
+..class:Class.Seed
+..summary:The size type of a @Class.Seed@.
+..description:This is used for the size value/score of a seed.
+..signature:Size<TSeed>::Type
+..param.TSeed:The seed to query for its size type.
+...type:Class.Seed
+..include:seqan/seeds.h
+*/
+
 template <typename TSpec, typename TConfig>
 struct Size<Seed<TSpec, TConfig> >
 {
@@ -120,19 +125,24 @@ struct Size<Seed<TSpec, TConfig> >
 };
 
 template <typename TSpec, typename TConfig>
-struct Size<Seed<TSpec, TConfig> const>
-        : Size<Seed<TSpec, TConfig> > {};
+struct Size<Seed<TSpec, TConfig> const> : Size<Seed<TSpec, TConfig> >
+{};
+
+// ---------------------------------------------------------------------------
+// Metafunction Diagonal
+// ---------------------------------------------------------------------------
 
 /**
-.Metafunction.Diagonal:
+.Metafunction.Seed#Diagonal
 ..cat:Seed Handling
-..summary:Returns type of the value for the diagonal of a seed.
-..signature:Diagonal<T>::Type
 ..class:Class.Seed
-..param.T:Type of the seed to retrieve the diagonal for.
+..summary:Returns type of the value for the diagonal of a seed.
+..signature:Diagonal<TSeed>::Type
+..param.TSeed:Type of the seed to query for its diagonal type.
 ...type:Class.Seed
 ..include:seqan/seeds2.h
  */
+
 template <typename T>
 struct Diagonal;
 
@@ -146,39 +156,21 @@ template <typename TSpec, typename TConfig>
 struct Diagonal<Seed<TSpec, TConfig> const>
         : Diagonal<Seed<TSpec, TConfig> > {};
 
+// ---------------------------------------------------------------------------
+// Metafunction Diagonal
+// ---------------------------------------------------------------------------
+
 /**
-.Metafunction.HasScore:
+.Metafunction.Seed#SeedScore
 ..cat:Seed Handling
-..summary:Returns True if the seed stores a score, False otherwise.
-..signature:HasScore<T>::Type
 ..class:Class.Seed
-..param.T:Type of the seed to retrieve whether it has a score for.
-...type:Class.Seed
-..include:seqan/seeds2.h
- */
-template <typename T>
-struct HasScore;
-
-template <typename TSpec, typename TConfig>
-struct HasScore<Seed<TSpec, TConfig> >
-{
-    typedef typename TConfig::THasScore Type;
-};
-
-template <typename TSpec, typename TConfig>
-struct HasScore<Seed<TSpec, TConfig> const>
-        : HasScore<Seed<TSpec, TConfig> > {};
-
-/**
-.Metafunction.SeedScore:
-..cat:Seed Handling
 ..summary:Returns type of the value for the score of a seed.
-..signature:SeedScore<T>::Type
-..class:Class.Seed
-..param.T:Type of the seed to retrieve the score for.
+..signature:SeedScore<TSeed>::Type
+..param.TSeed:Type of the seed to retrieve the score for.
 ...type:Class.Seed
 ..include:seqan/seeds2.h
  */
+
 template <typename T>
 struct SeedScore;
 
@@ -189,8 +181,8 @@ struct SeedScore<Seed<TSpec, TConfig> >
 };
 
 template <typename TSpec, typename TConfig>
-struct SeedScore<Seed<TSpec, TConfig> const>
-        : SeedScore<Seed<TSpec, TConfig> > {};
+struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
+{};
 
 // ===========================================================================
 // Functions
@@ -210,11 +202,47 @@ struct SeedScore<Seed<TSpec, TConfig> const>
 ..include:seqan/seeds2.h
 */
 
+// ---------------------------------------------------------------------------
+// Function beginPositionH()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.getBeginDim0:
+.Function.Seed#beginPositionH
+..summary: Returns the first position of the seed in the database.
+..cat:Seed Handling
+..signature:beginPositionH(seed)
+..class:Class.Seed
+..param.seed:The seed whose database position should be returned.
+...type:Class.Seed
+..returns:Begin position of the seed in the database.
+..include:seqan/seeds.h
+*/
+
+// ---------------------------------------------------------------------------
+// Function endPositionH()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#endPositionH
+..summary: Returns the end position of the seed in the database.
+..cat:Seed Handling
+..signature:endPositionH(seed)
+..class:Class.Seed
+..param.seed:The seed whose end position in the database position should be returned.
+...type:Class.Seed
+..returns:End of the seed in the database.
+..include:seqan/seeds.h
+*/
+
+// ---------------------------------------------------------------------------
+// Function beginPositionV()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#beginPositionV
 ..summary: Returns the first position of the seed in the query.
 ..cat:Seed Handling
-..signature:beginDim0(seed)
+..signature:beginPositionV(seed)
 ..class:Class.Seed
 ..param.seed:The seed whose query position should be returned.
 ...type:Class.Seed
@@ -222,103 +250,98 @@ struct SeedScore<Seed<TSpec, TConfig> const>
 ..include:seqan/seeds.h
 */
 
+// ---------------------------------------------------------------------------
+// Function endPositionV()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.getEndDim0:
-..summary: Returns the last position of the seed in the query.
+.Function.Seed#endPositionV
+..summary: Returns the end position of the seed in the query.
 ..cat:Seed Handling
-..signature:endDim0(seed)
+..signature:endPositionV(seed)
 ..class:Class.Seed
-..param.seed:The seed whose last in the query position should be returned.
+..param.seed:The seed whose end in the query position should be returned.
 ...type:Class.Seed
 ..returns: End of the seed.
 ..include:seqan/seeds.h
 */
 
-/**
-.Function.getBeginDim1:
-..summary: Returns the first position of the seed in the database.
-..cat:Seed Handling
-..signature:beginDim1(seed)
-..class:Class.Seed
-..param.seed:The seed whose database position should be returned.
-...type:Class.Seed
-..returns: Begin of the seed.
-..include:seqan/seeds.h
-*/
+// ---------------------------------------------------------------------------
+// Function lowerDiagonal()
+// ---------------------------------------------------------------------------
 
 /**
-.Function.getEndDim1:
-..summary: Returns the last position of the seed in the database.
+.Function.Seed#lowerDiagonal
+..summary:Returns the leftmost diagonal of the seed (minimum diagonal value).
 ..cat:Seed Handling
-..signature:endDim1(seed)
-..class:Class.Seed
-..param.seed:The seed whose last in the database position should be returned.
-...type:Class.Seed
-..returns: End of the seed.
-..include:seqan/seeds.h
-*/
-
-/**
-.Function.getLowerDiagonal:
-..summary: Returns the most left diagonal of the seed (maximum diagonal value).
-..cat:Seed Handling
-..signature:getLowerDiagonal(seed)
+..signature:lowerDiagonal(seed)
 ..class:Class.Seed
 ..param.seed:The seed whose database position should be returned.
 ...type:Class.Seed
 ..returns:The most left diagonal.
 ..include:seqan/seeds.h
 */
+
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
-getLowerDiagonal(Seed<TSpec, TConfig> const & seed)
+lowerDiagonal(Seed<TSpec, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
     return seed._lowerDiagonal;
 }
 
+// ---------------------------------------------------------------------------
+// Function setLowerDiagonal()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.setLowerDiagonal:
-..summary: Sets a new value for the most left diagonal.
+.Function.Seed#setLowerDiagonal
+..summary: Sets a new value for the leftmost diagonal.
 ..cat:Seed Handling
 ..signature:setLowerDiagonal(seed, diag)
 ..class:Class.Seed
 ..param.seed:The seed whose left diagonal value should be updated.
 ...type:Class.Seed
-..param.diag:The new value for the most left diagonal.
+..param.diag:The new value for the leftmost diagonal.
 ..include:seqan/seeds.h
 */
-template <typename TSpec, typename TConfig, typename TPosition>
+
+template <typename TSpec, typename TConfig, typename TDiagonal>
 inline void 
-setLowerDiagonal(Seed<TSpec, TConfig> & seed, 
-				 TPosition newDiag)
+setLowerDiagonal(Seed<TSpec, TConfig> & seed, TDiagonal newDiag)
 {
-	SEQAN_CHECKPOINT;
 	seed._lowerDiagonal = newDiag;
 }
 
+// ---------------------------------------------------------------------------
+// Function upperDiagonal()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.getUpperDiagonal:
-..summary: Returns the most right diagonal of the seed (minimum diagonal value).
+.Function.Seed#getUpperDiagonal
+..summary:Returns the rightmost diagonal of the seed (maximum diagonal value).
 ..cat:Seed Handling
-..signature:getUpperDiagonal(seed)
+..signature:upperDiagonal(seed)
 ..class:Class.Seed
-..param.seed:The seed whose database position should be returned.
+..param.seed:The seed whose upper right diagonal value should be returned.
 ...type:Class.Seed
-..returns:The most right diagonal.
+..returns:The right diagonal.
 ..include:seqan/seeds.h
 */
+
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
-getUpperDiagonal(Seed<TSpec, TConfig> const & seed)
+upperDiagonal(Seed<TSpec, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
     return seed._upperDiagonal;
 }
 
+// ---------------------------------------------------------------------------
+// Function setUpperDiagonal()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.setUpperDiagonal:
-..summary: Sets a new value for the most right diagonal.
+.Function.Seed#setUpperDiagonal
+..summary: Sets a new value for the rightmost diagonal.
 ..cat:Seed Handling
 ..signature:setUpperDiagonal(seed, diag)
 ..class:Class.Seed
@@ -327,69 +350,75 @@ getUpperDiagonal(Seed<TSpec, TConfig> const & seed)
 ..param.diag:The new value for the most right diagonal.
 ..include:seqan/seeds.h
 */
+
 template <typename TSpec, typename TConfig, typename TPosition>
 inline void 
 setUpperDiagonal(Seed<TSpec, TConfig> & seed, 
 				 TPosition newDiag)
 {
-	SEQAN_CHECKPOINT;
 	seed._upperDiagonal = newDiag;
 }
 
+// ---------------------------------------------------------------------------
+// Function seedSize()
+// ---------------------------------------------------------------------------
 
 /**
-.Function.getSeedSize
+.Function.Seed#seedSize
 ..summary:Returns the number of matches and mismatches of the seed.  This is the longest true diagonal fitting into its dimensions.
-..signature:getSeedSize(seed)
+..signature:seedSize(seed)
 ..class:Class.Seed
-..remark:"Seed size" is mostly called "seed length" in the literature.  However, in SeqAn reverse "length" is reserved to be the size of a container.
+..remark:"Seed size" is mostly called "seed length" in the literature.  However, in SeqAn the term "length" is reserved to be the size of a container.
 ..include:seqan/seeds2.h
 */
-template <typename TSpec, typename TConfig>
-inline typename Size<Seed<TSpec, TConfig> >::Type
-getSeedSize(Seed<TSpec, TConfig> & seed)
-{
-    SEQAN_CHECKPOINT;
-    // TODO(holtgrew): What if reverse seed?
-    return _max(getEndDim0(seed) - getBeginDim0(seed), getEndDim1(seed) - getBeginDim1(seed));
-}
-
 
 template <typename TSpec, typename TConfig>
 inline typename Size<Seed<TSpec, TConfig> >::Type
-getSeedSize(Seed<TSpec, TConfig> const & seed)
+seedSize(Seed<TSpec, TConfig> & seed)
 {
-    SEQAN_CHECKPOINT;
-    // TODO(holtgrew): What if reverse seed?
-    return _max(getEndDim0(seed) - getBeginDim0(seed), getEndDim1(seed) - getBeginDim1(seed));
+    return _max(endPositionH(seed) - beginPositionH(seed), endPositionV(seed) - beginPositionV(seed));
 }
 
+template <typename TSpec, typename TConfig>
+inline typename Size<Seed<TSpec, TConfig> >::Type
+seedSize(Seed<TSpec, TConfig> const & seed)
+{
+    return _max(endPositionH(seed) - beginPositionH(seed), endPositionV(seed) - beginPositionV(seed));
+}
+
+// ---------------------------------------------------------------------------
+// Function beginDiagonal()
+// ---------------------------------------------------------------------------
 
 // Computed values, based on properties returned by getters.
 
 // TODO(holtgrew): Rename to getBeginDiagonal.
 /**
-.Function.getStartDiagonal:
-..summary: Returns the diagonal of the start point.
+.Function.Seed#beginDiagonal
+..summary:Returns the diagonal of the start point.
 ..cat:Seed Handling
-..signature:startDiagonal(seed)
+..signature:beginDiagonal(seed)
 ..class:Class.Seed
 ..param.seed:The seed whose start diagonal should be returned.
 ...type:Class.Seed
 ..returns:The diagonal of the start point.
 ..include:seqan/seeds.h
 */
+
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
-getStartDiagonal(Seed<TSpec, TConfig> const & seed)
+beginDiagonal(Seed<TSpec, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
-    return getBeginDim1(seed) - getBeginDim0(seed);
+    return beginPositionH(seed) - beginPositionV(seed);
 }
 
+// ---------------------------------------------------------------------------
+// Function endDiagonal()
+// ---------------------------------------------------------------------------
+
 /**
-.Function.getEndDiagonal:
-..summary: Returns the diagonal of the end point.
+.Function.Seed#endDiagonal
+..summary:Returns the diagonal of the end point.
 ..cat:Seed Handling
 ..signature:endDiagonal(seed)
 ..class:Class.Seed
@@ -398,86 +427,120 @@ getStartDiagonal(Seed<TSpec, TConfig> const & seed)
 ..returns:The diagonal of the end point.
 ..include:seqan/seeds.h
 */
+
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
-getEndDiagonal(Seed<TSpec, TConfig> const & seed)
+endDiagonal(Seed<TSpec, TConfig> const & seed)
 {
-	SEQAN_CHECKPOINT;
-    return getEndDim1(seed) - getEndDim0(seed);
+    return endPositionH(seed) - endPositionV(seed);
 }
 
-// Functions for seeds with the ScoreMixin_.
+// ---------------------------------------------------------------------------
+// Function score()
+// ---------------------------------------------------------------------------
 
-// Case: No score, do not update anything.
-template <typename TSpec, typename TConfig>
+/**
+.Function.Seed#score
+..summary:Returns the score of the seed.
+..cat:Seed Handling
+..signature:score(seed)
+..class:Class.Seed
+..param.seed:The seed to query for the score.
+...type:Class.Seed
+..returns:The seed's score.
+..include:seqan/seeds.h
+*/
+
+template <typename TSeed>
+inline typename SeedScore<TSeed>::Type
+score(TSeed const & seed)
+{
+    return seed._score;
+}
+
+// ---------------------------------------------------------------------------
+// Function setScore()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#setScore
+..summary:Set the score value of a seed.
+..cat:Seed Handling
+..signature:setScore(seed, val)
+..class:Class.Seed
+..param.seed:The seed to set the score value of.
+...type:Class.Seed
+..param.val:The score value to set.
+..returns:The seed's score.
+..include:seqan/seeds.h
+*/
+
+template <typename TSeed, typename TScore>
 inline void
-_updateSeedsScoreMergeHelper(Seed<TSpec, TConfig> & /*seed*/, Seed<TSpec, TConfig> const & /*other*/, False const &)
+setScore(TSeed & seed, TScore const & score)
 {
-    SEQAN_CHECKPOINT;
+    seed._score = score;
 }
 
-// Case: Seed has score.  The assumption is that the score is
-// proportional to the size of the seed.  Each seed contributes a
-// fraction of its score that is proportional to the fraction of the
-// score it contributes.
-template <typename TSpec, typename TConfig>
-inline void
-_updateSeedsScoreMergeHelper(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other, True const &)
+// ---------------------------------------------------------------------------
+// Functor LessBeginDiagonal_()
+// ---------------------------------------------------------------------------
+
+// Compare two seeds based on begin diagonal.
+
+template <typename TSeed>
+struct LessBeginDiagonal
 {
-    SEQAN_CHECKPOINT;
-    typedef Seed<TSpec, TConfig> TSeed;
-    typedef typename Size<TSeed>::Type TSize;
+    inline bool operator()(TSeed const & lhs, TSeed const & rhs) const
+    {
+        return beginDiagonal(lhs) < beginDiagonal(rhs);
+    }
+};
 
-    // Compute new size.
-    TSize newBegin0 = _min(getBeginDim0(seed), getBeginDim0(other));
-    TSize newEnd0 = _max(getEndDim0(seed), getEndDim0(other));
-    TSize newBegin1 = _min(getBeginDim1(seed), getBeginDim1(other));
-    TSize newEnd1 = _max(getEndDim1(seed), getEndDim1(other));
-    TSize newSize = _max(newEnd0 - newBegin0, newEnd1 - newBegin1);
-    // New seed should be larger than either old one and overlap should be > 0.
-    SEQAN_ASSERT_GEQ(newSize, getSeedSize(seed));
-    SEQAN_ASSERT_GEQ(newSize, getSeedSize(other));
-    SEQAN_ASSERT_LEQ(newSize, getSeedSize(seed) + getSeedSize(other));
-    TSize overlap = getSeedSize(seed) + getSeedSize(other) - newSize;
-    // Overlap should be smaller than or equal to either seed size.
-    SEQAN_ASSERT_GEQ(getSeedSize(seed), overlap);
-    SEQAN_ASSERT_GEQ(getSeedSize(other), overlap);
+// ---------------------------------------------------------------------------
+// Score Helper Functions
+// ---------------------------------------------------------------------------
 
-    // Compute fraction each seed contributes.
-    TSize total = getSeedSize(seed) + getSeedSize(other) - overlap;
-    double fracSeed = static_cast<double>(getSeedSize(seed) - 0.5 * overlap) / static_cast<double>(total);
-    double fracOther = static_cast<double>(getSeedSize(other) - 0.5 * overlap) / static_cast<double>(total);
-    typedef typename SeedScore<TSeed>::Type TScoreValue;
-	TScoreValue newScore = static_cast<TScoreValue>(round(fracSeed * getScore(seed) + fracOther * getScore(other)));
-    setScore(seed, newScore);
-}
-
-
-// Update the score for merging.  If the seeds do not have scores, nothing is done.
+// Seed has score.  The assumption is that the score is proportional to the size of the seed.  Each seed contributes a
+// fraction of its score that is proportional to the fraction of the score it contributes.
 template <typename TSpec, typename TConfig>
 inline void
 _updateSeedsScoreMerge(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other)
 {
-    SEQAN_CHECKPOINT;
     typedef Seed<TSpec, TConfig> TSeed;
-    _updateSeedsScoreMergeHelper(seed, other, typename HasScore<TSeed>::Type());
+    typedef typename Size<TSeed>::Type TSize;
+
+    // Compute new size.
+    TSize newBegin0 = _min(beginPositionH(seed), beginPositionH(other));
+    TSize newEnd0 = _max(endPositionH(seed), endPositionH(other));
+    TSize newBegin1 = _min(beginPositionV(seed), beginPositionV(other));
+    TSize newEnd1 = _max(endPositionV(seed), endPositionV(other));
+    TSize newSize = _max(newEnd0 - newBegin0, newEnd1 - newBegin1);
+    // New seed should be larger than either old one and overlap should be > 0.
+    SEQAN_ASSERT_GEQ(newSize, seedSize(seed));
+    SEQAN_ASSERT_GEQ(newSize, seedSize(other));
+    SEQAN_ASSERT_LEQ(newSize, seedSize(seed) + seedSize(other));
+    TSize overlap = seedSize(seed) + seedSize(other) - newSize;
+    // Overlap should be smaller than or equal to either seed size.
+    SEQAN_ASSERT_GEQ(seedSize(seed), overlap);
+    SEQAN_ASSERT_GEQ(seedSize(other), overlap);
+
+    // Compute fraction each seed contributes.
+    TSize total = seedSize(seed) + seedSize(other) - overlap;
+    double fracSeed = static_cast<double>(seedSize(seed) - 0.5 * overlap) / static_cast<double>(total);
+    double fracOther = static_cast<double>(seedSize(other) - 0.5 * overlap) / static_cast<double>(total);
+    typedef typename SeedScore<TSeed>::Type TScoreValue;
+	TScoreValue newScore = static_cast<TScoreValue>(round(fracSeed * score(seed) + fracOther * score(other)));
+    setScore(seed, newScore);
 }
 
-// Case: No score, do not update anything.
+// Update the score of seed according to the gap size.
 template <typename TSpec, typename TConfig, typename TScoreValue>
 inline void
-_updateSeedsScoreSimpleChainHelper(Seed<TSpec, TConfig> & /*seed*/, Seed<TSpec, TConfig> const & /*other*/, Score<TScoreValue, Simple> const & /*scoringScheme*/, False const &)
+_updateSeedsScoreSimpleChain(Seed<TSpec, TConfig> & seed,
+                             Seed<TSpec, TConfig> const & other,
+                             Score<TScoreValue, Simple> const & scoringScheme)
 {
-    SEQAN_CHECKPOINT;
-}
-
-// Case: Seeds have scores.  Update the score of seed according to the
-// gap size.
-template <typename TSpec, typename TConfig, typename TScoreValue>
-inline void
-_updateSeedsScoreSimpleChainHelper(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other, Score<TScoreValue, Simple> const & scoringScheme, True const &)
-{
-    SEQAN_CHECKPOINT;
     typedef Seed<TSpec, TConfig> TSeed;
     typedef typename Size<TSeed>::Type TSize;
 
@@ -493,8 +556,8 @@ _updateSeedsScoreSimpleChainHelper(Seed<TSpec, TConfig> & seed, Seed<TSpec, TCon
     // systematically overestimates the gap costs: We close the gap
     // with a maximal diagonal and then remaining indels or just
     // indels, whatever yields a lower score.
-    TSize maxDist = _max(getBeginDim0(other) - getEndDim0(seed), getBeginDim1(other) - getEndDim1(seed));
-    TSize minDist = _max(getBeginDim0(other) - getEndDim0(seed), getBeginDim1(other) - getEndDim1(seed));
+    TSize maxDist = _max(beginPositionH(other) - endPositionH(seed), beginPositionV(other) - endPositionV(seed));
+    TSize minDist = _max(beginPositionH(other) - endPositionH(seed), beginPositionV(other) - endPositionV(seed));
     TSize diagLen = minDist;
     TSize indelLen = maxDist - minDist;
     TScoreValue gapScore1 = diagLen * scoreMismatch(scoringScheme) + indelLen * scoreGap(scoringScheme);
@@ -503,87 +566,15 @@ _updateSeedsScoreSimpleChainHelper(Seed<TSpec, TConfig> & seed, Seed<TSpec, TCon
 
     // The new score is the sum of the seed scores and the better of
     // the gap scores computed above.
-    setScore(seed, getScore(seed) + getScore(other) + gapScore);
+    setScore(seed, score(seed) + score(other) + gapScore);
 }
 
-
-// Update the score for simple chaining.  If the seeds do not have scores, nothing is done.
-template <typename TSpec, typename TConfig, typename TScoreValue>
-inline void
-_updateSeedsScoreSimpleChain(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other, Score<TScoreValue, Simple> const & scoringScheme)
-{
-    SEQAN_CHECKPOINT;
-    typedef Seed<TSpec, TConfig> TSeed;
-    _updateSeedsScoreSimpleChainHelper(seed, other, scoringScheme, typename HasScore<TSeed>::Type());
-}
-
-
-// Case: No score, do not update anything.
-template <typename TSpec, typename TConfig, typename TScoreValue>
-inline void
-_updateSeedsScoreChaosHelper(Seed<TSpec, TConfig> & /*seed*/, Seed<TSpec, TConfig> const & /*other*/, TScoreValue const & /*scoreDelta*/, False const &)
-{
-    SEQAN_CHECKPOINT;
-}
-
-// Case: Seed has score.  The new score is the sum of the other seed's
-// score and the delta as computed by the chaining routine.
-template <typename TSpec, typename TConfig, typename TScoreValue>
-inline void
-_updateSeedsScoreChaosHelper(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other, TScoreValue const & scoreDelta, True const &)
-{
-    SEQAN_CHECKPOINT;
-    setScore(seed, getScore(seed) + getScore(other) + scoreDelta);
-}
-
-
-// Update the score for CHAOS chaining.  If the seeds do not have scores, nothing is done.
+// The new score is the sum of the other seed's score and the delta as computed by the chaining routine.
 template <typename TSpec, typename TConfig, typename TScoreValue>
 inline void
 _updateSeedsScoreChaos(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other, TScoreValue const & scoreDelta)
 {
-    SEQAN_CHECKPOINT;
-    typedef Seed<TSpec, TConfig> TSeed;
-    _updateSeedsScoreChaosHelper(seed, other, scoreDelta, typename HasScore<TSeed>::Type());
-}
-
-
-template <typename TSeed>
-inline typename SeedScore<TSeed>::Type
-getScore(TSeed const & seed)
-{
-    SEQAN_CHECKPOINT;
-    return seed._score;
-}
-
-
-template <typename TSeed, typename TScore>
-inline void
-setScore(TSeed & seed, TScore const & score)
-{
-    SEQAN_CHECKPOINT;
-    seed._score = score;
-}
-
-
-// The part of assign() for seeds that have no score mixin.
-template <typename TSpec, typename TConfig>
-inline void
-_assignScoreMixin(Seed<TSpec, TConfig> & /*seed*/, Seed<TSpec, TConfig> const & /*other*/, False const &)
-{
-    SEQAN_CHECKPOINT;
-    // Do nothing, no mixin.
-}
-
-
-// The part of assign() for seeds that have a score mixin.
-template <typename TSpec, typename TConfig>
-inline void
-_assignScoreMixin(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const & other, True const &)
-{
-    SEQAN_CHECKPOINT;
-    // Update score.
-    seed._score = other._score;
+    setScore(seed, score(seed) + score(other) + scoreDelta);
 }
 
 }  // namespace seqan

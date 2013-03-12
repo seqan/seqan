@@ -49,7 +49,6 @@ struct TestSmallSeedConfig
     typedef int TDiagonal;
     typedef seqan::True THasScore;
     typedef int TScoreValue;
-    typedef seqan::ScoreMixin_<int> TScoreMixin;
 };
 
 // Test assignment of chained seeds.
@@ -87,9 +86,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_metafunctions)
         SEQAN_ASSERT(b);
         b = IsSameType<MakeSigned_<size_t>::Type, Diagonal<TSeed>::Type>::VALUE;
         SEQAN_ASSERT(b);
-        b = IsSameType<False, HasScore<TSeed>::Type>::VALUE;
-        SEQAN_ASSERT(b);
-        b = IsSameType<Nothing, SeedScore<TSeed>::Type>::VALUE;
+        b = IsSameType<int, SeedScore<TSeed>::Type>::VALUE;
         SEQAN_ASSERT(b);
     }
     // Test with other specialization.
@@ -107,8 +104,6 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_metafunctions)
         b = IsSameType<unsigned, Size<TSeed>::Type>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<int, Diagonal<TSeed>::Type>::VALUE;
-        SEQAN_ASSERT(b);
-        b = IsSameType<True, HasScore<TSeed>::Type>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<int, SeedScore<TSeed>::Type>::VALUE;
         SEQAN_ASSERT(b);
@@ -144,22 +139,22 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_append_diagonal)
     typedef Value<TSeed>::Type TSeedDiagonal;
     TSeed s(1, 3, 4);
 
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(s));
-    SEQAN_ASSERT_EQ(3u, getBeginDim1(s));
-    SEQAN_ASSERT_EQ(5u, getEndDim0(s));
-    SEQAN_ASSERT_EQ(7u, getEndDim1(s));
-    SEQAN_ASSERT_EQ(2, getStartDiagonal(s));
-    SEQAN_ASSERT_EQ(2, getEndDiagonal(s));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+    SEQAN_ASSERT_EQ(3u, beginPositionV(s));
+    SEQAN_ASSERT_EQ(5u, endPositionH(s));
+    SEQAN_ASSERT_EQ(7u, endPositionV(s));
+    SEQAN_ASSERT_EQ(-2, beginDiagonal(s));
+    SEQAN_ASSERT_EQ(-2, endDiagonal(s));
     SEQAN_ASSERT_EQ(1u, length(s));
 
     appendDiagonal(s, TSeedDiagonal(5, 7, 3));
 
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(s));
-    SEQAN_ASSERT_EQ(3u, getBeginDim1(s));
-    SEQAN_ASSERT_EQ(8u, getEndDim0(s));
-    SEQAN_ASSERT_EQ(10u, getEndDim1(s));
-    SEQAN_ASSERT_EQ(2, getStartDiagonal(s));
-    SEQAN_ASSERT_EQ(2, getEndDiagonal(s));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+    SEQAN_ASSERT_EQ(3u, beginPositionV(s));
+    SEQAN_ASSERT_EQ(8u, endPositionH(s));
+    SEQAN_ASSERT_EQ(10u, endPositionV(s));
+    SEQAN_ASSERT_EQ(-2, beginDiagonal(s));
+    SEQAN_ASSERT_EQ(-2, endDiagonal(s));
     SEQAN_ASSERT_EQ(2u, length(s));
 }
 
@@ -199,12 +194,12 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_iterators)
     {  // non-const seed
         typedef Iterator<TSeed, Standard>::Type TIterator;
         TIterator it = begin(s);
-        SEQAN_ASSERT_EQ(1u, it->beginDim0);
-        SEQAN_ASSERT_EQ(2u, it->beginDim1);
+        SEQAN_ASSERT_EQ(1u, it->beginPositionH);
+        SEQAN_ASSERT_EQ(2u, it->beginPositionV);
         SEQAN_ASSERT_EQ(3u, it->length);
         ++it;
-        SEQAN_ASSERT_EQ(4u, it->beginDim0);
-        SEQAN_ASSERT_EQ(5u, it->beginDim1);
+        SEQAN_ASSERT_EQ(4u, it->beginPositionH);
+        SEQAN_ASSERT_EQ(5u, it->beginPositionV);
         SEQAN_ASSERT_EQ(3u, it->length);
         ++it;
         SEQAN_ASSERT(it == end(s));
@@ -213,12 +208,12 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_iterators)
         TSeed const & cs = s;
         typedef Iterator<TSeed const, Standard>::Type TIterator;
         TIterator it = begin(cs);
-        SEQAN_ASSERT_EQ(1u, it->beginDim0);
-        SEQAN_ASSERT_EQ(2u, it->beginDim1);
+        SEQAN_ASSERT_EQ(1u, it->beginPositionH);
+        SEQAN_ASSERT_EQ(2u, it->beginPositionV);
         SEQAN_ASSERT_EQ(3u, it->length);
         ++it;
-        SEQAN_ASSERT_EQ(4u, it->beginDim0);
-        SEQAN_ASSERT_EQ(5u, it->beginDim1);
+        SEQAN_ASSERT_EQ(4u, it->beginPositionH);
+        SEQAN_ASSERT_EQ(5u, it->beginPositionV);
         SEQAN_ASSERT_EQ(3u, it->length);
         ++it;
         SEQAN_ASSERT(it == end(cs));

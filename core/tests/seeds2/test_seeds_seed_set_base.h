@@ -74,7 +74,7 @@ void testSeedsSeedSetContainerFunctions(TSeedSpec const &, TSeedSetSpec const &)
         ++it;
         SEQAN_ASSERT(it == end(s));
     }
-    SEQAN_ASSERT(TSeed(1, 2, 3) == value(begin(s)));
+    SEQAN_ASSERT(TSeed(1, 2, 3) == *begin(s, Standard()));
     SEQAN_ASSERT(TSeed(1, 2, 3) == front(s));
     SEQAN_ASSERT(TSeed(1, 2, 3) == back(s));
     {  // Same tests with const seed set.
@@ -85,12 +85,11 @@ void testSeedsSeedSetContainerFunctions(TSeedSpec const &, TSeedSetSpec const &)
             ++it;
             SEQAN_ASSERT(it == end(cs));
         }
-        SEQAN_ASSERT(TSeed(1, 2, 3) == value(begin(cs)));
+        SEQAN_ASSERT(TSeed(1, 2, 3) == *begin(cs, Standard()));
         SEQAN_ASSERT(TSeed(1, 2, 3) == front(cs));
         SEQAN_ASSERT(TSeed(1, 2, 3) == back(cs));
     }
 }
-
 
 // Test addSeed(..., Single) for the given Seed and SeedSet
 // specialization.
@@ -101,7 +100,7 @@ void testSeedsSeedSetAddSeedSingleNoThreshold(TSeedSpec const &, TSeedSetSpec co
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfig> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -112,7 +111,6 @@ void testSeedsSeedSetAddSeedSingleNoThreshold(TSeedSpec const &, TSeedSetSpec co
     SEQAN_ASSERT_EQ(1u, length(set));
     SEQAN_ASSERT_EQ(seed, front(set));
 }
-
 
 // Test addSeed(..., Single) for the given Seed and SeedSet
 // specialization.
@@ -123,11 +121,11 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedLength(TSeedSpec const &, TSee
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 1);
+    setMinSeedSize(set, 1);
 
     TSeed seed(3, 3, 3);
 
@@ -135,7 +133,6 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedLength(TSeedSpec const &, TSee
     SEQAN_ASSERT_EQ(1u, length(set));
     SEQAN_ASSERT_EQ(seed, front(set));
 }
-
 
 // Test addSeed(..., Single) for the given Seed and SeedSet
 // specialization.
@@ -146,16 +143,16 @@ void testSeedsSeedSetAddSeedSingleThresholdNotReachedLength(TSeedSpec const &, T
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 4);
+    setMinSeedSize(set, 4);
 
     TSeed seed(3, 3, 3);
 
     addSeed(set, seed, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -168,11 +165,11 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedScore(TSeedSpec const &, TSeed
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, -1);
+    setMinScore(set, -1);
 
     TSeed seed(3, 3, 3);
     setScore(seed, 1);
@@ -192,17 +189,17 @@ void testSeedsSeedSetAddSeedSingleThresholdNotReachedScore(TSeedSpec const &, TS
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, -1);
+    setMinScore(set, -1);
 
     TSeed seed(3, 3, 3);
     setScore(seed, -2);
 
     addSeed(set, seed, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -225,10 +222,10 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleNoThreshold(TSeedSpec const 
 
     // std::cout << front(set) << std::endl;
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(2u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(2u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(2u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(2u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionV(front(set)));
 }
 
 
@@ -250,10 +247,10 @@ void testSeedsSeedSetAddSeedMergeRightMergingPossibleNoThreshold(TSeedSpec const
     SEQAN_ASSERT(ret);
 
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(2u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(2u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(2u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(2u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionV(front(set)));
 }
 
 
@@ -301,24 +298,24 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedLength(TS
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 5);
+    setMinSeedSize(set, 5);
 
     // Add a low-scoring seed.
     addSeed(set, TSeed(1, 1, 3), Single());
     // The seed is added to the set but not included in the set of
     // seeds above the quality threshold.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to merge into a low-quality seed.
     bool ret = addSeed(set, TSeed(0, 0, 2), 1, Nothing(), Score<int, Simple>()/*TODO(holtgrew): unnecessary!*/, Nothing(), Nothing(), Merge());
     SEQAN_ASSERT(ret);
     // The seed is merged into the first one but the first one does
     // not exceed the quality threshold yet.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -330,17 +327,17 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(TSeed
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 4);
+    setMinSeedSize(set, 4);
 
     // Add a low-quality seed.
     addSeed(set, TSeed(1, 1, 3), Single());
     // The seed is added to the set but not included in the set of
     // seeds above the quality threshold.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to merge into a high-quality seed.
     bool ret = addSeed(set, TSeed(0, 0, 2), 1, Nothing(), Score<int, Simple>()/*TODO(holtgrew): unnecessary!*/, Nothing(), Nothing(), Merge());
@@ -348,10 +345,10 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(TSeed
     // The seed is merged into the first one and exceeds the quality
     // threshold.
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(0u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(0u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(4u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(4u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(4u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(4u, endPositionV(front(set)));
 }
 
 
@@ -363,17 +360,17 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(TS
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, -1);
+    setMinScore(set, -1);
 
     // Add a low-quality seed.
     TSeed s1(1, 1, 3);
     setScore(s1, -2);
     addSeed(set, s1, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to merge into another low-quality seed.
     TSeed s2(0, 0, 2);
@@ -382,7 +379,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(TS
     SEQAN_ASSERT(ret);
     // The seed is merged with the existing low-quality seed into one
     // of low quality.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -394,17 +391,17 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(TSeed
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, -2);
+    setMinScore(set, -2);
 
     // Add a low-quality seed.
     TSeed s1(1, 1, 4);
     setScore(s1, -3);
     addSeed(set, s1, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to merge into a high-quality seed.
     TSeed s2(0, 0, 2);
@@ -414,11 +411,11 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(TSeed
     // The seed is merged with the existing low-quality seed into one
     // of sufficiently high quality.
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(0u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(0u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(5u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(5u, getEndDim1(front(set)));
-    SEQAN_ASSERT_EQ(-2, getScore(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(5u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(5u, endPositionV(front(set)));
+    SEQAN_ASSERT_EQ(-2, score(front(set)));
 }
 
 
@@ -440,10 +437,10 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleNoThreshold(TSeedSpec
     SEQAN_ASSERT(ret);
 
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(7u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(1u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(8u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(7u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(8u, endPositionV(front(set)));
 }
 
 
@@ -465,10 +462,10 @@ void testSeedsSeedSetAddSeedSimpleChainRightChainingPossibleNoThreshold(TSeedSpe
     SEQAN_ASSERT(ret);
 
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(7u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(1u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(8u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(7u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(8u, endPositionV(front(set)));
 }
 
 
@@ -516,24 +513,24 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedLe
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 6);
+    setMinSeedSize(set, 6);
 
     // Add a low-quality seed.
     addSeed(set, TSeed(2, 2, 3), Single());
     // The seed is added to the set but not included in the set of
     // seeds above the quality threshold.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into a low-quality seed.
     bool ret = addSeed(set, TSeed(0, 0, 2), 1, Nothing(), Score<int, Simple>()/*TODO(holtgrew): unnecessary*/, Nothing(), Nothing(), SimpleChain());
     SEQAN_ASSERT(ret);
     // The seed is chained into the first one but the result does not
     // exceed the quality threshold yet.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -545,17 +542,17 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLengt
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 5);
+    setMinSeedSize(set, 5);
 
     // Add a low-quality seed.
     addSeed(set, TSeed(2, 2, 3), Single());
     // The seed is added to the set but not included in the set of
     // seeds above the quality threshold.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into a low-quality seed.
     bool ret = addSeed(set, TSeed(0, 0, 2), 1, Nothing(), Score<int, Simple>()/*TODO(holtgrew): unnecessary */, Nothing(), Nothing(), SimpleChain());
@@ -563,10 +560,10 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLengt
     // The seed is chained into the first one and exceeds the quality
     // threshold.
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(0u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(0u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(5u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(5u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(5u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(5u, endPositionV(front(set)));
 }
 
 
@@ -578,18 +575,18 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedSc
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, 2);
+    setMinScore(set, 2);
     Score<int, Simple> scoringScheme(1, -1, -1);
 
     // Add a low-quality seed.
     TSeed s1(0, 0, 3);
     setScore(s1, 1);
     addSeed(set, s1, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into another low-quality seed.
     TSeed s2(4, 4, 2);
@@ -598,7 +595,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedSc
     SEQAN_ASSERT(ret);
     // The seed is chained with the existing low-quality seed into one
     // of low quality.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -610,18 +607,18 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScore
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, 3);
+    setMinScore(set, 3);
     Score<int, Simple> scoringScheme(1, -1, -1);
 
     // Add a low-quality seed.
     TSeed s1(0, 0, 3);
     setScore(s1, 2);
     addSeed(set, s1, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into a seed of sufficiently high quality.
     TSeed s2(4, 4, 2);
@@ -631,11 +628,11 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScore
     // The seed is chained with the existing low-quality seed into one
     // of sufficiently high quality.
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(0u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(0u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim1(front(set)));
-    SEQAN_ASSERT_EQ(3, getScore(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionV(front(set)));
+    SEQAN_ASSERT_EQ(3, score(front(set)));
 }
 
 
@@ -660,10 +657,10 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleNoThreshold(TSeedSpec const
     SEQAN_ASSERT(ret);
 
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(7u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(1u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(8u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(7u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(8u, endPositionV(front(set)));
 }
 
 
@@ -688,10 +685,10 @@ void testSeedsSeedSetAddSeedChaosRightChainingPossibleNoThreshold(TSeedSpec cons
     SEQAN_ASSERT(ret);
 
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(7u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(1u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(8u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(7u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(1u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(8u, endPositionV(front(set)));
 }
 
 
@@ -745,11 +742,11 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(T
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 6);
+    setMinSeedSize(set, 6);
 
     DnaString sequence0 = "CCCCCCCCCC";
     DnaString sequence1 = "CCCCCCCCCC";
@@ -758,14 +755,14 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(T
     addSeed(set, TSeed(2, 2, 3), Single());
     // The seed is added to the set but not included in the set of
     // seeds above the quality threshold.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into a low-quality seed.
     bool ret = addSeed(set, TSeed(0, 0, 2), 1, 2, Score<int, Simple>()/*TODO(holtgrew): unnecessary*/, sequence0, sequence1, Chaos());
     SEQAN_ASSERT(ret);
     // The seed is chained into the first one but the result does not
     // exceed the quality threshold yet.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -777,11 +774,11 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(TSee
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigLength> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinSeedSizeThreshold(set, 5);
+    setMinSeedSize(set, 5);
 
     DnaString sequence0 = "CCCCCCCCCC";
     DnaString sequence1 = "CCCCCCCCCC";
@@ -790,7 +787,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(TSee
     addSeed(set, TSeed(2, 2, 3), Single());
     // The seed is added to the set but not included in the set of
     // seeds above the quality threshold.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into a low-quality seed.
     bool ret = addSeed(set, TSeed(0, 0, 2), 1, 2, Score<int, Simple>()/*TODO(holtgrew): unnecessary */, sequence0, sequence1, Chaos());
@@ -798,10 +795,10 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(TSee
     // The seed is chained into the first one and exceeds the quality
     // threshold.
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(0u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(0u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(5u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(5u, getEndDim1(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(5u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(5u, endPositionV(front(set)));
 }
 
 
@@ -813,11 +810,11 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(T
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, 4);
+    setMinScore(set, 4);
     Score<int, Simple> scoringScheme(1, -1, -1);
 
     DnaString sequence0 = "CCCCCCCCCC";
@@ -827,7 +824,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(T
     TSeed s1(0, 0, 3);
     setScore(s1, 1);
     addSeed(set, s1, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into another low-quality seed.
     TSeed s2(4, 4, 2);
@@ -836,7 +833,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(T
     SEQAN_ASSERT(ret);
     // The seed is chained with the existing low-quality seed into one
     // of low quality.
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 }
 
 
@@ -848,11 +845,11 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(TSee
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec, DefaultSeedSetConfigScore> TSeedSet;
+    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
-    setMinScoreThreshold(set, 5);
+    setMinScore(set, 5);
     Score<int, Simple> scoringScheme(1, -1, -1);
 
     DnaString sequence0 = "CCCCCCCCCC";
@@ -862,7 +859,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(TSee
     TSeed s1(0, 0, 3);
     setScore(s1, 2);
     addSeed(set, s1, Single());
-    SEQAN_ASSERT_EQ(0u, length(set));
+    SEQAN_ASSERT_EQ(1u, length(set));  // TODO(holtgrew): Build-in thresholds.
 
     // Add a seed to chain into a seed of sufficiently high quality.
     TSeed s2(4, 4, 2);
@@ -872,13 +869,12 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(TSee
     // The seed is chained with the existing low-quality seed into one
     // of sufficiently high quality.
     SEQAN_ASSERT_EQ(1u, length(set));
-    SEQAN_ASSERT_EQ(0u, getBeginDim0(front(set)));
-    SEQAN_ASSERT_EQ(0u, getBeginDim1(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim0(front(set)));
-    SEQAN_ASSERT_EQ(6u, getEndDim1(front(set)));
-    SEQAN_ASSERT_EQ(5, getScore(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionH(front(set)));
+    SEQAN_ASSERT_EQ(0u, beginPositionV(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionH(front(set)));
+    SEQAN_ASSERT_EQ(6u, endPositionV(front(set)));
+    SEQAN_ASSERT_EQ(5, score(front(set)));
 }
-
 
 // Test container functions for specialization Simple Seed and
 // Unordered SeedSet.
@@ -887,7 +883,6 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_container_functions_simple_unordered)
     using namespace seqan;
     testSeedsSeedSetContainerFunctions(Simple(), Unordered());
 }
-
 
 // Test addSeed(..., Single) for specialization Simple Seed and
 // Unordered SeedSet.
@@ -899,7 +894,6 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_no_threshold_simple_u
     testSeedsSeedSetAddSeedSingleNoThreshold(Simple(), Unordered());
 }
 
-
 // Test addSeed(..., Single) for specialization Simple Seed and
 // Unordered SeedSet.
 //
@@ -909,7 +903,6 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_len
     using namespace seqan;
     testSeedsSeedSetAddSeedSingleThresholdReachedLength(Simple(), Unordered());
 }
-
 
 // Test addSeed(..., Single) for specialization Simple Seed and
 // Unordered SeedSet.

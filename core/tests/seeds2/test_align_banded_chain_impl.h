@@ -188,7 +188,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(10,5,21,16), Single());
+        addSeed(seedSet, TSeed(5,10,16,21), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -223,7 +223,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(5,10,16,21), Single());
+        addSeed(seedSet, TSeed(10,5,21,16), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -258,7 +258,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(5,12,16,19), Single());
+        addSeed(seedSet, TSeed(12,5,19,16), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -293,7 +293,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(12,5,14,16), Single());
+        addSeed(seedSet, TSeed(5,12,16,14), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -328,7 +328,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(5,12,16,19), Single());
+        addSeed(seedSet, TSeed(12,5,19,16), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -363,7 +363,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(12,5,19,16), Single());
+        addSeed(seedSet, TSeed(5,12,16,19), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -408,8 +408,8 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(2,0,11,11), Single());
-        addSeed(seedSet, TSeed(21,21,29,26), Single());
+        addSeed(seedSet, TSeed(0,2,11,11), Single());
+        addSeed(seedSet, TSeed(21,21,26,29), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -443,8 +443,8 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(0,2,11,10), Single());
-        addSeed(seedSet, TSeed(11,21,20,28), Single());
+        addSeed(seedSet, TSeed(2,0,10,11), Single());
+        addSeed(seedSet, TSeed(21,11,28,20), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -478,8 +478,8 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(2,0,10,11), Single());
-        addSeed(seedSet, TSeed(21,11,28,20), Single());
+        addSeed(seedSet, TSeed(0,2,11,10), Single());
+        addSeed(seedSet, TSeed(11,21,20,28), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -513,8 +513,8 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(6,2,15,17), Single());
-        addSeed(seedSet, TSeed(15,17,29,29), Single());
+        addSeed(seedSet, TSeed(2,6,17,15), Single());
+        addSeed(seedSet, TSeed(17,15,29,29), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -548,8 +548,8 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(6,2,15,17), Single());
-        addSeed(seedSet, TSeed(15,17,29,29), Single());
+        addSeed(seedSet, TSeed(2,6,17,15), Single());
+        addSeed(seedSet, TSeed(17,15,29,29), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -583,8 +583,8 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(6,2,15,17), Single());
-        addSeed(seedSet, TSeed(15,17,29,29), Single());
+        addSeed(seedSet, TSeed(2,6,17,15), Single());
+        addSeed(seedSet, TSeed(17,15,29,29), Single());
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -612,7 +612,7 @@ void testBandedChainAlignmentThreeSeeds(TGapCosts const &)
     using namespace seqan;
 
     typedef Seed<Simple> TSeed;
-    typedef SeedSet<Simple, Unordered> TSeedSet;
+    typedef StringSet<TSeed> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
 
     // Test two anchors one position apart in horizontal & vertical direction.
@@ -628,9 +628,9 @@ void testBandedChainAlignmentThreeSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(11,10,21,21), Single());
-        addSeed(seedSet, TSeed(29,21,40,32), Single());
-        addSeed(seedSet, TSeed(40,38,48,40), Single());
+        appendValue(seedSet, TSeed(10,11,21,21));
+        appendValue(seedSet, TSeed(21,29,32,40));
+        appendValue(seedSet, TSeed(38,40,40,48));
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -697,9 +697,9 @@ void testBandedChainAlignmentThreeSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(10,11,21,21), Single());
-        addSeed(seedSet, TSeed(21,29,32,40), Single());
-        addSeed(seedSet, TSeed(38,40,40,48), Single());
+        appendValue(seedSet, TSeed(11,10,21,21));
+        appendValue(seedSet, TSeed(29,21,40,32));
+        appendValue(seedSet, TSeed(40,38,48,40));
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -765,9 +765,9 @@ void testBandedChainAlignmentThreeSeeds(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(11,10,21,21), Single());
-        addSeed(seedSet, TSeed(29,21,40,32), Single());
-        addSeed(seedSet, TSeed(40,38,48,40), Single());
+        appendValue(seedSet, TSeed(10,11,21,21));
+        appendValue(seedSet, TSeed(21,29,32,40));
+        appendValue(seedSet, TSeed(38,40,40,48));
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -795,7 +795,7 @@ void testBandedChainAlignmentRareCases(TGapCosts const &)
     using namespace seqan;
 
     typedef Seed<Simple> TSeed;
-    typedef SeedSet<Simple, Unordered> TSeedSet;
+    typedef StringSet<TSeed> TSeedSet;
     AlignConfig<false, true, false, true> alignConfig;
 
     // Test one anchor of minimal size with huge band extension.
@@ -811,7 +811,7 @@ void testBandedChainAlignmentRareCases(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(25,25,26,26), Single());
+        appendValue(seedSet, TSeed(25,25,26,26));
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -845,10 +845,9 @@ void testBandedChainAlignmentRareCases(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(0,0,2,2), Single());
-        addSeed(seedSet, TSeed(11,10,21,21), Single());
-
-        addSeed(seedSet, TSeed(25,25,26,26), Single());
+        appendValue(seedSet, TSeed(0,0,2,2));
+        appendValue(seedSet, TSeed(10,11,21,21));
+        appendValue(seedSet, TSeed(25,25,26,26));
 
         Score<int,Simple> scoreScheme(5, -3, -5);
         if (IsSameType<TGapCosts, AffineGaps>::VALUE)
@@ -882,13 +881,13 @@ void testBandedChainAlignmentRareCases(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(0,0,2,2), Single());
-        addSeed(seedSet, TSeed(11,10,21,21), Single());
+        appendValue(seedSet, TSeed(0,0,2,2));
+        appendValue(seedSet, TSeed(10,11,21,21));
 
-        addSeed(seedSet, TSeed(22,22,23,23), Single());
+        appendValue(seedSet, TSeed(22,22,23,23));
 
-        addSeed(seedSet, TSeed(29,30,40,37), Single());
-        addSeed(seedSet, TSeed(40,38,48,40), Single());
+        appendValue(seedSet, TSeed(30,29,37,40));
+        appendValue(seedSet, TSeed(38,40,40,48));
 
 
         Score<int,Simple> scoreScheme(5, -3, -5);
@@ -923,11 +922,11 @@ void testBandedChainAlignmentRareCases(TGapCosts const &)
 
         TSeedSet seedSet;
 
-        addSeed(seedSet, TSeed(1,1,2,2), Single());
-        addSeed(seedSet, TSeed(7,8,8,9), Single());
-        addSeed(seedSet, TSeed(22,22,23,23), Single());
-        addSeed(seedSet, TSeed(30,30,31,31), Single());
-        addSeed(seedSet, TSeed(40,35,41,36), Single());
+        appendValue(seedSet, TSeed(1,1,2,2));
+        appendValue(seedSet, TSeed(8,7,9,8));
+        appendValue(seedSet, TSeed(22,22,23,23));
+        appendValue(seedSet, TSeed(30,30,31,31));
+        appendValue(seedSet, TSeed(35,40,36,41));
 
 
         Score<int,Simple> scoreScheme(5, -3, -5);
@@ -968,7 +967,7 @@ void testBandedChainAlignmentBandExtension(TGapSpec)
             scoringScheme = Score<int, Simple>(2, -1, -1, -3);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 3, 5, 6));
+        appendValue(seedChain, TSeed(3,2,6,5));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);

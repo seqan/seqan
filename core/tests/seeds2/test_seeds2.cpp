@@ -39,7 +39,7 @@
 
 #include <seqan/seeds2.h>  // Include module under test.
 
-#include "test_basic_iter_indirect.h"
+// #include "test_basic_iter_indirect.h"
 #include "test_seeds_combination.h"
 #include "test_seeds_extension.h"
 #include "test_seeds_global_chaining.h"
@@ -125,6 +125,7 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
     SEQAN_CALL_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_reached_scored_simple_unordered);
 
     // Tests for unordered seed sets and chained seeds.
+
     SEQAN_CALL_TEST(test_seeds_seed_set_base_container_functions_chained_unordered);
 
     SEQAN_CALL_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_length_chained_unordered);
@@ -156,12 +157,17 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
     SEQAN_CALL_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_not_reached_scored_chained_unordered);
     SEQAN_CALL_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_reached_scored_chained_unordered);
 
-    // Tests for seed algorithms
+
+    // Tests for seed extension algorithms
     SEQAN_CALL_TEST(test_seeds_extension_match_extension_simple);
     SEQAN_CALL_TEST(test_seeds_extension_ungapped_xdrop_extension_simple);
     SEQAN_CALL_TEST(test_seeds_extension_gapped_xdrop_extension_simple);
     SEQAN_CALL_TEST(test_seeds_extension_match_extension_chained);
     SEQAN_CALL_TEST(test_seeds_extension_ungapped_xdrop_extension_chained);
+
+    // Test global chaining of seeds.
+    SEQAN_CALL_TEST(test_seeds_global_chaining_sparse_length);
+
     // Disabled the test for now.  Extension function contains a
     // force-failure assertion and instruction show to implement this.
     // See http://trac.mi.fu-berlin.de/seqan/ticket/344 for details.
@@ -235,9 +241,5 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores);
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score);
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_scores);
-
-// TODO(rmaerker): What has to be done here?
-//    // Test global chaining of seeds.
-//    SEQAN_CALL_TEST(test_seeds_global_chaining_sparse_length);
 }
 SEQAN_END_TESTSUITE

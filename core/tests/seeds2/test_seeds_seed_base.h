@@ -68,20 +68,20 @@ void testSeedsSeedBaseGettersSetters(TSeedSpec const &)
     TSeed s(1, 2, 3);
 
     // Check values from construction.
-    SEQAN_ASSERT_EQ(1u, getBeginDim0(s));
-    SEQAN_ASSERT_EQ(4u, getEndDim0(s));
-    SEQAN_ASSERT_EQ(2u, getBeginDim1(s));
-    SEQAN_ASSERT_EQ(5u, getEndDim1(s));
-    SEQAN_ASSERT_EQ(1, getLowerDiagonal(s));
-    SEQAN_ASSERT_EQ(1, getUpperDiagonal(s));
-    SEQAN_ASSERT_EQ(1, getStartDiagonal(s));
-    SEQAN_ASSERT_EQ(1, getEndDiagonal(s));
+    SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+    SEQAN_ASSERT_EQ(4u, endPositionH(s));
+    SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+    SEQAN_ASSERT_EQ(5u, endPositionV(s));
+    SEQAN_ASSERT_EQ(-1, lowerDiagonal(s));
+    SEQAN_ASSERT_EQ(-1, upperDiagonal(s));
+    SEQAN_ASSERT_EQ(-1, beginDiagonal(s));
+    SEQAN_ASSERT_EQ(-1, endDiagonal(s));
 
     // Use setters from base class.
-    setLowerDiagonal(s, 42);
-    SEQAN_ASSERT_EQ(42, getLowerDiagonal(s));
-    setUpperDiagonal(s, 5);
-    SEQAN_ASSERT_EQ(5, getUpperDiagonal(s));
+    setLowerDiagonal(s, 5);
+    SEQAN_ASSERT_EQ(5, lowerDiagonal(s));
+    setUpperDiagonal(s, 42);
+    SEQAN_ASSERT_EQ(42, upperDiagonal(s));
 }
 
 template <typename TSeedSpec>
@@ -98,12 +98,6 @@ void testSeedsSeedBaseBasicFunctions(TSeedSpec const &)
         assign(x, s);
         SEQAN_ASSERT(x == s);
     }
-    {  // test move
-        TSeed s2(s);
-        TSeed x;
-        move(x, s);
-        SEQAN_ASSERT(x == s2);
-    }
 }
 
 template <typename TSeedSpec>
@@ -111,55 +105,29 @@ void testSeedsSeedBaseAssign(TSeedSpec const &)
 {
     using namespace seqan;
     
-    // Test with score.
+    typedef Seed<TSeedSpec> TSeed;
+    TSeed seed(0, 0, 3);
+    setScore(seed, -3);
+    
+    // Via copy constructor.
     {
-        typedef Seed<TSeedSpec, DefaultSeedConfigScore> TSeed;
-        TSeed seed(0, 0, 3);
-        setScore(seed, -3);
-
-        // Via copy constructor.
-        {
-            TSeed seed2(seed);
-            SEQAN_ASSERT(seed2 == seed);
-            SEQAN_ASSERT_EQ(getScore(seed2), getScore(seed));
-        }
-        // Via operator=.
-        {
-            TSeed seed2;
-            seed2 = seed;
-            SEQAN_ASSERT(seed2 == seed);
-            SEQAN_ASSERT_EQ(getScore(seed2), getScore(seed));
-        }
-        // Via assign().
-        {
-            TSeed seed2;
-            assign(seed2, seed);
-            SEQAN_ASSERT(seed2 == seed);
-            SEQAN_ASSERT_EQ(getScore(seed2), getScore(seed));
-        }
+        TSeed seed2(seed);
+        SEQAN_ASSERT(seed2 == seed);
+        SEQAN_ASSERT_EQ(score(seed2), score(seed));
     }
-    // Test without score.
+    // Via operator=.
     {
-        typedef Seed<TSeedSpec, DefaultSeedConfig> TSeed;
-        TSeed seed(0, 0, 3);
-
-        // Via copy constructor.
-        {
-            TSeed seed2(seed);
-            SEQAN_ASSERT(seed2 == seed);
-        }
-        // Via operator=.
-        {
-            TSeed seed2;
-            seed2 = seed;
-            SEQAN_ASSERT(seed2 == seed);
-        }
-        // Via assign().
-        {
-            TSeed seed2;
-            assign(seed2, seed);
-            SEQAN_ASSERT(seed2 == seed);
-        }
+        TSeed seed2;
+        seed2 = seed;
+        SEQAN_ASSERT(seed2 == seed);
+        SEQAN_ASSERT_EQ(score(seed2), score(seed));
+    }
+    // Via assign().
+    {
+        TSeed seed2;
+        assign(seed2, seed);
+        SEQAN_ASSERT(seed2 == seed);
+        SEQAN_ASSERT_EQ(score(seed2), score(seed));
     }
 }
 
@@ -176,7 +144,17 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_constructors_simple)
 SEQAN_DEFINE_TEST(test_seeds_seed_base_metafunctions_simple)
 {
     using namespace seqan;
-    // No metafunctions in base, intentionally left blank.
+
+    typedef Seed<Simple> TSeed;
+
+    typedef typename Position<TSeed const>::Type TPosition SEQAN_UNUSED_TYPEDEF;
+    typedef typename Position<TSeed>::Type TPosition SEQAN_UNUSED_TYPEDEF;
+
+    typedef typename Size<TSeed const>::Type TSize SEQAN_UNUSED_TYPEDEF;
+    typedef typename Size<TSeed>::Type TSize SEQAN_UNUSED_TYPEDEF;
+
+    typedef typename Diagonal<TSeed const >::Type TDiagonal SEQAN_UNUSED_TYPEDEF;
+    typedef typename Diagonal<TSeed>::Type TDiagonal SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test the getters and seeters of the SimpleSeed specialization as

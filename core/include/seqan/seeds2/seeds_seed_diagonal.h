@@ -44,6 +44,10 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
+// ---------------------------------------------------------------------------
+// Class SeedDiagonal
+// ---------------------------------------------------------------------------
+
 /**
 .Class.SeedDiagonal
 ..summary:Store the information about a seed segment.
@@ -52,39 +56,46 @@ namespace seqan {
 ..param.TPosition:The type to use for positions.
 ..param.TSize:The type to use for the seed length.
 ..include:seqan/seeds2.h
+
+.Memvar.SeedDiagonal#beginPositionH:The position in the database sequence (horizontal).
+.Memvar.SeedDiagonal#beginPositionV:The position in the query sequence (vertical).
+.Memvar.SeedDiagonal#length:The length of the diagonal.
 */
 template <typename TPosition, typename TSize>
 class SeedDiagonal
 {
 public:
-/**
-.Memvar.SeedDiagonal#beginDim0:The position in the query (dimension 0).
-*/
-    TPosition beginDim0;
-/**
- .Memvar.SeedDiagonal#beginDim0:The position in the database sequence (dimension 1).
-*/
-    TPosition beginDim1;
-/**
-.Memvar.SeedDiagonal#length:The length of the diagonal.
-*/
+    TPosition beginPositionH;
+    TPosition beginPositionV;
     TSize length;
     
-    SeedDiagonal()
-            : beginDim0(0), beginDim1(0), length(0)
-    { SEQAN_CHECKPOINT; }
+    SeedDiagonal() : beginPositionH(0), beginPositionV(0), length(0)
+    {}
 
-    SeedDiagonal(TPosition _beginDim0, TPosition _beginDim1, TSize _length)
-            : beginDim0(_beginDim0), beginDim1(_beginDim1), length(_length)
-    { SEQAN_CHECKPOINT; }
+    SeedDiagonal(TPosition _beginPositionH, TPosition _beginPositionV, TSize _length) :
+            beginPositionH(_beginPositionH), beginPositionV(_beginPositionV), length(_length)
+    {}
 };
 
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
   
-///.Metafunction.Position.param.T:SeedDiagonal
-///.Metafunction.Position.class:SeedDiagonal
+// ---------------------------------------------------------------------------
+// Metafunction Position
+// ---------------------------------------------------------------------------
+
+/**
+.Metafunction.SeedDiagonal#Position
+..cat:Seed Handling
+..class:Class.SeedDiagonal
+..summary:The position type of a @Class.SeedDiagonal@.
+..signature:Position<TSeed>::Type
+..param.TSeed:The seed diagonal to query for its position type.
+...type:Class.Seed
+..include:seqan/seeds.h
+*/
+
 template <typename TPosition, typename TSize>
 struct Position<SeedDiagonal<TPosition, TSize> >
 {
@@ -92,11 +103,24 @@ struct Position<SeedDiagonal<TPosition, TSize> >
 };
 
 template <typename TPosition, typename TSize>
-struct Position<SeedDiagonal<TPosition, TSize> const>
-  : Position<SeedDiagonal<TPosition, TSize> > {};
+struct Position<SeedDiagonal<TPosition, TSize> const> : Position<SeedDiagonal<TPosition, TSize> >
+{};
+  
+// ---------------------------------------------------------------------------
+// Metafunction Size
+// ---------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T:SeedDiagonal
-///.Metafunction.Size.class:SeedDiagonal
+/**
+.Metafunction.SeedDiagonal#Size
+..cat:Seed Handling
+..class:Class.SeedDiagonal
+..summary:The position type of a @Class.SeedDiagonal@.
+..signature:Size<TSeed>::Type
+..param.TSeed:The seed diagonal to query for its position type.
+...type:Class.Seed
+..include:seqan/seeds.h
+*/
+
 template <typename TPosition, typename TSize>
 struct Size<SeedDiagonal<TPosition, TSize> >
 {
@@ -104,27 +128,36 @@ struct Size<SeedDiagonal<TPosition, TSize> >
 };
 
 template <typename TPosition, typename TSize>
-struct Size<SeedDiagonal<TPosition, TSize> const>
-  : Size<SeedDiagonal<TPosition, TSize> > {};
+struct Size<SeedDiagonal<TPosition, TSize> const> : Size<SeedDiagonal<TPosition, TSize> >
+{};
   
 // ===========================================================================
 // Functions
 // ===========================================================================
 
+// ---------------------------------------------------------------------------
+// Debugger Function operator<<()
+// ---------------------------------------------------------------------------
+
 template <typename TStream, typename TPosition, typename TSize>
 inline TStream &
 operator<<(TStream & stream, SeedDiagonal<TPosition, TSize> const & seedDiagonal)
 {
-    return stream << "SeedDiagonal(" << seedDiagonal.beginDim0 << ", " << seedDiagonal.beginDim1 << ", "  << seedDiagonal.length << ")";
+    return stream << "SeedDiagonal(" << seedDiagonal.beginPositionH << ", " << seedDiagonal.beginPositionV
+                  << ", "  << seedDiagonal.length << ")";
 }
 
+// ---------------------------------------------------------------------------
+// Function operator==()
+// ---------------------------------------------------------------------------
 
 template <typename TPosition, typename TSize>
 inline bool
 operator==(SeedDiagonal<TPosition, TSize> const & a, SeedDiagonal<TPosition, TSize> const & b)
 {
-    SEQAN_CHECKPOINT;
-    return a.beginDim0 == b.beginDim0 && a.beginDim1 == b.beginDim1 && a.length == b.length;
+    return a.beginPositionH == b.beginPositionH &&
+            a.beginPositionV == b.beginPositionV &&
+            a.length == b.length;
 }
 
 }  // namespace seqan

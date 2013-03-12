@@ -27,7 +27,7 @@ def main(source_base, binary_base):
     print 'Executing test for stellar'
     print '========================='
     print
-    
+
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
         'core/apps/stellar/tests')  # tests dir
@@ -203,8 +203,6 @@ def main(source_base, binary_base):
     # ============================================================
     failures = 0
     for conf in conf_list:
-        print ' '.join(['stellar'] + conf.args),
-        sys.stdout.flush()
         res = app_tests.runTest(conf)
         # Output to the user.
         print ' '.join(['stellar'] + conf.args),

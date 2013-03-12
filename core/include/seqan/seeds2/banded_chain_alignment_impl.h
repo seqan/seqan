@@ -105,8 +105,8 @@ _checkColinearity(TIter currIter)
     TIter nextIter = currIter;
     ++nextIter;
 
-    return getEndHorizontal(value(currIter)) <= getBeginHorizontal(value(nextIter)) &&
-           getEndVertical(value(currIter)) <= getBeginVertical(value(nextIter));
+    return endPositionH(value(currIter)) <= beginPositionH(value(nextIter)) &&
+           endPositionV(value(currIter)) <= beginPositionV(value(nextIter));
 }
 
 // ----------------------------------------------------------------------------
@@ -175,54 +175,6 @@ _isCrossingEndVertical(TPosition const & verticalSeedEndPos,
 }
 
 // ----------------------------------------------------------------------------
-// Function getBeginHorizontal()
-// ----------------------------------------------------------------------------
-
-// Wrapper class to map dim1 to horizontal orientation.
-template <typename TSpec, typename TConfig>
-inline typename Position<Seed<TSpec, TConfig> >::Type
-getBeginHorizontal(Seed<TSpec, TConfig> const & seed)
-{
-    return getBeginDim1(seed);
-}
-
-// ----------------------------------------------------------------------------
-// Function getBeginVertical()
-// ----------------------------------------------------------------------------
-
-// Wrapper class to map dim0 to vertical orientation.
-template <typename TSpec, typename TConfig>
-inline typename Position<Seed<TSpec, TConfig> >::Type
-getBeginVertical(Seed<TSpec, TConfig> const & seed)
-{
-    return getBeginDim0(seed);
-}
-
-// ----------------------------------------------------------------------------
-// Function getEndHorizontal()
-// ----------------------------------------------------------------------------
-
-// Wrapper class to map dim1 to horizontal orientation.
-template <typename TSpec, typename TConfig>
-inline typename Position<Seed<TSpec, TConfig> >::Type
-getEndHorizontal(Seed<TSpec, TConfig> const & seed)
-{
-    return getEndDim1(seed);
-}
-
-// ----------------------------------------------------------------------------
-// Function getEndVertical()
-// ----------------------------------------------------------------------------
-
-// Wrapper class to map dim0 to vertical orientation.
-template <typename TSpec, typename TConfig>
-inline typename Position<Seed<TSpec, TConfig> >::Type
-getEndVertical(Seed<TSpec, TConfig> const & seed)
-{
-    return getEndDim0(seed);
-}
-
-// ----------------------------------------------------------------------------
 // Function _horizontalBandShift()
 // ----------------------------------------------------------------------------
 
@@ -231,7 +183,7 @@ template <typename TSeed>
 inline typename Size<TSeed>::Type _horizontalBandShift(TSeed const & seed)
 {
     typedef typename Size<TSeed>::Type TSize;
-    TSize bandSize = (getUpperDiagonal(seed) - (getBeginHorizontal(seed) - getBeginVertical(seed)));
+    TSize bandSize = (upperDiagonal(seed) - (beginPositionH(seed) - beginPositionV(seed)));
     SEQAN_ASSERT_GEQ(bandSize, TSize(0));  // must be greater or equal than zero
     return bandSize;
 }
@@ -245,7 +197,7 @@ template <typename TSeed>
 inline typename Size<TSeed>::Type _verticalBandShift(TSeed const & seed)
 {
     typedef typename Size<TSeed>::Type TSize;
-    TSize bandSize((getBeginHorizontal(seed) - getBeginVertical(seed)) - getLowerDiagonal(seed));
+    TSize bandSize((beginPositionH(seed) - beginPositionV(seed)) - lowerDiagonal(seed));
     SEQAN_ASSERT_GEQ(bandSize, TSize(0));  // must be greater or equal than zero
     return bandSize;
 }
@@ -613,9 +565,9 @@ _findFirstAnchor(TSeedSet const & seedSet, int bandExtension)
     while (it != itEnd)
     {
         TSeed seed = value(++it);
-        if (_isCrossingBeginHorizontal(getBeginHorizontal(seed), bandExtension))
+        if (_isCrossingBeginHorizontal(beginPositionH(seed), bandExtension))
             continue;
-        else if (_isCrossingBeginVertical(getBeginVertical(seed), bandExtension))
+        else if (_isCrossingBeginVertical(beginPositionV(seed), bandExtension))
             continue;
         else
         { // found seed which is not crossing the begin.
@@ -648,9 +600,9 @@ _findLastAnchor(typename Iterator<TSeedSet const, Standard>::Type & iterBegin,
     while (it != iterBegin)
     {
         TSeed seed = value(--it);
-        if (_isCrossingEndHorizontal(getEndHorizontal(seed), bandExtension, seqH))
+        if (_isCrossingEndHorizontal(endPositionH(seed), bandExtension, seqH))
             continue;
-        else if (_isCrossingEndVertical(getEndVertical(seed), bandExtension, seqV))
+        else if (_isCrossingEndVertical(endPositionV(seed), bandExtension, seqV))
             continue;
         else  // Found seed which is not crossing the end.
             return it;
@@ -761,9 +713,9 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     TSeedSize horizontalBandShift = _horizontalBandShift(seed);
     TSeedSize verticalBandShift = _verticalBandShift(seed);
 
-    TSeedSize horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(getBeginHorizontal(seed)) + 1 -
+    TSeedSize horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 -
                                               static_cast<TSignedPosition>(bandExtension));
-    TSeedSize verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(getBeginVertical(seed)) + 1 -
+    TSeedSize verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionV(seed)) + 1 -
                                             static_cast<TSignedPosition>(bandExtension));
 
     DPBand_<BandOn> band;
@@ -772,13 +724,13 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     // The problem here is, that we have to cast everything into an integer type.
     setUpperDiagonal(band, static_cast<TSignedPosition>(_min(static_cast<TSignedSize>(length(seqH)),
         static_cast<TSignedPosition>(horizontalNextGridOrigin +  (bandExtension << 1) + horizontalBandShift +
-        _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(getBeginVertical(seed)) -1)) +
-        _min(0, static_cast<TSignedPosition>(getBeginHorizontal(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
+        _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionV(seed)) -1)) +
+        _min(0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
 
     setLowerDiagonal(band, -static_cast<TSignedPosition>(_min(static_cast<TSignedSize>(length(seqV)),
         static_cast<TSignedPosition>(verticalNextGridOrigin + (bandExtension << 1) + verticalBandShift +
-        _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(getBeginHorizontal(seed)) -1)) +
-        _min(0, static_cast<TSignedPosition>(getBeginVertical(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
+        _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionH(seed)) -1)) +
+        _min(0, static_cast<TSignedPosition>(beginPositionV(seed)) + 1 - static_cast<TSignedPosition>(bandExtension)))));
 
     TScore score = 0;
     TInfixH infixH;
@@ -816,20 +768,20 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
 
     // Check if the end point is at most as long as the sequences.
     TGridPoint gridEnd;
-    gridEnd.i1 = _min(length(seqH), getEndHorizontal(seed) + bandExtension);
-    gridEnd.i2 = _min(length(seqV), getEndVertical(seed) + bandExtension);
+    gridEnd.i1 = _min(length(seqH), endPositionH(seed) + bandExtension);
+    gridEnd.i2 = _min(length(seqV), endPositionV(seed) + bandExtension);
 
     // Define area covering the infixes.
     infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
 
-    horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(getEndHorizontal(seed)) -
+    horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(endPositionH(seed)) -
         static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(horizontalBandShift) -
-        _max(0, static_cast<TSignedPosition>(getEndVertical(seed) + bandExtension) -
+        _max(0, static_cast<TSignedPosition>(endPositionV(seed) + bandExtension) -
         static_cast<TSignedSize>(length(seqV))) - static_cast<TSignedPosition>(gridBegin.i1));
-    verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(getEndVertical(seed)) -
+    verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(endPositionV(seed)) -
         static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(verticalBandShift) -
-        _max(0, static_cast<TSignedPosition>(getEndHorizontal(seed) + bandExtension) -
+        _max(0, static_cast<TSignedPosition>(endPositionH(seed) + bandExtension) -
         static_cast<TSignedSize>(length(seqH))) - static_cast<TSignedPosition>(gridBegin.i2));
 
     setUpperDiagonal(band, upperDiagonal(band) - static_cast<TSignedPosition>(gridBegin.i1));
@@ -911,16 +863,16 @@ _computeGapArea(TTraceSet & globalTraceSet,
 
     TGridPoint gridBegin(scoutState._horizontalNextGridOrigin, scoutState._verticalNextGridOrigin);
 
-    TGridPoint gridEnd(getBeginHorizontal(currentSeed) + 1 + bandExtension + _horizontalBandShift(currentSeed),
-                       getBeginVertical(currentSeed) + 1 + bandExtension + _verticalBandShift(currentSeed));
+    TGridPoint gridEnd(beginPositionH(currentSeed) + 1 + bandExtension + _horizontalBandShift(currentSeed),
+                       beginPositionV(currentSeed) + 1 + bandExtension + _verticalBandShift(currentSeed));
 
     // Define infix area for alignment.
     TInfixH infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     TInfixV infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
 
     // Relative begin positions of next grid.
-    TPosH horizontalNextGridOrigin = getBeginHorizontal(currentSeed) + 1 - bandExtension - gridBegin.i1;
-    TPosV verticalNextGridOrigin = getBeginVertical(currentSeed) + 1 - bandExtension - gridBegin.i2;
+    TPosH horizontalNextGridOrigin = beginPositionH(currentSeed) + 1 - bandExtension - gridBegin.i1;
+    TPosV verticalNextGridOrigin = beginPositionV(currentSeed) + 1 - bandExtension - gridBegin.i2;
 
     // Prepare the scout state for the next part of the algorithm.
     _reinitScoutState(scoutState, horizontalNextGridOrigin, verticalNextGridOrigin, gridEnd.i1 - gridBegin.i1 + 1,
@@ -968,8 +920,8 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
     typedef Pair<TPosition, TPosition> TGridPoint;
 
     TGridPoint gridBegin(scoutState._horizontalNextGridOrigin, scoutState._verticalNextGridOrigin);
-    TGridPoint gridEnd(getEndHorizontal(currentSeed) + bandExtension,
-                       getEndVertical(currentSeed) + bandExtension);
+    TGridPoint gridEnd(endPositionH(currentSeed) + bandExtension,
+                       endPositionV(currentSeed) + bandExtension);
 
     // Define area covering the infixes of the current sub-matrix.
     TInfixH infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
@@ -978,8 +930,8 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
     TPosition horizontalBandShift = _horizontalBandShift(currentSeed);
     TPosition verticalBandShift = _verticalBandShift(currentSeed);
 
-    TPosition horizontalNextGridOrigin = getEndHorizontal(currentSeed) - bandExtension - horizontalBandShift - gridBegin.i1;
-    TPosition verticalNextGridOrigin = getEndVertical(currentSeed) - bandExtension - verticalBandShift - gridBegin.i2;
+    TPosition horizontalNextGridOrigin = endPositionH(currentSeed) - bandExtension - horizontalBandShift - gridBegin.i1;
+    TPosition verticalNextGridOrigin = endPositionV(currentSeed) - bandExtension - verticalBandShift - gridBegin.i2;
 
     DPBand_<BandOn> band(-static_cast<TSignedPosition>((bandExtension << 1)) -static_cast<TSignedPosition>(verticalBandShift),
                          static_cast<TSignedPosition>((bandExtension << 1) + horizontalBandShift));
@@ -1042,17 +994,17 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     TPosition horizontalBandShift = _horizontalBandShift(currentSeed);
     TPosition verticalBandShift = _verticalBandShift(currentSeed);
 
-    TGridPoint gridEnd(_min(length(seqH), getBeginHorizontal(currentSeed) + 1 + bandExtension + horizontalBandShift),
-                       _min(length(seqV), getBeginVertical(currentSeed) + 1 + bandExtension + verticalBandShift));
+    TGridPoint gridEnd(_min(length(seqH), beginPositionH(currentSeed) + 1 + bandExtension + horizontalBandShift),
+                       _min(length(seqV), beginPositionV(currentSeed) + 1 + bandExtension + verticalBandShift));
 
     // Define infix area for alignment.
     TInfixH infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     TInfixV infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
 
     // Relative begin positions of next grid.
-    TPosition horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(getBeginHorizontal(currentSeed)) + 1 -
+    TPosition horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionH(currentSeed)) + 1 -
         static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(gridBegin.i1));
-    TPosition verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(getBeginVertical(currentSeed)) + 1 -
+    TPosition verticalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionV(currentSeed)) + 1 -
         static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(gridBegin.i2));
 
     // Prepare the scout state for the next part of the algorithm.
@@ -1077,18 +1029,18 @@ _finishBandedChain(TTraceSet & globalTraceSet,
 
     DPBand_<BandOn> band(-static_cast<TSignedPosition>(gridEnd.i2 + gridBegin.i2), static_cast<TSignedPosition>(gridEnd.i1 - gridBegin.i1));
 
-    gridEnd.i1 = _min(length(seqH), getEndHorizontal(currentSeed) + bandExtension);
-    gridEnd.i2 = _min(length(seqV), getEndVertical(currentSeed) + bandExtension);
+    gridEnd.i1 = _min(length(seqH), endPositionH(currentSeed) + bandExtension);
+    gridEnd.i2 = _min(length(seqV), endPositionV(currentSeed) + bandExtension);
 
     horizontalNextGridOrigin = _max(0,
-        static_cast<TSignedPosition>(getEndHorizontal(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
+        static_cast<TSignedPosition>(endPositionH(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
         static_cast<TSignedPosition>(horizontalBandShift) - static_cast<TSignedPosition>(gridBegin.i1) -
-        _max(0, static_cast<TSignedPosition>(getEndVertical(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqV))));
+        _max(0, static_cast<TSignedPosition>(endPositionV(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqV))));
 
     verticalNextGridOrigin = _max(0,
-        static_cast<TSignedPosition>(getEndVertical(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
+        static_cast<TSignedPosition>(endPositionV(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
         static_cast<TSignedPosition>(verticalBandShift) - static_cast<TSignedPosition>(gridBegin.i2) -
-        _max(0, static_cast<TSignedPosition>(getEndHorizontal(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqH))));
+        _max(0, static_cast<TSignedPosition>(endPositionH(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqH))));
 
     infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
@@ -1194,8 +1146,8 @@ _computeAlignment(TTraceSet & globalTraceSet,
     if (length(seedSet) == 1 || (it == itEnd && _isLastSeed(itEnd, seedSet)))
     {
         // There is nothing to close.
-        if (getEndHorizontal(value(it)) + bandExtension < length(seqH) ||
-            getEndVertical(value(it)) + bandExtension < length(seqV))
+        if (endPositionH(value(it)) + bandExtension < length(seqH) ||
+            endPositionV(value(it)) + bandExtension < length(seqV))
         {
             TPosH gridBeginH = scoutState._horizontalNextGridOrigin;
             TPosV gridBeginV = scoutState._verticalNextGridOrigin;

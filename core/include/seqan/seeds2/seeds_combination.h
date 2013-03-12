@@ -82,25 +82,23 @@ typedef Tag<Single_> Single;
 // upper left, b the one to the lower right.
 template <typename TSeedSpec, typename TSeedConfig, typename TThreshold>
 inline bool
-_seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & a,
-                  Seed<TSeedSpec, TSeedConfig> const & b,
+_seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & seedA,
+                  Seed<TSeedSpec, TSeedConfig> const & seedB,
                   TThreshold const & maxDiagonalDistance,
                   Nothing const & /*maxBandwidth*/,
                   Merge const &)
 {
     // TODO(holtgrew): TThreshold could be Position<TSeed>::Type.
-    SEQAN_CHECKPOINT;
-
     // b has to be right of a for the two seeds to be mergeable.
-    if (getBeginDim0(b) < getBeginDim0(a) || getBeginDim1(b) < getBeginDim1(a))
+    if (beginPositionH(seedB) < beginPositionH(seedA) || beginPositionV(seedB) < beginPositionV(seedA))
         return false;
     // If the two seeds do not overlap, they cannot be merged.
-    if (getBeginDim0(b) > getEndDim0(a) || getBeginDim1(b) > getEndDim1(a))
+    if (beginPositionH(seedB) > endPositionH(seedA) || beginPositionV(seedB) > endPositionV(seedA))
         return false;
     // If the distance between the diagonals exceeds the threshold
     // then the seeds cannot be merged.
     typedef typename MakeUnsigned_<TThreshold>::Type TUnsignedThreshold;
-    if (static_cast<TUnsignedThreshold>(_abs(getEndDiagonal(a) - getStartDiagonal(b))) > static_cast<TUnsignedThreshold>(maxDiagonalDistance))
+    if (static_cast<TUnsignedThreshold>(_abs(endDiagonal(seedA) - beginDiagonal(seedB))) > static_cast<TUnsignedThreshold>(maxDiagonalDistance))
         return false;
     // Otherwise, the seeds can be merged.
     return true;
@@ -111,24 +109,23 @@ _seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & a,
 // the upper left, b the one to the lower right.
 template <typename TSeedSpec, typename TSeedConfig, typename TThreshold>
 inline bool
-_seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & a,
-                  Seed<TSeedSpec, TSeedConfig> const & b,
+_seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & seedA,
+                  Seed<TSeedSpec, TSeedConfig> const & seedB,
                   TThreshold const & maxGapSize,
                   Nothing const & /*maxBandwidth*/,
                   SimpleChain const &)
 {
     // TODO(holtgrew): We should be able to configure whether we want to have Manhattan, euclidean, minimal edit distance, for seeds.
     // TODO(holtgrew): TThreshold could be Position<TSeed>::Type.
-    SEQAN_CHECKPOINT;
 
     // b has to be right of a for the two seeds to be chainable.
-    if (getBeginDim0(b) < getEndDim0(a) || getBeginDim1(b) < getEndDim1(a))
+    if (beginPositionH(seedB) < endPositionH(seedA) || beginPositionV(seedB) < endPositionV(seedA))
         return false;
 
     // Distance is maximal distance, this corresponds to going the
     // distacen in the smaller distance with matches/mismatches and
     // the rest with indels.
-    TThreshold distance = _max(getBeginDim0(b) - getEndDim0(a), getBeginDim1(b) - getEndDim1(a));
+    TThreshold distance = _max(beginPositionH(seedB) - endPositionH(seedA), beginPositionV(seedB) - endPositionV(seedA));
     // Compare distance with threshold.
     return distance <= maxGapSize;
 }
@@ -140,28 +137,26 @@ _seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & a,
 // TODO(holtgrew): Replace bandwidth with diagonalDistance.
 template <typename TSeedSpec, typename TSeedConfig, typename TDistanceThreshold, typename TBandwidthThreshold>
 inline bool
-_seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & a,
-                  Seed<TSeedSpec, TSeedConfig> const & b,
+_seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & seedA,
+                  Seed<TSeedSpec, TSeedConfig> const & seedB,
                   TDistanceThreshold const & maxGapSize,
                   TBandwidthThreshold const & bandwidth,
                   Chaos const &)
 {
-    SEQAN_CHECKPOINT;
-
     // b has to be right of a for the two seeds to be chainable.
-    if (getBeginDim0(b) < getEndDim0(a) || getBeginDim1(b) < getEndDim1(a))
+    if (beginPositionH(seedB) < endPositionH(seedA) || beginPositionV(seedB) < endPositionV(seedA))
         return false;
 
     // The diagonal distance has to be smaller than the bandwidth.
-    // TODO(holtgrew): s/getStartDiagonal/getBeginDiagonal/
-    TBandwidthThreshold diagonalDistance = _abs(getEndDiagonal(b) - getStartDiagonal(a));
+    // TODO(holtgrew): s/beginDiagonal/getBeginDiagonal/
+    TBandwidthThreshold diagonalDistance = _abs(endDiagonal(seedB) - beginDiagonal(seedA));
     if (diagonalDistance > bandwidth)
         return false;
 
     // Distance is maximal distance, this corresponds to going the
     // distance in the smaller distance with matches/mismatches and
     // the rest with indels.
-    TDistanceThreshold distance = _max(getBeginDim0(b) - getEndDim0(a), getBeginDim1(b) - getEndDim1(a));
+    TDistanceThreshold distance = _max(beginPositionH(seedB) - endPositionH(seedA), beginPositionV(seedB) - endPositionV(seedA));
     // Compare distance with threshold.
     return distance <= maxGapSize;
 }
@@ -175,14 +170,12 @@ _updateSeedsCoordinatesMergeOrSimpleChain(
         Seed<Simple, TSeedConfig> & seed,
         Seed<Simple, TSeedConfig> const & other)
 {
-    SEQAN_CHECKPOINT;
-
-    setBeginDim0(seed, _min(getBeginDim0(seed), getBeginDim0(other)));
-    setBeginDim1(seed, _min(getBeginDim1(seed), getBeginDim1(other)));
-    setEndDim0(seed, _max(getEndDim0(seed), getEndDim0(other)));
-    setEndDim1(seed, _max(getEndDim1(seed), getEndDim1(other)));
-    setLowerDiagonal(seed, _min(getLowerDiagonal(seed), getLowerDiagonal(other)));
-    setUpperDiagonal(seed, _max(getUpperDiagonal(seed), getUpperDiagonal(other)));
+    setBeginPositionH(seed, std::min(beginPositionH(seed), beginPositionH(other)));
+    setBeginPositionV(seed, std::min(beginPositionV(seed), beginPositionV(other)));
+    setEndPositionH(seed, std::max(endPositionH(seed), endPositionH(other)));
+    setEndPositionV(seed, std::max(endPositionV(seed), endPositionV(other)));
+    setLowerDiagonal(seed, std::min(lowerDiagonal(seed), lowerDiagonal(other)));
+    setUpperDiagonal(seed, std::max(upperDiagonal(seed), upperDiagonal(other)));
 }
 
 
@@ -195,8 +188,6 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
               Nothing const & /*sequence1*/,
               Merge const &)
 {
-    SEQAN_CHECKPOINT;
-
     _updateSeedsScoreMerge(seed, other);
     _updateSeedsCoordinatesMergeOrSimpleChain(seed, other);
 }
@@ -225,8 +216,6 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
               TSequence1 const & sequence1,
               Chaos const &)
 {
-    SEQAN_CHECKPOINT;
-
     typedef Seed<Simple, TSeedConfig> TSeed;
     typedef typename Position<TSeed>::Type TPosition;
 
@@ -237,8 +226,8 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
     // chaining.
     //
     // TODO(holtgrew): We need + 1 here, do we need it anywhere else?
-    TPosition gapDim0 = getBeginDim0(other) - getEndDim0(seed);
-    TPosition gapDim1 = getBeginDim1(other) - getEndDim1(seed);
+    TPosition gapDim0 = beginPositionH(other) - endPositionH(seed);
+    TPosition gapDim1 = beginPositionV(other) - endPositionV(seed);
     TPosition minGap = _min(gapDim0, gapDim1);
     TPosition maxGap = _max(gapDim0, gapDim1);
     TPosition remainingGap = maxGap - minGap;
@@ -246,17 +235,17 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
     // Compute new score using the CHAOS method.
     //
     // First, compute the score when force-aligning from seed.
-    TPosition posLeft0 = getEndDim0(seed);
-    TPosition posLeft1 = getEndDim1(seed);
+    TPosition posLeft0 = endPositionH(seed);
+    TPosition posLeft1 = endPositionV(seed);
     TScoreValue tmpScore = 0;
     // TODO(holtgrew): Probably better use iterators on sequences!
     for (TPosition i = 0; i < minGap; ++i)
         tmpScore += score(scoringScheme, sequence0[posLeft0 + i], sequence1[posLeft1 + i]);
 
-    SEQAN_ASSERT_GT(getBeginDim0(other), static_cast<TPosition>(0));
-    SEQAN_ASSERT_GT(getBeginDim1(other), static_cast<TPosition>(0));
-    TPosition posRight0 = getBeginDim0(other);
-    TPosition posRight1 = getBeginDim1(other);
+    SEQAN_ASSERT_GT(beginPositionH(other), static_cast<TPosition>(0));
+    SEQAN_ASSERT_GT(beginPositionV(other), static_cast<TPosition>(0));
+    TPosition posRight0 = beginPositionH(other);
+    TPosition posRight1 = beginPositionV(other);
 
     // Now, try to put the gap at each position and get the position
     // with the highest score.  If there are two such positions, the
@@ -297,15 +286,14 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
               Nothing const & /*sequence1*/,
               Merge const &)
 {
-    SEQAN_CHECKPOINT;
     // For chained seeds, we first remove all diagonals from seed
     // until the last diagonal of seed starts truly before other.
     // Then, we possibly shorten the last diagonal.  Finally, we copy
     // over all diagonals from other.
 
     // std::cout << "Merging chained seeds " << seed << " and " << other << std::endl;
-    SEQAN_ASSERT_LEQ_MSG(getBeginDim0(seed), getBeginDim0(other), "Monotony in both dimensions required for merging.");
-    SEQAN_ASSERT_LEQ_MSG(getBeginDim1(seed), getBeginDim1(other), "Monotony in both dimensions required for merging.");
+    SEQAN_ASSERT_LEQ_MSG(beginPositionH(seed), beginPositionH(other), "Monotony in both dimensions required for merging.");
+    SEQAN_ASSERT_LEQ_MSG(beginPositionV(seed), beginPositionV(other), "Monotony in both dimensions required for merging.");
     
     _updateSeedsScoreMerge(seed, other);
 
@@ -316,7 +304,7 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     // TODO(holtgrew): Could use back() instead of lastKept.
     TIterator lastKept = begin(seed);
     for (it = begin(seed); it != end(seed); ++it) {
-        if (it->beginDim0 >= getBeginDim0(other) && it->beginDim1 >= getBeginDim1(other))
+        if (it->beginPositionH >= beginPositionH(other) && it->beginPositionV >= beginPositionV(other))
             break;
         lastKept = it;
     }
@@ -325,12 +313,12 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     // std::cout << "Seed after truncating diagonals: " << seed << std::endl;
 
     // Shorten last diagonal if necessary.
-    if (lastKept->beginDim0 + lastKept->length > getBeginDim0(other) && lastKept->beginDim1 + lastKept->length > getBeginDim1(other)) {
-        lastKept->length = _min(getBeginDim0(other) - lastKept->beginDim0, getBeginDim1(other) - lastKept->beginDim1);
-    } else if (lastKept->beginDim0 + lastKept->length > getBeginDim0(other)) {
-        lastKept->length = getBeginDim0(other) - lastKept->beginDim0;
-    } else if (lastKept->beginDim1 + lastKept->length > getBeginDim1(other)) {
-        lastKept->length = getBeginDim1(other) - lastKept->beginDim1;
+    if (lastKept->beginPositionH + lastKept->length > beginPositionH(other) && lastKept->beginPositionV + lastKept->length > beginPositionV(other)) {
+        lastKept->length = _min(beginPositionH(other) - lastKept->beginPositionH, beginPositionV(other) - lastKept->beginPositionV);
+    } else if (lastKept->beginPositionH + lastKept->length > beginPositionH(other)) {
+        lastKept->length = beginPositionH(other) - lastKept->beginPositionH;
+    } else if (lastKept->beginPositionV + lastKept->length > beginPositionV(other)) {
+        lastKept->length = beginPositionV(other) - lastKept->beginPositionV;
     }
 
     // Maybe remove shortened diagonal if its length is 0.
@@ -359,7 +347,6 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
               Nothing const & /*sequence1*/,
               SimpleChain const &)
 {
-    SEQAN_CHECKPOINT;
     // Simply copy over the diagonals of the seed (other) into the
     // left one (seed) after updating the score.
 
@@ -382,8 +369,6 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
               TSequence1 const & sequence1,
               Chaos const &)
 {
-    SEQAN_CHECKPOINT;
-
     typedef Seed<ChainedSeed, TSeedConfig> TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Iterator<TSeed const, Standard>::Type TConstIterator;
@@ -395,8 +380,8 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     // chaining.
     //
     // TODO(holtgrew): We need + 1 here, do we need it anywhere else?
-    TPosition gapDim0 = getBeginDim0(other) - getEndDim0(seed);
-    TPosition gapDim1 = getBeginDim1(other) - getEndDim1(seed);
+    TPosition gapDim0 = beginPositionH(other) - endPositionH(seed);
+    TPosition gapDim1 = beginPositionV(other) - endPositionV(seed);
     TPosition minGap = _min(gapDim0, gapDim1);
     TPosition maxGap = _max(gapDim0, gapDim1);
     TPosition remainingGap = maxGap - minGap;
@@ -404,17 +389,17 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     // Compute new score using the CHAOS method.
     //
     // First, compute the score when force-aligning from seed.
-    TPosition posLeft0 = getEndDim0(seed);
-    TPosition posLeft1 = getEndDim1(seed);
+    TPosition posLeft0 = endPositionH(seed);
+    TPosition posLeft1 = endPositionV(seed);
     TScoreValue tmpScore = 0;
     // TODO(holtgrew): Probably better use iterators on sequences!
     for (TPosition i = 0; i < minGap; ++i)
         tmpScore += score(scoringScheme, sequence0[posLeft0 + i], sequence1[posLeft1 + i]);
 
-    SEQAN_ASSERT_GT(getBeginDim0(other), static_cast<TPosition>(0));
-    SEQAN_ASSERT_GT(getBeginDim1(other), static_cast<TPosition>(0));
-    TPosition posRight0 = getBeginDim0(other);
-    TPosition posRight1 = getBeginDim1(other);
+    SEQAN_ASSERT_GT(beginPositionH(other), static_cast<TPosition>(0));
+    SEQAN_ASSERT_GT(beginPositionV(other), static_cast<TPosition>(0));
+    TPosition posRight0 = beginPositionH(other);
+    TPosition posRight1 = beginPositionV(other);
 
     // Now, try to put the gap at each position and get the position
     // with the highest score.  If there are two such positions, the
@@ -440,8 +425,8 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     back(seed).length += minGap - bestGapPos;
     // Copy over the first diagonal of other and adjust diagonal.
     appendDiagonal(seed, front(other));
-    back(seed).beginDim0 -= bestGapPos;
-    back(seed).beginDim1 -= bestGapPos;
+    back(seed).beginPositionH -= bestGapPos;
+    back(seed).beginPositionV -= bestGapPos;
     back(seed).length += bestGapPos;
     // Copy over all other diagonals.
     TConstIterator it = begin(other, Standard());

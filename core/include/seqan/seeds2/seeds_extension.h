@@ -54,6 +54,10 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
+// ---------------------------------------------------------------------------
+// Tags Seed Extension
+// ---------------------------------------------------------------------------
+
 /**
 .Tag.Seed Extension
 ..cat:Seed Handling
@@ -76,6 +80,12 @@ typedef Tag<UngappedXDrop_> const UnGappedXDrop;
 struct GappedXDrop_;
 typedef Tag<GappedXDrop_> const GappedXDrop;
 
+// ---------------------------------------------------------------------------
+// Enum ExtensionDirection
+// ---------------------------------------------------------------------------
+
+// TODO(holtgrew): Put into class?
+
 /**
 .Enum.Extension Direction
 ..cat:Seed Handling
@@ -87,6 +97,7 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
 ..see:Function.extendSeed
 ..include:seqan/seeds.h
 */
+
 enum ExtensionDirection
 {
     EXTEND_LEFT,
@@ -103,18 +114,22 @@ enum ExtensionDirection
 // Functions
 // ===========================================================================
 
+// ---------------------------------------------------------------------------
+// Function extendSeed                                           [MatchExtend]
+// ---------------------------------------------------------------------------
+
 /**
 .Function.extendSeed
 ..summary:Extends a seed.
 ..cat:Seed Handling
-..signature:extendSeed(seed, query, database, direction, MatchExtend)
-..signature:extendSeed(seed, query, database, direction, scoreMatrix, scoreDropOff, {UngappedXDrop, GappedXDrop})
+..signature:extendSeed(seed, database, query, direction, MatchExtend)
+..signature:extendSeed(seed, database, query, direction, scoreMatrix, scoreDropOff, {UngappedXDrop, GappedXDrop})
 ..class:Class.Seed
 ..param.seed: The seed to extend.
 ...type:Class.Seed
-..param.query: The query sequence.
+..param.query: The query sequence (vertical).
 ...type:Class.String
-..param.query: The database sequence.
+..param.database: The database sequence (horizontal).
 ...type:Class.String
 ..param.direction: Defines the direction in which the seed should be extended.
 ...type:Enum.Extension Direction
@@ -130,64 +145,63 @@ enum ExtensionDirection
 ..include:seqan/seeds.h
 */
 
-// We need one specialization for each combination of the extension
-// variants and seeds.  It is not worth to extract the common parts
-// for simple and chained seeds.
+// We need one specialization for each combination of the extension variants and seeds.  It is not worth to extract the
+// common parts for simple and chained seeds.
 
-template <typename TConfig, typename TQuery, typename TDatabase>
+template <typename TConfig, typename TDatabase, typename TQuery>
 inline void 
 extendSeed(Seed<Simple, TConfig> & seed, 
-		   TQuery const & query,
 		   TDatabase const & database,
+		   TQuery const & query,
 		   ExtensionDirection direction,
 		   MatchExtend const &)
 {
-    // For match extension of Simple Seeds, we can simply update the
-    // begin and end values in each dimension.
+    // For match extension of Simple Seeds, we can simply update the begin and end values in each dimension.
     typedef Seed<Simple, TConfig> TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Size<TSeed>::Type TSize;
     
 	// Extension to the left
-	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH) {
-		TPosition posDim0 = getBeginDim0(seed) ;
-		TPosition posDim1 = getBeginDim1(seed);
-		while (posDim0 >= 1 && posDim1 >= 1 && query[posDim0 - 1] == database[posDim1 - 1]) {
-			--posDim0;
-			--posDim1;
+	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
+    {
+		TPosition posH = beginPositionH(seed);
+		TPosition posV = beginPositionV(seed);
+		while (posH >= 1 && posV >= 1 && database[posH - 1] == query[posV - 1])
+        {
+			--posH;
+			--posV;
 		}
-		setBeginDim0(seed, posDim0);
-		setBeginDim1(seed, posDim1);
+		setBeginPositionH(seed, posH);
+		setBeginPositionV(seed, posV);
 	}
 
 	// Extension to the right
-	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH) {
-		TSize lengthDim0 = length(query);
-		TSize lengthDim1 = length(database);
-		TPosition posDim0 = getEndDim0(seed) ;
-		TPosition posDim1 = getEndDim1(seed);
-		while (posDim0 < lengthDim0 && posDim1 < lengthDim1 && query[posDim0] == database[posDim1]) {
-			++posDim0;
-			++posDim1;
+	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH)
+    {
+		TSize lengthH = length(database);
+		TSize lengthV = length(query);
+		TPosition posH = endPositionH(seed);
+		TPosition posV = endPositionV(seed);
+		while (posH < lengthH && posV < lengthV && database[posH] == query[posV])
+        {
+			++posH;
+			++posV;
 		}
-		setEndDim0(seed, posDim0);
-		setEndDim1(seed, posDim1);
+        setEndPositionH(seed, posH);
+        setEndPositionV(seed, posV);
 	}
 }
 
 
-template <typename TConfig, typename TQuery, typename TDatabase>
+template <typename TConfig, typename TDatabase, typename TQuery>
 inline void 
 extendSeed(Seed<ChainedSeed, TConfig> & seed, 
-		   TQuery const & query,
 		   TDatabase const & database,
+		   TQuery const & query,
 		   ExtensionDirection direction,
 		   MatchExtend const &)
 {
-    // For match extension of Chained Seeds, we extend the first and
-    // the last Seed Diagonal.
-	SEQAN_CHECKPOINT;
-
+    // For match extension of Chained Seeds, we extend the first and the last Seed Diagonal.
     SEQAN_ASSERT_GT(length(seed), 0u);
 
     typedef Seed<ChainedSeed, TConfig> TSeed;
@@ -196,44 +210,51 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
     typedef typename Size<TSeedDiagonal>::Type TSize;
     
 	// Extension to the left
-	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
+    {
         TSeedDiagonal & diag = front(seed);
-		TPosition posDim0 = diag.beginDim0;
-		TPosition posDim1 = diag.beginDim1;
+		TPosition posH = diag.beginPositionH;
+		TPosition posV = diag.beginPositionV;
         TSize diagonalLength = diag.length;
-		while (posDim0 >= 1 && posDim1 >= 1 && query[posDim0 - 1] == database[posDim1 - 1]) {
-			--posDim0;
-			--posDim1;
+		while (posH >= 1 && posV >= 1 && database[posH - 1] == query[posV - 1])
+        {
+			--posH;
+			--posV;
             ++diagonalLength;
 		}
-        diag.beginDim0 = posDim0;
-        diag.beginDim1 = posDim1;
+        diag.beginPositionH = posH;
+        diag.beginPositionV = posV;
         diag.length = diagonalLength;
 	}
 
 	// Extension to the right
-	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH) {
-		TSize lengthDim0 = length(query);
-		TSize lengthDim1 = length(database);
+	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH)
+    {
+		TSize lengthH = length(database);
+		TSize lengthV = length(query);
         TSeedDiagonal & diag = back(seed);
-		TPosition posDim0 = diag.beginDim0 + diag.length;
-		TPosition posDim1 = diag.beginDim1 + diag.length;
+		TPosition posH = diag.beginPositionH + diag.length;
+		TPosition posV = diag.beginPositionV + diag.length;
         TSize diagonalLength = diag.length;
-		while (posDim0 < lengthDim0 && posDim1 < lengthDim1 && query[posDim0] == database[posDim1]) {
-			++posDim0;
-			++posDim1;
+		while (posH < lengthH && posV < lengthV && database[posH] == query[posV])
+        {
+			++posH;
+			++posV;
             ++diagonalLength;
 		}
         diag.length = diagonalLength;
 	}
 }
 
+// ---------------------------------------------------------------------------
+// Function extendSeed                                         [UnGappedXDrop]
+// ---------------------------------------------------------------------------
 
-template <typename TConfig, typename TQuery, typename TDatabase, typename TScoreValue, typename TScoreSpec>
+template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
 inline void 
 extendSeed(Seed<Simple, TConfig> & seed,
-           TQuery const & query,
            TDatabase const & database,
+           TQuery const & query,
            ExtensionDirection direction,
            Score<TScoreValue, TScoreSpec> const & scoringScheme,
            TScoreValue scoreDropOff,
@@ -241,8 +262,6 @@ extendSeed(Seed<Simple, TConfig> & seed,
 {
     // For ungapped X-drop extension of Simple Seeds, we can simply
     // update the begin and end values in each dimension.
-	SEQAN_CHECKPOINT;
-
     scoreDropOff = -scoreDropOff;
 
     typedef Seed<ChainedSeed, TConfig> TSeed;
@@ -250,62 +269,72 @@ extendSeed(Seed<Simple, TConfig> & seed,
     typedef typename Size<TSeed>::Type TSize;
     
 	// Extension to the left
-	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
+    {
         TScoreValue tmpScore = 0;
-		TPosition posDim0 = getBeginDim0(seed) ;
-		TPosition posDim1 = getBeginDim1(seed);
+		TPosition posH = beginPositionH(seed);
+		TPosition posV = beginPositionV(seed);
         TPosition mismatchingSuffixLength = 0;
-		while (posDim0 >= 1 && posDim1 >= 1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
-                              sequenceEntryForScore(scoringScheme, database, posDim1));
-            if (query[posDim0 - 1] == database[posDim1 - 1]) {
+		while (posH >= 1 && posV >= 1 && tmpScore > scoreDropOff)
+        {
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, database, posH),
+                              sequenceEntryForScore(scoringScheme, query, posV));
+            if (database[posH - 1] == query[posV - 1])
+            {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
                     tmpScore = 0;
-            } else {
+            }
+            else
+            {
                 mismatchingSuffixLength += 1;
             }
-			--posDim0;
-			--posDim1;
+			--posH;
+			--posV;
 		}
-		setBeginDim0(seed, posDim0 + mismatchingSuffixLength);
-		setBeginDim1(seed, posDim1 + mismatchingSuffixLength);
+		setBeginPositionH(seed, posH + mismatchingSuffixLength);
+		setBeginPositionV(seed, posV + mismatchingSuffixLength);
 	}
 
 	// Extension to the right
-	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH)
+    {
         TScoreValue tmpScore = 0;
-		TSize lengthDim0 = length(query);
-		TSize lengthDim1 = length(database);
-		TPosition posDim0 = getEndDim0(seed) ;
-		TPosition posDim1 = getEndDim1(seed);
+		TSize lengthH = length(database);
+		TSize lengthV = length(query);
+		TPosition posH = endPositionH(seed);
+		TPosition posV = endPositionV(seed);
         TPosition mismatchingSuffixLength = 0;
-		while (posDim0 < lengthDim0 && posDim1 < lengthDim1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
-                              sequenceEntryForScore(scoringScheme, database, posDim1));
-            if (query[posDim0] == database[posDim1]) {
+		while (posH < lengthH && posV < lengthV && tmpScore > scoreDropOff)
+        {
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, database, posH),
+                              sequenceEntryForScore(scoringScheme, query, posV));
+            if (database[posH] == query[posV])
+            {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
                     tmpScore = 0;
-            } else {
+            }
+            else
+            {
                 mismatchingSuffixLength += 1;
             }
-            ++posDim0;
-            ++posDim1;
+            ++posH;
+            ++posV;
 		}
-		setEndDim0(seed, posDim0 - mismatchingSuffixLength);
-		setEndDim1(seed, posDim1 - mismatchingSuffixLength);
+		setEndPositionH(seed, posH - mismatchingSuffixLength);
+		setEndPositionV(seed, posV - mismatchingSuffixLength);
     }
 
     // TODO(holtgrew): Update score?!
 }
 
 
-template <typename TConfig, typename TQuery, typename TDatabase, typename TScoreValue, typename TScoreSpec>
+template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
 inline void 
 extendSeed(Seed<ChainedSeed, TConfig> & seed, 
-		   TQuery const & query,
 		   TDatabase const & database,
+		   TQuery const & query,
 		   ExtensionDirection direction,
            Score<TScoreValue, TScoreSpec> const & scoringScheme,
            TScoreValue scoreDropOff,
@@ -313,8 +342,6 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
 {
     // For ungapped X-drop extension of Chained Seeds, we extend the
     // first and the last Seed Diagonal.
-	SEQAN_CHECKPOINT;
-
     scoreDropOff = -scoreDropOff;
 
     typedef Seed<ChainedSeed, TConfig> TSeed;
@@ -323,54 +350,64 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
     typedef typename Size<TSeedDiagonal>::Type TSize;
     
 	// Extension to the left
-	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
+    {
         TScoreValue tmpScore = 0;
         TPosition mismatchingSuffixLength = 0;
         TSeedDiagonal & diag = front(seed);
-		TPosition posDim0 = getBeginDim0(seed) ;
-		TPosition posDim1 = getBeginDim1(seed);
+		TPosition posH = beginPositionH(seed);
+		TPosition posV = beginPositionV(seed);
         TSize diagonalLength = diag.length;
-		while (posDim0 >= 1 && posDim1 >= 1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
-                              sequenceEntryForScore(scoringScheme, database, posDim1));
-            if (query[posDim0 - 1] == database[posDim1 - 1]) {
+		while (posH >= 1 && posV >= 1 && tmpScore > scoreDropOff)
+        {
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, database, posH),
+                              sequenceEntryForScore(scoringScheme, query, posV));
+            if (database[posH - 1] == query[posV - 1])
+            {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
                     tmpScore = 0;
-            } else {
+            }
+            else
+            {
                 mismatchingSuffixLength += 1;
             }
-			--posDim0;
-			--posDim1;
+			--posH;
+			--posV;
             ++diagonalLength;
 		}
-        diag.beginDim0 = posDim0 + mismatchingSuffixLength;
-        diag.beginDim1 = posDim1 + mismatchingSuffixLength;
+        diag.beginPositionH = posH + mismatchingSuffixLength;
+        diag.beginPositionV = posV + mismatchingSuffixLength;
         diag.length = diagonalLength - mismatchingSuffixLength;
 	}
 
 	// Extension to the right
-	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH)
+    {
         TScoreValue tmpScore = 0;
         TPosition mismatchingSuffixLength = 0;
-		TSize lengthDim0 = length(query);
-		TSize lengthDim1 = length(database);
+		TSize lengthH = length(query);
+		TSize lengthV = length(database);
         TSeedDiagonal & diag = back(seed);
-		TPosition posDim0 = diag.beginDim0 + diag.length;
-		TPosition posDim1 = diag.beginDim1 + diag.length;
+		TPosition posH = diag.beginPositionH + diag.length;
+		TPosition posV = diag.beginPositionV + diag.length;
         TSize diagonalLength = diag.length;
-		while (posDim0 < lengthDim0 && posDim1 < lengthDim1 && tmpScore > scoreDropOff) {
-            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, query, posDim0),
-                              sequenceEntryForScore(scoringScheme, database, posDim1));
-            if (query[posDim0] == database[posDim1]) {
+		while (posH < lengthH && posV < lengthV && tmpScore > scoreDropOff)
+        {
+            tmpScore += score(scoringScheme, sequenceEntryForScore(scoringScheme, database, posH),
+                              sequenceEntryForScore(scoringScheme, query, posV));
+            if (database[posH] == query[posV])
+            {
                 mismatchingSuffixLength = 0;
                 if (tmpScore > static_cast<TScoreValue>(0))
                     tmpScore = 0;
-            } else {
+            }
+            else
+            {
                 mismatchingSuffixLength += 1;
             }
-            ++posDim0;
-            ++posDim1;
+            ++posH;
+            ++posV;
             ++diagonalLength;
 		}
         diag.length = diagonalLength - mismatchingSuffixLength;
@@ -379,6 +416,10 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
     // TODO(holtgrew): Update score?!
 }
 
+// ---------------------------------------------------------------------------
+// Function extendSeed                                           [GappedXDrop]
+// ---------------------------------------------------------------------------
+
 template<typename TAntiDiag, typename TDropOff, typename TScoreValue>
 inline void
 _initAntiDiags(TAntiDiag & ,
@@ -386,8 +427,8 @@ _initAntiDiags(TAntiDiag & ,
                TAntiDiag & antiDiag3,
                TDropOff dropOff,
                TScoreValue gapCost,
-               TScoreValue undefined) {
-SEQAN_CHECKPOINT
+               TScoreValue undefined)
+{
 	// antiDiagonals will be swaped in while loop BEFORE computation of antiDiag3 entries
 	//  -> no initialization of antiDiag1 necessary
 
@@ -395,10 +436,13 @@ SEQAN_CHECKPOINT
     antiDiag2[0] = 0;
 
     resize(antiDiag3, 2);
-    if (-gapCost > dropOff) {
+    if (-gapCost > dropOff)
+    {
         antiDiag3[0] = undefined;
         antiDiag3[1] = undefined;
-    } else {
+    }
+    else
+    {
         antiDiag3[0] = gapCost;
         antiDiag3[1] = gapCost;
     }
@@ -408,8 +452,8 @@ template<typename TAntiDiag>
 inline void
 _swapAntiDiags(TAntiDiag & antiDiag1,
                TAntiDiag & antiDiag2,
-			   TAntiDiag & antiDiag3) {
-SEQAN_CHECKPOINT
+			   TAntiDiag & antiDiag3)
+{
     TAntiDiag temp;
     move(temp, antiDiag1);
     move(antiDiag1, antiDiag2);
@@ -425,22 +469,19 @@ _initAntiDiag3(TAntiDiag & antiDiag3,
 			   TSize antiDiagNo,
 			   TScoreValue minScore,
                TScoreValue gapCost,
-               TScoreValue undefined) {
-SEQAN_CHECKPOINT
+               TScoreValue undefined)
+{
 	resize(antiDiag3, maxCol + 1 - offset);
 
     antiDiag3[0] = undefined;
 	antiDiag3[maxCol - offset] = undefined;
 
-	if ((int)antiDiagNo * gapCost > minScore) {
-		if (offset == 0) {
-			// init first column
+	if ((int)antiDiagNo * gapCost > minScore)
+    {
+		if (offset == 0) // init first column
 			antiDiag3[0] = antiDiagNo * gapCost;
-		}
-		if (antiDiagNo - maxCol == 0) {
-			// init first row
+		if (antiDiagNo - maxCol == 0) // init first row
 			antiDiag3[maxCol - offset] = antiDiagNo * gapCost;
-		}
 	}
 	return offset;
 }
@@ -449,24 +490,22 @@ template<typename TDiagonal, typename TSize>
 inline void
 _calcExtendedLowerDiag(TDiagonal & lowerDiag,
 					   TSize minCol,
-					   TSize antiDiagNo) {
-SEQAN_CHECKPOINT
+					   TSize antiDiagNo)
+{
 	TSize minRow = antiDiagNo - minCol;
-	if ((TDiagonal)minCol - (TDiagonal)minRow < lowerDiag) {
+	if ((TDiagonal)minCol - (TDiagonal)minRow < lowerDiag)
 		lowerDiag = (TDiagonal)minCol - (TDiagonal)minRow;
-    }
 }
 
 template<typename TDiagonal, typename TSize>
 inline void
 _calcExtendedUpperDiag(TDiagonal & upperDiag,
 					   TSize maxCol,
-					   TSize antiDiagNo) {
-SEQAN_CHECKPOINT
+					   TSize antiDiagNo)
+{
 	TSize maxRow = antiDiagNo + 1 - maxCol;
-	if ((TDiagonal)maxCol - 1 - (TDiagonal)maxRow > upperDiag) {
+	if ((TDiagonal)maxCol - 1 - (TDiagonal)maxRow > upperDiag)
 		upperDiag = maxCol - 1 - maxRow;
-    }
 }
 
 template<typename TSeed, typename TSize, typename TDiagonal>
@@ -476,36 +515,37 @@ _updateExtendedSeed(TSeed & seed,
 					TSize cols,
 					TSize rows,
 					TDiagonal lowerDiag,
-					TDiagonal upperDiag) {
-SEQAN_CHECKPOINT
-	if (direction == EXTEND_LEFT) {
+					TDiagonal upperDiag)
+{
+	if (direction == EXTEND_LEFT)
+    {
 		// Set lower and upper diagonals.
-		TDiagonal startDiag = getStartDiagonal(seed);
-		if (getLowerDiagonal(seed) > startDiag + lowerDiag)
-			setLowerDiagonal(seed, startDiag + lowerDiag);
-		if (getUpperDiagonal(seed) < startDiag + upperDiag)
-			setUpperDiagonal(seed, startDiag + upperDiag);
+		TDiagonal beginDiag = beginDiagonal(seed);
+		if (lowerDiagonal(seed) > beginDiag + lowerDiag)
+			setLowerDiagonal(seed, beginDiag + lowerDiag);
+		if (upperDiagonal(seed) < beginDiag + upperDiag)
+			setUpperDiagonal(seed, beginDiag + upperDiag);
 
 		// Set new start position of seed.
-		setBeginDim0(seed, getBeginDim0(seed) - cols);
-		setBeginDim1(seed, getBeginDim1(seed) - rows);
+		setBeginPositionH(seed, beginPositionH(seed) - rows);
+		setBeginPositionV(seed, beginPositionV(seed) - cols);
 	} else {  // direction == EXTEND_RIGHT
 		// Set new lower and upper diagonals.
-		TDiagonal endDiag = getEndDiagonal(seed);
-		if (getUpperDiagonal(seed) < endDiag - lowerDiag)
+		TDiagonal endDiag = endDiagonal(seed);
+		if (upperDiagonal(seed) < endDiag - lowerDiag)
 			setUpperDiagonal(seed, endDiag - lowerDiag);
-		if (getLowerDiagonal(seed) > endDiag - upperDiag)
+		if (lowerDiagonal(seed) > endDiag - upperDiag)
 			setLowerDiagonal(seed, endDiag - upperDiag);
 
 		// Set new end position of seed.
-		setEndDim0(seed, getEndDim0(seed) + cols);
-		setEndDim1(seed, getEndDim1(seed) + rows);
+        setEndPositionH(seed, endPositionH(seed) + rows);
+        setEndPositionV(seed, endPositionV(seed) + cols);
 	}
-    SEQAN_ASSERT_GEQ(getUpperDiagonal(seed), getLowerDiagonal(seed));
-    SEQAN_ASSERT_GEQ(getUpperDiagonal(seed), getStartDiagonal(seed));
-    SEQAN_ASSERT_GEQ(getUpperDiagonal(seed), getEndDiagonal(seed));
-    SEQAN_ASSERT_GEQ(getStartDiagonal(seed), getLowerDiagonal(seed));
-    SEQAN_ASSERT_GEQ(getEndDiagonal(seed), getLowerDiagonal(seed));
+    SEQAN_ASSERT_GEQ(upperDiagonal(seed), lowerDiagonal(seed));
+    SEQAN_ASSERT_GEQ(upperDiagonal(seed), beginDiagonal(seed));
+    SEQAN_ASSERT_GEQ(upperDiagonal(seed), endDiagonal(seed));
+    SEQAN_ASSERT_GEQ(beginDiagonal(seed), lowerDiagonal(seed));
+    SEQAN_ASSERT_GEQ(endDiagonal(seed), lowerDiagonal(seed));
 }
 
 template<typename TConfig, typename TQuerySegment, typename TDatabaseSegment, typename TScoreValue, typename TScoreSpec>
@@ -516,14 +556,15 @@ _extendSeedGappedXDropOneDirection(
         TDatabaseSegment const & databaseSeg,
         ExtensionDirection direction,
         Score<TScoreValue, TScoreSpec> scoringScheme,
-		TScoreValue scoreDropOff) {
-SEQAN_CHECKPOINT
+		TScoreValue scoreDropOff)
+{
     typedef typename Size<TQuerySegment>::Type TSize;
 	typedef typename Seed<Simple,TConfig>::TDiagonal TDiagonal;
 
     TSize cols = length(querySeg)+1;
     TSize rows = length(databaseSeg)+1;
-	if (rows == 1 || cols == 1) return 0;
+	if (rows == 1 || cols == 1)
+        return 0;
 
     TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
     TScoreValue minGapScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
@@ -557,7 +598,8 @@ SEQAN_CHECKPOINT
 	TDiagonal lowerDiag = 0;
 	TDiagonal upperDiag = 0;
 
-    while (minCol < maxCol) {
+    while (minCol < maxCol)
+    {
         ++antiDiagNo;
 		_swapAntiDiags(antiDiag1, antiDiag2, antiDiag3);
 		offset1 = offset2;
@@ -574,10 +616,13 @@ SEQAN_CHECKPOINT
 
 			// indices in query and database segments
 			TSize queryPos, dbPos;
-			if (direction == EXTEND_RIGHT) {
+			if (direction == EXTEND_RIGHT)
+            {
 				queryPos = col - 1;
 				dbPos = antiDiagNo - col - 1;
-			} else { // direction == EXTEND_LEFT
+			}
+            else // direction == EXTEND_LEFT
+            {
 				queryPos = cols - 1 - col;
 				dbPos = rows - 1 + col - antiDiagNo;
 			}
@@ -586,9 +631,12 @@ SEQAN_CHECKPOINT
 			TScoreValue tmp = _max(antiDiag2[i2-1], antiDiag2[i2]) + gapCost;
 			tmp = _max(tmp, antiDiag1[i1-1] + score(scoringScheme, sequenceEntryForScore(scoringScheme, querySeg, queryPos),
 			                                        sequenceEntryForScore(scoringScheme, databaseSeg, dbPos)));
-			if (tmp < best - scoreDropOff) {
+			if (tmp < best - scoreDropOff)
+            {
 				antiDiag3[i3] = undefined;
-			} else {
+			}
+            else
+            {
 				antiDiag3[i3] = tmp;
 				antiDiagBest = _max(antiDiagBest, tmp);
 			}
@@ -597,13 +645,15 @@ SEQAN_CHECKPOINT
 
 		// Calculate new minCol and minCol
 		while (minCol - offset3 < length(antiDiag3) && antiDiag3[minCol - offset3] == undefined &&
-			   minCol - offset2 - 1 < length(antiDiag2) && antiDiag2[minCol - offset2 - 1] == undefined) {
+			   minCol - offset2 - 1 < length(antiDiag2) && antiDiag2[minCol - offset2 - 1] == undefined)
+        {
 			++minCol;
 		}
 
 		// Calculate new maxCol
 		while (maxCol - offset3 > 0 && (antiDiag3[maxCol - offset3 - 1] == undefined) &&
-			                           (antiDiag2[maxCol - offset2 - 1] == undefined)) {
+			                           (antiDiag2[maxCol - offset2 - 1] == undefined))
+        {
 			--maxCol;
 		}
 		++maxCol;
@@ -625,14 +675,17 @@ SEQAN_CHECKPOINT
 	TSize longestExtensionRow = antiDiagNo - longestExtensionCol;
 	TScoreValue longestExtensionScore = antiDiag3[longestExtensionCol - offset3];
 
-	if (longestExtensionScore == undefined) {
-		if (antiDiag2[length(antiDiag2)-2] != undefined) {
+	if (longestExtensionScore == undefined)
+    {
+		if (antiDiag2[length(antiDiag2)-2] != undefined)
+        {
 			// reached end of query segment
 			longestExtensionCol = length(antiDiag2) + offset2 - 2;
 			longestExtensionRow = antiDiagNo - 1 - longestExtensionCol;
 			longestExtensionScore = antiDiag2[longestExtensionCol - offset2];
 		}
-		else if (length(antiDiag2) > 2 && antiDiag2[length(antiDiag2)-3] != undefined) {
+		else if (length(antiDiag2) > 2 && antiDiag2[length(antiDiag2)-3] != undefined)
+        {
 			// reached end of database segment
 			longestExtensionCol = length(antiDiag2) + offset2 - 3;
 			longestExtensionRow = antiDiagNo - 1 - longestExtensionCol;
@@ -640,10 +693,13 @@ SEQAN_CHECKPOINT
 		}
 	}
 
-	if (longestExtensionScore == undefined) {
+	if (longestExtensionScore == undefined)
+    {
 		// general case
-		for (TSize i = 0; i < length(antiDiag1); ++i) {
-			if (antiDiag1[i] > longestExtensionScore) {
+		for (TSize i = 0; i < length(antiDiag1); ++i)
+        {
+			if (antiDiag1[i] > longestExtensionScore)
+            {
 				longestExtensionScore = antiDiag1[i];
 				longestExtensionCol = i + offset1;
 				longestExtensionRow = antiDiagNo - 2 - longestExtensionCol;
@@ -652,17 +708,16 @@ SEQAN_CHECKPOINT
 	}
 
 	// update seed
-    if (longestExtensionScore != undefined) {
+    if (longestExtensionScore != undefined)
 		_updateExtendedSeed(seed, direction, longestExtensionCol, longestExtensionRow, lowerDiag, upperDiag);
-    }
 	return longestExtensionScore;
 }
 
-template <typename TConfig, typename TQuery, typename TDatabase, typename TScoreValue, typename TScoreSpec>
+template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
 inline void 
 extendSeed(Seed<Simple, TConfig> & seed, 
-		   TQuery const & query,
 		   TDatabase const & database,
+		   TQuery const & query,
 		   ExtensionDirection direction,
            Score<TScoreValue, TScoreSpec> const & scoringScheme,
            TScoreValue scoreDropOff,
@@ -681,31 +736,35 @@ extendSeed(Seed<Simple, TConfig> & seed,
     SEQAN_ASSERT_LT(scoreGapExtend(scoringScheme), 0);
     SEQAN_ASSERT_EQ(scoreGapExtend(scoringScheme), scoreGapOpen(scoringScheme));
 
-	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
+    {
         // Do not extend to the left if we are already at the beginning of an
         // infix or the sequence itself.
 
-        typedef typename Prefix<TQuery const>::Type TQueryPrefix;
         typedef typename Prefix<TDatabase const>::Type TDatabasePrefix;
+        typedef typename Prefix<TQuery const>::Type TQueryPrefix;
 
-        TQueryPrefix queryPrefix = prefix(query, getBeginDim0(seed));
-        TDatabasePrefix databasePrefix = prefix(database, getBeginDim1(seed));
+        TDatabasePrefix databasePrefix = prefix(database, beginPositionH(seed));
+        TQueryPrefix queryPrefix = prefix(query, beginPositionV(seed));
+        // TODO(holtgrew): Update _extendSeedGappedXDropOneDirection and switch query/database order.
         _extendSeedGappedXDropOneDirection(seed, queryPrefix, databasePrefix, EXTEND_LEFT, scoringScheme, scoreDropOff);
     }
 
-	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH) {
+	if (direction == EXTEND_RIGHT || direction == EXTEND_BOTH)
+    {
         // Do not extend to the right if we are already at the beginning of an
         // infix or the sequence itself.
 
-        typedef typename Suffix<TQuery const>::Type TQuerySuffix;
         typedef typename Suffix<TDatabase const>::Type TDatabaseSuffix;
+        typedef typename Suffix<TQuery const>::Type TQuerySuffix;
         
-        TQuerySuffix querySuffix = suffix(query, getEndDim0(seed));
-        TDatabaseSuffix databaseSuffix = suffix(database, getEndDim1(seed));
+        TDatabaseSuffix databaseSuffix = suffix(database, endPositionH(seed));
+        TQuerySuffix querySuffix = suffix(query, endPositionV(seed));
 		// std::cout << "database = " << database << std::endl;
 		// std::cout << "database Suffix = " << databaseSuffix << std::endl;
 		// std::cout << "query = " << query << std::endl;
 		// std::cout << "query Suffix = " << querySuffix << std::endl;
+        // TODO(holtgrew): Update _extendSeedGappedXDropOneDirection and switch query/database order.
         _extendSeedGappedXDropOneDirection(seed, querySuffix, databaseSuffix, EXTEND_RIGHT, scoringScheme, scoreDropOff);
     }
 
@@ -713,11 +772,11 @@ extendSeed(Seed<Simple, TConfig> & seed,
 }
 
 
-template <typename TConfig, typename TQuery, typename TDatabase, typename TScoreValue, typename TScoreSpec>
+template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
 inline void 
 extendSeed(Seed<ChainedSeed, TConfig> & /*seed*/,
-		   TQuery const & /*query*/,
 		   TDatabase const & /*database*/,
+		   TQuery const & /*query*/,
 		   ExtensionDirection /*direction*/,
            Score<TScoreValue, TScoreSpec> const & /*scoringScheme*/,
            TScoreValue /*scoreDropOff*/,

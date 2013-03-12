@@ -53,15 +53,15 @@ SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_constructors)
     // Default constructor.
     {
         TSeedDiagonal sd;
-        SEQAN_ASSERT_EQ(0, sd.beginDim0);
-        SEQAN_ASSERT_EQ(0, sd.beginDim1);
+        SEQAN_ASSERT_EQ(0, sd.beginPositionH);
+        SEQAN_ASSERT_EQ(0, sd.beginPositionV);
         SEQAN_ASSERT_EQ(0, sd.length);
     }
     // Only other constructor has all properties.
     {
         TSeedDiagonal sd(1, 2, 3);
-        SEQAN_ASSERT_EQ(1, sd.beginDim0);
-        SEQAN_ASSERT_EQ(2, sd.beginDim1);
+        SEQAN_ASSERT_EQ(1, sd.beginPositionH);
+        SEQAN_ASSERT_EQ(2, sd.beginPositionV);
         SEQAN_ASSERT_EQ(3, sd.length);
     }
 }

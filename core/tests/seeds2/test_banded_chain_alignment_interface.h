@@ -48,19 +48,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_one_score)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
+
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, 5);
@@ -72,19 +73,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_one_score)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
+
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, 2);
         SEQAN_ASSERT_EQ(result, 5);
@@ -102,20 +104,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, -47);
@@ -127,20 +129,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_two_scores)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
         SEQAN_ASSERT_EQ(result, -47);
@@ -157,19 +159,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_one_score)
 
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, 9);
@@ -180,19 +182,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_one_score)
     }
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2, 5, 6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<false, true, true, false>(),  2);
         SEQAN_ASSERT_EQ(result, 9);
@@ -208,20 +210,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_two_scores)
     using namespace seqan;
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
 
@@ -232,20 +234,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_two_scores)
     }
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(),  2);
         SEQAN_ASSERT_EQ(result, -147);
@@ -261,19 +263,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_overlap_one_score)
     using namespace seqan;
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 13);
@@ -288,20 +290,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_overlap_two_scores)
     using namespace seqan;
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
 
@@ -318,19 +320,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_one_score)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, 8);
@@ -342,19 +344,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_one_score)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, 2);
         SEQAN_ASSERT_EQ(result, 8);
@@ -371,20 +373,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, -98);
@@ -396,20 +398,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_two_scores)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
         SEQAN_ASSERT_EQ(result, -98);
@@ -425,19 +427,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_one_score)
     typedef Seed<Simple> TSeed;
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, 11);
@@ -448,19 +450,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_one_score)
     }
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<false, true, true, false>(), 2);
         SEQAN_ASSERT_EQ(result, 11);
@@ -478,20 +480,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, -8);
@@ -503,27 +505,27 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_two_scores)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
         
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(), 2);
         SEQAN_ASSERT_EQ(result, -97);
 
         // Compare alignment rows.
-        SEQAN_ASSERT_EQ(row(alignment, 0), "------CGA-ATCCATCCCACACA");
         SEQAN_ASSERT_EQ(row(alignment, 1), "GGCGATNNNCATGGCAC------A");
+        SEQAN_ASSERT_EQ(row(alignment, 0), "------CGA-ATCCATCCCACACA");
     }
 }
 
@@ -533,19 +535,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_one_score)
     typedef Seed<Simple> TSeed;
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 14);
@@ -563,28 +565,28 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceH = "CGAATCCATCCCACACA";
+        CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Align<CharString, ArrayGaps> alignment;
         resize(rows(alignment), 2);
-        assignSource(row(alignment, 0), sequence0);
-        assignSource(row(alignment, 1), sequence1);
+        assignSource(row(alignment, 0), sequenceH);
+        assignSource(row(alignment, 1), sequenceV);
 
         int result = bandedChainAlignment(alignment, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
 
         SEQAN_ASSERT_EQ(result, -42);
 
         // Compare alignment rows.
-        SEQAN_ASSERT_EQ(row(alignment, 0), "------CGA-ATCCATCCCACACA");
         SEQAN_ASSERT_EQ(row(alignment, 1), "GGCGATNNNCATGGCACA------");
+        SEQAN_ASSERT_EQ(row(alignment, 0), "------CGA-ATCCATCCCACACA");
     }
 }
 
@@ -594,19 +596,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_one_score)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, 5);
@@ -618,19 +620,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_one_score)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, 2);
         SEQAN_ASSERT_EQ(result, 5);
@@ -647,20 +649,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_two_score)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, -47);
@@ -672,20 +674,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_two_score)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
         SEQAN_ASSERT_EQ(result, -47);
@@ -701,19 +703,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_one_score)
 
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, 9);
@@ -724,19 +726,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_one_score)
     }
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<false, true, true, false>(),  2);
         SEQAN_ASSERT_EQ(result, 9);
@@ -752,20 +754,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_two_score)
     using namespace seqan;
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
 
@@ -776,20 +778,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_two_score)
     }
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(),  2);
         SEQAN_ASSERT_EQ(result, -147);
@@ -805,19 +807,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_overlap_one_score)
     using namespace seqan;
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 13);
@@ -831,20 +833,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_overlap_two_score)
     using namespace seqan;
     typedef Seed<Simple> TSeed;
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        Dna5String sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
         
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
 
@@ -861,19 +863,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_one_score)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, 8);
@@ -885,19 +887,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_one_score)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, 2);
         SEQAN_ASSERT_EQ(result, 8);
@@ -915,20 +917,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, -98);
@@ -940,20 +942,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_two_scores)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
         SEQAN_ASSERT_EQ(result, -98);
@@ -969,19 +971,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_one_score)
     typedef Seed<Simple> TSeed;
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, 11);
@@ -992,19 +994,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_one_score)
     }
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<false, true, true, false>(), 2);
         SEQAN_ASSERT_EQ(result, 11);
@@ -1022,20 +1024,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, -8);
@@ -1047,20 +1049,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_two_scores)
 
     // Test on whole strings without AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
         
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(), 2);
         SEQAN_ASSERT_EQ(result, -97);
@@ -1077,19 +1079,19 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_one_score)
     typedef Seed<Simple> TSeed;
 
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 14);
@@ -1107,20 +1109,20 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_two_scores)
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
-        CharString sequence0 = "CGAATCCATCCCACACA";
-        CharString sequence1 = "GGCGATNNNCATGGCACA";
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         Gaps<CharString, ArrayGaps> gapsHorizontal;
         Gaps<Dna5String, ArrayGaps> gapsVertical;
-        assignSource(gapsHorizontal, sequence0);
-        assignSource(gapsVertical, sequence1);
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
 
@@ -1150,9 +1152,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_one_s
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
@@ -1181,9 +1183,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_one_s
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringScheme, 2);
@@ -1221,9 +1223,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_two_s
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
@@ -1255,9 +1257,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_two_s
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
@@ -1294,9 +1296,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_one_sco
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
@@ -1325,9 +1327,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_one_sco
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringScheme, AlignConfig<false, true, true, false>(),  2);
         SEQAN_ASSERT_EQ(result, 9);
@@ -1365,9 +1367,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_two_sco
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
@@ -1399,9 +1401,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_two_sco
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(), 2);
@@ -1438,9 +1440,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_one_
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
@@ -1479,9 +1481,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_two_
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
@@ -1514,9 +1516,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_one_s
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
         
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1544,9 +1546,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_one_s
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1584,9 +1586,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_two_s
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1617,9 +1619,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_two_s
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1654,9 +1656,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_one_sco
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1684,9 +1686,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_one_sco
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1725,9 +1727,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_two_sco
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1757,9 +1759,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_two_sco
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
         
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1795,9 +1797,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_one_
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1836,9 +1838,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_two_
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
@@ -1881,9 +1883,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_one_score)
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
@@ -1905,9 +1907,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_one_score)
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, 2);
@@ -1939,9 +1941,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_two_scores
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
@@ -1963,9 +1965,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_two_scores
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
@@ -1995,9 +1997,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_one_score)
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
@@ -2018,9 +2020,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_one_score)
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<false, true, true, false>(), 2);
@@ -2051,9 +2053,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_two_scores)
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
@@ -2075,9 +2077,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_two_scores)
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(), 2);
@@ -2106,9 +2108,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_overlap_one_score
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
@@ -2140,9 +2142,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_overlap_two_score
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
@@ -2169,9 +2171,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_one_score)
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
@@ -2191,9 +2193,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_one_score)
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, 2);
@@ -2222,9 +2224,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_two_scores
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
@@ -2245,9 +2247,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_two_scores
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, 2);
@@ -2274,9 +2276,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_one_score)
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
@@ -2295,9 +2297,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_one_score)
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<false, true, true, false>(), 2);
@@ -2327,9 +2329,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores)
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
@@ -2350,9 +2352,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores)
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
         
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, true, true, false>(), 2);
@@ -2380,9 +2382,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score
         Score<int, Simple> scoringScheme(2, -1, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
@@ -2412,9 +2414,9 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_score
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
 
         String<TSeed> seedChain;
-        appendValue(seedChain, TSeed(2, 0, 6, 5));
-        appendValue(seedChain, TSeed(9, 6, 12, 9));
-        appendValue(seedChain, TSeed(14, 11, 16, 17));
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
 
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, true, true, true>(), 2);
