@@ -558,23 +558,6 @@ extractOptions(
         options.scoreDistanceRange++;
     getOptionValue(options.dumpAlignment, parser, "alignment");
 
-    // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
-    CharString tmp = options.output;
-    toLower(tmp);
-
-    if (endsWith(tmp, ".razers"))
-        options.outputFormat = 0;
-    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
-        options.outputFormat = 1;
-    else if (endsWith(tmp, ".eland"))
-        options.outputFormat = 2;
-    else if (endsWith(tmp, ".gff"))
-        options.outputFormat = 3;
-    else if (endsWith(tmp, ".sam"))
-        options.outputFormat = 4;
-    else if (endsWith(tmp, ".afg"))
-        options.outputFormat = 5;
-
     getOptionValue(options.sortOrder, parser, "sort-order");
     getOptionValue(options.genomeNaming, parser, "genome-naming");
     getOptionValue(options.readNaming, parser, "read-naming");
@@ -624,9 +607,6 @@ extractOptions(
         options.forward = true;
         options.reverse = true;
     }
-    // don't append /L/R in SAM mode
-    if (!isSet(parser, "read-naming") && options.outputFormat == 4)
-        options.readNaming = 3;
 
 #ifdef RAZERS_MATEPAIRS
     unsigned maxReadFiles = 2;
@@ -649,6 +629,27 @@ extractOptions(
         options.output = readFileNames[0];
         append(options.output, ".razers");
     }
+
+    // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
+    CharString tmp = options.output;
+    toLower(tmp);
+
+    if (endsWith(tmp, ".razers"))
+        options.outputFormat = 0;
+    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+        options.outputFormat = 1;
+    else if (endsWith(tmp, ".eland"))
+        options.outputFormat = 2;
+    else if (endsWith(tmp, ".gff"))
+        options.outputFormat = 3;
+    else if (endsWith(tmp, ".sam"))
+        options.outputFormat = 4;
+    else if (endsWith(tmp, ".afg"))
+        options.outputFormat = 5;
+
+    // don't append /L/R in SAM mode
+    if (!isSet(parser, "read-naming") && options.outputFormat == 4)
+        options.readNaming = 3;
 
     CharString filter;
     getOptionValue(filter, parser, "filter");
