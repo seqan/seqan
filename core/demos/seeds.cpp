@@ -7,43 +7,34 @@ using namespace seqan;
 int main()
 {
 ///Example 1: three algorithms for seed extension.
-	String<char> a = "SEEDabXcdXefXXX";
-	String<char> b = "SEEDabYcdefYYYY";
+    String<char> a = "SEEDabXcdXefXXX";
+    String<char> b = "SEEDabYcdefYYYY";
 
-	Seed<> seed1(0, 0, 4);          //left=0; length=4
-	extendSeed(seed1, a, b, 1, MatchExtend());
-	std::cout << rightPosition(seed1, 0) << std::endl;  //output: 6
-	std::cout << rightPosition(seed1, 1) << std::endl;  //output: 6
+    Seed<Simple> seed1(0, 0, 4);          //left=0; length=4
+    extendSeed(seed1, a, b, EXTEND_BOTH, MatchExtend());
+    std::cout << endPositionH(seed1) << std::endl;  //output: 6
+    std::cout << endPositionV(seed1) << std::endl;  //output: 6
 
-	Seed<> seed2(0, 0, 4);          //left=0; length=4
-	Score<> scoring(1, -1, -1);
-	extendSeed(seed2, 2, scoring, a, b, 1, UngappedXDrop());
-	std::cout << rightPosition(seed2, 0) << std::endl;  //output: 9
-	std::cout << rightPosition(seed2, 1) << std::endl;  //output: 9
+    Seed<Simple> seed2(0, 0, 4);          //left=0; length=4
+    Score<> scoring(1, -1, -1);
+    extendSeed(seed2, a, b, EXTEND_BOTH, scoring, 2, UnGappedXDrop());
+    std::cout << endPositionH(seed2) << std::endl;  //output: 9
+    std::cout << endPositionV(seed2) << std::endl;  //output: 9
 
-	Seed<> seed3(0, 0, 4);          //left=0; length=4
-	extendSeed(seed3, 2, scoring, a, b, 1, GappedXDrop());
-	std::cout << rightPosition(seed3, 0) << std::endl;  //output: 12
-	std::cout << rightPosition(seed3, 1) << std::endl;  //output: 11
+    Seed<Simple> seed3(0, 0, 4);          //left=0; length=4
+    extendSeed(seed3, a, b, EXTEND_BOTH, scoring, 2, GappedXDrop());
+    std::cout << endPositionH(seed3) << std::endl;  //output: 14
+    std::cout << endPositionV(seed3) << std::endl;  //output: 13
 
 ///Example 2: global chaining.
-	String< Seed<int, MultiSeed> > fragments;
-	for (int i = 0; i < 1000; ++i)
-	{
-		Seed<int, MultiSeed> seed(3);
-		for (int d = 0; d < 3; ++d)
-		{
-			int pos = rand();
-			setLeftPosition(seed, d, pos);
-			setRightPosition(seed, d, pos+100);
-		}
-		setWeight(seed, 200);
-		appendValue(fragments, seed); 
-	}
-	String< Seed<int, MultiSeed> > global_chain;
-	Score<int, Manhattan> scoring2;
-	int chain_score = globalChaining(fragments, global_chain, scoring2);
-	std::cout << chain_score << "\n";
+    SeedSet<Simple, Unordered> seedSet;
+    addSeed(seedSet, Seed<Simple>(0, 93, 281, 342), Single());
+    addSeed(seedSet, Seed<Simple>(3, 237, 127, 364), Single());
+    addSeed(seedSet, Seed<Simple>(3, 284, 86, 368), Single());
+    addSeed(seedSet, Seed<Simple>(5, 146, 239, 374), Single());
 
-	return 0;
+    String<Seed<Simple> > chain;
+    chainSeedsGlobally(chain, seedSet, SparseChaining());
+
+    return 0;
 }

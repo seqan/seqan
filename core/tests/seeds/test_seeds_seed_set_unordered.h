@@ -31,60 +31,56 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Module for two-dimensional seeding and chaining.
+// Test the specialization Unordered SeedSet.
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SEEDS_H
-#define SEQAN_HEADER_SEEDS_H
+#ifndef TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
+#define TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_
 
-// ===========================================================================
-// Preliminaries
-// ===========================================================================
+#include <seqan/basic.h>  // Includes testing infrastructure.
+#include <seqan/file.h>   // Required to print strings in tests.
 
-#include <algorithm>
-#include <cmath>
-#include <list>
-#include <new>
+#include <seqan/seeds.h>  // Include module under test.
 
-#include <seqan/sequence.h>
-#include <seqan/index.h>
-#include <seqan/score.h>
-#include <seqan/align.h>
-#include <seqan/map.h>
-#include <seqan/modifier.h>
+template <typename TSeedSpec>
+void testSeedsSeedSetConstructors(TSeedSpec const &)
 
-// ===========================================================================
-// Seeds Module
-// ===========================================================================
+// Test container functions for specialization unordered.
+SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
+{
+    using namespace seqan;
 
-// Basic definitions
-// #include <seqan/seeds2/seeds_base.h>
+    { // Construct with begin/end in both dimensions.
+        // Define Seed type and declare a variable.
+        typedef Seed<Simple> TSeed;
+        TSeed s(1, 2, 3, 5);
 
-// Class Seed and specializations
-#include <seqan/seeds/seeds_seed_base.h>
-#include <seqan/seeds/seeds_seed_simple.h>
-#include <seqan/seeds/seeds_seed_diagonal.h>
-#include <seqan/seeds/seeds_seed_chained.h>
+        // Check values from construction.
+        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+        SEQAN_ASSERT_EQ(3u, endPositionH(s));
+        SEQAN_ASSERT_EQ(5u, endPositionV(s));
+        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
+        SEQAN_ASSERT_EQ(2, upperDiagonal(s));
+        SEQAN_ASSERT_EQ(1, startDiagonal(s));
+        SEQAN_ASSERT_EQ(2, endDiagonal(s));
+    }
+    { // Construct from ChainedSeed object.
+        typedef Seed<ChainedSeed> TSeed2;
+        TSeed2 s2(1, 2, 3);
+        typedef Seed<Simple> TSeed;
+        TSeed s(s2);
 
-// Seed extension algorithms.
-#include <seqan/seeds/seeds_extension.h>
+        // Check values from construction.
+        SEQAN_ASSERT_EQ(1u, beginPositionH(s));
+        SEQAN_ASSERT_EQ(4u, endPositionH(s));
+        SEQAN_ASSERT_EQ(2u, beginPositionV(s));
+        SEQAN_ASSERT_EQ(5u, endPositionV(s));
+        SEQAN_ASSERT_EQ(1, lowerDiagonal(s));
+        SEQAN_ASSERT_EQ(1, upperDiagonal(s));
+        SEQAN_ASSERT_EQ(1, beginDiagonal(s));
+        SEQAN_ASSERT_EQ(1, endDiagonal(s));
+    }
+}
 
-// Algorithms for chaining and merging seeds.
-#include <seqan/seeds/seeds_combination.h>
-
-// Class SeedSet, specializations, iterators.
-#include <seqan/seeds/basic_iter_indirect.h>
-#include <seqan/seeds/seeds_seed_set_base.h>
-#include <seqan/seeds/seeds_seed_set_unordered.h>
-
-// Banded chain alignment.
-#include <seqan/seeds/banded_chain_alignment_profile.h>
-#include <seqan/seeds/banded_chain_alignment_scout.h>
-#include <seqan/seeds/banded_chain_alignment_traceback.h>
-#include <seqan/seeds/banded_chain_alignment_impl.h>
-#include <seqan/seeds/banded_chain_alignment.h>
-
-// Global chaining algorithms
-#include <seqan/seeds/seeds_global_chaining.h>
-
-#endif  // #ifndef SEQAN_HEADER_SEEDS_H
+#endif  // TEST_SEEDS_TEST_SEEDS_SEED_SET_UNORDERED_H_

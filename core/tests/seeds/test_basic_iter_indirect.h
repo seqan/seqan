@@ -31,60 +31,58 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Module for two-dimensional seeding and chaining.
+// Test the interface of the Seed class for specializations Simple Seed and
+// Chained Seed.
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SEEDS_H
-#define SEQAN_HEADER_SEEDS_H
+#ifndef TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
+#define TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_
 
-// ===========================================================================
-// Preliminaries
-// ===========================================================================
+#include <seqan/basic.h>  // Includes testing infrastructure.
+#include <seqan/file.h>   // Required to print strings in tests.
 
-#include <algorithm>
-#include <cmath>
-#include <list>
-#include <new>
+#include <seqan/seeds.h>  // Include module under test.
 
-#include <seqan/sequence.h>
-#include <seqan/index.h>
-#include <seqan/score.h>
-#include <seqan/align.h>
-#include <seqan/map.h>
-#include <seqan/modifier.h>
+#include <set>
 
-// ===========================================================================
-// Seeds Module
-// ===========================================================================
+// Test constructors of the indirect iterator.
+SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_constructors)
+{
+    using namespace seqan;
 
-// Basic definitions
-// #include <seqan/seeds2/seeds_base.h>
+    SEQAN_ASSERT_FAIL("Write me!");
 
-// Class Seed and specializations
-#include <seqan/seeds/seeds_seed_base.h>
-#include <seqan/seeds/seeds_seed_simple.h>
-#include <seqan/seeds/seeds_seed_diagonal.h>
-#include <seqan/seeds/seeds_seed_chained.h>
+    // Default constructor.
+    {
+    }
+    // Construct from wrapped iterator.
+    {
+    }
+    // Copy constructor.
+    {
+    }
+}
 
-// Seed extension algorithms.
-#include <seqan/seeds/seeds_extension.h>
+// Test the metafunctions.
+SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_metafunctions)
+{
+    using namespace seqan;
 
-// Algorithms for chaining and merging seeds.
-#include <seqan/seeds/seeds_combination.h>
+    SEQAN_ASSERT_FAIL("Write me!");
 
-// Class SeedSet, specializations, iterators.
-#include <seqan/seeds/basic_iter_indirect.h>
-#include <seqan/seeds/seeds_seed_set_base.h>
-#include <seqan/seeds/seeds_seed_set_unordered.h>
+    // Iterator
+    {
+    }
 
-// Banded chain alignment.
-#include <seqan/seeds/banded_chain_alignment_profile.h>
-#include <seqan/seeds/banded_chain_alignment_scout.h>
-#include <seqan/seeds/banded_chain_alignment_traceback.h>
-#include <seqan/seeds/banded_chain_alignment_impl.h>
-#include <seqan/seeds/banded_chain_alignment.h>
+    // Const Iterator
+    {
+    }
+}
 
-// Global chaining algorithms
-#include <seqan/seeds/seeds_global_chaining.h>
+// Test the common iterator functions.
+SEQAN_DEFINE_TEST(test_seeds_basic_iter_indirect_basic_functions)
+{
+    SEQAN_ASSERT_FAIL("Write me!");
+}
 
-#endif  // #ifndef SEQAN_HEADER_SEEDS_H
+#endif  // #ifndef TEST_SEEDS_TEST_BASIC_ITER_INDIRECT_H_

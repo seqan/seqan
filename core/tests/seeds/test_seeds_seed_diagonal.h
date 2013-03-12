@@ -31,60 +31,67 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Module for two-dimensional seeding and chaining.
+// Test the header seeds_seed_diagonal.h containing the SeedDiagonal class.
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SEEDS_H
-#define SEQAN_HEADER_SEEDS_H
+#ifndef TEST_SEEDS_TEST_SEEDS_SEED_DIAGONAL_H_
+#define TEST_SEEDS_TEST_SEEDS_SEED_DIAGONAL_H_
 
-// ===========================================================================
-// Preliminaries
-// ===========================================================================
+#include <seqan/basic.h>  // Includes testing infrastructure.
+#include <seqan/file.h>   // Required to print strings in tests.
 
-#include <algorithm>
-#include <cmath>
-#include <list>
-#include <new>
+#include <seqan/seeds.h>  // Include module under test.
 
-#include <seqan/sequence.h>
-#include <seqan/index.h>
-#include <seqan/score.h>
-#include <seqan/align.h>
-#include <seqan/map.h>
-#include <seqan/modifier.h>
+// Test constructors of the SeedDiagonal class.  This also tests that
+// all member variables are there.
+SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_constructors)
+{
+    using namespace seqan;
 
-// ===========================================================================
-// Seeds Module
-// ===========================================================================
+    typedef SeedDiagonal<int, int> TSeedDiagonal;
 
-// Basic definitions
-// #include <seqan/seeds2/seeds_base.h>
+    // Default constructor.
+    {
+        TSeedDiagonal sd;
+        SEQAN_ASSERT_EQ(0, sd.beginPositionH);
+        SEQAN_ASSERT_EQ(0, sd.beginPositionV);
+        SEQAN_ASSERT_EQ(0, sd.length);
+    }
+    // Only other constructor has all properties.
+    {
+        TSeedDiagonal sd(1, 2, 3);
+        SEQAN_ASSERT_EQ(1, sd.beginPositionH);
+        SEQAN_ASSERT_EQ(2, sd.beginPositionV);
+        SEQAN_ASSERT_EQ(3, sd.length);
+    }
+}
 
-// Class Seed and specializations
-#include <seqan/seeds/seeds_seed_base.h>
-#include <seqan/seeds/seeds_seed_simple.h>
-#include <seqan/seeds/seeds_seed_diagonal.h>
-#include <seqan/seeds/seeds_seed_chained.h>
 
-// Seed extension algorithms.
-#include <seqan/seeds/seeds_extension.h>
+// Test metafunctions of the SeedDiagonal class.
+SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_metafunctions)
+{
+    using namespace seqan;
 
-// Algorithms for chaining and merging seeds.
-#include <seqan/seeds/seeds_combination.h>
+    // Test the parametrization expected to be used most.
+    {
+        typedef SeedDiagonal<size_t, size_t> TSeedDiagonal;
+        typedef Position<TSeedDiagonal>::Type TPosition;
+        bool b1 = IsSameType<size_t, TPosition>::VALUE;
+        SEQAN_ASSERT(b1);
+        typedef Size<TSeedDiagonal>::Type TSize;
+        bool b2 = IsSameType<size_t, TSize>::VALUE;
+        SEQAN_ASSERT(b2);
+    }
+    // Test another parametrization.
+    {
+        typedef SeedDiagonal<double, int> TSeedDiagonal;
+        typedef Position<TSeedDiagonal>::Type TPosition;
+        bool b1 = IsSameType<double, TPosition>::VALUE;
+        SEQAN_ASSERT(b1);
+        typedef Size<TSeedDiagonal>::Type TSize;
+        bool b2 = IsSameType<int, TSize>::VALUE;
+        SEQAN_ASSERT(b2);
+    }
+}
 
-// Class SeedSet, specializations, iterators.
-#include <seqan/seeds/basic_iter_indirect.h>
-#include <seqan/seeds/seeds_seed_set_base.h>
-#include <seqan/seeds/seeds_seed_set_unordered.h>
-
-// Banded chain alignment.
-#include <seqan/seeds/banded_chain_alignment_profile.h>
-#include <seqan/seeds/banded_chain_alignment_scout.h>
-#include <seqan/seeds/banded_chain_alignment_traceback.h>
-#include <seqan/seeds/banded_chain_alignment_impl.h>
-#include <seqan/seeds/banded_chain_alignment.h>
-
-// Global chaining algorithms
-#include <seqan/seeds/seeds_global_chaining.h>
-
-#endif  // #ifndef SEQAN_HEADER_SEEDS_H
+#endif  // TEST_SEEDS_TEST_SEEDS_SEED_DIAGONAL_H_

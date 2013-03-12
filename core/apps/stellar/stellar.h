@@ -26,7 +26,7 @@
 
 #include <iostream>
 #include <seqan/index.h>
-#include <seqan/seeds2.h>
+#include <seqan/seeds.h>
 #include "stellar_types.h"
 #include "stellar_extension.h"
 

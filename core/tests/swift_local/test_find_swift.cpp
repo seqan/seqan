@@ -35,7 +35,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/index.h>
-#include <seqan/seeds2.h>
+#include <seqan/seeds.h>
 
 #include "../../apps/stellar/stellar.h"
 

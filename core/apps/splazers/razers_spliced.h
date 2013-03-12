@@ -30,8 +30,7 @@
 #include <seqan/graph_types.h>
 #include <seqan/graph_algorithms.h>
 #include <seqan/align.h>
-//#include <seqan/seeds.h>
-#include <seqan/seeds2.h>
+#include <seqan/seeds.h>
 #include <seqan/bam_io.h>
 
 namespace SEQAN_NAMESPACE_MAIN
@@ -2595,7 +2594,7 @@ void mapSplicedReads(
 
 		//	std::cout << "i=" <<i << "\t";
 			it = &value(fifo, i - firstNo);
-			//CHECK HIER raus noMatchRight --> überspringen korrekt?
+			//CHECK HIER raus noMatchRight --> \FCberspringen korrekt?
 			if (noMatchRight || (*it).i2.gBegin + minDistance > (TSignedGPos)rEndPos) 
 			{ 	
 				if (lastPositive == (__int64)-1)
@@ -2709,8 +2708,8 @@ void mapSplicedReads(
 //					::std::cout << "outerDistance->" << outerDistance << std::endl;
 					int outerDistanceError = length(readSet[rseqNo]) -(int)(outerDistance);
 					if (outerDistanceError < 0) outerDistanceError = -outerDistanceError;
-					if ((outerDistanceError > (int) options.maxGap) || // für edit + static_cast<TGPos>(floor(options.errorRate*length(read))
-						(outerDistanceError < (int) options.minGap))   // für edit - static_cast<TGPos>(floor(options.errorRate*length(read))
+					if ((outerDistanceError > (int) options.maxGap) || // f\FCr edit + static_cast<TGPos>(floor(options.errorRate*length(read))
+						(outerDistanceError < (int) options.minGap))   // f\FCr edit - static_cast<TGPos>(floor(options.errorRate*length(read))
 						continue;
 
 					TMatch mRtmp = mR;

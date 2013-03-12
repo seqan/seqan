@@ -31,11 +31,18 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_seeds
                test_seeds.cpp
-               test_seeds_banded_align.h
-               test_seeds_global_seed_chain.h
-               test_seeds.h
-               test_seeds_memory_manager.h
-               test_seeds_seed_set.h)
+               test_basic_iter_indirect.h
+               test_seeds_combination.h
+               test_seeds_extension.h
+               test_seeds_global_chaining.h
+               test_seeds_seed_base.h
+               test_seeds_seed_chained.h
+               test_seeds_seed_diagonal.h
+               test_seeds_seed_set_base.h
+               test_seeds_seed_set_unordered.h
+               test_seeds_seed_simple.h
+               test_align_banded_chain_impl.h
+               test_banded_chain_alignment_interface.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_seeds ${SEQAN_LIBRARIES})

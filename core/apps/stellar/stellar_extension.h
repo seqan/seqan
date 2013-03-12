@@ -24,7 +24,7 @@
 #ifndef SEQAN_HEADER_STELLAR_EXTENSION_H
 #define SEQAN_HEADER_STELLAR_EXTENSION_H
 
-#include <seqan/seeds2.h>
+#include <seqan/seeds.h>
 
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@ You can use Trac wiki syntax.
 
 == Trunk ==
 
+ * Switching to new seeds module. Module seeds2 becomes seeds.
  * ''config.h'' and generated forward files are now created in the build directory.
  * Removing basic_definition.h, moving contents into basic_metaprogramming, basic_tag and new basic_math.h.
  * Documentation of Simple Holder.
