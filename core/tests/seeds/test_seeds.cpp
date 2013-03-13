@@ -57,7 +57,7 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
     // SEQAN_CALL_TEST(test_seeds_basic_iter_indirect_constructors);
     // SEQAN_CALL_TEST(test_seeds_basic_iter_indirect_metafunctions);
     // SEQAN_CALL_TEST(test_seeds_basic_iter_indirect_basic_functions);
-        
+
     // Tests for seed diagonals.
     SEQAN_CALL_TEST(test_seeds_seed_diagonal_constructors);
     SEQAN_CALL_TEST(test_seeds_seed_diagonal_metafunctions);

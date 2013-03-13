@@ -149,16 +149,16 @@ template <typename TSeedSpec>
 struct Iterator<SeedSet<TSeedSpec, Unordered>, Standard>
 {
     typedef SeedSet<TSeedSpec, Unordered> TSeedSet_;
-    typedef typename Value<TSeedSet_>::Type TSeed_;
-    typedef Iter<std::multiset<TSeed_>, StdIteratorAdaptor> Type;
+	typedef typename TSeedSet_::TSet_ TMultiSet_;
+    typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
 
 template <typename TSeedSpec>
 struct Iterator<SeedSet<TSeedSpec, Unordered> const, Standard>
 {
     typedef SeedSet<TSeedSpec, Unordered> const TSeedSet_;
-    typedef typename Value<TSeedSet_>::Type TSeed_;
-    typedef Iter<std::multiset<TSeed_> const, StdIteratorAdaptor> Type;
+	typedef typename TSeedSet_::TSet_ TMultiSet_;
+    typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
 
 // ===========================================================================
@@ -193,7 +193,7 @@ template <typename TSeedSpec>
 inline typename Iterator<SeedSet<TSeedSpec, Unordered> >::Type
 begin(SeedSet<TSeedSpec, Unordered> & seedSet, Standard const &)
 {
-    return seedSet._seeds.begin();
+	return seedSet._seeds.begin();
 }
 
 template <typename TSeedSpec>
