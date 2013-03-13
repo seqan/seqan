@@ -60,7 +60,7 @@ class Package(object):
         self.version = version
         self.os = os
         self.word_size = word_size
-        SYS_NAMES = {'Windows': {'32': 'win32', '64': 'win64'},
+        SYS_NAMES = {'Windows': {'32': 'win32-i686', '64': 'win64-x86'},
                      'Linux': {'32': 'Linux-i686', '64': 'Linux-x86_64'},
                      'Mac': {'32': 'Mac-i686', '64': 'Mac-x86_64'}}
         self.system_name = SYS_NAMES[os][word_size]
@@ -117,6 +117,10 @@ class BuildStep(object):
             if os.path.exists(from_):
                 to = os.path.join(self.base_path, os.path.basename(from_))
                 print >>sys.stderr, "Copying %s => %s" % (from_, to)
+                if 'x86' in to and 'x86_64' not in to:  # fix processor name
+                    to = to.replace('x86', 'x86_64')
+                if 'win32' in to or 'win64' in to:  # fix OS name
+                    to = to.replace('win32', 'Windows').replace('win64', 'Windows')
                 shutil.copyfile(from_, to)
             else:
                 print >>sys.stderr, "%s does not exist (not fatal)" % from_
@@ -163,7 +167,8 @@ class BuildStep(object):
         """Build an application."""
         # Create build directory.
         print >>sys.stderr, "Creating build directory %s" % (build_dir,)
-        os.mkdir(build_dir)
+        if not os.path.exists(build_dir):
+            os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY, checkout_dir,# '-G', 'Visual Studio 10',
                       "-DCMAKE_BUILD_TYPE=Release",
