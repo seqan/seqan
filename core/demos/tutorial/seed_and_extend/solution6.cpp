@@ -1,11 +1,9 @@
-// FRAGMENT(header)
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/seeds.h>
 
 int main()
 {
-    // FRAGMENT(example)
     typedef seqan::Seed<seqan::Simple>    TSeed;
     typedef seqan::SeedSet<seqan::Simple> TSeedSet;
     
@@ -18,6 +16,5 @@ int main()
     seqan::String<TSeed> result;
     chainSeedsGlobally(result, seedSet, seqan::SparseChaining());
 
-    // FRAGMENT(footer)
     return 0;
 }
