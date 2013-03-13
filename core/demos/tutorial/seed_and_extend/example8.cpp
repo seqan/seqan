@@ -26,7 +26,7 @@ int main()
 
     Score<int, Simple> scoringScheme(2,-1,-2);
 
-    int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<>(), 2);
+    int result = bandedChainAlignment(alignment, seedChain, scoringScheme, 2);
 
     std::cout << "Score: " << result << std::endl;
     std::cout << alignment << std::endl;
