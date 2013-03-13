@@ -104,6 +104,10 @@ class BuildStep(object):
         """Returns whether one of the package files is missing."""
         for p in self.packages:
             package_path = os.path.join(self.base_path, p.fileName())
+            if 'x86' in package_path and 'x86_64' not in package_path:  # fix processor name
+                package_path = package_path.replace('x86', 'x86_64')
+            if 'win32' in package_path or 'win64' in package_path:  # fix OS name
+                package_path = package_path.replace('win32', 'Windows').replace('win64', 'Windows')
             if not os.path.exists(package_path):
                 return True
             elif self.options.verbosity >= 1:
