@@ -104,8 +104,8 @@ public:
 ..description:This is used for unified interfaces for position dependent and independent scores.
 ..param.TSequence:The underlying sequence of the alignments or gaps.
 ...type:Concept.SequenceConcept
-..see:Metafunction.SequenceEntryForScore
-..see:Function.sequenceEntryForScore
+..see:Metafunction.Score#SequenceEntryForScore
+..see:Function.Score#sequenceEntryForScore
 ..include:seqan/score.h
 */
 
