@@ -44,7 +44,7 @@ namespace seqan {
 // ===========================================================================
 
 /**
-.Spec.Scored SeedSet
+.Internal.Spec.Non-Scored SeedSet
 ..summary:SeedSet that uses non-scored Seeds.
 ..cat:Seed Handling
 ..general:Class.SeedSet

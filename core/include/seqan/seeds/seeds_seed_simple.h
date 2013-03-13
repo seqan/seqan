@@ -61,10 +61,10 @@ namespace seqan {
 ..signature: Seed<TPosition, SimpleSeed> ()
 ..signature: Seed<TPosition, SimpleSeed> (beginPosH, beginPosV, length)
 ..signature: Seed<TPosition, SimpleSeed> (beginPosH, beginPosV, endPosH, endPosV)
-..param.qStartPos: Start in query sequence.
-..param.dStartPos: Start in database sequence.
-..param.qEndPos: End in query sequence.
-..param.dEndPos: End in database sequence.
+..param.beginPosH: Begin position in database (horizontal).
+..param.beginPosV: Begin position in query (vertical).
+..param.endPosH: End position in database (horizontal).
+..param.endPosV: End position in query (vertical).
 ..param.length: Length of the seed.
 ..include:seqan/seeds.h
 */

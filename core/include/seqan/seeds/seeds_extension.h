@@ -63,12 +63,9 @@ namespace seqan {
 ..cat:Seed Handling
 ..summary:The algorithms used to extend a seed.
 ..see:Function.extendSeed
-..see:Function.extendSeeds
-..see:Function.extendSeedScore
-..see:Function.extendSeedsScore
 ..tag.MatchExtend:Extends a seed until a mismatch occurs.
 ..tag.UngappedXDrop:Ungapped extension of a seed until score drops below a Value.
-..tag.GappedXDrop:Gapped extension of a seed until score drops below a Value. Only @Spec.SimpleSeed@s.
+..tag.GappedXDrop:Gapped extension of a seed until score drops below a Value. Only @Spec.Simple Seed@s.
 ..include:seqan/seeds.h
 */
 struct MatchExtend_;

@@ -57,15 +57,15 @@ typedef Tag<Chained_> ChainedSeed;  // TODO(holtgrew): Chained already taken as 
 ..description:Additionaly diagonal segments between start and end position2 are stored.
 ..general:Class.Seed
 ..signature:Seed<TPosition, ChainedSeed>
-..param.TPosition:The type of number that schuld be used. Must have negative numbers (e.g. int/long).
+..param.TPosition:The type of number that should be used. Must have negative numbers (e.g. int/long).
 
 .Memfunc.Chained Seed#Seed
 ..class:Spec.Chained Seed
 ..summary:Constructor
 ..signature: Seed<TPosition, ChainedSeed> ()
-..signature: Seed<TPosition, ChainedSeed> (qStartPos, dStartPos, length)
-..param.qStartPos: Start in query sequence.
-..param.dStartPos: Start in database sequence.
+..signature: Seed<TPosition, ChainedSeed> (beginPosH, beginPosV, length)
+..param.beginPosH: Begin position in database (horizontal).
+..param.beginPosV: Begin position in query (vertical).
 ..param.length: Length of the seed.
 ..include:seqan/seeds.h
 */
@@ -291,9 +291,9 @@ endPositionV(Seed<ChainedSeed, TConfig> const & seed)
 .Function.Chained Seed#length
 ..summary:Returns the number of diagonals in the chained seed.
 ..signature:TSize length(seed)
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..param.seed:The seed to query.
-...type:Spec.ChainedSeed
+...type:Spec.Chained Seed
 ..returns:The number of diagonals in the chained seed.
 ..include:seqan/seeds.h
 */
@@ -314,9 +314,9 @@ length(Seed<ChainedSeed, TConfig> const & seed)
 ..summary: Adds diagonal to the Chained Seed.
 ..cat:Seed Handling
 ..signature:appendDiag(seed, diagonal)
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..param.seed: The seed to which the diagonal should be added.
-...type:Spec.ChainedSeed
+...type:Spec.Chained Seed
 ..param.diag: The diagonal to add.
 ...type:Class.SeedDiagonal
 ...remarks: A diagonal consists of three values: 1: start in 1. sequence, 2: start in 2. sequence, 3: length of match
@@ -347,9 +347,9 @@ appendDiagonal(Seed<ChainedSeed, TConfig> & seed,
 ..summary:Removes diagonals from the given first one to the end of the seed's diagonals.
 ..cat:Seed Handling
 ..signature:truncateDiagonals(seed, first)
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..param.seed: The seed to which the diagonal should be added.
-...type:Spec.ChainedSeed
+...type:Spec.Chained Seed
 ..param.first: Iterator the first diagonal to remove.
 ..include:seqan/seeds.h
 */
@@ -370,7 +370,7 @@ truncateDiagonals(Seed<ChainedSeed, TConfig> & seed,
 /**
 .Function.Chained Seed#begin
 ..summary:Returns an iterator to the beginning of the seed digonals.
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..signature:TIterator begin(seed, tag)
 ..include:seqan/seeds.h
 */
@@ -396,7 +396,7 @@ begin(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
 /**
 .Function.Chained Seed#end
 ..summary:Returns an iterator to the end of the seed diagonals.
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..signature:TIterator end(seed, tag)
 ..include:seqan/seeds.h
 */
@@ -422,7 +422,7 @@ end(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
 /**
 .Function.Chained Seed#front
 ..summary:Returns a reference to the first seed diagonal.
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..signature:TReference front(seed)
 ..include:seqan/seeds.h
 */
@@ -448,7 +448,7 @@ front(Seed<ChainedSeed, TConfig> const & seed)
 /**
 .Function.Chained Seed#back
 ..summary:Returns a reference to the last seed diagonal.
-..class:Spec.ChainedSeed
+..class:Spec.Chained Seed
 ..signature:TReference back(seed)
 ..include:seqan/seeds.h
 */

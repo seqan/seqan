@@ -61,13 +61,14 @@ typedef Tag<Unordered_> Unordered;
 .Class.SeedSet:
 ..summary:Handles a set of seeds with local chaining on adding seeds.
 ..cat:Seed Handling
-..signature:SeedSet<TSeedSpec, TScored, TSpec[, TSeedConfig]>
-..param.TSeedSpec:Specialization of the seed to use.
-..param.TScored:Either UnScored or a seed set scoring scheme specification.
-..param.TSpec:Specialization of the seed set.
-..param.TSeedConfig:Configuration for the seeds.  Sensible defaults are chosen based on the other template parameters.
+..signature:SeedSet<TSeedSpec>
+..param.TSeedSpec:Specialization of the underlying seed to use.
 ..include:seqan/seeds.h
 */
+
+// ..param.TScored:Either UnScored or a seed set scoring scheme specification.
+// ..param.TSpec:Specialization of the seed set.
+// ..param.TSeedConfig:Configuration for the seeds.  Sensible defaults are chosen based on the other template parameters.
 
 template <typename TSeedSpec, typename TSpec = Unordered>
 class SeedSet;
@@ -124,24 +125,24 @@ class SeedSet;
 .Function.addSeed:
 ..summary:Adds a seed to an existing set.
 ..cat:Seed Handling
-..signature:addSeed(set, qPos, dPos, length, tag)
-..signature:addSeed(set, qPos, dPos, qrPos, drPos, tag)
+..signature:addSeed(set, beginPosH, beginPosV, length, tag)
+..signature:addSeed(set, beginPosH, beginPosV, endPosH, endPosV, tag)
 ..signature:addSeed(set, seed, tag)
 ..class:Class.SeedSet
 ..param.set:The set to which the new seed should be added.
 ...type:Class.SeedSet
-..param.qPos: Start position in sequence1.
-..param.dPos: Start position in sequence2.
+..param.beginPosH: Start position in database (horizontal).
+..param.beginPosV: Start position in query (vertical).
 ..param.length: Length of the seed.
 ..param.tag: The algorithm that should be used to add the new seed.
-...type:Tag.Seed Adding
+...type:Tag.Local Chaining
 ...remark: Note that not every algorithm can be used with each type of @Class.Seed@.
-..param.qrPos: End position in sequence1.
-..param.drPos: End Position in sequence2.
+..param.endPosH: End position in database (horizontal).
+..param.endPosV: End Position in query (vertical).
 ..param.seed: The new Seed.
 ...type:Class.Seed
 ...remarks: The seed is copied and then added.
-..returns:Boolean if succesfully added.
+..returns:Boolean if successfully added.
 ...remarks:Always true for Tag Single.
 ..include:seqan/seeds.h
 */
@@ -179,7 +180,7 @@ class SeedSet;
 ...type:Class.SeedSet
 ...remarks: If the score of a seed is higher than the given threshold, then it is virtually put
 into a container storing the high-scoring seeds which can be iterated separately.
-..see:setMinScore
+..see:Function.setMinScore
 ..include:seqan/seeds.h
 */
 
@@ -205,7 +206,7 @@ minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
 ..param.score:The new threshold to set.
 ...remarks: If the score of a seed is higher than the given threshold, then it is virtually put
 into a container storing the high-scoring seeds which can be iterated separately.
-..see:minScore
+..see:Function.minScore
 ..include:seqan/seeds.h
 */
 
