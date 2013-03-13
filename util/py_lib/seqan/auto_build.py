@@ -14,8 +14,6 @@ import tempfile
 SVN_BINARY='svn'
 # The CMake command to use.
 CMAKE_BINARY='cmake'
-# The Make command to use.
-MAKE_BINARY='make'
 
 # The default value for the SVN tags.
 DEFAULT_TAGS_URL='http://svn.seqan.de/seqan/tags'
@@ -167,7 +165,7 @@ class BuildStep(object):
         print >>sys.stderr, "Creating build directory %s" % (build_dir,)
         os.mkdir(build_dir)
         # Execute CMake.
-        cmake_args = [CMAKE_BINARY, checkout_dir,
+        cmake_args = [CMAKE_BINARY, checkout_dir,# '-G', 'Visual Studio 10',
                       "-DCMAKE_BUILD_TYPE=Release",
                       "-DSEQAN_BUILD_SYSTEM=APP:%s" % self.name,
                       "-DSEQAN_APP_VERSION=%d.%d.%d" %
@@ -178,23 +176,25 @@ class BuildStep(object):
             if self.os != 'Windows':
                 cmake_args.append('-DCMAKE_CXX_FLAGS=-m32')
             else:
-                cmake_args.append('-G "Visual Studio 10"')
+                cmake_args += ['-G', 'Visual Studio 10']
         else:  # self.word_size == '64'
             if self.os == 'Windows':
-                cmake_args.append('-G "Visual Studio 10 Win64"')
+                cmake_args += ['-G', 'Visual Studio 10 Win64']
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
-        popen = subprocess.Popen(cmake_args, cwd=build_dir)
+        #for key in sorted(os.environ.keys()):
+        #    print key, ': ', os.environ[key]
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
             print >>sys.stderr, 'ERROR during make call.'
             print out_data
             print err_data
             return 1
-        # Execute Make.
-        make_args = [MAKE_BINARY, 'package'] + self.make_args
+        # Build and package project.
+        make_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package']
         if self.options.verbosity > 1:
             make_args.insert(1, 'VERBOSE=1')
-        print >>sys.stderr, 'Executing Make: "%s"' % (' '.join(make_args),)
+        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(make_args),)
         popen = subprocess.Popen(make_args, cwd=build_dir)
         out_data, err_data = popen.communicate()
         if popen.returncode != 0:
