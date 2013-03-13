@@ -13,16 +13,16 @@ import pyratemp
 LIBRARY_PATTERN = (r'seqan-library-([0-9])\.([0-9])(?:\.([0-9]))?\.'
                    '(tar\.gz|tar\.bz2|zip)')
 APPS_PATTERN = (r'seqan-apps-([0-9])\.([0-9])(?:\.([0-9]))?-'
-                '(Linux|Mac|Windows)-(x86_64|i386)?'
+                '(Linux|Mac|Windows)-(x86_64|i686)?'
                 '\.(tar\.gz|tar\.bz2|zip|exe)')
 # The regular expression to use for matching patterns.
 PACKAGE_PATTERN = (r'(.*)-([0-9])\.([0-9])(?:\.([0-9]))?-'
-                   '(Linux|Mac|Windows)-(x86_64|i386)?'
+                   '(Linux|Mac|Windows)-(x86_64|i686)?'
                    '\.(tar\.gz|tar\.bz2|zip|exe)')
 # The operating systems that we expect.
 OPERATING_SYSTEMS = ['Linux', 'Mac', 'Windows', 'src']
 # The architectures that we expect.
-ARCHITECTURES = ['x86_64', 'i386', 'src']
+ARCHITECTURES = ['x86_64', 'i686', 'src']
 # The file formats.
 FORMATS = ['tar.gz', 'tar.bz2', 'zip', 'exe']
 # Path to template.

@@ -20,7 +20,7 @@ MAKE_BINARY='make'
 # The default value for the SVN tags.
 DEFAULT_TAGS_URL='http://svn.seqan.de/seqan/tags'
 # The default minimal revision of that tags must have.
-DEFAULT_START_REVISION=13039
+DEFAULT_START_REVISION=13708
 # The path to the package repository.
 DEFAULT_PACKAGE_DB='.'
 
@@ -63,8 +63,8 @@ class Package(object):
         self.os = os
         self.word_size = word_size
         SYS_NAMES = {'Windows': {'32': 'win32', '64': 'win64'},
-                     'Linux': {'32': 'Linux-i368', '64': 'Linux-x86_64'},
-                     'Mac': {'32': 'Mac-i368', '64': 'Mac-x86_64'}}
+                     'Linux': {'32': 'Linux-i686', '64': 'Linux-x86_64'},
+                     'Mac': {'32': 'Mac-i686', '64': 'Mac-x86_64'}}
         self.system_name = SYS_NAMES[os][word_size]
         self.pkg_format = pkg_format
 
@@ -77,26 +77,30 @@ class BuildStep(object):
     """Management of one build step."""
 
     def __init__(self, path, name, version, os, word_size, pkg_formats,
-                 svn_url, make_args):
+                 svn_url, make_args, options, tmp_dir=None):
         self.base_path = path
         self.name = name
-        self.version = version
+        self.version = version  # TODO(holtgrew): Unused, overwritten below.
         self.major_version = int(version.split('.')[0])
         self.minor_version = int(version.split('.')[1])
         self.patch_version = 0
+        self.version = '%d.%d.%d' % (self.major_version, self.minor_version, self.patch_version)
         if len(version.split('.')) > 2:
             self.patch_version = int(version.split('.')[2])
         self.os = os
         self.word_size = word_size
         self.pkg_formats = pkg_formats
         if name == 'seqan':
-            self.packages = [Package(name + suffix, version, os, word_size, f)
+            self.packages = [Package(name + suffix, self.version, os, word_size, f)
                              for f in pkg_formats for suffix in ['-apps', '-library']]
         else:
-            self.packages = [Package(name, version, os, word_size, f)
+            self.packages = [Package(name, self.version, os, word_size, f)
                              for f in pkg_formats]
         self.svn_url = svn_url
         self.make_args = make_args
+        self.options = options
+        # If set then this is used instead of a random name in TMPDIR.
+        self.tmp_dir = tmp_dir
 
     def buildNeeded(self):
         """Returns whether one of the package files is missing."""
@@ -104,17 +108,18 @@ class BuildStep(object):
             package_path = os.path.join(self.base_path, p.fileName())
             if not os.path.exists(package_path):
                 return True
-            elif options.verbosity >= 1:
+            elif self.options.verbosity >= 1:
                 print >>sys.stderr, 'File %s exists.' % package_path
         return False
 
-    def copyArchives(self):
+    def copyArchives(self, build_dir):
         """Copy build packages to base_path directory."""
         for p in self.packages:
-            from_ = os.path.join(self.base_path, p.fileName())
+            from_ = os.path.join(build_dir, p.fileName())
             if os.path.exists(from_):
                 to = os.path.join(self.base_path, os.path.basename(from_))
                 print >>sys.stderr, "Copying %s => %s" % (from_, to)
+                shutil.copyfile(from_, to)
             else:
                 print >>sys.stderr, "%s does not exist (not fatal)" % from_
 
@@ -127,10 +132,7 @@ class BuildStep(object):
         os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY,
-                      "-DSEQAN_BUILD_PACKAGE=SEQAN_RELEASE_APPS",
-                      "-DSEQAN_VERSION_MAJOR=%d" % self.major_version,
-                      "-DSEQAN_VERSION_MINOR=%d" % self.minor_version,
-                      "-DSEQAN_VERSION_PATCH=%d" % self.patch_version]
+                      "-DSEQAN_BUILD_PACKAGE=SEQAN_RELEASE_APPS"]
         if self.os in ['Linux', 'Mac']:
             cmake_args += ['-m%s' % self.word_size]
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
@@ -138,7 +140,7 @@ class BuildStep(object):
         make_args = [MAKE_BINARY, "package"] + self.make_args
         print >>sys.stderr, 'Executing Make: "%s"' % (' '.join(make_args),)
         # Copy over the archives.
-        self.copyArchives()
+        self.copyArchives(build_dir)
         # Remove build directory.
         print >>sys.stderr, 'Removing build directory %s' % build_dir
         shutil.rmtree(build_dir)
@@ -149,15 +151,12 @@ class BuildStep(object):
         os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY,
-                      "-DSEQAN_BUILD_PACKAGE=SEQAN_RELEASE_LIBRARY",
-                      "-DSEQAN_VERSION_MAJOR=%d" % self.major_version,
-                      "-DSEQAN_VERSION_MINOR=%d" % self.minor_version,
-                      "-DSEQAN_VERSION_PATCH=%d" % self.patch_version]
+                      "-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY"]
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
         # Execute Make.
         make_args = [MAKE_BINARY, "package"] + self.make_args
         print >>sys.stderr, 'Executing Make: "%s"' % (' '.join(make_args),)
-        self.copyArchives()
+        self.copyArchives(build_dir)
         # Remove build directory.
         print >>sys.stderr, 'Removing build directory %s' % build_dir
         shutil.rmtree(build_dir)
@@ -168,40 +167,81 @@ class BuildStep(object):
         print >>sys.stderr, "Creating build directory %s" % (build_dir,)
         os.mkdir(build_dir)
         # Execute CMake.
-        cmake_args = [CMAKE_BINARY,
-                      "-DSEQAN_BUILD_PACKAGE=APP:%s" % self.name,
-                      "-DSEQAN_APP_VERSION_MAJOR=%d" % self.major_version,
-                      "-DSEQAN_APP_VERSION_MINOR=%d" % self.minor_version,
-                      "-DSEQAN_APP_VERSION_PATCH=%d" % self.patch_version]
+        cmake_args = [CMAKE_BINARY, checkout_dir,
+                      "-DCMAKE_BUILD_TYPE=Release",
+                      "-DSEQAN_BUILD_SYSTEM=APP:%s" % self.name,
+                      "-DSEQAN_APP_VERSION=%d.%d.%d" %
+                        (self.major_version, self.minor_version, self.patch_version)]
+        # Use appropriate CMake flags for OS and processor.
+        if self.word_size == '32':
+            cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=i686')
+            if self.os != 'Windows':
+                cmake_args.append('-DCMAKE_CXX_FLAGS=-m32')
+            else:
+                cmake_args.append('-G "Visual Studio 10"')
+        else:  # self.word_size == '64'
+            if self.os == 'Windows':
+                cmake_args.append('-G "Visual Studio 10 Win64"')
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
         # Execute Make.
-        make_args = [MAKE_BINARY, "package"] + self.make_args
+        make_args = [MAKE_BINARY, 'package'] + self.make_args
+        if self.options.verbosity > 1:
+            make_args.insert(1, 'VERBOSE=1')
         print >>sys.stderr, 'Executing Make: "%s"' % (' '.join(make_args),)
-        self.copyArchives()
+        popen = subprocess.Popen(make_args, cwd=build_dir)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
+        # Copy out archives.
+        self.copyArchives(build_dir)
         # Remove build directory.
         print >>sys.stderr, 'Removing build directory %s' % build_dir
         shutil.rmtree(build_dir)
 
+    def tmpDir(self):
+      print 'self.tmp_dir = %s' % self.tmp_dir
+      if self.tmp_dir:
+        if not os.path.exists(self.tmp_dir):
+          os.makedirs(self.tmp_dir)
+        return self.tmp_dir
+      else:
+        return tempfile.mkdtemp()
+
     def execute(self):
         """Execute build step."""
         # Create temporary directory.
-        tmp_dir = tempfile.mkdtemp()
+        tmp_dir = self.tmpDir()
         print >>sys.stderr, 'Temporary directory is %s' % (tmp_dir,)
         # Create SVN checkout in temporary directory.
-        build_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url))
-        print >>sys.stderr, 'Creating checkout in %s' % build_dir
+        checkout_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url))
+        print >>sys.stderr, 'Creating checkout in %s' % checkout_dir
         svn = MinisculeSvnWrapper()
-        #svn.co(self.svn_url, build_dir)
+        svn.co(self.svn_url, checkout_dir)
         # Create build directory.
-        build_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url) + '-build')
+        suffix = '-build-%s-%s' % (self.os, self.word_size)
+        build_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url) + suffix)
+        if os.path.exists(build_dir):
+          print >>sys.stderr, 'Removing build directory %s' % (build_dir,)
+          shutil.rmtree(build_dir)
         # Perform the build.  We have to separate between app and whole SeqAn releases.
         if self.name == 'seqan':
-            self.buildSeqAnRelease(build_dir, build_dir)
+            self.buildSeqAnRelease(checkout_dir, build_dir)
         else:
-            self.buildApp(build_dir, build_dir)
+            self.buildApp(checkout_dir, build_dir)
         # Remove temporary directory again.
-        print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
-        shutil.rmtree(tmp_dir)
+        if not self.tmp_dir:  # Only remove it not set with --tmp-dir.
+          print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
+          shutil.rmtree(tmp_dir)
 
 
 def work(options):
@@ -212,6 +252,8 @@ def work(options):
                  if rev >= options.start_revision and
                     '-' in tag]
     # Enumerate all package names that we could enumerate.
+    print 'revs_tags = %s' % revs_tags
+    print 'word_sizes = %s' % options.word_sizes
     for rev, tag in revs_tags:
         name, version = tag.rsplit('-', 1)
         for word_size in options.word_sizes.split(','):
@@ -220,7 +262,7 @@ def work(options):
             svn_url = options.tags_url + '/' + tag
             build_step = BuildStep(options.package_db, name, version, options.os,
                                    word_size, pkg_formats, svn_url,
-                                   options.make_args.split())
+                                   options.make_args.split(), options, options.tmp_dir)
             # Check whether we need to build this.
             if not build_step.buildNeeded():
                 continue  # Skip
@@ -253,6 +295,8 @@ def main():
                       help='Build binaries with the given word sizes')
     parser.add_option('--make-args', dest='make_args', type="string", default='',
                       help='Arguments for make.')
+    parser.add_option('--tmp-dir', dest='tmp_dir', type='string', default=None,
+                      help='Temporary directory to use. Use this to reuse the same checkout.')
     parser.epilog = ('The program will use the environment variable TMPDIR as '
                      'the directory for temporary files.')
 

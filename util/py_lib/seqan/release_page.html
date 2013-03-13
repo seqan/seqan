@@ -1,10 +1,10 @@
 <!--(macro packages_cell)-->
 <td>
-  <!--(if packages.archs['i386'].files)-->
+  <!--(if packages.archs['i686'].files)-->
     32 bit:#!
     <!--(for f in FORMATS)-->#!
-      <!--(if packages.archs['i386'].files.get(f))-->#!
-      <a href="@!packages.archs['i386'].files[f]!@">@!f!@</a>#!
+      <!--(if packages.archs['i686'].files.get(f))-->#!
+      <a href="@!packages.archs['i686'].files[f]!@">@!f!@</a>#!
       <!--(end)-->#!
     <!--(end)-->#!
   <!--(end)-->
