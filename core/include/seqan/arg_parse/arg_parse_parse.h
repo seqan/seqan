@@ -182,7 +182,7 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
                 }
                 else
                 {
-                    throw ParseException("To many arguments!");
+                    throw ParseException("Too many arguments!");
                 }
             }
         }
