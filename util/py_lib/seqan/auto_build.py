@@ -82,9 +82,9 @@ class BuildStep(object):
         self.major_version = int(version.split('.')[0])
         self.minor_version = int(version.split('.')[1])
         self.patch_version = 0
-        self.version = '%d.%d.%d' % (self.major_version, self.minor_version, self.patch_version)
         if len(version.split('.')) > 2:
             self.patch_version = int(version.split('.')[2])
+        self.version = '%d.%d.%d' % (self.major_version, self.minor_version, self.patch_version)
         self.os = os
         self.word_size = word_size
         self.pkg_formats = pkg_formats
