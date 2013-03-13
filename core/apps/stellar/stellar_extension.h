@@ -72,7 +72,7 @@ SEQAN_CHECKPOINT
     TPos totalErrors = 0;
 	typename Row<Align<TSource> >::Type row0 = row(align, 0);
     TPos i = 0;
-	TPos endPos = endPosition(row0);
+	TPos endPos = length(row0);
     TPos gapBegin = i;
 
     // append gap starting at beginPosition (also if its length is 0!)
@@ -159,10 +159,10 @@ SEQAN_CHECKPOINT
     }
 
     // Set view positions to the eps-match
-    setClippedBeginPosition(row(align, 0), beginPos);
-    setClippedBeginPosition(row(align, 1), beginPos);
-	setClippedEndPosition(row(align, 0), endPos);
-	setClippedEndPosition(row(align, 1), endPos);
+    setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
+    setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
+	setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
+	setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
 	// setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
 	// setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
 	// setBeginPosition(row(align, 0), beginPos);
