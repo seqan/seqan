@@ -216,17 +216,12 @@ macro (seqan_setup_library NAME)
         file (GLOB HEADERS
               RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
               include/seqan/[A-z]*/[A-z]*.h
-              include/seqan/[A-z]*.h)
+              include/seqan/[A-z]*.h
+              include/seqan.h)
         foreach (HEADER ${HEADERS})
             get_filename_component (_DESTINATION ${HEADER} PATH)
             install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER} DESTINATION ${_DESTINATION})
         endforeach ()
-    endif ()
-
-    # Install global super header from extras.
-    get_filename_component (_PART_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-    if (${_PART_NAME} STREQUAL "extras" AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan.h)
-      install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan.h DESTINATION include)
     endif ()
 
     # Get list of header and super header files.
