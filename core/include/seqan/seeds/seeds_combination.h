@@ -80,12 +80,12 @@ typedef Tag<Single_> Single;
 
 // Returns true iff b can be merged into a where a is the one to the
 // upper left, b the one to the lower right.
-template <typename TSeedSpec, typename TSeedConfig, typename TThreshold>
+template <typename TSeedSpec, typename TSeedConfig, typename TThreshold, typename TBandwidth>
 inline bool
 _seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & seedA,
                   Seed<TSeedSpec, TSeedConfig> const & seedB,
                   TThreshold const & maxDiagonalDistance,
-                  Nothing const & /*maxBandwidth*/,
+                  TBandwidth const & /*maxBandwidth*/,
                   Merge const &)
 {
     // TODO(holtgrew): TThreshold could be Position<TSeed>::Type.
@@ -107,12 +107,12 @@ _seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & seedA,
 
 // Returns true iff b can be simple-chained to a where a is the one to
 // the upper left, b the one to the lower right.
-template <typename TSeedSpec, typename TSeedConfig, typename TThreshold>
+template <typename TSeedSpec, typename TSeedConfig, typename TThreshold, typename TBandwidth>
 inline bool
 _seedsCombineable(Seed<TSeedSpec, TSeedConfig> const & seedA,
                   Seed<TSeedSpec, TSeedConfig> const & seedB,
                   TThreshold const & maxGapSize,
-                  Nothing const & /*maxBandwidth*/,
+                  TBandwidth const & /*maxBandwidth*/,
                   SimpleChain const &)
 {
     // TODO(holtgrew): We should be able to configure whether we want to have Manhattan, euclidean, minimal edit distance, for seeds.
@@ -179,13 +179,13 @@ _updateSeedsCoordinatesMergeOrSimpleChain(
 }
 
 
-template <typename TSeedConfig, typename TScoreValue>
+template <typename TSeedConfig, typename TScoreValue, typename TSequence0, typename TSequence1>
 inline void
 _combineSeeds(Seed<Simple, TSeedConfig> & seed,
               Seed<Simple, TSeedConfig> const & other,
               Score<TScoreValue, Simple> const & /*scoringScheme*/,
-              Nothing const & /*sequence0*/,
-              Nothing const & /*sequence1*/,
+              TSequence0 const & /*sequence0*/,
+              TSequence1 const & /*sequence1*/,
               Merge const &)
 {
     _updateSeedsScoreMerge(seed, other);
@@ -193,13 +193,13 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
 }
 
 
-template <typename TSeedConfig, typename TScoreValue>
+template <typename TSeedConfig, typename TScoreValue, typename TSequence0, typename TSequence1>
 inline void
 _combineSeeds(Seed<Simple, TSeedConfig> & seed,
               Seed<Simple, TSeedConfig> const & other,
               Score<TScoreValue, Simple> const & scoringScheme,
-              Nothing const & /*sequence0*/,
-              Nothing const & /*sequence1*/,
+              TSequence0 const & /*sequence0*/,
+              TSequence1 const & /*sequence1*/,
               SimpleChain const &)
 {
     _updateSeedsScoreSimpleChain(seed, other, scoringScheme);
@@ -277,13 +277,13 @@ _combineSeeds(Seed<Simple, TSeedConfig> & seed,
 }
 
 
-template <typename TSeedConfig, typename TScoreValue>
+template <typename TSeedConfig, typename TScoreValue, typename TSequence0, typename TSequence1>
 inline void
 _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
               Seed<ChainedSeed, TSeedConfig> const & other,
               Score<TScoreValue, Simple> const & /*scoringScheme*/,
-              Nothing const & /*sequence0*/,
-              Nothing const & /*sequence1*/,
+              TSequence0 const & /*sequence0*/,
+              TSequence1 const & /*sequence1*/,
               Merge const &)
 {
     // For chained seeds, we first remove all diagonals from seed
@@ -338,13 +338,13 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
 }
 
 
-template <typename TSeedConfig, typename TScoreValue>
+template <typename TSeedConfig, typename TScoreValue, typename TSequence0, typename TSequence1>
 inline void
 _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
               Seed<ChainedSeed, TSeedConfig> const & other,
               Score<TScoreValue, Simple> const & scoringScheme,
-              Nothing const & /*sequence0*/,
-              Nothing const & /*sequence1*/,
+              TSequence0 const & /*sequence0*/,
+              TSequence1 const & /*sequence1*/,
               SimpleChain const &)
 {
     // Simply copy over the diagonals of the seed (other) into the
