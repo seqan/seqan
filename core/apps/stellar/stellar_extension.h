@@ -159,16 +159,19 @@ SEQAN_CHECKPOINT
     }
 
     // Set view positions to the eps-match
-    setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
-    setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
-	setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
-	setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
+    TPosition viewBeginRow0 = toSourcePosition(row(align, 0), 0);
+    TPosition viewBeginRow1 = toSourcePosition(row(align, 1), 0);
+	setClippedEndPosition(row(align, 0), viewBeginRow0 + endPos);
+	setClippedEndPosition(row(align, 1), viewBeginRow1 + endPos);
+    setClippedBeginPosition(row(align, 0), viewBeginRow0 + beginPos);
+    setClippedBeginPosition(row(align, 1), viewBeginRow1 + beginPos);
 	// setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
 	// setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
 	// setBeginPosition(row(align, 0), beginPos);
 	// setBeginPosition(row(align, 1), beginPos);
 	// setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
 	// setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
+    SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
 
 	if (endPos == 0 && beginPos == 0) return 1;
 	return 0;
