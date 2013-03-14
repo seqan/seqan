@@ -157,8 +157,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     // Set short description, version, and date.
     setShortDescription(parser, "Prepare SAM For Rabema");
-    setVersion(parser, "1.2");
-    setDate(parser, "February 2013");
+    setVersion(parser, "1.2.0");
+    setDate(parser, "March 14, 2013");
     setCategory(parser, "Benchmarking");
 
     // Define usage line and long description.

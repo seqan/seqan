@@ -980,8 +980,8 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     seqan::ArgumentParser parser("rabema_build_gold_standard");
     setShortDescription(parser, "RABEMA Gold Standard Builder");
-    setVersion(parser, "1.2");
-    setDate(parser, "February 2013");
+    setVersion(parser, "1.2.0");
+    setDate(parser, "March 14, 2013");
     setCategory(parser, "Benchmarking");
 
     addUsageLine(parser,
