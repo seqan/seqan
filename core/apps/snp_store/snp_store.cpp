@@ -1120,8 +1120,8 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     ArgumentParser parser("snp_store");
     // Set short description, version, and date.
     setShortDescription(parser, "SnpStore");
-    setVersion(parser, "1.0");
-    setDate(parser, "October 2012");
+    setVersion(parser, "1.0.1");
+    setDate(parser, "March 14, 2013");
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIGENOME FILE\\fP\" \"\\fIMAPPED READ FILE(S)\\fP\" ");
