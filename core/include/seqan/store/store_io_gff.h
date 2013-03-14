@@ -290,11 +290,15 @@ _storeOneAnnotation(
         resize(fragStore.annotationStore, maxId + 1, Generous());
     fragStore.annotationStore[ctx.annotationId] = ctx.annotation;
 
+    TAnnotation & parent = fragStore.annotationStore[ctx.annotation.parentId];
+    if (parent.parentId == TAnnotation::INVALID_ID)
+        parent.parentId = 0;    // if our parent has no parent, it becomes a child of the root
+
     if (geneId != TAnnotation::INVALID_ID)
     {
         // link and adjust our gtf ancestors
         TAnnotation & gene = fragStore.annotationStore[geneId];
-        TAnnotation & transcript = fragStore.annotationStore[ctx.annotation.parentId];
+//        TAnnotation & transcript = fragStore.annotationStore[ctx.annotation.parentId];
 
         gene.parentId = 0;
         gene.typeId = TFragmentStore::ANNO_GENE;
@@ -303,11 +307,11 @@ _storeOneAnnotation(
         if (!empty(ctx.gtfGeneName))
             annotationAssignValueByKey(fragStore, gene, "gene_name", ctx.gtfGeneName);
 
-        transcript.parentId = geneId;
-        transcript.typeId = TFragmentStore::ANNO_MRNA;
-        _adjustParent(transcript, ctx.annotation);
+        parent.parentId = geneId;
+        parent.typeId = TFragmentStore::ANNO_MRNA;
+        _adjustParent(parent, ctx.annotation);
         if (!empty(ctx.gtfTranscriptName))
-            annotationAssignValueByKey(fragStore, transcript, "transcript_name", ctx.gtfTranscriptName);
+            annotationAssignValueByKey(fragStore, parent, "transcript_name", ctx.gtfTranscriptName);
     }
 }
 
