@@ -73,6 +73,17 @@ if (MSVC)
 endif (MSVC)
 
 # ---------------------------------------------------------------------------
+# Set architecture for MinGW.
+#
+# If we do not set i586 as the architecture for MinGW then generating atomic
+# expressions will fail.
+# ---------------------------------------------------------------------------
+
+if (MINGW)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+endif (MINGW)
+
+# ---------------------------------------------------------------------------
 # Function add_executable (name [WIN32] [MACOSX_BUNDLE] [EXCLUDE_FROM_ALL]
 #                          source1 source2 ... sourceN)
 #
