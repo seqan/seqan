@@ -52,6 +52,8 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     setVersion(parser, "0.1.0");
     setShortDescription(parser, "This is a test-app.");
     setCategory(parser, "SeqAn/Testing");
+    addDescription(parser, "This is the first line of our test description.");
+    addDescription(parser, "The second one contains formating <\\fIbla\\fP>.");
 
     addOption(parser, seqan::ArgParseOption("d", "double", "set a double option", seqan::ArgParseArgument::DOUBLE));
     addOption(parser, seqan::ArgParseOption("i", "integer", "set an integer option", seqan::ArgParseArgument::INTEGER));
@@ -59,8 +61,16 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUTFILE));
     addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUTFILE));
     addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will be advanced in the ctd", seqan::ArgParseArgument::STRING));
+
     hideOption(parser, "hi");
-    
+
+    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::DOUBLE, "DOUBLE"));
+    setHelpText(parser, 0, "Double Argument");
+    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "STRING"));
+    setHelpText(parser, 1, "String Argument");
+    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "DOC"));
+    setHelpText(parser, 1, "Documentated Argument with \\fBformating\\fP");
+
     // export ctd
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".ctd");

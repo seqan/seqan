@@ -160,7 +160,7 @@ public:
 
     ToolDoc                  _toolDoc;      // the tool doc for all user specified
                                             // text
-    ToolDoc                  _description;  // the description which we need to
+    std::vector<std::string> _description;  // the description which we need to
                                             // separate to put it on top of the rest
     std::vector<std::string> _usageText;    // the usage lines as strings, to avoid
                                             // interference with the rest of the doc
@@ -187,10 +187,6 @@ public:
                                         "FORMAT"));
         hideOption(*this, "export-help", true);
         setValidValues(*this, "export-help", "html man txt");
-
-        // this is our ToolDoc only for the Description, we will later append it to the
-        // real ToolDoc, but we need to separate it to ease the formating
-        addSection(_description, "Description");
     }
 
     // ----------------------------------------------------------------------------

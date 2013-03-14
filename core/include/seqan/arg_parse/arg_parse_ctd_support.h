@@ -47,14 +47,65 @@
 namespace seqan {
 
 // ----------------------------------------------------------------------------
-// Function _join()
+// Function _toText()
 // ----------------------------------------------------------------------------
+// Removes formatting (\fI, \fB, and \fP).
 template <typename TSequence>
-inline TSequence
-_toHTML(TSequence const & sequence)
+TSequence _toText(TSequence const & input)
 {
-    HtmlToolDocPrinter_ docPrinter;
-    return docPrinter._toHtml(sequence);
+    TSequence buffer = xmlEscape(input);
+    TSequence result;
+    String<TSequence> openTags;
+
+    typedef typename Iterator<TSequence const, Standard>::Type TIterator;
+    TIterator endIt = end(input, Standard());
+    for (TIterator it = begin(input, Standard()); it != endIt; goNext(it))
+    {
+        if (*it == '\\')
+        {
+            // Handle escape sequence, we interpret only "\-", "\fI", and "\fB".
+            goNext(it);
+            SEQAN_ASSERT_NOT(it == endIt);
+            if (*it == '-')
+            {
+                appendValue(result, *it);
+            }
+            else if (*it == 'f')
+            {
+                goNext(it);
+                SEQAN_ASSERT_NOT(it == endIt);
+                if (*it == 'I')
+                {
+                    appendValue(openTags, "i");
+                }
+                else if (*it == 'B')
+                {
+                    appendValue(openTags, "b");
+                }
+                else if (*it == 'P')
+                {
+                    SEQAN_ASSERT_NOT(empty(openTags));
+                    eraseBack(openTags);
+                }
+                else
+                {
+                    append(result, "\\f");
+                    appendValue(result, *it);
+                }
+            }
+            else
+            {
+                appendValue(result, '\\');
+                appendValue(result, *it);
+            }
+        }
+        else
+        {
+            appendValue(result, *it);
+        }
+    }
+
+    return result;
 }
 
 // ----------------------------------------------------------------------------
@@ -199,6 +250,9 @@ std::string _indent(const int currentIndent)
     return indent;
 }
 
+// ----------------------------------------------------------------------------
+// Function _writeCLIElement()
+// ----------------------------------------------------------------------------
 void _writeCLIElement(std::ostream & ctdfile, int currentIndent, std::string const & optionIdentifier, std::string const & ref_name, bool isList)
 {
     ctdfile << _indent(currentIndent)
@@ -208,6 +262,19 @@ void _writeCLIElement(std::ostream & ctdfile, int currentIndent, std::string con
     ctdfile << _indent(currentIndent + 1) << "<mapping referenceName=\"" << ref_name << "\" />\n";
 
     ctdfile << _indent(currentIndent) << "</clielement>\n";
+}
+
+// ----------------------------------------------------------------------------
+// Function _getManual()
+// ----------------------------------------------------------------------------
+inline std::string _getManual(ArgumentParser const & me)
+{
+    std::stringstream manual;
+    for (unsigned i = 0; i < me._description.size(); ++i)
+    {
+        manual << _toText(me._description[i]) << std::endl;
+    }
+    return manual.str();
 }
 
 // ----------------------------------------------------------------------------
@@ -259,9 +326,9 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
     ctdfile << _indent(currentIndent) << "<name>" << class_name << "</name>\n";
     ctdfile << _indent(currentIndent) << "<executableName>" << toolname << "</executableName>\n";
     ctdfile << _indent(currentIndent) << "<version>" << xmlEscape(getVersion(me)) << "</version>\n";
-    ctdfile << _indent(currentIndent) << "<description><![CDATA[" << xmlEscape(getShortDescription(me)) << ".]]></description>\n";
-    ctdfile << _indent(currentIndent) << "<manual><![CDATA[" << xmlEscape(getAppName(me)) << ".]]></manual>\n"; // TODO(aiche): as soon as we have a more sophisticated documentation embedded into the CmdParser, we should at this here
-    ctdfile << _indent(currentIndent) << "<docurl>Direct links in docs</docurl>\n";
+    ctdfile << _indent(currentIndent) << "<description>" << xmlEscape(getShortDescription(me)) << "</description>\n";
+    ctdfile << _indent(currentIndent) << "<manual>" << xmlEscape(_getManual(me)) << "</manual>\n"; // TODO(aiche): as soon as we have a more sophisticated documentation embedded into the CmdParser, we should at this here
+    ctdfile << _indent(currentIndent) << "<docurl>http://www.seqan.de</docurl>\n";
     ctdfile << _indent(currentIndent) << "<category>" << xmlEscape(getCategory(me)) << "</category>\n";
     ctdfile << _indent(currentIndent++) << "<cli>\n";
 
@@ -355,7 +422,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
             ctdfile << _indent(currentIndent)
                     << "<ITEMLIST " << "name=\"" << xmlEscape(optionName) << "\" "
                     << "type=\"" << type << "\" "
-                    << "description=\"" << xmlEscape(_toHTML(opt._helpText)) << "\" ";
+                    << "description=\"" << xmlEscape(_toText(opt._helpText)) << "\" ";
 
             if (!empty(tags))
                 ctdfile << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" ";
@@ -378,7 +445,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
                     << "<ITEM " << "name=\"" << xmlEscape(optionName) << "\" "
                     << "value=\"" << xmlEscape(_join(opt.defaultValue, ",")) << "\" "
                     << "type=\"" << type << "\" "
-                    << "description=\"" << xmlEscape(_toHTML(opt._helpText)) << "\" ";
+                    << "description=\"" << xmlEscape(_toText(opt._helpText)) << "\" ";
 
             if (!empty(tags))
                 ctdfile << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" ";
@@ -433,7 +500,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
                 << "<ITEM" << (isListArgument(arg) ? "LIST" : "") << " name=\"" << xmlEscape(optionName) << "\" "
                 << (isListArgument(arg) ? " " : "value=\"\" ")
                 << "type=\"" << type << "\" "
-                << "description=\"" << xmlEscape(_toHTML(arg._helpText)) << "\" "; // it will be "" in most cases but we try
+                << "description=\"" << xmlEscape(_toText(arg._helpText)) << "\" "; // it will be "" in most cases but we try
         if (!empty(tags))
             ctdfile << "tags=\"" << xmlEscape(_join(tags, ",")) << "\" ";
         if (!empty(restrictions))

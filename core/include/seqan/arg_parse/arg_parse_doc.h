@@ -198,7 +198,7 @@ void _addUsage(ToolDoc & toolDoc, ArgumentParser const & me)
 
 inline void addDescription(ArgumentParser & me, std::string const & description)
 {
-    addText(me._description, description);
+    me._description.push_back(description);
 }
 
 // ----------------------------------------------------------------------------
@@ -656,7 +656,9 @@ inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharStri
     _addUsage(toolDoc, me);
 
     // Add description to tool documentation.
-    append(toolDoc, me._description);
+    addSection(toolDoc, "Description");
+    for (unsigned i = 0; i < me._description.size(); ++i)
+        addText(toolDoc, me._description[i]);
 
     // Add options to description section.
     for (unsigned i = 0; i < length(me.optionMap); ++i)

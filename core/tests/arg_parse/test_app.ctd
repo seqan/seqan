@@ -3,9 +3,11 @@
 	<name>TestApp</name>
 	<executableName>test_app</executableName>
 	<version>0.1.0</version>
-	<description><![CDATA[This is a test-app..]]></description>
-	<manual><![CDATA[test_app.]]></manual>
-	<docurl>Direct links in docs</docurl>
+	<description>This is a test-app.</description>
+	<manual>This is the first line of our test description.
+The second one contains formating &lt;bla&gt;.
+</manual>
+	<docurl>http://www.seqan.de</docurl>
 	<category>SeqAn/Testing</category>
 	<cli>
 		<clielement optionIdentifier="--double" isList="false">
@@ -26,6 +28,16 @@
 		<clielement optionIdentifier="--hidden" isList="false">
 			<mapping referenceName="test_app.hidden" />
 		</clielement>
+		<!-- Following clielements are arguments. You should consider providing a help text to ease understanding. -->
+		<clielement optionIdentifier="" isList="false">
+			<mapping referenceName="test_app.argument-0" />
+		</clielement>
+		<clielement optionIdentifier="" isList="false">
+			<mapping referenceName="test_app.argument-1" />
+		</clielement>
+		<clielement optionIdentifier="" isList="false">
+			<mapping referenceName="test_app.argument-2" />
+		</clielement>
 	</cli>
 	<PARAMETERS  version="1.4" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_4.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="test_app" description="This is a test-app.">
@@ -36,6 +48,9 @@
 			<ITEM name="in" value="" type="string" description="set an input file" tags="input file"  />
 			<ITEM name="out" value="" type="string" description="set an output file" tags="output file"  />
 			<ITEM name="hidden" value="" type="string" description="a hidden option - will be advanced in the ctd" tags="advanced"  />
+			<ITEM name="argument-0" value="" type="double" description="Double Argument" tags="required"  />
+			<ITEM name="argument-1" value="" type="string" description="Documentated Argument with formating" tags="required"  />
+			<ITEM name="argument-2" value="" type="string" description="" tags="required"  />
 		</NODE>
 	</PARAMETERS>
 </tool>
