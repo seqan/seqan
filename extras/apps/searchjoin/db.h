@@ -356,6 +356,12 @@ struct Size<Db<TText, TSpec> >
 {
     typedef typename Size<TText>::Type         Type;
 };
+
+template <typename TIndex, typename TSpec>
+struct Size<DbIndex<TIndex, TSpec> >
+{
+    typedef typename DbIndex<TIndex, TSpec>::TSize Type;
+};
 }
 
 // ----------------------------------------------------------------------------
@@ -855,12 +861,14 @@ void buildQuery(DbIndex<Index<TText, IndexSa<TIndexSpec> >, Query> & dbIndex,
            Db<TText, TDbSpec> /* const */ & db,
            TSeedLength minSeedLength)
 {
-    typedef Db<TText, TDbSpec>                              TDb;
-    typedef typename Size<TDb>::Type                        TDbSize;
-    typedef Index<TText, IndexSa<TIndexSpec> >              TIndex;
-    //typedef typename Fibre<TIndex, FibreSA>::Type           TIndexSAFibre;
-    typedef typename Size<TText>::Type                      TTextSize;
-    typedef TTextSize                                       TErrors;
+    typedef Db<TText, TDbSpec>                                 TDb;
+    typedef typename Size<TDb>::Type                           TDbSize;
+    typedef DbIndex<Index<TText, IndexSa<TIndexSpec> >, Query> TDbIndex;
+    typedef typename Size<TDbIndex>::Type                      TDbIndexSize;
+    typedef Index<TText, IndexSa<TIndexSpec> >                 TIndex;
+    //typedef typename Fibre<TIndex, FibreSA>::Type             TIndexSAFibre;
+    typedef typename Size<TText>::Type                         TTextSize;
+    typedef TTextSize                                          TErrors;
 
     String<TDbSize> seedCounts;
 
@@ -882,7 +890,7 @@ void buildQuery(DbIndex<Index<TText, IndexSa<TIndexSpec> >, Query> & dbIndex,
     std::cout << "Seed errors:\t\t\t\t";
     std::copy(begin(dbIndex.errors, Standard()),
               end(dbIndex.errors, Standard()),
-              std::ostream_iterator<TDbSize>(std::cout, ", "));
+              std::ostream_iterator<TDbIndexSize>(std::cout, ", "));
     std::cout << std::endl;
 
     // Resize indices.
