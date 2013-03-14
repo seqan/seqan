@@ -274,7 +274,7 @@ template<typename TRow, typename TPosition>
 TPosition
 projectedPosition(TRow & rowA, TRow & rowB, TPosition pos)
 {
-    return toSourcePosition(rowA, toViewPosition(rowB, pos));
+    return toSourcePosition(rowB, toViewPosition(rowA, pos));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -295,8 +295,7 @@ _checkAlignColOverlap(TMatch & matchA, TMatch & matchB, TSize minLength)
             ++diffCols;
     }
 
-    // TODO: This criterium has to be revisited
-    if (diffCols >= minLength || equalCols/(equalCols+diffCols) < 0.95) return false;
+    if (diffCols >= minLength) return false;
     return true;
 }
 

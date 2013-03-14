@@ -38,6 +38,6 @@ Aligning all query sequences to database sequence...
     Longest hit       : 268
     Avg hit length    : 62
 
-# Eps-matches     : 501
+# Eps-matches     : 500
 Longest eps-match : 224
 Avg match length  : 132

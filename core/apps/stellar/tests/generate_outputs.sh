@@ -2,7 +2,7 @@
 #
 # Output generation script for stellar
 
-STELLAR=../../../../../seqan-seeds-build/release/bin/stellar
+STELLAR=../../../../build/release/bin/stellar
 
 # ============================================================
 # Varying error rates
