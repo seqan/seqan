@@ -2435,7 +2435,11 @@ void mapSplicedReads(
 			std::cout << "MinRegionStartPos=" << options.minReadRegionsStart << std::endl;
 		}
 		scanBegin = options.minReadRegionsStart;
+		if (scanBegin > length(genome))
+			scanBegin = length(genome);
 		scanEnd = options.maxReadRegionsEnd;
+		if (scanEnd > length(genome))
+			scanEnd = length(genome);
 	}
 	TGenomeInf genomeInf = infix(genome, scanBegin, scanEnd);
 	//TSwiftFinderL swiftFinderL(genome, options.repeatLength, 1);
