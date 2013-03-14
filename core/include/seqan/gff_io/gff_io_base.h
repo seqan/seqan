@@ -692,6 +692,10 @@ template <typename TStream, typename TTag>
 inline int
 writeRecord(TStream & stream, GffRecord & record, TTag const tag)
 {
+    // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
+    if (empty(record.seqID))
+        return 0;
+
     // write column 1: seqid
     if (streamWriteBlock(stream, &record.seqID[0], length(record.seqID)) != length(record.seqID))
         return 1;
