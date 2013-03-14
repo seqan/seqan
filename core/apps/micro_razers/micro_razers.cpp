@@ -236,7 +236,7 @@ int main(int argc, const char *argv[])
         
     addDescription(parser, "(c) Copyright 2009 by Anne-Katrin Emde.");
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "1.0");
+    setVersion(parser, "1.0.1");
     setDate(parser, "Jul 2009" );
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
