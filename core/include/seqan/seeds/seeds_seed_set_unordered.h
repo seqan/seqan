@@ -157,7 +157,7 @@ template <typename TSeedSpec>
 struct Iterator<SeedSet<TSeedSpec, Unordered> const, Standard>
 {
     typedef SeedSet<TSeedSpec, Unordered> const TSeedSet_;
-	typedef typename TSeedSet_::TSet_ TMultiSet_;
+	typedef typename TSeedSet_::TSet_ const TMultiSet_;
     typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
 
