@@ -328,8 +328,8 @@ TStream & operator<<(TStream & stream, ReadSimulationInstruction<Global> const &
 void setUpArgumentParser(ArgumentParser & parser)
 {
     setShortDescription(parser, "A Read Simulator");
-    setVersion(parser, "0.1.1");
-    setDate(parser, "July 27, 2012");
+    setVersion(parser, "0.1.2");
+    setDate(parser, "March 14, 2013");
     setCategory(parser, "Simulation");
 
     addDescription(parser, "Use 'random.fasta' for the SEQUENCE file name to generate it randomly.");
