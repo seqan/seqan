@@ -140,6 +140,8 @@ enum GapMode            {RAZERS_GAPPED, RAZERS_UNGAPPED};
 enum ScoreMode          {RAZERS_ERRORS, RAZERS_SCORE, RAZERS_QUALITY};
 enum CompactMatchesMode {COMPACT, COMPACT_FINAL, COMPACT_FINAL_EXTERNAL};
 
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Default options
 

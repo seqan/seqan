@@ -313,10 +313,10 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 
     // Need genome and reads (hg18.fa reads.fq)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    setValidValues(parser, 0, "fa fasta fq fastq");
+    setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqFormat()));
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
-    setValidValues(parser, 1, "fa fasta fq fastq");
+    setValidValues(parser, 1, getFileFormatExtensions(seqan::AutoSeqFormat()));
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
