@@ -232,10 +232,8 @@ struct TagSelector
 {
     int tagId;
 
-    TagSelector()
-    {
-        tagId = 0;
-    }
+    TagSelector() :
+        tagId(-1) {}    // -1 is an important initialization to signal a not yet selected tag (used for file format auto-detection)
 
     inline bool
     operator==(TagSelector const & other) const
@@ -251,6 +249,27 @@ struct TagSelector< TagList<TTag, TSubList> >
     typedef TTag                    Type;
     typedef TagSelector<TSubList>   Base;
 };
+
+
+template <typename TTagList>
+struct Value<TagSelector<TTagList> >
+{
+    typedef int Type;
+};
+
+template <typename TTagList>
+inline typename Reference<TagSelector<TTagList> >::Type
+value(TagSelector<TTagList> &selector)
+{
+    return selector.tagId;
+}
+
+template <typename TTagList>
+inline typename Reference<TagSelector<TTagList> const>::Type
+value(TagSelector<TTagList> const &selector)
+{
+    return selector.tagId;
+}
 
 // ----------------------------------------------------------------------------
 // Tag DotDrawing
@@ -353,37 +372,39 @@ struct LENGTH<TagList<TTag, TSubList> >
 ..include:seqan/basic.h
 */
 
-template <typename TList, int i>
+template <typename TList, int I>
 struct TagListValue;
 
-template <typename TTag, typename TSubList>
-struct TagListValue<TagList<TTag, TSubList>, 1>
-{
-    typedef TTag Type;
-};
-
 template <typename TTag, typename TSubList, int I>
-struct TagListValue<TagList<TTag, TSubList>, I>
-{
-    typedef typename TagListValue<TSubList, I - 1>::Type Type;
-};
+struct TagListValue<TagList<TTag, TSubList>, I>:
+    public If<Eval<I == LENGTH<TSubList>::VALUE>,
+              TTag,
+              typename TagListValue<TSubList, I>::Type> {};
+
+//template <typename TTag, typename TSubList, int I>
+//struct TagListValue<TagList<TTag, TSubList>, I> :
+//    public typename TagListValue<TSubList, I - 1> {};
+//
+//template <typename TTagList, int I>
+//struct TagListValue<TagSelector<TTagList>, I> :
+//    public typename TagListValue<TTagList, I> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction TagListGetIndex
 // ----------------------------------------------------------------------------
 
 /**
-.Metafunction.TagListGetIndex:
+.Metafunction.Find:
 ..cat:Basic
 ..summary:A metafunction to retrieve the index of a tag in the @Tag.TagList@.
-..signature:TagListGetIndex<TTagList, TTag>
+..signature:Find<TTagList, TSearchTag>
 ..param.TTagList:A tag list.
 ...remarks:For a @Class.TagSelector@ the underlying @Tag.TagList@ is used.
 ...type:Tag.TagList
 ...type:Class.TagSelector
-..param.TTag:A tag to retrieve the index of.
+..param.TSearchTag:A tag to retrieve the index of.
 ...type:Tag.Tag
-..return:The index of $TTag$ in the tag list $TTagList$. If $TTag$ is not contained $-1$ is returned.
+..return:The index of $TSearchTag$ in the tag list $TTagList$. If $TSearchTag$ is not contained $-1$ is returned.
 ...remarks:This meta-function can be used to test whether the value of a @Class.TagSelector@ equals a specific tag.
 ...type:nolink:int
 ..cat:Basic
@@ -394,33 +415,67 @@ if (format.tagId == TagListGetIndex<AutoSeqStreamFormat, Fasta>::VALUE)
 {
     // do something specific to Fasta format
 }
+
+// or even shorter:
+
+if (isEqual(format.tagId, Fasta()))
+{
+    // do something specific to Fasta format
+}
 */
 
-template <typename TList, typename TTag>
-struct TagListGetIndex
+template <typename TList, typename TSearchTag>
+struct Find;
+
+template <typename TTag, typename TSearchTag>
+struct Find<TagList<TTag, void>, TSearchTag>
 {
-    enum { VALUE = -1 };
+    enum { VALUE = -1 };    // not found
 };
 
-template <typename TTag, typename TSubList>
-struct TagListGetIndex<TagList<TTag, TSubList>, TTag>
+template <typename TSearchTag>
+struct Find<TagList<TSearchTag, void>, TSearchTag>
 {
-    enum { VALUE = 1 };
+    enum { VALUE = 0 };
 };
 
-template <typename TTag, typename TSubList, typename TOtherTag>
-struct TagListGetIndex<TagList<TTag, TSubList>, TOtherTag>
+template <typename TTag, typename TSubList, typename TSearchTag>
+struct Find<TagList<TTag, TSubList>, TSearchTag>
 {
-    enum { VALUE = TagListGetIndex<TSubList, TOtherTag>::VALUE + 1 };
+    enum { VALUE = Find<TSubList, TSearchTag>::VALUE };
 };
 
-template <typename TTagList, int I>
-struct TagListValue<TagSelector<TTagList>, I>:
-    public TagListValue<TTagList, I> {};
+template <typename TSubList, typename TSearchTag>
+struct Find<TagList<TSearchTag, TSubList>, TSearchTag>
+{
+    enum { VALUE = LENGTH<TSubList>::VALUE };
+};
+
+template <typename TTagList, typename TSearchTag>
+struct Find<TagSelector<TTagList>, TSearchTag>:
+    public Find<TTagList, TSearchTag> {};
+
+template <typename TTagList, typename TSearchTag>
+inline int find(TagSelector<TTagList> const &, TSearchTag const &)
+{
+    return Find<TTagList, TSearchTag>::VALUE;
+}
 
 // ============================================================================
 // Functions
 // ============================================================================
+
+template <typename TTagList, typename TTag>
+inline bool isEqual(TagSelector<TTagList> const &selector, TTag const &)
+{
+    return selector.tagId == Find<TTagList, TTag>::VALUE;
+}
+
+template <typename TTagList, typename TTag>
+inline void assign(TagSelector<TTagList> &selector, TTag const &)
+{
+    selector.tagId = Find<TTagList, TTag>::VALUE;
+}
 
 }  // namespace seqan
 
