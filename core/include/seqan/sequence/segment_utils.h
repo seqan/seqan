@@ -72,11 +72,14 @@ namespace seqan {
 */
 
 template <typename TLhs, typename TRhs>
-bool endsWith(TLhs const & lhs, TRhs const & rhs)
+inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
 {
-    if (length(lhs) < length(rhs))
+    typename Size<TLhs const>::Type lhsLen = length(lhs);
+    typename Size<TRhs const>::Type rhsLen = length(rhs);
+
+    if (lhsLen < rhsLen)
         return false;
-    return suffix(lhs, length(lhs) - length(rhs)) == rhs;
+    return suffix(lhs, lhsLen - rhsLen) == rhs;
 }
 
 // ----------------------------------------------------------------------------
@@ -95,12 +98,15 @@ bool endsWith(TLhs const & lhs, TRhs const & rhs)
 ..include:seqan/stream.h
 */
 
+// TODO(weese:) this function is doing the same as isPrefix() one should be removed
 template <typename TLhs, typename TRhs>
-bool startsWith(TLhs const & lhs, TRhs const & rhs)
+inline bool startsWith(TLhs const & lhs, TRhs const & rhs)
 {
-    if (length(lhs) < length(rhs))
+    typename Size<TRhs const>::Type rhsLen = length(rhs);
+
+    if (length(lhs) < rhsLen)
         return false;
-    return prefix(lhs, length(rhs)) == rhs;
+    return prefix(lhs, rhsLen) == rhs;
 }
 
 }  // namespace seqan
