@@ -479,7 +479,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 
     addTextSection(parser, "Formats, Naming, Sorting, and Coordinate Schemes");
 
-    addText(parser, "RazerS 2 supports various output formats. The output format is detected automatically from the file name suffix.");
+    addText(parser, "RazerS 3 supports various output formats. The output format is detected automatically from the file name suffix.");
 	addListItem(parser, ".razers", "Razer format");
 	addListItem(parser, ".fa, .fasta", "Enhanced Fasta format");
 	addListItem(parser, ".eland", "Eland format");
