@@ -214,11 +214,12 @@ _getSupportedFormats(std::vector<std::string> & supported_formats, ArgParseArgum
 
     if (length(opt.validValues) != 0)
     {
+        std::string filetype;
         for (std::vector<std::string>::const_iterator valid = opt.validValues.begin();
              valid != opt.validValues.end();
              ++valid)
         {
-            std::string filetype = "*.";
+            filetype = "*";
             append(filetype, *valid);
             appendValue(supported_formats, filetype);
         }

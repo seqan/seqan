@@ -671,7 +671,7 @@ inline int build(FaiIndex & index, char const * seqFilename, char const * faiFil
     RecordReader<TMMapString, SinglePass<Mapped> > reader(index.mmapString);
     // Get file format, must be FASTA for FAI.
     AutoSeqStreamFormat tagSelector;
-    if (!checkStreamFormat(reader, tagSelector))
+    if (!guessStreamFormat(reader, tagSelector))
         return 1;  // Invalid format.
 
     if (tagSelector.tagId != 1)

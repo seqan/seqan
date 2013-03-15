@@ -45,7 +45,7 @@ namespace seqan {
 // ============================================================================
 
 struct TagRaw_;
-typedef Tag<TagRaw_> const Raw;
+typedef Tag<TagRaw_> Raw;
 
 // ============================================================================
 // Tags, Classes, Enums

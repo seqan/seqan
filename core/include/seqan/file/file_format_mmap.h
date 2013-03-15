@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,13 @@
 // DAMAGE.
 //
 // ==========================================================================
-
-//SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
+// Author: David Weese <david.weese@fu-berlin.de>
+// ==========================================================================
+// Provides functionality to map a sequence file into memory and split into
+// segments (one for each sequence). Implements different sequence file
+// formats, e.g. Fastq, Fasta, QSeq, Raw, and auto detection (via the
+// TagSelector AutoSeqFormat) based on content or file extension.
+// ==========================================================================
 
 #ifndef SEQAN_HEADER_FILE_FORMAT_MMAP_H
 #define SEQAN_HEADER_FILE_FORMAT_MMAP_H
@@ -56,6 +61,84 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
+
+//////////////////////////////////////////////////////////////////////////////
+// File Formats - Fastq (Fasta extension for quality values)
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+.Tag.File Format.tag.Fastq:
+    FASTQ file format for sequences.
+..include:seqan/file.h
+*/
+
+    struct TagFastq_;
+    //IOREV _doc_ this should ge somewhere else!
+    typedef Tag<TagFastq_> Fastq; //IOREV
+
+/**
+.Tag.File Format.tag.QSeq:
+	QSeq format, used for most of the Illumina read files.
+..include:seqan/file.h
+*/
+	struct QSeq_;
+	//IOREV _doc_ this whole part should go someplace different
+	typedef Tag<QSeq_> QSeq; //IOREV
+
+
+    template <typename TFormat, typename T = void>
+    struct FileFormatExtensions;
+    
+
+    template <typename T>
+    struct FileFormatExtensions<Fasta, T>
+    {
+        static char const * VALUE[6];
+    };
+
+    template <typename T>
+    char const * FileFormatExtensions<Fasta, T>::VALUE[6] = {
+        ".fa",      // default output extension
+        ".fasta",
+        ".faa",     // FASTA Amino Acid file
+        ".ffn",     // FASTA nucleotide coding regions file
+        ".fna",     // FASTA Nucleic Acid file
+        ".frn" };
+
+
+    template <typename T>
+    struct FileFormatExtensions<Fastq, T>
+    {
+        static char const * VALUE[2];
+    };
+
+    template <typename T>
+    char const * FileFormatExtensions<Fastq, T>::VALUE[2] = {
+        ".fq",      // default output extension
+        ".fastq" };
+
+
+    template <typename T>
+    struct FileFormatExtensions<QSeq, T>
+    {
+        static char const * VALUE[2];
+    };
+
+    template <typename T>
+    char const * FileFormatExtensions<QSeq, T>::VALUE[2] = {
+        ".txt",     // default output extension
+        ".seq" };
+
+
+    template <typename T>
+    struct FileFormatExtensions<Raw, T>
+    {
+        static char const * VALUE[1];	// default is one extension
+    };
+
+    template <typename T>
+    char const * FileFormatExtensions<Raw, T>::VALUE[1] = {
+        ".qseq" };  // default output extension
 
 /**
 .Shortcut.MultiFasta
@@ -197,37 +280,54 @@ namespace SEQAN_NAMESPACE_MAIN
 ..include:seqan/file.h
 */
 
-	template < typename TFilename >
+	template <typename TFilename, typename TFormat_>
 	inline bool
 	guessFormatFromFilename(
-		TFilename const & fname,
-		Fasta)
+		TFilename const & fileName,
+		Tag<TFormat_> /*formatTag*/)
 	{
-//IOREV _doc_
-		typedef typename Value<TFilename>::Type									TValue;
+		typedef typename Value<TFilename>::Type                                 TValue;
 		typedef ModifiedString<TFilename, ModView<FunctorLowcase<TValue> > >	TLowcase;
+		typedef Tag<TFormat_>                                                   TFormat;
 		
-		typename Size<TFilename>::Type len = length(fname);
-		TLowcase lowcaseFname(fname);
+		TLowcase lowcaseFileName(fileName);
+		for (unsigned i = 0; i < sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
+			if (endsWith(lowcaseFileName, FileFormatExtensions<TFormat>::VALUE[i]))
+				return true;
 
-		if (len >= 3)
-		{
-			if (suffix(lowcaseFname, len - 3) == ".fa") return true;
-		}
-		if (len >= 4)
-		{
-			if (suffix(lowcaseFname, len - 4) == ".fas") return true;
-			if (suffix(lowcaseFname, len - 4) == ".faa") return true;	// FASTA Amino Acid file 
-			if (suffix(lowcaseFname, len - 4) == ".ffn") return true;	// FASTA nucleotide coding regions file
-			if (suffix(lowcaseFname, len - 4) == ".fna") return true;	// FASTA Nucleic Acid file
-			if (suffix(lowcaseFname, len - 4) == ".frn") return true;
-		}
-		if (len >= 6)
-		{
-			if (suffix(lowcaseFname, len - 6) == ".fasta") return true;
-		}
 		return false;
 	}
+
+    template <typename TStringSet, typename TFormat_>
+    inline void
+    _getFileFormatExtensions(TStringSet &stringSet, Tag<TFormat_> /*formatTag*/)
+    {
+		typedef Tag<TFormat_> TFormat;
+		for (unsigned i = 0; i < sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
+			appendValue(stringSet, FileFormatExtensions<TFormat>::VALUE[i]);
+    }
+
+    template <typename TStringSet, typename TTag>
+    inline void
+    _getFileFormatExtensions(TStringSet &stringSet, TagList<TTag, void> const /*formatTag*/)
+    {
+        _getFileFormatExtensions(stringSet, TTag());
+    }
+
+    template <typename TStringSet, typename TTag, typename TSubList>
+    inline void
+    _getFileFormatExtensions(TStringSet &stringSet, TagList<TTag, TSubList> const /*formatTag*/)
+    {
+        _getFileFormatExtensions(stringSet, TTag());
+        _getFileFormatExtensions(stringSet, TSubList());
+    }
+
+    template <typename TStringSet, typename TTagList>
+    inline void
+    _getFileFormatExtensions(TStringSet &stringSet, TagSelector<TTagList> const /*formatTag*/)
+    {
+        _getFileFormatExtensions(stringSet, TTagList());
+    }
 
 /**
 .Function.split:
@@ -250,7 +350,7 @@ After calling this function, the StringSet length is the number of sequence frag
 
     // split stringset into single Fasta sequences
     template <typename TValue, typename TSpec, typename TStringSetSpec>
-    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Fasta const & /* tag */)
+    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> &me, Fasta /* tag */)
     {
 //IOREV _doc_
         typedef String<TValue, TSpec>                               TString;
@@ -472,18 +572,6 @@ this function can be used to extract the quality value id of every fragment in t
 		clear(dst);
 	}
 
-//////////////////////////////////////////////////////////////////////////////
-// File Formats - Fastq (Fasta extension for quality values)
-//////////////////////////////////////////////////////////////////////////////
-
-/**
-.Tag.File Format.tag.Fastq:
-	FASTQ file format for sequences.
-..include:seqan/file.h
-*/
-struct TagFastq_;
-//IOREV _doc_ this should ge somewhere else!
-typedef Tag<TagFastq_> const Fastq; //IOREV
 
 	// test for Fastq format
 	template < typename TSeq >
@@ -495,35 +583,11 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
 //IOREV _doc_
 		return seq[0] == '@';
 	}
-	
-	template < typename TFilename >
-	inline bool
-	guessFormatFromFilename(
-		TFilename const & fname,
-		Fastq)
-	{
-//IOREV _doc_
-		typedef typename Value<TFilename>::Type									TValue;
-		typedef ModifiedString<TFilename, ModView<FunctorLowcase<TValue> > >	TLowcase;
-		
-		typename Size<TFilename>::Type len = length(fname);
-		TLowcase lowcaseFname(fname);
-
-		if (len >= 3)
-		{
-			if (suffix(lowcaseFname, len - 3) == ".fq") return true;
-		}
-		if (len >= 6)
-		{
-			if (suffix(lowcaseFname, len - 6) == ".fastq") return true;
-		}
-		return false;
-	}
 
     // split stringset into single Fasta sequences
     template <typename TValue, typename TSpec, typename TStringSetSpec>
     inline void
-    split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Fastq const & /* tag */)
+    split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Fastq /* tag */)
     {
         //IOREV
         typedef String<TValue, TSpec>                               TString;
@@ -714,15 +778,6 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
 //////////////////////////////////////////////////////////////////////////////
 // File Formats - QSeq (used by Illumina for most of their read files)
 //////////////////////////////////////////////////////////////////////////////
-
-/**
-.Tag.File Format.tag.QSeq:
-	QSeq format, used for most of the Illumina read files.
-..include:seqan/file.h
-*/
-	struct QSeq_;
-//IOREV _doc_ this whole part should go someplace different
-	typedef Tag<QSeq_> const QSeq; //IOREV
 
 	// FIXME The following enum is more or less arbitrary since the information
 	// in a QSeq file may differ depending on where they come from. Not sure if
@@ -961,7 +1016,7 @@ typedef Tag<TagFastq_> const Fastq; //IOREV
 */
 struct TagRaw_;
 //IOREV _doc_ whats this doing here?
-typedef Tag<TagRaw_> const Raw; //IOREV
+typedef Tag<TagRaw_> Raw; //IOREV
 
 	// test for Fastq format
 	template < typename TSeq >
@@ -974,33 +1029,9 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		return true;
 	}
 	
-	template < typename TFilename >
-	inline bool
-	guessFormatFromFilename(
-		TFilename const & fname,
-		Raw)
-	{
-//IOREV _doc_
-		typedef typename Value<TFilename>::Type									TValue;
-		typedef ModifiedString<TFilename, ModView<FunctorLowcase<TValue> > >	TLowcase;
-		
-		typename Size<TFilename>::Type len = length(fname);
-		TLowcase lowcaseFname(fname);
-
-		if (len >= 3)
-		{
-			if (suffix(lowcaseFname, len - 3) == ".txt") return true;
-		}
-		if (len >= 6)
-		{
-			if (suffix(lowcaseFname, len - 6) == ".seq") return true;
-		}
-		return false;
-	}
-
     // split stringset into single Fasta sequences
     template <typename TValue, typename TSpec, typename TStringSetSpec>
-    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Raw const & /* tag */)
+    inline void split(StringSet<String<TValue, TSpec>, TStringSetSpec> & me, Raw /* tag */)
     {
 //IOREV _doc_
         typedef String<TValue, TSpec>                               TString;
@@ -1118,72 +1149,69 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		TagList<Fastq,
 		TagList<Fasta,
 //		TagList<QSeq,   // doesn't work as it uses STL strings and parsers
-		TagList<Raw> /* > */  > > 						SeqFormats; //IOREV
-	typedef TagSelector<SeqFormats>				AutoSeqFormat; //IOREV _doc_ _tested_ alltogether this recursive construction of format-autodetection is not very intuitive
+		TagList<Raw> /* > */ > > SeqFormats;  // if TagSelector is set to -1, the file format is auto-detected
+
+	typedef TagSelector<SeqFormats> AutoSeqFormat;
 
 //____________________________________________________________________________
 // guess file format
 
-	template < typename TFileSeq >
+	template <typename TFileSeq>
 	inline bool
-	guessFormat(
-		TFileSeq const &,
-		TagSelector<> &format)
+	guessFormat(TFileSeq const &, TagSelector<> &)
 	{
-//IOREV _doc_
-		format.tagId = 0;
+        // we get here if the file format could not be determined
 		return false;
 	}
 	
-	template < typename TFileSeq, typename TTagList >
+	template <typename TFileSeq, typename TTagList>
 	inline bool
-	guessFormat(
-		TFileSeq const & seq,
-		TagSelector<TTagList> &format)
+	guessFormat(TFileSeq const &seq, TagSelector<TTagList> &format)
 	{
 //IOREV _doc_ as mentionened this recursive method is not intuitive, also inlining doesn't really make sense for recursive functions, does it?
-		if (guessFormat(seq, typename TTagList::Type()))
-		{
-			if (format.tagId == 0)
-			{
-				format.tagId = LENGTH<TTagList>::VALUE;			// if tagId == 0 then store detected format
-				return true;
-			} else
-				return format.tagId == LENGTH<TTagList>::VALUE;	// if tagId != 0 then compare detected format with tagId
-		}
+//(weese:) ANSWER: This is not a recursive function as TTagList is different for each called instance.
+//                 It will be expanded (inlined) completely.
+
+        typedef typename TTagList::Type TFormatTag;
+
+        if (value(format) == -1 || value(format) == LENGTH<TTagList>::VALUE - 1)
+        {
+            // if tagId is set to -1 (auto-detect) or the current format (TFormatTag) then test for TFormatTag format
+            if (guessFormat(seq, TFormatTag()))
+            {
+                value(format) = LENGTH<TTagList>::VALUE - 1;
+                return true;
+            }
+        }
 		return guessFormat(seq, static_cast<typename TagSelector<TTagList>::Base &>(format));
 	}
 	
 //____________________________________________________________________________
 // guess file format from filename
 
-	template < typename TFilename >
+	template <typename TFilename>
 	inline bool
-	guessFormatFromFilename(
-		TFilename const &,
-		TagSelector<> &format)
+	guessFormatFromFilename(TFilename const &, TagSelector<>)
 	{
-//IOREV _doc_
-		format.tagId = 0;
+        // we get here if the file format could not be determined
 		return false;
 	}
 	
-	template < typename TFilename, typename TTagList >
+	template <typename TFilename, typename TTagList>
 	inline bool
-	guessFormatFromFilename(
-		TFilename const & fname,
-		TagSelector<TTagList> &format)
+	guessFormatFromFilename(TFilename const &fname, TagSelector<TTagList> &format)
 	{
-//IOREV _doc_ see above
-		if (guessFormatFromFilename(fname, typename TTagList::Type()))
-		{
-			if (format.tagId == 0)
-			{
-				format.tagId = LENGTH<TTagList>::VALUE;			// if tagId == 0 then store detected format
-				return true;
-			} else
-				return format.tagId == LENGTH<TTagList>::VALUE;	// if tagId != 0 then compare detected format with tagId
-		}
+        typedef typename TTagList::Type TFormatTag;
+
+        if (value(format) == -1 || value(format) == LENGTH<TTagList>::VALUE - 1)
+        {
+            // if tagId is set to -1 (auto-detect) or the current format (TFormatTag) then test for TFormatTag format
+            if (guessFormatFromFilename(fname, TFormatTag()))
+            {
+                value(format) = LENGTH<TTagList>::VALUE - 1;
+                return true;
+            }
+        }
 		return guessFormatFromFilename(fname, static_cast<typename TagSelector<TTagList>::Base &>(format));
 	}
 
@@ -1202,8 +1230,10 @@ typedef Tag<TagRaw_> const Raw; //IOREV
                       TagSelector<TTagList> const & format)
     {
 //IOREV _doc_
-        if (format.tagId == LENGTH<TTagList>::VALUE)
-            split(me, typename TTagList::Type());
+        typedef typename TTagList::Type TFormatTag;
+
+		if (value(format) == LENGTH<TTagList>::VALUE - 1)
+            split(me, TFormatTag());
         else
             split(me, static_cast<typename TagSelector<TTagList>::Base const &>(format));
     }
@@ -1230,8 +1260,10 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		TagSelector<TTagList> const &format)
 	{
 //IOREV _doc_
-		if (format.tagId == LENGTH<TTagList>::VALUE)
-			assignSeq(dst, seq, typename TTagList::Type());
+        typedef typename TTagList::Type TFormatTag;
+
+		if (value(format) == LENGTH<TTagList>::VALUE - 1)
+			assignSeq(dst, seq, TFormatTag());
 		else
 			assignSeq(dst, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 	}
@@ -1257,8 +1289,10 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		TagSelector<TTagList> const &format)
 	{
 //IOREV _doc_
-		if (format.tagId == LENGTH<TTagList>::VALUE)
-			assignSeqId(dst, seq, typename TTagList::Type());
+        typedef typename TTagList::Type TFormatTag;
+
+		if (value(format) == LENGTH<TTagList>::VALUE - 1)
+			assignSeqId(dst, seq, TFormatTag());
 		else
 			assignSeqId(dst, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 	}
@@ -1284,8 +1318,10 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		TagSelector<TTagList> const &format)
 	{
 //IOREV _doc_
-		if (format.tagId == LENGTH<TTagList>::VALUE)
-			assignCroppedSeqId(dst, seq, typename TTagList::Type());
+        typedef typename TTagList::Type TFormatTag;
+
+		if (value(format) == LENGTH<TTagList>::VALUE - 1)
+			assignCroppedSeqId(dst, seq, TFormatTag());
 		else
 			assignCroppedSeqId(dst, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 	}
@@ -1311,8 +1347,10 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		TagSelector<TTagList> const &format)
 	{
 //IOREV _doc_
-		if (format.tagId == LENGTH<TTagList>::VALUE)
-			assignQual(dst, seq, typename TTagList::Type());
+        typedef typename TTagList::Type TFormatTag;
+
+		if (value(format) == LENGTH<TTagList>::VALUE - 1)
+			assignQual(dst, seq, TFormatTag());
 		else
 			assignQual(dst, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 	}
@@ -1338,8 +1376,10 @@ typedef Tag<TagRaw_> const Raw; //IOREV
 		TagSelector<TTagList> const &format)
 	{
 //IOREV _doc_
-		if (format.tagId == LENGTH<TTagList>::VALUE)
-			assignQualId(dst, seq, typename TTagList::Type());
+        typedef typename TTagList::Type TFormatTag;
+
+		if (value(format) == LENGTH<TTagList>::VALUE - 1)
+			assignQualId(dst, seq, TFormatTag());
 		else
 			assignQualId(dst, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 	}

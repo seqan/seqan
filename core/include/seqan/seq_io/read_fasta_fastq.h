@@ -56,7 +56,7 @@ namespace seqan {
 ..include:seqan/file.h
 */
 struct TagFasta_;
-typedef Tag<TagFasta_> const Fasta;
+typedef Tag<TagFasta_> Fasta;
 
 /**
 .Tag.File Format.tag.Fastq:
@@ -64,7 +64,7 @@ typedef Tag<TagFasta_> const Fasta;
 ..include:seqan/file.h
 */
 struct TagFastq_;
-typedef Tag<TagFastq_> const Fastq;
+typedef Tag<TagFastq_> Fastq;
 
 
 // ============================================================================
@@ -1041,12 +1041,12 @@ int read2(StringSet<TIdString, TIdSpec> & sequenceIds,
 }
 
 // ----------------------------------------------------------------------------
-// Function checkStreamFormat()
+// Function guessStreamFormat()
 // ----------------------------------------------------------------------------
 
 /**
-.Function.checkStreamFormat
-..signature:checkStreamFormat(reader, tag)
+.Function.guessStreamFormat
+..signature:guessStreamFormat(reader, tag)
 ..returns:$bool$, indicating whether the file of $reader$ is of the given format.
 ..param.reader:RecordReader to query.
 ...type:Class.RecordReader
@@ -1059,7 +1059,7 @@ int read2(StringSet<TIdString, TIdSpec> & sequenceIds,
 
 template <typename TStream, typename TPass>
 inline bool
-checkStreamFormat(RecordReader<TStream, TPass> & reader, Fasta const & /*tag*/)
+guessStreamFormat(RecordReader<TStream, TPass> & reader, Fasta const & /*tag*/)
 {
     LimitRecordReaderInScope<TStream, TPass> limiter(reader);
     while (!atEnd(reader))
@@ -1076,7 +1076,7 @@ checkStreamFormat(RecordReader<TStream, TPass> & reader, Fasta const & /*tag*/)
 
 template <typename TStream, typename TPass>
 inline bool
-checkStreamFormat(RecordReader<TStream, TPass> & reader, Fastq const & /*tag*/)
+guessStreamFormat(RecordReader<TStream, TPass> & reader, Fastq const & /*tag*/)
 {
     LimitRecordReaderInScope<TStream, TPass> limiter(reader);
     while (!atEnd(reader))

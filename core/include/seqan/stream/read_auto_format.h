@@ -35,6 +35,11 @@
 // them to be used for automatic format detection with sequence files.
 // ==========================================================================
 
+// (weese:)
+// Why did you introduce int i in every function?
+// That adds complexity and requires an additional _x() helper function
+// for each x() function. Please have a look at assignSeq() in file/file_format_mmap.h
+
 #ifndef SEQAN_STREAM_RECORD_READER_AUTO_FORMAT_H_
 #define SEQAN_STREAM_RECORD_READER_AUTO_FORMAT_H_
 
@@ -76,7 +81,7 @@ int _read2(StringSet<TIdString, TIdSpec> & /*metas*/,
            TagSelector<void> const & /*tagSelector*/,
            int i)
 {
-    SEQAN_ASSERT_EQ(i, 0);
+    SEQAN_ASSERT_EQ(i, -1);
     (void)i;  // Only used for assertion.
     return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 }
@@ -90,7 +95,7 @@ int _read2(StringSet<TIdString, TIdSpec> & metas,
            TagSelector<TTagList> const & tagSelector,
            int i)
 {
-    if (i == 0)
+    if (i == -1)
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
     if (i != tagSelector.tagId)
         return _read2(metas, seqs, quals, reader, static_cast<typename TagSelector<TTagList>::Base const &>(tagSelector), i - 1);
@@ -107,10 +112,10 @@ int read2(StringSet<TIdString, TIdSpec> & metas,
           TRecordReader & reader,
           TagSelector<TTagList> & tagSelector)
 {
-    if (!checkStreamFormat(reader, tagSelector))
+    if (!guessStreamFormat(reader, tagSelector))
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 
-    return _read2(metas, seqs, quals, reader, tagSelector, LENGTH<TTagList>::VALUE);
+    return _read2(metas, seqs, quals, reader, tagSelector, LENGTH<TTagList>::VALUE - 1);
 }
 
 // For read2(metas, seqs, reader, TTagSelector/AutoSeqStreamFormat).
@@ -123,7 +128,7 @@ int _read2(StringSet<TIdString, TIdSpec> & /*metas*/,
            TagSelector<void> const & /*tagSelector*/,
            int i)
 {
-    SEQAN_ASSERT_EQ(i, 0);
+    SEQAN_ASSERT_EQ(i, -1);
     (void)i;  // Only used for assertion.
     return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 }
@@ -136,7 +141,7 @@ int _read2(StringSet<TIdString, TIdSpec> & metas,
            TagSelector<TTagList> const & tagSelector,
            int i)
 {
-    if (i == 0)
+    if (i == -1)
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
     if (i != tagSelector.tagId)
         return _read2(metas, seqs, reader, static_cast<typename TagSelector<TTagList>::Base const &>(tagSelector), i - 1);
@@ -152,10 +157,10 @@ int read2(StringSet<TIdString, TIdSpec> & metas,
           TRecordReader & reader,
           TagSelector<TTagList> & tagSelector)
 {
-    if (!checkStreamFormat(reader, tagSelector))
+    if (!guessStreamFormat(reader, tagSelector))
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 
-    return _read2(metas, seqs, reader, tagSelector, LENGTH<TTagList>::VALUE);
+    return _read2(metas, seqs, reader, tagSelector, LENGTH<TTagList>::VALUE - 1);
 }
 
 // ----------------------------------------------------------------------------
@@ -167,7 +172,7 @@ int read2(StringSet<TIdString, TIdSpec> & metas,
 template <typename TIdString, typename TSeqString, typename TQualString, typename TRecordReader>
 int _readRecord(TIdString & /*meta*/, TSeqString & /*seq*/, TQualString & /*qual*/, TRecordReader & /*reader*/, TagSelector<void> const & /*tagSelector*/, int i)
 {
-    SEQAN_ASSERT_EQ(i, 0);
+    SEQAN_ASSERT_EQ(i, -1);
     (void)i;  // only used for assertion.
     return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 }
@@ -175,7 +180,7 @@ int _readRecord(TIdString & /*meta*/, TSeqString & /*seq*/, TQualString & /*qual
 template <typename TIdString, typename TSeqString, typename TQualString, typename TRecordReader, typename TTagList>
 int _readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TRecordReader & reader, TagSelector<TTagList> const & tagSelector, int i)
 {
-    if (i == 0)
+    if (i == -1)
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
     if (i != tagSelector.tagId)
         return _readRecord(meta, seq, qual, reader, static_cast<typename TagSelector<TTagList>::Base const &>(tagSelector), i - 1);
@@ -188,10 +193,10 @@ template <typename TIdString, typename TSeqString, typename TQualString, typenam
 int readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TRecordReader & reader, TagSelector<TTagList> & tagSelector)
 {
     // TODO(holtgrew): The check should only happen once! Otherwise we waste time :(
-    if (!checkStreamFormat(reader, tagSelector))
+    if (!guessStreamFormat(reader, tagSelector))
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 
-    return _readRecord(meta, seq, qual, reader, tagSelector, LENGTH<TTagList>::VALUE);
+    return _readRecord(meta, seq, qual, reader, tagSelector, LENGTH<TTagList>::VALUE - 1);
 }
 
 // For readRecord(meta, seq, reader, TTagSelector/AutoSeqStreamFormat).
@@ -200,14 +205,14 @@ template <typename TIdString, typename TSeqString, typename TRecordReader>
 int _readRecord(TIdString & /*meta*/, TSeqString & /*seq*/, TRecordReader & /*reader*/, TagSelector<void> const & /*tagSelector*/, int i)
 {
     (void)i;  // Only used in assertion.
-    SEQAN_ASSERT_EQ(i, 0);
+    SEQAN_ASSERT_EQ(i, -1);
     return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 }
 
 template <typename TIdString, typename TSeqString, typename TRecordReader, typename TTagList>
 int _readRecord(TIdString & meta, TSeqString & seq, TRecordReader & reader, TagSelector<TTagList> const & tagSelector, int i)
 {
-    if (i == 0)
+    if (i == -1)
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
     if (i != tagSelector.tagId)
         return _readRecord(meta, seq, reader, static_cast<typename TagSelector<TTagList>::Base const &>(tagSelector), i - 1);
@@ -216,14 +221,18 @@ int _readRecord(TIdString & meta, TSeqString & seq, TRecordReader & reader, TagS
     return readRecord(meta, seq, reader, TFormat());
 }
 
+// (weese:)
+// why is guessStreamFormat called insided readRecord?
+// guessStreamFormat should be called outside and only once, directly after opening a stream
+
 template <typename TIdString, typename TSeqString, typename TRecordReader, typename TTagList>
 int readRecord(TIdString & meta, TSeqString & seq, TRecordReader & reader, TagSelector<TTagList> & tagSelector)
 {
     // TODO(holtgrew): The check should only happen once! Otherwise we waste time :(
-    if (!checkStreamFormat(reader, tagSelector))
+    if (!guessStreamFormat(reader, tagSelector))
         return IOERR_READ_AUTO_FORMAT_UNKNOWN_FORMAT;
 
-    return _readRecord(meta, seq, reader, tagSelector, LENGTH<TTagList>::VALUE);
+    return _readRecord(meta, seq, reader, tagSelector, LENGTH<TTagList>::VALUE - 1);
 }
 
 }  // namespace seqan

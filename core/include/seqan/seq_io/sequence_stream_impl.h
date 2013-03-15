@@ -326,7 +326,7 @@ public:
     SeqIOFileFormat_::Type _checkFormat(RecordReader<TStream, TSpec> & recordReader)
     {
         AutoSeqStreamFormat formatTag;
-        if (!checkStreamFormat(recordReader, formatTag))
+        if (!guessStreamFormat(recordReader, formatTag))
             return SeqIOFileFormat_::FILE_FORMAT_ERROR;
 
         switch (formatTag.tagId)

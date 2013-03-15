@@ -65,7 +65,7 @@ that is the file cannot store multiple records.
 
 struct TagRaw_;
 //IOREV
-typedef Tag<TagRaw_> const Raw; //IOREV
+typedef Tag<TagRaw_> Raw; //IOREV
 
 
 

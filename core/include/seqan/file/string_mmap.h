@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,10 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
+// ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
+// ==========================================================================
+// Memory map a whole file and use it as a string.
 // ==========================================================================
 
 #ifndef SEQAN_HEADER_STRING_MMAP_H

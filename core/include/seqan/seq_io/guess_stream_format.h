@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // File Format detection with Stream Class.
 // ==========================================================================
@@ -58,7 +59,11 @@ namespace seqan {
 ...signature:TagList<Fastq, TagList<Fasta > >
 ..include:seqan/stream.h
 */
-typedef TagList<Fastq, TagList<Fasta > >    SeqStreamFormats;
+
+// TODO(weese): File formats should be independent of the I/O interface?
+// Why adding SeqStreamFormats and AutoSeqStreamFormat instead of using
+// the existing AutoSeqFormat and SeqFormats?
+typedef TagList<Fastq, TagList<Fasta> > SeqStreamFormats;
 
 /**
 .Shortcut.AutoSeqStreamFormat
@@ -68,18 +73,18 @@ typedef TagList<Fastq, TagList<Fasta > >    SeqStreamFormats;
 ..shortcutfor:Class.TagSelector
 ..shortcutfor:Tag.TagList
 ..remarks:This shortcut is a typedef of $TagSelector<TagList<Fastq, TagList<Fasta > > >$.
-..remarks:Variables of this type an be passed to @Function.checkStreamFormat@ and will offer the index of the detected FileFormat in its member $tagId$.
+..remarks:Variables of this type an be passed to @Function.guessStreamFormat@ and will offer the index of the detected FileFormat in its member $tagId$.
 The values of its member $tagId$ can be as follows:
 ..remarks.tableheader:value|meaning
 ..remarks.table:0|Unknown file format.
 ..remarks.table:1|FASTA
 ..remarks.table:2|FASTQ
 ..see:Shortcut.SeqStreamFormats
-..see:Function.checkStreamFormat
+..see:Function.guessStreamFormat
 ..include:seqan/stream.h
 */
 
-typedef TagSelector<SeqStreamFormats>       AutoSeqStreamFormat;
+typedef TagSelector<SeqStreamFormats> AutoSeqStreamFormat;
 
 /**
 .Class.LimitRecordReaderInScope
@@ -91,7 +96,7 @@ typedef TagSelector<SeqStreamFormats>       AutoSeqStreamFormat;
 ..param.TSpec:The specialization of the @Class.RecordReader@.
 ...type:Class.RecordReader
 ..see:Class.RecordReader
-..see:Function.checkStreamFormat
+..see:Function.guessStreamFormat
 ..include:seqan/stream.h
 ..remarks:This class is intended for situations, where you do not wish the RecordReader to rebuffer and where you wish to return to the original reading position after reading, e.g. when detecting the file format of the stream.
 ..remarks:It is used by passing the RecordReader-object on construction (this already does the necessary changes in the RecordReader). Upon deconstruction of this object, the RecordReader is reset to its original state, including all iterators.
@@ -200,7 +205,7 @@ private:
 ...type:Shortcut.AutoSeqStreamFormat
 ..returns:$char const *$ with the format name.
 ..include:seqan/stream.h
-..see:Function.checkStreamFormat
+..see:Function.guessStreamFormat
 ..see:Shortcut.AutoSeqStreamFormat
 ..example.code:
 // (Create RecordReader object recordReader with sequence file here).
@@ -216,26 +221,26 @@ getAutoSeqStreamFormatName(AutoSeqStreamFormat const & format)
 {
     switch (format.tagId)
     {
-        case 1: return "FASTA";
-        case 2: return "FASTQ";
+        case Find<SeqStreamFormats, Fasta>::VALUE: return "FASTA";
+        case Find<SeqStreamFormats, Fastq>::VALUE: return "FASTQ";
     }
 
     return "INVALID FORMAT";
 }
 
 // ----------------------------------------------------------------------------
-// Function checkStreamFormat()
+// Function guessStreamFormat()
 // ----------------------------------------------------------------------------
 
 /**
-.Function.checkStreamFormat
+.Function.guessStreamFormat
 ..class:Class.RecordReader
 ..cat:Input/Output
 ..summary:check whether the data provided by reader is (one of) the specified format(s).
-..signature:checkStreamFormat(TRecordReader & reader, TTag const &)
+..signature:guessStreamFormat(TRecordReader & reader, TTag const &)
 ..param.reader:The @Class.RecordReader@ to read from
 ..param.TTag:The tag to check against.
-..signature:checkStreamFormat(TRecordReader & reader, TagSelector<TTagList> & formats)
+..signature:guessStreamFormat(TRecordReader & reader, TagSelector<TTagList> & formats)
 ..param.formats:A @Class.TagSelector@ object that contains the list of tags to check and provides a tagId member with index of the detected tag.
 ..returns: $true$ if (one of) the specified Tag(s) tested positive and $False$ otherwise
 ...type:nolink:$bool$
@@ -244,12 +249,12 @@ getAutoSeqStreamFormatName(AutoSeqStreamFormat const & format)
 ..include:seqan/stream.h
 ..example.text:
 The following example guesses the sequence file format of the already open fstream $in$.
-After the call to $checkStreamFormat()$, the $tagSelector.tagId$ contains the 1-based index of the matching tag.
+After the call to $guessStreamFormat()$, the $tagSelector.tagId$ contains the 1-based index of the matching tag.
 Here, we use the @Shortcut.AutoSeqStreamFormat@ tag selector.
 ..example.code:
 RecordReader<std::fstream, SinglePass<> > reader(in);
 AutoSeqStreamFormat tagSelector;
-bool b = checkStreamFormat(reader, tagSelector);
+bool b = guessStreamFormat(reader, tagSelector);
 // b is true if any format was detected successfully.
 if (tagSelector.tagId == 1)
     std::cerr << "Detected FASTA." << std::endl;
@@ -266,7 +271,7 @@ typedef TagSelector<TagList<Fasta, TagList<Fastq> > > MyTagSelector;
 RecordReader<std::fstream, SinglePass<> > reader(in);
 AutoSeqStreamFormat tagSelector;
 MyTagSelector tagSelector;
-bool b = checkStreamFormat(reader, tagSelector);
+bool b = guessStreamFormat(reader, tagSelector);
 // b is true if any format was detected successfully.
 if (tagSelector.tagId == 1)
     std::cerr << "Detected FASTQ." << std::endl;
@@ -277,36 +282,31 @@ else
 
 */
 
-// TODO(holtgrew): Rename to guessStreamFormat().
-
 template < typename TRecordReader >
 inline bool
-checkStreamFormat(TRecordReader & reader, TagSelector<> & formats)
+guessStreamFormat(TRecordReader &, TagSelector<> &)
 {
-    (void)reader;
-    formats.tagId = 0;
+    // we get here if the file format could not be determined
     return false;
 }
 
 template <typename TRecordReader, typename TTagList >
 inline bool
-checkStreamFormat(TRecordReader & reader, TagSelector<TTagList> & formats)
+guessStreamFormat(TRecordReader & reader, TagSelector<TTagList> & format)
 {
-    if (checkStreamFormat(reader, typename TTagList::Type()))
+    // (weese:) compare with guessFormat in file_format_mmap.h
+    typedef typename TTagList::Type TFormatTag;
+
+    if (value(format) == -1 || value(format) == Find<TTagList, TFormatTag>::VALUE)
     {
-        if (formats.tagId == 0)
+        // if tagId is set to -1 (auto-detect) or the current format (TFormatTag) then test for TFormatTag format
+        if (guessStreamFormat(reader, TFormatTag()))
         {
-            // if tagId == 0 then store detected format
-            formats.tagId = LENGTH<TTagList>::VALUE;
+            value(format) = Find<TTagList, TFormatTag>::VALUE;
             return true;
-        } else
-            // if tagId != 0 then compare detected format with tagId
-            return formats.tagId == LENGTH<TTagList>::VALUE;
+        }
     }
-    return checkStreamFormat(reader,
-                              static_cast<
-                                typename TagSelector<TTagList>::Base &
-                                         > (formats) );
+    return guessStreamFormat(reader, static_cast<typename TagSelector<TTagList>::Base &>(format));
 }
 
 }  // namespace seqan

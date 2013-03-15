@@ -1,8 +1,7 @@
-
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,6 +28,11 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
+// ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
+// ==========================================================================
+// Implements lots of internal data structures for low-level file access used
+// by the External String, external sorters and mappers (Pool), FileStream.
 // ==========================================================================
 
 #ifndef SEQAN_HEADER_FILE_PAGE_H

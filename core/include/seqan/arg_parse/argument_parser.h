@@ -887,6 +887,35 @@ inline void setHelpText(ArgumentParser & me,
     setHelpText(getArgument(me, argumentPosition), text);
 }
 
+// ----------------------------------------------------------------------------
+// Function getFileFormatExtensions()
+// ----------------------------------------------------------------------------
+
+/**
+.Function.getFileFormatExtensions
+..class:Class.ArgumentParser
+..signature:getFileFormatExtensions(formatTag)
+..signature:getFileFormatExtensions(formatTagList)
+..signature:getFileFormatExtensions(formatTagSelector)
+..param.format:A single file format, e.g. @Tag.File Format.tag.Fastq@ or @Tag.Sam@.
+...type:Tag.Tag
+..param.formatTagList:A list of file formats.
+...type:Tag.TagList
+..param.formatTagSelector:A file format selector.
+...type:Class.TagSelector
+..returns:A $std::vector<std::string>$ of all extensions supported by a single format or all formats of a list or selector.
+*/
+
+template <typename T>
+inline std::vector<std::string>
+getFileFormatExtensions(T const formatTag)
+{
+    std::vector<std::string> extensions;
+    _getFileFormatExtensions(extensions, formatTag);
+    return extensions;
+}
+
+
 }  // namespace seqan
 
 #endif // SEQAN_CORE_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_

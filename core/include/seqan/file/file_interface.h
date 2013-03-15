@@ -29,6 +29,10 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
+// ==========================================================================
+// Defines basic tags and flags for file access.
+// ==========================================================================
 
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
