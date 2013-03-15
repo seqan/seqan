@@ -84,7 +84,7 @@ struct Holder<TValue, Tristate>
     {
         EMPTY = 0,
         OWNER = 1,
-        DEPENDENT = ~0
+        DEPENDENT = 2
     };
 
     typedef typename Value<Holder>::Type THostValue;
@@ -170,7 +170,7 @@ struct Holder<TValue const, Tristate>
     {
         EMPTY = 0,
         OWNER = 1,
-        DEPENDENT = ~0
+        DEPENDENT = 2
     };
 
     typedef typename Value<Holder>::Type THostValue;
@@ -255,7 +255,7 @@ struct Holder<TValue *, Tristate>
     {
         EMPTY = 0,
         OWNER = 1,
-        DEPENDENT = ~0
+        DEPENDENT = 2
     };
 
     typedef typename Value<Holder>::Type THostValue;
@@ -332,7 +332,7 @@ struct Holder<TValue * const, Tristate>
     {
         EMPTY = 0,
         OWNER = 1,
-        DEPENDENT = ~0
+        DEPENDENT = 2
     };
 
     typedef typename Value<Holder>::Type THostValue;
@@ -1036,7 +1036,7 @@ assign(Holder<TValue, Tristate> & target_,
         case Holder<TValue, Tristate>::OWNER:
             assignValue(target_, value(source_));
             break;
-            
+
         default:  // case Holder<TValue, Tristate>::DEPENDENT
             setValue(target_, value(source_));
             break;
