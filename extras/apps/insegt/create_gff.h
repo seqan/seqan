@@ -222,8 +222,10 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 	
 	for ( ; itCount != itCountEnd; goNext(itCount), goNext(itAnno), goNext(itNorm))
 	{
+        if (getValue(itAnno).typeId != INVALID_ID)
+	        if (me.annotationTypeStore[getValue(itAnno).typeId] == "<root>") continue;  
 		// contig-name
-		if ( getValue(itAnno).contigId == INVALID_ID )
+		if (getValue(itAnno).contigId == INVALID_ID )
 		{
 			_streamWrite(annoOutput, "INVALID_ID");
 			_streamPut(annoOutput, '\t');
@@ -239,7 +241,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 		{
 			_streamWrite(annoOutput, ".\t.\t");
 			_streamPutInt(annoOutput, getValue(itCount));
-			if (getValue(itAnno).parentId == INVALID_ID)
+			if (getValue(itAnno).parentId == INVALID_ID || (me.annotationStore[getValue(itAnno).parentId].typeId != INVALID_ID && me.annotationTypeStore[me.annotationStore[getValue(itAnno).parentId].typeId] == "<root>"))
 			{
 				if (mapValue(mapO, position(itAnno, me.annotationStore)) == 0)
 				{
@@ -256,7 +258,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 		{
 			if (getValue(itAnno).beginPos <= getValue(itAnno).endPos)
 			{
-				_streamPutInt(annoOutput, getValue(itAnno).beginPos);
+				_streamPutInt(annoOutput, getValue(itAnno).beginPos+1);
 				_streamPut(annoOutput, '\t');
 				_streamPutInt(annoOutput, getValue(itAnno).endPos);
 				_streamPut(annoOutput, '\t');
@@ -265,7 +267,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 			}
 			else
 			{
-				_streamPutInt(annoOutput, getValue(itAnno).endPos);
+				_streamPutInt(annoOutput, getValue(itAnno).endPos+1);
 				_streamPut(annoOutput, '\t');
 				_streamPutInt(annoOutput, getValue(itAnno).beginPos);
 				_streamPut(annoOutput, '\t');
@@ -274,7 +276,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
 			}
 		}
 		// annotation-name (parent annotation-name)
-		if (getValue(itAnno).parentId == INVALID_ID)
+		if (getValue(itAnno).parentId == INVALID_ID || (me.annotationStore[getValue(itAnno).parentId].typeId != INVALID_ID && me.annotationTypeStore[me.annotationStore[getValue(itAnno).parentId].typeId] == "<root>"))
 		{
 			_streamWrite(annoOutput, "ID=");
 			_streamWrite(annoOutput, getValue(me.annotationNameStore, position(itAnno, me.annotationStore)) );

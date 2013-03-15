@@ -23,8 +23,30 @@
 //#define DEBUG_OVERLAP_MODULE
 
 namespace SEQAN_NAMESPACE_MAIN
-{ 
+{
 
+// Assign ContigId of children to parents    
+template<typename TSpec, typename TConfig>
+inline void
+adjustParentEntries(FragmentStore<TSpec, TConfig> & me)
+{
+    // Iterate over all parents and assign contigId of first child
+	typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore 	                TAnnotationStore;
+    typedef typename Value<TAnnotationStore>::Type 				                        TAnnotationStoreElement;
+    typedef typename Iterator<FragmentStore<TSpec, TConfig>, AnnotationTree<> >::Type   TIter;
+
+    TIter it = begin(me, AnnotationTree<>());
+    // Go down from root to the first parent
+    goDown(it);
+    while (goRight(it)) // Iterate over all parents
+        if (getAnnotation(it).contigId == TAnnotationStoreElement::INVALID_ID)
+        {
+            getAnnotation(it).contigId = getAnnotation(nodeDown(it)).contigId;  // If no child exists: nothing happens
+            getAnnotation(it).beginPos = TAnnotationStoreElement::INVALID_POS;
+            getAnnotation(it).endPos = TAnnotationStoreElement::INVALID_POS;
+        }
+}
+    
 //////////////////////////////////////////////////////////////////////////////
 // getIdsFroRead
 //////////////////////////////////////////////////////////////////////////////
@@ -660,9 +682,9 @@ normalizeAnnoCounts(TAnnoNormStore &annoNormStore, TMapO &mapO, TAnnoCountStore 
 			else if (getValue(itA).beginPos != INVALID_POS)						// for each exon/child: 
 			{
 				if (getValue(itA).beginPos <= getValue(itA).endPos)
-					length = getValue(itA).endPos - getValue(itA).beginPos + 1;
+					length = getValue(itA).endPos - getValue(itA).beginPos;
 				else
-					length = getValue(itA).beginPos - getValue(itA).endPos + 1;
+					length = getValue(itA).beginPos - getValue(itA).endPos;
 		
 				value(itN) = ((double)1000000000 * (double)getValue(itC))/((double)readNo * (double)length);		// calculate normalized expression-value
 		
@@ -754,9 +776,9 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
 					for ( ; itId != itIdEnd; goNext(itId))
 					{	
 						if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-							tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos + 1;
+							tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
 						else
-							tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos + 1;
+							tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
 					}
 					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
 				}
@@ -779,9 +801,9 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
 						if (getValue(itId) != INVALID_ID)
 						{
 							if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos + 1;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
 							else
-								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos + 1;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
 						}
 					}
 					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
@@ -814,6 +836,10 @@ ngsOverlapper(TOptions &options)
 	read(fileSAM, me, Sam());
 	fileSAM.close();
 
+	std::fstream fileGFF;
+	fileGFF.open(toCString(options.nameGFF), std::ios_base::in | std::ios_base::binary);
+	if(!fileGFF.is_open()) return false;
+
 	// readAnnotations from Gff or Gtf:
 	if (options.gtf == 0)
 	{
@@ -821,7 +847,8 @@ ngsOverlapper(TOptions &options)
 		SEQAN_PROTIMESTART(find2_time);	
 		std::cout << "load Gff..." << std::endl;
 #endif 
-		readAnnotationsFromGFF(me, toCString(options.nameGFF));
+	    read(fileGFF, me, Gtf());
+	    fileGFF.close();
 	}
 	else
 	{
@@ -829,8 +856,12 @@ ngsOverlapper(TOptions &options)
 		SEQAN_PROTIMESTART(find2_time);	
 		std::cout << "load Gff..." << std::endl;
 #endif 
-		readAnnotationsFromGTF(me, toCString(options.nameGFF));
+	    read(fileGFF, me, Gff());
+	    fileGFF.close();
 	}
+
+
+	adjustParentEntries(me);
 
 	// create IntervalTreeStore:
 #ifdef DEBUG_OVERLAP_MODULE

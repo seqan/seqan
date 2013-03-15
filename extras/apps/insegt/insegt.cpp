@@ -38,7 +38,7 @@ struct InsegtOptions
 	CharString tupleOutputFileName;
 	CharString tupleFusionOutputFileName;
 	unsigned nTuple;
-	unsigned offsetInterval;
+	unsigned offsetInterval; 
 	unsigned thresholdGaps;
 	unsigned thresholdCount;
 	double thresholdRPKM;

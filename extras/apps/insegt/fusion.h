@@ -670,9 +670,9 @@ normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, Fra
 						if (getValue(itId) != INVALID_ID)
 						{
 							if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos + 1;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
 							else
-								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos + 1;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
 						}
 					}
 					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
@@ -697,9 +697,9 @@ normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, Fra
 						if (getValue(itId) != INVALID_ID)
 						{
 							if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos + 1;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
 							else
-								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos + 1;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
 						}
 					}
 					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
