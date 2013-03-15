@@ -191,16 +191,18 @@ struct Host< ModifiedString<THost, TSpec> const > {
 };
 
 
+// don't uncomment this, it would cause the Segment() c'tor to take the address
+// of a temporary copy of the ModifiedString
 
-template < typename THost, typename TSpec >
-struct Parameter_< ModifiedString<THost, TSpec> > {
-    typedef ModifiedString<THost, TSpec> Type;
-};
-
-template < typename THost, typename TSpec >
-struct Parameter_< ModifiedString<THost, TSpec> const > {
-    typedef ModifiedString<THost, TSpec> const Type;
-};
+//template < typename THost, typename TSpec >
+//struct Parameter_< ModifiedString<THost, TSpec> > {
+//    typedef ModifiedString<THost, TSpec> & Type;
+//};
+//
+//template < typename THost, typename TSpec >
+//struct Parameter_< ModifiedString<THost, TSpec> const > {
+//    typedef ModifiedString<THost, TSpec> const & Type;
+//};
 
 
 ///.Metafunction.IsSequence.param.T.type:Class.ModifiedString
