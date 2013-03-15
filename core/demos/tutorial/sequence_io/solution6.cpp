@@ -21,7 +21,7 @@ int main(int argc, char const ** argv)
 
     // Create the AutoSeqStreamFormat object and guess the file format.
     seqan::AutoSeqStreamFormat formatTag;
-    if (!checkStreamFormat(reader, formatTag))
+    if (!guessStreamFormat(reader, formatTag))
         return 1;  // Could not detect file format.
 
     // Read file in one pass.

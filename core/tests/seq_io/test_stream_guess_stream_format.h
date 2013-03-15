@@ -32,7 +32,7 @@
 // Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
 // ==========================================================================
 // Tests for seqan/stream/guess_stream_format.h
-// NOTE that tests for checkStreamFormat() specific to each FileFormat are
+// NOTE that tests for guessStreamFormat() specific to each FileFormat are
 // located with the other tests for that file format, e.g.
 // tests/stream/test_stream_record_reader_fasta.h for FASTA
 // ==========================================================================
@@ -52,7 +52,7 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_fasta)
     TRecordReader reader(*file);
     AutoSeqStreamFormat tagSelect;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, tagSelect));
+    SEQAN_ASSERT(guessStreamFormat(reader, tagSelect));
     SEQAN_ASSERT_EQ(tagSelect.tagId, 1);
 
     file->close();
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_fastq)
     TRecordReader reader(*file);
     AutoSeqStreamFormat tagSelect;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, tagSelect));
+    SEQAN_ASSERT(guessStreamFormat(reader, tagSelect));
     SEQAN_ASSERT_EQ(tagSelect.tagId, 2);
 
     file->close();
@@ -86,7 +86,7 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_bogus)
     TRecordReader reader(*file);
     AutoSeqStreamFormat tagSelect;
 
-    SEQAN_ASSERT_NOT(checkStreamFormat(reader, tagSelect));
+    SEQAN_ASSERT_NOT(guessStreamFormat(reader, tagSelect));
     SEQAN_ASSERT_EQ(tagSelect.tagId, 0);
 
     file->close();

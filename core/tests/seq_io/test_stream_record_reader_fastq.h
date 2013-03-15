@@ -43,7 +43,7 @@ void FASTQ_TEST(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fastq()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fastq()));
 
     CharString meta;
     DnaString seq;
@@ -72,7 +72,7 @@ void FASTQ_TEST_BATCH(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fastq()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fastq()));
 
     StringSet<CharString> metas;
     StringSet<String<DnaQ> > seqs;
@@ -104,7 +104,7 @@ void FASTQ_TEST_BATCH_CONCAT(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fastq()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fastq()));
 
     StringSet<CharString, Owner<ConcatDirect<> > > metas;
     StringSet<String<Dna5Q>, Owner<ConcatDirect<> > > seqs;
@@ -307,7 +307,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_check_stream_format)
 
     RecordReader<std::fstream, SinglePass<> > reader(inFile);
     AutoSeqStreamFormat tagSelector;
-    bool b = checkStreamFormat(reader, tagSelector);
+    bool b = guessStreamFormat(reader, tagSelector);
 
     SEQAN_ASSERT_MSG(b, "File format detection must have been successful.");
     SEQAN_ASSERT_EQ_MSG(tagSelector.tagId, 2, "Format must be FASTQ.");

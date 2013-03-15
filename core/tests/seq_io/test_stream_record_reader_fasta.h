@@ -43,7 +43,7 @@ void FASTA_TEST(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fasta()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
     CharString meta;
     Dna5String seq;
@@ -66,7 +66,7 @@ void FASTA_TEST_PROTEIN(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fasta()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
     CharString meta;
     Peptide seq;
@@ -89,7 +89,7 @@ void FASTA_TEST_ANNOTATED_PROTEIN(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fasta()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
     CharString meta;
     CharString seq;
@@ -112,7 +112,7 @@ void FASTA_TEST_BATCH(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fasta()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
     StringSet<CharString> metas;
     StringSet<Dna5String> seqs;
@@ -132,7 +132,7 @@ void FASTA_TEST_BATCH_CONCAT(TRecordReader & reader)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT(checkStreamFormat(reader, Fasta()));
+    SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
     StringSet<CharString, Owner<ConcatDirect<> > > metas;
     StringSet<Dna5String, Owner<ConcatDirect<> > > seqs;
