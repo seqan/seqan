@@ -29,6 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // Swiss Army Knife tool... "It slices, it dices and it makes the laundry!"
@@ -61,7 +62,7 @@ struct SakOptions
     seqan::CharString outPath;
 
     // Whether or not to print FASTQ to output.
-    bool outFastq;
+    seqan::AutoSeqStreamFormat outFormat;
 
     // Set if one sequence is to be retrieved.
     seqan::String<__uint64> seqIndices;
@@ -87,12 +88,12 @@ struct SakOptions
 
     SakOptions() :
         verbosity(1),
-        outFastq(false),
         seqInfixBegin(seqan::maxValue<__uint64>()),
         seqInfixEnd(seqan::maxValue<__uint64>()),
         reverseComplement(false),
         maxLength(seqan::maxValue<__uint64>())
-    {}
+    {
+    }
 };
 
 // --------------------------------------------------------------------------
@@ -174,7 +175,7 @@ parseArgs(SakOptions & options,
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
 
     // Only FASTA and FASTQ files are allowed as input.
-    setValidValues(parser, 0, "fa fasta fq fastq");
+    setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqStreamFormat()));
 
     // TODO(holtgrew): I want a custom help text!
     // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
@@ -188,7 +189,7 @@ parseArgs(SakOptions & options,
                                             "Path to the resulting file.  If omitted, result is printed to stdout. "
                                             "Use files ending in \\fI.fq\\fP or \\fI.\\fP to write out FASTQ.",
                                             seqan::ArgParseOption::OUTPUTFILE, "FASTX"));
-    setValidValues(parser, "out-path", "fa fasta fq fastq");
+    setValidValues(parser, "out-path", getFileFormatExtensions(seqan::AutoSeqStreamFormat()));
     addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
     addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
                                             seqan::ArgParseOption::INTEGER, "LEN"));
@@ -238,7 +239,8 @@ parseArgs(SakOptions & options,
 
     seqan::CharString tmp;
     getOptionValue(tmp, parser, "out-path");
-    options.outFastq = (!empty(tmp) && (endsWith(tmp, ".fq") || endsWith(tmp, ".fastq")));
+    if (!guessFormatFromFilename(tmp, options.outFormat))
+        assign(options.outFormat, seqan::Fasta());
 
     if (isSet(parser, "out-path"))
         getOptionValue(options.outPath, parser, "out-path");
@@ -339,7 +341,7 @@ int main(int argc, char const ** argv)
                   << "VERBOSITY    " << options.verbosity << "\n"
                   << "IN           " << options.inFastxPath << "\n"
                   << "OUT          " << options.outPath << "\n"
-                  << "FASTQ OUT    " << yesNo(options.outFastq) << "\n"
+                  << "FASTQ OUT    " << yesNo(isEqual(options.outFormat, seqan::Fastq())) << "\n"
                   << "INFIX BEGIN  " << options.seqInfixBegin << "\n"
                   << "INFIX END    " << options.seqInfixEnd << "\n"
                   << "MAX LEN      " << options.maxLength << "\n"
@@ -395,7 +397,7 @@ int main(int argc, char const ** argv)
     startTime = sysTime();
     seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inStream);
     seqan::AutoSeqStreamFormat tagSelector;
-    if (!checkStreamFormat(reader, tagSelector) || (tagSelector.tagId != 1 && tagSelector.tagId != 2))
+    if (!guessStreamFormat(reader, tagSelector))
     {
         std::cerr << "ERROR: Could not determine input format!\n";
         return 1;
@@ -408,7 +410,8 @@ int main(int argc, char const ** argv)
     seqan::CharString quals;
     while (!atEnd(reader) && charsWritten < options.maxLength && idx < endIdx)
     {
-        if (tagSelector.tagId == 1)
+        // TODO(weese): There should be a uniform read interface that make this case distinction obsolete!
+        if (tagSelector.tagId == seqan::Find<seqan::SeqStreamFormats, seqan::Fasta>::VALUE)
         {
             // FASTA.
             if (readRecord(id, seq, reader, seqan::Fasta()) != 0)
@@ -416,7 +419,7 @@ int main(int argc, char const ** argv)
                 std::cerr << "ERROR: Reading record!\n";
                 return 1;
             }
-            if (options.outFastq)
+            if (isEqual(options.outFormat, seqan::Fastq()))
                 resize(quals, length(seq), 'I');
         }
         else
@@ -493,7 +496,7 @@ int main(int argc, char const ** argv)
                 infixBegin = length(seq) - infixBegin;
                 std::swap(infixEnd, infixBegin);
 
-                if (options.outFastq)
+                if (isEqual(options.outFormat, seqan::Fastq()))
                 {
                     if (writeRecord(*outPtr, id, infix(seqCopy, infixBegin, infixEnd),
                                     infix(quals, infixBegin, infixEnd), seqan::Fastq(),
@@ -515,7 +518,7 @@ int main(int argc, char const ** argv)
             }
             else
             {
-                if (options.outFastq)
+                if (isEqual(options.outFormat, seqan::Fastq()))
                 {
                     if (writeRecord(*outPtr, id, infix(seq, infixBegin, infixEnd),
                                     infix(quals, infixBegin, infixEnd), seqan::Fastq(),
