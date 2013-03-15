@@ -13,9 +13,9 @@ int main()
     seqan::Score<int, seqan::Simple> scoringSchemeGap(2, -1, -1, -2);
 
     seqan::String<TSeed> seedChain;
-    seqan::appendValue(seedChain, TSeed(0,2,5,6));
-    seqan::appendValue(seedChain, TSeed(6,9,9,12));
-    seqan::appendValue(seedChain, TSeed(11,14,17,16));
+    seqan::appendValue(seedChain, TSeed(0, 2, 5, 6));
+    seqan::appendValue(seedChain, TSeed(6, 9, 9, 12));
+    seqan::appendValue(seedChain, TSeed(11, 14, 17, 16));
 
     seqan::Align<seqan::Dna5String, seqan::ArrayGaps> alignment;
     seqan::resize(seqan::rows(alignment), 2);

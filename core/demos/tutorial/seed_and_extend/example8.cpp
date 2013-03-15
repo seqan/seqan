@@ -15,16 +15,16 @@ int main()
     Dna5String sequenceV = "GGCGATNNNCATGGCACA";
 
     String<TSeed> seedChain;
-    appendValue(seedChain, TSeed(0,2,5,6));
-    appendValue(seedChain, TSeed(6,9,9,12));
-    appendValue(seedChain, TSeed(11,14,17,16));
+    appendValue(seedChain, TSeed(0, 2, 5, 6));
+    appendValue(seedChain, TSeed(6, 9, 9, 12));
+    appendValue(seedChain, TSeed(11, 14, 17, 16));
 
     Align<Dna5String, ArrayGaps> alignment;
     resize(rows(alignment), 2);
     assignSource(row(alignment, 0), sequenceH);
     assignSource(row(alignment, 1), sequenceV);
 
-    Score<int, Simple> scoringScheme(2,-1,-2);
+    Score<int, Simple> scoringScheme(2, -1, -2);
 
     int result = bandedChainAlignment(alignment, seedChain, scoringScheme, 2);
 
