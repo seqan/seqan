@@ -331,7 +331,11 @@ void testAlignGapsGapOperationsGapsLeading(TGapsSpec const & /*spec*/)
         TString seq("GTTTTTT");
         TGaps gaps(seq);
 
+        std::cerr << "gaps " << gaps << "\n";
+
         insertGap(gaps, 0);
+
+        std::cerr << "gaps " << gaps << "\n";
 
         SEQAN_ASSERT_EQ(length(seq), 7u);
         SEQAN_ASSERT_EQ(length(gaps), 8u);
@@ -1044,6 +1048,54 @@ void testAlignGapsClippingGapsTrailing(TGapsSpec const & /*spec*/)
     SEQAN_ASSERT_EQ(endPosition(gaps), 3u);
 }
 
+// Test clearing of clipping.
+
+template <typename TGapsSpec>
+void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
+{
+    using namespace seqan;
+
+    typedef Dna5String                               TString;
+    typedef Gaps<TString, TGapsSpec>                 TGaps;
+    typedef typename Iterator<TGaps, Standard>::Type TIter;
+
+    // Clip into leading/trailing gaps and clear.
+    {
+        TString seq = "CGAT";
+        TGaps gaps(seq);
+        insertGaps(gaps, 4, 2);
+        insertGaps(gaps, 2, 2);
+        insertGaps(gaps, 0, 2);
+        
+        // 0123456789
+        // --CG--AT--
+        //  XXXXXXXX
+
+        {
+            std::stringstream ss;
+            ss << gaps;
+            SEQAN_ASSERT_EQ(ss.str(), "--CG--AT--");
+        }
+        
+        setClippedEndPosition(gaps, 9);
+        setClippedBeginPosition(gaps, 1);
+
+        {
+            std::stringstream ss;
+            ss << gaps;
+            SEQAN_ASSERT_EQ(ss.str(), "-CG--AT-");
+        }
+
+        clearClipping(gaps);
+
+        {
+            std::stringstream ss;
+            ss << gaps;
+            SEQAN_ASSERT_EQ(ss.str(), "--CG--AT--");
+        }
+    }
+}
+
 // ==========================================================================
 // Tests for Array Gaps
 // ==========================================================================
@@ -1202,6 +1254,13 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clipping_gaps_trailing)
     testAlignGapsClippingGapsTrailing(TTag());
 }
 
+SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear_clipping)
+{
+    using namespace seqan;
+    typedef ArrayGaps TTag;
+    testAlignGapsClearClipping(TTag());
+}
+
 // ==========================================================================
 // Tests for Anchor Gaps
 // ==========================================================================
@@ -1358,6 +1417,13 @@ SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clipping_gaps_trailing)
     using namespace seqan;
     typedef AnchorGaps<> TTag;
     testAlignGapsClippingGapsTrailing(TTag());
+}
+
+SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clear_clipping)
+{
+    using namespace seqan;
+    typedef AnchorGaps<> TTag;
+    testAlignGapsClearClipping(TTag());
 }
 
 #endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_

@@ -1977,6 +1977,7 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 	typedef typename TFragmentStore::TReadSeqStore					TReadSeqStore;
 	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
 	typedef typename TFragmentStore::TContigStore					TContigStore;
+	//typedef typename TFragmentStore::TContigSeq  					TContigSeq;
 
 	// store elements
 	//typedef typename Value<TReadStore>::Type						TRead;
@@ -1989,6 +1990,8 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 	typedef typename TFragmentStore::TContigPos						TContigPos;
 
 	// gap structures
+	//typedef Gaps<TContigSeq/*Nothing*/, AnchorGaps<typename TContig::TGapAnchors> >			TContigGapsGlobal;
+	//typedef Gaps<TContigSeq/*Nothing*/, AnchorGaps<typename Value<TContigGapsString>::Type> >	TContigGapsPW;
 	typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename TContig::TGapAnchors> >			TContigGapsGlobal;
 	typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename Value<TContigGapsString>::Type> >	TContigGapsPW;
 	typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >			TReadGaps;
@@ -2016,7 +2019,12 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 		
 		// 1. Initialize gap structures
 		TContigGapsGlobal	contigGapsGlobal(/*store.contigStore[(*it).contigId].seq, */store.contigStore[(*it).contigId].gaps);
-		TContigGapsPW		contigGapsPW(/*store.contigStore[(*it).contigId].seq, */gaps[(*it).id]);
+		/*
+		TContigSeq contigInfix = infix(store.contigStore[(*it).contigId].seq, cBegin, cEnd);
+		if (left > right)
+		    reverseComplement(contigInfix);
+		*/
+		TContigGapsPW		contigGapsPW(/*contigInfix, */gaps[(*it).id]);
 		TReadGaps			readGaps(store.readSeqStore[(*it).readId], (*it).gaps);
 		
         SEQAN_ASSERT(dependent(contigGapsGlobal.data_gaps));
@@ -2039,11 +2047,18 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 		TContigPWIter pIt = begin(contigGapsPW);
 		TReadIter rIt = begin(readGaps);
 		
-		while (!atEnd(rIt))
+		/*
+		std::cout << "contigGlobal\t" << contigGapsGlobal << std::endl;
+		std::cout << "contigPW    \t" << contigGapsPW << std::endl;
+		std::cout << "readPW      \t" << readGaps << std::endl;
+		*/
+		
+		typename Size<TContig>::Type blkLen = 0;
+		for (; !atEnd(rIt); goFurther(rIt, blkLen), goFurther(cIt, blkLen))
 		{
 			bool isGapContig = isGap(cIt);
 			bool isGapLocalContig = isGap(pIt);
-            typename Size<TContig>::Type blkLen = _min(blockLength(cIt), blockLength(pIt));
+            blkLen = _min(blockLength(cIt), blockLength(pIt));
             SEQAN_ASSERT_GT(blkLen, 0u);
 //          SEQAN_ASSERT_LT(blkLen, length(contigGapsGlobal));
 
@@ -2054,6 +2069,7 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 					// *** gap in contig of the global alignment ***
 					// copy exisiting contig gap
 					insertGaps(rIt, blkLen);
+					continue;
 				}
                 else
 				{
@@ -2089,13 +2105,10 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 						}
 					}
 				}
-                // fast forward the whole block
-                goFurther(pIt, blkLen);
 			}
-            
+
             // fast forward the whole block
-            goFurther(rIt, blkLen);
-            goFurther(cIt, blkLen);
+            goFurther(pIt, blkLen);
 		}
 
 		// store new gap-space alignment borders

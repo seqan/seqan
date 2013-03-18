@@ -88,6 +88,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_clipping_gaps_center);
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_clipping_gaps_leading);
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_clipping_gaps_trailing);
+    SEQAN_CALL_TEST(test_align_gaps_array_gaps_clear_clipping);
 
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_metafunctions);
     SEQAN_CALL_TEST(test_align_gaps_anchor_constructor_and_source);
@@ -111,6 +112,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clipping_gaps_center);
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clipping_gaps_leading);
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clipping_gaps_trailing);
+    SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clear_clipping);
 
     // -----------------------------------------------------------------------
     // Test Gaps Iterators.

@@ -57,7 +57,8 @@ public:
 
     // TODO(holtgrew): Why is the following commented out?
 //	typedef typename Value<TGapAnchors>::Type				TGapAnchor;
-	typedef GapAnchor<int>									TGapAnchor;
+    typedef typename Size<typename Value<TGapAnchors>::Type>::Type   TGapAnchorSize_;
+	typedef GapAnchor<typename MakeSigned_<TGapAnchorSize_>::Type> TGapAnchor;
 	typedef typename Size<TGapAnchor>::Type					TGapSize;
 	typedef typename Iterator<TGapAnchors, Standard>::Type	TAnchorIter;
 
@@ -92,19 +93,19 @@ SEQAN_CHECKPOINT
 	{
 SEQAN_CHECKPOINT
 		_assignSourceLength(seqLength, container_);
-		_goToGapAnchorIterator(*this, data_container->data_viewCutBegin);
+		_goToGapAnchorIterator(*this, data_container->data_viewCutBegin + data_container->data_cutBegin);
 		viewBegin = current;
-		viewEnd.gapPos = _unclippedLength(*data_container) - data_container->data_viewCutEnd;
+		viewEnd.gapPos   = _unclippedLength(*data_container) + data_container->data_cutBegin - data_container->data_viewCutEnd;
 		viewEnd.seqPos = positionGapToSeq(*data_container, viewEnd.gapPos);
 	}
-	Iter(TGaps & container_, TGapSize position):
+	Iter(TGaps & container_, TGapSize clippedViewPosition):
 		data_container(&container_)
 	{
 SEQAN_CHECKPOINT
 		_assignSourceLength(seqLength, container_);
-		_goToGapAnchorIterator(*this, position + data_container->data_viewCutBegin);
-		viewBegin.gapPos = data_container->data_viewCutBegin;
-		viewEnd.gapPos   = _unclippedLength(*data_container) - data_container->data_viewCutEnd;
+		_goToGapAnchorIterator(*this, clippedViewPosition + data_container->data_viewCutBegin + data_container->data_cutBegin);
+		viewBegin.gapPos = data_container->data_viewCutBegin + data_container->data_cutBegin;
+		viewEnd.gapPos   = _unclippedLength(*data_container) + data_container->data_cutBegin - data_container->data_viewCutEnd;
 		viewBegin.seqPos = positionGapToSeq(*data_container, viewBegin.gapPos);
 		viewEnd.seqPos   = positionGapToSeq(*data_container, viewEnd.gapPos);
 	}
@@ -278,6 +279,8 @@ countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 {
     if (isGap(me))
         return 0;
+    if (me.nextAnchor.seqPos > me.viewEnd.seqPos)
+        return me.viewEnd.seqPos - me.current.seqPos;
     return me.nextAnchor.seqPos - me.current.seqPos;
 }
 
@@ -447,7 +450,7 @@ insertGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me,
 			// add gap after the sequence and in (or at the right boundary of) the view
 			if (me.current.gapPos <= me.viewEnd.gapPos)
 			{
-				container(me).data_viewCutEnd -= size;
+				container(me).data_cutEnd -= size;
 				me.viewEnd.gapPos += size;				
 			}
 			return;
@@ -471,7 +474,7 @@ insertGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me,
 			// add gap before the sequence and in (or at the left boundary of) the view
 			if (me.current.gapPos >= me.viewBegin.gapPos)
 		    {
-		        container(me).data_viewCutBegin -= size;
+		        container(me).data_cutBegin -= size;
 		        me.viewBegin.gapPos -= size;
 		        me.current.gapPos -= size;
 		        return;
@@ -542,7 +545,7 @@ removeGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & it,
 		    	// assure that we don't remove more gaps than available
 		    	if (size > it.nextAnchor.gapPos - it.current.gapPos)
 		    		size = it.nextAnchor.gapPos - it.current.gapPos;
-		        container(it).data_viewCutBegin += size;
+		        container(it).data_cutBegin += size;
 		        it.viewBegin.gapPos += size;
 		        it.current.gapPos += size;
 		        return size;
@@ -551,7 +554,7 @@ removeGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & it,
 	else
 	{
 		if (it.current.gapPos <= it.viewEnd.gapPos)
-			container(it).data_viewCutEnd += size;
+			container(it).data_cutEnd += size;
 	}
 	if (it.current.gapPos <= it.viewEnd.gapPos)
 		it.viewEnd.gapPos -= size;

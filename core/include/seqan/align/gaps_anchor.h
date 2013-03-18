@@ -105,6 +105,8 @@ public:
 
     Holder<TSource>     data_source;
     Holder<TGapAnchors> data_gaps;
+    int                 data_cutBegin;      // number of gap positions cut from the beginning
+    int                 data_cutEnd;        // number of gap positions cut from the end
     int                 data_viewCutBegin;  // how many alignment chars should be clipped at the beginning (can be negative too)
     int                 data_viewCutEnd;    // how ...                                           end ...
 
@@ -113,22 +115,37 @@ public:
     // -----------------------------------------------------------------------
 
     Gaps() :
-        data_viewCutBegin(0), data_viewCutEnd(0)
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
     Gaps(TSource & source) :
-        data_source(source), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
     Gaps(TGapAnchors & anchors) :
-        data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)        
     {
     }
 
     Gaps(TGapAnchors const & anchors) :
-        data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
@@ -136,12 +153,22 @@ public:
     // is often given as a temporary.
 
     Gaps(TSource & source, TGapAnchors & anchors) :
-        data_source(source), data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source), 
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)        
     {
     }
 
     Gaps(TSource & source, TGapAnchors const & anchors) :
-        data_source(source), data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source), 
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
@@ -149,25 +176,45 @@ public:
 
     template <typename TSource2>
     Gaps(TSource2 & source, TGapAnchors & anchors) :
-        data_source(source), data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source), 
+        data_gaps(anchors), 
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
     template <typename TSource2>
     Gaps(TSource2 & source, TGapAnchors const & anchors) :
-        data_source(source), data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source), 
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
     template <typename TSource2>
     Gaps(TSource2 const & source, TGapAnchors & anchors) :
-        data_source(source), data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source),
+        data_gaps(anchors), 
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
     template <typename TSource2>
     Gaps(TSource2 const & source, TGapAnchors const & anchors) :
-        data_source(source), data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
+        data_source(source),
+        data_gaps(anchors),
+        data_cutBegin(0),
+        data_cutEnd(0),
+        data_viewCutBegin(0),
+        data_viewCutEnd(0)
     {
     }
 
@@ -201,6 +248,8 @@ template <typename TSequence, typename TGapAnchors>
 inline void _reinitAnchorGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps)
 {
     clear(value(gaps.data_gaps));
+    gaps.data_cutBegin = 0;
+    gaps.data_cutEnd = 0;
     gaps.data_viewCutBegin = 0;
     gaps.data_viewCutEnd = 0;
 }
@@ -232,7 +281,7 @@ inline void
 _assignSourceLength(TSize & size, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me)
 {
     if (IsSameType<TSource, Nothing>::VALUE)
-        size = maxValue<TSize>();
+        size = maxValue<TSize>() / 2;
     else
         size = length(value(me.data_source));
 }
@@ -304,8 +353,8 @@ template <typename TSource, typename TGapAnchors>
 inline typename Size<Gaps<TSource, AnchorGaps<TGapAnchors> > >::Type
 _unclippedLength(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me)
 {
-    typedef typename Size<Gaps<TSource, AnchorGaps<TGapAnchors> > >::Type TSize;
     typedef typename Value<TGapAnchors>::Type TAnchor;
+    typedef typename Size<TAnchor>::Type TSize;
     TSize len;
     _assignSourceLength(len, me);
     if (!empty(_dataAnchors(me)))
@@ -313,7 +362,7 @@ _unclippedLength(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me)
         TAnchor const & last = back(_dataAnchors(me));
         len += last.gapPos - last.seqPos;
     }
-    return len;
+    return len - (me.data_cutBegin + me.data_cutEnd);
 }
 
 // ----------------------------------------------------------------------------
@@ -799,7 +848,7 @@ template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline typename Position<Gaps<TSequence, AnchorGaps<TGapAnchors> > >::Type
 toViewPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition sourcePosition)
 {
-    return positionSeqToGap(gaps, sourcePosition) - gaps.data_viewCutBegin;
+    return positionSeqToGap(gaps, sourcePosition) - gaps.data_viewCutBegin - gaps.data_cutBegin;
 }
 
 // ----------------------------------------------------------------------------
@@ -810,7 +859,9 @@ template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline typename Position<TSequence>::Type
 toSourcePosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPosition clippedViewPos)
 {
-    return positionGapToSeq(gaps, clippedViewPos + gaps.data_viewCutBegin);
+    // TODO(weese): possibly change positionGapToSeq interface to consider a different zero
+    // shifted by data_cutBegin
+    return positionGapToSeq(gaps, clippedViewPos + gaps.data_viewCutBegin + gaps.data_cutBegin);
 }
 
 // ----------------------------------------------------------------------------

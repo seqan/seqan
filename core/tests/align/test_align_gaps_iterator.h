@@ -508,6 +508,11 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         setClippedEndPosition(gaps, 9);
         setClippedBeginPosition(gaps, 1);
 
+        std::stringstream ss;
+        ss << gaps;
+        SEQAN_ASSERT_EQ(ss.str(), "-CG--AT-");
+
+
         TIter it = begin(gaps);
         
         SEQAN_ASSERT(isGap(it));
@@ -569,6 +574,10 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         
         setClippedEndPosition(gaps, 7);
         setClippedBeginPosition(gaps, 3);
+
+        std::stringstream ss;
+        ss << gaps;
+        SEQAN_ASSERT_EQ(ss.str(), "G--A");
 
         TIter it = begin(gaps);
         

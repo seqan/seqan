@@ -699,7 +699,7 @@ namespace SEQAN_NAMESPACE_MAIN
         
         // calculate the end position
         TContigPos endPos;
-        _getClippedLength(cigar, endPos);
+        _getLengthInRef(cigar, endPos);
         endPos = beginPos + endPos;
 
         // if the read is on the antisense strand switch begin and end position
