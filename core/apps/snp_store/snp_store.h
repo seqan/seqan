@@ -22,11 +22,15 @@
 #ifndef SEQAN_HEADER_CALLSNPS_H
 #define SEQAN_HEADER_CALLSNPS_H
 
+// TODO(holtgrew): Using a gff_io module would increase simplicity below.
 
 #include <iostream>
 #include <fstream>
 #include <math.h>
 #include <cmath>
+
+#include <seqan/misc/misc_svg.h>
+#include <seqan/stream.h>
 
 #ifdef CORRECTED_HET
 #include <boost/math/distributions.hpp>
@@ -549,51 +553,56 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 /////////////////////////////////////////////////////////////////////////////////////////   
 
     
-// get reference file names
+// Get reference file names
+
 template<typename TOptions>
-int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions &options)
+int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions const & options)
 {
-    ::std::ifstream file;
-    file.open(toCString(options.genomeFName),::std::ios_base::in | ::std::ios_base::binary);
+    std::ifstream file;
+    file.open(toCString(options.genomeFName), std::ios_base::in | std::ios_base::binary);
     if(!file.is_open())
         return CALLSNPS_GENOME_FAILED;
-    
+
+    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > reader(file);
+
     CharString nameStr;
-    char c = _streamGet(file);
-    if (c != '>' && c != '@')   //if file does not start with a fasta header --> list of multiple reference genome files
+    if (value(reader) != '>' && value(reader) != '@')
     {
+        // If file does not start with a fasta header --> list of multiple reference genome files.
         if(options._debugLevel >=1)
-            ::std::cout << ::std::endl << "Reading multiple genome files:" <<::std::endl;
+            std::cout << std::endl << "Reading multiple genome files:" << std::endl;
         /*      //locations of genome files are relative to list file's location
          ::std::string tempGenomeFile(filename);
          size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
          if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
          if (lastPos == tempGenomeFile.npos) lastPos = 0;
          ::std::string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-        unsigned i = 1;
-        while(!_streamEOF(file))
+        unsigned i = 0;
+        for (; !atEnd(reader); ++i)
         {
             clear(nameStr);
-            _parseSkipWhitespace(file, c);
-            while ((c!=' ') && (c != '\t') && (c != '\n') && (c != '\r'))
-            {
-                appendValue(nameStr,c,Generous());
-                c = _streamGet(file);
-            }
+            int res = skipWhitespaces(reader);
+            if (res == EOF_BEFORE_SUCCESS)
+                break;  // Done, no more file name.
+            if (res != 0)
+                return res;  // Error reading.
+            res = readGraphs(nameStr, reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return res;
             appendValue(genomeFileNames,nameStr,Generous());
-            if(options._debugLevel >=2)
-                ::std::cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << ::std::endl;
-            ++i;
-            _parseSkipWhitespace(file, c);
+            if(options._debugLevel >= 2)
+                std::cout << "Genome file #" << (i + 1) << ": " << genomeFileNames[length(genomeFileNames) - 1] << std::endl;
         }
         if(options._debugLevel >=1)
-            ::std::cout << i-1 << " genome files total." <<::std::endl;
+            std::cout << i << " genome files total." << std::endl;
     }
-    else        //if file starts with a fasta header --> regular one-genome-file input
+    else
+    {
+        // If file starts with a fasta header --> regular one-genome-file input.
         appendValue(genomeFileNames,options.genomeFName,Generous());
-    file.close();
+    }
+
     return 0;
-    
 }
 
 
@@ -716,15 +725,15 @@ int readMatchesFromGFF_Batch(
     String<int> gAliPos;
     
     //  bool test = true;
-    
-    char c = _streamGet(*file);
-    while (!_streamEOF(*file))
+
+    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(*file);
+
+    while (!atEnd(reader))
     {
         // our razers gff output looks like this:
         //X       razers      read            100919085       100919120       2       +       .       ID=s_3_1_3;unique;mutations=34A;quality=I)IEIIII-7IA>IIIIII07,-%I>)&#029.2-.
-        
-        typename std::ifstream::pos_type lineStart = (*file).tellg();
-        lineStart = lineStart - (std::ifstream::pos_type) 1;
+
+        typename std::ifstream::pos_type lineStart = position(reader);
         
         TId contigId;
         
@@ -743,11 +752,13 @@ int readMatchesFromGFF_Batch(
         bool hasIndel = false;
         int editDist = 0;
         int mScore = 100;
-        _parseSkipWhitespace(*file, c);
-        
+
         // skip whitespaces just in case (actually there shouldnt be a whitespace at the beginning of a line)
         // and read entry in column 1  --> genomeID
-        _parseReadWordUntilWhitespace(*file,temp_str,c); 
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        if (readGraphs(temp_str, reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         
         //check if the genomeID is in our map of relevant genomeIDs, otherwise skip match
         it = gIdStringToIdNumMap.find(temp_str);
@@ -756,7 +767,8 @@ int readMatchesFromGFF_Batch(
         if(it != gIdStringToIdNumMap.end()) contigId = it->second;
         else
         {
-            _parseSkipLine(*file,c);
+            if (skipLine(reader) != 0)
+                return CALLSNPS_GFF_FAILED;
             continue;
         }
         if((int)contigId < (int)highestChrId)
@@ -768,104 +780,150 @@ int readMatchesFromGFF_Batch(
         highestChrId = contigId;
         if(contigId < currSeqNo)    // havent reached the sequence of interest yet
         {
-            _parseSkipLine(*file,c);
+            if (skipLine(reader) != 0)
+                return CALLSNPS_GFF_FAILED;
             continue;
         }
         
         if(contigId > currSeqNo)    // have passed the seq of interest
         {
-            (*file).seekp(lineStart);
+            if (setPosition(reader, lineStart) != 0)
+                return CALLSNPS_GFF_FAILED;
             break;
         }
         if(setZero) contigId = 0; // if we only store one chromosome at a time
                 
         // skip whitespaces and read entry in column 2
-        _parseSkipWhitespace(*file, c);
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         clear(temp_str);
-        _parseReadWordUntilWhitespace(*file,temp_str,c); 
+        if (readGraphs(temp_str, reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         
         if(options._debugLevel > 1) 
             ::std::cout << temp_str << "\t";
         
         // skip whitespaces and read entry in column 3
-        _parseSkipWhitespace(*file, c);
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         clear(temp_str);
-        _parseReadWordUntilWhitespace(*file,temp_str,c); 
+        if (readGraphs(temp_str, reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         if(options._debugLevel > 1) 
             ::std::cout << temp_str << "\t";
         
         // skip whitespaces and read entry in column 4  --> genomic begin position
-        _parseSkipWhitespace(*file, c);
-        TContigPos beginPos = _parseReadNumber(*file,c) - options.positionFormat;
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        clear(temp_str);
+        if (readDigits(temp_str, reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        TContigPos beginPos = 0;
+        if (!lexicalCast2(beginPos, temp_str))
+            return CALLSNPS_GFF_FAILED;
+        beginPos -= options.positionFormat;
         if(beginPos > currentEnd + (TContigPos)options.windowBuff)  // we have passed the relevant match positions
         {
             if(options._debugLevel > 1)
                 std::cout  << "gBegin "<< beginPos<<"  of match is too large, seeking "<<lineStart<<"\n";
-            (*file).seekp(lineStart);
+            if (setPosition(reader, lineStart) != 0)
+                return CALLSNPS_GFF_FAILED;
             break;
         }
         if(options._debugLevel > 1) 
             ::std::cout << beginPos << "\t";
         
         // skip whitespaces and read entry in column 5  --> genomic end position
-        _parseSkipWhitespace(*file, c);
-        TContigPos endPos = _parseReadNumber(*file,c);
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        clear(temp_str);
+        if (readDigits(temp_str, reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        TContigPos endPos = 0;
+        if (!lexicalCast2(endPos, temp_str))
+            return CALLSNPS_GFF_FAILED;
         
         if(options._debugLevel > 1) 
             ::std::cout << endPos << "\t";
         if(endPos + (TContigPos)options.windowBuff < currentBegin)  //we havent reached a relevant read yet
         {
-            _parseSkipLine(*file,c);
+            if (skipLine(reader) != 0)
+                return CALLSNPS_GFF_FAILED;
             continue;
         }
         
-        int gMatchLen = endPos - beginPos;  
+        int gMatchLen = endPos - beginPos;
         int rLen = gMatchLen;
         if(endPos > genomeLen)
         {
-            (*file).seekp(lineStart);
+            if (setPosition(reader, lineStart) != 0)
+                return CALLSNPS_GFF_FAILED;
             break;  
         }
         
         // skip whitespaces and read entry in column 6  --> score (percent identity or mapping quality) or a '.'
-        _parseSkipWhitespace(*file, c);
-        if(c=='.')
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        if(value(reader) == '.')
         {
             mScore = 100;  //not used, but needs to be >= options.minMapQual (default 1)
-            c = _streamGet(*file);
+            goNext(reader);
+            if (atEnd(reader))
+                return CALLSNPS_GFF_FAILED;
         }
-        else mScore = (int)_parseReadDouble(*file,c); 
+        else
+        {
+            clear(temp_str);
+            if (readFloat(temp_str, reader) != 0)
+                return CALLSNPS_GFF_FAILED;
+            double tmp;
+            if (!lexicalCast2(tmp, temp_str))
+                return CALLSNPS_GFF_FAILED;
+            mScore = (int)tmp;
+        }
         if(options._debugLevel > 1) 
             ::std::cout << mScore << "\t";
         
         // skip whitespaces and read entry in column 7  --> strand information: '+' or '-' 
-        _parseSkipWhitespace(*file, c);
-        if (c=='+')
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        if (value(reader) == '+')
             orientation = 'F';
         else
             orientation = 'R';
-        c = _streamGet(*file);
+        goNext(reader);
+        if (atEnd(reader))
+            return CALLSNPS_GFF_FAILED;
         
         // skip whitespaces and read entry in column 8  --> in razers output this is always a '.' 
-        _parseSkipWhitespace(*file, c);
-        c = _streamGet(*file);
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
+        goNext(reader);
+        if (atEnd(reader))
+            return CALLSNPS_GFF_FAILED;
         
         // skip whitespaces and read entry in column 9  --> tags, extra information. in razers output first tag is always "ID"
-        _parseSkipWhitespace(*file, c);
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         clear(temp_str);
-        _parseReadIdentifier(*file,temp_str,c);
+        if (readIdentifier(temp_str, reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         if(options._debugLevel > 1) 
             ::std::cout << temp_str << "\n";
-        if(temp_str!="ID") ::std::cout << "first feature field should be 'ID'"<<::std::endl;
+        if(temp_str!="ID")
+            ::std::cout << "first feature field should be 'ID'"<<::std::endl;
         
         // skip the "="
-        c = _streamGet(*file);
+        goNext(reader);
+        if (atEnd(reader))
+            return CALLSNPS_GFF_FAILED;
         
         // read the readID
-        clear(temp_str);
         CharString readName;
-        _parseReadIdentifier(*file,readName,c);
-        if(options._debugLevel > 1) 
+        while (!atEnd(reader) && value(reader) != ';' && value(reader) != '\r' && value(reader) != '\n')
+            if (readNChars(readName, reader, 1) != 0)
+                return 1;
+        if(options._debugLevel > 1)
             ::std::cout << "myID = "<<readName << "\n";
 #ifdef SNPSTORE_DEBUG
         bool extraV = true;
@@ -879,7 +937,8 @@ int readMatchesFromGFF_Batch(
         
         // process tags in a loop
         CharString current_tag;
-        _parseSkipWhitespace(*file,c); 
+        if (skipWhitespaces(reader) != 0)
+            return CALLSNPS_GFF_FAILED;
         bool multi = false, suboptimal = false/*, unique = true*/, splitRead = false;
         clipLeft = 0; clipRight = 0; 
         bool discardRead = false;
@@ -890,23 +949,31 @@ int readMatchesFromGFF_Batch(
         //int maxIndelLen = 0;
         clear(gAliPos);
         clear(tmpCigarStr);
-        while(!_streamEOF(*file) && !(c == '\n' || (c == '\r' && _streamPeek(*file) != '\n'))) // while in same line
+        while (!atEnd(reader) && value(reader) != '\r' && value(reader) != '\n') // while in same line
         {
-            // different tags are separated by ';'  ATTENTION: ascii qualities can contain ';', therefore the tag "quality"
-            while(c != ';')                         // MUST be the last tag in a line!!!!!!!!
+            // different tags are separated by ';'  ATTENTION: ascii qualities can contain ';', therefore the tag "quality" MUST be the last tag in a line!!!!!!!!
+            while (value(reader) != ';')
             {
-                if(c == '\n' || (c == '\r' && _streamPeek(*file) != '\n')) // end of line
+                if (value(reader) == '\r')
+                    goNext(reader);
+                if (atEnd(reader))
+                    return CALLSNPS_GFF_FAILED;
+                if (value(reader) == '\n')
                     break;
-                c = _streamGet(*file);
             }
-            if(c == '\n' || (c == '\r' && _streamPeek(*file) != '\n')) // end of line
+            goNext(reader);
+            if (value(reader) == '\n')  // end of line
+            {
+                if (skipLine(reader) != 0)
+                    return CALLSNPS_GFF_FAILED;
                 break;
+            }
             // get the current tag
             clear(current_tag);
-            c = _streamGet(*file);
-            _parseReadIdentifier(*file,current_tag,c);
+            if (readIdentifier(current_tag, reader) != 0)
+                return CALLSNPS_GFF_FAILED;
 #ifdef SNPSTORE_DEBUG
-            if(options._debugLevel > 1) 
+            if(options._debugLevel > 1)
                 ::std::cout << current_tag << " in features\n";
 #endif
             if(current_tag=="quality")
@@ -921,10 +988,10 @@ int readMatchesFromGFF_Batch(
                 }
                 for(int i = 0; i < rLen ; ++i) //vorsicht! rLen muss hier schon bekannt sein! (i.e. quality tag is last tag!)
                 {
-                    c = _streamGet(*file);
-                    if (!(c == '\n' || (c == '\r' && _streamPeek(*file) != '\n')))
+                    goNext(reader);  // Skip '='.
+                    if (value(reader) != '\n' && value(reader) != '\r')
                     {
-                        int tempQual = _max(0, (int)ordValue(c)-options.asciiQualOffset);
+                        int tempQual = _max(0, (int)ordValue(value(reader))-options.asciiQualOffset);
                         assignQualityValue(curr_read[i],tempQual);
 #ifdef SNPSTORE_DEBUG
                         if(extraV) ::std::cout << (char)(getQualityValue(curr_read[i]));
@@ -933,7 +1000,7 @@ int readMatchesFromGFF_Batch(
                     else
                     {
                         // shouldnt happen
-                        if(i != rLen-1 && options._debugLevel > 1) std::cout << curr_read << "macht probleme\n";
+                        if(i != rLen-1 && options._debugLevel > 1) std::cout << curr_read << " gives problems\n";
                         break;
                     }
                 }
@@ -950,45 +1017,66 @@ int readMatchesFromGFF_Batch(
                 else if (current_tag == "clip")
                 {
                     options.clipTagsInFile = true;
-                    if(c=='=') c = _streamGet(*file);
-                    clipLeft = _parseReadNumber(*file,c);
-                    c = _streamGet(*file);
-                    clipRight = _parseReadNumber(*file,c);
+                    if (value(reader) == '=')
+                        if (skipNChars(reader, 1) != 0)
+                            return CALLSNPS_GFF_FAILED;
+                    clear(temp_str);
+                    if (readDigits(temp_str, reader) != 0)
+                        return 1;
+                    if (!lexicalCast2(clipLeft, temp_str))
+                        return 1;
+                    goNext(reader);  // Skip ','
+                    clear(temp_str);
+                    if (readDigits(temp_str, reader) != 0)
+                        return 1;
+                    if (!lexicalCast2(clipRight, temp_str))
+                        return 1;
                 }
                 else if (current_tag == "count")
                 {
-                    if(c=='=') c = _streamGet(*file);
-                    readCount = _parseReadNumber(*file,c);
+                    if (value(reader) == '=')
+                        if (skipNChars(reader, 1) != 0)
+                            return CALLSNPS_GFF_FAILED;
+                    clear(temp_str);
+                    if (readDigits(temp_str, reader) != 0)
+                        return 1;
+                    if (!lexicalCast2(readCount, temp_str))
+                        return 1;
                 }
                 else if (current_tag == "read")
                 {
                     clear(curr_read);
                     readFound = true;
-                    if(c=='=') c = _streamGet(*file);
-                    while(c != ';' && !(c == '\n' || (c == '\r' && _streamPeek(*file) != '\n')))
-                    {
-                        appendValue(curr_read,c);
-                        c = _streamGet(*file);
-                    }
-                    if(mScore != 100)
-                    {
+                    if (value(reader) == '=')
+                        if (skipNChars(reader, 1) != 0)
+                            return CALLSNPS_GFF_FAILED;
+                    while (!atEnd(reader) && value(reader) != ';' && value(reader) != '\r' && value(reader) != '\n')
+                        if (readNChars(curr_read, reader, 1) != 0)
+                            return CALLSNPS_GFF_FAILED;
+                    if (mScore != 100)
                         editDist = (int)floor((length(curr_read) * ((100.0 - mScore + 0.001)/100.0)));
-                    }
                 }
                 else if (current_tag == "mutations")
                 {
-                    if(!readFound)
+                    if (!readFound)
                     {
                         temp_read = infix(readTemplate,0,gMatchLen);
                         curr_read = temp_read;
                         readFound = true;
                     }
-                    while(c==',' || c=='=') // and add the mutated positions (misfragmentStore.alignedReadStore and insertions in read)
+                    while (value(reader) == ',' || value(reader) == '=') // and add the mutated positions (misfragmentStore.alignedReadStore and insertions in read)
                     {
-                        c = _streamGet(*file);
-                        pos = _parseReadNumber(*file,c);
-                        curr_read[pos-1]=(Dna5)c;
-                        c = _streamGet(*file);
+                        goNext(reader);
+                        if (atEnd(reader))
+                            return CALLSNPS_GFF_FAILED;
+                        clear(temp_str);
+                        if (readDigits(temp_str, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(pos, temp_str))
+                            return 1;
+                        curr_read[pos - 1] = (Dna5)value(reader);
+                        if (skipNChars(reader, 1) != 0)
+                            return 1;
                         ++editDist;
                     }
                 }
@@ -998,11 +1086,20 @@ int readMatchesFromGFF_Batch(
                     pos = 0; pos2 = 0;
                     int gPos = 0;
                     readFound = true;
-                    while(c!=';'  && !(c == '\n' || (c == '\r' && _streamPeek(*file) != '\n')))
+                    while (value(reader) != ';' && value(reader) != '\r' && value(reader) != '\n')
                     {
-                        if(c=='=') c = _streamGet(*file);
-                        pos2 = _parseReadNumber(*file,c);
-                        if(c=='M')
+                        if (value(reader) == '=')
+                        {
+                            goNext(reader);
+                            if (atEnd(reader))
+                                return CALLSNPS_GFF_FAILED;
+                        }
+                        clear(temp_str);
+                        if (readDigits(temp_str, reader) != 0)
+                            return 1;
+                        if (!lexicalCast2(pos2, temp_str))
+                            return 1;
+                        if (value(reader) == 'M')
                         {
                             unsigned k= 0;
                             while(k<pos2)
@@ -1016,11 +1113,12 @@ int readMatchesFromGFF_Batch(
                             pos2 += pos;
                             append(temp_read,infix(readTemplate,pos,pos2));
                             pos = pos2;
-                            c = _streamGet(*file);
+                            if (skipNChars(reader, 1) != 0)
+                                return 1;
                             first = false;
                             continue;
                         }
-                        if(c=='I')
+                        else if (value(reader) == 'I')
                         { //insertion in the read
                             //(*mIt).editDist += pos2; will be increased in mutations loop
                             unsigned k= 0;
@@ -1032,14 +1130,15 @@ int readMatchesFromGFF_Batch(
                             appendValue(tmpCigarStr,TCigar('I',pos2));
                             for(unsigned f = 0; f < pos2; ++f)
                                 append(temp_read,'A');  // will be replaced with correct base in "mutations" loop
-                            c = _streamGet(*file);
+                            if (skipNChars(reader, 1) != 0)
+                                return 1;
                             rLen += pos2;
                             hasIndel = true;
                             first = false;
                 //            if(maxIndelLen < pos2) maxIndelLen = pos2;
                             continue;
                         }
-                        if(c=='D')
+                        else if (value(reader) == 'D')
                         { //there is a deletion in the read
                             unsigned k= 0;
                             while(k<pos2)
@@ -1052,15 +1151,16 @@ int readMatchesFromGFF_Batch(
                             alignLength += pos2;
                             pos += pos2;
                             rLen -= pos2;
-                            c = _streamGet(*file);
+                            if (skipNChars(reader, 1) != 0)
+                                return 1;
                             hasIndel = true;
                             first = false;
                //             if(maxIndelLen < pos2) maxIndelLen = pos2;
                             continue;
                         }
-                        if(c=='S')
+                        else if (value(reader) == 'S')
                         {
-                            if(first) 
+                            if (first)
                                 softClippedLeft = pos2;
                             else
                                 softClippedRight = pos2;
@@ -1077,7 +1177,8 @@ int readMatchesFromGFF_Batch(
 //                            if(first)
                                 append(temp_read,infix(readTemplate,pos,pos2));
                             pos = pos2;
-                            c = _streamGet(*file);
+                            if (skipNChars(reader, 1) != 0)
+                                return 1;
                             first = false;
                             options.softClipTagsInFile = true;
                             continue;
@@ -1092,8 +1193,12 @@ int readMatchesFromGFF_Batch(
                     curr_read = temp_read;
                 }
             }
-            if(qualityFound ) {_parseSkipLine(*file,c); break;}
-            
+            if (qualityFound)
+            {
+                if (skipLine(reader) != 0)
+                    return CALLSNPS_GFF_FAILED;
+                break;
+            }
         }
         if (options._debugLevel>0&&(rSeq%1000000)==0) std::cout <<rSeq<<".."<<std::flush;
         if(!discardRead && (mScore >= options.minMapQual && (!multi || options.keepMultiReads) && (!suboptimal || options.keepSuboptimalReads)))// && (!((*mIt).hasIndel==1 && options.hammingOnly)))
@@ -1119,15 +1224,18 @@ int readMatchesFromGFF_Batch(
             if(clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
             {
                 if (options._debugLevel>1) std::cout <<"Discarding read "<<readName<<", too short after clipping.."<<std::endl;
-                _parseSkipWhitespace(*file, c); continue;
+                if (skipWhitespaces(reader) != 0)
+                    return CALLSNPS_GFF_FAILED;
+                continue;
             }
             if(options.realign && splitRead)
             {
                 if(endPos-beginPos > (int)((float)length(curr_read)*1.5))
                 {
-                    
                     if (options._debugLevel>1) std::cout <<"Discarding split read "<<readName<<", deletion too large.."<<std::endl;
-                    _parseSkipWhitespace(*file, c); continue;
+                    if (skipWhitespaces(reader) != 0)
+                        return CALLSNPS_GFF_FAILED;
+                    continue;
                 }
             }
 #ifdef READ_NAME_AWARE
@@ -1214,7 +1322,7 @@ int readMatchesFromGFF_Batch(
             if(options._debugLevel > 1)
             {
                 ::std::cout<<"Parsed: id= " <<m.readId<<" name="<<readName<<"="<<curr_read<<" with edit="<<editDist<<" at position "<< beginPos<<"\n";
-                ::std::cout << "mScore=" << mScore << " m.beginPos=" << m.beginPos << "m.endPos="<<m.endPos<<std::endl;
+                ::std::cout << "mScore=" << mScore << " m.beginPos=" << m.beginPos << " m.endPos=" << m.endPos << std::endl;
                 if(q.pairScore==1) ::std::cout << "indel! pairScore=" << q.pairScore <<std::endl;
                 if(q.pairScore==0) ::std::cout << "no indel! pairScore=" << q.pairScore <<std::endl;
                 
@@ -1228,8 +1336,10 @@ int readMatchesFromGFF_Batch(
                 ::std::cout << "mScore = " << mScore << std::endl;
             }
         }
-        
-        _parseSkipWhitespace(*file, c);
+
+        int res = skipWhitespaces(reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return CALLSNPS_GFF_FAILED;
     }
     if(options._debugLevel > 0) 
         ::std::cout << ::std::endl << "Parsed "<<length(fragmentStore.alignedReadStore)<<" matches of "<<length(fragmentStore.readSeqStore)<<" reads." << ::std::endl;
@@ -3905,7 +4015,6 @@ convertMatchesToGlobalAlignment(fragmentStore, scoreType, Nothing());
 #else
     reAlign(fragmentStore,consScore,0,1,bandWidth,true);
 #endif
-
 
 #ifdef SNPSTORE_DEBUG
     if(extraV)
