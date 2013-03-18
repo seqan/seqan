@@ -357,10 +357,10 @@ addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
     return false;
 }
 
-template <typename TSeedSpec>
+template <typename TSeedSpec, typename TSeed>
 inline void
 addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
-        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+        TSeed const & seed,
         Single const &)
 {
     seedSet._seeds.insert(seed);
