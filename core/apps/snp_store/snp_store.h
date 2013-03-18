@@ -606,60 +606,6 @@ int getGenomeFileNameList(StringSet<CharString> & genomeFileNames, TOptions cons
 }
 
 
-
-//read filename (read line and trim trailing whitespaces)
-template<typename TFile, typename TChar, typename TString>
-void
-_parseReadWordUntilWhitespace(TFile& file, TString& str, TChar& c)
-{
-    append(str,c);
-    if (c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) {
-        c = _streamGet(file);
-        return;
-    }
-    while (!_streamEOF(file)) {
-        c = _streamGet(file);
-        if (c== ' ' || c== '\t' || c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) break;
-        append(str, c);
-    }
-    return;
-}
-
-
-
-//read filename (read line and trim trailing whitespaces)
-template<typename TFile, typename TChar>
-void
-_parse_skipUntilWhitespace(TFile& file, TChar& c)
-{
-    if (c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) {
-        c = _streamGet(file);
-        return;
-    }
-    while (!_streamEOF(file)) {
-        c = _streamGet(file);
-        if (c== ' ' || c== '\t' || c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) break;
-    }
-    return;
-}
-
-
-
-inline int
-_parseReadNumber(CharString & file, unsigned & c)
-{
-	// Read number
-	String<char> str(file[c]);
-	while (c < length(file)-1) {
-		++c;
-		if (!_parseIsDigit(file[c])) break;
-		append(str, file[c]);
-	}
-	return atoi(toCString(str));
-}
-
-
-
 /////////////////////////////////////////////////////////////
 // read sorted(!) Gff input file containing mapped reads
 template <
@@ -1402,9 +1348,18 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
         if('Z' == getTagValue(bamTags, clipIndex)[0])
         {
             CharString clipLeftRight = getTagValue(bamTags, clipIndex);
-            unsigned x=1;
-            clipLeft = _parseReadNumber(clipLeftRight, x);
-            clipRight = _parseReadNumber(clipLeftRight, ++x);
+            // Get position of splitter char.
+            unsigned x = 1;
+            while (x < length(clipLeftRight) && isdigit(clipLeftRight[x]))
+                ++x;
+            // Extract left and right clipping count.
+            seqan::CharString buffer = infix(clipLeftRight, 1, x);
+            lexicalCast2(clipLeft, buffer);
+            if (x + 1 <= length(clipLeftRight))
+                buffer = infix(clipLeftRight, x + 1, length(clipLeftRight));
+            else
+                buffer = "0";
+            lexicalCast2(clipRight, buffer);
             options.clipTagsInFile = true;
         }
     }
@@ -1875,37 +1830,51 @@ bool loadPositions(TPositions & positions,
     int numPos = 0;
     typename ::std::map<CharString,unsigned>::const_iterator it;
     unsigned contigId;
-    char c = _streamGet(file);
-    while(!_streamEOF(file))
+    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > reader(file);
+    while (!atEnd(reader))
     {
-        _parseSkipWhitespace(file, c);
-
-        // skip whitespaces just in case (actually there shouldnt be a whitespace at the beginning of a line)
+        if (skipWhitespaces(reader) != 0)
+            return false;
+        
+        // Skip whitespaces just in case (actually there shouldnt be a whitespace at the beginning of a line)
         // and read entry in column 1  --> genomeID
         clear(chrId);
-        _parseReadWordUntilWhitespace(file, chrId, c); 
-        
-        //check if the genomeID is in our map of relevant genomeIDs, otherwise skip position
+        int res = readUntilWhitespace(chrId, reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return false;
+
+        // Check if the genomeID is in our map of relevant genomeIDs, otherwise skip position.
         it = gIdStringToIdNumMap.find(chrId);
-        if(options._debugLevel > 1) 
+        if (options._debugLevel > 1) 
             ::std::cout << chrId << "\t";
-        if(it != gIdStringToIdNumMap.end()) contigId = it->second;
+        if (it != gIdStringToIdNumMap.end())
+        {
+            contigId = it->second;
+        }
         else
         {
-            _parseSkipLine(file,c);
+            res = skipLine(reader);
+            if (res != 0 && res != EOF_BEFORE_SUCCESS)
+                return false;
             continue;
         }
-        SEQAN_ASSERT_GT(length(positions),contigId);
-        _parseSkipWhitespace(file, c);
-        unsigned pos = _parseReadNumber(file,c) - options.positionFormat;
+        SEQAN_ASSERT_GT(length(positions), contigId);
+        skipWhitespaces(reader);
+        seqan::CharString buffer;
+        res = readDigits(buffer, reader);
+        if (res != 0 && res != EOF_BEFORE_SUCCESS)
+            return false;
+        unsigned pos = 0;
+        if (!lexicalCast2(pos, buffer))
+            return false;
+        pos -= options.positionFormat;
         appendValue(positions[contigId],pos);
         ++numPos;
-        _parseSkipLine(file,c);
+        skipLine(reader);
     }
-    if(options._debugLevel > 0) ::std::cout << numPos << " positions to inspect." << std::endl;
-    file.close();
-    
-    if (numPos > 0) return 0;
+
+    if (numPos > 0)
+        return 0;
     return 1;
 }
 
