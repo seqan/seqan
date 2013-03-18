@@ -514,6 +514,7 @@ struct MMap;
 //IOREV _nodoc_
 		TValue* tmp = NULL;
 		allocate(me, tmp, capacity(pf));
+		//bzero(tmp, sizeof(TValue) * capacity(pf));
 		pf.begin = tmp;
 		#ifdef SEQAN_VVERBOSE
 			::std::cerr << "allocPage: " << ::std::hex << &pf << '\t' << tmp << ::std::dec << ::std::endl;

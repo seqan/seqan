@@ -80,6 +80,9 @@ it could be convenient to do so.
 ..include:seqan/basic.h
 */
 
+#ifdef PLATFORM_WINDOWS
+    #pragma pack(push,1)
+#endif
 template <typename TValue, typename TSpec>
 class SimpleType
 {
@@ -202,7 +205,14 @@ public:
         assign(c, *this);
         return c;
     }
-};
+}
+#ifndef PLATFORM_WINDOWS
+    __attribute__((packed))
+#endif
+    ;
+#ifdef PLATFORM_WINDOWS
+      #pragma pack(pop)
+#endif
 
 // ============================================================================
 // Metafunctions
