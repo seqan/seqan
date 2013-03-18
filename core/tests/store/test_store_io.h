@@ -514,9 +514,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
 {
     // Get path to input files.
     seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/core/tests/store/toy.sam");
+    append(inPathSam, "/core/tests/store/ex1.sam.copy");
     seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
-    append(inPathFasta, "/core/tests/store/toy.fa");
+    append(inPathFasta, "/core/tests/store/ex1.fa");
     // Get path to temporary file.
     seqan::CharString outPathAmos = SEQAN_TEMP_FILENAME();
 
