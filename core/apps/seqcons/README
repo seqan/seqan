@@ -1,0 +1,26 @@
+SeqCons - Sequence Consensus
+============================
+
+Sequence consensus “./seqcons” is an open source consensus computation program
+for Linux and Windows.  The algorithm can be used for de novo and
+reference-guided sequence assembly.
+
+For more information, see
+
+    http://www.seqan.de/projects/seqcons/
+
+Usage
+-----
+
+  ./seqcons -r [Options]
+  ./seqcons --help
+
+References
+----------
+
+ * Rausch, T., Koren, S., Gennady, D., Weese, D., Emde, A.-K., Doering, A.,
+   Reinert, K. (2009). A consistency-based consensus algorithm for de novo and
+   reference-guided sequence assembly of short reads. Bioinformatics.
+
+ * Rausch, T., Emde, A.-K., Reinert, K. (2008). Robust consensus
+   computation. BMC Bioinformatics.
