@@ -104,6 +104,10 @@ public:
     // target position.
     bool trustNM;
 
+    // If enabled then all reads are treated as single-end mapped.  This is required for analyzing SOAP output that has
+    // been converted to SAM since it will set the paired-end flags.
+    bool ignorePairedFlags;
+
     // If enabled, don't panic on additional hits in non-weighted mode.
     bool dontPanic;
 
@@ -155,6 +159,7 @@ public:
         benchmarkCategory(CATEGORY_ALL),
         distanceMetric(EDIT_DISTANCE),
         trustNM(false),
+        ignorePairedFlags(false),
         dontPanic(false),
         // outPath("-"),
         showMissedIntervals(false),
@@ -802,6 +807,24 @@ int benchmarkReadResult(RabemaStats & result,
 }
 
 // ----------------------------------------------------------------------------
+// Function clearPairedFlags()
+// ----------------------------------------------------------------------------
+
+void clearPairedFlags(seqan::BamAlignmentRecord & record)
+{
+    if (hasFlagMultiple(record))
+        record.flag = record.flag ^ seqan::BAM_FLAG_MULTIPLE;
+    if (hasFlagFirst(record))
+        record.flag = record.flag ^ seqan::BAM_FLAG_FIRST;
+    if (hasFlagLast(record))
+        record.flag = record.flag ^ seqan::BAM_FLAG_LAST;
+    if (hasFlagNextRC(record))
+        record.flag = record.flag ^ seqan::BAM_FLAG_NEXT_RC;
+    if (hasFlagNextUnmapped(record))
+        record.flag = record.flag ^ seqan::BAM_FLAG_NEXT_UNMAPPED;
+}
+
+// ----------------------------------------------------------------------------
 // Function compareAlignedReadsToReference()
 // ----------------------------------------------------------------------------
 
@@ -835,6 +858,8 @@ compareAlignedReadsToReference(RabemaStats & result,
         std::cerr << "ERROR: Could not read first SAM/BAM record.\n";
         return 1;
     }
+    if (options.ignorePairedFlags)
+        clearPairedFlags(samRecord);
     GsiRecord gsiRecord;
     if (atEnd(gsiReader) || readRecord(gsiRecord, gsiReader, Gsi()) != 0)
     {
@@ -898,6 +923,8 @@ compareAlignedReadsToReference(RabemaStats & result,
                 std::cerr << "ERROR: Could not read SAM/BAM record.\n";
                 return 1;
             }
+            if (options.ignorePairedFlags)
+                clearPairedFlags(samRecord);
             if (lessThanSamtoolsQueryName(samRecord.qName, currentReadName))
             {
                 std::cerr << "ERROR: Wrong order in SAM/BAM file: " << samRecord.qName << " succeeds "
@@ -1061,6 +1088,9 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     addOption(parser, seqan::ArgParseOption("", "trust-NM",
                                             "When set, we trust the alignment and distance from SAM/BAM file and no "
                                             "realignment is performed.  Off by default."));
+    addOption(parser, seqan::ArgParseOption("", "ignore-paired-flags",
+                                            "When set, we ignore all SAM/BAM flags related to pairing.  This is "
+                                            "necessary when analyzing SAM from SOAP's soap2sam.pl script."));
     addOption(parser, seqan::ArgParseOption("", "DONT-PANIC",
                                             "Do not stop program execution if an additional hit was found that "
                                             "indicates that the gold standard is incorrect."));
@@ -1167,6 +1197,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     else
         options.distanceMetric = HAMMING_DISTANCE;
     options.trustNM = isSet(parser, "trust-NM");
+    options.ignorePairedFlags = isSet(parser, "ignore-paired-flags");
     options.dontPanic = isSet(parser, "DONT-PANIC");
 
     options.showMissedIntervals = isSet(parser, "show-missed-intervals");
@@ -1209,6 +1240,8 @@ int main(int argc, char const ** argv)
               << "Benchmark category    " << categoryName(options.benchmarkCategory) << "\n"
               << "Distance measure      " << metricName(options.distanceMetric) << "\n"
               << "Match Ns              " << yesNo(options.matchN) << '\n'
+              << "Trust NM tag          " << yesNo(options.trustNM) << '\n'
+              << "Ignore paired flags   " << yesNo(options.ignorePairedFlags) << '\n'
               << "GSI File              " << options.inGsiPath << '\n'
               << "SAM File              " << options.inSamPath << '\n'
               << "BAM File              " << options.inBamPath << '\n'
