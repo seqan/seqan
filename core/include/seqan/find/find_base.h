@@ -202,11 +202,11 @@ in which $hayNo$ is the haystack index and $pos$ the local position of the hit.
 template < typename THaystack, typename TSpec = typename DefaultFinder<THaystack>::Type >
 class Finder
 {
+public:
 	typedef typename Iterator<THaystack, Rooted>::Type TIterator;
 	typedef typename Position<THaystack>::Type TPosition;
 	typedef typename Size<THaystack>::Type TSize;
 
-public:
 	TIterator data_iterator;
 	TPosition data_endPos; //note: we need this since iterator could point to begin or end (depending on pattern type)
 	TSize data_length;
@@ -511,7 +511,6 @@ template <typename THaystack, typename TSpec>
 inline typename Parameter_<THaystack>::Type 
 container(Finder<THaystack, TSpec> & me)
 {
-SEQAN_CHECKPOINT
 	return container(hostIterator(me));
 }
 
@@ -814,13 +813,13 @@ setHaystack(Finder<THaystack, TSpec> &obj, THaystack const &hstk) {
 */
 
 template < typename TObject >
-inline typename Haystack<TObject>::Type &
+inline typename Parameter_<typename Haystack<TObject>::Type>::Type
 haystack(TObject &obj) {
 	return container(obj);
 }
 
 template < typename TObject >
-inline typename Haystack<TObject const>::Type &
+inline typename Parameter_<typename Haystack<TObject const>::Type>::Type
 haystack(TObject const &obj) {
 	return container(obj);
 }

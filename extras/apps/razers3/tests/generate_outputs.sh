@@ -2,8 +2,8 @@
 #
 # Currently, we run RazerS only on
 
-# We use revision 13383 for building the gold standard.
-RAZERS=../../../../build/make/bin/razers3
+# We use revision 13774 for building the gold standard.
+RAZERS=../../../../../seqan-clean-build/release/bin/razers3
 
 # ============================================================
 # Run Adeno Single-End Example

@@ -347,16 +347,20 @@ template <typename T>
 typename Parameter_<T>::Type
 _toParameter(T * _object)
 {
-    SEQAN_CHECKPOINT;
     return * _object;
 }
 
 template <typename T>
 typename Parameter_<T>::Type
-_toParameter(T _object)
+_toParameter(T & _object)
 {
-    // TODO(holtgrew): This cannot really work, cannot return references to temporaries.
-    SEQAN_CHECKPOINT;
+    return _object;
+}
+
+template <typename T>
+typename Parameter_<T const>::Type
+_toParameter(T const & _object)
+{
     return _object;
 }
 

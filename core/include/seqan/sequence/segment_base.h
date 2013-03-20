@@ -84,6 +84,34 @@ struct Host<Segment<THost, TSpec> const >
 
 //////////////////////////////////////////////////////////////////////////////
 
+template <typename THost, typename TSpec>
+struct Pointer_<Segment<THost, TSpec> >
+{
+    typedef Segment<THost, TSpec> Type;
+};
+
+template <typename THost, typename TSpec>
+struct Pointer_<Segment<THost, TSpec> const >
+{
+    typedef Segment<THost, TSpec> Type;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename THost, typename TSpec>
+struct Parameter_<Segment<THost, TSpec> >
+{
+    typedef Segment<THost, TSpec> Type;
+};
+
+template <typename THost, typename TSpec>
+struct Parameter_<Segment<THost, TSpec> const >
+{
+    typedef Segment<THost, TSpec> Type;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
 ///.Metafunction.Spec.param.T.type:Class.Segment
 ///.Metafunction.Spec.class:Class.Segment
 
@@ -151,6 +179,8 @@ struct Reference<Segment<THost, TSpec> const >
 	
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): Should the iterators of const segments be iterators with the constness of the host.
+
 ///.Metafunction.Iterator.param.T.type:Class.Segment
 ///.Metafunction.Iterator.class:Class.Segment
 
@@ -164,7 +194,7 @@ struct Iterator<Segment<THost, TSpec>, Rooted>
 template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec> const, Rooted>
 {
-    typedef Segment<THost, TSpec> const TSequence_;
+    typedef Segment<THost, TSpec> TSequence_;
     typedef typename Iterator<THost const, Standard>::Type TIterator_;
     typedef Iter<TSequence_, AdaptorIterator<TIterator_> > Type;
 };
@@ -176,7 +206,7 @@ struct Iterator<Segment<THost, TSpec>, Standard>:
 };
 template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec> const, Standard>:
-    Iterator<THost, Standard>
+    Iterator<THost const, Standard>
 {
 };
 
@@ -299,6 +329,41 @@ getObjectId(Segment<THost, TSpec> const & me)
 SEQAN_CHECKPOINT
     return getObjectId(host(me));
 }
+
+// --------------------------------------------------------------------------
+// Function _toPointer()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename Pointer_<Segment<THost, TSpec> >::Type
+_toPointer(Segment<THost, TSpec> & me)
+{
+    return me;
+}
+
+template <typename THost, typename TSpec>
+inline typename Pointer_<Segment<THost, TSpec> const >::Type
+_toPointer(Segment<THost, TSpec> const & me)
+{
+    return me;
+}
+
+// --------------------------------------------------------------------------
+// Function _fromPointer()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+Segment<THost, TSpec> _fromPointer(Segment<THost, TSpec> & me)
+{
+    return me;
+}
+
+template <typename THost, typename TSpec>
+Segment<THost, TSpec> _fromPointer(Segment<THost, TSpec> const & me)
+{
+    return me;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 

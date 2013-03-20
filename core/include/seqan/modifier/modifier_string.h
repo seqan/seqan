@@ -35,8 +35,22 @@
 #ifndef SEQAN_MODIFIER_MODIFIER_STRING_H_
 #define SEQAN_MODIFIER_MODIFIER_STRING_H_
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
+
+// ==========================================================================
+// Forwards
+// ==========================================================================
+
+template <typename T> struct InnermostHost_;
+
+// ==========================================================================
+// Classes
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Class ModifierString
+// --------------------------------------------------------------------------
 
 /**
 .Class.ModifiedString:
@@ -52,64 +66,119 @@ namespace SEQAN_NAMESPACE_MAIN
 ..include:seqan/modifier.h
 */
 
-template < typename THost, typename TSpec = void >
-class ModifiedString {
+template <typename THost, typename TSpec = void>
+class ModifiedString
+{
 public:
-    Holder<THost>							data_host;
-    typename Cargo<ModifiedString>::Type	data_cargo;
+    typedef typename Pointer_<THost>::Type       THostPointer_;
+    typedef typename Cargo<ModifiedString>::Type TCargo_;
 
-    ModifiedString() {
-        SEQAN_CHECKPOINT;
+    typedef typename InnermostHost_<ModifiedString>::Type TInnermostHost_;
+
+    mutable THostPointer_ _host;
+    TCargo_ _cargo;
+
+    // Default constructor.
+    ModifiedString() : _host(), _cargo()
+    {}
+
+    // Construct with the actual host.
+    explicit
+    ModifiedString(THost & host) : _host(_toPointer(host)), _cargo()
+    {}
+
+    // Constructor for creating a ModifiedString with const host with a non-const host.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   SEQAN_CTOR_ENABLE_IF(IsSameType<THost, THost_>)) :
+            _host(_toPointer(host)), _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
     }
 
-    ModifiedString(ModifiedString &_origin):
-            data_host(_origin.data_host),
-            data_cargo(_origin.data_cargo) {
-        SEQAN_CHECKPOINT;
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ & host,
+                   SEQAN_CTOR_ENABLE_IF(And<Not<IsSameType<TInnermostHost_, THost> >,
+                                            IsSameType<TInnermostHost_, THost_> >)) :
+            _host(host), _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
     }
 
-    ModifiedString(ModifiedString const &_origin):
-            data_host(_origin.data_host),
-            data_cargo(_origin.data_cargo) {
-        SEQAN_CHECKPOINT;
-    }
-    
-    ModifiedString(THost &_origin) {
-        SEQAN_CHECKPOINT;
-        setHost(*this, _origin);
-    }
-
-    template <typename T>
-    ModifiedString(T & _origin) {
-        SEQAN_CHECKPOINT;
-        setValue(*this, _origin);
-    }
-
-    template <typename T>
-    ModifiedString(T const & _origin) {
-        SEQAN_CHECKPOINT;
-        setValue(*this, _origin);
-    }
-
-    template <typename T>
-    inline ModifiedString const &
-    operator=(T & _origin) {
-        SEQAN_CHECKPOINT;
-        assign(*this, _origin);
-        return *this;
+    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   SEQAN_CTOR_ENABLE_IF(And<Not<IsSameType<TInnermostHost_, THost> >,
+                                            IsSameType<TInnermostHost_, THost_> >)) :
+            _host(host), _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
     }
 };
 
+// ==========================================================================
+// Metafunctions
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction InnermostHost_
+// --------------------------------------------------------------------------
+
+// TODO(holtgrew): Test me!
+
+// This metafunction returns the innermost host type for a ModifiedString cascade.
+
+// Recurse down const/non-const.
+
+template <typename THost, typename TInnerSpec, typename TOuterSpec>
+struct InnermostHost_<ModifiedString<ModifiedString<THost, TInnerSpec> const, TOuterSpec> >
+{
+    typedef THost Type;
+};
+
+template <typename THost, typename TInnerSpec, typename TOuterSpec>
+struct InnermostHost_<ModifiedString<ModifiedString<THost, TInnerSpec>, TOuterSpec> >
+{
+    typedef THost Type;
+};
+
+// Recursion stop.
+
+template <typename THost, typename TSpec>
+struct InnermostHost_<ModifiedString<THost, TSpec> const>
+{
+    typedef THost Type;
+};
+
+template <typename THost, typename TSpec>
+struct InnermostHost_<ModifiedString<THost, TSpec> >
+{
+    typedef THost Type;
+};
+
+// --------------------------------------------------------------------------
+// Metafunction Spec
+// --------------------------------------------------------------------------
+
 template < typename THost, typename TSpec >
-struct Spec< ModifiedString<THost, TSpec> > {
+struct Spec< ModifiedString<THost, TSpec> >
+{
     typedef TSpec Type;
 };
 
 template < typename THost, typename TSpec >
-struct Spec< ModifiedString<THost, TSpec> const > {
+struct Spec< ModifiedString<THost, TSpec> const >
+{
     typedef TSpec Type;
 };
 
+// --------------------------------------------------------------------------
+// Metafunction Value
+// --------------------------------------------------------------------------
 
 // use Value, GetValue, Reference, Size, ... from corresponding iterator
 template < typename THost, typename TSpec >
@@ -120,6 +189,9 @@ template < typename THost, typename TSpec >
 struct Value< ModifiedString<THost, TSpec> const >:
     Value< typename Iterator< ModifiedString<THost, TSpec> const, Rooted >::Type > {};
 
+// --------------------------------------------------------------------------
+// Metafunction GetValue
+// --------------------------------------------------------------------------
 
 template < typename THost, typename TSpec >
 struct GetValue< ModifiedString<THost, TSpec> >:
@@ -129,6 +201,9 @@ template < typename THost, typename TSpec >
 struct GetValue< ModifiedString<THost, TSpec> const >:
     GetValue< typename Iterator< ModifiedString<THost, TSpec> const, Rooted >::Type > {};
 
+// --------------------------------------------------------------------------
+// Metafunction Reference
+// --------------------------------------------------------------------------
 
 template < typename THost, typename TSpec >
 struct Reference< ModifiedString<THost, TSpec> >:
@@ -138,6 +213,10 @@ template < typename THost, typename TSpec >
 struct Reference< ModifiedString<THost, TSpec> const >:
     Reference< typename Iterator< ModifiedString<THost, TSpec> const, Rooted >::Type > {};
 
+// --------------------------------------------------------------------------
+// Metafunction Size
+// --------------------------------------------------------------------------
+
 ///.Metafunction.Size.param.T.type:Class.ModifiedString
 ///.Metafunction.Size.class:Class.ModifiedString
 
@@ -145,179 +224,282 @@ template < typename THost, typename TSpec >
 struct Size< ModifiedString<THost, TSpec> >:
     Size< typename Iterator< ModifiedString<THost, TSpec>, Rooted >::Type > {};
 
+// --------------------------------------------------------------------------
+// Metafunction Position
+// --------------------------------------------------------------------------
+
 template < typename THost, typename TSpec >
 struct Position< ModifiedString<THost, TSpec> >:
     Position< typename Iterator< ModifiedString<THost, TSpec>, Rooted >::Type > {};
+
+// --------------------------------------------------------------------------
+// Metafunction Difference
+// --------------------------------------------------------------------------
 
 template < typename THost, typename TSpec >
 struct Difference< ModifiedString<THost, TSpec> >:
     Difference< typename Iterator< ModifiedString<THost, TSpec>, Rooted >::Type > {};
 
+// --------------------------------------------------------------------------
+// Metafunction Iterator
+// --------------------------------------------------------------------------
+
+// TODO(holtgrew): Should the result of Iterator<> be a const iterator for const ModifiedString objects?
 
 ///.Metafunction.Iterator.param.T.type:Class.ModifiedString
 ///.Metafunction.Iterator.class:Class.ModifiedString
 
 template <typename THost, typename TSpec>
-struct Iterator< ModifiedString<THost, TSpec>, Standard > {
+struct Iterator<ModifiedString<THost, TSpec>, Standard > {
     typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
 
 template <typename THost, typename TSpec >
-struct Iterator< ModifiedString<THost, TSpec> const, Standard > {
-    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
+struct Iterator<ModifiedString<THost, TSpec> const, Standard > {
+    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
 
 template <typename THost, typename TSpec>
-struct Iterator< ModifiedString<THost, TSpec>, Rooted > {
+struct Iterator<ModifiedString<THost, TSpec>, Rooted > {
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
 
 template <typename THost, typename TSpec >
-struct Iterator< ModifiedString<THost, TSpec> const, Rooted > {
-    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
+struct Iterator<ModifiedString<THost, TSpec> const, Rooted > {
+    typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
+
+// --------------------------------------------------------------------------
+// Metafunction Host
+// --------------------------------------------------------------------------
 
 ///.Metafunction.Host.param.T.type:Class.ModifiedString
 ///.Metafunction.Host.class:Class.ModifiedString
 
-template < typename THost, typename TSpec >
-struct Host< ModifiedString<THost, TSpec> > {
+template <typename THost, typename TSpec >
+struct Host<ModifiedString<THost, TSpec> > {
     typedef THost Type;
 };
 
-template < typename THost, typename TSpec >
-struct Host< ModifiedString<THost, TSpec> const > {
+template <typename THost, typename TSpec >
+struct Host<ModifiedString<THost, TSpec> const > {
     typedef THost const Type;
 };
 
+// --------------------------------------------------------------------------
+// Metafunction Parameter_
+// --------------------------------------------------------------------------
 
 // don't uncomment this, it would cause the Segment() c'tor to take the address
 // of a temporary copy of the ModifiedString
 
-//template < typename THost, typename TSpec >
-//struct Parameter_< ModifiedString<THost, TSpec> > {
-//    typedef ModifiedString<THost, TSpec> & Type;
-//};
-//
-//template < typename THost, typename TSpec >
-//struct Parameter_< ModifiedString<THost, TSpec> const > {
-//    typedef ModifiedString<THost, TSpec> const & Type;
-//};
+template <typename THost, typename TSpec >
+struct Parameter_<ModifiedString<THost, TSpec> > {
+    typedef ModifiedString<THost, TSpec> Type;
+};
 
+template <typename THost, typename TSpec >
+struct Parameter_<ModifiedString<THost, TSpec> const > {
+    typedef ModifiedString<THost, TSpec> Type;
+};
+
+// --------------------------------------------------------------------------
+// Metafunction Pointer_
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec >
+struct Pointer_<ModifiedString<THost, TSpec> >
+{
+    typedef ModifiedString<THost, TSpec> Type;
+};
+
+template <typename THost, typename TSpec >
+struct Pointer_<ModifiedString<THost, TSpec> const > : Pointer_<ModifiedString<THost, TSpec> >
+{};
+
+// --------------------------------------------------------------------------
+// Metafunction IsSequence
+// --------------------------------------------------------------------------
 
 ///.Metafunction.IsSequence.param.T.type:Class.ModifiedString
 
-template < typename THost, typename TSpec >
-struct IsSequence< ModifiedString<THost, TSpec> > {
-    typedef True Type;
-    enum { VALUE = true };
-};
+template <typename THost, typename TSpec >
+struct IsSequence<ModifiedString<THost, TSpec> > : True
+{};
 
-template < typename THost, typename TSpec >
-struct AllowsFastRandomAccess< ModifiedString<THost, TSpec> >:
-    AllowsFastRandomAccess<THost> {};
+// --------------------------------------------------------------------------
+// Metafunction AllowsFastRandomAccess
+// --------------------------------------------------------------------------
 
-//////////////////////////////////////////////////////////////////////////////
-// host interface
-//////////////////////////////////////////////////////////////////////////////
+template <typename THost, typename TSpec >
+struct AllowsFastRandomAccess<ModifiedString<THost, TSpec> > : AllowsFastRandomAccess<THost>
+{};
 
-template <typename THost, typename TSpec>
-inline Holder<THost> &
-_dataHost(ModifiedString<THost, TSpec> & me) 
-{
-    SEQAN_CHECKPOINT;
-    return me.data_host;
-}
+// ==========================================================================
+// Functions
+// ==========================================================================
 
-template <typename THost, typename TSpec>
-inline Holder<THost> const &
-_dataHost(ModifiedString<THost, TSpec> const & me) 
-{
-    SEQAN_CHECKPOINT;
-    return me.data_host;
-}
-
-template <typename THost, typename TSpec>
-inline typename Reference< typename Cargo<ModifiedString<THost, TSpec> >::Type >::Type
-cargo(ModifiedString<THost, TSpec> & me) 
-{
-    SEQAN_CHECKPOINT;
-    return me.data_cargo;
-}
-
-template <typename THost, typename TSpec>
-inline typename Reference< typename Cargo<ModifiedString<THost, TSpec> const>::Type >::Type
-cargo(ModifiedString<THost, TSpec> const & me) 
-{
-    SEQAN_CHECKPOINT;
-    return me.data_cargo;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// assign
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function _copyCargo
+// --------------------------------------------------------------------------
 
 template <typename TDest, typename TSource>
-inline void _copyCargoImpl(TDest &, TSource &, False const) {}
+inline void _copyCargoImpl(TDest &, TSource &, False const)
+{}
 
 template <typename TDest, typename TSource>
-inline void _copyCargoImpl(TDest & me, TSource & _origin, True const) {
-    SEQAN_CHECKPOINT;
+inline void _copyCargoImpl(TDest & me, TSource & _origin, True const)
+{
     cargo(me) = cargo(_origin);
 }
 
 template <typename TDest, typename TSource>
-inline void _copyCargo(TDest & me, TSource & _origin) {
-    SEQAN_CHECKPOINT;
+inline void _copyCargo(TDest & me, TSource & _origin)
+{
     _copyCargoImpl(me, _origin, typename IsSameType<
                    typename RemoveConst_<typename Cargo<TDest>::Type >::Type, 
                    typename RemoveConst_<typename Cargo<TSource>::Type>::Type >::Type());
 }
 
+// --------------------------------------------------------------------------
+// Function _toPointer()
+// --------------------------------------------------------------------------
 
-template <typename THost, typename TSpec, typename THost2>
-inline ModifiedString<THost, TSpec> const &
-assign(ModifiedString<THost, TSpec> & me, ModifiedString<THost2, TSpec> & _origin) {
-    SEQAN_CHECKPOINT;
-   host(me) = host(_origin);
-    _copyCargo(me, _origin);
+template <typename THost, typename TSpec>
+inline typename Pointer_<ModifiedString<THost, TSpec> >::Type
+_toPointer(ModifiedString<THost, TSpec> & me)
+{
     return me;
 }
 
-template <typename THost, typename TSpec, typename THost2>
-inline ModifiedString<THost, TSpec> const &
-assign(ModifiedString<THost, TSpec> & me, ModifiedString<THost2, TSpec> const & _origin) {
-    SEQAN_CHECKPOINT;
-    host(me) = host(_origin);
-    _copyCargo(me, _origin);
+template <typename THost, typename TSpec>
+inline typename Pointer_<ModifiedString<THost, TSpec> const >::Type
+_toPointer(ModifiedString<THost, TSpec> const & me)
+{
     return me;
 }
 
-template <typename THost, typename TSpec, typename T>
-inline ModifiedString<THost, TSpec> const &
-assign(ModifiedString<THost, TSpec> & me, T & _origin) {
-    SEQAN_CHECKPOINT;
-    host(me) = _origin;
+// --------------------------------------------------------------------------
+// Function _toParameter()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename Parameter_<ModifiedString<THost, TSpec> >::Type
+_toParameter(ModifiedString<THost, TSpec> & me)
+{
     return me;
 }
 
-template <typename THost, typename TSpec, typename T>
-inline ModifiedString<THost, TSpec> const &
-assign(ModifiedString<THost, TSpec> & me, T const & _origin) {
-    SEQAN_CHECKPOINT;
-    host(me) = _origin;
+template <typename THost, typename TSpec>
+inline typename Parameter_<ModifiedString<THost, TSpec> const >::Type
+_toParameter(ModifiedString<THost, TSpec> const & me)
+{
     return me;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// value
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function _fromPointer()
+// --------------------------------------------------------------------------
+
+// TODO(holtgrew): Replace with _toParameter()?
+
+template <typename T>
+T &
+_fromPointer(T * ptr)
+{
+    return *ptr;
+}
+
+template <typename T>
+T const &
+_fromPointer(T const * ptr)
+{
+    return *ptr;
+}
+
+template <typename THost, typename TSpec>
+ModifiedString<THost, TSpec> _fromPointer(ModifiedString<THost, TSpec> & me)
+{
+    return me;
+}
+
+template <typename THost, typename TSpec>
+ModifiedString<THost, TSpec> _fromPointer(ModifiedString<THost, TSpec> const & me)
+{
+    return me;
+}
+
+// --------------------------------------------------------------------------
+// Function host()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename Parameter_<THost>::Type
+host(ModifiedString<THost, TSpec> & me)
+{
+    return _toParameter(_fromPointer(me._host));
+}
+
+template <typename THost, typename TSpec>
+inline typename Parameter_<THost>::Type
+host(ModifiedString<THost, TSpec> const & me)
+{
+    // typedef ModifiedString<THost, TSpec> const TCMS;
+    // typedef ModifiedString<THost, TSpec> TMS;
+    // static_cast<typename TCMS::THostPointer_>(Nothing());
+    // static_cast<typename TMS::THostPointer_>(Nothing());
+    // static_cast<Nothing>(typename Pointer_<Dna5String>::Type());
+    // static_cast<THost>(Nothing());
+    // static_cast<Nothing>(me);
+    // static_cast<Nothing>(me._host);
+    // static_cast<Nothing>(_fromPointer(me._host));
+    // // static_cast<Nothing>(_toParameter(_fromPointer(me._host)));
+    // static_cast<Nothing>(_fromPointer(me._host));
+    return _toParameter(_fromPointer(me._host));
+}
+
+// --------------------------------------------------------------------------
+// Function setHost()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline void setHost(ModifiedString<THost, TSpec> & me, THost & host)
+{
+    me._host = _toPointer(host);
+}
+
+template <typename THost, typename TSpec>
+inline void setHost(ModifiedString<THost, TSpec> & me, THost const & host)
+{
+    me._host = _toPointer(host);
+}
+
+// --------------------------------------------------------------------------
+// Function cargo()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename Reference<typename Cargo<ModifiedString<THost, TSpec> >::Type >::Type
+cargo(ModifiedString<THost, TSpec> & me) 
+{
+    return me._cargo;
+}
+
+template <typename THost, typename TSpec>
+inline typename Reference<typename Cargo<ModifiedString<THost, TSpec> const>::Type >::Type
+cargo(ModifiedString<THost, TSpec> const & me) 
+{
+    return me._cargo;
+}
+
+// --------------------------------------------------------------------------
+// Function value()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TPos>
 inline typename Reference<ModifiedString<THost, TSpec> >::Type 
 value(ModifiedString<THost, TSpec> & me, TPos pos)
 {
-    SEQAN_CHECKPOINT;
     return value(begin(me, Standard()) + pos);
 }
 
@@ -325,307 +507,219 @@ template <typename THost, typename TSpec, typename TPos>
 inline typename Reference<ModifiedString<THost, TSpec> const >::Type 
 value(ModifiedString<THost, TSpec> const & me, TPos pos)
 {
-    SEQAN_CHECKPOINT;
     return value(begin(me, Standard()) + pos);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// setValue
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function length()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline ModifiedString<THost, TSpec> const &
-setValue(ModifiedString<THost, TSpec> & me, ModifiedString<THost, TSpec> const & _origin) {
-    SEQAN_CHECKPOINT;
-    setHost(me, host(_origin));
-    _copyCargo(me, _origin);
-    return me;
-}
-
-template <typename THost, typename TSpec>
-inline ModifiedString<THost, TSpec> const &
-setValue(ModifiedString<THost, TSpec> & me, ModifiedString<THost, TSpec> & _origin) {
-    SEQAN_CHECKPOINT;
-    setHost(me, host(_origin));
-    _copyCargo(me, _origin);
-    return me;
-}
-
-// pass _origin to parent modifier
-template <typename THost, typename THostSpec, typename TSpec, typename THost2>
-inline ModifiedString< ModifiedString<THost, THostSpec>, TSpec> const &
-setValue(
-    ModifiedString< ModifiedString<THost, THostSpec>, TSpec> & me, 
-    THost2 const & _origin) 
+inline typename Size<ModifiedString<THost, TSpec> >::Type 
+length(ModifiedString<THost, TSpec> const & me)
 {
-    SEQAN_CHECKPOINT;
-    setValue(host(me), _origin);
-    return me;
-}
-
-template <typename THost, typename THostSpec, typename TSpec, typename THost2>
-inline ModifiedString< ModifiedString<THost, THostSpec>, TSpec> const &
-setValue(
-    ModifiedString< ModifiedString<THost, THostSpec>, TSpec> & me, 
-    THost2 & _origin) 
-{
-    SEQAN_CHECKPOINT;
-    setValue(host(me), _origin);
-    return me;
-}
-
-// set _origin at the innermost modifier
-template <typename THost, typename TSpec>
-inline ModifiedString<THost, TSpec> const &
-setValue(ModifiedString<THost, TSpec> & me, THost const & _origin) {
-    SEQAN_CHECKPOINT;
-    assignHost(me, _origin);
-    return me;
-}
-
-template <typename THost, typename TSpec>
-inline ModifiedString<THost, TSpec> const &
-setValue(ModifiedString<THost, TSpec> & me, THost & _origin) {
-    SEQAN_CHECKPOINT;
-    setHost(me, _origin);
-    return me;
-}
-
-// allow _origin conversion at the innermost modifier
-template <typename THost, typename TSpec, typename THost2>
-inline ModifiedString<THost, TSpec> const &
-setValue(ModifiedString<THost, TSpec> & me, THost2 & _origin) {
-    SEQAN_CHECKPOINT;
-    assignHost(me, _origin);
-    return me;
-}
-
-template <typename THost, typename TSpec, typename THost2>
-inline ModifiedString<THost, TSpec> const &
-setValue(ModifiedString<THost, TSpec> & me, THost2 const & _origin) {
-    SEQAN_CHECKPOINT;
-    assignHost(me, _origin);
-    return me;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// length
-//////////////////////////////////////////////////////////////////////////////
-
-template < typename THost, typename TSpec >
-inline typename Size< ModifiedString<THost, TSpec> >::Type 
-length(ModifiedString<THost, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
     return length(host(me));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// begin
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function begin()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+inline typename Iterator<ModifiedString<THost, TSpec> const>::Type 
+begin(ModifiedString<THost, TSpec> const & me)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
+    return TResult(begin(host(me)));
+}
+
+template <typename THost, typename TSpec>
+inline typename Iterator< ModifiedString<THost, TSpec> >::Type 
+begin(ModifiedString<THost, TSpec> & me)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
+    return TResult(begin(host(me)));
+}
+
+template <typename THost, typename TSpec, typename TTagSpec>
+inline typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const>::Type 
+begin(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const>::Type TResult;
+    return TResult(begin(host(me), tag_));
+}
+
+template <typename THost, typename TSpec, typename TTagSpec>
+inline typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type 
+begin(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type TResult;
+    return TResult(begin(host(me), tag_));
+}
+
+// --------------------------------------------------------------------------
+// Function end()
+// --------------------------------------------------------------------------
 
 template < typename THost, typename TSpec >
 inline typename Iterator< ModifiedString<THost, TSpec> const >::Type 
-begin(ModifiedString<THost, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< ModifiedString<THost, TSpec> const >::Type temp_(begin(host(me)));
-    _copyCargo(temp_, me);
-    return temp_;
+end(ModifiedString<THost, TSpec> const & me)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
+    return TResult(end(me));
 }
 
 template < typename THost, typename TSpec >
 inline typename Iterator< ModifiedString<THost, TSpec> >::Type 
-begin(ModifiedString<THost, TSpec> & me) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< ModifiedString<THost, TSpec> >::Type temp_(begin(host(me)));
-    _copyCargo(temp_, me);
-    return temp_;
+end(ModifiedString<THost, TSpec> & me)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
+    return TResult(end(host(me)));
 }
 
 template < typename THost, typename TSpec, typename TTagSpec >
 inline typename Iterator< ModifiedString<THost, TSpec> const, Tag<TTagSpec> const >::Type 
-begin(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< 
-        ModifiedString<THost, TSpec> const, 
-        Tag<TTagSpec> const 
-    >::Type temp_(begin(host(me), tag_));
-    _copyCargo(temp_, me);
-    return temp_;
+end(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const>::Type TResult;
+    return TResult(end(host(me), tag_));
 }
 
 template < typename THost, typename TSpec, typename TTagSpec >
 inline typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type 
-begin(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< 
-        ModifiedString<THost, TSpec>, 
-        Tag<TTagSpec> const 
-    >::Type temp_(begin(host(me), tag_));
-    _copyCargo(temp_, me);
-    return temp_;
+end(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_)
+{
+    typedef typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const>::Type TResult;
+    return TResult(end(host(me), tag_));
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// end
-//////////////////////////////////////////////////////////////////////////////
-
-template < typename THost, typename TSpec >
-inline typename Iterator< ModifiedString<THost, TSpec> const >::Type 
-end(ModifiedString<THost, TSpec> const & me) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< ModifiedString<THost, TSpec> const >::Type temp_(end(host(me)));
-    _copyCargo(temp_, me);
-    return temp_;
-}
-
-template < typename THost, typename TSpec >
-inline typename Iterator< ModifiedString<THost, TSpec> >::Type 
-end(ModifiedString<THost, TSpec> & me) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< ModifiedString<THost, TSpec> >::Type temp_(end(host(me)));
-    _copyCargo(temp_, me);
-    return temp_;
-}
-
-template < typename THost, typename TSpec, typename TTagSpec >
-inline typename Iterator< ModifiedString<THost, TSpec> const, Tag<TTagSpec> const >::Type 
-end(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< ModifiedString<THost, TSpec> const, Tag<TTagSpec> const >::Type temp_(end(host(me), tag_));
-    _copyCargo(temp_, me);
-    return temp_;
-}
-
-template < typename THost, typename TSpec, typename TTagSpec >
-inline typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type 
-end(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_) {
-    SEQAN_CHECKPOINT;
-    typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type temp_(end(host(me), tag_));
-    _copyCargo(temp_, me);
-    return temp_;
-}
-
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function operator==()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TRight >
 inline bool
-operator == (ModifiedString<THost, TSpec> const & left, 
-			TRight const & right)
+operator==(ModifiedString<THost, TSpec> const & left, 
+           TRight const & right)
 {
-SEQAN_CHECKPOINT
-	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
-    return isEqual(_lex);
-}
-template <typename TLeftValue, typename THost, typename TSpec >
-inline bool
-operator == (TLeftValue * left,
-			 ModifiedString<THost, TSpec> const & right)
-{
-SEQAN_CHECKPOINT
 	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
     return isEqual(_lex);
 }
 
-//////////////////////////////////////////////////////////////////////////////
+template <typename TLeftValue, typename THost, typename TSpec >
+inline bool
+operator==(TLeftValue * left,
+           ModifiedString<THost, TSpec> const & right)
+{
+	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
+    return isEqual(_lex);
+}
+
+// --------------------------------------------------------------------------
+// Function operator!=()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TRight >
 inline bool
-operator !=(ModifiedString<THost, TSpec> const & left, 
-			TRight const & right)
+operator!=(ModifiedString<THost, TSpec> const & left, 
+           TRight const & right)
 {
-SEQAN_CHECKPOINT
-	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
-    return isNotEqual(_lex);
-}
-template <typename TLeftValue, typename THost, typename TSpec >
-inline bool
-operator != (TLeftValue * left,
-			 ModifiedString<THost, TSpec> const & right)
-{
-SEQAN_CHECKPOINT
 	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
     return isNotEqual(_lex);
 }
 
-//////////////////////////////////////////////////////////////////////////////
+template <typename TLeftValue, typename THost, typename TSpec >
+inline bool
+operator!= (TLeftValue * left,
+            ModifiedString<THost, TSpec> const & right)
+{
+	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
+    return isNotEqual(_lex);
+}
+
+// --------------------------------------------------------------------------
+// Function operator<()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator < (ModifiedString<THost, TSpec> const & left, 
-			TRight const & right)
+operator<(ModifiedString<THost, TSpec> const & left, 
+          TRight const & right)
 {
-SEQAN_CHECKPOINT
 	return isLess(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
+
 template <typename TLeftValue, typename THost, typename TSpec >
 inline bool
-operator < (TLeftValue * left,
-			 ModifiedString<THost, TSpec> const & right)
+operator<(TLeftValue * left,
+          ModifiedString<THost, TSpec> const & right)
 {
-SEQAN_CHECKPOINT
 	return isLess(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function operator<=()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator <= (ModifiedString<THost, TSpec> const & left, 
-			 TRight const & right)
+operator<=(ModifiedString<THost, TSpec> const & left, 
+           TRight const & right)
 {
-SEQAN_CHECKPOINT
 	return isLessOrEqual(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
+
 template <typename TLeftValue, typename THost, typename TSpec >
 inline bool
-operator <= (TLeftValue * left,
-			 ModifiedString<THost, TSpec> const & right)
+operator<=(TLeftValue * left,
+           ModifiedString<THost, TSpec> const & right)
 {
-SEQAN_CHECKPOINT
 	return isLessOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function operator>()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator > (ModifiedString<THost, TSpec> const & left, 
-		TRight const & right)
+operator>(ModifiedString<THost, TSpec> const & left, 
+          TRight const & right)
 {
-SEQAN_CHECKPOINT
 	return isGreater(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
+
 template <typename TLeftValue, typename THost, typename TSpec >
 inline bool
-operator > (TLeftValue * left,
-			 ModifiedString<THost, TSpec> const & right)
+operator>(TLeftValue * left,
+          ModifiedString<THost, TSpec> const & right)
 {
-SEQAN_CHECKPOINT
 	return isGreater(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function operator>=()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator >= (ModifiedString<THost, TSpec> const & left, 
-		TRight const & right)
+operator>=(ModifiedString<THost, TSpec> const & left, 
+           TRight const & right)
 {
-SEQAN_CHECKPOINT
 	return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
+
 template <typename TLeftValue, typename THost, typename TSpec >
 inline bool
-operator >= (TLeftValue * left,
-			 ModifiedString<THost, TSpec> const & right)
+operator>=(TLeftValue * left,
+           ModifiedString<THost, TSpec> const & right)
 {
-SEQAN_CHECKPOINT
 	return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// stream operators
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function operator<<()
+// --------------------------------------------------------------------------
 
 template < typename TStream, typename THost, typename TSpec >
 inline TStream &
@@ -636,31 +730,34 @@ operator << (TStream & target, ModifiedString<THost, TSpec> const & source)
     return target;
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function operator>>()
+// --------------------------------------------------------------------------
 
 template < typename TStream, typename THost, typename TSpec >
 inline TStream &
-operator >> (TStream & source, ModifiedString<THost, TSpec> & target)
+operator>>(TStream & source, ModifiedString<THost, TSpec> & target)
 {
     SEQAN_CHECKPOINT;
     read(source, target);
     return source;
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function getObjectId()
+// --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
 inline void const *
 getObjectId(ModifiedString<THost, TSpec> & me) 
 {
-    SEQAN_CHECKPOINT;
     return getObjectId(host(me));
 }
+
 template <typename THost, typename TSpec>
 inline void const *
 getObjectId(ModifiedString<THost, TSpec> const & me) 
 {
-    SEQAN_CHECKPOINT;
     return getObjectId(host(me));
 }
 

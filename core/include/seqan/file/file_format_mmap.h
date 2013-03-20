@@ -287,7 +287,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		Tag<TFormat_> /*formatTag*/)
 	{
 		typedef typename Value<TFilename>::Type                                 TValue;
-		typedef ModifiedString<TFilename, ModView<FunctorLowcase<TValue> > >	TLowcase;
+		typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
 		typedef Tag<TFormat_>                                                   TFormat;
 		
 		TLowcase lowcaseFileName(fileName);

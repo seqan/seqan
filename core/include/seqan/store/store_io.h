@@ -906,6 +906,9 @@ write(TFile & target,
     TReadIter readItEnd = end(fragStore.readStore, Standard() );
     noNamesPresent = (length(fragStore.readNameStore) == 0);
     for(TSize idCount = 0;readIt != readItEnd; ++readIt, ++idCount) {
+        // Skip reads without a name.
+        if (length(value(fragStore.readNameStore, idCount)) == 0u)
+            continue;
         if (streamWriteBlock(target,"{RED\n", 5u) != 5u)
             return 1;
         if (streamWriteBlock(target,"iid:", 4u) != 4u)

@@ -988,6 +988,20 @@ matchVerify(
 	typedef Pattern<TReadRev, MyersUkkonenGlobal>			TMyersPatternRev;
 #endif
 
+    unsigned ndlLength = sequenceLength(readId, readSet);
+	int maxScore = MinValue<int>::VALUE;
+	int minScore = -(int)(ndlLength * verifier.options.errorRate);
+	TPosition maxPos = 0;
+	TPosition lastPos = length(inf);
+	unsigned minDistance = (verifier.oneMatchPerBucket)? lastPos: 1;
+
+
+#ifdef RAZERS_NOOUTERREADGAPS
+	TGenomeInfix origInf(inf);
+	setEndPosition(inf, endPosition(inf) - 1);
+	--ndlLength;
+#endif
+
 	TMyersFinder myersFinder(inf);
 	TMyersPattern &myersPattern = verifier.preprocessing[readId];
 
@@ -997,25 +1011,12 @@ matchVerify(
 	::std::cout<<"Read:   "<<readSet[readId]<<::std::endl;
 #endif
 
-    unsigned ndlLength = sequenceLength(readId, readSet);
-	int maxScore = MinValue<int>::VALUE;
-	int minScore = -(int)(ndlLength * verifier.options.errorRate);
-	TPosition maxPos = 0;
-	TPosition lastPos = length(inf);
-	unsigned minDistance = (verifier.oneMatchPerBucket)? lastPos: 1;
-
-#ifdef RAZERS_NOOUTERREADGAPS
-	TGenomeInfix origInf(inf);
-	setEndPosition(inf, endPosition(inf) - 1);
-	--ndlLength;
-#endif
-	
 	// find end of best semi-global alignment
 	while (find(myersFinder, myersPattern, minScore))
 	{
 		TPosition pos = position(hostIterator(myersFinder));
 		int score = getScore(myersPattern);
-//        std::cerr << "found " << pos << ", " << length(host(inf)) - pos << ", " << score << std::endl;
+        // std::cerr << "found " << pos << ", " << length(host(inf)) - pos << ", " << score << std::endl;
 		
 #ifdef RAZERS_NOOUTERREADGAPS
 		// Manually align the last base of the read

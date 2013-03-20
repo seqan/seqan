@@ -107,6 +107,14 @@ public:
             : data_iterator(iter_)
     {}
 
+    template <typename TContainer_>
+    Iter(Iter<TContainer_, StdIteratorAdaptor> const & other,
+         SEQAN_CTOR_ENABLE_IF(IsSameType<TContainer, TContainer_ const>)) :
+            data_iterator(other.data_iterator)
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
     // TODO(holtgrew): Do we want this? Besides being non-essential, this creates a cross dependency on the begin function!
     Iter(TContainer const & cont_)
             : data_iterator(begin(cont_))

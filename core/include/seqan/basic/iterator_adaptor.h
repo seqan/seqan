@@ -90,9 +90,8 @@ public:
     // Constructors
     // ------------------------------------------------------------------------
 
-    Iter() : data_container(0)
+    Iter() : data_container()
     {
-        SEQAN_CHECKPOINT;
         data_iterator = TIterator();
     }
 
@@ -121,14 +120,31 @@ public:
         SEQAN_CHECKPOINT;
     }
 
+    // TODO(holtgrew): Use this technique to the other Iter specializations.
+    template <typename TContainer_, typename TIterator2>
+    Iter(Iter<TContainer_, AdaptorIterator<TIterator2, TSpec> > const & other,
+         SEQAN_CTOR_ENABLE_IF(IsSameType<TContainer, TContainer_ const>)) :
+            data_container(other.data_container), data_iterator(other.data_iterator)
+    {
+        ignoreUnusedVariableWarning(dummy);\
+    }
+
     // ------------------------------------------------------------------------
     // Assignment Operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-    Iter const &
+    Iter &
     operator=(Iter const & other_)
     {
-        SEQAN_CHECKPOINT;
+        data_container = other_.data_container;
+        data_iterator = other_.data_iterator;
+        return *this;
+    }
+
+    template <typename TContainer_>
+    SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer, TContainer_ const>, Iter &)
+    operator=(Iter<TContainer_, AdaptorIterator<TIterator, TSpec> > const & other_)
+    {
         data_container = other_.data_container;
         data_iterator = other_.data_iterator;
         return *this;

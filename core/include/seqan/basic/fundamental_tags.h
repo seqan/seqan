@@ -373,7 +373,10 @@ struct LENGTH<TagList<TTag, TSubList> >
 */
 
 template <typename TList, int I>
-struct TagListValue;
+struct TagListValue
+{
+    typedef void Type;
+};
 
 template <typename TTag, typename TSubList, int I>
 struct TagListValue<TagList<TTag, TSubList>, I>:

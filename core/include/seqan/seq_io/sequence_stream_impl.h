@@ -331,10 +331,10 @@ public:
 
         switch (formatTag.tagId)
         {
-        case 1:
+        case Find<AutoSeqStreamFormat, Fasta>::VALUE:
             return SeqIOFileFormat_::FILE_FORMAT_FASTA;
 
-        case 2:
+        case Find<AutoSeqStreamFormat, Fastq>::VALUE:
             return SeqIOFileFormat_::FILE_FORMAT_FASTQ;
 
         default:

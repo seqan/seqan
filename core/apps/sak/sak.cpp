@@ -411,7 +411,7 @@ int main(int argc, char const ** argv)
     while (!atEnd(reader) && charsWritten < options.maxLength && idx < endIdx)
     {
         // TODO(weese): There should be a uniform read interface that make this case distinction obsolete!
-        if (tagSelector.tagId == seqan::Find<seqan::SeqStreamFormats, seqan::Fasta>::VALUE)
+        if (isEqual(tagSelector, seqan::Fasta()))
         {
             // FASTA.
             if (readRecord(id, seq, reader, seqan::Fasta()) != 0)

@@ -37,7 +37,7 @@ def getMapperConf(ph, path_to_program, rl, optionName, optionValue):
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       '-o', ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat))],
                 to_diff=[(ph.inFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat)),
-                          ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat))),
+                          ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, optionName, optionValue, defaultFormat)), 'md5'),
                          (ph.inFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
                           ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, optionName, optionValue)),
                           transforms)])
@@ -141,8 +141,7 @@ def main(source_base, binary_base):
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   '-o', ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat))],
             to_diff=[(ph.inFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat)),
-                      ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat)),
-                      'md5'),
+                      ph.outFile('se-adeno-reads%d_1-%s%s.out.%s' % (rl, 'of', samFormat, samFormat))),
                      (ph.inFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, 'of', samFormat)),
                       ph.outFile('se-adeno-reads%d_1-%s%s.stdout' % (rl, 'of', samFormat)),
                       transforms)])

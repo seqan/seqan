@@ -2173,19 +2173,6 @@ matchVerify(
 #endif
     typedef Pattern<TReadRev, MyersUkkonenGlobal>           TMyersPatternRev;
 
-
-    TMyersFinder myersFinder(inf);
-#ifndef RAZERS_BANDED_MYERS
-    TMyersPattern & myersPattern = verifier.options->forwardPatterns[readId];
-#endif  // #ifdef RAZERS_BANDED_MYERS
-    TPatternState & state = verifier.patternState;
-
-#ifdef RAZERS_DEBUG
-    std::cout << "Verify: " << std::endl;
-    std::cout << "Genome: " << inf << "\t" << beginPosition(inf) << "," << endPosition(inf) << std::endl;
-    std::cout << "Read:   " << read << "(id: " << readId << ")" << std::endl;
-#endif
-
     unsigned ndlLength = length(read);
     int maxScore = MinValue<int>::VALUE;
     int minScore = verifier.options->errorCutOff[readId];
@@ -2208,6 +2195,18 @@ matchVerify(
     TReadPrefix readPrefix = prefix(read, ndlLength);
 #else
     TRead readPrefix(read);  // here only infixes (no sequence) is copied
+#endif
+
+    TMyersFinder myersFinder(inf);
+#ifndef RAZERS_BANDED_MYERS
+    TMyersPattern & myersPattern = verifier.options->forwardPatterns[readId];
+#endif  // #ifdef RAZERS_BANDED_MYERS
+    TPatternState & state = verifier.patternState;
+
+#ifdef RAZERS_DEBUG
+    std::cout << "Verify: " << std::endl;
+    std::cout << "Genome: " << inf << "\t" << beginPosition(inf) << "," << endPosition(inf) << std::endl;
+    std::cout << "Read:   " << read << "(id: " << readId << ")" << std::endl;
 #endif
 
     // find end of best semi-global alignment

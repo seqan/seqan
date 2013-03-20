@@ -736,9 +736,17 @@ int dumpMatches(
 
     TBinFunctor binFunctor(store.alignQualityStore);
     // maskDuplicates(store, options, mode);
-    if (options.outputFormat > 0)
+	if (options.outputFormat >= 1 && options.outputFormat <= 3)
     {
         // match statistics
+		unsigned maxErrors = (int)(options.errorRate * maxReadLength);
+		if (maxErrors > 10)
+            maxErrors = 10;
+        if (maxErrors < 2 && options.outputFormat == 2)
+            maxErrors = 2;
+		resize(stats, maxErrors + 1);
+		for (unsigned i = 0; i <= maxErrors; ++i)
+			resize(stats[i], length(store.readStore), 0);
         countMatches(store, stats, mode);
     }
 
@@ -1039,8 +1047,9 @@ int dumpMatches(
 
 
     case 2:     // Eland Format
+        // TODO(holtgrew): Is the ELAND output correct this way?
         _sep_ = '\t';
-        for (unsigned readNo = 0; readNo < length(store.readSeqStore); ++readNo)
+        for (; it != itEnd; ++it)
         {
             TQuality    qual = getValue(store.alignQualityStore, (*it).id);
 
@@ -1049,20 +1058,20 @@ int dumpMatches(
             // 0..filename is the read's Fasta id
             case 0:
             case 3:          // same as 0 if non-paired
-                file << '>' << store.readNameStore[readNo] << _sep_;
+                file << '>' << store.readNameStore[it->readId] << _sep_;
                 break;
 
             // 1..filename is the read filename + seqNo
             case 1:
                 file.fill('0');
-                file << readName << '#' << std::setw(pzeros) << readNo + 1  << _sep_;
+                file << readName << '#' << std::setw(pzeros) << it->readId + 1  << _sep_;
                 break;
             }
 
-            if (it == itEnd || readNo < (*it).readId)
+            if (it == itEnd || it->readId < (*it).readId)
             {
-                if (!empty(store.readSeqStore[readNo]))
-                    file << store.readSeqStore[readNo] << _sep_ << "NM" << _sep_ << '0' << _sep_ << '0' << _sep_ << '0' << '\n';
+                if (!empty(store.readSeqStore[it->readId]))
+                    file << store.readSeqStore[it->readId] << _sep_ << "NM" << _sep_ << '0' << _sep_ << '0' << _sep_ << '0' << '\n';
                 else
                 {
                     for (unsigned i = 0; i < maxReadLength; ++i)
@@ -1072,10 +1081,10 @@ int dumpMatches(
             }
             else
             {
-                file << store.readSeqStore[readNo] << _sep_;
+                file << store.readSeqStore[it->readId] << _sep_;
                 unsigned bestMatches = 1;
                 if ((unsigned)qual.errors < length(stats))
-                    bestMatches = stats[qual.errors][readNo];
+                    bestMatches = stats[qual.errors][it->readId];
 
                 if (bestMatches == 0)
                     file << '?';                        // impossible
@@ -1084,7 +1093,7 @@ int dumpMatches(
                 if (bestMatches >  1)
                     file << 'R';                        // non-unique best matches
 
-                file << (unsigned)qual.errors << _sep_ << stats[0][readNo] << _sep_ << stats[1][readNo] << _sep_ << stats[2][readNo];
+                file << (unsigned)qual.errors << _sep_ << stats[0][it->readId] << _sep_ << stats[1][it->readId] << _sep_ << stats[2][it->readId];
 
                 if (bestMatches == 1)
                 {
@@ -1122,13 +1131,12 @@ int dumpMatches(
                             reverseComplement(gInf);
                         }
                         for (unsigned i = 0; i < length(gInf); ++i)
-                            if ((options.compMask[ordValue(store.readSeqStore[readNo][i])] &
+                            if ((options.compMask[ordValue(store.readSeqStore[it->readId][i])] &
                                  options.compMask[ordValue(gInf[i])]) == 0)
                                 file << _sep_ << i + 1 << gInf[i];
                     }
                 }
                 file << '\n';
-                ++it;
             }
         }
         break;

@@ -615,27 +615,23 @@ inline void
 goBegin(TIterator & it,
         TContainer & container)
 {
-    SEQAN_CHECKPOINT;
     it = begin(container);
 }
 
-/*
-template <typename TIterator, typename TContainer>
-inline void
-goBegin(TIterator & it,
-        TContainer const & container)
-{
-SEQAN_CHECKPOINT
-    it = begin(container);
-}
-*/
+// template <typename TIterator, typename TContainer>
+// inline void
+// goBegin(TIterator & it,
+//         TContainer const & container)
+// {
+//     it = begin(container);
+// }
 
 template <typename TIterator>
 inline void
 goBegin(TIterator & it)
 {
-    SEQAN_CHECKPOINT;
-    goBegin(it, container(it));
+    typename Parameter_<typename Container<TIterator>::Type>::Type tmpContainer = container(it);
+    goBegin(it, tmpContainer);
 }
 
 // ---------------------------------------------------------------------------

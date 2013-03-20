@@ -108,7 +108,7 @@ of the host object.
 ...text:The predicate $begin <= end$ must be true.
 */
     Segment():
-        data_host(NULL),
+        data_host(),
         data_begin_position(0),
         data_end_position(0)
     {

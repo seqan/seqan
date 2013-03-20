@@ -43,7 +43,7 @@ template <typename TAlphabetSpecPair>
 class RankDictionaryTest : public seqan::Test
 {
 public:
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TRankDictionarySpec;
+    typedef typename seqan::TagListValue<TAlphabetSpecPair, 0>::Type TRankDictionarySpec;
 };
 
 // TODO(singer): MMap causes lots of seg faults

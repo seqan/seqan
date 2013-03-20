@@ -3277,16 +3277,6 @@ qlt:
 .
 }
 {RED
-iid:300
-eid:
-seq:
-
-.
-qlt:
-
-.
-}
-{RED
 iid:301
 eid:adeno-reads36.fasta.000000300
 seq:

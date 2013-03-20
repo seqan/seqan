@@ -1,5 +1,5 @@
 @HD	VN:1.4	SO:coordinate
-@PG	ID:razers3	VN:3.2 [13658]	PN:razers3	CL:adeno-genome.fa adeno-reads100_1.fa adeno-reads100_2.fa -o pe-adeno-reads100_2-of4.sam
+@PG	ID:razers3	VN:3.2 [13765]	PN:razers3	CL:adeno-genome.fa adeno-reads100_1.fa adeno-reads100_2.fa -o pe-adeno-reads100_2-of4.sam
 @SQ	SN:gi|9632547|ref|NC_002077.1|	LN:4718
 adeno-reads100.fasta.000000007	99	gi|9632547|ref|NC_002077.1|	2828	255	41M1D57M1I1M	=	2997	265	AATGGCTTCAGGCGGTGGCGCACCAATGGCAGACAATAACGAGGCGCCGACGGAGTGGGTAATGCCTCAGGAAATTGGCATTGCGATTCCACATGGCTAG	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:2	MD:Z:41A58
 adeno-reads100.fasta.000000007	147	gi|9632547|ref|NC_002077.1|	2997	255	19M2I1M2I76M	=	2828	-265	CAAATCTCCAGTGCTTCAACGCTGGGGGGCCAGCAACGACAACCACTACTTCGGCTACAGCACCCCCTGGGGGTATTTTGATTTCAACAGATTCCACTGC	]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]	NM:i:4	MD:Z:96

@@ -20,6 +20,26 @@ sys.path.insert(0, path)
 
 import seqan.app_tests as app_tests
 
+class RemovePairIdColumn(object):
+    """Transformation to remove pair id column."""
+    
+    def __init__(self, col_no=8, min_cols=8):
+        # The index of the column to remove.
+        self.col_no = col_no
+        # If there are less than min_col columns then we don't remove.
+        self.min_cols = min_cols
+
+    def apply(self, text, is_left):
+        lines = text.splitlines(True)
+        lines2 = []
+        for line in lines:
+            cols = line.split('\t')
+            if len(cols) > self.min_cols:
+                cols = cols[0:self.col_no] + cols[self.col_no + 1:]
+            lines2.append('\t'.join(cols))
+        return ''.join(lines2)
+
+
 def main(source_base, binary_base):
     """Main entry point of the script."""
 
@@ -52,8 +72,14 @@ def main(source_base, binary_base):
     ph.outFile('-')  # To ensure that the out path is set.
     transforms = [
         app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'extras/apps/razers3/tests') + os.sep, '', right=True),
-        app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True)
+        app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
         ]
+
+    # Transforms for SAM output format only.  Make VN field of @PG header canonical.
+    sam_transforms = [app_tests.RegexpReplaceTransform(r'\tVN:[^\t]*', r'\tVN:VERSION', right=True, left=True)]
+
+    # Transforms for RazerS output format only.  Remove pair id column.
+    razers_transforms = [RemovePairIdColumn()]
 
     # ============================================================
     # Run Adeno Single-End Tests
@@ -120,6 +146,11 @@ def main(source_base, binary_base):
 
         # Compute with different output formats.
         for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff', 'sam', 'afg']):
+            this_transforms = list(transforms)
+            if suffix == 'razers':
+                this_transforms += razers_transforms
+            elif suffix == 'sam':
+                this_transforms += sam_transforms
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
@@ -128,7 +159,7 @@ def main(source_base, binary_base):
                       '-o', ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix))],
                 to_diff=[(ph.inFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix)),
                           ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix)),
-                          transforms),
+                          this_transforms),
                          (ph.inFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
                           ph.outFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
                           transforms)])
@@ -164,7 +195,8 @@ def main(source_base, binary_base):
                   ph.inFile('adeno-reads%d_2.fa' % rl),
                   '-o', ph.outFile('pe-adeno-reads%d_2.razers' % rl)],
             to_diff=[(ph.inFile('pe-adeno-reads%d_2.razers' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.razers' % rl)),
+                      ph.outFile('pe-adeno-reads%d_2.razers' % rl),
+                      razers_transforms),
                      (ph.inFile('pe-adeno-reads%d_2.stdout' % rl),
                       ph.outFile('pe-adeno-reads%d_2.stdout' % rl))])
         conf_list.append(conf)
@@ -178,7 +210,8 @@ def main(source_base, binary_base):
                   ph.inFile('adeno-reads%d_2.fa' % rl),
                   '-o', ph.outFile('pe-adeno-reads%d_2.razers' % rl)],
             to_diff=[(ph.inFile('pe-adeno-reads%d_2.razers' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.razers' % rl)),
+                      ph.outFile('pe-adeno-reads%d_2.razers' % rl),
+                      razers_transforms),
                      (ph.inFile('pe-adeno-reads%d_2.stdout' % rl),
                       ph.outFile('pe-adeno-reads%d_2.stdout' % rl))])
         conf_list.append(conf)
@@ -194,7 +227,8 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-reads%d_2.fa' % rl),
                       '-o', ph.outFile('pe-adeno-reads%d_2%s.razers' % (rl, o))],
                 to_diff=[(ph.inFile('pe-adeno-reads%d_2%s.razers' % (rl, o)),
-                          ph.outFile('pe-adeno-reads%d_2%s.razers' % (rl, o))),
+                          ph.outFile('pe-adeno-reads%d_2%s.razers' % (rl, o)),
+                          razers_transforms),
                          (ph.inFile('pe-adeno-reads%d_2%s.stdout' % (rl, o)),
                           ph.outFile('pe-adeno-reads%d_2%s.stdout' % (rl, o)))])
             conf_list.append(conf)
@@ -210,13 +244,19 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-reads%d_2.fa' % rl),
                       '-o', ph.outFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i))],
                 to_diff=[(ph.inFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i)),
-                          ph.outFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i))),
+                          ph.outFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i)),
+                          razers_transforms),
                          (ph.inFile('pe-adeno-reads%d_2-i%d.stdout' % (rl, i)),
                           ph.outFile('pe-adeno-reads%d_2-i%d.stdout' % (rl, i)))])
             conf_list.append(conf)
 
         # Compute with different output formats.
         for of, suffix in enumerate(['razers', 'fa', 'eland', 'gff', 'sam', 'afg']):
+            this_transforms = list(transforms)
+            if suffix == 'razers':
+                this_transforms += razers_transforms
+            elif suffix == 'sam':
+                this_transforms += sam_transforms
             conf = app_tests.TestConf(
                 program=path_to_program,
                 redir_stdout=ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
@@ -226,10 +266,10 @@ def main(source_base, binary_base):
                       '-o', ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix))],
                 to_diff=[(ph.inFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix)),
                           ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix)),
-                          transforms),
+                          this_transforms),
                          (ph.inFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
                           ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
-                          transforms)])
+                          this_transforms)])
             conf_list.append(conf)
 
         # Compute with different sort orders.
@@ -243,7 +283,8 @@ def main(source_base, binary_base):
                       ph.inFile('adeno-reads%d_2.fa' % rl),
                       '-o', ph.outFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so))],
                 to_diff=[(ph.inFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so)),
-                          ph.outFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so))),
+                          ph.outFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so)),
+                          razers_transforms),
                          (ph.inFile('pe-adeno-reads%d_2-so%d.stdout' % (rl, so)),
                           ph.outFile('pe-adeno-reads%d_2-so%d.stdout' % (rl, so)))])
             conf_list.append(conf)

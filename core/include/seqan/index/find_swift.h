@@ -1540,7 +1540,7 @@ swiftInfixNoClip(TSwiftHit const &hit, TText &text)
 
 template <typename TSwiftHit, typename TText>
 inline typename Infix<TText>::Type
-swiftInfix(TSwiftHit const &hit, TText &text)
+swiftInfix(TSwiftHit const & hit, TText & text)
 {
     __int64 hitBegin = hit.hstkPos;
     __int64 hitEnd = hit.hstkPos + hit.bucketWidth;
@@ -1561,7 +1561,8 @@ template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
 infix(Finder<THaystack, Swift<TSpec> > &finder)
 {
-    return swiftInfix(*finder.curHit, haystack(finder));
+    typename Parameter_<THaystack>::Type tmpHaystack = haystack(finder);
+    return swiftInfix(*finder.curHit, tmpHaystack);
 }
 
 template <typename THaystack, typename TSpec, typename TText>
@@ -1697,8 +1698,9 @@ _firstNonRepeatRange(
         return _nextNonRepeatRange(finder, pattern);
 
     finder.curPos = finder.startPos = 0;
-    hostIterator(finder) = begin(host(finder));
-    finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
+    typename Parameter_<typename Host<TFinder>::Type>::Type tmpHost = host(finder);
+    hostIterator(finder) = begin(tmpHost);
+    finder.haystackEnd = begin(tmpHost) + (finder.endPos - length(pattern.shape) + 1);
 
 //  if (pattern.params.printDots)
 //      ::std::cerr << ::std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;

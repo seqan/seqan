@@ -106,7 +106,7 @@ the whole sequence $host$ is constructed.
 This is the same segment that is returned by @Function.goBegin@.
 */
     Segment():
-        data_host(NULL),
+        data_host(),
         data_end_position(0)
     {
 SEQAN_CHECKPOINT
@@ -242,16 +242,17 @@ inline typename Iterator<Segment<THost_, PrefixSegment>, Standard>::Type
 begin(Segment<THost_, PrefixSegment> & me,
     Standard)
 {
-SEQAN_CHECKPOINT
-    return begin(host(me), Standard());
+    // TODO(holtgrew): An update at another point is required to make the call chain "return begin(host(me), Standard())" possible again. Same below.
+    typename Parameter_<THost_>::Type tmpHost = host(me);
+    return begin(tmpHost, Standard());
 }
 template <typename THost_>
 inline typename Iterator<Segment<THost_, PrefixSegment> const, Standard>::Type
 begin(Segment<THost_, PrefixSegment> const & me,
     Standard)
 {
-SEQAN_CHECKPOINT
-    return begin(host(me), Standard());
+    typename Parameter_<THost_>::Type tmpHost = host(me);
+    return begin(tmpHost, Standard());
 }
 
 //____________________________________________________________________________

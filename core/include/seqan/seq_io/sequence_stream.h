@@ -169,9 +169,9 @@ public:
     // This enum is used to select the file format.
     enum FileFormat
     {
-        AUTO_FORMAT,
         FASTA,
-        FASTQ
+        FASTQ,
+        AUTO_FORMAT
     };
 
     // This enum is used to select the file type, compression if any.

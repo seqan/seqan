@@ -480,10 +480,10 @@ void _estimateReadsStatistics(ReadsLoader<TSpec, TConfig> & loader)
     unsigned long recordSize;
     switch (loader._fileFormat.tagId)
     {
-    case 1:
+    case Find<AutoSeqStreamFormat, Fasta>::VALUE:
         recordSize = _estimateRecordSize(loader, Fasta());
         break;
-    case 2:
+    case Find<AutoSeqStreamFormat, Fastq>::VALUE:
         recordSize = _estimateRecordSize(loader, Fastq());
         break;
     default:
@@ -492,7 +492,10 @@ void _estimateReadsStatistics(ReadsLoader<TSpec, TConfig> & loader)
     }
 
     // Estimate number of reads in file.
-    value(loader.reads)._countEstimate = loader._fileSize / recordSize;
+    if (recordSize > 0)
+        value(loader.reads)._countEstimate = loader._fileSize / recordSize;
+    else
+        value(loader.reads)._countEstimate = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -520,7 +523,7 @@ bool open(ReadsLoader<TSpec, TConfig> & loader, TString const & readsFile)
     loader._reader.reset(new TRecordReader(loader._file));
 
     // Autodetect file format.
-    if (!checkStreamFormat(*(loader._reader), loader._fileFormat))
+    if (!guessStreamFormat(*(loader._reader), loader._fileFormat))
         return false;
 
     // Estimate statistics for reads in file.
@@ -585,9 +588,9 @@ bool load(ReadsLoader<TSpec, TConfig> & loader, TSize count)
 {
     switch (loader._fileFormat.tagId)
     {
-    case 1:
+    case Find<AutoSeqStreamFormat, Fasta>::VALUE:
         return load(loader, count, Fasta());
-    case 2:
+    case Find<AutoSeqStreamFormat, Fastq>::VALUE:
         return load(loader, count, Fastq());
     default:
         return false;

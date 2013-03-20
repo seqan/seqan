@@ -43,7 +43,7 @@ template <typename TAlphabetSpecPair>
 class SentinelRankDictionaryTest : public seqan::Test
 {
 public:
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TSentinelRankDictionarySpec;
+    typedef typename seqan::TagListValue<TAlphabetSpecPair, 0>::Type TSentinelRankDictionarySpec;
 };
 
 typedef seqan::TagList<

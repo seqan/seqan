@@ -291,7 +291,7 @@ _storeOneAnnotation(
     fragStore.annotationStore[ctx.annotationId] = ctx.annotation;
 
     TAnnotation & parent = fragStore.annotationStore[ctx.annotation.parentId];
-    if (parent.parentId == TAnnotation::INVALID_ID)
+    if (ctx.annotation.parentId != 0 && parent.parentId == TAnnotation::INVALID_ID)
         parent.parentId = 0;    // if our parent has no parent, it becomes a child of the root
 
     if (geneId != TAnnotation::INVALID_ID)

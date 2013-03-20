@@ -578,7 +578,10 @@ void dumpMatches(
 	{
 		// match statistics
 		unsigned maxErrors = (int)(options.errorRate * maxReadLength);
-		if (maxErrors > 10) maxErrors = 10;
+		if (maxErrors > 10)
+            maxErrors = 10;
+        if (maxErrors < 2 && options.outputFormat == 2)
+            maxErrors = 2;
 		resize(stats, maxErrors + 1);
 		for (unsigned i = 0; i <= maxErrors; ++i)
 			resize(stats[i], length(store.readStore), 0);

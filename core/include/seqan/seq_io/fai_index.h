@@ -674,7 +674,7 @@ inline int build(FaiIndex & index, char const * seqFilename, char const * faiFil
     if (!guessStreamFormat(reader, tagSelector))
         return 1;  // Invalid format.
 
-    if (tagSelector.tagId != 1)
+    if (!isEqual(tagSelector, seqan::Fasta()))
         return 1;  // Invalid format, not FASTA.
 
     // Re-using the FASTA/FASTQ parsing code from read_fasta_fastq is not really feasible here.  We roll our own

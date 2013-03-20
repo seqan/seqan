@@ -730,7 +730,8 @@ template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
 infix(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-	return swiftInfix(*finder.curHit, haystack(finder));
+    typename Parameter_<THaystack>::Type tmpHaystack = haystack(finder);
+	return swiftInfix(*finder.curHit, tmpHaystack);
 }
 
 template <typename THaystack, typename TSpec, typename TText>
