@@ -345,21 +345,21 @@ struct Parameter_<T [I]>
 
 template <typename T>
 typename Parameter_<T>::Type
-_toParameter(T * _object)
+inline _toParameter(T * _object)
 {
     return * _object;
 }
 
 template <typename T>
 typename Parameter_<T>::Type
-_toParameter(T & _object)
+inline _toParameter(T & _object)
 {
     return _object;
 }
 
 template <typename T>
 typename Parameter_<T const>::Type
-_toParameter(T const & _object)
+inline _toParameter(T const & _object)
 {
     return _object;
 }
