@@ -53,7 +53,7 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_fasta)
     AutoSeqStreamFormat tagSelect;
 
     SEQAN_ASSERT(guessStreamFormat(reader, tagSelect));
-    SEQAN_ASSERT_EQ(value(tagSelect), (Find<AutoSeqStreamFormat, Fasta>::VALUE));
+    SEQAN_ASSERT_EQ(value(tagSelect), +(Find<AutoSeqStreamFormat, Fasta>::VALUE));
 
     file->close();
 }
@@ -70,7 +70,7 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_fastq)
     AutoSeqStreamFormat tagSelect;
 
     SEQAN_ASSERT(guessStreamFormat(reader, tagSelect));
-    SEQAN_ASSERT_EQ(value(tagSelect), (Find<AutoSeqStreamFormat, Fastq>::VALUE));
+    SEQAN_ASSERT_EQ(value(tagSelect), +(Find<AutoSeqStreamFormat, Fastq>::VALUE));
 
     file->close();
 }
