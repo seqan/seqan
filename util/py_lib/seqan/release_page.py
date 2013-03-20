@@ -119,7 +119,8 @@ def work(options):
         f.write(tpl(FORMATS=FORMATS,
                     seqan_apps=db.seqan_apps,
                     seqan_library=db.seqan_library,
-                    softwares=db.softwares))
+                    softwares=db.softwares,
+                    sorted=sorted))
 
 def main():
     parser = optparse.OptionParser()

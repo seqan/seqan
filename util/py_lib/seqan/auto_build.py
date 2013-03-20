@@ -109,6 +109,8 @@ class BuildStep(object):
             if 'win32' in package_path or 'win64' in package_path:  # fix OS name
                 package_path = package_path.replace('win32', 'Windows').replace('win64', 'Windows')
             if not os.path.exists(package_path):
+                if self.options.verbosity >= 1:
+                    print >>sys.stderr, 'File %s does not exist yet.' % package_path
                 return True
             elif self.options.verbosity >= 1:
                 print >>sys.stderr, 'File %s exists.' % package_path
@@ -247,6 +249,8 @@ class BuildStep(object):
             self.buildSeqAnRelease(checkout_dir, build_dir)
         else:
             self.buildApp(checkout_dir, build_dir)
+        print >>sys.stderr, 'Removing checkout directory %s' % (checkout_dir,)
+        shutil.rmtree(checkout_dir)
         # Remove temporary directory again.
         if not self.tmp_dir:  # Only remove it not set with --tmp-dir.
           print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
