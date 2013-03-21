@@ -1057,7 +1057,6 @@ void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
-    typedef typename Iterator<TGaps, Standard>::Type TIter;
 
     // Clip into leading/trailing gaps and clear.
     {
@@ -1066,7 +1065,7 @@ void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
         insertGaps(gaps, 4, 2);
         insertGaps(gaps, 2, 2);
         insertGaps(gaps, 0, 2);
-        
+
         // 0123456789
         // --CG--AT--
         //  XXXXXXXX
@@ -1076,7 +1075,7 @@ void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
             ss << gaps;
             SEQAN_ASSERT_EQ(ss.str(), "--CG--AT--");
         }
-        
+
         setClippedEndPosition(gaps, 9);
         setClippedBeginPosition(gaps, 1);
 
