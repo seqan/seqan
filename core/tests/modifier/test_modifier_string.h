@@ -89,7 +89,6 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_assignment)
 {
     typedef seqan::Dna5String                           TString;
     typedef seqan::ModifiedString<TString>              TInnerModifiedString;
-    typedef seqan::ModifiedString<TInnerModifiedString> TOuterModifiedString;
 
     // Copy with one level.
     {
