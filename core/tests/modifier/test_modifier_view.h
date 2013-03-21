@@ -32,18 +32,20 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
-#define TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
+#ifndef SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
+#define SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
 
 #include "helpers.h"
 
-using namespace seqan;
 
 // Test the modifier view metafunctions.
-SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions) {
+SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions)
+{
+    using namespace seqan;
+
     typedef CaesarChiffre<char> TFunctor;
     typedef ModifiedIterator<CharString, ModView<TFunctor> > TModifiedIterator;
 
@@ -75,9 +77,11 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions) {
     }
 }
 
-
 // Test the modifier view iterator.
-SEQAN_DEFINE_TEST(test_modifier_view_iterator) {
+SEQAN_DEFINE_TEST(test_modifier_view_iterator)
+{
+    using namespace seqan;
+
     typedef CaesarChiffre<char> TFunctor;
     typedef Iterator<CharString, Rooted>::Type TIterator;
     typedef ModifiedIterator<TIterator, ModView<TFunctor> > TModifiedIterator;
@@ -97,108 +101,86 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator) {
     // Test the various ways to construct the iterator with both a
     // container and a functor.
     {
+        TModifiedIterator it(myFunctor);
+    }
+    {
+        TModifiedIterator it(begin(myString, Rooted()), myFunctor);
+    }
+    {
         TModifiedIterator it;
-        assignModViewFunctor(it, myFunctor);
+        TModifiedIterator it2(it);
     }
     {
-         TModifiedIterator it(begin(myString, Rooted()));
-         assignModViewFunctor(it, myFunctor);
-    }
-    {
-         TFunctor const & kMyFunctor = myFunctor;
-         TModifiedIterator it(kMyFunctor);
-         it = begin(myString, Rooted());
-    }
-    {
-         TModifiedIterator it(myFunctor);
-         it = begin(myString);
-    }
-    {
-         TModifiedIterator it;
-         TModifiedIterator it2(it);
-         assignModViewFunctor(it, myFunctor);
-    }
-    {
-         const TModifiedIterator kIt;
-         TModifiedIterator it(kIt);
-         assignModViewFunctor(it, myFunctor);
+        TModifiedIterator const IT(myFunctor);
+        TModifiedIterator it(IT);
     }
 
     // Test value() and getValue().
     {
-         TModifiedIterator it(begin(myString, Rooted()));
-         assignModViewFunctor(it, myFunctor);
-         const TModifiedIterator kIt = it;
-
+        TModifiedIterator it(begin(myString, Rooted()), myFunctor);
+        TModifiedIterator const IT = it;
+        
         // TODO(holtgrew): The following does not compile.
-         SEQAN_ASSERT_EQ('U', value(it));
-         SEQAN_ASSERT_EQ('U', value(kIt));
-
-         SEQAN_ASSERT_EQ('U', getValue(it));
-         SEQAN_ASSERT_EQ('U', getValue(kIt));
+        SEQAN_ASSERT_EQ('U', value(it));
+        SEQAN_ASSERT_EQ('U', value(IT));
+        
+        SEQAN_ASSERT_EQ('U', getValue(it));
+        SEQAN_ASSERT_EQ('U', getValue(IT));
     }
 }
 
-
-SEQAN_DEFINE_TEST(test_modifier_view_const_iterator) {
+SEQAN_DEFINE_TEST(test_modifier_view_const_iterator)
+{
     SEQAN_ASSERT_FAIL("Implement me!");
 }
 
-
 // Test the modified string class with caesar chiffre.
-SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre) {
+SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre)
+{
+    using namespace seqan;
+
     typedef CaesarChiffre<char> TFunctor;
     TFunctor myFunctor(1);
 
     CharString originalStr = "This is a test!";
-    const CharString kExpectedResult = "Uijt jt b uftu!";
+    CharString const EXPECTED_RESULT = "Uijt jt b uftu!";
 
     // Test the various ways to initialize a ModifiedString.
     // TODO(holtgrew): Should modified strings not be const to the outside?  Lots of non-const functions are superflous, right?
     {
-        ModifiedString<CharString, ModView<TFunctor> > modifiedStr;
-        assignModViewFunctor(modifiedStr, myFunctor);
-        setHost(modifiedStr, originalStr);
-
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStr);
-        CharString modifiedStrCopy = modifiedStr;
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy);
-    }
-    {
-        ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr);
-        assignModViewFunctor(modifiedStr, myFunctor);
-
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStr);
-        CharString modifiedStrCopy = modifiedStr;
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy);
-    }
-    {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(myFunctor);
         setHost(modifiedStr, originalStr);
 
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStr);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
         CharString modifiedStrCopy = modifiedStr;
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
     }
     {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStr);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
         CharString modifiedStrCopy = modifiedStr;
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
     }
     {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStr);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
         CharString modifiedStrCopy = modifiedStr;
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
+    }
+    {
+        ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
+
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
+        CharString modifiedStrCopy = modifiedStr;
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
 
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr2(modifiedStr);
 
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStr2);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr2);
         CharString modifiedStrCopy2 = modifiedStr2;
-        SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy2);
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy2);
     }
 
     // Test operator[].
@@ -219,102 +201,114 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre) {
     }
 }
 
-
 // Test the modified string class with upper case functor.
-SEQAN_DEFINE_TEST(test_modifier_view_string_upper_case) {
+SEQAN_DEFINE_TEST(test_modifier_view_string_upper_case)
+{
+    using namespace seqan;
+
     typedef FunctorUpcase<char> TFunctor;
     TFunctor myFunctor;
 
     CharString originalStr = "This is a test!";
-    const CharString kExpectedResult = "THIS IS A TEST!";
+    CharString const EXPECTED_RESULT = "THIS IS A TEST!";
 
     ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
-    SEQAN_ASSERT_EQ(length(kExpectedResult), length(modifiedStr));
+    SEQAN_ASSERT_EQ(length(EXPECTED_RESULT), length(modifiedStr));
     for (size_t i = 0; i < length(originalStr); ++i)
-        SEQAN_ASSERT_EQ_MSG(kExpectedResult[i], modifiedStr[i], "i = %lu", i);
+        SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
     // TODO(holtgrew): This does not compile.
-//     SEQAN_ASSERT_EQ(modifiedStr, kExpectedResult);
+//     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
     CharString modifiedStrCopy = modifiedStr;
-    SEQAN_ASSERT_EQ(modifiedStrCopy, kExpectedResult);
+    SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
     // We do not test the whole interface as in _caesar_chiffre, so this is
     // more a test of FunctorUpcase.
 }
 
-
 // Test the modified string class with low case functor.
-SEQAN_DEFINE_TEST(test_modifier_view_string_low_case) {
+SEQAN_DEFINE_TEST(test_modifier_view_string_low_case)
+{
+    using namespace seqan;
+
     // TODO(holtgrew): Would it make more sense to name this FunctorDowncase?
     typedef FunctorLowcase<char> TFunctor;
     TFunctor myFunctor;
 
     CharString originalStr = "This is a test!";
-    const CharString kExpectedResult = "this is a test!";
+    CharString const EXPECTED_RESULT = "this is a test!";
 
     ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
-    SEQAN_ASSERT_EQ(length(kExpectedResult), length(modifiedStr));
+    SEQAN_ASSERT_EQ(length(EXPECTED_RESULT), length(modifiedStr));
     for (size_t i = 0; i < length(originalStr); ++i)
-        SEQAN_ASSERT_EQ_MSG(kExpectedResult[i], modifiedStr[i], "i = %lu", i);
+        SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
     // TODO(holtgrew): This does not compile.
-//     SEQAN_ASSERT_EQ(modifiedStr, kExpectedResult);
+//     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
     CharString modifiedStrCopy = modifiedStr;
-    SEQAN_ASSERT_EQ(modifiedStrCopy, kExpectedResult);
+    SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
     // We do not test the whole interface as in _caesar_chiffre, so this is
     // more a test of FunctorLowcase
 }
 
-
 // Test the modified string class with alphabet conversion.
-SEQAN_DEFINE_TEST(test_modifier_view_string_alphabet_conversion) {
+SEQAN_DEFINE_TEST(test_modifier_view_string_alphabet_conversion)
+{
+    using namespace seqan;
+
     typedef FunctorConvert<char, Dna5> TFunctor;
     TFunctor myFunctor;
 
     CharString originalStr = "acgtnACGTN";
-    Dna5String const kExpectedResult = "ACGTNACGTN";
+    Dna5String const EXPECTED_RESULT = "ACGTNACGTN";
 
     ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
-    SEQAN_ASSERT_EQ(length(kExpectedResult), length(modifiedStr));
+    SEQAN_ASSERT_EQ(length(EXPECTED_RESULT), length(modifiedStr));
     for (size_t i = 0; i < length(originalStr); ++i)
-        SEQAN_ASSERT_EQ_MSG(kExpectedResult[i], modifiedStr[i], "i = %lu", i);
+        SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
     // TODO(holtgrew): This does not compile.
-//     SEQAN_ASSERT_EQ(modifiedStr, kExpectedResult);
+//     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
     CharString modifiedStrCopy = modifiedStr;
-    SEQAN_ASSERT_EQ(modifiedStrCopy, kExpectedResult);
+    SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
     // We do not test the whole interface as in _caesar_chiffre, so this is
     // more a test of FunctorConvert.
 }
 
-
 // Test the modified string class with nested modifier.
-SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier) {
+SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
+{
+    using namespace seqan;
+
     typedef CaesarChiffre<char> TFunctor;
     typedef ModifiedString<ModifiedString<CharString, ModView<TFunctor> >, ModView<TFunctor> > TModifiedString;
 
     CharString originalStr = "This is a test!";
-    CharString const kExpectedResult = "Wklv lv d whvw!";
+    CharString const EXPECTED_RESULT = "Wklv lv d whvw!";
 
-    TModifiedString modifiedStr(originalStr);
     TFunctor func1(1), func2(2);
-    assignModViewFunctor(modifiedStr, func1);
-    assignModViewFunctor(host(modifiedStr), func2);
+    TModifiedString modifiedStr(originalStr, func1);
+    // TODO(holtgrew): Because of the copy-as-a-pointer behaviour of ModifiedString, assigning nested mod view functor is hard/impossible.
+    cargo(modifiedStr._host).func = func2;
+    // assignModViewFunctor(modifiedStr, func1);
+    // assignModViewFunctor(host(modifiedStr), func2);
 
-    SEQAN_ASSERT_EQ(modifiedStr, kExpectedResult);
+    SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
 
     CharString modifiedStrCopy = modifiedStr;
-    SEQAN_ASSERT_EQ(kExpectedResult, modifiedStrCopy);
+    SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
 }
 
-
 // Test the convert() function.
-SEQAN_DEFINE_TEST(test_modifier_convert_in_place) {
+SEQAN_DEFINE_TEST(test_modifier_convert_in_place)
+{
+    using namespace seqan;
+
     CharString const originalStr = "This is a test!";
     CharString const expectedResult = "Uijt jt b uftu!";
 
@@ -342,4 +336,4 @@ SEQAN_DEFINE_TEST(test_modifier_convert_in_place) {
     }
 }
 
-#endif  // TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
+#endif  // SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_

@@ -445,17 +445,6 @@ template <typename THost, typename TSpec>
 inline typename Parameter_<THost>::Type
 host(ModifiedString<THost, TSpec> const & me)
 {
-    // typedef ModifiedString<THost, TSpec> const TCMS;
-    // typedef ModifiedString<THost, TSpec> TMS;
-    // static_cast<typename TCMS::THostPointer_>(Nothing());
-    // static_cast<typename TMS::THostPointer_>(Nothing());
-    // static_cast<Nothing>(typename Pointer_<Dna5String>::Type());
-    // static_cast<THost>(Nothing());
-    // static_cast<Nothing>(me);
-    // static_cast<Nothing>(me._host);
-    // static_cast<Nothing>(_fromPointer(me._host));
-    // // static_cast<Nothing>(_toParameter(_fromPointer(me._host)));
-    // static_cast<Nothing>(_fromPointer(me._host));
     return _toParameter(_fromPointer(me._host));
 }
 
@@ -531,7 +520,9 @@ inline typename Iterator<ModifiedString<THost, TSpec> const>::Type
 begin(ModifiedString<THost, TSpec> const & me)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
-    return TResult(begin(host(me)));
+    TResult tmp(begin(host(me)));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 template <typename THost, typename TSpec>
@@ -539,7 +530,9 @@ inline typename Iterator< ModifiedString<THost, TSpec> >::Type
 begin(ModifiedString<THost, TSpec> & me)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
-    return TResult(begin(host(me)));
+    TResult tmp(begin(host(me)));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 template <typename THost, typename TSpec, typename TTagSpec>
@@ -547,7 +540,9 @@ inline typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const
 begin(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const>::Type TResult;
-    return TResult(begin(host(me), tag_));
+    TResult tmp(begin(host(me), tag_));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 template <typename THost, typename TSpec, typename TTagSpec>
@@ -555,7 +550,9 @@ inline typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::T
 begin(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type TResult;
-    return TResult(begin(host(me), tag_));
+    TResult tmp(begin(host(me), tag_));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 // --------------------------------------------------------------------------
@@ -567,7 +564,9 @@ inline typename Iterator< ModifiedString<THost, TSpec> const >::Type
 end(ModifiedString<THost, TSpec> const & me)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
-    return TResult(end(me));
+    TResult tmp(end(host(me)));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 template < typename THost, typename TSpec >
@@ -575,7 +574,9 @@ inline typename Iterator< ModifiedString<THost, TSpec> >::Type
 end(ModifiedString<THost, TSpec> & me)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
-    return TResult(end(host(me)));
+    TResult tmp(end(host(me)));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 template < typename THost, typename TSpec, typename TTagSpec >
@@ -583,7 +584,9 @@ inline typename Iterator< ModifiedString<THost, TSpec> const, Tag<TTagSpec> cons
 end(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const>::Type TResult;
-    return TResult(end(host(me), tag_));
+    TResult tmp(end(host(me), tag_));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 template < typename THost, typename TSpec, typename TTagSpec >
@@ -591,7 +594,9 @@ inline typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::T
 end(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const>::Type TResult;
-    return TResult(end(host(me), tag_));
+    TResult tmp(end(host(me), tag_));
+    _copyCargo(tmp, me);
+    return tmp;
 }
 
 // --------------------------------------------------------------------------

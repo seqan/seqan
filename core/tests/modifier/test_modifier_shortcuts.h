@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,168 +32,164 @@
 // Tests for modifier/modifier_shortcuts.h
 // ==========================================================================
 
-#ifndef TEST_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
-#define TEST_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
+#ifndef SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
+#define SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
+#include <seqan/sequence.h>
 
-using namespace seqan;
 
-// TODO(holtgrew): The usage of the prefix "k" to indicate const-ness is obsolete and should be replaced by ALL_UPPERCASE.
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_reverse)
+{
+    seqan::DnaString str = "CGAT";
+    seqan::DnaString const EXPECTED_STRING = "ATCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_reverse) {
-    DnaString str = "CGAT";
-    DnaString const EXPECTED_STRING = "ATCG";
-
-    DnaStringReverseComplement modifiedString(str);
-    DnaString modifiedStringCopy = modifiedString;
+    seqan::DnaStringReverseComplement modifiedString(str);
+    seqan::DnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_reverse)
+{
+    seqan::Dna5String str = "CGATN";
+    seqan::Dna5String const EXPECTED_STRING = "NATCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_reverse) {
-    Dna5String str = "CGATN";
-    Dna5String const EXPECTED_STRING = "NATCG";
-
-    Dna5StringReverseComplement modifiedString(str);
-    Dna5String modifiedStringCopy = modifiedString;
+    seqan::Dna5StringReverseComplement modifiedString(str);
+    seqan::Dna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_reverse)
+{
+    seqan::RnaString str = "CGAU";
+    seqan::RnaString const EXPECTED_STRING = "AUCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_reverse) {
-    RnaString str = "CGAU";
-    RnaString const EXPECTED_STRING = "AUCG";
-
-    RnaStringReverseComplement modifiedString(str);
-    RnaString modifiedStringCopy = modifiedString;
+    seqan::RnaStringReverseComplement modifiedString(str);
+    seqan::RnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_reverse)
+{
+    seqan::Rna5String str = "CGAUN";
+    seqan::Rna5String const EXPECTED_STRING = "NAUCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_reverse) {
-    Rna5String str = "CGAUN";
-    Rna5String const EXPECTED_STRING = "NAUCG";
-
-    Rna5StringReverseComplement modifiedString(str);
-    Rna5String modifiedStringCopy = modifiedString;
+    seqan::Rna5StringReverseComplement modifiedString(str);
+    seqan::Rna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_complement)
+{
+    seqan::DnaString str = "CGAT";
+    seqan::DnaString const EXPECTED_STRING = "ATCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_complement) {
-    DnaString str = "CGAT";
-    DnaString const EXPECTED_STRING = "ATCG";
-
-    DnaStringReverseComplement modifiedString(str);
-    DnaString modifiedStringCopy = modifiedString;
+    seqan::DnaStringReverseComplement modifiedString(str);
+    seqan::DnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_complement)
+{
+    seqan::Dna5String str = "CGATN";
+    seqan::Dna5String const EXPECTED_STRING = "NATCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_complement) {
-    Dna5String str = "CGATN";
-    Dna5String const EXPECTED_STRING = "NATCG";
-
-    Dna5StringReverseComplement modifiedString(str);
-    Dna5String modifiedStringCopy = modifiedString;
+    seqan::Dna5StringReverseComplement modifiedString(str);
+    seqan::Dna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_complement)
+{
+    seqan::RnaString str = "CGAU";
+    seqan::RnaString const EXPECTED_STRING = "AUCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_complement) {
-    RnaString str = "CGAU";
-    RnaString const EXPECTED_STRING = "AUCG";
-
-    RnaStringReverseComplement modifiedString(str);
-    RnaString modifiedStringCopy = modifiedString;
+    seqan::RnaStringReverseComplement modifiedString(str);
+    seqan::RnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_complement)
+{
+    seqan::Rna5String str = "CGAUN";
+    seqan::Rna5String const EXPECTED_STRING = "NAUCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_complement) {
-    Rna5String str = "CGAUN";
-    Rna5String const EXPECTED_STRING = "NAUCG";
-
-    Rna5StringReverseComplement modifiedString(str);
-    Rna5String modifiedStringCopy = modifiedString;
+    seqan::Rna5StringReverseComplement modifiedString(str);
+    seqan::Rna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_reverse_complement)
+{
+    seqan::DnaString str = "CGAT";
+    seqan::DnaString const EXPECTED_STRING = "ATCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_reverse_complement) {
-    DnaString str = "CGAT";
-    DnaString const EXPECTED_STRING = "ATCG";
-
-    DnaStringReverseComplement modifiedString(str);
-    DnaString modifiedStringCopy = modifiedString;
+    seqan::DnaStringReverseComplement modifiedString(str);
+    seqan::DnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_reverse_complement)
+{
+    seqan::Dna5String str = "CGATN";
+    seqan::Dna5String const EXPECTED_STRING = "NATCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_reverse_complement) {
-    Dna5String str = "CGATN";
-    Dna5String const EXPECTED_STRING = "NATCG";
-
-    Dna5StringReverseComplement modifiedString(str);
-    Dna5String modifiedStringCopy = modifiedString;
+    seqan::Dna5StringReverseComplement modifiedString(str);
+    seqan::Dna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_reverse_complement)
+{
+    seqan::RnaString str = "CGAU";
+    seqan::RnaString const EXPECTED_STRING = "AUCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_reverse_complement) {
-    RnaString str = "CGAU";
-    RnaString const EXPECTED_STRING = "AUCG";
-
-    RnaStringReverseComplement modifiedString(str);
-    RnaString modifiedStringCopy = modifiedString;
+    seqan::RnaStringReverseComplement modifiedString(str);
+    seqan::RnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_reverse_complement)
+{
+    seqan::Rna5String str = "CGAUN";
+    seqan::Rna5String const EXPECTED_STRING = "NAUCG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_reverse_complement) {
-    Rna5String str = "CGAUN";
-    Rna5String const EXPECTED_STRING = "NAUCG";
-
-    Rna5StringReverseComplement modifiedString(str);
-    Rna5String modifiedStringCopy = modifiedString;
+    seqan::Rna5StringReverseComplement modifiedString(str);
+    seqan::Rna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
-
-// TODO(holtgrew): The following could be made non-redundant with a helper function.
-
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string) {
-    Dna5String str = "CGATN";
-    Dna5String const kStr = str;
-    Dna5String const kExpectedResult = "GCTAN";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string)
+{
+    seqan::Dna5String str = "CGATN";
+    seqan::Dna5String const STR = str;
+    seqan::Dna5String const EXPECTED_RESULT = "GCTAN";
 
     // Test non-const version.
     complement(str);
-    SEQAN_ASSERT_EQ(kExpectedResult, str);
+    SEQAN_ASSERT_EQ(EXPECTED_RESULT, str);
 
     // Test const version.
     // TODO(holtgrew): This should not be possible!
-    complement(kStr);
-    SEQAN_ASSERT_EQ(kExpectedResult, kStr);
+    complement(STR);
+    SEQAN_ASSERT_EQ(EXPECTED_RESULT, STR);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string_set)
+{
+    seqan::Dna5String str1 = "CCGGTTAANN";
+    seqan::Dna5String str2 = "CGTANCGTAN";
+    seqan::Dna5String const EXPECTED_STRING1 = "GGCCAATTNN";
+    seqan::Dna5String const EXPECTED_STRING2 = "GCATNGCATN";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string_set) {
-    Dna5String str1 = "CCGGTTAANN";
-    Dna5String str2 = "CGTANCGTAN";
-    Dna5String const EXPECTED_STRING1 = "GGCCAATTNN";
-    Dna5String const EXPECTED_STRING2 = "GCATNGCATN";
-
-    StringSet<Dna5String> strSet;
+    seqan::StringSet<seqan::Dna5String> strSet;
     appendValue(strSet, str1);
     appendValue(strSet, str2);
 
     // Test non-const version.
     {
-        StringSet<Dna5String> strSetCopy(strSet);
+        seqan::StringSet<seqan::Dna5String> strSetCopy(strSet);
 
         complement(strSetCopy);
         SEQAN_ASSERT_EQ(2u, length(strSetCopy));
@@ -203,7 +199,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string_set) {
 
     // Test const version.
     {
-        StringSet<Dna5String> const strSetCopy(strSet);
+        seqan::StringSet<seqan::Dna5String> const strSetCopy(strSet);
         
         complement(strSetCopy);
         SEQAN_ASSERT_EQ(2u, length(strSetCopy));
@@ -212,11 +208,11 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string_set) {
     }
 }
 
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string) {
-    Dna5String str = "CGATN";
-    Dna5String const kStr = str;
-    Dna5String const kExpectedResult = "NATCG";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string)
+{
+    seqan::Dna5String str = "CGATN";
+    seqan::Dna5String const kStr = str;
+    seqan::Dna5String const kExpectedResult = "NATCG";
 
     // Test non-const version.
     reverseComplement(str);
@@ -228,20 +224,20 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string) {
     SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string_set)
+{
+    seqan::Dna5String str1 = "CCGGTTAANN";
+    seqan::Dna5String str2 = "CGTANCGTAN";
+    seqan::Dna5String const EXPECTED_STRING1 = "NNTTAACCGG";
+    seqan::Dna5String const EXPECTED_STRING2 = "NTACGNTACG";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string_set) {
-    Dna5String str1 = "CCGGTTAANN";
-    Dna5String str2 = "CGTANCGTAN";
-    Dna5String const EXPECTED_STRING1 = "NNTTAACCGG";
-    Dna5String const EXPECTED_STRING2 = "NTACGNTACG";
-
-    StringSet<Dna5String> strSet;
+    seqan::StringSet<seqan::Dna5String> strSet;
     appendValue(strSet, str1);
     appendValue(strSet, str2);
 
     // Test non-const version.
     {
-        StringSet<Dna5String> strSetCopy = strSet;
+        seqan::StringSet<seqan::Dna5String> strSetCopy = strSet;
 
         reverseComplement(strSetCopy);
         SEQAN_ASSERT_EQ(2u, length(strSetCopy));
@@ -251,7 +247,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string_set)
 
     // Test const version.
     {
-        StringSet<Dna5String> const strSetCopy = strSet;
+        seqan::StringSet<seqan::Dna5String> const strSetCopy = strSet;
         
         reverseComplement(strSetCopy);
         SEQAN_ASSERT_EQ(2u, length(strSetCopy));
@@ -260,11 +256,11 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string_set)
     }
 }
 
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string) {
-    Dna5String str = "CGATN";
-    Dna5String const kStr = str;
-    Dna5String const kExpectedResult = "NTAGC";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string)
+{
+    seqan::Dna5String str = "CGATN";
+    seqan::Dna5String const kStr = str;
+    seqan::Dna5String const kExpectedResult = "NTAGC";
 
     // Test non-const version.
     reverse(str);
@@ -276,20 +272,20 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string) {
     SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string_set)
+{
+    seqan::Dna5String str1 = "CCGGTTAANN";
+    seqan::Dna5String str2 = "CGTANCGTAN";
+    seqan::Dna5String const EXPECTED_STRING1 = "NNAATTGGCC";
+    seqan::Dna5String const EXPECTED_STRING2 = "NATGCNATGC";
 
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string_set) {
-    Dna5String str1 = "CCGGTTAANN";
-    Dna5String str2 = "CGTANCGTAN";
-    Dna5String const EXPECTED_STRING1 = "NNAATTGGCC";
-    Dna5String const EXPECTED_STRING2 = "NATGCNATGC";
-
-    StringSet<Dna5String> strSet;
+    seqan::StringSet<seqan::Dna5String> strSet;
     appendValue(strSet, str1);
     appendValue(strSet, str2);
 
     // Test non-const version.
     {
-        StringSet<Dna5String> strSetCopy(strSet);
+        seqan::StringSet<seqan::Dna5String> strSetCopy(strSet);
 
         reverse(strSetCopy);
         SEQAN_ASSERT_EQ(2u, length(strSetCopy));
@@ -299,7 +295,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string_set) {
 
     // Test const version.
     {
-        StringSet<Dna5String> strSetCopy(strSet);
+        seqan::StringSet<seqan::Dna5String> strSetCopy(strSet);
         
         reverse(strSetCopy);
         SEQAN_ASSERT_EQ(2u, length(strSetCopy));
@@ -308,11 +304,11 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string_set) {
     }
 }
 
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string) {
-    CharString str = "This is a test!";
-    CharString const kStr = str;
-    CharString const kExpectedResult = "this is a test!";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string)
+{
+    seqan::CharString str = "This is a test!";
+    seqan::CharString const kStr = str;
+    seqan::CharString const kExpectedResult = "this is a test!";
 
     // Test non-const version.
     toLower(str);
@@ -324,15 +320,15 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string) {
     SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string_set) {
-    CharString str1 = "This is a test!";
-    CharString str2 = "This is also a test!";
-    CharString const EXPECTED_STRING1 = "this is a test!";
-    CharString const EXPECTED_STRING2 = "this is also a test!";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string_set)
+{
+    seqan::CharString str1 = "This is a test!";
+    seqan::CharString str2 = "This is also a test!";
+    seqan::CharString const EXPECTED_STRING1 = "this is a test!";
+    seqan::CharString const EXPECTED_STRING2 = "this is also a test!";
 
     // Test non-const version.
-    StringSet<CharString> strSet;
+    seqan::StringSet<seqan::CharString> strSet;
     appendValue(strSet, str1);
     appendValue(strSet, str2);
 
@@ -342,7 +338,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string_set) {
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[1]);
 
     // Test const version.
-    StringSet<CharString> const kStrSet = strSet;
+    seqan::StringSet<seqan::CharString> const kStrSet = strSet;
 
     toLower(kStrSet);
     SEQAN_ASSERT_EQ(2u, length(kStrSet));
@@ -350,11 +346,11 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string_set) {
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, kStrSet[1]);
 }
 
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string) {
-    CharString str = "This is a test!";
-    CharString const kStr = str;
-    CharString const kExpectedResult = "THIS IS A TEST!";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string)
+{
+    seqan::CharString str = "This is a test!";
+    seqan::CharString const kStr = str;
+    seqan::CharString const kExpectedResult = "THIS IS A TEST!";
 
     // Test non-const version.
     toUpper(str);
@@ -366,15 +362,15 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string) {
     SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
-
-SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set) {
-    CharString str1 = "This is a test!";
-    CharString str2 = "This is also a test!";
-    CharString const EXPECTED_STRING1 = "THIS IS A TEST!";
-    CharString const EXPECTED_STRING2 = "THIS IS ALSO A TEST!";
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set)
+{
+    seqan::CharString str1 = "This is a test!";
+    seqan::CharString str2 = "This is also a test!";
+    seqan::CharString const EXPECTED_STRING1 = "THIS IS A TEST!";
+    seqan::CharString const EXPECTED_STRING2 = "THIS IS ALSO A TEST!";
 
     // Test non-const version.
-    StringSet<CharString> strSet;
+    seqan::StringSet<seqan::CharString> strSet;
     appendValue(strSet, str1);
     appendValue(strSet, str2);
 
@@ -384,7 +380,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set) {
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[1]);
 
     // Test const version.
-    StringSet<CharString> const kStrSet = strSet;
+    seqan::StringSet<seqan::CharString> const kStrSet = strSet;
 
     toUpper(kStrSet);
     SEQAN_ASSERT_EQ(2u, length(kStrSet));
@@ -392,6 +388,4 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set) {
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, kStrSet[1]);
 }
 
-
-
-#endif  // TEST_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
+#endif  // SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_

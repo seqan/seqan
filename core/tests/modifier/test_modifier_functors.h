@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,51 +32,50 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TESTS_MODIFIER_TEST_MODIFIER_FUNCTORS_H_
-#define TESTS_MODIFIER_TEST_MODIFIER_FUNCTORS_H_
+#ifndef SEQAN_CORE_TESTS_TEST_MODIFIER_FUNCTORS_H_
+#define SEQAN_CORE_TESTS_TEST_MODIFIER_FUNCTORS_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
 
-using namespace seqan;
 
-
-SEQAN_DEFINE_TEST(test_modifier_functors_functor_upcase) {
-    FunctorUpcase<char> func;
+SEQAN_DEFINE_TEST(test_modifier_functors_functor_upcase)
+{
+    seqan::FunctorUpcase<char> func;
 
     SEQAN_ASSERT_EQ('A', func('a'));
     SEQAN_ASSERT_EQ('A', func('A'));
     SEQAN_ASSERT_EQ('!', func('!'));
 }
 
-
-SEQAN_DEFINE_TEST(test_modifier_functors_functor_lowcase) {
-    FunctorLowcase<char> func;
+SEQAN_DEFINE_TEST(test_modifier_functors_functor_lowcase)
+{
+    seqan::FunctorLowcase<char> func;
 
     SEQAN_ASSERT_EQ('a', func('a'));
     SEQAN_ASSERT_EQ('a', func('A'));
     SEQAN_ASSERT_EQ('!', func('!'));
 }
 
-
-SEQAN_DEFINE_TEST(test_modifier_functors_dna_complement) {
+SEQAN_DEFINE_TEST(test_modifier_functors_dna_complement)
+{
     {
-        FunctorComplement<Dna> func;
+        seqan::FunctorComplement<seqan::Dna> func;
 
-        SEQAN_ASSERT_EQ(Dna('C'), func(Dna('G')));
-        SEQAN_ASSERT_EQ(Dna('G'), func(Dna('C')));
-        SEQAN_ASSERT_EQ(Dna('A'), func(Dna('T')));
-        SEQAN_ASSERT_EQ(Dna('T'), func(Dna('A')));
+        SEQAN_ASSERT_EQ(seqan::Dna('C'), func(seqan::Dna('G')));
+        SEQAN_ASSERT_EQ(seqan::Dna('G'), func(seqan::Dna('C')));
+        SEQAN_ASSERT_EQ(seqan::Dna('A'), func(seqan::Dna('T')));
+        SEQAN_ASSERT_EQ(seqan::Dna('T'), func(seqan::Dna('A')));
     }
     {
-        FunctorComplement<Dna5> func;
+        seqan::FunctorComplement<seqan::Dna5> func;
 
-        SEQAN_ASSERT_EQ(Dna5('C'), func(Dna5('G')));
-        SEQAN_ASSERT_EQ(Dna5('G'), func(Dna5('C')));
-        SEQAN_ASSERT_EQ(Dna5('A'), func(Dna5('T')));
-        SEQAN_ASSERT_EQ(Dna5('T'), func(Dna5('A')));
-        SEQAN_ASSERT_EQ(Dna5('N'), func(Dna5('N')));
+        SEQAN_ASSERT_EQ(seqan::Dna5('C'), func(seqan::Dna5('G')));
+        SEQAN_ASSERT_EQ(seqan::Dna5('G'), func(seqan::Dna5('C')));
+        SEQAN_ASSERT_EQ(seqan::Dna5('A'), func(seqan::Dna5('T')));
+        SEQAN_ASSERT_EQ(seqan::Dna5('T'), func(seqan::Dna5('A')));
+        SEQAN_ASSERT_EQ(seqan::Dna5('N'), func(seqan::Dna5('N')));
     }
 }
 
-#endif  // TESTS_MODIFIER_TEST_MODIFIER_FUNCTORS_H_
+#endif  // #ifndef SEQAN_CORE_TESTS_TEST_MODIFIER_FUNCTORS_H_

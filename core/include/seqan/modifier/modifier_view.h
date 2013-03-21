@@ -94,8 +94,19 @@ public:
     {}
 
     explicit
-    ModifiedIterator(THost const & host) : _host(host)
+    ModifiedIterator(THost const & host) : _host(host), _cargo()
     {}
+
+    ModifiedIterator(THost const & host, TFunctor const & functor) : _host(host), _cargo()
+    {
+        cargo(*this).func = functor;
+    }
+
+    explicit
+    ModifiedIterator(TFunctor const & functor) : _host(), _cargo()
+    {
+        cargo(*this).func = functor;
+    }
 };
 
 // --------------------------------------------------------------------------
@@ -124,6 +135,13 @@ public:
     explicit
     ModifiedString(THost & host) : _host(_toPointer(host)), _cargo(), tmp_value()
     {}
+
+    // Construct with the functor.
+    explicit
+    ModifiedString(TFunctor const & functor) : _host(), _cargo(), tmp_value()
+    {
+        cargo(*this).func = functor;
+    }
 
     // Constructor for creating a ModifiedString with const host with a non-const host.
     template <typename THost_>

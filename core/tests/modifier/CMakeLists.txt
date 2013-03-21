@@ -30,12 +30,13 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
 add_executable (test_modifier
-               test_modifier.cpp
-               helpers.h
-               test_modifier_alphabet.h
-               test_modifier_functors.h
-               test_modifier_shortcuts.h
-               test_modifier_view.h)
+                test_modifier.cpp
+                helpers.h
+                test_modifier_alphabet.h
+                test_modifier_functors.h
+                test_modifier_shortcuts.h
+                test_modifier_string.h
+                test_modifier_view.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_modifier ${SEQAN_LIBRARIES})
