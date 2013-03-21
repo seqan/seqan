@@ -38,13 +38,15 @@ adjustParentEntries(FragmentStore<TSpec, TConfig> & me)
     TIter it = begin(me, AnnotationTree<>());
     // Go down from root to the first parent
     goDown(it);
-    while (goRight(it)) // Iterate over all parents
+    do
+    { // Iterate over all parents
         if (getAnnotation(it).contigId == TAnnotationStoreElement::INVALID_ID)
         {
             getAnnotation(it).contigId = getAnnotation(nodeDown(it)).contigId;  // If no child exists: nothing happens
             getAnnotation(it).beginPos = TAnnotationStoreElement::INVALID_POS;
             getAnnotation(it).endPos = TAnnotationStoreElement::INVALID_POS;
         }
+    } while (goRight(it));
 }
     
 //////////////////////////////////////////////////////////////////////////////
