@@ -57,7 +57,8 @@ SEQAN_BEGIN_TESTSUITE(test_file)
     SEQAN_CALL_TEST(test_file_fasta_cr);
     SEQAN_CALL_TEST(test_file_fasta_write);
 
-    SEQAN_CALL_TEST(test_file_cgviz);
+	// TODO(holtgrew): Reading FastaAlign is not portable right now.
+    //SEQAN_CALL_TEST(test_file_cgviz);
     SEQAN_CALL_TEST(test_file_fasta_align);
 
     SEQAN_CALL_TEST(test_file_embl);
