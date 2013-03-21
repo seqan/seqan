@@ -1,0 +1,26 @@
+String Similarity Search/Join
+=============================
+
+Abstract
+--------
+
+We present in this paper scalable algorithms for optimal string similarity
+search and join. Our methods are variations of those applied in Masai, our
+recently published tool for mapping high-throughput DNA sequencing data with
+unpreceded speed and accuracy. The key features of our approach are filtration
+with approximate seeds and methods for multiple backtracking. Approximate
+seeds, compared to exact seeds, increase filtration specificity while
+preserving sensitivity. Multiple backtracking amortizes the cost of searching
+a large set of seeds. Combined together, these two methods significantly speed
+up string similarity search and join operations.
+
+For more information see
+
+    http://www.seqan.de/projects/edbt2013/
+
+References
+----------
+
+ * Siragusa, E., Weese D., & Reinert, K. (2013). Scalable String Similarity
+   Search/Join with Approximate Seeds and Multiple Backtracking.
+   EDBT/ICDT ’13, March 18--22 2013, Genoa, Italy
