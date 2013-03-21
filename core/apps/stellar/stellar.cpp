@@ -683,12 +683,13 @@ int mainWithOptions(TOptions & options, String<TAlphabet>)
     }
 
     // stellar on all databases and queries writing results to file
-    SEQAN_PROTIMESTART(timeStellar);
+
+    double startTime = sysTime();
     if (!_stellarOnAll(databases, databaseIDs, queries, queryIDs, options))
         return 1;
 
     if (options.verbose && options.noRT == false)
-        std::cout << "Running time: " << SEQAN_PROTIMEDIFF(timeStellar) << "s" << std::endl;
+        std::cout << "Running time: " << sysTime() - startTime << "s" << std::endl;
 
     return 0;
 }
