@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
 #ifndef SEQAN_MODIFIER_MODIFIER_STRING_H_
@@ -723,9 +724,8 @@ operator>=(TLeftValue * left,
 
 template < typename TStream, typename THost, typename TSpec >
 inline TStream &
-operator << (TStream & target, ModifiedString<THost, TSpec> const & source)
+operator<<(TStream & target, ModifiedString<THost, TSpec> const & source)
 {
-    SEQAN_CHECKPOINT;
     write(target, source);
     return target;
 }
@@ -738,7 +738,6 @@ template < typename TStream, typename THost, typename TSpec >
 inline TStream &
 operator>>(TStream & source, ModifiedString<THost, TSpec> & target)
 {
-    SEQAN_CHECKPOINT;
     read(source, target);
     return source;
 }

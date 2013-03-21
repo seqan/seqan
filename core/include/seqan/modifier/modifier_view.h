@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
 // TODO(holtgrew): Split into modified_string_mod_view.h and modified_iterator_mod_view.h.
@@ -357,7 +358,6 @@ template < typename TSequence, typename TFunctor >
 inline void
 convert(TSequence & sequence, TFunctor const &F)
 {
-	SEQAN_CHECKPOINT;
 #if defined (_OPENMP) && defined (SEQAN_PARALLEL)
 	// OpenMP does not support for loop with iterators. Therefore use index variables.
 	typedef typename Position<TSequence>::Type	TPos;
@@ -381,7 +381,6 @@ template < typename TSequence, typename TFunctor >
 inline void
 convert(TSequence const & sequence, TFunctor const &F)
 {
-	SEQAN_CHECKPOINT;
 #if defined (_OPENMP) && defined (SEQAN_PARALLEL)
 	// OpenMP does not support for loop with iterators. Therefore use index variables.
 	typedef typename Position<TSequence>::Type	TPos;

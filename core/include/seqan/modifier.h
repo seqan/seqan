@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,38 +29,43 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Umbrella header for the modifier module.
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_MODIFIER_H
-#define SEQAN_HEADER_MODIFIER_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
 
-//____________________________________________________________________________
-// prerequisites
+// --------------------------------------------------------------------------
+// Prerequisites
+// --------------------------------------------------------------------------
 
 #include <functional>
 #include <list>
 
-//____________________________________________________________________________
-// basics
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
 
-#include <seqan/sequence.h> //also include basic.h
-
-//____________________________________________________________________________
+// --------------------------------------------------------------------------
+// Modified Alphabets
+// --------------------------------------------------------------------------
 
 #include <seqan/modifier/modifier_alphabet.h>
 #include <seqan/modifier/modifier_alphabet_expansion.h>
 
-//____________________________________________________________________________
+// --------------------------------------------------------------------------
+// Modified Strings and Iterators Base Classes
+// --------------------------------------------------------------------------
 
 #include <seqan/modifier/modifier_iterator.h>
 #include <seqan/modifier/modifier_string.h>
 
-//____________________________________________________________________________
-// applications
+// --------------------------------------------------------------------------
+// Applications of Base Classes
+// --------------------------------------------------------------------------
 
 #include <seqan/modifier/modifier_functors.h>
 #include <seqan/modifier/modifier_view.h>
 #include <seqan/modifier/modifier_reverse.h>
 #include <seqan/modifier/modifier_shortcuts.h>
 
-
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
