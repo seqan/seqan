@@ -202,7 +202,7 @@ class BuildStep(object):
             print err_data
             return 1
         # Build and package project.
-        make_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package']
+        make_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--config', 'Release']
         if self.options.verbosity > 1:
             make_args.insert(1, 'VERBOSE=1')
         print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(make_args),)
