@@ -125,7 +125,7 @@ int
 readRecord(std::map<CharString, String<AlignmentBlockRow<TSize, TSize> > > & idToRowsMap,
            RecordReader<TStream, SinglePass<TPassSpec> > & recordReader,
            unsigned lineId,
-           std::set<CharString> const & seqIds,
+           std::set<CharString> const & /*seqIds*/,
            bool swapPos,
            Xmfa const &)
 {
