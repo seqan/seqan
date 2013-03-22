@@ -1,0 +1,18 @@
+gi|9632547|ref|NC_002077.1|	MSplazer	inversion	211	280	1000	+	.	ID=0;endChr=gi|9632547|ref|NC_002077.1|;endPos=280;endStrand=+;support=1;supportIds=1 140-350,
+gi|9632547|ref|NC_002077.1|	MSplazer	inversion	214	280	1000	+	.	ID=1;endChr=gi|9632547|ref|NC_002077.1|;endPos=280;endStrand=-;support=1;supportIds=1 140-350,
+gi|9632547|ref|NC_002077.1|	MSplazer	deletion	422	490	1000	+	.	ID=2;size=69;support=1;supportIds=2 420-580,
+gi|9632547|ref|NC_002077.1|	MSplazer	insertion	910	910	1000	+	.	ID=3;size=-70;seq=CTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTT;support=1;supportIds=3 840-1050,;percRep=0;matchID=3
+###################################################
+# Total Stats: 
+# Number of reference indels: 3
+# Number of predicted indels: 4
+# Number of TP predictions  : 1
+# Number of FP predictions  : 3
+# Number of FN predictions  : 2
+###################################################
+# Inversion Stats: 
+# Number of reference inversions: 1
+# Number of predicted inversions: 2
+# Number of TP predictions  : 0
+# Number of FP predictions  : 2
+# Number of FN predictions  : 1

@@ -1,0 +1,4 @@
+#StartSeqId	Label	SV type	sPos	sPos	.	+/-	.	Tags:ID=i;size=(-)indel;EndSeqId=;EndSeqPos=;EndSeqStrand=;Support=;SupportIds=;
+gi|9632547|ref|NC_002077.1|	SIMULATED	inversion	211	280	.	-	.	ID=0;endChr=gi|9632547|ref|NC_002077.1|;endPos=280;endStrand=+;support=1;supportIds=1 140-350,
+gi|9632547|ref|NC_002077.1|	SIMULATED	deletion	421	490	.	+	.	ID=2;size=70;support=1;supportIds=2 420-580,
+gi|9632547|ref|NC_002077.1|	SIMULATED	insertion	911	911	.	+	.	ID=3;size=-70;seq=CTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTT;support=1;supportIds=3 840-1050,

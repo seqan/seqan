@@ -1,0 +1,7 @@
+Global breakpoints found on best MSplazerChains sorted according to genome Ids
+Database file: ../../trunk/extras/apps/variant_comp/tests/adeno.fa
+StartSeqId	Label	SV type	sPos	sPos	.	+/-	.	Tags:ID=i;size=(-)indel;EndSeqId=;EndSeqPos=;EndSeqStrand=;Support=;SupportIds=;
+gi|9632547|ref|NC_002077.1|	MSplazer	inversion	211	280	.	-	.	ID=0;endChr=gi|9632547|ref|NC_002077.1|;endPos=280;endStrand=+;support=1;supportIds=1 140-350,
+gi|9632547|ref|NC_002077.1|	MSplazer	inversion	214	280	.	+	.	ID=1;endChr=gi|9632547|ref|NC_002077.1|;endPos=280;endStrand=-;support=1;supportIds=1 140-350,
+gi|9632547|ref|NC_002077.1|	MSplazer	deletion	422	490	.	+	.	ID=2;size=69;support=1;supportIds=2 420-580,
+gi|9632547|ref|NC_002077.1|	MSplazer	insertion	910	910	.	+	.	ID=3;size=-70;seq=CTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTT;support=1;supportIds=3 840-1050,
