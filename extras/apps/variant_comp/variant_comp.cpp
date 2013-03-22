@@ -444,8 +444,11 @@ int readGFF(
 		TIndel indel = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		TSnp snp = {0,0,0,0,0,0,0,0,0};
 		
-		if(c == '#')
-			_parseSkipLine(file,c);	
+        if(c == '#')
+        {
+            _parseSkipLine(file,c);
+            continue;
+        }
 				
 		// skip whitespaces just in case (actually there shouldnt be a whitespace at the beginning of a line)
 		_parseSkipWhitespace(file, c);
@@ -728,13 +731,13 @@ int main(int argc, const char *argv[])
     addOption(parser, ArgParseOption("ip", "input-predicted", "Input GFF file that contains predicted variants", ArgParseOption::INPUTFILE));
     addOption(parser, ArgParseOption("ir", "input-reference", "Input GFF file that contains reference variants", ArgParseOption::INPUTFILE));
 
-	addOption(parser, ArgParseOption("pt",  "position-tolerance",   "Position tolerance in bp (for indel comparison)", ArgParseOption::INTEGER));
+	addOption(parser, ArgParseOption("pt",  "position-tolerance",   "Position tolerance in bp (for indel comparison)", ArgParseOption::DOUBLE));
     setMinValue(parser, "position-tolerance", "0");   
-    setDefaultValue(parser, "position-tolerance", options.positionTolerance);
+    setDefaultValue(parser, "position-tolerance", "0");
 
-	addOption(parser, ArgParseOption("st",  "size-tolerance",   "Size tolerance in percent (of candidate reference variant)", ArgParseOption::INTEGER));
+	addOption(parser, ArgParseOption("st",  "size-tolerance",   "Size tolerance in percent (of candidate reference variant)", ArgParseOption::DOUBLE));
     setMinValue(parser, "size-tolerance", "0");   
-    setDefaultValue(parser, "size-tolerance", options.positionTolerance);
+    setDefaultValue(parser, "size-tolerance", "0");
     setMaxValue(parser, "size-tolerance", "100");   
 
 	addOption(parser, ArgParseOption("gta",  "genotype-aware",           "Genotype aware (het/hom) matching of variants"));
@@ -761,7 +764,7 @@ int main(int argc, const char *argv[])
     }
 
 	getOptionValue(options.sizeTolerance, parser, "size-tolerance");
-    options.sizeTolerance /= 100;
+    options.sizeTolerance /= 100.0;
 	getOptionValue(options.positionTolerance, parser, "position-tolerance");
 	getOptionValue(options.output, parser, "output");
 	getOptionValue(options.outputFN, parser, "outputFN");
@@ -777,8 +780,8 @@ int main(int argc, const char *argv[])
 	if (isSet(parser, "help") || isSet(parser, "version")) return 0;	// print help or version and exit
 	if (isSet(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
 	if (isSet(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 2);
-	if(getArgumentValueCount(parser, 0) > 1) { std::cerr << "Too many arguments. Exiting... \n"; exit(0); }
-    if(getArgumentValueCount(parser, 0) < 1) { std::cerr << "Not enough arguments. Exiting... \n"; exit(0); }
+	if(getArgumentValueCount(parser, 0) > 1) { std::cerr << "Too many arguments. Exiting... \n"; exit(1); }
+    if(getArgumentValueCount(parser, 0) < 1) { std::cerr << "Not enough arguments. Exiting... \n"; exit(1); }
     resize(genomeFileNames, length(genomeFileNames) + 1);
     getArgumentValue(back(genomeFileNames), parser, 0, 0);
     

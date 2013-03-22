@@ -268,6 +268,8 @@ struct LessGPos : public ::std::binary_function < TVariant, TVariant, bool >
 
 //____________________________________________________________________________
 
+// Compare two IndelInfo objects and return true on match and false on no match.
+
 template <typename TIndel, typename TOptions>
 bool compareIndelPair(TIndel &refIndel, TIndel &predIndel, TOptions &options)
 {
@@ -317,7 +319,11 @@ bool compareIndelPair(TIndel &refIndel, TIndel &predIndel, TPos beginPoint, TPos
 
     int sizeTol = int((double)abs(refIndel.indelSize) * options.sizeTolerance);
 	if(!(refIndel.indelSize - sizeTol <= predIndel.indelSize && predIndel.indelSize <= refIndel.indelSize + sizeTol))
+    {
+        if (options._debugLevel > 1)
+            std::cerr << "IGNORING, INDEL SIZE WRONG!\n";
 		return false; // --> doesnt match
+    }
 	
 	// check if begin position matches
 	if(refIndel.originalPos >= (unsigned)beginPoint
@@ -531,6 +537,8 @@ int compareIndels(
 				else
 					appendValue(intervals, IntervalAndCargo<TValue,TCargo>((*refIndelIt).originalPos,(*refIndelIt).originalPos + 1, ii ));
 			}
+            if (options._debugLevel > 1)
+                std::cout << "INTERVAL\t" << back(intervals).i1 << "\t" << back(intervals).i2 << "\n";
 			++ii;
 		}
 		IntervalTree<TValue,TCargo> itree(intervals);
@@ -569,7 +577,11 @@ int compareIndels(
 			
 			// retrieve overlapping intervals
 			String<TCargo> intersectingIntervals;
+            if (options._debugLevel > 1)
+                std::cout << "QUERY\t" << beginPoint << "\t" << endPoint << "\n";
 			findIntervals(itree,beginPoint,endPoint,intersectingIntervals);
+            if (options._debugLevel > 1)
+                std::cout << " ==> found " << length(intersectingIntervals) << "\n";
 
 			if(options._debugLevel > 1) std::cout <<"begin=" << beginPoint << " end=" << endPoint << std::endl;
 			
