@@ -60,10 +60,10 @@ namespace seqan {
 .Function.bandedChainAlignment
 ..summary:Computes the best global pairwise alignment between two sequences given a non-empty seed chain.
 ..cat:Alignments
-..signature:bandedChainAlignment(align,          seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
-..signature:bandedChainAlignment(gapsH, gapsV,   seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
-..signature:bandedChainAlignment(frags, strings, seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
-..signature:bandedChainAlignment(alignmentGraph, seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, bandExtension])
+..signature:bandedChainAlignment(align,          seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, k])
+..signature:bandedChainAlignment(gapsH, gapsV,   seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, k])
+..signature:bandedChainAlignment(frags, strings, seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, k])
+..signature:bandedChainAlignment(alignmentGraph, seedChain, scoringScheme1 [, scoringScheme2] [, alignConfig] [, k])
 ..param.align:
 An @Class.Align@ object that stores the alignment.
 The number of rows must be 2 and the sequences must have already been set.
@@ -86,14 +86,15 @@ The sequence with id $0$ is the horizontal one, the sequence with id $1$ is the 
 The container holding the @Class.Seed|seeds@. Note that the @Class.Seed|seeds@ have to be in montonic non-decreasing order
 and the container has to implement a forward-iterator.
 ...see:Class.SeedSet
-..param.scoringScheme1:
-The scoring scheme to use for the alignment.
-If $scoringScheme2$ is specified, then $scoringScheme1$ is used for the regions around the seeds and $scoringScheme2$ for the
-gap regions between two consecutive seeds.
+..param.scoringScheme1:The scoring scheme used for the alignment.
+...remarks:If $scoringScheme2$ is specified, then $scoringScheme1$ is used for the regions around the seeds
+...type:Class.Score
+and $scoringScheme2$ for the gap regions between two consecutive seeds.
+..param.scoringScheme2:The optional scoring scheme for the gap regions between two anchors.
 ...type:Class.Score
 ..param.alignConfig:The @Class.AlignConfig@ to use for the alignment.
 ...type:Class.AlignConfig
-..param.bandExtension:Optional extension of the band around the seeds.
+..param.k:Optional extension of the band around the seeds.
 ...type:nolink:$int$
 ...default:15
 ...remarks:At the moment only band extensions greater or equal $1$ are allowed.
