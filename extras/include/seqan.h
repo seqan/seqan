@@ -68,7 +68,6 @@
 
 #include <seqan/alignment_free.h>
 #include <seqan/find_motif.h>
-#include <seqan/index_fm.h>
 #include <seqan/journaled_set.h>
 #include <seqan/math.h>
 #include <seqan/parse_lm.h>
