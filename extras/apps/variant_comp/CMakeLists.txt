@@ -62,7 +62,7 @@ install (FILES LICENSE
 # App Test
 # ----------------------------------------------------------------------------
 
-#seqan_add_app_test (variant_comp)
+seqan_add_app_test (variant_comp)
 
 # ----------------------------------------------------------------------------
 # CPack Install

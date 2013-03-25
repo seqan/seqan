@@ -1,0 +1,1 @@
+gi|9632547|ref|NC_002077.1|	SIMULATED	deletion	421	490	1000	+	.	ID=2;size=70;support=1;supportIds=2 420-580,;notMatched

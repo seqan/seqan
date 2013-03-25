@@ -68,25 +68,28 @@ class TestConf(object):
       name -- optional string, name of the test.
       redir_stdout -- optional string that gives the path to redirect stdout to
                       if the variable is not None.
+      redir_stderr -- optional string that gives the path to redirect stderr to
+                      if the variable is not None.
     """
 
     def __init__(self, program, args, to_diff=[], name=None,
-                 redir_stdout=None):
+                 redir_stdout=None, redir_stderr=None):
         """Constructor, args correspond to attrs."""
         self.program = program
         self.args = args
         self.to_diff = to_diff
         self.name = name
         self.redir_stdout = redir_stdout
+        self.redir_stderr = redir_stderr
         if not hasattr(TestConf, 'valgrind'):
             self.valgrind = False
         else:
             self.valgrind = TestConf.valgrind
 
     def __str__(self):
-        fmt = 'TestConf(%s, %s, %s, %s, %s)'
+        fmt = 'TestConf(%s, %s, %s, %s, %s, %s)'
         return fmt % (repr(self.program), self.args, self.to_diff, self.name,
-                      self.redir_stdout)
+                      self.redir_stdout, self.redir_stderr)
 
 
 class TestPathHelper(object):
@@ -217,9 +220,13 @@ def runTest(test_conf):
     if test_conf.redir_stdout:
         logging.debug('  Redirecting stdout to "%s".' % test_conf.redir_stdout)
         stdout_file = open(test_conf.redir_stdout, 'w+')
+    stderr_file = subprocess.PIPE
+    if test_conf.redir_stderr:
+        logging.debug('  Redirecting stderr to "%s".' % test_conf.redir_stderr)
+        stderr_file = open(test_conf.redir_stderr, 'w+')
     try:
         process = subprocess.Popen(args, stdout=stdout_file,
-                                   stderr=subprocess.PIPE)
+                                   stderr=stderr_file)
         retcode = process.wait()
         logging.debug('  return code is %d', retcode)
         if retcode != 0:

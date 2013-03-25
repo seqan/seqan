@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Output generation for variant_comp.
+
+# We use the current trunk version (r13805) for building the reference.
+VARIANT_COMP="../../../../../seqan-trunk-build/release/bin/variant_comp"
+
+${VARIANT_COMP} adeno.fa -ir gold_standard.gff -ip predicted_full.gff -pt 10 -sc 10 -v -o predicted_full_pt10_sc10.txt > predicted_full_pt10_sc10.stdout 2> predicted_full_pt10_sc10.stderr

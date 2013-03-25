@@ -1,0 +1,16 @@
+Parsed 3 indels.
+Parsed 3 indels.
+
+Number of reference indels: 3
+Number of predicted indels: 3
+
+Number of reference SNPs: 0
+Number of predicted SNPs: 0
+
+Starting to compare indels...
+# Total Stats: 
+# Number of reference indels: 3
+# Number of predicted indels: 3
+# Number of TP predictions  : 2
+# Number of FP predictions  : 1
+# Number of FN predictions  : 1
