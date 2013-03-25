@@ -62,7 +62,7 @@ class Package(object):
         self.word_size = word_size
         SYS_NAMES = {'Windows': {'32': 'win32-i686', '64': 'win64-x86'},
                      'Linux': {'32': 'Linux-i686', '64': 'Linux-x86_64'},
-                     'Mac': {'32': 'Mac-i686', '64': 'Mac-x86_64'}}
+                     'Mac': {'32': 'Darwin-i686', '64': 'Darwin-x86_64'}}
         self.system_name = SYS_NAMES[os][word_size]
         self.pkg_format = pkg_format
 
@@ -108,6 +108,8 @@ class BuildStep(object):
                 package_path = package_path.replace('x86', 'x86_64')
             if 'win32' in package_path or 'win64' in package_path:  # fix OS name
                 package_path = package_path.replace('win32', 'Windows').replace('win64', 'Windows')
+            if 'Darwin' in package_path:  # fix OS name
+                package_path = package_path.replace('Darwin', 'Mac')
             if not os.path.exists(package_path):
                 if self.options.verbosity >= 1:
                     print >>sys.stderr, 'File %s does not exist yet.' % package_path
@@ -127,6 +129,8 @@ class BuildStep(object):
                     to = to.replace('x86', 'x86_64')
                 if 'win32' in to or 'win64' in to:  # fix OS name
                     to = to.replace('win32', 'Windows').replace('win64', 'Windows')
+                if 'Darwin' in to:  # fix OS name
+                    to = to.replace('Darwin', 'Mac')
                 shutil.copyfile(from_, to)
             else:
                 print >>sys.stderr, "%s does not exist (not fatal)" % from_
@@ -189,6 +193,7 @@ class BuildStep(object):
             else:
                 cmake_args += ['-G', 'Visual Studio 10']
         else:  # self.word_size == '64'
+            cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=x86_64')
             if self.os == 'Windows':
                 cmake_args += ['-G', 'Visual Studio 10 Win64']
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
