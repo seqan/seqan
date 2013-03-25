@@ -1,0 +1,4 @@
+variant_comp
+============
+
+Comparison of variant files (in GFF format) against a gold standard.
