@@ -193,6 +193,9 @@ public:
     // Member Variables
     // -----------------------------------------------------------------------
 
+    // The configuration for the output format options.
+    SequenceOutputOptions outputOptions;
+
     CharString filename;
     OperationMode operationMode;
     bool _atEnd;
@@ -775,7 +778,7 @@ int writeRecord(SequenceStream & seqIO,
                 TSequence const & seq,
                 TQualities const & qual)
 {
-    return writeRecord(seqIO, id, seq, qual, SequenceOutputOptions());
+    return writeRecord(seqIO, id, seq, qual, seqIO.outputOptions);
 }
 
 template <typename TId, typename TSequence>
@@ -802,7 +805,7 @@ int writeRecord(SequenceStream & seqIO,
                 TId const & id,
                 TSequence const & seq)
 {
-    return writeRecord(seqIO, id, seq, SequenceOutputOptions());
+    return writeRecord(seqIO, id, seq, seqIO.outputOptions);
 }
 
 // ----------------------------------------------------------------------------
@@ -883,7 +886,7 @@ int writeAll(SequenceStream & seqIO,
              StringSet<TSequence, TSeqSpec> const & seqs,
              StringSet<TQualities, TQualSpec> const & quals)
 {
-    return writeAll(seqIO, ids, seqs, quals, SequenceOutputOptions());
+    return writeAll(seqIO, ids, seqs, quals, seqIO.outputOptions);
 }
 
 template <typename TId, typename TIdSpec, typename TSequence, typename TSeqSpec>
@@ -910,7 +913,7 @@ int writeAll(SequenceStream & seqIO,
              StringSet<TId, TIdSpec> const & ids,
              StringSet<TSequence, TSeqSpec> const & seqs)
 {
-    return writeAll(seqIO, ids, seqs, SequenceOutputOptions());
+    return writeAll(seqIO, ids, seqs, seqIO.outputOptions);
 }
 
 }  // namespace seqan
