@@ -143,14 +143,36 @@ class BuildStep(object):
         print >>sys.stderr, "Creating build directory %s" % (build_dir,)
         os.mkdir(build_dir)
         # Execute CMake.
-        cmake_args = [CMAKE_BINARY,
-                      "-DSEQAN_BUILD_PACKAGE=SEQAN_RELEASE_APPS"]
-        if self.os in ['Linux', 'Mac']:
-            cmake_args += ['-m%s' % self.word_size]
+        cmake_args = [CMAKE_BINARY, checkout_dir,
+                      '-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS']
+        # Use appropriate CMake flags for OS and processor.
+        if self.word_size == '32':
+            cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=i686')
+            if self.os != 'Windows':
+                cmake_args.append('-DCMAKE_CXX_FLAGS=-m32')
+            else:
+                cmake_args += ['-G', 'Visual Studio 10']
+        else:  # self.word_size == '64'
+            if self.os == 'Windows':
+                cmake_args += ['-G', 'Visual Studio 10 Win64']
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
         # Execute Make.
-        make_args = [MAKE_BINARY, "package"] + self.make_args
-        print >>sys.stderr, 'Executing Make: "%s"' % (' '.join(make_args),)
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
+        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
         # Copy over the archives.
         self.copyArchives(build_dir)
         # Remove build directory.
@@ -162,12 +184,26 @@ class BuildStep(object):
         print >>sys.stderr, "Creating build directory %s" % (build_dir,)
         os.mkdir(build_dir)
         # Execute CMake.
-        cmake_args = [CMAKE_BINARY,
+        cmake_args = [CMAKE_BINARY, checkout_dir,
                       "-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY"]
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
         # Execute Make.
-        make_args = [MAKE_BINARY, "package"] + self.make_args
-        print >>sys.stderr, 'Executing Make: "%s"' % (' '.join(make_args),)
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
+        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
         self.copyArchives(build_dir)
         # Remove build directory.
         print >>sys.stderr, 'Removing build directory %s' % build_dir
