@@ -452,8 +452,11 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 
 #ifdef _OPENMP
     addSection(parser, "Parallelism Options");
+#endif  // #ifdef _OPENMP
     addOption(parser, ArgParseOption("tc", "thread-count", "Set the number of threads to use (0 to force sequential mode).", ArgParseOption::INTEGER));
     setMinValue(parser, "thread-count", "0");
+    hideOption(parser, "tc");
+#ifdef _OPENMP
     setDefaultValue(parser, "thread-count", options.threadCount);
     addOption(parser, ArgParseOption("pws", "parallel-window-size", "Collect candidates in windows of this length.", ArgParseOption::INTEGER));
     setMinValue(parser, "parallel-window-size", "1");
