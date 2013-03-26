@@ -53,7 +53,6 @@ add_executable (masai_mapper mapper.cpp
                             extender.h
                             manager.h
                             matches.h
-                            stream.h
                             writer.h
                             options.h
                             index/index_qgram_stretched.h
@@ -66,7 +65,6 @@ add_executable (masai_output_se sorter.cpp
                                tags.h
                                store.h
                                matches.h
-                               stream.h
                                writer.h
                                options.h
                                store/store_io.h
@@ -77,7 +75,6 @@ add_executable (masai_output_pe pairer.cpp
                                tags.h
                                store.h
                                matches.h
-                               stream.h
                                writer.h
                                options.h
                                store/store_io.h
