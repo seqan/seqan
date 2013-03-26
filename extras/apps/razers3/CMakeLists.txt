@@ -94,7 +94,13 @@ install (FILES example/genome.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-seqan_add_app_test (razers3)
+# The parallel code paths are only available when compiling with OpenMP.
+if (OPENMP_FOUND)
+  seqan_add_app_test (razers3)
+endif (OPENMP_FOUND)
+
+# However, the sequential tests are always executed.
+seqan_add_app_test (razers3 _sequential)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes

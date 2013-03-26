@@ -383,7 +383,7 @@ class UniqueTransform(object):
         return ''.join(sorted(set(text.splitlines(True))))
 
 
-def main(main_func):
+def main(main_func, **kwargs):
     """Run main_func with the first and second positional parameter.""" 
     parser = optparse.OptionParser("usage: run_tests [options] SOURCE_ROOT_PATH BINARY_ROOT_PATH")
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true')
@@ -396,4 +396,4 @@ def main(main_func):
         logging.root.setLevel(logging.DEBUG)
     if options.valgrind:
         TestConf.valgrind = True
-    return main_func(args[0], args[1])
+    return main_func(args[0], args[1], **kwargs)

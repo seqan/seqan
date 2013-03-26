@@ -40,7 +40,7 @@ class RemovePairIdColumn(object):
         return ''.join(lines2)
 
 
-def main(source_base, binary_base):
+def main(source_base, binary_base, num_threads=1):
     """Main entry point of the script."""
 
     print 'Executing test for razers3'
@@ -90,58 +90,62 @@ def main(source_base, binary_base):
         # Run with default options.
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.outFile('se-adeno-reads%d_1.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
+            redir_stdout=ph.outFile('se-adeno-reads%d_1-tc%d.stdout' % (rl, num_threads)),
+            args=['-tc', str(num_threads),
+                  ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
-                  '-o', ph.outFile('se-adeno-reads%d_1.razers' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1.razers' % rl),
-                      ph.outFile('se-adeno-reads%d_1.razers' % rl)),
-                     (ph.inFile('se-adeno-reads%d_1.stdout' % rl),
-                      ph.outFile('se-adeno-reads%d_1.stdout' % rl))])
+                  '-o', ph.outFile('se-adeno-reads%d_1-tc%d.razers' % (rl, num_threads))],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1-tc%d.razers' % (rl, num_threads)),
+                      ph.outFile('se-adeno-reads%d_1-tc%d.razers' % (rl, num_threads))),
+                     (ph.inFile('se-adeno-reads%d_1-tc%d.stdout' % (rl, num_threads)),
+                      ph.outFile('se-adeno-reads%d_1-tc%d.stdout' % (rl, num_threads)))])
         conf_list.append(conf)
 
         # Allow indels.
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.outFile('se-adeno-reads%d_1-ng.stdout' % rl),
-            args=['-ng',
+            redir_stdout=ph.outFile('se-adeno-reads%d_1-ng-tc%d.stdout' % (rl, num_threads)),
+            args=['-tc', str(num_threads),
+                  '-ng',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
-                  '-o', ph.outFile('se-adeno-reads%d_1-ng.razers' % rl)],
-            to_diff=[(ph.inFile('se-adeno-reads%d_1-ng.razers' % rl),
-                      ph.outFile('se-adeno-reads%d_1-ng.razers' % rl)),
-                     (ph.inFile('se-adeno-reads%d_1-ng.stdout' % rl),
-                      ph.outFile('se-adeno-reads%d_1-ng.stdout' % rl))])
+                  '-o', ph.outFile('se-adeno-reads%d_1-ng-tc%d.razers' % (rl, num_threads))],
+            to_diff=[(ph.inFile('se-adeno-reads%d_1-ng-tc%d.razers' % (rl, num_threads)),
+                      ph.outFile('se-adeno-reads%d_1-ng-tc%d.razers' % (rl, num_threads))),
+                     (ph.inFile('se-adeno-reads%d_1-ng-tc%d.stdout' % (rl, num_threads)),
+                      ph.outFile('se-adeno-reads%d_1-ng-tc%d.stdout' % (rl, num_threads)))])
         conf_list.append(conf)
 
         # Compute forward/reverse matches only.
         for o in ['-r', '-f']:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('se-adeno-reads%d_1%s.stdout' % (rl, o)),
-                args=[o,
+                redir_stdout=ph.outFile('se-adeno-reads%d_1%s-tc%d.stdout' % (rl, o, num_threads)),
+                args=['-tc', str(num_threads),
+                      o,
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1%s.razers' % (rl, o))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1%s.razers' % (rl, o)),
-                          ph.outFile('se-adeno-reads%d_1%s.razers' % (rl, o))),
-                         (ph.inFile('se-adeno-reads%d_1%s.stdout' % (rl, o)),
-                          ph.outFile('se-adeno-reads%d_1%s.stdout' % (rl, o)))])
+                      '-o', ph.outFile('se-adeno-reads%d_1%s-tc%d.razers' % (rl, o, num_threads))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1%s-tc%d.razers' % (rl, o, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1%s-tc%d.razers' % (rl, o, num_threads))),
+                         (ph.inFile('se-adeno-reads%d_1%s-tc%d.stdout' % (rl, o, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1%s-tc%d.stdout' % (rl, o, num_threads)))])
             conf_list.append(conf)
 
         # Compute with different identity rates.
         for i in range(90, 101):
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('se-adeno-reads%d_1-i%d.stdout' % (rl, i)),
-                args=['-i', str(i),
+                redir_stdout=ph.outFile('se-adeno-reads%d_1-i%d-tc%d.stdout' % (rl, i, num_threads)),
+                args=['-tc', str(num_threads),
+                      '-i', str(i),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-i%d.razers' % (rl, i))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-i%d.razers' % (rl, i)),
-                          ph.outFile('se-adeno-reads%d_1-i%d.razers' % (rl, i))),
-                         (ph.inFile('se-adeno-reads%d_1-i%d.stdout' % (rl, i)),
-                          ph.outFile('se-adeno-reads%d_1-i%d.stdout' % (rl, i)))])
+                      '-o', ph.outFile('se-adeno-reads%d_1-i%d-tc%d.razers' % (rl, i, num_threads))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-i%d-tc%d.razers' % (rl, i, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1-i%d-tc%d.razers' % (rl, i, num_threads))),
+                         (ph.inFile('se-adeno-reads%d_1-i%d-tc%d.stdout' % (rl, i, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1-i%d-tc%d.stdout' % (rl, i, num_threads)))])
             conf_list.append(conf)
 
         # Compute with different output formats.
@@ -153,15 +157,16 @@ def main(source_base, binary_base):
                 this_transforms += sam_transforms
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
-                args=[    ph.inFile('adeno-genome.fa'),
+                redir_stdout=ph.outFile('se-adeno-reads%d_1-of%d-tc%d.stdout' % (rl, of, num_threads)),
+                args=['-tc', str(num_threads),
+                      ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix)),
-                          ph.outFile('se-adeno-reads%d_1-of%d.%s' % (rl, of, suffix)),
+                      '-o', ph.outFile('se-adeno-reads%d_1-of%d-tc%d.%s' % (rl, of, num_threads, suffix))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-of%d-tc%d.%s' % (rl, of, num_threads, suffix)),
+                          ph.outFile('se-adeno-reads%d_1-of%d-tc%d.%s' % (rl, of, num_threads, suffix)),
                           this_transforms),
-                         (ph.inFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
-                          ph.outFile('se-adeno-reads%d_1-of%d.stdout' % (rl, of)),
+                         (ph.inFile('se-adeno-reads%d_1-of%d-tc%d.stdout' % (rl, of, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1-of%d-tc%d.stdout' % (rl, of, num_threads)),
                           transforms)])
             conf_list.append(conf)
 
@@ -169,15 +174,16 @@ def main(source_base, binary_base):
         for so in [0, 1]:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('se-adeno-reads%d_1-so%d.stdout' % (rl, so)),
-                args=['-so', str(so),
+                redir_stdout=ph.outFile('se-adeno-reads%d_1-so%d-tc%d.stdout' % (rl, so, num_threads)),
+                args=['-tc', str(num_threads),
+                      '-so', str(so),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
-                      '-o', ph.outFile('se-adeno-reads%d_1-so%d.razers' % (rl, so))],
-                to_diff=[(ph.inFile('se-adeno-reads%d_1-so%d.razers' % (rl, so)),
-                          ph.outFile('se-adeno-reads%d_1-so%d.razers' % (rl, so))),
-                         (ph.inFile('se-adeno-reads%d_1-so%d.stdout' % (rl, so)),
-                          ph.outFile('se-adeno-reads%d_1-so%d.stdout' % (rl, so)))])
+                      '-o', ph.outFile('se-adeno-reads%d_1-so%d-tc%d.razers' % (rl, so, num_threads))],
+                to_diff=[(ph.inFile('se-adeno-reads%d_1-so%d-tc%d.razers' % (rl, so, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1-so%d-tc%d.razers' % (rl, so, num_threads))),
+                         (ph.inFile('se-adeno-reads%d_1-so%d-tc%d.stdout' % (rl, so, num_threads)),
+                          ph.outFile('se-adeno-reads%d_1-so%d-tc%d.stdout' % (rl, so, num_threads)))])
             conf_list.append(conf)
 
     # ============================================================
@@ -189,65 +195,69 @@ def main(source_base, binary_base):
         # Run with default options.
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.outFile('pe-adeno-reads%d_2.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
+            redir_stdout=ph.outFile('pe-adeno-reads%d_2-tc%d.stdout' % (rl, num_threads)),
+            args=['-tc', str(num_threads),
+                  ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   ph.inFile('adeno-reads%d_2.fa' % rl),
-                  '-o', ph.outFile('pe-adeno-reads%d_2.razers' % rl)],
-            to_diff=[(ph.inFile('pe-adeno-reads%d_2.razers' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.razers' % rl),
+                  '-o', ph.outFile('pe-adeno-reads%d_2-tc%d.razers' % (rl, num_threads))],
+            to_diff=[(ph.inFile('pe-adeno-reads%d_2-tc%d.razers' % (rl, num_threads)),
+                      ph.outFile('pe-adeno-reads%d_2-tc%d.razers' % (rl, num_threads)),
                       razers_transforms),
-                     (ph.inFile('pe-adeno-reads%d_2.stdout' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.stdout' % rl))])
+                     (ph.inFile('pe-adeno-reads%d_2-tc%d.stdout' % (rl, num_threads)),
+                      ph.outFile('pe-adeno-reads%d_2-tc%d.stdout' % (rl, num_threads)))])
         conf_list.append(conf)
 
         # Allow indels.
         conf = app_tests.TestConf(
             program=path_to_program,
-            redir_stdout=ph.outFile('pe-adeno-reads%d_2.stdout' % rl),
-            args=[ph.inFile('adeno-genome.fa'),
+            redir_stdout=ph.outFile('pe-adeno-reads%d_2-tc%d.stdout' % (rl, num_threads)),
+            args=['-tc', str(num_threads),
+                  ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads%d_1.fa' % rl),
                   ph.inFile('adeno-reads%d_2.fa' % rl),
-                  '-o', ph.outFile('pe-adeno-reads%d_2.razers' % rl)],
-            to_diff=[(ph.inFile('pe-adeno-reads%d_2.razers' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.razers' % rl),
+                  '-o', ph.outFile('pe-adeno-reads%d_2-tc%d.razers' % (rl, num_threads))],
+            to_diff=[(ph.inFile('pe-adeno-reads%d_2-tc%d.razers' % (rl, num_threads)),
+                      ph.outFile('pe-adeno-reads%d_2-tc%d.razers' % (rl, num_threads)),
                       razers_transforms),
-                     (ph.inFile('pe-adeno-reads%d_2.stdout' % rl),
-                      ph.outFile('pe-adeno-reads%d_2.stdout' % rl))])
+                     (ph.inFile('pe-adeno-reads%d_2-tc%d.stdout' % (rl, num_threads)),
+                      ph.outFile('pe-adeno-reads%d_2-tc%d.stdout' % (rl, num_threads)))])
         conf_list.append(conf)
 
         # Compute forward/reverse matches only.
         for o in ['-r', '-f']:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('pe-adeno-reads%d_2%s.stdout' % (rl, o)),
-                args=[o,
+                redir_stdout=ph.outFile('pe-adeno-reads%d_2%s-tc%d.stdout' % (rl, o, num_threads)),
+                args=['-tc', str(num_threads),
+                      o,
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2%s.razers' % (rl, o))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2%s.razers' % (rl, o)),
-                          ph.outFile('pe-adeno-reads%d_2%s.razers' % (rl, o)),
+                      '-o', ph.outFile('pe-adeno-reads%d_2%s-tc%d.razers' % (rl, o, num_threads))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2%s-tc%d.razers' % (rl, o, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2%s-tc%d.razers' % (rl, o, num_threads)),
                           razers_transforms),
-                         (ph.inFile('pe-adeno-reads%d_2%s.stdout' % (rl, o)),
-                          ph.outFile('pe-adeno-reads%d_2%s.stdout' % (rl, o)))])
+                         (ph.inFile('pe-adeno-reads%d_2%s-tc%d.stdout' % (rl, o, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2%s-tc%d.stdout' % (rl, o, num_threads)))])
             conf_list.append(conf)
 
         # Compute with different identity rates.
         for i in range(90, 101):
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('pe-adeno-reads%d_2-i%d.stdout' % (rl, i)),
-                args=['-i', str(i),
+                redir_stdout=ph.outFile('pe-adeno-reads%d_2-i%d-tc%d.stdout' % (rl, i, num_threads)),
+                args=['-tc', str(num_threads),
+                      '-i', str(i),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i)),
-                          ph.outFile('pe-adeno-reads%d_2-i%d.razers' % (rl, i)),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-i%d-tc%d.razers' % (rl, i, num_threads))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-i%d-tc%d.razers' % (rl, i, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2-i%d-tc%d.razers' % (rl, i, num_threads)),
                           razers_transforms),
-                         (ph.inFile('pe-adeno-reads%d_2-i%d.stdout' % (rl, i)),
-                          ph.outFile('pe-adeno-reads%d_2-i%d.stdout' % (rl, i)))])
+                         (ph.inFile('pe-adeno-reads%d_2-i%d-tc%d.stdout' % (rl, i, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2-i%d-tc%d.stdout' % (rl, i, num_threads)))])
             conf_list.append(conf)
 
         # Compute with different output formats.
@@ -259,16 +269,17 @@ def main(source_base, binary_base):
                 this_transforms += sam_transforms
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
-                args=[    ph.inFile('adeno-genome.fa'),
+                redir_stdout=ph.outFile('pe-adeno-reads%d_2-of%d-tc%d.stdout' % (rl, of, num_threads)),
+                args=['-tc', str(num_threads),
+                      ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix)),
-                          ph.outFile('pe-adeno-reads%d_2-of%d.%s' % (rl, of, suffix)),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-of%d-tc%d.%s' % (rl, of, num_threads, suffix))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-of%d-tc%d.%s' % (rl, of, num_threads, suffix)),
+                          ph.outFile('pe-adeno-reads%d_2-of%d-tc%d.%s' % (rl, of, num_threads, suffix)),
                           this_transforms),
-                         (ph.inFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
-                          ph.outFile('pe-adeno-reads%d_2-of%d.stdout' % (rl, of)),
+                         (ph.inFile('pe-adeno-reads%d_2-of%d-tc%d.stdout' % (rl, of, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2-of%d-tc%d.stdout' % (rl, of, num_threads)),
                           this_transforms)])
             conf_list.append(conf)
 
@@ -276,17 +287,18 @@ def main(source_base, binary_base):
         for so in [0, 1]:
             conf = app_tests.TestConf(
                 program=path_to_program,
-                redir_stdout=ph.outFile('pe-adeno-reads%d_2-so%d.stdout' % (rl, so)),
-                args=['-so', str(so),
+                redir_stdout=ph.outFile('pe-adeno-reads%d_2-so%d-tc%d.stdout' % (rl, so, num_threads)),
+                args=['-tc', str(num_threads),
+                      '-so', str(so),
                       ph.inFile('adeno-genome.fa'),
                       ph.inFile('adeno-reads%d_1.fa' % rl),
                       ph.inFile('adeno-reads%d_2.fa' % rl),
-                      '-o', ph.outFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so))],
-                to_diff=[(ph.inFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so)),
-                          ph.outFile('pe-adeno-reads%d_2-so%d.razers' % (rl, so)),
+                      '-o', ph.outFile('pe-adeno-reads%d_2-so%d-tc%d.razers' % (rl, so, num_threads))],
+                to_diff=[(ph.inFile('pe-adeno-reads%d_2-so%d-tc%d.razers' % (rl, so, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2-so%d-tc%d.razers' % (rl, so, num_threads)),
                           razers_transforms),
-                         (ph.inFile('pe-adeno-reads%d_2-so%d.stdout' % (rl, so)),
-                          ph.outFile('pe-adeno-reads%d_2-so%d.stdout' % (rl, so)))])
+                         (ph.inFile('pe-adeno-reads%d_2-so%d-tc%d.stdout' % (rl, so, num_threads)),
+                          ph.outFile('pe-adeno-reads%d_2-so%d-tc%d.stdout' % (rl, so, num_threads)))])
             conf_list.append(conf)
 
     # Execute the tests.
