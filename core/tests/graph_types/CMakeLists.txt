@@ -8,6 +8,7 @@
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_graph_types)
+
 message (STATUS "Configuring core/tests/graph_types")
 
 # ----------------------------------------------------------------------------
@@ -17,6 +18,14 @@ message (STATUS "Configuring core/tests/graph_types")
 # Search SeqAn and select dependencies.
 set (SEQAN_FIND_DEPENDENCIES NONE)
 find_package (SeqAn REQUIRED)
+
+# Clang 3.2.0 has a bug that prevents test_graph_types from compiling.  See
+# http://llvm.org/bugs/show_bug.cgi?id=14538
+if (COMPILER_IS_CLANG AND "${_GCC_VERSION}" STREQUAL "320")
+  message (STATUS "  Skipping test_graph_types in Clang 3.2.0")
+  return ()
+endif (COMPILER_IS_CLANG AND "${_GCC_VERSION}" STREQUAL "320")
+
 
 # ----------------------------------------------------------------------------
 # Build Setup

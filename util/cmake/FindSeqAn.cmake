@@ -182,6 +182,8 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
                ARGS --version
                OUTPUT_VARIABLE __GCC_VERSION)
   STRING(REGEX REPLACE ".*([0-9])\\.([0-9])\\.([0-9]).*" "\\1\\2\\3"
+         __GCC_VERSION ${__GCC_VERSION})
+  STRING(REGEX REPLACE ".*([0-9])\\.([0-9]).*" "\\1\\20"
          _GCC_VERSION ${__GCC_VERSION})
 
   # Add -Wno-longlong if the GCC version is < 4.0.0.  Add -pedantic flag but
