@@ -8,6 +8,7 @@
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests)
+message (STATUS "Configuring extras/tests")
 
 # Setup flags and register all subdirectories.
 seqan_register_tests ()

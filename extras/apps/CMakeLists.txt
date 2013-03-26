@@ -8,6 +8,7 @@
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_apps)
+message (STATUS "Configuring extras/apps")
 
 # Register all apps in extras.  The apps will be built in SEQAN_RELEASE mode or
 # the apps called ${app} in APP:${app} mode.
