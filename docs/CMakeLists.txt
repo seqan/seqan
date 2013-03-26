@@ -8,7 +8,6 @@
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_docs)
-message (STATUS "Configuring docs")
 
 # Skip building docs if building app.
 if (NOT ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") AND

@@ -119,10 +119,12 @@ seqan_build_system_init ()
 # ===========================================================================
 
 message (STATUS "Configuring core")
-
 add_subdirectory (core)
+message (STATUS "Configuring extras")
 add_subdirectory (extras)
+message (STATUS "Configuring docs")
 add_subdirectory (docs)
+message (STATUS "Configuring sandbox")
 add_subdirectory (sandbox)
 
 # ===========================================================================
