@@ -324,11 +324,13 @@ inline bool _extendLeft(Extender<TMatchesDelegate, EditDistance, TSpec> & extend
     typedef ModifiedString<TContigInfix, ModReverse>        TContigInfixRev;
     typedef Finder<TContigInfixRev>                         TFinder;
 
-    TContigInfixRev contigInfixRev(contigInfix);
-    TReadInfixRev readInfixRev(readInfix);
-
     // Lcp trick.
-    TContigSeqSize lcp = lcpLength(contigInfixRev, readInfixRev);
+    TContigSeqSize lcp = 0;
+    {  // TODO(holtgrew): Workaround to storing and returning copies in host() for nested infixes/modified strings. This is ugly and should be fixed later.
+        TReadInfixRev readInfixRev(readInfix);
+        TContigInfixRev contigInfixRev(contigInfix);
+        lcp = lcpLength(contigInfixRev, readInfixRev);
+    }
     if (lcp == length(readInfix))
     {
         matchBegin -= lcp;
@@ -346,6 +348,8 @@ inline bool _extendLeft(Extender<TMatchesDelegate, EditDistance, TSpec> & extend
         return false;
 
     // Align.
+    TReadInfixRev readInfixRev(readInfix);
+    TContigInfixRev contigInfixRev(contigInfix);
     TFinder finder(contigInfixRev);
     patternState.leftClip = remainingErrors;
 
