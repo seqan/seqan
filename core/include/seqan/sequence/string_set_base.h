@@ -1033,9 +1033,11 @@ void _refreshStringSetLimits(StringSet< TString, TSpec > & me)
 
 //      SEQAN_ASSERT_EQ(length(me.limits), len + 1);
     resize(me.limits, len + 1, Generous());
-    for(; i < len; ++i) {
+    for(; i < len; ++i)
+    {
         me.limits[i] = sum;
         sum += length(me[i]);
+        SEQAN_ASSERT_LEQ(me.limits[i], sum);
     }
     me.limits[i] = sum;
     me.limitsValid = true;
