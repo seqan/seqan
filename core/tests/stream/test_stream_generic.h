@@ -45,10 +45,11 @@ void testStreamReadSimpleUsage(TStream & stream)
 
     // Read first line.
     char buffer[100];
-    char *ptr = &(buffer[0]);
+    char *ptr = buffer;
     while (!streamEof(stream)) {
         int res = streamReadChar(*ptr, stream);
         SEQAN_ASSERT_EQ(res, 0);
+        SEQAN_ASSERT_LT(ptr, buffer + 100);
         if (*(ptr++) == '\n')
             break;
     }
