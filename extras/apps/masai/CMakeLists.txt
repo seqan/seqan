@@ -11,7 +11,7 @@ project (extras_apps_masai)
 message (STATUS "Configuring extras/apps/masai")
 
 if (MINGW)
-  message (STATUS "  Skipping since MASAI does not support MinGW.");
+  message (STATUS "  Skipping since MASAI does not support MinGW.")
   return ()
 endif (MINGW)
 
