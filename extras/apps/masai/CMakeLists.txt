@@ -10,6 +10,11 @@ cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_masai)
 message (STATUS "Configuring extras/apps/masai")
 
+if (MINGW)
+  message (STATUS "  Skipping since MASAI does not support MinGW.");
+  return ()
+endif (MINGW)
+
 # ----------------------------------------------------------------------------
 # App-Level Configuration
 # ----------------------------------------------------------------------------
