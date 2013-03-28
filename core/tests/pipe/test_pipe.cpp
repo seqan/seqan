@@ -40,6 +40,7 @@
 #include <seqan/file.h>
 #include <seqan/pipe.h>
 #include <seqan/system.h>
+#include <seqan/index.h>
 
 #include "test_pipe.h"
 
@@ -298,6 +299,177 @@ SEQAN_DEFINE_TEST(test_pipe_test_sorter) {
     testSorter(MAX_SIZE);
 }
 
+template <typename TStringSet>
+inline void appendValues(TStringSet &stringSet, int numArgs, ...)
+{
+    va_list ap;
+    va_start(ap, numArgs);
+    for(int j = 0; j < numArgs; ++j)
+        appendValue(stringSet, va_arg(ap, char const *));
+    va_end(ap);
+}
+
+template <typename TStringSet, typename TStrings>
+inline void appendValues(TStringSet &stringSet, TStrings const &strings)
+{
+    typename Size<TStrings>::Type numStrings = length(strings);
+    for(int j = 0; j < numStrings; ++j)
+        appendValue(stringSet, strings[j]);
+}
+
+template <typename TPipe, typename TStrings>
+inline void comparePipeStream(TPipe &pipe, TStrings const &strings)
+{
+    typename Size<TStrings>::Type numStrings = length(strings);
+    SEQAN_ASSERT_EQ(length(pipe), numStrings);
+    beginRead(pipe);
+    for (unsigned i = 0; i < numStrings; ++i)
+    {
+        SEQAN_ASSERT_NOT(eof(pipe));
+        std::stringstream sstr;
+        sstr << *pipe;
+        SEQAN_ASSERT_EQ_MSG(CharString(sstr.str()), strings[i], "Pipe output differs at position %d", i);
+        ++pipe;
+    }
+    SEQAN_ASSERT(eof(pipe));
+    endRead(pipe);
+}
+
+SEQAN_DEFINE_TEST(test_pipe_sampler)
+{
+    {
+        typedef DnaString TString;
+        typedef Pipe<TString, Source<> > TSource;
+        typedef Pipe<TSource, Sampler<3, BitPacked<> > > TSamplerDC3;
+
+        TString string = "";
+        TSource source(string);
+        TSamplerDC3 sampler(source);
+
+
+        string = "";
+        SEQAN_ASSERT_EQ(length(source), 0u);
+        StringSet<CharString> expectedOutput;
+        comparePipeStream(sampler, expectedOutput);
+
+
+        string = "T";
+        SEQAN_ASSERT_EQ(length(source), 1u);
+        appendValue(expectedOutput, "< 1 , [T A A] >");
+        comparePipeStream(sampler, expectedOutput);
+
+
+        string = "TA";
+        SEQAN_ASSERT_EQ(length(source), 2u);
+        clear(expectedOutput);
+        appendValues(expectedOutput, 2,
+            "< 2 , [T A A] >",
+            "< 1 , [A A A] >");
+        comparePipeStream(sampler, expectedOutput);
+
+
+        string = "TAC";
+        SEQAN_ASSERT_EQ(length(source), 3u);
+        clear(expectedOutput);
+        appendValues(expectedOutput, 2,
+            "< 2 , [A C A] >",
+            "< 1 , [C A A] >");
+        comparePipeStream(sampler, expectedOutput);
+
+
+        string = "TACG";
+        SEQAN_ASSERT_EQ(length(source), 4u);
+        clear(expectedOutput);
+        appendValues(expectedOutput, 3,
+            "< 4 , [T A C] >",
+            "< 2 , [C G A] >",
+            "< 1 , [G A A] >");
+        comparePipeStream(sampler, expectedOutput);
+    }
+    {
+        typedef StringSet<DnaString> TStringSet;
+        typedef typename Concatenator<TStringSet>::Type TConcat;
+        typedef Pipe<TConcat, Source<> > TSource;
+        typedef Pipe<TSource, Multi<Sampler<7, BitPacked<> >, Pair<unsigned short>, StringSetLimits<TStringSet>::Type> > TSamplerDC7;
+
+        TStringSet set;
+        appendValue(set, "CGGAAGGCC");
+        appendValue(set, "A");
+        appendValue(set, "");
+        appendValue(set, "ACCGT");
+        appendValue(set, "CGGAAGGCCA");
+        appendValue(set, "TCGGAAGGCCA");
+        appendValue(set, "TTCGGAAGGCCA");
+        appendValue(set, "TTTCGGAAGGCCA");
+        appendValue(set, "TTTTCGGAAGGCCA");
+        appendValue(set, "TTTTTCGGAAGGCCA");
+        appendValue(set, "TTTTTTCGGAAGGCCA");
+
+        TSource source(concat(set));
+        TSamplerDC7 sampler(source, stringSetLimits(set));
+
+        SEQAN_ASSERT_EQ(&stringSetLimits(set), &sampler.limits);
+        SEQAN_ASSERT_EQ(length(source), 106u);
+
+        StringSet<CharString> expectedOutput;
+        appendValues(expectedOutput, 53,
+            "< < 0 , 9 > , [C G G A A G G] >",
+            "< < 0 , 8 > , [G G A A G G C] >",
+            "< < 0 , 4 > , [G G C C A A C] >",
+            "< < 0 , 2 > , [C C A A C C G] >",
+            "< < 0 , 1 > , [C A A C C G T] >",
+            "< < 1 , 1 > , [A A C C G T C] >",
+            "< < 3 , 4 > , [C C G T C G G] >",
+            "< < 3 , 2 > , [G T C G G A A] >",
+            "< < 3 , 1 > , [T C G G A A G] >",
+            "< < 4 , 9 > , [G G A A G G C] >",
+            "< < 4 , 8 > , [G A A G G C C] >",
+            "< < 4 , 4 > , [G C C A T C G] >",
+            "< < 4 , 2 > , [C A T C G G A] >",
+            "< < 4 , 1 > , [A T C G G A A] >",
+            "< < 5 , 11 > , [T C G G A A G] >",
+            "< < 5 , 9 > , [G G A A G G C] >",
+            "< < 5 , 8 > , [G A A G G C C] >",
+            "< < 5 , 4 > , [G C C A T T C] >",
+            "< < 5 , 2 > , [C A T T C G G] >",
+            "< < 5 , 1 > , [A T T C G G A] >",
+            "< < 6 , 11 > , [T C G G A A G] >",
+            "< < 6 , 9 > , [G G A A G G C] >",
+            "< < 6 , 8 > , [G A A G G C C] >",
+            "< < 6 , 4 > , [G C C A T T T] >",
+            "< < 6 , 2 > , [C A T T T C G] >",
+            "< < 6 , 1 > , [A T T T C G G] >",
+            "< < 7 , 11 > , [T C G G A A G] >",
+            "< < 7 , 9 > , [G G A A G G C] >",
+            "< < 7 , 8 > , [G A A G G C C] >",
+            "< < 7 , 4 > , [G C C A T T T] >",
+            "< < 7 , 2 > , [C A T T T T C] >",
+            "< < 7 , 1 > , [A T T T T C G] >",
+            "< < 8 , 11 > , [T C G G A A G] >",
+            "< < 8 , 9 > , [G G A A G G C] >",
+            "< < 8 , 8 > , [G A A G G C C] >",
+            "< < 8 , 4 > , [G C C A T T T] >",
+            "< < 8 , 2 > , [C A T T T T T] >",
+            "< < 8 , 1 > , [A T T T T T C] >",
+            "< < 9 , 15 > , [T T T T T C G] >",
+            "< < 9 , 11 > , [T C G G A A G] >",
+            "< < 9 , 9 > , [G G A A G G C] >",
+            "< < 9 , 8 > , [G A A G G C C] >",
+            "< < 9 , 4 > , [G C C A T T T] >",
+            "< < 9 , 2 > , [C A T T T T T] >",
+            "< < 9 , 1 > , [A T T T T T T] >",
+            "< < 10 , 16 > , [T T T T T T C] >",
+            "< < 10 , 15 > , [T T T T T C G] >",
+            "< < 10 , 11 > , [T C G G A A G] >",
+            "< < 10 , 9 > , [G G A A G G C] >",
+            "< < 10 , 8 > , [G A A G G C C] >",
+            "< < 10 , 4 > , [G C C A A A A] >",
+            "< < 10 , 2 > , [C A A A A A A] >",
+            "< < 10 , 1 > , [A A A A A A A] >");
+        comparePipeStream(sampler, expectedOutput);
+    }
+}
+
 
 SEQAN_BEGIN_TESTSUITE(test_pipe) {
 	std::cerr << "";  // This line is an esoteric fix for an even more esoteric crash in MS VC++ 9/10.
@@ -306,6 +478,7 @@ SEQAN_BEGIN_TESTSUITE(test_pipe) {
     SEQAN_CALL_TEST(test_pipe_test_mapper);
     SEQAN_CALL_TEST(test_pipe_test_mapper_partially_filled);
     SEQAN_CALL_TEST(test_pipe_test_sorter);
+    SEQAN_CALL_TEST(test_pipe_sampler);
 }
 SEQAN_END_TESTSUITE
 
