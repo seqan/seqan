@@ -226,7 +226,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		TLimitsString const &limits;
         
-        Pipe(TInput& _in, TLimitsString const &_limits):
+        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
 			limits(_limits) {}
 
@@ -322,7 +322,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		TLimitsString const &limits;
         
-        Pipe(TInput& _in, TLimitsString const &_limits):
+        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
 			limits(_limits) {}
 

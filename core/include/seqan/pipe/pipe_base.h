@@ -786,6 +786,12 @@ SEQAN_CHECKPOINT
 			assignValueI1(me.pos, getValueI1(me.pos) - 1);
 		}
 	}
+
+	template <typename TPair, typename TLimits>
+	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits &limits)
+    {
+        setHost(me, const_cast<TLimits const &>(limits));
+    }
 //____________________________________________________________________________
 
 	template <typename TPair, typename TLimits>
@@ -830,6 +836,7 @@ SEQAN_CHECKPOINT
 			else
 			{
 				i2 = 0;
+                SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!i2 && (it != itEnd))
 				{
 					assignValueI1(pos, getValueI1(pos) + 1);
@@ -858,6 +865,12 @@ SEQAN_CHECKPOINT
 		} else
 			me.residue = 0;
 	}
+
+	template <typename TPair, typename TLimits, unsigned m, typename TLimits2>
+	void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 &limits)
+    {
+        setHost(me, const_cast<TLimits const &>(limits));
+    }
 //____________________________________________________________________________
 
 	template <typename TPair, typename TLimits>
@@ -907,6 +920,12 @@ SEQAN_CHECKPOINT
 			assignValueI1(me.pos, getValueI1(me.pos) - 1);
 		}
 	}
+
+	template <typename TPair, typename TLimits, typename TLimits2>
+	void setHost(PairDecrementer_<TPair, TLimits, 0> &me, TLimits2 &limits)
+    {
+        setHost(me, const_cast<TLimits const &>(limits));
+    }
 //____________________________________________________________________________
 
 	template <typename TPair, typename TLimits, unsigned m>
