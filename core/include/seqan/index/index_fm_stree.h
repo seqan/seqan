@@ -109,6 +109,7 @@ struct HistoryStackFmi_
     {
         range = _origin.range;
         lastChar = _origin.lastChar;
+        return _origin;
     }
 };
 
