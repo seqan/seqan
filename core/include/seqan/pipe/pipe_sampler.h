@@ -609,7 +609,7 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
         TLimitsString const &limits = me.limits;
         __int64 seqCountPlusOne = length(me.limits);
 
-        SEQAN_OMP_PRAGMA(parallel for reduction(+:sum) private(limits))
+        SEQAN_OMP_PRAGMA(parallel for reduction(+:sum))
         for (__int64 i = 1; i < seqCountPlusOne; ++i)
         {
 			register TSize prev = limits[i - 1];
