@@ -335,12 +335,13 @@ inline void comparePipeStream(TPipe &pipe, TStrings const &strings)
     endRead(pipe);
 }
 
-SEQAN_DEFINE_TEST(test_pipe_sampler)
+template <typename TPack>
+void testPipeSampler()
 {
     {
         typedef DnaString TString;
         typedef Pipe<TString, Source<> > TSource;
-        typedef Pipe<TSource, Sampler<3, BitPacked<> > > TSamplerDC3;
+        typedef Pipe<TSource, Sampler<3, TPack> > TSamplerDC3;
 
         TString string = "";
         TSource source(string);
@@ -390,7 +391,12 @@ SEQAN_DEFINE_TEST(test_pipe_sampler)
         typedef StringSet<DnaString> TStringSet;
         typedef typename Concatenator<TStringSet>::Type TConcat;
         typedef Pipe<TConcat, Source<> > TSource;
-        typedef Pipe<TSource, Multi<Sampler<7, BitPacked<> >, Pair<unsigned short>, StringSetLimits<TStringSet>::Type> > TSamplerDC7;
+        typedef Pipe<
+            TSource,
+            Multi<
+                Sampler<7, BitPacked<> >,
+                Pair<unsigned short, unsigned short, Pack>,
+                StringSetLimits<TStringSet>::Type> >    TSamplerDC7;
 
         TStringSet set;
         appendValue(set, "CGGAAGGCC");
@@ -470,6 +476,11 @@ SEQAN_DEFINE_TEST(test_pipe_sampler)
     }
 }
 
+SEQAN_DEFINE_TEST(test_pipe_sampler)
+{
+//    testPipeSampler<Pack>();
+    testPipeSampler<BitPacked<> >();
+}
 
 SEQAN_BEGIN_TESTSUITE(test_pipe) {
 	std::cerr << "";  // This line is an esoteric fix for an even more esoteric crash in MS VC++ 9/10.
