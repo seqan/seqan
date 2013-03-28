@@ -842,15 +842,15 @@ SEQAN_CHECKPOINT
 		inline TPair const & operator-- ()
         {
 			typename Value<TPair,2>::Type i2 = getValueI2(pos);
-			if (i2 > 1) {
+			if (i2 > 1)
+            {
 				--i2;
 				if (residue == 0) residue = m;
 				--residue;
-			} 
+			}
 			else
 			{
 				i2 = 0;
-                SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!i2 && (it != itEnd))
 				{
                     typename Value<TPair,1>::Type i1 = getValueI1(pos);
@@ -917,7 +917,6 @@ SEQAN_CHECKPOINT
 			else
 			{
 				i2 = 0;
-                SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!i2 && (it != itEnd))
 				{
                     typename Value<TPair,1>::Type i1 = getValueI1(pos);
