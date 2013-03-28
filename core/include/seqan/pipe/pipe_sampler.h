@@ -612,8 +612,8 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
         SEQAN_OMP_PRAGMA(parallel for reduction(+:sum))
         for (__int64 i = 1; i < seqCountPlusOne; ++i)
         {
-			register TSize prev = limits[i - 1];
-			register TSize cur = limits[i];
+			TSize prev = limits[i - 1];
+			TSize cur = limits[i];
 
             SEQAN_ASSERT_LEQ(prev, cur);
 			register TSize size = cur - prev;

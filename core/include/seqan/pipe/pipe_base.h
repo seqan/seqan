@@ -762,7 +762,6 @@ SEQAN_CHECKPOINT
             {
 				i2 = 0;
 				localEnd = 0;
-                SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!localEnd && (it != itEnd))
 				{
                     typename Value<TPair,1>::Type i1 = getValueI1(pos);
