@@ -273,16 +273,24 @@ namespace SEQAN_NAMESPACE_MAIN
         TSorterS6			sortedS6;
         TSorterS124			sortedS124;
         TMerger				in;
-		TLimitsString const &limits;
-            
-        Pipe(TLimitsString const &_limits) :
-			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
-			limits(_limits) {}
+		TLimitsString       const &limits;
 
-		Pipe(TInput& _textIn, TLimitsString const &_limits) :
+        // (weese): The SEQAN_CTOR_ENABLE_IF is necessary to avoid implicit casts and references to temporaries
+
+        template <typename TLimitsString_>
+        Pipe(TLimitsString_ const &_limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimitsString, TLimitsString_>)) :
+			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
+			limits(_limits)
+        {
+            ignoreUnusedVariableWarning(dummy);
+        }
+
+        template <typename TLimitsString_>
+        Pipe(TInput& _textIn, TLimitsString_ const &_limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimitsString, TLimitsString_>)) :
 			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
 			limits(_limits)
 		{
+            ignoreUnusedVariableWarning(dummy);
 			process(_textIn);
 		}
         

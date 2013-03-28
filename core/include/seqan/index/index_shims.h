@@ -95,7 +95,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef Multi<
 			TAlgSpec, 
 			typename Value<TSA>::Type, 
-			typename StringSetLimits<StringSet<TString, TSpec> >::Type >		MultiConstrSpec;
+			typename StringSetLimits<StringSet<TString, TSpec> >::Type >        MultiConstrSpec;
 
         // specialization
 		typedef Pipe< TConcat, Source<> >				src_t;
