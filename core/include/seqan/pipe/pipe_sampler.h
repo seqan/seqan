@@ -370,8 +370,9 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
         bool		last;
 
 		TLimitsString const &limits;
-        
-        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
+
+        template <typename TLimitsString_>
+        Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
             outRef(&tmp1),
             tmpRef(&tmp2),
@@ -491,7 +492,8 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
 
 		TLimitsString const &limits;
         
-        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
+        template <typename TLimitsString_>
+        Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
 			limits(_limits) {}
         

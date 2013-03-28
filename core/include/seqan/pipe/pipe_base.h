@@ -741,9 +741,13 @@ SEQAN_CHECKPOINT
 	template <typename TPair, typename TLimits>
 	struct PairIncrementer_
     {
-		typename Iterator<TLimits const, Standard>::Type			it, itEnd;
-		typename RemoveConst_<typename Value<TLimits>::Type>::Type	old;
-		typename Value<TPair, 2>::Type								localEnd;
+        typedef typename Iterator<TLimits const, Standard>::Type            TIter;
+        typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
+        typedef typename Value<TPair, 2>::Type                              TOffset;
+
+        TIter   it, itEnd;
+		TSize   old;
+        TOffset localEnd;
 
 		TPair pos;
 		inline operator TPair () const
@@ -753,14 +757,20 @@ SEQAN_CHECKPOINT
 
 		inline TPair const & operator++ ()
         {
-			typename Value<TPair, 2>::Type i2 = getValueI2(pos) + 1;
-			if (i2 >= localEnd) {
+			TOffset i2 = getValueI2(pos) + 1;
+			if (i2 >= localEnd)
+            {
 				i2 = 0;
 				localEnd = 0;
+                SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!localEnd && (it != itEnd))
 				{
-					assignValueI1(pos, getValueI1(pos) + 1);
+                    typename Value<TPair,1>::Type i1 = getValueI1(pos);
+                    assignValueI1(pos, i1 + 1);
 					localEnd = (*it - old);
+                    // test for overflows
+                    SEQAN_ASSERT_LT_MSG(i1, getValueI1(pos), "Overflow detected. Use a bigger type for the *first* value in the SAValue pair!");
+                    SEQAN_ASSERT_EQ_MSG((TSize)localEnd, (*it - old), "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
 					old = *it;
 					++it;
 				}
@@ -772,25 +782,26 @@ SEQAN_CHECKPOINT
 		}
 	};
 
-	template <typename TPair, typename TLimits>
-	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits const &limits) {
-		me.it = begin(limits);
-		me.itEnd = end(limits);
+	template <typename TPair, typename TLimits, typename TLimits2>
+	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits2 const &limits)
+    {
+		me.it = begin(limits, Standard());
+		me.itEnd = end(limits, Standard());
 		me.old = 0;
 		me.localEnd = 0;
-		assignValueI1(me.pos, 0);
-		assignValueI2(me.pos, 0);
-		if (length(limits) > 1) {
+        me.pos = TPair(0, 0);
+		if (length(limits) > 1)
+        {
 			++me.it;
 			++me;
 			assignValueI1(me.pos, getValueI1(me.pos) - 1);
 		}
 	}
 
-	template <typename TPair, typename TLimits>
-	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits &limits)
+	template <typename TPair, typename TLimits, typename TLimits2>
+	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits2 &limits)
     {
-        setHost(me, const_cast<TLimits const &>(limits));
+        setHost(me, const_cast<TLimits2 const &>(limits));
     }
 //____________________________________________________________________________
 
@@ -812,10 +823,13 @@ SEQAN_CHECKPOINT
 	// for generating pairs (seqNo, seqOffs)
 
 	template <typename TPair, typename TLimits, unsigned m = 0>
-	struct PairDecrementer_ {
-		typename Iterator<TLimits const, Standard>::Type			it, itEnd;
-		typename RemoveConst_<typename Value<TLimits>::Type>::Type	old;
-
+	struct PairDecrementer_
+    {
+        typedef typename Iterator<TLimits const, Standard>::Type            TIter;
+        typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
+        
+        TIter       it, itEnd;
+		TSize       old;
 		TPair		pos;
 		unsigned	residue;
 
@@ -826,7 +840,8 @@ SEQAN_CHECKPOINT
 			return pos;
 		}
 
-		inline TPair const & operator-- () {
+		inline TPair const & operator-- ()
+        {
 			typename Value<TPair,2>::Type i2 = getValueI2(pos);
 			if (i2 > 1) {
 				--i2;
@@ -839,8 +854,12 @@ SEQAN_CHECKPOINT
                 SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!i2 && (it != itEnd))
 				{
-					assignValueI1(pos, getValueI1(pos) + 1);
+                    typename Value<TPair,1>::Type i1 = getValueI1(pos);
+					assignValueI1(pos, i1 + 1);
 					i2 = (*it - old);
+                    // test for overflows
+                    SEQAN_ASSERT_LT_MSG(i1, getValueI1(pos), "Overflow detected. Use a bigger type for the *first* value in the SAValue pair!");
+                    SEQAN_ASSERT_EQ_MSG((TSize)i2, *it - old, "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
 					old = *it;
 					++it;
 				} 
@@ -852,13 +871,14 @@ SEQAN_CHECKPOINT
 	};
 
 	template <typename TPair, typename TLimits, unsigned m, typename TLimits2>
-	void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 const &limits) {
+	void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 const &limits)
+    {
 		me.it = begin(limits);
 		me.itEnd = end(limits);
 		me.old = 0;
-		assignValueI1(me.pos, 0);
-		assignValueI2(me.pos, 0);
-		if (length(limits) > 1) {
+        me.pos = TPair(0, 0);
+		if (length(limits) > 1)
+        {
 			++me.it;
 			--me;
 			assignValueI1(me.pos, getValueI1(me.pos) - 1);
@@ -874,10 +894,13 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 	template <typename TPair, typename TLimits>
-	struct PairDecrementer_<TPair, TLimits, 0> {
-		typename Iterator<TLimits const, Standard>::Type			it, itEnd;
-		typename RemoveConst_<typename Value<TLimits>::Type>::Type	old;
+	struct PairDecrementer_<TPair, TLimits, 0>
+    {
+        typedef typename Iterator<TLimits const, Standard>::Type            TIter;
+        typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
 
+        TIter       it, itEnd;
+		TSize       old;
 		TPair		pos;
 
 		PairDecrementer_() {}
@@ -887,17 +910,23 @@ SEQAN_CHECKPOINT
 			return pos;
 		}
 
-		inline TPair const & operator-- () {
+		inline TPair const & operator-- ()
+        {
 			typename Value<TPair,2>::Type i2 = getValueI2(pos);
 			if (i2 > 1)
 				--i2;
 			else
 			{
 				i2 = 0;
+                SEQAN_ASSERT_NEQ(it, itEnd);
 				while (!i2 && (it != itEnd))
 				{
-					assignValueI1(pos, getValueI1(pos) + 1);
+                    typename Value<TPair,1>::Type i1 = getValueI1(pos);
+					assignValueI1(pos, i1 + 1);
 					i2 = (*it - old);
+                    // test for overflows
+                    SEQAN_ASSERT_LT_MSG(i1, getValueI1(pos), "Overflow detected. Use a bigger type for the *first* value in the SAValue pair!");
+                    SEQAN_ASSERT_EQ_MSG((TSize)i2, *it - old, "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
 					old = *it;
 					++it;
 				} 

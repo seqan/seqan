@@ -225,8 +225,9 @@ namespace SEQAN_NAMESPACE_MAIN
 		typename Size<TInput>::Type	seqLength, lastTuples;
 
 		TLimitsString const &limits;
-        
-        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
+
+        template <typename TLimitsString_>
+        Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
 			limits(_limits) {}
 
@@ -322,7 +323,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		TLimitsString const &limits;
         
-        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
+        template <typename TLimitsString_>
+        Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
 			limits(_limits) {}
 
