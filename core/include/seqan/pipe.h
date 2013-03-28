@@ -36,8 +36,9 @@
 //____________________________________________________________________________
 // prerequisites
 
-#include <seqan/file.h>
 #include <seqan/basic.h>
+#include <seqan/parallel.h>
+#include <seqan/file.h>
 
 #include <cstdio>
 #include <cassert>
