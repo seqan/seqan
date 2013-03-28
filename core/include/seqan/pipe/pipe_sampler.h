@@ -326,16 +326,21 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
     inline typename Size< Pipe< TInput, Sampler<m, TPack> > >::Type
 	length(Pipe< TInput, Sampler<m, TPack> > const &me)
     {
-        typename Size< Pipe< TInput, Sampler<m> > >::Type _size = 0, n = length(me.in);
+        typedef typename Size< Pipe< TInput, Sampler<m> > >::Type TSize;
 
-        for (unsigned i = 1; i <= SkewDC_<m>::VALUE[0]; i++)
+        TSize sum = 0;
+        TSize size = length(me.in);
+
+        // sum up the number of tuples in each residue class
+        // for a string of length n there are 1+(n-x)/m suffixes
+        // whose lengths are in residue class x
+        for (unsigned i = 1; i <= SkewDC_<m>::VALUE[0]; ++i)
         {
-            if (SkewDC_<m>::VALUE[i])
-                _size += (n + m - SkewDC_<m>::VALUE[i]) / m;
-            else
-                _size += n / m;
+            sum += (size + m - SkewDC_<m>::VALUE[i]) / m;
+            if (SkewDC_<m>::VALUE[i] == 0)
+                --sum;  // we don't consider empty suffixes
         }
-        return _size;
+        return sum;
     }
 
 
@@ -366,7 +371,7 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
 
 		TLimitsString const &limits;
         
-        Pipe(TInput& _in, TLimitsString const &_limits):
+        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
             outRef(&tmp1),
             tmpRef(&tmp2),
@@ -486,7 +491,7 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
 
 		TLimitsString const &limits;
         
-        Pipe(TInput& _in, TLimitsString const &_limits):
+        Pipe(TInput& _in, TLimitsString &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
 			limits(_limits) {}
         
@@ -594,28 +599,32 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
 	length(Pipe< TInput, Multi<Sampler<m, TPack>, TPair, TLimitsString> > const &me)
 	{
 		typedef typename Size< Pipe< TInput, Multi<Sampler<m, TPack>, TPair, TLimitsString> > >::Type TSize;
-		typename Iterator<TLimitsString const, Standard>::Type it = begin(me.limits), itEnd = end(me.limits);
-		
-		if (it == itEnd)
+
+		if (empty(me.limits))
             return 0;
 
 		TSize sum = 0;
-		TSize size;
-		TSize old = *it; ++it;
+        TLimitsString const &limits = me.limits;
+        __int64 seqCountPlusOne = length(me.limits);
 
-		while (it != itEnd)
+        SEQAN_OMP_PRAGMA(parallel for reduction(+:sum) private(limits))
+        for (__int64 i = 1; i < seqCountPlusOne; ++i)
         {
-			size = *it - old;
-			old = *it;
-			
-			for (unsigned i = 1; i <= SkewDC_<m>::VALUE[0]; i++)
+			register TSize prev = limits[i - 1];
+			register TSize cur = limits[i];
+
+            SEQAN_ASSERT_LEQ(prev, cur);
+			register TSize size = cur - prev;
+
+            // sum up the number of tuples in each residue class
+            // for a string of length n there are 1+(n-x)/m suffixes
+            // whose lengths are in residue class x
+			for (unsigned i = 1; i <= SkewDC_<m>::VALUE[0]; ++i)
             {
-				if (SkewDC_<m>::VALUE[i])
-					sum += (size + m - SkewDC_<m>::VALUE[i]) / m;
-				else
-					sum += size / m;
+                sum += (size + m - SkewDC_<m>::VALUE[i]) / m;
+                if (SkewDC_<m>::VALUE[i] == 0)
+                    --sum;  // we don't consider empty suffixes
             }
-			++it;
 		}
 
         return sum;
