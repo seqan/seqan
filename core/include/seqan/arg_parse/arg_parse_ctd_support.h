@@ -243,7 +243,7 @@ _includeInCTD(ArgParseOption const & opt)
 // Function _indent()
 // ----------------------------------------------------------------------------
 
-std::string _indent(const int currentIndent)
+inline std::string _indent(const int currentIndent)
 {
     std::string indent = "";
     for (int i = 0; i < currentIndent; ++i)
@@ -254,7 +254,7 @@ std::string _indent(const int currentIndent)
 // ----------------------------------------------------------------------------
 // Function _writeCLIElement()
 // ----------------------------------------------------------------------------
-void _writeCLIElement(std::ostream & ctdfile, int currentIndent, std::string const & optionIdentifier, std::string const & ref_name, bool isList)
+inline void _writeCLIElement(std::ostream & ctdfile, int currentIndent, std::string const & optionIdentifier, std::string const & ref_name, bool isList)
 {
     ctdfile << _indent(currentIndent)
             << "<clielement optionIdentifier=\"" << optionIdentifier

@@ -167,7 +167,7 @@ inline void addUsageLine(ArgumentParser & me, std::string const & line)
 // Helper Function _addUsage()
 // ----------------------------------------------------------------------------
 
-void _addUsage(ToolDoc & toolDoc, ArgumentParser const & me)
+inline void _addUsage(ToolDoc & toolDoc, ArgumentParser const & me)
 {
     for (unsigned i = 0; i < length(me._usageText); ++i)
     {

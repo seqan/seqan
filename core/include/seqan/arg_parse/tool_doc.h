@@ -1160,6 +1160,7 @@ inline void clearEntries(ToolDoc & doc)
 // Function HtmlDocPrinter_::print()
 // --------------------------------------------------------------------------
 
+inline
 void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 {
     // Print HTML boilerplate header.
@@ -1250,6 +1251,7 @@ void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 // Function TextDocPrinter_::print()
 // --------------------------------------------------------------------------
 
+inline
 void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 {
     std::ostream_iterator<char> out(stream);
@@ -1316,6 +1318,7 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     stream << "Last update " << doc._date << "\n";
 }
 
+inline
 void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 {
     std::ostream_iterator<char> out(stream);
