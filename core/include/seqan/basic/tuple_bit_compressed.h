@@ -157,13 +157,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
     template <typename T>
     inline void operator|=(T const & t)
     {
-        i |= t;
-    }
-
-    template <typename T, typename TSpec>
-    inline void operator|=(SimpleType<T, TSpec> const & t)
-    {
-        i |= t.value;
+        i |= ordValue(t);
     }
 
     inline TBitVector* operator&()
