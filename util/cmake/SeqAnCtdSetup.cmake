@@ -177,7 +177,7 @@ foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})
 
   add_custom_command (OUTPUT ${CTD_PATH}/${_BINARY}.ctd
                       COMMAND ${_BINARY_PATH} --write-ctd "${CTD_PATH}/${_BINARY}.ctd"
-                      DEPENDS ${_CTD_PATH}
+                      DEPENDS ${CTD_PATH}
                               ${_BINARY})
   list (APPEND DESCRIPTOR_FILES ${CTD_PATH}/${_BINARY}.ctd)
 endforeach ()
@@ -186,23 +186,11 @@ endforeach ()
 # Eclipse Plugin Files.
 # ============================================================================
 
-# If possible, get latest change date from SeqAn SVN.
-find_package(Subversion)
-if (Subversion_FOUND AND EXISTS ${_SEQAN_SOURCE_DIR}/.svn)
-  file (TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" _SEQAN_SOURCE_DIR)
-  Subversion_WC_INFO (${_SEQAN_SOURCE_DIR} SEQAN)
-  string(REGEX REPLACE "^([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+).*"
-    "\\1\\2\\3\\4\\5" SEQAN_LAST_CHANGE_DATE "${SEQAN_WC_LAST_CHANGED_DATE}")
-  set (CF_SEQAN_VERSION ${SEQAN_VERSION_STRING}.${SEQAN_LAST_CHANGE_DATE})
-else ()
-  set (CF_SEQAN_VERSION "${SEQAN_VERSION_STRING}")
-endif ()
-
 # plugin.properties
 add_custom_command (OUTPUT ${WORKFLOW_PLUGIN_DIR}/plugin.properties
                     COMMAND ${CMAKE_COMMAND} "-DSEQAN_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
                                              "-DWORKFLOW_PLUGIN_DIR=${WORKFLOW_PLUGIN_DIR}"
-                                             "-DCF_SEQAN_VERSION=${CF_SEQAN_VERSION}"
+                                             "-DSEQAN_VERSION_STRING=${SEQAN_VERSION_STRING}"
                                              -P "${CMAKE_SOURCE_DIR}/util/cmake/ctd/configure_profile_properties.cmake"
                     DEPENDS ${WORKFLOW_PLUGIN_DIR}
                             ${CMAKE_SOURCE_DIR}/util/cmake/ctd/plugin.properties.in)
