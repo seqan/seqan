@@ -52,7 +52,7 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
-#include <cmath> // isnan, isinf
+#include <cmath>    // isnan, isinf
 #include <string.h> // memset
 
 //////////////////////////////////////////////////////////////////////////////
