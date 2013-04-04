@@ -528,7 +528,7 @@ _readGffRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContext
     if (!getIdByName(nameStore(context), record.seqID, idx, nameStoreCache(context)))
     {
         idx = length(nameStore(context));
-        appendName(nameStore(context), record.seqID, nameStore(context));
+        appendName(nameStore(context), record.seqID, nameStoreCache(context));
     }
     record.seqIdx = idx;
 
