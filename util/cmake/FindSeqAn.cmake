@@ -181,6 +181,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   EXEC_PROGRAM(${CMAKE_CXX_COMPILER}
                ARGS --version
                OUTPUT_VARIABLE __GCC_VERSION)
+  # Remove all but first line.
+  STRING(REGEX REPLACE "([^\n]+).*" "\\1" __GCC_VERSION ${__GCC_VERSION})
+  # Find out version (3 or 2 components).
   STRING(REGEX REPLACE ".*([0-9])\\.([0-9])\\.([0-9]).*" "\\1\\2\\3"
          __GCC_VERSION ${__GCC_VERSION})
   STRING(REGEX REPLACE ".*([0-9])\\.([0-9]).*" "\\1\\20"
