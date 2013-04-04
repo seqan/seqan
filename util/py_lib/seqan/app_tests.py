@@ -211,10 +211,11 @@ def runTest(test_conf):
     """
     # Execute the program.
     logging.debug('runTest(%s)', test_conf)
-    args = [test_conf.program] + test_conf.args
+    args = [x for x in test_conf.args if x != '']
+    args = [test_conf.program] + args
     if test_conf.valgrind:
         # Call through valgrind.
-        args = [VALGRIND_PATH] + VALGRIND_FLAGS + args
+        args = [VALGRIND_PATH] + VALGRIND_FLAGS
     logging.debug('Executing "%s"', ' '.join(args))
     stdout_file = subprocess.PIPE
     if test_conf.redir_stdout:
@@ -236,12 +237,19 @@ def runTest(test_conf):
             print >>sys.stderr, stdout_file.read()
             print >>sys.stderr, '--- stdout end --'
             stdout_file.close()
-            stderr_contents = process.stderr.read()
+            if process.stderr:
+                stderr_contents = process.stderr.read()
+            else:
+                stderr_contents = ''
             print >>sys.stderr, '-- stderr begin --'
             print >>sys.stderr, stderr_contents
             print >>sys.stderr, '-- stderr end --'
             return False
     except Exception, e:
+        # Print traceback.
+        import traceback
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
         fmt = 'ERROR (when executing "%s"): %s'
         if stdout_file is not subprocess.PIPE:
             stdout_file.close()
