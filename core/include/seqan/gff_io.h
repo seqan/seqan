@@ -44,6 +44,7 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
 #include <seqan/misc/misc_name_store_cache.h>
 
 // ===========================================================================
