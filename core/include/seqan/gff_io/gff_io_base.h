@@ -598,7 +598,7 @@ _writeSemicolonSensitive(TTargetStream & target, TString & temp)
 ..summary:Writes one gff record to a stream.
 ..signature:writeRecord(TSreamm stream, GffRecord record)
 ..param.stream:The output stream.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.record:The gff record.
 ...type:Class.GffRecord
 ..include:seqan/gff_io.h

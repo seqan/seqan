@@ -35,11 +35,11 @@
 
 
 ..Needle:The sequence that is searched in the @glos:Haystack|haystack@.
-...see:Concept.Pattern
+...see:Concept.PatternConcept
 
 
 ..Haystack:The sequence that is searched for @glos:Needle|needle@. 
-...see:Concept.Finder
+...see:Concept.FinderConcept
 
 
 ..Index:A data structure for faster searching in sequences.

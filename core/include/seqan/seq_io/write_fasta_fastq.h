@@ -103,13 +103,13 @@ public:
 ..signature:int writeRecord(stream, id, seq, tag[, options])
 ..signature:int writeRecord(stream, id, seq, qual, tag[, options])
 ..param.stream:The stream to write to.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.id:ID/Meta information line to write out.
-...type:Concept.Sequence
+...type:Concept.SequenceConcept
 ..param.seq:Sequence to write out.
-...type:Concept.Sequence
+...type:Concept.SequenceConcept
 ..param.quals:ASCII quality characters to write out.
-...type:Concept.Sequence
+...type:Concept.SequenceConcept
 ..param.tag:The format selector.
 ...type:nolink:$Fasta$, $Fastq$
 ..param.options:if not supplied defaults are chosen.
@@ -405,7 +405,7 @@ writeRecord(TStream & stream,
 ..signature:int write2(stream, ids, seqs, tag[, options])
 ..signature:int write2(stream, ids, seqs, quals, tag[, options])
 ..param.stream:The stream to write to.
-...type:Concept.Stream
+...type:Concept.StreamConcept
 ..param.ids:IDs/Metainformation strings to write out.
 ...type:Class.StringSet
 ..param.seqs:Sequences to write out.

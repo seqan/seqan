@@ -68,9 +68,8 @@ class SBM;
 
 /**
 .Spec.SequenceBitMask Fibres
-..summary:Tag to select a specific fibre (e.g. table, object, ...) of a @Class.WaveletTree@.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a WaveletTree.
-..cat:WaveletTree
+..summary:Tag to select a specific fibre of a SequenceBitMask.
+..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a SequenceBitMask.
 
 ..tag.FibreBitStrings:The string set containing a bit string for each node.
 

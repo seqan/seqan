@@ -294,7 +294,7 @@ inline void assignValue(
 ..param.stringSet: The string set that stores the sequences.
 ...type:Spec.Journaled Set
 ..returns:The global reference sequence of the @Spec.Journaled Set@.
-...metafunction:Metafunction.Host &
+...metafunction:Metafunction.Host
 ..see:Function.setGlobalReference
 ..see:Function.createGlobalReference
 ..include:seqan/journal_set.h
@@ -320,7 +320,7 @@ globalReference(StringSet<TString, Owner<JournaledSet> > const & journalSet)
 ..param.stringSet: The string set that stores the sequences.
 ...type:Spec.Journaled Set
 ..param.reference: The new reference sequence of the Journaled Set.
-...type:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
+...type:nolink:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
 ..remarks:Uses an @Class.Holder@ to store a reference to the new global reference sequence instead of copying it.
 ..see:Function.createGlobalReference
 ..see:Function.globalReference
@@ -347,7 +347,7 @@ setGlobalReference(StringSet<TString, Owner<JournaledSet> > & journalSet,
 ..param.stringSet: The string set that stores the sequences.
 ...type:Spec.Journaled Set
 ..param.reference: The new reference sequence of the Journaled Set.
-...type:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
+...type:nolink:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
 ..remarks:Stores a copy of the passed global reference sequence.
 ..see:Function.setGlobalReference
 ..see:Function.globalReference

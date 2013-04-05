@@ -91,7 +91,7 @@ typedef Tag<FibreSentinelPosition_> const   FibreSentinelPosition;
 // ----------------------------------------------------------------------------
 
 // TODO(DOC)
-///.Metafunction.Fibre.param.TSpec.type:Spec.SentinelRankDictionary Fibres
+///.Metafunction.Fibre.param.TSpec.type:Tag.SentinelRankDictionary Fibres
 
 template <typename TValue, typename TSpec>
 struct Fibre<SentinelRankDictionary<RankDictionary<WaveletTree<TValue> >, TSpec>, FibreRankDictionary>
@@ -416,7 +416,7 @@ _getSentinelPosition(SentinelRankDictionary<TRankDictionary, Sentinels> const & 
 ..param.dictionary:The dictionary holding the fibre.
 ...type:Class.RankDictionary
 ..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Spec.SentinelRankDictionary Fibres
+...type:Tag.SentinelRankDictionary Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
 */
@@ -568,7 +568,7 @@ inline void setSentinelPosition(SentinelRankDictionary<TRankDictionary, TSpec> &
 ..summary:This functions creates the dictionary structure.
 ..signature:void createSentinelRankDictionary(dictionary, text)
 ..param.dictionary:The dictionary.
-...type:ClassRankDictionary.
+...type:Class.RankDictionary.
 ..param.text:A text to be transfered into a dictionary.
 ...type:Class.String
 ..include:seqan/index.h

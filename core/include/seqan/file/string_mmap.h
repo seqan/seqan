@@ -327,11 +327,11 @@ SEQAN_CHECKPOINT
 ..param.mmapString:The @Spec.MMap String@ that contains the location in the advise call.
 ...type:Spec.MMap String
 ..param.scheme:The memory access scheme to use.
-...type:Enum.MMapAdviseScheme
+...type:Enum.FileMappingAdviseScheme
 ..param.beginPos:Begin position in the string for the advise call.
 ..param.size:Size of the range used for the advise call.
 ..returns:$int$, return code 0 on success.
-..see:Enum.MMapAdviseScheme
+..see:Enum.FileMappingAdviseScheme
 ..include:seqan/file.h
  */
     template <typename TValue, typename TConfig, typename TPos, typename TSize>

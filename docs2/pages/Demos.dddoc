@@ -46,7 +46,7 @@
 ..cat:Basics
 ..summary:Examples for common alphabets.
 ..description
-...text:SeqAn offers some common alphabets like @Spec.Dna@, @Spec.Iupac@, and @Spec.AminoAcid@, which are all @Concept.Simple Type.simple types@.
+...text:SeqAn offers some common alphabets like @Spec.Dna@, @Spec.Iupac@, and @Spec.AminoAcid@, which are all @Concept.SimpleConcept Type@.
 ..file:../core/demos/alphabet.cpp
 ..demofor:Spec.Dna
 ..demofor:Spec.Dna5

@@ -140,7 +140,7 @@ space efficient.
 ...type:Tag.CompressText
 ...default;$void$
 ..param.TFibreSpec:Tag to specify the fibre.
-...type:Tag.FM Index fibres
+...type:Tag.FM Index Fibres
 ..returns:Fibre type.
 ..remarks:Some containers, such as @Spec.FMIndex@, can be seen as a bundle consisting of various fibres. Because not 
 every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables. The 

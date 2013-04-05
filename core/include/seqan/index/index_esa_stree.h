@@ -196,7 +196,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ..param.index:An index object.
 ..param.iterator:Another TopDownHistory iterator. (copy constructor)
 ...type:Spec.TopDownHistory Iterator
-..remarks:If not copy-constructed the @Spec.Spec.TopDownHistory@ starts in the root node of the suffix tree.
+..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the suffix tree.
 ..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 */
 

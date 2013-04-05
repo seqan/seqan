@@ -155,20 +155,20 @@ struct ImplMapValue_<Nothing>
 ...type:Class.Map
 ..param.key:A key.
 ...metafunction:Metafunction.Key
-..returns:If $map$ is a set: The same as @Function.map#hasKey.hasKey(map, key)@.
-...text:If $map$ is a dictionary: The same as @Function.map#value.value(map, key)@.
+..returns:If $map$ is a set: The same as @Function.Map#hasKey@.
+...text:If $map$ is a dictionary: The same as @Function.Map#value@.
 ...metafunction:Metafunction.MapValue
-..remarks: Usually, @Function.map#value@ implements the subscript operator $[ ]$, but for maps, 
+..remarks: Usually, @Function.Map#value@ implements the subscript operator $[ ]$, but for maps, 
 this operator is implemented in $mapValue$. 
 The semantic of this operator depends on the kind of map: If the map has a @Metafunction.Cargo.cargo@, 
 than $mapValue(map, key)$ returns the cargo of the (first) value in the map of the given key.
 If the map has no @Metafunction.Cargo.cargo@, than the function returns a $true$, if $key$ is in $map$, or $false$ otherwise.
 ...note:There is no way to create a set of @Class.Pair@, since it is always interpreted as a key/value pair.
 If you need a key type that holds two members, define your own key type.
-..remarks:You may overload @Function.key@ and @Function.cargo@ for your own value type in order to define, what part of your value type is used as key and what as cargo.
-..see:Function.map#value
-..see:Function.map#cargo
-..see:Function.map#hasKey
+..remarks:You may overload @Metafunction.Key@ and @Metafunction.Cargo@ for your own value type in order to define, what part of your value type is used as key and what as cargo.
+..see:Function.Map#value
+..see:Function.Map#cargo
+..see:Function.Map#hasKey
 ..include:seqan/map.h
 */
 

@@ -766,7 +766,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..param.index:The index to return the number of sequences of.
 ...type:Class.Index
 ..returns:The number of sequences in the index' underlying text.
-...metafunction:Size
+...metafunction:Metafunction.Size
 ..include:seqan/index.h
  */
 

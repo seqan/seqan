@@ -57,7 +57,6 @@ namespace seqan {
 ..value.MAP_SEQUENTIAL:The address range will be accessed sequentially.
 ..value.MAP_WILLNEED:The address range in the advise will be needed in the future.
 ..value.MAP_DONTNEED:The address range in the advise will not be needed any more.
-..see:Function.adviseFileSegment
 ..include:seqan/file.h
  */
 
@@ -94,7 +93,7 @@ enum FileMappingAdvise {
 /**
 .Class.FileMapping:
 ..cat:File
-..summary:A structure used by a @Class.FilePager@ to represent a file and its memory mapping.
+..summary:A structure to represent a file and its memory mapping.
 ..signature:FileMapping<TFile>
 ..param.TFile:The file type.
 ..include:seqan/file.h

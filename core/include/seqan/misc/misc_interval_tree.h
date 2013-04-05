@@ -865,7 +865,6 @@ struct ListType<IntervalTreeNode<TInterval,StoreIntervals> >
 ..param.g:DirectedGraph to create interval tree in.
 ...type:Class.Graph
 ..param.pm:Property map to use for the created interval tree.
-...type:Class.PropertyMap
 ..param.intervals:Container of intervals.
 ...type:Spec.Alloc String
 ...remarks:A string of $IntervalAndCargo<TValue, TCargo>$ objects, see @Class.IntervalAndCargo@.

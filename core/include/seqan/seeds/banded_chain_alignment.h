@@ -88,8 +88,8 @@ and the container has to implement a forward-iterator.
 ...see:Class.SeedSet
 ..param.scoringScheme1:The scoring scheme used for the alignment.
 ...remarks:If $scoringScheme2$ is specified, then $scoringScheme1$ is used for the regions around the seeds
-...type:Class.Score
 and $scoringScheme2$ for the gap regions between two consecutive seeds.
+...type:Class.Score
 ..param.scoringScheme2:The optional scoring scheme for the gap regions between two anchors.
 ...type:Class.Score
 ..param.alignConfig:The @Class.AlignConfig@ to use for the alignment.

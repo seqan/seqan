@@ -64,7 +64,7 @@ typedef Tag<FibreRankDictionary_> const FibreRankDictionary;
 // Metafunctions
 // ==========================================================================
 /**
-.Spec.WaveletTree Fibres
+.Tag.WaveletTree Fibres
 ..summary:Tag to select a specific fibre (e.g. table, object, ...) of a @Spec.WaveletTree@.
 ..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a @Spec.WaveletTree@.
 ..cat:Spec.WaveletTree
@@ -282,7 +282,6 @@ inline void clear(RankDictionary<WaveletTree<TValue> > & dictionary)
 ..param.dictionary:The rank dictionary to be checked.
 ...type:Class.RankDictionary
 ..returns:$true$ if the dictionary is empty, $false$ otherwise.
-...type:$bool$
 ..include:seqan/index.h
 */
 
@@ -369,7 +368,7 @@ getValue(RankDictionary<WaveletTree<TValue> > const & tree, TPos pos)
 ..param.dictionary:The dictionary holding the fibre.
 ...type:Class.RankDictionary
 ..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Spec.WaveletTree Fibres
+...type:Tag.WaveletTree Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
 */
@@ -416,7 +415,7 @@ getFibre(RankDictionary<WaveletTree<TValue> > const & dictionary, const FibreTre
 ..param.character:The character of interest.
 ..param.pos:The position (which is also included in the rank computation).
 ..returns:The rank (number of occurrences) of a specified character up to a specified position. 
-...type:$unsigned$
+...type:nolink:$unsigned$
 ..include:seqan/index.h
 */
 

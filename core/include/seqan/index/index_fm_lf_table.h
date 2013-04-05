@@ -217,7 +217,7 @@ inline void clear(LfTable<TOccTable, TPrefixSumTable> & lfTable)
 ..param.lfTable:The LF table to be cleared.
 ...type:Class.LfTable
 ..returns:$true$ if the LF table is empty, $false$ otherwise.
-...type:$bool$
+...type:nolink:$bool$
 ..include:seqan/index.h
 */
 
@@ -241,7 +241,6 @@ inline bool empty(LfTable<TOccTable, TPrefixSumTable> & lfTable)
 ..param.text:The underlying text
 ...type:Class.String
 ..returns:$true$ on successes, $false$ otherwise.
-...type:$bool$
 ..include:seqan/index.h
 */
 
@@ -338,7 +337,6 @@ the sorted cyclic rotations of the original text, while F correspond to the firs
 ...type:Class.LfTable
 ..param.pos:The position in L
 ..returns:Returns the position of the character L[c] in F. The returned position is of the same type as pos.
-...type:Type of pos.
 ..include:seqan/index.h
 */
 
@@ -370,7 +368,7 @@ inline TPos lfMapping(TLfTable & lfTable,
 ...remarks:To append a file if existing add $OPEN_APPEND$.
 ...remarks:To circumvent problems, files are always opened in binary mode.
 ...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
+..returns:A nolink:$bool$ which is $true$ on success.
 ..include:seqan/index.h
 */
 
@@ -413,7 +411,7 @@ inline bool open(
 ...remarks:To append a file if existing add $OPEN_APPEND$.
 ...remarks:To circumvent problems, files are always opened in binary mode.
 ...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
+..returns:A nolink:$bool$ which is $true$ on success.
 ..include:seqan/index.h
 */
 
