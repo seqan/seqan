@@ -790,7 +790,7 @@ stringToStringSet(StringSet<TString> & stringSet, TString const & sequence)
     stringSet[0] = sequence;
 }
 
-void
+inline void
 stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & sequence)
 {
     typedef Iterator<String<Dna5> const, Rooted>::Type  TIterator;
@@ -863,7 +863,7 @@ std::cout<<sequenceMaskedPartsRemoved<<"\n";
 // "TTTCCGAAAAGGTAGCAACTTTACGTGATCAAAGTTTTCCCCGTCGAAATTGGGTG"
 */
 
-void
+inline void
 cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)
 {
     typedef Iterator<String<Dna5> const, Rooted>::Type  TIterator;

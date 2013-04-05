@@ -48,7 +48,7 @@ namespace seqan {
  * This function returns a string with indices indicating which k-mer is the
  * reverse complement k-mer: i=revComIndex[revComIndex[i]]
  */
-void _initialiseRevComIndex(String<unsigned> & revComIndex, unsigned const k)
+inline void _initialiseRevComIndex(String<unsigned> & revComIndex, unsigned const k)
 {
     unsigned myLength = (unsigned)pow(4.0, (int)k);
     resize(revComIndex, myLength, 0);
@@ -70,7 +70,7 @@ void _initialiseRevComIndex(String<unsigned> & revComIndex, unsigned const k)
  * k-mers belong to the word neighbourhood for every k-mer (all k-mers with
  * one mismatch)
  */
-void _initialiseKmerNeighbourhood(StringSet<String<unsigned> > & kmerNeighbourhood,
+inline void _initialiseKmerNeighbourhood(StringSet<String<unsigned> > & kmerNeighbourhood,
                                   unsigned const k, bool const revCom,
                                   String<unsigned> const & revComIndex)
 {
