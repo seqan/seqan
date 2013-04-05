@@ -143,7 +143,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(record.tagValue[0], "exon00001");
     SEQAN_ASSERT_EQ(record.tagName[1], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
-    SEQAN_ASSERT_EQ(length(nameStore), 2u);
+    SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
     seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
     SEQAN_ASSERT_EQ(record.seqID, "ctg123");
@@ -160,7 +160,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "");
     SEQAN_ASSERT_EQ(record.tagName[2], "Parent");
     SEQAN_ASSERT_EQ(record.tagValue[2], "mrna0001");
-    SEQAN_ASSERT_EQ(length(nameStore), 3u);
+    SEQAN_ASSERT_EQ(length(nameStore), 1u);
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_gff)
