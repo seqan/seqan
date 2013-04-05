@@ -174,7 +174,7 @@ refresh(NameStoreCache<TNameStore, TName> &cache)
 
 /**
 .Function.getIdByName:
-..summary:Appends a name to a name store.
+..summary:Get the id/index of a string in a name store with a cache.
 ..cat:Fragment Store
 ..signature:getIdByName(nameStore, name, id[, cache])
 ..param.nameStore:A name store, e.g. @Memvar.FragmentStore#readNameStore@
