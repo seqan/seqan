@@ -6,7 +6,7 @@ Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Author: René Rahn <rene.rahn@fu-berlin.de>
 Maintainer: René Rahn <rene.rahn@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2012, Knut Reinert, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: mature
 Description: Alignment data structures.
  Definition of alignment data structures and pairwise DP alignment

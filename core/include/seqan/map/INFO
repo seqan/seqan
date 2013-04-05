@@ -1,7 +1,7 @@
 Name: seqan-map
 Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2011, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: mature, known issues
 Description: Map class and specializations.
  Contains implementations for associative arrays/mappings.

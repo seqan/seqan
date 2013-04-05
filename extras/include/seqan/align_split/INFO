@@ -2,7 +2,7 @@ Name: align_split
 Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2013, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: under development
 Description: Dynamic programming based split alignment.
  This module contains the implementation of the splitAlignment() function.

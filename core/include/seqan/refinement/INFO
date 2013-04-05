@@ -3,6 +3,6 @@ Author: Tobias Rausch <rausch@embl.de>
 Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
 Maintainer: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2011, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: mature
 Description: Segment match refinement implementation.

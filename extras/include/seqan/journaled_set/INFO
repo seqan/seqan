@@ -2,7 +2,7 @@ Name: journaled_set
 Author: Rene Rahn <rene.rahn@fu-berlin.de>
 Maintainer: Rene Rahn <rene.rahn@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2012, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: under development
 Description: One-line description for module journaled_set.
  This is the long text description for the module.  You should wrap text to 78

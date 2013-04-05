@@ -2,7 +2,7 @@ Name: seq_io
 Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2012, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: new
 Description: Sequence I/O Interface
  This module contains I/O code for accessing sequence files such as FASTA

@@ -2,6 +2,6 @@ Name: seqan-find_motif
 Author: Ji-Hyun Lim <jhlim@inf.fu-berlin.de>
 Maintainer: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2011, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: known issues
 Description: Motif finding algorithms.

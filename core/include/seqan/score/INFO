@@ -3,7 +3,7 @@ Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: BSD 3-clause
-Copyright: 2008-2011, FU Berlin
+Copyright: 2006-2013, FU Berlin
 Status: mature
 Description: Alignment score related code.
  This module contains the Score class and specializations for edit distance

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                  test_alignment_dp_adapt_tracesegments.h
 // ==========================================================================
-// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
