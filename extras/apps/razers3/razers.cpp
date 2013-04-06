@@ -422,7 +422,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     setMinValue(parser, "taboo-length", "1");
     setDefaultValue(parser, "taboo-length", options.tabooLength);
     addOption(parser, ArgParseOption("s", "shape", "Manually set k-mer shape.", ArgParseOption::STRING, "BITSTRING"));
-    setDefaultValue(parser, "shape", options.shape);
+//    setDefaultValue(parser, "shape", options.shape);  // <-- doesn't work with KNIME which always sets default values
     addOption(parser, ArgParseOption("oc", "overabundance-cut", "Set k-mer overabundance cut ratio.", ArgParseOption::INTEGER));
     setMinValue(parser, "overabundance-cut", "0");
     setMaxValue(parser, "overabundance-cut", "1");
