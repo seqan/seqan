@@ -346,8 +346,6 @@ class Request(object):
         if not scheme in SCHEMAS:
             raise InvalidSchema("Invalid scheme %r" % scheme)
 
-        netloc = netloc.encode('idna').decode('utf-8')
-
         if not path:
             path = '/'
 

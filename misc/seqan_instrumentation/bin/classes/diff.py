@@ -4,10 +4,11 @@ import glob
 from datetime import datetime
 import socket
 import requests
+import re # regular expressions
+import zipfile
+import hashlib
 
 class Diff(object):
-	MAX_REVISION_LENGTH = 8
-        
 	def __init__(self, bin_dir, results_dir, root_dir, from_dir_local, to_dir_local, id, excluded_resources):
 		self.results_dir = results_dir
 		self.root_dir = root_dir
@@ -26,48 +27,52 @@ class Diff(object):
 		minutes = (abs(offset)%3600)/60
 		return ("+" if offset >= 0 else "-") + str(hours).rjust(2, "0") + str(minutes).rjust(2, "0")
 
-	def get_diff_filename(self, revision, datetime):
-		return self.results_dir + "/" + self.id.get() + "_r" + str.rjust(str(revision), self.MAX_REVISION_LENGTH, "0") + "_" + datetime.strftime("%Y-%m-%dT%H-%M-%S") + self.get_timezone_string() + ".diff"
+	def get_diff_filename(self, datetime):
+		root_dir_hash = hashlib.md5(self.root_dir).hexdigest()[:4]
+		return self.results_dir + "/" + self.id.get() + "_" + root_dir_hash + "_" + datetime.strftime("%Y-%m-%dT%H-%M-%S.%f") + self.get_timezone_string() + ".diff.zip"
 	
-	def get_diff_filenames(self):
-		return glob.glob(self.results_dir + "/" + self.id.get() + "_r*_*.diff")
-
-	def get_next_diff_filename(self):
-		r = len(self.get_diff_filenames())
-		if(r >= 10**self.MAX_REVISION_LENGTH):
-			raise Exception("Maximum number of " + (10**self.MAX_REVISION_LENGTH) + " exceeded!")
-		return self.get_diff_filename(r, datetime.today())
-
-	def save_diff_reset(self, filename):
-		f = open(filename, "w")
-		f.write("RESET\n")
-		f.close()
-
 	def save_diff(self, filename):
+		# old parameters (to create a huge textual diff file: "-a", "-u", "-r", "-N"
 		if(os.name == "nt"):
-			p = subprocess.Popen([self.bin_dir + "/diffutils/bin/diff.exe", "-u", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir)
+			p = subprocess.Popen([self.bin_dir + "/diffutils/bin/diff.exe", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir)
 		else:
-			p = subprocess.Popen(["diff", "-u", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir)	
-		f = open(filename, "wb")
+			p = subprocess.Popen(["diff", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir)	
 		output = p.communicate()[0]
-		f.write(output)
-		f.close()
+		
+		zipFile = zipfile.ZipFile(filename, "w")
+		
+		for line in output.split("\n"):
+			match = re.search(" and \\.(.*) differ", line)
+			if(match and match.groups > 0):
+				currentFile = self.root_dir + match.group(1);
+				oldFile = self.root_dir + self.from_dir_local + match.group(1);
+				if(os.path.isfile(currentFile)):
+					zipFile.write(currentFile, match.group(1), zipfile.ZIP_STORED)
+
+				#else:
+					# currentFile does not exist anymore
+					# ignore, since the old revision was already saved
+					
+		zipFile.close()
 
 	def sync(self, url):
 		# get remote file list
 		remote_files = []
 		
+		readFileListUrl = url + "/" + self.id.get()
 		try:
-			r = requests.get(url + "/" + self.id.get())
+			r = requests.get(readFileListUrl)
 			if(r.status_code != 200):
-				raise Exception;
+				print("Connection to " + readFileListUrl + " failed with status code " + r.status_code + "! Retrying next time.")
+				return
 			remote_files = {}
 			for line in r.text.split("\n"):
 				file = line.strip().split("\t")
 				if(len(file) < 2): continue
 				remote_files[file[0]] = file[1]
-		except Exception:
-			print("Error connecting to " + url + "! Retrying next time.")
+		except Exception as e:
+			print("Connection to " + readFileListUrl + " failed for an unknow reason! Please inform bjoern.kahlert@fu-berlin.de.")
+			print(e)
 			return
 
 		# upload all files that are not present on the ftp server

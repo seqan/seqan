@@ -9,7 +9,7 @@ import os
 sys.path.append("C:\\Program Files\\CMake 2.8\\bin")
 sys.path.append(os.path.normpath(os.getcwd() + "/../bin"))
 setup(options={
-    "py2exe": { "includes": ["platform", "glob", "shutil", "webbrowser", "cgi", "netrc", "urllib2", "Queue", "decimal", "os"], "skip_archive": True, "bundle_files": 3 } },
+    "py2exe": { "includes": ["platform", "glob", "shutil", "webbrowser", "cgi", "netrc", "urllib2", "Queue", "decimal", "os", "hashlib"], "skip_archive": True, "bundle_files": 3 } },
     data_files=[
         ("Microsoft.VC90.CRT", glob(r'.\Microsoft.VC90.CRT\*.*')),
         ("classes", glob(r'..\bin\classes\*.*')),

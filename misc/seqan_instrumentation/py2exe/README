@@ -1,0 +1,45 @@
+This py2exe copy creates a windows application that wraps
+Python 2.7 + the SeqAn Usability Analyzer Data Collection.
+
+To create a fresh exe you need to do the following steps:
+1) Install Python 2.7.3 to the default path
+2) Install CMake
+3) Install py2exe to the default path
+4) Run setup.bat
+5) TEST!
+
+Very important:
+The used module "requests" has support for IDNA.
+Python's IDNA implementation itself has a dependency to the
+stringprep lib.
+
+If you included encodings.idna and you run the created windows binary you 
+get the following error:
+
+------------------------------------------------------------------------------------
+
+-- Prepare SeqAn Usability Analyzer data collection...
+Traceback (most recent call last):
+  File "seqan_instrumentation.py", line 6, in <module>
+  File "bkahlert.pyc", line 8, in <module>
+
+  File "Z:\Dropbox\Development\seqan-workspace\seqan-trunk\misc\seqan_instrument
+ation\py2exe\dist\.\classes\diff.py", line 10, in <module>
+    import encodings.idna
+  File "encodings\idna.pyc", line 3, in <module>
+  File "stringprep.pyc", line 8, in <module>
+    ☻6dß
+ImportError: DLL load failed: The specified procedure could not be found.
+
+------------------------------------------------------------------------------------
+
+I didn't know how to solve this problem.
+In modely.py line 349 the IDNA-needing call can be found.
+I removed the line:
+        netloc = netloc.encode('idna').decode('utf-8')
+        
+Since I don't need IDNA (international dns names) support I just removed the
+additional encoding.
+
+SO IF YOU EVER UPDATE THE "REQUESTS" MODULE
+PLEASE SOLVE THE ISSUE OR RE-APPLY THE ABOVE MENTIONED CHANGE.
