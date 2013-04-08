@@ -10,7 +10,7 @@ int main()
     seqan::String<char> pattern = "tutorial";
 
     seqan::String<int> score;
-    resize(score, seqan::length(text));
+    resize(score, seqan::length(text) - seqan::length(pattern) + 1);
 
     // Computation of the similarities
     // Iteration over the text (outer loop)
