@@ -73,7 +73,7 @@ _adaptTraceSegmentsTo(String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec
     typedef typename JournalType<TJournalString>::Type TJournalEntries;
     typedef typename Value<TJournalEntries>::Type TJournalEntry;
 
-    typedef typename Position<TReference>::Type TPhysicalPosition;
+//    typedef typename Position<TReference>::Type TPhysicalPosition;
     typedef typename Position<TSource>::Type TVirtualPosition;
 
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;

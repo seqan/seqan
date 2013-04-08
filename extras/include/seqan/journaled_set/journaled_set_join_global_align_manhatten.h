@@ -66,7 +66,7 @@ _joinInternal(String <TValue, THostSpec> const & reference,
 
     typedef String <TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
     typedef typename TJournalString::TJournalEntry TJounralEntry;
-    typedef typename Size<TJournalString>::Type TSize;
+//    typedef typename Size<TJournalString>::Type TSize;
 
     JournalTraceBuffer<TJournalString> traceDescriptor;
     std::stringstream stream;

@@ -67,7 +67,7 @@ _joinInternal(String <TValue, THostSpec> const & reference,
 {
 
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-    typedef typename Size<TJournalString>::Type TSize;
+//    typedef typename Size<TJournalString>::Type TSize;
 
     // TODO(rmaerker): Check the correct behavior here.
     TJournalString tmpJournal;
