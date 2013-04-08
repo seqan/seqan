@@ -410,6 +410,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
     String<char> goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/gff_io/example_gtf_context.tsv");
 
+    std::cerr << toCString(outPath) << std::endl;
+
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
 }
 

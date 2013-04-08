@@ -606,7 +606,7 @@ _writeSemicolonSensitive(TTargetStream & target, TString & temp)
 
 template <typename TStream>
 inline int
-_writeAttributes(TStream & stream, GffRecord & record, Gff /*tag*/)
+_writeAttributes(TStream & stream, GffRecord const & record, Gff /*tag*/)
 {
     unsigned i = 0;
     for (; i < length(record.tagName) - 1; ++i)
@@ -645,7 +645,7 @@ _writeAttributes(TStream & stream, GffRecord & record, Gff /*tag*/)
 
 template <typename TStream>
 inline int
-_writeAttributes(TStream & stream, GffRecord & record, Gtf /*tag*/)
+_writeAttributes(TStream & stream, GffRecord const & record, Gtf /*tag*/)
 {
     unsigned i = 0;
     for (; i < length(record.tagName) - 1; ++i)
@@ -688,16 +688,16 @@ _writeAttributes(TStream & stream, GffRecord & record, Gtf /*tag*/)
     return 0;
 }
 
-template <typename TStream, typename TTag>
+template <typename TStream, typename TSeqId, typename TTag>
 inline int
-writeRecord(TStream & stream, GffRecord & record, TTag const tag)
+_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & seqID, TTag const tag)
 {
     // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
-    if (empty(record.seqID))
+    if (empty(seqID))
         return 0;
 
     // write column 1: seqid
-    if (streamWriteBlock(stream, &record.seqID[0], length(record.seqID)) != length(record.seqID))
+    if (streamWriteBlock(stream, &seqID[0], length(seqID)) != length(seqID))
         return 1;
 
     if (streamWriteChar(stream, '\t'))
@@ -793,15 +793,23 @@ writeRecord(TStream & stream, GffRecord & record, TTag const tag)
     return 0;
 }
 
+template <typename TStream, typename TTag>
+inline int
+writeRecord(TStream & stream, GffRecord const & record, TTag const tag)
+{
+    return _writeRecordImpl(stream, record, record.seqID, tag);
+}
+
 template <typename TStream, typename TContextSpec, typename TContextSpec2, typename TTag>
 inline int
-writeRecord(TStream & stream, GffRecord & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
+writeRecord(TStream & stream, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
 {
     if (record.seqIdx != GffRecord::INVALID_IDX)
     {
-        record.seqID = nameStore(context)[record.seqIdx];
+        String<char> tempSeqId = nameStore(context)[record.seqIdx];
+        return _writeRecordImpl(stream, record, tempSeqId, tag);
     }
-    return writeRecord(stream, record, tag);
+    return _writeRecordImpl(stream, record, record.seqID, tag);
 }
 
 }  // namespace seqan
