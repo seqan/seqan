@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Build the SeqAn Releases Website."""
 
+import operator
 import optparse
 import os
 import os.path
@@ -65,7 +66,12 @@ class PackageDatabase(object):
         self.softwares = {}
 
     def load(self):
-        xs = os.listdir(self.path)
+        # Two craw directory structure by two levels.
+        xs = []
+        for x in os.listdir(self.path):
+            if os.path.isdir(os.path.join(self.path, x)):
+                for y in os.listdir(os.path.join(self.path, x)):
+                    xs.append(y)
         for x in xs:
             if re.match(LIBRARY_PATTERN, x):
                 major, minor, patch, suffix = re.match(LIBRARY_PATTERN, x).groups()

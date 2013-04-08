@@ -103,7 +103,7 @@ class BuildStep(object):
     def buildNeeded(self):
         """Returns whether one of the package files is missing."""
         for p in self.packages:
-            package_path = os.path.join(self.base_path, p.fileName())
+            package_path = os.path.join(self.base_path, p.name, p.fileName())
             if 'x86' in package_path and 'x86_64' not in package_path:  # fix processor name
                 package_path = package_path.replace('x86', 'x86_64')
             if 'win32' in package_path or 'win64' in package_path:  # fix OS name
@@ -123,7 +123,9 @@ class BuildStep(object):
         for p in self.packages:
             from_ = os.path.join(build_dir, p.fileName())
             if os.path.exists(from_):
-                to = os.path.join(self.base_path, os.path.basename(from_))
+                to = os.path.join(self.base_path, p.name, os.path.basename(from_))
+                if not os.path.exists(os.path.dirname(to)):  # Create directory if necessary.
+                    os.makedirs(os.path.dirname(to))
                 print >>sys.stderr, "Copying %s => %s" % (from_, to)
                 if 'x86' in to and 'x86_64' not in to:  # fix processor name
                     to = to.replace('x86', 'x86_64')

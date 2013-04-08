@@ -4,7 +4,7 @@
     32 bit:#!
     <!--(for f in FORMATS)-->#!
       <!--(if packages.archs['i686'].files.get(f))-->#!
-      <a href="@!packages.archs['i686'].files[f]!@">@!f!@</a>#!
+      <a href="@!prefix!@/@!packages.archs['i686'].files[f]!@">@!f!@</a>#!
       <!--(end)-->#!
     <!--(end)-->#!
   <!--(end)-->
@@ -13,7 +13,7 @@
     64 bit:#!
     <!--(for f in FORMATS)-->#!
       <!--(if packages.archs['x86_64'].files.get(f))-->#!
-      <a href="@!packages.archs['x86_64'].files[f]!@">@!f!@</a>#!
+      <a href="@!prefix!@/@!packages.archs['x86_64'].files[f]!@">@!f!@</a>#!
       <!--(end)-->#!
     <!--(end)-->#!
   <!--(else)-->
@@ -73,9 +73,9 @@
       <!--(for version in seqan_apps.versions.values())-->
       <tr>
         <td>@!version.version!@</td>
-        @!packages_cell(packages=version.packages['Linux'])!@
-        @!packages_cell(packages=version.packages['Mac'])!@
-        @!packages_cell(packages=version.packages['Windows'])!@
+        @!packages_cell(prefix=software.name, packages=version.packages['Linux'])!@
+        @!packages_cell(prefix=software.name, packages=version.packages['Mac'])!@
+        @!packages_cell(prefix=software.name, packages=version.packages['Windows'])!@
       </tr>
       <!--(end)-->
     </table>
@@ -99,9 +99,9 @@
         <!--(for version in software.versions.values())-->
           <tr>
             <td>@!version.version!@</td>
-            @!packages_cell(packages=version.packages['Linux'])!@
-            @!packages_cell(packages=version.packages['Mac'])!@
-            @!packages_cell(packages=version.packages['Windows'])!@
+            @!packages_cell(prefix=software.name, packages=version.packages['Linux'])!@
+            @!packages_cell(prefix=software.name, packages=version.packages['Mac'])!@
+            @!packages_cell(prefix=software.name, packages=version.packages['Windows'])!@
           </tr>
         <!--(end)-->
       </table>
