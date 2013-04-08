@@ -7,6 +7,7 @@ import os
 import os.path
 import re
 import sys
+import xml.sax.saxutils
 
 import pyratemp
 
@@ -29,6 +30,11 @@ FORMATS = ['tar.gz', 'tar.bz2', 'zip', 'exe']
 # Path to template.
 TPL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         'release_page.html')
+PACKAGE_TPL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                'one_package.html')
+# Base URL for links.
+BASE_URL='http://packages.seqan.de'
+
 
 class Arch(object):
     def __init__(self, name):
@@ -113,13 +119,73 @@ class PackageDatabase(object):
                 pass
 
 
+class RssItem(object):
+    """One RSS item."""
+    def __init__(self, title, description, link):
+        self.title = title
+        self.description = description
+        self.link = link
+
+    def generate(self):
+        tpl = ('<item>\n'
+               '  <title>%s</title>\n'
+               '  <description>%s</description>\n'
+               '  <link>%s</link>\n'
+               '</item>\n')
+        return tpl % (self.title, self.description, self.link)
+
+
+class RssFeed(object):
+    """Feed with one channel."""
+
+    def __init__(self, title, description, link):
+        self.title = title
+        self.description = description
+        self.link = link
+        self.items = []
+
+    def generate(self):
+        tpl = ('<?xml version="1.0" encoding="UTF-8" ?>\n'
+               '<rss version="2.0">\n'
+               '  <title>%s</title>\n'
+               '  <description>%s</description>\n'
+               '\n'
+               '%s'
+               '</rss>\n')
+        items_s = '\n'.join([i.generate() for i in self.items])
+        return tpl % (self.title, self.description, items_s)
+
+
+class RssWriter(object):
+    """Writing of RSS files for a PackageDB."""
+
+    def __init__(self, out_dir, package_db, base_url):
+        self.out_dir = out_dir
+        self.package_db = package_db
+        self.base_url = base_url
+
+    def generate(self):
+        """Create output RSS files."""
+        for sname, software in self.package_db.softwares.items():
+            feed = RssFeed(sname, '', '')
+            for vname, version in software.versions.items():
+                description = 'Version %s of %s.' % (vname, sname)
+                link = '%s/%s#%s' % (self.base_url, sname, vname)
+                item = RssItem('%s %s' % (sname, vname), description, link)
+                feed.items.append(item)
+            path = os.path.join(self.out_dir, sname, 'package.rss')
+            print >>sys.stderr, 'Writing %s' % path
+            with open(path, 'wb') as f:
+                f.write(feed.generate())
+
+
 def work(options):
     print >>sys.stderr, 'Generating Release Site.'
     print >>sys.stderr, 'Package Dir: %s' % (options.package_db,)
     print >>sys.stderr, 'Out file: %s' % (options.out_file,)
     db = PackageDatabase(options.package_db)
     db.load()
-    # Load template.
+    # Load and render overview template.
     tpl = pyratemp.Template(filename=TPL_PATH)
     with open(options.out_file, 'wb') as f:
         f.write(tpl(FORMATS=FORMATS,
@@ -127,6 +193,19 @@ def work(options):
                     seqan_library=db.seqan_library,
                     softwares=db.softwares,
                     sorted=sorted))
+    # Load and render package template.
+    tpl = pyratemp.Template(filename=PACKAGE_TPL_PATH)
+    for sname, software in db.softwares.items():
+        out_path = os.path.join(options.package_db, sname, 'index.html')
+        print >>sys.stderr, 'Writing %s.' % out_path
+        with open(out_path, 'wb') as f:
+            f.write(tpl(FORMATS=FORMATS,
+                        software=software,
+                        sorted=sorted))
+    # Write out RSS feeds for the packages.
+    rss_writer = RssWriter(options.package_db, db, options.base_url)
+    rss_writer.generate()
+
 
 def main():
     parser = optparse.OptionParser()
@@ -134,6 +213,8 @@ def main():
                       help='Path to directory with package files.')
     parser.add_option('-o', '--out-file', dest='out_file',
                       help='Path to the HTML file to generate.')
+    parser.add_option('-b', '--base-url', dest='base_url',
+                      help='Base URL.', default=BASE_URL)
 
     options, args = parser.parse_args()
     if args:
@@ -145,5 +226,5 @@ def main():
     if not options.out_file:
         parser.error('Option --out-file/-o is required!')
         return 1
-    
+
     return work(options)
