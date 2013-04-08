@@ -362,7 +362,7 @@ def translateLinkDisplaytext(text):
 ################################################################################
 
 
-def translateLink(text, attribs = "", line=None):
+def translateLink(text, attribs = "", line=None, cat=False):
     global globalDocsPath
     
     pos = text.find(':')
@@ -390,7 +390,7 @@ def translateLink(text, attribs = "", line=None):
 
     #no link    
     if (protocol == 'nolink'):
-        return translateID(rest)
+        return translateID(rest, cat=cat)
 
     arr = dddoc.splitName(text)
     if len(arr) == 0: return brokenLink(text, line=line)
@@ -423,7 +423,7 @@ def translateLink(text, attribs = "", line=None):
     if len(summary) > 0:
         summary = 'title="' + summary + '"'
     
-    return '<a href="' + href + '" ' + summary + ' ' + attribs + '>' + translateID(arr[len(arr) - 1]) + '</a>'
+    return '<a href="' + href + '" ' + summary + ' ' + attribs + '>' + translateID(arr[len(arr) - 1], cat=cat) + '</a>'
 
 
 ################################################################################
@@ -454,10 +454,13 @@ def translateImage(text):
 
 ################################################################################
     
-def translateID(text, line=None):
+def translateID(text, line=None, cat=False):
     i = text.find('#');
     if (i >= 0):
-        text = text[i + 1:]
+        if cat:
+            text = '%s (%s)' % (text[i + 1:], text[:i])
+        else:
+            text = text[i + 1:]
     i = text.find('|');
     if (i >= 0):
         text = text[i + 1:]
@@ -495,10 +498,10 @@ def getPageTitle(data):
 	
 ################################################################################
 	
-def getCategoryTitle(cat):
+def getCategoryTitle(cat, show_cat=False):
 	s = dddoc.DATA["Indexpage"][cat]["title"].text()
 	if (s == ''): 
-		return translateID(dddoc.DATA["globals.indexes"][cat].text())
+		return translateID(dddoc.DATA["globals.indexes"][cat].text(), cat=show_cat)
 	else:
 		return s
 
@@ -543,7 +546,7 @@ def pageIndexPrintMembers(fl, data):
     for entr in entrs:
         links = data[entr]
         for link in links:
-            fl.write('<div class=index_item>' + translateLink(link, "target=_top") + '</div>')
+            fl.write('<div class=index_item>' + translateLink(link, "target=_top", cat=True) + '</div>')
 
 ################################################################################
 
@@ -667,7 +670,7 @@ def addIndexPageMembers(data, key, entries, subcat):
         entries[subcat] = {}
         
     s = '<tr><td class=value_key valign=top><nobr>'
-    s += '<a href="' + getFilename(data.name(0), key) + '">' + translateID(key) + '</a>'
+    s += '<a href="' + getFilename(data.name(0), key) + '">' + translateID(key, cat=True) + '</a>'
     s += '</nobr></td><td class=value_text valign=top>'
 
     summary = translateText(data[key]["summary"].text())
@@ -1684,7 +1687,7 @@ def pushSearchResult(db, title, cat, name):
             summary = 'title="' + summary + '"'
         
         link = 'href="' + href + '" ' + summary + '>'
-        key = translateID(name)
+        key = translateID(name, cat=True)
         text =  '(' + cat + ')'
 
     if not db.has_key(title): db[title] = []
