@@ -29,12 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_IMPL_ALIGN_ADAPT_H
-#define SEQAN_HEADER_GRAPH_IMPL_ALIGN_ADAPT_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_ADAPT_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_ADAPT_H_
 
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 // Adaptations so that the alignment graph works like any other graph
@@ -419,6 +421,6 @@ _writeEdgeType(TFile & file,
     streamPut(file, " -- ");
 }
 
-}  // namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_ADAPT_H_

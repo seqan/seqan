@@ -29,16 +29,16 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-
-#ifndef SEQAN_HEADER_GRAPH_REFINE_ANNOTATION_H
-#define SEQAN_HEADER_GRAPH_REFINE_ANNOTATION_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
 
 //SEQAN_NO_DDDOC: do not generate documentation for this file
 
-
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 
 template<typename TSequence, typename TValue, typename TSpec = Simple>
@@ -55,7 +55,7 @@ class Annotation;
 ..param.TLabel:The label type (e.g. int or String<char>)
 ..param.TSpec:The specializing type.
 ...default:Simple
-..include:refinement.h
+..include:graph_align.h
 */
 template<typename TSequence,typename TValue>
 class Annotation<TSequence,TValue,Simple>{
@@ -323,7 +323,7 @@ SEQAN_CHECKPOINT
 ..param.annotation:Sequence annotation data. 
 ...remarks: Additional semgent match subdivisions will be made at sequence positions at which the annotation label changes.
 ...type:Class.Annotation
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //annotation given,exact refinement, score type given
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TAnnoString,typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -343,7 +343,7 @@ SEQAN_CHECKPOINT
 /**
 .Function.matchRefinement:
 ..signature:matchRefinement(matches,annotation,stringSet,scoringScheme,refinedGraph,minFragmentLen)
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //annotation given,score type given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TAnnoString, typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -367,7 +367,7 @@ SEQAN_CHECKPOINT
 /**
 .Function.matchRefinement:
 ..signature:matchRefinement(matches,annotation,stringSet,refinedGraph,minFragmentLen)
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //annotation given,score type not given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TOutGraph, typename TAnnoString, typename TSequence, typename TSetSpec>
@@ -392,7 +392,7 @@ SEQAN_CHECKPOINT
 /**
 .Function.matchRefinement:
 ..signature:matchRefinement(matches,annotation,stringSet,refinedGraph)
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //annotation given,exact refinement, score type not given
 template<typename TAlignmentString,typename TAnnoString, typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -408,5 +408,6 @@ SEQAN_CHECKPOINT
 	matchRefinement(alis,seq,fake_score,ali_graph,1,anno,ExactRefinement());
 }
 
-}
-#endif //#ifndef SEQAN_HEADER_...
+}  // namespace seqan
+
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_

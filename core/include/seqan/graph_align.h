@@ -29,35 +29,40 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
+// Umbrella header for the moduel graph_align.
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_REFINE_SCORING_H
-#define SEQAN_HEADER_GRAPH_REFINE_SCORING_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_H_
 
+// External STL
+#include <map>
 
-namespace SEQAN_NAMESPACE_MAIN
-{
-
-	
-
-
-
-//fake score function 
-template<typename TScoreValue,typename TStringSet,typename TAlign,typename TValue, typename TSize>
-TScoreValue
-_getRefinedMatchScore(TScoreValue &,
-		 TStringSet &,
-		 TAlign &,
-		 TValue,
-		 TValue,
-		 TSize,
-		 TSize)
-{
-SEQAN_CHECKPOINT
-	return 1;
-}				
+// Seqan
+#include <seqan/score.h>
+#include <seqan/graph_types.h>
+#include <seqan/graph_algorithms.h>
 
 
+// Alignment graph
+#include <seqan/graph_align/graph_impl_align.h>
+#include <seqan/graph_align/graph_impl_align_adapt.h>
 
+// Interval trees
+#include <seqan/misc/misc_interval_tree.h>
 
-}
-#endif //#ifndef SEQAN_HEADER_...
+// Refinement
+//#include <seqan/graph_align/graph_algorithm_refine.h>
+#include <seqan/graph_align/graph_algorithm_refine_scoring.h>
+#include <seqan/graph_align/graph_algorithm_refine_fragment.h>
+#include <seqan/graph_align/graph_algorithm_refine_aligngraph.h>
+#include <seqan/graph_align/graph_algorithm_refine_align.h>
+//#include <seqan/graph_align/graph_algorithm_refine_exact.h>
+#include <seqan/graph_align/graph_algorithm_refine_exact_iterative.h>
+#include <seqan/graph_align/graph_algorithm_refine_inexact.h>
+#include <seqan/graph_align/graph_algorithm_refine_annotation.h>
+
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_H_

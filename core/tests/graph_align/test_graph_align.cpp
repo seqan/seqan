@@ -29,35 +29,48 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Anne-Katrin Emde <emde@fu-berlin.de>
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// ==========================================================================
+// Tests for the SeqAn moduel "graph_align".
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_REFINEMENT_H
-#define SEQAN_HEADER_REFINEMENT_H
+#define SEQAN_DEBUG
 
-// External STL
-#include <map>
+#define SEQAN_VERBOSE
 
-// Seqan
-#include <seqan/score.h>
-#include <seqan/graph_types.h>
-#include <seqan/graph_algorithms.h>
+// Test path
+#define TEST_PATH "projects/tests/graph_align/"
+#define LIB_PATH "core/include/seqan/graph_align/"
+
+// SeqAn Includes
+#include <seqan/graph_align.h>
+#include <seqan/basic.h>
+
+// Test files
+#include "test_graph_impl_align.h"
+#include "test_graph_match_refinement.h"
+
+using namespace seqan;
 
 
-// Alignment graph
-#include <seqan/refinement/graph_impl_align.h>
-#include <seqan/refinement/graph_impl_align_adapt.h>
+//////////////////////////////////////////////////////////////////////////////
 
-// Intervall trees
-#include <seqan/misc/misc_interval_tree.h>
+SEQAN_BEGIN_TESTSUITE(test_graph_align)
+{
+    // Test AlignmentGraph.
+	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights);
+	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphEdgeWeights);
+	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphIterators);
+	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphOutput);
+     SEQAN_CALL_TEST(Test_Refinement_HeaviestCommonSubsequence);
+     SEQAN_CALL_TEST(Test_Refinement_OutEdgeIteratorAlignment);
 
-// Refinement
-//#include <seqan/refinement/graph_algorithm_refine.h>
-#include <seqan/refinement/graph_algorithm_refine_scoring.h>
-#include <seqan/refinement/graph_algorithm_refine_fragment.h>
-#include <seqan/refinement/graph_algorithm_refine_aligngraph.h>
-#include <seqan/refinement/graph_algorithm_refine_align.h>
-//#include <seqan/refinement/graph_algorithm_refine_exact.h>
-#include <seqan/refinement/graph_algorithm_refine_exact_iterative.h>
-#include <seqan/refinement/graph_algorithm_refine_inexact.h>
-#include <seqan/refinement/graph_algorithm_refine_annotation.h>
+    // Test Match Refinement.
+    SEQAN_CALL_TEST(RefineMatchesSelfEdges);
 
-#endif //#ifndef SEQAN_HEADER_...
+    //SEQAN_CALL_TEST(GraphMatchRefine);
+    SEQAN_CALL_TEST(RefineAlign);
+    SEQAN_CALL_TEST(RefineInexactFragment);
+}
+SEQAN_END_TESTSUITE

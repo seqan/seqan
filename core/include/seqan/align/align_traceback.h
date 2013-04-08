@@ -68,7 +68,7 @@ namespace seqan {
 ...text:The @Metafunction.ValueSize@ of $TraceBack$ is 3. 
 The values are defined in the following way: 0=Diagonal Move, 1=Horizontal Move, 2=Vertical Move
 ..see:Metafunction.ValueSize
-..include:seqan/graph_align.h
+..include:seqan/align.h
 */
 
 struct TraceBack_ {};

@@ -37,7 +37,7 @@
 #include <seqan/score.h>
 #include <seqan/graph_types.h>
 #include <seqan/graph_algorithms.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 #include <seqan/align.h>
 
 //MSA

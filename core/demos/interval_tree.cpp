@@ -1,6 +1,6 @@
 ///An example for using interval trees.
 #include <iostream>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 
 using namespace seqan;
 

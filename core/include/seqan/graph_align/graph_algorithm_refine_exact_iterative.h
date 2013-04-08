@@ -29,15 +29,17 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
+// Iterative instead of recursive implementation of segment match refinement.
+// This is required for some large inputs to circumvent stack overflows.
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_REFINE_EXACT_H
-#define SEQAN_HEADER_GRAPH_REFINE_EXACT_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_
 
-
-namespace SEQAN_NAMESPACE_MAIN
-{
-
-
+namespace seqan {
 	
 struct TagExactRefinement_;
 typedef Tag<TagExactRefinement_> const ExactRefinement;
@@ -654,7 +656,7 @@ SEQAN_CHECKPOINT
 edges in the refined Alignment Graph).
 ...remarks:If no scoring scheme is given, all edges get weight 1.
 ...type:Class.Score
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //exact refinement, score type given
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -683,7 +685,7 @@ identical (fully overlapping) or non-overlapping.
 ...type:Class.StringSet
 ..param.refinedGraph:The resulting refined set of matches stored in a graph.
 ...type:Spec.Alignment Graph
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //exact refinement, score type not given
 template<typename TFragmentString, typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -698,6 +700,6 @@ matchRefinement(TFragmentString & matches,
 	matchRefinement(matches,strSet,fake_score,ali_graph,1,anno,ExactRefinement());
 }
 
+}  // namespace seqan
 
-}
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_

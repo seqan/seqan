@@ -29,48 +29,24 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Anne-Katrin Emde <emde@fu-berlin.de>
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-// ==========================================================================
-// Tests for the SeqAn moduel "refinement".
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
 // ==========================================================================
 
-#define SEQAN_DEBUG
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
 
-#define SEQAN_VERBOSE
+namespace seqan {
 
-// Test path
-#define TEST_PATH "projects/tests/refinement/"
-#define LIB_PATH "core/include/seqan/refinement/"
+// Fake score function.
 
-// SeqAn Includes
-#include <seqan/refinement.h>
-#include <seqan/basic.h>
-
-// Test files
-#include "test_graph_impl_align.h"
-#include "test_graph_match_refinement.h"
-
-using namespace seqan;
-
-
-//////////////////////////////////////////////////////////////////////////////
-
-SEQAN_BEGIN_TESTSUITE(test_refinement)
+template<typename TScoreValue,typename TStringSet,typename TAlign,typename TValue, typename TSize>
+TScoreValue
+_getRefinedMatchScore(TScoreValue const &, TStringSet const &, TAlign const &, TValue, TValue, TSize, TSize)
 {
-    // Test AlignmentGraph.
-	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights);
-	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphEdgeWeights);
-	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphIterators);
-	 SEQAN_CALL_TEST(Test_Refinement_AlignmentGraphOutput);
-     SEQAN_CALL_TEST(Test_Refinement_HeaviestCommonSubsequence);
-     SEQAN_CALL_TEST(Test_Refinement_OutEdgeIteratorAlignment);
-
-    // Test Match Refinement.
-    SEQAN_CALL_TEST(RefineMatchesSelfEdges);
-
-    //SEQAN_CALL_TEST(GraphMatchRefine);
-    SEQAN_CALL_TEST(RefineAlign);
-    SEQAN_CALL_TEST(RefineInexactFragment);
+	return 1;
 }
-SEQAN_END_TESTSUITE
+
+}  // namespace seqan
+
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_

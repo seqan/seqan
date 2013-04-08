@@ -29,12 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_IMPL_ALIGN_H
-#define SEQAN_HEADER_GRAPH_IMPL_ALIGN_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_H_
 
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
 // Alignment Graph
@@ -55,7 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
 .Tag.Alignment Graph Format:
 ..cat:Input/Output
 ..summary:A file format to write an alignment graph.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 
 //////////////////////////////////////////////////////////////////////////////
@@ -65,7 +67,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /**
 .Tag.Alignment Graph Format.value.MsfFormat:
 	Msf format to write an alignment graph.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 
 struct MsfFormat_;
@@ -76,7 +78,7 @@ typedef Tag<MsfFormat_> const MsfFormat;
 /**
 .Tag.Alignment Graph Format.value.FastaFormat:
 	Fasta format to write an alignment graph.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 
 struct FastaFormat_;
@@ -87,7 +89,7 @@ typedef Tag<FastaFormat_> const FastaFormat;
 /**
 .Tag.Alignment Graph Format.value.CgVizFormat:
 	Cgviz format to write an alignment graph.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 
 struct CgVizFormat_;
@@ -195,7 +197,7 @@ public:
 ...remarks:Use WithoutEdgeId here to omit edge ids.
 Note: If edges do not store ids external property maps do not work.
 ...default:$Default$, see @Tag.Default@.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TString, typename TSpecial, typename TCargo, typename TSpec>
 class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> > 
@@ -1082,7 +1084,7 @@ write(TFile & file,
 ..param.str:A string set.
 ..see:Function.getStringSet
 ..see:Function.stringSet
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TString, typename TDefault, typename TCargo, typename TSpec, typename TDefault2>
 inline void
@@ -1129,7 +1131,7 @@ assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo
 ..returns:A string set.
 ..see:Function.assignStringSet
 ..see:Function.stringSet
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename Host<Graph<Alignment<TStringSet, TCargo, TSpec> > const>::Type&
@@ -1153,7 +1155,7 @@ getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 ..returns:A reference or temporary of @Class.StringSet.string set@ type.
 ..see:Function.assignStringSet
 ..see:Function.getStringSet
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 
 template <typename T>
@@ -1187,7 +1189,7 @@ stringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 ..param.v:A vertex descriptor.
 ...type:Metafunction.VertexDescriptor
 ..returns:An infix representing the sequence label.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Infix<typename Value<TStringSet>::Type>::Type
@@ -1219,7 +1221,7 @@ label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ..param.v:A vertex descriptor.
 ...type:Metafunction.VertexDescriptor
 ..returns:The sequence id.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Id<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
@@ -1244,7 +1246,7 @@ sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ..param.v:A vertex descriptor.
 ...type:Metafunction.VertexDescriptor
 ..returns:The begin position.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
@@ -1268,7 +1270,7 @@ fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ..param.v:A vertex descriptor.
 ...type:Metafunction.VertexDescriptor
 ..returns:The length of the fragment represented by this vertex descriptor.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
@@ -1292,7 +1294,7 @@ fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ..param.id:A sequence id.
 ..param.pos:A position.
 ..returns:The vertex covering the given position on the specified sequence, $getNil<TVertexDescriptor>()$ if none could be found.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPos> 
 inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
@@ -1423,7 +1425,7 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 ..param.id:A sequence id.
 ..returns:A sequence position
 ..see:Function.getLastCoveredPosition
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
@@ -1464,7 +1466,7 @@ getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ..param.id:A sequence id.
 ..returns:A sequence position
 ..see:Function.getFirstCoveredPosition
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
@@ -1504,7 +1506,7 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 ..param.component:Vertex to component mapping.
 ..param.order:The order of the component graph when sorting topologically.
 ..param.compLength:Component sizes.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TComponentMap, typename TOrderMap, typename TComponentLength> 
@@ -1621,7 +1623,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 ...type:Spec.Alignment Graph
 ..param.matrix:Out-parameter: A string that represents an alignment matrix.
 ..returns: A bool that is true iff the alignment graph is a valid alignment
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix> 
 inline bool
@@ -2152,4 +2154,4 @@ _alignTracePrint(String<TFragment>& matches,
 
 }  // namespace seqan
 
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_H_

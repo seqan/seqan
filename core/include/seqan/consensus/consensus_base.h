@@ -441,7 +441,7 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
 ..include:seqan/consensus.h
 ..example.code:
 #include <seqan/sequence.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 #include <seqan/consensus.h>
 
 int main()

@@ -29,15 +29,16 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_REFINE_INEXACT_H
-#define SEQAN_HEADER_GRAPH_REFINE_INEXACT_H
-
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_INEXACT_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_INEXACT_H_
 
 //SEQAN_NO_DDDOC: do not generate documentation for this file
 
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 
 struct TagInexactRefinement_;
@@ -287,7 +288,7 @@ SEQAN_CHECKPOINT
 ...remarks:If in the refinement process a cut would result in
 a segment shorter than minFragmentLen, then the cut is not made and a heuristic is applied to refine this short overlap.
 ...remarks:If no minFragmentLen is given, then all cuts are made. This corresponds to a minFragmentLen of 1.
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //score type given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec, typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -310,7 +311,7 @@ SEQAN_CHECKPOINT
 /**
 .Function.matchRefinement:
 ..signature:matchRefinement(matches,stringSet,refinedGraph,minFragmentLen)
-..include:seqan/refinement.h
+..include:seqan/graph_align.h
 */
 //score type not given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TOutGraph, typename TSequence, typename TSetSpec>
@@ -330,5 +331,6 @@ SEQAN_CHECKPOINT
         matchRefinement(alis,seq,fake_score,ali_graph,min_frag_len,anno,ExactRefinement());
 }
 	
-}
-#endif //#ifndef SEQAN_HEADER_...
+}  // namespace seqan
+
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_INEXACT_H_

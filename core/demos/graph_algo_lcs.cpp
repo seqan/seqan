@@ -1,7 +1,7 @@
 ///A tutorial about the longest common subsequence algorithm.
 #include <iostream>
 #include <seqan/graph_algorithms.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 
 using namespace seqan;
 

@@ -13,7 +13,7 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/map.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 #include <seqan/store.h>
 //#include <seqan/misc/misc_cmdparser.h>
 

@@ -66,7 +66,7 @@ It indicates at what ends gaps are free, the so-called free ends-space alignment
 ..param.TSpec:The specializing type.
 ...metafunction:Metafunction.Spec
 ...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_align.h
+..include:seqan/align.h
 */
 
 template <bool TOP = false, bool LEFT = false, bool RIGHT = false, bool BOTTOM = false, typename TSpec = Default>

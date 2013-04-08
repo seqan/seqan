@@ -29,15 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_REFINE_EXACT_H
-#define SEQAN_HEADER_GRAPH_REFINE_EXACT_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_H_
 
-
-namespace SEQAN_NAMESPACE_MAIN
-{
-
-
+namespace seqan {
 	
 struct TagExactRefinement_;
 typedef Tag<TagExactRefinement_> const ExactRefinement;
@@ -562,6 +561,6 @@ matchRefinement(TFragmentString & matches,
 	matchRefinement(matches,strSet,fake_score,ali_graph,1,anno,ExactRefinement());
 }
 
+}  // namespace seqan
 
-}
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_H_

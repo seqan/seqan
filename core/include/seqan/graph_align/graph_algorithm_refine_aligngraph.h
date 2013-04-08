@@ -29,15 +29,16 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_REFINE_ALIGRAPH_H
-#define SEQAN_HEADER_GRAPH_REFINE_ALIGRAPH_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_ALGORITHM_REFINE_ALIGNGRAPH_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_ALGORITHM_REFINE_ALIGNGRAPH_H_
 
 //SEQAN_NO_DDDOC: do not generate documentation for this file
 
-
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -286,6 +287,6 @@ SEQAN_CHECKPOINT
 	return ret_score;
 }				
 
+}  // namespace seqan
 
-}
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_ALGORITHM_REFINE_ALIGNGRAPH_H_

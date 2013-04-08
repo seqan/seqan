@@ -50,7 +50,7 @@
 #include <seqan/pipe.h>
 #include <seqan/platform.h>
 #include <seqan/random.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 #include <seqan/score.h>
 #include <seqan/seeds.h>
 #include <seqan/seq_io.h>

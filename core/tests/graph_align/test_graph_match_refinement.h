@@ -30,12 +30,12 @@
 //
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_TEST_GRAPH_MATCH_REFINEMENT_H
-#define SEQAN_HEADER_TEST_GRAPH_MATCH_REFINEMENT_H
+#ifndef SEQAN_HEADER_TEST_GRAPH_MATCH_GRAPH_ALIGN_H
+#define SEQAN_HEADER_TEST_GRAPH_MATCH_GRAPH_ALIGN_H
 
 #include <seqan/sequence.h>
 #include <seqan/align.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 
 using namespace std;
 using namespace seqan;
@@ -93,7 +93,7 @@ SEQAN_DEFINE_TEST(RefineMatchesSelfEdges)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// test the refinement heuristic
+// test the graph_align heuristic
 SEQAN_DEFINE_TEST(RefineInexactFragment)
 {
 	typedef String<char> TString;
@@ -867,13 +867,13 @@ void Test_GraphMatchRefinement()
 
 //	Test_Problem();
 
-	//test for refinement on Align<TSource,TSpec>
+	//test for graph_align on Align<TSource,TSpec>
 //	Test_RefineAlign();
 	
-	//test for refinement on Graph<Alignment<> >
+	//test for graph_align on Graph<Alignment<> >
 //	Test_RefineAlignGraph();
 
-	//test for refinement on Fragment<>
+	//test for graph_align on Fragment<>
 //	Test_GraphMatchRefine();
 }
 

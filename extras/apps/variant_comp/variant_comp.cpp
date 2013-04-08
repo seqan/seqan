@@ -30,7 +30,7 @@
 #include <seqan/file.h>
 #include <seqan/misc/misc_parsing.h>
 #include <seqan/arg_parse.h>
-#include <seqan/refinement.h>
+#include <seqan/graph_align.h>
 
 #include "variant_comp.h"
 

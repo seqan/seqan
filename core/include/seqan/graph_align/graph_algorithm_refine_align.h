@@ -29,14 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Tobias Rausch <rausch@embl.de>
+// Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
+// ==========================================================================
 
-#ifndef SEQAN_HEADER_GRAPH_REFINE_ALIGN_H
-#define SEQAN_HEADER_GRAPH_REFINE_ALIGN_H
+#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ALIGN_H_
+#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ALIGN_H_
 
-
-
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -189,6 +189,6 @@ SEQAN_CHECKPOINT
 //	return ret_score;
 //}				
 
+}  // namespace seqan
 
-}
-#endif //#ifndef SEQAN_HEADER_...
+#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ALIGN_H_
