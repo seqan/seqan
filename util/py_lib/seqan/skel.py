@@ -163,7 +163,7 @@ def buildReplacements(type_, name, location, target_file, options):
                            paths.repositoryRoot())
     cmake_project_name = _pathToIdentifier(path)
     result['CMAKE_PROJECT_NAME'] = cmake_project_name
-    result['CMAKE_PROJECT_PATH'] = path
+    result['CMAKE_PROJECT_PATH'] = path.replace('\\', '\\\\')
     if type_ == 'repository':
         result['REPOSITORY_PSEUDO_TARGET_NAME'] = name.replace('/', '_').replace('\\', '_').replace(' ', '_')
     if type_ == 'app_tests':
