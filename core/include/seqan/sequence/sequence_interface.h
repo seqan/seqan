@@ -1544,7 +1544,7 @@ reserve(T & me,
 ...type:Class.String
 ..param.newLength: The new length $object$ will get.
 ..param.value: Value that is copied if new items are created in $object$.
-...remarks:If the $value$ argument is omitted, the items are not initialized.
+...remarks:If the $value$ argument is omitted, the items are not initialized if @Metafunction.IsSimple@ returns `False`.
 ..param.resizeTag: Specifies the strategy that is applied if the capacity of $object$ is less than $newLength$. (optional)
 ...type:Tag.Overflow Strategy
 ...default:Specified by @Metafunction.DefaultOverflowExplicit@.
