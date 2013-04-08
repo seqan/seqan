@@ -33,10 +33,14 @@ class Diff(object):
 	
 	def save_diff(self, filename):
 		# old parameters (to create a huge textual diff file: "-a", "-u", "-r", "-N"
+		# change the language to C to avoid unparseable non-english output 
+		# of localized shell tools
+		my_env = os.environ.copy()
+		my_env["LANG"] = "C"
 		if(os.name == "nt"):
-			p = subprocess.Popen([self.bin_dir + "/diffutils/bin/diff.exe", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir)
+			p = subprocess.Popen([self.bin_dir + "/diffutils/bin/diff.exe", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir, env=my_env)
 		else:
-			p = subprocess.Popen(["diff", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir)	
+			p = subprocess.Popen(["diff", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir, env=my_env)
 		output = p.communicate()[0]
 		
 		zipFile = zipfile.ZipFile(filename, "w")
