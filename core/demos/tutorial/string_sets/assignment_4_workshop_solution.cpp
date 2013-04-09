@@ -101,7 +101,7 @@ int main(int, char const **)
     // Iterate over StringSet
     Iterator<TDnaListSet, Rooted>::Type it3 = begin(readStringSet);
     
-    std::cout << " \n Print alignment using Rooted Iterators: " << std::endl;
+    std::cout << " \n Print reads stored in a StringSet using Rooted Iterators: " << std::endl;
     for(; !atEnd(it3); goNext(it3))
         std::cout << value(it3) << std::endl;
     
