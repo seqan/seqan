@@ -139,7 +139,7 @@ int main()
     //
     // Construct new scoring scheme, alternatively only give one score
     // that is used for both opening and extension.
-    TScoringScheme scoringScheme(gapOpenScore, gapExtendScore);
+    TScoringScheme scoringScheme(gapExtendScore, gapOpenScore);
 
     // 3. Fill the now-existing ScoreMatrix
     //
