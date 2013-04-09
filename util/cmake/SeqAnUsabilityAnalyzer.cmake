@@ -46,17 +46,17 @@ function (seqan_setup_sua)
   endif (NOT SEQAN_INSTRUMENTATION)
 
   message(STATUS "Prepare SeqAn Usability Analyzer data collection...")
-  if (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
-    # Use EXE for instrumentation with bundled Python runtime.
-    execute_process (COMMAND ${CMAKE_SOURCE_DIR}/misc/seqan_instrumentation/py2exe/dist/seqan_instrumentation.exe cmake ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR})
-    add_custom_target (seqan_sua_target ${CMAKE_SOURCE_DIR}/misc/seqan_instrumentation/py2exe/dist/seqan_instrumentation.exe build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}
-                       COMMENT "Build Instrumentation...")
-  else (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
+#  if (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
+#    # Use EXE for instrumentation with bundled Python runtime.
+#    execute_process (COMMAND ${CMAKE_SOURCE_DIR}/misc/seqan_instrumentation/py2exe/dist/seqan_instrumentation.exe cmake ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR})
+#    add_custom_target (seqan_sua_target ${CMAKE_SOURCE_DIR}/misc/seqan_instrumentation/py2exe/dist/seqan_instrumentation.exe build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}
+#                       COMMENT "Build Instrumentation...")
+#  else (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
     # Use system's Python runtime.
     execute_process (COMMAND ${PYTHON_EXECUTABLE} ${SEQAN_ROOT_SOURCE_DIR}/misc/seqan_instrumentation/bin/seqan_instrumentation.py cmake ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR})
     add_custom_target (seqan_sua_target ${PYTHON_EXECUTABLE} ${SEQAN_ROOT_SOURCE_DIR}/misc/seqan_instrumentation/bin/seqan_instrumentation.py build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}
                        COMMENT "Build Instrumentation...")
-  endif (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
+#  endif (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
 endfunction (seqan_setup_sua)
 
 # ---------------------------------------------------------------------------
@@ -74,17 +74,17 @@ function (seqan_add_sua_dependency TARGET)
   add_dependencies (${TARGET} seqan_sua_target)
 
   # Add hooks before and after building.
-  if (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
-    set (_INST ${CMAKE_SOURCE_DIR}/misc/seqan_instrumentation/py2exe/dist/seqan_instrumentation.exe)
-    add_custom_command (TARGET ${TARGET}
-                        PRE_BUILD
-                        COMMAND ${_INST} pre_build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${TARGET}
-                        COMMENT "Pre Build Instrumentation...")
-    add_custom_command (TARGET ${TARGET}
-                        POST_BUILD
-                        COMMAND ${_INST} post_build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${TARGET}
-                        COMMENT "Post Build Instrumentation...")
-  else (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
+#  if (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
+#    set (_INST ${CMAKE_SOURCE_DIR}/misc/seqan_instrumentation/py2exe/dist/seqan_instrumentation.exe)
+#    add_custom_command (TARGET ${TARGET}
+#                        PRE_BUILD
+#                        COMMAND ${_INST} pre_build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${TARGET}
+#                        COMMENT "Pre Build Instrumentation...")
+#    add_custom_command (TARGET ${TARGET}
+#                        POST_BUILD
+#                        COMMAND ${_INST} post_build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${TARGET}
+#                        COMMENT "Post Build Instrumentation...")
+#  else (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
     set (_INST ${PYTHON_EXECUTABLE} ${SEQAN_ROOT_SOURCE_DIR}/misc/seqan_instrumentation/bin/seqan_instrumentation.py)
     add_custom_command (TARGET ${TARGET}
                         PRE_BUILD
@@ -94,5 +94,5 @@ function (seqan_add_sua_dependency TARGET)
                         POST_BUILD
                         COMMAND ${_INST} post_build ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${TARGET}
                         COMMENT "Post Build Instrumentation...")
-  endif (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
+#  endif (CMAKE_HOST_WIN32 AND NOT PYTHON_EXECUTABLE)
 endfunction (seqan_add_sua_dependency TARGET)
