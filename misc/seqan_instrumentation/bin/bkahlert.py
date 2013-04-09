@@ -6,7 +6,13 @@ import threading
 import binascii
 import shutil
 from datetime import datetime
-from classes import *
+from classes import diff
+from classes import dirs
+from classes import flushfile
+from classes import id
+from classes import stats
+from classes import sync
+
 sys.stdout = flushfile.Flushfile(sys.stdout)
 
 class DiffCollector(object):
