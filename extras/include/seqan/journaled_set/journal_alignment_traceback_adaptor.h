@@ -64,7 +64,7 @@ template <typename TValue, typename THostSpec, typename TBuffSpec, typename TRef
           typename TSource, typename TPosition, typename TSize, typename TStringSpec>
 inline void
 _adaptTraceSegmentsTo(String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec> > & targetJournal,
-                      TReference const & reference, // What if the TSequenceH is a journal string.
+                      TReference const & /*reference*/, //TODO(rmaerker): What if the TSequenceH is a journal string.
                       TSource const & source,
                       String<TraceSegment_<TPosition, TSize>, TStringSpec> const & traceSegments)
 {
