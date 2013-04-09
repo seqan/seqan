@@ -1381,7 +1381,7 @@ _convertSimpleReadFile(TFile& file,
         {
 			TAlignedElement alignEl;
 			TId id = count;
-			TId fragId = count;
+			TId fragId = TReadStoreElement::INVALID_ID;
 			TId repeatId = 0;
 
             goNext(reader);
