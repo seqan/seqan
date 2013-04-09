@@ -12,7 +12,7 @@ import simplejson as json
 
 class Stats(object):
 	CMakeCachePathKey = "CMakeCachePath"
-        
+
 	def __init__(self, cMake_binary_dir, src_dir, stats_cache):
 		self.cMake_binary_dir = cMake_binary_dir
 		self.src_dir = src_dir
@@ -41,8 +41,8 @@ class Stats(object):
 		f.close()
 
 	def save(self, key=None, value=None):
-                self.set(key, value)
-                
+		self.set(key, value)
+
 		f = open(self.stats_cache, "w")
 		json.dump(self.stats, f, indent = 4)
 		f.close()
@@ -50,7 +50,7 @@ class Stats(object):
 		cMakeCache_path = self.get_cMakeCache_path()
 		if not cMakeCache_path is None and os.path.isfile(cMakeCache_path):
 			shutil.copyfile(cMakeCache_path, self.get_cMakeCache_copy_path())
-		
+
 	def needs_refresh(self, stat):
 		return not stat in self.stats or self.stats[stat] is None or len(self.stats[stat]) == 0
 	
@@ -75,10 +75,10 @@ class Stats(object):
 		return self.stats["ip"]
 
 	def get_cMakeCache_path(self):
-        	cMakeCache_paths = map(os.path.normpath, glob.glob(self.cMake_binary_dir + "/../*/CMakeCache.txt"))
-        	return None if len(cMakeCache_paths) == 0 else cMakeCache_paths[0]
+       	cMakeCache_paths = map(os.path.normpath, glob.glob(self.cMake_binary_dir + "/../*/CMakeCache.txt"))
+       	return None if len(cMakeCache_paths) == 0 else cMakeCache_paths[0]
 
 	def get_cMakeCache_copy_path(self):
 		(l, m, r) = self.stats_cache.rpartition(".")
 		l = l + "_CMakeCache"
-        	return os.path.normpath("".join([l, m, r]))
+       	return os.path.normpath("".join([l, m, r]))
