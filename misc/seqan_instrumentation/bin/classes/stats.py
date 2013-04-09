@@ -75,10 +75,10 @@ class Stats(object):
 		return self.stats["ip"]
 
 	def get_cMakeCache_path(self):
-       	cMakeCache_paths = map(os.path.normpath, glob.glob(self.cMake_binary_dir + "/../*/CMakeCache.txt"))
-       	return None if len(cMakeCache_paths) == 0 else cMakeCache_paths[0]
+		cMakeCache_paths = map(os.path.normpath, glob.glob(self.cMake_binary_dir + "/../*/CMakeCache.txt"))
+		return None if len(cMakeCache_paths) == 0 else cMakeCache_paths[0]
 
 	def get_cMakeCache_copy_path(self):
 		(l, m, r) = self.stats_cache.rpartition(".")
 		l = l + "_CMakeCache"
-       	return os.path.normpath("".join([l, m, r]))
+		return os.path.normpath("".join([l, m, r]))
