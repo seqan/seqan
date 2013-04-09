@@ -1522,10 +1522,10 @@ _convertSimpleReadFile(TFile& file,
 	TContigElement contigEl;
 	std::string fileName = filePath + 'S';
 	FILE* strmRef = fopen(fileName.c_str(), "rb");
-    seqan::RecordReader<FILE *, SinglePass<> > readerRef(strmRef);
 	String<char> contigEid = "C0";
     if (strmRef)
     {
+        seqan::RecordReader<FILE *, SinglePass<> > readerRef(strmRef);
         clear(contigEid);
         if (readRecord(contigEid, contigEl.seq, readerRef, Fasta()) != 0)
             return 1;
@@ -1543,9 +1543,9 @@ _convertSimpleReadFile(TFile& file,
 	// Read fragments
 	fileName = filePath + 'F';
 	FILE* strmFrag = fopen(fileName.c_str(), "rb");
-    RecordReader<FILE *, SinglePass<> > readerFrag(strmFrag);
     if (!strmFrag)
         return 1;
+    RecordReader<FILE *, SinglePass<> > readerFrag(strmFrag);
     while (!atEnd(readerFrag))
     {
         if (value(readerFrag) == '>')
