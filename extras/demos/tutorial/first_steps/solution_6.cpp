@@ -30,7 +30,7 @@ template <typename TText, typename TPattern>
 seqan::String<int> computeScore(TText const & text, TPattern const & pattern)
 {
     seqan::String<int> score;
-    seqan::resize(score, seqan::length(text), 0);
+    seqan::resize(score, seqan::length(text) - seqan::length(pattern) + 1, 0);
 
     for (unsigned i = 0; i < seqan::length(text) - seqan::length(pattern) + 1; ++i)
         score[i] = computeLocalScore(infix(text, i, i + seqan::length(pattern)), pattern);

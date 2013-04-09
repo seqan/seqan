@@ -14,7 +14,7 @@ int main()
     // FRAGMENT(score)
     seqan::String<int> score;
     // FRAGMENT(resize)
-    resize(score, seqan::length(text));
+    resize(score, seqan::length(text) - seqan::length(pattern) + 1);
 
     // FRAGMENT(similarity)
     // Computation of the similarities
