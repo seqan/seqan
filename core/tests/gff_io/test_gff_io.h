@@ -285,6 +285,75 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.2");
 }
 
+// Complex GTF format, from pseudogenes.org
+
+SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
+{
+    seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
+    append(gtfPath, "/core/tests/gff_io/example_gtf_pseudogenes.tsv");
+
+    std::fstream f(toCString(gtfPath), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(f.good());
+
+    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(f);
+
+    seqan::GffRecord record;
+    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Gtf()), 0);
+
+    SEQAN_ASSERT_EQ(record.seqID, "chrAL590842");
+    SEQAN_ASSERT_EQ(record.source, "pgenes.org");
+    SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
+    SEQAN_ASSERT_EQ(record.beginPos, 34872);
+    SEQAN_ASSERT_EQ(record.endPos, 35130);
+    SEQAN_ASSERT_NEQ(record.score, record.score);  // NaN
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(length(record.tagName), 7u);
+    SEQAN_ASSERT_EQ(length(record.tagValue), 7u);
+    SEQAN_ASSERT_EQ(record.tagName[0], "pgene_type");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "p");
+    SEQAN_ASSERT_EQ(record.tagName[1], "protein");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "Q8ZKU6");
+    SEQAN_ASSERT_EQ(record.tagName[2], "exon_index");
+    SEQAN_ASSERT_EQ(record.tagValue[2], "1");
+    SEQAN_ASSERT_EQ(record.tagName[3], "name");
+    SEQAN_ASSERT_EQ(record.tagValue[3], "Q8ZKU6.Yersinia_pestis.chrAL590842.mb0");
+    SEQAN_ASSERT_EQ(record.tagName[4], "tax_id");
+    SEQAN_ASSERT_EQ(record.tagValue[4], "632");
+    SEQAN_ASSERT_EQ(record.tagName[5], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValue[5], "1");
+    SEQAN_ASSERT_EQ(record.tagName[6], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:1");
+
+    SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Gtf()), 0);
+    SEQAN_ASSERT_EQ(record.seqID, "chrAL590842");
+    SEQAN_ASSERT_EQ(record.source, "pgenes.org");
+    SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
+    SEQAN_ASSERT_EQ(record.beginPos, 72639);
+    SEQAN_ASSERT_EQ(record.endPos, 73496);
+    SEQAN_ASSERT_NEQ(record.score, record.score);  // NaN
+    SEQAN_ASSERT_EQ(record.strand, '+');
+    SEQAN_ASSERT_EQ(record.phase, '.');
+    SEQAN_ASSERT_EQ(length(record.tagName), 7u);
+    SEQAN_ASSERT_EQ(length(record.tagValue), 7u);
+    SEQAN_ASSERT_EQ(record.tagName[0], "pgene_type");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "p");
+    SEQAN_ASSERT_EQ(record.tagName[1], "protein");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "Q8ZL54");
+    SEQAN_ASSERT_EQ(record.tagName[2], "exon_index");
+    SEQAN_ASSERT_EQ(record.tagValue[2], "1");
+    SEQAN_ASSERT_EQ(record.tagName[3], "name");
+    SEQAN_ASSERT_EQ(record.tagValue[3], "Q8ZL54.Yersinia_pestis.chrAL590842.mb0");
+    SEQAN_ASSERT_EQ(record.tagName[4], "tax_id");
+    SEQAN_ASSERT_EQ(record.tagValue[4], "632");
+    SEQAN_ASSERT_EQ(record.tagName[5], "gene_id");
+    SEQAN_ASSERT_EQ(record.tagValue[5], "2");
+    SEQAN_ASSERT_EQ(record.tagName[6], "transcript_id");
+    SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:2");
+
+    SEQAN_ASSERT(atEnd(reader));
+}
+
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
 {
     seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();

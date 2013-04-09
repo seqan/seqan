@@ -50,6 +50,7 @@ SEQAN_BEGIN_TESTSUITE(test_gff_io)
 	//gtf tests
 	SEQAN_CALL_TEST(test_store_io_read_record_gtf);
 	SEQAN_CALL_TEST(test_store_io_read_record_context_gtf);
+    SEQAN_CALL_TEST(test_store_io_read_record_gtf_pseudogenes);
 	SEQAN_CALL_TEST(test_store_io_write_record_gtf);
 	SEQAN_CALL_TEST(test_store_io_write_record_context_gtf);
 }

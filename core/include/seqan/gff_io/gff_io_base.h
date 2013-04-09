@@ -339,7 +339,7 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
     // read column 1: seqid
     // The letters until the first whitespace will be read.
     // Then, we skip until we hit the first tab character.
-    if (readUntilWhitespace(record.seqID, reader))
+    if (readUntilTabOrLineBreak(record.seqID, reader))
         return 1;
     record.seqIdx = GffRecord::INVALID_IDX;
 
@@ -354,7 +354,7 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
         return 1;
 
     // read column 2: source
-    if (readUntilWhitespace(record.source, reader))
+    if (readUntilTabOrLineBreak(record.source, reader))
         return 1;
 
     if (record.source == ".")
@@ -364,7 +364,7 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
         return 1;
 
     // read column 3: type
-    if (readUntilWhitespace(record.type, reader))
+    if (readUntilTabOrLineBreak(record.type, reader))
         return 1;
 
     if (skipWhitespaces(reader))
@@ -439,7 +439,7 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
 
     // read column 7: strand
     clear(temp);
-    if (readUntilWhitespace(temp, reader))
+    if (readUntilTabOrLineBreak(temp, reader))
         return 1;
 
     if (temp[0] != '-' && temp[0] != '+')
@@ -456,7 +456,7 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
 
     // read column 8: phase
     clear(temp);
-    if (readUntilWhitespace(temp, reader))
+    if (readUntilTabOrLineBreak(temp, reader))
         return 1;
 
     if (temp != "0" && temp != "1" && temp != "2")
@@ -470,6 +470,12 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
 
     if (skipBlanks(reader))
         return 1;
+
+    // It's fine if there are no attributes and the line ends here.
+    if (atEnd(reader))
+        return 0;
+    if (value(reader) == '\n' || value(reader) == '\r')
+        return skipLine(reader);
 
     // read column 9: attributes
     while (!atEnd(reader))
@@ -608,8 +614,11 @@ template <typename TStream>
 inline int
 _writeAttributes(TStream & stream, GffRecord const & record, Gff /*tag*/)
 {
+    if (empty(record.tagName))
+        return 0;
+
     unsigned i = 0;
-    for (; i < length(record.tagName) - 1; ++i)
+    for (; i + 1 < length(record.tagName); ++i)
     {
         if (_writeSemicolonSensitive(stream, record.tagName[i]))
             return 1;
