@@ -618,6 +618,11 @@ inline int write(FaiIndex const & index, char * faiFilename)
     return write(index, static_cast<char const *>(faiFilename));
 }
 
+inline int write(FaiIndex & index, char const * faiFilename)
+{
+    return write(static_cast<FaiIndex const &>(index), faiFilename);
+}
+
 inline int write(FaiIndex & index, char * faiFilename)
 {
     return write(static_cast<FaiIndex const &>(index), static_cast<char const *>(faiFilename));
