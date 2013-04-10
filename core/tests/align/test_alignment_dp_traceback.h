@@ -381,4 +381,304 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
     SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 0, 3, +TraceBitMap_::DIAGONAL));
 }
 
+SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_linear_gaps)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 3);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::HORIZONTAL;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL | +TraceBitMap_::DIAGONAL;
+
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+    DnaString str0 = "AC";
+    DnaString str1 = "CCC";
+
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 11;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(0, 1, 2, +TraceBitMap_::DIAGONAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 1, +TraceBitMap_::VERTICAL));
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsRight> > TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsRight> >, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 3);
+    setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+    resize(traceMatrix);
+
+    value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
+    value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+
+    value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::HORIZONTAL;
+
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL | +TraceBitMap_::DIAGONAL;
+
+
+    TDPTraceNavigator navigator;
+    _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+    DnaString str0 = "AC";
+    DnaString str1 = "CCC";
+
+    DPScout_<int, Default> dpScout;
+    dpScout._maxHostPosition = 11;
+    _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+    SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::VERTICAL));
+    SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 2, +TraceBitMap_::DIAGONAL));
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+
+    {   // Tests gaps at end
+        setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 3);
+        setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+        resize(traceMatrix);
+
+        value(traceMatrix, 0, 0) = TraceBitMap_::NONE;
+        value(traceMatrix, 1, 0) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+        value(traceMatrix, 2, 0) = TraceBitMap_::VERTICAL;
+        value(traceMatrix, 3, 0) = TraceBitMap_::VERTICAL;
+
+        value(traceMatrix, 0, 1) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 1, 1) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 2, 1) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 3, 1) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::HORIZONTAL;
+
+        value(traceMatrix, 0, 2) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 2) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+        value(traceMatrix, 2, 2) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 3, 2) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::DIAGONAL;
+
+
+        TDPTraceNavigator navigator;
+        _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+        DnaString str0 = "AC";
+        DnaString str1 = "CCC";
+
+        DPScout_<int, Default> dpScout;
+        dpScout._maxHostPosition = 11;
+        _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+        // TODO(rmaerker): This is disabled by default for the affine gap costs.
+        SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 2, +TraceBitMap_::DIAGONAL));
+    }
+
+    {   // Tests inner gaps.
+        clear(target);
+        setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 5);
+        setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+        resize(traceMatrix);
+
+        value(traceMatrix, 0, 0) = TraceBitMap_::NONE;
+        value(traceMatrix, 1, 0) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+        value(traceMatrix, 2, 0) = TraceBitMap_::VERTICAL;
+        value(traceMatrix, 3, 0) = TraceBitMap_::VERTICAL;
+
+        value(traceMatrix, 0, 1) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 1, 1) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 2, 1) = TraceBitMap_::NONE;
+        value(traceMatrix, 3, 1) = TraceBitMap_::NONE;
+
+        value(traceMatrix, 0, 2) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 2) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 2, 2) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 3, 2) = TraceBitMap_::NONE;
+
+        value(traceMatrix, 0, 3) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 3) = TraceBitMap_::NONE;
+        value(traceMatrix, 2, 3) = TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 3, 3) = TraceBitMap_::NONE;
+
+        value(traceMatrix, 0, 4) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 4) = TraceBitMap_::NONE;
+        value(traceMatrix, 2, 4) = TraceBitMap_::NONE;
+        value(traceMatrix, 3, 4) = TraceBitMap_::DIAGONAL;
+
+        TDPTraceNavigator navigator;
+        _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+        DnaString str0 = "ACCA";
+        DnaString str1 = "ACA";
+
+        DPScout_<int, Default> dpScout;
+        dpScout._maxHostPosition = 19;
+        _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+        // TODO(rmaerker): This is disabled by default for the affine gap costs.
+        SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 1, 2, +TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(target[1], TTraceSegment(1, 1, 1, +TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 1, +TraceBitMap_::DIAGONAL));
+    }
+
+}
+
+SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
+{
+    using namespace seqan;
+
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsRight> > TDPProfile;
+    typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
+
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsRight> >, NavigateColumnWise> TDPTraceNavigator;
+
+    String<TTraceSegment> target;
+    TTraceMatrix traceMatrix;
+
+    {   // Tests gaps at end
+        setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 3);
+        setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+        resize(traceMatrix);
+
+        value(traceMatrix, 0, 0) = TraceBitMap_::NONE;
+        value(traceMatrix, 1, 0) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+        value(traceMatrix, 2, 0) = TraceBitMap_::VERTICAL;
+        value(traceMatrix, 3, 0) = TraceBitMap_::VERTICAL;
+
+        value(traceMatrix, 0, 1) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 1, 1) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 2, 1) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 3, 1) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::HORIZONTAL;
+
+        value(traceMatrix, 0, 2) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 2) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+        value(traceMatrix, 2, 2) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 3, 2) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::DIAGONAL;
+
+
+        TDPTraceNavigator navigator;
+        _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+        DnaString str0 = "AC";
+        DnaString str1 = "CCC";
+
+        DPScout_<int, Default> dpScout;
+        dpScout._maxHostPosition = 11;
+        _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+        SEQAN_ASSERT_EQ(target[0], TTraceSegment(2, 2, 1, +TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(target[1], TTraceSegment(0, 0, 2, +TraceBitMap_::DIAGONAL));
+    }
+
+    {   // Test inner gaps.
+        clear(target);
+        setLength(traceMatrix, DPMatrixDimension_::HORIZONTAL, 5);
+        setLength(traceMatrix, DPMatrixDimension_::VERTICAL, 4);
+
+        resize(traceMatrix);
+
+        value(traceMatrix, 0, 0) = TraceBitMap_::NONE;
+        value(traceMatrix, 1, 0) = TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+        value(traceMatrix, 2, 0) = TraceBitMap_::VERTICAL;
+        value(traceMatrix, 3, 0) = TraceBitMap_::VERTICAL;
+
+        value(traceMatrix, 0, 1) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 1, 1) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 2, 1) = TraceBitMap_::NONE;
+        value(traceMatrix, 3, 1) = TraceBitMap_::NONE;
+
+        value(traceMatrix, 0, 2) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 2) = TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 2, 2) = TraceBitMap_::DIAGONAL;
+        value(traceMatrix, 3, 2) = TraceBitMap_::NONE;
+
+        value(traceMatrix, 0, 3) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 3) = TraceBitMap_::NONE;
+        value(traceMatrix, 2, 3) = TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+        value(traceMatrix, 3, 3) = TraceBitMap_::NONE;
+
+        value(traceMatrix, 0, 4) = TraceBitMap_::HORIZONTAL;
+        value(traceMatrix, 1, 4) = TraceBitMap_::NONE;
+        value(traceMatrix, 2, 4) = TraceBitMap_::NONE;
+        value(traceMatrix, 3, 4) = TraceBitMap_::DIAGONAL;
+
+        TDPTraceNavigator navigator;
+        _init(navigator, traceMatrix, DPBand_<BandOff>());
+
+        DnaString str0 = "ACCA";
+        DnaString str1 = "ACA";
+
+        DPScout_<int, Default> dpScout;
+        dpScout._maxHostPosition = 19;
+        _computeTraceback(target, navigator, dpScout, str0, str1, DPBand_<BandOff>(), TDPProfile());
+
+        // TODO(rmaerker): This is disabled by default for the affine gap costs.
+        SEQAN_ASSERT_EQ(target[0], TTraceSegment(3, 2, 1, +TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(target[1], TTraceSegment(2, 2, 1, +TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(target[2], TTraceSegment(0, 0, 2, +TraceBitMap_::DIAGONAL));
+    }
+}
+
+
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_TRACEBACK_H_

@@ -38,7 +38,7 @@
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_
 
 // TODO(holtgrew): GapsRight traceback is currently untested.
-// TODO(rmaerker): Change Tracback to TraceConfig<TGapsPlacement, TAllPaths, TAllOptimal> | TraceBackOff
+// TODO(rmaerker): Change Tracback to TraceConfig<TGapsPlacement, TPathSpec> | TraceBackOff
 
 namespace seqan {
 
@@ -117,6 +117,10 @@ struct PreferGapsAtEnd_ : False{};
 
 template <typename TAlgorithm, typename TTracebackSpec>
 struct PreferGapsAtEnd_<DPProfile_<TAlgorithm, AffineGaps, TTracebackSpec > > : True{};
+
+template <typename TAlgorithm>
+struct PreferGapsAtEnd_<DPProfile_<TAlgorithm, LinearGaps, TracebackOn<GapsRight> > > : True{};
+
 
 // ============================================================================
 // Functions
@@ -463,11 +467,12 @@ _retrieveInitialTraceDirection(TTraceValue & traceValue, TDPProfile const & /*dp
     }
 
     if (traceValue & TraceBitMap_::DIAGONAL)
-        return TraceBitMap_::DIAGONAL;
-    else if (traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX))
+            return TraceBitMap_::DIAGONAL;
+    if (traceValue & (TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX))
         return  TraceBitMap_::VERTICAL;
-    else if (traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX))
+    if (traceValue & (TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX))
         return TraceBitMap_::HORIZONTAL;
+
     return TraceBitMap_::NONE;
 }
 

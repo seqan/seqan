@@ -331,11 +331,7 @@ void testAlignGapsGapOperationsGapsLeading(TGapsSpec const & /*spec*/)
         TString seq("GTTTTTT");
         TGaps gaps(seq);
 
-        std::cerr << "gaps " << gaps << "\n";
-
         insertGap(gaps, 0);
-
-        std::cerr << "gaps " << gaps << "\n";
 
         SEQAN_ASSERT_EQ(length(seq), 7u);
         SEQAN_ASSERT_EQ(length(gaps), 8u);
