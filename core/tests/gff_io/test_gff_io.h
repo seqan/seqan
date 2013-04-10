@@ -303,8 +303,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_EQ(record.seqID, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
-    SEQAN_ASSERT_EQ(record.beginPos, 34872);
-    SEQAN_ASSERT_EQ(record.endPos, 35130);
+    SEQAN_ASSERT_EQ(record.beginPos, 34872u);
+    SEQAN_ASSERT_EQ(record.endPos, 35130u);
     SEQAN_ASSERT_NEQ(record.score, record.score);  // NaN
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
@@ -329,8 +329,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_EQ(record.seqID, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
-    SEQAN_ASSERT_EQ(record.beginPos, 72639);
-    SEQAN_ASSERT_EQ(record.endPos, 73496);
+    SEQAN_ASSERT_EQ(record.beginPos, 72639u);
+    SEQAN_ASSERT_EQ(record.endPos, 73496u);
     SEQAN_ASSERT_NEQ(record.score, record.score);  // NaN
     SEQAN_ASSERT_EQ(record.strand, '+');
     SEQAN_ASSERT_EQ(record.phase, '.');
