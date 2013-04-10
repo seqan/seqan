@@ -500,6 +500,23 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 {
     return removeGaps(gaps, clippedViewPos, 1u);
 }
+    
+// ----------------------------------------------------------------------------
+// Function countGaps()
+// ----------------------------------------------------------------------------
+    
+/**
+.Function.Gaps#countGaps
+..class:Class.Gaps
+..summary:Reports number of continues gaps right of current iterator position.
+..cat:Alignments
+..signature:TSize countGaps(iter)
+..param.iter:Iterator of the  @Class.Gaps@ object to count gaps for.
+...type:Metafunction.Iterator
+..returns:The number of gaps right of the current iterator position, including the current position, or $0$ if there is no gap.
+...type:Metafunction.Size
+..include:seqan/align.h
+*/
 
 // ----------------------------------------------------------------------------
 // Function setClippedBeginPosition()
