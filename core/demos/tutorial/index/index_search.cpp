@@ -19,7 +19,7 @@ int main ()
 	{
 		// go down edge starting with the next pattern character
 		if (!goDown(it, pattern[repLength(it)])) return 0;
-		unsigned endPos = _min(repLength(it), length(pattern));
+		unsigned endPos = std::min((unsigned)repLength(it), (unsigned)length(pattern));
 		// compare remaining edge characters with pattern
 		std::cout << representative(it) << std::endl;
 		if (infix(representative(it), parentRepLength(it) + 1, endPos) !=
