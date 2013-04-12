@@ -191,7 +191,7 @@ bool foo(MyEnum x) {
 ..summary:Indicates whether debugging is enabled.
 ..signature:SEQAN_ENABLE_DEBUG
 ..remarks:When enabled (set to 1), debugging is enabled. This means the assertion macros are expanded to actual code and not to nothing.
-..remarks:By default, this is set to 0.
+..remarks:By default, this is set to 0 if $NDEBUG$ is defined and to 1 if $NDEBUG$ is not defined.
 ..remarks:If you want to change this value, you have to define this value before including any SeqAn header.
 ..remarks:Force-enabled if @Macro.SEQAN_ENABLE_TESTING@ is set to 1.
 ..see:Macro.SEQAN_ENABLE_TESTING
@@ -200,7 +200,11 @@ bool foo(MyEnum x) {
 
 // Set default for SEQAN_ENABLE_DEBUG.
 #ifndef SEQAN_ENABLE_DEBUG
-#define SEQAN_ENABLE_DEBUG 1
+  #ifdef NDEBUG
+    #define SEQAN_ENABLE_DEBUG 0
+  #else  // #ifdef NDEBUG
+    #define SEQAN_ENABLE_DEBUG 1
+  #endif  // #ifdef NDEBUG
 #endif  // #ifndef SEQAN_ENABLE_DEBUG
 
 // Force-enable debugging if testing is enabled.

@@ -38,8 +38,6 @@
 # defaults are given after the variable name.
 #
 #   SEQAN_FIND_DEPENDENCIES   -- DEFAULT
-#   SEQAN_FIND_ENABLE_DEBUG   -- TRUE if ${CMAKE_BUILD_TYPE} == "Debug", FALSE
-#                                otherwise.
 #   SEQAN_FIND_ENABLE_TESTING -- TRUE if ${CMAKE_BUILD_TYPE} == "Debug", FALSE
 #                                otherwise.
 #
@@ -133,15 +131,6 @@ elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
   set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_ALL_LIBRARIES})
 elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "NONE")
   set(SEQAN_FIND_DEPENDENCIES)
-endif ()
-
-# SEQAN_FIND_ENABLE_DEBUG
-if (NOT SEQAN_FIND_ENABLE_DEBUG)
-  if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    set(SEQAN_FIND_ENABLE_DEBUG "TRUE")
-  else ()
-    set(SEQAN_FIND_ENABLE_DEBUG "FALSE")
-  endif()
 endif ()
 
 # SEQAN_FIND_ENABLE_TESTING
@@ -277,12 +266,6 @@ if (SEQAN_FIND_ENABLE_TESTING)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
 else ()
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=0)
-endif ()
-
-if (SEQAN_FIND_ENABLE_DEBUG)
-  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_DEBUG=1)
-else ()
-  set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_DEBUG=0)
 endif ()
 
 # ----------------------------------------------------------------------------
