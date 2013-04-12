@@ -65,7 +65,7 @@ class Diff(object):
         
         readFileListUrl = url + "/" + self.id.get()
         try:
-            r = requests.get(readFileListUrl)
+            r = requests.get(readFileListUrl, timeout=5.0)
             if(r.status_code != 200):
                 print("Connection to " + readFileListUrl + " failed with status code " + r.status_code + "! Retrying next time.")
                 return
