@@ -3,7 +3,6 @@ import subprocess
 import glob
 from datetime import datetime
 import socket
-import requests
 import re # regular expressions
 import zipfile
 import hashlib
@@ -60,6 +59,8 @@ class Diff(object):
         zipFile.close()
 
     def sync(self, url):
+        import requests
+        
         # get remote file list
         remote_files = []
         
@@ -74,8 +75,15 @@ class Diff(object):
                 file = line.strip().split("\t")
                 if(len(file) < 2): continue
                 remote_files[file[0]] = file[1]
+        except requests.exceptions.ConnectionError as e:
+            print("\n!!! Connection to " + readFileListUrl + " failed! Retrying next time.") 
+            return       
+        except requests.exceptions.Timeout as e:
+            print("\n!!! Connection to " + readFileListUrl + " timed out! Retrying next time.")
+            return
         except Exception as e:
-            print("Connection to " + readFileListUrl + " failed for an unknow reason! Please inform bjoern.kahlert@fu-berlin.de.")
+            print(type(e))
+            print("\n !!!Connection to " + readFileListUrl + " failed for an unknow reason! Please inform bjoern.kahlert@fu-berlin.de.")
             print(e)
             return
 
