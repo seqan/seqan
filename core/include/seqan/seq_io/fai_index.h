@@ -261,7 +261,7 @@ inline __uint64 sequenceLength(FaiIndex & index, TRefId refId)
 .Function.FaiIndex#sequenceName
 ..cat:Input / Output
 ..class:Class.FaiIndex
-..signature:CharString sequenceLength(faiIndex, refId)
+..signature:CharString sequenceName(faiIndex, refId)
 ..summary:Return the name of the sequence with the given id in the @Class.FaiIndex@.
 ..param.faiIndex:The @Class.FaiIndex@ to query.
 ...type:Class.FaiIndex
