@@ -204,7 +204,7 @@ clear(BamHeaderRecord & record)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.findTagKey
+.Function.BamHeaderRecord#findTagKey
 ..cat:BAM I/O
 ..summary:Find a tag's key of a @Class.BamHeaderRecord@.
 ..signature:findTagKey(idx, key, record)
@@ -242,7 +242,7 @@ findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.getTagValue
+.Function.BamHeaderRecord#getTagValue
 ..cat:BAM I/O
 ..summary:Return tag value from a @Class.BamHeaderRecord@ or @Class.BamTagsDict@.
 ..signature:getTagValue(tagValue, idx, record)
@@ -287,10 +287,12 @@ inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord con
     return getTagValue(value, idx, record);
 }
 
+// TODO(holtgrew): Parameter order!
+
 /**
-.Function.setTagValue
+.Function.BamHeaderRecord#setTagValue
 ..cat:BAM I/O
-..summary:Set tag value of a @Class.BamHeaderRecord@ or @Class.BamTagsDict@.
+..summary:Set tag value of a @Class.BamHeaderRecord@.
 ..signature:setTagValue(idx, tagValue, record)
 ..signature:setTagValue(key, tagValue, record)
 ..param.idx:The index of the tag whose value should be set.

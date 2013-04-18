@@ -139,7 +139,7 @@ host(BamTagsDict const & bamTags)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.hasIndex
+.Function.BamTagsDict#hasIndex
 ..class:Class.BamTagsDict
 ..cat:Fragment Store
 ..summary:Return $true$ if @Class.BamTagsDict@ has an index.
@@ -211,7 +211,7 @@ getBamTypeSize(char c)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.buildIndex
+.Function.BamTagsDict#buildIndex
 ..class:Class.BamTagsDict
 ..cat:Fragment Store
 ..summary:Build index for a @Class.BamTagsDict@ object.
@@ -219,7 +219,7 @@ getBamTypeSize(char c)
 ..param.bamTags:SAM Tags to build index for.
 ...type:Class.BamTagsDict
 ..returns:$void$
-..include:<seqan/store_ex.h>
+..include:<seqan/bam_io.h>
 */
 
 inline void
@@ -312,7 +312,7 @@ length(BamTagsDict const & tags)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.getTagType
+.Function.BamTagsDict#getTagType
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
 ..signature:getTagType(tagsDict, idx)
@@ -337,7 +337,7 @@ getTagType(BamTagsDict & tags, TPos idx)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.getTagKey
+.Function.BamTagsDict#getTagKey
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
 ..signature:getTagKey(tagsDict, idx)
@@ -371,7 +371,7 @@ getTagKey(BamTagsDict const & tags, TPos idx)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.findTagKey
+.Function.BamTagsDict#findTagKey
 ..class:Class.BamTagsDict
 ..signature:findTagKey(idx, tagsDict, name)
 ..param.idx:Index of the tag with the given key.
@@ -403,7 +403,7 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.getTagValue
+.Function.BamTagsDict#getTagValue
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
 ..signature:getTagValue(tagsDict, idx)
@@ -467,7 +467,7 @@ getTagValue(BamTagsDict const & tags, TPos idx)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.extractTagValue
+.Function.BamTagsDict#extractTagValue
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
 ..signature:extractTagValue(dest, tags, idx)
@@ -480,7 +480,7 @@ getTagValue(BamTagsDict const & tags, TPos idx)
 ..returns:$bool$, indicating the success.
 ..remarks:The function only works for atomic types such as $int$, not for $char*$ or arrays.
 ..remarks:See @Class.BamTagsDict@ for an example.
-..see:Function.getTagValue
+..see:Function.BamTagsDict#getTagValue
 ..include:seqan/bam_io.h
 */
 
@@ -568,7 +568,7 @@ extractTagValue(TDest & dest, BamTagsDict & tags, TIdx idx)
 ..signature:getBamTypeChar<T>()
 ..param.T:The type to get the BAM char for.
 ..returns:$char$ describing the BAM type. One of $ACcSsIif$.
-..remarks:Note that this function is defined for the $__int16$, $__uint16$ etc. but not for the types $short$, $int$ etc. An exception are 8-bit characters/char, where it is defined for $__int8$, $__uint8$, and $char$ unless $char$ is equal to one of the other two types. This is important when used in @Function.setTagValue@ etc. since BAM gives type chars for printable characters, signed 8-bit numbers and unsigned 8-bit numbers.
+..remarks:Note that this function is defined for the $__int16$, $__uint16$ etc. but not for the types $short$, $int$ etc. An exception are 8-bit characters/char, where it is defined for $__int8$, $__uint8$, and $char$ unless $char$ is equal to one of the other two types. This is important when used in @Function.BamTagsDict#setTagValue@ etc. since BAM gives type chars for printable characters, signed 8-bit numbers and unsigned 8-bit numbers.
 ..remarks:If $__int8$ and $__uint8$ are not identical to $char$, we can make this decision from the type, otherwise we cannot and we will give the integer types a higher precedence.
 ..remarks:In your programs, this should not make any difference, only the written SAM/BAM will differ.
 ..include:seqan/bam_io.h
@@ -604,7 +604,7 @@ inline char getBamTypeChar()
 // TODO(holtgrew): Test me!
 
 /**
-.Function.setTagValue
+.Function.BamTagsDict#setTagValue
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
 ..summary:Set the value of a tag through a @Class.BamTagsDict@.
@@ -730,7 +730,7 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.eraseTag
+.Function.BamTagsDict#eraseTag
 ..class:Class.BamTagsDict
 ..summary:Erase tag from @Class.BamTagsDict@.
 ..cat:BAM I/O
