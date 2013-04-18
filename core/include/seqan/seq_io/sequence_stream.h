@@ -294,7 +294,9 @@ public:
 .Function.SequenceStream#open
 ..summary:Open or re-open a file using a SequenceStream.
 ..class:Class.SequenceStream
-..signature:void open(fileName[, operationMode[, format[, fileType]]])
+..signature:void open(seqStream, fileName[, operationMode[, format[, fileType]]])
+..param.seqStream:The SequenceStream object to open.
+...type:Class.SequenceStream
 ..param.fileName:Path to the file to open.
 ...type:nolink:$char const *$
 ..param.operationMode:Mode to open the file in. Optional.
