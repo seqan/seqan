@@ -67,7 +67,7 @@ inline void clear(BamAlignmentRecord & record);
 ..value.BAM_FLAG_QC_NO_PASS:$0x0200$ Does not pass quality controls.
 ..value.BAM_FLAG_DUPLICATE:$0x0400$ PCR or optical duplicate.
 ..remarks:Also see the SAM standard on these flags for more explanation.
-..include:seqa/bam_io.h
+..include:seqan/bam_io.h
 */
 
 enum BamFlags
