@@ -59,7 +59,6 @@
 #include "test_align_global_alignment_specialized.h"
 
 #include "test_align_alignment_operations.h"
-#include "test_alignment_floating_point_score.h"
 
 SEQAN_BEGIN_TESTSUITE(test_align)
 {
@@ -567,15 +566,6 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_global_alignment_score_hirschberg);
     SEQAN_CALL_TEST(test_align_global_alignment_score_myers);
     SEQAN_CALL_TEST(test_align_global_alignment_score_myers_hirschberg);
-
-    // -----------------------------------------------------------------------
-    // Test Floating Point Types for Score
-    // -----------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_alignment_flaoting_point_score_float_linear_gaps);
-    SEQAN_CALL_TEST(test_alignment_flaoting_point_score_float_affine_gaps);
-    SEQAN_CALL_TEST(test_alignment_flaoting_point_score_double_linear_gaps);
-    SEQAN_CALL_TEST(test_alignment_flaoting_point_score_double_affine_gaps);
 
     // -----------------------------------------------------------------------
     // Test Operations On Align Objects
