@@ -566,6 +566,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_global_alignment_score_hirschberg);
     SEQAN_CALL_TEST(test_align_global_alignment_score_myers);
     SEQAN_CALL_TEST(test_align_global_alignment_score_myers_hirschberg);
+    SEQAN_CALL_TEST(test_align_global_alignment_hirschberg_single_character);
 
     // -----------------------------------------------------------------------
     // Test Operations On Align Objects

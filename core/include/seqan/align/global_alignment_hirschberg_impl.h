@@ -392,7 +392,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     TSequenceH const & s1 = source(gapsH);
     TSequenceV const & s2 = source(gapsV);
 	
-	TScoreValue total_score=0;
+	TScoreValue total_score = 0;
 
     typedef typename Value<TSequenceV>::Type TValueV;
 
@@ -447,6 +447,15 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 			for(i = 0;i < (_end1(target) - _begin1(target));++i)
 			{
 				insertGap(target_1);
+				++target_0;
+				++target_1;
+			}
+		}
+        if(_begin1(target) == _end1(target))
+		{
+			for(i = 0;i < (_end2(target) - _begin2(target));++i)
+			{
+				insertGap(target_0);
 				++target_0;
 				++target_1;
 			}
@@ -534,7 +543,11 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 					}
 					*finger1 = v;
 				}
-			}	
+			}
+            total_score += value(matrix_, 0,0);
+#ifdef SEQAN_HIRSCHBERG_DEBUG_CUT
+            std::cout << "alignment score is " << total_score << std::endl << std::endl;
+#endif
 
 			/* TRACE BACK */
 			finger1 = begin(matrix_);
@@ -697,10 +710,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 					dp = sg;
 				}
 			}
-
-			// if computed the whole matrix max = alignment score
-			if(hs_complete == target)
-				total_score = c_score[_end2(target)];
 
 #ifdef SEQAN_HIRSCHBERG_DEBUG_CUT
 			std::cout << "hirschberg calculates cut in column " << mid << " and row " << pointer[_end2(target)] << std::endl;

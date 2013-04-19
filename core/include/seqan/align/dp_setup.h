@@ -242,8 +242,11 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -319,8 +322,11 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
     typedef AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> TAlignConfig;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -401,10 +407,13 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -479,10 +488,13 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -564,9 +576,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
+    
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
 
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -650,8 +665,11 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -739,10 +757,13 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
@@ -811,10 +832,13 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
 
+    SEQAN_ASSERT_GEQ(length(seqH), 1u);
+    SEQAN_ASSERT_GEQ(length(seqV), 1u);
+
     String<TraceSegment_<unsigned, unsigned> > traceSegments;
 
     TSequenceHEntry seqHEntry = sequenceEntryForScore(scoringScheme, seqH, 0);
-    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 1);
+    TSequenceVEntry seqVEntry = sequenceEntryForScore(scoringScheme, seqV, 0);
 
     if (scoreGapExtendHorizontal(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenHorizontal(scoringScheme, seqHEntry, seqVEntry) ||
