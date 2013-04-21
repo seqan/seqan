@@ -11,7 +11,7 @@ def main():
     # sys.argv[3]: seqan trunk directory
     diffCollector = DiffCollector(sys.argv[2], sys.argv[3])
     id = diffCollector.getID().get()
-    url = "https://dalak.imp.fu-berlin.de/SUAsrv/static/register.html?id=" + id
+    url = "https://dalak.imp.fu-berlin.de/SUAsrv/static/register.html?SUAid=" + id
         
     # cmake run
     if(sys.argv[1] == "cmake"):

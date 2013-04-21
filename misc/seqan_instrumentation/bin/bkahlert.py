@@ -20,18 +20,18 @@ class DiffCollector(object):
         self.cMake_binary_dir = cMake_binary_dir
         self.src_dir = src_dir        
         
-        self.dirs        = dirs.Dirs(self.src_dir, [ ".git", ".svn", "bin", "build", "util", "misc", "docs", "docs2", "extras", "core" ], [ "*.o", "Thumbs.db", ".DS_Store", "CMakeCache.txt" ])
-        self.bin_dir        = self.dirs.get_abs_dir_path("misc/seqan_instrumentation/bin")
+        self.dirs = dirs.Dirs(self.src_dir, [ ".git", ".svn", "bin", "build", "util", "misc", "docs", "docs2", "extras", "core" ], [ "*.o", "Thumbs.db", ".DS_Store", "CMakeCache.txt" ])
+        self.bin_dir = self.dirs.get_abs_dir_path("misc/seqan_instrumentation/bin")
         try:
             os.mkdir(self.dirs.get_abs_dir_path("misc/seqan_instrumentation/last_revision_copy"))
         except Exception:
             pass
-        self.last_revision_dir    = self.dirs.get_abs_dir_path("misc/seqan_instrumentation/last_revision_copy")
+        self.last_revision_dir = self.dirs.get_abs_dir_path("misc/seqan_instrumentation/last_revision_copy")
         try:
             os.mkdir(self.dirs.get_abs_dir_path("misc/seqan_instrumentation/userdata"))
         except Exception:
             pass
-        self.userdata_dir    = self.dirs.get_abs_dir_path("misc/seqan_instrumentation/userdata")
+        self.userdata_dir = self.dirs.get_abs_dir_path("misc/seqan_instrumentation/userdata")
 
         # if possible save user ID in the user's home directory
         # otherwise use sub folder of SeqAn installation
@@ -45,10 +45,10 @@ class DiffCollector(object):
             if(os.path.isfile(old_id_file) and not os.path.isfile(self.id_file)):
                 shutil.move(old_id_file, self.id_file)
                 
-        self.id    = id.ID(self.id_file)
+        self.id = id.ID(self.id_file)
 
-        self.stats_file        = self.dirs.get_abs_file_path("misc/seqan_instrumentation/userdata/" + self.id.get() + "_stats.txt")
-        self.stats        = stats.Stats(cMake_binary_dir, src_dir, self.stats_file)
+        self.stats_file = self.dirs.get_abs_file_path("misc/seqan_instrumentation/userdata/" + self.id.get() + "_stats.txt")
+        self.stats = stats.Stats(cMake_binary_dir, src_dir, self.stats_file)
         self.stats.save("id", self.id.get())
         
     def getID(self):
