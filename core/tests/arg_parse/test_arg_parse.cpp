@@ -57,6 +57,11 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_int_long_argument);
     SEQAN_CALL_TEST(test_non_int_argument);
 
+    // Call the int64 option tests
+    SEQAN_CALL_TEST(test_int64_short_argument);
+    SEQAN_CALL_TEST(test_int64_long_argument);
+    SEQAN_CALL_TEST(test_non_int64_argument);
+
     // Call the double option tests
     SEQAN_CALL_TEST(test_double_short_argument);
     SEQAN_CALL_TEST(test_double_long_argument);

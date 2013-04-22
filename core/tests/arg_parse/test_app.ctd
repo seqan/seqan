@@ -16,6 +16,9 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--integer" isList="false">
 			<mapping referenceName="test_app.integer" />
 		</clielement>
+		<clielement optionIdentifier="--int64" isList="false">
+			<mapping referenceName="test_app.int64" />
+		</clielement>
 		<clielement optionIdentifier="--string" isList="true">
 			<mapping referenceName="test_app.string" />
 		</clielement>
@@ -43,6 +46,7 @@ The second one contains formating &lt;bla&gt;.
 		<NODE name="test_app" description="This is a test-app.">
 			<ITEM name="double" value="" type="double" description="set a double option"  />
 			<ITEM name="integer" value="" type="int" description="set an integer option"  />
+			<ITEM name="int64" value="" type="int" description="set a 64 bit integer option"  />
 			<ITEMLIST name="string" type="string" description="set a string option" >
 			</ITEMLIST>
 			<ITEM name="in" value="" type="string" description="set an input file" tags="input file"  />

@@ -386,7 +386,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 
         if (isStringArgument(opt) || isBooleanOption(opt))
             type = "string";
-        else if (isIntegerArgument(opt))
+        else if (isIntegerArgument(opt) || isInt64Argument(opt))
             type = "int";
         else if (isDoubleArgument(opt))
             type = "double";
@@ -472,7 +472,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 
         if (isStringArgument(arg))
             type = "string";
-        else if (isIntegerArgument(arg))
+        else if (isIntegerArgument(arg) || isInt64Argument(arg))
             type = "int";
         else if (isDoubleArgument(arg))
             type = "double";

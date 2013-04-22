@@ -133,6 +133,7 @@ inline bool _convertArgumentValue(bool & dst, ArgParseOption const & opt, std::s
 
 class ArgParseArgument;
 inline bool isIntegerArgument(ArgParseArgument const & me);
+inline bool isInt64Argument(ArgParseArgument const & me);
 inline bool isDoubleArgument(ArgParseArgument const & me);
 inline bool isStringArgument(ArgParseArgument const & me);
 
@@ -154,7 +155,7 @@ inline bool _convertArgumentValue(unsigned int & dst, ArgParseArgument const & o
 
 inline bool _convertArgumentValue(__int64 & dst, ArgParseArgument const & opt, std::string const & src)
 {
-    if (!isIntegerArgument(opt))
+    if (!isIntegerArgument(opt) && !isInt64Argument(opt))
         return false;
 
     return _tryCast(dst, src);
@@ -162,7 +163,7 @@ inline bool _convertArgumentValue(__int64 & dst, ArgParseArgument const & opt, s
 
 inline bool _convertArgumentValue(__uint64 & dst, ArgParseArgument const & opt, std::string const & src)
 {
-    if (!isIntegerArgument(opt))
+    if (!isIntegerArgument(opt) && !isInt64Argument(opt))
         return false;
 
     return _tryCast(dst, src);

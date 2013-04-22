@@ -50,7 +50,13 @@ const char * A_INT_0 = "test";
 const char * A_INT_1 = "-i";
 const char * A_INT_2 = "--integer";
 const char * A_INT_3 = "1";
-const char * A_INT_5 = "not-an-int";
+const char * A_INT_5 = "3000000000";  // too large!
+
+const char * A_INT64_0 = "test";
+const char * A_INT64_1 = "-i";
+const char * A_INT64_2 = "--int64";
+const char * A_INT64_3 = "3000000000";
+const char * A_INT64_5 = "not-an-int";
 
 const char * A_DOUBLE_0 = "test";
 const char * A_DOUBLE_1 = "-d";
@@ -115,6 +121,11 @@ void setupDoubleParser(ArgumentParser & parser)
 void setupIntegerParser(ArgumentParser & parser)
 {
     addOption(parser, ArgParseOption("i", "integer", "set an integer option", ArgParseArgument::INTEGER));
+}
+
+void setupInt64Parser(ArgumentParser & parser)
+{
+    addOption(parser, ArgParseOption("i", "int64", "set a 64 bit integer option", ArgParseArgument::INT64));
 }
 
 void setupStringParser(ArgumentParser & parser)
@@ -227,7 +238,66 @@ SEQAN_DEFINE_TEST(test_non_int_argument)
     std::stringstream outputStream;
 
     SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
-    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given value 'not-an-int' cannot be casted to integer\n");
+    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given value '3000000000' cannot be casted to integer\n");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+}
+
+SEQAN_DEFINE_TEST(test_int64_short_argument)
+{
+
+    ArgumentParser parser;
+    setupInt64Parser(parser);
+
+    int argc = 3;
+    const char * argv[3] = {A_INT64_0, A_INT64_1, A_INT64_3};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    __int64 integerValue = 0;
+    SEQAN_ASSERT(getOptionValue(integerValue, parser, "int64"));
+    SEQAN_ASSERT_EQ(integerValue, 3000000000ll);
+}
+
+SEQAN_DEFINE_TEST(test_int64_long_argument)
+{
+
+    ArgumentParser parser;
+    setupInt64Parser(parser);
+
+    int argc = 3;
+    const char * argv[3] = {A_INT64_0, A_INT64_2, A_INT64_3};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    __int64 integerValue = 0;
+    SEQAN_ASSERT(getOptionValue(integerValue, parser, "int64"));
+    SEQAN_ASSERT_EQ(integerValue, 3000000000ll);
+}
+
+SEQAN_DEFINE_TEST(test_non_int64_argument)
+{
+
+    ArgumentParser parser;
+    setupInt64Parser(parser);
+
+    int argc = 3;
+    const char * argv[3] = {A_INT64_0, A_INT64_1, A_INT64_5};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
+    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given value 'not-an-int' cannot be casted to int64\n");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 }
 
