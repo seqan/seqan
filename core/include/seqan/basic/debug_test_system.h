@@ -56,6 +56,8 @@
 #include <Windows.h>    // DeleteFile()
 #else  // #ifdef PLATFORM_WINDOWS
 #include <unistd.h>     // unlink()
+#include <sys/stat.h>   // mkdir()
+#include <dirent.h>     // DIR
 #if SEQAN_HAS_EXECINFO
 #include <execinfo.h>   // backtrace(), backtrace_symbols()
 #endif  // #if SEQAN_HAS_EXECINFO
@@ -138,7 +140,7 @@ bool foo(MyEnum x) {
 #define SEQAN_CHECK(_arg1, ...)                                         \
     do {                                                                \
         if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
-                                          (_arg1), #_arg1,              \
+                                          (_arg1), # _arg1,              \
                                           __VA_ARGS__)) {               \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -293,7 +295,8 @@ namespace seqan {
 ..include:seqan/basic.h
  */
 template <typename TStream>
-void printDebugLevel(TStream &stream) {
+void printDebugLevel(TStream & stream)
+{
     stream << "SEQAN_ENABLE_DEBUG == " << SEQAN_ENABLE_DEBUG << std::endl;
     stream << "SEQAN_ENABLE_TESTING == " << SEQAN_ENABLE_TESTING << std::endl;
     stream << "SEQAN_ENABLE_CHECKPOINTS == " << SEQAN_ENABLE_CHECKPOINTS << std::endl;
@@ -301,140 +304,135 @@ void printDebugLevel(TStream &stream) {
 }
 
 #if defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO
-    
-    template <typename TSize>
-    void printStackTrace(TSize /*maxFrames*/)
-    {
-    }
-    
+
+template <typename TSize>
+void printStackTrace(TSize /*maxFrames*/)
+{}
+
 #else
-    
-    // print a demangled stack backtrace of the caller function
-    template <typename TSize>
-    void printStackTrace(TSize maxFrames)
-    {
-        void *addrlist[256];
-        char temp[4096];
-        char addr[20];
-        char offset[20];
-        
-        size_t size;
-        int status;
-        char *symname;
-        char *demangled;
-        
-        std::cerr << std::endl << "stack trace:" << std::endl;
 
-        int addrlist_len = backtrace(addrlist, maxFrames);
-        char** symbollist = backtrace_symbols(addrlist, addrlist_len);
-        for (int i = 1; i < addrlist_len; ++i)
+// print a demangled stack backtrace of the caller function
+template <typename TSize>
+void printStackTrace(TSize maxFrames)
+{
+    void * addrlist[256];
+    char temp[4096];
+    char addr[20];
+    char offset[20];
+
+    size_t size;
+    int status;
+    char * symname;
+    char * demangled;
+
+    std::cerr << std::endl << "stack trace:" << std::endl;
+
+    int addrlist_len = backtrace(addrlist, maxFrames);
+    char ** symbollist = backtrace_symbols(addrlist, addrlist_len);
+    for (int i = 1; i < addrlist_len; ++i)
+    {
+        offset[0] = 0;
+        addr[0] = 0;
+        demangled = NULL;
+
+        // LINUX FORMAT:
+        //          ./sam2svg [0x473b8c]
+        //          /lib/libc.so.6 [0x7f40d2526f60]
+        //          ./sam2svg(_Z2f3v+0x10) [0x47200c]
+        //          ./sam2svg(_Z2f2v+0xd) [0x472021]
+        //          ./sam2svg(main+0x1367) [0x4735fc]
+        //          /lib/libc.so.6(__libc_start_main+0xe6) [0x7f40d25131a6]
+        //
+
+        if (3 == sscanf(symbollist[i], "%*[^(](%4095[^+]+%[^)]) %s", temp, offset, addr))
         {
-            offset[0] = 0;
-            addr[0] = 0;
-            demangled = NULL;
-
-            // LINUX FORMAT:
-            //          ./sam2svg [0x473b8c]
-            //          /lib/libc.so.6 [0x7f40d2526f60]
-            //          ./sam2svg(_Z2f3v+0x10) [0x47200c]
-            //          ./sam2svg(_Z2f2v+0xd) [0x472021]
-            //          ./sam2svg(main+0x1367) [0x4735fc]
-            //          /lib/libc.so.6(__libc_start_main+0xe6) [0x7f40d25131a6]
-            //
-            
-            if (3 == sscanf(symbollist[i], "%*[^(](%4095[^+]+%[^)]) %s", temp, offset, addr))
+            symname = temp;
+            if (NULL != (demangled = abi::__cxa_demangle(temp, NULL, &size, &status)))
             {
-                symname = temp;
-                if (NULL != (demangled = abi::__cxa_demangle(temp, NULL, &size, &status))) 
-                {
-                    symname = demangled;
-                }
+                symname = demangled;
             }
-
-            // MAC OS X FORMAT:
-            //          1   sam2svg                             0x0000000100003a39 _ZN5seqanL28signalHandlerPrintStackTraceEi + 21
-            //          2   libSystem.B.dylib                   0x00007fff87a6d67a _sigtramp + 26
-            //          3   libSystem.B.dylib                   0x00007fff87a76df7 tiny_free_do_recirc_to_depot + 980
-            //          4   sam2svg                             0x00000001000021b9 _Z2f2v + 9
-            //          5   sam2svg                             0x00000001000034b1 main + 4546
-            //          6   sam2svg                             0x0000000100002190 start + 52
-            
-            else if (3 == sscanf(symbollist[i], "%*d %*s %s %s %*s %s", addr, temp, offset))
-            {
-                symname = temp;
-                if (NULL != (demangled = abi::__cxa_demangle(temp, NULL, &size, &status))) 
-                {
-                    symname = demangled;
-                }
-            }
-            
-            // LINUX FORMAT:
-            //          ./sam2svg [0x473b8c]
-            //          /lib/libc.so.6 [0x7f40d2526f60]
-
-            else if (2 == sscanf(symbollist[i], "%s %s", temp, addr))
-            {
-                symname = temp;
-            } 
-            
-            // DEFAULT:
-            else
-            {
-                symname = symbollist[i];
-            }
-            
-            std::cerr << std::setw(3) << i - 1;
-            std::cerr << std::setw(20) << addr;
-            std::cerr << "  " << symname;
-            if (offset[0] != 0) std::cerr << " + " << offset;
-            std::cerr << std::endl;
-
-            free(demangled);
         }
+        // MAC OS X FORMAT:
+        //          1   sam2svg                             0x0000000100003a39 _ZN5seqanL28signalHandlerPrintStackTraceEi + 21
+        //          2   libSystem.B.dylib                   0x00007fff87a6d67a _sigtramp + 26
+        //          3   libSystem.B.dylib                   0x00007fff87a76df7 tiny_free_do_recirc_to_depot + 980
+        //          4   sam2svg                             0x00000001000021b9 _Z2f2v + 9
+        //          5   sam2svg                             0x00000001000034b1 main + 4546
+        //          6   sam2svg                             0x0000000100002190 start + 52
+        else if (3 == sscanf(symbollist[i], "%*d %*s %s %s %*s %s", addr, temp, offset))
+        {
+            symname = temp;
+            if (NULL != (demangled = abi::__cxa_demangle(temp, NULL, &size, &status)))
+            {
+                symname = demangled;
+            }
+        }
+        // LINUX FORMAT:
+        //          ./sam2svg [0x473b8c]
+        //          /lib/libc.so.6 [0x7f40d2526f60]
+        else if (2 == sscanf(symbollist[i], "%s %s", temp, addr))
+        {
+            symname = temp;
+        }
+        // DEFAULT:
+        else
+        {
+            symname = symbollist[i];
+        }
+
+        std::cerr << std::setw(3) << i - 1;
+        std::cerr << std::setw(20) << addr;
+        std::cerr << "  " << symname;
+        if (offset[0] != 0)
+            std::cerr << " + " << offset;
         std::cerr << std::endl;
+
+        free(demangled);
+    }
+    std::cerr << std::endl;
     // Only the array must be freed according to man page, not the contents.
-        free(symbollist);
-    }
-    
-    static void signalHandlerPrintStackTrace(int signum)
-    {
-        std::cerr << std::endl;
-        printStackTrace(20);
-        signal(signum, SIG_DFL);
-        kill(getpid(), signum);
-    }   
-    
-    inline int _deploySignalHandlers()
-    {
-        signal(SIGSEGV, signalHandlerPrintStackTrace);  // segfault
-        signal(SIGFPE, signalHandlerPrintStackTrace);   // divide by zero
-        // ...
-        return 0;
-    }
+    free(symbollist);
+}
+
+static void signalHandlerPrintStackTrace(int signum)
+{
+    std::cerr << std::endl;
+    printStackTrace(20);
+    signal(signum, SIG_DFL);
+    kill(getpid(), signum);
+}
+
+inline int _deploySignalHandlers()
+{
+    signal(SIGSEGV, signalHandlerPrintStackTrace);      // segfault
+    signal(SIGFPE, signalHandlerPrintStackTrace);       // divide by zero
+    // ...
+    return 0;
+}
 
 #if SEQAN_ENABLE_DEBUG
 
-    // automatically deploy signal handlers that output the stack trace on a trap (in debug mode)
+// automatically deploy signal handlers that output the stack trace on a trap (in debug mode)
 
-    template <typename T>
-    struct SignalHandlersDummy_
-    {
-        static const int i;
-    };
+template <typename T>
+struct SignalHandlersDummy_
+{
+    static const int i;
+};
 
-    template <typename T>
-    const int SignalHandlersDummy_<T>::i = _deploySignalHandlers();
+template <typename T>
+const int SignalHandlersDummy_<T>::i = _deploySignalHandlers();
 
-    namespace {
+namespace {
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif  // ifdef __clang__
-    volatile int signalHandlersDummy_ = SignalHandlersDummy_<void>::i;
+volatile int signalHandlersDummy_ = SignalHandlersDummy_<void>::i;
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif  // ifdef __clang__
-  }
+}
 
 #endif  // #if SEQAN_ENABLE_DEBUG
 #endif  // defined(PLATFORM_WINDOWS) || !SEQAN_HAS_EXECINFO
@@ -445,83 +443,95 @@ void printDebugLevel(TStream &stream) {
 // This namespace contains the variables and functions that are used
 // in the macros below to perform the tests.
 namespace ClassTest {
-    // Raised when an assertion fails in test mode.
-    struct AssertionFailedException {};
+// Raised when an assertion fails in test mode.
+struct AssertionFailedException {};
 
-    // Container for static global data for the tests.
-    struct StaticData {
-        // Number of tests that were run.
-        static int &testCount() {
-            static int result = 0;
-            return result;
-        }
+// Container for static global data for the tests.
+struct StaticData
+{
+    // Number of tests that were run.
+    static int & testCount()
+    {
+        static int result = 0;
+        return result;
+    }
 
-        // Number of errors that occured.
-        static int &errorCount() {
-            static int result = 0;
-            return result;
-        }
+    // Number of errors that occured.
+    static int & errorCount()
+    {
+        static int result = 0;
+        return result;
+    }
 
-        // Number of skipped tests.
-        static int &skippedCount() {
-            static int result = 0;
-            return result;
-        }
+    // Number of skipped tests.
+    static int & skippedCount()
+    {
+        static int result = 0;
+        return result;
+    }
 
-        // Flag whether there was an error in this test.
-        static bool &thisTestOk() {
-            static bool result = 0;
-            return result;
-        }
+    // Flag whether there was an error in this test.
+    static bool & thisTestOk()
+    {
+        static bool result = 0;
+        return result;
+    }
 
-        // Flag whether this test was skipped.
-        static bool &thisTestSkipped() {
-            static bool result = 0;
-            return result;
-        }
+    // Flag whether this test was skipped.
+    static bool & thisTestSkipped()
+    {
+        static bool result = 0;
+        return result;
+    }
 
-        // Name of the current test.
-        static const char *&currentTestName() {
-            const char *defaultValue = "";
-            static const char *result = const_cast<char*>(defaultValue);
-            return result;
-        }
+    // Name of the current test.
+    static const char * & currentTestName()
+    {
+        const char * defaultValue = "";
+        static const char * result = const_cast<char *>(defaultValue);
+        return result;
+    }
 
-        // Base path to the binary.  Extrapolated from __FILE__.
-        static char *&basePath() {
-            const char *defaultValue = ".";
-            static char *result = const_cast<char*>(defaultValue);
-            return result;
-        }
+    // Base path to the binary.  Extrapolated from __FILE__.
+    static char * & basePath()
+    {
+        const char * defaultValue = ".";
+        static char * result = const_cast<char *>(defaultValue);
+        return result;
+    }
 
-        // Base path to the directory containing "core" and "extras." 
-        // Extrapolated from __FILE__.
-        static char *&pathToRoot() {
-            const char *defaultValue = ".";
-            static char *result = const_cast<char*>(defaultValue);
-            return result;
-        }
+    // Base path to the directory containing "core" and "extras."
+    // Extrapolated from __FILE__.
+    static char * & pathToRoot()
+    {
+        const char * defaultValue = ".";
+        static char * result = const_cast<char *>(defaultValue);
+        return result;
+    }
 
-        // Total number of checkpoints in header file.
-        static int &totalCheckPointCount() {
-            static int result = 0;
-            return result;
-        }
+    // Total number of checkpoints in header file.
+    static int & totalCheckPointCount()
+    {
+        static int result = 0;
+        return result;
+    }
 
-        // Total number of checkpoints found in binary files.
-        static int &foundCheckPointCount() {
-            static int result = 0;
-            return result;
-        }
+    // Total number of checkpoints found in binary files.
+    static int & foundCheckPointCount()
+    {
+        static int result = 0;
+        return result;
+    }
 
-        // Names of temporary files as returned by tempFileName.  This
-        // global state is used to remove any existing such files
-        // after completing the testsuite.
-        static ::std::vector<std::string> & tempFileNames() {
-            static ::std::vector<std::string> filenames;
-            return filenames;
-        }
-    };
+    // Names of temporary files as returned by tempFileName.  This
+    // global state is used to remove any existing such files
+    // after completing the testsuite.
+    static::std::vector<std::string> & tempFileNames()
+    {
+        static::std::vector<std::string> filenames;
+        return filenames;
+    }
+};
 
 // Open a temporary file, unlink it, return posix handle.  Note: This has not been tested yet.
 // TODO(holtgrew): Not used yet and Windows code does not work.
@@ -550,7 +560,8 @@ int openTempFile() {
 // Return the path to a temporary file, in a static buffer in this
 // function.  This is not thread safe!
 inline
-const char *tempFileName() {
+const char * tempFileName()
+{
 //IOREV _duplicate_ overlaps with some stuff in system/file_sync.h, should be moved to io-module
     static char fileNameBuffer[1000];
 #ifdef PLATFORM_WINDOWS_VS
@@ -558,24 +569,31 @@ const char *tempFileName() {
     //  Gets the temp path env string (no guarantee it's a valid path).
     DWORD dwRetVal = 0;
     dwRetVal = GetTempPath(1000,            // length of the buffer
-                           filePathBuffer); // buffer for path 
+                           filePathBuffer); // buffer for path
     if (dwRetVal > 1000 || (dwRetVal == 0))
     {
         std::cerr << "GetTempPath failed" << std::endl;
         exit(1);
     }
+
     UINT uRetVal   = 0;
     uRetVal = GetTempFileName(filePathBuffer,   // directory for tmp files
-                              TEXT("SEQAN."),   // temp file name prefix 
-                              0,                // create unique name 
-                              fileNameBuffer);  // buffer for name 
+                              TEXT("SEQAN."),   // temp file name prefix
+                              0,                // create unique name
+                              fileNameBuffer);  // buffer for name
+
     if (uRetVal == 0)
     {
         std::cerr << "GetTempFileName failed" << std::endl;
         exit(1);
     }
+
+    DeleteFile(fileNameBuffer);
+    CreateDirectoryA(fileNameBuffer, NULL);
     StaticData::tempFileNames().push_back(fileNameBuffer);
+    strcat(fileNameBuffer, "\\test_file");
     return fileNameBuffer;
+
 #else  // ifdef PLATFORM_WINDOWS_VS
     strcpy(fileNameBuffer, "/tmp/SEQAN.XXXXXXXXXXXXXXXXXXXX");
 #ifdef PLATFORM_WINDOWS_MINGW
@@ -585,144 +603,250 @@ const char *tempFileName() {
     int _tmp = mkstemp(fileNameBuffer);
     (void) _tmp;
     unlink(fileNameBuffer);
-#endif  // #ifdef PLATFORM_WINDOWS_MINGW
+    mkdir(fileNameBuffer, 0777);
+
     StaticData::tempFileNames().push_back(fileNameBuffer);
+
+    strcat(fileNameBuffer, "/test_file");
+#endif  // #ifdef PLATFORM_WINDOWS_MINGW
     return fileNameBuffer;
+
 #endif  // ifdef PLATFORM_WINDOWS_VS
 }
 
-    // Initialize the testing infrastructure.
-    //
-    // Used through SEQAN_BEGIN_TESTSUITE(test_name)
-    inline
-    void beginTestSuite(const char *testSuiteName, const char *argv0) {
-        // First things first: Print test suite name and current debug level.
-        std::cout << "TEST SUITE " << testSuiteName << std::endl;
-        printDebugLevel(std::cout);
-        (void)testSuiteName;
-        StaticData::testCount() = 0;
-        StaticData::skippedCount() = 0;
-        StaticData::errorCount() = 0;
-        StaticData::totalCheckPointCount() = 0;
-        StaticData::foundCheckPointCount() = 0;
-        // Get path to argv0.
-        const char *end = argv0;
-        const char *ptr = std::min(strchr(argv0, '\\'), strchr(argv0, '/'));  // On Windows, we can have both \ and /.
-        for (; ptr != 0; ptr = std::min(strchr(ptr+1, '\\'), strchr(ptr+1, '/')))
-            end = ptr;
-        int rpos = end - argv0;
-        if (rpos <= 0) {
-            StaticData::basePath() = new char[2];
-            strcpy(StaticData::basePath(), ".");
-        } else {
-            int len = rpos;
-            StaticData::basePath() = new char[len];
-            strncpy(StaticData::basePath(), argv0, len);
+// Initialize the testing infrastructure.
+//
+// Used through SEQAN_BEGIN_TESTSUITE(test_name)
+inline
+void beginTestSuite(const char * testSuiteName, const char * argv0)
+{
+    // First things first: Print test suite name and current debug level.
+    std::cout << "TEST SUITE " << testSuiteName << std::endl;
+    printDebugLevel(std::cout);
+    (void)testSuiteName;
+    StaticData::testCount() = 0;
+    StaticData::skippedCount() = 0;
+    StaticData::errorCount() = 0;
+    StaticData::totalCheckPointCount() = 0;
+    StaticData::foundCheckPointCount() = 0;
+    // Get path to argv0.
+    const char * end = argv0;
+    const char * ptr = std::min(strchr(argv0, '\\'), strchr(argv0, '/'));     // On Windows, we can have both \ and /.
+    for (; ptr != 0; ptr = std::min(strchr(ptr + 1, '\\'), strchr(ptr + 1, '/')))
+        end = ptr;
+    int rpos = end - argv0;
+    if (rpos <= 0)
+    {
+        StaticData::basePath() = new char[2];
+        strcpy(StaticData::basePath(), ".");
+    }
+    else
+    {
+        int len = rpos;
+        StaticData::basePath() = new char[len];
+        strncpy(StaticData::basePath(), argv0, len);
+    }
+    // Get path to projects.
+    const char * file = __FILE__;
+    int pos = -1;
+    for (size_t i = 0; i < strlen(file) - strlen("core"); ++i)
+    {
+        if (strncmp(file + i, "core", strlen("core")) == 0)
+        {
+            pos = i;
         }
-        // Get path to projects.
-        const char *file = __FILE__;
-        int pos = -1;
-        for (size_t i = 0; i < strlen(file) - strlen("core"); ++i) {
-            if (strncmp(file + i, "core", strlen("core")) == 0) {
-                pos = i;
+    }
+    for (; pos > 0 && *(file + pos - 1) != '/' &&  *(file + pos - 1) != '\\'; --pos)
+        continue;
+    if (pos == -1)
+    {
+        std::cerr << "Could not extrapolate path to repository from __FILE__ == \""
+                  << __FILE__ << "\"" << std::endl;
+        exit(1);
+    }
+    StaticData::pathToRoot() = new char[pos];
+    strncpy(StaticData::pathToRoot(), file, pos);
+    StaticData::pathToRoot()[pos - 1] = '\0';
+#ifdef PLATFORM_WINDOWS_VS
+    // Set CRT reporting such that everything goes to stderr and there are
+    // no popups causing timeouts.
+    _set_error_mode(_OUT_TO_STDERR);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif  // PLATFORM_WINDOWS_VS
+}
+
+// Run test suite finalization.
+//
+// Used through SEQAN_END_TESTSUITE
+//
+// Prints a bottom banner with the error count and returns the
+// program's return code.
+inline
+int endTestSuite()
+{
+    delete[] StaticData::basePath();
+    delete[] StaticData::pathToRoot();
+
+    std::cout << "**************************************" << std::endl;
+    std::cout << " Total Check Points : " << StaticData::totalCheckPointCount() << std::endl;
+    std::cout << " Found Check Points : " << StaticData::foundCheckPointCount() << std::endl;
+    std::cout << " Lost Check Points  : " << StaticData::totalCheckPointCount() - StaticData::foundCheckPointCount() << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
+    std::cout << " Total Tests: " << StaticData::testCount() << std::endl;
+    std::cout << " Skipped:     " << StaticData::skippedCount() << std::endl;
+    std::cout << " Errors:      " << StaticData::errorCount() << std::endl;
+    std::cout << "**************************************" << std::endl;
+    // TODO(holtgrew): Re-enable that all check points have to be found for the test to return 1;
+    /*
+    if (StaticData::totalCheckPointCount() != StaticData::foundCheckPointCount())
+        return 1;
+    */
+    // Delete all temporary files that still exist.
+    for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i)
+    {
+#ifdef PLATFORM_WINDOWS
+        HANDLE hFind;
+        WIN32_FIND_DATA data;
+
+        std::string temp = StaticData::tempFileNames()[i].c_str() + std::string("\\*");
+        hFind = FindFirstFile(temp.c_str(), &data);
+        if (hFind != INVALID_HANDLE_VALUE)
+        {
+            do
+            {
+                std::string tempp = StaticData::tempFileNames()[i].c_str() + std::string("\\") + data.cFileName;
+                DeleteFile(tempp.c_str());
+            }
+            while (FindNextFile(hFind, &data));
+            FindClose(hFind);
+        }
+
+        RemoveDirectory(StaticData::tempFileNames()[i].c_str());
+#else  // #ifdef PLATFORM_WINDOWS
+        DIR * dpdf;
+        struct dirent * epdf;
+
+        dpdf = opendir(StaticData::tempFileNames()[i].c_str());
+        if (dpdf != NULL)
+        {
+            while ((epdf = readdir(dpdf)) != NULL)
+            {
+                std::string temp = StaticData::tempFileNames()[i].c_str() + std::string("/") + std::string(epdf->d_name);
+                unlink(temp.c_str());
             }
         }
-        for (; pos > 0 && *(file + pos - 1) != '/' &&  *(file + pos - 1) != '\\'; --pos)
-            continue;
-        if (pos == -1) {
-            std::cerr << "Could not extrapolate path to repository from __FILE__ == \""
-                      << __FILE__ << "\"" << std::endl;
-            exit(1);
-        }
-        StaticData::pathToRoot() = new char[pos];
-        strncpy(StaticData::pathToRoot(), file, pos);
-        StaticData::pathToRoot()[pos-1] = '\0';
-#ifdef PLATFORM_WINDOWS_VS
-        // Set CRT reporting such that everything goes to stderr and there are
-        // no popups causing timeouts.
-        _set_error_mode(_OUT_TO_STDERR);
-        _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-        _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
-        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
-        _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
-        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-        _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-#endif  // PLATFORM_WINDOWS_VS
-    }
 
-    // Run test suite finalization.
-    //
-    // Used through SEQAN_END_TESTSUITE
-    //
-    // Prints a bottom banner with the error count and returns the
-    // program's return code.
-    inline
-    int endTestSuite() {
-        delete[] StaticData::basePath();
-        delete[] StaticData::pathToRoot();
-
-        std::cout << "**************************************" << std::endl;
-        std::cout << " Total Check Points : " << StaticData::totalCheckPointCount() << std::endl;
-        std::cout << " Found Check Points : " << StaticData::foundCheckPointCount() << std::endl;
-        std::cout << " Lost Check Points  : " << StaticData::totalCheckPointCount() - StaticData::foundCheckPointCount() << std::endl;
-        std::cout << "--------------------------------------" << std::endl;
-        std::cout << " Total Tests: " << StaticData::testCount() << std::endl;
-        std::cout << " Skipped:     " << StaticData::skippedCount() << std::endl;
-        std::cout << " Errors:      " << StaticData::errorCount() << std::endl;
-        std::cout << "**************************************" << std::endl;
-        // TODO(holtgrew): Re-enable that all check points have to be found for the test to return 1;
-        /*
-        if (StaticData::totalCheckPointCount() != StaticData::foundCheckPointCount())
-            return 1;
-        */
-        // Delete all temporary files that still exist.
-        for (unsigned i = 0; i < StaticData::tempFileNames().size(); ++i) {
-#ifdef PLATFORM_WINDOWS
-            DeleteFile(StaticData::tempFileNames()[i].c_str());
-#else  // #ifdef PLATFORM_WINDOWS
-            unlink(StaticData::tempFileNames()[i].c_str());
+        rmdir(StaticData::tempFileNames()[i].c_str());
 #endif  // #ifdef PLATFORM_WINDOWS
-        }
-
-        if (StaticData::errorCount() != 0)
-            return 1;
-        return 0;
     }
 
-    // Run test initialization.
-    inline
-    void beginTest(const char *testName) {
-        StaticData::currentTestName() = testName;
-        StaticData::thisTestOk() = true;
-        StaticData::thisTestSkipped() = false;
-        StaticData::testCount() += 1;
-    }
+    if (StaticData::errorCount() != 0)
+        return 1;
 
-    // Run test finalization.
-    inline
-    void endTest() {
-        if (StaticData::thisTestSkipped()) {
-            std::cout << StaticData::currentTestName() << " SKIPPED" << std::endl;
-        } else if (StaticData::thisTestOk()) {
-            std::cout << StaticData::currentTestName() << " OK" << std::endl;
-        } else {
-            std::cerr << StaticData::currentTestName() << " FAILED" << std::endl;
-        }
-    }
+    return 0;
+}
 
-    // Marks the current test as "skipped".
-    inline
-    void skipCurrentTest() {
-        StaticData::thisTestSkipped() = true;
-        StaticData::skippedCount() += 1;
-    }
+// Run test initialization.
+inline
+void beginTest(const char * testName)
+{
+    StaticData::currentTestName() = testName;
+    StaticData::thisTestOk() = true;
+    StaticData::thisTestSkipped() = false;
+    StaticData::testCount() += 1;
+}
 
-    // Called by the macro SEQAN_ASSERT_FAIL.
-    inline void forceFail(const char *file, int line,
-                          const char *comment, ...) {
+// Run test finalization.
+inline
+void endTest()
+{
+    if (StaticData::thisTestSkipped())
+    {
+        std::cout << StaticData::currentTestName() << " SKIPPED" << std::endl;
+    }
+    else if (StaticData::thisTestOk())
+    {
+        std::cout << StaticData::currentTestName() << " OK" << std::endl;
+    }
+    else
+    {
+        std::cerr << StaticData::currentTestName() << " FAILED" << std::endl;
+    }
+}
+
+// Marks the current test as "skipped".
+inline
+void skipCurrentTest()
+{
+    StaticData::thisTestSkipped() = true;
+    StaticData::skippedCount() += 1;
+}
+
+// Called by the macro SEQAN_ASSERT_FAIL.
+inline void forceFail(const char * file, int line,
+                      const char * comment, ...)
+{
+    StaticData::errorCount() += 1;
+    std::cerr << file << ":" << line << " FAILED! ";
+    if (comment)
+    {
+        std::cerr << " (";
+        va_list args;
+        va_start(args, comment);
+        vfprintf(stderr, comment, args);
+        va_end(args);
+        std::cerr << ")";
+    }
+    std::cerr << std::endl;
+}
+
+// Similar to forceFail above, but accepting a va_list parameter.
+inline void vforceFail(const char * file, int line,
+                       const char * comment, va_list argp)
+{
+    StaticData::errorCount() += 1;
+    std::cerr << file << ":" << line << " FAILED! ";
+    if (comment)
+    {
+        std::cerr << " (";
+        vfprintf(stderr, comment, argp);
+        std::cerr << ")";
+    }
+    std::cerr << std::endl;
+}
+
+// Same as forceFail above, but with comment set to 0.
+inline void forceFail(const char * file, int line)
+{
+    forceFail(file, line, 0);
+}
+
+// Called by the macro SEQAN_ASSERT_EQ.
+//
+// Tests that the given two value are equal.  Returns true iff the
+// two values are equal.
+template <typename T1, typename T2>
+bool testEqual(char const * file, int line,
+               T1 const & value1, char const * expression1,
+               T2 const & value2, char const * expression2,
+               char const * comment, ...)
+{
+    if (!(value1 == value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
         StaticData::errorCount() += 1;
-        std::cerr << file << ":" << line << " FAILED! ";
-        if (comment) {
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " == " << expression2 << " was: " << value1
+                  << " != " << value2;
+        if (comment)
+        {
             std::cerr << " (";
             va_list args;
             va_start(args, comment);
@@ -731,740 +855,750 @@ const char *tempFileName() {
             std::cerr << ")";
         }
         std::cerr << std::endl;
+        return false;
     }
+    return true;
+}
 
-    // Similar to forceFail above, but accepting a va_list parameter.
-    inline void vforceFail(const char *file, int line,
-                           const char *comment, va_list argp) {
+// Similar to testEqual above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2>
+bool vtestEqual(const char * file, int line,
+                const T1 & value1, const char * expression1,
+                const T2 & value2, const char * expression2,
+                const char * comment, va_list argp)
+{
+    if (!(value1 == value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
         StaticData::errorCount() += 1;
-        std::cerr << file << ":" << line << " FAILED! ";
-        if (comment) {
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " == " << expression2 << " was: " << value1
+                  << " != " << value2;
+        if (comment)
+        {
             std::cerr << " (";
             vfprintf(stderr, comment, argp);
             std::cerr << ")";
         }
         std::cerr << std::endl;
+        return false;
     }
+    return true;
+}
 
-    // Same as forceFail above, but with comment set to 0.
-    inline void forceFail(const char *file, int line) {
-        forceFail(file, line, 0);
-    }
+// Same as testEqual above, but with comment set to 0.
+template <typename T1, typename T2>
+bool testEqual(const char * file, int line,
+               const T1 & value1, const char * expression1,
+               const T2 & value2, const char * expression2)
+{
+    return testEqual(file, line, value1, expression1, value2, expression2, 0);
+}
 
-    // Called by the macro SEQAN_ASSERT_EQ.
-    //
-    // Tests that the given two value are equal.  Returns true iff the
-    // two values are equal.
-    template <typename T1, typename T2>
-    bool testEqual(char const * file, int line,
-                   T1 const & value1, char const * expression1,
-                   T2 const & value2, char const * expression2,
-                   char const * comment, ...) {
-        if (!(value1 == value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " == " << expression2 << " was: " << value1
-                      << " != " << value2;
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testEqual above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2>
-    bool vtestEqual(const char *file, int line,
-                    const T1 &value1, const char *expression1,
-                    const T2 &value2, const char *expression2,
-                    const char *comment, va_list argp) {
-        if (!(value1 == value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " == " << expression2 << " was: " << value1
-                      << " != " << value2;
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testEqual above, but with comment set to 0.
-    template <typename T1, typename T2>
-    bool testEqual(const char *file, int line,
-                   const T1 &value1, const char *expression1,
-                   const T2 &value2, const char *expression2) {
-        return testEqual(file, line, value1, expression1, value2, expression2, 0);
-    }
-
-
-
-    // Called by the macro SEQAN_ASSERT_IN_DELTA.
-    //
-    // Tests that the given two value are equal.  Returns true iff the
-    // two values are equal.
-    template <typename T1, typename T2, typename T3>
-    bool testInDelta(const char *file, int line,
-                     const T1 &value1, const char *expression1,
-                     const T2 &value2, const char *expression2,
-                     const T3 &value3, const char *expression3,
-                     const char *comment, ...) {
-        if (!(value1 >= value2 - value3 && value1 <= value2 + value3)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " in [" << expression2 << " - " << expression3
-                      << ", " << expression2 << " + " << expression3 << "] was: " << value1
-                      << " not in [" << value2 - value3 << ", " << value2 + value3 << "]";
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testInDelta above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2, typename T3>
-    bool vtestInDelta(const char *file, int line,
-                      const T1 &value1, const char *expression1,
-                      const T2 &value2, const char *expression2,
-                      const T3 &value3, const char *expression3,
-                      const char *comment, va_list argp) {
-        if (!(value1 >= value2 - value3 && value1 <= value2 + value3)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " in [" << expression2 << " - " << expression3
-                      << ", " << expression2 << " + " << expression3 << "] was: " << value1
-                      << " not in [" << value2 - value3 << ", " << value2 + value3 << "]";
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testInDelta above, but with comment set to 0.
-    template <typename T1, typename T2, typename T3>
-    bool testInDelta(const char *file, int line,
-                     const T1 &value1, const char *expression1,
-                     const T2 &value2, const char *expression2,
-                     const T3 &value3, const char *expression3) {
-        return testInDelta(file, line, value1, expression1, value2, expression2, value3, expression3, 0);
-    }
-
-
-    // Called by the macro SEQAN_ASSERT_NEQ.
-    //
-    // Tests that the given two value are not equal.  Returns true iff
-    // the two values are equal.
-    template <typename T1, typename T2>
-    bool testNotEqual(const char *file, int line,
-                      const T1 &value1, const char *expression1,
-                      const T2 &value2, const char *expression2,
-                      const char *comment, ...) {
-        if (!(value1 != value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " != " << expression2 << " was: " << value1
-                      << " == " << value2;
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-    // Similar to testNotEqual above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2>
-    bool vtestNotEqual(const char *file, int line,
-                       const T1 &value1, const char *expression1,
-                       const T2 &value2, const char *expression2,
-                       const char *comment, va_list argp) {
-        if (!(value1 != value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " != " << expression2 << " was: " << value1
-                      << " == " << value2;
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testNotEqual above, but with comment set to 0.
-    template <typename T1, typename T2>
-    bool testNotEqual(const char *file, int line,
-                      const T1 &value1, const char *expression1,
-                      const T2 &value2, const char *expression2) {
-        return testNotEqual(file, line, value1, expression1, value2, expression2, 0);
-    }
-
-
-    // Called by the macro SEQAN_ASSERT_GEQ.
-    //
-    // Tests that the first value is greater than or equal to the
-    // second one.  Returns true iff the test yields true.
-    template <typename T1, typename T2>
-    bool testGeq(const char *file, int line,
-                 const T1 &value1, const char *expression1,
-                 const T2 &value2, const char *expression2,
-                 const char *comment, ...) {
-        if (!(value1 >= value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " >= " << expression2 << " was: " << value1
-                      << " < " << value2;
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testGeq above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2>
-    bool vtestGeq(const char *file, int line,
-                  const T1 &value1, const char *expression1,
-                  const T2 &value2, const char *expression2,
-                  const char *comment, va_list argp) {
-        if (!(value1 >= value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " >= " << expression2 << " was: " << value1
-                      << " < " << value2;
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-    // Same as testGeq above, but with comment set to 0.
-    template <typename T1, typename T2>
-    bool testGeq(const char *file, int line,
-                 const T1 &value1, const char *expression1,
-                 const T2 &value2, const char *expression2) {
-        return testGeq(file, line, value1, expression1, value2, expression2, 0);
-    }
-
-
-    // Called by the macro SEQAN_ASSERT_GT.
-    //
-    // Tests that the first value is greater than the second one.
-    // Returns true iff the test yields true.
-    template <typename T1, typename T2>
-    bool testGt(const char *file, int line,
-                const T1 &value1, const char *expression1,
-                const T2 &value2, const char *expression2,
-                const char *comment, ...) {
-        if (!(value1 > value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " > " << expression2 << " was: " << value1
-                      << " <= " << value2;
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testGt above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2>
-    bool vtestGt(const char *file, int line,
-                 const T1 &value1, const char *expression1,
-                 const T2 &value2, const char *expression2,
-                 const char *comment, va_list argp) {
-        if (!(value1 > value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " > " << expression2 << " was: " << value1
-                      << " <= " << value2;
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-                
-    // Same as testGt above, but with comment set to 0.
-    template <typename T1, typename T2>
-    bool testGt(const char *file, int line,
-                const T1 &value1, const char *expression1,
-                const T2 &value2, const char *expression2) {
-        return testGt(file, line, value1, expression1, value2, expression2, 0);
-    }
-
-
-    // Called by the macro SEQAN_ASSERT_LEQ.
-    //
-    // Tests that the first value is less than or equal to the second
-    // one.  Returns true iff the test yields true.
-    template <typename T1, typename T2>
-    bool testLeq(const char *file, int line,
-                 const T1 &value1, const char *expression1,
-                 const T2 &value2, const char *expression2,
-                 const char *comment, ...) {
-        if (!(value1 <= value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " <= " << expression2 << " was: " << value1
-                      << " > " << value2;
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testLeq above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2>
-    bool vtestLeq(const char *file, int line,
-                  const T1 &value1, const char *expression1,
-                  const T2 &value2, const char *expression2,
-                  const char *comment, va_list argp) {
-        if (!(value1 <= value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " <= " << expression2 << " was: " << value1
-                      << " > " << value2;
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testLeq above, but with comment set to 0.
-    template <typename T1, typename T2>
-    bool testLeq(const char *file, int line,
-                 const T1 &value1, const char *expression1,
-                 const T2 &value2, const char *expression2) {
-        return testLeq(file, line, value1, expression1, value2, expression2, 0);
-    }
-
-
-    // Called by the macro SEQAN_ASSERT_LT.
-    //
-    // Tests that the first value is greater than the second one.
-    // Returns true iff the test yields true.
-    template <typename T1, typename T2>
-    bool testLt(const char *file, int line,
-                const T1 &value1, const char *expression1,
-                const T2 &value2, const char *expression2,
-                const char *comment, ...) {
-        if (!(value1 < value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " < " << expression2 << " was: " << value1
-                      << " >= " << value2;
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testLt above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T1, typename T2>
-    bool vtestLt(const char *file, int line,
-                 const T1 &value1, const char *expression1,
-                 const T2 &value2, const char *expression2,
-                 const char *comment, va_list argp) {
-        if (!(value1 < value2)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression1 << " < " << expression2 << " was: " << value1
-                      << " >= " << value2;
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testLt above, but comment is 0.
-    template <typename T1, typename T2>
-    bool testLt(const char *file, int line,
-                const T1 &value1, const char *expression1,
-                const T2 &value2, const char *expression2) {
-        return testLt(file, line, value1, expression1, value2, expression2, 0);
-    }
-
-
-    // Called by the macro SEQAN_ASSERT.
-    //
-    // Test that the given argument evaluates to true.
-    template <typename T>
-    bool testTrue(const char *file, int line,
-                  const T &value_, const char *expression_,
-                  const char *comment, ...) {
-        if (!(value_)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression_ << " should be true but was " << (value_);
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Similar to testTrue above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T>
-    bool vtestTrue(const char *file, int line,
-                   const T &value_, const char *expression_,
-                   const char *comment, va_list argp) {
-        if (!(value_)) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression_ << " should be true but was " << (value_);
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testTrue above, but comment will automatically be set to 0.
-    template <typename T>
-    bool testTrue(const char *file, int line,
-                  const T &value_, const char *expression_)
+// Called by the macro SEQAN_ASSERT_IN_DELTA.
+//
+// Tests that the given two value are equal.  Returns true iff the
+// two values are equal.
+template <typename T1, typename T2, typename T3>
+bool testInDelta(const char * file, int line,
+                 const T1 & value1, const char * expression1,
+                 const T2 & value2, const char * expression2,
+                 const T3 & value3, const char * expression3,
+                 const char * comment, ...)
+{
+    if (!(value1 >= value2 - value3 && value1 <= value2 + value3))
     {
-        return testTrue(file, line, value_, expression_, 0);
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " in [" << expression2 << " - " << expression3
+                  << ", " << expression2 << " + " << expression3 << "] was: " << value1
+                  << " not in [" << value2 - value3 << ", " << value2 + value3 << "]";
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testInDelta above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2, typename T3>
+bool vtestInDelta(const char * file, int line,
+                  const T1 & value1, const char * expression1,
+                  const T2 & value2, const char * expression2,
+                  const T3 & value3, const char * expression3,
+                  const char * comment, va_list argp)
+{
+    if (!(value1 >= value2 - value3 && value1 <= value2 + value3))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " in [" << expression2 << " - " << expression3
+                  << ", " << expression2 << " + " << expression3 << "] was: " << value1
+                  << " not in [" << value2 - value3 << ", " << value2 + value3 << "]";
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testInDelta above, but with comment set to 0.
+template <typename T1, typename T2, typename T3>
+bool testInDelta(const char * file, int line,
+                 const T1 & value1, const char * expression1,
+                 const T2 & value2, const char * expression2,
+                 const T3 & value3, const char * expression3)
+{
+    return testInDelta(file, line, value1, expression1, value2, expression2, value3, expression3, 0);
+}
+
+// Called by the macro SEQAN_ASSERT_NEQ.
+//
+// Tests that the given two value are not equal.  Returns true iff
+// the two values are equal.
+template <typename T1, typename T2>
+bool testNotEqual(const char * file, int line,
+                  const T1 & value1, const char * expression1,
+                  const T2 & value2, const char * expression2,
+                  const char * comment, ...)
+{
+    if (!(value1 != value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " != " << expression2 << " was: " << value1
+                  << " == " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testNotEqual above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2>
+bool vtestNotEqual(const char * file, int line,
+                   const T1 & value1, const char * expression1,
+                   const T2 & value2, const char * expression2,
+                   const char * comment, va_list argp)
+{
+    if (!(value1 != value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " != " << expression2 << " was: " << value1
+                  << " == " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testNotEqual above, but with comment set to 0.
+template <typename T1, typename T2>
+bool testNotEqual(const char * file, int line,
+                  const T1 & value1, const char * expression1,
+                  const T2 & value2, const char * expression2)
+{
+    return testNotEqual(file, line, value1, expression1, value2, expression2, 0);
+}
+
+// Called by the macro SEQAN_ASSERT_GEQ.
+//
+// Tests that the first value is greater than or equal to the
+// second one.  Returns true iff the test yields true.
+template <typename T1, typename T2>
+bool testGeq(const char * file, int line,
+             const T1 & value1, const char * expression1,
+             const T2 & value2, const char * expression2,
+             const char * comment, ...)
+{
+    if (!(value1 >= value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " >= " << expression2 << " was: " << value1
+                  << " < " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testGeq above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2>
+bool vtestGeq(const char * file, int line,
+              const T1 & value1, const char * expression1,
+              const T2 & value2, const char * expression2,
+              const char * comment, va_list argp)
+{
+    if (!(value1 >= value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " >= " << expression2 << " was: " << value1
+                  << " < " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testGeq above, but with comment set to 0.
+template <typename T1, typename T2>
+bool testGeq(const char * file, int line,
+             const T1 & value1, const char * expression1,
+             const T2 & value2, const char * expression2)
+{
+    return testGeq(file, line, value1, expression1, value2, expression2, 0);
+}
+
+// Called by the macro SEQAN_ASSERT_GT.
+//
+// Tests that the first value is greater than the second one.
+// Returns true iff the test yields true.
+template <typename T1, typename T2>
+bool testGt(const char * file, int line,
+            const T1 & value1, const char * expression1,
+            const T2 & value2, const char * expression2,
+            const char * comment, ...)
+{
+    if (!(value1 > value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " > " << expression2 << " was: " << value1
+                  << " <= " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testGt above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2>
+bool vtestGt(const char * file, int line,
+             const T1 & value1, const char * expression1,
+             const T2 & value2, const char * expression2,
+             const char * comment, va_list argp)
+{
+    if (!(value1 > value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " > " << expression2 << " was: " << value1
+                  << " <= " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testGt above, but with comment set to 0.
+template <typename T1, typename T2>
+bool testGt(const char * file, int line,
+            const T1 & value1, const char * expression1,
+            const T2 & value2, const char * expression2)
+{
+    return testGt(file, line, value1, expression1, value2, expression2, 0);
+}
+
+// Called by the macro SEQAN_ASSERT_LEQ.
+//
+// Tests that the first value is less than or equal to the second
+// one.  Returns true iff the test yields true.
+template <typename T1, typename T2>
+bool testLeq(const char * file, int line,
+             const T1 & value1, const char * expression1,
+             const T2 & value2, const char * expression2,
+             const char * comment, ...)
+{
+    if (!(value1 <= value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " <= " << expression2 << " was: " << value1
+                  << " > " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testLeq above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2>
+bool vtestLeq(const char * file, int line,
+              const T1 & value1, const char * expression1,
+              const T2 & value2, const char * expression2,
+              const char * comment, va_list argp)
+{
+    if (!(value1 <= value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " <= " << expression2 << " was: " << value1
+                  << " > " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testLeq above, but with comment set to 0.
+template <typename T1, typename T2>
+bool testLeq(const char * file, int line,
+             const T1 & value1, const char * expression1,
+             const T2 & value2, const char * expression2)
+{
+    return testLeq(file, line, value1, expression1, value2, expression2, 0);
+}
+
+// Called by the macro SEQAN_ASSERT_LT.
+//
+// Tests that the first value is greater than the second one.
+// Returns true iff the test yields true.
+template <typename T1, typename T2>
+bool testLt(const char * file, int line,
+            const T1 & value1, const char * expression1,
+            const T2 & value2, const char * expression2,
+            const char * comment, ...)
+{
+    if (!(value1 < value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " < " << expression2 << " was: " << value1
+                  << " >= " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testLt above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T1, typename T2>
+bool vtestLt(const char * file, int line,
+             const T1 & value1, const char * expression1,
+             const T2 & value2, const char * expression2,
+             const char * comment, va_list argp)
+{
+    if (!(value1 < value2))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression1 << " < " << expression2 << " was: " << value1
+                  << " >= " << value2;
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testLt above, but comment is 0.
+template <typename T1, typename T2>
+bool testLt(const char * file, int line,
+            const T1 & value1, const char * expression1,
+            const T2 & value2, const char * expression2)
+{
+    return testLt(file, line, value1, expression1, value2, expression2, 0);
+}
+
+// Called by the macro SEQAN_ASSERT.
+//
+// Test that the given argument evaluates to true.
+template <typename T>
+bool testTrue(const char * file, int line,
+              const T & value_, const char * expression_,
+              const char * comment, ...)
+{
+    if (!(value_))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression_ << " should be true but was " << (value_);
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testTrue above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T>
+bool vtestTrue(const char * file, int line,
+               const T & value_, const char * expression_,
+               const char * comment, va_list argp)
+{
+    if (!(value_))
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression_ << " should be true but was " << (value_);
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testTrue above, but comment will automatically be set to 0.
+template <typename T>
+bool testTrue(const char * file, int line,
+              const T & value_, const char * expression_)
+{
+    return testTrue(file, line, value_, expression_, 0);
+}
+
+// Called by the macro SEQAN_ASSERT.
+//
+// Test that the given argument evaluates to false.
+template <typename T>
+bool testFalse(const char * file, int line,
+               const T & value_, const char * expression_,
+               const char * comment, ...)
+{
+    if (value_)
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression_ << " should be false but was " << (value_);
+        if (comment)
+        {
+            std::cerr << " (";
+            va_list args;
+            va_start(args, comment);
+            vfprintf(stderr, comment, args);
+            va_end(args);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Similar to testFalse above, but accepts a va_list instead of variadic
+// parameters.
+template <typename T>
+bool vtestFalse(const char * file, int line,
+                const T & value_, const char * expression_,
+                const char * comment, va_list argp)
+{
+    if (value_)
+    {
+        // Increase global error count.
+        StaticData::thisTestOk() = false;
+        StaticData::errorCount() += 1;
+        // Print assertion failure text, with comment if any is given.
+        std::cerr << file << ":" << line << " Assertion failed : "
+                  << expression_ << " should be false but was " << (value_);
+        if (comment)
+        {
+            std::cerr << " (";
+            vfprintf(stderr, comment, argp);
+            std::cerr << ")";
+        }
+        std::cerr << std::endl;
+        return false;
+    }
+    return true;
+}
+
+// Same as testFalse above, but comment will automatically be set to 0.
+template <typename T>
+bool testFalse(const char * file, int line,
+               const T & value_, const char * expression_)
+{
+    return testFalse(file, line, value_, expression_, 0);
+}
+
+// Represents a check point in a file.
+struct CheckPoint
+{
+    // Path to the file.
+    const char * file;
+    // Line in the file.
+    unsigned int line;
+
+    // Less-than comparator for check points.
+    bool operator<(const CheckPoint & other) const
+    {
+        int c = strcmp(file, other.file);
+        if (c < 0)
+            return true;
+
+        if (c == 0 && line < other.line)
+            return true;
+
+        return false;
     }
 
+};
 
-    // Called by the macro SEQAN_ASSERT.
-    //
-    // Test that the given argument evaluates to false.
-    template <typename T>
-    bool testFalse(const char *file, int line,
-                   const T &value_, const char *expression_,
-                   const char *comment, ...) {
-        if (value_) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression_ << " should be false but was " << (value_);
-            if (comment) {
-                std::cerr << " (";
-                va_list args;
-                va_start(args, comment);
-                vfprintf(stderr, comment, args);
-                va_end(args);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
+// Wrapper for a set of check points.
+// TODO(holtgrew): Simply store the set?
+struct CheckPointStore
+{
+    static::std::set<CheckPoint> & data()
+    {
+        static::std::set<CheckPoint> result;
+        return result;
     }
+};
 
+// Puts the given check point into the CheckPointStore's data.
+inline bool
+registerCheckPoint(unsigned int line, const char * file)
+{
+    const char * file_name = strrchr(file, '/');
+    const char * file_name_2 = strrchr(file, '\\');
+    if (file_name_2 > file_name)
+        file_name = file_name_2;
+    if (!file_name)
+        file_name = file;
+    else
+        ++file_name;
 
-    // Similar to testFalse above, but accepts a va_list instead of variadic
-    // parameters.
-    template <typename T>
-    bool vtestFalse(const char *file, int line,
-                    const T &value_, const char *expression_,
-                    const char *comment, va_list argp) {
-        if (value_) {
-            // Increase global error count.
-            StaticData::thisTestOk() = false;
-            StaticData::errorCount() += 1;
-            // Print assertion failure text, with comment if any is given.
-            std::cerr << file << ":" << line << " Assertion failed : "
-                      << expression_ << " should be false but was " << (value_);
-            if (comment) {
-                std::cerr << " (";
-                vfprintf(stderr, comment, argp);
-                std::cerr << ")";
-            }
-            std::cerr << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-
-    // Same as testFalse above, but comment will automatically be set to 0.
-    template <typename T>
-    bool testFalse(const char *file, int line,
-                   const T &value_, const char *expression_) {
-        return testFalse(file, line, value_, expression_, 0);
-    }
-
-    // Represents a check point in a file.
-    struct CheckPoint {
-        // Path to the file.
-        const char *file;
-        // Line in the file.
-        unsigned int line;
-
-        // Less-than comparator for check points.
-        bool operator<(const CheckPoint &other) const {
-            int c = strcmp(file, other.file);
-            if (c < 0)
-                return true;
-            if (c == 0 && line < other.line)
-                return true;
-            return false;
-        }
-    };
-
-    // Wrapper for a set of check points.
-    // TODO(holtgrew): Simply store the set?
-    struct CheckPointStore {
-        static ::std::set<CheckPoint> &data() {
-            static ::std::set<CheckPoint> result;
-            return result;
-        }
-    };
-
-    // Puts the given check point into the CheckPointStore's data.
-    inline bool
-    registerCheckPoint(unsigned int line, const char *file) {
-        const char *file_name = strrchr(file, '/');
-        const char *file_name_2 = strrchr(file, '\\');
-        if (file_name_2 > file_name)
-            file_name = file_name_2;
-        if (!file_name)
-            file_name = file;
-        else ++file_name;
-
-        CheckPoint cp = {file_name, line};
+    CheckPoint cp = {file_name, line};
         #ifdef _OMP
         #pragma omp critical
         #endif  // #ifdef _OMP
-        CheckPointStore::data().insert(cp);
-        return true;
+    CheckPointStore::data().insert(cp);
+    return true;
+}
+
+// Test whether the given check point exists in the check point
+// store.
+inline void
+testCheckPoint(const char * file, unsigned int line)
+{
+    StaticData::totalCheckPointCount() += 1;
+    CheckPoint cp = {file, line};
+    if (CheckPointStore::data().find(cp) == CheckPointStore::data().end())
+    {
+        std::cerr << file << ":" << line << "  -- Check point lost."
+                  << std::endl;
+        return;
+    }
+    StaticData::foundCheckPointCount() += 1;
+}
+
+// Verify the check points for the given file.
+inline void
+verifyCheckPoints(const char * file)
+{
+    char const * file_name = strrchr(file, '/');
+    char const * file_name_2 = strrchr(file, '\\');
+    if (file_name_2 > file_name)
+        file_name = file_name_2;
+    if (!file_name)
+        file_name = file;
+    else
+        ++file_name;
+
+
+
+    int len = strlen(StaticData::pathToRoot()) +
+              strlen("/") + strlen(file) + 1;
+    char * absolutePath = new char[len];
+    absolutePath[0] = '\0';
+    strcat(absolutePath, StaticData::pathToRoot());
+    strcat(absolutePath, "/");
+    strcat(absolutePath, file);
+
+    FILE * fl = ::std::fopen(absolutePath, "r");
+    delete[] absolutePath;
+    if (!fl)
+    {
+        std::cerr << file << " -- verifyCheckPoints could not find this file." << std::endl;
+    }
+    unsigned int line_number = 1;
+    char buf[1 << 16];
+
+    while (::std::fgets(buf, sizeof(buf), fl))
+    {
+        if (::std::strstr(buf, "SEQAN_CHECKPOINT"))
+        {
+            testCheckPoint(file_name, line_number);
+        }
+        ++line_number;
     }
 
-    // Test whether the given check point exists in the check point
-    // store.
-    inline void
-    testCheckPoint(const char *file, unsigned int line) {
-        StaticData::totalCheckPointCount() += 1;
-        CheckPoint cp = {file, line};
-        if (CheckPointStore::data().find(cp) == CheckPointStore::data().end()) {
-            std::cerr << file << ":" << line << "  -- Check point lost."
-                      << std::endl;
-            return;
-        }
-        StaticData::foundCheckPointCount() += 1;
-    }
-
-    // Verify the check points for the given file.
-    inline void
-    verifyCheckPoints(const char *file) {
-        char const* file_name = strrchr(file, '/');
-        char const* file_name_2 = strrchr(file, '\\');
-        if (file_name_2 > file_name) file_name = file_name_2;
-        if (!file_name) file_name = file;
-        else ++file_name;
-
-
-
-        int len = strlen(StaticData::pathToRoot()) +
-            strlen("/") + strlen(file) + 1;
-        char *absolutePath = new char[len];
-        absolutePath[0] = '\0';
-        strcat(absolutePath, StaticData::pathToRoot());
-        strcat(absolutePath, "/");
-        strcat(absolutePath, file);
-
-        FILE * fl = ::std::fopen(absolutePath, "r");
-        delete[] absolutePath;
-        if (!fl) {
-            std::cerr << file << " -- verifyCheckPoints could not find this file." << std::endl;
-        }
-        unsigned int line_number = 1;
-        char buf[1<<16];
-
-        while (::std::fgets(buf, sizeof(buf), fl)) {
-            if (::std::strstr(buf, "SEQAN_CHECKPOINT")) {
-                testCheckPoint(file_name, line_number);
-            }
-            ++line_number;
-        }
-
-        ::std::fclose(fl);
-    }
+    ::std::fclose(fl);
+}
 
 #if SEQAN_ENABLE_TESTING
-    // If in testing mode then raise an AssertionFailedException.
-    inline void fail() {
-        StaticData::thisTestOk() = false;
-        printStackTrace(20);
-        throw AssertionFailedException();
-    }
+// If in testing mode then raise an AssertionFailedException.
+inline void fail()
+{
+    StaticData::thisTestOk() = false;
+    printStackTrace(20);
+    throw AssertionFailedException();
+}
+
 #else
-    // If not in testing mode then quit with an abort.
-    inline void fail() {
-        printStackTrace(20);
-        abort();
-    }
+// If not in testing mode then quit with an abort.
+inline void fail()
+{
+    printStackTrace(20);
+    abort();
+}
+
 #endif  // #if SEQAN_ENABLE_TESTING
 
 }  // namespace ClassTest
@@ -1489,7 +1623,8 @@ SEQAN_DEFINE_TEST(test_name)
 
 // This macro expands to function header for one test.
 #define SEQAN_DEFINE_TEST(test_name)                    \
-    template <bool speed_up_dummy_to_prevent_compilation_of_unused_tests_> void SEQAN_TEST_ ## test_name ()
+    template <bool speed_up_dummy_to_prevent_compilation_of_unused_tests_> \
+    void SEQAN_TEST_ ## test_name()
 
 /**
 .Macro.SEQAN_BEGIN_TESTSUITE
@@ -1515,9 +1650,9 @@ SEQAN_END_TESTSUITE
 #if SEQAN_ENABLE_TESTING
 // This macro expands to startup code for a test file.
 #define SEQAN_BEGIN_TESTSUITE(suite_name)                       \
-    int main(int argc, char **argv) {                           \
-    (void) argc;                                                \
-    ::seqan::ClassTest::beginTestSuite(#suite_name, argv[0]);
+    int main(int argc, char ** argv) {                           \
+        (void) argc;                                                \
+        ::seqan::ClassTest::beginTestSuite(# suite_name, argv[0]);
 
 /**
 .Macro.SEQAN_END_TESTSUITE
@@ -1542,7 +1677,7 @@ SEQAN_END_TESTSUITE
 // This macro expands to shutdown code for a test file.
 #define SEQAN_END_TESTSUITE                     \
     return ::seqan::ClassTest::endTestSuite();  \
-}
+    }
 
 /**
 .Macro.SEQAN_CALL_TEST
@@ -1563,10 +1698,10 @@ SEQAN_CALL_TEST(test_name);
 // This macro expands to code to call a given test.
 #define SEQAN_CALL_TEST(test_name)                                      \
     do {                                                                \
-        ::seqan::ClassTest::beginTest(#test_name);                      \
+        ::seqan::ClassTest::beginTest(# test_name);                      \
         try {                                                           \
             SEQAN_TEST_ ## test_name<true>();                           \
-        } catch(::seqan::ClassTest::AssertionFailedException e) {       \
+        } catch (::seqan::ClassTest::AssertionFailedException e) {       \
             /* Swallow exception, go on with next test. */              \
             (void) e;  /* Get rid of unused variable warning. */        \
         }                                                               \
@@ -1613,7 +1748,7 @@ SEQAN_DEFINE_TEST(test_skipped)
 ..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
 ..example.code:
 SEQAN_ASSERT(0);  // will fail
-SEQAN_ASSERT(1);  // will run through 
+SEQAN_ASSERT(1);  // will run through
 SEQAN_ASSERT_MSG(0, "message %d", 2);  // Will fail with message.
 ..see:Macro.SEQAN_ASSERT_NOT
 ..see:Macro.SEQAN_ASSERT_EQ
@@ -1823,8 +1958,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_EQ(_arg1, _arg2)                                   \
     do {                                                                \
         if (!::seqan::ClassTest::testEqual(__FILE__, __LINE__,          \
-                                           (_arg1), #_arg1,             \
-                                           (_arg2), #_arg2)) {          \
+                                           (_arg1), # _arg1,             \
+                                           (_arg2), # _arg2)) {          \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1836,8 +1971,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_EQ_MSG(_arg1, _arg2, ...)                          \
     do {                                                                \
         if (!::seqan::ClassTest::testEqual(__FILE__, __LINE__,          \
-                                           (_arg1), #_arg1,             \
-                                           (_arg2), #_arg2,             \
+                                           (_arg1), # _arg1,             \
+                                           (_arg2), # _arg2,             \
                                            __VA_ARGS__)) {              \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1850,9 +1985,9 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_IN_DELTA(_arg1, _arg2, _arg3)                      \
     do {                                                                \
         if (!::seqan::ClassTest::testInDelta(__FILE__, __LINE__,        \
-                                             (_arg1), #_arg1,           \
-                                             (_arg2), #_arg2,           \
-                                             (_arg3), #_arg3)) {        \
+                                             (_arg1), # _arg1,           \
+                                             (_arg2), # _arg2,           \
+                                             (_arg3), # _arg3)) {        \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1864,9 +1999,9 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_IN_DELTA_MSG(_arg1, _arg2, _arg3, ...)             \
     do {                                                                \
         if (!::seqan::ClassTest::testInDelta(__FILE__, __LINE__,        \
-                                             (_arg1), #_arg1,           \
-                                             (_arg2), #_arg2,           \
-                                             (_arg3), #_arg3,           \
+                                             (_arg1), # _arg1,           \
+                                             (_arg2), # _arg2,           \
+                                             (_arg3), # _arg3,           \
                                              __VA_ARGS__)) {            \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1879,8 +2014,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NEQ(_arg1, _arg2)                                  \
     do {                                                                \
         if (!::seqan::ClassTest::testNotEqual(__FILE__, __LINE__,       \
-                                              (_arg1), #_arg1,          \
-                                              (_arg2), #_arg2)) {       \
+                                              (_arg1), # _arg1,          \
+                                              (_arg2), # _arg2)) {       \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1892,8 +2027,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NEQ_MSG(_arg1, _arg2, ...)                         \
     do {                                                                \
         if (!::seqan::ClassTest::testNotEqual(__FILE__, __LINE__,       \
-                                              (_arg1), #_arg1,          \
-                                              (_arg2), #_arg2,          \
+                                              (_arg1), # _arg1,          \
+                                              (_arg2), # _arg2,          \
                                               __VA_ARGS__)) {           \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1904,8 +2039,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_LEQ(_arg1, _arg2)                                  \
     do {                                                                \
         if (!::seqan::ClassTest::testLeq(__FILE__, __LINE__,            \
-                                         (_arg1), #_arg1,               \
-                                         (_arg2), #_arg2)) {            \
+                                         (_arg1), # _arg1,               \
+                                         (_arg2), # _arg2)) {            \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1915,8 +2050,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_LEQ_MSG(_arg1, _arg2, ...)                         \
     do {                                                                \
         if (!::seqan::ClassTest::testLeq(__FILE__, __LINE__,            \
-                                         (_arg1), #_arg1,               \
-                                         (_arg2), #_arg2,               \
+                                         (_arg1), # _arg1,               \
+                                         (_arg2), # _arg2,               \
                                          __VA_ARGS__)) {                \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1927,8 +2062,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_LT(_arg1, _arg2)                                   \
     do {                                                                \
         if (!::seqan::ClassTest::testLt(__FILE__, __LINE__,             \
-                                        (_arg1), #_arg1,                \
-                                        (_arg2), #_arg2)) {             \
+                                        (_arg1), # _arg1,                \
+                                        (_arg2), # _arg2)) {             \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1938,8 +2073,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_LT_MSG(_arg1, _arg2, ...)                          \
     do {                                                                \
         if (!::seqan::ClassTest::testLt(__FILE__, __LINE__,             \
-                                        (_arg1), #_arg1,                \
-                                        (_arg2), #_arg2,                \
+                                        (_arg1), # _arg1,                \
+                                        (_arg2), # _arg2,                \
                                         __VA_ARGS__)) {                 \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1950,8 +2085,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_GEQ(_arg1, _arg2)                                  \
     do {                                                                \
         if (!::seqan::ClassTest::testGeq(__FILE__, __LINE__,            \
-                                         (_arg1), #_arg1,               \
-                                         (_arg2), #_arg2)) {            \
+                                         (_arg1), # _arg1,               \
+                                         (_arg2), # _arg2)) {            \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1961,8 +2096,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_GEQ_MSG(_arg1, _arg2, ...)                         \
     do {                                                                \
         if (!::seqan::ClassTest::testGeq(__FILE__, __LINE__,            \
-                                         (_arg1), #_arg1,               \
-                                         (_arg2), #_arg2,               \
+                                         (_arg1), # _arg1,               \
+                                         (_arg2), # _arg2,               \
                                          __VA_ARGS__)) {                \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1973,8 +2108,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_GT(_arg1, _arg2)                                   \
     do {                                                                \
         if (!::seqan::ClassTest::testGt(__FILE__, __LINE__,             \
-                                        (_arg1), #_arg1,                \
-                                        (_arg2), #_arg2)) {             \
+                                        (_arg1), # _arg1,                \
+                                        (_arg2), # _arg2)) {             \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -1984,8 +2119,8 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_GT_MSG(_arg1, _arg2, ...)                          \
     do {                                                                \
         if (!::seqan::ClassTest::testGt(__FILE__, __LINE__,             \
-                                        (_arg1), #_arg1,                \
-                                        (_arg2), #_arg2,                \
+                                        (_arg1), # _arg1,                \
+                                        (_arg2), # _arg2,                \
                                         __VA_ARGS__)) {                 \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -1999,7 +2134,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT(_arg1)                                        \
     do {                                                                \
         if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
-                                          (_arg1), #_arg1)) {           \
+                                          (_arg1), # _arg1)) {           \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
@@ -2010,7 +2145,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_MSG(_arg1, ...)                               \
     do {                                                                \
         if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
-                                          (_arg1), #_arg1,              \
+                                          (_arg1), # _arg1,              \
                                           __VA_ARGS__)) {             \
             ::seqan::ClassTest::fail();                                 \
         }                                                               \
@@ -2023,7 +2158,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT(_arg1)                                       \
     do {                                                              \
         if (!::seqan::ClassTest::testFalse(__FILE__, __LINE__,        \
-                                           (_arg1), #_arg1)) {        \
+                                           (_arg1), # _arg1)) {        \
             ::seqan::ClassTest::fail();                               \
         }                                                             \
     } while (false)
@@ -2033,7 +2168,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...)                              \
     do {                                                              \
         if (!::seqan::ClassTest::testFalse(__FILE__, __LINE__,        \
-                                           (_arg1), #_arg1,           \
+                                           (_arg1), # _arg1,           \
                                            __VA_ARGS__)) {          \
             ::seqan::ClassTest::fail();                               \
         }                                                             \
@@ -2065,7 +2200,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #else // no variadic macros
 
 #if SEQAN_ENABLE_DEBUG
-inline void SEQAN_ASSERT_FAIL(const char *comment, ...)
+inline void SEQAN_ASSERT_FAIL(const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2075,14 +2210,14 @@ inline void SEQAN_ASSERT_FAIL(const char *comment, ...)
 }
 
 template <typename T1, typename T2, typename T3>
-void SEQAN_ASSERT_IN_DELTA(T1 const &_arg1, T2 const &_arg2, T3 const &_arg3)
+void SEQAN_ASSERT_IN_DELTA(T1 const & _arg1, T2 const & _arg2, T3 const & _arg3)
 {
     if (!::seqan::ClassTest::testInDelta("", 0, _arg1, "", _arg2, "", _arg3, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2, typename T3>
-void SEQAN_ASSERT_IN_DELTA_MSG(T1 const &_arg1, T2 const &_arg2, T3 const &_arg3, const char *comment, ...)
+void SEQAN_ASSERT_IN_DELTA_MSG(T1 const & _arg1, T2 const & _arg2, T3 const & _arg3, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2092,14 +2227,14 @@ void SEQAN_ASSERT_IN_DELTA_MSG(T1 const &_arg1, T2 const &_arg2, T3 const &_arg3
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_EQ(T1 const &_arg1, T2 const &_arg2)
+void SEQAN_ASSERT_EQ(T1 const & _arg1, T2 const & _arg2)
 {
     if (!::seqan::ClassTest::testEqual("", 0, _arg1, "", _arg2, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_EQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...)
+void SEQAN_ASSERT_EQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2109,14 +2244,14 @@ void SEQAN_ASSERT_EQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, 
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_NEQ(T1 const &_arg1, T2 const &_arg2)
+void SEQAN_ASSERT_NEQ(T1 const & _arg1, T2 const & _arg2)
 {
     if (!::seqan::ClassTest::testNotEqual("", _arg1, "", _arg2, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_NEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...)
+void SEQAN_ASSERT_NEQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2126,14 +2261,14 @@ void SEQAN_ASSERT_NEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment,
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_LEQ(T1 const &_arg1, T2 const &_arg2)
+void SEQAN_ASSERT_LEQ(T1 const & _arg1, T2 const & _arg2)
 {
     if (!::seqan::ClassTest::testLeq("", 0, _arg1, "", _arg2, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_LEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...)
+void SEQAN_ASSERT_LEQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2143,14 +2278,14 @@ void SEQAN_ASSERT_LEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment,
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_LT(T1 const &_arg1, T2 const &_arg2)
+void SEQAN_ASSERT_LT(T1 const & _arg1, T2 const & _arg2)
 {
     if (!::seqan::ClassTest::testLt("", 0, _arg1, "", _arg2, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_LT_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...)
+void SEQAN_ASSERT_LT_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2160,14 +2295,14 @@ void SEQAN_ASSERT_LT_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, 
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_GEQ(T1 const &_arg1, T2 const &_arg2)
+void SEQAN_ASSERT_GEQ(T1 const & _arg1, T2 const & _arg2)
 {
     if (!::seqan::ClassTest::testGeq("", 0, _arg1, "", _arg2, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_GEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...)
+void SEQAN_ASSERT_GEQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2177,14 +2312,14 @@ void SEQAN_ASSERT_GEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment,
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_GT(T1 const &_arg1, T2 const &_arg2)
+void SEQAN_ASSERT_GT(T1 const & _arg1, T2 const & _arg2)
 {
     if (!::seqan::ClassTest::testGt("", 0, _arg1, "", _arg2, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1, typename T2>
-void SEQAN_ASSERT_GT_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...)
+void SEQAN_ASSERT_GT_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2194,14 +2329,14 @@ void SEQAN_ASSERT_GT_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, 
 }
 
 template <typename T1>
-void SEQAN_ASSERT(T1 const &_arg1)
+void SEQAN_ASSERT(T1 const & _arg1)
 {
     if (!::seqan::ClassTest::testTrue("", 0, _arg1, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1>
-void SEQAN_ASSERT_MSG(T1 const &_arg1, const char *comment, ...)
+void SEQAN_ASSERT_MSG(T1 const & _arg1, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2211,14 +2346,14 @@ void SEQAN_ASSERT_MSG(T1 const &_arg1, const char *comment, ...)
 }
 
 template <typename T1>
-void SEQAN_ASSERT_NOT(T1 const &_arg1)
+void SEQAN_ASSERT_NOT(T1 const & _arg1)
 {
     if (!::seqan::ClassTest::testFalse("", 0, _arg1, ""))
         ::seqan::ClassTest::fail();
 }
 
 template <typename T1>
-void SEQAN_ASSERT_NOT_MSG(T1 const &_arg1, const char *comment, ...)
+void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...)
 {
     va_list args;
     va_start(args, comment);
@@ -2229,25 +2364,43 @@ void SEQAN_ASSERT_NOT_MSG(T1 const &_arg1, const char *comment, ...)
 
 #else // #if SEQAN_ENABLE_DEBUG
 
-inline void SEQAN_ASSERT_FAIL(const char *comment, ...) {}
-template <typename T1, typename T2, typename T3> void SEQAN_ASSERT_IN_DELTA(T1 const &_arg1, T2 const &_arg2, T3 const &_arg3) {}
-template <typename T1, typename T2, typename T3> void SEQAN_ASSERT_IN_DELTA_MSG(T1 const &_arg1, T2 const &_arg2, T3 const &_arg3, const char *comment, ...) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_EQ(T1 const &_arg1, T2 const &_arg2) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_EQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_NEQ(T1 const &_arg1, T2 const &_arg2) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_NEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_LEQ(T1 const &_arg1, T2 const &_arg2) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_LEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_LT(T1 const &_arg1, T2 const &_arg2) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_LT_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_GEQ(T1 const &_arg1, T2 const &_arg2) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_GEQ_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_GT(T1 const &_arg1, T2 const &_arg2) {}
-template <typename T1, typename T2> void SEQAN_ASSERT_GT_MSG(T1 const &_arg1, T2 const &_arg2, const char *comment, ...) {}
-template <typename T1> void SEQAN_ASSERT(T1 const &_arg1) {}
-template <typename T1> void SEQAN_ASSERT_MSG(T1 const &_arg1, const char *comment, ...) {}
-template <typename T1> void SEQAN_ASSERT_NOT(T1 const &_arg1) {}
-template <typename T1> void SEQAN_ASSERT_NOT_MSG(T1 const &_arg1, const char *comment, ...) {}
+inline void SEQAN_ASSERT_FAIL(const char * comment, ...) {}
+template <typename T1, typename T2, typename T3>
+void SEQAN_ASSERT_IN_DELTA(T1 const & _arg1, T2 const & _arg2, T3 const & _arg3) {}
+template <typename T1, typename T2, typename T3>
+void SEQAN_ASSERT_IN_DELTA_MSG(T1 const & _arg1, T2 const & _arg2, T3 const & _arg3, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_EQ(T1 const & _arg1, T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_EQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_NEQ(T1 const & _arg1, T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_NEQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_LEQ(T1 const & _arg1, T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_LEQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_LT(T1 const & _arg1, T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_LT_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_GEQ(T1 const & _arg1, T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_GEQ_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_GT(T1 const & _arg1, T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_GT_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1>
+void SEQAN_ASSERT(T1 const & _arg1) {}
+template <typename T1>
+void SEQAN_ASSERT_MSG(T1 const & _arg1, const char * comment, ...) {}
+template <typename T1>
+void SEQAN_ASSERT_NOT(T1 const & _arg1) {}
+template <typename T1>
+void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
 
 #endif // #if SEQAN_ENABLE_DEBUG
 
@@ -2326,7 +2479,7 @@ SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/basic_alphabet.h");
 SEQAN_CHECKPOINT;
 ..see:Macro.SEQAN_VERIFY_CHECKPOINTS
  */
-    
+
 #if SEQAN_ENABLE_CHECKPOINTS
 
 // Create a check point at the point where the macro is placed.
@@ -2349,18 +2502,19 @@ SEQAN_CHECKPOINT;
         fprintf(stderr, ("WARNING: Check point verification is "        \
                          "disabled. Trying to verify %s from %s:%d.\n"), \
                 filename, __FILE__, __LINE__);                          \
-    } while(false)
+    } while (false)
 
 #endif  // #if SEQAN_ENABLE_CHECKPOINTS
 
 #if !SEQAN_ENABLE_TESTING
 
 #define SEQAN_BEGIN_TESTSUITE(suite_name)                               \
-    int main(int argc, char **argv) {                                   \
-    (void) argc;                                                        \
-    (void) argv;                                                        \
-    fprintf(stderr, "Warning: SEQAN_ENABLE_TESTING is wrong and you used the macro SEQAN_BEGIN_TESTSUITE!\n");
-#define SEQAN_END_TESTSUITE return 0;                                   \
+    int main(int argc, char ** argv) {                                   \
+        (void) argc;                                                        \
+        (void) argv;                                                        \
+        fprintf(stderr, "Warning: SEQAN_ENABLE_TESTING is wrong and you used the macro SEQAN_BEGIN_TESTSUITE!\n");
+#define SEQAN_END_TESTSUITE \
+    return 0;                                   \
     }
 #define SEQAN_CALL_TEST(test_name) do { SEQAN_TEST_ ## test_name(); } while (false)
 #define SEQAN_SKIP_TEST do {} while (false)
