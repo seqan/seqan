@@ -74,6 +74,7 @@ Finds q-grams in a @Spec.IndexQGram@ index using the hash table.
 		typedef typename Fibre<TIndex, QGramSA>::Type				TSA;
 		typedef typename Fibre<TIndex, QGramShape>::Type			TShape;
 		typedef typename Fibre<TIndex, QGramDir>::Type				TDir;
+		typedef typename Fibre<TIndex, QGramBucketMap>::Type		TBucketMap;
 		typedef typename Iterator<TSA const, Standard>::Type		TSAIterator;
 		typedef typename Iterator<TPattern const, Standard>::Type	TPatternIterator;
 
@@ -85,8 +86,21 @@ Finds q-grams in a @Spec.IndexQGram@ index using the hash table.
 		TDir const &dir = indexDir(index);
 		TShape &shape = indexShape(index);
 
-		finder.range.i1 = saIt + dir[getBucket(index.bucketMap, hash(shape, pIt, length(pattern)))];
-		finder.range.i2 = saIt + dir[getBucket(index.bucketMap, hashUpper(shape, pIt, length(pattern)))];
+        if (IsSameType<TBucketMap, Nothing>::VALUE)
+        {
+            // hashUpper and patterns shorter than the shape can only be used for
+            // direct addressing q-gram indices
+            finder.range.i1 = saIt + dir[index.bucketMap, hash(shape, pIt, length(pattern))];
+            finder.range.i2 = saIt + dir[index.bucketMap, hashUpper(shape, pIt, length(pattern))];
+        }
+        else
+        {
+            // for bucket map based indices we require the pattern and the shape to have the same length
+            SEQAN_ASSERT_EQ(length(pattern), length(shape));
+            typename Size<TDir>::Type bktNo = getBucket(index.bucketMap, hash(shape, pIt));
+            finder.range.i1 = saIt + dir[bktNo];
+            finder.range.i2 = saIt + dir[bktNo + 1];
+        }
 	}
 
 
