@@ -17,6 +17,8 @@ CMAKE_BINARY='cmake'
 
 # The default value for the SVN tags.
 DEFAULT_TAGS_URL='http://svn.seqan.de/seqan/tags'
+# The default value for the SVN trunk.
+DEFAULT_TRUNK_URL='http://svn.seqan.de/seqan/trunk'
 # The default minimal revision of that tags must have.
 DEFAULT_START_REVISION=13708
 # The path to the package repository.
@@ -119,7 +121,7 @@ class BuildStep(object):
         return False
 
     def copyArchives(self, build_dir):
-        """Copy build packages to base_path directory."""
+        """Copy built packages to base_path directory."""
         for p in self.packages:
             from_ = os.path.join(build_dir, p.fileName())
             if os.path.exists(from_):
@@ -166,25 +168,26 @@ class BuildStep(object):
             print err_data
             return 1
         # Execute Make.
-        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
-        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
-        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
-        out_data, err_data = popen.communicate()
-        if popen.returncode != 0:
-            print >>sys.stderr, 'ERROR during make call.'
-            print out_data
-            print err_data
-            return 1
-        # Copy over the archives.
-        self.copyArchives(build_dir)
-        # Remove build directory.
-        print >>sys.stderr, 'Removing build directory %s' % build_dir
-        shutil.rmtree(build_dir)
+#        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
+#        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+#        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+#        out_data, err_data = popen.communicate()
+#        if popen.returncode != 0:
+#            print >>sys.stderr, 'ERROR during make call.'
+#            print out_data
+#            print err_data
+#            return 1
+#        # Copy over the archives.
+#        self.copyArchives(build_dir)
+#        # Remove build directory.
+#        print >>sys.stderr, 'Removing build directory %s' % build_dir
+#        shutil.rmtree(build_dir)
         # Build seqan-library.
         #
         # Create build directory.
-        print >>sys.stderr, "Creating build directory %s" % (build_dir,)
-        os.mkdir(build_dir)
+        if not os.path.exists(build_dir):
+            print >>sys.stderr, "Creating build directory %s" % (build_dir,)
+            os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY, checkout_dir,
                       "-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY"]
@@ -196,6 +199,15 @@ class BuildStep(object):
             print out_data
             print err_data
             return 1
+        # Build Docs
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'docs'] + self.make_args
+        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make docs call.'
+            print out_data
+            print err_data
         # Execute Make.
         cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
         print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
@@ -295,13 +307,14 @@ class BuildStep(object):
         print >>sys.stderr, 'Removing checkout directory %s' % (checkout_dir,)
         shutil.rmtree(checkout_dir)
         # Remove temporary directory again.
-        if not self.tmp_dir:  # Only remove it not set with --tmp-dir.
-          print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
-          shutil.rmtree(tmp_dir)
+        if not self.tmp_dir and not self.options.keep_tmp_dir:
+            # Only remove if not explicitely given and not forced to keep.
+            print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
+            shutil.rmtree(tmp_dir)
 
 
-def work(options):
-    """Run the individual steps."""
+def workTags(options):
+    """Run the individual steps for tags."""
     # Get the revisions and tag names.
     svn = MinisculeSvnWrapper()
     revs_tags = [(rev, tag) for (rev, tag) in svn.ls(options.tags_url)
@@ -327,6 +340,37 @@ def work(options):
     return 0
 
 
+def workTrunk(options):
+    """Run the individual steps for the trunk with fake tag name."""
+    # Get the revisions and tag names.
+    svn = MinisculeSvnWrapper()
+    # Enumerate all package names that we could enumerate.
+    print 'fake tag = %s' % options.build_trunk_as
+    print 'word_sizes = %s' % options.word_sizes
+    name, version = options.build_trunk_as.rsplit('-', 1)
+    for word_size in options.word_sizes.split(','):
+        # Create build step for this package name.
+        pkg_formats = options.package_formats.split(',')
+        svn_url = options.trunk_url
+        build_step = BuildStep(options.package_db, name, version, options.os,
+                               word_size, pkg_formats, svn_url,
+                               options.make_args.split(), options, options.tmp_dir)
+        # Check whether we need to build this.
+        if not build_step.buildNeeded():
+            continue  # Skip
+        # Execute build step.
+        build_step.execute()
+    return 0
+
+
+def work(options):
+    """Run the steps."""
+    if not options.build_trunk_as:
+        return workTags(options)
+    else:
+        return workTrunk(options)
+
+
 def main():
     """Program entry point."""
     # Parse Arguments.
@@ -334,6 +378,9 @@ def main():
     parser.add_option('-t', '--tags-url', dest='tags_url',
                       default=DEFAULT_TAGS_URL,
                       help='This URL is searched for tags.', metavar='URL')
+    parser.add_option('--trunk-url', dest='trunk_url',
+                      default=DEFAULT_TRUNK_URL,
+                      help='This URL is searched for trunk.', metavar='URL')
     parser.add_option('--package-db', dest='package_db', type='string',
                       default=DEFAULT_PACKAGE_DB,
                       help='Path the directory with the packages.')
@@ -353,6 +400,10 @@ def main():
                       help='Arguments for make.')
     parser.add_option('--tmp-dir', dest='tmp_dir', type='string', default=None,
                       help='Temporary directory to use. Use this to reuse the same checkout.')
+    parser.add_option('--build-trunk-as', dest='build_trunk_as', type='string', default=None,
+                      help='Build current trunk with this string as a tag name.')
+    parser.add_option('--keep-tmp-dir', dest='keep_tmp_dir', default=False,
+                      action='store_true', help='Keep temporary directory.')
     parser.epilog = ('The program will use the environment variable TMPDIR as '
                      'the directory for temporary files.')
 
