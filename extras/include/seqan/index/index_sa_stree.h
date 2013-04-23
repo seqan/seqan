@@ -65,7 +65,7 @@ struct IndexSa {};
 ..param.TText:The text type.
 ...type:Class.String
 ...type:Class.StringSet
-..include:seqan/index.h
+..include:seqan/index_extras.h
 */
 
 template <typename TText, typename TSpec>
