@@ -121,6 +121,8 @@ struct StlComparator_< ::std::map<TKey, TCargo, TCompare, TAlloc> >
 
 */
 
+// TODO(rmaerker): Default type should not be int.
+// TODO(rmaerker): Metafunction for const iterator is missing.
 
 template <typename T>
 struct StlIterator_
