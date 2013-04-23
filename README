@@ -36,7 +36,7 @@ can be found in the LICENSE files.
  3. Supported Platforms
 ===========================================================================
 
-  Visual C++ 8, 9, 10
+  Visual C++ 8, 9, 10, 11
   MinGW
   LLVM >= 3.0
   GCC >= 4.1
@@ -57,7 +57,7 @@ prerequisites are installed and you are on Linux or Mac Os X:
 
   $ mkdir build/Debug
   $ cd build/Debug
-  $ cmake ../..
+  $ cmake ../.. -DCMAKE_BUILD_TYPE=Debug
   $ make test_basic
   $ ./core/tests/basic/test_basic
   ... the tests for module basic will run ...
@@ -73,9 +73,9 @@ prerequisites are installed and you are on Linux or Mac Os X:
   How Tos
     http://trac.seqan.de/wiki/HowTo
   Stable Documentation
-    http://www.seqan.de/dddoc/html/
+    http://docs.seqan.de/seqan/1.4/
   Nightly Documentation (updated, more recent!)
-    http://www.seqan.de/dddoc/html_devel/
+    http://docs.seqan.de/seqan/dev/
 
 ===========================================================================
  7. Contact
