@@ -260,7 +260,7 @@ findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
 ..example.code:
 CharString tagValue;
 bool keyFound = getTagValue(tagValue, "SN", record);
-..see:Function.findTagKey
+..see:Function.BamHeaderRecord#findTagKey
 */
 
 template <typename TId>
@@ -306,7 +306,7 @@ inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord con
 ..include:seqan/bam_io.h
 ..example.code:
 setTagValue("SN", "chr1", record);
-..see:Function.findTagKey
+..see:Function.BamHeaderRecord#findTagKey
 */
 
 template <typename TId>
