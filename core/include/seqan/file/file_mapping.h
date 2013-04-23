@@ -252,7 +252,7 @@ _unmapFile(FileMapping<TSpec> &mapping)
 /**
 .Function.FileMapping#open:
 ..class:Class.FileMapping
-..summary:Opens a file to be mapped into memory.
+..summary:Open a file to be mapped into memory.
 ..cat:Input/Output
 ..signature:open(mapping, fileName[, openMode])
 ..param.mapping:A file mapping object.
@@ -301,7 +301,7 @@ open(FileMapping<TSpec> &mapping, TFile const &file)
 /**
 .Function.FileMapping#openTemp:
 ..class:Class.FileMapping
-..summary:Opens a temporary file to be mapped into memory.
+..summary:Open a temporary file to be mapped into memory.
 ..cat:Input/Output
 ..signature:openTemp(mapping)
 ..param.mapping:A file mapping object.
@@ -348,7 +348,7 @@ close(FileMapping<TSpec> &mapping)
 /**
 .Function.FileMapping#closeAndResize:
 ..class:Class.FileMapping
-..summary:Closes a memory mapping and resizes and closes the underlying file.
+..summary:Close a memory mapping and resize and close the underlying file.
 ..cat:Input/Output
 ..signature:closeAndResize(mapping, newFileSize)
 ..param.mapping:A file mapping object.
@@ -374,7 +374,7 @@ closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
 /**
 .Function.FileMapping#length:
 ..class:Class.FileMapping
-..summary:Returns the file size of a memory mapping.
+..summary:Return the file size of a memory mapping.
 ..cat:Input/Output
 ..signature:length(mapping)
 ..param.mapping:A file mapping object.
@@ -400,15 +400,14 @@ length(FileMapping<TSpec> const &mapping)
 /**
 .Function.FileMapping#resize:
 ..class:Class.FileMapping
-..summary:Resizes the underlying file.
+..summary:Resize the underlying file.
 ..cat:Input/Output
 ..signature:resize(mapping, newFileSize)
 ..param.mapping:A file mapping object.
 ...type:Class.FileMapping
 ..param.newFileSize:The new file size.
 ..returns:A $bool$ which is $true$ on success.
-..remarks:On the Windows platform, all existing file mappings must be unmapped via 
-@Function.unmapFileSegment@ prior calling this function.
+..remarks:Under Windows, all existing file mappings must be unmapped via @Function.unmapFileSegment@ prior calling this function.
 ..include:seqan/file.h
 */
 
@@ -537,7 +536,6 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
 ...default:The read/write open mode of the underlying file.
 ..returns:A pointer to the beginning of the memory-mapped segment in memory or NULL on error. 
 ...type:nolink:$void *$
-..remarks:Under Windows, all existing file mappings must be unmapped via @Function.unmapFileSegment@ prior calling this function.
 ..include:seqan/file.h
 */
 
@@ -656,7 +654,6 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 ..param.newSize:The new segment length in bytes.
 ..returns:A pointer to the beginning of the memory-mapped segment in memory or NULL on error. 
 ...type:nolink:$void *$
-..remarks:Under Windows, all existing file mappings must be unmapped via @Function.unmapFileSegment@ prior calling this function.
 ..include:seqan/file.h
 */
 
