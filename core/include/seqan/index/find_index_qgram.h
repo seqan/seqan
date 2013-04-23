@@ -90,12 +90,14 @@ Finds q-grams in a @Spec.IndexQGram@ index using the hash table.
         {
             // hashUpper and patterns shorter than the shape can only be used for
             // direct addressing q-gram indices
-            finder.range.i1 = saIt + dir[index.bucketMap, hash(shape, pIt, length(pattern))];
-            finder.range.i2 = saIt + dir[index.bucketMap, hashUpper(shape, pIt, length(pattern))];
+            // all codes between hash and hashUpper are from q-grams beginning with the pattern
+            finder.range.i1 = saIt + dir[hash(shape, pIt, length(pattern))];
+            finder.range.i2 = saIt + dir[hashUpper(shape, pIt, length(pattern))];
         }
         else
         {
             // for bucket map based indices we require the pattern and the shape to have the same length
+            // and can look up only a single bucket
             SEQAN_ASSERT_EQ(length(pattern), length(shape));
             typename Size<TDir>::Type bktNo = getBucket(index.bucketMap, hash(shape, pIt));
             finder.range.i1 = saIt + dir[bktNo];
