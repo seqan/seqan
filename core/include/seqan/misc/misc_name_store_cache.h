@@ -270,21 +270,21 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
 
 template <typename TNameStore, typename TName>
 inline void
-appendName(TNameStore &nameStore, TName &name)
+appendName(TNameStore &nameStore, TName const & name)
 {
     appendValue(nameStore, name, Generous());
 }
 
 template <typename TNameStore, typename TName, typename TContext>
 inline void
-appendName(TNameStore &nameStore, TName &name, TContext &)
+appendName(TNameStore &nameStore, TName const & name, TContext &)
 {
     appendName(nameStore, name);
 }
 
 template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
 inline void
-appendName(TNameStore &nameStore, TName &name, NameStoreCache<TCNameStore, TCName> &context)
+appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
 {
     appendValue(nameStore, name, Generous());
     context.nameSet.insert(length(nameStore) - 1);
