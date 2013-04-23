@@ -57,13 +57,13 @@ public:
 
     // TODO(holtgrew): Why is the following commented out?
 //	typedef typename Value<TGapAnchors>::Type				TGapAnchor;
-    typedef typename Size<typename Value<TGapAnchors>::Type>::Type   TGapAnchorSize_;
-	typedef GapAnchor<typename MakeSigned_<TGapAnchorSize_>::Type> TGapAnchor;
-	typedef typename Size<TGapAnchor>::Type					TGapSize;
-	typedef typename Iterator<TGapAnchors, Standard>::Type	TAnchorIter;
+    typedef typename Size<typename Value<TGapAnchors>::Type>::Type          TGapAnchorSize_;
+	typedef GapAnchor<typename MakeSigned_<TGapAnchorSize_>::Type>          TGapAnchor;
+	typedef typename MakeSigned<typename Position<TGapAnchor>::Type>::Type  TGapPos;
+	typedef typename Iterator<TGapAnchors, Standard>::Type                  TAnchorIter;
 
 	TGaps *					data_container;							//the gaps object
-	TGapSize				seqLength;
+	TGapPos 				seqLength;
 	mutable TGapAnchor		current;
 	mutable TGapAnchor		prevAnchor;
 	mutable TGapAnchor		nextAnchor;
@@ -98,7 +98,7 @@ SEQAN_CHECKPOINT
 		viewEnd.gapPos   = _unclippedLength(*data_container) + data_container->data_cutBegin - data_container->data_viewCutEnd;
 		viewEnd.seqPos = positionGapToSeq(*data_container, viewEnd.gapPos);
 	}
-	Iter(TGaps & container_, TGapSize clippedViewPosition):
+	Iter(TGaps & container_, TGapPos clippedViewPosition):
 		data_container(&container_)
 	{
 SEQAN_CHECKPOINT
@@ -616,8 +616,10 @@ template <typename T, typename TPos>
 inline void 
 _goToGapAnchorIterator(T & me, TPos pos)
 {
-	typedef typename T::TGapAnchors	TGapAnchors;
-	typedef typename Position<typename Value<TGapAnchors>::Type >::Type TAnchorPos;
+	typedef typename T::TGapAnchors                 TGapAnchors;
+	typedef typename Value<TGapAnchors>::Type       TGapAnchor;
+	typedef typename Position<TGapAnchor>::Type     TAnchorPos;
+	typedef typename MakeSigned<TAnchorPos>::Type   TAnchorSPos;
 
 	if (_helperIsNegative(pos, typename IsSameType<TPos, typename MakeSigned_<TPos>::Type>::Type()))
 		me.anchorIdx = -1;
@@ -633,7 +635,7 @@ _goToGapAnchorIterator(T & me, TPos pos)
 		}
 		else
         {
-			me.anchorIdx = (pos < (TPos)me.seqLength)? 0: 1;
+			me.anchorIdx = ((TAnchorSPos)pos < me.seqLength)? 0: 1;
         }
 	}
 	_getAnchor(me.prevAnchor, *me.data_container, me.anchorIdx);
