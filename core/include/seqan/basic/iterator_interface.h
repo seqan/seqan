@@ -89,7 +89,7 @@ typedef Tag<Standard_> const Standard;
 ..summary:Specifies default kind of iterator.
 ..signature:DefaultIteratorSpec<T>::Type
 ..param.T:Container type for which the default iterator spec is determined.
-...concept:Concept.ContainerConcept
+...concept:Concept.cept
 ..returns.param.Type:Iterator spec of $T$.
 ..see:Metafunction.Iterator
 ..include:seqan/basic.h
@@ -590,7 +590,6 @@ atEnd(T const & it)
 /**
 .Function.goBegin
 ..class:Class.Iter
-..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Iterates to the first position of a container.
@@ -641,7 +640,6 @@ goBegin(TIterator & it)
 /**
 .Function.goEnd
 ..class:Class.Iter
-..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Iterates to the last position of a container.
