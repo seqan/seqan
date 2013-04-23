@@ -190,7 +190,22 @@ struct Needle<Segment<THost, TSpec> const>
 ..remarks:$position(finder)$ returns the position of the current hit in the haystack.
 If $THaystack$ is a set of strings or an index of a set of strings, then $position(finder)$ returns a @Class.Pair@ $(hayNo, pos)$,
 in which $hayNo$ is the haystack index and $pos$ the local position of the hit.
-..remarks:Use $clear(finder)$ to reset a finder object and search from the beginning.
+..remarks:To reset the finder object and use it on another text or different text position, use $clear(finder)$
+Note that $clear(finder)$ doesn't move the text iterator. To start the search from the beginning or somewhere else in the text, use
+@Function.goBegin@ or @Function.setPosition@.
+..example.text:The following example shows how to restart a search from the beginning of a text.
+..example.code:
+CharString hstck = "I spy with my little eye something that is yellow";
+Finder<CharString> finder(hstck);
+
+Pattern<CharString, Horspool> p1("y");
+findAll(finder, p1);
+
+goBegin(finder);    // move Finder to the beginning of the text
+clear(finder);      // reset Finder
+
+Pattern<CharString, Horspool> p2("t");
+findAll(finder, p2);
 ..include:seqan/find.h
 */
 
