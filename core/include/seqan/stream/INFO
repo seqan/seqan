@@ -3,10 +3,10 @@ Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: 3-clause BSD
-Copyright: 2011, Knut Reinert, FU Berlin
+Copyright: 2011-1013, FU Berlin
 Homepage: http://www.seqan.de/
 Version: 0.1
-Status: development
+Status: under development
 Depends: seqan-basic
 Depends: seqan-sequence
 Depends: seqan-file

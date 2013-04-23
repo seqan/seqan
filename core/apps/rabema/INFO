@@ -2,7 +2,7 @@ Name: Read Alignment BEnchMArk
 Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: GPL v3
-Copyright: 2010-2011, FU Berlin
+Copyright: 2010-2013, FU Berlin
 Status: mature
 Homepage: http://seqan.de/projects/rabema.html
 Description: RABEMA is a benchmark for read mappers.

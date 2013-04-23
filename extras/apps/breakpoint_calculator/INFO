@@ -1,8 +1,8 @@
 Name: breakpoint_calculator
-Author: bkehr
-Maintainer: bkehr
+Author: Birte Kehr <birte.kehr@fu-berlin.de>
+Maintainer: Birte Kehr <birte.kehr@fu-berlin.de>
 License: GPL v3
-Copyright: 2012, Birte Kehr
+Copyright: 2012-2013, FU Berlin
 Status: stable
 Description: Calculates number of pairwise and triplet breakpoints.
  Given a genome alignment consisting of collinear blocks without duplications,

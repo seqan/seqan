@@ -2,7 +2,8 @@ Name: seqan-statistics
 Author: Filippo Utro <utro@math.unipa.it>
 Author: Simona E. Rombo <srombo@deis.unical.it>
 Author: Jonathan Goeke <goeke@molgen.mpg.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: BSD 3-clause
 Copyright: 2006-2013, FU Berlin
 Status: new
-Description: Markov models and code for working with them.
+Description: Implements Markov models and interfaces for working with them.

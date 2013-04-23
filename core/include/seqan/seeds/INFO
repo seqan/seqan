@@ -5,7 +5,7 @@ Author: Rene Rahn <rene.rahn@fu-berlin.de>
 Maintainer: Rene Rahn <rene.rahn@fu-berlin.de>
 License: BSD 3-clause
 Copyright: 2006-2013, FU Berlin
-Status: under development
+Status: mature
 Description: Everything seeds: Local/global chaining, seed extension, ...
  .
  This module contains seed-related code.  The seed set class allows the

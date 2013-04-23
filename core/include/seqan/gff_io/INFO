@@ -5,4 +5,4 @@ License: BSD 3-clause
 Copyright: 2006-2013, FU Berlin
 Status: under development
 Description: Gff and Gtf record I/O code.
-This module contains code for streaming through Gff and Gtf files.
+  This module contains code for streaming through Gff and Gtf files.

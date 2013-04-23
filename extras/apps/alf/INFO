@@ -3,8 +3,8 @@ Author: Jonathan Göke <goeke@molgen.mpg.de>
 Maintainer: Jonathan Göke <goeke@molgen.mpg.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: GPL v3
-Copyright: 2012, FU Berlin
-Status: testing
+Copyright: 2012-2013, FU Berlin
+Status: stable
 Description: Alignment free sequence comparison.
  Alignment free sequence comparison.
  .

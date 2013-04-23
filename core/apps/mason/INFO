@@ -3,7 +3,7 @@ Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 License: GPL v3
 Homepage: http://www.seqan.de/projects/mason.html
-Copyright: 2008-2011, FU Berlin
+Copyright: 2008-2013, FU Berlin
 Status: mature
 Description: Mason is a read simualtor for NGS data.
  Mason is a read simulator software for Illumina, 454 and Sanger reads. Its 

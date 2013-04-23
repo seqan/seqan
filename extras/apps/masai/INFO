@@ -4,4 +4,5 @@ Maintainer: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 License: BSD
 Copyright: 2008-2013, FU Berlin
 Status: stable
-Description: Fast and accurate read mapping with approximate seeds and multiple backtracking.
+Description: Fast and accurate read mapping.
+  Facilitates approximate seed mapping using multiple backtracking.
