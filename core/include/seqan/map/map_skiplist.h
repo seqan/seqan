@@ -33,11 +33,9 @@
 #ifndef SEQAN_HEADER_MISC_SKIPLIST_H
 #define SEQAN_HEADER_MISC_SKIPLIST_H
 
-//////////////////////////////////////////////////////////////////////////////
 
-#include <seqan/misc/misc_random.h>
+#include <seqan/random.h>
 
-//////////////////////////////////////////////////////////////////////////////
 
 namespace SEQAN_NAMESPACE_MAIN
 {
@@ -167,31 +165,31 @@ public:
 	TSize data_length;
 	unsigned char data_height;
 
+    Rng<> rng;
+
 	Map()
 		: data_mem_begin(0)
 		, data_mem_end(0)
 		, data_length(0)
 		, data_height(0)
+        , rng(0)
 	{
 		for (unsigned char i = 0; i < MAX_HEIGHT; ++i)
 		{
 			data_recycle[i] = 0;
 			valueConstruct(data_border.data_next + i, NonMinimalCtor()); 
 		}
-
-		mtRandInit();
 	}
 	Map(Map const & other)
 		: data_mem_begin(0)
 		, data_mem_end(0)
 		, data_length(0)
 		, data_height(0)
+        , rng(0)
 	{
 		assign(*this, other);
 	}
-	~Map()
-	{
-	}
+
 	Map &
     operator=(Map const & other)
 	{
@@ -408,7 +406,7 @@ _skiplistCreateHeight(Map<TValue, Skiplist<TSpec> > & me)
 {
 	typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 
-	unsigned char height = geomRand<unsigned char>();
+	unsigned char height = pickRandomNumber(me.rng, Pdf<GeometricFairCoin>());
 	if (height >= TSkiplist::MAX_HEIGHT) height = TSkiplist::MAX_HEIGHT-1;
 
 	if (height > me.data_height) me.data_height = height;
@@ -423,7 +421,7 @@ _skiplistCreateHeight(Map<TValue, Skiplist<TSpec> > & me,
 {
 	typedef Map<TValue, Skiplist<TSpec> > TSkiplist;
 
-	unsigned char height = geomRand<unsigned char>();
+	unsigned char height = pickRandomNumber(me.rng, Pdf<GeometricFairCoin>());
 	if (height >= TSkiplist::MAX_HEIGHT) height = TSkiplist::MAX_HEIGHT-1;
 
 	if (height > me.data_height)

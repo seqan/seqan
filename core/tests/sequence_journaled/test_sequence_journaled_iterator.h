@@ -40,7 +40,6 @@
 #include <string>
 
 #include <seqan/basic.h>
-#include <seqan/misc/misc_random.h>
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>
 

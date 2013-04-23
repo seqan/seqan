@@ -46,7 +46,6 @@
 #include <seqan/index.h>
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
-#include <seqan/misc/misc_random.h>
 
 #include "test_index_helpers.h"
 #include "test_qgram_index.h"

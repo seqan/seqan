@@ -47,7 +47,6 @@
 #include <seqan/misc/misc_cmdparser.h>
 #include <seqan/misc/misc_dequeue.h>
 #include <seqan/misc/misc_map.h>
-#include <seqan/misc/misc_random.h>
 #include <seqan/misc/misc_set.h>
 #include <seqan/misc/misc_interval_tree.h>
 #include <seqan/misc/priority_type_base.h>
@@ -61,22 +60,6 @@
 
 using namespace std;
 using namespace seqan;
-
-SEQAN_DEFINE_TEST(test_misc_random) {
-    mtRandInit();
-
-    for (unsigned int i=0; i<100; ++i)
-    {
-        cout << mtRand() << ", ";
-    }
-    cout << "\n\n";
-
-    for (unsigned int i=0; i<100; ++i)
-    {
-        cout << geomRand<int>() << ", ";
-    }
-
-}
 
 SEQAN_DEFINE_TEST(test_misc_terminal_get_terminal_size)
 {
@@ -95,8 +78,6 @@ SEQAN_DEFINE_TEST(test_misc_terminal_get_terminal_size)
 }
 
 SEQAN_BEGIN_TESTSUITE(test_misc) {
-    //     SEQAN_CALL_TEST(test_misc_random);
-
     SEQAN_CALL_TEST(test_misc_terminal_get_terminal_size);
 
     // Test Bit Twiddling.
@@ -134,7 +115,6 @@ SEQAN_BEGIN_TESTSUITE(test_misc) {
     SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_FindNoInterval__int);
     SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_GraphMap__int_ComputeCenter_StoreIntervals);
     SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_FindIntervalsIntervals__int_ComputeCenter);
-    SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_Random__int_RandomCenter_StorePointsOnly);
 
     SEQAN_CALL_TEST(test_misc_accumulators_average_accumulator_int_average);
     SEQAN_CALL_TEST(test_misc_accumulators_average_accumulator_int_count);

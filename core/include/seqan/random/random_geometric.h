@@ -72,7 +72,7 @@ public:
 .Memfunc.Geometric Pdf#Pdf
 ..class:Spec.Geometric Pdf
 ..summary:Constructor for geometric Pdf.
-..signature:Pdf<Geometric>()
+..signature:Pdf<GeometricFairCoin>()
 */
     Pdf() { SEQAN_CHECKPOINT; }
 };

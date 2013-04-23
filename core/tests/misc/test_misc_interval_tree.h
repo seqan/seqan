@@ -188,7 +188,7 @@ void IntervalTreeTest_TreeStructure() {
     // Create interval tree from the intervals.
     TGraph g;
     TPropertyMap pm;
-    createIntervalTree(g, pm, intervals,ComputeCenter());
+    createIntervalTree(g, pm, intervals, ComputeCenter());
 
     // Perform extensives checks on the interval tree's structure.
     {
@@ -650,80 +650,64 @@ void IntervalTreeTest_AddInterval() {
 
 
 // Call testIntervalTree_IntervalTree with <int> parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_IntervalTree__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_IntervalTree__int)
+{
     IntervalTreeTest_IntervalTree<int>();
 }
 
 // Call testIntervalTree_IntervalTreeFromIterator with <int> parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_IntervalTreeFromIterator__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_IntervalTreeFromIterator__int)
+{
     IntervalTreeTest_IntervalTreeFromIterator<int>();
 }
 
 // Call testIntervalTree_NonFullLength with <int> parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_NonFullLength__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_NonFullLength__int)
+{
     IntervalTreeTest_NonFullLength<int>();
 }
 
 // Call testIntervalTree_AddInterval with <int> parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_AddInterval__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_AddInterval__int)
+{
     IntervalTreeTest_AddInterval<int>();
 }
 
-// Call IntervalTreeTests with <int, RandomCenter, StorePointsOnly>
+// Call IntervalTreeTests with <int, ComputeCenter, StorePointsOnly>
 // parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_TreeStructure__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_TreeStructure__int)
+{
     IntervalTreeTest_TreeStructure<int>();
 }
 
-// Call IntervalTreeTest__FindNoInterval with <int, RandomCenter, StorePointsOnly>
+// Call IntervalTreeTest__FindNoInterval with <int, ComputeCenter, StorePointsOnly>
 // parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindNoInterval__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindNoInterval__int)
+{
     IntervalTreeTest_FindNoInterval<int>();
 }
 
 // Call IntervalTreeTest_FindIntervalExcludeTouching with <int>
 // parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindIntervalExcludeTouching__int) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindIntervalExcludeTouching__int)
+{
     IntervalTreeTest_FindIntervalExcludeTouching<int>();
 }
 
 // Call IntervalTreeTest_GraphMap with <int, ComputeCenter, StoreIntervals>
 // parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_GraphMap__int_ComputeCenter_StoreIntervals) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_GraphMap__int_ComputeCenter_StoreIntervals)
+{
     IntervalTreeTest_GraphMap<int, ComputeCenter, StoreIntervals>();
-}
-
-// Call IntervalTreeTestRandom with <int, RandomCenter, StorePointsOnly>
-// parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_Random__int_RandomCenter_StorePointsOnly) {
-    srand(static_cast<unsigned>(time(NULL)));
-    IntervalTreeTest_Random<int, RandomCenter, StorePointsOnly>(0,100000);
 }
 
 
 // Call IntervalTreeTest_FindIntervalsIntervals with <int, ComputeCenter, StoreIntervals>
 // parametrization.
-SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindIntervalsIntervals__int_ComputeCenter) {
-    srand(static_cast<unsigned>(time(NULL)));
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_FindIntervalsIntervals__int_ComputeCenter)
+{
     IntervalTreeTest_FindIntervalsIntervals<int, ComputeCenter>();
 }
-
-
-//// Call IntervalTreeTests with <float, RandomCenter, StorePointsOnly>
-//// parametrization.
-//SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTestRandom__float_RandomCenter_StorePointsOnly) {
-//    srand(static_cast<unsigned>(time(NULL)));
-//    IntervalTreeTestRandom<float, RandomCenter, StorePointsOnly>(-10000.0,10000.0);
-//}
-//
 
 }  // SEQAN_NAMESPACE_MAIN
 

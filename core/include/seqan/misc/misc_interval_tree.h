@@ -33,6 +33,8 @@
 // ==========================================================================
 
 
+// TODO(holtgrew): Bring back random center computation using new random module?
+
 // (weese:) This header needs improvement
 //
 // documentation lacks:
@@ -342,7 +344,7 @@ public:
 ..param.intervalEnds:Iterator pointing to end position of first interval.
 ..param.intervalCargos:Iterator pointing to cargos/ids for intervals.
 ..param.len:Number of intervals to store in tree.
-..param.tag:Tag for tree construction method. @Tag.IntervalTree Centers.tag.RandomCenter@ or @Tag.IntervalTree Centers.tag.ComputeCenter@
+..param.tag:Tag for tree construction method; @Tag.IntervalTree Centers.tag.ComputeCenter@
 ...default:@Tag.IntervalTree Centers.tag.ComputeCenter@
 ..remarks:center of root node is computed by _calcIntervalTreeRootCenter
 */
@@ -433,24 +435,13 @@ SEQAN_CHECKPOINT
 
 /**
 ..tag.ComputeCenter
-...summary:For intervals that are more or less uniformly distributed in the value range, using the ComputeCenter tag may result in a more balanced tree compared to using the RandomCenter tag.
+...summary:For intervals that are more or less uniformly distributed in the value range, using the ComputeCenter tag may result in a more balanced tree compared to using a random approach.
 ...signature:ComputeCenter
 ...remarks:center = minbegin + (maxend-minbegin)/2
  */
 //template <typename TSpec = SpecPointAndCargo>
 struct TagComputeCenter_;
 typedef Tag<TagComputeCenter_> const ComputeCenter;
-
-
-/**
-..tag.RandomCenter
-...summary:The RandomCenter tag guarantees that each node contains at least one interval, therefore the size of the tree is limited by the nummer of intervals. This may lead to an unbalanced tree, but is the most space-efficient and in practice the fastest method.
-...signature:RandomCenter
-...remarks:center = center of random interval
- */
-//template <typename TSpec = SpecPointAndCargo>
-struct TagRandomCenter_;
-typedef Tag<TagRandomCenter_> const RandomCenter;
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -868,7 +859,7 @@ struct ListType<IntervalTreeNode<TInterval,StoreIntervals> >
 ..param.intervals:Container of intervals.
 ...type:Spec.Alloc String
 ...remarks:A string of $IntervalAndCargo<TValue, TCargo>$ objects, see @Class.IntervalAndCargo@.
-..param.tag:Tag for tree construction method. @Tag.IntervalTree Centers.tag.RandomCenter@ or @Tag.IntervalTree Centers.tag.ComputeCenter@
+..param.tag:Tag for tree construction method; @Tag.IntervalTree Centers.tag.ComputeCenter@
 ...default:@Tag.IntervalTree Centers.tag.ComputeCenter@
 ..remarks:center of root node is computed by _calcIntervalTreeRootCenter
 ..include:seqan/misc/misc_interval_tree.h
@@ -913,8 +904,7 @@ createIntervalTree(TGraph & g,
 				   TPropertyMap & pm, 
 				   TIntervals & intervals)
 {
-SEQAN_CHECKPOINT
-	createIntervalTree(g,pm,intervals,RandomCenter());
+	createIntervalTree(g,pm,intervals,ComputeCenter());
 }
 
 template <typename TGraph, typename TPropertyMap, typename TIntervals, typename TSpec>
@@ -955,15 +945,14 @@ SEQAN_CHECKPOINT
     }
 }
 
-// RandomCenter tag as default construction method
+// ComputeCenter tag as default construction method
 template <typename TGraph, typename TPropertyMap, typename TIntervals>
 inline void
 createIntervalTree(TGraph & g, TPropertyMap & pm, 
 				   TIntervals & intervals, 
 				   typename Value<typename Value<TIntervals>::Type>::Type center)
 {
-SEQAN_CHECKPOINT
-	createIntervalTree(g,pm,intervals,center,RandomCenter());
+	createIntervalTree(g, pm, intervals, center, ComputeCenter());
 }
 
 
@@ -980,11 +969,10 @@ SEQAN_CHECKPOINT
 
 template <typename TValue,typename TCargo, typename TIntervals>
 inline void 
-createIntervalTree(IntervalTree<TValue,TCargo> & it,
+createIntervalTree(IntervalTree<TValue, TCargo> & it,
 				   TIntervals & intervals)
 {
-SEQAN_CHECKPOINT
-	createIntervalTree(it, intervals, RandomCenter());
+	createIntervalTree(it, intervals, ComputeCenter());
 }
 
 
@@ -1190,34 +1178,6 @@ _makePointerInterval(TIntervals & intervals, TIntervalPointers & interval_pointe
     for (; it != itEnd; ++it, ++iit)
         *iit = it;
 }
-
-
-
-
-//the RandomCenter spec way of chosing center values:
-//pick a random interval from the list and take its center as the center value 
-//for the left child node (during interval tree construction)
-template<typename TIntervals, typename TValue>
-TValue
-_calcIntervalTreeNodeCenterLeft(TIntervals & intervals, TValue &, TValue &, Tag<TagRandomCenter_> const)
-{
-SEQAN_CHECKPOINT
-	TValue rand_index = rand()%length(intervals);  
-	return (rightBoundary(*value(intervals,rand_index))+leftBoundary(*value(intervals,rand_index)))/(TValue)2.0;
-}
-
-//the RandomCenter spec way of chosing center values:
-//pick a random interval from the list and take its center as the center value 
-//for the right child node (during interval tree construction)
-template<typename TIntervals, typename TValue>
-TValue
-_calcIntervalTreeNodeCenterRight(TIntervals & intervals, TValue &, TValue &, Tag<TagRandomCenter_> const)
-{
-SEQAN_CHECKPOINT
-	TValue rand_index = rand()%length(intervals);  
-	return (rightBoundary(*value(intervals,rand_index))+leftBoundary(*value(intervals,rand_index)))/(TValue)2.0;
-}
-
 
 // if the center of the root is not given, it is placed in the "ComputeCenter way": in the middle of minValue and maxValue
 // where minValue is the minimum left boundary and maxValue is the maximum right boundary of all intervals

@@ -45,7 +45,7 @@
 #include <string>
 
 #include <seqan/basic.h>
-#include <seqan/misc/misc_random.h>
+#include <seqan/random.h>
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>
 
@@ -743,10 +743,9 @@ void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
     const unsigned ASSIGN_COUNT = 2;
     const unsigned LENGTH = 1000;
     const unsigned SEED = 42;
-    std::srand(SEED);
-    mtRandInit(false);
+    Rng<> rng(SEED);
 
-#define RAND_CHAR() ('A' + mtRand() % ('Z' - 'A'))
+#define RAND_CHAR() (pickRandomNumber(rng, Pdf<Uniform<char> >('A', 'Z')))
 
     // Build random reference and host string.
     String<char> string;
@@ -766,8 +765,8 @@ void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
         unsigned begin = 0;
         unsigned end = 0;
         while (begin == end) {
-            begin = mtRand() % length(string);
-            end = mtRand() % (length(string) + 1);
+            begin = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string) - 1));
+            end = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string)));
         }
         if (begin > end)
             std::swap(begin, end);
@@ -807,10 +806,9 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
     const unsigned MAX_INSERT = 100;
 
     const unsigned SEED = 42;
-    std::srand(SEED);
-    mtRandInit(false);
+    Rng<> rng(SEED);
 
-#define RAND_CHAR() ('A' + mtRand() % ('Z' - 'A'))
+#define RAND_CHAR() (pickRandomNumber(rng, Pdf<Uniform<int> >('A', 'Z')))
 
     // Build random reference and host string.
     String<char> string;
@@ -852,15 +850,15 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
 
     for (unsigned i = 0; i < NUM_CHANGES; ++i) {
 //         std::cout << "i == " << i << std::endl;
-        unsigned changeType = mtRand() % 3;
+        unsigned changeType = pickRandomNumber(rng, Pdf<Uniform<int> >(0, 2));
         if (changeType == 0) {  // edit
             if (length(string) == 0)
                 continue;
             unsigned begin = 0;
             unsigned end = 0;
             while (begin == end) {
-                begin = mtRand() % length(string);
-                end = mtRand() % (length(string) + 1);
+                begin = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string) - 1));
+                end = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string)));
             }
             if (begin > end)
                 std::swap(begin, end);
@@ -883,8 +881,8 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
                 if (length(string) == 0)
                     begin = 0;
                 else
-                    begin = mtRand() % length(string);
-                len = mtRand() % MAX_INSERT + 1;
+                    begin = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string) - 1));
+                len = pickRandomNumber(rng, Pdf<Uniform<int> >(0, MAX_INSERT));
             }
             expectedLength += len;
             String<char> buffer;
@@ -906,8 +904,8 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
             unsigned begin = 0;
             unsigned end = 0;
             while (begin == end) {
-                begin = mtRand() % length(string);
-                end = mtRand() % (length(string) + 1);
+                begin = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string) - 1));
+                end = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(string)));
             }
             if (begin > end)
                 std::swap(begin, end);
@@ -963,7 +961,7 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
 
             while (remaining > 1) {
                 SEQAN_ASSERT(csIt != end(string) - 1);
-                size_t len = mtRand() % (remaining + 1);
+                size_t len = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(remaining)));
                 remaining -= len;
                 if (remaining == 0)
                     break;
@@ -987,7 +985,7 @@ void testJournaledStringFuzzying(TStringJournalSpec const &)
 
             while (remaining > 1) {
                 SEQAN_ASSERT(csIt != end(string) - 1);
-                size_t len = mtRand() % (remaining + 1);
+                size_t len = pickRandomNumber(rng, Pdf<Uniform<int> >(0, length(remaining)));
                 remaining -= len;
                 if (remaining == 0)
                     break;

@@ -35,17 +35,26 @@
 #ifndef TESTS_INDEX_TEST_INDEX_HELPERS_H
 #define TESTS_INDEX_TEST_INDEX_HELPERS_H
 
+#include <seqan/random.h>
+
 
 //////////////////////////////////////////////////////////////////////////////
 
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+// Return shared random number generator for this test's helpers.  Note that the helper cannot be called in parallel.
+inline seqan::Rng<> & getRng()
+{
+    const int SEED = 0;
+    static seqan::Rng<> result(SEED);
+    return result;
+}
 
 template < typename TBuffer >
-void permute(TBuffer &buf) {
+void permute(TBuffer &buf)
+{
 	typename Size<TBuffer>::Type i, j, s = length(buf);
-//        srand( (unsigned)time( NULL ) );
 	for(i = 0; i < s; i++)
 		buf[i] = s-i-1;
 	for(i = 0; i < s; i++) {
@@ -69,19 +78,23 @@ void blank(TBuffer &buf) {
 }
 
 template < typename TBuffer >
-void randomize(TBuffer &buf) {
-	mtRandInit(false);
+void randomize(TBuffer &buf)
+{
 	typename Size<TBuffer>::Type i, s = length(buf);
+
+    seqan::Pdf<seqan::Uniform<int> > pdf(0, s - 1);
+
 	for(i = 0; i < s; i++)
-		buf[i] = mtRand() % s;
+		buf[i] = pickRandomNumber(getRng(), pdf);
 }
 
 template < typename TBuffer >
 void textRandomize(TBuffer &buf) {
-	mtRandInit(false);
+    seqan::Pdf<seqan::Uniform<int> > pdf(0, 1);
+
 	typename Size<TBuffer>::Type i, s = length(buf);
 	for(i = 0; i < s; i++)
-		buf[i] = '@' + mtRand() % 2;//('z'-'@');
+		buf[i] = '@' + pickRandomNumber(getRng(), pdf);
 }
 
 template < typename TValue >

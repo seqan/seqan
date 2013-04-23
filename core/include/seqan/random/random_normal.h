@@ -101,6 +101,8 @@ struct Value<const Pdf<Normal> > : Value<Pdf<Normal> > {};
 // Functions
 // ===========================================================================
 
+static const double SEQAN_NV_MAGICCONST = 1.7155277699214135;  // == 4 * exp(-0.5)/sqrt(2.0)
+
 /*
 ..summary:Pick a normally distributed random number.
 */

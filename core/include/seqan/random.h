@@ -44,7 +44,6 @@
 #include <cstdlib>
 
 #include <seqan/basic.h>
-#include <seqan/misc/misc_random.h>
 
 //____________________________________________________________________________
 // Module Headers

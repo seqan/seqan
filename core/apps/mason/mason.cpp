@@ -43,7 +43,6 @@
 #include <seqan/basic.h>
 #include <seqan/find.h>
 #include <seqan/arg_parse.h>
-#include <seqan/misc/misc_random.h>
 #include <seqan/modifier.h>
 #include <seqan/sequence.h>
 #include <seqan/store.h>

@@ -61,6 +61,15 @@
 namespace seqan {
 namespace ext {
 
+#define SEQAN_MERSENNE_MT_LEN			624
+#define SEQAN_MERSENNE_MT_IA			397
+#define SEQAN_MERSENNE_MT_IB			(SEQAN_MERSENNE_MT_LEN - SEQAN_MERSENNE_MT_IA)
+#define SEQAN_MERSENNE_UPPER_MASK      0x80000000
+#define SEQAN_MERSENNE_LOWER_MASK      0x7FFFFFFF
+#define SEQAN_MERSENNE_MATRIX_A        0x9908B0DF
+#define SEQAN_MERSENNE_TWIST(b,i,j)    ((b)[i] & SEQAN_MERSENNE_UPPER_MASK) | ((b)[j] & SEQAN_MERSENNE_LOWER_MASK)
+#define SEQAN_MERSENNE_MAGIC(s)        (((s)&1)*SEQAN_MERSENNE_MATRIX_A)
+
 // Not thread safe (unless auto-initialization is avoided and each thread has
 // its own MTRand object)
 
@@ -412,6 +421,15 @@ inline MTRand& MTRand::operator=( const MTRand& o )
 	pNext = &state[N-left];
 	return (*this);
 }
+
+#undef SEQAN_MERSENNE_MT_LEN
+#undef SEQAN_MERSENNE_MT_IA
+#undef SEQAN_MERSENNE_MT_IB
+#undef SEQAN_MERSENNE_UPPER_MASK
+#undef SEQAN_MERSENNE_LOWER_MASK
+#undef SEQAN_MERSENNE_MATRIX_A
+#undef SEQAN_MERSENNE_TWIST
+#undef SEQAN_MERSENNE_MAGIC
 
 }  // namespace ext
 }  // namespace seqan
