@@ -70,8 +70,7 @@ seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, 
 	setDefaultValue(parser, "method", "realign");
 	addOption(parser, ArgParseOption("b", "bandwidth", "bandwidth", ArgParseArgument::INTEGER, "<Int>"));
 	setDefaultValue(parser, "bandwidth", "8");
-    addOption(parser, ArgParseOption("n", "noalign", "no align, only convert input", ArgParseArgument::INTEGER, "<Bool>"));
-    setDefaultValue(parser, "noalign", "0");
+    addOption(parser, ArgParseOption("n", "noalign", "no align, only convert input"));
 
 	addOption(parser, ArgParseOption("ma", "matchlength", "min. overlap length", ArgParseArgument::INTEGER, "<Int>"));
 	setDefaultValue(parser, "matchlength", "15");
@@ -83,8 +82,7 @@ seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, 
 	setDefaultValue(parser, "window", "0");
  
 	addSection(parser, "ReAlign Method Options:");
-	addOption(parser, ArgParseOption("in", "include", "include contig sequence", ArgParseArgument::INTEGER, "<Bool>"));
-	setDefaultValue(parser, "include", "0");
+	addOption(parser, ArgParseOption("in", "include", "include contig sequence"));
 	addOption(parser, ArgParseOption("rm", "rmethod", "realign method", ArgParseArgument::STRING, "[nw | gotoh]"));
 	setDefaultValue(parser, "rmethod", "gotoh");
 
