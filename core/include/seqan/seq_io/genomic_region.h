@@ -57,7 +57,7 @@ inline bool parse(GenomicRegion & region, CharString const & regionString);
 
 /**
 .Class.GenomicRegion
-..cat:Input / Output
+..cat:Input/Output
 ..signature:GenomicRegion
 ..summary:Store information about a genomic region.
 ..description.text:
@@ -162,7 +162,7 @@ public:
 
 /**
 .Function.GenomicRegion#clear
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.GenomicRegion
 ..summary:Reset a @Class.GenomicRegion@ object to the same state after default construction.
 ..signature:reset(genomicRegion)
@@ -186,7 +186,7 @@ inline void clear(GenomicRegion & region)
 
 /**
 .Function.GenomicRegion#parse
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.GenomicRegion
 ..summary:Parse genomic region string store results in @Class.GenomicRegion@.
 ..signature:parse(genomicRegion, regionString)

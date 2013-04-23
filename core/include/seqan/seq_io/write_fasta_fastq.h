@@ -53,7 +53,7 @@ namespace seqan {
 
 /**
 .Class.SequenceOutputOptions
-..cat:Input / Output
+..cat:Input/Output
 ..summary:Configuration for writing sequence (FASTA/FASTQ) files.
 ..description:
 This $struct$ is used for the configuration of writing out FASTA and FASTQ files.

@@ -55,7 +55,7 @@ inline void close(Stream<GZFile> & stream);
 
 /**
 .Spec.GZ File Stream
-..cat:Input / Output
+..cat:Input/Output
 ..signature:Stream<GZFile>
 ..general:Class.Stream
 ..summary:Adaption from $gzFile$ of $<zlib.h>$ to streams.
@@ -275,7 +275,7 @@ open(Stream<GZFile> & stream, char const * filename, char const * mode)
 /**
 .Function.isDirect
 ..class:Spec.GZ File Stream
-..cat:Input / Output
+..cat:Input/Output
 ..summary:Query a GZ File Stream for being "direct."
 ..signature:isDirect(gzStream)
 ..param.gzStream:GZ File Stream to query.

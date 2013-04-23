@@ -95,7 +95,7 @@ struct BgzfCacheEntry_
 
 /**
 .Spec.BGZF Stream
-..cat:Input / Output
+..cat:Input/Output
 ..signature:Stream<Bgzf>
 ..general:Class.Stream
 ..summary:Reading and writing of BGZF data.
@@ -703,7 +703,7 @@ _bgzfDeflateBlock(Stream<Bgzf> & stream, int blockLength)
 /**
 .Function.attachToFile
 ..class:Spec.BGZF Stream
-..cat:Input / Output
+..cat:Input/Output
 ..summary:Attach to already open input / output file.
 ..signature:attachToFile(stream, fileHandle, mode)
 ..param.stream:Stream to attach to file.
@@ -929,7 +929,7 @@ streamReadChar(char & c, Stream<Bgzf> & stream)
 /**
 .Function.checkEof
 ..class:Spec.BGZF Stream
-..cat:Input / Output
+..cat:Input/Output
 ..summary:Check that the EOF marker is present in a BGZF(/BAM) file.
 ..signature:streamEof(stream)
 ..param.stream:The BGZF Stream to check.

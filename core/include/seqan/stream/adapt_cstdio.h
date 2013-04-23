@@ -52,7 +52,7 @@ namespace seqan {
 
 /**
 .Adaption."FILE *"
-..cat:Input / Output
+..cat:Input/Output
 ..summary:Adaption from $FILE *$ of $<cstdio>$ to streams.
 ..include:seqan/stream.h
  */

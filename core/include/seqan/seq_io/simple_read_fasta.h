@@ -61,7 +61,7 @@ namespace seqan {
 
 /**
 .Function.readFasta
-..cat:Input / Output
+..cat:Input/Output
 ..signature:int readFasta(seq, filename)
 ..summary:Read first sequence from a FASTA file.
 ..description:

@@ -51,7 +51,7 @@ namespace seqan {
 
 /**
 .Spec.Char Array Stream
-..cat:Input / Output
+..cat:Input/Output
 ..general:Class.Stream
 ..summary:Thin wrapper around $char *$ to the @Concept.StreamConcept|Stream@ concept.
 ..signature:Stream<CharArray<TPointer> >

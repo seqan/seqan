@@ -50,7 +50,7 @@ namespace seqan {
 
 /**
 .Spec.Double-Pass RecordReader
-..cat:Input / Output
+..cat:Input/Output
 ..general:Class.RecordReader
 ..summary:Record reader specialization for double-pass reading.
 ..signature:RecordReader<TStream, DoublePass>

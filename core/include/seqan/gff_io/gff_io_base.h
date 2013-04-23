@@ -296,7 +296,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reade
 /**
 .Function.GffRecord#clear
 ..class:Class.GffRecord
-..cat:Input / Output
+..cat:Input/Output
 ..signature:clear(record)
 ..param.record:The @Class.GffRecord@ to reset.
 ...type:Class.GffRecord

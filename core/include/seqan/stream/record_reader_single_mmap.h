@@ -55,7 +55,7 @@ namespace seqan {
 
 /**
 .Spec.Single-Pass String RecordReader
-..cat:Input / Output
+..cat:Input/Output
 ..general:Spec.Single-Pass RecordReader
 ..summary:Record reader specialization for single-pass reading from memory mapped files.
 ..signature:RecordReader<TStream, SinglePass<StringReader> >

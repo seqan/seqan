@@ -85,7 +85,7 @@ public:
 
 /**
 .Class.FaiIndex
-..cat:Input / Output
+..cat:Input/Output
 ..signature:FaiIndex
 ..summary:Data type for storing FAI indices.
 ..wiki:Tutorial/IndexedFastaIO|Tutorial: Indexed FASTA I/O
@@ -167,7 +167,7 @@ public:
 
 /**
 .Function.FaiIndex#clear
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:clear(faiIndex)
 ..param.faiIndex:The @Class.FaiIndex@ to reset.
@@ -191,7 +191,7 @@ inline void clear(FaiIndex & index)
 
 /**
 .Function.FaiIndex#getIdByName
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:getIdByName(faiIndex, name, refId)
 ..summary:Return id (numeric index in the file) of a sequence in a FAI file.
@@ -227,7 +227,7 @@ inline bool getIdByName(FaiIndex const & index, TName const & name, TId & id)
 
 /**
 .Function.FaiIndex#sequenceLength
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:__uint64 sequenceLength(faiIndex, refId)
 ..summary:Return length of the sequence with the given id in the @Class.FaiIndex@.
@@ -259,7 +259,7 @@ inline __uint64 sequenceLength(FaiIndex & index, TRefId refId)
 
 /**
 .Function.FaiIndex#sequenceName
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:CharString sequenceName(faiIndex, refId)
 ..summary:Return the name of the sequence with the given id in the @Class.FaiIndex@.
@@ -282,7 +282,7 @@ inline CharString sequenceName(FaiIndex const & index, unsigned refId)
 
 /**
 .Function.FaiIndex#numSeqs
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:numSeqs(faiIndex)
 ..summary:Return number of sequences known to an @Class.FaiIndex@.
@@ -303,7 +303,7 @@ inline __uint64 numSeqs(FaiIndex const & index)
 
 /**
 .Function.FaiIndex#readRegion
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:readRegion(str, faiIndex, refId, beginPos, endPos)
 ..signature:readRegion(str, faiIndex, region);
@@ -398,7 +398,7 @@ inline int readRegion(String<TValue, TSpec> & str,
 
 /**
 .Function.FaiIndex#readSequence
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:readSequence(str, faiIndex, refId)
 ..summary:Load a whole sequence from an @Class.FaiIndex@.
@@ -427,7 +427,7 @@ inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, uns
 
 /**
 .Function.FaiIndex#read
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:read(faiIndex, fastaFileName[, faiFileName])
 ..summary:Read a FAI index.
@@ -582,7 +582,7 @@ inline int read(FaiIndex & index)
 
 /**
 .Function.FaiIndex#write
-..cat:Input / Output
+..cat:Input/Output
 ..class:Class.FaiIndex
 ..signature:write(faiIndex[, faiFileName])
 ..summary:Write out an @Class.FaiIndex@ object.

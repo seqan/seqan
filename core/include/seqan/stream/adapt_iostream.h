@@ -54,7 +54,7 @@ namespace seqan {
 /**
 .Adaption.IO stream
 ..summary:Adaption of standard C++ iostream objects.
-..cat:Input / Output
+..cat:Input/Output
 ..remarks:Also, adaption from $ostream$ and $istream$ to the @Concept.StreamConcept@ concept.
 ..include:seqan/stream.h
  */
