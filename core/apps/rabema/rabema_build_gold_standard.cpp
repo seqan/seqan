@@ -810,10 +810,10 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             return 1;
         }
         // Break if we have an unaligned SAM/BAM record.
-        if (record.rId == -1)
+        if (record.rID == -1)
             break;  // Done!
         // Check that the file is actually sorted by coordinate.
-        if (prevRefId != -1 && (prevRefId > record.rId || (prevRefId == record.rId && prevPos > record.pos)))
+        if (prevRefId != -1 && (prevRefId > record.rID || (prevRefId == record.rID && prevPos > record.beginPos)))
         {
             std::cerr << "ERROR: File was not sorted by coordinate!\n";
             return 1;
@@ -847,28 +847,28 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
         // -------------------------------------------------------------------
 
         // Handle progress: Change of contig.
-        SEQAN_ASSERT_LEQ(prevRefId, record.rId);
-        if (prevRefId != record.rId)
+        SEQAN_ASSERT_LEQ(prevRefId, record.rID);
+        if (prevRefId != record.rID)
         {
-            for (int i = prevRefId + 1; i <= record.rId; ++i)
+            for (int i = prevRefId + 1; i <= record.rID; ++i)
             {
                 if (i != prevRefId)
                     std::cerr << "\n";
-                std::cerr << contigNameStore[record.rId] << " (" << record.rId + 1 << "/"
+                std::cerr << contigNameStore[record.rID] << " (" << record.rID + 1 << "/"
                           << length(contigNameStore) << ") ";
             }
             posOnContig = 0;
 
             // Load reference sequence on the fly using FAI index to save memory.
             unsigned faiRefId = 0;
-            if (!getIdByName(faiIndex, contigNameStore[record.rId], faiRefId))
+            if (!getIdByName(faiIndex, contigNameStore[record.rID], faiRefId))
             {
-                std::cerr << "Reference sequence " << contigNameStore[record.rId] << " not known in FAI file.\n";
+                std::cerr << "Reference sequence " << contigNameStore[record.rID] << " not known in FAI file.\n";
                 return 1;
             }
             if (readSequence(contig, faiIndex, faiRefId) != 0)
             {
-                std::cerr << "Could not load sequence " << contigNameStore[record.rId]
+                std::cerr << "Could not load sequence " << contigNameStore[record.rID]
                           << " from FASTA file with FAI.\n";
                 return 1;
             }
@@ -876,7 +876,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             reverseComplement(rcContig);
         }
         // Handle progress: Position on contig.
-        for (; posOnContig < record.pos; posOnContig += 100 * 1000)
+        for (; posOnContig < record.beginPos; posOnContig += 100 * 1000)
         {
             if (posOnContig % (1000 * 1000) == 0 && posOnContig > 0)
                 std::cerr << posOnContig / 1000 / 1000 << "M";
@@ -895,14 +895,14 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             maxError = static_cast<int>(floor(0.01 * options.maxError * length(record.seq)));
 
         // Compute end position of alignment.
-        int endPos = record.pos + getAlignmentLengthInRef(record) - countPaddings(record.cigar);
+        int endPos = record.beginPos + getAlignmentLengthInRef(record) - countPaddings(record.cigar);
 
         if (!hasFlagRC(record))
-            buildErrorCurvePoints(errorCurves[readId], maxError, contig, record.rId, !hasFlagRC(record),
+            buildErrorCurvePoints(errorCurves[readId], maxError, contig, record.rID, !hasFlagRC(record),
                                   readSeq, readId, endPos, readNameStore, options.matchN, TPatternSpec());
         else
-            buildErrorCurvePoints(errorCurves[readId], maxError, rcContig, record.rId, !hasFlagRC(record),
-                                  readSeq, readId, length(rcContig) - record.pos, readNameStore, options.matchN,
+            buildErrorCurvePoints(errorCurves[readId], maxError, rcContig, record.rID, !hasFlagRC(record),
+                                  readSeq, readId, length(rcContig) - record.beginPos, readNameStore, options.matchN,
                                   TPatternSpec());
 #if ENABLE
         std::cerr << "AFTER BUILD, readId == " << readId << ", read name == " << readNameStore[readId] << ", maxError == " << maxError << "\n";
@@ -911,8 +911,8 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             readAlignmentDistances[readId] = maxError;
 
         // Update variables storing the previous read/contig id and position.
-        prevRefId = record.rId;
-        prevPos = record.pos;
+        prevRefId = record.rID;
+        prevPos = record.beginPos;
     }
     std::cerr << "\n\nTook " << sysTime() - startTime << " s\n";
 

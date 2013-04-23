@@ -105,8 +105,8 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
 
     SEQAN_ASSERT_EQ(alignments[0].qName, "READ0");
     SEQAN_ASSERT_EQ(alignments[0].flag, 2);
-    SEQAN_ASSERT_EQ(alignments[0].rId, 0);
-    SEQAN_ASSERT_EQ(alignments[0].pos, 0);
+    SEQAN_ASSERT_EQ(alignments[0].rID, 0);
+    SEQAN_ASSERT_EQ(alignments[0].beginPos, 0);
     SEQAN_ASSERT_EQ(alignments[0].mapQ, 8);
     SEQAN_ASSERT_EQ(length(alignments[0].cigar), 3u);
     SEQAN_ASSERT_EQ(alignments[0].cigar[0].count, 5u);
@@ -229,8 +229,8 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
 
     record.qName = "READ0";
     record.flag = 2;
-    record.rId = 0;
-    record.pos = 0;
+    record.rID = 0;
+    record.beginPos = 0;
     record.mapQ = 8;
     resize(record.cigar, 3);
     record.cigar[0].count = 5;
@@ -248,8 +248,8 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
 
     record.qName = "READ0";
     record.flag = 1;
-    record.rId = 0;
-    record.pos = 1;
+    record.rID = 0;
+    record.beginPos = 1;
     record.mapQ = 8;
     resize(record.cigar, 3);
     record.cigar[0].count = 5;
@@ -267,8 +267,8 @@ void testBamIOBamStreamWriteRecords(char const * pathFragmentExpected)
 
     record.qName = "READ0";
     record.flag = 3;
-    record.rId = 0;
-    record.pos = 2;
+    record.rID = 0;
+    record.beginPos = 2;
     record.mapQ = 8;
     resize(record.cigar, 3);
     record.cigar[0].count = 5;

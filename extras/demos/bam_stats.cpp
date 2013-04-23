@@ -261,7 +261,7 @@ realignBamRecord(Align<TSource, TSpec> & result, TReference & reference, BamAlig
     resize(rows(result), 2);
 
     unsigned len = getAlignmentLengthInRef(record);
-    __int64 posBegin = record.pos;
+    __int64 posBegin = record.beginPos;
 
     if (!empty(record.cigar) && record.cigar[0].operation == 'S')
         posBegin -= record.cigar[0].count;
@@ -297,7 +297,7 @@ int realignBamRecord(TReference & reference, BamAlignmentRecord & record, unsign
     typedef Finder<TReferenceInfix>                     TFinder;
     
     unsigned len = getAlignmentLengthInRef(record);
-    __int64 posBegin = record.pos;
+    __int64 posBegin = record.beginPos;
     
     if (!empty(record.cigar) && record.cigar[0].operation == 'S')
         posBegin -= record.cigar[0].count;
@@ -453,7 +453,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             return 1;
         }
         
-        // Initialize mapping from record.rId to seq id from reference.
+        // Initialize mapping from record.rID to seq id from reference.
         String<unsigned> rIdToSeqId;
         for (unsigned i = 0; i < length(refNames); ++i)
         {
@@ -477,7 +477,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                 return 1;
             }
             
-            // Update mapping from SAM rId to index of sequence in reference sequences.
+            // Update mapping from SAM rID to index of sequence in reference sequences.
             if (oldNumRefs != length(refNames))
             {
                 for (unsigned i = oldNumRefs; i < length(refNames); ++i)
@@ -494,7 +494,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             }
             
             // Check reference id.
-            if (record.rId != -1 && record.rId < static_cast<int>(length(seqs)))
+            if (record.rID != -1 && record.rID < static_cast<int>(length(seqs)))
             {
                 Read read;
                 
@@ -503,10 +503,10 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                 int tagValue;
                 
                 // Read reference id.
-                read.contigId = record.rId;
+                read.contigId = record.rID;
                 
                 // Read begin position.
-                read.beginPos = record.pos;
+                read.beginPos = record.beginPos;
                 
                 // Read reverse complemented tag.
                 if (hasFlagRC(record)) read.reverseComplemented = true;
@@ -597,7 +597,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         return 1;
     }
 
-    // Initialize mapping from record.rId to seq id from reference.
+    // Initialize mapping from record.rID to seq id from reference.
     String<unsigned> rIdToSeqId;
     for (unsigned i = 0; i < length(refNames); ++i)
     {
@@ -654,7 +654,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             if (options.verbosity >= 3)
                 write2(std::cerr, record, context, Sam());
 
-            // Update mapping from SAM rId to index of sequence in reference sequences.
+            // Update mapping from SAM rID to index of sequence in reference sequences.
             if (oldNumRefs != length(refNames))
             {
                 for (unsigned i = oldNumRefs; i < length(refNames); ++i)
@@ -724,7 +724,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                     appendValue(matchesCount, 0);
                 }
             }
-            record._qId = readId;
+            record._qID = readId;
         }
 
         // Remove any unmapped records or records with unmapped mate.
@@ -732,7 +732,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             String<BamAlignmentRecord> tmpChunk;
             for (unsigned i = 0; i < length(chunk); ++i)
             {
-                if (hasFlagUnmapped(chunk[i]) || chunk[i].rId == -1 || hasFlagNextUnmapped(chunk[i]))
+                if (hasFlagUnmapped(chunk[i]) || chunk[i].rID == -1 || hasFlagNextUnmapped(chunk[i]))
                     continue;
                 appendValue(tmpChunk, chunk[i]);
             }
@@ -748,8 +748,8 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                 unsigned mate = i;
                 for (unsigned j = i + 1; j < length(chunk); ++j)
                 {
-                    if (chunk[i].rId == chunk[j].rNextId && chunk[i].pos == chunk[j].pNext &&
-                        chunk[j].rId == chunk[i].rNextId && chunk[j].pos == chunk[i].pNext)
+                    if (chunk[i].rID == chunk[j].rNextId && chunk[i].beginPos == chunk[j].pNext &&
+                        chunk[j].rID == chunk[i].rNextId && chunk[j].beginPos == chunk[i].pNext)
                     {
                         mate = j;
                         break;
@@ -794,10 +794,10 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             BamAlignmentRecord & record = chunk[chunkI];
             unsigned & editDistance = editDistances[chunkI];
 
-            SEQAN_CHECK(record.rId != -1 && record.rId < static_cast<int>(length(seqs)),
+            SEQAN_CHECK(record.rID != -1 && record.rID < static_cast<int>(length(seqs)),
                         "Must be aligned!");
 
-            unsigned seqId = rIdToSeqId[record.rId];
+            unsigned seqId = rIdToSeqId[record.rID];
 
             // realign in a window 10bp left and right of the original alignment
             if (options.realign)
@@ -825,7 +825,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                     return 1;
                 }
                 if (record.cigar[0].operation == 'S')
-                    record.pos -= record.cigar[0].count;
+                    record.beginPos -= record.cigar[0].count;
 
                 for (unsigned i = 0; i < length(record.cigar); ++i)
                 {
@@ -906,14 +906,14 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             SEQAN_CHECK(length(chunk) % 2 == 0u, "Chunk length must be even.");
             for (unsigned i = 0; i < length(chunk); i += 2)
             {
-                if (chunk[i].rId != chunk[i + 1].rId)
+                if (chunk[i].rID != chunk[i + 1].rID)
                     continue;  // Invalid: Not even on same reference.
-                if (chunk[i].pos < chunk[i + 1].pos && (hasFlagRC(chunk[i]) || !hasFlagRC(chunk[i + 1])))
+                if (chunk[i].beginPos < chunk[i + 1].beginPos && (hasFlagRC(chunk[i]) || !hasFlagRC(chunk[i + 1])))
                     continue;  // Invalid: Not aligned --> <--, case where chunk[i] is left.
-                if (chunk[i].pos > chunk[i + 1].pos && (!hasFlagRC(chunk[i]) || hasFlagRC(chunk[i + 1])))
+                if (chunk[i].beginPos > chunk[i + 1].beginPos && (!hasFlagRC(chunk[i]) || hasFlagRC(chunk[i + 1])))
                     continue;  // Invalid: Not aligned --> <--, case where chunk[i] is right.
-                chunk[i].tLen = chunk[i + 1].pos - chunk[i].pos;
-                chunk[i + 1].tLen = chunk[i].pos - chunk[i + 1].pos;
+                chunk[i].tLen = chunk[i + 1].beginPos - chunk[i].beginPos;
+                chunk[i + 1].tLen = chunk[i].beginPos - chunk[i + 1].beginPos;
                 __int32 tlen = abs(chunk[i].tLen);
                 if ((options.insertSizeMax != -1 && tlen > options.insertSizeMax) ||
                     (options.insertSizeMin != -1 && tlen < options.insertSizeMin))
@@ -934,16 +934,16 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         for (unsigned i = 0; i < length(chunk); ++i)
         {
             BamAlignmentRecord & record = chunk[i];
-            int readId = record._qId;
+            int readId = record._qID;
             unsigned editDistance = editDistances[i];
 
             // Update the maps minErrors, matchesCount, and minErrorsOrigin.  These will be used to print the results.
             if (options.goldStandard)
             {
                 // Check if match corresponds to the true origin in gold standard.
-                if ((record.pos >= goldStandard[readId].beginPos - 2 * goldStandard[readId].errors &&
-                     record.pos <= goldStandard[readId].beginPos + 2 * goldStandard[readId].errors) &&
-                    record.rId == goldStandard[readId].contigId &&
+                if ((record.beginPos >= goldStandard[readId].beginPos - 2 * goldStandard[readId].errors &&
+                     record.beginPos <= goldStandard[readId].beginPos + 2 * goldStandard[readId].errors) &&
+                    record.rID == goldStandard[readId].contigId &&
                     hasFlagRC(record) == goldStandard[readId].reverseComplemented)
                 {
                     minErrorsOrigin[readId] = _min(minErrors[readId], editDistance);
@@ -1013,7 +1013,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         if (options.verbosity >= 3)
             write2(std::cerr, record, context, Sam());
         
-        // Update mapping from SAM rId to index of sequence in reference sequences.
+        // Update mapping from SAM rID to index of sequence in reference sequences.
         if (oldNumRefs != length(refNames))
         {
             for (unsigned i = oldNumRefs; i < length(refNames); ++i)
@@ -1037,7 +1037,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         stats.alignedRecords += !hasFlagUnmapped(record);
         
         // Compute alignment.
-        if (record.rId != -1 && record.rId < static_cast<int>(length(seqs)))
+        if (record.rID != -1 && record.rID < static_cast<int>(length(seqs)))
         {
             // retrieve (possibly) missing read sequence
             int readId;
@@ -1059,7 +1059,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                 readId = -1;
             }
  
-            unsigned seqId = rIdToSeqId[record.rId];
+            unsigned seqId = rIdToSeqId[record.rID];
             
             // realign in a window 10bp left and right of the original alignment
             if (options.realign)
@@ -1070,7 +1070,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             {
                 // convert soft clipping into match/mismatches
                 if (record.cigar[0].operation == 'S')
-                    record.pos -= record.cigar[0].count;
+                    record.beginPos -= record.cigar[0].count;
 
                 for (unsigned i = 0; i < length(record.cigar); ++i)
                 {
@@ -1163,7 +1163,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
 //                if (editDistance != realignEditDist)
 //                {
 //                    std::cout << "Realignment difference " << record.qName << " (old=" << editDistance << ", new=" << realignEditDist << ")\n";
-//                    std::cout << "improvement=" << (editDistance - realignEditDist) << '\t' << record.qName << '\t' << record.pos << '\n';
+//                    std::cout << "improvement=" << (editDistance - realignEditDist) << '\t' << record.qName << '\t' << record.beginPos << '\n';
 //                    std::cout << align;
 //                    std::cout << realign;
 //                    std::cout << std::endl;
@@ -1174,9 +1174,9 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             if (options.goldStandard)
             {
                 // Check if match corresponds to the true origin in gold standard.
-                if ((record.pos >= goldStandard[readId].beginPos - 2 * goldStandard[readId].errors &&
-                     record.pos <= goldStandard[readId].beginPos + 2 * goldStandard[readId].errors) &&
-                    record.rId == goldStandard[readId].contigId &&
+                if ((record.beginPos >= goldStandard[readId].beginPos - 2 * goldStandard[readId].errors &&
+                     record.beginPos <= goldStandard[readId].beginPos + 2 * goldStandard[readId].errors) &&
+                    record.rID == goldStandard[readId].contigId &&
                     hasFlagRC(record) == goldStandard[readId].reverseComplemented)
                 {
                     minErrorsOrigin[readId] = _min(minErrors[readId], editDistance);

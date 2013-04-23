@@ -181,7 +181,7 @@ int readRecord(SamAlignment & record,
     // Reading integers.
     CharString buffer;
     tokenizeTo(buffer, reader, '\t');
-    record.pos = ::seqan::lexical_cast<__int32>(buffer); // We should probably steal/port the boost code, with enforcing english locale.
+    record.beginPos = ::seqan::lexical_cast<__int32>(buffer); // We should probably steal/port the boost code, with enforcing english locale.
     goNext(reader);
     
     // ... etc.

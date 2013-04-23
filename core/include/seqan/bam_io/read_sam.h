@@ -332,15 +332,15 @@ int readRecord(BamAlignmentRecord & record,
         return res;
     if (buffer == "*")
     {
-        record.rId = BamAlignmentRecord::INVALID_REFID;
+        record.rID = BamAlignmentRecord::INVALID_REFID;
     }
     else if (buffer == "0")
     {
-        record.rId = BamAlignmentRecord::INVALID_REFID;
+        record.rID = BamAlignmentRecord::INVALID_REFID;
     }
-    else if (!getIdByName(nameStore(context), buffer, record.rId))
+    else if (!getIdByName(nameStore(context), buffer, record.rID))
     {
-        record.rId = length(nameStore(context));
+        record.rID = length(nameStore(context));
         appendName(nameStore(context), buffer, nameStoreCache(context));
     }
     SEQAN_SKIP_TAB;
@@ -351,11 +351,11 @@ int readRecord(BamAlignmentRecord & record,
     if (res != 0)
         return res;
     if (buffer == "*")
-        record.pos = BamAlignmentRecord::INVALID_POS;
+        record.beginPos = BamAlignmentRecord::INVALID_POS;
     else if (buffer == "0")
-        record.pos = BamAlignmentRecord::INVALID_POS;
+        record.beginPos = BamAlignmentRecord::INVALID_POS;
     else
-        record.pos = lexicalCast<__uint32>(buffer) - 1;
+        record.beginPos = lexicalCast<__uint32>(buffer) - 1;
     SEQAN_SKIP_TAB;
 
     // MAPQ
@@ -410,7 +410,7 @@ int readRecord(BamAlignmentRecord & record,
     }
     else if (buffer == "=")
     {
-        record.rNextId = record.rId;
+        record.rNextId = record.rID;
     }
     else if (!getIdByName(nameStore(context), buffer, record.rNextId))
     {

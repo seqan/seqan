@@ -269,9 +269,9 @@ int _dumpRegion(TInStreamOrRecordReader & in, TOutStream & out, Bam const & /*ba
                 std::cerr << "Could not read alignment record!" << std::endl;
                 return 1;
             }
-            if (record.pos < options.regions[i].i2)
+            if (record.beginPos < options.regions[i].i2)
                 continue;  // Skip, before region.
-            if (record.pos >= options.regions[i].i3)
+            if (record.beginPos >= options.regions[i].i3)
             {
                 stop = true;
                 continue;  // Stop, wrote out all required ones.

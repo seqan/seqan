@@ -80,15 +80,15 @@ getStrandIndependentOrientation(BamAlignmentRecord const& rec)
 {
     if (!hasFlagRC(rec)) {
         if (!(hasFlagNextRC(rec))) {
-            return (rec.pos < rec.pNext) ? LibraryInfo::F_PLUS : LibraryInfo::F_MINUS;
+            return (rec.beginPos < rec.pNext) ? LibraryInfo::F_PLUS : LibraryInfo::F_MINUS;
         } else {
-            return (rec.pos < rec.pNext) ? LibraryInfo::R_PLUS : LibraryInfo::R_MINUS;
+            return (rec.beginPos < rec.pNext) ? LibraryInfo::R_PLUS : LibraryInfo::R_MINUS;
         }
     } else {
         if (!hasFlagNextRC(rec)) {
-            return (rec.pos > rec.pNext) ? LibraryInfo::R_PLUS : LibraryInfo::R_MINUS;
+            return (rec.beginPos > rec.pNext) ? LibraryInfo::R_PLUS : LibraryInfo::R_MINUS;
         } else {
-            return (rec.pos > rec.pNext) ? LibraryInfo::F_PLUS : LibraryInfo::F_MINUS;
+            return (rec.beginPos > rec.pNext) ? LibraryInfo::F_PLUS : LibraryInfo::F_MINUS;
         }
     }
 }

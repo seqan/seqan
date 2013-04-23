@@ -93,7 +93,7 @@ typedef Tag<TagGtf_> const Gtf;
 ..summary:Static member with invalid score value.
 ..type:nolink:$float$
 
-.Memvar.GffRecord#seqID
+.Memvar.GffRecord#ref
 ..class:Class.GffRecord
 ..summary:The sequence id of the record.
 ..type:Shortcut.CharString
@@ -156,8 +156,8 @@ struct GffRecord
 
     // TODO(singer): Maybe use a I/O context object and store ids as integers
     // The ID of the landmark used to establish the coordinate system for the current feature.
-    String<char> seqID;
-    int seqIdx;
+    String<char> ref;
+    int rID;
 
     // The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this feature.
     String<char> source;
@@ -195,7 +195,7 @@ struct GffRecord
     }
 
     GffRecord() :
-        seqIdx(INVALID_IDX), beginPos(-1), endPos(-1), score(INVALID_SCORE()),
+        rID(INVALID_IDX), beginPos(-1), endPos(-1), score(INVALID_SCORE()),
         strand('.'), phase('.')
     {}
 };
@@ -306,7 +306,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reade
 
 inline void clear(GffRecord & record)
 {
-    clear(record.seqID);
+    clear(record.ref);
     clear(record.source);
     clear(record.type);
     clear(record.tagName);
@@ -339,11 +339,11 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
     // read column 1: seqid
     // The letters until the first whitespace will be read.
     // Then, we skip until we hit the first tab character.
-    if (readUntilTabOrLineBreak(record.seqID, reader))
+    if (readUntilTabOrLineBreak(record.ref, reader))
         return 1;
-    record.seqIdx = GffRecord::INVALID_IDX;
+    record.rID = GffRecord::INVALID_IDX;
 
-    if (!empty(record.seqID) && record.seqID[0] == '#')
+    if (!empty(record.ref) && record.ref[0] == '#')
     {
         if (skipLine(reader))
             return 1;
@@ -524,19 +524,19 @@ template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
 inline int
 _readGffRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context)
 {
-    // Read record with string seqID from GFF file.
+    // Read record with string ref from GFF file.
     int res = _readGffRecord(record, reader);
     if (res != 0)
         return res;
 
-    // Translate seqID to seqIdx using the context.  If there is no such sequence name in the context yet then we add it.
+    // Translate ref to rID using the context.  If there is no such sequence name in the context yet then we add it.
     unsigned idx = 0;
-    if (!getIdByName(nameStore(context), record.seqID, idx, nameStoreCache(context)))
+    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
     {
         idx = length(nameStore(context));
-        appendName(nameStore(context), record.seqID, nameStoreCache(context));
+        appendName(nameStore(context), record.ref, nameStoreCache(context));
     }
-    record.seqIdx = idx;
+    record.rID = idx;
 
     return 0;
 }
@@ -699,14 +699,14 @@ _writeAttributes(TStream & stream, GffRecord const & record, Gtf /*tag*/)
 
 template <typename TStream, typename TSeqId, typename TTag>
 inline int
-_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & seqID, TTag const tag)
+_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref, TTag const tag)
 {
     // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
-    if (empty(seqID))
+    if (empty(ref))
         return 0;
 
     // write column 1: seqid
-    if (streamWriteBlock(stream, &seqID[0], length(seqID)) != length(seqID))
+    if (streamWriteBlock(stream, &ref[0], length(ref)) != length(ref))
         return 1;
 
     if (streamWriteChar(stream, '\t'))
@@ -806,19 +806,19 @@ template <typename TStream, typename TTag>
 inline int
 writeRecord(TStream & stream, GffRecord const & record, TTag const tag)
 {
-    return _writeRecordImpl(stream, record, record.seqID, tag);
+    return _writeRecordImpl(stream, record, record.ref, tag);
 }
 
 template <typename TStream, typename TContextSpec, typename TContextSpec2, typename TTag>
 inline int
 writeRecord(TStream & stream, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
 {
-    if (record.seqIdx != GffRecord::INVALID_IDX)
+    if (record.rID != GffRecord::INVALID_IDX)
     {
-        String<char> tempSeqId = nameStore(context)[record.seqIdx];
+        String<char> tempSeqId = nameStore(context)[record.rID];
         return _writeRecordImpl(stream, record, tempSeqId, tag);
     }
-    return _writeRecordImpl(stream, record, record.seqID, tag);
+    return _writeRecordImpl(stream, record, record.ref, tag);
 }
 
 }  // namespace seqan

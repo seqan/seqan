@@ -252,7 +252,7 @@ bool loadReadsSam(
             std::cerr << "ERROR: Problem while reading sam record from " << fileName << "\n";
             return false;
         }
-        if (record.rId == -1)
+        if (record.rID == -1)
             continue;  // Skip if orphan.
 
         // Get the query name, remove everything after the first space.
@@ -269,11 +269,11 @@ bool loadReadsSam(
 
         // Read reference name.  Same behaviour as for query name:  Read up to
         // the first whitespace character and skip to next tab char.
-        String<char> chrname = nameStore[record.rId];
+        String<char> chrname = nameStore[record.rID];
         //need gnameToIdMap !!
 
         // Get read begin position.
-        TContigPos beginPos = record.pos;
+        TContigPos beginPos = record.beginPos;
 
         // Get CIGAR string.
         String<CigarElement<> > cigar = record.cigar;

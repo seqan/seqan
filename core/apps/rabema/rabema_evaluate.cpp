@@ -553,7 +553,7 @@ int benchmarkReadResult(RabemaStats & result,
     for (unsigned i = 0; i < length(samRecords); ++i)
     {
         BamAlignmentRecord const & samRecord = samRecords[i];
-        int seqId = refIdMapping.map[samRecord.rId];
+        int seqId = refIdMapping.map[samRecord.rID];
 
         // Compute actual alignment score to rule out invalidly reported alignments.
         //
@@ -593,7 +593,7 @@ int benchmarkReadResult(RabemaStats & result,
                 if (hasFlagLast(samRecord))
                     readSeq = readSeqR;
                 int bandwidth = static_cast<int>(ceil(0.01 * options.maxError * length(readSeq)));
-                __int32 beginPos = samRecord.pos - bandwidth;
+                __int32 beginPos = samRecord.beginPos - bandwidth;
                 __int32 endPos = (beginPos + getAlignmentLengthInRef(samRecord) -
                                   countPaddings(samRecord.cigar) + 2 * bandwidth);
                 if (beginPos < 0)
@@ -618,9 +618,9 @@ int benchmarkReadResult(RabemaStats & result,
         // C-style end) of the read.
         unsigned lastPos = 0;
         if (!hasFlagRC(samRecord))
-            lastPos = samRecord.pos + getAlignmentLengthInRef(samRecord) - countPaddings(samRecord.cigar) - 1;
+            lastPos = samRecord.beginPos + getAlignmentLengthInRef(samRecord) - countPaddings(samRecord.cigar) - 1;
         else
-            lastPos = length(refSeqs[seqId]) - samRecord.pos - 1;
+            lastPos = length(refSeqs[seqId]) - samRecord.beginPos - 1;
 
         if (options.showTryHitIntervals)
             std::cerr << "TRY HIT\tchr=" << refSeqNames[seqId] << "\tlastPos=" << lastPos << "\tqName="

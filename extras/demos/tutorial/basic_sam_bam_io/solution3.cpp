@@ -48,7 +48,7 @@ int main()
     {
         clear(record);
         // Set members that are the same for all records.
-        record.rId = 0;
+        record.rID = 0;
         record.flag = 0;
         resize(record.cigar, 1);
         record.cigar[0].operation = '=';
@@ -60,7 +60,7 @@ int main()
         ss << "REF_" << i << "_" << (i + 12);
         record.qName = ss.str();
         // Set position.
-        record.pos = i;
+        record.beginPos = i;
         // Set sequence.
         record.seq = infix(ref, i, i + 12);
 

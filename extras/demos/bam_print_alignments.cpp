@@ -117,11 +117,11 @@ int main(int argc, char const ** argv)
             return 1;
         }
 
-        if (record.rId == BamAlignmentRecord::INVALID_REFID)
+        if (record.rID == BamAlignmentRecord::INVALID_REFID)
             continue;  // Skip * reference.
 
         // Convert BAM record to alignment.
-        bamRecordToAlignment(align, seqs[record.rId], record);
+        bamRecordToAlignment(align, seqs[record.rID], record);
         // Dump record as SAM and the alignment.
         write2(std::cout, record, context, Sam());
         std::cout << align << std::endl;

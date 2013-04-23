@@ -98,8 +98,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
     BamAlignmentRecord record;
     record.qName = "READNAME";
     record.flag = BAM_FLAG_ALL_PROPER | BAM_FLAG_RC;
-    record.rId = 0;
-    record.pos = 30;
+    record.rID = 0;
+    record.beginPos = 30;
     record.mapQ = 8;
     appendValue(record.cigar, CigarElement<>('M', 10));
     record.rNextId = BamAlignmentRecord::INVALID_REFID;

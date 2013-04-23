@@ -55,7 +55,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     seqan::GffRecord record;
     seqan::readRecord(record, reader, seqan::Gff());
 
-    SEQAN_ASSERT_EQ(record.seqID, "ctg123");
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "mRNA");
     SEQAN_ASSERT_EQ(record.beginPos, 1299u);
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "sonichedgehog;hehe");
 
     seqan::readRecord(record, reader, seqan::Gff());
-    SEQAN_ASSERT_EQ(record.seqID, "ctg123");
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
     SEQAN_ASSERT_EQ(record.beginPos, 1299u);
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagValue[1], "mrn a0001");
 
     seqan::readRecord(record, reader, seqan::Gff());
-    SEQAN_ASSERT_EQ(record.seqID, "ctg123");
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
     SEQAN_ASSERT_EQ(record.beginPos, 1049u);
@@ -116,7 +116,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     seqan::GffRecord record;
     seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
 
-    SEQAN_ASSERT_EQ(record.seqID, "ctg123");
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "mRNA");
     SEQAN_ASSERT_EQ(record.beginPos, 1299u);
@@ -131,7 +131,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
     seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
-    SEQAN_ASSERT_EQ(record.seqID, "ctg123");
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
     SEQAN_ASSERT_EQ(record.beginPos, 1299u);
@@ -146,7 +146,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
     seqan::readRecord(record, reader, gffIOContext, seqan::Gff());
-    SEQAN_ASSERT_EQ(record.seqID, "ctg123");
+    SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
     SEQAN_ASSERT_EQ(record.beginPos, 1049u);
@@ -243,7 +243,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     seqan::GffRecord record;
     seqan::readRecord(record, reader, seqan::Gtf());
 
-    SEQAN_ASSERT_EQ(record.seqID, "140");
+    SEQAN_ASSERT_EQ(record.ref, "140");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "inter");
     SEQAN_ASSERT_EQ(record.beginPos, 5140u);
@@ -257,7 +257,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagValue[1], "2");
 
     seqan::readRecord(record, reader, seqan::Gtf());
-    SEQAN_ASSERT_EQ(record.seqID, "240");
+    SEQAN_ASSERT_EQ(record.ref, "240");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "CDS");
     SEQAN_ASSERT_EQ(record.beginPos, 66995u);
@@ -271,7 +271,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagValue[1], "140.000.1");
 
     seqan::readRecord(record, reader, seqan::Gtf());
-    SEQAN_ASSERT_EQ(record.seqID, "340");
+    SEQAN_ASSERT_EQ(record.ref, "340");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "intron_CNS");
     SEQAN_ASSERT_EQ(record.beginPos, 70102u);
@@ -300,7 +300,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     seqan::GffRecord record;
     SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Gtf()), 0);
 
-    SEQAN_ASSERT_EQ(record.seqID, "chrAL590842");
+    SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
     SEQAN_ASSERT_EQ(record.beginPos, 34872u);
@@ -326,7 +326,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_EQ(record.tagValue[6], "urn:lsid:pseudogene.org:632.Pseudogene:1");
 
     SEQAN_ASSERT_EQ(readRecord(record, reader, seqan::Gtf()), 0);
-    SEQAN_ASSERT_EQ(record.seqID, "chrAL590842");
+    SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
     SEQAN_ASSERT_EQ(record.beginPos, 72639u);
@@ -371,7 +371,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     seqan::GffRecord record;
     seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
 
-    SEQAN_ASSERT_EQ(record.seqID, "140");
+    SEQAN_ASSERT_EQ(record.ref, "140");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "inter");
     SEQAN_ASSERT_EQ(record.beginPos, 5140u);
@@ -386,7 +386,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
     seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
-    SEQAN_ASSERT_EQ(record.seqID, "240");
+    SEQAN_ASSERT_EQ(record.ref, "240");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "CDS");
     SEQAN_ASSERT_EQ(record.beginPos, 66995u);
@@ -401,7 +401,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(length(nameStore), 2u);
 
     seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
-    SEQAN_ASSERT_EQ(record.seqID, "340");
+    SEQAN_ASSERT_EQ(record.ref, "340");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "intron_CNS");
     SEQAN_ASSERT_EQ(record.beginPos, 70102u);

@@ -1300,7 +1300,7 @@ _printRecord(TFile &file, BamAlignmentRecord &record)
 {
     file << "QueryName = " << record.qName << std::endl;
     file << "Flag      = " << record.flag << std::endl;
-    file << "RefId     = " << record.rId << std::endl;
+    file << "RefId     = " << record.rID << std::endl;
     file << "MapQ      = " << record.mapQ << std::endl;
     file << "bin       = " << record.bin << std::endl;
     file << "rNextId   = " << record.rNextId << std::endl;
@@ -1503,23 +1503,23 @@ int readMatchesFromSamBam_Batch(
         int editDist = 0;
         int mScore = 100;
         
-        // problem: contigNameStore is not filled --> what is rId set to? can i get the original string?? -> extra BamAlignmentRecord spec?
+        // problem: contigNameStore is not filled --> what is rID set to? can i get the original string?? -> extra BamAlignmentRecord spec?
         //check if the genomeID is in our map of relevant genomeIDs, otherwise skip match
-        it = gIdStringToIdNumMap.find(nameStore(ioContext)[record.rId]);
+        it = gIdStringToIdNumMap.find(nameStore(ioContext)[record.rID]);
         if(options._debugLevel > 1)
-            ::std::cout << record.rId << "\t";
+            ::std::cout << record.rID << "\t";
         if(it != gIdStringToIdNumMap.end()) 
             contigId = it->second;
         else // check if there is "chr"
         {
-            if(prefix(nameStore(ioContext)[record.rId],3) == "chr")
-                it = gIdStringToIdNumMap.find(suffix(nameStore(ioContext)[record.rId],3));
+            if(prefix(nameStore(ioContext)[record.rID],3) == "chr")
+                it = gIdStringToIdNumMap.find(suffix(nameStore(ioContext)[record.rID],3));
             if(it != gIdStringToIdNumMap.end()) 
                 contigId = it->second;
             else 
             {
                 CharString temp = "chr";
-                append(temp,nameStore(ioContext)[record.rId]);
+                append(temp,nameStore(ioContext)[record.rID]);
                 it = gIdStringToIdNumMap.find(temp);
                 if(it != gIdStringToIdNumMap.end()) 
                     contigId = it->second;
@@ -1554,7 +1554,7 @@ int readMatchesFromSamBam_Batch(
                 
         // skip whitespaces and read entry in column 2
         
-        TContigPos beginPos = record.pos;
+        TContigPos beginPos = record.beginPos;
         if(beginPos > currentEnd + (TContigPos)options.windowBuff)  // we have passed the relevant match positions
         {
             if(options._debugLevel > 1)

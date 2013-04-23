@@ -158,17 +158,17 @@ int write2(TStream & stream,
     // First, write record to buffer.
 
     // refID
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.rId), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.rID), 4);
 
     // pos
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.pos), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.beginPos), 4);
 
     // bin_mq_nl
     SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
     __uint8 lReadName = length(record.qName) + 1;
     unsigned l = 0;
     _getLengthInRef(record.cigar, l);
-    record.bin = _reg2Bin(record.pos, record.pos + l);
+    record.bin = _reg2Bin(record.beginPos, record.beginPos + l);
     __uint32 binMqNl = (record.bin << 16) | (record.mapQ << 8) | lReadName;
     streamWriteBlock(buffer, reinterpret_cast<char *>(&binMqNl), 4);
 

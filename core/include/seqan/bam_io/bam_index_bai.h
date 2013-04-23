@@ -279,11 +279,11 @@ jumpToRegion(Stream<Bgzf> & stream,
         if (readRecord(record, bamIOContext, stream, Bam()) != 0)
             return false;  // Error while reading.
 
-        // std::cerr << "record.pos == " << record.pos << "\n";
-        // __int32 endPos = record.pos + getAlignmentLengthInRef(record);
-        if (record.rId != refId)
+        // std::cerr << "record.beginPos == " << record.beginPos << "\n";
+        // __int32 endPos = record.beginPos + getAlignmentLengthInRef(record);
+        if (record.rID != refId)
             continue;  // Wrong contig.
-        if (record.pos >= posEnd)
+        if (record.beginPos >= posEnd)
             continue;  // Cannot overlap with [pos, posEnd).
 
         // Found an alignment.
@@ -354,7 +354,7 @@ bool jumpToOrphans(Stream<Bgzf> & stream,
         res = readRecord(record, bamIOContext, stream, Bam());
         if (res != 0)
             return false;  // Error while reading.
-        if (record.rId == -1)
+        if (record.rID == -1)
         {
             // Found alignment.
             hasAlignments = true;
@@ -665,18 +665,18 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
             return false;
         
         // Check ordering.
-        if (prevRefId == record.rId && prevPos > record.pos)
+        if (prevRefId == record.rID && prevPos > record.beginPos)
             return false;
 
         // The reference sequence changed, close bins for previous reference.
-        if (prevRefId != record.rId)
+        if (prevRefId != record.rID)
         {
             if (prevRefId != BamAlignmentRecord::INVALID_REFID)
             {
                 _baiAddAlignmentChunkToBin(index, currBin, currOffset, prevOffset);
 
-                // Add an index for all empty references between prevRefId (excluded) and record.rId (included).
-                for (int i = prevRefId + 1; i < record.rId; ++i)
+                // Add an index for all empty references between prevRefId (excluded) and record.rID (included).
+                for (int i = prevRefId + 1; i < record.rID; ++i)
                 {
                     BamIndex<Bai>::TBinIndex_ binIndex;
                     appendValue(index._binIndices, binIndex);
@@ -688,13 +688,13 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
                 currOffset = prevOffset;
                 currBin    = record.bin;
                 prevBin    = record.bin;
-                currRefId  = record.rId;
+                currRefId  = record.rID;
             }
             else
             {
                 // Otherwise, this is the first pass.  Create an index for all empty references up to and including
                 // current refId.
-                for (int i = 0; i < record.rId; ++i)
+                for (int i = 0; i < record.rID; ++i)
                 {
                     BamIndex<Bai>::TBinIndex_ binIndex;
                     appendValue(index._binIndices, binIndex);
@@ -704,14 +704,14 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
             }
 
             // Update reference book keeping.
-            prevRefId = record.rId;
+            prevRefId = record.rID;
             prevBin = minValue<__int32>();
         }
 
         // If the alignment's reference id is valid and its bin is not a leaf.
-        if (record.rId >= 0 && record.bin < 4681)
+        if (record.rID >= 0 && record.bin < 4681)
         {
-            __int32 beginOffset = record.pos >> BamIndex<Bai>::BAM_LIDX_SHIFT;
+            __int32 beginOffset = record.beginPos >> BamIndex<Bai>::BAM_LIDX_SHIFT;
             __int32 endPos      = getAlignmentLengthInRef(record);
             __int32 endOffset   = (endPos - 1) >> BamIndex<Bai>::BAM_LIDX_SHIFT;
 
@@ -738,7 +738,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
             currOffset = prevOffset;
             currBin    = record.bin;
             prevBin    = record.bin;
-            currRefId  = record.rId;
+            currRefId  = record.rID;
 
             // If the reference id is invalid then break out.
             if (currRefId < 0)
@@ -751,7 +751,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
 
         // Update prevOffset and prevPos.
         prevOffset = streamTell(bamStream);
-        prevPos    = record.pos;
+        prevPos    = record.beginPos;
     }
 
     // Count remaining unaligned records.
@@ -760,7 +760,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
         SEQAN_ASSERT_GT(index._unalignedCount, 0u);
 
         res = readRecord(record, bamIOContext, bamStream, Bam());
-        if (res != 0 || record.rId >= 0)
+        if (res != 0 || record.rID >= 0)
             return false;  // Could not read record.
 
         index._unalignedCount += 1;

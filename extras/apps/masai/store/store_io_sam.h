@@ -368,10 +368,10 @@ _fillRecord(FragmentStore<TSpec, TConfig> & store,
     }
 
     // Fill RNAME by providing contig id.
-    record.rId = alignedRead.contigId;
+    record.rID = alignedRead.contigId;
 
     // Fill POS with start position.
-    record.pos = positionGapToSeq(contigGaps, std::min(alignedRead.beginPos, alignedRead.endPos));
+    record.beginPos = positionGapToSeq(contigGaps, std::min(alignedRead.beginPos, alignedRead.endPos));
 
     // Fill MAPQ with mapping quality.
 //    if (alignQuality.score != TAlignedReadQualityElement::INVALID_SCORE)
@@ -398,7 +398,7 @@ _fillRecord(FragmentStore<TSpec, TConfig> & store,
     if (alignedRead.contigId == alignedMate.contigId)
     {
         if (alignedRead.beginPos < alignedMate.beginPos)
-            record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.pos + 1;
+            record.tLen = positionGapToSeq(contigGaps, std::max(alignedMate.beginPos, alignedMate.endPos) - 1) - record.beginPos + 1;
         else
             record.tLen = record.pNext - positionGapToSeq(contigGaps, std::max(alignedRead.beginPos, alignedRead.endPos) - 1) - 1;
     }

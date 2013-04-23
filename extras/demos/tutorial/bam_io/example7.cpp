@@ -45,9 +45,9 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    // Translate from reference name to rId.
-    int rId = 0;
-    if (!getIdByName(nameStore, argv[3], rId, nameStoreCache))
+    // Translate from reference name to rID.
+    int rID = 0;
+    if (!getIdByName(nameStore, argv[3], rID, nameStoreCache))
     {
         std::cerr << "ERROR: Reference sequence named " << argv[3] << " not known.\n";
         return 1;
@@ -78,7 +78,7 @@ int main(int argc, char const ** argv)
 
     // Jump the BGZF stream to this position.
     bool hasAlignments = false;
-    if (!jumpToRegion(inStream, hasAlignments, context, rId, beginPos, endPos, baiIndex))
+    if (!jumpToRegion(inStream, hasAlignments, context, rID, beginPos, endPos, baiIndex))
     {
         std::cerr << "ERROR: Could not jump to " << argv[3] << ":" << argv[4] << "\n";
         return 1;
@@ -98,10 +98,10 @@ int main(int argc, char const ** argv)
         }
 
         // If we are on the next reference or at the end already then we stop.
-        if (record.rId == -1 || record.rId > rId || record.pos >= endPos)
+        if (record.rID == -1 || record.rID > rID || record.beginPos >= endPos)
             break;
         // If we are left of the selected position then we skip this record.
-        if (record.pos < beginPos)
+        if (record.beginPos < beginPos)
             continue;
 
         // Otherwise, we print it to the user.

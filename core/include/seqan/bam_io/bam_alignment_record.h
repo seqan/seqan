@@ -124,12 +124,12 @@ enum BamFlags
 ..summary:The flag of this mapping, see @Enum.BamFlags@ for flag constants and the $hasFlag*$ functions.
 ..type:nolink:$__uint16$
 
-.Memvar.BamAlignmentRecord#rId
+.Memvar.BamAlignmentRecord#rID
 ..class:Class.BamAlignmentRecord
 ..summary:ID of reference for this fragment mapping (0-based, $INVALID_REFID$ for '*').
 ..type:Shortcut.CharString
 
-.Memvar.BamAlignmentRecord#pos
+.Memvar.BamAlignmentRecord#beginPos
 ..class:Class.BamAlignmentRecord
 ..summary:The position of this fragment mapping (0-based, $INVALID_POS$ for '*').
 ..type:Shortcut.CharString
@@ -188,11 +188,11 @@ public:
     static __int32 const INVALID_LEN = 2147483647;
     static __uint32 const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
-    __uint32 _qId;  // TODO(holtgrew): Undocumented as of yet.
+    __uint32 _qID;  // TODO(holtgrew): Undocumented as of yet.
     CharString qName;
     __uint16 flag;
-    __int32 rId;
-    __int32 pos;
+    __int32 rID;
+    __int32 beginPos;
     __uint8 mapQ;
     __uint16 bin;
     String<CigarElement<> > cigar;
@@ -203,7 +203,7 @@ public:
     CharString qual;
     CharString tags;  // raw tags in BAM format
 
-    BamAlignmentRecord() : _qId(MaxValue<unsigned>::VALUE) { clear(*this); }
+    BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
 
 // ============================================================================
@@ -225,9 +225,9 @@ inline void
 clear(BamAlignmentRecord & record)
 {
     clear(record.qName);
-    record._qId = MaxValue<__uint32>::VALUE;
-    record.rId = BamAlignmentRecord::INVALID_REFID;
-    record.pos = BamAlignmentRecord::INVALID_POS;
+    record._qID = MaxValue<__uint32>::VALUE;
+    record.rID = BamAlignmentRecord::INVALID_REFID;
+    record.beginPos = BamAlignmentRecord::INVALID_POS;
     record.mapQ = 255;
     record.bin = 0;
     clear(record.cigar);

@@ -177,7 +177,7 @@ StringSet<Dna5String> references;
 BamAlignment record;
 // Read references and record.
 Align<Dna5String> align;
-if (record.rId != BamAlignmentRecord::INVALID_REFID)
+if (record.rID != BamAlignmentRecord::INVALID_REFID)
     bamRecordToAlignment(align, references[record.refId], record);
  */
 
@@ -188,11 +188,11 @@ bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, Bam
     // TODO(holtgrew): Clipping better than copying infix? But is it generic?
     resize(rows(result), 2);
 
-    unsigned len = record.pos + getAlignmentLengthInRef(record) - countPaddings(record.cigar);
+    unsigned len = record.beginPos + getAlignmentLengthInRef(record) - countPaddings(record.cigar);
 
     setSource(row(result, 0), reference);
-    setClippedEndPosition(row(result, 0), record.pos + len);
-    setClippedBeginPosition(row(result, 0), record.pos);
+    setClippedEndPosition(row(result, 0), record.beginPos + len);
+    setClippedBeginPosition(row(result, 0), record.beginPos);
     cigarToGapAnchorContig(record.cigar, row(result, 0));
 
     assignSource(row(result, 1), record.seq);

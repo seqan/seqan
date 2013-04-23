@@ -106,7 +106,7 @@ _readOneAnnotation(
     clear(ctx);
 
     // read column 1: contig name
-    ctx.contigName = record.seqID;
+    ctx.contigName = record.ref;
 
     // skip column 2
     // read column 3: type
@@ -382,7 +382,7 @@ _writeCommonGffGtfInfo(
     {
         if (length(store.contigNameStore[annotation.contigId]) > 0u)
         {
-            record.seqID = store.contigNameStore[annotation.contigId];
+            record.ref = store.contigNameStore[annotation.contigId];
         }
     }
 
