@@ -1031,19 +1031,6 @@ TCAG
 ..demofor:Function.findMotif
 .
 
-.Demo.Blast Reports:
-..cat:Miscellaneous
-..summary:Parsing the output of BLAST call.
-..file:../extras/demos/blast_report.cpp
-..demofor:Class.BlastHsp
-..demofor:Class.BlastReport
-..demofor:Metafunction.Hit
-..demofor:Function.getBitScore
-..demofor:Function.getEValue
-..demofor:Function.getQueryName
-..demofor:Function.getDatabaseName
-.
-
 .Demo.Interval Tree:
 ..cat:Miscellaneous
 ..summary:Construction and usage demo for the interval tree.
