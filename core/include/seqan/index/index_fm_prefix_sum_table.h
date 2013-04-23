@@ -276,8 +276,8 @@ inline void clear(PrefixSumTable<TChar, TSpec> & prefixSumTable)
 ..param.prefixSumTable:The prefix sum table to be constructed.
 ...type:Class.PrefixSumTable
 ..param.text:The underlying text.
-...type.class:String
-...type.class:StringSet
+...type:Class.String
+...type:Class.StringSet
 ..include:seqan/index.h
 */
 
@@ -446,7 +446,7 @@ getPrefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.PrefixSumTable#getPrefixSum
+.Function.PrefixSumTable#getvalue
 ..class:Class.PrefixSumTable
 ..summary:Returns the prefix sum of a given position. 
 ..signature:getValue(prefixSumTable, pos)
@@ -648,7 +648,7 @@ value(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
 .Function.PrefixSumTable#open
 ..class:Class.PrefixSumTable
 ..summary:This functions loads a prefix-sum table from disk.
-..signature:open(prefixSumTable, filename [, openMode])
+..signature:open(prefixSumTable, fileName [, openMode])
 ..param.prefixSumTable:The prefix-sum table.
 ...type:Class.PrefixSumTable
 ..param.fileName:C-style character string containing the file name.
@@ -693,7 +693,7 @@ inline bool open(
 .Function.PrefixSumTable#save
 ..class:Class.PrefixSumTable
 ..summary:This functions saves a prefix-sum table to disk.
-..signature:save(prefixSumTable, filename [, openMode])
+..signature:save(prefixSumTable, fileName [, openMode])
 ..param.prefixSumTable:The prefix-sum table.
 ...type:Class.PrefixSumTable
 ..param.fileName:C-style character string containing the file name.

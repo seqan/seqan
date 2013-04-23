@@ -330,8 +330,8 @@ inline void _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize si
 .Function.RightArrayBinaryTree#open
 ..class:Class.RightArrayBinaryTree
 ..summary:This functions loads a @Class.RightArrayBinaryTree@ from disk.
-..signature:open(rightArrayBinaryTree, filename [, openMode])
-..param.dictionary:The rightArrayBinaryTree.
+..signature:open(rightArrayBinaryTree, fileName [, openMode])
+..param.rightArrayBinaryTree:The rightArrayBinaryTree.
 ...type:Class.RightArrayBinaryTree
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.
@@ -371,8 +371,8 @@ inline bool open(
 .Function.RightArrayBinaryTree#save
 ..class:Class.RightArrayBinaryTree
 ..summary:This functions saves a @Class.RightArrayBinaryTree@ to disk.
-..signature:save(rightArrayBinaryTree, filename [, openMode])
-..param.dictionary:The rightArrayBinaryTree.
+..signature:save(rightArrayBinaryTree, fileName [, openMode])
+..param.rightArrayBinaryTree:The rightArrayBinaryTree.
 ...type:Class.RightArrayBinaryTree
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.

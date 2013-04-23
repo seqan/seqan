@@ -220,7 +220,7 @@ inline bool _isContained(SparseString<TFibreValueString, TSpec> const & string, 
     return isBitSet(getFibre(string, FibreIndicatorString()), pos);
 }
 
-///.Function.assignValue.param.type:Class.SparseString
+///.Function.assignValue.param.container.type:Class.SparseString
 template <typename TFibreValueString, typename TSpec, typename TPos, typename TValue>
 inline void
 assignValue(SparseString<TFibreValueString, TSpec> & string, TPos pos, TValue value)
@@ -232,7 +232,7 @@ assignValue(SparseString<TFibreValueString, TSpec> & string, TPos pos, TValue va
     getFibre(string, FibreValueString())[getRank(getFibre(string, FibreIndicatorString()), pos) - 1] = value;
 }
 
-///.Function.getValue.param.type:Class.SparseString
+///.Function.getValue.param.container.type:Class.SparseString
 template <typename TFibreValueString, typename TSpec, typename TPos>
 inline typename GetValue<SparseString<TFibreValueString, TSpec> >::Type
 getValue(SparseString<TFibreValueString, TSpec> & string, TPos pos)

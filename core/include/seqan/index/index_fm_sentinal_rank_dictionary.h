@@ -603,12 +603,12 @@ inline void createSentinelRankDictionary(LfTable<SentinelRankDictionary<TRankDic
 // ----------------------------------------------------------------------------
 
 /**
-.Function.RankDictionary#open
+.Function.SentinelRankDictionary#open
 ..class:Class.SentinelRankDictionary
 ..summary:This functions loads a dictionary from disk.
-..signature:open(dictionary, filename [, openMode])
+..signature:open(dictionary, fileName [, openMode])
 ..param.dictionary:The dictionary.
-...type:Class.RankDictionary
+...type:Class.SentinelRankDictionary
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.
 ...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
@@ -693,9 +693,9 @@ inline bool open(
 .Function.SentinelRankDictionary#save
 ..class:Class.SentinelRankDictionary
 ..summary:This functions saves a dictionary to disk.
-..signature:open(dictionary, filename [, openMode])
+..signature:open(dictionary, fileName [, openMode])
 ..param.dictionary:The dictionary.
-...type:Class.RankDictionary
+...type:Class.SentinelRankDictionary
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.
 ...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.

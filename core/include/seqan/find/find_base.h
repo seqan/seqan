@@ -480,7 +480,7 @@ SEQAN_CHECKPOINT
 
 /**
 .Function.Finder#infix:
-..description:Segment of the last found match in haystack.
+..summary:Returns the segment of the last found match in haystack.
 ..signature:Infix infix(finder)
 ..param.finder:An online finder.
 ...type:Class.Finder

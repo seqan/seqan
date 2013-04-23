@@ -549,7 +549,7 @@ inline void createRankDictionary(LfTable<SentinelRankDictionary<RankDictionary<W
 .Function.RankDictionary#open
 ..class:Class.RankDictionary
 ..summary:This functions loads a dictionary from disk.
-..signature:open(dictionary, filename [, openMode])
+..signature:open(dictionary, fileName [, openMode])
 ..param.dictionary:The dictionary.
 ...type:Class.RankDictionary
 ..param.fileName:C-style character string containing the file name.
@@ -586,7 +586,7 @@ inline bool open(RankDictionary<WaveletTree<TValue> > & tree, const char * fileN
 .Function.RankDictionary#save
 ..class:Class.RankDictionary
 ..summary:This functions saves a dictionary to disk.
-..signature:open(dictionary, filename [, openMode])
+..signature:open(dictionary, fileName [, openMode])
 ..param.dictionary:The dictionary.
 ...type:Class.RankDictionary
 ..param.fileName:C-style character string containing the file name.

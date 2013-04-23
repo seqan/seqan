@@ -498,8 +498,12 @@ void setLfTable(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, TLf
 // ==========================================================================
 /**
 .Function.CompressedSA#value
-..param.container:
+..summary:Returns the value stored at a specified position in the compressed suffix-array.
+..signature:value(compressedSA, pos)
+..param.compressedSA:The compressed suffix array to access.
 ...type:Class.CompressedSA
+..param.pos:Position at which to access the suffix array.
+...type:Concept.UnsignedIntegerConcept
 ..remarks:Note that the compressed suffix array is read only. Therefore a const reference is return by
 this function.
 */

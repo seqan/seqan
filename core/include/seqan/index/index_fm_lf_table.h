@@ -144,7 +144,7 @@ struct Reference<LfTable<TOccTable, TPrefixSumTable> >
 ..summary:LfTable is an object storing all necessary information for the LF-mapping.
 ..signature:LfTable<TOccTable, TPrefixSumTable>
 ..param.TOccTable:The occurrence table data structure.
-...type.class:WaveletTree
+...type.Spec:WaveletTree
 ..param.TPrefixSumTable:The specialisation tag.
 ...default:String
 ..include:seqan/Index.h
@@ -358,8 +358,8 @@ inline TPos lfMapping(TLfTable & lfTable,
 .Function.LfTable#open
 ..class:Class.LfTable
 ..summary:This functions loads a LF table from disk.
-..signature:open(lfTable, filename [, openMode])
-..param.dictionary:The lfTable.
+..signature:open(lfTable, fileName [, openMode])
+..param.lfTable:The lfTable.
 ...type:Class.LfTable
 ..param.fileName:C-style character string containing the file name.
 ..param.openMode:The combination of flags defining how the file should be opened.
@@ -401,7 +401,7 @@ inline bool open(
 .Function.LfTable#save
 ..class:Class.LfTable
 ..summary:This functions saves a LF table to disk.
-..signature:save(lfTable, filename [, openMode])
+..signature:save(lfTable, fileName [, openMode])
 ..param.lfTable:The dictionary.
 ...type:Class.LfTable
 ..param.fileName:C-style character string containing the file name.
