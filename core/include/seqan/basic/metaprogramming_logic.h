@@ -142,9 +142,6 @@ struct Eval<true> : True {};
 ..param.B:Argument to invert.
 ...type:Tag.Logical Values.tag.True
 ...type:Tag.Logical Values.tag.False
-..param.B2:Right-hand argument.
-...type:Tag.Logical Values.tag.True
-...type:Tag.Logical Values.tag.False
 ..returns:One of @Tag.Logical Values.tag.True@ and @Tag.Logical Values.tag.False@, the result of logical not.
 The arguments $B$ can either be @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@
 or boolean metafunctions that return @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@.
