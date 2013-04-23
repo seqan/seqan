@@ -1748,7 +1748,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 /**
 .Function.open:
 ..signature:open(string, fileName[, openMode]))
-..param.string:An external string.
+..param.string:A persistent string, e.g. a @Spec.External String@ or @Spec.MMap String@.
 ...type:Spec.External String
 ..include:seqan/file.h
 */

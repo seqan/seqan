@@ -63,17 +63,15 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 /**
 .Function.open:
 ..class:Class.File
-..summary:Opens a file.
+..summary:Opens a file, stream, or persistent string.
 ..cat:Input/Output
 ..signature:open(file, fileName[, openMode])
 ..param.file:A File object.
 ...type:Class.File
 ..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
+..param.openMode:The combination of flags defining how the file should be opened. See @Enum.FileOpenMode@ for more details.
+...remarks:If you omit the $OPEN_APPEND$ flag in write mode, the file will be cleared when opened.
+...type:Enum.FileOpenMode
 ...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/file.h

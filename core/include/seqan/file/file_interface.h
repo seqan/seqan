@@ -81,6 +81,26 @@ namespace seqan {
     class File;
 //IOREV
 
+/**
+.Enum.FileOpenMode
+..summary:Flags to select the open mode of a @Class.File@ or external string.
+..value.OPEN_RDONLY:Open for only reading.
+..value.OPEN_WRONLY:Open for only writing.
+..value.OPEN_RDWR:Open for reading and writing.
+..value.OPEN_CREATE:Create a file if it not yet exists.
+..value.OPEN_APPEND:Keep the existing data. If this flag is not given, the file is cleared in write mode.
+..value.OPEN_QUIET:Don't print any warning message if the file could not be opened.
+..value.OPEN_MASK:(Internal) Bitmask to extract the read/write open mode.
+..example.text:Code example to test for read-only mode.
+..example.code:
+if (openMode & OPEN_MASK == OPEN_READ)
+    // do something if opened in read-only mode
+..value.OPEN_ASYNC:(Internal) Open the file for asynchronous file access. For asynchronous file access, use @Spec.Async@.
+..value.OPEN_TEMPORARY:(Internal) Automatically delete the file after close. Use @Function.openTemp@ to open temporary files.
+..remarks:These flags can be combined via the $|$ operator. The default open mode is $OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$.
+..remarks:If you omit the $OPEN_APPEND$ flag in write mode, the file will be cleared when opened.
+..include:seqan/seq_io.h
+*/
     enum FileOpenMode {
         OPEN_RDONLY     = 1,
         OPEN_WRONLY     = 2,
