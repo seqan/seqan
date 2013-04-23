@@ -164,9 +164,9 @@ void testAlignGapsAssignSource(TGapsSpec const & /*spec*/)
         TString seq("AAAAACCCCC");
         TGaps gaps;
 
-        setSource(gaps, seq);
+        assignSource(gaps, seq);
 
-        SEQAN_ASSERT_EQ(&source(gaps), &seq);
+        SEQAN_ASSERT_NEQ(&source(gaps), &seq);
         SEQAN_ASSERT_EQ(source(gaps), seq);
     }
 
