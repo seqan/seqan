@@ -290,7 +290,6 @@ position(RecordReader<TFile, DoublePass<void> > const & recordReader)
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document!
 // This automatically starts the first pass at the position.
 template <typename TFile, typename TPosition>
 inline int

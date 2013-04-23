@@ -120,7 +120,6 @@ position(RecordReader<TString, DoublePass<StringReader> > const & recordReader)
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document!
 template <typename TString, typename TPosition>
 inline int
 setPosition(RecordReader<TString, DoublePass<StringReader> > & recordReader, TPosition pos)

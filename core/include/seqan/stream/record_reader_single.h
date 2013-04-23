@@ -169,7 +169,6 @@ position(RecordReader<TFile, SinglePass<void> > const & recordReader)
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document!
 template <typename TFile, typename TPosition>
 inline int
 setPosition(RecordReader<TFile, SinglePass<void> > & recordReader, TPosition pos)

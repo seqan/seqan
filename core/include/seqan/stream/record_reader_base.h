@@ -86,6 +86,19 @@ class RecordReader;
 // Metafuction Position
 // ----------------------------------------------------------------------------
 
+/**
+.Metafunction.RecordReader#Position
+..class:Class.RecordReader
+..cat:Input/Output
+..summary:Returns the position type to use in @Function.RecordReader#position@ and @Function.RecordReader#setPosition@.
+..signature:Position<TReader>::Type
+..param.TReader:The @Class.RecordReader@ type to query for its position type.
+..returns:The position type related to the record reader type.
+..include:seqan/stream.h
+..see:Function.RecordReader#position
+..see:Function.RecordReader#setPosition
+*/
+
 template <typename TStream, typename TSpec>
 struct Position<RecordReader<TStream, TSpec> >
 {
@@ -102,33 +115,37 @@ struct Position<RecordReader<TStream, TSpec> const> :
 // ============================================================================
 
 /**
-.Function.resultCode
-..class:Class.RecordReader
+.Function.RecordReder#resultCode
 ..cat:Input/Output
+..class:Class.RecordReader
+..signature:int resultCode(reader)
 ..summary:Returns $int$ current status code for reader (0 on success).
-..signature:resultCode(recordReader)
-..param.recordReader:The @Class.RecordReader@ to query the state of.
+..param.reader:The @Class.RecordReader@ to query the state of.
 ...type:Class.RecordReader
 ..returns:$int$, zero if there was no error reading, non-zero value on errors. Note that zero is also returned on EOF.
 ..include:seqan/stream.h
 
-.Function.value
-..class:Class.RecordReader
+.Function.RecordReader#value
 ..cat:Input/Output
-..param.object.type:Class.RecordReader
+..class:Class.RecordReader
+..signature:char value(reader)
+..param.reader:The @Class.RecordReader@ to get the current value from.
+...type:Class.RecordReader
 ..include:seqan/stream.h
 
-.Function.goNext
+.Function.RecordReader#goNext
 ..cat:Input/Output
-..signature:goNext(recordReader)
+..class:Class.RecordReader
+..signature:bool goNext(recordReader)
+..summary:Advance record reader to next position.
 ..param.recordReader:The @Class.RecordReader@ to advance the position in.
 ...type:Class.RecordReader
 ..include:seqan/stream.h
 
-.Function.nextIs
+.Function.RecordReader#nextIs
 ..class:Class.RecordReader
 ..cat:Input/Output
-..signature:nextIs(recordReader, tag)
+..signature:bool nextIs(recordReader, tag)
 ..summary:Query whether the next record is of a given type.
 ..param.recordReader:The @Class.RecordReader@ to peek into.
 ...type:Class.RecordReader
@@ -138,16 +155,45 @@ struct Position<RecordReader<TStream, TSpec> const> :
 ..remarks:The checks are mostly heuristic, mostly looking at one or few characters from recordReader.
 ..include:seqan/stream.h
 
-.Function.atEnd
-..class:Class.RecordReader
+.Function.RecordReader#atEnd
 ..cat:Input/Output
+..class:Class.RecordReader
 ..summary:Returns $true$ if there is no more data to be read.
-..signature:atEnd(recordReader)
+..signature:bool atEnd(recordReader)
 ..param.recordReader:The @Class.RecordReader@ to query the state of.
 ...type:Class.RecordReader
-..returns:This function returns $true$ if the file is at end or there was an error reading. It returns $false$ if there is more data to read. In parsing functions, you can use @Function.resultCode@ to get the result to return from your parsing function.
-..see:Function.value
-..see:Function.resultCode
+..returns:This function returns $true$ if the file is at end or there was an error reading. It returns $false$ if there is more data to read. In parsing functions, you can use @Function.RecordReader#resultCode@ to get the result to return from your parsing function.
+..see:Function.RecordReader#value
+..see:Function.RecordReader#resultCode
+..include:seqan/stream.h
+
+.Function.RecordReader#position
+..cat:Input/Output
+..class:Class.RecordReader
+..summary:Returns the current position of the reader.
+..signature:TPosition position(reader)
+..param.reader:The @Class.RecordReader@ to query for its position.
+...type:Class.RecordReader
+..param.TPosition:The @Metafunction.RecordReader#Position@ of the reader.
+..returns:The current position of the record reader.
+..see:Metafunction.RecordReader#Position
+..include:seqan/stream.h
+
+.Function.RecordReader#setPosition
+..cat:Input/Output
+..class:Class.RecordReader
+..summary:Returns the current position of the reader.
+..remarks:
+The underlying data source has to support setting the position.
+For String RecordReader objects, this works nicely, when reading from streams, setting the position of the record reader is supported if the underlying string supports it.
+..signature:void setPosition(reader, pos)
+..param.reader:The @Class.RecordReader@ to query for its position.
+...type:Class.RecordReader
+..param.pos:The position to set the reader to.
+...type:Metafunction.RecordReader#Position
+..returns:$void$
+..see:Metafunction.RecordReader#Position
+..see:Function.RecordReader#position
 ..include:seqan/stream.h
  */
 
