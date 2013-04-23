@@ -790,7 +790,7 @@ inline void _range(const Index<TText, FMIndex<TOccSpec, TSpec> > & index, const 
 .Function.Index#open
 ..class:Class.Index
 ..summary:This functions loads a dictionary from disk.
-..signature:open(dictionary, filename [, openMode])
+..signature:open(dictionary, fileName [, openMode])
 ..param.dictionary:The dictionary.
 ...type:Class.RankDictionary
 ..param.fileName:C-style character string containing the file name.
@@ -854,7 +854,7 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 .Function.Index#save
 ..class:Class.Index
 ..summary:This functions saves an index to disk.
-..signature:open(index, filename [, openMode])
+..signature:open(index, fileName [, openMode])
 ..param.index:The index.
 ...type:Class.RankDictionary
 ..param.fileName:C-style character string containing the file name.

@@ -583,7 +583,7 @@ int readBatch(StringSet<TId, TIdSpec> & ids,
 ..class:Class.SequenceStream
 ..summary:Read all sequence records from a @Class.SequenceStream@ object.
 ..signature:int readAll(ids, seqs, seqIO)
-..signature:int readRecord(ids, seqs, quals, seqIO)
+..signature:int readAll(ids, seqs, quals, seqIO)
 ..param.ids:The identifiers of the sequence are written here.
 ...type:nolink:@Class.StringSet@ of @Shortcut.CharString@.
 ..param.seq:The sequence of the record is written here.
@@ -656,52 +656,6 @@ int readAll(StringSet<TId, TIdSpec> & ids,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord()
-// ----------------------------------------------------------------------------
-
-/**
-.Function.SequenceStream#readRecord
-..class:Class.SequenceStream
-..summary:Read the next sequence record from @Class.SequenceStream@.
-..signature:int readRecord(id, seq, seqIO)
-..signature:int readRecord(id, seq, quals, seqIO)
-..param.id:The identifier of the sequence is written here.
-...type:Shortcut.CharString
-..param.seq:The sequence of the record is written here.
-...type:Class.String
-..param.quals:The qualities of the sequence is written here. Optional.
-...type:Shortcut.CharString
-...remarks:If the sequence has no qualities, @Function.clear@ is called on $quals$ to indicate this.
-..param.seqIO:The @Class.SequenceStream@ object to read from.
-...type:Class.SequenceStream
-..returns:An integer, $0$ on success, $1$ on errors.
-...type:nolink:$int$
-..example:Read the first sequence of a FASTA file.
-..example.code:
-int main()
-{
-    seqan::SequenceStream seqIO("in.fasta", seqan::SequenceStream::READ_SINGLE);
-    seqan::CharString id;
-    seqan::Dna5String seq;
-
-    if (atEnd(seqIO))
-    {
-        std::cerr << "ERROR: File does not contain any sequences!\n";
-        return 1;
-    }
-    int res = readRecord(id, seq, seqIO);
-    if (res != 0)
-    {
-        std::cerr << "ERROR: Could not read first record!\n";
-        return 1;
-    }
-
-    return 0;
-}
-..include:seqan/seq_io.h
-*/
-
-// ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
@@ -713,7 +667,7 @@ int main()
 The record is appended to the file if you have written out any previously.
 When writing out @Spec.Dna5@, qualities are automatically taken from the sequence characters.
 ..signature:int writeRecord(seqIO, id, seq, [options])
-..signature:int writeRecord(seqIO, id, seq, qual, [options])
+..signature:int writeRecord(seqIO, id, seq, quals, [options])
 ..param.seqIO:The @Class.SequenceStream@ object to write to.
 ...type:Class.SequenceStream
 ..param.id:The identifier to write.
@@ -821,8 +775,8 @@ int writeRecord(SequenceStream & seqIO,
 ..description:
 The records are appended to the file if you have written out any previously.
 When writing out @Spec.Dna5@, qualities are automatically taken from the sequence characters.
-..signature:int writeAll(seqIO, ids, seqs)
-..signature:int writeAll(seqIO, ids, seqs, quals)
+..signature:int writeAll(seqIO, ids, seqs[, options])
+..signature:int writeAll(seqIO, ids, seqs, quals, [options])
 ..param.seqIO:The @Class.SequenceStream@ object to write to.
 ...type:Class.SequenceStream
 ..param.ids:Identifiers to write out.

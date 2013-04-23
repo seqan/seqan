@@ -305,7 +305,7 @@ empty(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
 }
 
 ///.Function.clear.param.object.type:Adaption.std::basic_string
-///.Function.class:Adaption.std::basic_string
+///.Function.clear.class:Adaption.std::basic_string
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
 inline void

@@ -108,7 +108,7 @@ for (unsigned i = 0; i < length(record); ++i)
 
 .Memvar.BamStream#header:
 ..class:Class.BamStream
-..type:BamHeader
+..type:Class.BamHeader
 ..summary:The @Class.BamHeader@ of the @Class.BamStream@ object.
 ..description:
 SAM and BAM files have a header.

@@ -372,6 +372,7 @@ getTagKey(BamTagsDict const & tags, TPos idx)
 
 /**
 .Function.BamTagsDict#findTagKey
+..summary:Find a tag by its key for a @Class.BamTagsDict@ object.
 ..class:Class.BamTagsDict
 ..signature:findTagKey(idx, tagsDict, name)
 ..param.idx:Index of the tag with the given key.
@@ -406,6 +407,7 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 .Function.BamTagsDict#getTagValue
 ..class:Class.BamTagsDict
 ..cat:BAM I/O
+..summary:Return the value of a tag by its index in the @Class.BamTagsDict@.
 ..signature:getTagValue(tagsDict, idx)
 ..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
 ...type:Class.BamTagsDict

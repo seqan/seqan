@@ -79,39 +79,6 @@ Although not suggested the short-name can contain more than 1 character.
 ...type:nolink:$bool$
 */
 
-///.Function.isListArgument.param.argument.type:Class.ArgParseOption
-///.Function.isStringArgument.param.argument.type:Class.ArgParseOption
-///.Function.isIntegerArgument.param.argument.type:Class.ArgParseOption
-///.Function.isDoubleArgument.param.argument.type:Class.ArgParseOption
-///.Function.isInputFileArgument.param.argument.type:Class.ArgParseOption
-///.Function.isOutputFileArgument.param.argument.type:Class.ArgParseOption
-///.Function.setMinValue.param.argument.type:Class.ArgParseOption
-///.Function.setMaxValue.param.argument.type:Class.ArgParseOption
-///.Function.setValidValues.param.argument.type:Class.ArgParseOption
-///.Function.getArgumentValue.param.argument.type:Class.ArgParseOption
-///.Function.getArgumentValues.param.argument.type:Class.ArgParseOption
-///.Function.hasValue.param.argument.type:Class.ArgParseOption
-///.Function.isSet.param.argument.type:Class.ArgParseOption
-///.Function.hasDefault.param.argument.type:Class.ArgParseOption
-///.Function.numberOfAllowedValues.param.argument.type:Class.ArgParseOption
-
-///.Function.numberOfAllowedValues.class:Class.ArgParseOption
-///.Function.isListArgument.class:Class.ArgParseOption
-///.Function.isStringArgument.class:Class.ArgParseOption
-///.Function.isIntegerArgument.class:Class.ArgParseOption
-///.Function.isDoubleArgument.class:Class.ArgParseOption
-///.Function.isInputFileArgument.class:Class.ArgParseOption
-///.Function.isOutputFileArgument.class:Class.ArgParseOption
-///.Function.setMinValue.class:Class.ArgParseOption
-///.Function.setMaxValue.class:Class.ArgParseOption
-///.Function.setValidValues.class:Class.ArgParseOption
-///.Function.getArgumentValue.class:Class.ArgParseOption
-///.Function.getArgumentValues.class:Class.ArgParseOption
-///.Function.hasValue.class:Class.ArgParseOption
-///.Function.isSet.class:Class.ArgParseOption
-///.Function.hasDefault.class:Class.ArgParseOption
-///.Function.numberOfAllowedValues.class:Class.ArgParseOption
-
 class ArgParseOption :
     public ArgParseArgument
 {
@@ -173,9 +140,6 @@ public:
 // Function isStringArgument()
 // ----------------------------------------------------------------------------
 
-///.Function.isStringArgument.param.argument.type:Class.ArgParseOption
-///.Function.isStringArgument.class:Class.ArgParseOption
-
 inline bool isStringArgument(ArgParseOption const & me)
 {
     return isStringArgument(static_cast<ArgParseArgument>(me)) && !me._isFlag;
@@ -186,7 +150,7 @@ inline bool isStringArgument(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.isBooleanOption
+.Function.ArgParseOption#isBooleanOption
 ..class:Class.ArgParseOption
 ..summary:Returns whether option is a switch.
 ..cat:Miscellaneous
@@ -207,7 +171,7 @@ inline bool isBooleanOption(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.isHidden
+.Function.ArgParseOption#isHidden
 ..class:Class.ArgParseOption
 ..summary:Returns whether option is hidden on the help screen. Default is false.
 ..cat:Miscellaneous
@@ -228,7 +192,7 @@ inline bool isHidden(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.hideOption
+.Function.ArgParseOption#hideOption
 ..class:Class.ArgParseOption
 ..summary:Hides the ArgParseOption from the help screen.
 ..cat:Miscellaneous
@@ -250,7 +214,7 @@ inline void hideOption(ArgParseOption & me, bool hide = true)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.isRequired
+.Function.ArgParseOption#isRequired
 ..class:Class.ArgParseOption
 ..summary:Returns whether the option is mandatory.
 ..cat:Miscellaneous
@@ -271,7 +235,7 @@ inline bool isRequired(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.setDefaultValue
+.Function.ArgParseOption#setDefaultValue
 ..summary:Sets the default value for the given option.
 ..cat:Miscellaneous
 ..remarks:Note that this overwrites any previously given default values.
@@ -310,7 +274,7 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addDefaultValue
+.Function.ArgParseOption#addDefaultValue
 ..summary:Adds/appends a new value to the list of default values.
 ..cat:Miscellaneous
 ..remarks:Note that this method does not check any length restrictions for this value.
@@ -346,7 +310,7 @@ inline void addDefaultValue(ArgParseOption & me, const TValue & value)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.setRequired
+.Function.ArgParseOption#setRequired
 ..class:Class.ArgParseOption
 ..summary:Sets whether or not the option is mandatory.
 ..cat:Miscellaneous
@@ -367,9 +331,6 @@ inline void setRequired(ArgParseOption & me, bool required)
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
 
-///.Function.getArgumentLabel.param.argument.type:Class.ArgParseOption
-///.Function.getArgumentLabel.class:Class.ArgParseOption
-
 inline std::string const getArgumentLabel(ArgParseOption const & me)
 {
     if (isBooleanOption(me))
@@ -383,10 +344,9 @@ inline std::string const getArgumentLabel(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 
 /**
- .Function.getOptionName
+ .Function.ArgParseOption#getOptionName
  ..class:Class.ArgParseOption
- ..summary:Returns the name of the @Class.ArgParseOption@ in a well formated
- way.
+ ..summary:Returns the name of the @Class.ArgParseOption@ in a well formated way.
  ..cat:Miscellaneous
  ..signature:getOptionName(option)
  ..param.option:The @Class.ArgParseOption@ object.
@@ -414,11 +374,11 @@ inline std::string getOptionName(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.write
+.Function.ArgParseOption#write
 ..class:Class.ArgParseOption
 ..summary:Writes the basic information about the @Class.ArgParseOption@ to the provided stream.
 ..cat:Miscellaneous
-..signature:write(stream,option)
+..signature:write(stream, option)
 ..param.stream:The target stream.
 ..param.option:The @Class.ArgParseOption@ object.
 ...type:Class.ArgParseOption

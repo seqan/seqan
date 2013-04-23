@@ -46,8 +46,9 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /**
-.Function.parse:
+.Function.ArgumentParser#parse
 ..summary:Parses the command line.
+..class:Class.ArgumentParser
 ..cat:Miscellaneous
 ..signature:parse(parser, argc, argv[, outputStream, errorStream])
 ..param.parser:The @Class.ArgumentParser@ object.

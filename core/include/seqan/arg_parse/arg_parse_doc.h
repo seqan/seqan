@@ -49,12 +49,12 @@ namespace seqan {
 // --------------------------------------------------------------------------
 
 /**
-.Function.getAppName
+.Function.ArgumentParser#getAppName
 ..class:Class.ArgumentParser
 ..summary:Get tool name of @Class.ArgumentParser@ object.
 ..cat:Miscellaneous
 ..signature:getAppName(parser)
-..param.doc:The @Class.ArgumentParser@ object.
+..param.parser:The @Class.ArgumentParser@ object.
 ...type:Class.ArgumentParser
 ..returns:Tool name of argument parser object.
 ...type:nolink:$std::string$
@@ -87,7 +87,7 @@ inline void _parseAppName(ArgumentParser & parser, std::string const & candidate
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addLine:
+.Function.ArgumentParser#addLine:
 ..class:Class.ArgumentParser
 ..summary:Adds a line of text to the help output of the @Class.ArgumentParser@ in the block of
 @Class.ArgParseOption@s.
@@ -111,7 +111,7 @@ inline void addLine(ArgumentParser & me, TString const & line)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addSection:
+.Function.ArgumentParser#addSection:
 ..class:Class.ArgumentParser
 ..summary:Begins a new section of @Class.ArgParseOption@ the help output of
 the @Class.ArgumentParser@.
@@ -147,7 +147,7 @@ inline void addSection(ArgumentParser & me, TString const & line)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addUsageLine:
+.Function.ArgumentParser#addUsageLine:
 ..class:Class.ArgumentParser
 ..summary:Adds a line of text to the usage output of the @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -184,7 +184,7 @@ inline void _addUsage(ToolDoc & toolDoc, ArgumentParser const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addDescription
+.Function.ArgumentParser#addDescription
 ..class:Class.ArgumentParser
 ..summary:Appends a description paragraph to the @Class.ArgumentParser@ documentation.
 ..cat:Miscellaneous
@@ -206,7 +206,7 @@ inline void addDescription(ArgumentParser & me, std::string const & description)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.setAppName
+.Function.ArgumentParser#setAppName
 ..class:Class.ArgumentParser
 ..summary:Sets application name of @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -228,7 +228,7 @@ inline void setAppName(ArgumentParser & me, std::string const & name)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.setShortDescription
+.Function.ArgumentParser#setShortDescription
 ..class:Class.ArgumentParser
 ..summary:Sets short description of the @Class.ArgumentParser@ object.
 ..cat:Miscellaneous
@@ -250,7 +250,7 @@ inline void setShortDescription(ArgumentParser & me, std::string const & descrip
 // ----------------------------------------------------------------------------
 
 /**
-.Function.getShortDescription
+.Function.ArgumentParser#getShortDescription
 ..class:Class.ArgumentParser
 ..summary:Gets short description of @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -271,7 +271,7 @@ inline CharString getShortDescription(ArgumentParser const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.setVersion
+.Function.ArgumentParser#setVersion
 ..class:Class.ArgumentParser
 ..summary:Sets version string of @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -295,7 +295,7 @@ inline void setVersion(ArgumentParser & me, std::string const & versionString)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getVersion
+.Function.ArgumentParser#getVersion
 ..class:Class.ArgumentParser
 ..cat:Miscellaneous
 ..summary:Get version string from @Class.ArgumentParser@ object.
@@ -317,7 +317,7 @@ inline CharString const & getVersion(ArgumentParser const & me)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setCategory
+.Function.ArgumentParser#setCategory
 ..class:Class.ArgumentParser
 ..summary:Set tool category for @Class.ArgumentParser@ object.
 ..cat:Miscellaneous
@@ -340,12 +340,12 @@ inline void setCategory(ArgumentParser & parser, CharString const & category)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getCategory
+.Function.ArgumentParser#getCategory
 ..class:Class.ArgumentParser
 ..summary:Get tool category of @Class.ArgumentParser@ object.
 ..cat:Miscellaneous
 ..signature:getCategory(parser)
-..param.paresr:The @Class.ArgumentParser@ object to get the tool category of.
+..param.parser:The @Class.ArgumentParser@ object to get the tool category of.
 ...type:Class.ArgumentParser
 ..returns:Tool category of the @Class.ArgumentParser@ object.
 ...type:Shortcut.CharString
@@ -362,7 +362,7 @@ inline CharString const & getCategory(ArgumentParser const & parser)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.setDate
+.Function.ArgumentParser#setDate
 ..class:Class.ArgumentParser
 ..summary:Sets date string of @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -384,7 +384,7 @@ inline void setDate(ArgumentParser & me, std::string const & date)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addTextSection
+.Function.ArgumentParser#addTextSection
 ..class:Class.ArgumentParser
 ..summary:Adds a text section to the @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -407,7 +407,7 @@ inline void addTextSection(ArgumentParser & me, std::string const & title)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addTextSubSection
+.Function.ArgumentParser#addTextSubSection
 ..class:Class.ArgumentParser
 ..summary:Adds a text subsection to the @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -430,7 +430,7 @@ inline void addTextSubSection(ArgumentParser & me, std::string const & title)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addText
+.Function.ArgumentParser#addText
 ..class:Class.ArgumentParser
 ..summary:Appends a text paragraph to the @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -452,7 +452,7 @@ inline void addText(ArgumentParser & me, std::string const & text)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.addListItem
+.Function.ArgumentParser#addListItem
 ..class:Class.ArgumentParser
 ..summary:Appends a list item to the @Class.ArgumentParser@.
 ..cat:Miscellaneous
@@ -477,7 +477,7 @@ inline void addListItem(ArgumentParser & me, std::string const & item, std::stri
 // ----------------------------------------------------------------------------
 
 /**
-.Function.printShortHelp
+.Function.ArgumentParser#printShortHelp
 ..class:Class.ArgumentParser
 ..summary:Prints a short help message for the parser to a stream
 ..cat:Miscellaneous
@@ -513,7 +513,7 @@ inline void printShortHelp(ArgumentParser const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.printVersion
+.Function.ArgumentParser#printVersion
 ..class:Class.ArgumentParser
 ..summary:Prints the version information of the parser to a stream.
 ..cat:Miscellaneous
@@ -633,7 +633,7 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
 // ----------------------------------------------------------------------------
 
 /**
-.Function.printHelp
+.Function.ArgumentParser#printHelp
 ..class:Class.ArgumentParser
 ..summary:Prints the complete help message for the parser to a stream.
 ..cat:Miscellaneous

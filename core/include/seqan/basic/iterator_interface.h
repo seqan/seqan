@@ -238,7 +238,7 @@ value(T const & me)
 ..signature:GetValue getValue(object)
 ..param.object:An object that holds a value or points to a value.
 ...type:Class.Iter
-...concept:Concept.IteratorAssociatedConcept
+...concept:Concept.IteratorAssociatedTypesConcept
 ..see:Metafunction.GetValue
 ..include:seqan/basic.h
 */

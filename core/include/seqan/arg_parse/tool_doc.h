@@ -737,7 +737,7 @@ inline void append(ToolDoc & a, ToolDoc const & b)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setName
+.Function.ToolDoc#setName
 ..summary:Set tool name for @Class.ToolDoc@ object.
 ..cat:Miscellaneous
 ..signature:setName(doc, name)
@@ -760,7 +760,7 @@ inline void setName(ToolDoc & doc, CharString const & name)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getName
+.Function.ToolDoc#getName
 ..summary:Get tool name of @Class.ToolDoc@ object.
 ..cat:Miscellaneous
 ..signature:getName(doc)
@@ -782,7 +782,7 @@ inline CharString const & getName(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setCategory
+.Function.ToolDoc#setCategory
 ..summary:Set tool category for @Class.ToolDoc@ object.
 ..cat:Miscellaneous
 ..signature:setCategory(doc, category)
@@ -805,7 +805,7 @@ inline void setCategory(ToolDoc & doc, CharString const & category)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getCategory
+.Function.ToolDoc#getCategory
 ..summary:Get tool category of @Class.ToolDoc@ object.
 ..cat:Miscellaneous
 ..signature:getCategory(doc)
@@ -827,7 +827,7 @@ inline CharString const & getCategory(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setShortDescription
+.Function.ToolDoc#setShortDescription
 ..summary:Set short description for @Class.ToolDoc@ object.
 ..cat:Miscellaneous
 ..signature:setShortDescriptioin(doc, description)
@@ -850,7 +850,7 @@ inline void setShortDescription(ToolDoc & doc, CharString const & shortDescripti
 // --------------------------------------------------------------------------
 
 /**
-.Function.getShortDescription
+.Function.ToolDoc#getShortDescription
 ..summary:Get short description of @Class.ToolDoc@ object.
 ..cat:Miscellaneous
 ..signature:setName(doc)
@@ -872,7 +872,7 @@ inline CharString const & getShortDescription(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setDate
+.Function.ToolDoc#setDate
 ..cat:Miscellaneous
 ..summary:Set date string for @Class.ToolDoc@ object.
 ..signature:setDate(doc, date)
@@ -895,7 +895,7 @@ inline void setDate(ToolDoc & doc, CharString const & date)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getDate
+.Function.ToolDoc#getDate
 ..cat:Miscellaneous
 ..summary:Get date string from @Class.ToolDoc@ object.
 ..signature:getDate(doc)
@@ -917,14 +917,14 @@ inline CharString const & getDate(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setVersion
+.Function.ToolDoc#setVersion
 ..cat:Miscellaneous
 ..summary:Set version string for @Class.ToolDoc@ object.
 ..signature:setVersion(doc, version)
 ..class:Class.ToolDoc
 ..param.doc:Tool documentation object to set the version string to.
 ...type:Class.ToolDoc
-..param.name:Version string to set.
+..param.version:Version string to set.
 ...type:Shortcut.CharString
 ..returns:$void$
 ..include:seqan/arg_parse/tool_doc.h
@@ -940,11 +940,11 @@ inline void setVersion(ToolDoc & doc, CharString const & version)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getVersion
+.Function.ToolDoc#getVersion
 ..cat:Miscellaneous
 ..summary:Get version string from @Class.ToolDoc@ object.
 ..class:Class.ToolDoc
-..signature:getVersion(doc)
+..signature:CharString getVersion(doc)
 ..param.doc:Tool documentation object to get the version string of.
 ...type:Class.ToolDoc
 ..returns:Date string.
@@ -962,7 +962,7 @@ inline CharString const & getVersion(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 
 /**
-.Function.setManTitle
+.Function.ToolDoc#setManTitle
 ..cat:Miscellaneous
 ..summary:Set version string for @Class.ToolDoc@ object.
 ..signature:setManTitle(doc, title)
@@ -985,7 +985,7 @@ inline void setManTitle(ToolDoc & doc, CharString const & title)
 // --------------------------------------------------------------------------
 
 /**
-.Function.getManTitle
+.Function.ToolDoc#getManTitle
 ..cat:Miscellaneous
 ..summary:Get man title from @Class.ToolDoc@ object.
 ..signature:getManTitle(doc)
@@ -1007,7 +1007,7 @@ inline CharString const & getManTitle(ToolDoc & doc)
 // --------------------------------------------------------------------------
 
 /**
-.Function.addSection
+.Function.ToolDoc#addSection
 ..cat:Miscellaneous
 ..summary:Add section to @Class.ToolDoc@ object.
 ..signature:addSection(doc, title)
@@ -1030,7 +1030,7 @@ inline void addSection(ToolDoc & doc, CharString const & title)
 // --------------------------------------------------------------------------
 
 /**
-.Function.addSubSection
+.Function.ToolDoc#addSubSection
 ..cat:Miscellaneous
 ..summary:Add subsection to @Class.ToolDoc@ object.
 ..signature:addSubSection(doc, title)
@@ -1053,7 +1053,7 @@ inline void addSubSection(ToolDoc & doc, CharString const & title)
 // --------------------------------------------------------------------------
 
 /**
-.Function.addText
+.Function.ToolDoc#addText
 ..cat:Miscellaneous
 ..summary:Add text line/paragraph to @Class.ToolDoc@.
 ..signature:addText(doc, text, [isParagraph])
@@ -1085,7 +1085,7 @@ inline void addText(ToolDoc & doc, CharString const & text)
 // --------------------------------------------------------------------------
 
 /**
-.Function.addListItem
+.Function.ToolDoc#addListItem
 ..cat:Miscellaneous
 ..summary:Add list item to @Class.ToolDoc@ object.
 ..signature:addListItem(doc, key, value)
@@ -1112,10 +1112,10 @@ inline void addListItem(ToolDoc & doc, CharString const & key, CharString const 
 // --------------------------------------------------------------------------
 
 /**
-.Function.print
+.Function.ToolDoc#print
 ..cat:Miscellaneous
 ..summary:Print @Class.ToolDoc@ object in a given format.
-..signature:print(doc, format)
+..signature:print(stream, doc, format)
 ..class:Class.ToolDoc
 ..param.stream:List item key.
 ...type:nolink:$std::ostream$
@@ -1137,7 +1137,7 @@ inline void print(std::ostream & stream, ToolDoc const & doc, CharString const &
 // --------------------------------------------------------------------------
 
 /**
-.Function.clearEntries
+.Function.ToolDoc#clearEntries
 ..cat:Miscellaneous
 ..summary:Clear entries from @Class.ToolDoc@ object.
 ..signature:clearEntries(doc)

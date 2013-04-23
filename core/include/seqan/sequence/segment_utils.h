@@ -66,7 +66,7 @@ namespace seqan {
 ..signature:startsWith(str, suffix)
 ..summary:Check whether a sequence ends with a given suffix.
 ..param.str:The string to check.
-..param.prefix:The suffix to check for.
+..param.suffix:The suffix to check for.
 ..returns:$bool$
 ..include:seqan/stream.h
 */

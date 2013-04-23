@@ -416,7 +416,6 @@ SEQAN_CHECKPOINT
 }
 
 ///.Function.clear.param.object.type:Adaption.char array
-///.Function.clearValue.class:Adaption.char array
 
 template <typename TValue>
 inline void

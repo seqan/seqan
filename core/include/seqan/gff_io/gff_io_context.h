@@ -118,7 +118,7 @@ public:
 // ----------------------------------------------------------------------------
 
 /**
-.Function.nameStore
+.Function.GffIOContext#nameStore
 ..class:Class.GffIOContext
 ..cat:GFF I/O
 ..summary:Return reference to name store from @Class.GffIOContext@.
@@ -151,7 +151,7 @@ nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.nameStoreCache
+.Function.GffIOContext#nameStoreCache
 ..class:Class.GffIOContext
 ..cat:GFF I/O
 ..summary:Return reference to name store cache from @Class.GffIOContext@.
@@ -160,7 +160,7 @@ nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
 ...type:Class.GffIOContext
 ..see:Typedef.GffIOContext#TNameStoreCache
 ..include:seqan/bam_io.h
-..see:Function.nameStore
+..see:Function.GffIOContext#nameStore
 */
 
 // TODO(holtgrew): Rename to referenceNameStoreCache

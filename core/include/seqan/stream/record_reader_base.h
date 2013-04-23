@@ -126,6 +126,7 @@ struct Position<RecordReader<TStream, TSpec> const> :
 ..include:seqan/stream.h
 
 .Function.RecordReader#value
+..summary:Returns the current value of the reader.
 ..cat:Input/Output
 ..class:Class.RecordReader
 ..signature:char value(reader)

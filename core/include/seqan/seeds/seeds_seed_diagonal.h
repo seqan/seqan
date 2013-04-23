@@ -57,9 +57,17 @@ namespace seqan {
 ..param.TSize:The type to use for the seed length.
 ..include:seqan/seeds.h
 
-.Memvar.SeedDiagonal#beginPositionH:The position in the database sequence (horizontal).
-.Memvar.SeedDiagonal#beginPositionV:The position in the query sequence (vertical).
-.Memvar.SeedDiagonal#length:The length of the diagonal.
+.Memvar.SeedDiagonal#beginPositionH
+..summary:The position in the database sequence (horizontal).
+..class:Class.SeedDiagonal
+
+.Memvar.SeedDiagonal#beginPositionV:
+..summary:The position in the query sequence (vertical).
+..class:Class.SeedDiagonal
+
+.Memvar.SeedDiagonal#length:
+..summary:The length of the diagonal.
+..class:Class.SeedDiagonal
 */
 template <typename TPosition, typename TSize>
 class SeedDiagonal

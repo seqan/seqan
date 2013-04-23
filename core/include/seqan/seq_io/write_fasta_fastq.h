@@ -100,8 +100,9 @@ public:
 
 /**
 .Function.FASTA/FASTQ I/O#writeRecord
+..summary:Write one FASTA or FASTQ record.
 ..signature:int writeRecord(stream, id, seq, tag[, options])
-..signature:int writeRecord(stream, id, seq, qual, tag[, options])
+..signature:int writeRecord(stream, id, seq, quals, tag[, options])
 ..param.stream:The stream to write to.
 ...type:Concept.StreamConcept
 ..param.id:ID/Meta information line to write out.
@@ -402,6 +403,7 @@ writeRecord(TStream & stream,
 
 /**
 .Function.FASTA/FASTQ I/O#write2
+..summary:Write FASTA or FASTQ records.
 ..signature:int write2(stream, ids, seqs, tag[, options])
 ..signature:int write2(stream, ids, seqs, quals, tag[, options])
 ..param.stream:The stream to write to.

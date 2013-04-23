@@ -1039,8 +1039,9 @@ matricialProduct(Matrix<TValue, 2> &matrix1,
 */
 // TODO(holtgrew): Should work as the graph-transpose.
 /**
-.Function.transpose:
+.Function.Matrix#transpose
 ..summary:Transposes matrix
+..class:Class.Matrix
 ..signature:Matrix transpose(matrix)
 ..param.matrix:The matrix (mxn) to transpose.
 ...type:Class.Matrix

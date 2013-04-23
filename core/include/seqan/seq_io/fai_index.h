@@ -193,8 +193,8 @@ inline void clear(FaiIndex & index)
 .Function.FaiIndex#getIdByName
 ..cat:Input / Output
 ..class:Class.FaiIndex
-..signature:getIdByName(index, name, id)
-..summary:Return id (index in the file) of a sequence in a FAI file.
+..signature:getIdByName(faiIndex, name, refId)
+..summary:Return id (numeric index in the file) of a sequence in a FAI file.
 ..param.faiIndex:The @Class.FaiIndex@ to query.
 ...type:Class.FaiIndex
 ..param.name:The name of the sequence to get the id for.
@@ -315,7 +315,7 @@ inline __uint64 numSeqs(FaiIndex const & index)
 ...type:Class.FaiIndex
 ..param.refId:The index of the reference in the file.
 ...type:nolink:$unsigned$
-..param.bgeinPos:The begin position of the infix to write to $str$.
+..param.beginPos:The begin position of the infix to write to $str$.
 ...type:nolink:$unsigned$
 ..param.endPos:The end position of the infix to write to $str$.
 ...type:nolink:$unsigned$

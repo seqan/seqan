@@ -139,7 +139,7 @@ namespace seqan {
 ..cat:C++ built-in
 ..summary:C++ built-in logical AND operator.
 
-.Function.operator\pipe\pipe|operator||
+.DISABLED.Function.operator\pipe\pipe|operator||
 ..cat:C++ built-in
 ..summary:C++ built-in logical OR operator.
 
@@ -151,7 +151,7 @@ namespace seqan {
 ..cat:C++ built-in
 ..summary:C++ built-in bitwise AND operator.
 
-.Function.operator\pipe|operator|
+.DISABLED.Function.operator\pipe|operator\pipe
 ..cat:C++ built-in
 ..summary:C++ built-in bitwise OR operator.
 
@@ -199,7 +199,7 @@ namespace seqan {
 ..cat:C++ built-in
 ..summary:C++ built-in bitwise AND assignment operator.
 
-.Function.operator\pipe=|operator|=
+.DISABLED.Function.operator\pipe=|operator|=
 ..cat:C++ built-in
 ..summary:C++ built-in bitwise OR assignment operator.
 

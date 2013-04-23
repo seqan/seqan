@@ -106,7 +106,6 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 ..summary:Totally strict ordered alphabet.
 ..baseconcept:Concept.AlphabetConcept
 ..baseconcept:Concept.ComparableConcept
-..summary:Ordered alphabet value.
 ..include:seqan/basic.h
 
 .Function.operator<.concept:Concept.OrderedAlphabetConcept

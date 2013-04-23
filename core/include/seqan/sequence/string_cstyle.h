@@ -64,7 +64,6 @@ clear(String<TValue, CStyle> & me);
 ..signature:String<TValue, CStyle>
 ..param.TValue:The value type, that is the type of the items/characters stored in the string.
 ...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-...note:$TValue$ must be a @Concept.SimpleConcept Type@.
 ..remarks:
 ..text:Assigning a string $TValue *$ to a CStyle String will not create a copy of the string but just copy pointers.
 ..remarks:

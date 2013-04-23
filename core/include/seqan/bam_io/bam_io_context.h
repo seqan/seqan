@@ -118,7 +118,7 @@ public:
 // ----------------------------------------------------------------------------
 
 /**
-.Function.nameStore
+.Function.BamIOContext#nameStore
 ..class:Class.BamIOContext
 ..cat:BAM I/O
 ..summary:Return reference to name store from @Class.BamIOContext@.
@@ -151,7 +151,7 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.nameStoreCache
+.Function.BamIOContext#nameStoreCache
 ..class:Class.BamIOContext
 ..cat:BAM I/O
 ..summary:Return reference to name store cache from @Class.BamIOContext@.
@@ -160,7 +160,7 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 ...type:Class.BamIOContext
 ..see:Typedef.BamIOContext#TNameStoreCache
 ..include:seqan/bam_io.h
-..see:Function.nameStore
+..see:Function.BamIOContext#nameStore
 */
 
 // TODO(holtgrew): Rename to referenceNameStoreCache

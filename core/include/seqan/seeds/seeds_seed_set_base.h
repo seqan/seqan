@@ -101,21 +101,12 @@ class SeedSet;
 ..class:Class.SeedSet
 .Function.end.param.object.type:Class.SeedSet
 ..class:Class.SeedSet
-.Function.end.param.object.type:Class.SeedSet
-..class:Class.SeedSet
 .Function.length.param.object.type:Class.SeedSet
 ..class:Class.SeedSet
-.Function.length.param.object.type:Class.SeedSet
-..class:Class.SeedSet
-.Function.front.param.object.type:Class.SeedSet
-..class:Class.SeedSet
-.Function.front.param.object.type:Class.SeedSet
+.Function.front.param.container.type:Class.SeedSet
 ..class:Class.SeedSet
 .Function.back.param.container.type:Class.SeedSet
 ..class:Class.SeedSet
-.Function.back.param.container.type:Class.SeedSet
-..class:Class.SeedSet
-..include:seqan/seeds.h
  */
 // TODO(holtgrew): dddoc {begin,end,length,front,back}All(T)
 

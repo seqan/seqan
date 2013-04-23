@@ -135,10 +135,7 @@ enum ExtensionDirection
 ..param.scoreMatrix: The scoring scheme.
 ...type:Spec.Simple Score
 ...remarks:Only used for the algorithms @Tag.Seed Extension.UngappedXDrop@ and @Tag.Seed Extension.GappedXDrop@
-..param.tag: The algorithm to use.
-...type:Tag.Seed Extension.MatchExtend
-...type:Tag.Seed Extension.UngappedXDrop
-...type:Tag.Seed Extension.GappedXDrop
+..remarks:You can use the tags, @Tag.Seed Extension.MatchExtend@, @Tag.Seed Extension.UngappedXDrop@, and @Tag.Seed Extension.GappedXDrop@.
 ..include:seqan/seeds.h
 */
 

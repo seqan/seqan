@@ -278,7 +278,7 @@ open(Stream<GZFile> & stream, char const * filename, char const * mode)
 ..cat:Input / Output
 ..summary:Query a GZ File Stream for being "direct."
 ..signature:isDirect(gzStream)
-..param.stream:GZ File Stream to query.
+..param.gzStream:GZ File Stream to query.
 ...type:Spec.GZ File Stream
 ..returns:$bool$, indicating whether the file is opened uncompressed ("direct").
 ..remarks:

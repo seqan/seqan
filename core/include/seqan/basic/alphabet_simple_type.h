@@ -76,7 +76,6 @@ are not optimized for simple types this way.
 But for classes derived from $SimpleType$, optimized variants of array manipulation functions are applied. 
 ...text:Note that simple types need not to be derived or specialized from $SimpleType$, but
 it could be convenient to do so.
-..implements:Concept.SimpleConcept Type
 ..include:seqan/basic.h
 */
 

@@ -383,7 +383,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 ..signature:bool isGap(gaps, clippedViewPos)
 ..param.gaps:The @Class.Gaps@ object to query.
 ...type:Class.Gaps
-..param.clippedViewPosition:The position in the view to query.
+..param.clippedViewPos:The position in the view to query.
 ...type:Metafunction.Position
 ..returns:Whether or not there is a gap at the given clipped view position.
 ...type:nolink:$bool$
@@ -405,7 +405,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 ..signature:void insertGaps(gaps, clippedViewPos, count)
 ..param.gaps:The @Class.Gaps@ object to insert gaps into.
 ...type:Class.Gaps
-..param.clippedViewPosition:The position in the view to insert gaps at.
+..param.clippedViewPos:The position in the view to insert gaps at.
 ...type:Metafunction.Position
 ..param.count:The number of gaps to insert
 ...type:nolink:$unsigned$
@@ -428,7 +428,7 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 ..signature:void insertGap(gaps, clippedViewPos)
 ..param.gaps:The @Class.Gaps@ object to insert gap into.
 ...type:Class.Gaps
-..param.clippedViewPosition:The position in the view to insert gap at.
+..param.clippedViewPos:The position in the view to insert gap at.
 ...type:Metafunction.Position
 ..returns:$void$
 ..see:Function.insertGaps
@@ -458,7 +458,7 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 ..signature:TSize removeGaps(gaps, clippedViewPos, count)
 ..param.gaps:The @Class.Gaps@ object to remove gaps into.
 ...type:Class.Gaps
-..param.clippedViewPosition:The position in the view to remove gaps from.
+..param.clippedViewPos:The position in the view to remove gaps from.
 ...type:Metafunction.Position
 ..param.count:The number of gaps to remove
 ...type:nolink:$unsigned$
@@ -482,7 +482,7 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 ..signature:TSize removeGap(gaps, clippedViewPos)
 ..param.gaps:The @Class.Gaps@ object to remove gap into.
 ...type:Class.Gaps
-..param.clippedViewPosition:The position in the view to remove gap from.
+..param.clippedViewPos:The position in the view to remove gap from.
 ...type:Metafunction.Position
 ..returns:The number of removed gaps.
 ...type:Metafunction.Size

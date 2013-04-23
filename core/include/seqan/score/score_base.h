@@ -93,6 +93,7 @@ struct SequenceEntryForScore
 
 /**
 .Function.Score#sequenceEntryForScore
+..summary:Helper function for element access, depending on score type.
 ..cat:Alignments
 ..signature:sequenceEntryForScore(scoringScheme, seq, pos)
 ..param.scoringScheme:The scoring scheme to get the representation for.

@@ -53,7 +53,7 @@ namespace seqan {
 .Class.ProfileChar
 ..summary:Alphabet type for profiles over another alphabet.
 ..cat:Alphabets
-..signature:ProfileChar<TValue, TCount>
+..signature:ProfileChar<TValue, TCount[, TSpec=void]>
 ..param.TValue:The underlying alphabet type.
 ..param.TCount:The type to use for counting.
 ...default:nolink:$unsigned int$

@@ -384,6 +384,7 @@ _sprintfValue(char * buf, double val)
 
 /**
 .Function.Score Matrix#write
+..summary:Write a score matrix to a stream.
 ..cat:Input/Output
 ..class:Spec.Score Matrix
 ..signature:write(stream, scoreMatrix[, meta])

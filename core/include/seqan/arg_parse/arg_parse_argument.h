@@ -783,7 +783,7 @@ inline void _assignArgumentValue(ArgParseArgument & me, std::string const & valu
 // ----------------------------------------------------------------------------
 
 /**
-.Function.getArgumentValue
+.Function.ArgParseArgument#getArgumentValue
 ..class:Class.ArgParseArgument
 ..summary:Returns the value of the @Class.ArgParseArgument@ object. If
 the @Class.ArgParseArgument@ is a list or can hold multiple values
@@ -844,7 +844,7 @@ inline std::vector<std::string> const & getArgumentValues(ArgParseArgument const
 // ----------------------------------------------------------------------------
 
 /**
-.Function.hasArgumentValue
+.Function.ArgParseArgument#hasValue
 ..class:Class.ArgParseArgument
 ..summary:Returns true if a value for the given position is available.
 ..cat:Miscellaneous
@@ -870,7 +870,7 @@ inline bool hasValue(ArgParseArgument const & arg)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.isSet
+.Function.ArgParseArgument#isSet
 ..class:Class.ArgParseArgument
 ..summary:Returns true if a value was assigned to the argument.
 ..cat:Miscellaneous
@@ -891,7 +891,7 @@ inline bool isSet(ArgParseArgument const & me)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.hasDefault
+.Function.ArgParseArgument#hasDefault
 ..summary:Returns true if a default value was given for that argument.
 ..cat:Miscellaneous
 ..signature:hasDefault(argument)
