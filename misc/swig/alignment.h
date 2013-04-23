@@ -1,5 +1,7 @@
 #include <cstring>
-#include <seqan.h>
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/index.h>
 #include <seqan/align.h>
 #include <string>
 

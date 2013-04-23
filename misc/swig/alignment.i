@@ -7,7 +7,10 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <seqan.h>
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/index.h>
+#include <seqan/alignment.h>
 #include "alignment.h"
 %}
 %include "alignment.h"
