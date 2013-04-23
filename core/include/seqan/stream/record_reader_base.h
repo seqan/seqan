@@ -115,7 +115,7 @@ struct Position<RecordReader<TStream, TSpec> const> :
 // ============================================================================
 
 /**
-.Function.RecordReder#resultCode
+.Function.RecordReader#resultCode
 ..cat:Input/Output
 ..class:Class.RecordReader
 ..signature:int resultCode(reader)
