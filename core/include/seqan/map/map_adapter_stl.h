@@ -127,11 +127,13 @@ struct StlIterator_
 {
 	typedef int Type;
 };
+
 template <typename TKey, typename TCompare, typename TAlloc>
 struct StlIterator_< ::std::set<TKey, TCompare, TAlloc> >
 {
 	typedef typename ::std::set<TKey, TCompare, TAlloc>::iterator Type;
 };
+
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
 struct StlIterator_< ::std::map<TKey, TCargo, TCompare, TAlloc> >
 {
@@ -498,8 +500,8 @@ SEQAN_CHECKPOINT
 template <typename TValue, typename TCompare, typename TAlloc, typename TIteratorSpec>
 struct Iterator< ::std::set<TValue, TCompare, TAlloc> , TIteratorSpec >
 {
-    typedef ::std::set<TValue, TCompare, TAlloc> TStlMap_;
-	typedef Iter<TStlMap_, StlSetIterator> Type;
+    typedef ::std::set<TValue, TCompare, TAlloc> TStlSet_;
+	typedef Iter<TStlSet_, StlSetIterator> Type;
 };
 
 template <typename TStlMap>

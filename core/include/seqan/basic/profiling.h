@@ -43,6 +43,9 @@
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROFILING_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROFILING_H_
 
+namespace seqan
+{
+
 // todo: substitute defines with inlines
 #ifndef SEQAN_PROFILE
 
@@ -589,5 +592,6 @@ if (printTiming)
         a += x;
         return x;
     }
+}
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROFILING_H_

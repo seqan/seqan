@@ -394,7 +394,7 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
     // Read and Write Filtered.
     // -----------------------------------------------------------------------
-    startTime = sysTime();
+    startTime = seqan::sysTime();
     seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inStream);
     seqan::AutoSeqStreamFormat tagSelector;
     if (!guessStreamFormat(reader, tagSelector))
@@ -545,7 +545,7 @@ int main(int argc, char const ** argv)
     }
 
     if (options.verbosity >= 2)
-        std::cerr << "Took " << (sysTime() - startTime) << " s\n";
+        std::cerr << "Took " << (seqan::sysTime() - startTime) << " s\n";
 
     return 0;
 }
