@@ -160,7 +160,7 @@ int readFileMMapDocument(char const * filename, Options const & /*options*/, TSp
         std::cerr << std::endl << "Could not open mmap file for reading." << std::endl;
         return 1;
     }
-    RecordReader<TMMapString, DoublePass<Mapped> > reader(myString, BUFFER_SIZE);
+    RecordReader<TMMapString, DoublePass<StringReader> > reader(myString, BUFFER_SIZE);
     int res = read2(sequenceIds, sequences, reader, Fasta());
     SEQAN_ASSERT_EQ(length(sequenceIds), length(sequences));
 
@@ -220,7 +220,7 @@ int readFileMMap(char const * filename, Options const & /*options*/, TPass const
 
     double before = sysTime();
     std::cerr << "READING\tRECORD\t" << std::flush;
-    if (IsSameType<TPass, SinglePass<Mapped> >::VALUE)
+    if (IsSameType<TPass, SinglePass<StringReader> >::VALUE)
         std::cerr << "SINGLE PASS\tmmap" << std::flush;
     else
         std::cerr << "DOUBLE PASS\tmmap" << std::flush;
@@ -389,12 +389,12 @@ int main(int argc, char const ** argv)
         readFileMMapDocument(toCString(getArgumentValue(parser, 0)), options);
     } else if (options.doublePass) {
         if (options.mmapString)
-            readFileMMap(toCString(getArgumentValue(parser, 0)), options, DoublePass<Mapped>());
+            readFileMMap(toCString(getArgumentValue(parser, 0)), options, DoublePass<StringReader>());
         else
             readFileDefault(toCString(getArgumentValue(parser, 0)), options, DoublePass<>());
     } else {
         if (options.mmapString)
-            readFileMMap(toCString(getArgumentValue(parser, 0)), options, SinglePass<Mapped>());
+            readFileMMap(toCString(getArgumentValue(parser, 0)), options, SinglePass<StringReader>());
         else
             readFileDefault(toCString(getArgumentValue(parser, 0)), options, SinglePass<>());
     }

@@ -117,8 +117,8 @@ public:
 #if SEQAN_HAS_BZIP2
     std::auto_ptr<RecordReader<Stream<BZ2File>, SinglePass<> > > _bz2Reader;
 #endif  // #if SEQAN_HAS_BZIP2
-    std::auto_ptr<RecordReader<String<char, MMap<> >, SinglePass<Mapped> > > _mmapReaderSinglePass;
-    std::auto_ptr<RecordReader<String<char, MMap<> >, DoublePass<Mapped> > > _mmapReaderDoublePass;
+    std::auto_ptr<RecordReader<String<char, MMap<> >, SinglePass<StringReader> > > _mmapReaderSinglePass;
+    std::auto_ptr<RecordReader<String<char, MMap<> >, DoublePass<StringReader> > > _mmapReaderDoublePass;
     std::auto_ptr<RecordReader<std::istream, SinglePass<> > > _istreamReader;
 
     CharString _filename;
@@ -254,12 +254,12 @@ public:
             {
                 if (!_hintDoublePass)
                 {
-                    _mmapReaderSinglePass.reset(new RecordReader<String<char, MMap<> >, SinglePass<Mapped> >(*_mmapString));
+                    _mmapReaderSinglePass.reset(new RecordReader<String<char, MMap<> >, SinglePass<StringReader> >(*_mmapString));
                     _fileFormat = this->_checkFormat(*_mmapReaderSinglePass);
                 }
                 else
                 {
-                    _mmapReaderDoublePass.reset(new RecordReader<String<char, MMap<> >, DoublePass<Mapped> >(*_mmapString));
+                    _mmapReaderDoublePass.reset(new RecordReader<String<char, MMap<> >, DoublePass<StringReader> >(*_mmapString));
                     _fileFormat = this->_checkFormat(*_mmapReaderDoublePass);
                 }
             }

@@ -418,7 +418,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnEmblFile();
-    RecordReader<TString, SinglePass<Mapped> > reader(mmapString);
+    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
 
     testHelperReadEmblSingle(reader);
 }
@@ -431,7 +431,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_batch_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnEmblFile();
-    RecordReader<TString, SinglePass<Mapped> > reader(mmapString);
+    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
 
     testHelperReadEmblRecord(reader);
 }
@@ -444,7 +444,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_batch_concat_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnEmblFile();
-    RecordReader<TString, SinglePass<Mapped> > reader(mmapString);
+    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
 
     testHelperReadEmblBatch(reader);
 }

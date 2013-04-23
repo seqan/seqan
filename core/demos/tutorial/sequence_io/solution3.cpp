@@ -17,7 +17,7 @@ int main(int argc, char const ** argv)
 
     // Create RecordReader.
     seqan::RecordReader<seqan::String<char, seqan::MMap<> >,
-                        seqan::DoublePass<seqan::Mapped> > reader(mmapString);
+                        seqan::DoublePass<seqan::StringReader> > reader(mmapString);
 
     // Read file in one pass.
     seqan::StringSet<seqan::CharString> ids;

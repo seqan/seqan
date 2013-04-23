@@ -45,8 +45,8 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct Mapped_;
-typedef Tag<Mapped_> Mapped;
+struct StringReader_;
+typedef Tag<StringReader_> StringReader;
 
 template <typename TSpec = void>
 struct SinglePass {};

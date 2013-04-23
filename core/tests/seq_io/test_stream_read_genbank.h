@@ -435,7 +435,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnGenBankFile();
-    RecordReader<TString, SinglePass<Mapped> > reader(mmapString);
+    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
 
     testHelperReadGenBankSingle(reader);
 }
@@ -448,7 +448,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_batch_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnGenBankFile();
-    RecordReader<TString, SinglePass<Mapped> > reader(mmapString);
+    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
 
     testHelperReadGenBankRecord(reader);
 }
@@ -461,7 +461,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_batch_concat_mmap)
 
     TString mmapString;
     mmapString = testHelperReturnGenBankFile();
-    RecordReader<TString, SinglePass<Mapped> > reader(mmapString);
+    RecordReader<TString, SinglePass<StringReader> > reader(mmapString);
 
     testHelperReadGenBankBatch(reader);
 }

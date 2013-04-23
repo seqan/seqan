@@ -52,23 +52,22 @@ namespace seqan {
 // TODO(holtgrew): This could easily be adjusted to work for any string specialization by adding another layer, signature would then be RecordReader<TFile, DoublePass<StringReader<TStringSpec> > >.
 
 /**
-.Spec.Double-Pass MMap RecordReader
+.Spec.Double-Pass String RecordReader
 ..cat:Input / Output
 ..general:Spec.Double-Pass RecordReader
 ..summary:Record reader specialization for double-pass reading
-..signature:RecordReader<TStream, DoublePass<Mapped> >
-..param.TStream:The @Concept.StreamConcept@ type to work on.
+..signature:RecordReader<TString, DoublePass<StringReader> >
+..param.TString:The @Class.String@ type to work on.
 ..remarks:This record reader does not have any buffers but uses the memory mapped string directly.
 ..remarks:Is not default or copy constructable.
-..remarks:The buffer size is the granularity in which @Function.mmapAdvise@ will be called.
+..remarks:The buffer size is the granularity in which @Function.mmapAdvise@ will be called if $TString$ is a @Spec.MMap String@.
 ..include:seqan/stream.h
  */
 
-template <typename TMMapString>
-class RecordReader<TMMapString, DoublePass<Mapped> >
+template <typename TString>
+class RecordReader<TString, DoublePass<StringReader> >
 {
 public:
-    typedef TMMapString TString;
     typedef typename Iterator<TString, Standard>::Type TIter;
     typedef typename Size<TString>::Type TSize;
 
@@ -82,12 +81,12 @@ public:
         INVALID_FORMAT
     };
 
-    RecordReader(TMMapString & string)
+    RecordReader(TString & string)
             : _passNo(0), _string(string), _first(begin(string)),
               _current(begin(string)), _end(end(string)), _bufferSize(BUFSIZ)
     {}
 
-    RecordReader(TMMapString & string, unsigned bufferSize)
+    RecordReader(TString & string, unsigned bufferSize)
             : _passNo(0), _string(string), _first(begin(string)),
               _current(begin(string)), _end(end(string)), _bufferSize(bufferSize)
     {}
@@ -110,9 +109,9 @@ private:
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Document!
-template <typename TMMapString>
-inline typename Position<TMMapString>::Type
-position(RecordReader<TMMapString, DoublePass<Mapped> > const & recordReader)
+template <typename TString>
+inline typename Position<TString>::Type
+position(RecordReader<TString, DoublePass<StringReader> > const & recordReader)
 {
     return recordReader._current - begin(recordReader._string, Standard());
 }
@@ -122,9 +121,9 @@ position(RecordReader<TMMapString, DoublePass<Mapped> > const & recordReader)
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Document!
-template <typename TMMapString, typename TPosition>
+template <typename TString, typename TPosition>
 inline int
-setPosition(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader, TPosition pos)
+setPosition(RecordReader<TString, DoublePass<StringReader> > & recordReader, TPosition pos)
 {
     recordReader._current = iter(recordReader._string, pos, Standard());
     startFirstPass(recordReader);
@@ -146,9 +145,9 @@ void _startFirstPassMMapAdvise(String<TValue, MMap<TConfig> > & s)
     
 }
 
-template <typename TMMapString>
+template <typename TString>
 void
-startFirstPass(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
+startFirstPass(RecordReader<TString, DoublePass<StringReader> > & recordReader)
 {
     _startFirstPassMMapAdvise(recordReader._string);
     recordReader._passNo = 1;
@@ -159,9 +158,9 @@ startFirstPass(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
 // Function startSecondPass()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 void
-startSecondPass(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
+startSecondPass(RecordReader<TString, DoublePass<StringReader> > & recordReader)
 {
     SEQAN_ASSERT_EQ(recordReader._passNo, 1);
     recordReader._passNo = 2;
@@ -172,9 +171,9 @@ startSecondPass(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline bool
-atEnd(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
+atEnd(RecordReader<TString, DoublePass<StringReader> > & recordReader)
 {
     // There is more data if the current buffer is not exhausted.
     return recordReader._current == recordReader._end;
@@ -184,9 +183,9 @@ atEnd(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
 // Function resultCode()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline int
-resultCode(RecordReader<TMMapString, DoublePass<Mapped> > & /*recordReader*/)
+resultCode(RecordReader<TString, DoublePass<StringReader> > & /*recordReader*/)
 {
     return 0;
 }
@@ -195,9 +194,9 @@ resultCode(RecordReader<TMMapString, DoublePass<Mapped> > & /*recordReader*/)
 // Function goNext()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline bool
-goNext(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
+goNext(RecordReader<TString, DoublePass<StringReader> > & recordReader)
 {
     SEQAN_ASSERT(recordReader._current != recordReader._end);
     recordReader._current += 1;
@@ -208,9 +207,9 @@ goNext(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
 // Function value()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline char
-value(RecordReader<TMMapString, DoublePass<Mapped> > & recordReader)
+value(RecordReader<TString, DoublePass<StringReader> > & recordReader)
 {
     SEQAN_ASSERT(recordReader._current != recordReader._end);
     return *recordReader._current;

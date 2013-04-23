@@ -31,9 +31,9 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// The Single-Pass Record Reader using the Memory Mapped String
-// specialization.  It uses that data does not have to be read explicitely but
-// is automatically loaded by the OS on pagefaults.
+// The Single-Pass Record Reader working on strings.  It uses that data does
+// not have to be read explicitely but is automatically loaded by the OS on
+// pagefaults.
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_RECORD_READER_SINGLE_MMAP_H_
@@ -54,24 +54,25 @@ namespace seqan {
 // TODO(holtgrew): This could easily be adjusted to work for any string specialization by adding another layer, signature would then be RecordReader<TFile, SinglePass<StringReader<TStringSpec> > >.
 
 /**
-.Spec.Single-Pass MMap RecordReader
+.Spec.Single-Pass String RecordReader
 ..cat:Input / Output
 ..general:Spec.Single-Pass RecordReader
 ..summary:Record reader specialization for single-pass reading from memory mapped files.
-..signature:RecordReader<TStream, SinglePass<Mapped> >
+..signature:RecordReader<TStream, SinglePass<StringReader> >
 ..param.TStream:The @Concept.StreamConcept@ type to work on.
 ..remarks:This record reader does not have any buffers but uses the memory mapped string directly.
 ..remarks:Is not default or copy constructable.
-..remarks:The buffer size is the granularity in which @Function.mmapAdvise@ will be called.
-..see:Spec.MMap String
+..remarks:The buffer size is the granularity in which @Function.mmapAdvise@ will be called if $TString$ is an @Spec.MMap String@.
+..see:Class.String
 ..include:seqan/stream.h
  */
 
-template <typename TMMapString>
-class RecordReader<TMMapString, SinglePass<Mapped> >
+// TODO(holtgrew): Actually, this should work on sequences but is yet untested.
+
+template <typename TString>
+class RecordReader<TString, SinglePass<StringReader> >
 {
 public:
-    typedef TMMapString TString;
     typedef typename Iterator<TString, Standard>::Type TIter;
     typedef typename Size<TString>::Type TSize;
 
@@ -112,9 +113,9 @@ private:
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Document!
-template <typename TMMapString>
-inline typename Position<TMMapString>::Type
-position(RecordReader<TMMapString, SinglePass<Mapped> > const & recordReader)
+template <typename TString>
+inline typename Position<TString>::Type
+position(RecordReader<TString, SinglePass<StringReader> > const & recordReader)
 {
     return recordReader._current - begin(recordReader._string, Standard());
 }
@@ -124,9 +125,9 @@ position(RecordReader<TMMapString, SinglePass<Mapped> > const & recordReader)
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Document!
-template <typename TMMapString, typename TPosition>
+template <typename TString, typename TPosition>
 inline int
-setPosition(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader, TPosition pos)
+setPosition(RecordReader<TString, SinglePass<StringReader> > & recordReader, TPosition pos)
 {
     recordReader._current = iter(recordReader._string, pos, Standard());
     return 0;
@@ -136,18 +137,18 @@ setPosition(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader, TPosi
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline bool
-atEnd(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader)
+atEnd(RecordReader<TString, SinglePass<StringReader> > & recordReader)
 {
     return recordReader._current == recordReader._end;
 }
 
 // TODO(holtgrew): We would rather have the const version only.
 
-template <typename TMMapString>
+template <typename TString>
 inline bool
-atEnd(RecordReader<TMMapString, SinglePass<Mapped> > const & recordReader)
+atEnd(RecordReader<TString, SinglePass<StringReader> > const & recordReader)
 {
     return recordReader._current == recordReader._end;
 }
@@ -156,9 +157,9 @@ atEnd(RecordReader<TMMapString, SinglePass<Mapped> > const & recordReader)
 // Function resultCode()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline int
-resultCode(RecordReader<TMMapString, SinglePass<Mapped> > & /*recordReader*/)
+resultCode(RecordReader<TString, SinglePass<StringReader> > & /*recordReader*/)
 {
     return 0;
 }
@@ -167,9 +168,9 @@ resultCode(RecordReader<TMMapString, SinglePass<Mapped> > & /*recordReader*/)
 // Function goNext()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline bool
-goNext(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader)
+goNext(RecordReader<TString, SinglePass<StringReader> > & recordReader)
 {
     SEQAN_ASSERT(recordReader._current != recordReader._end);
     recordReader._current += 1;
@@ -180,9 +181,9 @@ goNext(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader)
 // Function value()
 // ----------------------------------------------------------------------------
 
-template <typename TMMapString>
+template <typename TString>
 inline char
-value(RecordReader<TMMapString, SinglePass<Mapped> > & recordReader)
+value(RecordReader<TString, SinglePass<StringReader> > & recordReader)
 {
     SEQAN_ASSERT(recordReader._current != recordReader._end);
     return *recordReader._current;

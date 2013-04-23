@@ -56,7 +56,7 @@ int main(int argc, char const ** argv)
     TMMapString mmapString;
     if (!open(mmapString, argv[1], OPEN_RDONLY))
         return 1;
-    RecordReader<TMMapString, DoublePass<Mapped> > reader2(mmapString);
+    RecordReader<TMMapString, DoublePass<StringReader> > reader2(mmapString);
     
     // Define variables for storing the sequences and sequence ids.
     StringSet<CharString> ids2;

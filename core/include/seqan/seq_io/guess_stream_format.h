@@ -135,7 +135,7 @@ private:
     }
 
     inline void
-    _suspendRefill(SinglePass<Mapped> const & /* tag */)
+    _suspendRefill(SinglePass<StringReader> const & /* tag */)
     {
         if (_recordreader._end - _recordreader._current > BUFSIZ)
             _recordreader._end = _recordreader._current + BUFSIZ;
@@ -171,7 +171,7 @@ private:
     }
 
     inline void
-    _resumeRefillAndReset(SinglePass<Mapped> const & /* tag */)
+    _resumeRefillAndReset(SinglePass<StringReader> const & /* tag */)
     {
         _recordreader._end = _endBeforeSuspend;
         _recordreader._current = _currentBeforeSuspend;

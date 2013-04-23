@@ -199,7 +199,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_single_mmap)
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(filename));
 
-    typedef RecordReader<String<char, MMap<> >, SinglePass<Mapped> > TRecordReader;
+    typedef RecordReader<String<char, MMap<> >, SinglePass<StringReader> > TRecordReader;
     TRecordReader reader(mmapString);
 
     FASTQ_TEST(reader);
@@ -217,7 +217,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_double_mmap)
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(filename));
 
-    typedef RecordReader<String<char, MMap<> >, DoublePass<Mapped> > TRecordReader;
+    typedef RecordReader<String<char, MMap<> >, DoublePass<StringReader> > TRecordReader;
     TRecordReader reader(mmapString);
 
     FASTQ_TEST(reader);
@@ -235,7 +235,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_batch_single_mmap)
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(filename));
 
-    typedef RecordReader<String<char, MMap<> >, SinglePass<Mapped> > TRecordReader;
+    typedef RecordReader<String<char, MMap<> >, SinglePass<StringReader> > TRecordReader;
     TRecordReader reader(mmapString);
 
     FASTQ_TEST_BATCH(reader);
@@ -253,7 +253,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_batch_single_concat_mmap)
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(filename));
 
-    typedef RecordReader<String<char, MMap<> >, SinglePass<Mapped> > TRecordReader;
+    typedef RecordReader<String<char, MMap<> >, SinglePass<StringReader> > TRecordReader;
     TRecordReader reader(mmapString);
 
     FASTQ_TEST_BATCH_CONCAT(reader);
@@ -271,7 +271,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_batch_double_mmap)
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(filename));
 
-    typedef RecordReader<String<char, MMap<> >, DoublePass<Mapped> > TRecordReader;
+    typedef RecordReader<String<char, MMap<> >, DoublePass<StringReader> > TRecordReader;
     TRecordReader reader(mmapString);
 
     FASTQ_TEST_BATCH(reader);
@@ -289,7 +289,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_batch_double_concat_mmap)
     String<char, MMap<> > mmapString;
     open(mmapString, toCString(filename));
 
-    typedef RecordReader<String<char, MMap<> >, DoublePass<Mapped> > TRecordReader;
+    typedef RecordReader<String<char, MMap<> >, DoublePass<StringReader> > TRecordReader;
     TRecordReader reader(mmapString);
 
     FASTQ_TEST_BATCH_CONCAT(reader);

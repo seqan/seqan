@@ -1365,7 +1365,7 @@ int main(int argc, char const ** argv)
         return 1;
     }
     double start = sysTime();
-    RecordReader<String<char, MMap<> >, DoublePass<Mapped> > refReader(seqMMapString);
+    RecordReader<String<char, MMap<> >, DoublePass<StringReader> > refReader(seqMMapString);
     if (read2(seqIds, seqs, refReader, Fasta()) != 0)
     {
         std::cerr << "Could not read reference from " << options.refFile << std::endl;
@@ -1384,7 +1384,7 @@ int main(int argc, char const ** argv)
             std::cerr << "Could not open " << options.inFile << std::endl;
             return 1;
         }
-        RecordReader<String<char, MMap<> >, SinglePass<Mapped> > samReader(samMMapString);
+        RecordReader<String<char, MMap<> >, SinglePass<StringReader> > samReader(samMMapString);
         
         if (options.goldStandard)
         {
@@ -1394,7 +1394,7 @@ int main(int argc, char const ** argv)
                 std::cerr << "Could not open " << options.goldStandardFile << std::endl;
                 return 1;
             }
-            RecordReader<String<char, MMap<> >, SinglePass<Mapped> > goldReader(goldMMapString);
+            RecordReader<String<char, MMap<> >, SinglePass<StringReader> > goldReader(goldMMapString);
             return doWork(samReader, goldReader, seqIds, seqs, options, Sam());
         }
         else
