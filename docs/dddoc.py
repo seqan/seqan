@@ -513,7 +513,9 @@ def parseString(str, context, file_name, line_no):
         if c_quoted != "":
             if c_quoted == c: c_quoted = ""
             else: key += c                       
-        elif is_escaped: 
+        elif is_escaped:
+            if c != ':':
+                key += '\\'
             key += c
             is_escaped = False
         else:
@@ -525,8 +527,8 @@ def parseString(str, context, file_name, line_no):
                 break
             else: key += c
                 
-        pos += 1    
-        
+        pos += 1
+
     entry += splitName(key)
     DATA.lines.append(Line(entry, text, file_name, line_no))
     context.append(entry)
@@ -545,7 +547,9 @@ def splitName(line):
         if c_quoted != "":
             if c_quoted == c: c_quoted = ""
             else: key += c                       
-        elif is_escaped: 
+        elif is_escaped:
+            if c != ':':
+                key += '\\'
             key += c
             is_escaped = False
         else:
