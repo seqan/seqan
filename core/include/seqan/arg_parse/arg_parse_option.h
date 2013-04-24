@@ -52,7 +52,7 @@ namespace seqan {
 ..cat:Miscellaneous
 ..summary:Stores information for a specific command line option.
 ..signature:ArgParseOption
-..remarks:A @Class.ArgParseOption@ object can be added to a @Class.ArgumentParser@ via @Function.addOption@.
+..remarks:A @Class.ArgParseOption@ object can be added to a @Class.ArgumentParser@ via @Function.ArgumentParser#addOption@.
 ..include:seqan/arg_parse.h
 ..see:Class.ArgParseArgument
 ..see:Class.ArgumentParser

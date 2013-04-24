@@ -144,7 +144,7 @@ struct Reference<LfTable<TOccTable, TPrefixSumTable> >
 ..summary:LfTable is an object storing all necessary information for the LF-mapping.
 ..signature:LfTable<TOccTable, TPrefixSumTable>
 ..param.TOccTable:The occurrence table data structure.
-...type.Spec:WaveletTree
+...type:Spec.WaveletTree
 ..param.TPrefixSumTable:The specialisation tag.
 ...default:String
 ..include:seqan/Index.h

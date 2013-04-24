@@ -89,7 +89,7 @@ typedef Tag<Standard_> const Standard;
 ..summary:Specifies default kind of iterator.
 ..signature:DefaultIteratorSpec<T>::Type
 ..param.T:Container type for which the default iterator spec is determined.
-...concept:Concept.cept
+...type:Concept.ContainerConcept
 ..returns.param.Type:Iterator spec of $T$.
 ..see:Metafunction.Iterator
 ..include:seqan/basic.h

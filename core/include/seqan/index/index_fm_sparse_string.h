@@ -199,7 +199,7 @@ inline void _assignValueInValueString(SparseString<TFibreValueString, TSpec> & s
     getFibre(string, FibreValueString())[pos] = value;
 }
 
-///.Function.clear.param.type:Class.SparseString
+///.Function.clear.param.object.type:Class.SparseString
 template <typename TFibreValueString, typename TSpec>
 inline void clear(SparseString<TFibreValueString, TSpec> & string)
 {
@@ -207,7 +207,7 @@ inline void clear(SparseString<TFibreValueString, TSpec> & string)
     clear(getFibre(string, FibreIndicatorString()));
 }
 
-///.Function.empty.param.type:Class.SparseString
+///.Function.empty.param.object.type:Class.SparseString
 template <typename TFibreValueString, typename TSpec>
 inline bool empty(SparseString<TFibreValueString, TSpec> const & string)
 {
@@ -363,9 +363,21 @@ inline bool open(
 }
 
 /**
-.Function.save
-..param.string:
+.Function.SparseString#save
+..class:Class.SparseString
+..summary:This functions saves a sparse string to disk.
+..signature:open(string, fileName [, openMode])
+..param.string:The string to be saved.
 ...type:Class.SparseString
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
 template <typename TFibreValueString, typename TSpec>
 inline bool save(

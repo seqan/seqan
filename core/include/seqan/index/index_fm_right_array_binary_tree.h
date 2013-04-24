@@ -73,6 +73,7 @@ class RightArrayBinaryTree;
 ..include:seqan/index.h
 */
 
+///.Metafunction.Fibre.param.TContainer.type:Class.RightArrayBinaryTree
 ///.Metafunction.Fibre.param.TSpec.type:Tag.RightArrayBinaryTree Fibres
 struct FibreTreeStructureEncoding_;
 typedef Tag<FibreTreeStructureEncoding_> const FibreTreeStructureEncoding;

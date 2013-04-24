@@ -74,7 +74,7 @@ struct Iterator<CompressedSA<TSparseString, TLfTable, TSpec> const, Rooted>:
 // ==========================================================================
 // Functions
 // ==========================================================================
-///.Function.begin.param.type:Class.CompressedSA
+///.Function.begin.param.object.type:Class.CompressedSA
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline typename Iterator<CompressedSA<TSparseString, TLfTable, TSpec>, Standard>::Type
 begin(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, Standard const & /* dummy */)
@@ -104,7 +104,7 @@ begin(CompressedSA<TSparseString, TLfTable, TSpec> const & compressedSA, Rooted 
 }
 
 // ==========================================================================
-///.Function.end.param.type:Class.CompressedSA
+///.Function.end.param.object.type:Class.CompressedSA
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline typename Iterator<CompressedSA<TSparseString, TLfTable, TSpec>, Rooted>::Type
 end(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA, Rooted const & /* dummy */)

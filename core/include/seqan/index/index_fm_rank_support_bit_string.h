@@ -611,7 +611,6 @@ resize(RankSupportBitString<TSpec> & bitString, TLength const _length, Tag<TExpa
 // ==========================================================================
 /**
 .Function.setBitTo
-..summary:Set a specified bit to true or false.
 ..signature:setBitTo(bitString, pos, bit)
 ..param.bitString:The bit string.
 ...type:Class.RankSupportBitString
@@ -710,9 +709,21 @@ inline bool open(
 
 // ==========================================================================
 /**
-.Function.save:
-..param.object:
-...type:Class.RankSupportBitString
+.Function.RankSupportBitString#save
+..class:Class.RankSupportBitString
+..summary:This functions saves a @Class.RankSupportBitString@ to disk.
+..signature:save(bitString, fileName [, openMode])
+..param.bitString:The bit string to be saved.
+...type:Class.RightArrayBinaryTree
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
 template <typename TSpec>
 inline bool save(

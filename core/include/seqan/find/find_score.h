@@ -248,7 +248,7 @@ SEQAN_CHECKPOINT
 ..summary:The minimal score a match must reach in approximate searching.
 ..signature:scoreLimit(pattern)
 ..class:Spec.DPSearch
-..param.pattern:A @Concept.PatternConcept|pattern@ that can be used for approximate searching.
+..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
 ...type:Spec.DPSearch
 ..returns:The current score limit of $pattern$.
 */
@@ -268,7 +268,7 @@ SEQAN_CHECKPOINT
 ..summary:Sets the minimal score a match must reach in approximate searching.
 ..signature:setScoreLimit(pattern, limit)
 ..class:Spec.DPSearch
-..param.pattern:A @Concept.PatternConcept|pattern@ that can be used for approximate searching.
+..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
 ...type:Spec.DPSearch
 ..param.limit:The new score limit.
 ..see:Function.scoreLimit
@@ -291,7 +291,7 @@ SEQAN_CHECKPOINT
 ..summary:Score of the last found match in approximate searching.
 ..signature:getScore(pattern)
 ..class:Spec.DPSearch
-..param.pattern:A @Concept.PatternConcept|pattern@ that can be used for approximate searching.
+..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
 ...type:Spec.DPSearch
 ..returns:The score of the last match found using $pattern$.
 ...remarks:If no match was found, the value is undefined.

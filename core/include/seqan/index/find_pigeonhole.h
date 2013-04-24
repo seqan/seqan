@@ -723,8 +723,8 @@ pigeonholeInfix(TPigeonholeHit const &hit, TText &text)
 
 //____________________________________________________________________________
 
-///.Function.infix.param.finder.type:Spec.Pigeonhole
-///.Function.infix.class:Spec.Pigeonhole
+///.Function.Finder#infix.param.finder.type:Spec.Pigeonhole
+///.Function.Finder#infix.class:Spec.Pigeonhole
 
 template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type

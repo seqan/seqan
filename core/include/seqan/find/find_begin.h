@@ -374,7 +374,7 @@ findBegin(TFinder & finder,
 ..summary:Score of the last match found by @Function.findBegin@ during approximate searching.
 ..signature:getBeginScore(pattern)
 ..class:Class.Finder
-..param.pattern:A @Concept.PatternConcept|pattern@ that can be used for approximate searching.
+..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
 ...type:Spec.DPSearch
 ..returns:The score of the last match found using $pattern$.
 ...remarks:The value is set after a successfully call of @Function.findBegin@.

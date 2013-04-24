@@ -125,7 +125,7 @@ space efficient.
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
     
-/**
+/*
 .Metafunction.Fibre:
 ..summary:Type of a specific FMIndex member (fibre).
 ..signature:Fibre<Index<TText, FMIndex<TSentinelRankDictionary, TSpec> >, TFibreSpec>::Type
@@ -720,7 +720,7 @@ inline bool indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec> > & index)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.indexSupplied:
+.Function.FMIndex#indexSupplied:
 ..summary:Returns whether a specific @Metafunction.Fibre@ is present.
 ..param.fibreTag:
 ...type:Tag.FM Index Fibres

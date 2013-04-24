@@ -1554,8 +1554,8 @@ swiftInfix(TSwiftHit const & hit, TText & text)
 
 //____________________________________________________________________________
 
-///.Function.infix.remarks:For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
-///.Function.infix.param.finder.type:Spec.Swift
+///.Function.Finder#infix.remarks:For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
+///.Function.Finder#infix.param.finder.type:Spec.Swift
 
 template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type

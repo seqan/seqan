@@ -155,7 +155,7 @@ begin(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TIterSpec const
     return typename Iterator<RightArrayBinaryTree<TChar, TSpec>, TIterSpec>::Type(waveletTreeStructure);
 }
 
-///.Function.container.param.object.type:Class.RightArrayBinaryTree
+///.Function.container.param.iterator.type:Class.RightArrayBinaryTree
 template <typename TTree, typename TIterSpec>
 inline TTree &
 container(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
@@ -187,6 +187,7 @@ end(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TIterSpec const &
 
 /**
 .Function.getCharacter
+..summary:This function returns the pivot character of the node the iterator currently points to.
 ..signature:getCharacter(it)
 ..param.it:The iterator.
 ...type:Spec.RightArrayBinaryTree Iterator
@@ -305,6 +306,7 @@ inline bool _goDownConstruction(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
 
 /**
 .Function.goLeftChild
+..summary:Sets the iterator to the left child of the current node if it exists and returns true, otherwise the iterator does not change position and the function returns false.
 ..signature:bool goLeftChild(iterator)
 ..param.iterator:An iterator of a wavelet tree structure.
 ...type:Spec.RightArrayBinaryTree Iterator
@@ -368,6 +370,7 @@ inline bool goRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> 
 
 /**
 .Function.goRightChild
+..summary:Sets the iterator to the right child of the current node if it exists and returns true, otherwise the iterator does not change position and the function returns false.
 ..signature:bool goRightChild(iterator)
 ..param.iterator:An iterator of a wavelet tree structure.
 ...type:Spec.RightArrayBinaryTree Iterator
@@ -408,13 +411,15 @@ inline bool goRightChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
 //     return true;
 // }
 
-/**
+// TODO(singer): Make this work!
+/*
 .Function.goToPosition
+..summary:Move the iterator to a specified position.
 ..signature:bool goToPosition(iterator, pos)
 ..param.iterator:An iterator of a wavelet tree structure.
 ...type:Spec.RightArrayBinaryTree Iterator
 ..param.pos:A position.
-..remarks:$goToPosition(iterator)$ goes to position pos if it exist.
+..remarks:$goToPosition(iterator)$ goes to position pos regardless of pos being a valid position.
 ..returns:$true$ if the edge or path to go down exists, otherwise $false$.
 ..include:seqan/index.h
 ..example.code:
@@ -540,7 +545,7 @@ inline bool _setAndGoRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIte
 ..param.iterator:An iterator of a wavelet tree structure.
 ...type:Spec.RightArrayBinaryTree Iterator
 ..param.character:The character to be assigned to a node.
-..remarks:$setCharacter(iterator, character)$ sets the character of the node the iterator points to to character.
+..summary:$setCharacter(iterator, character)$ sets the character of the node the iterator points to to character.
 ..include:seqan/index.h
 ..example.code:
 String<Dna5> genome = "ACGTACGT";

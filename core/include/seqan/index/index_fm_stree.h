@@ -174,7 +174,7 @@ void _indexRequireTopDownIteration(Index<TText, FMIndex<TOccSpec, TIndexSpec> > 
 // ----------------------------------------------------------------------------
 
 // ==========================================================================
-///.Function.begin.param.type:Spec.FMIndex
+///.Function.begin.param.object.type:Spec.FMIndex
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
 inline
 typename Iterator<Index<TText,FMIndex<TOccSpec, TIndexSpec> >, TSpec>::Type

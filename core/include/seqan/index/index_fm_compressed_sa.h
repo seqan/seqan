@@ -236,7 +236,7 @@ Pair<TSeqId, TPos> _addGapDistance(Pair<TSeqId, TPos, TSpec> const & value, TOff
 
 // ==========================================================================
 /**
-.Function.clear.param.type:Class.CompressedSA
+.Function.clear.param.object.type:Class.CompressedSA
 */
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline void clear(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA)
@@ -246,7 +246,7 @@ inline void clear(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA)
 
 // ==========================================================================
 /**
-.Function.empty.param.type:Class.CompressedSA
+.Function.empty.param.object.type:Class.CompressedSA
 */
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline bool empty(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA)
@@ -393,7 +393,7 @@ inline bool _getNextPos(CompressedSA<TSparseString, TLfTable, TSpec> const & com
 
 // ==========================================================================
 /**
-.Function.length.param.type:Class.CompressedSA
+.Function.length.param.object.type:Class.CompressedSA
 */
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline typename Size<typename Fibre<CompressedSA<TSparseString, TLfTable, TSpec>, FibreSparseString>::Type>::Type
@@ -404,7 +404,7 @@ length(CompressedSA<TSparseString, TLfTable, TSpec> const & compressedSA)
 
 // ==========================================================================
 /**
-.Function.resize.param.type:Class.CompressedSA
+.Function.resize.param.object.type:Class.CompressedSA
 */
 template <typename TSparseString, typename TLfTable, typename TSpec, typename TSize>
 inline void resize(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA,
@@ -451,9 +451,21 @@ inline bool open(
 
 // ==========================================================================
 /**
-.Function.save:
-..param.object:
+.Function.CompressedSA#save
+..class:Class.CompressedSA
+..summary:This functions saves a compressed suffix array to disk.
+..signature:open(compressedSA, fileName [, openMode])
+..param.compressedSA:The string to be saved.
 ...type:Class.CompressedSA
+..param.fileName:C-style character string containing the file name.
+..param.openMode:The combination of flags defining how the file should be opened.
+...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
+...remarks:To create or overwrite a file add $OPEN_CREATE$.
+...remarks:To append a file if existing add $OPEN_APPEND$.
+...remarks:To circumvent problems, files are always opened in binary mode.
+...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
+..returns:A $bool$ which is $true$ on success.
+..include:seqan/index.h
 */
 template <typename TSparseString, typename TLfTable, typename TSpec>
 inline bool save(
@@ -486,7 +498,7 @@ inline bool save(
 ..param.CompressedSA<TSparseString, TLfTable, TSpec>:The compressed suffix array.
 ...type:Class.CompressedSA
 ..param.lfTable
-...type.Class:LfTable
+...type:Class.LfTable
 ..include:seqan/index.h
 */
 template <typename TSparseString, typename TLfTable, typename TSpec>
