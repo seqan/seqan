@@ -169,8 +169,8 @@ public:
 
 /**
 .Metafunction.Host
-..param.T:Spec.Journaled String
-...type:Spec.Journaled String
+..param.T.type:Spec.Journaled String
+..class:Spec.Journaled String
 */
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
@@ -193,7 +193,10 @@ struct Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
 .Metafunction.InsertionBuffer
 ..cat:Sequences
 ..summary:Return type of insertion buffer string for a journaled string.
-..param.T:Spec.Journaled String
+..class:Spec.Journaled String
+..signature:InsertionBuffer<T>::Type
+..param.T:The journaled string to get the insertion buffer type for.
+...type:Spec.Journaled String
 ..include:sequan/sequence_journal.h
 */
 template <typename T>
@@ -215,7 +218,8 @@ struct InsertionBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffer
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T:Spec.Journaled String
+///.Metafunction.Size.param.T.type:Spec.Journaled String
+///.Metafunction.Size.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Size<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -230,7 +234,8 @@ struct Size<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Position.param.T:Spec.Journaled String
+///.Metafunction.Position.param.T.type:Spec.Journaled String
+///.Metafunction.Position.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Position<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -245,7 +250,8 @@ struct Position<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Reference.param.T:Spec.Journaled String
+///.Metafunction.Reference.param.T.type:Spec.Journaled String
+///.Metafunction.Reference.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -268,7 +274,8 @@ struct Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> 
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-///.Metafunction.GetValue.param.T:Spec.Journaled String
+///.Metafunction.GetValue.param.T.type:Spec.Journaled String
+///.Metafunction.GetValue.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct GetValue<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -286,7 +293,8 @@ struct GetValue<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Does Value have to be overwritten? Is not for packed strings!
-///.Metafunction.Value.param.T:Spec.Journaled String
+///.Metafunction.Value.param.T.type:Spec.Journaled String
+///.Metafunction.Value.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Value<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -306,9 +314,10 @@ struct Value<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > co
 /**
 .Metafunction.JournalType
 ..cat:Sequences
-..signature:JournalType<T>::Type
 ..summary:Metafunction for returning the type of the journal of a Journaled String.
-..param.T:Spec.Journaled String
+..signature:JournalType<T>::Type
+..class:Spec.Journaled String
+..param.T:The journaled string to get the journal type for.
 ...type:Spec.Journaled String
 ..include:seqan/string_journaled.h
  */

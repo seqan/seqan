@@ -208,7 +208,7 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 
 /**
 .Function.Seed#beginPositionH
-..summary: Returns the first position of the seed in the database.
+..summary: Returns the begin position of the seed in the database.
 ..cat:Seed Handling
 ..signature:beginPositionH(seed)
 ..class:Class.Seed
@@ -235,12 +235,43 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 */
 
 // ---------------------------------------------------------------------------
+// Function setBeginPositionH()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#steBeginPositionH
+..summary: Sets the begin position of the seed in the database.
+..cat:Seed Handling
+..signature:setBeginPositionH(seed)
+..class:Class.Seed
+..param.seed:The seed for which to set the begin position in the database sequence.
+...type:Class.Seed
+..include:seqan/seeds.h
+*/
+
+// ---------------------------------------------------------------------------
+// Function setEndPositionH()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#setEndPositionH
+..summary: Sets the end position of the seed in the database.
+..cat:Seed Handling
+..signature:setEndPositionH(seed)
+..class:Class.Seed
+..param.seed:The seed for which to set the end position in the database sequence.
+...type:Class.Seed
+..returns:End of the seed in the database.
+..include:seqan/seeds.h
+*/
+
+// ---------------------------------------------------------------------------
 // Function beginPositionV()
 // ---------------------------------------------------------------------------
 
 /**
 .Function.Seed#beginPositionV
-..summary: Returns the first position of the seed in the query.
+..summary: Returns the begin position of the seed in the query.
 ..cat:Seed Handling
 ..signature:beginPositionV(seed)
 ..class:Class.Seed
@@ -261,6 +292,38 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 ..signature:endPositionV(seed)
 ..class:Class.Seed
 ..param.seed:The seed whose end in the query position should be returned.
+...type:Class.Seed
+..returns: End of the seed.
+..include:seqan/seeds.h
+*/
+
+// ---------------------------------------------------------------------------
+// Function setBeginPositionV()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#setBeginPositionV
+..summary: Sets the begin position of the seed in the query.
+..cat:Seed Handling
+..signature:setBeginPositionV(seed)
+..class:Class.Seed
+..param.seed:The seed for which to set the begin position in the query sequence.
+...type:Class.Seed
+..returns: Begin of the seed.
+..include:seqan/seeds.h
+*/
+
+// ---------------------------------------------------------------------------
+// Function setEndPositionV()
+// ---------------------------------------------------------------------------
+
+/**
+.Function.Seed#setEndPositionV
+..summary: Returns the end position of the seed in the query.
+..cat:Seed Handling
+..signature:setEndPositionV(seed)
+..class:Class.Seed
+..param.seed:The seed for which to set the end position in the query sequence.
 ...type:Class.Seed
 ..returns: End of the seed.
 ..include:seqan/seeds.h
@@ -317,7 +380,7 @@ setLowerDiagonal(Seed<TSpec, TConfig> & seed, TDiagonal newDiag)
 // ---------------------------------------------------------------------------
 
 /**
-.Function.Seed#getUpperDiagonal
+.Function.Seed#upperDiagonal
 ..summary:Returns the rightmost diagonal of the seed (maximum diagonal value).
 ..cat:Seed Handling
 ..signature:upperDiagonal(seed)

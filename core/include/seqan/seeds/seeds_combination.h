@@ -51,7 +51,7 @@ namespace seqan {
 ..cat:Seed Handling
 ..summary:The local chaining algorithms to use when adding a seed to a @Class.SeedSet@.
 ..see:Class.SeedSet
-..see:Function.addSeed
+..see:Function.SeedSet#addSeed
 ..tag.Merge:Merge with existing seed.
 ..tag.Chaos:CHAOS chaining.
 ..tag.SimpleChain:Simple chaining.
