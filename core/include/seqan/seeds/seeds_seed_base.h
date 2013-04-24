@@ -239,7 +239,7 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // ---------------------------------------------------------------------------
 
 /**
-.Function.Seed#steBeginPositionH
+.Function.Seed#setBeginPositionH
 ..summary: Sets the begin position of the seed in the database.
 ..cat:Seed Handling
 ..signature:setBeginPositionH(seed)
