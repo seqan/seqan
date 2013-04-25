@@ -132,20 +132,18 @@ SEQAN_CHECKPOINT
 	inline void
 	setHost(
 		Finder< Index<TText, TSpec>, TSpecFinder > & me, 
-		typename Parameter_<Index<TText, TSpec> >::Type /*container_*/)
+		typename Parameter_<Index<TText, TSpec> >::Type container_)
 	{
-SEQAN_CHECKPOINT
-		me.index = container;
+		me.index = container_;
 	}
 
 	template < typename TText, typename TSpec, typename TSpecFinder >
 	inline void
 	setContainer(
 		Finder< Index<TText, TSpec>, TSpecFinder > & me, 
-		typename Parameter_<Index<TText, TSpec> >::Type /*container_*/)
+		typename Parameter_<Index<TText, TSpec> >::Type container_)
 	{
-SEQAN_CHECKPOINT
-		me.index = container;
+		me.index = container_;
 	}
 
 //____________________________________________________________________________
