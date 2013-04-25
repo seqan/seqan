@@ -854,7 +854,7 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 .Function.Index#save
 ..class:Class.Index
 ..summary:This functions saves an index to disk.
-..signature:open(index, fileName [, openMode])
+..signature:save(index, fileName [, openMode])
 ..param.index:The index.
 ...type:Class.RankDictionary
 ..param.fileName:C-style character string containing the file name.
