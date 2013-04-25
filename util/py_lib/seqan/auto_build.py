@@ -69,8 +69,11 @@ class Package(object):
         self.pkg_format = pkg_format
 
     def fileName(self):
-        return '%s-%s-%s.%s' % (self.name, self.version, self.system_name,
-                                self.pkg_format)
+        if self.name == 'seqan-library':
+            return '%s-%s.%s' % (self.name, self.version, self.pkg_format)
+        else:
+            return '%s-%s-%s.%s' % (self.name, self.version, self.system_name,
+                                    self.pkg_format)
 
 
 class BuildStep(object):
@@ -168,20 +171,20 @@ class BuildStep(object):
             print err_data
             return 1
         # Execute Make.
-#        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
-#        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
-#        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
-#        out_data, err_data = popen.communicate()
-#        if popen.returncode != 0:
-#            print >>sys.stderr, 'ERROR during make call.'
-#            print out_data
-#            print err_data
-#            return 1
-#        # Copy over the archives.
-#        self.copyArchives(build_dir)
-#        # Remove build directory.
-#        print >>sys.stderr, 'Removing build directory %s' % build_dir
-#        shutil.rmtree(build_dir)
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
+        print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
+        popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during make call.'
+            print out_data
+            print err_data
+            return 1
+        # Copy over the archives.
+        self.copyArchives(build_dir)
+        # Remove build directory.
+        print >>sys.stderr, 'Removing build directory %s' % build_dir
+        shutil.rmtree(build_dir)
         # Build seqan-library.
         #
         # Create build directory.
