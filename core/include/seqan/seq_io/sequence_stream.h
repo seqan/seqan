@@ -56,6 +56,7 @@ namespace seqan {
 
 /**
 .Class.SequenceStream
+..cat:Input/Output
 ..summary:High-level reading and writing of sequences.
 ..description:
 Building upon the more low-level sequence I/O functionality of SeqAn, this class provides easier to use I/O facilities.
@@ -127,6 +128,7 @@ while (!atEnd(seqIO)))
 ...default:@Enum.SequenceStream\colon\colonFileType.value.AUTO_TYPE@
 
 .Enum.SequenceStream\colon\colonOperationMode
+..cat:Input/Output
 ..summary:Select the operation mode of a @Class.SequenceStream@.
 ..value.READ:Open stream for reading.
 ..value.READ_PERSISTENT:Open stream for reading, mark as "persisent reading". See @Class.SequenceStream@ for more information on the difference between normal and persistent reading.
@@ -134,6 +136,7 @@ while (!atEnd(seqIO)))
 ..include:seqan/seq_io.h
 
 .Enum.SequenceStream\colon\colonFileFormat
+..cat:Input/Output
 ..summary:Select the file format to read/write.
 ..description:The file format is the format of the possibly compressed content.
 ..value.AUTO_FORMAT:Auto-detect format from file content on reading and from the file name on writing. If Auto-detection fails, FASTA is used.
@@ -142,6 +145,7 @@ while (!atEnd(seqIO)))
 ..include:seqan/seq_io.h
 
 .Enum.SequenceStream\colon\colonFileType
+..cat:Input/Output
 ..summary:Select the file type to read/write.
 ..description:The file type is the type of the file itself, i.e. plain text or compressed.
 ..value.AUTO_TYPE:Auto-detect format from file content on reading and from the file name on writing. If Auto-detection fails, $PLAIN_TEXT$ is used.

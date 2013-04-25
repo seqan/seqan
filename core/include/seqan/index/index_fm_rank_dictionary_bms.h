@@ -68,6 +68,7 @@ class SBM;
 
 /**
 .Spec.SequenceBitMask Fibres
+..cat:Index
 ..summary:Tag to select a specific fibre of a SequenceBitMask.
 ..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a SequenceBitMask.
 

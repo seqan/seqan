@@ -83,6 +83,7 @@ namespace seqan {
 
 /**
 .Enum.FileOpenMode
+..cat:Input/Output
 ..summary:Flags to select the open mode of a @Class.File@ or external string.
 ..value.OPEN_RDONLY:Open for only reading.
 ..value.OPEN_WRONLY:Open for only writing.

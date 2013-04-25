@@ -112,6 +112,7 @@ typedef Tag<Sentinels_> const           Sentinels;
 
 /**
 .Tag.CompressText
+..cat:Index
 ..summary:Tag to select a FM index variant that can be used such that it is 
 not necessary to store the text after index construction. This index is very
 space efficient.

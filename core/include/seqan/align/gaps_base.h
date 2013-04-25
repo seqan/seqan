@@ -59,6 +59,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 
 /**
 .Class.Gaps
+..cat:Alignments
 ..implements:Concept.SequenceConcept
 ..summary:Efficient storage of gaps for a sequence.
 ..signature:Gaps<TSequence, TSpec>
@@ -859,7 +860,7 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 /**
 .Function.source
 ..summary:Return underlying object.
-..cat:Bsic
+..cat:Basic
 ..signature:source(obj)
 ..param.obj:The object to get underlying sequence of.
 ...type:Class.Gaps

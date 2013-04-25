@@ -41,6 +41,7 @@ namespace seqan {
 
 /**
 .Metafunction.Pointer
+..cat:Basic
 ..summary:Returns pointer to an object, required for @Function.operator->@, for example.
 ..signature:Pointer<T>::Type
 ..param.T:The type to query.

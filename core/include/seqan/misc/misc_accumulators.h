@@ -145,6 +145,7 @@ struct Value<Accumulator<TValue, Average> const > : Value<Accumulator<TValue, Av
 
 /**
 .Metafunction.Result
+..cat:Miscellaneous
 ..summary:Return the result of a computation.
 ..signature:Result<T, TTag>::Type
 ..param.T:The type to query

@@ -64,6 +64,7 @@ namespace seqan {
 
 /**
 .Class.BamStream
+..cat:BAM I/O
 ..summary:Class that provides an easy to use interface for reading and writing SAM and BAM files.
 ..signature:BamStream
 ..example.text:Stream through a SAM or BAM file.
@@ -130,12 +131,14 @@ When reading SAM, new reference sequences can be introduced "on the fly" when a 
 When writing, the $bamIOContext$ is automatically filled/reset when the first record is written.
 
 .Enum.BamStream\colon\colonOperationMode:
+..cat:BAM I/O
 ..summary:Select the operation mode of a @Class.BamStream@.
 ..value.READ:Open stream for reading.
 ..value.WRITE:Open stream for writing.
 ..include:seqan/bam_io.h
 
 .Enum.BamStream\colon\colonFormat:
+..cat:BAM I/O
 ..summary:Select the format to use for reading/writing.
 ..value.AUTO:Auto-detect format from file content on reading and from the file name on writing. If Auto-detection fails, SAM is used.
 ..value.SAM:Force reading/writing of SAM.
