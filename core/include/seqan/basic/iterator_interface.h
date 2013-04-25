@@ -161,11 +161,13 @@ struct IteratorDefaultImp_<T, Standard>
 };
 
 // (weese): This definition is important and defines default const-iterators. Don't remove.
-template <typename T>
-struct IteratorDefaultImp_<T const, Standard>
-{
-    typedef typename Value<T>::Type const * Type;
-};
+//          However, there are different places where const-correctness is broken that must be fixed before we can uncomment this
+
+//template <typename T>
+//struct IteratorDefaultImp_<T const, Standard>
+//{
+//    typedef typename Value<T>::Type const * Type;
+//};
 
 //IteratorDefaultImp_<T, Rooted> is implemented in basic_iterator_adaptor.h
 

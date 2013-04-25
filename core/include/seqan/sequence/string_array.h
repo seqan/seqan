@@ -68,8 +68,8 @@ template <typename TValue, size_t LENGTH>
 class String<TValue, Array<LENGTH> >
 {
 public:
-    TValue   data_begin[LENGTH];
-    TValue * data_end;
+    mutable TValue   data_begin[LENGTH];    // TODO(weese): mutable seems to be a workaround for non-const iterators returned by
+    TValue * data_end;                      //              Iterator<> for const Alloc/Array strings. Must be fixed to work without mutable.
 
     String()
     {
