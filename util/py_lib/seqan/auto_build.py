@@ -62,7 +62,7 @@ class Package(object):
         self.version = version
         self.os = os
         self.word_size = word_size
-        SYS_NAMES = {'Windows': {'32': 'win32-i686', '64': 'win64-x86'},
+        SYS_NAMES = {'Windows': {'32': 'win32-i686', '64': 'win64-x86_64'},
                      'Linux': {'32': 'Linux-i686', '64': 'Linux-x86_64'},
                      'Mac': {'32': 'Darwin-i686', '64': 'Darwin-x86_64'}}
         self.system_name = SYS_NAMES[os][word_size]
@@ -140,14 +140,14 @@ class BuildStep(object):
                     to = to.replace('Darwin', 'Mac')
                 shutil.copyfile(from_, to)
             else:
-                print >>sys.stderr, "%s does not exist (not fatal)" % from_
+                print >>sys.stderr, '%s does not exist (not fatal)' % from_
 
     def buildSeqAnRelease(self, checkout_dir, build_dir):
         """Build SeqAn release: Apps and library build."""
         # Build seqan-apps.
         #
         # Create build directory.
-        print >>sys.stderr, "Creating build directory %s" % (build_dir,)
+        print >>sys.stderr, 'Creating build directory %s' % (build_dir,)
         os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY, checkout_dir,
@@ -307,8 +307,9 @@ class BuildStep(object):
             self.buildSeqAnRelease(checkout_dir, build_dir)
         else:
             self.buildApp(checkout_dir, build_dir)
-        print >>sys.stderr, 'Removing checkout directory %s' % (checkout_dir,)
-        shutil.rmtree(checkout_dir)
+        if not self.options.keep_co_dir:
+            print >>sys.stderr, 'Removing checkout directory %s' % (checkout_dir,)
+            shutil.rmtree(checkout_dir)
         # Remove temporary directory again.
         if not self.tmp_dir and not self.options.keep_tmp_dir:
             # Only remove if not explicitely given and not forced to keep.
@@ -407,6 +408,8 @@ def main():
                       help='Build current trunk with this string as a tag name.')
     parser.add_option('--keep-tmp-dir', dest='keep_tmp_dir', default=False,
                       action='store_true', help='Keep temporary directory.')
+    parser.add_option('--keep-co-dir', dest='keep_co_dir', default=False,
+                      action='store_true', help='Keep checkout directory.')
     parser.epilog = ('The program will use the environment variable TMPDIR as '
                      'the directory for temporary files.')
 
