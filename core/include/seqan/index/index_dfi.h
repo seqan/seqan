@@ -308,7 +308,7 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
 
 		typedef typename Iterator<TText const, Standard>::Type		TTextIterator;
 		typedef typename Iterator<TSA, Standard>::Type				TSAIterator;
-		typedef typename Iterator<TTempSA, Standard>::Type			TTempSAIterator;
+		typedef typename Iterator<TTempSA const, Standard>::Type    TTempSAIterator;
 		typedef typename Iterator<TCounter, Standard>::Type			TCntIterator;
 		typedef typename Size<TText>::Type							TTextSize;
 		typedef typename Value<TText>::Type							TValue;

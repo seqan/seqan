@@ -1037,8 +1037,8 @@ namespace SEQAN_NAMESPACE_MAIN
 	_wotdCummulativeSum(TBounds &bounds, TBuckets const &buckets, TSize offset)
 	{
 	SEQAN_CHECKPOINT
-		typedef typename Iterator<TBounds, Standard>::Type		TBoundIterator;
-		typedef typename Iterator<TBuckets, Standard>::Type		TBucketsIterator;
+		typedef typename Iterator<TBounds, Standard>::Type          TBoundIterator;
+		typedef typename Iterator<TBuckets const, Standard>::Type   TBucketsIterator;
 
 		TBucketsIterator it = begin(buckets, Standard());
 		TBucketsIterator itEnd = end(buckets, Standard());

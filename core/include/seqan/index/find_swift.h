@@ -936,7 +936,7 @@ inline bool _swiftMultiProcessQGram(
     typedef Pattern<TIndex, Swift<TSpec> >                      TPattern;
 
     //typedef typename Size<TIndex>::Type                         TSize;
-    typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
+    typedef typename Fibre<TIndex const, QGramSA>::Type         TSA;
     typedef typename Iterator<TSA, Standard>::Type              TSAIter;
     typedef typename TPattern::TBucketString                    TBucketString;
     typedef typename Iterator<TBucketString, Standard>::Type    TBucketIter;
