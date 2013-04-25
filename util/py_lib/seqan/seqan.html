@@ -1,30 +1,7 @@
-<!--(macro packages_cell)-->
-<td>
-  <!--(if packages.archs['i686'].files)-->
-    32 bit:#!
-    <!--(for f in FORMATS)-->#!
-      <!--(if packages.archs['i686'].files.get(f))-->#!
-      <a href="/@!prefix!@/@!packages.archs['i686'].files[f]!@">@!f!@</a>#!
-      <!--(end)-->#!
-    <!--(end)-->#!
-  <!--(end)-->
-  <br />
-  <!--(if packages.archs['x86_64'].files)-->
-    64 bit:#!
-    <!--(for f in FORMATS)-->#!
-      <!--(if packages.archs['x86_64'].files.get(f))-->#!
-      <a href="/@!prefix!@/@!packages.archs['x86_64'].files[f]!@">@!f!@</a>#!
-      <!--(end)-->#!
-    <!--(end)-->#!
-  <!--(else)-->
-  &nbsp;
-  <!--(end)-->
-</td>
-<!--(end)-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-EN">
     <head>
-        <title>Package Releases | SeqAn</title>
+        <title>Sub Page | SeqAn</title>
         <!-- Meta Tags --> 
         <meta http-equiv="X-UA-Compatible" content="IE=9">
         <!-- Enable IE9 Standards mode --> <!-- WordPress --> 
@@ -119,72 +96,25 @@
                                     <p class="hideme">Breadcrumbs</p>
                                     <ul>
                                         <li class="first"><a href="http://www.seqan.de">SeqAn</a></li>
-                                        <li class="active">Package Releases</li>
+                                        <li class="active">Sub Page</li>
                                     </ul>
                                 </div>
-                                <h1 class="main_headline" style="margin-top:0;">Package Releases</h1>
-<!-- custom -->
-    <h2>SeqAn Library</h2>
-    <p>
-      Below, you find links to the SeqAn library releases.
-      The releases contain the library and demo source code as well as the API documentation.
-    </p>
-
-    <table>
-      <tr>
-        <th>Version</th>
-        <th>Platform Independent Download</th>
-      </tr>
-      <!--(for version in seqan_library.versions.values())-->
-      <tr>
-        <td id="@!version.version!@">@!version.version!@</td>
-        <td>
-        <!--(for f in FORMATS)-->#!
-          <!--(if version.packages['src'].archs['src'].files.get(f))-->#!
-           <a href="@!version.packages['src'].archs['src'].files[f]!@">@!f!@</a>
-          <!--(end)-->
-        <!--(end)-->
-        </td>
-      </tr>
-      <!--(end)-->
-    </table>
-
-    <h2>SeqAn Apps Bundle</h2>
-    <p>
-      On each SeqAn release, the apps are also released in a bundle.
-      The version number is the same as the one of the corresponding SeqAn release.
-      See below for individual app releases.
-    </p>
-
-    <table>
-      <tr>
-        <th>Version</th>
-        <th>Linux</th>
-        <th>Mac</th>
-        <th>Windows</th>
-      </tr>
-      <!--(for version in seqan_apps.versions.values())-->
-      <tr>
-        <td>@!version.version!@</td>
-        @!packages_cell(prefix=software.name, packages=version.packages['Linux'])!@
-        @!packages_cell(prefix=software.name, packages=version.packages['Mac'])!@
-        @!packages_cell(prefix=software.name, packages=version.packages['Windows'])!@
-      </tr>
-      <!--(end)-->
-    </table>
-
-    <h2>Individual App Releases</h2>
-    <p>
-      The SeqAn apps are also released independently of the apps bundle release.
-      You can find the builds below.
-      The version numbers are independent of any SeqAn release number.
-    </p>
-
-    <ul>
-    <!--(for software in sorted(softwares.values(), key=lambda x:x.name))-->
-      <li><a href="@!software.name!@">@!software.name!@</a></li>
-    <!--(end)-->
-<!-- end: custom -->
+                                <h1 class="main_headline" style="margin-top:0;">Sub Page</h1>
+                                <h2>What is SeqAn?</h2>
+                                <p>SeqAn is an open source C++ library of efficient algorithms and data structures for the analysis of sequences with the focus on biological data. Our library applies a unique generic design that guarantees high performance, generality, extensibility, and integration with other libraries. SeqAn is easy to use and simplifies the development of new software tools with a minimal loss of performance.</p>
+                                <h2>Quick Facts</h2>
+                                <ul>
+                                    <li>Programming Language: C++98</li>
+                                    <li>License: BSD/3-clause</li>
+                                    <li>
+                                        Supported Platforms: 
+                                        <ul>
+                                            <li>Windows: Visual C++ 8, 9, 10 and MinGW</li>
+                                            <li>Linux: GNU/g++, LLVM/Clang (3.0+)</li>
+                                            <li>Mac OS X: GNU/g++, LLVM/Clang (3.0+)</li>
+                                        </ul>
+                                    </li>
+                                </ul>
                                 <div class="last_updated"><small class="dimmed"> Last Update 12. September 2012 </small></div>
                             </div>
                         </div>
