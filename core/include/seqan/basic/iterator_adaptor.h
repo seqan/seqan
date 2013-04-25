@@ -225,6 +225,7 @@ container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 .Function.setContainer
 ..class:Spec.Adaptor Iterator
 ..summary:Set container of an adaptor iterator.
+..description:After setting the pointer to the container, the position will be set to 0.
 ..cat:Dependent Objects
 ..signature:setContainer(object, container)
 ..param.object:Object to set the container for.
@@ -237,15 +238,8 @@ inline void
 setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
              typename Parameter_<TContainer>::Type container_)
 {
-    SEQAN_CHECKPOINT;
-    typedef Iter<TContainer, AdaptorIterator<TIterator, TSpec> > TIter;
-    if (me.data_container && me.data_iterator != TIterator()) {
-        typename Position<TIter>::Type pos = position(me);
-        me.data_container = _toPointer(container_);
-        setPosition(me, pos);
-    } else {
-        me.data_container = _toPointer(container_);
-    }
+    me.data_container = _toPointer(container_);
+    setPosition(me, 0);
 }
 
 // ----------------------------------------------------------------------------

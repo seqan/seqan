@@ -224,7 +224,7 @@ struct FindBeginImpl_<Myers<FindPrefix, THasState, void> >
 
 		//build begin_finder
 		TBeginFinder begin_finder;
-		THaystack & hayst = haystack(finder);
+		typename Parameter_<THaystack>::Type hayst = haystack(finder);
 		setContainer(host(hostIterator(begin_finder)), hayst);
 		TPosition begin_finder_beginPosition = position(finder);
 		TPosition begin_finder_position;
