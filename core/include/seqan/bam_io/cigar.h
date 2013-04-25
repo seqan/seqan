@@ -460,7 +460,7 @@ inline void _getClippedLength(TCigarString const & cigar, TNum & sum)
 template <typename TCigarString, typename TNum>
 inline void _getLengthInRef(TCigarString const & cigar, TNum & sum)
 {
-    typedef typename Iterator<TCigarString, Standard>::Type TCigarIter;
+    typedef typename Iterator<TCigarString const, Standard>::Type TCigarIter;
     
     TCigarIter it = begin(cigar, Standard());
     TCigarIter itEnd = end(cigar, Standard());
