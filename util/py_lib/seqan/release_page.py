@@ -129,7 +129,7 @@ class RssItem(object):
     def generate(self):
         tpl = ('<item>\n'
                '  <title>%s</title>\n'
-               '  <description>%s</description>\n'
+               '  <summary>%s</summary>\n'
                '  <link>%s</link>\n'
                '</item>\n')
         return tpl % (self.title, self.description, self.link)
