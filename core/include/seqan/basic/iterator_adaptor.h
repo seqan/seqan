@@ -182,11 +182,11 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction Iterator_Default_Imp
+// Metafunction IteratorDefaultImp_
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct Iterator_Default_Imp<T, Rooted>
+struct IteratorDefaultImp_<T, Rooted>
 {
     typedef typename Iterator<T, Standard>::Type TStandardIterator;
     typedef Iter<T, AdaptorIterator<TStandardIterator> > Type;

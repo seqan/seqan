@@ -357,14 +357,6 @@ capacity(std::list<T> const & list)
     return length(list);
 }
 
-template <typename T>
-inline typename Size<std::list<T> >::Type
-capacity(std::list<T> & list)
-{
-    SEQAN_CHECKPOINT;
-    return capacity(const_cast<std::list<T> const &>(list));
-}
-
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_ADAPT_STD_LIST_H_

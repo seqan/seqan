@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Declarations related to and implementation of the Segment class.
 // ==========================================================================
@@ -132,16 +133,12 @@ struct Spec<Segment<THost, TSpec> const>
 ///.Metafunction.Value.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct Value<Segment<THost, TSpec> >
-{
-    typedef typename Value<THost>::Type Type;
-};
+struct Value<Segment<THost, TSpec> > :
+    Value<THost> {};
 
 template <typename THost, typename TSpec>
-struct Value<Segment<THost, TSpec> const >
-{
-    typedef typename Value<THost const>::Type Type;
-};
+struct Value<Segment<THost, TSpec> const > :
+    Value<THost const> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -149,16 +146,12 @@ struct Value<Segment<THost, TSpec> const >
 ///.Metafunction.GetValue.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct GetValue<Segment<THost, TSpec> >
-{
-    typedef typename GetValue<THost>::Type Type;
-};
+struct GetValue<Segment<THost, TSpec> > :
+    GetValue<THost> {};
 
 template <typename THost, typename TSpec>
-struct GetValue<Segment<THost, TSpec> const >
-{
-    typedef typename GetValue<THost const>::Type Type;
-};
+struct GetValue<Segment<THost, TSpec> const > :
+    GetValue<THost const> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -166,17 +159,13 @@ struct GetValue<Segment<THost, TSpec> const >
 ///.Metafunction.Reference.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct Reference<Segment<THost, TSpec> >
-{
-	typedef typename Reference<THost>::Type Type;
-};
+struct Reference<Segment<THost, TSpec> > :
+    Reference<THost> {};
 
 template <typename THost, typename TSpec>
-struct Reference<Segment<THost, TSpec> const >
-{
-	typedef typename Reference<THost>::Type Type;
-};
-	
+struct Reference<Segment<THost, TSpec> const > :
+    Reference<THost> {};
+
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO(holtgrew): Should the iterators of const segments be iterators with the constness of the host.
@@ -201,14 +190,11 @@ struct Iterator<Segment<THost, TSpec> const, Rooted>
 
 template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec>, Standard>:
-    Iterator<THost, Standard>
-{
-};
+    Iterator<THost, Standard> {};
+
 template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec> const, Standard>:
-    Iterator<THost const, Standard>
-{
-};
+    Iterator<THost const, Standard> {};
 
 
 
@@ -218,28 +204,20 @@ struct Iterator<Segment<THost, TSpec> const, Standard>:
 ///.Metafunction.Size.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct Size<Segment<THost, TSpec> >
-{
-    typedef typename Size<THost>::Type Type;
-};
+struct Size<Segment<THost, TSpec> > :
+    Size<THost> {};
 
 template <typename THost, typename TSpec>
-struct Size<Segment<THost, TSpec> const >
-{
-    typedef typename Size<THost>::Type Type;
-};
+struct Size<Segment<THost, TSpec> const > :
+    Size<THost> {};
 
 template <typename THost, typename TSpec>
-struct Position<Segment<THost, TSpec> >
-{
-    typedef typename Position<THost>::Type Type;
-};
+struct Position<Segment<THost, TSpec> > :
+    Position<THost> {};
 
 template <typename THost, typename TSpec>
-struct Position<Segment<THost, TSpec> const >
-{
-    typedef typename Position<THost>::Type Type;
-};
+struct Position<Segment<THost, TSpec> const > :
+    Position<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -247,16 +225,12 @@ struct Position<Segment<THost, TSpec> const >
 ///.Metafunction.DefaultOverflowImplicit.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct DefaultOverflowImplicit<Segment<THost, TSpec > >:
-    DefaultOverflowImplicit<THost>
-{
-};
+struct DefaultOverflowImplicit<Segment<THost, TSpec > > :
+    DefaultOverflowImplicit<THost> {};
 
 template <typename THost, typename TSpec>
-struct DefaultOverflowImplicit<Segment<THost, TSpec > const >:
-    DefaultOverflowImplicit<THost>
-{
-};
+struct DefaultOverflowImplicit<Segment<THost, TSpec > const > :
+    DefaultOverflowImplicit<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -264,16 +238,12 @@ struct DefaultOverflowImplicit<Segment<THost, TSpec > const >:
 ///.Metafunction.DefaultOverflowExplicit.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct DefaultOverflowExplicit<Segment<THost, TSpec > >:
-    DefaultOverflowExplicit<THost>
-{
-};
+struct DefaultOverflowExplicit<Segment<THost, TSpec > > :
+    DefaultOverflowExplicit<THost> {};
 
 template <typename THost, typename TSpec>
-struct DefaultOverflowExplicit<Segment<THost, TSpec > const >:
-    DefaultOverflowExplicit<THost>
-{
-};
+struct DefaultOverflowExplicit<Segment<THost, TSpec > const > :
+    DefaultOverflowExplicit<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -281,8 +251,8 @@ struct DefaultOverflowExplicit<Segment<THost, TSpec > const >:
 ///.Metafunction.IsContiguous.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct IsContiguous< Segment<THost, TSpec> >:
-    public IsContiguous<THost> {};
+struct IsContiguous< Segment<THost, TSpec> > :
+    IsContiguous<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -290,10 +260,8 @@ struct IsContiguous< Segment<THost, TSpec> >:
 ///.Metafunction.IsSequence.class:Class.Segment
 
 template <typename THost, typename TSpec>
-struct IsSequence< Segment<THost, TSpec> > {
-    typedef True Type;
-    enum { VALUE = true };
-};
+struct IsSequence< Segment<THost, TSpec> > :
+    True {};
 
 //////////////////////////////////////////////////////////////////////////////
 

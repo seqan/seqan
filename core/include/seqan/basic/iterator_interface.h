@@ -150,21 +150,30 @@ struct DefaultGetIteratorSpec
 ..include:seqan/basic.h
 */
 
-// TODO(holtgrew): Rename this Metafunction to IteratorDefaultImp_?
 template <typename T, typename TSpec>
-struct Iterator_Default_Imp;
+struct IteratorDefaultImp_;
 
 // We use plain pointers as standard iterators.
 template <typename T>
-struct Iterator_Default_Imp<T, Standard>
+struct IteratorDefaultImp_<T, Standard>
 {
     typedef typename Value<T>::Type * Type;
 };
 
-//Iterator_Default_Imp<T, Rooted> is implemented in basic_iterator_adaptor.h
+// (weese): This definition is important and defines default const-iterators. Don't remove.
+template <typename T>
+struct IteratorDefaultImp_<T const, Standard>
+{
+    typedef typename Value<T>::Type const * Type;
+};
 
+//IteratorDefaultImp_<T, Rooted> is implemented in basic_iterator_adaptor.h
+
+// TODO(weese): Mmh. What was the reason to introduce the helper struct IteratorDefaultImp_ instead of directly defining it here.
+//              Aah. I guess in to allow to specialize Iterator only in the first template argument. However, right now it is always
+//              specialized for both the first and second argument everywhere in the code.
 template <typename T, typename TSpec = typename DefaultIteratorSpec<T>::Type>
-struct Iterator : Iterator_Default_Imp<T, TSpec>
+struct Iterator : IteratorDefaultImp_<T, TSpec>
 {
 };
 
