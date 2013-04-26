@@ -860,7 +860,7 @@ namespace SEQAN_NAMESPACE_MAIN
 					}
 				}
 				if (leftmostChild || leftmostParent) break;
-			} while (keyOf(childFraction) == keyOf(parentFraction));		// ignore occurences with equal bwt entries
+			} while (keyOf(childFraction) == keyOf(parentFraction));		// ignore occurrences with equal bwt entries
 			return true;
 		}
 

@@ -170,8 +170,8 @@ struct Needle<Segment<THost, TSpec> const>
 ..param.k:Desired minimal score (for approximate matching).
 ...remarks:$k$ has to be a number <= 0.
 ...remarks:Differences are deletions, insertions and substitutions.
-..returns:$boolean$ that indicates whether an occurence of $pattern$ was found or not.
-..remarks:Repeated calls of this function iterate through all occurences of $pattern$.
+..returns:$boolean$ that indicates whether an occurrence of $pattern$ was found or not.
+..remarks:Repeated calls of this function iterate through all occurrences of $pattern$.
 ..include:seqan/find.h
 */
 

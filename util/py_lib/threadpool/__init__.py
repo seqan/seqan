@@ -307,7 +307,7 @@ class ThreadPool:
             try:
                 # get back next results
                 request, result = self._results_queue.get(block=block)
-                # has an exception occured?
+                # has an exception occurred?
                 if request.exception and request.exc_callback:
                     request.exc_callback(request, result)
                 # hand results to callback, if any
@@ -356,7 +356,7 @@ if __name__ == '__main__':
             print request
             print exc_info
             raise SystemExit
-        print "**** Exception occured in request #%s: %s" % \
+        print "**** Exception occurred in request #%s: %s" % \
           (request.requestID, exc_info)
 
     # assemble the arguments for each job to a list...

@@ -87,7 +87,7 @@ bool isCandidate(FragmentStore<TSpec, TConfig> const& fragStore,
         if( _sequenceCharacter(candidate[i]) != _sequenceCharacter(consensus) ) {
             ++simple_deviations;
         }
-        // remember all characters and their cumulated occurence
+        // remember all characters and their cumulated occurrence
         ++vote_map[_sequenceCharacter(candidate[i])];
     }
 

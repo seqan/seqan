@@ -191,7 +191,7 @@ longestCommonSubsequence(TString1 const& str1,
 	typedef typename Position<TString1>::Type TPos;
 	TSize alphabet_size = ValueSize<TValue>::VALUE;
 
-	// The occurences of each letter in the second string
+	// The occurrences of each letter in the second string
 	typedef String<TPos> TPositions;
 	String<TPositions> occ;
 	resize(occ, alphabet_size, TPositions());

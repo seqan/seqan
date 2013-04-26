@@ -338,8 +338,8 @@ _computeBucketThreshold(TType const & alp_size,
            more planted motif instances in at least one of the "tr" trials. Normally, we use 
 		   prob_q=0.95.	
 ...type:$double$
-..remarks:tr>= log(1-q)/log(B), where p is the probability that each motif occurence hashes 
-          to the planted bucket and B is the probability that fewer than s planted occurences hash
+..remarks:tr>= log(1-q)/log(B), where p is the probability that each motif occurrence hashes 
+          to the planted bucket and B is the probability that fewer than s planted occurrences hash
           to the planted buckes in a given trial
 ..include:seqan/find_motif.h
 */

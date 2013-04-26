@@ -456,7 +456,7 @@ struct StaticData
         return result;
     }
 
-    // Number of errors that occured.
+    // Number of errors that occurred.
     static int & errorCount()
     {
         static int result = 0;

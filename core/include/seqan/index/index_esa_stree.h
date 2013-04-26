@@ -819,7 +819,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.getOccurrence:
-..summary:Returns an occurence of the @Function.representative@ substring or a q-gram in the index text.
+..summary:Returns an occurrence of the @Function.representative@ substring or a q-gram in the index text.
 ..cat:Index
 ..signature:getOccurrence(iterator)
 ..class:Spec.VSTree Iterator
@@ -841,7 +841,7 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.countOccurrences:
-..summary:Returns the number of occurences of @Function.representative@ substring or a q-gram in the index text.
+..summary:Returns the number of occurrences of @Function.representative@ substring or a q-gram in the index text.
 ..cat:Index
 ..signature:countOccurrences(iterator)
 ..class:Spec.VSTree Iterator
@@ -865,7 +865,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Typ
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.range:
-..summary:Returns the suffix array interval borders of occurences of @Function.representative@ substring or a q-gram in the index text.
+..summary:Returns the suffix array interval borders of occurrences of @Function.representative@ substring or a q-gram in the index text.
 ..cat:Index
 ..signature:range(iterator)
 ..class:Spec.VSTree Iterator
@@ -902,7 +902,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Pair<Size<TIndex>
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.getOccurrences:
-..summary:Returns all occurences of the @Function.representative@ substring or a q-gram in the index text.
+..summary:Returns all occurrences of the @Function.representative@ substring or a q-gram in the index text.
 ..cat:Index
 ..signature:getOccurrences(iterator)
 ..classSpec.VSTree Iterator
@@ -926,7 +926,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.alignment:
-..summary:Returns an alignment of the occurences of the @Function.representative@ substring in the index text.
+..summary:Returns an alignment of the occurrences of the @Function.representative@ substring in the index text.
 ..cat:internal
 ..signature:alignment(iterator)
 ..param.iterator:An iterator of a suffix tree.
@@ -2096,13 +2096,13 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 
 /**
 .Function.isLeftMaximal:
-..summary:Test whether the occurences of an iterator's @Function.representative@ mutually differ in the character left of the hits.
+..summary:Test whether the occurrences of an iterator's @Function.representative@ mutually differ in the character left of the hits.
 ..cat:Index
 ..signature:bool isLeftMaximal(iterator)
 ..class:Spec.VSTree Iterator
 ..param.iterator:An iterator of a suffix tree.
 ...type:Spec.VSTree Iterator
-..returns:$true$ if there are at least two different characters left of the occurences, otherwise $false$.
+..returns:$true$ if there are at least two different characters left of the occurrences, otherwise $false$.
 ...type:nolink:bool
 ..see:Function.getOccurrences
 ..include:seqan/index.h
@@ -2147,13 +2147,13 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 
 /**
 .Function.isPartiallyLeftExtensible:
-..summary:Test whether the characters left of the two occurences of @Function.representative@ are equal.
+..summary:Test whether the characters left of the two occurrences of @Function.representative@ are equal.
 ..cat:Index
 ..signature:bool isPartiallyLeftExtensible(iterator)
 ..class:Spec.VSTree Iterator
 ..param.iterator:An iterator of a suffix tree.
 ...type:Spec.VSTree Iterator
-..returns:$true$ if there are at least two different characters left of the occurences, otherwise $false$.
+..returns:$true$ if there are at least two different characters left of the occurrences, otherwise $false$.
 ..see:Function.getOccurrences
 ..include:seqan/index.h
 */
@@ -2207,7 +2207,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..class:Spec.VSTree Iterator
 ..param.iterator:An iterator of a suffix tree.
 ...type:Spec.VSTree Iterator
-..returns:$true$ if there are at least two different characters left of the occurences, otherwise $false$.
+..returns:$true$ if there are at least two different characters left of the occurrences, otherwise $false$.
 ...type:nolink:bool
 ..see:Function.getOccurrences
 ..include:seqan/index.h

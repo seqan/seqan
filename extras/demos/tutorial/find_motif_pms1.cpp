@@ -20,7 +20,7 @@ int main()
 // FRAGMENT(initialization)
 	TSize motifLength = 4;		//length of motif
 	TSize mm = 1;	        	//number of mismatches
-	bool is_exact = false;	    //occurences of motif need to have exactly mm mismatches
+	bool is_exact = false;	    //occurrences of motif need to have exactly mm mismatches
 
 	TMotifFinder finder_pms1(motifLength, mm, is_exact);
 

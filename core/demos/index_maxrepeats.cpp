@@ -23,7 +23,7 @@ int main ()
 ///A repeat can be represented by its length and positions it occurs at.
 ///$myRepeatIterator$ iterates over all repeat strings.
 ///Please note that in contrast to supermaximal repeats, given a maximal repeat string,
-///not all pairs of its occurences are maximal repeats.
+///not all pairs of its occurrences are maximal repeats.
 ///So we need an iterator to iterate over all maximal pairs of this repeat string.
 ///The @Spec.MaxRepeats Iterator@ can be seen as a container and be iterated for itself.
 		Iterator<TMaxRepeatIterator>::Type myRepeatPair(myRepeatIterator);

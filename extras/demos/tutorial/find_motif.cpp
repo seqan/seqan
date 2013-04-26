@@ -24,7 +24,7 @@ int main()
     TSize seqLength = length(dataset[0]); // length of sequences
 	TSize motifLength = 3;		          // length of motif
 	TSize mm = 1;	                	  // number of mismatches
-	bool is_exact = true;	              // occurences of motif need to have exactly mm mismatches
+	bool is_exact = true;	              // occurrences of motif need to have exactly mm mismatches
     TSize numPos = seqCount * (seqLength - motifLength + 1);
 
 	TMotifFinder finder_proj(seqCount, motifLength, numPos, mm, is_exact);

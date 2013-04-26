@@ -19,7 +19,7 @@ int main()
 		std::cout << value(it) << ',';
 	}
 	std::cout << std::endl;
-// FRAGMENT(count-occurences)
+// FRAGMENT(count-occurrences)
 	typedef Size<TAminoAcidString>::Type TSize;
 	typedef String<TSize> TCounterString;
 	TCounterString counter;

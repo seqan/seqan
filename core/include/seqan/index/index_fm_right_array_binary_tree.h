@@ -112,8 +112,8 @@ struct Reference<const RightArrayBinaryTree<TChar, TSpec> >
 template <typename TChar, typename TSpec>
 struct Value<RightArrayBinaryTree<TChar, TSpec> >
 {
-    typedef typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces_;
-    typedef typename Value<TWaveletTreeVertieces_>::Type TWaveletTreeVertex_;
+    typedef typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type TWaveletTreeVertices_;
+    typedef typename Value<TWaveletTreeVertices_>::Type TWaveletTreeVertex_;
     typedef typename Value<TWaveletTreeVertex_, 2>::Type TPos;
 
     typedef Pair<TChar, TPos> Type;
@@ -122,8 +122,8 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> >
 template <typename TChar, typename TSpec>
 struct Value<RightArrayBinaryTree<TChar, TSpec> const>
 {
-    typedef typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces_;
-    typedef typename Value<TWaveletTreeVertieces_>::Type TWaveletTreeVertex_;
+    typedef typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type TWaveletTreeVertices_;
+    typedef typename Value<TWaveletTreeVertices_>::Type TWaveletTreeVertex_;
     typedef typename Value<TWaveletTreeVertex_, 2>::Type TPos;
 
     typedef Pair<TChar, TPos> Type;
@@ -217,7 +217,7 @@ inline void createRightArrayBinaryTree(Iter<RightArrayBinaryTree<TChar, TSpec>, 
             SEQAN_ASSERT_MSG(isLeaf(it), "You just deleted a subtree.");
         }
         else
-            _setChildVertieces(it, borderString, pst);
+            _setChildVertices(it, borderString, pst);
 
         if (!_goDownConstruction(it) && !_setAndGoRight(it, borderString, pst))
             while (_goUpStructureConstruction(it, borderString) && !_setAndGoRight(it, borderString, pst))

@@ -91,8 +91,8 @@ struct Spec<Iter<RightArrayBinaryTree<TChar, TSpec> const, RightArrayBinaryTreeI
 template <typename TTree, typename TIterSpec>
 class Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > >
 {
-    typedef typename Fibre<TTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
-    typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
+    typedef typename Fibre<TTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
     typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 public:
@@ -115,8 +115,8 @@ class Iter<TTree, RightArrayBinaryTreeIterator<TopDown<ParentLinks<TSpec> > > > 
     public Iter<TTree, RightArrayBinaryTreeIterator<TopDown<> > >
 {
     typedef Iter<TTree, RightArrayBinaryTreeIterator<TopDown<> > > TBase;
-    typedef typename Fibre<TTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertieces;
-    typedef typename Value<TWaveletTreeVertieces>::Type TWaveletTreeVertex;
+    typedef typename Fibre<TTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
     typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
 public:
@@ -567,7 +567,7 @@ inline void setCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
 
 // This function sets the left child of the current node, or the right if there is no left child.
 template <typename TTree, typename TIterSpec, typename TBorderString, typename TCharPST, typename TSpecPST>
-void _setChildVertieces(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it,
+void _setChildVertices(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it,
                         TBorderString & borderString,
                         PrefixSumTable<TCharPST, TSpecPST> & pst)
 {

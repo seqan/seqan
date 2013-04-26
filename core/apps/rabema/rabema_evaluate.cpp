@@ -1098,7 +1098,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     addSection(parser, "Logging");
     addText(parser, "");
     addText(parser,
-            "The occurence of \"invalid\" hits in the read mapper's output is not an error.  If there are "
+            "The occurrence of \"invalid\" hits in the read mapper's output is not an error.  If there are "
             "additional hits, however, this shows an error in the gold standard.");
     addOption(parser, seqan::ArgParseOption("", "show-missed-intervals",
                                             "Show details for each missed interval from the GSI."));

@@ -32,7 +32,7 @@
 // Author: Jonathan Goeke <goeke@molgen.mpg.de>
 // ==========================================================================
 // This file contains helper functions to count words in sequences and to
-// calculate probabilities and variances of word occurences.
+// calculate probabilities and variances of word occurrences.
 // ==========================================================================
 
 // TODO (goeke) const could be added below for the input variables but the function value() in matrix_base (align) is not defined for const.  Similarly, the function emittedProbabilty is not defined for const in statistics_markov_model.h
@@ -373,10 +373,10 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
 /**
 .Function.calculateVariance:
 ..cat:Alignment Free
-..summary:Calculates the variance for the number of word occurences of a word in a sequence of length n given a background model.
+..summary:Calculates the variance for the number of word occurrences of a word in a sequence of length n given a background model.
 ..signature:calculateVariance(variance, word, backgroundFrequencies, n)
 ..signature:calculateVariance(variance, word, bgModel, n)
-..param.variance:Variance of the number of occurences of the word in a sequence of length n given the model
+..param.variance:Variance of the number of occurrences of the word in a sequence of length n given the model
 ...type:nolink:double
 ..param.word:Usually a DNA sequence
 ...type:Class.String
@@ -384,19 +384,19 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
 ...type:nolink:double
 ..param.bgModel:Markov model
 ...type:Class.MarkovModel
-..param.n:Length of the sequence where the occurences of word are counted
+..param.n:Length of the sequence where the occurrences of word are counted
 ...type:nolink:integer
-..returns:TValue variance; Variance of the number of occurences of the word in a sequence of length n given the model
+..returns:TValue variance; Variance of the number of occurrences of the word in a sequence of length n given the model
 ..see:Function.calculateProbability
 ..see:Function.calculateCovariance
 ..see:Class.MarkovModel
 ..see:Function.alignmentFreeComparison
 ..include:seqan/alignment_free.h
 ..remarks:
-...text:Calculates the variance for the number of word occurences of a word in a sequence of length n given a background model (Markov model or Bernoulli model).
+...text:Calculates the variance for the number of word occurrences of a word in a sequence of length n given a background model (Markov model or Bernoulli model).
 The formula is obtained from Robin, S., Rodolphe, F., and Schbath, S. (2005). DNA, Words and Models. Cambridge University Press.
 See Jonathan Goeke et al (to appear) for details on the implementation.
-..example.text: Calculate the variance for the number of occurences of CAAGTC in a sequence of length 10000bp with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
+..example.text: Calculate the variance for the number of occurrences of CAAGTC in a sequence of length 10000bp with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
 ..example.code:
 using namespace seqan;
 double var = 0.0;
@@ -409,7 +409,7 @@ model[1] = 0.2;  // p(C)
 model[2] = 0.2;  // p(G)
 model[3] = 0.3;  // p(T)
 calculateVariance(var, word, model, n);  // var = 2.16
-..example.text: Estimate a Markov model on a set of sequences and calculate the variance for the number of occurences of the word CAAGTC in a sequence of length 10000bp.
+..example.text: Estimate a Markov model on a set of sequences and calculate the variance for the number of occurrences of the word CAAGTC in a sequence of length 10000bp.
 ..example.code:
 using namespace seqan;
 double var = 0.0;
@@ -478,10 +478,10 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
 /**
 .Function.calculateCovariance:
 ..cat:Alignment Free
-..summary:Calculates the covariance for the number of word occurences for two words in a sequence of length n, given a background model.
+..summary:Calculates the covariance for the number of word occurrences for two words in a sequence of length n, given a background model.
 ..signature:calculateCovariance(covariance, word1, word2, backgroundFrequencies, n)
 ..signature:calculateCovariance(covariance, word1, word2, bgModel, n)
-..param.covariance:Variance of the number of occurences of the word in a sequence of length n given the model
+..param.covariance:Variance of the number of occurrences of the word in a sequence of length n given the model
 ...type:nolink:double
 ..param.word1:Usually a DNA sequence
 ...type:Class.String
@@ -491,20 +491,20 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
 ...type:nolink:double
 ..param.bgModel:Markov model
 ...type:Class.MarkovModel
-..param.n:Length of the sequence where the occurences of word are counted
+..param.n:Length of the sequence where the occurrences of word are counted
 ...type:nolink:integer
-..returns:TValue covariance; Covariance of the number of occurences of the word in a sequence of length n given the model
+..returns:TValue covariance; Covariance of the number of occurrences of the word in a sequence of length n given the model
 ..see:Function.calculateProbability
 ..see:Function.calculateVariance
 ..see:Class.MarkovModel
 ..see:Function.alignmentFreeComparison
 ..include:seqan/alignment_free.h
 ..remarks:
-...text:Calculates the covariance for the number of word occurences for two words in a sequence of length n given a background model (Markov model or Bernoulli model).
+...text:Calculates the covariance for the number of word occurrences for two words in a sequence of length n given a background model (Markov model or Bernoulli model).
 The covariance is influenced by the property of words to overlap, for example, the words ATAT and TATA have a high covariance since they are likely to overlap.
 The formula is based on Robin, S., Rodolphe, F., and Schbath, S. (2005). DNA, Words and Models. Cambridge University Press.
 See Jonathan Goeke et al (to appear) for details on the implementation.
-..example.text: Calculate the covariance for the number of occurences of ATATAT and TATATA in a sequence of length 10000bp with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
+..example.text: Calculate the covariance for the number of occurrences of ATATAT and TATATA in a sequence of length 10000bp with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
 ..example.code:
 using namespace seqan;
 double covar = 0.0;
@@ -518,7 +518,7 @@ model[1] = 0.2;  // p(C)
 model[2] = 0.2;  // p(G)
 model[3] = 0.3;  // p(T)
 calculateCovariance(covar, word1, word2, model, n);  // covar = 4.74
-..example.text: Estimate a Markov model on a set of sequences and calculate the covariance for the number of occurences of ATATAT and TATATA in a sequence of length 10000bp.
+..example.text: Estimate a Markov model on a set of sequences and calculate the covariance for the number of occurrences of ATATAT and TATATA in a sequence of length 10000bp.
 ..example.code:
 using namespace seqan;
 double covar = 0.0;

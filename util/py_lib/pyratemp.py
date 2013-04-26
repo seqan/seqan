@@ -312,7 +312,7 @@ class TemplateParseError(TemplateException):
         """
         :Parameters:
             - `err`:    error-message or exception to wrap
-            - `errpos`: ``(filename,row,col)`` where the error occured.
+            - `errpos`: ``(filename,row,col)`` where the error occurred.
         """
         self.err = err
         self.filename, self.row, self.col = errpos

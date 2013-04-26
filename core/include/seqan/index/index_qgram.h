@@ -1809,7 +1809,7 @@ The resulting tables must have appropriate size before calling this function.
             
             for (; leftToRead > 0; --leftToRead, ++sorter, ++itSA)
             {
-                // copy occurence position
+                // copy occurrence position
                 *itSA = (*sorter).i1;
                 if (qcomp(old_qgram, *sorter) != 0) 
                 {
@@ -1990,7 +1990,7 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
             
             for (; leftToRead > 0; --leftToRead, ++sorter, ++itSA)
             {
-                // copy occurence position
+                // copy occurrence position
                 *itSA = (*sorter).i1;
                 
                 if (qcomp(old_qgram, *sorter) != 0) 
@@ -2608,7 +2608,7 @@ If the type of $index$ is $TIndex$ the return type is $Size<TIndex>::Type$.
 /**
 .Function.countOccurrencesMultiple:
 ..cat:Index
-..summary:Returns the number of occurences of a q-gram for every sequence of a @Class.StringSet@ .
+..summary:Returns the number of occurrences of a q-gram for every sequence of a @Class.StringSet@ .
 ..signature:countOccurrencesMultiple(index, shape)
 ..class:Spec.IndexQGram
 ..param.index:A q-gram index of a @Class.StringSet@.

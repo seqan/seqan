@@ -98,7 +98,7 @@ inline void _initialiseKmerNeighbourhood(StringSet<String<unsigned> > & kmerNeig
                 {
                     wTMP[j] = l;
                     unsigned hashValue = hash(myShape, begin(wTMP));
-                    // Check for double word occurences
+                    // Check for double word occurrences
                     bool duplicate = false;
                     if (revCom == true)
                     {

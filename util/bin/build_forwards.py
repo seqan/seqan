@@ -357,7 +357,7 @@ def deleteDefaultArguments(str, start_delim):
 
 
 def findCharOutsideBrackets(str, start_pos, char, verbose = False):
-    """Returns position of the first occurence of "char", or the position of the
+    """Returns position of the first occurrence of "char", or the position of the
     first closing bracket, whatever comes first.
     
     Areas in brackets are ignored.

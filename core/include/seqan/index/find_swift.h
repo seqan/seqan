@@ -947,7 +947,7 @@ inline bool _swiftMultiProcessQGram(
 
     TIndex const &index = host(pattern);
 
-    // create an iterator over the positions of the q-gram occurences in pattern
+    // create an iterator over the positions of the q-gram occurrences in pattern
     TSAIter saBegin = begin(indexSA(index), Standard());
     TSAIter occ = saBegin + indexDir(index)[getBucket(index.bucketMap, hash)];
     TSAIter occEnd = saBegin + indexDir(index)[getBucket(index.bucketMap, hash) + 1];
@@ -964,14 +964,14 @@ inline bool _swiftMultiProcessQGram(
     }
 */
 
-    // iterate over all q-gram occurences and do the processing
+    // iterate over all q-gram occurrences and do the processing
     __int64 curPos = finder.curPos + pattern.finderPosOffset;
     for(; occ != occEnd; ++occ)
     {
         posLocalize(ndlPos, *occ, stringSetLimits(index)); // get pair of SeqNo and Pos in needle
         TBucketParams &bucketParams = _swiftBucketParams(pattern, getSeqNo(ndlPos));
 
-        // begin position of the diagonal of q-gram occurence in haystack (possibly negative)
+        // begin position of the diagonal of q-gram occurrence in haystack (possibly negative)
         __int64 diag = finder.curPos;
         if (Swift<TSpec>::DIAGONAL == 1) diag -= getSeqOffset(ndlPos);
 
@@ -1081,7 +1081,7 @@ inline bool _swiftMultiProcessQGram(
     
     TIndex const & index = host(pattern);    
     
-    // create an iterator over the positions of the q-gram occurences in pattern
+    // create an iterator over the positions of the q-gram occurrences in pattern
     TSAIter saBegin = begin(indexSA(index), Standard());
     TSAIter occ = saBegin + indexDir(index)[getBucket(index.bucketMap, hash)];
     TSAIter occEnd = saBegin + indexDir(index)[getBucket(index.bucketMap, hash) + 1];
@@ -1097,7 +1097,7 @@ inline bool _swiftMultiProcessQGram(
             std::cerr<<*(hostIterator(hostIterator(finder))+i);
     }
 */  
-    // iterate over all q-gram occurences and do the processing
+    // iterate over all q-gram occurrences and do the processing
     __int64 curPos = finder.curPos + pattern.finderPosOffset;
 //    bool dbg=pattern.params.debug && (finder.curPos > 496 && finder.curPos < 591);
     for(; occ != occEnd; ++occ) 

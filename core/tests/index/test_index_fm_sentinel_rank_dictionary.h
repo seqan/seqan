@@ -339,8 +339,8 @@ SEQAN_TYPED_TEST(SentinelRankDictionaryTestCommon, CountOcc)
 // // {
 // //     typedef WaveletTree<TString, FmiDollarSubstituted<TSpec> > TRankDictionary;
 // // 	typedef typename Fibre<TRankDictionary, FibreTreeStructure>::Type TRankDictionaryStructure;
-// // 	typedef typename Fibre<TRankDictionaryStructure, FibreTreeStructureEncoding>::Type TRankDictionaryVertieces;
-// // 	typedef typename Value<TRankDictionaryVertieces>::Type TRankDictionaryVertex;
+// // 	typedef typename Fibre<TRankDictionaryStructure, FibreTreeStructureEncoding>::Type TRankDictionaryVertices;
+// // 	typedef typename Value<TRankDictionaryVertices>::Type TRankDictionaryVertex;
 // // 	typedef typename Value<TRankDictionary>::Type TChar;
 // // 	typedef typename Value<TRankDictionaryVertex, 2>::Type TPos;
 // // 

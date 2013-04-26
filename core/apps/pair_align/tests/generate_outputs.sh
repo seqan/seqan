@@ -4,7 +4,7 @@
 # different pair.  They contain the first 280 base pairs of Adenoviruses.
 #
 # The files adeno{1,2,3}-rna.fa are the same as adeno{1,2,3}.fa but all
-# occurences of T have been replaced by a U.
+# occurrences of T have been replaced by a U.
 #
 # The files 1ad2.fa, 1aab.fa and 2trx.fa contain pairs from the Balibase
 # benchmark.

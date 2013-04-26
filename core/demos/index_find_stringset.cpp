@@ -18,7 +18,7 @@ int main ()
 	Index< StringSet<String<char> > > myIndex(mySet); 
 	Finder< Index<StringSet<String<char> > > > myFinder(myIndex);
 
-///Finally we search for the string $"be"$ and output all occurences
+///Finally we search for the string $"be"$ and output all occurrences
 	std::cout << "hit at ";
 	while (find(myFinder, "be")) 
 		std::cout << position(myFinder) << "  ";

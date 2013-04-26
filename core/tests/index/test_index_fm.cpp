@@ -93,7 +93,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_end);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_character);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_child_pos);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_num_child_vertieces);
+    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_num_child_vertices);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_position);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_child);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_down);
@@ -104,7 +104,7 @@ SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_is_root);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_and_go_right);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_character);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_child_vertieces_);
+    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_child_vertices_);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_left_child_pos_);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_position_);
     SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_right_child_pos_);

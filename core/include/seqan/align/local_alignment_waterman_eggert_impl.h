@@ -135,7 +135,7 @@ public:
 	LocalAlignmentFinder() : needReinit(true)
 	{}
 
-    // TODO(holtgrew): Remove and replace all occurences with default constructor.
+    // TODO(holtgrew): Remove and replace all occurrences with default constructor.
     template<typename TAlign>
 	LocalAlignmentFinder(TAlign const &)
 	    : needReinit(true)

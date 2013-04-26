@@ -59,8 +59,8 @@ namespace SEQAN_NAMESPACE_MAIN
 ...type:Tag.Zoops
 ..param.tcm_model:The tcm_model object.
 ...type:Tag.Tcm
-..param.gamma:The probability of sequence having a motif occurence.
-..param.lambda:The probability of starting a motif occurence 
+..param.gamma:The probability of sequence having a motif occurrence.
+..param.lambda:The probability of starting a motif occurrence 
 ...remarks:$lambda$ is calculated by dividing $gamma$ by the length of the corresponding sequence.
 ..remarks:This version of EM is used in the MEME program of Bailey and Elkan. It is a Bayesian
           variant of the basic EM which allows multiple occurrences of a motif in any sequence and can 
@@ -339,7 +339,7 @@ em(TProfile & profile,
 ...type:Class.String
 ....signature:String<TFrequencyDistribution>
 ..param.dataset_start:n iterator pointing to the first input sequence of a given dataset.
-..param.gamma:The probability of sequence having a motif occurence.
+..param.gamma:The probability of sequence having a motif occurrence.
 ...type:$double$
 ..param.t:The number of input sequences.
 ..param.l:The size of the motif.
@@ -606,7 +606,7 @@ em(TProfile & profile,
 ...type:Class.String
 ....signature:String<TFrequencyDistribution>
 ..param.dataset_start:n iterator pointing to the first input sequence of a given dataset.
-..param.lambda:The probability of starting a motif occurence 
+..param.lambda:The probability of starting a motif occurrence 
 ...type:$double$
 ..param.t:The number of input sequences.
 ..param.l:The size of the motif.
@@ -781,7 +781,7 @@ _computeMStep(TProfile & profile,
 ..summary:Applies a smoothing step to reduce the degree to which any two overlapping 
           subsequences can both be assigned to the motif component.
          (We do not want the model to predict that two overlapping substrings are both 
-          motif occurences.)
+          motif occurrences.)
 ..cat:Motif Search
 ..signature:_smoothingStep(matrix_w,dataset_start,t,l)
 ..param.matrix_w:The matrix_w object.

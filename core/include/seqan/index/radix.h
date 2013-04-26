@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSize i, sum = 0, n = length(a);
 		arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);	// reset counters
 		
-		for (i = 0;  i < n;  i++)										// count occurences
+		for (i = 0;  i < n;  i++)										// count occurrences
 			c[ordValue(getValue(r,getValue(a,i)))]++;
 			
 		for (i = 0;  i < K;  i++)
@@ -94,7 +94,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		
 		for (i = 0;  i < n;  i++)
 		{
-			TSize j = getValue(a,i) + shift;							// count occurences
+			TSize j = getValue(a,i) + shift;							// count occurrences
 			if (j < sn) c[ordValue(getValue(r,j))]++;
 			else        sum++;
 		}
@@ -135,7 +135,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSize i, sum = 0, n = length(a);
 		arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);	// reset counters
 		
-		for (i = 0;  i < n;  i++)										// count occurences
+		for (i = 0;  i < n;  i++)										// count occurrences
 			c[ordValue(getValue(r,getValue(a,i)-1))]++;
 			
 		for (i = 0;  i < K;  i++) 
@@ -171,7 +171,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);	// reset counters
 		
 		for (i = 0;  i < n;  i++)
-		{																// count occurences
+		{																// count occurrences
 	        TSize j = getValue(a,i);
 			if (j > 0) c[ordValue(getValue(r,j-1))]++;
 		}
