@@ -117,7 +117,7 @@ inline bool find(TFinder & finder,
 				 Pattern<TNeedle, Simple> & me)
 {
 	typedef typename Haystack<TFinder>::Type THaystack;
-	typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
+	typedef typename Iterator<THaystack const, Standard>::Type THaystackIterator;
 
 	if (empty(finder))
 	{
