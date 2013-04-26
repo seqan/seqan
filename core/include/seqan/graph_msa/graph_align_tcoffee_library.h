@@ -508,8 +508,7 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
 					   TSize1& overlapLength,	// Number of character in overlapping segments (with mismatches and gaps)
 					   TSize1& alignLength)	// Length of the alignment
 {
-	SEQAN_CHECKPOINT
-	typedef String<TFragment, TSpec1> TFragmentMatches;
+	typedef String<TFragment, TSpec1> const TFragmentMatches;
 	typedef typename Size<TFragmentMatches>::Type TSize;
 	typedef typename Id<TFragmentMatches>::Type TId;
 	typedef typename Iterator<TFragmentMatches, Standard>::Type TFragIter;
@@ -579,7 +578,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 	typedef typename Id<TStringSet>::Type TId;
 	//typedef typename Value<TSegmentMatches>::Type TFragment;
 	//typedef typename Value<TScores>::Type TScoreValue;
-	typedef typename Iterator<TPairList, Standard>::Type TPairIter;
+	typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
 
 	// Pairwise longest common subsequence
 	TPairIter itPair = begin(pList, Standard());
@@ -712,7 +711,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 	typedef String<TSize2, TSpec2> TPairList;
 	//typedef typename Size<TStringSet>::Type TSize;
 	typedef typename Id<TStringSet>::Type TId;
-	typedef typename Iterator<TPairList, Standard>::Type TPairIter;
+	typedef typename Iterator<TPairList const, Standard>::Type TPairIter;
 
 	// Pairwise alignments
 	TPairIter itPair = begin(pList, Standard());
@@ -850,7 +849,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 	typedef typename Id<TStringSet>::Type TId;
 	typedef typename Size<TStringSet>::Type TSize;
 	typedef typename Value<TScoreValues>::Type TScoreValue;
-	typedef typename Iterator<String<TSize2, TSpec2>, Standard>::Type TPairIter;
+	typedef typename Iterator<String<TSize2, TSpec2> const, Standard>::Type TPairIter;
 
 	// Initialization
 	TSize nseq = length(str);

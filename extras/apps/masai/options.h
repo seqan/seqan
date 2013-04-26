@@ -129,10 +129,10 @@ bool setEnv(TString & key, TValue & value)
 // ----------------------------------------------------------------------------
 
 template <typename TString, typename TToken>
-typename Iterator<TString, Standard>::Type
+typename Iterator<TString const, Standard>::Type
 lastOf(TString const & string, TToken const & token)
 {
-    typedef typename Iterator<TString, Standard>::Type    TIterator;
+    typedef typename Iterator<TString const, Standard>::Type TIterator;
 
     TIterator it = end(string, Standard()) - length(token);
 
@@ -170,8 +170,8 @@ getExtension(TString & string)
 // ----------------------------------------------------------------------------
 
 template <typename TString>
-Segment<TString, PrefixSegment>
-getPath(TString & string)
+Segment<TString const, PrefixSegment>
+getPath(TString const & string)
 {
 #ifdef PLATFORM_WINDOWS
     return prefix(string, lastOf(string, '\\'));

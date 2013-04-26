@@ -17,7 +17,7 @@ void countOneMers(TString const sequence) {
 	resize(counter, alphSize, 0);
 	
 	//FRAGMENT(count-one-mers-count-chars)	
-	typedef typename Iterator<TString>::Type TIter;
+	typedef typename Iterator<TString const>::Type TIter;
 	TIter itEnd = end(sequence);
 	for (TIter it = begin(sequence); it != itEnd; goNext(it))
 		value(counter, ordValue(value(it))) += 1;

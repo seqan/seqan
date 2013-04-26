@@ -112,18 +112,18 @@ struct _LessTripel :
 
 template<typename TString, typename TSpec, typename TBegEndPos, typename TSize, typename TPairList, typename TPos, typename TSpec2>
 inline void
-selectPairsAssembly(StringSet<TString, TSpec> const& str,
-			       TBegEndPos const& begEndPos,
+selectPairsAssembly(StringSet<TString, TSpec> const & str,
+			       TBegEndPos const & begEndPos,
 			       TSize bandwidth,
-			       TPairList& pList,
-			       String<Pair<TPos, TPos>, TSpec2>& dList)
+			       TPairList & pList,
+			       String<Pair<TPos, TPos>, TSpec2> & dList)
 {
 	typedef String<Pair<TPos, TPos>, TSpec2>  TDistanceList;
 	//typedef StringSet<TString, TSpec> TStringSet;
 	typedef Pair<TPos, TPos> TDiagPair;
 	typedef typename Value<TPairList>::Type TPair;
 	//typedef typename Iterator<TPairList, Standard>::Type TPairIter;
-	typedef typename Iterator<TBegEndPos, Standard>::Type TBegEndIter;
+	typedef typename Iterator<TBegEndPos const, Standard>::Type TBegEndIter;
 
 	// Initialization
 	TSize nseq = length(str);
@@ -331,17 +331,17 @@ selectPairsAssembly(StringSet<TString, TSpec> const& str,
 
 template<typename TString, typename TSpec, typename TBegEndPos, typename TSize, typename TPairList, typename TPos, typename TSpec2>
 inline void 
-selectPairsAllAgainstAll(StringSet<TString, TSpec> const& str,
-				         TBegEndPos const& begEndPos,
+selectPairsAllAgainstAll(StringSet<TString, TSpec> const & str,
+				         TBegEndPos const & begEndPos,
 				         TSize lookAround,
 				         TPairList& pList,
-				         String<Pair<TPos, TPos>, TSpec2>& dList)
+				         String<Pair<TPos, TPos>, TSpec2> & dList)
 {
 	//typedef String<Pair<TPos, TPos>, TSpec2>  TDistanceList;
 	//typedef StringSet<TString, TSpec> TStringSet;
 	typedef Pair<TPos, TPos> TDiagPair;
 	typedef typename Value<TPairList>::Type TPair;
-	typedef typename Iterator<TBegEndPos, Standard>::Type TBegEndIter;
+	typedef typename Iterator<TBegEndPos const, Standard>::Type TBegEndIter;
 	
 	TBegEndIter beIt = begin(begEndPos, Standard());
 	TBegEndIter beItEnd = end(begEndPos, Standard());
@@ -368,25 +368,24 @@ selectPairsAllAgainstAll(StringSet<TString, TSpec> const& str,
 
 template<typename TString, typename TSpec, typename TId, typename TDiagList, typename TBegEndPos, typename TScore, typename TSize, typename TSegmentMatches, typename TScoreValues, typename TDistance>
 inline void 
-appendSegmentMatches(StringSet<TString, TSpec> const& str,
-					 String<Pair<TId, TId> > const& pList,
-					 TDiagList const& dList,
-					 TBegEndPos const& begEndPos,
-					 TScore const& score_type,
+appendSegmentMatches(StringSet<TString, TSpec> const & str,
+					 String<Pair<TId, TId> > const & pList,
+					 TDiagList const & dList,
+					 TBegEndPos const & begEndPos,
+					 TScore const & score_type,
 					 TSize thresholdMatchlength,
 					 TSize thresholdQuality,
 					 TSize maxOvl,
-					 TSegmentMatches& matches,
-					 TScoreValues& scores,
-					 TDistance& dist,
+					 TSegmentMatches & matches,
+					 TScoreValues & scores,
+					 TDistance & dist,
 					 OverlapLibrary)
 {
-	SEQAN_CHECKPOINT
 	typedef StringSet<TString, Dependent<> > TStringSet;
-	typedef String<Pair<TId, TId> > TPairList;
+	typedef String<Pair<TId, TId> > const TPairList;
 	typedef typename Value<TScoreValues>::Type TScoreValue;
 	typedef typename Iterator<TPairList, Standard>::Type TPairIter;
-	typedef typename Iterator<TDiagList, Standard>::Type TDiagIter;
+	typedef typename Iterator<TDiagList const, Standard>::Type TDiagIter;
 
 	// Initialization
 	TSize nseq = length(str);
@@ -484,7 +483,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const& str,
 		else if (backOvl[seqI] == 0) appendValue(noBack, seqI, Generous());
 	}
 	// Drop the first and the last sequence
-	typedef typename Iterator<TBegEndPos, Standard>::Type TBegEndIter;
+	typedef typename Iterator<TBegEndPos const, Standard>::Type TBegEndIter;
 	TBegEndIter begEndIt = begin(begEndPos, Standard());
 	TBegEndIter begEndItEnd = end(begEndPos, Standard());
 	TSize minVal = maxValue<TSize>();

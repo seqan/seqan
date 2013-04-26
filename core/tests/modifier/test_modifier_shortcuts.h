@@ -169,11 +169,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string)
     // Test non-const version.
     complement(str);
     SEQAN_ASSERT_EQ(EXPECTED_RESULT, str);
-
-    // Test const version.
-    // TODO(holtgrew): This should not be possible!
-    complement(STR);
-    SEQAN_ASSERT_EQ(EXPECTED_RESULT, STR);
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string_set)
@@ -196,16 +191,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_complement_in_place_string_set)
         SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSetCopy[0]);
         SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSetCopy[1]);
     }
-
-    // Test const version.
-    {
-        seqan::StringSet<seqan::Dna5String> const strSetCopy(strSet);
-        
-        complement(strSetCopy);
-        SEQAN_ASSERT_EQ(2u, length(strSetCopy));
-        SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSetCopy[0]);
-        SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSetCopy[1]);
-    }
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string)
@@ -217,11 +202,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string)
     // Test non-const version.
     reverseComplement(str);
     SEQAN_ASSERT_EQ(kExpectedResult, str);
-
-    // Test const version.
-    // TODO(holtgrew): This should not be possible!
-    reverseComplement(kStr);
-    SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string_set)
@@ -244,16 +224,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_in_place_string_set)
         SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSetCopy[0]);
         SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSetCopy[1]);
     }
-
-    // Test const version.
-    {
-        seqan::StringSet<seqan::Dna5String> const strSetCopy = strSet;
-        
-        reverseComplement(strSetCopy);
-        SEQAN_ASSERT_EQ(2u, length(strSetCopy));
-        SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSetCopy[0]);
-        SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSetCopy[1]);
-    }
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string)
@@ -265,11 +235,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string)
     // Test non-const version.
     reverse(str);
     SEQAN_ASSERT_EQ(kExpectedResult, str);
-
-    // Test const version.
-    // TODO(holtgrew): This should not be possible!
-    reverse(kStr);
-    SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string_set)
@@ -292,16 +257,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_in_place_string_set)
         SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSetCopy[0]);
         SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSetCopy[1]);
     }
-
-    // Test const version.
-    {
-        seqan::StringSet<seqan::Dna5String> strSetCopy(strSet);
-        
-        reverse(strSetCopy);
-        SEQAN_ASSERT_EQ(2u, length(strSetCopy));
-        SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSetCopy[0]);
-        SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSetCopy[1]);
-    }
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string)
@@ -313,11 +268,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string)
     // Test non-const version.
     toLower(str);
     SEQAN_ASSERT_EQ(kExpectedResult, str);
-
-    // Test const version.
-    // TODO(holtgrew): This should not be possible!
-    toLower(kStr);
-    SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string_set)
@@ -336,14 +286,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_lower_in_place_string_set)
     SEQAN_ASSERT_EQ(2u, length(strSet));
     SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSet[0]);
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[1]);
-
-    // Test const version.
-    seqan::StringSet<seqan::CharString> const kStrSet = strSet;
-
-    toLower(kStrSet);
-    SEQAN_ASSERT_EQ(2u, length(kStrSet));
-    SEQAN_ASSERT_EQ(EXPECTED_STRING1, kStrSet[0]);
-    SEQAN_ASSERT_EQ(EXPECTED_STRING2, kStrSet[1]);
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string)
@@ -355,11 +297,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string)
     // Test non-const version.
     toUpper(str);
     SEQAN_ASSERT_EQ(kExpectedResult, str);
-
-    // Test const version.
-    // TODO(holtgrew): This should not be possible!
-    toUpper(kStr);
-    SEQAN_ASSERT_EQ(kExpectedResult, kStr);
 }
 
 SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set)
@@ -378,14 +315,6 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set)
     SEQAN_ASSERT_EQ(2u, length(strSet));
     SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSet[0]);
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[1]);
-
-    // Test const version.
-    seqan::StringSet<seqan::CharString> const kStrSet = strSet;
-
-    toUpper(kStrSet);
-    SEQAN_ASSERT_EQ(2u, length(kStrSet));
-    SEQAN_ASSERT_EQ(EXPECTED_STRING1, kStrSet[0]);
-    SEQAN_ASSERT_EQ(EXPECTED_STRING2, kStrSet[1]);
 }
 
 #endif  // SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_

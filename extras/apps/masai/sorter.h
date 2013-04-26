@@ -130,7 +130,7 @@ _delegateMatches(Sorter<TDelegate, TSpec> & sorter,
                  unsigned matchesPerRead)
 {
     typedef Match<TRecordSpec>                              TMatch;
-    typedef String<TMatch, TStringSpec>                     TMatches;
+    typedef String<TMatch, TStringSpec> const               TMatches;
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
 
     TIterator matchesIt = begin(matches, Standard());

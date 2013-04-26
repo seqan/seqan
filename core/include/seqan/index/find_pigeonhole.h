@@ -465,7 +465,7 @@ inline bool _pigeonholeProcessQGram(
 	//typedef Pattern<TIndex, Pigeonhole<TSpec> >         TPattern;
 	//typedef typename TFinder::THstkPos					THstkPos;
 
-    typedef typename Fibre<TIndex, QGramSA>::Type       TSA;
+    typedef typename Fibre<TIndex, QGramSA>::Type const TSA;
     typedef typename Iterator<TSA, Standard>::Type      TSAIter;
     typedef typename TFinder::TPigeonholeHit            THit;
     

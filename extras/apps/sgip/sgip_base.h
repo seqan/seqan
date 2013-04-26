@@ -344,7 +344,7 @@ template <typename TValue>
 inline int compare_(seqan::String<TValue> const & obj1, seqan::String<TValue> const & obj2)
 {
     using namespace seqan;
-    typedef String<TValue>                   TString;
+    typedef String<TValue> const             TString;
     typedef typename Iterator<TString>::Type TIterator;
     TIterator it, itEnd, ti, tiEnd;
     it = begin(obj1);

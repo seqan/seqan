@@ -246,13 +246,13 @@ void smoothErrorCurve(String<WeightedMatch> & errorCurve)
                 value(it).distance = currentMax;
             }
 
-            // Make monotously decreasing from end to rightmost.
+            // Make monotonously decreasing from end to rightmost.
             TPosition offset = itBegin - begin(errorCurve, Standard());
             TPosition rightmostPos = offset + itRightmost - itBegin;
             TPosition intervalLength = itEnd - itBegin;
-            typedef ModifiedString<Segment<String<WeightedMatch>, InfixSegment>, ModReverse> TModifiedString;
+            typedef ModifiedString<Infix<String<WeightedMatch> >::Type, ModReverse> TModifiedString;
             TModifiedString rRightInterval(infix(errorCurve, rightmostPos, offset + intervalLength));
-            typedef Iterator<TModifiedString>::Type TModifiedStringIterator;
+            typedef Iterator<TModifiedString, Standard>::Type TModifiedStringIterator;
             currentMax = front(rRightInterval).distance;
             for (TModifiedStringIterator it = begin(rRightInterval, Standard()); it != end(rRightInterval, Standard()); ++it)
             {

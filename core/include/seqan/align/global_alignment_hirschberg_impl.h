@@ -398,8 +398,8 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
 	typedef typename Size<TSequenceH>::Type TStringSize;
 	
-	typedef typename Iterator<TSequenceH>::Type TSequenceHIter;
-	typedef typename Iterator<TSequenceV>::Type TSequenceVIter;
+	typedef typename Iterator<TSequenceH const, Standard>::Type TSequenceHIter;
+	typedef typename Iterator<TSequenceV const, Standard>::Type TSequenceVIter;
 
 	typedef typename Iterator<Gaps<TSequenceH, TGapsSpecH> >::Type TGapsHIter;
 	typedef typename Iterator<Gaps<TSequenceV, TGapsSpecV> >::Type TGapsVIter;
@@ -479,10 +479,10 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 			resize(matrix_);
 
 			/* init matrix */
-			TSequenceHIter x_begin = iter(s1,_begin1(target)) - 1;
-			TSequenceHIter x_end = iter(s1,_end1(target)) - 1;
-			TSequenceVIter y_begin = iter(s2,_begin2(target)) - 1;
-			TSequenceVIter y_end = iter(s2,_end2(target)) - 1;
+			TSequenceHIter x_begin = iter(s1, _begin1(target), Standard()) - 1;
+			TSequenceHIter x_end = iter(s1, _end1(target), Standard()) - 1;
+			TSequenceVIter y_begin = iter(s2, _begin2(target), Standard()) - 1;
+			TSequenceVIter y_end = iter(s2, _end2(target), Standard()) - 1;
 
 			TSequenceHIter x = x_end;
 			TSequenceVIter y;

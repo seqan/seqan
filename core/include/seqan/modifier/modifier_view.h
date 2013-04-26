@@ -409,7 +409,7 @@ convert(TSequence const & sequence, TFunctor const &F)
 		sequence[p] = F(sequence[p]);
 	
 #else
-	typedef typename Iterator<TSequence, Standard>::Type	TIter;
+	typedef typename Iterator<TSequence const, Standard>::Type	TIter;
 
 	TIter it = begin(sequence, Standard());
 	TIter itEnd = end(sequence, Standard());

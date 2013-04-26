@@ -36,12 +36,12 @@ void construct(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
     //typedef typename Size<TFragmentStore>::Type TSize;
     //typedef typename TFragmentStore::TReadPos TReadPos;
 
-    typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
+    typedef typename Iterator<typename TFragmentStore::TAlignedReadStore const>::Type TAlignIter;
     TAlignIter alignItBegin = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
     TAlignIter alignItEnd = upperBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());    
 
-    typedef typename Iterator< String< Pair< TPosition, String<TColumnAlphabet> > > >::Type TColumnSetIterator;
-    typedef typename Iterator< String<TColumnAlphabet> >::Type TColumnIterator;
+    typedef typename Iterator<String< Pair< TPosition, String<TColumnAlphabet> > > const>::Type TColumnSetIterator;
+    typedef typename Iterator<String<TColumnAlphabet> const>::Type TColumnIterator;
 
     // graph typedefs
     typedef GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition>  TGraphCargo;

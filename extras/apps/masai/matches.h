@@ -124,7 +124,7 @@ struct MatchSorterByErrors
 template <typename TMatch, typename TMatchString, typename TSpec = void>
 struct MatchIterator
 {
-    typedef String<TMatch, TMatchString>                    TMatches;
+    typedef String<TMatch, TMatchString> const              TMatches;
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
 
     TIterator it;

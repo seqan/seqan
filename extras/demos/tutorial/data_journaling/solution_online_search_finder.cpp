@@ -82,7 +82,7 @@ void findPatternInJournalString(String<int> & hitTarget,
                            TPattern const & pattern,
                            String<int> const & refHits)
 {
-    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TJournal;
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const TJournal;
     typedef typename JournalType<TJournal>::Type TJournalEntries;
     typedef typename Iterator<TJournalEntries>::Type TJournalEntriesIterator;
 

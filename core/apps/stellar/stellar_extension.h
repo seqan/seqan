@@ -181,15 +181,15 @@ SEQAN_CHECKPOINT
 // Identifies the longest epsilon match in align from possEndsLeft and possEndsRight and sets the view positions of
 // align to start and end position of the longest epsilon match
 template<typename TLength, typename TSize, typename TEps>
-Pair<typename Iterator<String<ExtensionEndPosition<TLength> > >::Type>
+Pair<typename Iterator<String<ExtensionEndPosition<TLength> const> >::Type>
 longestEpsMatch(String<ExtensionEndPosition<TLength> > const & possEndsLeft,
 				String<ExtensionEndPosition<TLength> > const & possEndsRight,
 				TLength const alignLen,
 				TLength const alignErr,
 				TSize const matchMinLength,
 				TEps const epsilon) {
-	typedef ExtensionEndPosition<TLength> TEnd;
-	typedef typename Iterator<String<TEnd> >::Type	TIterator;
+	typedef ExtensionEndPosition<TLength>               TEnd;
+	typedef typename Iterator<String<TEnd> const>::Type TIterator;
 
     // Identify longest eps match by iterating over combinations of left and right positions
     TIterator rightIt = end(possEndsRight) - 1;
@@ -234,8 +234,10 @@ longestEpsMatch(String<ExtensionEndPosition<TLength> > const & possEndsLeft,
 		--leftErr;
 	}
 
-	if (found) return Pair<TIterator>(left, right);
-	else return Pair<TIterator>(0,0);
+	if (found)
+        return Pair<TIterator>(left, right);
+	else
+        return Pair<TIterator>(0,0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -686,11 +688,11 @@ _bestExtension(TInfix const & infH,
 			   TDir const direction,
 			   TSize const minLength,
 			   TEps const eps,
-			   TAlign & align) {
-SEQAN_CHECKPOINT
-	typedef String<TraceBack>							TAlignmentMatrix;
-	typedef ExtensionEndPosition<TPos>					TEndInfo;
-	typedef typename Iterator<String<TEndInfo> >::Type	TEndIterator;
+			   TAlign & align)
+{
+	typedef String<TraceBack>							    TAlignmentMatrix;
+	typedef ExtensionEndPosition<TPos>                      TEndInfo;
+	typedef typename Iterator<String<TEndInfo> const>::Type TEndIterator;
 
 	// variables for banded alignment and possible ends of match
 	TAlignmentMatrix matrixRight, matrixLeft;

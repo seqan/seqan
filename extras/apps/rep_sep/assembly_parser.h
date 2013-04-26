@@ -104,7 +104,7 @@ parseContig(FragmentStore<TSpec, TConfig> const& fragStore,
     _gap_sequence(fragStore.contigStore[contigId].gaps, fragStore.contigStore[contigId].seq, (TReadPos) 0 , (TReadPos) length(fragStore.contigStore[contigId].seq), gapped_consensus);
     TSize l_gapped_consensus = length(gapped_consensus);
 
-    typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
+    typedef typename Iterator<typename TFragmentStore::TAlignedReadStore const>::Type TAlignIter;
     TAlignIter alignIt = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
     TAlignIter alignItEnd = upperBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
 

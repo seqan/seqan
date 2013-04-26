@@ -129,7 +129,7 @@ void countKmers(String<unsigned> & kmerCounts, TString const & sequence, unsigne
 {
     typedef typename Value<TString>::Type               TAlphabet;
     typedef typename UnmaskedAlphabet_<TAlphabet>::Type TUnmaskedAlphabet;
-    typedef typename Iterator<TString>::Type            TIterator;
+    typedef typename Iterator<TString const>::Type      TIterator;
     typedef typename Position<TIterator>::Type          TPosition;
     typedef Shape<TUnmaskedAlphabet, SimpleShape>       TShape;
     // Declare variables
@@ -174,12 +174,12 @@ void countKmers(String<unsigned> & kmerCounts, TString const & sequence, unsigne
 template <typename TValueBG, typename TString>
 void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFrequencies, TString const & sequence, unsigned const k)
 {
-    typedef typename Value<TString>::Type                   TAlphabet;
-    typedef typename UnmaskedAlphabet_<TAlphabet>::Type     TUnmaskedAlphabet;
-    typedef typename Iterator<TString>::Type                TIterator;
-    typedef typename Iterator<String<TValueBG> >::Type      TIteratorTStringBG;
-    typedef typename Position<TIterator>::Type              TPosition;
-    typedef Shape<TUnmaskedAlphabet, SimpleShape>           TShape;
+    typedef typename Value<TString>::Type                    TAlphabet;
+    typedef typename UnmaskedAlphabet_<TAlphabet>::Type      TUnmaskedAlphabet;
+    typedef typename Iterator<TString const>::Type           TIterator;
+    typedef typename Iterator<String<TValueBG> >::Type       TIteratorTStringBG;
+    typedef typename Position<TIterator>::Type               TPosition;
+    typedef Shape<TUnmaskedAlphabet, SimpleShape>            TShape;
     unsigned alphabetSize = ValueSize<TUnmaskedAlphabet>::VALUE;
 
     // Declare variables

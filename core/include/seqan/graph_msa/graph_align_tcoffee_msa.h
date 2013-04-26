@@ -252,7 +252,7 @@ globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 
 	// Include segment matches from subalignments
 	if (!empty(msaOpt.alnfiles)) {
-		typedef typename Iterator<String<std::string>, Standard>::Type TIter;
+		typedef typename Iterator<String<std::string> const, Standard>::Type TIter;
 		TIter begIt = begin(msaOpt.alnfiles, Standard() );
 		TIter begItEnd = end(msaOpt.alnfiles, Standard() );
 		for(;begIt != begItEnd; goNext(begIt)) {
@@ -265,7 +265,7 @@ globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 
 	// Include computed segment matches
 	if (!empty(msaOpt.method)) {
-		typedef typename Iterator<String<unsigned int>, Standard>::Type TIter;
+		typedef typename Iterator<String<unsigned int> const, Standard>::Type TIter;
 		TIter begIt = begin(msaOpt.method, Standard() );
 		TIter begItEnd = end(msaOpt.method, Standard() );
 		for(;begIt != begItEnd; goNext(begIt)) {
@@ -281,7 +281,7 @@ globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 
 	// Include a T-Coffee library
 	if (!empty(msaOpt.libfiles)) {
-		typedef typename Iterator<String<std::string>, Standard>::Type TIter;
+		typedef typename Iterator<String<std::string> const, Standard>::Type TIter;
 		TIter begIt = begin(msaOpt.libfiles, Standard() );
 		TIter begItEnd = end(msaOpt.libfiles, Standard() );
 		for(;begIt != begItEnd; goNext(begIt)) {
@@ -294,7 +294,7 @@ globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 
 	// Include MUMmer segment matches
 	if (!empty(msaOpt.mummerfiles)) {
-		typedef typename Iterator<String<std::string>, Standard>::Type TIter;
+		typedef typename Iterator<String<std::string> const, Standard>::Type TIter;
 		TIter begIt = begin(msaOpt.mummerfiles, Standard() );
 		TIter begItEnd = end(msaOpt.mummerfiles, Standard() );
 		for(;begIt != begItEnd; goNext(begIt)) {
@@ -307,7 +307,7 @@ globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
 
 	// Include BLAST segment matches
 	if (!empty(msaOpt.blastfiles)) {
-		typedef typename Iterator<String<std::string>, Standard>::Type TIter;
+		typedef typename Iterator<String<std::string> const, Standard>::Type TIter;
 		TIter begIt = begin(msaOpt.blastfiles, Standard() );
 		TIter begItEnd = end(msaOpt.blastfiles, Standard() );
 		for(;begIt != begItEnd; goNext(begIt)) {

@@ -240,7 +240,7 @@ _createTreesForAllSequences(String<TGraph> & gs,
 		//std::cout << (numSequences-i) <<" more ("<<length(intervals[i])<<" intervals)... "<<std::flush;
 		TValue center = length(seqs[i])/2; // center raus, hat hier nix zu suchen
 		//create interval tree!
-		createIntervalTree(gs[i],pms[i],intervals[i],center);
+		createIntervalTree(gs[i], pms[i], intervals[i], center);
 		
 		//intervals for sequence i are not needed anymore
 		clear(intervals[i]);

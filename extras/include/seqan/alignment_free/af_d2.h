@@ -106,7 +106,7 @@ _alignmentFreeCompareCounts(TValue & result,
                             String<unsigned> const & kmerCounts2,
                             AFScore<D2> const & /*score*/)
 {
-    typedef typename Iterator<String<unsigned> >::Type TIteratorInt;
+    typedef typename Iterator<String<unsigned> const>::Type TIteratorInt;
 
     TIteratorInt it1 = begin(kmerCounts1);
     TIteratorInt it2 = begin(kmerCounts2);

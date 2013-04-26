@@ -693,10 +693,10 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 	struct QGramLessOffset_<TSAValue, StringSet<TString, TSpec> const> : 
 		public ::std::binary_function < TSAValue, TSAValue, bool >
     {
-		typedef typename Iterator<TString, Standard>::Type	TIter;
-		typedef typename Size<TString>::Type				TSize;
-        typedef StringSet<TString, TSpec>                   TStringSet;
-        typedef typename StringSetLimits<TStringSet>::Type  TLimits;
+		typedef typename Iterator<TString const, Standard>::Type TIter;
+		typedef typename Size<TString>::Type                     TSize;
+        typedef StringSet<TString, TSpec>                        TStringSet;
+        typedef typename StringSetLimits<TStringSet>::Type       TLimits;
 
 		TStringSet const &_stringSet;
         TLimits const &limits;
@@ -713,8 +713,8 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 		{
 			if (a == b) return false;
             
-            typename Size<TStringSet>::Type seqNoA = getSeqNo(a, limits);
-            typename Size<TStringSet>::Type seqNoB = getSeqNo(b, limits);
+            typename Size<TStringSet const>::Type seqNoA = getSeqNo(a, limits);
+            typename Size<TStringSet const>::Type seqNoB = getSeqNo(b, limits);
 
 			TIter itA    = begin(_stringSet[seqNoA], Standard()) + getSeqOffset(a, limits);
             TIter itAEnd =   end(_stringSet[seqNoA], Standard());

@@ -106,19 +106,20 @@ convertPatternToProfile(TProfile & profile,
 
 template<typename TProfile, typename TStrings, typename TPseudocountMode>
 void
-convertSetOfPatternsToProfile(TProfile & profile,
-					 TStrings & l_mers, 
-					 TPseudocountMode & pseudocount)
+convertSetOfPatternsToProfile(
+        TProfile & profile,
+        TStrings const & l_mers, 
+        TPseudocountMode & pseudocount)
 {
 //IOREV _notio_
-	typedef typename Value<TStrings>::Type TString;
+	typedef typename Value<TStrings const>::Type TString;
 	//typedef typename Value<TProfile>::Type TFrequencyDistribution;
 
 	typename Size<TString>::Type l = length(l_mers[0]);
 	resize(profile, l);
 
-	typename Iterator<TStrings>::Type l_mers_iter, l_mers_end;
-	typename Iterator<TString>::Type l_mer_iter, l_mer_end;
+	typename Iterator<TStrings const>::Type l_mers_iter, l_mers_end;
+	typename Iterator<TString const>::Type l_mer_iter, l_mer_end;
 	l_mers_iter = begin(l_mers);
 	l_mers_end = end(l_mers);
 	while(l_mers_iter!=l_mers_end)

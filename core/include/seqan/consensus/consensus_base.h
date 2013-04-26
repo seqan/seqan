@@ -163,12 +163,12 @@ public:
 
 template<typename TValue, typename TStrSpec, typename TPosPair, typename TStringSpec, typename TSpec, typename TConfig, typename TId>
 inline void 
-_loadContigReads(StringSet<TValue, Owner<TStrSpec> >& strSet,
-				 String<TPosPair, TStringSpec>& startEndPos,
-				 FragmentStore<TSpec, TConfig> const& fragStore,
+_loadContigReads(StringSet<TValue, Owner<TStrSpec> > & strSet,
+				 String<TPosPair, TStringSpec> & startEndPos,
+				 FragmentStore<TSpec, TConfig> const & fragStore,
 				 TId const contigId)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+	typedef FragmentStore<TSpec, TConfig> const TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
 	typedef typename TFragmentStore::TReadPos TReadPos;
 
@@ -178,7 +178,7 @@ _loadContigReads(StringSet<TValue, Owner<TStrSpec> >& strSet,
 	resize(strSet, length(fragStore.alignedReadStore));
 
 	// Retrieve all reads, limit them to the clear range and if required reverse complement them
-	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore>::Type TAlignIter;
+	typedef typename Iterator<typename TFragmentStore::TAlignedReadStore const>::Type TAlignIter;
 	TAlignIter alignIt = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
 	TAlignIter alignItEnd = upperBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
 	TSize numRead = 0;
@@ -775,13 +775,12 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
 
 template <typename TValue, typename TSpec, typename TCounters, typename TSize, typename TAlphabet>
 inline void
-_countLetters(String<TValue, TSpec> const& mat,
-			   TCounters& counterValues,
-			   TSize alignDepth,
-			   TAlphabet)
+_countLetters(String<TValue, TSpec> const & mat,
+              TCounters & counterValues,
+              TSize alignDepth,
+              TAlphabet)
 {
-	SEQAN_CHECKPOINT
-	typedef String<TValue, TSpec> TMatrix;
+	typedef String<TValue, TSpec> const TMatrix;
 	typedef typename Iterator<TMatrix, Standard>::Type TMatIter;
 
 	// Initialization

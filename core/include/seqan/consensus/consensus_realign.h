@@ -531,8 +531,8 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 */
 template<typename TSpec, typename TConfig, typename TScore, typename TId, typename TMethod, typename TBandwidth>
 void 
-reAlign(FragmentStore<TSpec, TConfig>& fragStore,
-		TScore& consScore,
+reAlign(FragmentStore<TSpec, TConfig> & fragStore,
+		TScore & consScore,
 		TId const contigId,
 		TMethod const rmethod,
 		TBandwidth const bandwidth,

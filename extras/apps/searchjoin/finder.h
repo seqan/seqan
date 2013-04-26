@@ -675,10 +675,10 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
 {
-    typedef typename Fibre<TIndex, FibreSA>::Type const     TSA;
-    typedef typename Size<TIndex>::Type                     TSize;
-    typedef typename Value<TText>::Type                     TString;
-    typedef typename Iterator<TString, Standard>::Type      TStringIter;
+    typedef typename Fibre<TIndex, FibreSA>::Type const      TSA;
+    typedef typename Size<TIndex>::Type                      TSize;
+    typedef typename Value<TText>::Type                      TString;
+    typedef typename Iterator<TString const, Standard>::Type TStringIter;
 
     TText const &text = dbFinder.db.text;
     TSA const &sa = indexSA(dbFinder.dbIndex.index);

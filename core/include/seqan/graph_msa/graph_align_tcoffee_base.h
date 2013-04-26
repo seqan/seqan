@@ -201,17 +201,16 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 
 template<typename TString, typename TSpec, typename TScoreType, typename TSize, typename TSpec2, typename TScoreString, typename TScoreValue> 
 inline void
-_scoreMatches(StringSet<TString, TSpec> const& seqSet,
-			  TScoreType const& scType,
-			  String<Fragment<TSize, ExactFragment<> >, TSpec2> const& matches,
-			  TScoreString& scores,
+_scoreMatches(StringSet<TString, TSpec> const & seqSet,
+			  TScoreType const & scType,
+			  String<Fragment<TSize, ExactFragment<> >, TSpec2> const & matches,
+			  TScoreString & scores,
 			  TScoreValue offset)
 {
-	SEQAN_CHECKPOINT
-	typedef String<Fragment<TSize, ExactFragment<> >, TSpec2> TFragmentString;
+	typedef String<Fragment<TSize, ExactFragment<> >, TSpec2> const TFragmentString;
 	typedef typename Id<typename Value<TFragmentString>::Type>::Type TId;
 	typedef typename Iterator<TFragmentString, Standard>::Type TFragmentStringIter;
-	typedef typename Iterator<TString, Standard>::Type TStringIter;
+	typedef typename Iterator<TString const, Standard>::Type TStringIter;
 	typedef typename Iterator<TScoreString, Standard>::Type TScoreStringIter;
 	resize(scores, length(matches));
 

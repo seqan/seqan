@@ -179,7 +179,7 @@ _includeInCTD(CommandLineOption const & opt)
 inline void
 writeCTD(CommandLineParser const & me)
 {
-    typedef Iterator<CommandLineParser::TOptionMap>::Type TOptionMapIterator;
+    typedef Iterator<CommandLineParser::TOptionMap const>::Type TOptionMapIterator;
     TOptionMapIterator optionMapIterator;
 
     // create file [appname].ctd in working directory

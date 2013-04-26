@@ -240,6 +240,8 @@ struct RemoveConst<T &>
 	typedef typename RemoveConst<T>::Type & Type;
 };
 
+// TODO(holtgrew): We also need a "remove inner const" meta function.
+/*
 template <typename T>
 struct RemoveConst<T *>
 {
@@ -251,6 +253,7 @@ struct RemoveConst<T const [I]>
 {
 	typedef T * Type;
 };
+*/
 
 // TODO(holtgrew): Internal metafunction superflous?
 template <typename T>

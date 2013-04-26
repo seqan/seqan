@@ -225,6 +225,32 @@ findInJournalEntries(JournalEntries<TCargo, SortedArray> const & journalEntries,
 {
     typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos_;
+    typedef typename Iterator<String<TCargo> const, Standard>::Type TIterator;
+    typedef JournalEntryLtByVirtualPos<TPos_, TSize> TCmp;
+
+    if (pos >= back(journalEntries._journalNodes).virtualPosition)
+        return end(journalEntries._journalNodes, Standard()) - 1;
+
+    TCargo refCargo;
+    refCargo.virtualPosition = pos;
+    TIterator iter = std::upper_bound(begin(journalEntries._journalNodes, Standard()),
+                                      end(journalEntries._journalNodes, Standard()),
+                                      refCargo,
+                                      TCmp());
+    SEQAN_ASSERT(iter != begin(journalEntries._journalNodes, Standard()));
+    --iter;
+
+    return iter;
+}
+
+template <typename TCargo, typename TPos>
+inline
+typename Iterator<JournalEntries<TCargo, SortedArray>, Standard>::Type
+findInJournalEntries(JournalEntries<TCargo, SortedArray> & journalEntries,
+                     TPos pos)
+{
+    typedef typename Size<TCargo>::Type TSize;
+    typedef typename Position<TCargo>::Type TPos_;
     typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
     typedef JournalEntryLtByVirtualPos<TPos_, TSize> TCmp;
 
@@ -248,6 +274,15 @@ template <typename TCargo, typename TPos>
 inline
 TCargo const &
 findJournalEntry(JournalEntries<TCargo, SortedArray> const & journalEntries,
+                 TPos pos)
+{
+    return *findInJournalEntries(journalEntries, pos);
+}
+
+template <typename TCargo, typename TPos>
+inline
+TCargo &
+findJournalEntry(JournalEntries<TCargo, SortedArray> & journalEntries,
                  TPos pos)
 {
     return *findInJournalEntries(journalEntries, pos);
@@ -339,7 +374,6 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
                  typename Position<TCargo>::Type pos,
                  typename Position<TCargo>::Type posEnd)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Size<TCargo>::Type TSize;
     typedef typename Position<TCargo>::Type TPos;
     typedef typename Iterator<String<TCargo>, Standard>::Type TIter;
@@ -489,9 +523,8 @@ typename Position<typename Cargo<TNode>::Type >::Type
 virtualToHostPosition(JournalEntries<TNode, TJournalSpec> const & journalEntries,
                       TPos pos)
 {
-    SEQAN_CHECKPOINT;
     typedef JournalEntries<TNode, TJournalSpec> TJournalEntries;
-    typedef typename Iterator<TJournalEntries>::Type TIterator;
+    typedef typename Iterator<TJournalEntries const>::Type TIterator;
 
     TIterator it = findInJournalEntries(journalEntries, pos);
     // The easiest case is to find a segment from the original sequence that
@@ -534,7 +567,7 @@ typename Position<TCargo>::Type
 hostToVirtualPosition(JournalEntries<TCargo, SortedArray> const & journalEntries, TPos const & hostPos)
 {
     // std::cerr << journalEntries << "\n";
-    typedef JournalEntries<TCargo, SortedArray> TJournalEntries;
+    typedef JournalEntries<TCargo, SortedArray> const TJournalEntries;
     typedef typename Iterator<TJournalEntries>::Type TIterator;
     typedef typename Position<TCargo>::Type TCargoPos;
     typedef typename Size<TCargo>::Type TCargoSize;
@@ -593,8 +626,7 @@ bool
 isGapInHost(JournalEntries<TNode, TJournalSpec> const & journalEntries,
             TPos pos)
 {
-    SEQAN_CHECKPOINT;
-    typedef JournalEntries<TNode, TJournalSpec> TJournalEntries;
+    typedef JournalEntries<TNode, TJournalSpec> const TJournalEntries;
     typedef typename Iterator<TJournalEntries>::Type TIterator;
 
     TIterator it = findInJournalEntries(journalEntries, pos);

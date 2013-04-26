@@ -108,58 +108,39 @@ This is the same segment that is returned by @Function.goBegin@.
     Segment():
         data_host(),
         data_end_position(0)
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 
     Segment(THost & _host):
         data_host(& _host),
         data_end_position(length(_host))
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 
     Segment(typename Parameter_<THost>::Type _host, typename Position<THost>::Type _end_index):
         data_host(_toPointer(_host)),
         data_end_position(_end_index)
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 /*
     Segment(typename Parameter_<THost>::Type _host, typename Iterator<THost, Rooted>::Type _end):
         data_host(_toPointer(_host)),
         data_end_position(position(_end))
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 */
-    Segment(typename Parameter_<THost>::Type _host, typename Iterator<THost, Standard>::Type _end):
+    Segment(typename Parameter_<THost>::Type _host, typename Iterator<THost const, Standard>::Type _end):
         data_host(_toPointer(_host)),
         data_end_position(position(_end, _host))
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 
 /*
     Segment(Segment const & _other):
         data_host(_other.data_host),
         data_end_position(_other.data_end_position)
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 */
     template <typename THost2, typename TSpec2>
-    Segment(Segment<THost2, TSpec2> const & _other):
+    Segment(Segment<THost2, TSpec2> const & _other) :
         data_host(_toPointer(host(_other))),
         data_end_position(endPosition(_other))
-    {
-SEQAN_CHECKPOINT
-    }
-
-    ~ Segment()
-    {
-SEQAN_CHECKPOINT
-    }
+    {}
 
     inline Segment &
     operator = (Segment const & source)
@@ -176,7 +157,6 @@ public:
     inline typename Reference<Segment>::Type
     operator [] (TPos pos)
     {
-SEQAN_CHECKPOINT
         return value(*this, pos);
     }
 
@@ -184,11 +164,8 @@ SEQAN_CHECKPOINT
     inline typename Reference<Segment const>::Type
     operator [] (TPos pos) const
     {
-SEQAN_CHECKPOINT
         return value(*this, pos);
     }
-
-
 //____________________________________________________________________________
 };
 //////////////////////////////////////////////////////////////////////////////
@@ -562,14 +539,13 @@ template <typename T, typename TPosEnd>
 inline typename Prefix<T>::Type
 prefix(T & t, TPosEnd pos_end)
 {
-SEQAN_CHECKPOINT
     return typename Prefix<T>::Type(t, pos_end);
 }
+
 template <typename T, typename TPosEnd>
 inline typename Prefix<T const>::Type
 prefix(T const & t, TPosEnd pos_end)
 {
-SEQAN_CHECKPOINT
     return typename Prefix<T const>::Type(t, pos_end);
 }
 
@@ -577,7 +553,6 @@ template <typename T, typename TPosEnd>
 inline typename Prefix<T *>::Type
 prefix(T * t, TPosEnd pos_end)
 {
-SEQAN_CHECKPOINT
     return typename Prefix<T *>::Type (t, pos_end);
 }
 

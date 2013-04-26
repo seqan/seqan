@@ -252,14 +252,14 @@ sequenceEntryForScore(Score<TScoreValue, ConsensusScore> const &, TSequence cons
 template <typename TValue, typename TString>
 inline void
 assignProfile(Score<TValue, ConsensusScore>& me,
-			  TString const& profile)
+			  TString const & profile)
 {
 //IOREV _notio_
 	typedef typename Size<TString>::Type TSize;
 	TSize alphSize = ValueSize<typename Value<TString>::Type>::VALUE;
 	resize(me.consensus_set, alphSize * length(profile));
 
-	typedef typename Iterator<TString, Standard>::Type TIter;
+	typedef typename Iterator<TString const, Standard>::Type TIter;
 	typedef typename Iterator<String<TValue>, Standard>::Type TConsSetIter;
 	TConsSetIter itConsSet = begin(me.consensus_set, Standard());
 	TIter it = begin(profile, Standard());
@@ -364,20 +364,21 @@ sequenceEntryForScore(Score<TScoreValue, FractionalScore> const &, TSequence con
 
 template <typename TValue, typename TString>
 inline void
-assignProfile(Score<TValue, FractionalScore>& me,
-			  TString const& profile)
+assignProfile(Score<TValue, FractionalScore> & me,
+			  TString const & profile)
 {
 //IOREV _notio_
 	typedef typename Size<TString>::Type TSize;
 	resize(me.sum, length(profile));
-	typedef typename Iterator<TString, Standard>::Type TIter;
+	typedef typename Iterator<TString const, Standard>::Type TIter;
 	typedef typename Iterator<String<int>, Standard>::Type TSumIter;
 	TSumIter itSum = begin(me.sum, Standard());
 	TIter it = begin(profile, Standard());
 	TIter itEnd = end(profile, Standard());
-	for(;it!=itEnd;++it, ++itSum) {
+	for (; it!=itEnd; ++it, ++itSum)
+    {
 		*itSum = 0;
-		for(TSize i = 0; i < (TSize) ValueSize<typename Value<TString>::Type>::VALUE; ++i) 
+		for (TSize i = 0; i < (TSize) ValueSize<typename Value<TString>::Type>::VALUE; ++i) 
 			*itSum += (*it).count[i];
 	}
 }

@@ -251,22 +251,26 @@ struct Difference< ModifiedString<THost, TSpec> >:
 ///.Metafunction.Iterator.class:Class.ModifiedString
 
 template <typename THost, typename TSpec>
-struct Iterator<ModifiedString<THost, TSpec>, Standard > {
+struct Iterator<ModifiedString<THost, TSpec>, Standard>
+{
     typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
 
 template <typename THost, typename TSpec >
-struct Iterator<ModifiedString<THost, TSpec> const, Standard > {
+struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+{
     typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
 
 template <typename THost, typename TSpec>
-struct Iterator<ModifiedString<THost, TSpec>, Rooted > {
+struct Iterator<ModifiedString<THost, TSpec>, Rooted>
+{
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
 
 template <typename THost, typename TSpec >
-struct Iterator<ModifiedString<THost, TSpec> const, Rooted > {
+struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
+{
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
 
@@ -526,7 +530,7 @@ begin(ModifiedString<THost, TSpec> const & me)
 }
 
 template <typename THost, typename TSpec>
-inline typename Iterator< ModifiedString<THost, TSpec> >::Type 
+inline typename Iterator<ModifiedString<THost, TSpec> >::Type 
 begin(ModifiedString<THost, TSpec> & me)
 {
     typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
@@ -546,10 +550,10 @@ begin(ModifiedString<THost, TSpec> const & me, Tag<TTagSpec> const tag_)
 }
 
 template <typename THost, typename TSpec, typename TTagSpec>
-inline typename Iterator< ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type 
+inline typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const>::Type 
 begin(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_)
 {
-    typedef typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const >::Type TResult;
+    typedef typename Iterator<ModifiedString<THost, TSpec>, Tag<TTagSpec> const>::Type TResult;
     TResult tmp(begin(host(me), tag_));
     _copyCargo(tmp, me);
     return tmp;

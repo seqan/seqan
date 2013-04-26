@@ -1071,7 +1071,7 @@ inline bool _swiftMultiProcessQGram(
 
     typedef typename Size<TIndex>::Type                         TSize;
     typedef typename Fibre<TIndex, QGramSA>::Type               TSA;
-    typedef typename Iterator<TSA, Standard>::Type              TSAIter;
+    typedef typename Iterator<TSA const, Standard>::Type        TSAIter;
     typedef typename TPattern::TBucketString                    TBucketString;
     typedef typename Iterator<TBucketString, Standard>::Type    TBucketIter;
     typedef typename Value<TBucketString>::Type                 TBucket;
@@ -1079,7 +1079,7 @@ inline bool _swiftMultiProcessQGram(
     typedef typename TPattern::TBucketParams                    TBucketParams;
     typedef typename FindResult<TFinder, TPattern>::Type        THit;
     
-    TIndex const &index = host(pattern);    
+    TIndex const & index = host(pattern);    
     
     // create an iterator over the positions of the q-gram occurences in pattern
     TSAIter saBegin = begin(indexSA(index), Standard());

@@ -153,17 +153,19 @@ public:
     // ------------------------------------------------------------------------
     // Pointer Operators;  Have to be defined within class.
     // ------------------------------------------------------------------------
+
+    // For chaining behaviour of operator->(), see http://stackoverflow.com/a/8782794/84349
     
-    typename Value<Iter>::Type *
+    TIterator &
     operator->()
     {
-        return &*data_iterator;
+        return data_iterator;
     }
 
-    typename Value<Iter>::Type const *
+    TIterator const &
     operator->() const
     {
-        return &*data_iterator;
+        return data_iterator;
     }
 
     // ------------------------------------------------------------------------

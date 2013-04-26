@@ -338,7 +338,7 @@ inline int readRegion(String<TValue, TSpec> & str,
     endPos = std::min(std::max(beginPos, endPos), seqLen);
     unsigned toRead = endPos - beginPos;
 
-    typedef typename Iterator<String<char, MMap<> >, Standard>::Type TSourceIter;
+    typedef typename Iterator<String<char, MMap<> > const, Standard>::Type TSourceIter;
     typedef typename Iterator<String<TValue, TSpec>, Standard>::Type TTargetIter;
     TSourceIter itSource = begin(index.mmapString, Standard());
     __uint64 offset = index.indexEntryStore[refId].offset;

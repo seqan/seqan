@@ -464,11 +464,18 @@ typedef Tag<TagComputeCenter_> const ComputeCenter;
 ..see:Function.rightBoundary
 ..see:Function.getRightBoundary
 */
+
 template<typename TValue, typename TCargo>
 TValue &
-leftBoundary(IntervalAndCargo<TValue,TCargo> & interval)
+leftBoundary(IntervalAndCargo<TValue, TCargo> & interval)
 {
-SEQAN_CHECKPOINT
+	return interval.i1;
+}
+
+template<typename TValue, typename TCargo>
+TValue const &
+leftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
+{
 	return interval.i1;
 }
 
@@ -486,11 +493,18 @@ SEQAN_CHECKPOINT
 ..see:Function.leftBoundary
 ..see:Function.getLeftBoundary
 */
+
 template<typename TValue, typename TCargo>
 TValue &
-rightBoundary(IntervalAndCargo<TValue,TCargo> & interval)
+rightBoundary(IntervalAndCargo<TValue, TCargo> & interval)
 {
-SEQAN_CHECKPOINT
+	return interval.i2;
+}
+
+template<typename TValue, typename TCargo>
+TValue const &
+rightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
+{
 	return interval.i2;
 }
 
@@ -508,11 +522,11 @@ SEQAN_CHECKPOINT
 ..see:Function.getRightBoundary
 ..see:Function.rightBoundary
 */
+
 template<typename TValue, typename TCargo>
 TValue
-getLeftBoundary(IntervalAndCargo<TValue,TCargo> & interval)
+getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-SEQAN_CHECKPOINT
 	return interval.i1;
 }
 
@@ -530,11 +544,11 @@ SEQAN_CHECKPOINT
 ..see:Function.getLeftBoundary
 ..see:Function.leftBoundary
 */
+
 template<typename TValue, typename TCargo>
 TValue
-getRightBoundary(IntervalAndCargo<TValue,TCargo> & interval)
+getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-SEQAN_CHECKPOINT
 	return interval.i2;
 }
 
@@ -547,11 +561,18 @@ SEQAN_CHECKPOINT
 ...type:Class.IntervalAndCargo
 ..see:Function.getCargo
 */
+
+template<typename TValue, typename TCargo>
+TCargo const &
+cargo(IntervalAndCargo<TValue, TCargo> const & interval)
+{
+	return interval.cargo;
+}
+
 template<typename TValue, typename TCargo>
 TCargo &
-cargo(IntervalAndCargo<TValue,TCargo> & interval)
+cargo(IntervalAndCargo<TValue, TCargo> & interval)
 {
-SEQAN_CHECKPOINT
 	return interval.cargo;
 }
 
@@ -563,11 +584,11 @@ SEQAN_CHECKPOINT
 ...type:Class.IntervalAndCargo
 ..see:Function.cargo
 */
+
 template<typename TValue, typename TCargo>
 TCargo
-getCargo(IntervalAndCargo<TValue,TCargo> & interval)
+getCargo(IntervalAndCargo<TValue,TCargo> const & interval)
 {
-SEQAN_CHECKPOINT
 	return interval.cargo;
 }
 
@@ -586,7 +607,7 @@ struct Value<IntervalAndCargo<TValue,TCargo> >
 ///.Metafunction.Cargo.param.T.type:Class.IntervalAndCargo
 ///.Metafunction.Cargo.class:Class.IntervalAndCargo
 template<typename TValue,typename TCargo>
-struct Cargo<IntervalAndCargo<TValue,TCargo> >
+struct Cargo<IntervalAndCargo<TValue, TCargo> >
 {
 	typedef TCargo Type;
 };
@@ -602,11 +623,18 @@ struct Cargo<IntervalAndCargo<TValue,TCargo> >
 ..class:Class.PointAndCargo
 ..param.point.type:Class.PointAndCargo
  */
+
+template<typename TValue, typename TCargo>
+TValue const &
+leftBoundary(PointAndCargo<TValue, TCargo> const & point)
+{
+	return point.point;
+}
+
 template<typename TValue, typename TCargo>
 TValue &
-leftBoundary(PointAndCargo<TValue,TCargo> & point)
+leftBoundary(PointAndCargo<TValue, TCargo> & point)
 {
-SEQAN_CHECKPOINT
 	return point.point;
 }
 
@@ -617,11 +645,18 @@ SEQAN_CHECKPOINT
 ..class:Class.PointAndCargo
 ..param.point.type:Class.PointAndCargo
  */
+
+template<typename TValue, typename TCargo>
+TValue const &
+rightBoundary(PointAndCargo<TValue, TCargo> const & point)
+{
+	return point.point;
+}
+
 template<typename TValue, typename TCargo>
 TValue &
-rightBoundary(PointAndCargo<TValue,TCargo> & point)
+rightBoundary(PointAndCargo<TValue, TCargo> & point)
 {
-SEQAN_CHECKPOINT
 	return point.point;
 }
 
@@ -632,12 +667,12 @@ SEQAN_CHECKPOINT
 ..class:Class.PointAndCargo
 ..param.point.type:Class.PointAndCargo
  */
+
 template<typename TValue, typename TCargo>
 TValue
-getLeftBoundary(PointAndCargo<TValue,TCargo> & point)
+getLeftBoundary(PointAndCargo<TValue, TCargo> const & point)
 {
-SEQAN_CHECKPOINT
-	return point.point;
+    return point.point;
 }
 
 
@@ -647,11 +682,11 @@ SEQAN_CHECKPOINT
 ..class:Class.PointAndCargo
 ..param.point.type:Class.PointAndCargo
  */
+
 template<typename TValue, typename TCargo>
 TValue
-getRightBoundary(PointAndCargo<TValue,TCargo> & point)
+getRightBoundary(PointAndCargo<TValue,TCargo> const & point)
 {
-SEQAN_CHECKPOINT
 	return point.point;
 }
 
@@ -662,11 +697,18 @@ SEQAN_CHECKPOINT
 ..class:Class.PointAndCargo
 ..param.point.type:Class.PointAndCargo
  */
+
+template<typename TValue, typename TCargo>
+TCargo const &
+cargo(PointAndCargo<TValue,TCargo> const & point)
+{
+	return point.cargo;
+}
+
 template<typename TValue, typename TCargo>
 TCargo &
 cargo(PointAndCargo<TValue,TCargo> & point)
 {
-SEQAN_CHECKPOINT
 	return point.cargo;
 }
 
@@ -679,15 +721,13 @@ SEQAN_CHECKPOINT
 ...type:Class.IntervalAndCargo
 ..see:Function.getCargo
 */
+
 template<typename TValue, typename TCargo>
 TCargo
-getCargo(PointAndCargo<TValue,TCargo> & point)
+getCargo(PointAndCargo<TValue,TCargo> const & point)
 {
-SEQAN_CHECKPOINT
 	return point.cargo;
 }
-
-
 
 ////////////////// Metafunctions //////////////////
 ///.Metafunction.Value.param.T.type:Class.PointAndCargo
@@ -710,16 +750,16 @@ struct Cargo<PointAndCargo<TValue,TCargo> >
 
 //// Comparators
 template <typename TPair>
-bool _less_compI1_ITree(TPair const& p1, TPair const& p2){
-SEQAN_CHECKPOINT
-  return (leftBoundary(const_cast<TPair&>(p1)) < leftBoundary(const_cast<TPair&>(p2)));
+bool _less_compI1_ITree(TPair const & p1, TPair const & p2)
+{
+    return (leftBoundary(p1) < leftBoundary(p2));
 }
 
 
 template <typename TPair>
-bool _greater_compI2_ITree(TPair const& p1, TPair const& p2){
-SEQAN_CHECKPOINT
-  return (rightBoundary(const_cast<TPair&>(p1)) > rightBoundary(const_cast<TPair&>(p2)));
+bool _greater_compI2_ITree(TPair const & p1, TPair const & p2)
+{
+    return (rightBoundary(p1) > rightBoundary(p2));
 }
 
 
@@ -735,50 +775,38 @@ SEQAN_CHECKPOINT
 // internal set node functions
 template<typename TValue, typename TInterval>
 void
-_setIntervalTreeNode(IntervalTreeNode<TInterval,StoreIntervals> & knot,TValue center,TInterval & interval)
+_setIntervalTreeNode(IntervalTreeNode<TInterval, StoreIntervals> & knot, TValue center, TInterval const & interval)
 {
-SEQAN_CHECKPOINT
-	
 	knot.center = center;
-	appendValue(knot.list1,interval);
-	appendValue(knot.list2,interval);
-
+	appendValue(knot.list1, interval);
+	appendValue(knot.list2, interval);
 }
 
 // append intervals to lists in node knot
 template<typename TInterval>
 void
-_appendIntervalTreeNodeLists(IntervalTreeNode<TInterval,StoreIntervals> & knot,TInterval & interval)
+_appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StoreIntervals> & knot,TInterval const & interval)
 {
-SEQAN_CHECKPOINT
-	
-	appendValue(knot.list1,interval);
-	appendValue(knot.list2,interval);
-
+	appendValue(knot.list1, interval);
+	appendValue(knot.list2, interval);
 }
 
 
 //internal set node functions
 template<typename TValue, typename TInterval>
 void
-_setIntervalTreeNode(IntervalTreeNode<TInterval,StorePointsOnly> & knot,TValue center,TInterval & interval)
+_setIntervalTreeNode(IntervalTreeNode<TInterval, StorePointsOnly> & knot, TValue center, TInterval const & interval)
 {
-SEQAN_CHECKPOINT
-	
 	knot.center = center;
 	appendValue(knot.list1,PointAndCargo<TValue,typename Cargo<TInterval>::Type>(leftBoundary(interval),cargo(interval)));
 	appendValue(knot.list2,PointAndCargo<TValue,typename Cargo<TInterval>::Type>(rightBoundary(interval),cargo(interval)));
-	
-
 }
 
 
 template<typename TInterval>
 void
-_appendIntervalTreeNodeLists(IntervalTreeNode<TInterval,StorePointsOnly> & knot,TInterval & interval)
+_appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StorePointsOnly> & knot, TInterval const & interval)
 {
-SEQAN_CHECKPOINT
-	
 	appendValue(knot.list1,PointAndCargo<typename Value<TInterval>::Type,typename Cargo<TInterval>::Type>(leftBoundary(interval),cargo(interval)));
 	appendValue(knot.list2,PointAndCargo<typename Value<TInterval>::Type,typename Cargo<TInterval>::Type>(rightBoundary(interval),cargo(interval)));
 	
@@ -872,7 +900,6 @@ createIntervalTree(TGraph & g,
 				   TIntervals & intervals,
 				   Tag<TSpec> const tag)
 {
-SEQAN_CHECKPOINT
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Value<TIntervals>::Type TInterval;
 	typedef typename Value<TInterval>::Type TValue;
@@ -888,9 +915,9 @@ SEQAN_CHECKPOINT
 
         std::sort(begin(intervals, Standard()),end(intervals, Standard()),_less_compI1_ITree<TInterval>);
 
-        String<TInterval*> interval_pointers;
+        String<TInterval *> interval_pointers;
         // interval tree stores pointers to intervals, not original intervals
-        _makePointerInterval(intervals,interval_pointers);
+        _makePointerInterval(intervals, interval_pointers);
 
         _createIntervalTree(g,pm,interval_pointers,root,(TValue)0.0,center,length(intervals),tag);
         reserve(pm, length(pm), Exact());
@@ -904,7 +931,7 @@ createIntervalTree(TGraph & g,
 				   TPropertyMap & pm, 
 				   TIntervals & intervals)
 {
-	createIntervalTree(g,pm,intervals,ComputeCenter());
+	createIntervalTree(g, pm, intervals, ComputeCenter());
 }
 
 template <typename TGraph, typename TPropertyMap, typename TIntervals, typename TSpec>
@@ -915,7 +942,6 @@ createIntervalTree(TGraph & g,
 				   typename Value<typename Value<TIntervals>::Type>::Type center,
 				   Tag<TSpec> const tag)
 {
-SEQAN_CHECKPOINT
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Value<TIntervals>::Type TInterval;
 	typedef typename Value<typename Value<TIntervals>::Type>::Type TValue;
@@ -932,13 +958,13 @@ SEQAN_CHECKPOINT
 	    typename Iterator<TIntervals, Standard>::Type end_ = end(intervals, Standard());
 	    std::sort(begin_, end_ ,_less_compI1_ITree<TInterval>);
 
-	    String<TInterval*> interval_pointers;
+	    String<TInterval const*> interval_pointers;
 	    _makePointerInterval(intervals,interval_pointers);
 
 	    if(length(intervals)==1) // if there is just one interval ->  center = center of this interval
 		    center = (rightBoundary(intervals[0])-leftBoundary(intervals[0]))/(TValue)2.0;
 
-	    _createIntervalTree(g,pm,interval_pointers,root,(TValue)0.0,center,length(intervals),tag);
+	    _createIntervalTree(g, pm, interval_pointers, root, (TValue)0.0, center, length(intervals), tag);
 		
 	    reserve(pm, length(pm), Exact());
 	    reserve(g.data_vertex, length(g.data_vertex), Exact());
@@ -962,7 +988,6 @@ createIntervalTree(IntervalTree<TValue,TCargo> & it,
 				   TIntervals & intervals,
 				   Tag<TSpec> const tag)
 {
-SEQAN_CHECKPOINT
 	it.interval_counter = length(intervals);
 	createIntervalTree(it.g, it.pm, intervals, tag);
 }
@@ -989,10 +1014,10 @@ _createIntervalTree(TGraph & g, TPropertyMap & pm,
 				   typename VertexDescriptor<TGraph>::Type len,
 				   Tag<TagComputeCenter_> const tag)
 {
-SEQAN_CHECKPOINT
 	//  Rekursionsanker
-	if(len==1){
-		_setIntervalTreeNode(value(pm,knot),center,*intervals[0]);
+	if (len == 1)
+    {
+		_setIntervalTreeNode(value(pm, knot), center, *intervals[0]);
 		return;
 	}
 
@@ -1045,7 +1070,7 @@ SEQAN_CHECKPOINT
 			}
 			else // interval belongs to this node
 			{
-				_appendIntervalTreeNodeLists(value(pm,knot),**it);
+				_appendIntervalTreeNodeLists(value(pm,knot), **it);
 			}
 		}
         ++it;
