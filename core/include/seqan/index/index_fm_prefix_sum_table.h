@@ -578,11 +578,15 @@ prefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
 .Function.PrefixSumTable#resize
 ..class:Class.PrefixSumTable
 ..summary:Resize the prefix sum table to be able to store more or less characters. 
-..signature:resize(prefixSumTable, size [,value])
+..signature:resize(prefixSumTable, size [,value, resizeTag])
 ..param.prefixSumTable:A prefix sum table.
 ...type:Class.PrefixSumTable
 ..param.size:The new size.
 ...type:Concept.UnsignedIntegerConcept
+..param.resizeTag: Specifies the strategy that is applied if the capacity of $object$ is less than $newLength$. (optional)
+...type:Tag.Overflow Strategy
+...default:Specified by @Metafunction.DefaultOverflowExplicit@.
+
 ..param.value:The value to be used to initialize the new storage.
 ..include:seqan/index.h
 */
