@@ -80,23 +80,12 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 	template <typename TElement>
-	inline typename Key<TElement>::Type & 
-	keyOf(TElement & element) 
-	{
-		return element;
-	}
-	template <typename TElement>
 	inline typename Key<TElement const>::Type & 
 	keyOf(TElement const & element) 
 	{
 		return element;
 	}
 
-	template <typename TKey, typename TObject, typename TSpec>
-	inline TKey & 
-	keyOf(Pair<TKey, TObject, TSpec> &element) {
-		return element.i1;
-	}
 	template <typename TKey, typename TObject, typename TSpec>
 	inline TKey const &
 	keyOf(Pair<TKey, TObject, TSpec> const &element) {
