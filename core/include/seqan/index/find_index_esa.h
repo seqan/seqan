@@ -1033,7 +1033,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TQuery const &query,
 		TFlatTreeSpec const)
 	{	// find range equivalent to query, using operator<
-		Pair< typename Iterator<TSA, Standard>::Type > itPair = 
+		Pair< typename Iterator<TSA const, Standard>::Type > itPair =
 			_equalRangeSA(text, SearchTreeIterator<TSA const, TFlatTreeSpec>(sa), query);
 		return Pair< typename Position<TSA>::Type >
 			(itPair.i1 - begin(sa, Standard()), itPair.i2 - begin(sa, Standard()));
@@ -1130,7 +1130,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TQuery *query,
 		TFlatTreeSpec const)
 	{	// find range equivalent to query, using operator<
-		Pair< typename Iterator<TSA, Standard>::Type > itPair = 
+		Pair< typename Iterator<TSA const, Standard>::Type > itPair =
 			_equalRangeSA(text, SearchTreeIterator<TSA const, TFlatTreeSpec>(sa), query);
 		return Pair< typename Position<TSA>::Type >
 			(itPair.i1 - begin(sa, Standard()), itPair.i2 - begin(sa, Standard()));
@@ -1769,7 +1769,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TLCPE const &lcpe,
 		TQuery const &query)
 	{	// find range equivalent to query, using operator<
-		Pair< typename Iterator<TSA, Standard>::Type > itPair = 
+		Pair< typename Iterator<TSA const, Standard>::Type > itPair =
 			_equalRangeLcpe(text, sa, SearchTreeIterator<TLCPE const, LeftCompleteTree>(lcpe, (length(text)>1)?length(text)-1:0), query);
 		return Pair< typename Position<TSA>::Type >
 			(itPair.i1 - begin(sa, Standard()), itPair.i2 - begin(sa, Standard()));
@@ -1871,7 +1871,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TLCPE const &lcpe,
 		TQuery *query)
 	{	// find range equivalent to query, using operator<
-		Pair< typename Iterator<TSA, Standard>::Type > itPair = 
+		Pair< typename Iterator<TSA const, Standard>::Type > itPair =
 			_equalRangeLcpe(text, sa, SearchTreeIterator<TLCPE const, LeftCompleteTree>(lcpe, (length(text)>1)?length(text)-1:0), query);
 		return Pair< typename Position<TSA>::Type >
 			(itPair.i1 - begin(sa, Standard()), itPair.i2 - begin(sa, Standard()));
