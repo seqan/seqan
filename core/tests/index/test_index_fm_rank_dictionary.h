@@ -220,7 +220,7 @@ void rankDictionaryGetFibre(TRankDictionary & /*tag*/)
     typename Fibre<TRankDictionary, FibreTreeStructure>::Type & tempWaveletTreeStructure = getFibre(rankDictionary, FibreTreeStructure());
 
     resize(tempBitStrings, 110);
-    _resize(tempWaveletTreeStructure, 100);
+    _resize(tempWaveletTreeStructure, 100, Exact());
 
 	SEQAN_ASSERT_EQ(length(getFibre(rankDictionary, FibreBitStrings())), 110u);
 	SEQAN_ASSERT_EQ(_length(getFibre(rankDictionary, FibreTreeStructure())), 100u);

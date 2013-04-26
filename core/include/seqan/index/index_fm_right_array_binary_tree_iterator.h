@@ -197,7 +197,7 @@ template <typename TTree, typename TIterSpec>
 inline typename Value<typename Value<TTree>::Type, 1>::Type
 getCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & iter)
 {
-    return iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i1;
+    return iter.waveletTreeStructure->treeVertices[getPosition(iter)].i1;
 }
 
 /**
@@ -211,7 +211,7 @@ getCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > con
 template <typename TTree, typename TIterSpec>
 inline unsigned int getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & iter)
 {
-    if (iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i2 > 1)
+    if (iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2 > 1)
     {
         return getPosition(iter) + 1;
     }
@@ -263,11 +263,11 @@ inline unsigned int getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
 template <typename TTree, typename TIterSpec>
 inline unsigned int getRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
 {
-    if (it.waveletTreeStructure->treeVertieces[getPosition(it)].i2 > 2)
+    if (it.waveletTreeStructure->treeVertices[getPosition(it)].i2 > 2)
     {
-        return it.waveletTreeStructure->treeVertieces[getPosition(it)].i2 - 2;
+        return it.waveletTreeStructure->treeVertices[getPosition(it)].i2 - 2;
     }
-    if (it.waveletTreeStructure->treeVertieces[getPosition(it)].i2 == 1)
+    if (it.waveletTreeStructure->treeVertices[getPosition(it)].i2 == 1)
     {
         return getPosition(it) + 1;
     }
@@ -298,7 +298,7 @@ inline bool _goDownConstruction(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
 {
     if (goDown(it))
     {
-        resize(container(it).treeVertieces, length(container(it).treeVertieces) + 1);
+        resize(container(it).treeVertices, length(container(it).treeVertices) + 1);
         return true;
     }
     return false;
@@ -507,7 +507,7 @@ goUp(it); // go to root node
 template <typename TTree, typename TIterSpec>
 inline bool isLeaf(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter)
 {
-    return container(iter).treeVertieces[getPosition(iter)].i2 == 0;
+    return container(iter).treeVertices[getPosition(iter)].i2 == 0;
 }
 
 // This function creates the right sibling of the current node
@@ -529,9 +529,9 @@ inline bool _setAndGoRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIte
         return false;
     }
 
-    resize(container(it).treeVertieces, length(container(it).treeVertieces) + 1);
+    resize(container(it).treeVertices, length(container(it).treeVertices) + 1);
     TChar pivot = getCharacter(it);
-    _setRightChildPos(it, length(container(it).treeVertieces) - 1);
+    _setRightChildPos(it, length(container(it).treeVertices) - 1);
     goRightChild(it);
     back(borderString).i1 = getCharacterPosition(pst, pivot);
     back(borderString).i2 = borderString[length(borderString) - 2].i2;
@@ -562,7 +562,7 @@ template <typename TTree, typename TIterSpec, typename TChar2>
 inline void setCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter,
                          TChar2 character)
 {
-    container(iter).treeVertieces[getPosition(iter)].i1 = character;
+    container(iter).treeVertices[getPosition(iter)].i1 = character;
 }
 
 // This function sets the left child of the current node, or the right if there is no left child.
@@ -581,7 +581,7 @@ void _setChildVertieces(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSp
     if (leftBorder == pivotPosition - 1)
     {
         // set the right child to be the only one
-        container(it).treeVertieces[getPosition(it)].i2 = 1;
+        container(it).treeVertices[getPosition(it)].i2 = 1;
         appendValue(borderString, TBorderStringValue(pivotPosition, back(borderString).i2));
         return;
     }
@@ -595,10 +595,10 @@ void _setChildVertieces(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSp
 template <typename TTree, typename TIterSpec>
 inline bool _setLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter)
 {
-    switch (iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i2)
+    switch (iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2)
     {
     case (0):
-        iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i2 = 2;
+        iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2 = 2;
         return true;
 
     case (2):
@@ -613,15 +613,15 @@ inline bool _setLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TI
 template <typename TTree, typename TPos, typename TIterSpec>
 inline bool _setRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter, TPos rightChildPosition)
 {
-    switch (iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i2)
+    switch (iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2)
     {
     case (0):
         SEQAN_ASSERT_EQ_MSG(rightChildPosition, 0u, "Wrong right child position!");
-        iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i2 = 1;
+        iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2 = 1;
         return true;
 
     case (2):
-        iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i2 = rightChildPosition + 2;
+        iter.waveletTreeStructure->treeVertices[getPosition(iter)].i2 = rightChildPosition + 2;
         return true;
 
     case (1):
@@ -664,26 +664,26 @@ inline void _writeGraphImpl(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIt
     unsigned pos = getLeftChildPos(iter);
     if (pos)
     {
-        stream << (unsigned)ordValue(iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i1) << " -> " << (unsigned)ordValue(iter.waveletTreeStructure->treeVertieces[pos].i1) << ";" << std::endl;
+        stream << (unsigned)ordValue(iter.waveletTreeStructure->treeVertices[getPosition(iter)].i1) << " -> " << (unsigned)ordValue(iter.waveletTreeStructure->treeVertices[pos].i1) << ";" << std::endl;
         goLeftChild(iter);
         writeGraphImpl(iter, name);
     }
     else
     {
-        stream << (unsigned)ordValue(iter.waveletTreeStructure->treeVertieces[getPosition(iter)].i1) << " -> " << "leave1" << (unsigned)ordValue(getPosition(iter)) << ";" << std::endl;
+        stream << (unsigned)ordValue(iter.waveletTreeStructure->treeVertices[getPosition(iter)].i1) << " -> " << "leave1" << (unsigned)ordValue(getPosition(iter)) << ";" << std::endl;
     }
 
     pos = getRightChildPos(iter2);
     if (pos)
     {
-        stream << (unsigned) ordValue(iter2.waveletTreeStructure->treeVertieces[getPosition(iter2)].i1) << " -> " << (unsigned)ordValue(iter2.waveletTreeStructure->treeVertieces[pos].i1) << ";" << std::endl;
+        stream << (unsigned) ordValue(iter2.waveletTreeStructure->treeVertices[getPosition(iter2)].i1) << " -> " << (unsigned)ordValue(iter2.waveletTreeStructure->treeVertices[pos].i1) << ";" << std::endl;
 
         goRightChild(iter2);
         writeGraphImpl(iter2, name);
     }
     else
     {
-        stream << (unsigned)ordValue(iter2.waveletTreeStructure->treeVertieces[getPosition(iter2)].i1) << " -> " << "leave2" << (unsigned)ordValue(getPosition(iter2)) << ";" << std::endl;
+        stream << (unsigned)ordValue(iter2.waveletTreeStructure->treeVertices[getPosition(iter2)].i1) << " -> " << "leave2" << (unsigned)ordValue(getPosition(iter2)) << ";" << std::endl;
     }
     stream.close();
 }

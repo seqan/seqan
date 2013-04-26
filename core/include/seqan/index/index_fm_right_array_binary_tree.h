@@ -147,17 +147,17 @@ template <typename TChar, typename TSpec>
 class RightArrayBinaryTree
 {
 public:
-    typename Fibre<RightArrayBinaryTree, FibreTreeStructureEncoding>::Type treeVertieces;
+    typename Fibre<RightArrayBinaryTree, FibreTreeStructureEncoding>::Type treeVertices;
     TChar minCharValue;
  
     RightArrayBinaryTree() :
-        treeVertieces(),
+        treeVertices(),
         minCharValue()
     {}
 
     template <typename TText>
     explicit RightArrayBinaryTree(TText const & text) :
-        treeVertieces(),
+        treeVertices(),
         minCharValue()
     {
         createRightArrayBinaryTree(*this,
@@ -166,7 +166,7 @@ public:
 
     inline bool operator==(const RightArrayBinaryTree & b) const
     {
-        return treeVertieces == b.treeVertieces;
+        return treeVertices == b.treeVertices;
     }
 };
 
@@ -182,7 +182,7 @@ public:
 template <typename TChar, typename TSpec>
 inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
 {
-    clear(treeStructure.treeVertieces);
+    clear(treeStructure.treeVertices);
 }
 
 // ==========================================================================
@@ -292,14 +292,14 @@ template <typename TChar, typename TSpec>
 inline typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type &
 getFibre(RightArrayBinaryTree<TChar, TSpec> & treeStructure, FibreTreeStructureEncoding)
 {
-    return treeStructure.treeVertieces;
+    return treeStructure.treeVertices;
 }
 
 template <typename TChar, typename TSpec>
 inline typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type const &
 getFibre(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, FibreTreeStructureEncoding)
 {
-    return treeStructure.treeVertieces;
+    return treeStructure.treeVertices;
 }
 
 // ==========================================================================
@@ -307,7 +307,7 @@ getFibre(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, FibreTreeStru
 template <typename TChar, typename TSpec>
 inline unsigned _length(RightArrayBinaryTree<TChar, TSpec> const & tree)
 {
-    return length(tree.treeVertieces);
+    return length(tree.treeVertices);
 }
 
 // ==========================================================================
@@ -316,7 +316,7 @@ template <typename TChar, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type
 _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size, Tag<TExpand> tag)
 {
-    return resize(treeStructure.treeVertieces, size, tag);
+    return resize(treeStructure.treeVertices, size, tag);
 }
 
 // This function resizes the string holding the nodes of the wavelet tree structure.
@@ -326,7 +326,7 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
                    typename Value<typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type>::Type value,
                    Tag<TExpand> tag)
 {
-    return resize(treeStructure.treeVertieces, size, value, tag);
+    return resize(treeStructure.treeVertices, size, value, tag);
 }
 
 // ==========================================================================
