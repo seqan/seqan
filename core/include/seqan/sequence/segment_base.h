@@ -166,6 +166,14 @@ template <typename THost, typename TSpec>
 struct Reference<Segment<THost, TSpec> const > :
     Reference<THost> {};
 
+// TODO(weese): It's a philosophical question whether const Views like Segments are allowed to modify the host or not
+//              It would be more restrictive but consistent in generic algorithms if Segments would behave like Strings (immutable host)
+//              On the other hand segments are prone to unintentionally be given as a const to a function (by-const-reference, not by copy)
+
+//template <typename THost, typename TSpec>
+//struct Reference<Segment<THost, TSpec> const > :
+//    Reference<THost const> {};
+
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO(holtgrew): Should the iterators of const segments be iterators with the constness of the host.
@@ -184,7 +192,7 @@ template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec> const, Rooted>
 {
     typedef Segment<THost, TSpec> TSequence_;
-    typedef typename Iterator<THost const, Standard>::Type TIterator_;
+    typedef typename Iterator<THost, Standard>::Type TIterator_;
     typedef Iter<TSequence_, AdaptorIterator<TIterator_> > Type;
 };
 
@@ -194,7 +202,7 @@ struct Iterator<Segment<THost, TSpec>, Standard>:
 
 template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec> const, Standard>:
-    Iterator<THost const, Standard> {};
+    Iterator<THost , Standard> {};
 
 
 

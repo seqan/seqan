@@ -340,23 +340,18 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template <typename TSet>
 	inline typename Key<TSet>::Type
-	keyOf(Iter<TSet, VectorSetIterator__> &it) {
-		return position(it.ptr);
-	}
-	template <typename TSet>
-	inline typename Key<TSet>::Type
 	keyOf(Iter<TSet, VectorSetIterator__> const &it) {
 		return position(it.ptr);
 	}
 
 	template <typename TSet>
 	inline typename Object<TSet>::Type &
-	objectOf(Iter<TSet, VectorSetIterator__> &it) {
+	objectOf(Iter<TSet, VectorSetIterator__> const &it) {
 		return *it.obj;
 	}
 	template <typename TSet>
-	inline typename Object<TSet>::Type &
-	objectOf(Iter<TSet, VectorSetIterator__> const &it) {
+	inline typename Object<TSet>::Type const &
+	objectOf(Iter<TSet const, VectorSetIterator__> const &it) {
 		return *it.obj;
 	}
 

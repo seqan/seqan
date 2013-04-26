@@ -186,7 +186,7 @@ createSetOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 	typedef typename Position<TKeywords>::Type TPos;
 	typedef typename Value<TKeywords>::Type TKeyword;
-	typedef typename Iterator<TKeyword, Standard>::Type TIterator;
+	typedef typename Iterator<TKeyword const, Standard>::Type TIterator;
 
 	createTrie(g, terminalStateMap, keywords);
 

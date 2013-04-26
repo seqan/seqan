@@ -930,7 +930,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	{
 	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
-		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
+		typedef typename Iterator<TSA, Standard>::Type          TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
 
 		TTextIterator itText = begin(text, Standard());
@@ -1193,14 +1193,15 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSize prefixLen)
 	{
 	SEQAN_CHECKPOINT
-		typedef Index<TText, IndexWotd<WotdOriginal> >			TIndex;
-		typedef typename Fibre<TIndex, WotdSA >::Type			TSA;
-		typedef typename TIndex::TCounter						TCounter;
+		typedef Index<TText, IndexWotd<WotdOriginal> >              TIndex;
+		typedef typename Fibre<TIndex, WotdSA >::Type               TSA;
+		typedef typename TIndex::TCounter                           TCounter;
 
-		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
-		typedef typename Iterator<TSA, Standard>::Type			TSAIterator;
-		typedef typename Iterator<TCounter, Standard>::Type		TCntIterator;
-		typedef typename Size<TText>::Type						TTextSize;
+		typedef typename Iterator<TText const, Standard>::Type      TTextIterator;
+		typedef typename Iterator<TSA, Standard>::Type              TSAIterator;
+		typedef typename Iterator<TCounter, Standard>::Type         TCntIterator;
+		typedef typename Iterator<TCounter const, Standard>::Type   TConstCntIterator;
+		typedef typename Size<TText>::Type                          TTextSize;
 
 		TText const &text = indexText(index);
 		TCounter const &tempSA = index.tempSA;
@@ -1214,7 +1215,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		index.tempSA = infix(indexSA(index), left, right);
 		index.sentinelBound = 0;
 		index.sentinelOcc =
-			_wotdCountCharsWotdOriginal(occ, text, tempSA, prefixLen);
+			_wotdCountCharsWotdOriginal(occ, text, index.tempSA, prefixLen);
 
 		// 3. cumulative sum
 		TSize requiredSize = 0;
@@ -1236,8 +1237,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			TCntIterator boundBeg = begin(bound, Standard());
 
 			TTextIterator itText = begin(text, Standard());
-			TCntIterator itSA = begin(tempSA, Standard());
-			TCntIterator itSAEnd = end(tempSA, Standard());
+			TConstCntIterator itSA = begin(tempSA, Standard());
+			TConstCntIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = length(text);
 			for(; itSA != itSAEnd; ++itSA)
 			{
@@ -1307,14 +1308,15 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSize prefixLen)
 	{
 	SEQAN_CHECKPOINT
-		typedef typename Fibre<TIndex, WotdText >::Type		TText;
-		typedef typename Fibre<TIndex, WotdSA >::Type			TSA;
-		typedef typename TIndex::TCounter						TCounter;
+		typedef typename Fibre<TIndex, WotdText >::Type             TText;
+		typedef typename Fibre<TIndex, WotdSA >::Type               TSA;
+		typedef typename TIndex::TCounter                           TCounter;
 
-		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
-		typedef typename Iterator<TSA, Standard>::Type			TSAIterator;
-		typedef typename Iterator<TCounter, Standard>::Type		TCntIterator;
-		typedef typename Size<TText>::Type						TTextSize;
+		typedef typename Iterator<TText const, Standard>::Type      TTextIterator;
+		typedef typename Iterator<TSA, Standard>::Type              TSAIterator;
+		typedef typename Iterator<TCounter, Standard>::Type         TCntIterator;
+		typedef typename Iterator<TCounter const, Standard>::Type   TConstCntIterator;
+		typedef typename Size<TText>::Type                          TTextSize;
 
 		TText const &text = indexText(index);
 		TCounter const &tempSA = index.tempSA;
@@ -1347,8 +1349,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			TCntIterator boundBeg = begin(bound, Standard());
 
 			TTextIterator itText = begin(text, Standard()) + prefixLen;
-			TCntIterator itSA = begin(tempSA, Standard());
-			TCntIterator itSAEnd = end(tempSA, Standard());
+			TConstCntIterator itSA = begin(tempSA, Standard());
+			TConstCntIterator itSAEnd = end(tempSA, Standard());
 			TTextSize textLength = length(text) - prefixLen;
 			for(; itSA != itSAEnd; ++itSA)
 			{
@@ -1380,7 +1382,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		typedef typename Iterator<TText const, Standard>::Type		TTextIterator;
 		typedef typename Iterator<TSA, Standard>::Type				TSAIterator;
-		typedef typename Iterator<TTempSA, Standard>::Type			TTempSAIterator;
+		typedef typename Iterator<TTempSA const, Standard>::Type    TTempSAIterator;
 		typedef typename Iterator<TCounter, Standard>::Type			TCntIterator;
 		typedef typename Size<TText>::Type							TTextSize;
 
