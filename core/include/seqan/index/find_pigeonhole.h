@@ -992,13 +992,13 @@ windowFindNext(
 {
 	SEQAN_CHECKPOINT
 	
-	typedef typename Fibre<TIndex, QGramShape>::Type	TShape;
-	typedef Finder<THaystack, Pigeonhole<TSpec> >		TFinder;
-	typedef typename TFinder::THstkPos					THstkPos;
+	typedef typename Fibre<TIndex, QGramShape>::Type        TShape;
+	typedef Finder<THaystack, Pigeonhole<TSpec> >           TFinder;
+	typedef typename TFinder::THstkPos                      THstkPos;
     
-    typedef typename Fibre<TIndex, QGramSA>::Type       TSA;
-    typedef typename Iterator<TSA, Standard>::Type      TSAIter;
-    typedef typename TFinder::TPigeonholeHit            THit;
+    typedef typename Fibre<TIndex, QGramSA>::Type           TSA;
+    typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
+    typedef typename TFinder::TPigeonholeHit                THit;
 
     TIndex const &index = host(pattern);	
 
