@@ -455,7 +455,6 @@ macro (seqan_build_demos_develop PREFIX)
         get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
 
         get_filename_component (FILE_NAME "${ENTRY}" NAME)
-        message (STATUS "FILE_NAME ${FILE_NAME}")
         if (NOT "${FILE_NAME}" MATCHES "^\\.")
             add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
             target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
