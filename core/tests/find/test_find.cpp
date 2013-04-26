@@ -1587,15 +1587,18 @@ SEQAN_DEFINE_TEST(test_find_on_segments) {
     CharString kNeedle = "GATC";
     
     test_find_on_segments_Helper<>(kHaystack, kNeedle);
-    // TODO(holtgrew): We should give the prefix() call to the function but we cannot make the arguments const because the finder code does not compile in this case.  The same is true for the calls below.
+
     Segment<CharString, PrefixSegment> myPrefix(prefix(kNeedle, 1));
-    // TODO(holtgrew): FIXME, the following line makes the program not compile any more.
-    //test_find_on_segments_Helper<>(kHaystack, myPrefix);
+    test_find_on_segments_Helper<>(kHaystack, myPrefix);
+    test_find_on_segments_Helper<>(kHaystack, prefix(kNeedle, 1));
+
     Segment<CharString, InfixSegment> myInfix(infix(kNeedle, 1, 2));
     test_find_on_segments_Helper<>(kHaystack, myInfix);
+    test_find_on_segments_Helper<>(kHaystack, infix(kNeedle, 1, 2));
+
     Segment<CharString, SuffixSegment> mySuffix(suffix(kNeedle, 1));
-    // TODO(holtgrew): FIXME, the following line makes the program not compile any more.
-    //test_find_on_segments_Helper<>(kHaystack, mySuffix);
+    test_find_on_segments_Helper<>(kHaystack, mySuffix);
+    test_find_on_segments_Helper<>(kHaystack, suffix(kNeedle, 1));
 }
 
 
