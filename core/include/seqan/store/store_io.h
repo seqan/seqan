@@ -100,11 +100,11 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
 {
 	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
 	typedef typename Size<TFragmentStore>::Type TSize;
-	typedef typename Iterator<String<TGapAnchor>, Standard>::Type TGapIter;
+	typedef typename Iterator<String<TGapAnchor> const, Standard>::Type TGapIter;
 	
 	TSize lenRead = length(fragStore.readSeqStore[alignEl.readId]);
-	TGapIter itGap = begin(alignEl.gaps, Standard() );
-	TGapIter itGapEnd = end(alignEl.gaps, Standard() );
+	TGapIter itGap = begin(alignEl.gaps, Standard());
+	TGapIter itGapEnd = end(alignEl.gaps, Standard());
 	
 	// Any gaps or clipped characters?
 	if (itGap == itGapEnd) {
@@ -927,7 +927,7 @@ write(TFile & target,
         }
         if (streamWriteBlock(target,"seq:\n", 5u) != 5u)
             return 1;
-        typedef typename Iterator<typename TFragmentStore::TReadSeq>::Type TSeqIter;
+        typedef typename Iterator<typename TFragmentStore::TReadSeq const>::Type TSeqIter;
         TSeqIter seqIt = begin(value(fragStore.readSeqStore, idCount));
         TSeqIter seqItEnd = end(value(fragStore.readSeqStore, idCount));
         for(TSize k = 0;seqIt!=seqItEnd;goNext(seqIt), ++k) {

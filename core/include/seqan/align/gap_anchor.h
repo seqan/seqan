@@ -258,36 +258,36 @@ lowerBoundGapAnchor(TGapAnchor const& gaps,
 // Function upperBoundGapAnchor()
 // ----------------------------------------------------------------------------
 
-template <typename TGapAnchor, typename TSearchValue>
-inline typename Iterator<TGapAnchor, Standard>::Type
-upperBoundGapAnchor(TGapAnchor const& gaps, 
+template <typename TGapAnchors, typename TSearchValue>
+inline typename Iterator<TGapAnchors const, Standard>::Type
+upperBoundGapAnchor(TGapAnchors const &gaps,
 					TSearchValue const val,
 					SortSeqPos) 
 {
-	typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
+	typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.seqPos = val;
 	return ::std::upper_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
-		_LessGapAnchor<typename Value<TGapAnchor>::Type, SortSeqPos const>() );
+		_LessGapAnchor<typename Value<TGapAnchors>::Type, SortSeqPos const>() );
 }
 
-template <typename TGapAnchor, typename TSearchValue>
-inline typename Iterator<TGapAnchor, Standard>::Type
-upperBoundGapAnchor(TGapAnchor const& gaps, 
+template <typename TGapAnchors, typename TSearchValue>
+inline typename Iterator<TGapAnchors const, Standard>::Type
+upperBoundGapAnchor(TGapAnchors const &gaps, 
 					TSearchValue const val,
 					SortGapPos) 
 {
-	typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
+	typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.gapPos = val;
 	return ::std::upper_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
-		_LessGapAnchor<typename Value<TGapAnchor>::Type, SortGapPos const>() );
+		_LessGapAnchor<typename Value<TGapAnchors>::Type, SortGapPos const>() );
 }
 
 }  // namespace seqan

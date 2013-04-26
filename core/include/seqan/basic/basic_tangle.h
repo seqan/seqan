@@ -126,7 +126,7 @@ template <typename TDest, typename TSource>
 void assignQualities(TDest &dst, TSource const &src)
 {
     typedef typename Iterator<TDest>::Type TDestIter;
-    typedef typename Iterator<TSource>::Type TSourceIter;
+    typedef typename Iterator<TSource const>::Type TSourceIter;
 
 	if (length(dst) < length(src))
         resize(dst, length(src));
