@@ -86,7 +86,7 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TSt
 {
 	typedef typename Iterator<TStringSet>::Type 				TSetIter;
 	typedef typename Value<TStringSet>::Type 				TString;
-	typedef typename Iterator<TString>::Type   				TStringIter;
+	typedef typename Iterator<TString const>::Type			TStringIter;
 	typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore 	TAnnotationStore;
 	typedef typename Value<TAnnotationStore>::Type 				TAnnotationStoreElement;
 	
@@ -106,8 +106,8 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TSt
 		for ( unsigned j = i; j < i + n; ++j)
 		{
 			clear(value(tempAnnoIds, j - i));
-			itStr = begin(getValue(annoIds, j));
-			itStrEnd = end(getValue(annoIds, j));
+			itStr = begin(annoIds[j]);
+			itStrEnd = end(annoIds[j]);
 			for ( ; itStr != itStrEnd; goNext(itStr))
 			{
 				if (getValue(itStr) != INVALID_ANNO_ID && getValue(me.annotationStore, getValue(itStr)).parentId == parentId)
@@ -241,9 +241,9 @@ getDifference(TString &difference, const TString &string1, const TString &string
 //////////////////////////////////////////////////////////////////////////////
 template<typename TPos, typename TValue, typename TString>
 inline bool
-searchValue(TPos & pos, const TValue &value, const TString &string)
+searchValue(TPos & pos, TValue const & value, TString const & string)
 {
-	typedef typename Iterator<TString>::Type TIter;
+	typedef typename Iterator<TString const>::Type TIter;
 	
 	TIter it = std::lower_bound(begin(string), end(string), value);
 	pos = position(it, string);
@@ -297,9 +297,9 @@ isElement(const TValue &value, const String<TValue> &string)
 
 template<typename TValue>
 inline bool
-isElement_unsorted(const TValue &value, const String<TValue> &string)
+isElement_unsorted(TValue const & value, String<TValue> const & string)
 {
-	typedef typename Iterator<String<TValue> >::Type TIter;
+	typedef typename Iterator<String<TValue> const>::Type TIter;
 	
 	TIter it = std::find(begin(string), end(string), value);
 	

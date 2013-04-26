@@ -208,7 +208,7 @@ extractAlignIntervals(TIntervals & contigIntervals, TAlignedReadStoreElement & a
 	typedef typename TAlignedReadStoreElement::TId 				TId;
 	typedef typename FragmentStore<TSpec, TConfig>::TContigGapAnchor 	TContigGapAnchor;
 	typedef		 String<TContigGapAnchor> 				TContigGaps;
-	typedef typename Iterator<TContigGaps >::Type 				TContigGapsIter;
+	typedef typename Iterator<TContigGaps const>::Type 			TContigGapsIter;
 	typedef typename Iterator<TIntervals>::Type 				TReadIntervalIter;
 	
 	

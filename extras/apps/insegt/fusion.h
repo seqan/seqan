@@ -179,8 +179,8 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 								      getValue(me.annotationStore, firstAnnoId1).endPos < 
 								      	getValue(me.annotationStore, firstAnnoId2).beginPos)  ) 
 								{	
-									itP2 = begin(getValue(readAnnoStore, secReadId).parentIds);
-									itP2End = end(getValue(readAnnoStore, secReadId).parentIds);
+									itP2 = begin(value(readAnnoStore, secReadId).parentIds);
+									itP2End = end(value(readAnnoStore, secReadId).parentIds);
 									clear(tempSecTupleSet);
 									for ( ; itP2 != itP2End; goNext(itP2))
 									{

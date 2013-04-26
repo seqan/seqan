@@ -625,9 +625,9 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 	struct QGramLess_<TSAValue, StringSet<TString, TSpec> const> : 
 		public ::std::binary_function < TSAValue, TSAValue, bool >
     {
-		typedef typename Iterator<TString, Standard>::Type  TIter;
-		typedef typename Size<TString>::Type				TSize;
-        typedef StringSet<TString, TSpec>                   TStringSet;
+		typedef typename Iterator<TString const, Standard>::Type TIter;
+		typedef typename Size<TString>::Type                     TSize;
+        typedef StringSet<TString, TSpec>                        TStringSet;
 		TStringSet const &_stringSet;
 		typename Size<TString>::Type _q;
 

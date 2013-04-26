@@ -190,8 +190,8 @@ assignToReadAnnoStore(TReadAnnoStore &readAnnoStore, FragmentStore<TSpec, TConfi
 			goNext(itA);
 			for ( ; itA != itAEnd; goNext(itA))	// not only for exon-annotations -> more than one parentId possible
 			{
-				itId = begin(getValue(itA));		// for each interval of read:
-				itIdEnd = end(getValue(itA));
+				itId = begin(*itA);		// for each interval of read:
+				itIdEnd = end(*itA);
 				for (unsigned i = 0; i < length(getValue(readAnnoStore, readId).parentIds); ++i) // check if at least one child of the parentId occurs 
 				{						
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -534,8 +534,8 @@ buildAnnoCountStore(TAnnoCountStore & annoCountStore, FragmentStore<TSpec, TConf
 					itAnnoIdsEnd = end(getValue(itRead).annoIds);
 					for ( ; itAnnoIds != itAnnoIdsEnd; goNext(itAnnoIds))
 					{
-						itId = begin(getValue(itAnnoIds));
-						itIdEnd = end(getValue(itAnnoIds));
+						itId = begin(*itAnnoIds);
+						itIdEnd = end(*itAnnoIds);
 						for ( ; itId != itIdEnd; goNext(itId))
 							if (getValue(itId) != INVALID_ANNO_ID && getValue(me.annotationStore, getValue(itId)).parentId == getValue(itP) )
 								++value(annoCountStore, getValue(itId));
@@ -766,49 +766,49 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
 			resize(value(itS).readConnectionNorm, length(getValue(itS).readConnections));
 			if (!empty(getValue(itS).readConnections))
 			{
-				itT = begin(getValue(itS).readConnections);
-				itTEnd = end(getValue(itS).readConnections);
-				itC = begin(getValue(itS).readConnectionCounts);
-				itN = begin(getValue(itS).readConnectionNorm);
+				itT = begin(itS->readConnections);
+				itTEnd = end(itS->readConnections);
+				itC = begin(itS->readConnectionCounts);
+				itN = begin(itS->readConnectionNorm);
 				for ( ; itT != itTEnd; goNext(itT), goNext(itC), goNext(itN))
 				{
 					tupleLength = 0;
-					itId = begin(getValue(itT));
-					itIdEnd = end(getValue(itT));
+					itId = begin(*itT);
+					itIdEnd = end(*itT);
 					for ( ; itId != itIdEnd; goNext(itId))
 					{	
-						if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-							tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
+						if (getValue(me.annotationStore, *itId).beginPos <= getValue(me.annotationStore, *itId).endPos)
+							tupleLength += getValue(me.annotationStore, *itId).endPos - getValue(me.annotationStore, *itId).beginPos;
 						else
-							tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
+							tupleLength += getValue(me.annotationStore, *itId).beginPos - getValue(me.annotationStore, *itId).endPos;
 					}
-					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
+					value(itN) = ((double)1000000000 * (double)*itC) / ((double)readNo * (double)tupleLength);
 				}
 			}
 			// matePairConnections:
-			resize(value(itS).matePairConnectionNorm, length(getValue(itS).matePairConnections));
-			if (!empty(getValue(itS).matePairConnections))
+			resize(value(itS).matePairConnectionNorm, length(itS->matePairConnections));
+			if (!empty(itS->matePairConnections))
 			{
-				itT = begin(getValue(itS).matePairConnections);
-				itTEnd = end(getValue(itS).matePairConnections);
-				itC = begin(getValue(itS).matePairConnectionCounts);
-				itN = begin(getValue(itS).matePairConnectionNorm);
+				itT = begin(itS->matePairConnections);
+				itTEnd = end(itS->matePairConnections);
+				itC = begin(itS->matePairConnectionCounts);
+				itN = begin(itS->matePairConnectionNorm);
 				for ( ; itT != itTEnd; goNext(itT), goNext(itC), goNext(itN))
 				{
 					tupleLength = 0;
-					itId = begin(getValue(itT));
-					itIdEnd = end(getValue(itT));
+					itId = begin(*itT);
+					itIdEnd = end(*itT);
 					for ( ; itId != itIdEnd; goNext(itId))
 					{
-						if (getValue(itId) != INVALID_ID)
+						if (*itId != INVALID_ID)
 						{
-							if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
+							if (getValue(me.annotationStore, *itId).beginPos <= getValue(me.annotationStore, *itId).endPos)
+								tupleLength += getValue(me.annotationStore, *itId).endPos - getValue(me.annotationStore, *itId).beginPos;
 							else
-								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
+								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, *itId).endPos;
 						}
 					}
-					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
+					value(itN) = ((double)1000000000 * (double)*itC) / ((double)readNo * (double)tupleLength);
 				}
 			}
 		}

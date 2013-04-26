@@ -99,8 +99,8 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
 				for ( ; itAnnoIds != itAnnoIdsEnd; goNext(itAnnoIds))
 				{
 					help = false;
-					itId = begin(getValue(itAnnoIds));	
-					itIdEnd = end(getValue(itAnnoIds));
+					itId = begin(*itAnnoIds);
+					itIdEnd = end(*itAnnoIds);
 					for ( ; itId != itIdEnd; goNext(itId))
 					{
 						if (!empty(getValue(itCountStore).parentIds) && getValue(itId) != INVALID_ID && 	// if current parentId == first id of parentIds (of read entry in readAnnoStore)
@@ -141,8 +141,8 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
 					for ( ; itAnnoIds != itAnnoIdsEnd; goNext(itAnnoIds))
 					{
 						invalid = true;				// if no annotation for the current parent in  interval -> UNKOWN_REGION
-						itId = begin(getValue(itAnnoIds));	
-						itIdEnd = end(getValue(itAnnoIds));
+						itId = begin(*itAnnoIds);	
+                        itIdEnd = end(*itAnnoIds);
 						for ( ; itId != itIdEnd; goNext(itId))
 						{
 							if (getValue(itId) != INVALID_ID && getValue(me.annotationStore, getValue(itId)).parentId == getValue(itP))

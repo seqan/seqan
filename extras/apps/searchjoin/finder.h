@@ -677,7 +677,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
 {
     typedef typename Fibre<TIndex, FibreSA>::Type const      TSA;
     typedef typename Size<TIndex>::Type                      TSize;
-    typedef typename Value<TText>::Type                      TString;
+    typedef typename Value<TText const>::Type                TString;
     typedef typename Iterator<TString const, Standard>::Type TStringIter;
 
     TText const &text = dbFinder.db.text;
