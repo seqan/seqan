@@ -385,7 +385,7 @@ template <typename TMatchString, typename TIndex, typename TDBLookup, typename T
 inline void compactSameSuffLinkFreqMatches(TMatchString &matches, TIndex const &index, TDBLookup const &dbLookup, TSeen &seen, TEntry &entry)
 {
 	typedef typename Iterator<TMatchString, Standard>::Type TIter;
-	typedef typename Fibre<TIndex, FibreSA>::Type TSA;
+	typedef typename Fibre<TIndex const, FibreSA>::Type TSA;
 	typedef typename Iterator<TSA, Standard>::Type TSAIter;
 
 	TIter src = begin(matches, Standard());
