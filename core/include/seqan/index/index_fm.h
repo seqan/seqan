@@ -401,7 +401,7 @@ inline void _createBwTable(TBwt & bwt, TSentinelPosition & sentinelPos, StringSe
     TSize seqNum = countSequences(text);
     TSize totalLen = lengthSum(text);
 
-    resize(sentinelPos, seqNum + totalLen);
+    resize(sentinelPos, seqNum + totalLen, Exact());
     
     TSAIter saIt = begin(sa, Standard());
     TSAIter saItEnd = end(sa, Standard());
@@ -582,7 +582,7 @@ inline void _getFrequencies(TFreq & freq,
 						    StringSet<TText, TSetSpec> const & text)
 {
 	typedef typename Value<TText>::Type TChar;
-	resize(freq, ValueSize<TChar>::VALUE, 0);
+	resize(freq, ValueSize<TChar>::VALUE, 0, Exact());
 
     typedef typename Size<TText>::Type TSize;
 	for (TSize i = 0; i < length(text); ++i)
@@ -596,7 +596,7 @@ inline void _getFrequencies(TFreq & freq,
 		   	   	   	   	   TText const & text)
 {
 	typedef typename Value<TText>::Type TChar;
-	resize(freq, ValueSize<TChar>::VALUE, 0);
+	resize(freq, ValueSize<TChar>::VALUE, 0, Exact());
 
     typedef typename Size<TText>::Type TSize;
 	for (TSize i = 0; i < length(text); ++i)
@@ -617,12 +617,6 @@ inline bool _indexCreateSA(Index<TText, FMIndex<TIndexSpec, TSpec> > & index, TS
 
     // TODO(singer): If there is a lfTable we do not need the Skew7
 	// create the fulle sa
-
-    // TODO(weese): Jochen, can this createSuffixArray call go to the caller function?
-	resize(fullSa, length(text));
-	createSuffixArray(fullSa,
-			text,
-			Skew7());
 
     // create the compressed sa
 	TCompressedSA & compressedSA = getFibre(index, FibreSA());
@@ -645,7 +639,7 @@ inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & ind
 	typedef Index<TText, FMIndex<TIndexSpec, TSpec> >		        TIndex;
 	typedef typename Fibre<TIndex, FibreLfTable>::Type              TLfTable;
 	typedef typename Fibre<TLfTable, FibreOccTable>::Type           TOccTable;
-	typedef typename Fibre<TOccTable, FibreSentinelPosition>::Type    TSentinelPosition;
+	typedef typename Fibre<TOccTable, FibreSentinelPosition>::Type  TSentinelPosition;
 	typedef typename Value<TIndex>::Type						    TAlphabet;
 
 	createPrefixSumTable(index.lfTable.prefixSumTable, text);
@@ -654,7 +648,7 @@ inline bool _indexCreateLfTables(Index<TText, FMIndex<TIndexSpec, TSpec> > & ind
 	_determineSentinelSubstitute(index.lfTable.prefixSumTable, sentinelSub);
 
 	String<TAlphabet> bwt;
-	resize(bwt, index.n);
+	resize(bwt, index.n, Exact());
 	TSentinelPosition sentinelPos = _setDefaultSentinelPosition(length(bwt), TSentinelPosition());
 
 	_createBwTable(bwt, sentinelPos, text, sa, sentinelSub);
@@ -693,6 +687,12 @@ inline bool _indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec > > & index, TTe
         return false;
 
     TTempSA tempSA;
+    
+	resize(tempSA, length(text), Exact());
+	createSuffixArray(tempSA,
+			text,
+			Skew7());
+
 
 	// create the compressed SA
 	_indexCreateSA(index, tempSA, text);

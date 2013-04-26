@@ -308,7 +308,8 @@ length(SparseString<TFibreValueString, TSpec> const & string)
 
 ///.Function.resize.param.object.type:Class.SparseString
 template <typename TFibreValueString, typename TSpec, typename TSize, typename TValue, typename TExpand>
-inline void resize(SparseString<TFibreValueString, TSpec> & string,
+inline typename Size<typename Fibre<SparseString<TFibreValueString, TSpec>, FibreValueString>::Type>::Type
+resize(SparseString<TFibreValueString, TSpec> & string,
                    TSize const size,
                    TValue const value,
                    Tag<TExpand> const tag)
@@ -322,14 +323,16 @@ inline void resize(SparseString<TFibreValueString, TSpec> & string,
             resize(getFibre(string, FibreValueString()), getRank(string, size), value, tag);
         resize(getFibre(string, FibreIndicatorString()), size, 1, tag);            
     }
-    resize(getFibre(string, FibreIndicatorString()), size, 0);
+    return resize(getFibre(string, FibreIndicatorString()), size, 0);
 }
 
-template <typename TFibreValueString, typename TSpec, typename TSize>
-inline void resize(SparseString<TFibreValueString, TSpec> & string,
-                   TSize const size)
+template <typename TFibreValueString, typename TSpec, typename TSize, typename TExpand>
+inline typename Size<typename Fibre<SparseString<TFibreValueString, TSpec>, FibreValueString>::Type>::Type
+resize(SparseString<TFibreValueString, TSpec> & string,
+                   TSize const size,
+                   Tag<TExpand> tag)
 {
-    resize(getFibre(string, FibreIndicatorString()), size, 0);
+    return resize(getFibre(string, FibreIndicatorString()), size, 0, tag);
 }
 
 

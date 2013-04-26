@@ -291,7 +291,7 @@ inline void createPrefixSumTable(PrefixSumTable<TChar, TSpec> & prefixSumTable, 
     _getFrequencies(freq, text);
 
     unsigned alpSize = length(freq);
-    resize(prefixSumTable, alpSize + 1, 0);
+    resize(prefixSumTable, alpSize + 1, 0, Exact());
 
 
     TPrefixSumValue temp = 0;
@@ -587,16 +587,18 @@ prefixSum(PrefixSumTable<TChar, TSpec> const & pst, TPos const pos)
 ..include:seqan/index.h
 */
 
-template <typename TChar, typename TSpec, typename TSize>
-inline void resize(PrefixSumTable<TChar, TSpec> & pst, TSize size)
+template <typename TChar, typename TSpec, typename TSize, typename TExpand>
+inline typename Size<PrefixSumTable<TChar, TSpec> >::Type
+resize(PrefixSumTable<TChar, TSpec> & pst, TSize size, Tag<TExpand> tag)
 {
-    resize(pst.entries, size);
+    return resize(pst.entries, size, tag);
 }
 
-template <typename TChar, typename TSpec, typename TSize, typename TValue>
-inline void resize(PrefixSumTable<TChar, TSpec> & pst, TSize size, TValue value)
+template <typename TChar, typename TSpec, typename TSize, typename TValue, typename TExpand>
+inline typename Size<PrefixSumTable<TChar, TSpec> >::Type
+resize(PrefixSumTable<TChar, TSpec> & pst, TSize size, TValue value, Tag<TExpand> tag)
 {
-    resize(pst.entries, size, value);
+    return resize(pst.entries, size, value, tag);
 }
 
 // ----------------------------------------------------------------------------

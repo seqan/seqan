@@ -179,7 +179,7 @@ _setDefaultSentinelPosition(TLength const _length, RankSupportBitString<TBitStri
 {
 
     RankSupportBitString<TBitStringSpec> bitString;
-    resize(bitString, _length, 0);
+    resize(bitString, _length, 0, Exact());
     return bitString;
 }
 

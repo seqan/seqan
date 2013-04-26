@@ -157,7 +157,7 @@ struct RankSupportBitString
     {
         typedef typename Iterator<String<TValue, TStringSpec> const>::Type TIter_;
 
-        resize(*this, _length);
+        resize(*this, _length, Exact());
         typename Position<RankSupportBitString>::Type i = 0;
         for (TIter_ it = begin(input, Standard()); it != end(input, Standard()); ++it, ++i)
             setBitTo(*this, i, getValue(it));
@@ -170,7 +170,7 @@ struct RankSupportBitString
     {
         typedef typename Iterator<Segment<THost, TStringSpec> const>::Type TIter_;
 
-        resize(*this, _length);
+        resize(*this, _length, Exact());
         typename Position<RankSupportBitString>::Type i = 0;
         for (TIter_ it = begin(input, Standard()); it != end(input, Standard()); ++it, ++i)
             setBitTo(*this, i, getValue(it));
@@ -677,7 +677,7 @@ inline bool open(
 {
     typedef typename Value<typename Fibre<RankSupportBitString<TSpec>, FibreSuperBlocks>::Type>::Type TValue;
     String<TValue> lengthString;
-    resize(lengthString, 1);
+    resize(lengthString, 1, Exact());
 
     String<char> name;
     name = fileName;    append(name, ".bit");
@@ -733,7 +733,7 @@ inline bool save(
 {
     typedef typename Value<typename Fibre<RankSupportBitString<TSpec>, FibreSuperBlocks>::Type>::Type TValue;
     String<TValue> lengthString;
-    resize(lengthString, 1);
+    resize(lengthString, 1, Exact());
     lengthString[0] = length(string);
     String<char> name;
     name = fileName;    append(name, ".len");   save(lengthString, toCString(name), openMode);

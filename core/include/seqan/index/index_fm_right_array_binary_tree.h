@@ -238,7 +238,7 @@ inline void createRightArrayBinaryTree(Iter<RightArrayBinaryTree<TChar, TSpec>, 
     unsigned alpSize = getAlphabetSize(pst);
     String<Pair<unsigned> > borderString;
     appendValue(borderString, Pair<unsigned>(0, alpSize - 1));
-    _resize(waveletTreeStructure, 1);
+    _resize(waveletTreeStructure, 1, Exact());
     createRightArrayBinaryTree(it, borderString, pst);
 }
 
@@ -312,18 +312,21 @@ inline unsigned _length(RightArrayBinaryTree<TChar, TSpec> const & tree)
 
 // ==========================================================================
 // This function resizes the string holding the nodes of the wavelet tree structure.
-template <typename TChar, typename TSpec, typename TSize>
-inline void _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size)
+template <typename TChar, typename TSpec, typename TSize, typename TExpand>
+inline typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type
+_resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size, Tag<TExpand> tag)
 {
-    resize(treeStructure.treeVertieces, size);
+    return resize(treeStructure.treeVertieces, size, tag);
 }
 
 // This function resizes the string holding the nodes of the wavelet tree structure.
-template <typename TChar, typename TSpec, typename TSize>
-inline void _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
-                   typename Value<typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type>::Type value)
+template <typename TChar, typename TSpec, typename TSize, typename TExpand>
+inline typename Size<RightArrayBinaryTree<TChar, TSpec> >::Type
+_resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
+                   typename Value<typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type>::Type value,
+                   Tag<TExpand> tag)
 {
-    resize(treeStructure.treeVertieces, size, value);
+    return resize(treeStructure.treeVertieces, size, value, tag);
 }
 
 // ==========================================================================

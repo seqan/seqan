@@ -293,10 +293,10 @@ inline void createRankDictionary(RankDictionary<SequenceBitMask<TValue> > & dict
     typedef typename Fibre<RankDictionary<SequenceBitMask<TValue> >, FibreBitStrings>::Type TBitStrings;
 
     TBitStrings & bitStrings = getFibre(dictionary, FibreBitStrings());
-    resize(bitStrings, ValueSize<TValue>::VALUE);
+    resize(bitStrings, ValueSize<TValue>::VALUE, Exact());
 
     for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
-        resize(bitStrings[i], length(text), 0);
+        resize(bitStrings[i], length(text), 0, Exact());
     
     for (unsigned i = 0; i < length(text); ++i)
         setBitTo(bitStrings[ordValue(text[i])], i, 1);

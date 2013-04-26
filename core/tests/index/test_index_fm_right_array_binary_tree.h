@@ -259,7 +259,7 @@ void waveletTreeStructureOpenSave(TRightArrayBinaryTree & /*tag*/)
 
 	
     TRightArrayBinaryTree waveletTreeStructure;
-    _resize(waveletTreeStructure, 10);
+    _resize(waveletTreeStructure, 10, Exact());
 
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 

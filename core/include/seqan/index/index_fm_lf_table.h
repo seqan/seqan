@@ -252,7 +252,7 @@ inline bool createLfTable(LfTable<SentinelRankDictionary<RankDictionary<WaveletT
     typedef typename Fibre<SentinelRankDictionary<RankDictionary<WaveletTree<TValue> >, TSpec>, FibreSentinentalPosition>::Type TDollarPos;
 
     String<TSAValue> sa;
-    resize(sa, length(text));
+    resize(sa, length(text), Exact());
     createSuffixArray(sa, text, Skew7());
 
     createPrefixSumTable(lfTable.prefixSumTable, text);
@@ -262,7 +262,7 @@ inline bool createLfTable(LfTable<SentinelRankDictionary<RankDictionary<WaveletT
 
     String<TAlphabet> bwt;
     TDollarPos dollarPos = 0;
-    resize(bwt, _computeBwtLength(text));
+    resize(bwt, _computeBwtLength(text), Exact());
     _createBwTable(bwt, dollarPos, text, sa, dollarSub);
 
     clear(sa);

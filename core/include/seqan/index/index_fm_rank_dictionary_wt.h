@@ -480,7 +480,7 @@ inline void _fillWaveletTree(RankDictionary<WaveletTree<TValue> > & tree, TText 
     typedef typename Size<TFibreBitString>::Type                                            TSize;
     typedef typename Fibre<RankDictionary<WaveletTree<TValue> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
 
-    resize(tree.bitStrings, _length(tree.waveletTreeStructure));
+    resize(tree.bitStrings, _length(tree.waveletTreeStructure), Exact());
 
     for (TSize i = 0; i < length(text); ++i)
     {

@@ -309,7 +309,7 @@ void createCompressedSa(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
     TIndicatorString & indicatorString = getFibre(sparseString, FibreIndicatorString());
 
     TSASize saLen = length(sa);
-    resize(compressedSA, saLen + offset);
+    resize(compressedSA, saLen + offset, Exact());
     
     TSAIter saIt = begin(sa, Standard());
     TSAIter saItEnd = end(sa, Standard());
@@ -323,7 +323,7 @@ void createCompressedSa(CompressedSA<TSparseString, TLfTable, TSpec> & compresse
     }
     _updateRanks(indicatorString);
 
-    resize(sparseString.valueString, getRank(indicatorString, length(indicatorString) - 1));
+    resize(sparseString.valueString, getRank(indicatorString, length(indicatorString) - 1), Exact());
 
     saIt = begin(sa, Standard());
     for (TSASize pos = offset, counter = 0; saIt != saItEnd; ++saIt, ++pos)
@@ -406,18 +406,20 @@ length(CompressedSA<TSparseString, TLfTable, TSpec> const & compressedSA)
 /**
 .Function.resize.param.object.type:Class.CompressedSA
 */
-template <typename TSparseString, typename TLfTable, typename TSpec, typename TSize>
-inline void resize(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA,
-                   TSize size)
+template <typename TSparseString, typename TLfTable, typename TSpec, typename TSize, typename TExpand>
+inline typename Size<typename Fibre<CompressedSA<TSparseString, TLfTable, TSpec>, FibreSparseString>::Type>::Type
+resize(CompressedSA<TSparseString, TLfTable, TSpec> & compressedSA,
+                   TSize size,
+                   Tag<TExpand> tag)
 {
-    resize(getFibre(compressedSA, FibreSparseString()), size);
+    return resize(getFibre(compressedSA, FibreSparseString()), size, tag);
 }
 
-template <typename TSparseString, typename TLfTable, typename TSpec, typename TSize>
-inline void resize(CompressedSA<String<TSparseString>, TLfTable, TSpec> & compressedSA, TSize size)
-{
-    resize(getFibre(compressedSA, FibreSparseString()), size);
-}
+// template <typename TSparseString, typename TLfTable, typename TSpec, typename TSize>
+// inline void resize(CompressedSA<String<TSparseString>, TLfTable, TSpec> & compressedSA, TSize size)
+// {
+//     resize(getFibre(compressedSA, FibreSparseString()), size);
+// }
 
 // ==========================================================================
 /**
