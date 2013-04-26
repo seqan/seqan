@@ -174,7 +174,7 @@
 // #include <seqan/index/index_fm_wavelet_tree.h>
 #include <seqan/index/index_fm_rank_dictionary_wt.h>
 #include <seqan/index/index_fm_rank_dictionary_bms.h>
-#include <seqan/index/index_fm_sentinal_rank_dictionary.h>
+#include <seqan/index/index_fm_sentinel_rank_dictionary.h>
 #include <seqan/index/index_fm_lf_table.h>
 #include <seqan/index/index_fm.h>
 #include <seqan/index/index_fm_stree.h>
