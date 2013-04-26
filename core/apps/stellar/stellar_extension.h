@@ -181,7 +181,7 @@ SEQAN_CHECKPOINT
 // Identifies the longest epsilon match in align from possEndsLeft and possEndsRight and sets the view positions of
 // align to start and end position of the longest epsilon match
 template<typename TLength, typename TSize, typename TEps>
-Pair<typename Iterator<String<ExtensionEndPosition<TLength> const> >::Type>
+Pair<typename Iterator<String<ExtensionEndPosition<TLength> > const>::Type>
 longestEpsMatch(String<ExtensionEndPosition<TLength> > const & possEndsLeft,
 				String<ExtensionEndPosition<TLength> > const & possEndsRight,
 				TLength const alignLen,
