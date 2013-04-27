@@ -296,7 +296,7 @@ addSequenceToMatchingGraph(TGraph & graph,
                            String<BlockInMatchingGraph> const & nMap,
                            std::map<TBlockId, TSize> & blocks)
 {
-    typedef typename Iterator<String<TBlockId> >::Type TIterator;
+    typedef typename Iterator<String<TBlockId> const>::Type TIterator;
     typedef typename TGraph::Node TNode;
 
     if (blocks.size() == 0)
