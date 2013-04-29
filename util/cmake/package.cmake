@@ -50,7 +50,11 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     # Archive Packages (.tar & .tar.bz2)
     # ===========================================================================
 
-    SET(CPACK_GENERATOR "ZIP;TBZ2;DEB")
+    if (WIN32)
+        SET (CPACK_GENERATOR "ZIP")
+    else ()
+        SET (CPACK_GENERATOR "ZIP;TBZ2")
+    endif ()
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
       SET(CPACK_PACKAGE_NAME "seqan")
     elseif ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")
