@@ -154,6 +154,7 @@ class BuildStep(object):
         cmake_args = [CMAKE_BINARY, checkout_dir,
                       '-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS']
         # Use appropriate CMake flags for OS and processor.
+        # Use appropriate CMake flags for OS and processor.
         if self.word_size == '32':
             cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=i686')
             if self.os != 'Windows':
@@ -161,6 +162,7 @@ class BuildStep(object):
             else:
                 cmake_args += ['-G', 'Visual Studio 10']
         else:  # self.word_size == '64'
+            cmake_args.append('-DSEQAN_SYSTEM_PROCESSOR=x86_64')
             if self.os == 'Windows':
                 cmake_args += ['-G', 'Visual Studio 10 Win64']
         print >>sys.stderr, 'Executing CMake: "%s"' % (' '.join(cmake_args),)
