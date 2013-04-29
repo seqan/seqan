@@ -147,8 +147,9 @@ class BuildStep(object):
         # Build seqan-apps.
         #
         # Create build directory.
-        print >>sys.stderr, 'Creating build directory %s' % (build_dir,)
-        os.mkdir(build_dir)
+        if not os.path.exists(build_dir):
+            print >>sys.stderr, 'Creating build directory %s' % (build_dir,)
+            os.mkdir(build_dir)
         # Execute CMake.
         cmake_args = [CMAKE_BINARY, checkout_dir,
                       '-DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS']
@@ -171,7 +172,7 @@ class BuildStep(object):
             print err_data
             return 1
         # Execute Make.
-        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package'] + self.make_args
+        cmake_args = [CMAKE_BINARY, '--build', build_dir, '--target', 'package', '--config', 'Release'] + self.make_args
         print >>sys.stderr, 'Building with CMake: "%s"' % (' '.join(cmake_args),)
         popen = subprocess.Popen(cmake_args, cwd=build_dir, env=os.environ.copy())
         out_data, err_data = popen.communicate()
@@ -183,8 +184,9 @@ class BuildStep(object):
         # Copy over the archives.
         self.copyArchives(build_dir)
         # Remove build directory.
-        print >>sys.stderr, 'Removing build directory %s' % build_dir
-        shutil.rmtree(build_dir)
+        if not self.options.keep_build_dir:
+            print >>sys.stderr, 'Removing build directory %s' % build_dir
+            shutil.rmtree(build_dir)
         # Build seqan-library.
         #
         # Create build directory.
@@ -223,8 +225,9 @@ class BuildStep(object):
             return 1
         self.copyArchives(build_dir)
         # Remove build directory.
-        print >>sys.stderr, 'Removing build directory %s' % build_dir
-        shutil.rmtree(build_dir)
+        if not self.options.keep_build_dir:
+            print >>sys.stderr, 'Removing build directory %s' % build_dir
+            shutil.rmtree(build_dir)
 
     def buildApp(self, checkout_dir, build_dir):
         """Build an application."""
@@ -274,8 +277,9 @@ class BuildStep(object):
         # Copy out archives.
         self.copyArchives(build_dir)
         # Remove build directory.
-        print >>sys.stderr, 'Removing build directory %s' % build_dir
-        shutil.rmtree(build_dir)
+        if not self.options.keep_co_dir:
+            print >>sys.stderr, 'Removing build directory %s' % build_dir
+            shutil.rmtree(build_dir)
 
     def tmpDir(self):
       print 'self.tmp_dir = %s' % self.tmp_dir
@@ -299,7 +303,7 @@ class BuildStep(object):
         # Create build directory.
         suffix = '-build-%s-%s' % (self.os, self.word_size)
         build_dir = os.path.join(tmp_dir, os.path.basename(self.svn_url) + suffix)
-        if os.path.exists(build_dir):
+        if os.path.exists(build_dir) and not self.options.keep_build_dir:
           print >>sys.stderr, 'Removing build directory %s' % (build_dir,)
           shutil.rmtree(build_dir)
         # Perform the build.  We have to separate between app and whole SeqAn releases.
@@ -311,7 +315,7 @@ class BuildStep(object):
             print >>sys.stderr, 'Removing checkout directory %s' % (checkout_dir,)
             shutil.rmtree(checkout_dir)
         # Remove temporary directory again.
-        if not self.tmp_dir and not self.options.keep_tmp_dir:
+        if self.tmp_dir and not self.options.keep_tmp_dir:
             # Only remove if not explicitely given and not forced to keep.
             print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
             shutil.rmtree(tmp_dir)
@@ -406,6 +410,8 @@ def main():
                       help='Temporary directory to use. Use this to reuse the same checkout.')
     parser.add_option('--build-trunk-as', dest='build_trunk_as', type='string', default=None,
                       help='Build current trunk with this string as a tag name.')
+    parser.add_option('--keep-build-dir', dest='keep_build_dir', default=False,
+                      action='store_true', help='Keep build directory.')
     parser.add_option('--keep-tmp-dir', dest='keep_tmp_dir', default=False,
                       action='store_true', help='Keep temporary directory.')
     parser.add_option('--keep-co-dir', dest='keep_co_dir', default=False,
