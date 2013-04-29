@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block content %}
+<h1>Group: {{ group.name|e }}</h1>
+
+<!--
+ =============================================================================
+  Grouped Overview
+ =============================================================================
+-->
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @brief -->
+    {{ sections.brief(group) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(group) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(group) }}
+
+<!-- Grouped Tags Overview -->
+{{ sections.grouped_tags_ov(group, doc, 'Grouped') }}
+
+<!-- Grouped Tags Overview -->
+{{ sections.grouped_macros_ov(group, doc, 'Grouped') }}
+
+<!-- Grouped Functions Overview -->
+{{ sections.interface_functions_ov(group, doc, 'Grouped') }}
+
+<!-- Grouped Metafunctions Overview -->
+{{ sections.interface_metafunctions_ov(group, doc, 'Grouped') }}
+
+<!--
+ =============================================================================
+  Grouped Details
+ =============================================================================
+-->
+
+<!-- Grouped Tags Details -->
+{{ sections.grouped_tags(group, 'Grouped') }}
+
+<!-- Grouped macros Details -->
+{{ sections.grouped_macros(group, 'Grouped') }}
+
+<!-- Grouped Functions Details -->
+{{ sections.interface_functions(group, 'Grouped') }}
+
+<!-- Grouped Metafunctions Details -->
+{{ sections.interface_metafunctions(group, 'Grouped') }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(group) }}
+
+{% endblock %}

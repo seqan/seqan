@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ adaption.name }}{% endblock %}
+
+{% block content %}
+<h1>Adaption: {{ adaption.name }}</h1>
+
+{{ sections.top_box(adaption) }}
+
+<!-- @signature -->
+{{ sections.signatures(adaption) }}
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @deprecated -->
+    {% if adaption.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        {% for msg in adaption.deprecation_msgs %}
+        <p>{{ msg|transtext(False) }}</p>
+        {% endfor %}
+    </div></div>
+    {% endif %}
+
+    <!-- @brief -->
+    {{ sections.brief(adaption) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(adaption) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(adaption) }}
+
+<!--
+ =============================================================================
+  Member and Interface Overview
+ =============================================================================
+-->
+
+<!-- Template Parameters -->
+{{ sections.tparams(adaption) }}
+
+<!-- Member Functions Overview -->
+{{ sections.member_functions_ov(adaption, doc) }}
+
+<!-- Interface Functions Overview -->
+{{ sections.interface_functions_ov(adaption, doc) }}
+
+<!-- Interface Metafunctions Overview -->
+{{ sections.interface_metafunctions_ov(adaption, doc) }}
+
+<!-- Member Variable Overview -->
+{{ sections.member_variables_ov(adaption, doc) }}
+
+<!--
+ =============================================================================
+  Member and Interface Details
+ =============================================================================
+-->
+
+<!-- Member Functions Details -->
+{{ sections.member_functions(adaption) }}
+
+<!-- Interface Functions Details -->
+{{ sections.interface_functions(adaption) }}
+
+<!-- Interface Metafunctions Details -->
+{{ sections.interface_metafunctions(adaption) }}
+
+<!-- Member Variable Details -->
+{{ sections.member_variables(adaption) }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(adaption) }}
+
+{% endblock %}

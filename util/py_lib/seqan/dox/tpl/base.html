@@ -1,0 +1,112 @@
+{% import 'sections.html' as sections -%}
+{% import 'sub_entries.html' as sub_entries -%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />    
+    <title>{% block title %}{% endblock %} - SeqAn API Documentation</title>
+    
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+    <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+    <link rel="stylesheet" href="css/custom.css" type="text/css" media="screen" charset="utf-8" />
+
+    <script type="text/javascript" charset="utf-8">
+      hasFrames = window.top.frames.main ? true : false;
+      relpath = '/';
+      docsPrefix = 'docs/yard';
+      listPrefix = 'list/docs/yard';
+      searchPrefix = 'search/docs/yard';
+      framesUrl = '/docs/yard/frames/file/README.md';
+    </script>
+
+    <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
+
+    <style>
+      .link.error
+      {
+          color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <form class="search" method="get" action="/search/docs/yard">
+        Search: <input name="q" type="search" placeholder="Search" id="search_box" size="30" value="" />
+      </form>
+      <script type="text/javascript" charset="utf-8">
+        $(function() {
+            $('#search_box').autocomplete($('#search_box').parent().attr('action'), {
+                width: document.body.className == 'frames' ? 250 : 340,
+                formatItem: function(item) {
+                    var values = item[0].split(",");
+                    return values[0] + (values[1] == '' ? "" : " <small>(" + values[1] + ")</small>");
+                }
+            }).result(function(event, item) {
+                var values = item[0].split(",")
+                $('#search_box').val(values[1]);
+                location.href = values[3];
+                return false;
+            });
+        });
+      </script>
+      <style>
+        .frames form.search { position: absolute; right: 14px; top: -6px; padding-top: 10px; }
+        .frames #menu .noframes { float: none; }
+        .frames #menu { float: left; }
+        .frames #content h1 { margin-top: 15px; }
+      </style>
+
+      {#
+      <div id="menu">       
+        <a href="/docs" target="_top">Libraries</a> &raquo;
+        <span class="title">yard <small>(0.8.4)</small></span>
+        
+        &raquo; 
+        <a href="/docs/yard/index">Index</a> &raquo; 
+        <span class='title'>File: README</span>
+        
+        <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+      </div>
+      #}
+
+      <div id="search">
+        
+        <a class="full_list_link" id="class_list_link"
+           href="/list/docs/yard/class">
+          Class List
+        </a>
+        
+        <a class="full_list_link" id="method_list_link"
+           href="/list/docs/yard/method">
+          Method List
+        </a>
+        
+        <a class="full_list_link" id="file_list_link"
+           href="/list/docs/yard/file">
+          File List
+        </a>
+        
+        <a class="full_list_link" id="tag_list_link"
+           href="/list/docs/yard/tag">
+          Tag List
+        </a>
+        
+      </div>
+      <div class="clear"></div>
+    </div>
+    <iframe id="search_frame"></iframe>
+
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

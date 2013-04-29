@@ -1,0 +1,1125 @@
+<!--
+Macro inheritance_class(klass)
+
+Render the inheritance information of the given class.
+-->
+
+<!--
+{% macro inheritance_class(klass) -%}
+<div class="inheritance">
+<dl>
+  {% if klass.extends %}
+  <dt>Extends</dt>
+  <dd>
+  {% for e in klass.extends|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if klass.implements %}
+  <dt>Implements</dt>
+  <dd>
+  {% for e in klass.implements|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if klass.all_extended %}
+  <dt>All Extended Classes</dt>
+  <dd>
+  {% for e in klass.all_extended|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if klass.all_extending %}
+  <dt>All Known Subclasses</dt>
+  <dd>
+  {% for e in klass.all_extending|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if klass.all_implemented %}
+  <dt>All Implemented Concepts</dt>
+  <dd>
+  {% for e in klass.all_implemented|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+</dl>
+</div>
+{% endmacro %}
+-->
+
+<!--
+Macro top_box(entry)
+
+Render the inheritance information of the given entr.
+-->
+
+{% macro top_box(entry) %}
+<dl class="box">
+  {% set row_class = cycler('r1', 'r2') %}
+
+  {% if entry.extends %}
+  <dt class="{{ row_class.current }}">Extends:</dt>
+  <dd class="{{ row_class.next() }}">
+  {% for e in entry.extends|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if entry.implements %}
+  <dt class="{{ row_class.current }}">Implements:</dt>
+  <dd class="{{ row_class.next() }}">
+  {% for e in entry.implements|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if entry.all_extended %}
+  <dt class="{{ row_class.current }}">All Extended:</dt>
+  <dd class="{{ row_class.next() }}">
+  {% for e in entry.all_extended|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if entry.all_extending %}
+  <dt class="{{ row_class.current }}">All Subcl's:</dt>
+  <dd class="{{ row_class.next() }}">
+  {% for e in entry.all_extending|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if entry.all_implemented %}
+  <dt class="{{ row_class.current }}">All Impl'd:</dt>
+  <dd class="{{ row_class.next() }}">
+  {% for e in entry.all_implemented|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  <dt class="{{ row_class.current }} last">Defined in:</dt>
+  <dd class="{{ row_class.next() }} last">
+    {% if entry.headerfiles %}
+    {% for h in entry.headerfiles|sort -%}
+    {{ h|e }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+    {% else %}
+    &nbsp;
+    {% endif %}
+  </dd>
+</dl>
+<div class="clear"></div>
+{% endmacro %}
+
+<!--
+Macro inheritance_concept(concept)
+
+Render the inheritance information of the given class.
+-->
+
+{% macro inheritance_concept(concept) -%}
+<div class="inheritance">
+<dl>
+  {% if concept.extends %}
+  <dt>Extends</dt>
+  <dd>
+  {% for e in concept.extends|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if concept.all_extended %}
+  <dt>All Extended Concepts</dt>
+  <dd>
+  {% for e in concept.all_extended|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if concept.all_extending %}
+  <dt>All Known Refinements</dt>
+  <dd>
+  {% for e in concept.all_extending|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+
+  {% if concept.all_implementing %}
+  <dt>All Implementing Classes</dt>
+  <dd>
+  {% for e in concept.all_implementing|sort -%}
+    {{ e|translink }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+  </dd>
+  {% endif %}
+</dl>
+</div>
+{% endmacro %}
+
+<!--
+Macro brief(entry)
+
+Render the @brief text for the given entry.
+-->
+
+{% macro brief(entry) -%}
+<div class="docstring">
+  <div class="discussion">
+    {{ entry.brief|transtext }}
+  </div>
+</div>
+{%- endmacro %}
+
+<!--
+Macro signatures(entry)
+
+Render the @signature entries for the given entry.
+-->
+
+{% macro signatures(entry) -%}
+<h3 class="signature"><pre style="margin:0;"><code>
+{%- for s in entry.signatures -%}
+{{ s|transtext(False) }}
+{% endfor -%}
+</code></pre></h3>
+
+{%- endmacro %}
+
+<!--
+Macro body(entry, start_heading=2)
+
+Render the body for the given entry.
+-->
+
+{% macro body(entry, start_heading=2) -%}
+{% if entry.body %}
+{{ entry.body|transtext(class="body", start_heading=start_heading) }}
+{% endif %}
+{%- endmacro %}
+
+<!--
+Macro see_also(entry, h_level)
+
+Render the given entry in a See Also section.  The heading "See Also" wil be
+rendered with level h_level.
+-->
+
+{% macro see_also(entry, h_level=2) -%}
+{% if entry.sees %}
+<div class="clause see">
+  <h{{ h_level }} class="clause_header">See Also</h{{ h_level }}>
+  <ul>
+  {% for link in entry.sees %}
+  <li>{{ link|transtext(True) }}</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{%- endmacro %}
+
+<!--
+Macro member_functions_ov(entry, doc)
+
+Render the member functions overview
+-->
+
+{% macro member_functions_ov(entry, doc, qualifier='Member') %}
+<h2>{{ qualifier }} Function Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% if entry.subentries['member_function'] -%}
+<ul class="summary">
+  {% for entry in entry.subentries['member_function'] %}
+  <li class="public">
+    {% if entry.sig_entries %}
+    <!-- TODO(holtgrew): Why sig_entries? -->
+    <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</td>
+    {% else %}
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+        {%- for s in entry.signatures -%}
+        {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
+        {%- endfor -%}
+    </a></span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% for cl in entry.all_extended %}
+{% if doc.top_level_entries[cl].subentries['member_function'] %}
+<h3>{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[cl].subentries['member_function'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+
+{% if entry.kind == 'class' %}
+{% for co in entry.all_implemented %}
+{% if doc.top_level_entries[co].subentries['member_function'] %}
+<h3>{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[co].subentries['member_function'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endmacro %}
+
+
+<!--
+Macro member_typedefs_ov(entry, doc)
+
+Render the member typedefs overview
+-->
+
+{% macro member_typedefs_ov(entry, doc, qualifier='Member') %}
+<h2>{{ qualifier }} Typedef Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% if entry.subentries['member_typedef'] -%}
+<ul class="summary">
+  {% for entry in entry.subentries['member_typedef'] %}
+  <li class="public">
+    {% if entry.sig_entries %}
+    <!-- TODO(holtgrew): Why sig_entries? -->
+    <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</td>
+    {% else %}
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (member typedef)">
+        {%- for s in entry.signatures -%}
+        {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
+        {%- endfor -%}
+    </a></span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+
+{% for cl in entry.all_extended %}
+{% if doc.top_level_entries[cl].subentries['member_typedef'] %}
+<h3>{{ qualifier }} Typedefs Inherited From {{ cl|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[cl].subentries['member_typedef'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+
+{% if entry.kind == 'class' %}
+{% for co in entry.all_implemented %}
+{% if doc.top_level_entries[co].subentries['member_typedef'] %}
+<h3>{{ qualifier }} Typedefs Inherited From {{ co|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[co].subentries['member_typedef'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endmacro %}
+x
+<!--
+Macro interface_functions_ov(entry, doc)
+
+Render the interface functions overview
+-->
+
+{% macro interface_functions_ov(entry, doc, qualifier='Interface') %}
+<h2>{{ qualifier }} Function Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% if entry.subentries['interface_function'] -%}
+<ul class="summary">
+  {% for entry in entry.subentries['interface_function'] %}
+  <li class="public">
+    {% if entry.sig_entries %}
+    <!-- TODO(holtgrew): Why sig_entries? -->
+    <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+    {% else %}
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)"><strong>
+        {%- for s in entry.signatures -%}
+        {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
+        {%- endfor -%}
+    </strong></a></span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% for cl in entry.all_extended %}
+{% if doc.top_level_entries[cl].subentries['interface_function'] %}
+<h3>{{ qualifier }} Functions Inherited From {{ cl|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[cl].subentries['interface_function'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+
+{% if entry.kind == 'class' %}
+{% for co in entry.all_implemented %}
+{% if doc.top_level_entries[co].subentries['interface_function'] %}
+<h3>{{ qualifier }} Functions Inherited From {{ co|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[co].subentries['interface_function'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endmacro %}
+
+<!--
+Macro grouped_macros_ov(entry, doc)
+
+Render the grouped macros overview
+-->
+
+{% macro grouped_macros_ov(entry, doc, qualifier='Grouped') %}
+{% if entry.subentries['grouped_macro'] -%}
+<div class="overview grouped_macros">
+<h2>{{ qualifier }} Macros Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+<table width="100%">
+  {% for entry in entry.subentries['grouped_macro'] %}
+  <tr>
+    {% if entry.sig_entries %}
+    <td>{{ sig_entries[0].toString() }}{{ entry.brief|transtext }}</td>
+    {% else %}
+    <td><code><a href="#{{ entry.name|escape_name }}">{{ entry.signatures[0].toHtmlLike(False) }}</a></code> {{ entry.brief|transtext }}</td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+
+{% endmacro %}
+
+<!--
+Macro interface_functions_ov(entry, doc)
+
+Render the interface functions overview
+-->
+
+{% macro grouped_tags_ov(entry, doc, qualifier='Interface') %}
+{% if entry.subentries['grouped_tag'] -%}
+<h2>{{ qualifier }} Tags Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+<ul class="summary">
+  {% for entry in entry.subentries['grouped_tag'] %}
+  <li class="public">
+    {% if entry.sig_entries %}
+    <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
+    {% elif entry.signatures %}
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+        {%- for s in entry.signatures -%}
+        {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
+        {%- endfor -%}
+    </a></span>
+    {% else %}
+    <span class="summary_signature">{{ entry.name }}</span>
+    {% endif %}
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+  </li>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+
+{% endmacro %}
+
+<!--
+Macro interface_metafunctions_ov(entry, doc)
+
+Render the interface metafunctions overview
+-->
+
+{% macro interface_metafunctions_ov(entry, doc, qualifier='Interface') %}
+<h2>{{ qualifier }}  Metafunction Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% if entry.subentries['interface_metafunction'] -%}
+<ul class="summary">
+  {% for entry in entry.subentries['interface_metafunction'] %}
+  <li class="public">
+    {% if entry.sig_entries %}
+    <!-- TODO(holtgrew): Why sig_entries? -->
+    <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</td>
+    {% else %}
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+        {%- for s in entry.signatures -%}
+        {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
+        {%- endfor -%}
+    </a></span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% for cl in entry.all_extended %}
+{% if doc.top_level_entries[cl].subentries['interface_metafunction'] %}
+<h3>{{ qualifier }} Metafunctions Inherited From {{ cl|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[cl].subentries['interface_metafunction'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+
+{% if entry.kind == 'class' %}
+{% for co in entry.all_implemented %}
+{% if doc.top_level_entries[co].subentries['interface_metafunction'] %}
+<h3>{{ qualifier }} Metafunctions Inherited From {{ co|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[co].subentries['interface_metafunction'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endmacro %}
+
+<!--
+Macro member_variables_ov(entry, doc)
+
+Render the member variables overview
+-->
+{% macro member_variables_ov(entry, doc, qualifier='Member') %}
+<h2>{{ qualifier }} Variable Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% if entry.subentries['member_variable'] -%}
+<ul class="summary">
+  {% for entry in entry.subentries['member_variable'] %}
+  <li class="public">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+        {{ entry.type|e }} {{ entry.name|e }}
+    </a></span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% for cl in entry.all_extended %}
+{% if doc.top_level_entries[cl].subentries['member_variable'] %}
+<h3>{{ qualifier }} Variables Inherited From {{ cl|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[cl].subentries['member_variable'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+
+{% if entry.kind == 'class' %}
+{% for co in entry.all_implemented %}
+{% if doc.top_level_entries[co].subentries['member_variable'] %}
+<h3>{{ qualifier }} Variable Inherited From {{ co|translink }}</h3>
+
+<ul class="summary compact">
+  {% for entry in doc.top_level_entries[co].subentries['member_variable'] %}
+  <li class="public"><span class="summary_signature">{{ entry.name|translink }}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endmacro %}
+
+<!--
+Macro enum_values_ov(entry, doc)
+
+Render the member variables overview
+-->
+{% macro enum_values_ov(entry, doc) %}
+<h2>Enum Values Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% if entry.subentries['variable'] -%}
+<ul class="summary">
+  {% for entry in entry.subentries['variable'] %}
+  <li class="public">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+        {{ entry.type|e }} {{ entry.name|e }}
+    </a></span>
+    <span class="summary_desc">{{ entry.brief|transtext }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endmacro %}
+
+<!--
+Macro member_functions(entry)
+
+Render the member functions details.
+-->
+
+{% macro member_functions(entry, qualifier='Member') %}
+{{ interface_functions(entry, 'Member', 'member_function') }}
+{% endmacro %}
+
+<!--
+Macro grouped_tags(entry)
+
+Render the grouped macros details
+-->
+
+{% macro grouped_tags(entry, qualifier='Grouped') %}
+{% if entry.subentries['grouped_tag'] -%}
+<div class="grouped_tags_details">
+  <h2>{{ qualifier }} Tags Detail</h2>
+
+  {% for subentry in entry.subentries['grouped_tag'] %}
+  <div class="method_details{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
+      <pre style="margin:0;"><code>
+          {%- if subentry.signatures -%}
+          {%- for s in subentry.signatures: -%}
+          {{ s|transtext(False) }}{% if not loop.last %}
+{% endif -%}{%- endfor -%}
+          {%- else -%}
+          {{ subentry.name|e }}
+          {%- endif -%}
+      </code></pre>
+    </h3>
+    
+    <div class="docstring">
+      <div class="discussion">
+        {{ subentry.brief|transtext }}
+        {{ body(subentry) }}
+      </div>
+    </div>
+
+    {% if subentry.sees %}
+    <div class="tags">
+      <p class="tag_title">See Also:</p>
+      
+      <ul class="see">
+        {% for link in subentry.sees %}
+        <li>{{ link|transtext(False)|translink }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endfor %}
+
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro grouped_macros(entry)
+
+Render the grouped macros details
+-->
+
+{% macro grouped_macros(entry, doc, qualifier='Grouped') %}
+{% if entry.subentries['grouped_macro'] -%}
+<div class="details grouped_macros">
+<h2>{{ qualifier }} Macros Detail</h2>
+
+{% for subentry in entry.subentries['grouped_macro'] %}
+<h3 id="{{ subentry.name|escape_name }}">{{ subentry.name|e }}</h3>
+
+{% if subentry.signatures -%}
+<pre class="signature"><code>
+{%- for s in subentry.signatures: -%}
+{{ s|transtext(False) }}
+{% endfor -%}
+</code></pre>
+{%- endif %}
+
+<div class="brief">{{ subentry.brief|transtext }}</div>
+
+<dl>
+{% if subentry.params %}
+  <dt>Parameters</dt>
+
+  {% for param in subentry.params %}
+  <dd>
+    <code>{{ param.name|e }}</code>
+    {% if param.in_out %}
+    ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
+    {% endif %} -
+    {{ param.desc|transtext(False) }}
+  </dd>
+  {% endfor %}
+{% endif %}
+
+{% if subentry.tparams %}
+  <dt>Template Parameters</dt>
+
+  {% for param in subentry.tparams %}
+  <dd>
+    <code>{{ param.type|e }}</code> -
+    {{ param.desc|transtext(False) }}
+  </dd>
+  {% endfor %}
+{% endif %}
+
+{% if subentry.returns %}
+  <dt>Return Values</dt>
+
+  {% for ret in subentry.returns %}
+  <dd>
+    <code>{{ ret.type|e }}</code> -
+    {{ ret.desc|transtext(False) }}
+  </dd>
+  {% endfor %}
+{% endif %}
+
+{% if subentry.sees %}
+  <dt>See Also</dt>
+  <dd>
+  {% for link in subentry.sees %}
+  <dd>{{ link|transtext(False)|translink }}</dd>
+  {% endfor %}
+  </dd>
+{% endif %}
+</dl>
+
+{{ body(subentry) }}
+
+{% endfor %}
+
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro interface_functions(entry)
+
+Render the interface functions details
+-->
+
+{% macro interface_functions(entry, qualifier='Interface', key='interface_function') %}
+{% if entry.subentries[key] -%}
+<div class="{{ key|e }}_defails">
+  <h2>{{ qualifier }} Functions Detail</h2>
+
+  {% for subentry in entry.subentries[key] %}
+  <div class="method_details{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
+      <pre style="margin:0;"><code>
+          {%- for s in subentry.signatures: -%}
+          {{ s|transtext(False) }}{% if not loop.last %}
+{% endif -%}{%- endfor -%}
+      </code></pre>
+    </h3>
+  </div>
+  <div class="docstring">
+    <div class="discussion">
+      {{ subentry.brief|transtext }}
+      {{ body(subentry) }}
+    </div>
+  </div>
+
+  {% if subentry.tparams %}
+  <div class="tags">
+    <p class="tag_title">Template Parameters</p>
+
+    <ul class="param">
+      {% for param in subentry.tparams %}
+      <li>
+        <span class="name"><tt>{{ param.type|e }}</tt></span> &mdash;
+        <div class="inline">{{ param.desc|transtext(False) }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if subentry.params %}
+  <div class="tags">
+    <p class="tag_title">Parameters</p>
+
+    <ul class="param">
+      {% for param in subentry.params %}
+      <li>
+        <span class="name"><tt>{{ param.name|e }}</tt></span>
+        {% if param.in_out %}
+        ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
+        {% endif %}
+        &mdash;
+        <div class="inline">{{ param.desc|transtext(False) }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if subentry.returns %}
+  <div class="tags">
+    <p class="tag_title">Returns:</p>
+
+    <ul class="return">
+      {% for ret in subentry.returns %}
+      <li>
+        <span class="type"><tt>{{ ret.type|e }}</tt></span> &mdash;
+        <div class="inline">{{ ret.desc|transtext(False) }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if subentry.sees %}
+  <div class="tags">
+    <p class="tag_title">See Also:</p>
+    
+    <ul class="see">
+      {% for link in subentry.sees %}
+      <li>{{ link|transtext(False)|translink }}</li>
+      {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+  {% endfor %}
+
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro member_typedefs(entry)
+
+Render the member typedef details
+-->
+
+{% macro member_typedefs(entry, qualifier='Member', key='member_typedef') %}
+{% if entry.subentries[key] -%}
+<div class="{{ key|e }}_defails">
+  <h2>{{ qualifier }} Typedef Detail</h2>
+
+  {% for subentry in entry.subentries[key] %}
+  <div class="method_details{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
+      <pre style="margin:0;"><code>
+          {%- for s in subentry.signatures: -%}
+          {{ s|transtext(False) }}{% if not loop.last %}
+{% endif -%}{%- endfor -%}
+      </code></pre>
+    </h3>
+  </div>
+  <div class="docstring">
+    <div class="discussion">
+      {{ subentry.brief|transtext }}
+      {{ body(subentry) }}
+    </div>
+  </div>
+
+  {% if subentry.sees %}
+  <div class="tags">
+    <p class="tag_title">See Also:</p>
+    
+    <ul class="see">
+      {% for link in subentry.sees %}
+      <li>{{ link|transtext(False)|translink }}</li>
+      {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+  {% endfor %}
+
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro interface_metafunctions(entry)
+
+Render the interface metafunctions details
+-->
+
+{% macro interface_metafunctions(entry, qualifier='Interface') %}
+{% if entry.subentries['interface_metafunction'] -%}
+<div class="interface_metafunction_details">
+<h2>{{ qualifier }} Metafunctions Detail <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+{% for subentry in entry.subentries['interface_metafunction'] %}
+<div class="method_details{% if loop.first %} first{% endif %}">
+  <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+    <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
+    <pre style="margin:0;"><code>
+          {%- for s in subentry.signatures: -%}
+          {{ s|transtext(False) }}{% if not loop.last %}
+{% endif -%}{%- endfor -%}
+    </code></pre>
+  </h3>
+
+  <div class="docstring">
+    <div class="discussion">
+      {{ subentry.brief|transtext }}
+      {{ body(subentry) }}
+    </div>
+  </div>
+
+  {% if subentry.tparams %}
+  <div class="tags">
+    <p class="tag_title">Template Parameters</p>
+
+    <ul class="param">
+      {% for param in subentry.tparams %}
+      <li>
+        <span class="name"><tt>{{ param.type|e }}</tt></span> &mdash;
+        <div class="inline">{{ param.desc|transtext(False) }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if subentry.returns %}
+  <div class="tags">
+    <p class="tag_title">Returns:</p>
+
+    <ul class="return">
+      {% for ret in subentry.returns %}
+      <li>
+        <span class="type"><tt>{{ ret.type|e }}</tt></span> &mdash;
+        <div class="inline">{{ ret.desc|transtext(False) }}</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+{% endfor %}
+
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro member_variables(entry)
+
+Render the member variables details
+-->
+
+{% macro member_variables(entry, qualifier='Member') %}
+{% if entry.subentries['member_variable'] -%}
+<div class="member_variable_details">
+  <h2>{{ qualifier }} Variables Detail</h2>
+
+  {% for subentry in entry.subentries['member_variable'] %}
+  <div class="member_variable_details{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
+      <tt>{{ subentry.type|e }} {{ subentry.name|e }}</tt>
+    </h3>
+    <div class="docstring">
+      <div class="discussion">
+        {{ subentry.brief|transtext }}
+        {{ body(subentry) }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro enum_values(entry)
+
+Render the member variables details
+-->
+
+{% macro enum_values(entry, qualifier='Member') %}
+{% if entry.subentries['variable'] -%}
+<div class="enum_value_details">
+  <h2>Enum Values Detail</h2>
+
+  {% for subentry in entry.subentries['variable'] %}
+  <div class="enum_value_details{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
+      <tt>{{ subentry.type|e }} {{ subentry.name|e }}</tt>
+    </h3>
+    <div class="docstring">
+      <div class="discussion">
+        {{ subentry.brief|transtext }}
+        {{ body(subentry) }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro params(entry)
+
+Render the parameter details.
+-->
+
+{% macro params(entry) %}
+
+{% if entry.params %}
+<h2>Parameters</h2>
+
+<div class="tags">
+  <ul class="param">
+    {% for param in entry.params %}
+    <li>
+      <span class="name"><tt>{{ param.name|e }}</tt></span>
+      {% if param.in_out %}
+      ({{ {'IN': 'in', 'OUT': 'out', 'IN_OUT': 'in,out'}.get(param.in_out)|e }})
+      {% endif %}
+      &mdash;
+      <div class="inline">{{ param.desc|transtext(False) }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro tparams(entry)
+
+Render the template parameter details.
+-->
+
+{% macro tparams(entry) %}
+
+{% if entry.tparams %}
+<h2>Template Parameters</h2>
+
+<div class="tags">
+  <ul class="param">
+    {% for param in entry.tparams %}
+    <li>
+      <span class="name"><tt>{{ param.type|e }}</tt></span>
+      &mdash;
+      <div class="inline">{{ param.desc|transtext(False) }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro tparams_ov(entry)
+
+Render the template parameter overview.
+-->
+
+{% macro tparams_ov(entry) %}
+{% if entry.tparams %}
+
+{% if entry.tparams %}
+  <h2>Template Parameters <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+
+  <ul class="summary">
+    {% for param in entry.tparams %}
+    <li class="public">
+      <span class="summary_signature"><a href="#"><strong>{{ param.type|e }}</strong></a></span>
+      <span class="summary_desc">{{ param.desc|transtext(False) }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro return_values(entry)
+
+Render the template parameter details.
+-->
+
+{% macro return_values(entry) %}
+{% if entry.returns %}
+<h2>Return Values</h2>
+
+<div class="tags">
+  <ul class="param">
+    {% for ret in entry.returns %}
+    <li class="public">
+      <span class="type">{{ ret.type|e }}</span> &mdash;
+      {{ ret.desc|transtext(False) }}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endmacro %}
+
+<!--
+Macro dox_source(entry)
+
+Render toggle-able Dox-like documentation.
+-->
+
+{% macro dox_source(entry) %}
+
+<a href="#" onclick="javascript:document.getElementById('dox-source').style.display = 'block'; return false;">Toggle</a>
+<pre style="font-size:.8em; display:none;" id="dox-source">{{ entry|to_dox|e }}</pre>
+
+{% endmacro %}

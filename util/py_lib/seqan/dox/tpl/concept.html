@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}{{ concept.name }}{% endblock %}
+
+{% block content %}
+<h1>Concept: {{ concept.name }}</h1>
+
+{{ sections.top_box(concept) }}
+
+<!-- signatures -->
+{{ sections.signatures(concept) }}
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @deprecated -->
+    {% if concept.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        {% for msg in concept.deprecation_msgs %}
+        <p>{{ msg|transtext(False) }}</p>
+        {% endfor %}
+    </div></div>
+    {% endif %}
+
+    <!-- @brief -->
+    {{ sections.brief(concept) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(concept) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(concept) }}
+
+<!--
+ =============================================================================
+  Member and Interface Overview
+ =============================================================================
+-->
+
+<!-- Member Functions Overview -->
+{{ sections.member_functions_ov(concept, doc) }}
+
+<!-- Interface Functions Overview -->
+{{ sections.interface_functions_ov(concept, doc) }}
+
+<!-- Interface Metafunctions Overview -->
+{{ sections.interface_metafunctions_ov(concept, doc) }}
+
+<!-- Member Variable Overview -->
+{{ sections.member_variables_ov(concept, doc) }}
+
+<!--
+ =============================================================================
+  Member and Interface Details
+ =============================================================================
+-->
+
+<!-- Member Functions Details -->
+{{ sections.member_functions(concept) }}
+
+<!-- Interface Functions Details -->
+{{ sections.interface_functions(concept) }}
+
+<!-- Interface Metafunctions Details -->
+{{ sections.interface_metafunctions(concept) }}
+
+<!-- Member Variable Details -->
+{{ sections.member_variables(concept) }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(concept) }}
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ klass.name }}{% endblock %}
+
+{% block content %}
+<h1>Class: {{ klass.name }}</h1>
+
+{{ sections.top_box(klass) }}
+
+<!-- @signature -->
+{{ sections.signatures(klass) }}
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @deprecated -->
+    {% if klass.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        {% for msg in klass.deprecation_msgs %}
+        <p>{{ msg|transtext(False) }}</p>
+        {% endfor %}
+    </div></div>
+    {% endif %}
+
+    <!-- @brief -->
+    {{ sections.brief(klass) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(klass) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(klass) }}
+
+<!--
+ =============================================================================
+  Member and Interface Overview
+ =============================================================================
+-->
+
+<!-- Template Parameters -->
+{{ sections.tparams_ov(klass) }}
+
+<!-- Member Functions Overview -->
+{{ sections.member_functions_ov(klass, doc) }}
+
+<!-- Interface Functions Overview -->
+{{ sections.interface_functions_ov(klass, doc) }}
+
+<!-- Member Typedefs Overview -->
+{{ sections.member_typedefs_ov(klass, doc) }}
+
+<!-- Interface Metafunctions Overview -->
+{{ sections.interface_metafunctions_ov(klass, doc) }}
+
+<!-- Member Variable Overview -->
+{{ sections.member_variables_ov(klass, doc) }}
+
+<!--
+ =============================================================================
+  Member and Interface Details
+ =============================================================================
+-->
+
+<!-- Member Functions Details -->
+{{ sections.member_functions(klass) }}
+
+<!-- Interface Functions Details -->
+{{ sections.interface_functions(klass) }}
+
+<!-- Member Typedefs Details -->
+{{ sections.member_typedefs(klass) }}
+
+<!-- Interface Metafunctions Details -->
+{{ sections.interface_metafunctions(klass) }}
+
+<!-- Member Variable Details -->
+{{ sections.member_variables(klass) }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(klass) }}
+
+{% endblock %}

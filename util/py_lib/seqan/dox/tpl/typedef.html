@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Typedef: {{ typedef.name }}</h1>
+
+{{ sections.top_box(typedef) }}
+
+<!-- signatures -->
+{{ sections.signatures(typedef) }}
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @deprecated -->
+    {% if typedef.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        {% for msg in typedef.deprecation_msgs %}
+        <p>{{ msg|transtext(False) }}</p>
+        {% endfor %}
+    </div></div>
+    {% endif %}
+
+    <!-- @brief -->
+    {{ sections.brief(typedef) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(typedef) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(typedef) }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(typedef) }}
+
+{% endblock %}

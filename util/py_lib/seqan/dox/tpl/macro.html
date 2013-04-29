@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ macro.name }}{% endblock %}
+
+{% block content %}
+<h1 class="macro title">Macro: {{ macro.name }}</h1>
+
+{{ sections.top_box(macro) }}
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @deprecated -->
+    {% if macro.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        {% for msg in macro.deprecation_msgs %}
+        <p>{{ msg|transtext(False) }}</p>
+        {% endfor %}
+    </div></div>
+    {% endif %}
+
+    <!-- @brief -->
+    {{ sections.brief(macro) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(macro) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(macro) }}
+
+<!-- @param -->
+{{ sections.params(macro) }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(macro) }}
+
+{% endblock %}

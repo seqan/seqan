@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ shortcut.name }}{% endblock %}
+
+{% block banner %}
+<h1 class="shortcut title">{{ shortcut.name }} Shortcut Reference</h1>
+{% endblock %}
+
+{% block content %}
+
+<!-- @brief -->
+{{ sections.brief(shortcut) }}
+
+<!-- @signature -->
+{{ sections.signatures(shortcut) }}
+
+<!-- paragraphs -->
+{{ sections.body(shortcut) }}
+
+<!-- @see -->
+{{ sections.see_also(shortcut) }}
+
+{% endblock %}

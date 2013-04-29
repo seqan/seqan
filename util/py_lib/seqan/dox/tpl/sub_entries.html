@@ -1,0 +1,23 @@
+{% import 'sections.html' as sections %}
+
+{% macro function(fn, pre) -%}
+<div class="{{ pre }}_function">
+  <h3>{{ fn.name }}</h3>
+  
+  <!-- @brief -->
+  {{ sections.brief(fn) }}
+  
+  <!-- @signature -->
+  {{ sections.signatures(fn) }}
+  
+  <!-- paragraphs -->
+  {{ sections.paragraphs(fn) }}
+  
+  <!-- @see -->
+  {{ sections.see_also(fn, 4) }}
+</div>
+{%- endmacro %}
+
+{% macro member_function(fn) -%}{{ function(fn, 'member') }}{%- endmacro %}
+
+{% macro interface_function(fn) -%}{{ function(fn, 'interface') }}{%- endmacro %}

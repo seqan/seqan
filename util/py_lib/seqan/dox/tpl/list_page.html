@@ -1,0 +1,31 @@
+{% extends 'list.html' %}
+
+{% block content %}
+
+<h1 id="full_list_header">Pages</h1>
+
+<div id="nav">
+  <span><a target="_self" href="first.html">
+      Types / Functions
+  </a></span>
+  
+  <span><a target="_self" href="second.html">
+      Member / Interface Entries
+  </a></span>
+  
+  <span><a target="_self" href="page.html">
+      Pages
+  </a></span>
+</div>
+
+<div id="search">Search: <input type="text" /></div>
+
+<ul id="full_list" class="class">
+  {% for name, entry in doc.top_level_entries|dictsort %}
+  {% if entry.kind == 'page' %}
+  <li><!--<a class="toggle"></a>--> <span class="label_{{ entry.kind }} object_link"><a href="../{{name|name_to_path}}" title="{{name}} ({{entry.kind}})">{{name}}</a></li>
+  {% endif %}
+  {% endfor %}
+</ul>
+
+{% endblock %}

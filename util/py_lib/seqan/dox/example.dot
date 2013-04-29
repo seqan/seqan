@@ -1,0 +1,19 @@
+digraph {
+  rankdir=BT;
+
+  SuperClassA -> SuperClassB [color="midnightblue",height=0.2,width=0.4];
+  TheClass -> SuperClassA [color="midnightblue",height=0.2,width=0.4];
+  TheClass -> SuperClassC [color="midnightblue",height=0.2,width=0.4];
+  TheClass -> ConceptA [color="orange",height=0.2,width=0.4];
+  SuperClassA -> ConceptB [color="orange",height=0.2,width=0.4];
+  ConceptA -> ConceptB [color="orange",height=0.2,width=0.4];
+  TheClass -> ConceptC [color="orange",height=0.2,width=0.4];
+
+  SuperClassA [shape=box,height=0.2,width=0.4,fontcolor="black",URL="SuperClassA.html"];
+  SuperClassB [shape=box,height=0.2,width=0.4,fontcolor="black",URL="SuperClassB.html"];
+  SuperClassC [shape=box,height=0.2,width=0.4,fontcolor="black",URL="SuperClassC.html"];
+  ConceptA [shape=box,height=0.2,width=0.4,style="rounded",fontcolor="black",URL="ConceptA.html"];
+  ConceptB [shape=box,height=0.2,width=0.4,style="rounded",fontcolor="black",URL="ConceptB.html"];
+  ConceptC [shape=box,height=0.2,width=0.4,style="rounded",fontcolor="black",URL="ConceptC.html"];
+  TheClass [shape=box,height=0.2,width=0.4,fillcolor="grey75",style="filled",fontcolor="black",URL="TheClass.html"];
+}

@@ -1,0 +1,12 @@
+TODOs
+-----
+
+ * identifier names apart from title.
+ * remove empty <h2> that confuse the collapse scripts
+
+ * dot inheritance diagrams
+ * Comprehensive parsing of in-text stuff link @link @endlink etc.
+ * Class/Concept/etc. overview pages
+ * frameset structure generation
+ * Do we need modules?
+ * tags

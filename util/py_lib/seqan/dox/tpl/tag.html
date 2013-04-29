@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tag.name }}{% endblock %}
+
+{% block content %}
+<h1>Tag: {{ tag.name }}</h1>
+
+{{ sections.top_box(tag) }}
+
+<!-- @signature -->
+{{ sections.signatures(tag) }}
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @deprecated -->
+    {% if tag.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        {% for msg in tag.deprecation_msgs %}
+        <p>{{ msg|transtext(False) }}</p>
+        {% endfor %}
+    </div></div>
+    {% endif %}
+
+    <!-- @brief -->
+    {{ sections.brief(tag) }}
+    
+    <!-- paragraphs -->
+    {{ sections.body(tag) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(tag) }}
+
+<!--
+ =============================================================================
+  Footer / Debug
+ =============================================================================
+-->
+
+{{ sections.dox_source(tag) }}
+
+{% endblock %}

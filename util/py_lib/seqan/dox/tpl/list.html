@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+      <link rel="stylesheet" href="../css/full_list.css" type="text/css" media="screen" charset="utf-8" />
+
+      <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+      <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+      <script type="text/javascript" charset="utf-8" src="../js/full_list.js"></script>
+
+      <style type="text/css">
+        span.object_link { padding-left: 10px; margin-left: 10px; }
+
+        span.label_global_function:before { content: "f() "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_global_metafunction:before { content: "F<> "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_macro:before { content: "M "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_global_typedef:before { content: "t "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_member_typedef:before { content: "::t "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_grouped_typedef:before { content: "#t "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_tag:before { content: "T "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_enum:before { content: "e "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_adaption:before { content: "a "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_group:before { content: "G "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_class:before { content: "c "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_concept:before { content: "C "; background-color: #033E6B; font-weight: bolder; color:white; }
+        span.label_variable:before { content: "v "; background-color: #033E6B; font-weight: bolder; color:white; }
+
+        span.label_member_function:before { content: "::() "; background-color: #FFB640; font-weight: bolder; color:white; }
+        span.label_member_variable:before { content: "v "; background-color: #FFB640; font-weight: bolder; color:white; }
+
+        span.label_interface_function:before { content: "#() "; background-color: #439400; font-weight: bolder; color:white; }
+        span.label_interface_metafunction:before { content: "#<> "; background-color: #439400; font-weight: bolder; color:white; }
+        span.label_grouped_tag:before { content: "#T "; background-color: #439400; font-weight: bolder; color:white; }
+      </style>
+
+      <base id="base_target" target="_parent" />
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) {
+        document.getElementById('base_target').target = 'main';
+        document.body.className = 'frames';
+      }
+    </script>
+    <div id="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

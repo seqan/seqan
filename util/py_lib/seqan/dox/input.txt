@@ -1,0 +1,438 @@
+@tag TagName
+
+@brief This is the tag brief.
+
+And this is some explanation.
+
+@signature typedef Tag<TagName_> TagName;
+
+@defgroup AlignmentAlgorithmTags Alignment Algorithm Tags
+
+@brief The tags from this group are used to select DP alignment algorithms.
+
+@tag AlignmentAlgorithmTags#NeedlemanWunsch
+
+This is a tag.
+
+@signature typedef Tag<NeedlemanWunsch_> NeedlemanWunsch;
+
+@macro AlignmentAlgorithmTags#FOO_BAR
+
+@signature FOO_BAR(p)
+
+@param p The parameter.
+
+@fn AlignmentAlgorithmTags#globalAlignment
+
+@brief Watch out! I'm here!
+
+@signature TScoreValue globalAlignment(align, scoringScheme, tag
+
+@macro AlignmentAlgorithmTags#ALIGN
+
+@signature SEQAN_ALIGN(hohoho)
+
+@macro SEQAN_FAIL
+
+@signature SEQAN_FAIL(msg)
+
+Some documentation.
+
+@param msg TString The string, <tt>char const *</tt>.
+
+@concept Assignable
+@concept DefaultConstructable
+@concept D
+@concept C
+@extends D
+
+@concept Container
+@extends Assignable
+@extends DefaultConstructable
+@extends C
+
+@brief A container is an object used to store objects.
+
+@signature concept Container;
+
+The memory of the contained objects is managed by the container.
+
+Some formatting: <tt>code</tt>, <i>italic</i>, <b>bold</b>.
+
+Links can be made this way: @link String Link text@endlink or
+<a href="seqan:String">with a different Title</a> or
+<a href="http://www.seqan.de">to arbitrary URLs</a>
+
+<a href="seqan:String#length">Link to String#length.</a>
+
+<ul><li>Lists</li><li>Lists again!</li></ul>
+
+<ol><li>More Lists</li><li>Many more lists!</li></ol>
+
+We limit the usage of tags and do not have to escape < and & properly.
+
+@code{.cpp}
+int main(int argc, char const ** argv)
+{
+    return 0;
+}
+@endcode
+
+Here is a demo file:
+
+@include demo.cpp
+
+Here is a demo snippet:
+
+@snippet demo.cpp block marker
+
+@section Example
+
+demo.cpp
+
+core/demos/api/container_concept.cpp#string
+
+@subsection Foo Bar!
+
+Subsections are also allowed.
+
+@see String
+@see TitlePage
+
+
+@fn Container::Container
+
+@brief Constructor: containers are default and copy constructible.
+
+@signature Container::Container();
+@signature Container::Container(Container other);
+
+@param other The source for copying.  Must be of the same type as the
+             container itself.
+
+
+
+@fn Container::~Container
+
+@brief Destructor: containers are destructible.
+
+@signature Container::~Container();
+
+
+
+@mfn Container#Iterator
+
+@brief Returns the type of iterators for containers.
+
+@signature Iterator<TContainer, TTag>::Type;
+
+@tparam TContainer The container type to quer.
+@tparam TTag       The tag for selecting the type of the iterator,
+                   e.g. @link Standard @endlink or @link Rooted @endlink.  The default
+                   is the value of <tt>DefaultIteratorSpec&lt;TContainer&gt;::Type</tt>.
+
+@returns The type of the iterator.
+
+@see Container#begin
+@see Container#end
+
+@section Example
+
+@snippet demo.cpp block marker
+
+core/demos/api/container_concept.cpp#iterate
+
+
+
+@mfn Container#Value
+
+@brief Returns the value type of the container.
+
+The actual representation of the objects in the container are convertible
+into the value type of the container.
+
+In many cases, containers are parametrized by the value type, e.g. for
+<tt>std::vector&lt;T&gt;</tt>, <tt>T</tt> is the value type.
+
+@signature Value<TContainer>::Type;
+
+@returns The value type.
+
+@see Container#GetValue
+@see Container#Reference
+
+
+
+@mfn Container#GetValue
+
+@brief Returns the "get value" type of the container.
+
+The "get value" type allows the fast reading of elements from a container.
+The requirement is that the get value type can be assigned to the value
+type.  For small objects, the "get value" type could be a copy and for
+larger objects, it could be a const reference.
+
+@signature GetValue<TContainer>::Type;
+
+@returns The get value type.
+
+@see Container#GetValue
+@see Container#Reference
+
+
+
+@mfn Container#Reference
+
+@brief Returns the reference type of the container.
+
+The reference type allows the reading and writing of elements from a
+container.  It could be a reference (possibly a const reference for const
+containers) or a proxy.
+
+@signature Reference<TContainer>::Type;
+
+@returns The reference type
+
+@see Container#Value
+@see Container#Reference
+
+
+
+@fn Container#length
+
+@brief Returns the number of elements in a container.
+
+@signature TSize length(TContainer obj);
+
+@param obj The container object to query for its length.
+
+@returns TSize  The number of elements in the container.
+
+
+
+@mfn Container#Size
+
+@brief Returns the size type of the container.
+
+@signature Size<TContainer>::Type;
+
+@tparam TContainer The container to get the size type of.
+
+@returns The size of type of the container.
+
+@section Example
+
+demo.cpp
+
+ core/demos/api/container_concept.cpp#size
+
+
+
+@fn Container#begin
+
+@brief Returns an iterator to the beginning of the container.
+
+@signature TIterator begin(TContainer obj, TTag tag);
+
+@param[in] obj The container object to get the begin iterator of.
+@param[in] tag A tag for selecting the kind of iterator.  The default is
+               <tt>DefaultIteratorSpec&lt;TContainer&gt;::Type()</tt>.
+
+@returns TIterator An iterator to the beginning of the container.  The
+                   return type is equal to <tt>Iterator&lt;TContainer,
+                   TTag&gt;::Type</tt>.
+
+@see Container#end
+@see Container#Iterator
+
+@section Example
+
+demo.cpp
+
+ core/demos/api/container_concept.cpp#iterate
+
+
+
+@fn Container#end
+
+@brief Returns an iterator to the end (behind the last item) of the container.
+
+@signature TIterator end(TContainer obj, TTag tag);
+
+@param[in] obj The container object to get the end iterator of.
+@param[in] tag A tag for selecting the kind of iterator.  The default is
+               <tt>DefaultIteratorSpec&lt;TContainer&gt;::Type()</tt>.
+
+@returns TIterator An iterator to the end of the container.  The
+                   return type is equal to <tt>Iterator&lt;TContainer,
+                   TTag&gt;::Type</tt>.
+
+@see Container#begin
+@see Container#Iterator
+
+@section Example
+
+demo.cpp
+
+ core/demos/api/container_concept.cpp#iterate
+
+
+@fn Container#swap
+
+@brief Swap the contents of two containers.
+
+This function is equivalent to the following.  However, depending on the
+type of the container, the implementation can be optimized.
+
+@code{.cpp}
+template <Typename TContainer>
+void swap(TContainer & lhs, TContainer & rhs)
+{
+    TContainer tmp = lhs;
+    lhs = rhs;
+    lhs = tmp;
+}
+@endcode
+
+@signature void swap(TContainer lhs, TContainer rhs);
+
+@param[in,out] lhs The first container.
+@param[in,out] rhs The second container.
+
+@returns void
+
+
+
+@fn Container#empty
+
+@brief Returns whether the the container is empty.
+
+@signature bool empty(TContainer obj);
+
+@param[in] obj The container object to query.
+
+@returns bool Whether the container is empty or not.
+
+
+@page TitlePage Title Page
+
+@brief This is the page's abstract.
+
+This is some page.
+
+With multiple paragraphs.
+
+@see Container
+@see Foo
+
+@class String
+@implements Container
+@implements C
+
+@brief Base class for the String class hierarchy.
+
+@signature template <typename TValue, typename TSpec>
+           class String;
+
+@section Examples
+
+Strings can be used yada yad yada.
+
+@code{.cpp}
+seqan::CharString s = "asdf";
+append(s, "foo");
+@endcode
+
+
+@fn String::String
+@brief Constructor.
+
+@signature String::String();
+@signature String::String(String other);
+@signature String::String(TSequence seq);
+
+Besides default and copy construction, Strings also support conversion
+construction.
+
+@param[in] other Another string of the same class that is copied from.
+@param[in] seq   A sequence that is copied into the newly created string.
+
+@section Examples
+
+The following examples shows the different ways that a String can be
+constructed in.
+
+@code{.cpp}
+seqan::String<char> s;      // Default Construction
+seqan::String<char> s2(s);  // Copy construction
+seqan::String<char> s3("Hi there");  // Conversion construction from sequence.
+@endcode
+
+@fn String::~String
+@brief Destrutor
+
+@signature String::~String();
+
+The default destructor allocates all memory associated with the string.
+
+
+@fn String#length
+@brief Return the length of the string.
+
+@signature TSize length(String s)
+
+@param[in] s The string to get the size of.
+
+@return TSize The length of the string.  The type of the length is the size
+              type of the string type, can be retrieved with the metafunction
+              Size.
+
+@see Alloc String
+
+
+@fn String#empty
+@brief Shortcut for querying a string whether it is empty.
+
+@signature bool empty(String s)
+
+@param[in] s The string to query for emptyness.
+
+@return bool <tt>true</tt> if the string is empty, <tt>false</tt> otherwise.
+
+
+@mfn String#Size
+@brief Returns the size type of the string.
+
+@signature Size<TString>::Type
+
+@tparam TString The string type to query.
+
+@return TSize The size type, usually an unsigned integral value.
+
+
+@var int String::dont_touch_this
+@brief Don't touch this. Period.
+
+@mfn String#Position
+@brief Returns the position type of the string.
+
+@signature Position<TString>::Type
+
+@tparam TString The string type to query.
+
+@return TPosition The position type of the string, signed or unsigned,
+                  depending on the string type.
+
+
+@class Alloc String
+@extends String
+
+@brief Simple implementation of the String class using dynamically sized arrays.
+
+
+@class Packed String
+@extends String
+
+@brief String class implementation that uses bit-compression to save memory.
+
+Note that the bit-compression is at the cost of running time.
