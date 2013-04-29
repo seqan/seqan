@@ -60,7 +60,7 @@ def doMain(args):
         lex = lexer.Lexer(dox_tokens.LEXER_TOKENS, skip_whitespace=False)
         for comment in the_file.comments:
             # TODO(holtgrew): Also give offset.
-            lex.input(comment.text)
+            lex.input(comment.text, filename, comment.line, comment.col)
             parser = dox_parser.Parser()
             parser.parse(lex)
             master_doc.merge(parser.documentation)

@@ -98,7 +98,19 @@ class ProcDoc(object):
     def registerEntry(self, x):
         """Register an entry."""
         if x.name in self.entries:
-            raise DocumentationBuildException('%s already known! (%s)' % (x.name, x))
+            old = self.entries[x.name]
+            tpl = ('Trying to define %(new_kind)s %(new_name)s in %(new_file)s:'
+                   '%(new_line)s but is previously defined as %(old_kind)s in '
+                   '%(old_file)s:%(old_line)d,')
+            vals = {
+                'new_kind': x.kind,
+                'new_name': x.name,
+                'new_file': old.location[0],
+                'new_line': old.location[1],
+                'old_kind': old.kind,
+                'old_file' : x.location[0],
+                'old_line' : x.location[1]}
+            raise DocumentationBuildException(tpl % vals)
         self.entries[x.name] = x
         x.doc = self
 
@@ -218,6 +230,7 @@ class ProcEntry(object):
         self.doc = None
         self.subentries = {}
         self.raw_entry = None
+        self._location = None
 
     def registerSubentry(self, proc_entry):
         self.subentries.setdefault(proc_entry.kind, []).append(proc_entry)
@@ -228,6 +241,18 @@ class ProcEntry(object):
         visitor.visit(self.body)
         for see in self.sees:
             visitor.visit(see)
+
+    @property
+    def location(self):
+        """Returns pair (path, line)."""
+        if not self._location:
+            path = '<none>'
+            line = -1
+            if self.raw_entry.name:
+                line = self.raw_entry.name.tokens[0].lineno
+                path = self.raw_entry.name.tokens[0].file_name
+            self._location = (path, line)
+        return self._location
 
     @property
     def kind(self):

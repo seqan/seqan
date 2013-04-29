@@ -10,14 +10,17 @@ import re
 
 class Token(object):
     """ A simple Token structure.
-        Contains the token type, value and position. 
+        Contains the token type, value and position.
+
+    TODO(holtgrew): Put file_name before lineno/column.
     """
-    def __init__(self, type, val, pos, lineno, column):
+    def __init__(self, type, val, pos, lineno, column, file_name='<file>'):
         self.type = type
         self.val = val
         self.pos = pos
         self.lineno = lineno
         self.column = column
+        self.file_name = file_name
 
     def __str__(self):
         return '%s(%s) at %d:%d (%d)' % (self.type, repr(self.val), self.lineno, self.column, self.pos)
@@ -71,13 +74,14 @@ class Lexer(object):
         
         self.re_ws_skip = re.compile('\S')
         
-    def input(self, buf):
+    def input(self, buf, file_name='<mem>', line=0, col=0):
         """ Initialize the lexer with a buffer as input.
         """
         self.buf = buf
-        self.column = 0
+        self.column = col
         self.pos = 0
-        self.lineno = 0
+        self.lineno = line
+        self.file_name = file_name
 
     def token(self):
         """ Return the next token (a Token object) found in the 
@@ -116,7 +120,7 @@ class Lexer(object):
                         ln_pos = -1
                     self.column = self.pos - ln_pos - 1
                     tok = Token(token_type, value, self.pos, self.lineno + self.line_offset,
-                                self.column + self.col_offset)
+                                self.column + self.col_offset, file_name=self.file_name)
                     self.pos += m.end()
                     return tok
 

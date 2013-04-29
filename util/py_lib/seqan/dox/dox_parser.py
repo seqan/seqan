@@ -676,7 +676,7 @@ class TypedefState(GenericDocState):
 class Parser(object):
     """The parser class takes tokens from a lexer.Lexer class.
     
-    It generates a raw_doc.RawDoc object from this withr
+    It generates a raw_doc.RawDoc object from this with
     raw_doc.RawEntry objects.
     """
 
