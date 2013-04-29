@@ -281,7 +281,7 @@ struct FmIndexInfo_
 ..param.TOccSpec:Occurrence table specialisation. 
 ...type:Tag.WT
 ...type:Tag.SBM
-...remakarks:The tags are really shortcuts for the different @Class.SentinelRankDictionary@s
+...remarks:The tags are really shortcuts for the different @Class.SentinelRankDictionary@s
 ...default:Tag.WT
 ..param.TSpec:FM index specialisation.
 ...type:Tag.CompressText

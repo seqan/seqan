@@ -91,7 +91,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@include example.cpp')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h4>Example</h4><code type=".cpp">#include <iostream>\n'
+        txt = ('<div><h0>Example</h0><code type=".cpp">#include <iostream>\n'
                '\n'
                'int main(int arg, char const ** argv)\n'
                '{\n'
@@ -109,7 +109,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@snippet example.cpp Print to stdout')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h4>Example</h4><code type=".cpp">'
+        txt = ('<div><h0>Example</h0><code type=".cpp">'
                '    std::cout << "This is an example.\\n";'
                '</code></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
@@ -147,7 +147,7 @@ class TestConvertPage(TestConverterBase):
         self.assertEqual(proc_page.brief.toHtmlLike(), txt)
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -203,7 +203,7 @@ class TestConvertGroup(TestConverterBase):
         self.assertEqual(proc_group.brief.toHtmlLike(), txt)
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -264,7 +264,7 @@ class TestConvertEnum(TestConverterBase):
         self.assertEqual(proc_enum.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -311,7 +311,7 @@ class TestConvertAdaption(TestConverterBase):
         self.assertEqual(proc_adaption.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -324,7 +324,7 @@ class TestConvertAdaption(TestConverterBase):
 class TestConvertTypedef(TestConverterBase):
     def setUp(self):
         self.proc = proc_doc.DocProcessor()
-        self.conv = self.proc.converters['typedef']
+        self.conv = self.proc.converters['global_typedef']
 
     def testConvertMinimal(self):
         txt = '@typedef My Typedef'
@@ -348,7 +348,7 @@ class TestConvertTypedef(TestConverterBase):
         raw_typedef = self.parseText(txt).entries[0]
         proc_typedef = self.conv.process(raw_typedef)
         self.assertEqual(proc_typedef.name, 'Typedef Name')
-        self.assertEqual(proc_typedef.kind, 'typedef')
+        self.assertEqual(proc_typedef.kind, 'global_typedef')
         self.assertEqual(proc_typedef.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_typedef.signatures), 1)
         self.assertEqual(proc_typedef.signatures[0].toHtmlLike(), '<div>typedef int Name;</div>')
@@ -358,7 +358,7 @@ class TestConvertTypedef(TestConverterBase):
         self.assertEqual(proc_typedef.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -409,7 +409,7 @@ class TestConvertConcept(TestConverterBase):
         self.assertEqual(proc_concept.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -464,7 +464,7 @@ class TestConvertClass(TestConverterBase):
         self.assertEqual(proc_class.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -512,7 +512,7 @@ class TestConvertTag(TestConverterBase):
         self.assertEqual(proc_tag.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -547,7 +547,7 @@ class TestConvertTag(TestConverterBase):
         self.assertEqual(proc_tag.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -627,7 +627,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -680,7 +680,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -733,7 +733,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -804,7 +804,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -850,7 +850,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -916,7 +916,7 @@ class TestConvertMetafunction(TestConverterBase):
         self.assertEqual(proc_metafunction.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -961,7 +961,7 @@ class TestConvertMetafunction(TestConverterBase):
         self.assertEqual(proc_metafunction.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1015,7 +1015,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.brief.toHtmlLike(), txt)
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1051,7 +1051,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1085,7 +1085,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )
@@ -1119,7 +1119,7 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.deprecation_msgs[0].toHtmlLike(), '<div>Deprecation msg.</div>')
         txt = ('<div>'
                '<p>This is the first paragraph.</p>'
-               '<h4>First <em>heading</em></h4>'
+               '<h0>First <em>heading</em></h0>'
                '<p>Second paragraph</p>'
                '</div>'
                )

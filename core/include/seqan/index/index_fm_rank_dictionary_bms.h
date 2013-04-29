@@ -72,7 +72,7 @@ class SBM;
 ..summary:Tag to select a specific fibre of a SequenceBitMask.
 ..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a SequenceBitMask.
 
-..tag.FibreBitStrings:The string set containing a bit string for each node.
+..DISABLED.tag.FibreBitStrings:The string set containing a bit string for each node.
 
 ..see:Metafunction.Fibre
 ..see:Function.getFibre
@@ -139,7 +139,7 @@ of the rank of a specified character at a specified position.
 ..signature:SequenceBitMask<TValue>
 ..param.TValue:The value type of the .
 ..include:seqan/index.h
-..remakrs:This data structure is optimized for very small alphabets, such as @Spec.Dna$ or @Spec.Dna5@. Consider using a @Spec.WaveletTree@ if your alphabet size is larger.
+..remarks:This data structure is optimized for very small alphabets, such as @Spec.Dna$ or @Spec.Dna5@. Consider using a @Spec.WaveletTree@ if your alphabet size is larger.
 */
 template <typename TValue>
 class RankDictionary<SequenceBitMask<TValue> >
