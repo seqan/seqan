@@ -85,7 +85,7 @@ typedef Tag<FibreSA_> const             FibreSA;
 typedef Tag<FibreTempSA_> const         FibreTempSA;
 typedef Tag<FibreText_> const           FibreText;
 typedef Tag<FibreLfTable_> const        FibreLfTable;
-typedef Tag<FibreSaLfTable_> const      FibreSaLfTable;       
+typedef Tag<FibreSaLfTable_> const      FibreSaLfTable;
 typedef Tag<CompressText_> const        CompressText;
 typedef Tag<Sentinel_> const            Sentinel;
 typedef Tag<Sentinels_> const           Sentinels;
@@ -243,18 +243,11 @@ struct Fibre<Index<TText, FMIndex<TOccSpec, TSpec> >, FibreTempSA>
 struct FmIndexInfo_
 {
     // The compression factor.
-    __int32 compressionFactor;
+    __uint32 compressionFactor;
     // The sizeof(TSAEntry) values for suffix array entries.
-    __int32 sizeOfSAEntry;
+    __uint32 sizeOfSAEntry;
     // The length of the genome.
-    __int64 genomeLength;
-
-    FmIndexInfo_() : compressionFactor(0), sizeOfSAEntry(0), genomeLength(0)
-    {}
-
-    FmIndexInfo_(__int32 compressionFactor, __int32 sizeOfSAEntry, __int32 genomeLength) :
-            compressionFactor(compressionFactor), sizeOfSAEntry(sizeOfSAEntry), genomeLength(genomeLength)
-    {}
+    __uint64 genomeLength;
 }
 
 #ifndef PLATFORM_WINDOWS
@@ -829,10 +822,12 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
     name = fileName;    append(name, ".fma");
     if (!open(infoString, toCString(name), openMode)) return false;
 
+    // TODO(weese): Why do we check the SA size here? Everywhere else we require the types being the same for reading and writing
+    //              Moreover a correct size is not indicating a correct type
     // Check that the size of the SA entries is correct.
-    if (infoString[0].sizeOfSAEntry != sizeof(TSAValue))
-        return false;
-    
+//    if (infoString[0].sizeOfSAEntry != 0 && infoString[0].sizeOfSAEntry != sizeof(TSAValue))
+//        return false;
+
     index.compressionFactor = infoString[0].compressionFactor;
     index.n = infoString[0].genomeLength;
     getFibre(index, FibreSA()).lfTable = & getFibre(index, FibreLfTable());
@@ -879,7 +874,8 @@ inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const ch
     typedef typename Value<TSAFibre>::Type TSAValue;
 
     String<FmIndexInfo_> infoString;
-    appendValue(infoString, FmIndexInfo_(index.compressionFactor, sizeof(TSAValue), index.n));
+    FmIndexInfo_ info = { index.compressionFactor, sizeof(TSAValue), index.n };
+    appendValue(infoString, info);
 
     name = fileName;    append(name, ".txt");
     if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
