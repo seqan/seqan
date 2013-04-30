@@ -63,7 +63,7 @@ typedef Tag<BlastnTabular_> BlastnTabular;
 // ----------------------------------------------------------------------------
 
 /**
-.Function.readRecord
+.Function.LocalMatchStore#readRecord
 ..class:Class.LocalMatchStore
 ..cat:Local Match Store
 ..signature:readRecord(store, stream, BlastnTabular())

@@ -752,6 +752,30 @@ class AdaptionMigration(GenericMigration):
         self.is_type = True
 
 
+def addGroups(raw_entries):
+    """Add implicitely given groups to raw_entries."""
+    # Collect known names.
+    names = set()
+    for e in raw_entries:
+        name = e.name.text
+        if '#' not in name and '::' not in name:
+            names.add(name)
+    # Collect unknown names.
+    unknown = set()
+    for e in raw_entries:
+        name = e.name.text
+        if '#' in name and not '::' in name:
+            prefix = name.split('#', 1)[0]
+            if prefix not in names:
+                unknown.add(prefix)
+    # Add groups.
+    for name in unknown:
+        group = raw_doc.RawGroup()
+        t = lexer.Token('WORD', name, 0, 0, 0)
+        group.name = raw_doc.RawText(translateTokens([t]))
+        raw_entries.append(group)
+
+
 def migrate(tree):
     print 'Class.keys', tree.root.children['Class'].children.keys()
     res = []
@@ -770,6 +794,7 @@ def migrate(tree):
     res += TypedefMigration(tree.root.children['Typedef']).work()
     res += AdaptionMigration(tree.root.children['Adaption']).work()
     res += TypedefMigration(tree.root.children['Shortcut']).work()
+    addGroups(res)
     #res += migratePages(tree.root.children['Demo'])
     #for x in res:
     #    print x.getFormatted(formatter)

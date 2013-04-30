@@ -100,14 +100,15 @@ class ProcDoc(object):
         if x.name in self.entries:
             old = self.entries[x.name]
             tpl = ('Trying to define %(new_kind)s %(new_name)s in %(new_file)s:'
-                   '%(new_line)s but is previously defined as %(old_kind)s in '
-                   '%(old_file)s:%(old_line)d,')
+                   '%(new_line)s but is previously defined as %(old_kind)s '
+                   '%(old_name)s in %(old_file)s:%(old_line)d.')
             vals = {
                 'new_kind': x.kind,
                 'new_name': x.name,
                 'new_file': old.location[0],
                 'new_line': old.location[1],
                 'old_kind': old.kind,
+                'old_name': old.name,
                 'old_file' : x.location[0],
                 'old_line' : x.location[1]}
             raise DocumentationBuildException(tpl % vals)
@@ -359,6 +360,13 @@ class ProcConcept(ProcCodeEntry):
 
     def addExtends(self, s):
         self.extends.append(s)
+
+    def __str__(self):
+        return 'ProcConcept(%s, brief=%s, body=%s, sees=%s)' % (
+            repr(self.name), repr(self.brief), repr(self.body), repr(self.sees))
+
+    def __repr__(self):
+        return 'ProcConcept(%s)' % repr(self.name)
 
 
 class ProcClass(ProcCodeEntry):
