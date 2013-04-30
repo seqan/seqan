@@ -1,0 +1,15 @@
+Name: bed_io
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2013, FU Berlin
+Status: under development
+Description: I/O routines for BED files.
+ BED files allow the easy representation of intervals on the genome.
+ Originally, they were designed for tracks in the UCSC genome browser.
+ The original format has 12 columns but often variants using fewer
+ columns with interpreted data are used and the rest is kept as application
+ dependent data.
+ .
+ This module provides data structures for storing such records and routines
+ for loading and writing BED files.
