@@ -125,6 +125,7 @@
 ..memvar.base
 ..typedef.base
 ..memfunc.general
+..memvar.general
 ..function.general
 ..function.implements:conceptusedbyfunc
 ..function.baseconcept:conceptusedbyfunc
