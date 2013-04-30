@@ -127,12 +127,12 @@ enum BamFlags
 .Memvar.BamAlignmentRecord#rID
 ..class:Class.BamAlignmentRecord
 ..summary:ID of reference for this fragment mapping (0-based, $INVALID_REFID$ for '*').
-..type:Shortcut.CharString
+..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#beginPos
 ..class:Class.BamAlignmentRecord
 ..summary:The position of this fragment mapping (0-based, $INVALID_POS$ for '*').
-..type:Shortcut.CharString
+..type:nolink:$__int32$
 
 .Memvar.BamAlignmentRecord#mapQ
 ..class:Class.BamAlignmentRecord
