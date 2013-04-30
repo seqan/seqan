@@ -393,7 +393,7 @@ unsigned _getPivotPosition(PrefixSumTable<TChar, TSpec> const & pst, TBeginPos b
     unsigned tooSmallValues = pst[beginPos];
     long currentMin = pst[realEndPos] + 1;
 
-    if (pst[pivotPos] - tooSmallValues) >= (pst[realEndPos] - pst[pivotPos])
+    if (pst[pivotPos] - tooSmallValues >= pst[realEndPos] - pst[pivotPos])
     {
         while ((pivotPos >= realBeginPos) && std::abs((long)(pst[pivotPos] - tooSmallValues) - (long)((pst[realEndPos] - pst[pivotPos]))) <= currentMin)
         {
