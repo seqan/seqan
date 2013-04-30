@@ -42,7 +42,7 @@ class Diff(object):
             p = subprocess.Popen(["diff", "-q", "-r", "-N"] + self.excluded_resources.get_exclude_list_diff() + ["." + self.from_dir_local, self.to_dir_local], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.root_dir, env=my_env)
         output = p.communicate()[0]
         
-        zipFile = zipfile.ZipFile(filename, "w", allowZip64=True)
+        zipFile = zipfile.ZipFile(filename, "w")
         
         for line in output.split("\n"):
             match = re.search(" and \\.(.*) differ", line)
