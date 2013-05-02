@@ -1,0 +1,11 @@
+Name: vcf_io
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2008-2013, FU Berlin
+Status: under development
+Description: I/O routines for the VCF format.
+ VCF is a text format for storing genome variant information in text files.
+ .
+ The vcf_io module provides data structures for holding records from VCF files
+ and routines for reading/writing from/to VCF files.
