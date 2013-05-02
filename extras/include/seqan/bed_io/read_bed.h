@@ -270,12 +270,11 @@ int _readBedRecordNoData(BedRecord<Bed12> & record,
         clear(buffer);
         if ((res = readDigits(buffer, reader)) != 0)
             return res;
-        int * ptr = &record.itemRgb.red;
-        if (i == 1)
-            ptr = &record.itemRgb.green;
-        if (i == 2)
-            ptr = &record.itemRgb.blue;
-        if (!lexicalCast2(*ptr, buffer))
+        if (i == 0 && !lexicalCast2(record.itemRgb.red, buffer))
+            return 1;  // Could not cast value.
+        else if (i == 1 && !lexicalCast2(record.itemRgb.green, buffer))
+            return 1;  // Could not cast value.
+        else if (i == 2 && !lexicalCast2(record.itemRgb.blue, buffer))
             return 1;  // Could not cast value.
     }
 
