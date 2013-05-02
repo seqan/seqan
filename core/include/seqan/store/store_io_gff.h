@@ -450,16 +450,13 @@ _writeOneAnnotation(
     String<char> temp;
     if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
     {
+        appendValue(record.tagName, "ID");
         appendValue(record.tagValue, getAnnoName(store, id));
     }
     else if (annotation.lastChildId != TAnnotation::INVALID_ID)
     {
-        appendValue(record.tagValue, getAnnoUniqueName(store, id));
-    }
-
-    if (length(record.tagValue[0]) > 0)
-    {
         appendValue(record.tagName, "ID");
+        appendValue(record.tagValue, getAnnoUniqueName(store, id));
     }
 
     // write column 9.2: parent id
