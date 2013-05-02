@@ -805,8 +805,8 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
     String<char> name;
 
     typedef Index<TText, FMIndex<TOccSpec, TSpec> > TIndex;
-    typedef typename Fibre<TIndex, FibreSA>::Type TSAFibre;
-    typedef typename Value<TSAFibre>::Type TSAValue;
+//    typedef typename Fibre<TIndex, FibreSA>::Type TSAFibre;
+//    typedef typename Value<TSAFibre>::Type TSAValue;
 
     String<FmIndexInfo_> infoString;
 
