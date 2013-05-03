@@ -1,0 +1,280 @@
+// ==========================================================================
+//                                  Gustaf
+// ==========================================================================
+// Copyright (c) 2011, Knut Reinert, FU Berlin
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
+//       its contributors may be used to endorse or promote products derived
+//       from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+// DAMAGE.
+//
+// ==========================================================================
+// Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
+// ==========================================================================
+
+#ifndef SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_PARSEOPTIONS_H_
+#define SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_PARSEOPTIONS_H_
+
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include "msplazer.h"
+
+using namespace seqan;
+
+// /////////////////////////////////////////////////////////////////////////////
+// Parses options from command line parser and writes them into options object
+ArgumentParser::ParseResult
+_parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions & msplazerOptions)
+{
+// IOREV _notio_
+    // i/o options
+    getArgumentValue(msplazerOptions.databaseFile, parser, 0);
+    getArgumentValue(msplazerOptions.queryFile, parser, 1);
+    // getOptionValue(msplazerOptions.queryFile2, parser, "q2");
+    // getOptionValue(msplazerOptions.outDir, parser, "i");
+    getOptionValue(msplazerOptions.breakpointOutFile, parser, "bpo");
+    getOptionValue(msplazerOptions.jobName, parser, "j");
+    getOptionValue(msplazerOptions.stellarInputFile, parser, "m");
+    getOptionValue(msplazerOptions.dotOut, parser, "do");
+
+    // main options
+    getOptionValue(msplazerOptions.diffDBPen, parser, "tp");
+    getOptionValue(msplazerOptions.diffStrandPen, parser, "ip");
+    getOptionValue(msplazerOptions.diffOrderPen, parser, "op");
+    getOptionValue(msplazerOptions.simThresh, parser, "oth");
+    getOptionValue(msplazerOptions.gapThresh, parser, "gth");
+    getOptionValue(msplazerOptions.initGapThresh, parser, "ith");
+    getOptionValue(msplazerOptions.support, parser, "st");
+    // getOptionValue(msplazerOptions.librSize, parser, "lib");
+
+    // Parsing Stellar options
+
+    getArgumentValue(options.databaseFile, parser, 0);
+    getArgumentValue(options.queryFile, parser, 1);
+    // getOptionValue(options.outputFile, parser, "out");
+    // getOptionValue(options.outputFormat, parser, "outFormat");
+    // getOptionValue(options.disabledQueriesFile, parser, "outDisabled");
+    // getOptionValue(options.noRT, parser, "no-rt");
+
+    getOptionValue(options.qGram, parser, "kmer");
+    getOptionValue(options.minLength, parser, "minLength");
+    getOptionValue(options.epsilon, parser, "epsilon");
+    getOptionValue(options.xDrop, parser, "xDrop");
+    getOptionValue(options.alphabet, parser, "alphabet");
+
+    if (isSet(parser, "forward") && !isSet(parser, "reverse"))
+        options.reverse = false;
+    if (!isSet(parser, "forward") && isSet(parser, "reverse"))
+        options.forward = false;
+
+    getOptionValue(options.fastOption, parser, "verification");
+    getOptionValue(options.disableThresh, parser, "disableThresh");
+    getOptionValue(options.numMatches, parser, "numMatches");
+    getOptionValue(options.compactThresh, parser, "sortThresh");
+    getOptionValue(options.maxRepeatPeriod, parser, "repeatPeriod");
+    getOptionValue(options.minRepeatLength, parser, "repeatLength");
+    getOptionValue(options.qgramAbundanceCut, parser, "abundanceCut");
+
+    getOptionValue(options.verbose, parser, "verbose");
+
+    if (isSet(parser, "kmer") && options.qGram >= 1 / options.epsilon)
+    {
+        std::cerr << "Invalid parameter value: Please choose q-gram length lower than 1/epsilon." << std::endl;
+        return ArgumentParser::PARSE_ERROR;
+    }
+
+    if (options.numMatches > options.compactThresh)
+    {
+        std::cerr << "Invalid parameter values: Please choose numMatches <= sortThresh." << std::endl;
+        return ArgumentParser::PARSE_ERROR;
+    }
+
+
+
+    return ArgumentParser::PARSE_OK;
+}
+
+// /////////////////////////////////////////////////////////////////////////////
+// Set-Up of Argument Parser
+void _setupArgumentParser(ArgumentParser & parser)
+{
+    setShortDescription(
+        parser,
+        "Gustaf - Generic mUlti-SpliT Alignment Finder: Tool for split-read mapping allowing multiple splits.");
+    setVersion(parser, "1.0");
+    setDate(parser, "July 2012");
+
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FASTA FILE\\fP> <\\fIREAD FASTA FILE\\fP> \n "
+                 );
+    // addUsageLine(parser, "-d <FASTA sequence file> -q <FASTA sequence file> [\\fIOPTIONS\\fP]");
+    addDescription(parser,
+                   "GUSTAF uses SeqAns STELLAR to find splits as local matches on different strands or "
+                   "chromosomes. Criteria and penalties to chain these matches can be specified. "
+                   "Output file contains the breakpoints along the best chain.");
+    addDescription(parser, "The genome file is used as database input, the read file as query input.");
+    addDescription(parser,
+                   "All STELLAR options are supported. See STELLAR documentation for STELLAR parameters and options.");
+    addDescription(parser, "(c) 2011-2012 by Kathrin Trappe");
+
+    addSection(parser, "GUSTAF Options");
+
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 1"));
+    setValidValues(parser, 0, "fa fasta");  // allow only fasta files as input
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2"));
+    setValidValues(parser, 1, "fa fasta");  // allow only fasta files as input
+
+    /*
+    addSection(parser, "Non-optional Arguments:");
+    addOption(parser, ArgParseOption("d", "database", "Fasta file containing the database sequences",
+                                        ArgParseArgument::INPUTFILE, "FILE"));
+    setValidValues(parser, "d", "fa FASTA");
+    setRequired(parser, "d");
+    addOption(parser, ArgParseOption("q", "query", "Fasta file containing the query sequences",
+                                        ArgParseArgument::INPUTFILE, "FILE"));
+    setValidValues(parser, "q", "fa FASTA");
+    setRequired(parser, "q");
+    addOption(parser, ArgParseOption("q2", "query2", "Second Fasta file containing query sequences (mate pairs)",
+                                        ArgParseArgument::INPUTFILE, "FILE"));
+    setValidValues(parser, "q", "fa FASTA");
+    */
+
+    addSection(parser, "Main Options");
+    addOption(parser,
+              ArgParseOption("tp", "transPen", "Interchromosomal translocation penalty", ArgParseArgument::INTEGER,
+                             "INT"));
+    setDefaultValue(parser, "tp", "5");
+    addOption(parser, ArgParseOption("ip", "invPen", "Inversion penalty", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "ip", "5");
+    addOption(parser,
+              ArgParseOption("op", "orderPen", "Intrachromosomal order change penalty", ArgParseArgument::INTEGER,
+                             "INT"));
+    setDefaultValue(parser, "op", "0");
+    addOption(parser,
+              ArgParseOption("oth", "overlapThresh", "Allowed overlap between matches", ArgParseArgument::DOUBLE,
+                             "DOUBLE"));
+    setDefaultValue(parser, "oth", "0.5");
+    addOption(parser,
+              ArgParseOption("gth", "gapThresh", "Allowed gap length between matches", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "gth", "10");
+    addOption(parser, ArgParseOption(
+                  "ith", "initGapThresh", "Allowed initial or ending gap length at begin and end of read",
+                  ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "ith", "15");
+    addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "st", "2");
+    // addOption(parser, ArgParseOption("lib", "librarySize", "Library size of mate pairs", ArgParseArgument::INTEGER, "INT"));
+
+    addSection(parser, "Input Options");
+    addOption(parser, ArgParseOption("m", "matchfile", "File of (stellar) matches", ArgParseArgument::INPUTFILE, "FILE"));
+    setValidValues(parser, "m", "gff GFF");
+    // setDefaultValue(parser, "m", "");
+
+    addSection(parser, "Output Options");
+    addOption(parser,
+              ArgParseOption("bpo", "breakpointOut", "Name of breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "bpo", "gff txt");
+    setDefaultValue(parser, "bpo", "breakpoints.gff");
+
+    addOption(parser, ArgParseOption("j", "jobName", "Job/Queue name", ArgParseArgument::STRING, "STR"));
+    setDefaultValue(parser, "j", "");
+
+    addOption(parser, ArgParseOption("do", "dots", "Enable graph output in dot format"));
+
+    addSection(parser, "Stellar Options");
+
+    addSection(parser, "Main Options");
+
+    addOption(parser, ArgParseOption("e", "epsilon", "Maximal error rate (max 0.25).", ArgParseArgument::DOUBLE));
+    setDefaultValue(parser, "e", "0.05");
+    setMinValue(parser, "e", "0.0000001");
+    setMaxValue(parser, "e", "0.25");
+    addOption(parser, ArgParseOption("l", "minLength", "Minimal length of epsilon-matches.", ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "l", "100");
+    setMinValue(parser, "l", "0");
+    addOption(parser, ArgParseOption("f", "forward", "Search only in forward strand of database."));
+    addOption(parser, ArgParseOption("r", "reverse", "Search only in reverse complement of database."));
+    addOption(parser, ArgParseOption("a", "alphabet",
+                                     "Alphabet type of input sequences (dna, rna, dna5, rna5, protein, char).",
+                                     ArgParseArgument::STRING));
+    setValidValues(parser, "a", "dna dna5 rna rna5 protein char");
+    addOption(parser, ArgParseOption("v", "verbose", "Set verbosity mode."));
+
+    addSection(parser, "Filtering Options");
+
+    addOption(parser, ArgParseOption("k", "kmer", "Length of the q-grams (max 32).", ArgParseArgument::INTEGER));
+    setMinValue(parser, "k", "1");
+    setMaxValue(parser, "k", "32");
+    addOption(parser, ArgParseOption("rp", "repeatPeriod",
+                                     "Maximal period of low complexity repeats to be filtered.",
+                                     ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "rp", "1");
+    addOption(parser, ArgParseOption("rl", "repeatLength",
+                                     "Minimal length of low complexity repeats to be filtered.",
+                                     ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "rl", "1000");
+    addOption(parser, ArgParseOption("c", "abundanceCut", "k-mer overabundance cut ratio.", ArgParseArgument::DOUBLE));
+    setDefaultValue(parser, "c", "1");
+    setMinValue(parser, "c", "0");
+    setMaxValue(parser, "c", "1");
+
+    addSection(parser, "Verification Options");
+
+    addOption(parser, ArgParseOption("x", "xDrop", "Maximal x-drop for extension.", ArgParseArgument::DOUBLE));
+    setDefaultValue(parser, "x", "5");
+    addOption(parser, ArgParseOption("vs", "verification", "Verification strategy: exact or bestLocal or bandedGlobal",
+                                     ArgParseArgument::STRING));
+    // addHelpLine(parser, "exact        = compute and extend all local alignments in SWIFT hits");
+    // addHelpLine(parser, "bestLocal    = compute and extend only best local alignment in SWIFT hits");
+    // addHelpLine(parser, "bandedGlobal = banded global alignment on SWIFT hits");
+    setDefaultValue(parser, "vs", "exact");
+    setValidValues(parser, "vs", "exact bestLocal bandedGlobal");
+    addOption(parser, ArgParseOption("dt", "disableThresh",
+                                     "Maximal number of verified matches before disabling verification for one query "
+                                     "sequence (default infinity).", ArgParseArgument::INTEGER));
+    setMinValue(parser, "dt", "0");
+    addOption(parser, ArgParseOption("n", "numMatches",
+                                     "Maximal number of kept matches per query and database. If STELLAR finds more matches, "
+                                     "only the longest ones are kept.", ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "n", "50");
+    addOption(parser, ArgParseOption("s", "sortThresh",
+                                     "Number of matches triggering removal of duplicates. Choose a smaller value for saving "
+                                     "space.", ArgParseArgument::INTEGER));
+    setDefaultValue(parser, "s", "500");
+
+    /*
+     * Stellar output options are not supported bc. no Stellar output is supported
+    addSection(parser, "Output Options");
+
+    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "o", "gff txt");
+    setDefaultValue(parser, "o", "stellar.gff");
+    addOption(parser, ArgParseOption("od", "outDisabled",
+                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "outDisabled", "fa FASTA");
+    setDefaultValue(parser, "od", "stellar.disabled.fasta");
+    addOption(parser, ArgParseOption("t", "no-rt", "Suppress printing running time."));
+    hideOption(parser, "t");
+    */
+}
+
+#endif  // #ifndef SANDBOX_MY_SANDBOX_APPS_MSPLAZER_MSPLAZER_PARSEOPTIONS_

@@ -1,0 +1,19 @@
+Name: gustaf
+Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
+Maintainer: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
+License: GPL v3
+Copyright: 2011-2013, FU Berlin
+Status: under development
+Description: Calculates breakpoints of NGS reads having one or multiple split points.
+ Given a reference sequence and one or multiple read sequences, Gustaf uses
+ Stellar to partial read alignments. Compatible partial alignments are
+ identified, and a split-read graph storing all compatibility information
+ is constructed for each read.
+ .
+ Vertices in the graph represent partial alignments, edges represent
+ possible split positions. Using an exact dynamic programming approach, we
+ refine the alignments around possible split positions to determine precise
+ breakpoint locations at single-nucleotide level. We use a DAG shortest path
+ algorithm to determine the best combination of refined alignments, and report
+ those breakpoints supported by multiple reads.
+

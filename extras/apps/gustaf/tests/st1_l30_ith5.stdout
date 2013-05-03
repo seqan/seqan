@@ -1,0 +1,50 @@
+Database file   : adeno.fa
+Query file      : adeno_modified_reads.fa
+
+Thresholds:
+  overlap threshold (oth)          : 0.5
+  gap threshold (gth)              : 10
+  inital gap threshold (ith)       : 5
+Penalties:
+  translocation penalty (tp)       : 5
+  inversion penalty (ip)           : 5
+  order penalty (op)               : 0
+  required read support (st)       : 1
+Loading query sequences... Loaded 6 query sequences.
+done
+Loading reference sequences... Loaded 1 database sequence.
+Loaded db seq with length: 4718
+Loaded db ID: gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome
+done
+Calling STELLAR... Stellar options: 
+Database file   : adeno.fa
+Query file      : adeno_modified_reads.fa
+
+User specified parameters:
+  minimal match length             : 30
+  maximal error rate (epsilon)     : 0.05
+  maximal x-drop                   : 5
+  search forward strand            : yes
+  search reverse complement        : yes
+
+  verification strategy            : exact
+  maximal number of matches        : 50
+  duplicate removal every          : 500
+
+Calculated parameters:
+  k-mer length: 13
+  s^min       : 13
+  threshold   : 2
+  distance cut: 40
+  delta       : 16
+  overlap     : 2
+
+Constructing index...
+
+TIME stellar 0.0302451s
+done
+Getting match distance...
+Constructing graphs... done
+Analyzing graphs... done
+ completed writing st1_l30_ith5.gff
+TIME all 0.101009s
