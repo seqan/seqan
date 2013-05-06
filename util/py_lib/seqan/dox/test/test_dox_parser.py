@@ -919,5 +919,18 @@ class TestPageParsing(TestDoxParserBase):
         self.assertMultiLineEqual(doc.getFormatted(50), expected)
 
 
+class TestLinkParsing(TestDoxParserBase):
+    def testMinimal(self):
+        txt = ('@page PageTitle Page Title\n'
+               '\n'
+               '@link PageTitle the page title @endlink.\n')
+        parser = self.parseText(txt)
+        doc = parser.documentation
+        expected = ('@page PageTitle Page Title\n'
+                    '\n'
+                    '<a href="seqan:PageTitle">the page title</a>.\n\n')
+        self.assertMultiLineEqual(doc.getFormatted(), expected)
+        
+
 if __name__ == '__main__':
     unittest.main()
