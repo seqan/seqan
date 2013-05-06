@@ -93,7 +93,7 @@ Note that while the BED file format is 1-based, the coordinates in the BedRecord
 .Memfunc.BedRecord#BedRecord
 ..class:Class.BedRecord
 ..summary:Constructor.
-..descripton:Default constructor.
+..description:Default constructor.
 ..signature:BedRecord::BedRecord()
 
 .Memvar.BedRecord#INVALID_REFID
