@@ -26,7 +26,7 @@ def main(source_base, binary_base):
     print 'Executing test for gustaf'
     print '==============================='
     print
-    
+
     ph = app_tests.TestPathHelper(
          source_base, binary_base,
          'extras/apps/gustaf/tests')  # tests dir
@@ -67,15 +67,13 @@ def main(source_base, binary_base):
                  (ph.inFile('st2_l100.gff'),
                   ph.outFile('st2_l100.gff'))])
     conf_list.append(conf)
-    
-  
 
     #out="st2_l100"
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
-    
+
     # ============================================================
     # -st 1 -l 30
-    # ============================================================    
+    # ============================================================
 
 
     conf = app_tests.TestConf(
@@ -94,13 +92,12 @@ def main(source_base, binary_base):
                   ph.outFile('st1_l30.gff'))])
     conf_list.append(conf)
 
-    
     #out="st1_l30"
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -m stellar.gff
-    # ============================================================    
+    # ============================================================
 
     conf = app_tests.TestConf(
         program=path_to_program,
@@ -117,13 +114,13 @@ def main(source_base, binary_base):
                  (ph.inFile('st1_l30_m.gff'),
                   ph.outFile('st1_l30_m.gff'))])
     conf_list.append(conf)
-    
-    #out="st1_l30_m"    
+
+    #out="st1_l30_m"
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -m stellar.gff -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
-  
+
     # ============================================================
     # -st 1 -l 30 -ith 5
-    # ============================================================  
+    # ============================================================
 
     conf = app_tests.TestConf(
         program=path_to_program,
@@ -141,13 +138,13 @@ def main(source_base, binary_base):
                  (ph.inFile('st1_l30_ith5.gff'),
                   ph.outFile('st1_l30_ith5.gff'))])
     conf_list.append(conf)
-    
+
     #out="st1_l30_ith5"
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -l 30 -gth 3
-    # ============================================================  
+    # ============================================================
 
     conf = app_tests.TestConf(
         program=path_to_program,
@@ -165,11 +162,10 @@ def main(source_base, binary_base):
                  (ph.inFile('st1_l30_gth3.gff'),
                   ph.outFile('st1_l30_gth3.gff'))])
     conf_list.append(conf)
-    
+ 
     #out="st1_l30_gth3"
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gth 3 -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
- 
-            
+
     # ============================================================
     # Execute the tests.
     # ============================================================

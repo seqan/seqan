@@ -19,9 +19,9 @@ done
  Getting STELLAR matches from file, not calling STELLAR 
 Importing STELLAR matches from file stellar.gff
 done
-TIME importing stellar matches 0.000473239s
+TIME importing stellar matches 0.000457897s
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
  completed writing st1_l30_m.gff
-TIME all 0.0692788s
+TIME all 0.0696251s

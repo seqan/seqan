@@ -41,10 +41,10 @@ Calculated parameters:
 
 Constructing index...
 
-TIME stellar 0.0406083s
+TIME stellar 0.0405408s
 done
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
  completed writing st2_l100.gff
-TIME all 0.0436742s
+TIME all 0.0435197s

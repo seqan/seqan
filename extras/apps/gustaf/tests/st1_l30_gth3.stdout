@@ -41,10 +41,10 @@ Calculated parameters:
 
 Constructing index...
 
-TIME stellar 0.0342931s
+TIME stellar 0.0266271s
 done
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
  completed writing st1_l30_gth3.gff
-TIME all 0.104928s
+TIME all 0.0962911s
