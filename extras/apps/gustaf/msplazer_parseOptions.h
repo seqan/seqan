@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -68,13 +68,8 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     // getOptionValue(msplazerOptions.librSize, parser, "lib");
 
     // Parsing Stellar options
-
     getArgumentValue(options.databaseFile, parser, 0);
     getArgumentValue(options.queryFile, parser, 1);
-    // getOptionValue(options.outputFile, parser, "out");
-    // getOptionValue(options.outputFormat, parser, "outFormat");
-    // getOptionValue(options.disabledQueriesFile, parser, "outDisabled");
-    // getOptionValue(options.noRT, parser, "no-rt");
 
     getOptionValue(options.qGram, parser, "kmer");
     getOptionValue(options.minLength, parser, "minLength");
@@ -108,9 +103,6 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
         std::cerr << "Invalid parameter values: Please choose numMatches <= sortThresh." << std::endl;
         return ArgumentParser::PARSE_ERROR;
     }
-
-
-
     return ArgumentParser::PARSE_OK;
 }
 
@@ -144,18 +136,9 @@ void _setupArgumentParser(ArgumentParser & parser)
     setValidValues(parser, 1, "fa fasta");  // allow only fasta files as input
 
     /*
-    addSection(parser, "Non-optional Arguments:");
-    addOption(parser, ArgParseOption("d", "database", "Fasta file containing the database sequences",
-                                        ArgParseArgument::INPUTFILE, "FILE"));
-    setValidValues(parser, "d", "fa FASTA");
-    setRequired(parser, "d");
-    addOption(parser, ArgParseOption("q", "query", "Fasta file containing the query sequences",
-                                        ArgParseArgument::INPUTFILE, "FILE"));
-    setValidValues(parser, "q", "fa FASTA");
-    setRequired(parser, "q");
     addOption(parser, ArgParseOption("q2", "query2", "Second Fasta file containing query sequences (mate pairs)",
                                         ArgParseArgument::INPUTFILE, "FILE"));
-    setValidValues(parser, "q", "fa FASTA");
+    setValidValues(parser, "q2", "fa FASTA");
     */
 
     addSection(parser, "Main Options");
@@ -187,7 +170,6 @@ void _setupArgumentParser(ArgumentParser & parser)
     addSection(parser, "Input Options");
     addOption(parser, ArgParseOption("m", "matchfile", "File of (stellar) matches", ArgParseArgument::INPUTFILE, "FILE"));
     setValidValues(parser, "m", "gff GFF");
-    // setDefaultValue(parser, "m", "");
 
     addSection(parser, "Output Options");
     addOption(parser,

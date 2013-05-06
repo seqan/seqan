@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,20 +52,14 @@ int main(int argc, char const ** argv)
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
-    // msplazerOptions.databaseFile = stellarOptions.databaseFile;
-    // msplazerOptions.queryFile = stellarOptions.queryFile;
-
     _writeFileNames(stellarOptions);
     _writeParams(msplazerOptions);
 
     // msplazer wrapper function
     msplazer(stellarOptions, msplazerOptions);
-    // msplazer(msplazerOptions) // If Stellar run is not necessary due to external match input
-
-
 
     // ///////////////////////////////////////////////////////////////////
-    // Initialisation
+    // Fragmentstore
 
     // Usage via fragmentStore
     /*Stellar can now handle FragmentStore input which is based on an Index using a StringSet based on

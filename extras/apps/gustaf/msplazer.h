@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                   Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,8 +39,9 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-
 #include <seqan/arg_parse.h>
+
+#include "create_stellarmatches_from_file.h"
 
 using namespace seqan;
 
@@ -482,7 +483,6 @@ inline bool getProperty(SparsePropertyMap<TObject, TPos> & spm, TDescriptor cons
     if (index == static_cast<TPos>(-1))
         return 0;
 
-    // obj = getValue(spm.valueTable, index);
     obj = value(spm.valueTable, index);
     return 1;
 }
@@ -494,7 +494,6 @@ inline bool getProperty(SparsePropertyMap<TObject, TPos> const & spm, TDescripto
     if (index == static_cast<TPos>(-1))
         return 0;
 
-    // obj = getValue(spm.valueTable, index);
     obj = value(spm.valueTable, index);
     return 1;
 }

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -162,7 +162,7 @@ write(TFile & file,
     _streamWrite(file, "}\n");
 }
 
-/**TODO(ktrappe)
+/**TODO(ktrappe): Add write functionality for SAM/VCF format
 .Function.write:
 ..signature:write(file, msplazerchain, stellarmatches, nodeMap, edgeMap, tag)
 ..param.graph:The graph to write out.
@@ -332,8 +332,7 @@ void _writeDotfiles(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & st
 // Breakpoint writing call
 template <typename TBreakpoint>
 bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
-                             MSplazerOptions const & msplazerOptions,
-                             unsigned const & support)
+                             MSplazerOptions const & msplazerOptions)
 {
     // String<char> fn = toString(msplazerOptions.outDir) + toString(msplazerOptions.jobName) + toString(fileName);
     String<char> fn = toString(msplazerOptions.breakpointOutFile);
@@ -364,7 +363,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         // if(globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= msplazerOptions.support)
-        if (globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= support)
+        if (globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= msplazerOptions.support)
             _streamWrite(strmWrite, globalBreakpoints[i], i);
         // _streamPut(strmWrite, '\n');
     }
@@ -395,7 +394,6 @@ _writeParams(TOptions & options)
     std::cout << "  order penalty (op)               : " << options.diffOrderPen << std::endl;
 
     std::cout << "  required read support (st)       : " << options.support << std::endl;
-
 }
 
 #endif  // #ifndef SANDBOX_MY_SANDBOX_APPS_MSPLAZER_MSPLAZER_OUT_H_

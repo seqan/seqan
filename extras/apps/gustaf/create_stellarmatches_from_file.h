@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,10 @@
 
 using namespace seqan;
 
+// ----------------------------------------------------------------------------
+// Function _getShortId()
+// ----------------------------------------------------------------------------
+
 // Creates a short Id out of a long one (i.e. it takes the prefix til the first white space)
 template <typename TId>
 void _getShortId(TId & shortId, TId const & longId)
@@ -54,7 +58,11 @@ void _getShortId(TId & shortId, TId const & longId)
     }
 }
 
-// Gets a Set of Ids and creates a set of short Ids from the longer ones
+// ----------------------------------------------------------------------------
+// Function _getShortIds()
+// ----------------------------------------------------------------------------
+
+// Gets a Set of Ids and creates a set of short Ids from it
 template <typename TId>
 void _getShortIds(StringSet<TId> & shortIds, StringSet<TId> & longIds)
 {
@@ -63,14 +71,17 @@ void _getShortIds(StringSet<TId> & shortIds, StringSet<TId> & longIds)
         TId & longId = longIds[index];
         TId sId;
         _getShortId(sId, longId);
-        // std::cerr << sId << std::endl;
         appendValue(shortIds, sId);
     }
 }
 
+// ----------------------------------------------------------------------------
+// Function _createStellarMatches()
+// ----------------------------------------------------------------------------
+
 // Takes the values from the localMatchStore and creates a Stellar match out of them.
 // The Stellar match is, sorted by read, appended to stQueryMatches. Reads are identified by their short query IDs
-// (sQueryIds), the coorect database by their short database IDs (sDBIds), which are both given in the GFF file
+// (sQueryIds), the correct database by their short database IDs (sDBIds), which are both given in the GFF file
 template <typename TSequence, typename TId>
 bool _createStellarMatches(StringSet<TSequence> & queries,
                            StringSet<TId> const & sQueryIds,
@@ -225,6 +236,10 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
     }
     return 0;
 }
+
+// ----------------------------------------------------------------------------
+// Function _getStellarMatchesFromFile()
+// ----------------------------------------------------------------------------
 
 // Reads in a file with Stellar matches in gff format and creates StellarMatch object from the entries
 template <typename TSequence, typename TId, typename TMatches>

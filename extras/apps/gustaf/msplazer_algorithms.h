@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -381,12 +381,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             TGraph & graph,
                             TScoreAlloc & matchDistanceScores,
                             TBreakpointMap & queryBreakpoints,
-                            MSplazerOptions const & msplazerOptions,
-                            String<unsigned> & insertionCount,
-                            unsigned long & edgeCount,
-                            unsigned & replacedBPCount,
-                            unsigned & replacedInsertBPCount,
-                            unsigned & noneCount)
+                            MSplazerOptions const & msplazerOptions)
 {
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef Align<TSequence, ArrayGaps> TAlign;
@@ -579,10 +574,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         {
                             assignCargo(edge, cargo);
                             TBreakpoint & oldBp = property(queryBreakpoints, edge);
-                            if (getSVType(oldBp) == "none")
-                                --noneCount;
                             oldBp = bp;
-                            ++replacedBPCount;
                         }
                     }
                     else
@@ -591,11 +583,6 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         edge = addEdge(graph, m1, m2, cargo);
                         resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
                         assignProperty(queryBreakpoints, edge, bp);
-                        if (doBP)
-                            ++insertionCount[0];
-                        else
-                            ++insertionCount[static_cast<int>(m2Begin - m1End)];
-                        ++edgeCount;
                     }
                 }
                 if (swap)
@@ -618,21 +605,6 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
                         StringSet<TSequence> & queries,
                         MSplazerOptions const & msplazerOptions)
 {
-    // Debug and statistic variables
-    unsigned replacedBPCount = 0;
-    unsigned replacedInsertionBPCount = 0;
-    unsigned emptyChainCount = 0;
-    String<unsigned> insertionCount;
-    resize(insertionCount, msplazerOptions.gapThresh + 1);
-    for (unsigned i = 0; i < length(insertionCount); ++i)
-        insertionCount[i] = 0;
-    String<unsigned> insertionCountRef;
-    resize(insertionCountRef, msplazerOptions.gapThresh + 1);
-    for (unsigned i = 0; i < length(insertionCountRef); ++i)
-        insertionCountRef[i] = 0;
-
-    unsigned long edgeCount = 0;
-    unsigned noneCount = 0;
 
     for (unsigned i = 0; i < length(stellarMatches); ++i)
     {
@@ -643,7 +615,6 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
         {
             // Insert single match into graph, no extra edges beside from start and to end
             chain.isEmpty = true;
-            ++emptyChainCount;
         }
         else
         {
@@ -665,34 +636,18 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
                           chain.matchDistanceScores,
                           chain.breakpoints,
                           msplazerOptions);
-
+            // Chain matches comptable according to reference
             _chainMatchesReference(stellarMatches[i],
                                    queryIds[i],
                                    queries[i],
                                    chain.graph,
                                    chain.matchDistanceScores,
                                    chain.breakpoints,
-                                   msplazerOptions,
-                                   insertionCountRef,
-                                   edgeCount,
-                                   replacedBPCount,
-                                   replacedInsertionBPCount,
-                                   noneCount);
+                                   msplazerOptions);
 
         }
         appendValue(queryChains, chain);
     }
-    /*
-    std::cerr << "Number of edges: " << edgeCount << std::endl;
-    std::cerr << "Empty chain count: " << emptyChainCount << std::endl;
-    for(unsigned i = 0; i < length(insertionCount); ++i)
-        std::cerr << "Number of edges with a " << i << " bp long insertion: " << insertionCount[i] << std::endl;
-    for(unsigned i = 0; i < length(insertionCountRef); ++i)
-        std::cerr << "REF Number of edges with a " << i << " bp long insertion: " << insertionCountRef[i] << std::endl;
-    std::cerr << "Replaced BP Count: " << replacedBPCount << std::endl;
-    std::cerr << "Replaced INSERTION BP Count: " << replacedInsertionBPCount << std::endl;
-    std::cerr << "NONE count: " << noneCount << std::endl;
-    */
 }
 
 // Analyze chains in read graphs
@@ -754,6 +709,7 @@ void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> con
         _insertBreakpoint(countedBP, newBP[i]);
 }
 
+//TODO(ktrappe): Trimming functionality is disabled atm and needs adaption to new alignment properties and moduls
 template <typename TMatch, typename TPos>
 void _trimMatches(TMatch & fstMatch, TMatch & sndMatch, String<TPos> & splitPos)
 {
@@ -787,6 +743,7 @@ void _trimMatches(String<TMatch> & matchChain, StringSet<String<TPos> > & splitP
     }
 }
 
+// TODO(ktrappe): Indel extraction is disabled atm cause it depends on match trimming
 template <typename TBreakpoint, typename TSequence, typename TId, typename TMatch>
 void _getChainIndels(String<String<TMatch> > & bestChains,
                      String<TBreakpoint> & globalStellarIndels,
@@ -959,7 +916,7 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
     // std::cerr << "BROKEN CHAIN COUNT: " << brokenChainCount << std::endl;
 }
 
-// Finding suboptimal chains using Sandros enumerateAcyclicPaths function
+// TODO(ktrappe): Finding suboptimal chains using Sandros enumerateAcyclicPaths function (disabled atm)
 // template <typename TBreakpoint, typename TMSplazerChain, typename TMatch>
 template <typename TMSplazerChain>
 bool _findSuboptimalChains(TMSplazerChain & queryChain // ,

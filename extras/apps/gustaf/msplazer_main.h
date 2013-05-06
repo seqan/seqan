@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                    Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -118,12 +118,12 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     if (msplazerOptions.stellarInputFile != "")
     {
         doStellar = false;
-        std::cout << " Getting STELLAR matches from file, not calling STELLAR " << std::endl;
+        std::cout << " Getting STELLAR matches from file, not calling STELLAR" << std::endl;
     }
     if (doStellar)
     {
-        std::cout << "Calling STELLAR... ";
-        std::cout << "Stellar options: " << std::endl;
+        std::cout << "Calling STELLAR..." << std::endl;
+        std::cout << "Stellar options:" << std::endl;
         _writeFileNames(stellarOptions);
         _writeSpecifiedParams(stellarOptions);
         _writeCalculatedParams(stellarOptions);
@@ -148,7 +148,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     }
     */
     std::cout << "Getting match distance..." << std::endl;
-    _getMatchDistanceScore(stellarMatches, distanceScores, doStellar);
+    _getMatchDistanceScore(stellarMatches, distanceScores);
 
     // Graph statistics
     /*
@@ -252,7 +252,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     // std sort in ascending order
     std::sort(begin(globalBreakpoints), end(globalBreakpoints));
     // std::sort(begin(globalStellarIndels), end(globalStellarIndels));
-    _writeGlobalBreakpoints(globalBreakpoints, msplazerOptions, msplazerOptions.support);
+    _writeGlobalBreakpoints(globalBreakpoints, msplazerOptions);
     // _writeGlobalBreakpoints(globalStellarIndels, msplazerOptions, msplazerOptions.support);
 
     // ///////////////////////////////////////////////////////////////////////

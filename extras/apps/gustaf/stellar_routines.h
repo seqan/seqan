@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                   Gustaf
 // ==========================================================================
-// Copyright (c) 2011, Knut Reinert, FU Berlin
+// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@
 #include <seqan/sequence.h>
 
 #include "../../../core/apps/stellar/stellar.h"
+#include "create_stellarmatches_from_file.h"
 using namespace seqan;
 
 // Compare StellarMatches using in order of priority (1) read begin, (2) read end position,
@@ -57,8 +58,6 @@ struct CompareStellarMatches
 
         if (match1.begin1 != match2.begin1)
             return match1.begin1 < match2.begin1;
-
-        // if(match1.end1 != match2.end1)
 
         return match1.end1 < match2.end1;
     }
@@ -120,31 +119,8 @@ void _convertStellarReverseMatches(TSequence & database, TID & databaseID,
             TPos begin1 = db_length - (*stM).end1;
             TPos end1 = db_length - (*stM).begin1;
             TInfix dbInf(database, begin1, end1);
-            TInfix readInf = infix(source((*stM).row2), (*stM).begin2, (*stM).end2);
 
             // Create new align object for as input for new Stellar object
-            /*
-            TAlign localAlign;
-            resize(rows(localAlign), 2);
-            setSource(row(localAlign, 0), host(dbInf));
-            setSource(row(localAlign, 1), host(readInf));
-
-            TRow & row1 = row(localAlign, 0);
-            TRow & row2 = row(localAlign, 1);
-
-            setBeginPosition(row1, begin1);
-            setBeginPosition(row2, (*stM).begin2);
-
-            setEndPosition(row1, end1);
-            setEndPosition(row2, (*stM).end2);
-
-            copyGaps(row1, (*stM).row1);
-            copyGaps(row2, (*stM).row2);
-
-            TMatch match(localAlign, databaseID, (*stM).orientation);
-            appendValue(stellarMatches[i].matches, match);
-            */
-
             TAlign localAlign;
             resize(rows(localAlign), 1);
             setSource(row(localAlign, 0), host(dbInf));
@@ -161,8 +137,11 @@ void _convertStellarReverseMatches(TSequence & database, TID & databaseID,
             appendValue(stellarMatches[i].matches, match);
         }
     }
-
 }
+
+// ----------------------------------------------------------------------------
+// Function _getStellarMatches()
+// ----------------------------------------------------------------------------
 
 // Compute Stellar matches using stellar function
 // Note: requires to convert matches on reverse strand: StellarMatches of the reverse Strand are being modified,
@@ -247,21 +226,14 @@ void _getStellarMatches(StringSet<TSequence> & queries, StringSet<TSequence> & d
             reverseComplement(databases[i]);
         }
     }
-
-    /*
-    for(unsigned j = 0; j < length(queries); ++j){
-        for (unsigned i = 0; i < length(stellarMatches[j].matches); ++i) {
-            std::cerr << stellarMatches[j].matches[i] << std::endl;
-            std::cerr << stellarMatches[j].matches[i].row1 << '\n' << stellarMatches[j].matches[i].row2 << std::endl;
-        }
-    }
-    */
-
     std::cout << "TIME stellar " << (sysTime() - start) << "s" << std::endl;
 }
 
-// Get edit distance score of two alignment rows
+// ----------------------------------------------------------------------------
+// Function _getScore()
+// ----------------------------------------------------------------------------
 
+// Get edit distance score of two alignment rows
 template <typename TSequence, typename TId, typename TValue>
 inline void _getScore(StellarMatch<TSequence, TId> & match, TValue & alignDistance)
 {
@@ -291,40 +263,23 @@ inline void _getScore(StellarMatch<TSequence, TId> & match, TValue & alignDistan
         reverseComplement(infix(source(match.row1), match.begin1, match.end1));
 }
 
-// Alignment Score using _analyzeAlignment(row0, row1, alignLen, matchNumber) from stellar_output.h
-// matchNumber and alignLen reset within _analyzeAlignment
-template <typename TSequence, typename TId, typename TValue>
-inline void _getScore(StellarMatch<TSequence, TId> & match,
-                      TValue & alignLen,
-                      TValue & matchNumber,
-                      TValue & alignDistance)
-{
-    // std::cout << match << std::endl;
-    if (!match.orientation)
-        reverseComplement(infix(source(match.row1), match.begin1, match.end1));
+// ----------------------------------------------------------------------------
+// Function _getMatchDistance()
+// ----------------------------------------------------------------------------
 
-    _analyzeAlignment(match.row1, match.row2, alignLen, matchNumber);
-
-    alignDistance = alignLen - matchNumber;
-    // std::cout << alignDistance << std::endl;
-    if (!match.orientation)
-        reverseComplement(infix(source(match.row1), match.begin1, match.end1));
-
-}
-
-// Computes distance score for each match and stores i in distanceScores
+// Computes distance score for each Stellar match and stores i in distanceScores
 // Note: Matches are being sorted within this function
 template <typename TScoreAlloc, typename TSequence, typename TId>
 void _getMatchDistanceScore(
     StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
-    String<TScoreAlloc> & distanceScores, bool internalStellarCall)
+    String<TScoreAlloc> & distanceScores)
 {
     typedef StellarMatch<TSequence, TId> TMatch;
     typedef typename Size<typename TMatch::TAlign>::Type TSize;
     typedef typename Iterator<String<TMatch> >::Type TIterator;
 
     // Calculating distance score of each match using Stellars _analayzeAlignment function
-    int matchNumber, alignLen, alignDistance;
+    int alignDistance = 0;
 
     for (TSize i = 0; i < length(stellarMatches); ++i)
     {
@@ -339,7 +294,6 @@ void _getMatchDistanceScore(
         for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
         {
             // Compute edit distance score
-            // _getScore(*itStellarMatches, alignLen, matchNumber, alignDistance);
             _getScore(*itStellarMatches, alignDistance);
             matchDistanceScores[matchIndex] = alignDistance;
             alignDistance = 0;
@@ -349,6 +303,11 @@ void _getMatchDistanceScore(
     }
 }
 
+// ----------------------------------------------------------------------------
+// Function trimMatchBegin()
+// ----------------------------------------------------------------------------
+
+// TODO(ktrappe): Rewrite according to new align modul (disabled atm)
 template <typename TMatch, typename TPos>
 void _trimMatchBegin(TMatch & stMatch, TPos const & splitPos, TPos const & projSplitPos)
 {
@@ -367,6 +326,11 @@ void _trimMatchBegin(TMatch & stMatch, TPos const & splitPos, TPos const & projS
     stMatch.begin2 = beginPosition(stMatch.row2);
 }
 
+// ----------------------------------------------------------------------------
+// Function trimMatchEnd()
+// ----------------------------------------------------------------------------
+
+// TODO(ktrappe): Rewrite according to new align modul (disabled atm)
 template <typename TMatch, typename TPos>
 void _trimMatchEnd(TMatch & stMatch, TPos & splitPos, TPos & projSplitPos)
 {
@@ -414,7 +378,11 @@ void _trimMatchEnd(TMatch & stMatch, TPos & splitPos, TPos & projSplitPos)
     stMatch.end2 = endPosition(stMatch.row2);
 }
 
-// TODO Restructure
+// ----------------------------------------------------------------------------
+// Function getStellarIndel()
+// ----------------------------------------------------------------------------
+
+// TODO(ktrappe): Restructure and rewrite (buggy) (disabled atm)
 template <typename TSequence, typename TId, typename TBreakpoint>
 void _getStellarIndel(StellarMatch<TSequence, TId> & match,
                       String<TBreakpoint> & globalStellarIndels,
@@ -618,6 +586,12 @@ void _getStellarIndel(StellarMatch<TSequence, TId> & match,
         reverseComplement(seq1);
 }
 
+// ----------------------------------------------------------------------------
+// Function checkUniqueId()
+// ----------------------------------------------------------------------------
+
+// Checks whether the short ID (sId) from a long ID (id) is uniq regarding all short IDs of the given
+// read set (sQueryIds). Prints IDs to cerr if not.
 template <typename TId>
 bool _checkUniqueId(TId const & sId, TId const & id, StringSet<TId> & ids, StringSet<TId> & sQueryIds)
 {
@@ -626,10 +600,10 @@ bool _checkUniqueId(TId const & sId, TId const & id, StringSet<TId> & ids, Strin
     {
         if (sId == sQueryIds[j])
         {
-            std::cout << "Found nonunique sequence ID!" << std::endl;
-            std::cout << ids[j] << std::endl;
-            std::cout << id << std::endl;
-            std::cout << "###########################" << std::endl;
+            std::cerr << "Found nonunique sequence ID!" << std::endl;
+            std::cerr << ids[j] << std::endl;
+            std::cerr << id << std::endl;
+            std::cerr << "###########################" << std::endl;
             unique = false;
         }
     }
