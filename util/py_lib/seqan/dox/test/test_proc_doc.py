@@ -291,13 +291,14 @@ class TestConvertEnum(TestConverterBase):
         self.conv = self.proc.converters['enum']
 
     def testConvertMinimal(self):
-        txt = '@enum My Enum'
+        txt = '@enum MyEnum My Enum'
         raw_enum = self.parseText(txt).entries[0]
         proc_enum = self.conv.process(raw_enum)
-        self.assertEqual(proc_enum.name, 'My Enum')
+        self.assertEqual(proc_enum.name, 'MyEnum')
+        self.assertEqual(proc_enum.title.toHtmlLike(), '<div>My Enum</div>')
 
     def testConvertFull(self):
-        txt = ('@enum Enum Name\n'
+        txt = ('@enum EnumName Enum Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> enum brief.\n'
@@ -311,7 +312,8 @@ class TestConvertEnum(TestConverterBase):
                '@see Link Target\n')
         raw_enum = self.parseText(txt).entries[0]
         proc_enum = self.conv.process(raw_enum)
-        self.assertEqual(proc_enum.name, 'Enum Name')
+        self.assertEqual(proc_enum.name, 'EnumName')
+        self.assertEqual(proc_enum.title.toHtmlLike(), '<div>Enum Name</div>')
         self.assertEqual(proc_enum.kind, 'enum')
         self.assertEqual(proc_enum.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_enum.signatures), 1)
@@ -338,13 +340,14 @@ class TestConvertAdaption(TestConverterBase):
         self.conv = self.proc.converters['adaption']
 
     def testConvertMinimal(self):
-        txt = '@adaption My Adaption'
+        txt = '@adaption MyAdaption My Adaption'
         raw_adaption = self.parseText(txt).entries[0]
         proc_adaption = self.conv.process(raw_adaption)
-        self.assertEqual(proc_adaption.name, 'My Adaption')
+        self.assertEqual(proc_adaption.name, 'MyAdaption')
+        self.assertEqual(proc_adaption.title.toHtmlLike(), '<div>My Adaption</div>')
 
     def testConvertFull(self):
-        txt = ('@adaption Adaption Name\n'
+        txt = ('@adaption AdaptionName Adaption Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> adaption brief.\n'
@@ -358,7 +361,8 @@ class TestConvertAdaption(TestConverterBase):
                '@see Link Target\n')
         raw_adaption = self.parseText(txt).entries[0]
         proc_adaption = self.conv.process(raw_adaption)
-        self.assertEqual(proc_adaption.name, 'Adaption Name')
+        self.assertEqual(proc_adaption.name, 'AdaptionName')
+        self.assertEqual(proc_adaption.title.toHtmlLike(), '<div>Adaption Name</div>')
         self.assertEqual(proc_adaption.kind, 'adaption')
         self.assertEqual(proc_adaption.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_adaption.signatures), 1)
@@ -385,13 +389,14 @@ class TestConvertTypedef(TestConverterBase):
         self.conv = self.proc.converters['global_typedef']
 
     def testConvertMinimal(self):
-        txt = '@typedef My Typedef'
+        txt = '@typedef MyTypedef My Typedef'
         raw_typedef = self.parseText(txt).entries[0]
         proc_typedef = self.conv.process(raw_typedef)
-        self.assertEqual(proc_typedef.name, 'My Typedef')
+        self.assertEqual(proc_typedef.name, 'MyTypedef')
+        self.assertEqual(proc_typedef.title.toHtmlLike(), '<div>My Typedef</div>')
 
     def testConvertFull(self):
-        txt = ('@typedef Typedef Name\n'
+        txt = ('@typedef TypedefName Typedef Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> typedef brief.\n'
@@ -405,7 +410,8 @@ class TestConvertTypedef(TestConverterBase):
                '@see Link Target\n')
         raw_typedef = self.parseText(txt).entries[0]
         proc_typedef = self.conv.process(raw_typedef)
-        self.assertEqual(proc_typedef.name, 'Typedef Name')
+        self.assertEqual(proc_typedef.name, 'TypedefName')
+        self.assertEqual(proc_typedef.title.toHtmlLike(), '<div>Typedef Name</div>')
         self.assertEqual(proc_typedef.kind, 'global_typedef')
         self.assertEqual(proc_typedef.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_typedef.signatures), 1)
@@ -432,14 +438,15 @@ class TestConvertConcept(TestConverterBase):
         self.conv = self.proc.converters['concept']
 
     def testConvertMinimal(self):
-        txt = '@concept My Concept'
+        txt = '@concept MyConcept My Concept'
         raw_concept = self.parseText(txt).entries[0]
         proc_concept = self.conv.process(raw_concept)
-        self.assertEqual(proc_concept.name, 'My Concept')
+        self.assertEqual(proc_concept.name, 'MyConcept')
+        self.assertEqual(proc_concept.title.toHtmlLike(), '<div>My Concept</div>')
         self.assertEqual(proc_concept.kind, 'concept')
 
     def testConvertFull(self):
-        txt = ('@concept Concept Name\n'
+        txt = ('@concept ConceptName Concept Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@extends Other Concept\n'
@@ -454,7 +461,8 @@ class TestConvertConcept(TestConverterBase):
                '@see Link Target\n')
         raw_concept = self.parseText(txt).entries[0]
         proc_concept = self.conv.process(raw_concept)
-        self.assertEqual(proc_concept.name, 'Concept Name')
+        self.assertEqual(proc_concept.name, 'ConceptName')
+        self.assertEqual(proc_concept.title.toHtmlLike(), '<div>Concept Name</div>')
         self.assertEqual(proc_concept.kind, 'concept')
         self.assertEqual(proc_concept.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_concept.signatures), 1)
@@ -483,14 +491,15 @@ class TestConvertClass(TestConverterBase):
         self.conv = self.proc.converters['class']
 
     def testConvertMinimal(self):
-        txt = '@class My Class'
+        txt = '@class MyClass My Class'
         raw_class = self.parseText(txt).entries[0]
         proc_class = self.conv.process(raw_class)
-        self.assertEqual(proc_class.name, 'My Class')
+        self.assertEqual(proc_class.name, 'MyClass')
+        self.assertEqual(proc_class.title.toHtmlLike(), '<div>My Class</div>')
         self.assertEqual(proc_class.kind, 'class')
 
     def testConvertFull(self):
-        txt = ('@class Class Name\n'
+        txt = ('@class ClassName Class Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@implements A Class\n'
@@ -507,7 +516,8 @@ class TestConvertClass(TestConverterBase):
                '@see Link Target\n')
         raw_class = self.parseText(txt).entries[0]
         proc_class = self.conv.process(raw_class)
-        self.assertEqual(proc_class.name, 'Class Name')
+        self.assertEqual(proc_class.name, 'ClassName')
+        self.assertEqual(proc_class.title.toHtmlLike(), '<div>Class Name</div>')
         self.assertEqual(proc_class.kind, 'class')
         self.assertEqual(proc_class.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_class.signatures), 1)
@@ -538,14 +548,15 @@ class TestConvertTag(TestConverterBase):
         self.conv = self.proc.converters['tag']
 
     def testConvertMinimal(self):
-        txt = '@tag MyTag'
+        txt = '@tag MyTag My Tag'
         raw_tag = self.parseText(txt).entries[0]
         proc_tag = self.conv.process(raw_tag)
         self.assertEqual(proc_tag.name, 'MyTag')
+        self.assertEqual(proc_tag.title.toHtmlLike(), '<div>My Tag</div>')
         self.assertEqual(proc_tag.kind, 'tag')
 
     def testConvertFull(self):
-        txt = ('@tag TagName\n'
+        txt = ('@tag TagName Tag Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> tag brief.\n'
@@ -560,6 +571,7 @@ class TestConvertTag(TestConverterBase):
         raw_tag = self.parseText(txt).entries[0]
         proc_tag = self.conv.process(raw_tag)
         self.assertEqual(proc_tag.name, 'TagName')
+        self.assertEqual(proc_tag.title.toHtmlLike(), '<div>Tag Name</div>')
         self.assertEqual(proc_tag.kind, 'tag')
         self.assertEqual(proc_tag.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_tag.signatures), 1)
@@ -580,7 +592,7 @@ class TestConvertTag(TestConverterBase):
         self.assertEqual(proc_tag.sees[0].toHtmlLike(), txt)
 
     def testConvertFullGrouped(self):
-        txt = ('@tag Group#TagName\n'
+        txt = ('@tag Group#TagName Tag Name\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> tag brief.\n'
@@ -595,6 +607,7 @@ class TestConvertTag(TestConverterBase):
         raw_tag = self.parseText(txt).entries[0]
         proc_tag = self.conv.process(raw_tag)
         self.assertEqual(proc_tag.name, 'Group#TagName')
+        self.assertEqual(proc_tag.title.toHtmlLike(), '<div>Tag Name</div>')
         self.assertEqual(proc_tag.kind, 'grouped_tag')
         self.assertEqual(proc_tag.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         self.assertEqual(len(proc_tag.signatures), 1)
@@ -621,28 +634,31 @@ class TestConvertFunction(TestConverterBase):
         self.conv = self.proc.converters['global_function']
 
     def testConvertMinimalGlobal(self):
-        txt = '@fn myFunction'
+        txt = '@fn myFunction my Function'
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'myFunction')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
         self.assertEqual(proc_function.kind, 'global_function')
 
     def testConvertMinimalInterface(self):
-        txt = '@fn Klass#myFunction'
+        txt = '@fn Klass#myFunction my Function'
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass#myFunction')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
         self.assertEqual(proc_function.kind, 'interface_function')
 
     def testConvertMinimalMember(self):
-        txt = '@fn Klass::myFunction'
+        txt = '@fn Klass::myFunction my Function'
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass::myFunction')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
         self.assertEqual(proc_function.kind, 'member_function')
 
     def testConvertFullGlobal(self):
-        txt = ('@fn myFunction\n'
+        txt = ('@fn myFunction my Function\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> class brief.\n'
@@ -661,6 +677,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'myFunction')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
         self.assertEqual(proc_function.kind, 'global_function')
         self.assertEqual(proc_function.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -695,7 +712,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.sees[0].toHtmlLike(), txt)
 
     def testConvertFullInterface(self):
-        txt = ('@fn Klass#myFunction\n'
+        txt = ('@fn Klass#myFunction my Function\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> class brief.\n'
@@ -714,6 +731,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass#myFunction')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
         self.assertEqual(proc_function.kind, 'interface_function')
         self.assertEqual(proc_function.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -748,7 +766,7 @@ class TestConvertFunction(TestConverterBase):
         self.assertEqual(proc_function.sees[0].toHtmlLike(), txt)
 
     def testConvertFullMember(self):
-        txt = ('@fn Klass::myFunction\n'
+        txt = ('@fn Klass::myFunction my Function\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> class brief.\n'
@@ -767,6 +785,7 @@ class TestConvertFunction(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass::myFunction')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>my Function</div>')
         self.assertEqual(proc_function.kind, 'member_function')
         self.assertEqual(proc_function.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -807,21 +826,23 @@ class TestConvertMacro(TestConverterBase):
         self.conv = self.proc.converters['macro']
 
     def testConvertMinimalGlobal(self):
-        txt = '@macro MACRO'
+        txt = '@macro MACRO macro title'
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'MACRO')
+        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
         self.assertEqual(proc_macro.kind, 'macro')
 
     def testConvertMinimalGrouped(self):
-        txt = '@fn Group#MACRO'
+        txt = '@fn Group#MACRO macro title'
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'Group#MACRO')
+        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
         self.assertEqual(proc_macro.kind, 'grouped_macro')
 
     def testConvertFullGlobal(self):
-        txt = ('@macro MACRO\n'
+        txt = ('@macro MACRO macro title\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> macro brief.\n'
@@ -839,6 +860,7 @@ class TestConvertMacro(TestConverterBase):
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'MACRO')
+        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
         self.assertEqual(proc_macro.kind, 'macro')
         self.assertEqual(proc_macro.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -872,7 +894,7 @@ class TestConvertMacro(TestConverterBase):
         self.assertEqual(proc_macro.sees[0].toHtmlLike(), txt)
 
     def testConvertFullGrouped(self):
-        txt = ('@macro Group#MACRO\n'
+        txt = ('@macro Group#MACRO macro title\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> class brief.\n'
@@ -889,6 +911,7 @@ class TestConvertMacro(TestConverterBase):
         raw_macro = self.parseText(txt).entries[0]
         proc_macro = self.conv.process(raw_macro)
         self.assertEqual(proc_macro.name, 'Group#MACRO')
+        self.assertEqual(proc_macro.title.toHtmlLike(), '<div>macro title</div>')
         self.assertEqual(proc_macro.kind, 'grouped_macro')
         self.assertEqual(proc_macro.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # params
@@ -924,21 +947,23 @@ class TestConvertMetafunction(TestConverterBase):
         self.conv = self.proc.converters['global_metafunction']
 
     def testConvertMinimalGlobal(self):
-        txt = '@mfn Metafunktion'
+        txt = '@mfn Metafunktion metafunction title'
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Metafunktion')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>metafunction title</div>')
         self.assertEqual(proc_function.kind, 'global_metafunction')
 
     def testConvertMinimalInterface(self):
-        txt = '@mfn Klass#Metafunktion'
+        txt = '@mfn Klass#Metafunktion metafunction title'
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass#Metafunktion')
+        self.assertEqual(proc_function.title.toHtmlLike(), '<div>metafunction title</div>')
         self.assertEqual(proc_function.kind, 'interface_metafunction')
 
     def testConvertFullGlobal(self):
-        txt = ('@mfn Metafunktion\n'
+        txt = ('@mfn Metafunktion metafunction title\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> class brief.\n'
@@ -956,6 +981,7 @@ class TestConvertMetafunction(TestConverterBase):
         raw_metafunction = self.parseText(txt).entries[0]
         proc_metafunction = self.conv.process(raw_metafunction)
         self.assertEqual(proc_metafunction.name, 'Metafunktion')
+        self.assertEqual(proc_metafunction.title.toHtmlLike(), '<div>metafunction title</div>')
         self.assertEqual(proc_metafunction.kind, 'global_metafunction')
         self.assertEqual(proc_metafunction.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
         # tparams
@@ -984,7 +1010,7 @@ class TestConvertMetafunction(TestConverterBase):
         self.assertEqual(proc_metafunction.sees[0].toHtmlLike(), txt)
 
     def testConvertFullInterface(self):
-        txt = ('@fn Klass#Metafunktion\n'
+        txt = ('@fn Klass#Metafunktion metafunction title\n'
                '@headerfile <seqan/header.h>\n'
                '@headerfile <seqan/header2.h>\n'
                '@brief This is the <i>very important</i> class brief.\n'
@@ -1002,6 +1028,7 @@ class TestConvertMetafunction(TestConverterBase):
         raw_metafunction = self.parseText(txt).entries[0]
         proc_metafunction = self.conv.process(raw_metafunction)
         self.assertEqual(proc_metafunction.name, 'Klass#Metafunktion')
+        self.assertEqual(proc_metafunction.title.toHtmlLike(), '<div>metafunction title</div>')
         self.assertEqual(proc_metafunction.kind, 'interface_metafunction')
         # tparams
         self.assertEqual(len(proc_metafunction.tparams), 1)
@@ -1039,6 +1066,7 @@ class TestConvertVariable(TestConverterBase):
         raw_function = self.parseText(txt).entries[0]
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'myVar')
+        self.assertEqual(proc_function.title, None)
         self.assertEqual(proc_function.type, 'Type')
         self.assertEqual(proc_function.kind, 'variable')
 
@@ -1048,6 +1076,7 @@ class TestConvertVariable(TestConverterBase):
         doc = proc_doc.ProcDoc
         proc_function = self.conv.process(raw_function)
         self.assertEqual(proc_function.name, 'Klass::myVar')
+        self.assertEqual(proc_function.title, None)
         self.assertEqual(proc_function.type, 'Type')
         self.assertEqual(proc_function.kind, 'member_variable')
 
@@ -1066,6 +1095,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'myVar')
+        self.assertEqual(proc_variable.title, None)
         self.assertEqual(proc_variable.type, 'Type')
         self.assertEqual(proc_variable.kind, 'variable')
         # brief
@@ -1099,6 +1129,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'Klass::myVar')
+        self.assertEqual(proc_variable.title, None)
         self.assertEqual(proc_variable.type, 'Type')
         self.assertEqual(proc_variable.kind, 'member_variable')
         self.assertEqual(proc_variable.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
@@ -1133,6 +1164,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'CONSTANT')
+        self.assertEqual(proc_variable.title, None)
         self.assertEqual(proc_variable.type, 'Enum')
         self.assertEqual(proc_variable.kind, 'variable')
         self.assertEqual(proc_variable.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])
@@ -1167,6 +1199,7 @@ class TestConvertVariable(TestConverterBase):
         raw_variable = self.parseText(txt).entries[0]
         proc_variable = self.conv.process(raw_variable)
         self.assertEqual(proc_variable.name, 'Klass::CONSTANT')
+        self.assertEqual(proc_variable.title, None)
         self.assertEqual(proc_variable.type, 'Klass::Enum')
         self.assertEqual(proc_variable.kind, 'member_variable')
         self.assertEqual(proc_variable.headerfiles, ['<seqan/header.h>', '<seqan/header2.h>'])

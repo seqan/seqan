@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ concept.name }}{% endblock %}
+{% block title %}{{ concept.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1>Concept: {{ concept.name }}</h1>
+<h1>Concept: {{ concept.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(concept) }}
 

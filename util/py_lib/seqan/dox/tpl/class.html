@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ klass.name }}{% endblock %}
+{% block title %}{{ klass.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1>Class: {{ klass.name }}</h1>
+<h1>Class: {{ klass.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(klass) }}
 

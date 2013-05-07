@@ -366,6 +366,10 @@ class GenericDocState(object):
         self.first_line_tokens = []
         self.substate = 'first_line'
         self.entry = self.entry_class()
+        # Variables for name/title separation.
+        self.name_read = False
+        self.name_tokens = []
+        self.title_tokens = []
 
     def handle(self, token):
         #print 'state = class, substate = %s, clause_state %s' % (self.substate, self.clause_state)
@@ -373,12 +377,26 @@ class GenericDocState(object):
             # If we have a line break in the first line then we go to the body
             # of the class documentation.
             if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
-                normalizeWhitespaceTokens(self.first_line_tokens)
-                self.entry.name = raw_doc.RawText(self.first_line_tokens)
+                #print >>sys.stderr, [v.val for v in self.name_tokens], [v.val for v in self.type_tokens]
+                normalizeWhitespaceTokens(self.name_tokens)
+                normalizeWhitespaceTokens(self.title_tokens)
+                self.entry.name = raw_doc.RawText(self.name_tokens)
+                self.entry.title = raw_doc.RawText(self.title_tokens)
                 self.substate = 'body'
                 return
+            # Skip space at the beginning of the type.
+            if not self.name_tokens and token.type == 'SPACE':
+                return
             # Otherwise, we collect the token's value.
-            self.first_line_tokens.append(token)
+            if self.name_read:
+                #print >>sys.stderr, 'NAME', token.type, repr(token.val)
+                self.title_tokens.append(token)
+            else:
+                if token.type == 'SPACE':
+                    self.name_read = True
+                else:
+                    #print >>sys.stderr, 'TYPE', token.type, repr(token.val)
+                    self.name_tokens.append(token)
         elif self.substate == 'body':
             # If we are already in a clause then continue to use the state.
             if not self.clause_state is None:
@@ -532,44 +550,8 @@ class PageState(GenericDocState):
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
 
-    def entered(self):
-        GenericDocState.entered(self)
-        self.name_read = False
-        self.name_tokens = []
-        self.title_tokens = []
 
-    def handle(self, token):
-        # Handle first state here and the remaining in the parent class.
-        #print >>sys.stderr, token.type, repr(token.val), self.name_read
-        if self.substate == 'first_line':
-            # If we have a line break in the first line then we go to the body
-            # of the class documentation.
-            if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
-                #print >>sys.stderr, [v.val for v in self.name_tokens], [v.val for v in self.type_tokens]
-                normalizeWhitespaceTokens(self.name_tokens)
-                normalizeWhitespaceTokens(self.title_tokens)
-                self.entry.name = raw_doc.RawText(self.name_tokens)
-                self.entry.title = raw_doc.RawText(self.title_tokens)
-                self.substate = 'body'
-                return
-            # Skip space at the beginning of the type.
-            if not self.name_tokens and token.type == 'SPACE':
-                return
-            # Otherwise, we collect the token's value.
-            if self.name_read:
-                #print >>sys.stderr, 'NAME', token.type, repr(token.val)
-                self.title_tokens.append(token)
-            else:
-                if token.type == 'SPACE':
-                    self.name_read = True
-                else:
-                    #print >>sys.stderr, 'TYPE', token.type, repr(token.val)
-                    self.name_tokens.append(token)
-        else:
-            GenericDocState.handle(self, token)
-
-
-class GroupState(PageState):
+class GroupState(GenericDocState):
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawGroup, 'group')
         self.allowed_commands = set(['COMMAND_CODE',

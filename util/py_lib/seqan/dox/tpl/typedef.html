@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}{{ typedef.title|transtext(top=False) }}{% endblock %}
+
 {% block content %}
-<h1>Typedef: {{ typedef.name }}</h1>
+<h1>Typedef: {{ typedef.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(typedef) }}
 

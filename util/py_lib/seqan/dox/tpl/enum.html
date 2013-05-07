@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ enum.name }}{% endblock %}
+{% block title %}{{ enum.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1>Enum: {{ enum.name }}</h1>
+<h1>Enum: {{ enum.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(enum) }}
 

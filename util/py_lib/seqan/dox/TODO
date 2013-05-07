@@ -1,10 +1,7 @@
 TODOs
 -----
 
- * identifier names apart from title.
- * toggle link for @page HTML pages
  * warn about missing return types etc.
-
  * generated tokens could have annotation, generated text should have its own type
 
  * dot inheritance diagrams

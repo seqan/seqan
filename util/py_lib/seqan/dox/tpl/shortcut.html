@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ shortcut.name }}{% endblock %}
+{% block title %}{{ shortcut.title|transtext(top=False) }}{% endblock %}
 
 {% block banner %}
-<h1 class="shortcut title">{{ shortcut.name }} Shortcut Reference</h1>
+<h1 class="shortcut title">{{ shortcut.title|transtext(top=False) }} Shortcut Reference</h1>
 {% endblock %}
 
 {% block content %}

@@ -221,8 +221,9 @@ class ProcEntry(object):
     @ivar raw_entry: The RawEntry object that this ProcEntry was generated from.
     """
 
-    def __init__(self, name, brief=None, body=None, sees=[]):
+    def __init__(self, name, title=None, brief=None, body=None, sees=[]):
         self.name = name
+        self.title = title
         self.brief = brief
         self.body = body
         self.sees = list(sees)
@@ -624,7 +625,6 @@ class ProcPage(ProcEntry):
 
     def __init__(self, name, brief=None, body=None, sees=[]):
         ProcEntry.__init__(self, name, brief, body, sees)
-        self.title = None
 
     def __str__(self):
         return 'Page(name=%s)' % repr(self.name)
@@ -635,7 +635,6 @@ class ProcGroup(ProcEntry):
 
     def __init__(self, name, brief=None, body=None, sees=[]):
         ProcEntry.__init__(self, name, brief, body, sees)
-        self.title = None
         self.tags = []
         self.typedefs = []
 
@@ -872,6 +871,9 @@ class EntryConverter(object):
 
     def process(self, raw_entry):
         entry = self.entry_class(name=raw_entry.name.text)
+        # Convert the title
+        if raw_entry.title.text:
+            entry.title = self.rawTextToTextNode(raw_entry.title)
         # Convert first brief member.  We already warned about duplicate ones
         # elsewhere.
         if raw_entry.briefs:
@@ -1102,13 +1104,6 @@ class PageConverter(EntryConverter):
     def __init__(self, doc_proc):
         EntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcPage
-    
-    def process(self, raw_entry):
-        page = EntryConverter.process(self, raw_entry)
-        # Convert the title
-        if raw_entry.title:
-            page.title = self.rawTextToTextNode(raw_entry.title)
-        return page
 
 
 class GroupConverter(EntryConverter):
@@ -1117,13 +1112,6 @@ class GroupConverter(EntryConverter):
     def __init__(self, doc_proc):
         EntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcGroup
-    
-    def process(self, raw_entry):
-        page = EntryConverter.process(self, raw_entry)
-        # Convert the title
-        if raw_entry.title:
-            page.title = self.rawTextToTextNode(raw_entry.title)
-        return page
 
 
 class TextNodeVisitor(object):

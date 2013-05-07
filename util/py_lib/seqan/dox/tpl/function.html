@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ function.name }}{% endblock %}
+{% block title %}{{ function.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1>Function: {{ function.name }}</h1>
+<h1>Function: {{ function.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(function) }}
 

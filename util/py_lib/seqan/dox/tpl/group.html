@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ group.name }}{% endblock %}
+{% block title %}{{ group.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1>Group: {{ group.name|e }}</h1>
+<h1>Group: {{ group.title|transtext(top=False) }}</h1>
 
 <!--
  =============================================================================

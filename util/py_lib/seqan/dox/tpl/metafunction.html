@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}{{ metafunction.title|transtext(top=False) }}{% endblock %}
+
 {% block content %}
-<h1>Metafunction: {{ metafunction.name }}</h1>
+<h1>Metafunction: {{ metafunction.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(metafunction) }}
 
