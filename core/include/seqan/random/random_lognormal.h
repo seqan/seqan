@@ -44,10 +44,12 @@ namespace seqan {
 // ===========================================================================
 
 // Forward-declarations.
-struct Normal;
+struct Normal_;
+typedef Tag<Normal_> Normal;
 
 // Specialization Tag for log-normal distribution.
-struct LogNormal {};
+struct LogNormal_;
+typedef Tag<LogNormal_> LogNormal;
 
 /**
 .Tag.Lognormal Construction:
@@ -62,8 +64,10 @@ struct LogNormal {};
 ..see:Spec.Log-Normal Pdf
 */
 
-struct MuSigma {};
-struct MeanStdDev {};
+struct MuSigma_;
+typedef Tag<MuSigma_> MuSigma;
+struct MeanStdDev_;
+typedef Tag<MeanStdDev_> MeanStdDev;
 
 // ===========================================================================
 // Classes

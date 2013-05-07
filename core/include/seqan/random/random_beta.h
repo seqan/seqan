@@ -31,11 +31,13 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Code for normally distributed random number generation.
+// Code for random number generation following beta distribution.
 // ==========================================================================
 
-#ifndef SEQAN_RANDOM_RANDOM_NORMAL_H_
-#define SEQAN_RANDOM_RANDOM_NORMAL_H_
+#ifndef SEQAN_RANDOM_RANDOM_BETA_H_
+#define SEQAN_RANDOM_RANDOM_BETA_H_
+
+#include "random_beta_kfunc.h"
 
 namespace seqan {
 
@@ -44,45 +46,61 @@ namespace seqan {
 // ===========================================================================
 
 // Specialization Tag for normal distribution.
-struct Normal_;
-typedef Tag<Normal_> Normal;
+struct Beta_;
+typedef Tag<Beta_> Beta;
+
+// Selection of construction with alpha and beta.
+struct AlphaBeta_;
+typedef Tag<AlphaBeta_> AlphaBeta;
+
+// Selection of construction with mu and sigma.
+struct MeanStdDev_;
+typedef Tag<MeanStdDev_> MeanStdDev;
 
 // ===========================================================================
 // Classes
 // ===========================================================================
 
 /**
-.Spec.Normal Pdf
-..signature:Pdf<Normal>
+.Spec.Beta Pdf
+..signature:Pdf<Beta>
 ..general:Class.Pdf
-..summary:Normal probability density function.
+..summary:Beta probability density function.
 ..cat:Random
 ..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
 */
 
 template <>
-class Pdf<Normal>
+class Pdf<Beta>
 {
 public:
-    double _mu;
-    double _sigma;
+    double _alpha;
+    double _beta;
 
 /**
-.Memfunc.Normal Pdf#Pdf
-..class:Spec.Normal Pdf
-..summary:Constructor for normal Pdf.
-..signature:Pdf<Normal>(mu, sigma)
-..param.mu:Mean of the normal distribution.
+.Memfunc.Beta Pdf#Pdf
+..class:Spec.Beta Pdf
+..summary:Constructor for beta Pdf.
+..description:Use the tags $AlphaBeta$ and $MeanStdDev$ to select the meaning of the two parameters.
+..signature:Pdf::Pdf(mu, sigma[, AlphaBeta()])
+..signature:Pdf::Pdf(mu, sigma, MeanStdDev())
+..param.mu:Mean of the beta distribution.
 ...type:nolink:double
-..param.sigma:Standard deviation of the normal distribution.
+..param.sigma:Standard deviation of the beta distribution.
 ...type:nolink:double
 */
-    Pdf(double mu, double sigma)
-            : _mu(mu), _sigma(sigma)
-    {
-        SEQAN_CHECKPOINT;
-    }
+    Pdf(double mu, double sigma, MeanStdDev const & /*tag*/)
+            : _alpha(((1 - mu) / sigma / sigma - 1 / mu) * mu * mu),
+              _beta(_alpha * (1 / mu - 1))
+    {}
+
+    Pdf(double alpha, double beta, AlphaBeta const & /*tag*/) :
+            _alpha(alpha), _beta(beta)
+    {}
+
+    Pdf(double alpha, double beta) :
+            _alpha(alpha), _beta(beta)
+    {}
 };
 
 // ===========================================================================
@@ -90,50 +108,27 @@ public:
 // ===========================================================================
 
 template <>
-struct Value<Pdf<Normal> >
+struct Value<Pdf<Beta> >
 {
     typedef double Type;
 };
 
 template <>
-struct Value<const Pdf<Normal> > : Value<Pdf<Normal> > {};
+struct Value<const Pdf<Beta> > : Value<Pdf<Beta> > {};
 
 // ===========================================================================
 // Functions
 // ===========================================================================
 
-static const double SEQAN_NV_MAGICCONST = 1.7155277699214135;  // == 4 * exp(-0.5)/sqrt(2.0)
-
-/*
-..summary:Pick a normally distributed random number.
-*/
 template <typename TRNG>
 inline
-typename Value<Pdf<Normal> >::Type
-pickRandomNumber(TRNG & rng, Pdf<Normal> const & pdf)
+typename Value<Pdf<Beta> >::Type
+pickRandomNumber(TRNG & rng, Pdf<Beta> const & pdf)
 {
-    SEQAN_CHECKPOINT;
-
-    // Normal Distribution Heuristics, ported from Python.
-    //
-    // Kinderman and Monahan method. Reference: Kinderman, A.J. and
-    // Monahan, J.F., "Computer generation of random variables using
-    // the ratio of uniform deviates", ACM Trans Math Software, 3,
-    // (1977), pp257-260.
-
-    double z;
     Pdf<Uniform<double> > pdfUniform(0, 1);
-    while (true) {
-        double u1 = pickRandomNumber(rng, pdfUniform);
-        double u2 = 1 - pickRandomNumber(rng, pdfUniform);
-        z = SEQAN_NV_MAGICCONST * (u1 - 0.5) / u2;
-        double zz = z * z / 4.0;
-        if (zz < -::std::log10(u2))
-            break;
-    }
-    return pdf._mu + z * pdf._sigma;
+    return 1 - kf_betai(pdf._alpha, pdf._beta, pickRandomNumber(rng, pdfUniform));
 }
 
 }  // namespace seqan
 
-#endif  // SEQAN_RANDOM_RANDOM_NORMAL_H_
+#endif  // SEQAN_RANDOM_RANDOM_BETA_H_

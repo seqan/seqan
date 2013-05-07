@@ -63,6 +63,9 @@ SEQAN_BEGIN_TESTSUITE(test_random) {
     SEQAN_CALL_TEST(test_random_lognormal_constructors);
     SEQAN_CALL_TEST(test_random_lognormal_pick);
 
+    SEQAN_CALL_TEST(test_random_beta_constructors);
+    SEQAN_CALL_TEST(test_random_beta_pick);
+
     SEQAN_CALL_TEST(test_random_uniform_int_constructors);
     SEQAN_CALL_TEST(test_random_uniform_int_pick);
     SEQAN_CALL_TEST(test_random_uniform_bool_pick);
@@ -71,12 +74,5 @@ SEQAN_BEGIN_TESTSUITE(test_random) {
     SEQAN_CALL_TEST(test_random_uniform_double_pick);
 
     SEQAN_CALL_TEST(test_random_shuffle);
-
-    // Verify Checkpoints.
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/random.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/random/random_lognormal.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/random/random_mt19937.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/random/random_normal.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/random/random_shuffle.h");
 }
 SEQAN_END_TESTSUITE

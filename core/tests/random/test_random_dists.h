@@ -49,12 +49,12 @@ SEQAN_DEFINE_TEST(test_random_normal_constructors)
 SEQAN_DEFINE_TEST(test_random_normal_pick)
 {
     using namespace seqan;
-    
+
     // mean = 1.0, stddev = 1.0
     {
         Rng<MersenneTwister> mt(42);
         Pdf<Normal> pdf(1, 1);
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 10000; ++i)
             sum += pickRandomNumber(mt, pdf);
@@ -64,7 +64,7 @@ SEQAN_DEFINE_TEST(test_random_normal_pick)
     {
         Rng<MersenneTwister> mt(42);
         Pdf<Normal> pdf(-3.4, 0.3);
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 10000; ++i)
             sum += pickRandomNumber(mt, pdf);
@@ -74,7 +74,7 @@ SEQAN_DEFINE_TEST(test_random_normal_pick)
     {
         Rng<MersenneTwister> mt(42);
         Pdf<Normal> pdf(4, 0.1);
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 10000; ++i)
             sum += pickRandomNumber(mt, pdf);
@@ -95,7 +95,7 @@ SEQAN_DEFINE_TEST(test_random_geometric_fair_coin_pick)
     {
         Rng<MersenneTwister> mt(42);
         Pdf<GeometricFairCoin> pdf;
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 100000; ++i)
             sum += pickRandomNumber(mt, pdf);
@@ -132,7 +132,7 @@ SEQAN_DEFINE_TEST(test_random_lognormal_pick)
     {
         Rng<MersenneTwister> mt(42);
         Pdf<LogNormal> pdf(1, 0.2, MeanStdDev());
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 10000; ++i)
             sum += pickRandomNumber(mt, pdf);
@@ -142,7 +142,7 @@ SEQAN_DEFINE_TEST(test_random_lognormal_pick)
     {
         Rng<MersenneTwister> mt(42);
         Pdf<LogNormal> pdf(0.4, 0.1, MeanStdDev());
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 10000; ++i)
             sum += pickRandomNumber(mt, pdf);
@@ -157,6 +157,63 @@ SEQAN_DEFINE_TEST(test_random_lognormal_pick)
         for (unsigned i = 0; i < 10000; ++i)
             sum += pickRandomNumber(mt, pdf);
         SEQAN_ASSERT_LT(fabs(sum / 10000 - 4), 0.02);
+    }
+}
+
+SEQAN_DEFINE_TEST(test_random_beta_constructors)
+{
+    using namespace seqan;
+
+    {
+        Pdf<Beta> pdf(0.5, 0.3);
+        SEQAN_ASSERT_EQ(pdf._alpha, 0.5);
+        SEQAN_ASSERT_EQ(pdf._beta, 0.3);
+    }
+    {
+        Pdf<Beta> pdf(0.5, 0.3, AlphaBeta());
+        SEQAN_ASSERT_EQ(pdf._alpha, 0.5);
+        SEQAN_ASSERT_EQ(pdf._beta, 0.3);
+    }
+    {
+        Pdf<Beta> pdf(0.3, 0.2, MeanStdDev());
+        SEQAN_ASSERT_IN_DELTA(pdf._alpha, 1.275, 0.01);
+        SEQAN_ASSERT_IN_DELTA(pdf._beta, 2.975, 0.01);
+    }
+}
+
+SEQAN_DEFINE_TEST(test_random_beta_pick)
+{
+    using namespace seqan;
+
+    // mean = 0.3, stddev = 0.2
+    {
+        Rng<MersenneTwister> mt(42);
+        Pdf<Beta> pdf(0.3, 0.2, MeanStdDev());
+
+        double sum = 0;
+        for (unsigned i = 0; i < 1000; ++i)
+            sum += pickRandomNumber(mt, pdf);
+        SEQAN_ASSERT_IN_DELTA((sum / 1000), 0.3, 0.01);
+    }
+    // mean = 0.4, stddev = 0.1
+    {
+        Rng<MersenneTwister> mt(42);
+        Pdf<Beta> pdf(0.4, 0.1, MeanStdDev());
+
+        double sum = 0;
+        for (unsigned i = 0; i < 10000; ++i)
+            sum += pickRandomNumber(mt, pdf);
+        SEQAN_ASSERT_IN_DELTA((sum / 10000), 0.4, 0.01);
+    }
+    // mean = 0.7, stddev = 0.1
+    {
+        Rng<MersenneTwister> mt(42);
+        Pdf<Beta> pdf(0.7, 0.1, MeanStdDev());
+
+        double sum = 0;
+        for (unsigned i = 0; i < 10000; ++i)
+            sum += pickRandomNumber(mt, pdf);
+        SEQAN_ASSERT_IN_DELTA((sum / 10000), 0.7, 0.01);
     }
 }
 
@@ -194,12 +251,12 @@ SEQAN_DEFINE_TEST(test_random_uniform_int_pick)
 SEQAN_DEFINE_TEST(test_random_uniform_bool_pick)
 {
     using namespace seqan;
-	
+
     Rng<MersenneTwister> mt(42);
     Pdf<Uniform<bool> > pdf;
-	
+
     unsigned gt = 0;  // Greater than 0.
-	
+
     int sum = 0;
     for (unsigned i = 0; i < 100000; ++i) {
         int x = pickRandomNumber(mt, pdf);
@@ -208,10 +265,10 @@ SEQAN_DEFINE_TEST(test_random_uniform_bool_pick)
         SEQAN_ASSERT_GEQ(x, 0);
         SEQAN_ASSERT_LEQ(x, 1);
     }
-	
+
     SEQAN_ASSERT_GT(gt, 0u);
     SEQAN_ASSERT_LT(gt, 100000u);
-	
+
 	SEQAN_ASSERT_IN_DELTA(sum / 100000.0, 0.5, 0.01);
 }
 
@@ -251,9 +308,9 @@ SEQAN_DEFINE_TEST(test_random_uniform_double_pick)
     {
         Rng<MersenneTwister> mt(42);
         Pdf<Uniform<double> > pdf(-20, 30);
-        
+
         unsigned gt = 0;  // Greater than 0.5
-        
+
         double sum = 0;
         for (unsigned i = 0; i < 10000; ++i) {
             double x = pickRandomNumber(mt, pdf);
@@ -262,12 +319,12 @@ SEQAN_DEFINE_TEST(test_random_uniform_double_pick)
             SEQAN_ASSERT_GEQ(x, -20);
             SEQAN_ASSERT_LEQ(x, 30);
         }
-        
+
         std::cerr << sum << std::endl;
-        
+
         SEQAN_ASSERT_GT(gt, 0u);
         SEQAN_ASSERT_LT(gt, 50000u);
-        
+
         SEQAN_ASSERT_LEQ(fabs(sum / 10000.0 - 5.0), 0.05);
     }
 }

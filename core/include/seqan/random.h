@@ -59,6 +59,7 @@
 #include <seqan/random/random_normal.h>
 #include <seqan/random/random_lognormal.h>  // uses normal.h, uniform.h
 #include <seqan/random/random_geometric.h>
+#include <seqan/random/random_beta.h>
 #include <seqan/random/random_rng_functor.h>
 
 // Functions with randomness.
