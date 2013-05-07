@@ -113,6 +113,7 @@ class RawEntry(object):
     """One top-level entry of the documentation.
     
     @ivar name  The identifier of the entry.
+    @ivar title The title of the entry.
     @ivar brief A string object with a brief summary of the entry.
     @ivar body  A RawBody object with the entry's documentation.
     @ivar sees  A list of RawSee objects.
@@ -696,14 +697,10 @@ class RawMetafunction(RawCodeEntry):
 
 
 class RawPage(RawEntry):
-    """A page in the documentation.
-
-    @ivar title: The title of the page as a RawText.
-    """
+    """A page in the documentation."""
 
     def __init__(self, briefs=[]):
         RawEntry.__init__(self, briefs=briefs)
-        self.title = RawText()
         self.command = 'page'
     
     def getType(self):
@@ -728,14 +725,10 @@ class RawPage(RawEntry):
 
 
 class RawGroup(RawEntry):
-    """A group in the documentation.
-
-    @ivar title: The title of the group as a RawText.
-    """
+    """A group in the documentation."""
 
     def __init__(self, briefs=[]):
         RawEntry.__init__(self, briefs=briefs)
-        self.title = RawText()
         self.command = 'defgroup'
     
     def getType(self):
