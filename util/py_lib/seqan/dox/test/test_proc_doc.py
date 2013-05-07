@@ -115,6 +115,35 @@ class TestConvertPageWithIncludes(TestConverterBase):
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
         
 
+class TestConvertPageWithLink(TestConverterBase):
+    """Tests for @page with @link command."""
+
+    def setUp(self):
+        base_dir = os.path.dirname(os.path.realpath(__file__))
+        self.proc = proc_doc.DocProcessor(include_dir=base_dir)
+        self.conv = self.proc.converters['page']
+
+    def testLinkWithTitle(self):
+        txt = ('@page Page Page Title\n'
+               '\n'
+               'A link with @link OtherPage a title @endlink.\n')
+        raw_page = self.parseText(txt).entries[0]
+        proc_page = self.conv.process(raw_page)
+        txt = ('<div><p>A link with <a href="seqan:OtherPage">a title</a>.'
+               '</p></div>')
+        self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
+
+    def testLinkWithoutTitle(self):
+        txt = ('@page Page Page Title\n'
+               '\n'
+               'And a link without a title: @link OtherPage @endlink.\n')
+        raw_page = self.parseText(txt).entries[0]
+        proc_page = self.conv.process(raw_page)
+        txt = ('<div><p>And a link without a title: <a href="seqan:OtherPage">'
+               '</a>.</p></div>')
+        self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)
+
+
 class TestConvertPage(TestConverterBase):
     def setUp(self):
         self.proc = proc_doc.DocProcessor()

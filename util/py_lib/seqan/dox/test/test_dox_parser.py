@@ -928,7 +928,7 @@ class TestLinkParsing(TestDoxParserBase):
         doc = parser.documentation
         expected = ('@page PageTitle Page Title\n'
                     '\n'
-                    '<a href="seqan:PageTitle">the page title</a>.\n\n')
+                    '@link PageTitle the page title @endlink.\n\n')
         self.assertMultiLineEqual(doc.getFormatted(), expected)
         
 

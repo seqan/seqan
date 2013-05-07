@@ -218,7 +218,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
         target_path, target_title = self.path_converter.convert(a_node.attrs['href'][6:])
         if target_path is not None:
             a_node.attrs['href'] = target_path
-            if target_title:
+            if not a_node.children:
                 a_node.children = target_title
         else:
             class_attr = a_node.attrs.get('class', '')

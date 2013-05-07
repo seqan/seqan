@@ -8,10 +8,6 @@ TODOs
  * warn about missing return types etc.
  * image inclusion <img src="">
 
- * Comprehensive parsing of in-text stuff link @link @endlink etc.
-  * bug remaining in translating whitespaces inside of link title
-  * render target title instead of given content between <a> and </a>
-
  * generated tokens could have annotation, generated text should have its own type
 
  * dot inheritance diagrams

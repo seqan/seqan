@@ -634,11 +634,20 @@ class ProcGroup(ProcEntry):
 
 
 class RawTextToTextNodeConverter(object):
+    """Convert raw text including HTML tags to text node."""
+
     def __init__(self, strip_lt_line_space=False):
         self.tag_stack = []
         self.node_stack = []
         self.current = None
         self.strip_lt_line_space = strip_lt_line_space
+        # Processing text between inline @begintag @endtag is done by first
+        # scanning over the tokens and then processing the tokens in between
+        # recursively with a new RawTextToTextNodeConverter.
+        self.current_cmd = None  # current command, e.g. '@link'
+        self.tokens_cmd = []  # currently scanned tokens
+        self.commands = ['COMMAND_LINK', 'COMMAND_ENDLINK']
+        self.command_pairs = {'COMMAND_LINK': 'COMMAND_ENDLINK'}
 
     def handleTag(self, token):
         regex = r'<(/)?\s*([_a-zA-Z][_a-zA-Z0-9]*)(?:\s+([_a-zA-Z][_a-zA-Z0-9]*)="([^"]*)")*\s*(?:/)?>'
@@ -676,13 +685,60 @@ class RawTextToTextNodeConverter(object):
             #print >>sys.stderr, '  A tag stack:  %s' % self.tag_stack
            # print >>sys.stderr, '  A node stack: %s' % self.node_stack
 
+    def handleCommand(self, token):
+        """Handle command for the given token."""
+        if self.current_cmd:  # There is a command active
+            if token.type == self.command_pairs[self.current_cmd]:  # closing current
+                self.handleCommandClosing()  # handle closing of command
+            else:  # not closing current
+                self.tokens_cmd.append(token)
+        else:  # no command active, open
+            assert token.type in self.command_pairs.keys(), \
+                'Must be open command.'
+            self.current_cmd = token.type
+
+    def handleCommandClosing(self):
+        """Handle closing of current command."""
+        assert self.current_cmd == 'COMMAND_LINK', 'Only known commandx.'
+        if self.current_cmd == 'COMMAND_LINK':
+            # Trim leading/trailing whitespace tokens
+            def isWhitespace(t):
+                return t.type in dox_tokens.WHITESPACE
+            while self.tokens_cmd and isWhitespace(self.tokens_cmd[0]):
+                self.tokens_cmd.pop(0)
+            while self.tokens_cmd and isWhitespace(self.tokens_cmd[-1]):
+                self.tokens_cmd.pop(-1)
+            if not self.tokens_cmd:
+                print >>sys.stderr, 'WARNING: Empty @link @endlink.'
+                return
+            # Get link target.
+            target_token = self.tokens_cmd.pop(0)
+            # Trim leading whitespace again.
+            while self.tokens_cmd and isWhitespace(self.tokens_cmd[0]):
+                self.tokens_cmd.pop(0)
+            # Translate any remaining non-whitespace tokens.
+            title_tokens = self.tokens_cmd
+            link_text = raw_doc.RawText(title_tokens)
+            conv = RawTextToTextNodeConverter()
+            link_text_node = conv.run(link_text)
+            link_text_node.type = 'a'
+            link_text_node.attrs = {'href': 'seqan:' + target_token.val}
+            self.current.addChild(link_text_node)
+        self.tokens_cmd = []
+        self.current_cmd = None
+
     def run(self, raw_text, verbatim=False):
+        """Convert the tokens in raw_text into a tree of TextNode objects."""
         #print >>sys.stderr, '================== %s' % raw_text.text
         #print >>sys.stderr, [(t.type, t.val) for t in raw_text.tokens]
         self.current = TextNode(type='div')
         root = self.current
         at_line_start = True
         for i, t in enumerate(raw_text.tokens):
+            if self.current_cmd:  # collect token in self.tokens_cmd
+                self.handleCommand(t)
+                continue
+
             if t.type in dox_tokens.WHITESPACE:
                 if i == 0 or (i + 1) == len(raw_text.tokens):
                     continue  # Ignore leading and trailing whitespace.
@@ -695,11 +751,17 @@ class RawTextToTextNodeConverter(object):
             elif not verbatim and t.type == 'HTML_TAG':
                 at_line_start = False
                 self.handleTag(t)
+            elif not verbatim and t.type in self.commands:
+                #print >>sys.stderr, 'command %s' % t
+                at_line_start = False
+                self.handleCommand(t)
             else:
                 at_line_start = False
                 # TODO(holtgrew): Escape values.
                 self.current.addChild(TextNode(text=t.val))
             at_line_start = t.type in ['EMPTY_LINE', 'BREAK']
+        if self.current_cmd:
+            print >>sys.stderr, 'WARNING: Open command %s!' % self.current_cmd
         return root
 
     def process(self, raw_entry):
