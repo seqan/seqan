@@ -122,6 +122,7 @@ class RawEntry(object):
     
     def __init__(self, briefs=[], command='<entry>'):
         self.name = RawText()
+        self.title = RawText()
         self.briefs = list(briefs)
         self.body = RawBody()
         self.sees = []
@@ -148,7 +149,11 @@ class RawEntry(object):
     def getFormatted(self, formatter):
         """Get formatted and normalized in dox format."""
         res = []
-        res.append(formatter.formatCommand(self.command, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.briefs:
             res.append('\n')
         for x in self.briefs:
@@ -193,7 +198,11 @@ class RawCodeEntry(RawEntry):
 
     def getFormatted(self, formatter):
         res = []
-        res.append(formatter.formatCommand(self.command, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.headerfiles:
             res.append('\n')
         if self.headerfiles:
@@ -290,7 +299,11 @@ class RawTag(RawCodeEntry):
         
     def getFormatted(self, formatter):
         res = []
-        res.append(formatter.formatCommand(self.command, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.headerfiles:
             res.append('\n')
         if self.headerfiles:
@@ -337,7 +350,11 @@ class RawConcept(RawCodeEntry):
 
     def getFormatted(self, formatter):
         res = []
-        res.append(formatter.formatCommand(self.command, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.headerfiles:
             res.append('\n')
         if self.headerfiles:
@@ -431,7 +448,11 @@ class RawClass(RawCodeEntry):
 
     def getFormatted(self, formatter):
         res = []
-        res.append(formatter.formatCommand(self.command, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.implements:
             res.append('\n')
         for x in self.implements:
@@ -708,7 +729,11 @@ class RawPage(RawEntry):
 
     def getFormatted(self, formatter):
         res = []
-        res.append(formatter.formatCommand(self.command, self.title.text, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.briefs:
             res.append('\n')
         for x in self.briefs:
@@ -736,7 +761,11 @@ class RawGroup(RawEntry):
 
     def getFormatted(self, formatter):
         res = []
-        res.append(formatter.formatCommand(self.command, self.title.text, self.name.text))
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text,
+                                               self.name.text))
+        else:
+            res.append(formatter.formatCommand(self.command, self.name.text))
         if self.briefs:
             res.append('\n')
         for x in self.briefs:

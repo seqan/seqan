@@ -75,6 +75,7 @@ class TestEntry(unittest.TestCase):
     def setUp(self):
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Concept', 0, 0, 0)
+        self.title_tok = lexer.Token('WORD', 'Concept Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
 
     def testInitialization(self):
@@ -119,9 +120,10 @@ class TestEntry(unittest.TestCase):
         b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
         entry = raw_doc.RawEntry([b])
         entry.name = raw_doc.RawText([self.name_tok])
+        entry.title = raw_doc.RawText([self.title_tok])
         entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
         formatter = raw_doc.DoxFormatter()
-        msg = ('@<entry> Concept\n\n'
+        msg = ('@<entry> Concept Concept Title\n\n'
                '@brief This is brief.\n\n'
                '@see See\n\n')
         self.assertMultiLineEqual(entry.getFormatted(formatter), msg)
@@ -131,6 +133,7 @@ class CodeEntryTest(unittest.TestCase):
     def setUp(self):
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Concept', 0, 0, 0)
+        self.title_tok = lexer.Token('WORD', 'Concept Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
         self.tok_sig = lexer.Token('WORD', 'payload', 0, 0, 0)
 
@@ -149,11 +152,12 @@ class CodeEntryTest(unittest.TestCase):
         b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
         code_entry = raw_doc.RawCodeEntry([b])
         code_entry.name = raw_doc.RawText([self.name_tok])
+        code_entry.title = raw_doc.RawText([self.title_tok])
         code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
         s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
         formatter = raw_doc.DoxFormatter()
-        txt = ('@<code entry> Concept\n\n'
+        txt = ('@<code entry> Concept Concept Title\n\n'
                '@brief This is brief.\n\n'
                '@signature payload\n\n'
                '@see See\n\n')
@@ -164,6 +168,7 @@ class ConceptTest(unittest.TestCase):
     def setUp(self):
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Concept', 0, 0, 0)
+        self.title_tok = lexer.Token('WORD', 'Concept Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
         self.tok_sig = lexer.Token('WORD', 'payload', 0, 0, 0)
         self.formatter = raw_doc.DoxFormatter()
@@ -172,10 +177,11 @@ class ConceptTest(unittest.TestCase):
         b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
         code_entry = raw_doc.RawConcept([b])
         code_entry.name = raw_doc.RawText([self.name_tok])
+        code_entry.title = raw_doc.RawText([self.title_tok])
         code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
         s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
-        txt = ('@concept Concept\n\n'
+        txt = ('@concept Concept Concept Title\n\n'
                '@brief This is brief.\n\n'
                '@signature payload\n\n'
                '@see See\n\n')
@@ -186,6 +192,7 @@ class EnumTest(unittest.TestCase):
     def setUp(self):
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Enum', 0, 0, 0)
+        self.title_tok = lexer.Token('WORD', 'Enum Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
         self.tok_sig = lexer.Token('WORD', 'payload', 0, 0, 0)
         self.formatter = raw_doc.DoxFormatter()
@@ -194,10 +201,11 @@ class EnumTest(unittest.TestCase):
         b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
         code_entry = raw_doc.RawEnum([b])
         code_entry.name = raw_doc.RawText([self.name_tok])
+        code_entry.title = raw_doc.RawText([self.title_tok])
         code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
         s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
-        txt = ('@enum Enum\n\n'
+        txt = ('@enum Enum Enum Title\n\n'
                '@brief This is brief.\n\n'
                '@signature payload\n\n'
                '@see See\n\n')
@@ -208,6 +216,7 @@ class TypedefTest(unittest.TestCase):
     def setUp(self):
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'TypeDef', 0, 0, 0)
+        self.title_tok = lexer.Token('WORD', 'Typedef Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
         self.tok_sig = lexer.Token('WORD', 'payload', 0, 0, 0)
         self.formatter = raw_doc.DoxFormatter()
@@ -216,10 +225,11 @@ class TypedefTest(unittest.TestCase):
         b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
         code_entry = raw_doc.RawTypedef([b])
         code_entry.name = raw_doc.RawText([self.name_tok])
+        code_entry.title = raw_doc.RawText([self.title_tok])
         code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
         s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
-        txt = ('@typedef TypeDef\n\n'
+        txt = ('@typedef TypeDef Typedef Title\n\n'
                '@brief This is brief.\n\n'
                '@signature payload\n\n'
                '@see See\n\n')
@@ -230,6 +240,7 @@ class AdaptionTest(unittest.TestCase):
     def setUp(self):
         self.brief_tok = lexer.Token('WORD', 'This is brief.', 0, 0, 0)
         self.name_tok = lexer.Token('WORD', 'Adaption', 0, 0, 0)
+        self.title_tok = lexer.Token('WORD', 'Adaption Title', 0, 0, 0)
         self.tok_see = lexer.Token('WORD', 'See', 0, 0, 0)
         self.tok_sig = lexer.Token('WORD', 'payload', 0, 0, 0)
         self.formatter = raw_doc.DoxFormatter()
@@ -238,10 +249,11 @@ class AdaptionTest(unittest.TestCase):
         b = raw_doc.RawBrief(raw_doc.RawText([self.brief_tok]))
         code_entry = raw_doc.RawAdaption([b])
         code_entry.name = raw_doc.RawText([self.name_tok])
+        code_entry.title = raw_doc.RawText([self.title_tok])
         code_entry.sees = [raw_doc.RawSee(raw_doc.RawText([self.tok_see]))]
         s = raw_doc.RawSignature(raw_doc.RawText([self.tok_sig]))
         code_entry.addSignature(s)
-        txt = ('@adaption Adaption\n\n'
+        txt = ('@adaption Adaption Adaption Title\n\n'
                '@brief This is brief.\n\n'
                '@signature payload\n\n'
                '@see See\n\n')
