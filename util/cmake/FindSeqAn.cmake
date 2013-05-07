@@ -192,9 +192,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
   # mainly important for 64 bit but does not get into the way on 32 bit either
   # at minimal performance impact.
   if (CMAKE_BUILD_TYPE STREQUAL Debug)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer")
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer")
   elseif (CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
-    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_CXX_FLAGS_RELEASE} -g -fno-omit-frame-pointer")
   endif ()
 endif ()
 
