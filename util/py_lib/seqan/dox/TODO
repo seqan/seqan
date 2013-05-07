@@ -2,7 +2,6 @@ TODOs
 -----
 
  * identifier names apart from title.
- * remove empty <h2> that confuse the collapse scripts
  * toggle link for @page HTML pages
  * warn about missing return types etc.
 

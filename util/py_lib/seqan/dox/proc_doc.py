@@ -234,6 +234,22 @@ class ProcEntry(object):
     def registerSubentry(self, proc_entry):
         self.subentries.setdefault(proc_entry.kind, []).append(proc_entry)
 
+    def hasSubEntry(self, kind, proc_doc):
+        """Returns has a subentry of the given kind."""
+        if self.subentries.get(kind):
+            return True
+        if hasattr(self, 'all_extended'):
+            for cl in self.all_extended:
+                extended = proc_doc.top_level_entries[cl]
+                if extended.subentries.get(kind):
+                    return True
+        if hasattr(self, 'all_implemented'):
+            for co in self.all_implemented:
+                extended = proc_doc.top_level_entries[co]
+                if extended.subentries.get(kind):
+                    return True
+        return False
+
     def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         visitor.visit(self.brief)
