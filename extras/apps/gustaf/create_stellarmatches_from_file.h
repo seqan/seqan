@@ -92,7 +92,6 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
                            StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stQueryMatches)
 {
     typedef typename Infix<TSequence>::Type TInfix;
-    typedef Segment<TInfix, InfixSegment> TSegment;
     typedef typename StellarMatch<TSequence, TId>::TAlign TAlign;
     typedef typename Row<TAlign>::Type TRow;
     typedef typename LocalMatchStore<>::TPosition TPosition;
@@ -275,11 +274,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
     }
     // Creating Stellar Matches from input
     resize(stQueryMatches, length(queries));
-
-    // Infices/segments of db and query sequence, needed for stellar match
-    typedef typename Infix<TSequence>::Type TInfix;
-    typedef Segment<TInfix, InfixSegment> TSegment;
-
+    
     if (!_createStellarMatches(queries, sQueryIds, databases, sDBIds, databaseIDs, lmStore, stQueryMatches))
         return 1;
 

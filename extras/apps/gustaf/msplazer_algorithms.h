@@ -61,16 +61,17 @@ inline bool _checkMatchSim(TPos const & m1Begin,
                            TPos const & m2End,
                            MSplazerOptions const & msplazerOptions)
 {
-    double overlapPartLength = m1End - m2Begin;
+    TPos overlapPartLength = m1End - m2Begin;
     // Catch special case of required overlap=0
     if (msplazerOptions.simThresh == static_cast<double>(0.0))
         return overlapPartLength == static_cast<double>(0.0);
 
-    double match1Length = m1End - m1Begin;
-    double match2Length = m2End - m2Begin;
+    TPos match1Length = m1End - m1Begin;
+    TPos match2Length = m2End - m2Begin;
     // Check if overlapping percent of each match is lower than the allowed percent threshold
-    if ((static_cast<double>(overlapPartLength / match1Length) < msplazerOptions.simThresh)
-       && (static_cast<double>(overlapPartLength / match2Length) < msplazerOptions.simThresh))
+    double const EPSILON = 0.00001;
+    if (((1.0 * overlapPartLength / match1Length) < (msplazerOptions.simThresh + EPSILON))
+       && ((1.0 * overlapPartLength / match2Length) < (msplazerOptions.simThresh + EPSILON)))
         return true;
 
     return false;
@@ -152,7 +153,6 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
     // std::cerr << " Initialising graph structure " << std::endl;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Iterator<String<StellarMatch<TSequence, TId> > >::Type TIterator;
-    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
 
     TIterator itStellarMatches = begin(queryMatches.matches);
     TIterator itEndStellarMatches = end(queryMatches.matches);
@@ -205,7 +205,6 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
     typedef Align<TSequence, ArrayGaps> TAlign;
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Position<TSequence>::Type  TPos;
-    typedef typename Position<TRow>::Type TViewPos;
     typedef Breakpoint<TSequence, TId> TBreakpoint;
     typedef typename Infix<TSequence>::Type TInfix;
 
@@ -387,7 +386,6 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
     typedef Align<TSequence, ArrayGaps> TAlign;
     typedef typename Row<TAlign>::Type TRow;
     typedef typename Position<TSequence>::Type  TPos;
-    typedef typename Position<TRow>::Type TViewPos;
     typedef Breakpoint<TSequence, TId> TBreakpoint;
     typedef StellarMatch<TSequence, TId> TMatch;
     typedef typename Infix<TSequence>::Type TInfix;
@@ -650,18 +648,13 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
     }
 }
 
-// Analyze chains in read graphs
+// Analyze chains in read graph by calling DAG shortest path algorithm
 template <typename TMSplazerChain>
 void _analyzeChains(String<TMSplazerChain> & queryChains)
 {
     InternalMap<int> weightMap;
     typedef typename TMSplazerChain::TGraph TGraph;
     typedef typename Size<TGraph>::Type TGraphSize;
-    // String<TVertexDescriptor> predMap;
-    // String<TGraphSize> distMap;
-    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-
-    // std::cerr << " length(queryChains) " << length(queryChains) << std::endl;
 
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
@@ -890,7 +883,6 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
     for(unsigned i = 0; i < length(chainSizeCount); ++i)
         chainSizeCount[i] = 0;
     */
-    typedef typename TMSplazerChain::TMatchAlloc TMatchAlloc;
     unsigned brokenChainCount = 0;
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
@@ -1078,7 +1070,6 @@ void _findAllChains(String<TMSplazerChain> & queryChains // ,
                     //    MSplazerOptions const & msplazerOptions
                     )
 {
-    typedef typename TMSplazerChain::TMatchAlloc TMatchAlloc;
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
         // String<TBreakpoint> tmpGlobalBreakpoints;

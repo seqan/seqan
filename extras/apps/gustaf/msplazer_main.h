@@ -193,9 +193,6 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     typedef Graph<Directed<int> > TGraph; // TRowSize> > TGraph;
     // static_cast<Nothing>(TGraph());
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    typedef EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-    typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-    typedef Iterator<TGraph, VertexIterator>::Type TEdgeIterator;
 
     // Breakpoint property map
     typedef SparsePropertyMap<Breakpoint<TSequence, TId>, unsigned> TSparsePropertyMap;

@@ -158,8 +158,8 @@ struct Breakpoint
     Breakpoint() :
         startSeqId("####"),
         endSeqId("####"),
-        startSeqStrand('+'),
-        endSeqStrand('-'),
+        startSeqStrand(true),
+        endSeqStrand(true),
         startSeqPos(0),
         endSeqPos(0),
         readStartPos(0),

@@ -67,7 +67,6 @@ write(TFile & file,
 {
     // IOREV _doc_ _batchreading_
     SEQAN_CHECKPOINT
-    typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     // typedef typename Value<TBreakpointAlloc>::Type TBreakpoint; // Requires Value<SparsePropertyMap> specialisation in msplazer.h
     typedef typename TBreakpoint::TId TId;
 
