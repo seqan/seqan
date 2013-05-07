@@ -69,7 +69,7 @@ def doMain(args):
     logger = logging.getLogger()
     processor = proc_doc.DocProcessor(logger=logger, include_dir=args.base_dir)
     doc_proc = processor.run(master_doc)
-    html_writer = write_html.HtmlWriter(doc_proc)
+    html_writer = write_html.HtmlWriter(doc_proc, args)
     html_writer.generateFor()
     return 0
 
@@ -86,6 +86,8 @@ def main():
                         action='append', default=[])
     parser.add_argument('-ldd', dest='legacy_doc_dirs', help='Path to legacy doc dirs.',
                         action='append', default=[])
+    parser.add_argument('--image-dir', dest='image_dirs', default=[],
+                        action='append', help='Path to image directory.')
     parser.add_argument('-b', '--base-dir', help='Base directory for @include.',
                         default='.', dest='base_dir')
     args = parser.parse_args()

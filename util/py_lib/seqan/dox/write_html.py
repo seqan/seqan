@@ -193,6 +193,7 @@ class PathConverter(object):
             return None, None
 
 
+# TODO(holtgrew): Should be doable in a simpler way than recursing ourselves here.  Visitor pattern for TextNode?
 class LinkConverter(proc_doc.TextNodeVisitor):
     """Convert raw links to HTML-like links.
 
@@ -239,10 +240,42 @@ class LinkConverter(proc_doc.TextNodeVisitor):
         return text_node
 
 
+class ImagePathUpdater(proc_doc.TextNodeVisitor):
+    """Update image paths to target image path."""
+    
+    def __init__(self, doc, prefix):
+        self.doc = doc
+        self.prefix = prefix
+
+    def visit(self, text_node):
+        if not text_node or text_node.type == '<text>':
+            return
+        if text_node.type == 'img':
+            self._updateImagePath(text_node)
+        else:
+            for i, c in enumerate(text_node.children):
+                text_node.children[i] = self._replaceNode(c)
+
+    def _updateImagePath(self, img_node):
+        if not img_node.attrs.get('src'):
+            return  # No path.
+        img_node.attrs['src'] = os.path.join(self.prefix, img_node.attrs['src'])
+
+    def _replaceNode(self, text_node):
+        if text_node.type == '<text>':
+            return text_node
+        if text_node.type == 'img':
+            self._updateImagePath(text_node)
+        for i, c in enumerate(text_node.children):
+            text_node.children[i] = self._replaceNode(c)
+        return text_node
+
+
 class HtmlWriter(object):
-    def __init__(self, doc, out_dir='html'):
+    def __init__(self, doc, args, out_dir='html'):
         self.doc = doc
         self.out_dirs = {}
+        self.args = args
         # Normalize path.
         out_dir = os.path.abspath(out_dir)
         # Generate path names.
@@ -260,10 +293,12 @@ class HtmlWriter(object):
         self.log('Generating HTML documentation')
         self.log('Output Directory: %s', self.out_dirs['root'])
         self.makedirs()
-        self.copyFiles()
+        self.copyStaticFiles()
+        self.copyDocImages()
         self.generateTopFrameSet()
         self.generateLists(self.doc)
         self.translateLinks(self.doc)
+        self.updateImagePaths(self.doc)
         self.generatePages(self.doc)
 
     def makedirs(self):
@@ -272,16 +307,29 @@ class HtmlWriter(object):
                 self.log('Creating directory %s', path)
                 os.makedirs(path)
 
-    def copyFiles(self):
+    def copyStaticFiles(self):
         """Copy static files."""
         for kind in ['css', 'js', 'img']:
             in_dir = os.path.join(self.path_manager.this_dir, 'tpl/%s' % kind)
-            files = [f for f in os.listdir(in_dir) if os.path.isfile(os.path.join(in_dir, f)) ]
+            join = os.path.join  # shortcut
+            files = [f for f in os.listdir(in_dir) if os.path.isfile(join(in_dir, f))]
             for f in files:
                 in_path = os.path.join(in_dir, f)
                 out_path = os.path.join(self.out_dirs[kind], f)
                 self.log('  Copying %s => %s', in_path, out_path)
                 shutil.copyfile(in_path, out_path)
+
+    def copyDocImages(self):
+        """Copy images from paths given in --image-dir parameter."""
+        for image_dir in self.args.image_dirs:
+            join = os.path.join  # shortcut
+            files = [f for f in os.listdir(image_dir)
+                     if os.path.isfile(join(image_dir, f))]
+            for f in files:
+                in_path = join(image_dir, f)
+                out_path = os.path.join(self.out_dirs['img'], f)
+                self.log('  Copying %s => %s', in_path, out_path)
+                shutil.copy(in_path, out_path)
 
     def generateTopFrameSet(self):
         """Generate frameset."""
@@ -303,6 +351,13 @@ class HtmlWriter(object):
         for proc_entry in doc.entries.values():
             self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(link_converter)
+
+    def updateImagePaths(self, doc):
+        """Appends image output directory to src attributes."""
+        updater = ImagePathUpdater(doc, 'img')
+        for proc_entry in doc.entries.values():
+            self.log('    * %s', proc_entry.name)
+            proc_entry.visitTextNodes(updater)
 
     def generatePages(self, doc):
         """Generate pages for proc_doc.Documentation entries."""

@@ -9,6 +9,7 @@ into structured documents such as HTML more easily.
 # TODO(holtgrew): Location traceability for entries and text.
 
 import os.path
+import HTMLParser
 import logging
 import re
 import sys
@@ -35,10 +36,6 @@ class LinkResolver(object):
     def __init__(self, proc_doc):
         self.proc_doc = proc_doc
 
-    def resolveEntry(self, link_str):
-        """Resolve a name to an ProcEntry objects."""
-        return self.proc_doc.entries[link_str]
-
 
 def splitSecondLevelEntry(name):
     """Split second-level entry and return (first, second) pair.
@@ -64,7 +61,6 @@ class ProcDoc(object):
         self.top_level_entries = {}
         self.second_level_entries = {}
         self.entries = {}
-        self.link_resolver = LinkResolver(self)
 
     def addTopLevelEntry(self, x):
         """Add a top-level-entry."""
@@ -191,6 +187,7 @@ class TextNode(object):
                 print >>sys.stderr, 'WARNING: Attributes on text node!'
             return self.text
         else:
+            dash = {True: '', False: ' /'}.get(bool(self.children))  # Whether empty
             res = []
             if not skip_top_tag:
                 res += ['<', self.type]
@@ -198,10 +195,11 @@ class TextNode(object):
                     res += [' ', key, '=', '"', repr(value)[1:-1], '"']
                 for key, value in kwargs.iteritems():
                     res += [' ', key, '=', '"', value, '"']
-                res.append('>')
-            res += [x.toHtmlLike() for x in self.children]
-            if not skip_top_tag:
-                res += ['</', self.type, '>']
+                res.append(dash + '>')
+            if self.children:
+                res += [x.toHtmlLike() for x in self.children]
+                if not skip_top_tag:
+                    res += ['</', self.type, '>']
             return ''.join(res)
 
 
@@ -632,6 +630,32 @@ class ProcGroup(ProcEntry):
         self.typedefs.append(t)
 
 
+class HtmlTagParser(HTMLParser.HTMLParser):
+    """Used for parsing HTML and storing the first tag and its attributes."""
+
+    def __init__(self):
+        self.reset()
+    
+    def reset(self):
+        HTMLParser.HTMLParser.reset(self)
+        self.tag = None
+        self.attrs = None
+        self.is_open = None
+        self.is_close = None
+
+    def handle_starttag(self, tag, attrs):
+        self.tag = tag
+        self.attrs = dict(attrs)
+        self.is_open = True
+
+    def handle_endtag(self, tag):
+        self.tag = tag
+        self.is_close = True
+
+    def parse(self, txt):
+        self.reset()
+        self.feed(txt)
+
 
 class RawTextToTextNodeConverter(object):
     """Convert raw text including HTML tags to text node."""
@@ -648,42 +672,42 @@ class RawTextToTextNodeConverter(object):
         self.tokens_cmd = []  # currently scanned tokens
         self.commands = ['COMMAND_LINK', 'COMMAND_ENDLINK']
         self.command_pairs = {'COMMAND_LINK': 'COMMAND_ENDLINK'}
+        self.html_parser = HtmlTagParser()
 
     def handleTag(self, token):
-        regex = r'<(/)?\s*([_a-zA-Z][_a-zA-Z0-9]*)(?:\s+([_a-zA-Z][_a-zA-Z0-9]*)="([^"]*)")*\s*(?:/)?>'
-        m = re.match(regex, token.val)
-        if m.group(1):  # </...
-            #print >>sys.stderr, 'CLOSING %s' % token.val
-            #print >>sys.stderr, '  B tag stack:  %s' % self.tag_stack
-            #print >>sys.stderr, '  B node stack: %s' % self.node_stack
-            if self.tag_stack and self.tag_stack[-1] == m.group(2):
-                self.tag_stack.pop()
-            elif self.tag_stack and self.tag_stack[-1] != m.group(2):
-                args = (m.group(1), self.tag_stack[-1])
+        """Handle a HTML tag.
+
+        The HTML tag is translated into a TextNode and appended to self.current.
+        Note that this is meant for parsing one tag only.
+        """
+        self.html_parser.parse(token.val)
+        tag_name = self.html_parser.tag
+
+        if self.html_parser.is_open:  # Opening tag.
+            self.tag_stack.append(self.html_parser.tag)
+            self.node_stack.append(self.current)
+            tag = TextNode(type=self.html_parser.tag)
+            for key, value in self.html_parser.attrs.items():
+                tag.setAttr(key, value)
+            self.current = self.current.addChild(tag)
+
+        if self.html_parser.is_close:  # No else, also handle standalone tags.
+            if self.tag_stack and self.tag_stack[-1] == tag_name:
+                self.tag_stack.pop()  # correct closing tag
+            elif self.tag_stack and self.tag_stack[-1] != tag_name:
+                # incorrect closing, pop and return
+                args = (tag_name, self.tag_stack[-1])
                 print >>sys.stderr, 'WARNING: Closing wrong tag %s instead of %s' % args
                 self.tag_stack.pop()
                 return
             else:  # not self.tag_stack
-                print >>sys.stderr, 'WARNING: Closing not opened tag %s' % m.group(1)
+                print >>sys.stderr, 'WARNING: Closing tag without opening %s!' % tag_name
+            # Pop from node stack.
             if self.node_stack:
                 self.current = self.node_stack[-1]
                 self.node_stack.pop()
             else:
                 print >>sys.stderr, 'WARNING: Having closed too many tags!'
-            #print >>sys.stderr, '  A tag stack:  %s' % self.tag_stack
-            #print >>sys.stderr, '  A node stack: %s' % self.node_stack
-        else: # <$name
-            #print >>sys.stderr, 'OPENING %s' % token.val
-            #print >>sys.stderr, '  B tag stack:  %s' % self.tag_stack
-            #print >>sys.stderr, '  B node stack: %s' % self.node_stack
-            self.tag_stack.append(m.group(2))
-            self.node_stack.append(self.current)
-            tag = TextNode(type=m.group(2))
-            if m.group(2) == 'a':
-                tag.setAttr(m.group(3), m.group(4))
-            self.current = self.current.addChild(tag)
-            #print >>sys.stderr, '  A tag stack:  %s' % self.tag_stack
-           # print >>sys.stderr, '  A node stack: %s' % self.node_stack
 
     def handleCommand(self, token):
         """Handle command for the given token."""

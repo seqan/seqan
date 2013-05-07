@@ -6,7 +6,6 @@ TODOs
  * toggle link for @page HTML pages
  * /*!... indentation generated in toggle link on pages
  * warn about missing return types etc.
- * image inclusion <img src="">
 
  * generated tokens could have annotation, generated text should have its own type
 
