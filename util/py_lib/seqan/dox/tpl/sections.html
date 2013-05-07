@@ -1117,9 +1117,9 @@ Macro dox_source(entry)
 Render toggle-able Dox-like documentation.
 -->
 
-{% macro dox_source(entry) %}
+{% macro dox_source(entry, in_comment=False) %}
 
 <a href="#" onclick="javascript:document.getElementById('dox-source').style.display = 'block'; return false;">Toggle</a>
-<pre style="font-size:.8em; display:none;" id="dox-source">{{ entry|to_dox|e }}</pre>
+<pre style="font-size:.8em; display:none;" id="dox-source">{{ entry|to_dox(in_comment=in_comment)|e }}</pre>
 
 {% endmacro %}

@@ -110,7 +110,7 @@ class TextNodeToHtml(object):
         return ''.join(self.res)
 
 
-def toDox(proc_entry, line_length=110):
+def toDox(proc_entry, line_length=110, in_comment=False):
     """Process a ProcEntry into the dox-like format."""
     formatter = raw_doc.DoxFormatter()
     result = []
@@ -118,6 +118,11 @@ def toDox(proc_entry, line_length=110):
     for key, lst in proc_entry.subentries.iteritems():
         for elem in lst:
             result.append(elem.raw_entry.getFormatted(formatter))
+    if in_comment:
+        result = [' * ' + l for line in result for l in line.splitlines(False)]
+        while result and result[-1] == ' * ':
+            result.pop(-1)
+        result = ['/*!'] + result + [' */']
     return '\n'.join(result)
 
 
