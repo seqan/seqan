@@ -12,7 +12,6 @@ import itertools
 import re
 import sys
 
-import lexer
 import raw_doc
 import dox_tokens
 
@@ -54,63 +53,6 @@ def normalizeWhitespaceTokens(token_list, strip_lt_breaks=False):
     stripWhitespaceTokens(token_list, strip_lt_breaks)
 
 
-class LinkState(object):
-    """Handler for @link @endlink"""
-
-    def __init__(self, parser, parent, token):
-        self.parser = parser
-        self.parent = parent
-        # Begin token.
-        self.start_token = token
-        # List of non-start tokens.
-        self.tokens = []
-        # Whether or not still active (active when @endlink not hit yet).
-        self._active = True
-
-    def handle(self, token):
-        """Handle token.  Append to self.tokens or end sub clause."""
-        assert self._active
-        if token.type == 'COMMAND_ENDLINK':
-            self.endSubClause(token)
-        else:
-            if self.tokens or token.type not in dox_tokens.WHITESPACE:
-                print 'APPENDING %s' % token
-                self.tokens.append(token)
-        
-    def endSubClause(self, token):
-        self._active = False
-        assert self.tokens
-        # Translate tokens into tokens for <a href="seqan:${name}">${title}</a>.
-        target_token = self.tokens[0]
-        if len(self.tokens) == 1:
-            title_tokens = [self.tokens[0]]
-        else:
-            title_tokens = self.tokens[1:]
-        # Delete leading and trailing whitespace.
-        while title_tokens and title_tokens[0].type in dox_tokens.WHITESPACE:
-            title_tokens.pop(0)
-        while title_tokens and title_tokens[-1].type in dox_tokens.WHITESPACE:
-            title_tokens.pop(-1)
-        target = target_token.val
-        title = ''.join([t.val for t in title_tokens])
-        res = [
-            lexer.Token('HTML_TAG', '<a href="seqan:%s">' % target,
-                        target_token.pos, target_token.lineno,
-                        target_token.column, target_token.file_name),
-            lexer.Token('WORD', title, title_tokens[0].pos,
-                        title_tokens[0].lineno, title_tokens[0].column,
-                        title_tokens[0].file_name),
-            lexer.Token('HTML_TAG', '</a>', token.pos, token.lineno,
-                        token.column, token.file_name),
-           ]
-        print [str(r) for r in res]
-        for t in res:
-            self.parent.handle(t)
-
-    def active(self):
-        return self._active
-
-
 class GenericSimpleClauseState(object):
     """Handler used in *DocState for handling simple text clauses clauses.
     """
@@ -124,8 +66,6 @@ class GenericSimpleClauseState(object):
         self.strip_lt_breaks = False
         # Whether to normalize whitespace tokens in getEntry().
         self.normalize_tokens = True
-        # If not None then the current sub state.
-        self.sub_state = None
 
     def getEntry(self):
         """Returns the Entry for the brief clause."""
@@ -137,31 +77,17 @@ class GenericSimpleClauseState(object):
         # One or more empty lines end such a clause as well as another
         # clause-starting command.
         if token.type in ['EMPTYLINE', 'EOF']:
-            if self.sub_state:
-                self.sub_state.endSubClause(token)
-                self.sub_state = None
             self.parent.endClause()
         elif token.type in dox_tokens.CLAUSE_STARTING or \
              token.type in dox_tokens.ITEM_STARTING:
-            if self.sub_state:
-                self.sub_state.endSubClause(token)
-                self.sub_state = None
             self.parent.endClause(token)
         elif token.type == 'SPACE' and (not self.tokens or self.tokens[-1].type == 'BREAK'):
             return  # Skip space at beginning or after break
         elif token.type == 'BREAK' and (self.tokens and self.tokens[-1].type == 'SPACE'):
             self.tokens[-1] = token  # Replace space before break
-        elif token.type == 'COMMAND_LINK':
-            assert self.sub_state is None
-            self.sub_state = LinkState(self.parser, self, token)
         else:
-            if self.sub_state and self.sub_state.active():
-                self.sub_state.handle(token)
-                if not self.sub_state.active():
-                    self.sub_state = None
-            else:
-                #print 'APPEND %s %s' % (repr(token.type), repr(token.val))
-                self.tokens.append(token)
+            #print 'APPEND %s' % repr(token.val)
+            self.tokens.append(token)
 
 
 class ParagraphState(GenericSimpleClauseState):
