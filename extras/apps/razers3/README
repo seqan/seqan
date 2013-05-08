@@ -78,7 +78,7 @@ compilers this can be done with:
 After compilation, copy the binary to a folder in your PATH variable, e.g.
 /usr/local/bin:
 
-  sudo cp extras/apps/razers3/razers3 /usr/local/bin
+  sudo cp bin/razers3 /usr/local/bin
 
 
 ------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ pairs.
   [ -i NUM ],  [ --percent-identity NUM ]
 
   Set the percent identity threshold. NUM must be a value between 50 and
-  100 (default is 92). RazerS 3 searches for matches with a percent identity
+  100 (default is 95). RazerS 3 searches for matches with a percent identity
   of at least NUM. A match of a read R with e errors has percent identity
   of 100*(1 - e/|R|), whereby |R| is the read length. In other words, a
   read is allowed to have not more than |R|*(100-NUM)/100 errors.
@@ -164,17 +164,6 @@ pairs.
   Only map reads onto the negative/reverse-complement strand of the
   genome. By default, both strands are scanned.
 
-  [ -ll NUM ],  [ --library-length NUM ]
-
-  Set the mean library size, default is 220. The library size is the outer
-  distance of the two mapped reads of a read pair. This value is used only for
-  paired-end read mapping.
-
-  [ -le NUM ],  [ --library-error NUM ]
-
-  Set the tolerated absolute deviation of the library size, default value is
-  50. This value is used only for paired-end read mapping.
-
   [ -m NUM ],  [ --max-hits NUM ]
 
   Output at most NUM of the best matches, default value is 100.
@@ -187,6 +176,17 @@ pairs.
   [ -tr NUM ],  [ --trim-reads NUM ]
 
   Trim reads to length NUM bp.
+
+  [ -ll NUM ],  [ --library-length NUM ]
+
+  Set the mean library size, default is 220. The library size is the outer
+  distance of the two mapped reads of a read pair. This value is used only for
+  paired-end read mapping.
+
+  [ -le NUM ],  [ --library-error NUM ]
+
+  Set the tolerated absolute deviation of the library size, default value is
+  50. This value is used only for paired-end read mapping.
 
   [ -o FILE ],  [ --output FILE ]
 
