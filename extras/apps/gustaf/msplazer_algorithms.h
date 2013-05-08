@@ -203,7 +203,6 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
 {
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef Align<TSequence, ArrayGaps> TAlign;
-    typedef typename Row<TAlign>::Type TRow;
     typedef typename Position<TSequence>::Type  TPos;
     typedef Breakpoint<TSequence, TId> TBreakpoint;
     typedef typename Infix<TSequence>::Type TInfix;
@@ -384,7 +383,6 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
 {
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef Align<TSequence, ArrayGaps> TAlign;
-    typedef typename Row<TAlign>::Type TRow;
     typedef typename Position<TSequence>::Type  TPos;
     typedef Breakpoint<TSequence, TId> TBreakpoint;
     typedef StellarMatch<TSequence, TId> TMatch;
@@ -653,8 +651,8 @@ template <typename TMSplazerChain>
 void _analyzeChains(String<TMSplazerChain> & queryChains)
 {
     InternalMap<int> weightMap;
-    typedef typename TMSplazerChain::TGraph TGraph;
-    typedef typename Size<TGraph>::Type TGraphSize;
+    // typedef typename TMSplazerChain::TGraph TGraph;
+    // typedef typename Size<TGraph>::Type TGraphSize;
 
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
