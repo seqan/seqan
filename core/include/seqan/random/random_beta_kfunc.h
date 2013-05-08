@@ -29,6 +29,7 @@
 #define SEQAN_CORE_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_
 
 #include <cmath>
+#define SEQAN_M_SQRT2 1.41421356237309504880
 
 namespace seqan {
 
@@ -73,10 +74,10 @@ inline double kf_erfc(double x)
 	const double q6 = 1.755667163182642;
 	const double q7 = .08838834764831844;
 	double expntl, z, p;
-	z = fabs(x) * M_SQRT2;
+	z = fabs(x) * SEQAN_M_SQRT2;
 	if (z > 37.) return x > 0.? 0. : 2.;
 	expntl = exp(z * z * - .5);
-	if (z < 10. / M_SQRT2) // for small z
+	if (z < 10. / SEQAN_M_SQRT2) // for small z
 	    p = expntl * ((((((p6 * z + p5) * z + p4) * z + p3) * z + p2) * z + p1) * z + p0)
 			/ (((((((q7 * z + q6) * z + q5) * z + q4) * z + q3) * z + q2) * z + q1) * z + q0);
 	else p = expntl / 2.506628274631001 / (z + 1. / (z + 2. / (z + 3. / (z + 4. / (z + .65)))));
