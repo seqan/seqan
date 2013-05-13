@@ -220,12 +220,14 @@ class LinkConverter(proc_doc.TextNodeVisitor):
     def _translateLink(self, a_node):
         if not a_node.attrs.get('href', '').startswith('seqan:'):
             return
-        target_path, target_title = self.path_converter.convert(a_node.attrs['href'][6:])
+        target = a_node.attrs['href'][6:]
+        target_path, target_title = self.path_converter.convert(target)
+        target_title = target_title or proc_doc.TextNode(text=target)
         # TODO(holtgrew): Catch target_title being None, target_path not found!
-        if target_path is not None and target_title is not None:
+        if target_path is not None:
             a_node.attrs['href'] = target_path
             if not a_node.children:
-                a_node.children = target_title
+                a_node.addChild(target_title)
         else:
             class_attr = a_node.attrs.get('class', '')
             if class_attr:
@@ -234,6 +236,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             a_node.attrs['class'] = class_attr
             if a_node.attrs.get('href'):
                 del a_node.attrs['href']
+            a_node.addChild(target_title)
             
     def _replaceNode(self, text_node):
         if text_node.type == '<text>':

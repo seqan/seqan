@@ -3,6 +3,9 @@ TODOs
 
  * warn about missing return types etc.
  * generated tokens could have annotation, generated text should have its own type
+ * HTML Tags in @deprecated
+ * proper HTML entity escaping
+ * Formatting for @link TextConcept#StringSetLimits @endlink is broken.
 
  * dot inheritance diagrams
  * Class/Concept/etc. overview pages

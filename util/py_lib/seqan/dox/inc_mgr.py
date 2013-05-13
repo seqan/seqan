@@ -74,7 +74,7 @@ class IncludeManager(object):
                 else:
                     current_key = key
             elif current_key:
-                current_lines = [line]
+                current_lines.append(line)
         if current_lines and current_key:
             self.snippet_cache[(path, current_key)] = '\n'.join(current_lines)
         

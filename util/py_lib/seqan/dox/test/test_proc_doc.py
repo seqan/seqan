@@ -1220,5 +1220,92 @@ class TestConvertVariable(TestConverterBase):
         self.assertEqual(proc_variable.sees[0].toHtmlLike(), txt)
 
 
+class TestDocProcessorInheritance(TestConverterBase):
+    def setUp(self):
+        self.proc = proc_doc.DocProcessor()
+
+    def testConceptInheritance(self):
+        txt = ('@concept ConceptA1\n'
+               '\n'
+               '@concept ConceptA2\n'
+               '\n'
+               '@concept ConceptB\n'
+               '@extends ConceptA1\n'
+               '@extends ConceptA2\n'
+               '\n'
+               '@concept ConceptC\n'
+               '@extends ConceptB\n')
+        raw_doc = self.parseText(txt)
+        proc_doc = self.proc.run(raw_doc)
+        concept_a1 = proc_doc.top_level_entries['ConceptA1']
+        self.assertEqual(concept_a1.all_extended, set())
+        self.assertEqual(concept_a1.all_extending, set(['ConceptB', 'ConceptC']))
+        concept_a2 = proc_doc.top_level_entries['ConceptA2']
+        self.assertEqual(concept_a2.all_extended, set())
+        self.assertEqual(concept_a2.all_extending, set(['ConceptB', 'ConceptC']))
+        concept_b = proc_doc.top_level_entries['ConceptB']
+        self.assertEqual(concept_b.all_extended, set(['ConceptA1', 'ConceptA2']))
+        self.assertEqual(concept_b.all_extending, set(['ConceptC']))
+        concept_c = proc_doc.top_level_entries['ConceptC']
+        self.assertEqual(concept_c.all_extended, set(['ConceptA1', 'ConceptA2', 'ConceptB']))
+        self.assertEqual(concept_c.all_extending, set([]))
+
+    def testClassInheritance(self):
+        txt = ('@class ClassA\n'
+               '\n'
+               '@class ClassB\n'
+               '@extends ClassA\n'
+               '\n'
+               '@class ClassC\n'
+               '@extends ClassB\n')
+        raw_doc = self.parseText(txt)
+        proc_doc = self.proc.run(raw_doc)
+        class_a = proc_doc.top_level_entries['ClassA']
+        self.assertEqual(class_a.all_extended, set())
+        self.assertEqual(class_a.all_extending, set(['ClassB', 'ClassC']))
+        class_b = proc_doc.top_level_entries['ClassB']
+        self.assertEqual(class_b.all_extended, set(['ClassA']))
+        self.assertEqual(class_b.all_extending, set(['ClassC']))
+        class_c = proc_doc.top_level_entries['ClassC']
+        self.assertEqual(class_c.all_extended, set(['ClassA', 'ClassB']))
+
+    def testConceptClassInheritance(self):
+        txt = ('@concept ConceptA\n'
+               '\n'
+               '@concept ConceptB\n'
+               '@extends ConceptA\n'
+               '\n'
+               '@class ClassA\n'
+               '@implements ConceptB\n'
+               '\n'
+               '@class ClassB\n'
+               '@extends ClassA\n'
+               '\n'
+               '@class ClassC\n'
+               '@extends ClassB\n')
+        raw_doc = self.parseText(txt)
+        proc_doc = self.proc.run(raw_doc)
+        concept_a = proc_doc.top_level_entries['ConceptA']
+        self.assertEqual(concept_a.all_extended, set())
+        self.assertEqual(concept_a.all_extending, set(['ConceptB']))
+        self.assertEqual(concept_a.all_implementing, set(['ClassA', 'ClassB', 'ClassC']))
+        concept_b = proc_doc.top_level_entries['ConceptB']
+        self.assertEqual(concept_b.all_extended, set(['ConceptA']))
+        self.assertEqual(concept_b.all_extending, set([]))
+        self.assertEqual(concept_b.all_implementing, set(['ClassA', 'ClassB', 'ClassC']))
+        class_a = proc_doc.top_level_entries['ClassA']
+        self.assertEqual(class_a.all_extended, set())
+        self.assertEqual(class_a.all_extending, set(['ClassB', 'ClassC']))
+        self.assertEqual(class_a.all_implemented, set(['ConceptA', 'ConceptB']))
+        class_b = proc_doc.top_level_entries['ClassB']
+        self.assertEqual(class_b.all_extended, set(['ClassA']))
+        self.assertEqual(class_b.all_extending, set(['ClassC']))
+        self.assertEqual(class_b.all_implemented, set(['ConceptA', 'ConceptB']))
+        class_c = proc_doc.top_level_entries['ClassC']
+        self.assertEqual(class_c.all_extended, set(['ClassA', 'ClassB']))
+        self.assertEqual(class_c.all_extending, set([]))
+        self.assertEqual(class_c.all_implemented, set(['ConceptA', 'ConceptB']))
+
+
 if __name__ == '__main__':
     unittest.main()

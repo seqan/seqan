@@ -1272,7 +1272,7 @@ class DocProcessor(object):
         # Now, build list of all extending concepts into c.all_extending.
         for c in concepts:
             for name in c.all_extended:
-                doc.top_level_entries[name].all_extending.add(name)
+                doc.top_level_entries[name].all_extending.add(c.name)
         # Process classes: All extended and all extending classes.
         classes = [x for x in doc.top_level_entries.values()
                    if x.kind == 'class']
@@ -1290,7 +1290,7 @@ class DocProcessor(object):
         for c in classes:
             for name in c.all_extended:
                 doc.top_level_entries[name].all_extending.add(c.name)
-        # Build list of all implementing classes for all concepts.
+        # Build list of all direct implementing classes for all concepts.
         for cl in classes:
             for name in cl.implements:
                 if '\u0001' in name:
@@ -1303,8 +1303,13 @@ class DocProcessor(object):
             for name in co.all_implementing:
                 cl = doc.top_level_entries[name]
                 cl.all_implemented.add(co.name)
-            
-        
+                cl.all_implemented.update(co.all_extended)  # inheritance
+        # Update list of all implementing classes for all concepts (transitive)
+        for cl in classes:
+            for name in cl.all_implemented:
+                co = doc.top_level_entries[name]
+                co.all_implementing.add(cl.name)
+
     def log(self, msg, *args, **kwargs):
         """Print the given message to the configured logger if any.
         """
