@@ -223,12 +223,29 @@ int mapReads(
 			return RAZERS_READS_FAILED;
 		}
 	} 
-	if(empty(readSet) || empty(readSet[0]))
+	if(empty(readSet))
 	{
 		cerr << "Failed to load reads. File empty? " << endl;
 		cerr << "Note that anchored split read mapping requires a SAM file + option -an needs to switched on.\nUnanchored split read mapping requires a Fasta/Fastq read file. " << endl;
 		return RAZERS_READS_FAILED;
 	}
+    if(empty(readSet[0]))
+    {
+        // is this just the first read is a low quality read?
+        unsigned i = 1;
+        while(i < length(readSet))
+        { 
+            if(!empty(readSet[i]))
+                break;
+            ++i;
+        }
+        if(i == length(readSet)) // all read sequences are empty
+        {
+            cerr << "Failed to load reads. File empty? All reads low quality? " << endl;
+		    return RAZERS_READS_FAILED;
+	    }
+
+    }
 
 	if (options._debugLevel >= 1) cerr << lengthSum(readSet) << " bps of " << length(readSet) << " reads loaded." << endl;
 	options.timeLoadFiles = SEQAN_PROTIMEDIFF(load_time);
