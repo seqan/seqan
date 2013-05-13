@@ -29,6 +29,8 @@ class FileNameSource(object):
                 yield os.path.abspath(p)
             for root, subFolders, files in os.walk(p):
                 for f in files:
+                    if f.startswith('.'):
+                        continue
                     if not any([f.endswith(s) for s in self.extensions]):
                         continue
                     if any([f.startswith(s) for s in self.ignore]):

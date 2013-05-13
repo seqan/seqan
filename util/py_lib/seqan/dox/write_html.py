@@ -189,11 +189,10 @@ class PathConverter(object):
                 title = list(entry.title.children)
             return path, title
         elif self.doc.entries.get(name):
-            print name
             first, second = proc_doc.splitSecondLevelEntry(name)
             entry = self.doc.top_level_entries.get(first)
             path = '%s_%s.html#%s' % (entry.kind, escapeName(entry.name), escapeName(name))
-            return path, None
+            return path, name
         else:
             return None, None
 
@@ -222,7 +221,8 @@ class LinkConverter(proc_doc.TextNodeVisitor):
         if not a_node.attrs.get('href', '').startswith('seqan:'):
             return
         target_path, target_title = self.path_converter.convert(a_node.attrs['href'][6:])
-        if target_path is not None:
+        # TODO(holtgrew): Catch target_title being None, target_path not found!
+        if target_path is not None and target_title is not None:
             a_node.attrs['href'] = target_path
             if not a_node.children:
                 a_node.children = target_title
