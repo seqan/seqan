@@ -933,6 +933,14 @@ Render the interface metafunctions details
     </code></pre>
   </h3>
 
+  {% if subentry.deprecation_msgs %}
+  <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+      {% for msg in subentry.deprecation_msgs %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
