@@ -1,9 +1,13 @@
-***  Gustaf - Generic mUlti-SpliT Alignment Finder ***
-http://www.seqan.de/projects/gustaf.html
+                Gustaf - Generic mUlti-SpliT Alignment Finder
+
+                   http://www.seqan.de/projects/gustaf.html
+                                 Version 0.1
+                                  May, 2013
 
 ---------------------------------------------------------------------------
 Table of Contents
 ---------------------------------------------------------------------------
+
   1.   Overview
   2.   Installation
   3.   Usage
@@ -14,7 +18,6 @@ Table of Contents
 ---------------------------------------------------------------------------
 1. Overview
 ---------------------------------------------------------------------------
-
 
 Gustaf is a tool primarily designed for multi-split mapping of sequencing reads.
 
@@ -257,18 +260,19 @@ related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
 5. Example
 ---------------------------------------------------------------------------
 
-See the 'tests' folder for example runs of Gustaf. There is a genome file
+See the 'example' folder for example runs of Gustaf.  There is a genome file
 'adeno.fa' and a modified genome file 'adeno_modified.fa', from the latter
-we created the read file 'adeno_modified_reads.fa'. There is a pre-calculated
+we created the read file 'adeno_modified_reads.fa'.  There is a pre-calculated
 Stellar output file 'stellar.gff' computed by calling
 
-./stellar adeno.fa adeno_modified_reads.fa -l 30 -o stellar.gff
+    ./stellar adeno.fa adeno_modified_reads.fa -l 30 -o stellar.gff
 
 The default calls for Gustaf would then be
 
-./gustaf adeno.fa adeno_modified_reads.fa -st 1 -l 30 -bpo st1_l30.gff
+    ./gustaf adeno.fa adeno_modified_reads.fa -st 1 -l 30 -bpo st1_l30.gff
 or
-./gustaf adeno.fa adeno_modified_reads.fa -st 1 -m stellar.gff -bpo st1_l30_m.gff
+    ./gustaf adeno.fa adeno_modified_reads.fa -st 1 -m stellar.gff \
+      -bpo st1_l30_m.gff
 
 Both calls produce an output file containing the same breakpoints.
 In the first run, Gustaf internally calls Stellar with parameter -l 30.

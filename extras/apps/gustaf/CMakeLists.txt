@@ -55,8 +55,11 @@ install (TARGETS gustaf
 install (FILES LICENSE
                README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
-#install (FILES
-#         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)
+install (FILES example/adeno.fa
+               example/adeno_modified.fa
+               example/adeno_modified_reads.fa
+               example/stellar.gff
+         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)
 
 # ----------------------------------------------------------------------------
 # App Test
