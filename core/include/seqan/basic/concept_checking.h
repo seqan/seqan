@@ -240,6 +240,38 @@ struct concept_check_<void(*)(Model)>
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt).
 
+/*!
+ * @macro SEQAN_CONCEPT_ASSERT
+ * @brief Perform a concept check.
+ * @headerfile seqan/basic.h
+ * 
+ * @signature SEQAN_CONCEPT_ASSERT((concept))
+ * 
+ * @param concept Concept specialized with a the type that should be checked.
+ * 
+ * @section Remarks
+ * 
+ * This macro is a compile-time assertion and requires the concept specialized
+ * with the tested types to compile. The check neither consumes memory nor
+ * running time. The macro can be used at the beginning of a function or within
+ * a struct/class definition. The checked concepts should be as restrictive and
+ * generic as possible to on the one hand cover all used functionality and on
+ * the other hand not limit the applicability of a function/class.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * typedef typename Value<TContainer>::Type                TValue;
+ * typedef typename Position<TContainer>::Type             TPosition;
+ * typedef typename Difference<TContainer>::Type           TDifference;
+ *  
+ * SEQAN_CONCEPT_ASSERT((AlphabetConcept<TValue>));
+ * SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TDifference>));
+ * SEQAN_CONCEPT_ASSERT((UnsignedIntegerConcept<TSize>));
+ * @endcode
+ * @see Is
+ */
+
 /**
 .Macro.SEQAN_CONCEPT_ASSERT
 ..cat:Concepts
@@ -473,6 +505,68 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
 
 // SEQAN_CONCEPT_REFINE added by David Weese
 
+/*!
+ * @macro SEQAN_CONCEPT
+ * @brief Defines a new concept.
+ * @headerfile seqan/basic.h
+ * 
+ * @signature SEQAN_CONCEPT(name, params)
+ * 
+ * @param params Template paramter list in parantheses, e.g. (T) or (T1)(T2).
+ *               Typically, template parameters are models, i.e. one or multiple
+ *               classes that should be checked for fulfilling a concept.This is
+ *               a sequence of the Boost Preprocessor Library, read @link
+ *               boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html more
+ *               @endlink.
+ * @param name Concept identifier. Non-trivial concepts should have an
+ *             identifier with a Concept-suffix.
+ * 
+ * @section Remarks
+ * 
+ * A concept is implemented as a template struct with name <tt>name</tt> and
+ * arguments <tt>params</tt>. The concept checking should be part of the struct
+ * definition. Associated types should be checked via @link SEQAN_CONCEPT_ASSERT
+ * @endlink and valid expressions in a function @link SEQAN_CONCEPT_USAGE
+ * @endlink, see below. Variables used in valid expressions should be (private)
+ * struct members instead of local variables in member functions (read @link
+ * boost.org/doc/libs/1_47_0/libs/concept_check/creating_concepts.htm more
+ * @endlink).
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * SEQAN_CONCEPT(Assignable,(T))
+ * {
+ *     SEQAN_CONCEPT_USAGE(Assignable)
+ *     {
+ *         a = b;              // require assignment operator
+ *         constConstraints(b);
+ *     }
+ * private:
+ *     void constConstraints(const T& x)
+ *     {
+ *         a = x;              // const required for argument to assignment
+ *         ignoreUnusedVariableWarning(x);
+ *     }
+ * private:
+ *     T a;
+ *     T b;
+ * };
+ *  
+ * SEQAN_CONCEPT(EqualityComparable,(T))
+ * {
+ *     SEQAN_CONCEPT_USAGE(EqualityComparable)
+ *     {
+ *         requireBooleanExpr(a == b);
+ *         requireBooleanExpr(a != b);
+ *     }
+ * private:
+ *     T a, b;
+ * };
+ * @endcode
+ * @see SEQAN_CONCEPT_USAGE
+ */
+
 /**
 .Macro.SEQAN_CONCEPT
 ..cat:Concepts
@@ -522,6 +616,51 @@ private:
     template < SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_typename,~,params) >       \
     struct name
 
+/*!
+ * @macro SEQAN_CONCEPT_REFINE
+ * @brief Defines a new concept as a refinement of existing concepts.
+ * @headerfile seqan/basic.h
+ * 
+ * @signature SEQAN_CONCEPT_REFINE(name, params, refinedConcepts)
+ * 
+ * @param params Template paramter list in parantheses, e.g. (T) or (T1)(T2).
+ *               Typically, template parameters are models, i.e. one or multiple
+ *               classes that should be checked for fulfilling a concept.This is
+ *               a sequence of the Boost Preprocessor Library, read @link
+ *               boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html more
+ *               @endlink.
+ * @param name Concept identifier. Non-trivial concepts should have an
+ *             identifier with a Concept-suffix.
+ * @param refinedConcepts Identifiers of concepts that are refined by the new
+ *                        concept.Refined concepts are implicitly integrated
+ *                        into the requirements of the new concept.This is a
+ *                        sequence of the Boost Preprocessor Library, read @link
+ *                        boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.
+ *                        html more @endlink.
+ * 
+ * @section Remarks
+ * 
+ * A concept is implemented as a template struct with name <tt>name</tt> and
+ * arguments <tt>params</tt>. The struct inherits all refined concept structs.
+ * The concept checking should be part of the struct definition. For more
+ * information, see @link SEQAN_CONCEPT @endlink.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructible)(CopyConstructible))
+ * {
+ *     TValue val, val2;
+ *  
+ *     SEQAN_CONCEPT_USAGE(AlphabetConcept)
+ *     {
+ *         assign(val, val2);
+ *     }
+ * };
+ * @endcode
+ * @see SEQAN_CONCEPT_USAGE
+ */
+
 /**
 .Macro.SEQAN_CONCEPT_REFINE
 ..cat:Concepts
@@ -566,6 +705,36 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
     template < SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_typename,~,params) >                           \
     struct name:                                                                                    \
         SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_REFINE_superclass,params,refinedConcepts)
+
+/*!
+ * @macro SEQAN_CONCEPT_IMPL
+ * @brief Defines which concepts a model fulfills.
+ * @headerfile seqan/basic.h
+ * 
+ * 
+ * @signature template<> SEQAN_CONCEPT_IMPL(name, implementedConcepts)
+ *            template<typename T, int I> SEQAN_CONCEPT_IMPL(name<T,I>, implementedConcepts)
+ * 
+ * @param implementedConcepts Identifiers of concepts that are fulfilled by the
+ *                            model.This is a sequence of the Boost Preprocessor
+ *                            Library, read @link boost.org/doc/libs/1_47_0/libs
+ *                            /preprocessor/doc/index.html more @endlink.
+ * @param name Model type, i.e. an identifier or an identifier with template
+ *             arguments.
+ * 
+ * @section Remarks
+ * 
+ * The metafunction @link Is @endlink can be used to determine whether a class
+ * models (fulfills) a concepts. A model of a concept must pass the concept
+ * check via @link SEQAN_CONCEPT_ASSERT @endlink.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * template <typename TValue, typename TSpec>
+ * SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
+ * @endcode
+ */
 
 /**
 .Macro.SEQAN_CONCEPT_IMPL
@@ -631,6 +800,71 @@ void sameType(T, T) { }
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+/*!
+ * @mfn Is
+ * @brief Returns whether a concept is fulfilled.
+ * @headerfile seqan/basic.h
+ * 
+ * @signature Is<TConcept>::Type
+ * @signature Is<TConcept>::VALUE
+ * 
+ * @tparam TConcept A concept that is specialized with type(s) that should be
+ *                  tested for fulfilling the concept.
+ * 
+ * @return Type @link Logical Values.tag.True @endlink/<tt>true</tt> if
+ *              <tt>TConcept</tt> is a fulfilled concept, otherwise @link
+ *              Logical Values.tag.False @endlink/<tt>false</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The @link Is @endlink-metafunction can be used to test types for fulfilling a
+ * concept without causing compilation errors. If @link Logical Values.tag.True
+ * @endlink/<tt>true</tt> is returned, <tt>TConcept</tt> must pass the concept
+ * test via @link SEQAN_CONCEPT_ASSERT @endlink. It can be used to switch
+ * between different implementations depending on the concept of a type, or in
+ * combination with @link SEQAN_FUNC_ENABLE_IF @endlink to make a function only
+ * visible to types of certain concepts.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * Is<SequenceConcept<TSeq> >::Type
+ * IfC<Is<ContainerConcept<TSeq> >::VALUE, T1, T2>::Type
+ *  
+ * std::cout << Is<IntegerConcept<int> >::VALUE << std::endl;     // 1
+ * std::cout << Is<IntegerConcept<double> >::VALUE << std::endl;  // 0
+ * @endcode
+ * Define a hierarchy of concepts and two models <tt>Alice</tt> and <tt>Bob</tt>
+ * that implements some of them. @link Is @endlink determines which concepts are
+ * explicitly or implicitly fulfilled.
+ * 
+ * @code{.cpp}
+ * struct Alice {};
+ * struct Bob {};
+ *  
+ * SEQAN_CONCEPT(ConceptA, (T)) {};
+ * SEQAN_CONCEPT(ConceptB, (T)) {};
+ * SEQAN_CONCEPT_REFINE(ConceptC, (T), (ConceptA)(ConceptB)) {};
+ * SEQAN_CONCEPT_REFINE(ConceptD, (T), (ConceptC)) {};
+ *  
+ * SEQAN_CONCEPT_IMPL(Alice, (ConceptA)(ConceptB));
+ * SEQAN_CONCEPT_IMPL(Bob, (ConceptC));
+ *  
+ * std::cout << Is< ConceptA<Alice> >::VALUE << std::endl; // 1
+ * std::cout << Is< ConceptB<Alice> >::VALUE << std::endl; // 1
+ * std::cout << Is< ConceptC<Alice> >::VALUE << std::endl; // 0
+ * std::cout << Is< ConceptD<Alice> >::VALUE << std::endl; // 0
+ *  
+ * std::cout << Is< ConceptA<Bob> >::VALUE << std::endl;   // 1
+ * std::cout << Is< ConceptB<Bob> >::VALUE << std::endl;   // 1
+ * std::cout << Is< ConceptC<Bob> >::VALUE << std::endl;   // 1
+ * std::cout << Is< ConceptD<Bob> >::VALUE << std::endl;   // 0
+ * @endcode
+ *
+ * @see SEQAN_FUNC_ENABLE_IF
+ * @see SEQAN_CONCEPT_ASSERT
+ */
 
 /**
 .Metafunction.Is

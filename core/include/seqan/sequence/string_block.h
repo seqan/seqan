@@ -48,6 +48,22 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BlockString Block String
+ * @extends String
+ * @headerfile <seqan/sequence.h>
+ * @brief String optimized for push_back, top, and pop (Stack behaviour).
+ * 
+ * @signature template <typename TValue, unsigned SPACE = 4096>
+ *            class String<TValue, Block<SIZE> >;
+ * 
+ * @tparam TValue The value type, that is the type of the items/characters stored in the string.  Use
+ *                @link String#Value @endlink to get the value type for a given class.
+ * @tparam SIZE A positive integer that specifies the number of values in each
+ *              allocated block.  Size should be a power of 2, e.g., 1024.
+ * 
+ */
+
 template<unsigned int SPACE = 4096>
 struct Block;
 

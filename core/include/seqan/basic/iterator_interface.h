@@ -49,6 +49,26 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @defgroup ContainerIteratorTags Container Iterator Tags
+ *
+ * The tags <tt>Standard</tt> and <tt>Rooted</tt> can be used for selecting specific iterator types with the
+ * @link Container#Iterator @endlink metafunction.  Rooted iterators also carry a pointer to the container
+ * they are iterating whereas standard iterators do not carry this information.
+ *
+ * @tag ContainerIteratorTags#Standard
+ * @headerfile <seqan/basic.h>
+ * @brief Tag for selecting standard iterators.
+ * @signature struct Standard_;
+ *            typedef Tag<Standard_> Standard;
+ *
+ * @tag ContainerIteratorTags#Rooted
+ * @headerfile <seqan/basic.h>
+ * @brief Tag for selecting rooted iterators.
+ * @signature struct Rooted_;
+ *            typedef Tag<Rooted_> Rooted;
+ */
+
 /**
 .Tag.Iterator Spec:
 ..cat:Iteration
@@ -82,6 +102,20 @@ typedef Tag<Standard_> const Standard;
 // Metafunction DefaultIteratorSpec
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn ContainerConcept#DefaultIteratorSpec
+ * @brief Returns the default iterator specialization.
+ *
+ * @signature DefaultIteratorSpec<TContainer>::Type
+ *
+ * @tparam TContainer The Container type to query.
+ * @return Type       The iterator specialization tag type.
+ *
+ * Used by @link ContainerConcept#Iterator @endlink to select the default value for <tt>TSpec</tt>.
+ *
+ * @see ContainerConcept#Iterator
+ */
+
 /**
 .Metafunction.DefaultIteratorSpec:
 ..hidefromindex
@@ -104,6 +138,21 @@ struct DefaultIteratorSpec
 // ----------------------------------------------------------------------------
 // Metafunction DefaultGetIteratorSpec
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn ContainerConcept#DefaultGetIteratorSpec
+ * @brief Returns the default iterator specialization for functions.
+ *
+ * @signature DefaultGetIteratorSpec<TContainer>::Type
+ *
+ * @tparam TContainer The Container type to query.
+ * @return Type       The iterator specialization tag type.
+ *
+ * Used by functions such as @link ContainerConcept#begin @endlink and @link ContainerConcept#end @endlink for the <tt>TSpec</tt>
+ * parameter.
+ *
+ * @see ContainerConcept#Iterator
+ */
 
 /**
 .Metafunction.DefaultGetIteratorSpec:

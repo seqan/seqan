@@ -45,6 +45,17 @@ namespace SEQAN_NAMESPACE_MAIN
 // SuffixSegment
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class SuffixSegment Suffix Segment
+ * @extends Segment
+ * @headerfile <seqan/sequence.h>
+ * @brief A suffix of a sequence.
+ *
+ * @signature template <typename THost>
+ *            class Segment<THost, SuffixSegment>;
+ *
+ * @tparam THost The underlying @link SequenceConcept sequence@ type.
+ */
 
 /**
 .Spec.SuffixSegment:

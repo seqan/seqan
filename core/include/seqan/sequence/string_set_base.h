@@ -49,6 +49,30 @@ namespace seqan {
 template <typename TSpec = Default>
 struct Owner {};
 
+/*!
+ * @class StringSet
+ * @implements SequenceConcept
+ * @implements TextConcept
+ * @implements SegmentableConcept
+ * @headerfile <seqan/sequence.h>
+ * @brief A container class for a set of strings.
+ *
+ * @signature template <typename TString, typename TSpec>
+ *            class StringSet;
+ *
+ * @tparam TString The type of the string to store in the string set.
+ * @tparam TSpec   A tag for selecting the specialization of the string set.  Default: <tt>Owner<Generous></tt>.
+ *
+ * String sets are containers for strings.  They have two advantages over a string of strings:
+ *
+ * First, they allow to express the common intent in Bioinformatics to have a list of strings, e.g. for the
+ * chromosomes of a genome.  This facilitates writing generic data structures and algorithms to operate on single
+ * strings and genomes which is captured by the @link TextConcept@.
+ *
+ * Second, the @link DependentStringSet @endlink specialization allows to create subsets of string sets without
+ * storing copies of strings and identifying strings by a common id.
+ */
+
 /**
 .Class.StringSet:
 ..cat:Sequences
@@ -71,6 +95,17 @@ class StringSet;
 // --------------------------------------------------------------------------
 // Metafunction Concatenator
 // --------------------------------------------------------------------------
+
+/*!
+ * @mfn StringSet#Concatenator
+ * @brief Return the type of the concatenated sequence of all sequences in a StringSet.
+ *
+ * @signature Concatenator<TStringSet>::Type
+ *
+ * @tparam TStringSet The type of the string set.
+ *
+ * @return Type The resulting concatenator type.
+ */
 
 /**
 .Metafunction.Concatenator:
@@ -132,6 +167,19 @@ struct StringSetLimits<StringSet<TString, TSpec> >
 // Metafunction StringSetPosition
 // --------------------------------------------------------------------------
 
+/*!
+ * @mfn StringSet#StringSetPosition
+ * @brief Returns position type in string set.
+ *
+ * @signature StringSetPosition<T>::Type
+ *
+ * @tparam T
+ *
+ * @return Type
+ *
+ * TODO(holtgrew): Complete documentation, part of TextConcept?
+ */
+
 // TODO(holtgrew): Default specializations necessary?
 template <typename TString>
 struct StringSetPosition
@@ -149,6 +197,19 @@ struct StringSetPosition<StringSet<TString, TSpec> >
 // --------------------------------------------------------------------------
 // Metafunction LengthSum
 // --------------------------------------------------------------------------
+
+/*!
+ * @mfn StringSet#LengthSum
+ * @brief Length sum type type in string set.
+ *
+ * @signature LengthSum<T>::Type
+ *
+ * @tparam T
+ *
+ * @return Type
+ *
+ * TODO(holtgrew): Complete documentation, part of TextConcept?
+ */
 
 template <typename TString>
 struct LengthSum
@@ -171,6 +232,19 @@ struct LengthSum<T const> :
 // --------------------------------------------------------------------------
 // Metafunction GetSequenceNo
 // --------------------------------------------------------------------------
+
+/*!
+ * @mfn StringSet#GetSequenceByNo
+ * @brief Type for getting sequence by number.
+ *
+ * @signature GetSequenceByNo<T>::Type
+ *
+ * @tparam T
+ *
+ * @return Type
+ *
+ * TODO(holtgrew): Complete documentation, part of TextConcept?
+ */
 
 // TODO(holtgrew): Default specializations necessary?
 template <typename TString>
@@ -559,7 +633,7 @@ posGlobalize(Pair<T1, T2, TPack> const & pos, TLimitsString const & limits)
 .Function.posLocalToX:
 ..cat:Sequences
 ..summary:Converts a local to a local/global position.
-..signature:posGlobalize(dst, localPos, limits)
+..signature:posLocalToX(dst, localPos, limits)
 ..param.dst:Destination value. A local or global position (pair or integer value).
 ...type:Class.Pair
 ..param.localPos:A local position (pair).
@@ -1088,6 +1162,17 @@ _countNonZeroValues(String<TValue, TSpec> const & me, TPos i)
 // Function lengthSum()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn StringSet#lengthSum
+ * @brief Returns total length of all strings in the string set.
+ *
+ * @signature TSize lengthSum(s);
+ *
+ * @param s The string set to get length sum of.
+ *
+ * @return TSize The sum of the lengths of all strings in the string set.
+ */
+
 template <typename TString>
 inline typename LengthSum<TString>::Type 
 lengthSum(TString const & me)
@@ -1158,6 +1243,17 @@ resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> tag)
 // --------------------------------------------------------------------------
 // Function reserve()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#reserve
+ * @brief Reserve memory for string set.
+ *
+ * @signature TSize reserver(s, newCapacity, tag);
+ *
+ * @param s           The string set to reserve memory for.
+ * @param newCapacity The target capacity.
+ * @param tag         A tag to select the reservation strategy.
+ */
 
 template <typename TString, typename TSpec, typename TSize, typename TExpand>
 inline typename Size<StringSet<TString, TSpec > >::Type
@@ -1255,6 +1351,29 @@ return iter(me, length(me), tag);
 // Function getValueById()
 // --------------------------------------------------------------------------
 
+/*!
+ * @mfn StringSet#Id
+ * @brief Return the id type for the string set.
+ *
+ * @signature Id<TStringSet>::Type
+ *
+ * @tparam TStringSet The string set type to query for its id type.
+ *
+ * @return Type The resulting ID type.
+ */
+
+/*!
+ * @fn StringSet#getValueById
+ * @brief Get the value from a string set by its id.
+ *
+ * @signature TString getValueById(s, id);
+ *
+ * @param s  The string set to get string from.
+ * @param id The id of the string to get.
+ *
+ * @return TString Reference to the string with the given id.
+ */
+
 /**
 .Function.getValueById:
 ..cat:Sequences
@@ -1276,6 +1395,18 @@ return iter(me, length(me), tag);
 // --------------------------------------------------------------------------
 // Function valueById()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#valueById
+ * @brief Get the value from a string set by its id.
+ *
+ * @signature TString valueById(s, id);
+ *
+ * @param s  The string set to get string from.
+ * @param id The id of the string to get.
+ *
+ * @return TString Reference to the string with the given id.
+ */
 
 /**
 .Function.valueById:
@@ -1305,6 +1436,19 @@ valueById(StringSet<TString, TSpec> & me,
 // --------------------------------------------------------------------------
 // Function assignValueById()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#assignValueById
+ * @brief Set the member of a string set by its id.
+ *
+ * @signature TId getValueById(set, s[, id]);
+ *
+ * @param set The string to assign value in.
+ * @param s   The string set to assign.
+ * @param id  The id of the string to set.  If omitted, <tt>s</tt> will be appended to <tt>set</tt>.
+ *
+ * @return TId The id of the new string in the string set.
+ */
 
 /**
 .Function.assignValueById:
@@ -1353,6 +1497,16 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 // Function removeValueById()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn StringSet#removeValueById
+ * @brief Remove a value from a string set by its id.
+ *
+ * @signature void removeValueById(set, id);
+ *
+ * @param set The string to remove value in.
+ * @param id  The id of the string to remove.
+ */
+
 /**
 .Function.removeValueById:
 ..cat:Sequences
@@ -1374,6 +1528,18 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 // Function positionToId()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn StringSet#positionToId
+ * @brief Convert a position/index in the string set to a string id.
+ *
+ * @signature Id positionToId(set, pos);
+ *
+ * @param set The string to convert positions for.
+ * @param pos The position to convert.
+ *
+ * @return TId The resulting id.
+ */
+
 /**
 .Function.positionToId:
 ..cat:Sequences
@@ -1394,6 +1560,17 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 // --------------------------------------------------------------------------
 // Function concat()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#concat
+ * @brief Returns the concatenation sequence of all sequences in a string set.
+ *
+ * @signature TConcat concat(set);
+ *
+ * @param set The string set to get the concatenation sequence for.
+ *
+ * @return TConcat The concatenation sequence.
+ */
 
 /**
 .Function.concat:
@@ -1446,6 +1623,22 @@ concat(StringSet<TString, TSpec> const & constMe)
 // --------------------------------------------------------------------------
 // Function strSplit()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#strSplit
+ * @brief Append a list of the words in the string, using sep as the delimiter string @link StringSet @endlink.
+ *
+ * @signature void strSplit(result, sequence[, sep[, allowEmptyStrings[, maxSplit]]]);
+ *
+ * @param result           The resulting string set.
+ * @param sequence         The sequence to split.
+ * @param sep              The splitter to use (default <tt>' '</tt>).
+ * @param allowEmptyString Whether or not to allow empty strings (<tt>bool</tt>, defaults to <tt>true</tt> iff
+ *                         <tt>sep</tt> is given).
+ * @param maxSplit         The maximal number of split operations to do if given.
+ *
+ * @return TConcat The concatenation sequence.
+ */
 
 /**
 .Function.stringSplit:
@@ -1534,6 +1727,18 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence)
 // --------------------------------------------------------------------------
 // Function idToPosition()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn StringSet#idToPosition
+ * @brief Convert a string id to a position/index in the string set.
+ *
+ * @signature TPos idToPosition(set, id);
+ *
+ * @param set The string to convert positions for.
+ * @param id  The id to convert.
+ *
+ * @return The resulting position.
+ */
 
 /**
 .Function.idToPosition:

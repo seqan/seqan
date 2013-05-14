@@ -47,6 +47,19 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class AllocString Alloc String
+ * @extends String
+ * @brief Expandable string that is stored on the heap.
+ * @headerfile <seqan/sequence.h>
+ *
+ * @signature template <typename TValue, typename TSpec>
+ *            class String<TValue, Alloc<TSpec> >;
+ *
+ * @tparam TValue Element type of the string.
+ * @tparam TSpec  Tag for further specializing Alloc String.  Default is <tt>void</tt>.
+ */
+
 // TODO(holtgrew): Where is Alloc<> defined? In module base?
 
 /**

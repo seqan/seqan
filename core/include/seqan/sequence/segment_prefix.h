@@ -45,6 +45,17 @@ namespace SEQAN_NAMESPACE_MAIN
 // PrefixSegment
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class PrefixSegment Prefix Segment
+ * @extends Segment
+ * @headerfile <seqan/sequence.h>
+ * @brief A prefix of a sequence.
+ *
+ * @signature template <typename THost>
+ *            class Segment<THost, PrefixSegment>;
+ *
+ * @tparam THost The underlying @link SequenceConcept sequence@ type.
+ */
 
 /**
 .Spec.PrefixSegment:

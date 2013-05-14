@@ -51,6 +51,37 @@ namespace seqan {
 
 // TODO(holtgrew): Change name of specialization to Dependent StringSet.
 
+/*!
+ * @class DependentStringSet Dependent StringSet
+ * @extends StringSet
+ * @headerfile <seqan/sequence.h>
+ * @brief StringSet implementation that only stores pointers to strings in other string sets.
+ *
+ * @signature template <typename TString, typename TSpec>
+ *            class StringSet<TString, Depedent<TSpec> >;
+ *
+ * @tparam TString The type of the string to store in the string set.
+ * @tparam TSpec   Tag for further specializing the string set.
+ *
+ * The class is not usable itself, only its subclasses @link TightDependentStringSet @endlink and
+ * @link GenerousDependentStringSet @endlink are.
+ */
+
+/*!
+ * @class TightDependentStringSet Tight Dependent StringSet
+ * @extends DependentStringSet
+ * @headerfile <seqan/sequence.h>
+ * @brief Very space efficient Dependent StringSet implementation.
+ *
+ * @signature template <typename TString>
+ *            class StringSet<TString, Depedent<Tight> >;
+ *
+ * @tparam TString The type of the string to store in the string set.
+ *
+ * See @link GenerousDependentStringSet @endlink for a Dependent StringSet implementation that allows for more
+ * efficient access to strings in the container via ids at the cost of higher memory usage.
+ */
+
 /**
 .Spec.Dependent:
 ..summary:A string set storing references of the strings.

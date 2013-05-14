@@ -47,6 +47,25 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class ArrayString Array String
+ * @extends String
+ * @headerfile <seqan/sequence.h>
+ * @brief Fast, static-size string.
+ * 
+ * @signature template <typename TValue, size_t LENGTH>
+ *            class String<TValue, Array<LENGTH> >;
+ * 
+ * @tparam TValue The value type, that is the type of the items/characters
+ *                stored in the string.Use @link Value @endlink to get the value
+ *                type for a given class.
+ * @tparam LENGTH A positive integer that specifies the capacity of the
+ *                string.Note that the capacity of an Array String is fixed at
+ *                compile-time.
+ * 
+ * Having static-sized strings is useful as members of structs for external memory algorithms, for example.
+ */
+
 /**
 .Spec.Array String:
 ..cat:Strings

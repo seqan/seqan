@@ -51,6 +51,227 @@ namespace seqan {
 template <typename TSpec = void>
 struct Alloc {};
 
+// TODO(holtgrew): This requires some work: explain it, maybe rather put this into a group since the text object appears in no function's signatures.
+
+/*!
+ * @concept TextConcept
+ * @brief Concept for a type that can be as text of an index.
+ * @headerfile <seqan/sequence.h>
+ *
+ * @signature concept TextConcept;
+ *
+ * Certain algorithms and data structures can work for both strings and string sets but need to treat these two
+ * types slightly different.  Examples are index data structures and algorithms that build the indices and use
+ * the indices for lookup.
+ *
+ * To facilitate writing of generic algorithms, the TextConcept concept gives a common interface to both for this
+ * kind of algorithms.
+ *
+ * @see String
+ * @see StringSet
+ */
+
+/*!
+ * @mfn TextConcept#StringSetLimits
+ * @brief Return type of string set limits for TextConcept types.
+ *
+ * @signature StringSetLimits<TText>::Type;
+ *
+ * @tparam TText The type of the text.
+ *
+ * @return Type The type of string set limits objects.
+ */
+
+/*!
+ * @mfn TextConcept#SAValue
+ * @brief The default alphabet type of a suffix array, i.e. the type to store a
+ *        position of a string or string set.
+ * 
+ * @signature SAValue<TText>::Type
+ * 
+ * @tparam TText The text type to query.
+ * 
+ * @return TReturn A type to store a position in a <tt>TText</tt>.  This could be an integer for strings or a
+ *                 pair of integers for string sets.
+ * 
+ * @section Usage
+ * 
+ * This type should be removed for functions returning positions in texts such as online or index-based search.
+ * Thus, always use this metafunction for declaring position variables.
+ *
+ * Use the functions @link TextConcept#posLocalize @endlink, @link TextConcept#posGlobalize @endlink, @link
+ * TextConcept#getSeqNo @endlink, and @link TextConcept#getSeqOffset @endlink for conversion between local
+ * and global positions in texts.
+ * 
+ * @section Examples
+ *
+ * The following shows the original definition of the SAValue metafunction in SeqAn.
+ *
+ * @code{.cpp} 
+ * template <typename TString, typename TSpec>
+ * struct SAValue<StringSet<TString, TSpec> >
+ * {
+ *     typedef Pair<
+ *             typename Size<StringSet<TString, TSpec> >::Type,
+ *             typename SAValue<TString>::Type,
+ *             Pack
+ *         > Type;
+ * };
+ * @endcode
+ */ 
+
+/*!
+ * @fn TextConcept#stringSetLimits
+ * @brief Return string delimiter positions for TextConcept types.
+ *
+ * @signature TStringSetLimits stringSetLimits(text);
+ *
+ * @param text The text to query for its string set limits.
+ *
+ * @return TStringSetLimits The string set limits (of type @link TextConcept#StringSetLimits @endlink).
+ */
+
+/*!
+ * @fn TextConcept#posLocalToX
+ * @brief Converts a local to a local/global position.
+ *
+ * @signature void posLocalToX(dst, localPos, limits);
+ *
+ * @param dst      The local or global position (pair or integer value) is written here.
+ * @param localPos The local position.
+ * @param limits   The string limits as returned by @link TextConcept#stringSetLimits @endlink.
+ */
+
+/*!
+ * @class String
+ * @implements SequenceConcept
+ * @implements TextConcept
+ * @implements SegmentableConcept
+ * @headerfile <seqan/sequence.h>
+ * @brief @link SequenceConcept Sequence @endlink container class.
+ *
+ * @signature template <typename TValue, typename TSpec>
+ *            class String<TValue, TSpec>;
+ *
+ * @tparam TValue The element type of the string.
+ * @tparam TSpec  The tag for selecting the string specialization.
+ *
+ * The String class is for storing sequences and thus at the core of the sequence analysis library SeqAn.  They
+ * are models for the @link SequenceConcept sequence concept @endlink but extend the sequence concept by allowing
+ * implicit conversion of other sequence into strings as long as the element conversion works:
+ *
+ * @snippet core/demos/sequence/string.cpp initializing strings
+ *
+ * Aside from that, the usual operations (appending, insertion, removing, element access) are available as well.
+ *
+ * @snippet core/demos/sequence/string.cpp usual operations
+ *
+ * Strings have a size (the actual number of elements) and a capacity (the number of elements that memory has
+ * been allocated for).  Note that clearing a string does not free the memory (as the STL, SeqAn assumes that
+ * strings will later require a similar amount of memory as before).  Using @link String#shrinkToFit @endlink,
+ * the user can force a re-allocation of the memory such that the string afterward uses the minimal amount
+ * of memory to accomodate all of its objects.
+ *
+ * @snippet core/demos/sequence/string.cpp clear and resize
+ *
+ * @see StringSet
+ */
+
+/*!
+ * @fn String::String
+ * @brief Constructor.
+ *
+ * @signature String::String()
+ * @signature String::String(other)
+ *
+ * @param other The source for the copy constructor.  Can be of any @link SequenceConcept sequence @endlink type
+ *              as long as <tt>other</tt>'s elements are convertible to the value type of this string.
+ *
+ * Default and copy constructor are implemented.
+ */
+
+/*!
+ * @fn String::operator=
+ * @brief The String assignment operator allows assignment of convertible sequences.
+ *
+ * @signature TString String::operator=(other)
+ *
+ * @param other The other string.  Must be a sequence whose elements are convertible into this String's type.
+ *
+ * @returns TString Reference to the String objecta after assignment.
+ */
+
+// TODO(holtgrew): The conversion functions rather belong into their own group than to the concept. The original documentation was a bit misleading and needs to be updated.
+
+/*!
+ * @fn TextConcept#posLocalize
+ * @brief Converts a local/global to a local position.
+ * @headerfile <seqan/sequence.h>
+ * 
+ * @signature void posLocalize(result, pos, limits)
+ * 
+ * @param pos    A local or global position (pair or integer value).
+ * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
+ * @param result Reference to the resulting corresponding local position of
+ *               <tt>pos</tt>.
+ */
+
+/*!
+ * @fn TextConcept#posGlobalize
+ * @brief Converts a local/global to a global position.
+ * @headerfile <seqan/sequence.h>
+ * 
+ * @signature TPos posGlobalize(pos, limits)
+ * 
+ * @param pos A local or global position (pair or integer value). Types: Pair
+ * @param limits The limits string returned by @link stringSetLimits @endlink.
+ * 
+ * @return TPos The corresponding global position of <tt>pos</tt>. If
+ *                 <tt>pos</tt> is an integral type <tt>pos</tt> is returned. If
+ *                 not, <tt>limits[getSeqNo(pos, limits)] + getSeqOffset(pos,
+ *                 limits)</tt> is returned.
+ */
+
+/*!
+ * @fn TextConcept#getSeqNo
+ * @brief Returns the sequence number of a position.
+ * @headerfile <seqan/sequence.h>
+ * 
+ * @signature TSeqNo getSeqNo(pos[, limits])
+ * 
+ * @param pos A position. Types: Pair
+ * @param limits The limits string returned by @link stringSetLimits @endlink.
+ * 
+ * @return TSeqNo A single integer value that identifies the string within the
+ *                stringset <tt>pos</tt> points at.If <tt>limits</tt> is
+ *                omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns
+ *                0.If <tt>pos</tt> is a local position (of class @link Pair
+ *                @endlink) then <tt>i1</tt> is returned.If <tt>pos</tt> is a
+ *                global position (integer type and <tt>limits</tt> is a @link
+ *                String @endlink) then <tt>pos</tt> is converted to a local
+ *                position and <tt>i1</tt> is returned.
+ */
+
+/*!
+ * @fn TextConcept#getSeqOffset
+ * @brief Returns the local sequence offset of a position.
+ * @headerfile <seqan/sequence.h>
+ * 
+ * @signature TOffset getSeqOffset(pos[, limits])
+ * 
+ * @param pos A position. Types: Pair
+ * @param limits The limits string returned by @link stringSetLimits @endlink.
+ * 
+ * @return TOffset A single integer value that identifies the position within
+ *                 the string <tt>pos</tt> points at.If <tt>limits</tt> is
+ *                 omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns
+ *                 <tt>pos</tt>.If <tt>pos</tt> is a local position (of class
+ *                 @link Pair @endlink) then <tt>i2</tt> is returned.If
+ *                 <tt>pos</tt> is a global position (integer type and
+ *                 <tt>limits</tt> is a @link String @endlink) then <tt>pos</tt>
+ *                 is converted to a local position and <tt>i2</tt> is returned.
+ */
+
 /**
 .Class.String
 ..cat:Sequences

@@ -52,7 +52,24 @@ namespace seqan {
 template <typename TDelimiter = void>
 struct ConcatDirect;                    // contains 1 string (the concatenation of n strings)
 
-// TODO(holtgrew): Change name of specialization to ConcatDirect StringSet.
+// TODO(holtgrew): Change name of specialization to ConcatDirect Owner StringSet?
+
+/*!
+ * @class ConcatDirectStringSet ConcatDirect StringSet
+ * @extends OwnerStringSet
+ * @headerfile <seqan/sequence.h>
+ * @brief Owner StringSet implementation that stores strings in one large underlying string.
+ *
+ * @signature template <typename TString>
+ *            class StringSet<TString, Owner<ConcatDirect> >;
+ *
+ * @tparam TString The type of the string to store in the string set.
+ *
+ * Storing multiple strings in one larger one with storing the positions between strings leads to a very compact
+ * representation with a predictable memory layout.
+ *
+ * At the moment, ConcatDirect StringSet objects only support appending data.
+ */
 
 /**
 .Spec.ConcatDirect:

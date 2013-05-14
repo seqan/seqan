@@ -51,8 +51,22 @@ namespace seqan {
 // The tag Owner is defined in string_set_base since it is the default
 // specialization.
 
+// TODO(holtgrew): Shouldn't Default be void?
+
 // template <typename TSpec = Default>
 // struct Owner;
+
+/*!
+ * @class OwnerStringSet Owner StringSet
+ * @extends StringSet
+ * @headerfile <seqan/sequence.h>
+ * @brief String set implementation that owns the string.
+ *
+ * @signature template <typename TString>
+ *            class StringSet<TString, Owner<Default> >;
+ *
+ * @tparam TString The type of the string to store in the string set.
+ */
 
 // TODO(holtgrew): Change name of specialization to Owner StringSet.
 

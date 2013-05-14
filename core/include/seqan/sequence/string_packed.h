@@ -54,6 +54,23 @@ struct HostIterator;
 // Specialization Packed String
 // --------------------------------------------------------------------------
 
+/*!
+ * @class PackedString Packed String
+ * @extends String
+ * @headerfile <seqan/sequence.h>
+ * @brief A string that stores as many values in one machine word as possible.
+ * 
+ * @signature template <typename TValue, typename THostSpec>
+ *            class String<TValue, Packed<THostSpec> >;
+ * 
+ * @tparam TValue The value type, that is the type of the items/characters
+ *                stored in the string.Use @link Value @endlink to get the value
+ *                type for a given class.
+ * @tparam THostSpec The specializing type.This is the specialization of the
+ *                   host string that is used for storing the packed values.
+ *                   Default: @link AllocString @endlink
+ */
+
 template <typename THostspec = Alloc<> >
 struct Packed;
 

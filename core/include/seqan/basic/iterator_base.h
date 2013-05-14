@@ -49,6 +49,19 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class Iter
+ * @extends IteratorAssociatedTypesConcept
+ * @headerfile <seqan/basic.h>
+ * @brief Base class for iterators to traverse containers.
+ *
+ * @signature template <typename TContainer, typename TSpec>
+ *            class Iter;
+ *
+ * @tparam TContainer The type of the container to iterate.
+ * @tparam TSpec      Type to use for specializing the <tt>Iter</tt> class.
+ */
+
 /**
 .Class.Iter:
 ..cat:Basic
@@ -72,6 +85,18 @@ class Iter;
 // ----------------------------------------------------------------------------
 // Metafunction IterComplementConst
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Iter#IterComplementConst
+ * @brief Metafunction that complements the const-ness of the container of an iterator.
+ *
+ * @signature IterComplementConst<TIter>::Type
+ *
+ * @tparam TIter The @link Iter @endlink to complement the container constness of.
+ *
+ * @return Type The type of the iterator that is the same as <tt>TIter</tt> except that the const-ness of the
+ *              container is complemented.
+ */
 
 /**
 .Metafunction.IterComplementConst:
@@ -104,6 +129,17 @@ struct IterComplementConst<Iter<TContainer, TSpec> const>
 // Metafunction IterMakeConst
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Iter#IterMakeConst
+ * @brief Metafunction to make enforce const-ness of the container of an iterator.
+ *
+ * @signature IterMakeConst<TIter>::Type
+ *
+ * @tparam TIter The iterator type to make the container const of.
+ *
+ * @return Type The resulting Iter type with a const container.
+ */
+
 /**
 .Metafunction.IterMakeConst:
 ..cat:Basic
@@ -129,6 +165,17 @@ struct IterMakeConst<Iter<TContainer, TSpec> const>
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Iter#Spec
+ * @brief Return specialization tag of the <tt>Iter</tt> specialization.
+ *
+ * @signature Spec<TIter>::Type
+ *
+ * @tparam TIter The <tt>Iter</tt> class to get specialization tag of.
+ *
+ * @return Type The specialization tag used for the <tt>Iter</tt>.
+ */
 
 ///.Metafunction.Spec.param.T.type:Class.Iter
 ///.Metafunction.Spec.class:Class.Iter
@@ -205,6 +252,17 @@ struct Reference<Iter<TContainer, TSpec> const>:
 // ----------------------------------------------------------------------------
 // Metafunction Container
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Iter#Container
+ * @brief The container type of the iterator.
+ *
+ * @signature Container<TIter>::Type
+ *
+ * @tparam TIter The <tt>TIter</tt> class to query for its container type.
+ *
+ * @return Type The container type of <tt>TIter</tt>
+ */
 
 ///.Metafunction.Container.param.T.type:Class.Iter
 ///.Metafunction.Container.class:Class.Iter

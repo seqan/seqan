@@ -44,6 +44,17 @@ namespace SEQAN_NAMESPACE_MAIN
 // InfixSegment
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class InfixSegment Infix Segment
+ * @extends Segment
+ * @headerfile <seqan/sequence.h>
+ * @brief An infix of a sequence.
+ *
+ * @signature template <typename THost>
+ *            class Segment<THost, InfixSegment>;
+ *
+ * @tparam THost The underlying @link SequenceConcept sequence@ type.
+ */
 
 /**
 .Spec.InfixSegment:
