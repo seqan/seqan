@@ -769,7 +769,7 @@ Render the interface functions details
 
 {% macro interface_functions(entry, qualifier='Interface', key='interface_function') %}
 {% if entry.subentries[key] -%}
-<div class="{{ key|e }}_defails">
+<div class="{{ key|e }}_details">
   <h2>{{ qualifier }} Functions Detail</h2>
 
   {% for subentry in entry.subentries[key] %}
@@ -783,6 +783,15 @@ Render the interface functions details
       </code></pre>
     </h3>
   </div>
+
+  {% if subentry.deprecation_msgs %}
+  <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+      {% for msg in subentry.deprecation_msgs %}
+      <p>{{ msg|transtext(False) }}</p>
+      {% endfor %}
+  </div></div>
+  {% endif %}
+
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
