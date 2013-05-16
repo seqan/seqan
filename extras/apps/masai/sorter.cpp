@@ -164,7 +164,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOutputFile(options.sortedReadsFile, options, parser, options.readsFile, "_se");
 
     // Parse output format.
-    getOutputFormat(options, options.mappedReadsFile);
+    getOutputFormat(options, options.sortedReadsFile);
     options.outputCigar = !isSet(parser, "no-cigar");
 
     // Parse debug options.
