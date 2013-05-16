@@ -243,7 +243,7 @@ void setDateAndVersion(ArgumentParser & parser)
     std::string date = "$Date$";
 
     setCategory(parser, "Read Mapping");
-    setVersion(parser, "0.7 [" + rev.substr(11, rev.size() - 13) + "]");
+    setVersion(parser, "0.7.1 [" + rev.substr(11, rev.size() - 13) + "]");
     setDate(parser, date.substr(7, std::min((int)date.size() - 8, 10)));
 }
 
