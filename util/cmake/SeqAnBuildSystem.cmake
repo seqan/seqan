@@ -84,6 +84,14 @@ if (MINGW)
 endif (MINGW)
 
 # ---------------------------------------------------------------------------
+# Disable false positive terminal detection in Xcode
+# ---------------------------------------------------------------------------
+
+if (CMAKE_GENERATOR STREQUAL Xcode)
+  add_definitions (-DSEQAN_NO_TERMINAL)
+endif (CMAKE_GENERATOR STREQUAL Xcode)
+
+# ---------------------------------------------------------------------------
 # Function add_executable (name [WIN32] [MACOSX_BUNDLE] [EXCLUDE_FROM_ALL]
 #                          source1 source2 ... sourceN)
 #

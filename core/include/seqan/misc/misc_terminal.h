@@ -89,7 +89,11 @@ inline bool isTerminal()
 
 inline bool isTerminal()
 {
+#ifdef SEQAN_NO_TERMINAL
+    return false;    // explicitly disable false positive terminal detection
+#else
     return isatty(fileno(stdout));
+#endif
 }
 
 #endif  // #if defined(PLATFORM_GCC)
