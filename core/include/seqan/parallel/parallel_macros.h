@@ -69,6 +69,13 @@ i += 1;
   #endif // #if defined(PLATFORM_WINDOWS_MINGW) || defined(PLATFORM_GCC)
 #else  // #ifdef _OPENMP
   #define SEQAN_OMP_PRAGMA(x)
+
+  // low-level OpenMP runtime compatibility
+  void omp_set_num_threads(int) {}
+  int  omp_get_num_threads()    { return 1; }
+  int  omp_get_max_threads()    { return 1; }
+  int  omp_get_thread_num()     { return 0; }
+
 #endif  // #ifdef _OPENMP
 
 #endif  // SEQAN_PARALLEL_PARALLEL_MACROS_H_
