@@ -146,7 +146,7 @@ inline int skipRecord(RecordReader<TStream, TPass> & reader,
 
 template <typename TStream, typename TSpec, typename TNameStore, typename TNameStoreCache>
 int readRecord(BamHeaderRecord & record,
-               BamIOContext<TNameStore, TNameStoreCache> & /*context*/,
+               BamIOContext<TNameStore, TNameStoreCache> & context,
                RecordReader<TStream, SinglePass<TSpec> > & reader,
                Sam const & /*tag*/)
 {
@@ -185,11 +185,11 @@ int readRecord(BamHeaderRecord & record,
         int res = skipChar(reader, '\t');
         if (res != 0)
             return res;
-        CharString buffer;
+        CharString &buffer = context.buffer;
         res = readLine(buffer, reader);
         if (res != 0)
             return res;
-        appendValue(record.tags, Pair<CharString>("", buffer));
+        appendValue(record.tags, Pair<CharString>(CharString(), buffer));
     }
     else
     {
@@ -297,7 +297,7 @@ int readRecord(BamAlignmentRecord & record,
                Sam const & /*tag*/)
 {
     clear(record);
-    CharString buffer;
+    CharString &buffer = context.buffer;
 
 #define SEQAN_SKIP_TAB                              \
     do                                              \

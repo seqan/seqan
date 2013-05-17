@@ -96,6 +96,7 @@ public:
 
     TNameStore * _nameStore;
     TNameStoreCache * _nameStoreCache;
+    CharString buffer;
 
     BamIOContext() : _nameStore(0), _nameStoreCache(0)
     {}
