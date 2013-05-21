@@ -73,7 +73,7 @@ struct MMap;
 
     struct Dynamic;
 
-    template <size_t PAGE_SIZE>
+    template <size_t PAGESIZE>
     struct Fixed;
 
 	template <typename TFile, typename TSpec = Dynamic>
@@ -160,11 +160,11 @@ struct MMap;
         return me.pageSize;
     }
 
-	template <typename TValue, typename TFile, size_t PAGE_SIZE>
-    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > >::Type
-    capacity(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
+	template <typename TValue, typename TFile, size_t PAGESIZE>
+    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > >::Type
+    capacity(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > const &)
     {
-        return PAGE_SIZE;
+        return PAGESIZE;
     }
 
 	template <typename TValue, typename TSpec, typename TSize>
@@ -181,11 +181,11 @@ struct MMap;
         return me.end - me.begin;
     }
 
-	template <typename TValue, typename TFile, size_t PAGE_SIZE>
-    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > >::Type
-    length(Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const &)
+	template <typename TValue, typename TFile, size_t PAGESIZE>
+    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > >::Type
+    length(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > const &)
     {
-        return PAGE_SIZE;
+        return PAGESIZE;
     }
 
 	template <typename TValue, typename TSpec, typename TSize>
@@ -372,14 +372,14 @@ struct MMap;
 
     template < typename TValue,
                typename TFile,
-               size_t PAGE_SIZE_ >
-	struct Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE_> > >
+               size_t PAGESIZE_ >
+	struct Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > >
     {
 		typedef TFile                                       File;
         typedef typename AsyncRequest<TFile>::Type          AsyncRequest;
 		typedef	typename Iterator<Buffer, Standard>::Type   TIterator;
 
-		enum            { PAGE_SIZE = PAGE_SIZE_ };
+		enum            { PAGESIZE = PAGESIZE_ };
 		enum DataStatus	{ ON_DISK = -1, UNINITIALIZED = -2 };
 		enum Priority	{ NORMAL_LEVEL = 0, PREFETCH_LEVEL = 1, ITERATOR_LEVEL = 2, PERMANENT_LEVEL = 3 };
 
@@ -442,14 +442,14 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// meta-function interface
 
-	template <typename TValue, typename TFile, size_t PAGE_SIZE>
-    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >, Standard >
+	template <typename TValue, typename TFile, size_t PAGESIZE>
+    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > >, Standard >
     {
         typedef VolatilePtr<TValue> Type;
     };
 
-	template <typename TValue, typename TFile, size_t PAGE_SIZE>
-    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > > const, Standard >
+	template <typename TValue, typename TFile, size_t PAGESIZE>
+    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > const, Standard >
     {
         typedef VolatilePtr<TValue> const Type;
     };

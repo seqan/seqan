@@ -109,13 +109,13 @@ For a larger size type, use @Tag.ExternalConfigLarge@.
     // standard external string
     // size is uint32
     template < typename TFile_ = File<>,				// default file type
-               unsigned PAGE_SIZE_ = 4 * 1024 * 1024,	// 1MTypes per default
+               unsigned PAGESIZE_ = 4 * 1024 * 1024,	// 1MTypes per default
 			   unsigned FRAMES_ = 2 >					// simultanous frames
     struct ExternalConfig {
 //IOREV _bug_ doc says default page size is 2^20, but it is 2^22
         typedef TFile_ TFile;
         typedef unsigned TSize;
-        enum { PAGE_SIZE = PAGE_SIZE_ };
+        enum { PAGESIZE = PAGESIZE_ };
         enum { FRAMES = FRAMES_ };
     };
 
@@ -146,13 +146,13 @@ you should think of using @Tag.ExternalConfig@.
     // pipes use the size type 
     // uint64 blows up your suffix arrays, lcp-tables, ...
     template < typename TFile_ = File<>,				// default file type
-               unsigned PAGE_SIZE_ = 4 * 1024 * 1024,	// 1MTypes per default
+               unsigned PAGESIZE_ = 4 * 1024 * 1024,	// 1MTypes per default
 			   unsigned FRAMES_ = 2 >					// simultanous frames
     struct ExternalConfigLarge {
 //IOREV contains warning in code comments, need to investigate
         typedef TFile_ TFile;
         typedef typename MakeUnsigned<typename Size<TFile_>::Type>::Type TSize;
-        enum { PAGE_SIZE = PAGE_SIZE_ };
+        enum { PAGESIZE = PAGESIZE_ };
         enum { FRAMES = FRAMES_ };
     };
 
@@ -180,13 +180,13 @@ you should think of using @Tag.ExternalConfig@.
     // custom size type
     template < typename TSize_,
 		       typename TFile_ = File<>,				// default file type
-               unsigned PAGE_SIZE_ = 1 * 1024 * 1024,	// 1MTypes per default
+               unsigned PAGESIZE_ = 1 * 1024 * 1024,	// 1MTypes per default
 			   unsigned FRAMES_ = 2 >					// simultanous frames
     struct ExternalConfigSize {
 //IOREV
 		typedef TSize_ TSize;
         typedef TFile_ TFile;
-        enum { PAGE_SIZE = PAGE_SIZE_ };
+        enum { PAGESIZE = PAGESIZE_ };
         enum { FRAMES = FRAMES_ };
     };
 
@@ -209,7 +209,7 @@ you should think of using @Tag.ExternalConfig@.
 		typedef typename Difference<TExtString>::Type	TDifference;
 		typedef typename TExtString::TVolatilePtr		TVolatilePtr;
 
-        enum { PAGE_SIZE = TExtString::PAGE_SIZE };
+        enum { PAGESIZE = TExtString::PAGESIZE };
 
 		TSize		offset;
 		TExtString	*extString;
@@ -313,7 +313,7 @@ you should think of using @Tag.ExternalConfig@.
 		typedef typename Difference<TExtString>::Type	TDifference;
 		typedef typename TExtString::TVolatilePtr	    TVolatilePtr;
 
-        enum { PAGE_SIZE = TExtString::PAGE_SIZE };
+        enum { PAGESIZE = TExtString::PAGESIZE };
 
 		TSize		offset;
 		TExtString	*extString;
@@ -417,7 +417,7 @@ you should think of using @Tag.ExternalConfig@.
 		typedef typename Difference<TExtString>::Type	TDifference;
 		typedef typename TExtString::TVolatilePtr	    TVolatilePtr;
 
-        enum { PAGE_SIZE = TExtString::PAGE_SIZE };
+        enum { PAGESIZE = TExtString::PAGESIZE };
 
 
 		TExtString		*extString;
@@ -444,8 +444,8 @@ you should think of using @Tag.ExternalConfig@.
 
 	    explicit ExtStringFwdIterator(TExtString *_extString, TSize _offset):
 			extString(_extString),
-			pageNo(_offset / PAGE_SIZE),
-			pageOfs(_offset % PAGE_SIZE),
+			pageNo(_offset / PAGESIZE),
+			pageOfs(_offset % PAGESIZE),
             prefetch(0),
 			begin(NULL) {}
 
@@ -465,22 +465,22 @@ you should think of using @Tag.ExternalConfig@.
 
 		ExtStringFwdIterator(const TStdIterator &I):
 			extString(I.extString),
-			pageNo(I.offset / PAGE_SIZE),
-            pageOfs(I.offset % PAGE_SIZE),
+			pageNo(I.offset / PAGESIZE),
+            pageOfs(I.offset % PAGESIZE),
             prefetch(0),
 			begin(NULL) {}
 
 		inline TIterator& operator=(TStdIterator const & Right_) {
 			invalidate();
-			pageNo = Right_.offset / PAGE_SIZE;
-			pageOfs = Right_.offset % PAGE_SIZE;
+			pageNo = Right_.offset / PAGESIZE;
+			pageOfs = Right_.offset % PAGESIZE;
             extString = Right_.extString;
 			return *this;
 		}
 
         inline TSize position() const
         {
-            return (TSize)pageNo * (TSize)PAGE_SIZE + pageOfs;
+            return (TSize)pageNo * (TSize)PAGESIZE + pageOfs;
         }
 
         inline operator TStdIterator() const {
@@ -509,20 +509,20 @@ you should think of using @Tag.ExternalConfig@.
 		}
 		
 		inline TIterator operator- (TDifference delta) const {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference dPOfs = delta % PAGE_SIZE;
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference dPOfs = delta % PAGESIZE;
 			if (pageOfs >= dPOfs)
 				return TIterator(extString, pageNo - dPNo, pageOfs - dPOfs);
 			else
-				return TIterator(extString, pageNo - dPNo - 1, PAGE_SIZE + pageOfs - dPOfs);
+				return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);
 		}
 		
 		inline TIterator& operator-= (TDifference delta) {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference dPOfs = delta % PAGE_SIZE;
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference dPOfs = delta % PAGESIZE;
 			if (pageOfs < dPOfs) {
 				++dPNo;
-				pageOfs = PAGE_SIZE + pageOfs - dPOfs;
+				pageOfs = PAGESIZE + pageOfs - dPOfs;
 			} else
 				pageOfs -= dPOfs;
 			if (dPNo) invalidate(0);
@@ -531,20 +531,20 @@ you should think of using @Tag.ExternalConfig@.
 		}
 		
 		inline TIterator operator+ (TDifference delta) const {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference nPOfs = pageOfs + delta % PAGE_SIZE;
-			if (nPOfs < PAGE_SIZE)
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference nPOfs = pageOfs + delta % PAGESIZE;
+			if (nPOfs < PAGESIZE)
 				return TIterator(extString, pageNo + dPNo, nPOfs);
 			else
-				return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGE_SIZE);
+				return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGESIZE);
 		}
 		
 		inline TIterator& operator+= (TDifference delta) {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference nPOfs = pageOfs + delta % PAGE_SIZE;
-			if (nPOfs >= PAGE_SIZE) {
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference nPOfs = pageOfs + delta % PAGESIZE;
+			if (nPOfs >= PAGESIZE) {
 				++dPNo;
-				nPOfs -= PAGE_SIZE;
+				nPOfs -= PAGESIZE;
 			}
 			if (dPNo) invalidate(0);
 			pageNo += dPNo;
@@ -586,7 +586,7 @@ you should think of using @Tag.ExternalConfig@.
 		}
 */    
 		inline TIterator& operator++ () {
-			if (++pageOfs == PAGE_SIZE) {
+			if (++pageOfs == PAGESIZE) {
 				invalidate(1);
 				pageOfs = 0;
 				++pageNo;
@@ -596,7 +596,7 @@ you should think of using @Tag.ExternalConfig@.
 
 		inline TIterator operator++ (int) {
 			TIterator before = *this;
-			if (++pageOfs == PAGE_SIZE) {
+			if (++pageOfs == PAGESIZE) {
 				invalidate(1);
 				pageOfs = 0;
 				++pageNo;
@@ -609,7 +609,7 @@ you should think of using @Tag.ExternalConfig@.
 				--pageOfs;
 			else {
 				invalidate(-1);
-				pageOfs = PAGE_SIZE - 1;
+				pageOfs = PAGESIZE - 1;
 				--pageNo;
 			}
 			return *this;
@@ -621,7 +621,7 @@ you should think of using @Tag.ExternalConfig@.
 				--pageOfs;
 			else {
 				invalidate(-1);
-				pageOfs = PAGE_SIZE - 1;
+				pageOfs = PAGESIZE - 1;
 				--pageNo;
 			}
 			return before;
@@ -660,7 +660,7 @@ you should think of using @Tag.ExternalConfig@.
 		typedef typename Difference<TExtString>::Type	TDifference;
 		typedef typename TExtString::TVolatilePtr	    TVolatilePtr;
 
-		enum { PAGE_SIZE = TExtString::PAGE_SIZE };
+		enum { PAGESIZE = TExtString::PAGESIZE };
 
 		
 		TExtString		*extString;
@@ -698,8 +698,8 @@ you should think of using @Tag.ExternalConfig@.
 
 	    ExtStringFwdConstIterator(TExtString *_extString, TSize _offset):
 			extString(_extString),
-			pageNo(_offset / PAGE_SIZE),
-			pageOfs(_offset % PAGE_SIZE),
+			pageNo(_offset / PAGESIZE),
+			pageOfs(_offset % PAGESIZE),
             prefetch(0),
 			begin(NULL) {}
 
@@ -715,37 +715,37 @@ you should think of using @Tag.ExternalConfig@.
 
 		ExtStringFwdConstIterator(TStdIterator &I):
 			extString(I.extString),
-			pageNo(I.offset / PAGE_SIZE),
-            pageOfs(I.offset % PAGE_SIZE),
+			pageNo(I.offset / PAGESIZE),
+            pageOfs(I.offset % PAGESIZE),
             prefetch(0),
 			begin(NULL) {}
 
         ExtStringFwdConstIterator(TStdConstIterator const &I):
 			extString(I.extString),
-			pageNo(I.offset / PAGE_SIZE),
-            pageOfs(I.offset % PAGE_SIZE),
+			pageNo(I.offset / PAGESIZE),
+            pageOfs(I.offset % PAGESIZE),
             prefetch(0),
 			begin(NULL) {}
 
 		inline TIterator& operator=(TStdIterator const & Right_) {
 			invalidate();
-			pageNo = Right_.offset / PAGE_SIZE;
-			pageOfs = Right_.offset % PAGE_SIZE;
+			pageNo = Right_.offset / PAGESIZE;
+			pageOfs = Right_.offset % PAGESIZE;
             extString = Right_.extString;
 			return *this;
 		}
 
 		inline TIterator& operator=(TStdConstIterator const & Right_) {
 			invalidate();
-			pageNo = Right_.offset / PAGE_SIZE;
-			pageOfs = Right_.offset % PAGE_SIZE;
+			pageNo = Right_.offset / PAGESIZE;
+			pageOfs = Right_.offset % PAGESIZE;
             extString = Right_.extString;
 			return *this;
 		}
 
         inline TSize position() const
         {
-            return (TSize)pageNo * (TSize)PAGE_SIZE + pageOfs;
+            return (TSize)pageNo * (TSize)PAGESIZE + pageOfs;
         }
 
         inline operator TStdConstIterator() const {
@@ -779,20 +779,20 @@ you should think of using @Tag.ExternalConfig@.
 		}
 		
 		inline TIterator operator- (TDifference delta) const {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference dPOfs = delta % PAGE_SIZE;
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference dPOfs = delta % PAGESIZE;
 			if (pageOfs >= dPOfs)
 				return TIterator(extString, pageNo - dPNo, pageOfs - dPOfs);
 			else
-				return TIterator(extString, pageNo - dPNo - 1, PAGE_SIZE + pageOfs - dPOfs);
+				return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);
 		}
 		
 		inline TIterator& operator-= (TDifference delta) {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference dPOfs = delta % PAGE_SIZE;
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference dPOfs = delta % PAGESIZE;
 			if (pageOfs < dPOfs) {
 				++dPNo;
-				pageOfs = PAGE_SIZE + pageOfs - dPOfs;
+				pageOfs = PAGESIZE + pageOfs - dPOfs;
 			} else
 				pageOfs -= dPOfs;
 			if (dPNo) invalidate(0);
@@ -801,20 +801,20 @@ you should think of using @Tag.ExternalConfig@.
 		}
 
 		inline TIterator operator+ (TDifference delta) const {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference nPOfs = pageOfs + delta % PAGE_SIZE;
-			if (nPOfs < PAGE_SIZE)
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference nPOfs = pageOfs + delta % PAGESIZE;
+			if (nPOfs < PAGESIZE)
 				return TIterator(extString, pageNo + dPNo, nPOfs);
 			else
-				return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGE_SIZE);
+				return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGESIZE);
 		}
 		
 		inline TIterator& operator+= (TDifference delta) {
-			TDifference dPNo  = delta / PAGE_SIZE;
-			TDifference nPOfs = pageOfs + delta % PAGE_SIZE;
-			if (nPOfs >= PAGE_SIZE) {
+			TDifference dPNo  = delta / PAGESIZE;
+			TDifference nPOfs = pageOfs + delta % PAGESIZE;
+			if (nPOfs >= PAGESIZE) {
 				++dPNo;
-				nPOfs -= PAGE_SIZE;
+				nPOfs -= PAGESIZE;
 			}
 			if (dPNo) invalidate(0);
 			pageNo += dPNo;
@@ -841,7 +841,7 @@ you should think of using @Tag.ExternalConfig@.
 		}
     
 		inline TIterator& operator++ () {
-			if (++pageOfs == PAGE_SIZE) {
+			if (++pageOfs == PAGESIZE) {
 				invalidate(1);
 				pageOfs = 0;
 				++pageNo;
@@ -851,7 +851,7 @@ you should think of using @Tag.ExternalConfig@.
 
 		inline TIterator operator++ (int) {
 			TIterator before = *this;
-			if (++pageOfs == PAGE_SIZE) {
+			if (++pageOfs == PAGESIZE) {
 				invalidate(1);
 				pageOfs = 0;
 				++pageNo;
@@ -864,7 +864,7 @@ you should think of using @Tag.ExternalConfig@.
 				--pageOfs;
 			else {
 				invalidate(-1);
-				pageOfs = PAGE_SIZE - 1;
+				pageOfs = PAGESIZE - 1;
 				--pageNo;
 			}
 			return *this;
@@ -876,7 +876,7 @@ you should think of using @Tag.ExternalConfig@.
 				--pageOfs;
 			else {
 				invalidate(-1);
-				pageOfs = PAGE_SIZE - 1;
+				pageOfs = PAGESIZE - 1;
 				--pageNo;
 			}
 			return before;
@@ -1066,23 +1066,23 @@ you should think of using @Tag.ExternalConfig@.
 	template <typename TExtString>
 	inline bool	atEnd(ExtStringFwdIterator<TExtString> &it) { 
 //IOREV
-		return TExtString::PAGE_SIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+		return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
 	}
 	template <typename TExtString>
 	inline bool	atEnd(ExtStringFwdIterator<TExtString> const &it) {
 //IOREV
-		return TExtString::PAGE_SIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+		return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
 	}
 
 	template <typename TExtString>
 	inline bool	atEnd(ExtStringFwdConstIterator<TExtString> &it) { 
 //IOREV
-		return TExtString::PAGE_SIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+		return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
 	}
 	template <typename TExtString>
 	inline bool	atEnd(ExtStringFwdConstIterator<TExtString> const &it) {
 //IOREV
-		return TExtString::PAGE_SIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+		return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
 	}
 
 
@@ -1101,13 +1101,13 @@ you should think of using @Tag.ExternalConfig@.
 //IOREV _doc_ contains TODOs by holtgrew
 	public:
         enum { FRAMES    = TConfig::FRAMES,
-               PAGE_SIZE = TConfig::PAGE_SIZE };
+               PAGESIZE = TConfig::PAGESIZE };
 
         typedef typename TConfig::TFile                                 TFile;
         typedef typename TConfig::TSize                                 TSize;
 
 		typedef String<int>                                             TPageTable;
-		typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGE_SIZE> > >    TPageFrame;
+		typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > >    TPageFrame;
 		typedef PageContainer<TPageFrame, FRAMES>                       TCache;
 		typedef VolatilePtr<TValue>                                     TVolatilePtr;
 
@@ -1117,7 +1117,7 @@ you should think of using @Tag.ExternalConfig@.
         bool                _temporary, _ownFile;
 		TSize				data_size;
         int                 lastDiskPage;       // the last page on disk and in mem 
-        unsigned            lastDiskPageSize;   // can be smaller than PAGE_SIZE
+        unsigned            lastDiskPageSize;   // can be smaller than PAGESIZE
 
 		String(TSize size = 0):
             file(NULL),
@@ -1181,13 +1181,13 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		}
 
 		inline TValue & operator[] (TSize offset) {
-			TPageFrame &pf = getPage(offset / PAGE_SIZE);
+			TPageFrame &pf = getPage(offset / PAGESIZE);
 			pf.dirty = true;
-			return pf[offset % PAGE_SIZE];
+			return pf[offset % PAGESIZE];
 		}
 
 		inline TValue const & operator[] (TSize offset) const {
-			return const_cast<String*>(this)->getPage(offset / PAGE_SIZE)[offset % PAGE_SIZE];
+			return const_cast<String*>(this)->getPage(offset / PAGESIZE)[offset % PAGESIZE];
 		}
 
 	    template <typename TSource>
@@ -1261,11 +1261,11 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 					cache.upgrade(pf, TPageFrame::PREFETCH_LEVEL);
 
 				_ensureFileIsOpen();
-				if (pf.pageNo != (int)(data_size / (TSize)PAGE_SIZE))
+				if (pf.pageNo != (int)(data_size / (TSize)PAGESIZE))
     				writePage(pf, pf.pageNo, file);
                 else {
-                    lastDiskPage = data_size / PAGE_SIZE;
-                    lastDiskPageSize = data_size % PAGE_SIZE;
+                    lastDiskPage = data_size / PAGESIZE;
+                    lastDiskPageSize = data_size % PAGESIZE;
 				    writeLastPage(pf, pf.pageNo, file, lastDiskPageSize);
                 }
                 pf.dataStatus = TPageFrame::ON_DISK;
@@ -1292,14 +1292,14 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 			if (pf.dirty) {                                 // write if dirty
 				_ensureFileIsOpen();
-                if (pf.pageNo != (int)(data_size / (TSize)PAGE_SIZE)) {
+                if (pf.pageNo != (int)(data_size / (TSize)PAGESIZE)) {
     				writePage(pf, pf.pageNo, file);
                     if (pf.pageNo >= lastDiskPage)
                         lastDiskPage = -1;       			// make lastDiskPage(Size) invalid because file size is aligned
                 } else {
-				    writeLastPage(pf, pf.pageNo, file, data_size % PAGE_SIZE);
-                    lastDiskPage = data_size / PAGE_SIZE;
-                    lastDiskPageSize = data_size % PAGE_SIZE;
+				    writeLastPage(pf, pf.pageNo, file, data_size % PAGESIZE);
+                    lastDiskPage = data_size / PAGESIZE;
+                    lastDiskPageSize = data_size % PAGESIZE;
                 }
 				pager[pf.pageNo] = TPageFrame::ON_DISK;		// page is marked to be on disk
 				bool waitResult = waitFor(pf);              // after finishing I/O transfer
@@ -1511,7 +1511,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		{
             unsigned oldFrames = length(cache);
             if (data_size)
-                newFrames = _min(newFrames, (unsigned) enclosingBlocks(data_size, (unsigned)PAGE_SIZE));
+                newFrames = _min(newFrames, (unsigned) enclosingBlocks(data_size, (unsigned)PAGESIZE));
             if (newFrames < oldFrames) {
                 flush(*this);
                 for(unsigned i = newFrames; i < oldFrames; ++i) {
@@ -1768,12 +1768,12 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
             me.data_size = 0;
 
 		resize(me.pager, enclosingBlocks(me.data_size, 
-			(unsigned)me.PAGE_SIZE), (me.data_size)? 
+			(unsigned)me.PAGESIZE), (me.data_size)? 
 				TPageFrame::ON_DISK: 
 				TPageFrame::UNINITIALIZED);
 
-        me.lastDiskPage = me.data_size / me.PAGE_SIZE;
-        me.lastDiskPageSize = me.data_size % me.PAGE_SIZE;
+        me.lastDiskPage = me.data_size / me.PAGESIZE;
+        me.lastDiskPageSize = me.data_size % me.PAGESIZE;
 		return me._ownFile;
     }
 
@@ -1805,12 +1805,12 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
             me.data_size = 0;
 
 		resize(me.pager, enclosingBlocks(me.data_size, 
-			(unsigned)me.PAGE_SIZE), (me.data_size)? 
+			(unsigned)me.PAGESIZE), (me.data_size)? 
 				TPageFrame::ON_DISK: 
 				TPageFrame::UNINITIALIZED);
 
-        me.lastDiskPage = me.data_size / me.PAGE_SIZE;
-        me.lastDiskPageSize = me.data_size % me.PAGE_SIZE;
+        me.lastDiskPage = me.data_size / me.PAGESIZE;
+        me.lastDiskPageSize = me.data_size % me.PAGESIZE;
 		return me._file;
     }
 
@@ -1905,7 +1905,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
     {
 //IOREV
 		typedef typename Size< String<TValue, External<TConfig> > >::Type TSize;
-        return (TSize)capacity(me.pager) * (TSize)me.PAGE_SIZE;
+        return (TSize)capacity(me.pager) * (TSize)me.PAGESIZE;
     }
 //____________________________________________________________________________
 
@@ -1921,7 +1921,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		typedef typename TString::TPageFrame		TPageFrame;
 		typedef typename Size<TString>::Type		TSize;
 
-		resize(me.pager, enclosingBlocks(new_length, (unsigned)me.PAGE_SIZE), TPageFrame::UNINITIALIZED, expand);
+		resize(me.pager, enclosingBlocks(new_length, (unsigned)me.PAGESIZE), TPageFrame::UNINITIALIZED, expand);
         if ((TSize)new_length < me.data_size && me.file) 
 		{
 			// wait for all pending transfers
@@ -1929,8 +1929,8 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 			// before shrinking the file size
             resize(me.file, (TSize)new_length * (TSize)sizeof(TValue));
-            me.lastDiskPage = new_length / me.PAGE_SIZE;
-            me.lastDiskPageSize = new_length % me.PAGE_SIZE;
+            me.lastDiskPage = new_length / me.PAGESIZE;
+            me.lastDiskPageSize = new_length % me.PAGESIZE;
         }
 		me.data_size = new_length;
 		return length(me);
@@ -1945,7 +1945,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		Tag<TExpand> expand)
 	{
 //IOREV
-		reserve(me.pager, enclosingBlocks(new_capacity, (unsigned)me.PAGE_SIZE), expand);
+		reserve(me.pager, enclosingBlocks(new_capacity, (unsigned)me.PAGESIZE), expand);
 		return capacity(me);
 	}
 //____________________________________________________________________________
