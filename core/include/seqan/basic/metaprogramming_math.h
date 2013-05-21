@@ -1,5 +1,5 @@
 // ==========================================================================
-//                           metaprogramming_math.h
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -53,9 +53,29 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
+/*!
+ * @defgroup MetaprogrammingMath Metaprogramming Math
+ * @brief Metafunctions for mathematical computations.
+ */
+
 // ----------------------------------------------------------------------------
 // Metafunction Log2
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn MetaprogrammingMath#Log2
+ * @brief Compute ceiled logarithm to base 2 using metaprogramming.
+ *
+ * @signature __uint64 Log2<NUMERUS>::VALUE;
+ *
+ * @tparam NUMERUS <tt>__int64</tt> value to use for the numerus.
+ *
+ * @return __uint64 <tt>ceil(log2(NUMERUS))</tt>
+ *
+ * @section Example
+ *
+ * @snippet core/demos/basic/metaprogramming_math.cpp log2 call
+ */
 
 /**
 .Metafunction.Log2
@@ -82,6 +102,21 @@ template <> struct Log2<0> { static const __uint64 VALUE = 0; };
 // Metafunction Log2Floor
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn MetaprogrammingMath#Log2Floor
+ * @brief Compute floored logarithm to base 2 using metaprogramming.
+ *
+ * @signature __uint64 Log2Floor<NUMERUS>::VALUE;
+ *
+ * @tparam NUMERUS <tt>__int64</tt> value to use for the numerus.
+ *
+ * @return __uint64 <tt>floor(log2(NUMERUS))</tt>
+ *
+ * @section Example
+ *
+ * @snippet core/demos/basic/metaprogramming_math.cpp log2floor call
+ */
+
 /**
 .Metafunction.Log2Floor
 ..cat:Metaprogramming
@@ -106,6 +141,20 @@ template <> struct Log2Floor<0> { static const __uint64 VALUE = 0; };
 // ----------------------------------------------------------------------------
 // Metafunction Power
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn MetaprogrammingMath#Power
+ * @brief Compute power of a number.
+ *
+ * @signature __uint64 Power<BASE, EXPONENT>::VALUE;
+ *
+ * @tparam BASE     The base of the term (<tt>__int64</tt>).
+ * @tparam EXPONENT The exponent of the term (<tt>__int64</tt>).
+ *
+ * @return __uint64 b<sup>e</sup
+ *
+ * @snippet core/demos/basic/metaprogramming_math.cpp power call
+ */
 
 /**
 .Metafunction.Power

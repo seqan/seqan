@@ -47,6 +47,20 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class PackedTriple
+ * @headerfile <seqan/basic.h>
+ * @extends Triple
+ * @brief Disable memory alignment to store memory.
+ *
+ * @signature template <typename T1, typename T2, typename T3>
+ *            class Triple<T1, T2, T3, Pack>;
+ *
+ * @tparam T1 The first type of the Triple.
+ * @tparam T2 The second type of the Triple.
+ * @tparam T3 The third type of the Triple.
+ */
+
 /**
 .Spec.Packed Triple:
 ..cat:Aggregates

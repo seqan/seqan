@@ -58,6 +58,49 @@ namespace seqan {
 // Metafunction Switch;  Supporting Tags Case, NilCase.
 // ----------------------------------------------------------------------------
 
+/*!
+ * @defgroup MetafunctionSwitch Switch Metafunction Types
+ * @brief Tags for the metafunction Switch and the metafunction itself.
+ *
+ * @section Example
+ *
+ * The following shows a complete example of using the Switch statement.
+ *
+ * @snippet core/demos/basic/metaprogramming_switch.cpp switch demo
+ */
+
+// TODO(holtgrew): Use Tag<>?
+/*!
+ * @tag MetafunctionSwitch#NilCase
+ * @brief Tag for terminating the case in Switch statement.
+ *
+ * @signature struct NilCase {};
+ */
+
+/*!
+ * @mfn MetafunctionSwitch#Case
+ * @brief Tag for one case.
+ *
+ * @signature template <int TAG, typename TResult, typename TNext>
+ *            struct Case;
+ *
+ * @tparam TAG     The <tt>int</tt> tag number to use.
+ * @tparam TResult The type to return in <tt>Case<...>::Type</tt> if matches.
+ * @tparam TNext   The next <tt>Case</tt>.
+ */
+
+/*!
+ * @mfn MetafunctionSwitch#Switch
+ * @brief Switch statement for metaprogramming.
+ *
+ * @signature Switch<TAG, TCase>::Type
+ *
+ * @tparam TAG   <tt>int</tt> with the current value.
+ * @tparam TCase First <tt>Case</tt> statement.
+ *
+ * @return Type The selected type.
+ */
+
 /**
 .Tag.NilCase
 ..cat:Metaprogramming
@@ -164,6 +207,36 @@ struct Switch<TAG, NilCase>
 // Metafunction Loop
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): This is more of a class than a function or metafunction.
+
+/*!
+ * @fn Loop
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature void Loop<TWorker, COUNT>::run(args);
+ *
+ * @tparam TWorker A struct with a static inline void function called <tt>body</tt>.  <tt>body</tt> should have two
+ *                 parameters, one for passing in values and state from the outside and the second is an int.  The
+ *                 function will be called <tt>COUNT</tt> times with the same reference for the first one and the values
+ *                 <tt>COUNT</tt>, <tt>COUNT - 1</tt>, ..., <tt>1</tt> for the second parameter.
+ * @param COUNT    An <tt>int</tt> constant.
+ *
+ * @section Example
+ *
+ * We define the following worker to print an integer.  The first argument is of <tt>Nothing</tt> as a dummy.  Note that
+ * the parameter is not const.
+ *
+ * @snippet core/demos/basic/metaprogramming_control.cpp print worker
+ *
+ * The following shows an example calling <tt>PrintWorker::body()</tt> through Loop.  We have to create a local variable
+ * since the first parameter is not const.  The reason for this is that the parameter can also be used for a mutable
+ * object that holds some state.
+ *
+ * @snippet core/demos/basic/metaprogramming_control.cpp print worker call loop reverse
+ *
+ * @see LoopReverse
+ */
+
 /**
 .Metafunction.Loop:
 ..cat:Metaprogramming
@@ -224,6 +297,36 @@ public:
 // Metafunction LoopReverse
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): This is more of a class than a function or metafunction.
+
+/*!
+ * @fn LoopReverse
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature void LoopReverse<TWorker, COUNT>::run(args);
+ *
+ * @tparam TWorker A struct with a static inline void function called <tt>body</tt>.  <tt>body</tt> should have two
+ *                 parameters, one for passing in values and state from the outside and the second is an int.  The
+ *                 function will be called <tt>COUNT</tt> times with the same reference for the first one and the values
+ *                 <tt>COUNT</tt>, <tt>COUNT - 1</tt>, ..., <tt>1</tt> for the second parameter.
+ * @param COUNT    An <tt>int</tt> constant.
+ *
+ * @section Example
+ *
+ * We define the following worker to print an integer.  The first argument is of <tt>Nothing</tt> as a dummy.  Note that
+ * the parameter is not const.
+ *
+ * @snippet core/demos/basic/metaprogramming_control.cpp print worker
+ *
+ * The following shows an example calling <tt>PrintWorker::body()</tt> through LoopReverse.  We have to create a local
+ * variable since the first parameter is not const.  The reason for this is that the parameter can also be used for a
+ * mutable object that holds some state.
+ *
+ * @snippet core/demos/basic/metaprogramming_control.cpp print worker call loop
+ *
+ * @see Loop
+ */
+
 /**
 .Metafunction.LoopReverse:
 ..cat:Metaprogramming
@@ -237,7 +340,6 @@ public:
 ..see:Metafunction.Loop
 ..example.text:Print the values $I$, $I - 1$, ..., 2, 1.
 ..example.code:
-
 struct PrintWorker
 {
     static inline body(Nothing & arg, int I)
@@ -252,7 +354,8 @@ Loop<PrintWorker, 10>::run(Nothing());
  */
 
 template <typename Worker, int I>
-class LoopReverse {
+class LoopReverse
+{
 public:
     template <typename Arg>
     static inline void run(Arg & arg)
@@ -263,7 +366,8 @@ public:
 };
 
 template <typename Worker>
-class LoopReverse<Worker, 0> {
+class LoopReverse<Worker, 0>
+{
   public:
     // end of loop
     template <typename Arg>

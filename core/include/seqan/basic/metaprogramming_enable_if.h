@@ -56,10 +56,44 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
+/*!
+ * @defgroup EnableIfFunctionality Enable-If Functionality
+ * @brief The metafunctions and macros for enabling/disabling of functions.
+ *
+ * The <tt>EnableIf</tt> metafunctions also support the shortcut to <tt>::Type</tt> members as described for the @link
+ * LogicMetaprogramming logical metaprogramming metafunctions @endlink.
+ *
+ * <b>Enable-if is an advanced technique and mostly interesting if you want to extend the SeqAn library with generic
+ * algorithms.  The average developer does not have to know about this technique.</tt>.
+ *
+ * @see LogicalValuesTags
+ * @see LogicMetaprogramming
+ */
+
 // ----------------------------------------------------------------------------
 // Metafunction EnableIf
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn EnableIfFunctionality#EnableIf
+ * @headerfile <seqan/basic.h>
+ * @brief Metafunction to use for conditionally enabling code.
+ *
+ * @signature EnableIf<TBool, T = void>::Type
+ *
+ * @tparam TBool The Tag <tt>True</tt> or <tt>False</tt> to use for enabling/disabling.
+ * @tparam T     Dummy, do not set.
+ *
+ * @return Type Set to <tt>T</tt>.  Only defined if <tt>TBool</tt> is <tt>True</tt>.  This triggers the SFINAE behaviour
+ *              in C++ which can be used to enable/disable functions.
+ *
+ * Do not use directly but use through the enable if/disable if macros.
+ *
+ * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_FUNC_DISABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_DISABLE_IF
+ */
 
 template <typename TBool, typename T = void>
 struct EnableIf : EnableIf<typename TBool::Type, T> {};
@@ -80,6 +114,27 @@ struct EnableIf<True, T>
 // Metafunction DisableIf
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn EnableIfFunctionality#DisableIf
+ * @headerfile <seqan/basic.h>
+ * @brief Metafunction to use for conditionally disabling code.
+ *
+ * @signature DisableIf<TBool, T = void>::Type
+ *
+ * @tparam TBool The Tag <tt>True</tt> or <tt>False</tt> to use for enabling/disabling.
+ * @tparam T     Dummy, do not set.
+ *
+ * @return Type Set to <tt>T</tt>.  Only defined if <tt>TBool</tt> is <tt>False</tt>.  This triggers the SFINAE behaviour
+ *              in C++ which can be used to enable/disable functions.
+ *
+ * Do not use directly but use through the enable if/disable if macros.
+ *
+ * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_FUNC_DISABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_DISABLE_IF
+ */
+
 template <typename TBool, typename T = void>
 struct DisableIf : DisableIf<typename TBool::Type, T> {};
 
@@ -95,6 +150,28 @@ struct DisableIf<False, T>
 // ----------------------------------------------------------------------------
 // Metafunction EnableIf2
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn EnableIfFunctionality#EnableIf2
+ * @headerfile <seqan/basic.h>
+ * @deprecated Will be renamed to EnableIfC.
+ * @brief Metafunction to use for conditionally enabling code, bool version.
+ *
+ * @signature EnableIf<BOOL, T = void>::Type
+ *
+ * @tparam BOOL The <tt>bool</tt> constant to evaluate for enabling/disabling.
+ * @tparam T    Dummy, do not set.
+ *
+ * @return Type Set to <tt>T</tt>.  Only defined if <tt>BOOL</tt> is <tt>true</tt>.  This triggers the SFINAE behaviour
+ *              in C++ which can be used to enable/disable functions.
+ *
+ * Do not use directly but use through the enable if/disable if macros.
+ *
+ * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_FUNC_DISABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_DISABLE_IF
+ */
 
 //
 // Example for enable-if function: 
@@ -125,6 +202,28 @@ struct EnableIf2<false, T> {};
 // Metafunction DisableIf2
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn EnableIfFunctionality#DisableIf2
+ * @headerfile <seqan/basic.h>
+ * @deprecated Will be renamed to DisableIfC.
+ * @brief Metafunction to use for conditionally disabling code, bool version.
+ *
+ * @signature DisableIf<BOOL, T = void>::Type
+ *
+ * @tparam BOOL The <tt>bool</tt> constant to evaluate for enabling/disabling.
+ * @tparam T    Dummy, do not set.
+ *
+ * @return Type Set to <tt>T</tt>.  Only defined if <tt>BOOL</tt> is <tt>false</tt>.  This triggers the SFINAE behaviour
+ *              in C++ which can be used to enable/disable functions.
+ *
+ * Do not use directly but use through the enable if/disable if macros.
+ *
+ * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_FUNC_DISABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_CTOR_DISABLE_IF
+ */
+
 template <bool b, typename T>
 struct DisableIf2;
 
@@ -143,6 +242,32 @@ struct DisableIf2<true, T> {};
 // Macros
 // ============================================================================
 
+/*!
+ * @macro EnableIfFunctionality#SEQAN_CTOR_ENABLE_IF
+ * @headerfile <seqan/basic.h>
+ * @brief Bind the visibility of a constructor to an expression.
+ *
+ * @signature SEQAN_CTOR_ENABLE_IF(TCondition);
+ *
+ * @param TCondition Boolean type, one of <tt>True</tt> and <tt>False</tt> or a metafunction returning such a tag
+ *                   type.  If <tt>True</tt> then the constructor is visible, otherwise, it is not.
+ *
+ * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must be used as the last dummy-argument of a constructor.
+ *
+ * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
+ *
+ * <b>Important:</b> The constructor to enable must be a function template and <tt>TCondition</tt> must include at
+ * least one template parameter of the function template.
+ *
+ * @section Example
+ *
+ * The following shows an example on how to properly use <tt>SEQAN_CTOR_ENABLE_IF</tt> as the last argument to the
+ * constructor and suppressing the unused variable warning for the dummy parameter.
+ *
+ * @snippet core/demos/basic/enable_if.cpp enable if example constructor
+ */
+
 /**
 .Macro.SEQAN_CTOR_ENABLE_IF
 ..cat:Concepts
@@ -151,7 +276,7 @@ struct DisableIf2<true, T> {};
 ..param.cond:Boolean type. If @Tag.Logical Values.tag.True@ or a metafunction that returns @Tag.Logical Values.tag.True@, the following function is visible, otherwise not.
 ...remarks:The boolean value must be available at compile-time, e.g. $sizeof(T)>4$.
 ..remarks:This macro allows to bind the visibility of a constructor to a boolean expression
-by using the @http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error|SFINAE@ principle for an optional argument with default value.
+by using the @hr|SFINAE@ principle for an optional argument with default value.
 It can be used as the last dummy-argument of a constructor.
 To avoid an unused argument warning, call $ignoreUnusedVariableWarning(dummy)$ in the constructor's body.
 ..example.code:
@@ -163,7 +288,33 @@ Rational(T const & n, SEQAN_CTOR_ENABLE_IF(Is<IntegerConcept<T> >)) :  // macro 
 ..include:seqan/basic.h
  */
 
-#define SEQAN_CTOR_ENABLE_IF(...) typename EnableIf<__VA_ARGS__>::Type * dummy = 0
+#define SEQAN_CTOR_ENABLE_IF(...) typename ::seqan::EnableIf<__VA_ARGS__>::Type * dummy = 0
+
+/*!
+ * @macro EnableIfFunctionality#SEQAN_CTOR_DISABLE_IF
+ * @headerfile <seqan/basic.h>
+ * @brief Bind the visibility of a constructor to an expression.
+ *
+ * @signature SEQAN_CTOR_DISABLE_IF(TCondition);
+ *
+ * @param TCondition Boolean type, one of <tt>True</tt> and <tt>False</tt> or a metafunction returning such a tag
+ *                   type.  If <tt>False</tt> then the constructor is visible, otherwise, it is not.
+ *
+ * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must be used as the last dummy-argument of a constructor.
+ *
+ * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
+ *
+ * <b>Important:</b> The constructor to disable must be a function template and <tt>TCondition</tt> must include at
+ * least one template parameter of the function template.
+ *
+ * @section Example
+ *
+ * The following shows an example on how to properly use <tt>SEQAN_CTOR_DISABLE_IF</tt> as the last argument to the
+ * constructor and suppressing the unused variable warning for the dummy parameter.
+ *
+ * @snippet core/demos/basic/enable_if.cpp disable if example constructor
+ */
 
 /**
 .Macro.SEQAN_CTOR_DISABLE_IF
@@ -185,7 +336,34 @@ String(T const & s, SEQAN_CTOR_DISABLE_IF(IsProxy<T> >)) :  // macro must be ext
 ..include:seqan/basic.h
  */
 
-#define SEQAN_CTOR_DISABLE_IF(...) typename DisableIf<__VA_ARGS__>::Type * dummy = 0
+#define SEQAN_CTOR_DISABLE_IF(...) typename ::seqan::DisableIf<__VA_ARGS__>::Type * dummy = 0
+
+/*!
+ * @macro EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
+ * @headerfile <seqan/basic.h>
+ * @brief Bind the visibility of a function to an expression.
+ *
+ * @signature SEQAN_FUNC_ENABLE_IF(TCondition, TResult);
+ *
+ * @param TCondition Boolean type, one of <tt>True</tt> and <tt>False</tt> or a metafunction returning such a tag
+ *                   type.  If <tt>True</tt> then the function is visible, otherwise, it is not.
+ * @param TResult    The type that the function should have as the return type in case it is enabled.
+ *
+ * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must occur as the return type definition of the function.
+ *
+ * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
+ *
+ * <b>Important:</b> The function to enable must be a function template and <tt>TCondition</tt> must include at
+ * least one template parameter of the function template.
+ *
+ * @section Example
+ *
+ * The following shows an example on how to properly use <tt>SEQAN_FUNC_ENABLE_IF</tt> as the last argument to the
+ * constructor and suppressing the unused variable warning for the dummy parameter.
+ *
+ * @snippet core/demos/basic/enable_if.cpp enable if example function
+ */
 
 /**
 .Macro.SEQAN_FUNC_ENABLE_IF
@@ -212,7 +390,34 @@ length(TContainer & cont)
 ..include:seqan/basic.h
  */
 
-#define SEQAN_FUNC_ENABLE_IF(...) typename EnableIf<__VA_ARGS__>::Type
+#define SEQAN_FUNC_ENABLE_IF(...) typename ::seqan::EnableIf<__VA_ARGS__>::Type
+
+/*!
+ * @macro EnableIfFunctionality#SEQAN_FUNC_DISABLE_IF
+ * @headerfile <seqan/basic.h>
+ * @brief Bind the visibility of a function to an expression.
+ *
+ * @signature SEQAN_FUNC_DISABLE_IF(TCondition, TResult);
+ *
+ * @param TCondition Boolean type, one of <tt>True</tt> and <tt>False</tt> or a metafunction returning such a tag
+ *                   type.  If <tt>False</tt> then the function is visible, otherwise, it is not.
+ * @param TResult    The type that the function should have as the return type in case it is enabled.
+ *
+ * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must occur as the return type definition of the function.
+ *
+ * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
+ *
+ * <b>Important:</b> The function to disable must be a function template and <tt>TCondition</tt> must include at least
+ * one template parameter of the function template.
+ *
+ * @section Example
+ *
+ * The following shows an example on how to properly use <tt>SEQAN_FUNC_DISABLE_IF</tt> as the last argument to the
+ * constructor and suppressing the unused variable warning for the dummy parameter.
+ *
+ * @snippet core/demos/basic/enable_if.cpp disable if example function
+ */
 
 /**
 .Macro.SEQAN_FUNC_DISABLE_IF
@@ -239,7 +444,7 @@ length(TContainer & cont)
 ..include:seqan/basic.h
  */
 
-#define SEQAN_FUNC_DISABLE_IF(...) typename DisableIf<__VA_ARGS__>::Type
+#define SEQAN_FUNC_DISABLE_IF(...) typename ::seqan::DisableIf<__VA_ARGS__>::Type
 
 // ============================================================================
 // Functions

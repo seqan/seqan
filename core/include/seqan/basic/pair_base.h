@@ -49,6 +49,43 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class Pair
+ * @extends ComparableConcept
+ * @headerfile <seqan/basic.h>
+ * @brief Store two arbitrary objects.
+ *
+ * @signature template <typename T1, typename T2, typename TSpec>
+ *            class Pair;
+ *
+ * @tparam T1    The type of the first member.
+ * @tparam T2    The type of the second member.
+ * @tparam TSpec Tag used for the specialization.
+ */
+
+/*!
+ * @fn Pair#Pair
+ * @brief Default and copy construction and construction for two values.
+ *
+ * @signature Pair::Pair();
+ * @signature Pair::Pair(other);
+ * @signature Pair::Pair(x1, x2);
+ *
+ * @param other The other Pair object to copy from.
+ * @param x1    Copied to first member.
+ * @param x2    Copied to second member
+ */
+
+/*!
+ * @var Pair::i1
+ * @brief First member
+ */
+
+/*!
+ * @var Pair::i2
+ * @brief Second member
+ */
+
 /**
 .Class.Pair:
 ..cat:Aggregates
@@ -118,6 +155,17 @@ struct Pair
 // Metafunction LENGTH
 // -----------------------------------------------------------------------
 
+/*!
+ * @mfn Pair#LENGTH
+ * @brief Return number of members in a Pair (2).
+ *
+ * @signature LENGTH<TPair>::VALUE;
+ *
+ * @tparam TPair The Pair specialization.
+ *
+ * @return VALUE The number of element in a Pair (2).
+ */
+
 ///.Metafunction.LENGTH.param.T.type:Class.Pair
 ///.Metafunction.LENGTH.class:Class.Pair
 
@@ -132,6 +180,18 @@ struct LENGTH<Pair<T1, T2, TSpec> >
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Pair#Value
+ * @brief Return type of the i-th value.
+ *
+ * @signature Value<TTuple, I>::Type;
+ *
+ * @tparam TTuple Tuple specialization to get the type of.
+ * @tparam I      The index of the member to get (1 or 2).
+ *
+ * @return Type Result type.
+ */
 
 /**
 .Metafunction.Value
@@ -162,6 +222,17 @@ struct Value<Pair<T1, T2, TSpec>, 2>
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Pair#Spec
+ * @brief Return specialization tag.
+ *
+ * @signature Spec<TPair>::Type;
+ *
+ * @tparam TPair The Pair specialization.
+ *
+ * @return Type The resulting type.
+ */
 
 ///.Metafunction.Spec.param.T.type:Class.Pair
 ///.Metafunction.Spec.class:Class.Pair
@@ -217,6 +288,17 @@ std::ostream & operator<<(std::ostream & out, Pair<T1, T2, TSpec> const & p)
 // Function getValueIX()
 // -----------------------------------------------------------------------
 
+/*!
+ * @fn Pair#getValueI1
+ * @brief The get-value of the Pair's first entry.
+ *
+ * @signature T1 getValue(pair);
+ *
+ * @param pair The pair to get entry from.
+ *
+ * @return T1 The first entry of the Pair.
+ */
+
 // There can be no getValue with index since T1 can be != T2.
 
 template <typename T1, typename T2, typename TSpec>
@@ -224,6 +306,17 @@ inline T1 getValueI1(Pair<T1, T2, TSpec> const & pair)
 {
     return pair.i1;
 }
+
+/*!
+ * @fn Pair#getValueI2
+ * @brief The get-value of the Pair's second entry.
+ *
+ * @signature T2 getValue(pair);
+ *
+ * @param pair The pair to get entry from.
+ *
+ * @return T2 The second entry of the Pair.
+ */
 
 template <typename T1, typename T2, typename TSpec>
 inline T2 getValueI2(Pair<T1, T2, TSpec> const & pair)
@@ -235,6 +328,16 @@ inline T2 getValueI2(Pair<T1, T2, TSpec> const & pair)
 // Function assignValueIX()
 // -----------------------------------------------------------------------
 
+/*!
+ * @fn Pair#assignValueI1
+ * @brief Set first entry of a pair.
+ *
+ * @signature void assignValueI1(pair, val);
+ *
+ * @param pair The pair to get entry from.
+ * @param val  Set the value of the Pair's first entry.
+ */
+
 // Cannot be assignValue with index since T1 can be != T2.
 
 template <typename T1, typename T2, typename TSpec, typename T>
@@ -242,6 +345,16 @@ inline void assignValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
 {
     pair.i1 = _i;
 }
+
+/*!
+ * @fn Pair#assignValueI2
+ * @brief Set second entry of a pair.
+ *
+ * @signature void assignValueI1(pair, val);
+ *
+ * @param pair The pair to get entry from.
+ * @param val  Set the value of the Pair's second entry.
+ */
 
 template <typename T1, typename T2, typename TSpec, typename T>
 inline void assignValueI2(Pair<T1, T2, TSpec> & pair, T const & _i)
@@ -253,6 +366,16 @@ inline void assignValueI2(Pair<T1, T2, TSpec> & pair, T const & _i)
 // Function setValueIX()
 // -----------------------------------------------------------------------
 
+/*!
+ * @fn Pair#assignValueI1
+ * @brief Set first entry of a pair.
+ *
+ * @signature void assignValueI1(pair, val);
+ *
+ * @param pair The pair to get entry from.
+ * @param val  Set the value of the Pair's first entry.
+ */
+
 // Cannot be setValue with index since T1 can be != T2.
 
 template <typename T1, typename T2, typename TSpec, typename T>
@@ -260,6 +383,16 @@ inline void setValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
 {
     set(pair.i1, _i);
 }
+
+/*!
+ * @fn Pair#assignValueI2
+ * @brief Set second entry of a pair.
+ *
+ * @signature void assignValueI1(pair, val);
+ *
+ * @param pair The pair to get entry from.
+ * @param val  Set the value of the Pair's second entry.
+ */
 
 template <typename T1, typename T2, typename TSpec, typename T>
 inline void setValueI2(Pair<T1, T2, TSpec> & pair, T const & _i)
