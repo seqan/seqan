@@ -264,7 +264,7 @@ class ProcEntry(object):
         if not self._location:
             path = '<none>'
             line = -1
-            if self.raw_entry.name:
+            if self.raw_entry.name and self.raw_entry.name.tokens:
                 line = self.raw_entry.name.tokens[0].lineno
                 path = self.raw_entry.name.tokens[0].file_name
             self._location = (path, line)

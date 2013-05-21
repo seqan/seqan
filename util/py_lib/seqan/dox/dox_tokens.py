@@ -91,3 +91,9 @@ LEXER_TOKENS = (
     ('LITERAL',              escapeLiterals(LITERALS)),
     )
 
+# Translation of token name to tag name.
+LEXER_TOKENS_DICT = dict(LEXER_TOKENS)
+
+def transToken(name):
+    """Translate the token name to the token pattern."""
+    return LEXER_TOKENS_DICT[name]

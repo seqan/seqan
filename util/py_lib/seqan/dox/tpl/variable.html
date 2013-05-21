@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ variable.title|trantext(top=False) }}{% endblock %}
+{% block title %}{{ variable.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1>Variable: {{ variable.title|trantext(top=False) }}</h1>
+<h1>Variable: {{ variable.title|transtext(top=False) }}</h1>
 
 {{ sections.top_box(variable) }}
 

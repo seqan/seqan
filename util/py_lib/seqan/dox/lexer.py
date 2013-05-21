@@ -74,7 +74,7 @@ class Lexer(object):
         
         self.re_ws_skip = re.compile('\S')
         
-    def input(self, buf, file_name='<mem>', line=0, col=0):
+    def input(self, buf, file_name='<mem>', line=0, col=0, offset_col=None):
         """ Initialize the lexer with a buffer as input.
         """
         self.buf = buf
@@ -82,6 +82,8 @@ class Lexer(object):
         self.pos = 0
         self.lineno = line
         self.file_name = file_name
+        if offset_col is not None:
+            self.col_offset = offset_col
 
     def token(self):
         """ Return the next token (a Token object) found in the 

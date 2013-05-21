@@ -16,13 +16,34 @@ import raw_doc
 import dox_tokens
 
 
+def printParserError(e):
+    """Print user-friendly error message for ParserError e."""
+    msg = e.msg
+    if not e.msg:
+        msg = 'Parse error'
+    if e.token:
+        # Print location and error message.
+        location = [e.token.file_name, e.token.lineno, e.token.column]
+        print >>sys.stderr, '%s:%d:%d: error: %s' % tuple(location + [msg])
+        # Load line with error and print it with an indicator of the error.
+        fcontents = open(e.token.file_name).read()
+        lines = fcontents.splitlines()
+        if e.token.lineno > len(lines):
+            return  # Invalid line number.
+        print >>sys.stderr, '%s' % lines[e.token.lineno].rstrip()
+        print >>sys.stderr, e.token.column * ' ' + '^'
+    else:
+        print >>sys.stderr, 'ERROR: %s' % msg
+
+
 class ParserError(Exception):
     """Raised when there is a parser error."""
     
     def __init__(self, token=None, msg=''):
         if msg and token:
-            args = (token.lineno, token.column, repr(token.val), msg)
-            message = 'Parser error at %d:%d ("%s") : %s' % args
+            args = (token.file_name, token.lineno, token.column, repr(token.val), msg)
+            message = ('Parse error at %s:%d (column %d) '
+                       'at token "%s": %s)' % args)
         elif not msg and token:
             args = (token.lineno, token.column, repr(token.val))
             message = 'Parser error at %d:%d ("%s").' % args
@@ -430,7 +451,9 @@ class GenericDocState(object):
                              'COMMAND_SUBSECTION' : SubsectionState(self.parser, self),
                              'COMMAND_INCLUDE' : IncludeState(self.parser, self),}
                 if not token.type in self.allowed_commands:
-                    raise ParserError(msg='Invalid command %s' % token.val)
+                    msg = 'Invalid command %s, expecting one of %s.'
+                    args = (repr(token.val), map(dox_tokens.transToken, self.allowed_commands))
+                    raise ParserError(token, msg % args)
                 self.clause_state = state_map[token.type]
                 #print '>>> SWITCHING TO CLAUSE STATE %s' % self.clause_state
                 return

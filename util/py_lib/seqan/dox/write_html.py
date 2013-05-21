@@ -403,6 +403,8 @@ class HtmlWriter(object):
             html = self.tpl_manager.render('typedef.html', typedef=entry, doc=doc)
         elif entry.kind == 'global_variable':
             html = self.tpl_manager.render('variable.html', variable=entry, doc=doc)
+        elif entry.kind == 'variable':
+            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc)
         else:
             assert False, entry.kind
         with open(self.path_manager.getEntryPath(entry), 'w') as f:
