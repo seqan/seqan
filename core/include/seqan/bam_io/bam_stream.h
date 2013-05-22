@@ -523,7 +523,7 @@ inline int readRecord(BamAlignmentRecord & record, BamStream & bamIO)
 ..include:seqan/bam_io.h
 */
 
-inline int writeRecord(BamStream & bamIO, BamAlignmentRecord & record)
+inline int writeRecord(BamStream & bamIO, BamAlignmentRecord const & record)
 {
     bamIO._writeHeader();  // Does nothing if head already written out.
 
