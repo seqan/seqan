@@ -149,7 +149,7 @@ static inline int _reg2Bin(uint32_t beg, uint32_t end)
 
 template <typename TStream, typename TNameStore, typename TNameStoreCache>
 int write2(TStream & stream,
-           BamAlignmentRecord & record,
+           BamAlignmentRecord const & record,
            BamIOContext<TNameStore, TNameStoreCache> const & /*context*/,
            Bam const & /*tag*/)
 {
@@ -158,44 +158,44 @@ int write2(TStream & stream,
     // First, write record to buffer.
 
     // refID
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.rID), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.rID), 4);
 
     // pos
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.beginPos), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.beginPos), 4);
 
     // bin_mq_nl
     SEQAN_ASSERT_LT(length(record.qName) + 1u, 255u);
     __uint8 lReadName = length(record.qName) + 1;
     unsigned l = 0;
     _getLengthInRef(record.cigar, l);
-    record.bin = _reg2Bin(record.beginPos, record.beginPos + l);
-    __uint32 binMqNl = (record.bin << 16) | (record.mapQ << 8) | lReadName;
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&binMqNl), 4);
+    __uint32 bin = _reg2Bin(record.beginPos, record.beginPos + l);
+    __uint32 binMqNl = (bin << 16) | (record.mapQ << 8) | lReadName;
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&binMqNl), 4);
 
     // flag_nc
     __uint16 nCigarOp = length(record.cigar);
     __uint32 flagNc = (record.flag << 16) | nCigarOp;
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&flagNc), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&flagNc), 4);
 
     // l_seq
     __int32 lSeq = length(record.seq);
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&lSeq), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&lSeq), 4);
 
     // next_refID
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.rNextId), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.rNextId), 4);
 
     // next_pos
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.pNext), 4);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.pNext), 4);
 
     // tlen
     __int32 zero = 0;
     if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        streamWriteBlock(buffer, reinterpret_cast<char *>(&zero), 4);
+        streamWriteBlock(buffer, reinterpret_cast<char const *>(&zero), 4);
     else
-        streamWriteBlock(buffer, reinterpret_cast<char *>(&record.tLen), 4);
+        streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.tLen), 4);
 
     // read_name
-    streamWriteBlock(buffer, reinterpret_cast<char *>(&record.qName[0]), lReadName - 1);
+    streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.qName[0]), lReadName - 1);
     streamWriteChar(buffer, '\0');
 
     // cigar
@@ -223,7 +223,7 @@ int write2(TStream & stream,
         __uint32 x = record.cigar[i].count;
         x <<= 4;
         x |= MAP[static_cast<int>(record.cigar[i].operation)];
-        streamWriteBlock(buffer, reinterpret_cast<char *>(&x), 4);
+        streamWriteBlock(buffer, reinterpret_cast<char const *>(&x), 4);
     }
 
     // seq
@@ -276,11 +276,11 @@ int write2(TStream & stream,
 
     // tags
     if (length(record.tags) > 0u)
-        streamWriteBlock(buffer, reinterpret_cast<char *>(&record.tags[0]), length(record.tags));
+        streamWriteBlock(buffer, reinterpret_cast<char const *>(&record.tags[0]), length(record.tags));
 
     // buffer to stream
     __uint32 blockSize = length(buffer);
-    streamWriteBlock(stream, reinterpret_cast<char *>(&blockSize), 4);
+    streamWriteBlock(stream, reinterpret_cast<char const *>(&blockSize), 4);
     return streamWriteBlock(stream, &buffer[0], blockSize) != blockSize;
 }
 

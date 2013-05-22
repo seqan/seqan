@@ -75,7 +75,7 @@ public:
     virtual int writeHeader(BamHeader const & header, BamIOContext<StringSet<CharString> > const & bamIOContext) = 0;
 
     // Write the BAM record to the wrapped file.
-    virtual int writeRecord(BamAlignmentRecord & record,
+    virtual int writeRecord(BamAlignmentRecord const & record,
                             BamIOContext<StringSet<CharString> > const & bamIOContext) = 0;
 
     // Flush all buffers.

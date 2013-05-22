@@ -69,7 +69,7 @@ public:
     virtual bool isGood();
     virtual int writeHeader(BamHeader const & header,
                             BamIOContext<StringSet<CharString> > const & context);
-    virtual int writeRecord(BamAlignmentRecord & record,
+    virtual int writeRecord(BamAlignmentRecord const & record,
                             BamIOContext<StringSet<CharString> > const & context);
     virtual int flush();
     virtual int close();
@@ -131,8 +131,8 @@ inline int BamWriter_::writeHeader(BamHeader const & header,
 // Member Function BamWriter_::writeRecord()
 // ----------------------------------------------------------------------------
 
-inline int BamWriter_::writeRecord(BamAlignmentRecord & record,
-                            BamIOContext<StringSet<CharString> > const & context)
+inline int BamWriter_::writeRecord(BamAlignmentRecord const & record,
+                                   BamIOContext<StringSet<CharString> > const & context)
 {
     return write2(this->_stream, record, context, Bam());
 }
