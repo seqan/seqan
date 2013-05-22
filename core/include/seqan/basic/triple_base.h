@@ -141,7 +141,7 @@ namespace seqan {
 ..summary:T3 object
 ..include:seqan/basic.h
 */
-pp
+
 template <typename T1, typename T2 = T1, typename T3 = T1, typename TSpec = void>
 struct Triple
 {
