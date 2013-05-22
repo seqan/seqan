@@ -74,7 +74,11 @@ def doMain(args):
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logger = logging.getLogger()
     processor = proc_doc.DocProcessor(logger=logger, include_dir=args.base_dir)
-    doc_proc = processor.run(master_doc)
+    try:
+        doc_proc = processor.run(master_doc)
+    except dox_parser.ParserError, e:
+        dox_parser.printParserError(e)
+        return 1
     html_writer = write_html.HtmlWriter(doc_proc, args)
     html_writer.generateFor()
     return 0

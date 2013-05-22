@@ -17,6 +17,7 @@ import xml.sax.saxutils
 
 import inc_mgr
 import sig_parser
+import dox_parser
 import dox_tokens
 import raw_doc
 
@@ -732,8 +733,9 @@ class RawTextToTextNodeConverter(object):
             else:  # not closing current
                 self.tokens_cmd.append(token)
         else:  # no command active, open
-            assert token.type in self.command_pairs.keys(), \
-                'Must be open command.'
+            if not token.type in self.command_pairs.keys():
+                expected = map(dox_tokens.transToken, self.command_pairs.keys())
+                raise dox_parser.ParserError(token, 'Unexpected token.  Must be one of %s' % expected)
             self.current_cmd = token.type
 
     def handleCommandClosing(self):
