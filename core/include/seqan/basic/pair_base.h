@@ -77,12 +77,12 @@ namespace seqan {
  */
 
 /*!
- * @var Pair::i1
+ * @var T1 Pair::i1
  * @brief First member
  */
 
 /*!
- * @var Pair::i2
+ * @var T2 Pair::i2
  * @brief Second member
  */
 
@@ -367,10 +367,10 @@ inline void assignValueI2(Pair<T1, T2, TSpec> & pair, T const & _i)
 // -----------------------------------------------------------------------
 
 /*!
- * @fn Pair#assignValueI1
+ * @fn Pair#setValueI1
  * @brief Set first entry of a pair.
  *
- * @signature void assignValueI1(pair, val);
+ * @signature void setValueI1(pair, val);
  *
  * @param pair The pair to get entry from.
  * @param val  Set the value of the Pair's first entry.
@@ -385,10 +385,10 @@ inline void setValueI1(Pair<T1, T2, TSpec> & pair, T const & _i)
 }
 
 /*!
- * @fn Pair#assignValueI2
+ * @fn Pair#setValueI2
  * @brief Set second entry of a pair.
  *
- * @signature void assignValueI1(pair, val);
+ * @signature void setValueI1(pair, val);
  *
  * @param pair The pair to get entry from.
  * @param val  Set the value of the Pair's second entry.
