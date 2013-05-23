@@ -161,12 +161,21 @@ add_custom_command (OUTPUT ${_ZIP_PATH}/${_ZIP_NAME}
 # ============================================================================
 
 # descriptors/mimetypes.xml
+# Note: The mimetypes.xml file is deprecated but we keep it here for backward compatibilty.
 add_custom_command (OUTPUT ${CTD_PATH}/mimetypes.xml
                     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml"
                                                      "${CTD_PATH}/mimetypes.xml"
                     DEPENDS ${CTD_PATH}
                             ${CMAKE_SOURCE_DIR}/util/cmake/ctd/mimetypes.xml)
 list (APPEND DESCRIPTOR_FILES ${CTD_PATH}/mimetypes.xml)
+
+# descriptors/mime.types
+add_custom_command (OUTPUT ${CTD_PATH}/mime.types
+                    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/util/cmake/ctd/mime.types"
+                                                     "${CTD_PATH}/mime.types"
+                    DEPENDS ${CTD_PATH}
+                            ${CMAKE_SOURCE_DIR}/util/cmake/ctd/mime.types)
+list (APPEND DESCRIPTOR_FILES ${CTD_PATH}/mime.types)
 
 # *.ctd
 foreach (_BINARY ${SEQAN_CTD_EXECUTABLES})

@@ -1,0 +1,34 @@
+application/x-fasta fasta fa
+application/x-fastq fastq fq
+application/x-masic masic mas
+application/x-gsi gsi
+application/x-z-gsi gsi.gz
+application/x-gff gff
+application/x-razers razers
+application/x-eland eland
+application/x-masai raw
+application/x-sam sam
+application/x-bam bam
+application/x-afg afg
+application/x-dist dist
+application/x-dot dot
+application/x-newick newick
+application/x-alftsv alf.tsv
+application/x-txt txt
+application/x-fasta fasta fa
+application/x-fastq fastq fq
+application/x-masic masic mas
+application/x-gsi gsi
+application/x-z-gsi gsi.gz
+application/x-gff gff
+application/x-razers razers
+application/x-eland eland
+application/x-masai raw
+application/x-sam sam
+application/x-bam bam
+application/x-afg afg
+application/x-dist dist
+application/x-dot dot
+application/x-newick newick
+application/x-alftsv alf.tsv
+application/x-txt txt
