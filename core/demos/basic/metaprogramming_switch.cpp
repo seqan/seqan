@@ -38,22 +38,22 @@
 #include <seqan/basic.h>
 
 //![switch demo]
-int switchTest(Nothing const &)
+int switchTest(seqan::Nothing const &)
 {
     return -1;
 }
 
-int switchTest(False const &)
+int switchTest(seqan::False const &)
 {
     return 0;
 }
 
-int switchTest(True const &)
+int switchTest(seqan::True const &)
 {
     return 1;
 }
 
-int switchTest(NilCase const &)
+int switchTest(seqan::NilCase const &)
 {
     return 2;
 }
@@ -61,20 +61,20 @@ int switchTest(NilCase const &)
 template <int X>
 struct SwitchTest
 {
-    typedef typename Switch<
+    typedef typename seqan::Switch<
         X,
-        seqan::Case<-1, Nothing,
-        seqan::Case<0, False,
-        seqan::Case<1, True
+        seqan::Case<-1, seqan::Nothing,
+        seqan::Case<0, seqan::False,
+        seqan::Case<1, seqan::True
         > > > >::Type Type;
 };
 
 int main()
 {
-    typedef typename SwitchTest<-1>::Type T1;
-    typedef typename SwitchTest< 0>::Type T2;
-    typedef typename SwitchTest< 1>::Type T3;
-    typedef typename SwitchTest< 2>::Type T4;
+    typedef SwitchTest<-1>::Type T1;
+    typedef SwitchTest< 0>::Type T2;
+    typedef SwitchTest< 1>::Type T3;
+    typedef SwitchTest< 2>::Type T4;
 
     std::cout << switchTest(T1()) << "\n"   // => "-1"
               << switchTest(T2()) << "\n"   // => "0"
