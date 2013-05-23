@@ -219,7 +219,14 @@ _getSupportedFormats(std::vector<std::string> & supported_formats, ArgParseArgum
              valid != opt.validValues.end();
              ++valid)
         {
+            SEQAN_ASSERT_NOT(empty(*valid));
+
             filetype = "*";
+
+            // ensure . as separator between * and file-extension
+            if (value(*valid, 0) != '.')
+                appendValue(filetype, '.');
+
             append(filetype, *valid);
             appendValue(supported_formats, filetype);
         }
