@@ -1,4 +1,4 @@
-// ==========================================================================
+    // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
@@ -175,12 +175,12 @@ _isCrossingEndVertical(TPosition const & verticalSeedEndPos,
 }
 
 // ----------------------------------------------------------------------------
-// Function _horizontalBandShift()
+// Function _horizontalBandShiftBeginPoint()
 // ----------------------------------------------------------------------------
 
 // Returns the shift in horizontal direction for skew bands.
 template <typename TSeed>
-inline typename Size<TSeed>::Type _horizontalBandShift(TSeed const & seed)
+inline typename Size<TSeed>::Type _horizontalBandShiftBeginPoint(TSeed const & seed)
 {
     typedef typename Size<TSeed>::Type TSize;
     TSize bandSize = (upperDiagonal(seed) - (beginPositionH(seed) - beginPositionV(seed)));
@@ -189,18 +189,47 @@ inline typename Size<TSeed>::Type _horizontalBandShift(TSeed const & seed)
 }
 
 // ----------------------------------------------------------------------------
-// Function _verticalBandShift()
+// Function _verticalBandShiftBeginPoint()
 // ----------------------------------------------------------------------------
 
 // Returns the shift in vertical direction for skew bands.
 template <typename TSeed>
-inline typename Size<TSeed>::Type _verticalBandShift(TSeed const & seed)
+inline typename Size<TSeed>::Type _verticalBandShiftBeginPoint(TSeed const & seed)
 {
     typedef typename Size<TSeed>::Type TSize;
     TSize bandSize((beginPositionH(seed) - beginPositionV(seed)) - lowerDiagonal(seed));
     SEQAN_ASSERT_GEQ(bandSize, TSize(0));  // must be greater or equal than zero
     return bandSize;
 }
+
+// ----------------------------------------------------------------------------
+// Function _horizontalBandShiftEndPoint()
+// ----------------------------------------------------------------------------
+
+    // Returns the shift in horizontal direction for skew bands.
+template <typename TSeed>
+inline typename Size<TSeed>::Type _horizontalBandShiftEndPoint(TSeed const & seed)
+{
+    typedef typename Size<TSeed>::Type TSize;
+    TSize bandSize = endPositionH(seed) - endPositionV(seed) - lowerDiagonal(seed);
+    SEQAN_ASSERT_GEQ(bandSize, TSize(0));  // must be greater or equal than zero
+    return bandSize;
+}
+
+// ----------------------------------------------------------------------------
+// Function _verticalBandShiftEndPoint()
+// ----------------------------------------------------------------------------
+
+    // Returns the shift in vertical direction for skew bands.
+template <typename TSeed>
+inline typename Size<TSeed>::Type _verticalBandShiftEndPoint(TSeed const & seed)
+{
+    typedef typename Size<TSeed>::Type TSize;
+    TSize bandSize = upperDiagonal(seed) - endPositionH(seed) + endPositionV(seed);
+    SEQAN_ASSERT_GEQ(bandSize, TSize(0));  // must be greater or equal than zero
+    return bandSize;
+}
+
 
 // ----------------------------------------------------------------------------
 // Function _verticalCellInitialization()
@@ -710,8 +739,10 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     typedef typename Value<TScoreScheme>::Type TScore;
     typedef Pair<TSeedPosition, TSeedPosition> TGridPoint;
 
-    TSeedSize horizontalBandShift = _horizontalBandShift(seed);
-    TSeedSize verticalBandShift = _verticalBandShift(seed);
+    // TODO(rmaerker): Change _horizontalBandShift to _horizontalBandShiftBeginPoint
+    // TODO(rmaerker): Change _verticalBandShift to _verticalBandShiftBeginPoint
+    TSeedSize horizontalBandShift = _horizontalBandShiftBeginPoint(seed);
+    TSeedSize verticalBandShift = _verticalBandShiftBeginPoint(seed);
 
     TSeedSize horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(beginPositionH(seed)) + 1 -
                                               static_cast<TSignedPosition>(bandExtension));
@@ -720,8 +751,6 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
 
     DPBand_<BandOn> band;
     // Determine coordinates of lower right corner of gap-area.
-
-    // The problem here is, that we have to cast everything into an integer type.
     setUpperDiagonal(band, static_cast<TSignedPosition>(_min(static_cast<TSignedSize>(length(seqH)),
         static_cast<TSignedPosition>(horizontalNextGridOrigin +  (bandExtension << 1) + horizontalBandShift +
         _max(0,static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(beginPositionV(seed)) -1)) +
@@ -735,6 +764,8 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     TScore score = 0;
     TInfixH infixH;
     TInfixV infixV;
+
+    // The first anchor does not cross the first row or column. Hence we have to fill the gap first.
     if (horizontalNextGridOrigin != 0u || verticalNextGridOrigin != 0u)
     {
 
@@ -774,6 +805,9 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     // Define area covering the infixes.
     infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
+
+    horizontalBandShift = _horizontalBandShiftEndPoint(seed);
+    verticalBandShift = _verticalBandShiftEndPoint(seed);
 
     horizontalNextGridOrigin = _max(0, static_cast<TSignedPosition>(endPositionH(seed)) -
         static_cast<TSignedPosition>(bandExtension) - static_cast<TSignedPosition>(horizontalBandShift) -
@@ -863,8 +897,10 @@ _computeGapArea(TTraceSet & globalTraceSet,
 
     TGridPoint gridBegin(scoutState._horizontalNextGridOrigin, scoutState._verticalNextGridOrigin);
 
-    TGridPoint gridEnd(beginPositionH(currentSeed) + 1 + bandExtension + _horizontalBandShift(currentSeed),
-                       beginPositionV(currentSeed) + 1 + bandExtension + _verticalBandShift(currentSeed));
+    // TODO(rmaerker): Change _horizontalBandShift to _horizontalBandShiftBeginPoint
+    // TODO(rmaerker): Change _verticalBandShift to _verticalBandShiftBeginPoint
+    TGridPoint gridEnd(beginPositionH(currentSeed) + 1 + bandExtension + _horizontalBandShiftBeginPoint(currentSeed),
+                       beginPositionV(currentSeed) + 1 + bandExtension + _verticalBandShiftBeginPoint(currentSeed));
 
     // Define infix area for alignment.
     TInfixH infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
@@ -927,20 +963,25 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
     TInfixH infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
     TInfixV infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
 
-    TPosition horizontalBandShift = _horizontalBandShift(currentSeed);
-    TPosition verticalBandShift = _verticalBandShift(currentSeed);
+    TPosition horizontalBandShift = _horizontalBandShiftBeginPoint(currentSeed);
+    TPosition verticalBandShift = _verticalBandShiftBeginPoint(currentSeed);
 
-    TPosition horizontalNextGridOrigin = endPositionH(currentSeed) - bandExtension - horizontalBandShift - gridBegin.i1;
-    TPosition verticalNextGridOrigin = endPositionV(currentSeed) - bandExtension - verticalBandShift - gridBegin.i2;
+    // Computing the start point of the next grid that overlaps with the current anchor at the end.
+    TPosition horizontalNextGridOrigin = endPositionH(currentSeed) - bandExtension - _horizontalBandShiftEndPoint(currentSeed) - gridBegin.i1;
+    TPosition verticalNextGridOrigin = endPositionV(currentSeed) - bandExtension - _verticalBandShiftEndPoint(currentSeed) - gridBegin.i2;
 
+    // Computing the start position of the band according to the start point.
+    // TODO(rmaerker): Rename the function _verticalBandShift to _verticalBandShiftBeginPoint()
+    // TODO(rmaerker): Rename the function _horiontalBandShift to _horizontalBandShiftBeginPoint()
     DPBand_<BandOn> band(-static_cast<TSignedPosition>((bandExtension << 1)) -static_cast<TSignedPosition>(verticalBandShift),
                          static_cast<TSignedPosition>((bandExtension << 1) + horizontalBandShift));
 
+    TPosition relativeVerticalNextGridOrigin = verticalNextGridOrigin;
     // Calibrate the next vertical origin to the correct position within the band.
     if (static_cast<TSignedSize>(length(infixV)) + lowerDiagonal(band) > upperDiagonal(band))
-        verticalNextGridOrigin -= (length(infixV) + lowerDiagonal(band)) - upperDiagonal(band);
+        relativeVerticalNextGridOrigin -= (length(infixV) + lowerDiagonal(band)) - upperDiagonal(band);
 
-    _reinitScoutState(scoutState, horizontalNextGridOrigin, verticalNextGridOrigin, upperDiagonal(band) + 1,
+    _reinitScoutState(scoutState, horizontalNextGridOrigin, relativeVerticalNextGridOrigin, upperDiagonal(band) + 1,
                       1 - lowerDiagonal(band), length(infixH) - horizontalNextGridOrigin + 1,
                       length(infixV) - verticalNextGridOrigin + 1);
 
@@ -991,8 +1032,10 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     // Part A: Compute last connecting rectangle between last two anchors
     TGridPoint gridBegin(dpScoutState._horizontalNextGridOrigin, dpScoutState._verticalNextGridOrigin);
 
-    TPosition horizontalBandShift = _horizontalBandShift(currentSeed);
-    TPosition verticalBandShift = _verticalBandShift(currentSeed);
+    // TODO(rmaerker): Change _horizontalBandShift to _horizontalBandShiftBeginPoint
+    // TODO(rmaerker): Change _verticalBandShift to _verticalBandShiftBeginPoint
+    TPosition horizontalBandShift = _horizontalBandShiftBeginPoint(currentSeed);
+    TPosition verticalBandShift = _verticalBandShiftBeginPoint(currentSeed);
 
     TGridPoint gridEnd(_min(length(seqH), beginPositionH(currentSeed) + 1 + bandExtension + horizontalBandShift),
                        _min(length(seqV), beginPositionV(currentSeed) + 1 + bandExtension + verticalBandShift));
@@ -1027,58 +1070,75 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     gridBegin.i1 += horizontalNextGridOrigin;
     gridBegin.i2 += verticalNextGridOrigin;
 
-    DPBand_<BandOn> band(-static_cast<TSignedPosition>(gridEnd.i2 + gridBegin.i2), static_cast<TSignedPosition>(gridEnd.i1 - gridBegin.i1));
-
+    // Get the absolute positions of the end point of the band.
     gridEnd.i1 = _min(length(seqH), endPositionH(currentSeed) + bandExtension);
     gridEnd.i2 = _min(length(seqV), endPositionV(currentSeed) + bandExtension);
 
+    infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
+    infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
+
+    // The last anchor is crossing the end of the global matrix in both directions.
+    if(gridEnd.i1 == length(seqH) && gridEnd.i2 == length(seqV))
+    {
+        DPBand_<BandOn> band(-static_cast<TSignedPosition>(gridEnd.i2 - gridBegin.i2), static_cast<TSignedPosition>(gridEnd.i1 - gridBegin.i1));
+        _reinitScoutState(dpScoutState, 0, 0, upperDiagonal(band)+ 1, 1 - lowerDiagonal(band),
+                          upperDiagonal(band)+ 1, 1 - lowerDiagonal(band));
+            // TODO(rmaerker): Should we not set the nextGridOrigin to 0 as it is the case for the last rectangle? We want to compute the last full path.
+            // Compute the last anchor which crosses the end of the global grid.
+        TScoreValue score = _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band,
+                                  DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
+
+        _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
+        if (!empty(localTraceSet))
+            _glueTracebacks(globalTraceSet, localTraceSet);
+        return score;   
+    }
+
+    DPBand_<BandOn> band(-static_cast<TSignedPosition>((bandExtension << 1)) -static_cast<TSignedPosition>(verticalBandShift),
+                         static_cast<TSignedPosition>((bandExtension << 1) + horizontalBandShift));
+
+    // Compute the last anchor and the rectangle to fill the gap between the end of the global matrix and the last anchor.
     horizontalNextGridOrigin = _max(0,
         static_cast<TSignedPosition>(endPositionH(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
-        static_cast<TSignedPosition>(horizontalBandShift) - static_cast<TSignedPosition>(gridBegin.i1) -
+        static_cast<TSignedPosition>(_horizontalBandShiftEndPoint(currentSeed)) - static_cast<TSignedPosition>(gridBegin.i1) -
         _max(0, static_cast<TSignedPosition>(endPositionV(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqV))));
 
     verticalNextGridOrigin = _max(0,
         static_cast<TSignedPosition>(endPositionV(currentSeed)) - static_cast<TSignedPosition>(bandExtension) -
-        static_cast<TSignedPosition>(verticalBandShift) - static_cast<TSignedPosition>(gridBegin.i2) -
+        static_cast<TSignedPosition>(_verticalBandShiftEndPoint(currentSeed)) - static_cast<TSignedPosition>(gridBegin.i2) -
         _max(0, static_cast<TSignedPosition>(endPositionH(currentSeed) + bandExtension) - static_cast<TSignedSize>(length(seqH))));
 
-    infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
-    infixV = infix(seqV, gridBegin.i2, gridEnd.i2);
+    // Calibrate the next vertical origin to the correct position within the band.
+    // TODO(rmaerker): Does this also apply to the case, when the anchor is crossing the end of the matrix?
+    if (static_cast<TSignedSize>(length(infixV)) + lowerDiagonal(band) > upperDiagonal(band))
+        verticalNextGridOrigin -= (length(infixV) + lowerDiagonal(band)) - upperDiagonal(band);
 
    _reinitScoutState(dpScoutState, horizontalNextGridOrigin, verticalNextGridOrigin, upperDiagonal(band) + 1,
                   1 - lowerDiagonal(band), length(infixH) - horizontalNextGridOrigin + 1,
                   length(infixV) - verticalNextGridOrigin + 1);
 
+    clear(localTraceSet);
+    // Compute the last anchor.
+    TScoreValue score = _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band, dpProfile);
+    _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
+    if (!empty(localTraceSet))
+        _glueTracebacks(globalTraceSet, localTraceSet);
+
+    // Close the gap between last anchor and the end of the global grid.
+    gridBegin.i1 += horizontalNextGridOrigin;
+    if (static_cast<TSignedSize>(length(infixV)) + lowerDiagonal(band) > upperDiagonal(band))
+        verticalNextGridOrigin += (length(infixV) + lowerDiagonal(band)) - upperDiagonal(band);
+    gridBegin.i2 += verticalNextGridOrigin;
+
+    _reinitScoutState(dpScoutState, 0, 0, length(seqH) - gridBegin.i1 + 1, length(seqV) - gridBegin.i2 + 1,
+                      length(seqH) - gridBegin.i1 + 1, length(seqV) - gridBegin.i2 + 1);
+
     // Compute the alignment.
     clear(localTraceSet);
-    TScoreValue score = 0;
-    if(gridEnd.i1 == length(seqH) && gridEnd.i2 == length(seqV))
-    {   // Compute the last anchor which crosses the end of the global grid.
-        score = _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band,
-            DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
+    score = _computeAlignment(localTraceSet, dpScoutState, suffix(seqH, gridBegin.i1), suffix(seqV,gridBegin.i2),
+                              scoreSchemeGap, DPBand_<BandOff>(), DPProfile_<BandedChainAlignment_<TFreeEndGaps,
+                              BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
 
-    }
-    else
-    {
-        // Compute the last anchor.
-        _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band, dpProfile);
-        _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
-        if (!empty(localTraceSet))
-            _glueTracebacks(globalTraceSet, localTraceSet);
-
-        // Close the gap between last anchor and the global grid.
-        gridBegin.i1 += horizontalNextGridOrigin;
-        gridBegin.i2 += verticalNextGridOrigin;
-
-        _reinitScoutState(dpScoutState, 0, 0, length(seqH) - gridBegin.i1 + 1, length(seqV) - gridBegin.i2 + 1,
-                          length(seqH) - gridBegin.i1 + 1, length(seqV) - gridBegin.i2 + 1);
-
-        // Compute the alignment.
-        clear(localTraceSet);
-        score = _computeAlignment(localTraceSet, dpScoutState, suffix(seqH, gridBegin.i1), suffix(seqV,gridBegin.i2),
-                                  scoreSchemeGap, DPBand_<BandOff>(), DPProfile_<BandedChainAlignment_<TFreeEndGaps,
-                                  BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
-    }
     _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
     if (!empty(localTraceSet))
         _glueTracebacks(globalTraceSet, localTraceSet);

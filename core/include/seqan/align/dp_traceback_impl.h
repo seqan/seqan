@@ -151,16 +151,22 @@ _initTracebackCoordinator(TracebackCoordinator_<TPosition> & coordinator,
     typedef typename Position<DPBand_<TBandFlag> >::Type TBandPosition;
     if (IsSameType<TBandFlag, BandOn>::VALUE)
     {
+        // Adapt the current column value when the lower diagonal is positive (shift right in horizontal direction).
         if (lowerDiagonal(band) >= 0)
             coordinator._currColumn += static_cast<TPosition>(lowerDiagonal(band));
+        // Adapt the current row value when the current column comes after the upper diagonal (shift down in vertical direction).
         if (static_cast<TBandPosition>(coordinator._currColumn) > upperDiagonal(band))
             coordinator._currRow += coordinator._currColumn - upperDiagonal(band);
+        // Adapt the end row value when the end column comes after the upper diagonal (shift down in vertical direction).
         if (static_cast<TBandPosition>(coordinator._endColumn) > upperDiagonal(band))
             coordinator._endRow += coordinator._endColumn - upperDiagonal(band);
 
         coordinator._breakpoint1 = _min(seqHSize, static_cast<TSizeH>(_max(0, upperDiagonal(band))));
         coordinator._breakpoint2 = _min(seqHSize, static_cast<TSizeH>(_max(0, static_cast<TBandPosition>(seqVSize) +
                                                                            lowerDiagonal(band))));
+        // Update the current row if the current column is before the upper diagoal or the first column where the maximal band size is reached.
+        if (coordinator._currColumn < _min(coordinator._breakpoint1, coordinator._breakpoint2))
+            coordinator._currRow -= _min(coordinator._breakpoint1, coordinator._breakpoint2) - coordinator._currColumn;
         coordinator._isInBand = true;
     }
 }

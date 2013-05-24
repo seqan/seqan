@@ -294,13 +294,6 @@ void _computeTraceback(TTarget & target,
     while(!_hasReachedEnd(tracebackCoordinator) && traceValue != +TraceBitMap_::NONE)
         _doTraceback(tmp, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, TGapCosts(), TIsGapsLeft());
 
-    // TODO(rmaerker): The currColumn or row actually can exceed the endColumn or row in affine case.
-    // A more cleaner implementation would stop at the endCol or endRow and simply adapts the trace for the
-    // particular current cell to continue the trace in the correct direction if it was within a horizontal
-    // or vertical gap. Because the actual value does not necessarily stores a horizontal or vertical gap
-    // if the maximum for this cell evolved from a different direction. Therefore we could implement kind of an
-    // state that is reported whenever we stopped the traceback while beeing within a vertical or horizontal gap
-    // for affine gap costs.
     TSignedPosition horizontalInitPos = static_cast<TSignedPosition>(tracebackCoordinator._currColumn) -
                                         static_cast<TSignedPosition>(tracebackCoordinator._endColumn);
     TSignedPosition verticalInitPos = static_cast<TSignedPosition>(tracebackCoordinator._currRow) -

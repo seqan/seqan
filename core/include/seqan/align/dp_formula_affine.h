@@ -228,6 +228,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal)
                                        + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
 
+    activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     activeCell._horizontalScore = _max(tmpGapExtendHorizontal, tmpGapOpenHorizontal);
     activeCell._score = _max(tmpScoreDiagonal, activeCell._horizontalScore);
 
@@ -265,6 +266,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical) +
                                      scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
 
+    activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
     activeCell._score = _max(tmpScoreDiagonal, activeCell._verticalScore);
 
@@ -300,6 +302,8 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                                        scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
     TScoreValue tmpGapExtendHorizontal = _horizontalScoreOfCell(previousHorizontal) +
                                          scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+
+    activeCell._verticalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     activeCell._horizontalScore = _max(tmpGapOpenHorizontal, tmpGapExtendHorizontal);
     activeCell._score = activeCell._horizontalScore;
 
@@ -335,6 +339,8 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                                      scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
     TScoreValue tmpGapExtendVertical = _verticalScoreOfCell(previousVertical) +
                                        scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
+
+    activeCell._horizontalScore = DPCellDefaultInfinity<DPCell_<TScoreValue, AffineGaps> >::VALUE;
     activeCell._verticalScore = _max(tmpGapExtendVertical, tmpGapOpenVertical);
     activeCell._score = activeCell._verticalScore;
 
