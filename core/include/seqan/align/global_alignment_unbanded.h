@@ -73,6 +73,113 @@ class Fragment;
 // Function globalAlignment()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn globalAlignment
+ * 
+ * @headerfile seqan/align.h
+ * 
+ * @brief Computes the best global pairwise alignment.
+ * 
+ * @signature TScoreVal globalAlignment(align,          scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
+ * @signature TScoreVal globalAlignment(gapsH, gapsV,   scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
+ * @signature TScoreVal globalAlignment(frags, strings, scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
+ * @signature TScoreVal globalAlignment(alignGraph,     scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
+ * 
+ * @param align        The @link Align @endlink object to use for storing the pairwise alignment.
+ * @param gapsH        The @link Gaps @endlink object for the first row (horizontal in the DP matrix).
+ * @param gapsV        The @link Gaps @endlink object for the second row (vertical in the DP matrix).
+ * @param frags        String of @link Fragment @endlink objects to store alignment in.
+ * @param strings      StringSet of length two with the strings to align.
+ * @param alignGraph   Alignment Graph for the resulting alignment.  Must be initialized with two strings.
+ * @param scoringScheme The @link Score scoring scheme @endlink to use for the alignment.  Note that
+ *                      the user is responsible for ensuring that the scoring scheme is compatible with <tt>algorithmTag</tt>.
+ * @param alignConfig  @link AlignConfig @endlink instance to use for the alignment configuration.
+ * @param lowerDiag    Optional lower diagonal (<tt>int</tt>).
+ * @param upperDiag    Optional upper diagonal (<tt>int</tt>).
+ * @param algorithmTag Tag to select the alignment algorithm (see @link AlignmentAlgorithmTags @endlink).
+ *
+ * @return TScoreVal Score value of the resulting alignment.  Of type <tt>Value<TScore>::Type</tt> where
+ *                   <tt>TScore</tt> is the type of <tt>scoringScheme</tt>.
+ * 
+ * There exist multiple overloads for this function with four configuration dimensions.
+ * 
+ * First, you can select whether begin and end gaps are free in either sequence using <tt>alignConfig</tt>.
+ * 
+ * Second, you can select the type of the target storing the alignment. This can be either an @link Align @endlink
+ * object, two @link Gaps @endlink objects, a @link Alignment Graph @endlink, or a string of @link Fragment @endlink
+ * objects. @link Align @endlink objects provide an interface to tabular alignments with the restriction of all rows
+ * having the same type. Using two @link Gaps @endlink objects has the advantage that you an align sequences with
+ * different types, for example @link DnaString @endlink and @link Dna5String @endlink. @link Alignment Graph Alignment
+ * Graphs @endlink provide a graph-based representation of segment-based colinear alignments. Using @link Fragment
+ * @endlink strings is useful for collecting many pairwise alignments, for example in the construction of @link
+ * Alignment Graph Alignment Graphs @endlink for multiple-sequence alignments (MSA).
+ * 
+ * Third, you can optionally give a band for the alignment using <tt>lowerDiag</tt> and <tt>upperDiag</tt>. The center
+ * diagonal has index <tt>0</tt>, the <tt>i</tt>th diagonal below has index <tt>-i</tt>, the <tt>i</tt>th above has
+ * index <tt>i</tt>.
+ * 
+ * Fourth, you can select the algorithm to use with <tt>algorithmTag</tt>. This can be one of @link
+ * AlignmentAlgorithmTags @endlink and @link Pairwise Global Alignment Algorithms.value.Gotoh @endlink.  The
+ * Needleman-Wunsch algorithm supports scoring schemes with linear gap costs only while Gotoh's algorithm also allows
+ * affine gap costs.
+ * 
+ * The available alignment algorithms all have some restrictions.  Gotoh's algorithm can handle arbitrary substitution
+ * and affine gap scores.  Needleman-Wunsch is limited to linear gap scores.  The implementation of Hirschberg's
+ * algorithm is further limited that it does not support <tt>alignConfig</tt> objects or banding.  The implementation of
+ * the Myers-Hirschberg algorithm further limits this to only support edit distance (as scores, matches are scored with
+ * 0, mismatches are scored with -1).
+ * 
+ * The examples below show some common use cases.
+ * 
+ * @section Examples
+ * 
+ * Global alignment of two sequences using an @link Align @endlink object and
+ * the Needleman-Wunsch algorithm.
+ * 
+ * @code{.cpp}
+ * Dna5String seqH = "CGATT";
+ * Dna5String seqV = "CGAAATT";
+ *  
+ * Align<Dna5String> align;
+ * resize(rows(align), 2);
+ * assignSource(row(align, 0), seqH);
+ * assignSource(row(align, 0), seqV);
+ * Score<int, Simple> scoringScheme(2, -1, -2);
+ * AlignConfig<> alignConfig;
+ *  
+ * int result = globalAlignment(align, scoringScheme, alignConfig,
+ *                              NeedlemanWunsch());
+ * @endcode
+ *
+ * Global banded alignment of two sequences using two @link Gaps @endlink objects and the Gotoh algorithm.
+ * 
+ * @code{.cpp}
+ * Dna5String seqH = "CGATT";
+ * Gaps<Dna5String, ArrayGaps> gapsH(seqH);
+ * DnaString seqV = "CGAAATT";
+ * Gaps<Dna5String, AnchorGaps<> > gapsV(seqV);
+ *  
+ * Score<int, Simple> scoringScheme(5, -3, -1, -5);
+ * AlignConfig<> alignConfig;
+ *  
+ * int result = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -2, 2);
+ * @endcode
+ * 
+ * http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
+ * 
+ * @section References
+ *
+ * <ul>
+ *   <li>Needleman SB, Wunsch CD: A general method applicable to the search for similarities in the amino acid sequence
+ *       of two proteins. J Mol Biol 1970, 48(3): 443-53.</li>
+ *   <li>Gotoh O: An improved algorithm for matching biological sequences. J Mol Biol 1982, 162(3):705-8</li>
+ * </ul>
+ * 
+ * @see localAlignment
+ * @see globalAlignmentScore
+ * @see AlignmentAlgorithmTags
+ */
+
 /**
 .Function.globalAlignment
 ..summary:Computes the best global pairwise alignment.

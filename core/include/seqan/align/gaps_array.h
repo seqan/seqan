@@ -74,6 +74,17 @@ inline void _reinitArrayGaps(Gaps<TSequence, ArrayGaps> & gaps);
 struct ArrayGaps_;
 typedef Tag<ArrayGaps_> ArrayGaps;
 
+/*!
+ * @class ArrayGaps
+ * @headerfile <seqan/align.h>
+ * @brief Stores length of gap- and non-gap runs in an array.
+ *
+ * @signature template <typename TSequence>
+ *            class Gaps<TSequence, ArrayGaps>
+ *
+ * @tparam TSequence The type of the underling sequence.
+ */
+
 /**
 .Spec.ArrayGaps
 ..cat:Alignments

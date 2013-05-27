@@ -52,6 +52,61 @@ namespace seqan {
 template <typename TScore, typename TSpec>
 class LocalAlignmentEnumerator;
 
+/*!
+ * @class LocalAlignmentEnumerator
+ * @headerfile <seqan/align.h>
+ *
+ * @signature template <typename TScore, typename TSpec>
+ *            class LocalAlignmentEnumerator;
+ *
+ * @tparam TScore The type of the @link Score @endlink to use for the local alignment.
+ * @tparam TSpec  The tag to use for specializing the enumerator.
+ *
+ * See the documentation of the specializations for examples.
+ *
+ * @section References
+ *
+ * <ul>
+ *   <li>Waterman MS, Eggert M: A new algorithm for best subsequence alignments with application to tRNA-rRNA
+ *       comparisons. J Mol Biol 1987, 197(4):723-728.</lI.
+ * </ul>
+ */
+
+/*!
+ * @class UnbandedLocalAlignmentEnumerator
+ * @extends LocalAlignmentEnumerator
+ * @headerfile <seqan/align.h>
+ * @brief Unbanded enumeration of local alignments using the Waterman-Eggert algorithm.
+ *
+ * @signature template <typename TScore>
+ *            class LocalAlignmentEnumerator<TScore, Unbanded>;
+ *
+ * @tparam TScore The @link Score @endlink type.
+ *
+ * @code
+ * SimpleScore scoringScheme(2, -1, -1, -2);
+ * LocalAlignmentEnumerator<SimpleScore, Unbanded> enumerator(scoringScheme, 5);
+ * 
+ * Dna5String seqH = "CGAGAGAGACCGAGA";
+ * Dna5String seqV = "TTCTGAGATCCGTTTTT";
+ * 
+ * Align<Dna5String> align;
+ * resize(rows(align), 2);
+ * assignSource(row(align), 0, seqH);
+ * assignSource(row(align), 1, seqV);
+ * 
+ * int i = 0;
+ * while (nextLocalAlignment(align, enumerator))
+ * {
+ *     std::cout << i << "-th alignment:\n";
+ *     std::cout << align << "\n\n";
+ *     std::cout << "score == " << getScore(enumerator) << "\n";
+ * }
+ * @endcode
+ */
+
+// TODO(holtgrew): Doxument unbanded local alignment enumerator constructor and banded local alignment enumerators.
+
 /**
 .Class.LocalAlignmentEnumerator
 ..cat:Alignments

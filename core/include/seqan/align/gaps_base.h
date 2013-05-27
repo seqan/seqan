@@ -46,6 +46,20 @@ namespace seqan {
 template <typename TSpec>
 struct GapsIterator;
 
+/*!
+ * @defgroup GapsSpecTag Gaps Specialization Tags
+ * @brief Tags for specializing the Gaps class.
+ */
+
+/*!
+ * @tag GapsSpecTag#ArrayGaps
+ * @headerfile <seqan/align.h>
+ * @brief Tag for the Array Gaps specialization.
+ *
+ * @signature struct ArrayGaps_;
+ * @signature typedef Tag<ArrayGaps_> ArrayGaps;
+ */
+
 struct ArrayGaps_;
 typedef Tag<ArrayGaps_> ArrayGaps;
 
@@ -56,6 +70,35 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 // ----------------------------------------------------------------------------
 // Class Gaps
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class Gaps
+ * @implements SequenceConcept
+ * @headerfile <seqan/align.h>
+ * @brief Store the gapped version of a sequence.
+ *
+ * @signature template <typename TSequence, typename TSpec>
+ *            class Gaps;
+ *
+ * @tparam TSequence The type of the underlying sequence.
+ * @tparam TSpec     Tag for specialization.
+ *
+ * Gaps wrap a @link SequenceConcept Sequence endlink@ and allows to (1) insert gaps into the sequence and (2) select
+ * an infix of the gapped sequence (clipping).  The gaps are not inserted into the underlying sequence (source) but
+ * stored separately.  Using the clipping is optional and meant for selecting parts of the alignment as a part of the
+ * result of a local alignment algorithm.
+ *
+ * <img src="gaps_illustration.png" title="Illustration of Gaps object and positions with clipping. />
+ *
+ * In the figure above, the source sequence has seven characters, the gapped sequence has four gaps and thus consists
+ * of eleven characters.  The gapped sequence is clipped to start at position 0 in the gapped sequence and to end at
+ * position 8 in the gapped sequence (the positions given as half-open intervals <tt>[begin, end)</tt>).
+ *
+ * The figure shows the three coordinate systems that are used with Gaps objects.  The source position is the position
+ * in the underlying sequence.  The unclipped view position is the position in the gapped sequence without gaps.  The
+ * view position is the position in the gapped sequence but including the clipping: All (clipped) view positions have
+ * the clipping begin position subtracted from them.
+ */
 
 /**
 .Class.Gaps
@@ -253,6 +296,26 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function iter()
+// ----------------------------------------------------------------------------
+
+// From SequenceConcept, only overwriting documentation here.
+
+/*!
+ * @fn Gaps#iter
+ * @brief Return an iterator to a specific position in the current clipping.
+ *
+ * @signature TIterator iter(gaps, viewPos[, tag);
+ *
+ * @param gaps    The Gaps object to get an iterator into.
+ * @param viewPos View position to get an iterator to.
+ * @param tag     An optional tag for selecting the iterator type.
+ *
+ * @return TIterator The resulting iterator.  The type is <tt>Iterator<TGaps, TTag>::Type</tt> where <tt>TTag</tt> is
+ *                   the type of <tt>tag</tt>.
+ */
+
 // TODO(holtgrew): Adding links to implemented sequence. This should be cleaned up once we have better documentation with concepts.
 ///.Function.begin.class:Class.Gaps
 ///.Function.end.class:Class.Gaps
@@ -269,6 +332,15 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ----------------------------------------------------------------------------
 // Function clearClipping()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#clearClipping
+ * @brief Clear clipping from Gaps objects.
+ *
+ * @signature void clearClipping(gaps);
+ *
+ * @param gaps Object to clear clipping from.
+ */
 
 /**
 .Function.Gaps#clearClipping
@@ -287,6 +359,15 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Function clearGaps()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#clearGaps
+ * @brief Clear gaps from Gaps objects.
+ *
+ * @signature void clearGaps(gaps);
+ *
+ * @param gaps Object to clear gaps from.
+ */
+
 /**
 .Function.Gaps#clearGaps
 ..class:Class.Gaps
@@ -303,6 +384,19 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
+
+// From SequenceConcept, only overwriting documentation here.
+
+/*!
+ * @fn Gaps#length
+ * @brief Return number of gap and characters between the beginning and the end of the clipping.
+ *
+ * @signature TSize length(gaps);
+ *
+ * @param gaps The @link Gaps @endlink object to query for its length.
+ *
+ * @return TSize The number of gaps and characters between the beginning and the end of the clipping.
+ */
 
 /**
 .Function.Gaps#length
@@ -321,6 +415,17 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Function unclippedLength()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#unclippedLength
+ * @brief Return length of the gapped sequence without clipping.
+ *
+ * @signature TSize unclippedLength(gaps);
+ *
+ * @param gaps The Gaps object to query.
+ *
+ * @return TSize The result.
+ */
+
 /**
 .Function.Gaps#unclippedLength
 ..class:Class.Gaps
@@ -337,6 +442,18 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ----------------------------------------------------------------------------
 // Function toViewPosition()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#toViewPosition
+ * @brief Conversion from source (without gaps or clipping) to view position (including gaps and clipping).
+ *
+ * @signature TPos toViewPosition(gaps, sourcePos);
+ *
+ * @param gaps      The gaps object to use for translation.
+ * @param sourcePos The source position (in the underlying sequence) to translate.
+ *
+ * @return TPos The resulting position in the view.
+ */
 
 /**
 .Function.toViewPosition
@@ -357,6 +474,18 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Function toSourcePosition()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#toSourcePosition
+ * @brief Conversion from view position (including gaps and clipping) to source (without gaps or clipping).
+ *
+ * @signature TPos toSourcePosition(gaps, viewPos);
+ *
+ * @param gaps      The gaps object to use for translation.
+ * @param sourcePos The view position (including gaps and clipping) to translate.
+ *
+ * @return TPos The resulting position in the underlying sequence.
+ */
+
 /**
 .Function.toSourcePosition
 ..class:Class.Gaps
@@ -375,6 +504,18 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#isGap
+ * @brief Query positions in a Gaps object for being a gap.
+ *
+ * @signature bool isGap(gaps, viewPos);
+ *
+ * @param gaps    The Gaps object to query.
+ * @param viewPos The view position (including clipping and gaps).
+ *
+ * @return bool The query result.
+ */
 
 /**
 .Function.Gaps#isGap
@@ -398,6 +539,17 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // Function insertGaps()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#insertGaps
+ * @brief Insert gap characters.
+ *
+ * @signature void insertGaps(gaps, viewPos, count);
+ *
+ * @param gaps    The Gaps object to insert gaps into.
+ * @param viewPos The view position (including clipping and gaps) to insert gaps at.
+ * @param count   The number of gaps to insert.
+ */
+
 /**
 .Function.insertGaps
 ..class:Class.Gaps
@@ -420,6 +572,16 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ----------------------------------------------------------------------------
 // Function insertGap()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#insertGap
+ * @brief Insert one gap character.
+ *
+ * @signature void insertGap(gaps, viewPos);
+ *
+ * @param gaps    The Gaps object to insert gap into.
+ * @param viewPos The view position (including clipping and gaps) to insert the gap at.
+ */
 
 /**
 .Function.insertGap
@@ -451,6 +613,19 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 // Function removeGaps()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#removeGaps
+ * @brief Remove gaps from a Gaps object.
+ *
+ * @signature TSize removeGaps(gaps, viewPos, count);
+ *
+ * @param gaps    The gaps object to remove gap characters from.
+ * @param viewPos The view positions to remove gap characters from.
+ * @param count   The number of gap characters to remove.
+ *
+ * @return TSize The number of gap characters removed.
+ */
+
 /**
 .Function.removeGaps
 ..class:Class.Gaps
@@ -474,6 +649,18 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 // ----------------------------------------------------------------------------
 // Function removeGap()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#removeGap
+ * @brief Remove one gap from a Gaps object.
+ *
+ * @signature TSize removeGap(gaps, viewPos);
+ *
+ * @param gaps    The gaps object to remove one gap character from.
+ * @param viewPos The view positions to remove one gap character from.
+ *
+ * @return TSize The number of gap characters removed.
+ */
 
 /**
 .Function.removeGap
@@ -505,7 +692,19 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 // ----------------------------------------------------------------------------
 // Function countGaps()
 // ----------------------------------------------------------------------------
-    
+
+/*!
+ * @fn Gaps#countGaps
+ * @brief The number of gaps following a position.
+ *
+ * @signature TSize countGaps(gaps, viewPos);
+ *
+ * @param gaps    The Gaps object to query.
+ * @param viewPos View position (including clipping and gaps) to query at.
+ *
+ * @return TSize The number of gap characters at <tt>viewPos</tt>.
+ */
+
 /**
 .Function.Gaps#countGaps
 ..class:Class.Gaps
@@ -522,6 +721,16 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 // ----------------------------------------------------------------------------
 // Function setClippedBeginPosition()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#setClippedBeginPosition
+ * @brief Set the begin position of the clipping.
+ *
+ * @signature void setClippedBeginPosition(gaps, unclippedViewPos);
+ *
+ * @param gaps             The Gaps object to set the clipping begin position of.
+ * @param unclippedViewPos View position (including gaps but excluding clipping) to set the clipping begin to.
+ */
 
 /**
 .Function.Gaps#setClippedBeginPosition
@@ -548,6 +757,16 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 // Function setClippedEndPosition()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#setClippedEndPosition
+ * @brief Set the end position of the clipping.
+ *
+ * @signature void setClippedEndPosition(gaps, unclippedViewPos);
+ *
+ * @param gaps             The Gaps object to set the clipping end position of.
+ * @param unclippedViewPos View position (including gaps but excluding clipping) to set the clipping end to.
+ */
+
 /**
 .Function.Gaps#setClippedEndPosition
 ..class:Class.Gaps
@@ -572,6 +791,32 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 // ----------------------------------------------------------------------------
 // Function clippedBeginPosition()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#clippedBeginPosition
+ * @brief Return begin position of the clipping.
+ *
+ * @signature TPos clippedBeginPosition(gaps);
+ *
+ * @param gaps             The Gaps object to query.
+ *
+ * @return TPos The begin position of the unclipped view.
+ *
+ * @section Example
+ *
+ * In the following gaps configuration, the result of <tt>clippedBeginPosition(gaps)</tt> is 1.
+ *
+ * @code
+ * clipping                   [     )
+ *   (half-open interval)           
+ * 
+ * gapped sequence:          X--XXX-XX-
+ * 
+ * source position:          0111234456
+ * unclipped view position:  0123456789
+ * clipped view position:     0123456
+ * @endcode
+ */
 
 /**
 .Function.Gaps#clippedBeginPosition
@@ -607,6 +852,32 @@ clipped view position:     0123456
 // Function clippedEndPosition()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#clippedEndPosition
+ * @brief Return end position of the clipping.
+ *
+ * @signature TPos clippedEndPosition(gaps);
+ *
+ * @param gaps             The Gaps object to query.
+ *
+ * @return TPos The end position of the unclipped view.
+ *
+ * @section Example
+ *
+ * In the following gaps configuration, the result of <tt>clippedEndPosition(gaps)</tt> is 7.
+ *
+ * @code
+ * clipping                   [     )
+ *   (half-open interval)           
+ * 
+ * gapped sequence:          X--XXX-XX-
+ * 
+ * source position:          0111234456
+ * unclipped view position:  0123456789
+ * clipped view position:     0123456
+ * @endcode
+ */
+
 /**
 .Function.Gaps#clippedEndPosition
 ..class:Class.Gaps
@@ -641,6 +912,16 @@ clipped view position:     0123456
 // Function setBeginPosition()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#setBeginPosition
+ * @brief Set the begin position of the clipped gapped sequence, given a source position.
+ *
+ * @signature void setBeginPosition(gaps, sourcePos);
+ *
+ * @param gaps      The Gaps object to set the begin position in.
+ * @param sourcePos Position in the underlying sequence to set clipping to.
+ */
+
 /**
 .Function.Gaps#setBeginPosition
 ..class:Class.Gaps
@@ -665,6 +946,16 @@ clipped view position:     0123456
 // Function setEndPosition()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Gaps#setEndPosition
+ * @brief Set the end position of the clipped gapped sequence, given a source position.
+ *
+ * @signature void setEndPosition(gaps, sourcePos);
+ *
+ * @param gaps      The Gaps object to set the end position in.
+ * @param sourcePos Position in the underlying sequence to set clipping to.
+ */
+
 /**
 .Function.Gaps#setEndPosition
 ..class:Class.Gaps
@@ -688,6 +979,33 @@ clipped view position:     0123456
 // ----------------------------------------------------------------------------
 // Function beginPosition()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#beginPosition
+ * @brief Return the clipping begin position as a source position.
+ *
+ * @signature TPosition beginPosition(gaps);
+ *
+ * @param gaps The Gaps object to query.
+ *
+ * @return TPosition The clipping begin position in the source.
+ *
+ * @section Example
+ *
+ * In the following gaps configuration, the result of <tt>beginPosition(gaps)</tt> is $1$.  The clipping starts in a
+ * gap and the source position of the first non-gap character right of the clipping begin has source position 1.
+ *
+ * @code
+ * clipping                   [     )
+ *   (half-open interval)           
+ * 
+ * gapped sequence:          X--XXX-XX-
+ * 
+ * source position:          0111234456
+ * unclipped view position:  0123456789
+ * clipped view position:     0123456
+ * @endcode
+ */
 
 /**
 .Function.Gaps#beginPosition
@@ -723,6 +1041,32 @@ clipped view position:     0123456
 // ----------------------------------------------------------------------------
 // Function endPosition()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#endPosition
+ * @brief Return the clipping end position as a source position.
+ *
+ * @signature TPosition endPosition(gaps);
+ *
+ * @param gaps The Gaps object to query for the end position as a source position.
+ *
+ * @return TPosition The end position as a source position.
+ *
+ * @section Example
+ *
+ * In the following gaps configuration, the result of <tt>endPositioN(gaps)</tt> is 4.
+ *
+ * @code
+ * clipping                   [     )
+ *   (half-open interval)           
+ * 
+ * gapped sequence:          X--XXX-XX-
+ * 
+ * source position:          0111234456
+ * unclipped view position:  0123456789
+ * clipped view position:     0123456
+ * @endcode
+ */
 
 /**
 .Function.Gaps#endPosition
@@ -857,6 +1201,8 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 // Function source()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): source concept in dox?
+
 /**
 .Function.source
 ..summary:Return underlying object.
@@ -868,6 +1214,17 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 ...type:Metafunction.Source
 ..include:seqan/align.h
 */
+
+/*!
+ * @fn Gaps#source
+ * @brief Return underlying object.
+ *
+ * @signature TSource source(gaps);
+ *
+ * @param gaps The Gaps object to return the underling sequence for.
+ * 
+ * @return TSource Reference to the source of the Gaps.
+ */
 
 /*
 .Function.Gaps#source
@@ -914,6 +1271,16 @@ sourceSegment(Gaps<TSequence, TSpec> & gaps)
 // ----------------------------------------------------------------------------
 // Function assignSource()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#assignSource
+ * @brief Assign the source of a gaps object, copying data.
+ *
+ * @signature void assignSource(gaps, seq);
+ *
+ * @param gaps The Gaps object to assign the source of.
+ * @param seq  The @link SequenceConcept sequence @endlink to assign to the underlying string.:w
+ */
 
 /**
 .Function.Gaps#assignSource
