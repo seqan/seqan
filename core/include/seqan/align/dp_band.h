@@ -35,6 +35,8 @@
 // whether a band was selected or not.
 // ==========================================================================
 
+// TODO(holtgrew): Documentation in this header necessary or internal only?
+
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_BAND_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_BAND_H_
 

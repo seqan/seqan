@@ -50,6 +50,18 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
+/*!
+ * @mfn GappedValueType
+ * @headerfile <seqan/align.h>
+ * @brief Returns a value type that contains a black value <tt>'-'</tt>.
+ *
+ * @signature GappedValueType<T>::Type
+ *
+ * @tparam T The value type that should be expanded (if needed) by '-'.
+ *
+ * @return Type A type that can store the values of <tt>T</tt> and the value <tt>'-'</tt>.
+ */
+
 /**
 .Metafunction.GappedValueType:
 ..cat:Alignments

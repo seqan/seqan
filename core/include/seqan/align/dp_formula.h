@@ -34,6 +34,8 @@
 // Defines the recursion formula for the dp-alignment algorithms.
 // ==========================================================================
 
+// TODO(holtgrew): Documentation in this header necessary or internal only?
+
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 

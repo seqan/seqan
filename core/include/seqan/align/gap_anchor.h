@@ -58,6 +58,23 @@ typedef Tag<SortGapPos_> const SortGapPos;
 // Specialization GapAnchor
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Make a class instead of a struct?
+
+/*!
+ * @class GapAnchor
+ * @headerfile <seqan/align.h>
+ * @brief Stores the position of an alignment character in sequence-space and in gap-space.
+ * 
+ * @signature template <typename TPosition>
+ *            struct GapAnchor;
+ * 
+ * @tparam TPos Type to store gapped/ungapped positions.
+ * 
+ * @section Remarks
+ * 
+ * Value types of the <tt>gaps</tt> strings in @link ReadStoreElement @endlink and @link ContigStoreElement @endlink.
+ */
+
 /**
 .Class.GapAnchor
 ..summary:Stores the position of an alignment character in sequence-space and in gap-space.
@@ -88,18 +105,44 @@ typedef Tag<SortGapPos_> const SortGapPos;
 template <typename TPos>
 struct GapAnchor
 {
+/*!
+ * @var VariableType GapAnchor::seqPos
+ * @brief Sequence character position in the ungapped sequence.
+ */
 	TPos	seqPos;			// sequence character position in the ungapped sequence
+
+/*!
+ * @var VariableType GapAnchor::gapPos
+ * @brief Sequence character position in the gapped sequence.
+ */
 	TPos	gapPos;			// sequence character position in the gapped sequence
+
+/*!
+ * @fn GapAnchor::GapAnchor
+ * 
+ * @brief Constructor
+ * 
+ * @signature GapAnchor::GapAnchor([other])
+ * @signature GapAnchor::GapAnchor(seqPos, gapPos)
+ *
+ * @param other  GapAnchor object to copy from.
+ * @param seqPos Sequence character position in the ungapped sequence.
+ * @param gapPos Sequence character position in the gapped sequence.
+ * 
+ * @section Remarks
+ * 
+ * Default constructor sets both positions to <tt>0</tt>.
+ */
 
 	GapAnchor() : seqPos(0), gapPos(0) {}
 	GapAnchor(TPos sP, TPos gP) : seqPos(sP), gapPos(gP) {}
-	
+
 	template <typename TPos_>
 	GapAnchor(GapAnchor<TPos_> const &other)
 	{
 		seqPos = other.seqPos;
 		gapPos = other.gapPos;
-	} 
+	}
 
 	template <typename TPos_>
 	inline GapAnchor const &

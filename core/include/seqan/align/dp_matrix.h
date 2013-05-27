@@ -41,6 +41,8 @@
 // can be selected using a special meta-function.
 // ==========================================================================
 
+// TODO(holtgrew): Documentation in this header necessary or internal only?
+
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
 

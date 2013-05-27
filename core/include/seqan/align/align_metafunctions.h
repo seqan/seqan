@@ -73,6 +73,18 @@ struct Cols;
 // Metafunction Col
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Align#Col
+ * @headerfile <seqan/align.h>
+ * @brief The column type for @link Align @endlink objects.
+ *
+ * @signature Col<TAlign>::Type
+ *
+ * @tparam TAlign The @link Align @endlink object to query for its column type.
+ *
+ * @return Type   The resulting type.
+ */
+
 /**
 .Metafunction.Col:
 ..cat:Alignments

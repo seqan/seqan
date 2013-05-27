@@ -43,6 +43,7 @@
 // a trace matrix. And the last parameter determines the sort of navigation.
 // ==========================================================================
 
+// TODO(holtgrew): Documentation in this header necessary or internal only?
 
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_H_

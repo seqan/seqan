@@ -52,6 +52,11 @@ namespace seqan {
 // Global Alignment Algorithm Tags
 // ----------------------------------------------------------------------------
 
+/*!
+ * @defgroup AlignmentAlgorithmTags Alignment Algorithm Tags
+ * @brief Tags for selecting algorithms.
+ */
+
 // TODO(holtgrew): Rename MyersBitVector to Myers? Clashes with find module at the moment.
 
 /**
@@ -72,14 +77,50 @@ namespace seqan {
 struct Gotoh_;
 typedef Tag<Gotoh_> Gotoh;
 
+/*!
+ * @tag AlignmentAlgorithmTags#NeedlemanWunsch
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting NeedlemanWunsch DP algorithm.
+ *
+ * @signature struct Hirschberg_;
+ * @signature typedef Tag<Hirschberg_> NeedlemanWunsch;
+ */
+
 struct NeedlemanWunsch_;
 typedef Tag<NeedlemanWunsch_> NeedlemanWunsch;
+
+/*!
+ * @tag AlignmentAlgorithmTags#Hirschberg
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting Hirschberg's DP algorithm.
+ *
+ * @signature struct Hirschberg_;
+ * @signature typedef Tag<Hirschberg_> Hirschberg;
+ */
 
 struct Hirschberg_;
 typedef Tag<Hirschberg_> Hirschberg;
 
+/*!
+ * @tag AlignmentAlgorithmTags#MyersBitVector
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting Myers' bit-vector algorithm.
+ *
+ * @signature struct MyersBitVector_;
+ * @signature typedef Tag<MyersBitVector_> MyersBitVector;
+ */
+
 struct MyersBitVector_;
 typedef Tag<MyersBitVector_> MyersBitVector;
+
+/*!
+ * @tag AlignmentAlgorithmTags#MyersHirschberg
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting a combination of Myers' bit-vector algorithm with Hirschberg's algorithm.
+ *
+ * @signature struct MyersHirschberg_;
+ * @signature typedef Tag<MyersHirschberg_> MyersHirschberg;
+ */
 
 struct MyersHirschberg_;
 typedef Tag<MyersHirschberg_> MyersHirschberg;
@@ -87,6 +128,11 @@ typedef Tag<MyersHirschberg_> MyersHirschberg;
 // ----------------------------------------------------------------------------
 // Local Alignment Algorithm Tags
 // ----------------------------------------------------------------------------
+
+/*!
+ * @defgroup PairwiseLocalAlignmentAlgorithms Pairwise Local Alignment Algorithms
+ * @brief Tags for selecting algorithms.
+ */
 
 /**
 .Tag.Pairwise Local Alignment Algorithms
@@ -100,8 +146,26 @@ typedef Tag<MyersHirschberg_> MyersHirschberg;
 ..include:seqan/align.h
 */
 
+/*!
+ * @tag PairwiseLocalAlignmentAlgorithms#SmithWaterman
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting the Smith-Waterman algorithm.
+ *
+ * @signature struct SmithWaterman_;
+ * @signature typedef Tag<SmithWaterman_> SmithWaterman;
+ */
+
 struct SmithWaterman_;
 typedef Tag<SmithWaterman_> SmithWaterman;
+
+/*!
+ * @tag PairwiseLocalAlignmentAlgorithms#WatermanEggert
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting the Waterman-Eggert algorithm.
+ *
+ * @signature struct WatermanEggert_;
+ * @signature typedef Tag<WatermanEggert_> WatermanEggert;
+ */
 
 struct WatermanEggert_;
 typedef Tag<WatermanEggert_> WatermanEggert;

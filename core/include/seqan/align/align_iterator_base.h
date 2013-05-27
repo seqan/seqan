@@ -42,6 +42,18 @@ namespace SEQAN_NAMESPACE_MAIN
 // Align Iterator for Gaps alignment
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): Extend class Iter?
+/*!
+ * @class AlignColIterator
+ * @brief Iterator for alignment columns.
+ *
+ * @signature template <typename TAlign, typename TSpec>
+ *            class Iter<TAlign, AlignColIterator<TSpec> >;
+ *
+ * @tparam TAlign Align object to iterate columns of.
+ * @tparam TSpec  Tag for specializing the class further.
+ */
+
 template <typename TAlign, typename TSpec>
 class Iter<TAlign, AlignColIterator<TSpec> >
 {
@@ -102,6 +114,8 @@ SEQAN_CHECKPOINT
 };
 
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO(holtgrew); Document as dox/hosted?
 
 template <typename TAlign, typename TSpec>
 inline TAlign &

@@ -39,6 +39,8 @@
 // function, or enables or disables the trace-back function.
 // ==========================================================================
 
+// TODO(holtgrew): Documentation in this header necessary or internal only?
+
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
 

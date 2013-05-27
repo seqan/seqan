@@ -38,6 +38,8 @@
 // All classes are only used on a meta-level.
 // ==========================================================================
 
+// TODO(holtgrew): Documentation in this header necessary or internal only?
+
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
 

@@ -59,6 +59,19 @@ namespace seqan {
 // Function integrateAlign()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Add demo! In this state, it's useless.
+/*!
+ * @fn integrateAlign
+ * @headerfile <seqan/align.h>
+ * @brief Integrates an alignment into another by copying the gaps.
+ *
+ * @signature void integrateAlign(align1, align2[, positions]);
+ *
+ * @param align1    Target Alignment object into which align2 is to be integrated.
+ * @param align2    Alignment object that is to be integrated into align1.
+ * @param positions The integration positions in align1 for all rows (view positions), String of positions.
+ */
+
 /**
 .Function.integrateAlign
 ..summary:Integrates an alignment into another by copying the gaps.
@@ -127,7 +140,7 @@ integrateAlign(Align<TSource1, TSpec1> & align,
     // std::cerr << "atend HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
 }
 
-template <typename TSource, typename TSpec1, typename TSpec2> 
+template <typename TSource, typename TSpec1, typename TSpec2>
 void
 integrateAlign(Align<TSource, TSpec1> & align,
 			   Align<typename Infix<TSource>::Type, TSpec2> const & infixAlign) {

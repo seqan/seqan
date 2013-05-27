@@ -52,6 +52,19 @@ namespace seqan {
 // Class AlignCols
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class AlignCols
+ * @implements EqualityComparableConcept
+ * @implements RandomAccessContainerConcept
+ * @headerfile <seqan/align.h>
+ * @brief Pseudo columns container for row-based Align class.
+ *
+ * @signature template <typename TAlign>
+ *            class AlignCols<TAlign>;
+ *
+ * @tparam TAlign The Align type.
+ */
+
 /**
 .Class.AlignCols:
 ..cat:Alignments
@@ -120,6 +133,8 @@ struct AlignColIterator;
 // ----------------------------------------------------------------------------
 // Metafunction Host
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Add HostedTypeConcept and make AlignCols object implement the concept.
 
 ///.Metafunction.Host.param.T.type:Class.AlignCols
 
