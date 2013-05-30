@@ -116,6 +116,24 @@
  */
 
 /*!
+ * @fn FMIndex#begin
+ * 
+ * @brief Returns an iterator pointing to the root not of the virtual prefix
+ *        trie of the reversed text of the index.
+ * 
+ * @signature Iterator begin(index, tag)
+ * 
+ * @param index The index to be traversed.
+ * @param tag The specialisation of the iterator to be returned by the function.
+ *            Types: VSTree Iterator
+ * 
+ * @return TReturn Returns an iterator pointing to the root not of the virtual
+ *                 prefix trie of the reversed text of the the index. Types:
+ *                 nolink:<tt>The result of Iterator<Index<TText, TIndexSpec>,
+ *                 TSpec >::Type</tt>
+ */
+
+/*!
  * @fn FMIndex#toSuffixPosition
  * 
  * @headerfile seqan/index.h
@@ -1373,7 +1391,637 @@
  * 
  * @signature Iter<RightArrayBinaryTree, TSpec >
  * 
- * @tparam TSpec Specialisation Tag. Types: TopDown Iterator
+ * @tparam TSpec Specialisation Tag. Types: TopDownIterator
  * @tparam RightArrayBinaryTree The @link RightArrayBinaryTree @endlink. Types:
- *                              RightArrayBinaryTree
+ *                              @link RightArrayBinaryTree @endlink
+ */
+
+/*!
+ * @fn RightArrayBinaryTree#begin
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief The begin (root) of a @link RightArrayBinaryTree @endlink.
+ * 
+ * @signature Iterator begin(rightArrayBinaryTree, iterSpec)
+ * 
+ * @param rightArrayBinaryTree The right-array-binary tree.
+ *
+ * @param iterSpec A specialisation tag. Types: TopDown<>, TopDown<ParentLinks<> >
+ * 
+ * @return TReturn An iterator to the first item in <tt>object</tt>.
+ *                 Metafunctions: Metafunction.Iterator
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#container
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Container of an iterator.
+ * 
+ * @signature Container container(iterator)
+ * 
+ * @param iterator An iterator.
+ * 
+ * @return TReturn The container that <tt>iterator</tt> traverses.
+ */
+
+/*!
+ * @fn RightArrayBinaryTree#end
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief The end (rigthmost laef) of a @link RightArrayBinaryTree @endlink.
+ * 
+ * @signature Iterator end(rightArrayBinaryTree, iterSpec)
+ * 
+ * @param rightArrayBinaryTree The right-array-binary tree.
+ *
+ * @param iterSpec A specialisation tag. Types: TopDown<>, TopDown<ParentLinks<> >
+ * 
+ * @return TReturn An iterator to the first item in <tt>object</tt>.
+ *                 Metafunctions: Metafunction.Iterator
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#getCharacter
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This function returns the pivot character of the node the iterator
+ *        currently points to.
+ * 
+ * @signature getCharacter(iterator)
+ * 
+ * @param iterator The iterator.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#getLeftChildPos
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the position in @link RightArrayBinaryTree @endlink of the
+ *        left child node.
+ * 
+ * @signature getLeftChildPos(iterator)
+ * 
+ * @param iterator The iterator.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#getSubTreeSize
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of vertices in the subtree starting at the position
+ *        an iterator points to.
+ * 
+ * @signature getSubTreeSize(iterator)
+ * 
+ * @param iterator The iterator.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#getPosition
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the position of the iterator in the host.
+ * 
+ * @signature getPosition(iterator)
+ * 
+ * @param iterator The iterator.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#getRightChildPos
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the position in @link RightArrayBinaryTree @endlink of the
+ *        right child node.
+ * 
+ * @signature getLeftChildPos(iterator)
+ * 
+ * @param iterator The iterator.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#goDown
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates down the leftmost edge in a @link RightArrayBinaryTree @endlink.
+ * 
+ * @signature bool goDown(iterator)
+ *
+ * @param iterator The iterator
+ * 
+ * @return TReturn <tt>true</tt> if an edge to go down exists,
+ *                 otherwise <tt>false</tt>. Types: bool
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#goLeftChild
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Sets the iterator to the left child of the current node if it exists
+ *        and returns true, otherwise the iterator does not change position and
+ *        the function returns false.
+ * 
+ * @signature bool goLeftChild(iterator)
+ * 
+ * @param iterator The iterator
+ * 
+ * @return TReturn <tt>true</tt> if the edge to go down exists,
+ *                 otherwise <tt>false</tt>.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#goRight
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates to the next sibling in a @link RightArrayBinaryTree @endlink.
+ * 
+ * @signature goRight(iterator)
+ * 
+ * @param iterator The iterator
+ * 
+ * @return TReturn <tt>true</tt> if the iterator could be moved, otherwise
+ *                 <tt>false</tt>. Types: nolink:bool
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#goRightChild
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Sets the iterator to the right child of the current node if it exists
+ *        and returns true, otherwise the iterator does not change position and
+ *        the function returns false.
+ * 
+ * @signature bool goRightChild(iterator)
+ * 
+ * @param iterator The iterator.
+ * 
+ * @return TReturn <tt>true</tt> if the edge to go down exists,
+ *                 otherwise <tt>false</tt>.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#goUp
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates up one edge to the parent in a @link RightArrayBinaryTree @endlink.
+ * 
+ * @signature goUp(iterator)
+ * 
+ * @param iterator The iterator.
+ * 
+ * @return TReturn <tt>true</tt> if the iterator could be moved, otherwise
+ *                 <tt>false</tt>. Types: nolink:bool
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#isLeaf
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Tests whether a given node is a leaf or not.
+ * 
+ * @signature isLeaf(iterator)
+ * 
+ * @param iterator The iterator.
+ * 
+ * @return TReturn True if the node is a leaf.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#setCharacter
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief The function sets the character of the
+ *        node the iterator points to to character.
+ * 
+ * @signature void setCharacter(iterator, character)
+ * 
+ * @param character The character to be assigned to a node.
+ * @param iterator The iterator.
+ */
+
+/*!
+ * @fn RightArrayBinaryTreeIterator#isRoot
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether a iterator points to the root node.
+ * 
+ * @signature bool isRoot(iterator)
+ * 
+ * @param iterator The iterator.
+ * 
+ * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to the root of the
+ *                 tree, otherwise <tt>false</tt>. Types: nolink:bool
+ */
+
+/*!
+ * @defgroup SentinelRankDictionaryFibres SentinelRankDictionary Fibres
+ * 
+ * @brief Tag to select a specific fibre of a @link
+ *        SentinelRankDictionary @endlink.
+ *  
+ * @see Fibre
+ * @see getFibre
+ * 
+ * @tag SentinelRankDictionaryFibres#FibreSentinelPosition
+ * 
+ * @brief The bit string encoding the position of the sentinel sign.
+ * 
+ * @tag SentinelRankDictionaryFibres#FibreRankDictionary
+ * 
+ * @brief The rank dictionary.
+ */
+
+/*!
+ * @class SentinelRankDictionary
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief A rank dictionary, additional storing sentinel character which are not
+ *        accounted for in a rank query.
+ * 
+ * @signature SentinelRankDictionary<TRankDictionary, TSpec>
+ * 
+ * @tparam TSpec Specialisation
+ * @tparam TRankDictionary The rank dictionary of a text.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#clear
+ * @headerfile seqan/index.h
+ * 
+ * @brief Clears the dictionary.
+ * 
+ * @signature clear(dictionary)
+ * 
+ * @param dictionary The rank dictionary to be cleared.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#sentinelPosition
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns whether a specified position is a sentinel position.
+ * 
+ * @signature sentinelPosition(dictionary, pos)
+ * 
+ * @param pos The position. Types: @link UnsignedIntegerConcept @endlink
+ * @param dictionary The dictionary.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#empty
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns whether or not the dictionary is empty.
+ * 
+ * @signature empty(dictionary)
+ * 
+ * @param dictionary The rank dictionary to be checked. 
+ */
+
+/*!
+ * @fn SentinelRankDictionary#getValue
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the character of a specified position.
+ * 
+ * @signature getCharacter(dictionary, pos)
+ * 
+ * @param pos The position
+ * @param dictionary The rank dictionary.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#getFibre
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a specific fibre of a dictionary.
+ * 
+ * @signature getFibre(dictionary, fibreTag)
+ * 
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ *                 @link SentinelRankDictionaryFibres SentinelRankDictionary Fibres
+ * @param dictionary The dictionary holding the fibre.
+ * 
+ * @return TReturn A reference to the @link Fibre @endlink object.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#countOccurrences
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of occurrences of a specified character from the
+ *        start to a specified position.
+ * 
+ * @signature countOccurrences(dictionary, character, pos)
+ * 
+ * @param character The character.
+ * @param pos The position (which is included in the counting).
+ * @param dictionary The dictionary.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#getSentinelSubstitute
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the character used to substitute the sentinel sign.
+ * 
+ * @signature getSentinelSubstitute(dictionary)
+ * 
+ * @param dictionary The dictionary.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#setSentinelSubstitute
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Sets the character used to substitute the sentinel sign.
+ * 
+ * @signature setSentinelSubstitute(dictionary, character)
+ * 
+ * @param character The sentinel substitute.
+ * @param dictionary The dictionary.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#setSentinelPosition
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Sets the sentinel position..
+ * 
+ * @signature setSentinelPosition(dictionary, pos)
+ * 
+ * @param pos The sentinel position. Types: @link UnsignedIntegerConcept @endlink
+ * @param dictionary The dictionary.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#createSentinelRankDictionary
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions creates the dictionary structure.
+ * 
+ * @signature void createSentinelRankDictionary(dictionary, text)
+ * 
+ * @param text A text to be transfered into a dictionary. Types: @link String @endlink
+ * @param dictionary The dictionary. 
+ */
+
+/*!
+ * @fn SentinelRankDictionary#save
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions saves a dictionary to disk.
+ * 
+ * @signature save(dictionary, fileName [, openMode])
+ * 
+ * @param openMode The combination of flags defining how the file should be
+ *                 opened.To open a file read-only, write-only or to read and
+ *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                 OPEN_APPEND</tt>
+ * @param dictionary The dictionary. Types: SentinelRankDictionary
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ */
+
+/*!
+ * @fn SentinelRankDictionary#open
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions loads a dictionary from disk.
+ * 
+ * @signature open(dictionary, fileName [, openMode])
+ * 
+ * @param openMode The combination of flags defining how the file should be
+ *                 opened.To open a file read-only, write-only or to read and
+ *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                 OPEN_APPEND</tt>
+ * @param dictionary The dictionary. Types: SentinelRankDictionary
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ */
+
+/*!
+ * @class SparseString
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief A string storing only a fraction of the values of the original
+ *        string.
+ * 
+ * @signature SparseString<TValueString, TSpec>
+ * 
+ * @tparam TSpec The specialisation tag. Default: void.
+ * @tparam TValueString The type of the string containing the values. Types: @link String @endlink
+ */
+
+/*!
+ * @defgroup SparseStringFibres FM Index Fibres
+ * 
+ * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
+ * 
+ * @section Remarks
+ * 
+ * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
+ * 
+ * @see Fibre
+ * @see getFibre
+ * 
+ * @tag SparseStringFibres#FibreValueString
+ * 
+ * @brief The String containing the stored values.
+ * 
+ * @tag SparseStringFibres#FibreIndicatorString
+ * 
+ * @brief The string storing for each position if a value different from a default value is stored.
+ */
+
+/*!
+ * @fn SparseString#clear
+ *
+ * @headerfile seqan/index.h
+ * 
+ * @brief Clears the @link SparseString @endlink.
+ * 
+ * @signature clear(sparseString)
+ * 
+ * @param sparseString The  @link SparseString @endlink to be cleared.
+ */
+
+/*!
+ * @fn SparseString#empty
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns whether or not the @link SparseString @endlink is empty.
+ * 
+ * @signature empty(sparseString)
+ * 
+ * @param sparseString The @link SparseString @endlink to be checked. 
+ */
+
+/*!
+ * @fn SparseString#getValue
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the value of a @link SparseString @endlink.
+ * 
+ * @signature getValue(sparseString, pos)
+ * 
+ * @param sparseString The @link SparseString @endlink. 
+ * @param pos The position at which a value should be assign to the sparse string. 
+ *        Types: @link UnsignedIntergerConcept @endlink
+ *
+ * @return TValue The type @link GetValue @endlink of @link SparseString @endlink is returned.
+ */
+
+/*!
+ * @fn SparseString#value
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the value of a @link SparseString @endlink.
+ * 
+ * @signature value(sparseString, pos)
+ * 
+ * @param sparseString The @link SparseString @endlink. 
+ * @param pos The position at which a value should be assign to the sparse string. 
+ *        Types: @link UnsignedIntergerConcept @endlink
+ *
+ * @return TValue The type @link Reference @endlink of @link SparseString @endlink is returned.
+ */
+
+/*!
+ * @fn SparseString#getFibre
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a specific fibre of a @link SparseString @endlink.
+ * 
+ * @signature getFibre(sparseString, fibreTag)
+ * 
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ *                 @link SparseStringFibres SparseString Fibres @endlink
+ * @param sparseString The sparseString holding the fibre.
+ * 
+ * @return TReturn A reference to the @link Fibre @endlink object.
+ */
+
+/*!
+ * @fn SparseString#length
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of elements in the @link SparseString @endlink.
+ * 
+ * @signature TSize length(sparseString)
+ * 
+ * @param sparseString The sparse string suffix array.
+ *
+ * @return TSize The number of elements in the sparse string array. Types: The result of @link Size @endlink of the
+ * sparse string.
+ */
+
+/*!
+ * @fn SparseString#resize
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Resets the number of elements in the compressed suffix array.
+ * 
+ * @signature TSize resize(sparseString, newLenght)
+ * 
+ * @param sparseString The sparse string.
+ * @param newLength The number of elements which should be stored in the  sparse string. Types: @link
+ * UnsignedIntegerConcept @endlink.
+ *
+ * @return TSize The number of elements in the  sparse string. Types: The result of @link Size @endlink of the
+ * sparse string.
+ *
+ * @section Note If the new length is smaller than the actual one then the last <bb>x<bb> items of the compressed suffix array
+ * are deleted with x = oldLength - newLength.
+ */
+
+/*!
+ * @fn SparseString#open
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions open a sparse string from disk.
+ * 
+ * @signature open(string, fileName [, openMode])
+ * 
+ * @param openMode The combination of flags defining how the file should be
+ *                 opened.To open a file read-only, write-only or to read and
+ *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                 OPEN_APPEND</tt>
+ * @param string The string to be saved. Types: SparseString
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ */
+/*!
+ * @fn SparseString#save
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions saves a sparse string to disk.
+ * 
+ * @signature open(string, fileName [, openMode])
+ * 
+ * @param openMode The combination of flags defining how the file should be
+ *                 opened.To open a file read-only, write-only or to read and
+ *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                 OPEN_APPEND</tt>
+ * @param string The string to be saved. Types: SparseString
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
  */
