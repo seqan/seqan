@@ -53,6 +53,48 @@ Every node can uniquely be mapped to an interval of the suffix array containing 
 This interval and some extra information constitute the @Metafunction.VertexDescriptor@ returned by the @Function.value@ function of the iterator.
 ..include:seqan/index.h
 */
+/*!
+ * @class VSTreeIterator VSTree Iterator
+ * 
+ * @extends Iter
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Abstract iterator for string trees, where string trees are trees constructed from a string.
+ * 
+ * @signature Iter<TContainer, VSTree<TSpec> >
+ * 
+ * @tparam TSpec The specialization type.
+ * @tparam TContainer Type of the container that can be iterated. Types:
+ *                    @link IndexDfi @endlink, @link IndexEsa @endlink, @link IndexWotd @endlink, @link FMindex @endlink
+ * 
+ * @section Remarks
+ * 
+ * This iterator is a pointer to a node in the string tree of a given text. Depending on the index this can either be
+ * a suffix or prefix tree/trie and depending on the iterator specification this can be a tree or a trie.  
+ *
+ * Default virtual string tree iterators depending on the @link Index @endlink
+ * <table border="1">
+ * <tr>
+ *   <td>IndexEsa</td>
+ *   <td>Virtual suffix tree iterator</td>
+ * </tr>
+ * <tr>
+ *   <td>IndexWotd</td>
+ *   <td>Virtual suffix tree iterator</td>
+ * </tr>
+ * <tr>
+ *   <td>IndexDfi</td>
+ *   <td>Virtual suffix tree iterator</td>
+ * </tr>
+ * <tr>
+ *   <td>FMIndex</td>
+ *   <td>Virtual prefix tree iterator</td>
+ * </tr>
+ * </table>
+ *
+ * Every node can uniquely be mapped to an interval of suffices or prefixes.
+ */
 
 	template < typename TIndex, typename TSpec >
     struct Value< Iter< TIndex, VSTree<TSpec> > > {
@@ -106,7 +148,50 @@ The iterator starts in the root node by default.
 ..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the virtual tree.
 ..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 */
-
+/*!
+ * @class TopDownIterator Top Down Iterator
+ * 
+ * @extends VSTreeIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator for virtual trees/tries that can go down and right beginning from
+ *        the root.
+ * 
+ * @signature 
+ * @signature Iter<TContainer, VSTree< TopDown<TSpec> > >
+ * 
+ * @tparam TSpec The specialization type.
+ * @tparam TContainer Type of the container that can be iterated. Types:
+ *                    IndexDfi, IndexEsa, IndexWotd
+ * 
+ * @section Remarks
+ * 
+ * If not copy-constructed the @link TopDownIterator @endlink starts in the
+ * root node of the virtual tree/trie.
+ * 
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, TopDown<TSpec> >::Type (which is Iter<TContainer, VSTree< TopDown<TSpec> > >).
+ */
+/*!
+ * @fn TopDownIterator::Iterator
+ * 
+ * @brief Constructor
+ * 
+ * @signature Iterator(index[, vertexDesc])
+ * @signature Iterator(iterator)
+ * 
+ * @param index An index object.
+ * @param iterator Another TopDown iterator. (copy constructor) Types: TopDown
+ *                 Iterator, TopDownHistory Iterator
+ * @param vertexDesc The vertex descriptor of a node the iterator should start
+ *                   in. The iterator starts in the root node by default.
+ * 
+ * @section Remarks
+ * 
+ * If not copy-constructed the @link TopDownIterator @endlink starts in the
+ * root node of the virtual tree.
+ */
 
 	template < typename TIndex, class TSpec >
 	class Iter< TIndex, VSTree< TopDown<TSpec> > > 
@@ -199,6 +284,57 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the suffix tree.
 ..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
 */
+/*!
+ * @class TopDownHistoryIterator Top Down History Iterator
+ * 
+ * @implements ForwardIteratorConcept
+ * 
+ * @extends TopDownIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief String tree iterator that can go down, right, and up. Supports depth-
+ *        first search.
+ * 
+ * @signature Iter<TContainer, VSTree< TopDown< ParentLinks<TSpec> > > >
+ * 
+ * @tparam TSpec The specialization type. Specifies the depth-first search mode.
+ *               Types: DFS Order.tag.Preorder, DFS
+ *               Order.tag.PreorderEmptyEdges, DFS Order.tag.Postorder, DFS
+ *               Order.tag.PostorderEmptyEdges
+ * @tparam TContainer Type of the container that can be iterated. Types:
+ *                    IndexDfi, IndexEsa, IndexWotd
+ *
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, TopDown<ParentLinks<TSpec> > >::Type (which is Iter<TContainer, VSTree<ParentLinks<TopDown<TSpec> > > >).
+ *
+ * 
+ * @section Remarks
+ * 
+ * If not copy-constructed the @link TopDownHistoryIterator @endlink starts in
+ * the root node of the string tree. Depending on the depth-first search mode
+ * the root is not the first DFS node. To go to the first DFS node use @link
+ * goBegin @endlink.
+ * 
+ * Demo: Demo.Constraint Iterator
+ */
+/*!
+ * @fn TopDownHistoryIterator::Iterator
+ * 
+ * @brief Constructor
+ * 
+ * @signature Iterator(index)
+ * @signature Iterator(iterator)
+ * 
+ * @param index An index object.
+ * @param iterator Another TopDownHistory iterator. (copy constructor) Types:
+ *                 TopDownHistory Iterator
+ * 
+ * @section Remarks
+ * 
+ * If not copy-constructed the @link TopDownHistoryIterator @endlink starts in
+ * the root node of the string tree.
+ */
 
 	template < typename TVSTreeIter >
 	struct HistoryStackEntry_;
@@ -296,6 +432,42 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ...type:Spec.BottomUp Iterator
 ..remarks:If not copy-constructed the @Spec.BottomUp Iterator@ starts in the first DFS node, which is the left-most leaf of the suffix tree.
 */
+/*!
+ * @class BottomUpIterator Bottom Up Iterator
+ * 
+ * @implements ForwardIteratorConcept
+ * 
+ * @extends VSTreeIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator for an efficient postorder depth-first search in a virtual string tree.
+ * 
+ * @signature Iter<TContainer, VSTree< BottomUp<TSpec> > >
+ * 
+ * @tparam TSpec The specialization type.
+ * @tparam TContainer Type of the container that can be iterated. Types:
+ *                    @link IndexEsa @endlink
+ *
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, BottomUp<TSpec> >::Type (which is Iter<TContainer, VSTree<BottomUp<TSpec> > >).
+ * 
+ * @fn BottomUp Iterator::Iterator
+ * 
+ * @brief Constructor
+ * 
+ * @signature Iterator(index)
+ * @signature Iterator(iterator)
+ * 
+ * @param index An index object.
+ * @param iterator Another BottomUp iterator. (copy constructor) Types: BottomUp
+ *                 Iterator
+ * 
+ * @section Remarks
+ * 
+ * If not copy-constructed the @link BottomUpIterator @endlink starts in the
+ * first DFS node, which is the left-most leaf of the virtual string tree.
+ */
 
 	template < typename TIndex, typename TSpec >
 	struct HistoryStackEntry_< Iter< TIndex, VSTree< BottomUp<TSpec> > > >
@@ -508,7 +680,27 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ...type:Metafunction.Size|Size type of the underlying index
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTreeIterator#repLength
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the length of the substring representing the path from root to
+ *        <tt>iterator</tt> node.
+ * 
+ * @signature repLength(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn The length of the sequence returned by @link representative
+ *                 @endlink Types: the result of the metafunction @link Size @endlink of the underlying index.
+ * 
+ * Demo: Demo.Mummy
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ * 
+ * Demo: Demo.Maximal Unique Matches
+ */
 	template < typename TIndex, typename TSpec >
 	inline typename Size<TIndex>::Type 
 	repLength(Iter< TIndex, VSTree<BottomUp<TSpec> > > const &it) 
@@ -558,6 +750,20 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ...type:Metafunction.Size|Size type of the underlying index
 ..include:seqan/index.h
 */
+/*!
+ * @fn TopDownHistoryIterator#nodeDepth
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the zero-based node depth of the <tt>iterator</tt> node.
+ * 
+ * @signature nodeDepth(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link TopDownHistoryIterator @endlink
+ * 
+ * @return TReturn The length of the path from root to <tt>iterator</tt> node,
+ *                 e.g. 0 is returned for the root node. Types: the result of the metafunction @link Size @endlink of the underlying index.
+ */
 
 	template < typename TIndex, typename TSpec >
 	inline typename Size<TIndex>::Type
@@ -579,6 +785,21 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ...type:Metafunction.Size|Size type of the underlying index
 ..include:seqan/index.h
 */
+/*!
+ * @fn TopDownIterator#parentRepLength
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the length of the substring representing the path from root to
+ *        <tt>iterator</tt>'s parent node.
+ * 
+ * @signature parentRepLength(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
+ * 
+ * @return TReturn The length of the sequence returned by @link representative
+ *                 @endlink of the parent node. Types: the result of the metafunction @link Size @endlink of the underlying index.
+ */
 
 	template < typename TIndex, typename TSpec >
 	inline typename Size<TIndex>::Type
@@ -601,6 +822,21 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ...type:Metafunction.Size|Size type of the underlying index
 ..include:seqan/index.h
 */
+/*!
+ * @fn TopDownIterator#emptyParentEdge
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns <tt>true</tt> iff the edge label from the <tt>iterator</tt>
+ *        node to its parent is empty.
+ * 
+ * @signature bool emptyParentEdge(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if @link parentEdgeLength @endlink<tt> returns
+ *                 0, otherwise </tt>false$. Types: the result of the metafunction @link Size @endlink of the underlying index.
+ */
 
 	template < typename TIndex, typename TSpec >
 	inline bool
@@ -631,6 +867,22 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ..returns:$false$ if the lca of $a$ and $b$ is the root node, otherwise $true$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn TopDownHistoryIterator#lca
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the last common ancestor of two tree nodes.
+ * 
+ * @signature bool lca(a, b, result)
+ * 
+ * @param a The first node. Types: @link TopDownHistoryIterator @endlink
+ * @param b The second node. Types: @link TopDownHistoryIterator @endlink
+ * @param result A reference to the resulting lca node. Types: @link TopDownHistoryIterator @endlink 
+ * 
+ * @return TReturn <tt>false</tt> if the lca of <tt>a</tt> and <tt>b</tt> is the
+ *                 root node, otherwise <tt>true</tt>.
+ */
 
 	template < typename TIndex, class TSpec1, class TSpec2 >
 	inline bool lca(
@@ -689,7 +941,21 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ..returns:The lcp-length of $a$ and $b$.
 ..include:seqan/index.h
 */
-
+/*! 
+ * @fn TopDownHistoryIterator#lcp
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the length of the longest-common-prefix of two suffix tree
+ *        nodes.
+ * 
+ * @signature lcp(a, b)
+ * 
+ * @param a The first node. Types: @link TopDownHistoryIterator @endlink
+ * @param b The second node. Types: @link TopDownHistoryIterator @endlink
+ * 
+ * @return TReturn The lcp-length of <tt>a</tt> and <tt>b</tt>.
+ */
 	// return the lcp of a and b by seeking the lca of them
 	template < typename TIndex, class TSpec1, class TSpec2 >
 	inline typename Size<TIndex>::Type lcp(
@@ -774,7 +1040,24 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ...type:Spec.IndexEsa
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn Index#resizeVertexMap
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Initializes a vertex map.
+ * 
+ * @signature resizeVertexMap(index, pm)
+ * 
+ * @param index An index with a suffix tree interface. Types: @link IndexEsa @endlink,
+ *              @link IndexWotd @endlink
+ *
+ * @param pm An External Property Map. Types: @link ExternalPropertyMap @endlink
+ * 
+ * @return TReturn void
+ * 
+ * @see resizeEdgeMap
+ */
 	template < typename TText, typename TSpec, typename TPropertyMap >
 	inline void
 	resizeVertexMap(
@@ -829,6 +1112,21 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::Type$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#getOccurrence
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns an occurrence of the @link representative @endlink substring in the index text.
+ *
+ * @signature getOccurrence(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn A position where the @link representative @endlink of
+ *                 <tt>iterator</tt> occurs in the text. Type: @link SAValue @endlink of the index type of the 
+ *                 iterator.
+ */
 
 	template < typename TIndex, class TSpec >
 	inline typename SAValue<TIndex>::Type 
@@ -851,6 +1149,32 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
 If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Type$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#countOccurrences
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of occurrences of @link representative @endlink
+ *        substring in the index text.
+ * @brief ..cat:Index
+ * 
+ * @signature countOccurrences(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn The number of positions where the @link representative
+ *                 @endlink of <tt>iterator</tt> occurs in the text.
+ *                 Type: @link Size @endlink of the index type of the iterator.
+
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ * 
+ * Demo: Demo.Index countChildren
+ */
 
 	template < typename TIndex, class TSpec >
 	inline typename Size<TIndex>::Type 
@@ -878,7 +1202,53 @@ $range$ returns begin and end position of this range for occurrences of @Functio
 If $iterator$'s container type is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTreeIterator#range
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the suffix array interval borders of occurrences of @link
+ *        representative @endlink substring in the index text.
+ * 
+ * @signature range(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn All positions where a substring occurs in the text are stored in a contiguous
+ *                 range of the suffix array. <tt>range</tt> returns begin and
+ *                 end position of this range for occurrences of @link
+ *                 representative @endlink. Type: @link Pair @endlink<@link Size @endlink< <tt>TIndex<tt> > > with 
+ *                 TIndex being the index type of the iterator.
+ *
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ */
+/*!
+ * @fn Index#range
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the suffix array interval borders of a q-gram in the index text.
+ * 
+ * @signature range(index, shape)
+ * 
+ * @param index A index. Types: @link Index @endlink
+ * @param shape A shape object. Types: @link Shape @endlink
+ * 
+ * @return TReturn All positions where the q-gram
+ *                 stored in <tt>shape</tt> occurs in the text (see @link QGramIndexFibres.QGramText @endlink) are 
+ *                 stored in a contiguous
+ *                 range of the suffix array. <tt>range</tt> returns begin and
+ *                 end position of this range. If the type of <tt>index</tt> is
+ *                 <tt>TIndex</tt> the return type is $Pair<Size<TIndex>::Type>.
+ * 
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ */
 	template < typename TText, typename TSpec, typename TDesc >
 	inline Pair<typename Size<Index<TText, TSpec> >::Type>
 	range(Index<TText, TSpec> const &index, TDesc const &desc)
@@ -912,6 +1282,39 @@ If $iterator$'s container type is $TIndex$ the return type is $Pair<Size<TIndex>
 If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaSA>::Type const>::Type$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#getOccurrences
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns all occurrences of the @link representative @endlink substring
+ *        in the index text.
+ * 
+ * @signature getOccurrences(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn All positions where the @link representative @endlink of
+ *                 <tt>iterator</tt> occurs in the text. Type 
+ *                 @link Infix @endlink<@link Fibre @endlink <TIndex, EsaSA>::Type>. 
+ * 
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ * 
+ * Demo: Demo.Mummy
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ * 
+ * Demo: Demo.Maximal Unique Matches
+ * 
+ * @see isUnique
+ * @see getFrequency
+ * @see isPartiallyLeftExtensible
+ * @see isLeftMaximal
+ * @see orderOccurrences
+ */
 
 	template < typename TIndex, class TSpec >
 	inline typename Infix< typename Fibre<TIndex, FibreSA>::Type const >::Type 
@@ -936,6 +1339,22 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 otherwise the seed returned is one many.
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#alignment
+ *
+ * @brief Returns an alignment of the occurrences of the @link representative @endlink substring in the index text.
+ *
+ * @deprecated Internal
+ *
+ * @signature alignment(iterator)
+ *
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn A local alignment corresponding to the seed of the <tt>iterator<tt>.
+ *
+ * @section Remark The @Function.representative@ must uniquely occur in every sequence (e.g. in Mums), 
+ * otherwise the seed returned is one many.
+ */
 
 	template < typename TString, typename TSSetSpec, typename TIndexSpec, class TSpec >
 	inline Align<TString, ArrayGaps>
@@ -1019,7 +1438,25 @@ otherwise the seed returned is one many.
 If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaBwt>::Type const>::Type$.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTreeIterator#getOccurrencesBwt
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the characters left beside all occurrence of the @link
+ *        representative @endlink substring in the index text.
+ * 
+ * @signature getOccurrencesBwt(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn All positions where the @link representative @endlink of
+ *                 <tt>iterator</tt> occurs in the text.
+ *
+ *                 If <tt>iterator</tt>'s container
+ *                 type is <tt>TIndex</tt> the return type is
+ *                 <tt>Infix<Fibre<TIndex, EsaBwt>::Type const>::Type</tt>.
+ */
 	template < typename TIndex, class TSpec >
 	inline typename Infix< typename Fibre<TIndex, EsaBwt>::Type const >::Type 
 	getOccurrencesBwt(Iter< TIndex, VSTree<TSpec> > const &it) 
@@ -1043,6 +1480,30 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaText>::Type const>::Type$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#representative
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a substring representing the path from root to
+ *        <tt>iterator</tt> node.
+ * 
+ * @signature representative(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn An @link InfixSegment @endlink of the text of an index. Types: Infix<Fibre<TIndex, FibreText>::Type>::Type.
+ * 
+ * Demo: Demo.Mummy
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ * 
+ * Demo: Demo.Constraint Iterator
+ * 
+ * Demo: Demo.Maximal Repeats
+ * 
+ * Demo: Demo.Maximal Unique Matches
+ */
 
 	template < typename TIndex, class TSpec >
 	inline typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type 
@@ -1085,7 +1546,42 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  }
 
 */
-
+/*!
+ * @fn VSTreeIterator#countChildren
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Count the number of children of a tree node.
+ * 
+ * @signature countChildren(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn The number of children of a tree node. Type: @link Size @endlink of the index type of the iterator.
+ *  
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * // this code is in seqan/index/index_esa_stree.h
+ *  
+ *  typedef Index< String<char> > TMyIndex;
+ *  TMyIndex myIndex(myString);
+ *  
+ *  Iterator< TMyIndex, TopDown<ParentLinks<PreorderEmptyEdges> > >::Type tdIterator(myIndex);
+ *  Size<TMyIndex>::Type count;
+ *  
+ *  while (!atEnd(tdIterator)) {
+ *  // We print out the representatives of all nodes that have more than 3 children and the number of occurrences.
+ *  count = countChildren(tdIterator);
+ *  if (count >= 3)
+ *  {
+ *      ::std::cout << "Representative " << representative(tdIterator) << " has " <<  count << " children  and " << countOccurrences(tdIterator) << " Occurrences " << ::std::endl;
+ *  
+ *      ++tdIterator;
+ *  }
+ * @endcode
+ * Demo: Demo.Index countChildren
+ */
 	template < typename TIndex, typename TSpec >
 	inline typename Size<TIndex>::Type 
 	countChildren(Iter<TIndex, VSTree<TSpec> > const &it) 
@@ -1222,6 +1718,23 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ..returns:
 ..include:seqan/index.h
 */
+//TODO(singer): Why only bottom-up???
+/*!
+ * @fn VSTreeIterator#nodePredicate
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief If <tt>false</tt> this node will be skipped during the bottom-up
+ *        traversal.
+ * 
+ * @signature bool nodePredicate(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return bool Returns whether or not the node will be skipped. 
+ * 
+ * Demo: Demo.Constraint Iterator
+ */
 
 	template < typename TIndex, class TSpec >
 	inline bool
@@ -1242,6 +1755,21 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ..returns:
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#nodeHullPredicate
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief If <tt>false</tt> this node and its subtree is concealed.
+ * 
+ * @signature bool nodeHullPredicate(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return bool Returns whether or not a subtree is concealed.
+ * 
+ * Demo: Demo.Constraint Iterator
+ */
 
 	template < typename TIndex, class TSpec >
 	inline bool
@@ -1262,6 +1790,17 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ...type:Spec.TopDown Iterator
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#goRoot
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Move iterator to the root node.
+ * 
+ * @signature goRoot(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link TopDownIterator @endlink
+ */
 
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline void goRoot(Iter<Index<TText, TIndexSpec>, VSTree<TSpec> > &it) 
@@ -1274,8 +1813,37 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 
 //____________________________________________________________________________
 
-///.Function.begin.param.object.type:Class.Index
-///.Function.begin.class:Class.Index
+/**
+.Function.Index#begin
+..summary:Returns an iterator pointing to the root not of the virtual suffix tree of the index.
+..signature:begin(index, tag)
+..class:Class.Index
+..param.index:The index to be traversed
+...type:Spec.IndexEsa
+...type:Spec.IndexDfi
+...type:Spec.IndexWotd
+..param.tag:The specialisation of the iterator to be returned by the function.
+...type:Spec.VSTree Iterator
+..returns:Returns an iterator pointing to the root not of the virtual suffix tree of the index.
+...type:nolink:$The result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type$
+*/
+//TODO(singer): The summary is not entirely true!!!
+/*!
+ * @fn Index#begin
+ * 
+ * @brief Returns an iterator pointing to the root not of the virtual suffix
+ *        tree of the index.
+ * 
+ * @signature begin(index, tag)
+ * 
+ * @param index The index to be traversed. Types: @link IndexEsa @endlink, @link IndexDfi @endlink, @link IndexWotd @endlink, @link FMIndex @endlink
+ * @param tag The specialisation of the iterator to be returned by the function.
+ *            Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn Returns an iterator pointing to the root not of the virtual
+ *                 string tree of the index. Types: nolink:<tt>The result of
+ *                 Iterator<Index<TText, TIndexSpec>, TSpec >::Type</tt>
+ */
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline typename Iterator<Index<TText, TIndexSpec>, TSpec >::Type
 	begin(Index<TText, TIndexSpec> &index, TSpec const) 
@@ -1416,7 +1984,38 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ...type:nolink:bool
 ..include:seqan/index.h
 */
-
+//TODO(singer): The lcp stuff need to be adapted
+/*!
+ * @fn TopDownIterator#goDown
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates down one edge or a path in a tree.
+ * 
+ * @signature bool goDown(iterator)
+ * @signature bool goDown(iterator, char)
+ * @signature bool goDown(iterator, text[, lcp])
+ * 
+ * @param char <tt>iterator</tt> goes down the edge beginning with
+ *             <tt>char</tt>.
+ * @param text <tt>iterator</tt> goes down the path representing <tt>text</tt>.
+ *             If <tt>text</tt> ends within an edge, <tt>iterator</tt> will
+ *             point to the child-end of this edge.
+ * @param lcp A reference of a size type. When <tt>goDown</tt> returns,
+ *            <tt>lcp</tt> contains the length of the longest-common-prefix of
+ *            <tt>text</tt> and a path beginning at the <tt>iterator</tt> node.
+ *            Types: String, Segment
+ * @param iterator An iterator of a tree. Types: @link TopDownIterator @endlink,
+ *                 @link RightArrayBinaryTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if the edge or path to go down exists,
+ *                 otherwise <tt>false</tt>. Types: <tt>bool<tt>
+ * 
+ * @section Remarks
+ * 
+ * <tt>goDown(iterator)</tt> goes down the leftmost edge in the tree,
+ * i.e. the edge beginning with the lexicographically smallest character.
+ */
     //////////////////////////////////////////////////////////////////////////////
 	// unified history stack access for goDown(..)
 
@@ -1709,7 +2308,20 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ...type:nolink:bool
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn TopDownHistoryIterator#goUp
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates up one edge to the parent in a tree/trie.
+ * 
+ * @signature goUp(iterator)
+ * 
+ * @param iterator An iterator of a string tree/trie. Types: @link TopDownHistoryIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if the iterator could be moved, otherwise
+ *                 <tt>false</tt>. Types: <tt>bool<tt>
+ */
 	// go up one edge (returns false if in root node)
 	// can be used at most once, as no history stack is available
 	template < typename TIndex, class TSpec >
@@ -1761,6 +2373,23 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 ...type:Metafunction.VertexDescriptor
 ..include:seqan/index.h
 */
+/*!
+ * @fn TopDownIterator#nodeUp
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the vertex descriptor of the parent node.
+ * 
+ * @signature nodeUp(iterator)
+ * 
+ * @param iterator An iterator of a string tree/trie. Types: @link TopDownIterator @endlink
+ * 
+ * @return TReturn The vertex descriptor of the parent node. The type is
+ *                 @link VertexDescriptor @endlink of TIndex. If <tt>iterator</tt>
+ *                 points at the root node, the vertex descriptor of
+ *                 <tt>iterator</tt> (<tt>value(iterator)</tt>) is returned.
+ *                 Types: @link VertexDescriptor @endlink
+ */
 
 	// return vertex descriptor of parent's node
 	template < typename TIndex, class TSpec >
@@ -1798,7 +2427,21 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 ...type:nolink:bool
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn TopDownIterator#goRight
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates to the next sibling in a tree.
+ * 
+ * @signature goRight(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink,
+ *                 @link RightArrayBinaryTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if the iterator could be moved, otherwise
+ *                 <tt>false</tt>. Types: nolink:bool
+ */
 	// go right to the lexic. next sibling
 	template < typename TText, class TIndexSpec, class TSpec, typename TDfsOrder, typename THideEmptyEdges >
 	inline bool _goRight(
@@ -1850,7 +2493,21 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 ..returns:The returned value is equal to $length(parentEdgeLabel(iterator))$.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn TopDownIterator#parentEdgeLength
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the length of the edge from the <tt>iterator</tt> node to its
+ *        parent.
+ * 
+ * @signature parentEdgeLength(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
+ * 
+ * @return TReturn The returned value is equal to
+ *                 <tt>length(parentEdgeLabel(iterator))</tt>.
+ */
 	template < typename TIndex, class TSpec >
 	inline typename Size< TIndex >::Type
 	parentEdgeLength(Iter< TIndex, VSTree< TopDown<TSpec> > > const &it) 
@@ -1870,6 +2527,24 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaText>::Type const>::Type$.
 ..include:seqan/index.h
 */
+//TODO(singer): EsaText should be FibreText!
+/*!
+ * @fn TopDownIterator#parentEdgeLabel
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a substring representing the edge from an <tt>iterator</tt>
+ *        node to its parent.
+ * 
+ * @signature parentEdgeLabel(iterator)
+ * 
+ * @param iterator An iterator of a string tree/trie. Types: @link TopDownIterator @endlink
+ * 
+ * @return TReturn An @link InfixSegment @endlink of the text of an index. If
+ *                 <tt>iterator</tt>'s container type is <tt>TIndex</tt> the
+ *                 return type is <tt>Infix<Fibre<TIndex, EsaText>::Type
+ *                 const>::Type</tt>.
+ */
 
 	template < typename TIndex, class TSpec >
     inline typename EdgeLabel< Iter< TIndex, VSTree<TSpec> > >::Type
@@ -1892,6 +2567,23 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..returns:A single character of type $Value<TIndex>::Type$ which is identical to $Value<Fibre<TIndex, EsaRawText>::Type>::Type$.
 ..include:seqan/index.h
 */
+//TODO(singer): EsaRawText
+/*!
+ * @fn TopDownIterator#parentEdgeFirstChar
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the first character of the edge from an <tt>iterator</tt> node
+ *        to its parent.
+ * 
+ * @signature parentEdgeFirstChar(iterator)
+ * 
+ * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
+ * 
+ * @return TReturn A single character of type <tt>Value<TIndex>::Type</tt> which
+ *                 is identical to <tt>Value<Fibre<TIndex,
+ *                 EsaRawText>::Type>::Type</tt>.
+ */
 
 	template < typename TIndex, class TSpec >
 	inline typename Value<TIndex>::Type 
@@ -2048,7 +2740,21 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ...type:nolink:bool
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTreeIterator#isRoot
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether a tree iterator points to the root node.
+ * 
+ * @signature bool isRoot(iterator)
+ * 
+ * @param iterator An iterator of a tree. Types: @link VSTreeIterator @endlink,
+ *                 @link RightArrayBinaryTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to the root of the
+ *                 tree, otherwise <tt>false</tt>. Types: nolink:bool
+ */
 	template < typename TIndex, class TSpec >
 	inline bool isRoot(Iter<TIndex, VSTree< BottomUp<TSpec> > > const &it) 
 	{
@@ -2081,6 +2787,27 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..remarks:Every leaf is also a right terminal (see @Function.isLeaf@), but not vice versa.
 ..include:seqan/index.h
 */
+//TODO(singer): Not the case for trie or FM Index
+/*!
+ * @fn VSTreeIterator#isRightTerminal
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether iterator points to a suffix.
+ * 
+ * @signature bool isRightTerminal(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to the node
+ *                 representing a suffix, otherwise <tt>false</tt>. Types:
+ *                 <tt>bool<tt>
+ * 
+ * @section Remarks
+ * 
+ * Every leaf is also a right terminal (see @link isLeaf @endlink), but not vice
+ * versa.
+ */
 
 	template < typename TIndex, class TSpec >
 	inline bool isRightTerminal(Iter<TIndex, VSTree<TSpec> > const &it) 
@@ -2107,6 +2834,23 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..see:Function.getOccurrences
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#isLeftMaximal
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether the occurrences of an iterator's @link representative @endlink mutually differ in the character
+ *        left of the hits.
+ * 
+ * @signature bool isLeftMaximal(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if there are at least two different characters
+ *                 left of the occurrences, otherwise <tt>false</tt>. Types: <tt>bool<tt>
+ * 
+ * @see getOccurrences
+ */
 
 	template < typename TIndex, class TSpec >
 	inline bool isLeftMaximal(Iter<TIndex, VSTree<TSpec> > const &it)
@@ -2157,7 +2901,23 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..see:Function.getOccurrences
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTree Iterator#isPartiallyLeftExtensible
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether the characters left of the two occurrences of @link
+ *        representative @endlink are equal.
+ * 
+ * @signature bool isPartiallyLeftExtensible(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if there are at least two different characters
+ *                 left of the occurrences, otherwise <tt>false</tt>.
+ * 
+ * @see getOccurrences
+ */
 	template < typename TIndex, class TSpec, typename TSet >
 	inline bool isPartiallyLeftExtensible(Iter<TIndex, VSTree<TSpec> > const &it, TSet &charSet)
 	{
@@ -2212,6 +2972,24 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..see:Function.getOccurrences
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#isUnique
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether the @link representative @endlink occurs only once in
+ *        every sequence.
+ * 
+ * @signature bool isUnique(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if there are at least two different characters
+ *                 left of the occurrences, otherwise <tt>false</tt>. Types:
+ *                 <tt> bool <tt>
+ * 
+ * @see getOccurrences
+ */
 
 	template < typename TIndex, class TSpec, typename TSet >
 	inline bool isUnique(Iter<TIndex, VSTree<TSpec> > const &it, TSet &set)
@@ -2258,6 +3036,23 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..see:Function.getOccurrences
 ..include:seqan/index.h
 */
+/*!
+ * @fn VSTreeIterator#getFrequency
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of sequences, which contain the @link
+ *        representative @endlink as a substring.
+ * 
+ * @signature int getFrequency(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn The number of different sequences containing the @link
+ *                 representative @endlink.
+ * 
+ * @see getOccurrences
+ */
 
 	template < typename TIndex, class TSpec, typename TSet >
 	inline typename Size<TIndex>::Type
@@ -2309,7 +3104,21 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..returns:$true$ if $iterator$ points to an inner node of the tree, whose children are leaves. Otherwise it is $false$.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTreeIterator#childrenAreLeaves
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether iterator points to a node with only leaf-children.
+ * 
+ * @signature bool childrenAreLeaves(iterator)
+ * 
+ * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to an inner node of
+ *                 the tree, whose children are leaves. Otherwise it is
+ *                 <tt>false</tt>.
+ */
 	template < typename TIndex, class TSpec >
 	inline bool childrenAreLeaves(Iter<TIndex, VSTree<TSpec> > const &it) 
 	{
@@ -2328,7 +3137,23 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ...type:nolink:bool
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn VSTreeIterator#isLeaf
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Test whether a tree iterator points to a leaf.
+ * 
+ * @signature bool isLeaf(iterator)
+ * 
+ * @param iterator An iterator of a tree. Types: @link VSTreeIterator @endlink,
+ *                 @link RightArrayBinaryTreeIterator @endlink
+ * 
+ * @return TReturn <tt>true</tt> if <tt>iterator</tt> points to a leaf of the
+ *                 tree, otherwise <tt>false</tt>. Types: <tt>bool<tt>
+ * 
+ * Demo: Demo.Index countChildren
+ */
 	template < typename TSize >
 	inline bool _isLeaf(VertexEsa<TSize> const &vDesc)
 	{

@@ -209,6 +209,26 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks:The size of $childTab$ must be at least $length(text)$ before calling this function.
 ..include:seqan/index.h
 */
+
+/*!
+ * @fn IndexEsa#createChildtab
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates a child table from a given lcp table.
+ * 
+ * @signature createChildtab(childTab, lcp[, algoTag])
+ * 
+ * @param algoTag A tag that identifies the algorithm which is used for
+ *                the creation.
+ * @param lcp A given lcp table.
+ * @param childTab A reference to the resulting child table.
+ * 
+ * @section Remarks
+ * 
+ * The size of <tt>childTab</tt> must be at least <tt>length(text)</tt> before
+ * calling this function.
+ */
 	template < typename TLCPTable,
                typename TValue,
 			   typename TConfig >

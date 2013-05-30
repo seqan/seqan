@@ -64,6 +64,43 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another Mums iterator. (copy constructor)
 ...type:Spec.Mums Iterator
 */
+/*H
+ * @class MumsIterator Mums Iterator
+ * 
+ * @extends vIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator to search for all maximum unique matches.
+ * 
+ * @signature Iterator<TContainer, Mums>::Type
+ * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(iterator)
+ * 
+ * @tparam TContainer Type of an index that can be iterated with a bottom-up
+ *                    iterator. Types: @link IndexEsa @endlink
+ *
+ * Demo: Demo.Mummy
+ * 
+ * Demo: Demo.Maximal Unique Matches
+ *
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, Mums>::Type (which is Iter<TContainer, VSTree< BottomUp<Mums> > >).
+ */
+/*H
+ * @fn Iter<TContainer, VSTree< BottomUp<Mums> > >::Iter<TContainer, VSTree< BottomUp<Mums> > >
+ *
+ * brief The constructor
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(iterator)
+ *
+ * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
+ *
+ * @param minLength Minimum length of the supermaximal repeats, default value is 1.
+ *
+ * @param iterator Another MultiMems iterator. Types: @link MultiMemsIterator @endlink
+ */
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Mums - generalized suffix tree version
@@ -161,6 +198,39 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another MultiMems iterator. (copy constructor)
 ...type:Spec.MultiMems Iterator
 */
+/*H
+ * @class MultiMemsIterator Multi Mems Iterator
+ * 
+ * @extends BottomUpIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator to search for MultiMems.
+ * 
+ * @signature Iterator<TContainer, MultiMems>::Type
+ * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(iterator)
+ * 
+ * @tparam TContainer Type of an index that can be iterated with a bottom-up
+ *                    iterator. Types: IndexEsa
+ *
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, MultiMems>::Type (which is Iter<TContainer, VSTree< BottomUp<MultiMems> > >).
+ */
+/*H
+ * @fn Iter<TContainer, VSTree< BottomUp<MultiMems> > >::Iter<TContainer, VSTree< BottomUp<MultiMems> > >
+ *
+ * brief The constructor
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(iterator)
+ *
+ * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
+ *
+ * @param minLength Minimum length of the supermaximal repeats, default value is 1.
+ *
+ * @param iterator Another MultiMemsIterator iterator. Types: @link MultiMemsIterator @endlink
+ */
 
 	//////////////////////////////////////////////////////////////////////////////
 	// MultiMems

@@ -126,7 +126,28 @@ namespace SEQAN_NAMESPACE_MAIN
 The size of $suffixArray$ must be at least $length(text)$ before calling this function.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn createSuffixArray
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates a suffix array from a given text.
+ * 
+ * @signature createSuffixArray(suffixArray, text[, algo_tag])
+ * 
+ * @param text A given text. Types: @link SequenceConcept @endlink
+ * @param algo_tag A tag that identifies the algorithm which is used for
+ *                 creation.
+ * @param suffixArray The resulting suffix array.
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The size of <tt>suffixArray</tt>
+ * must be at least <tt>length(text)</tt> before calling this function.
+ * 
+ * Demo: Demo.Suffix Array
+ */
     template < typename TSA,
                typename TText,
 			   typename TAlgSpec >
@@ -289,6 +310,27 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
 The size of $lcp$ must be at least $length(text)$ before calling this function.
 ..include:seqan/index.h
 */
+/*!
+ * @fn createLcpTable
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates a lcp table from a given text and suffix array.
+ * 
+ * @signature createLcpTable(lcp, text, suffixArray[, algo_tag])
+ * 
+ * @param text A given text. Types: @link SequenceConcept @endlink
+ * @param algo_tag A tag that identifies the algorithm which is used for
+ *                 creation.
+ * @param suffixArray The suffix array of <tt>text</tt>.
+ * @param lcp The resulting lcp table.
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The size of <tt>lcp</tt> must be at
+ * least <tt>length(text)</tt> before calling this function.
+ */
 
 	template < 
         typename TLCP,
@@ -487,7 +529,27 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
 The size of $bwt$ must be at least $length(text)$ before calling this function.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn createBWTable
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates a Burrows-Wheeler table from a given text and suffix array.
+ * 
+ * @signature createBWTable(bwt, text, suffixArray[, algo_tag])
+ * 
+ * @param bwt The resulting Burrows-Wheeler table.
+ * @param algo_tag A tag that identifies the algorithm which is used for
+ *                 creation.
+ * @param suffixArray The suffix array of <tt>text</tt>.
+ * @param text A given text. Types: @link SequenceConcept @endlink
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The size of <tt>bwt</tt> must be at
+ * least <tt>length(text)</tt> before calling this function.
+ */
 	// default
 	template < typename TBWT, typename TText, typename TSA, typename TTextRandom_ >
     inline void _createBWTableWrapper(TBWT &bwt, TText const &s, TSA const &sa,		TTextRandom_ const)
@@ -528,6 +590,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 		}
 	};
 
+//TODO(singer): Make this internal
 /**
 .Function.orderOccurrences:
 ..summary:Sorts a string of occurrences.
@@ -540,6 +603,31 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 ..see:Metafunction.SAValue
 ..include:seqan/index.h
 */
+/*!
+ * @fn orderOccurrences
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Sorts a string of occurrences.
+ * 
+ * @signature orderOccurrences(occString)
+ * 
+ * @param occString String of occurrences. Contains suffix array values returned
+ *                  by @link getOccurrences @endlink.
+ * 
+ * @section Remarks
+ * 
+ * The occurrences are sorted by increasing positions.
+ * 
+ * Demo: Demo.Mummy
+ * 
+ * Demo: Demo.Maximal Repeats
+ * 
+ * Demo: Demo.Maximal Unique Matches
+ * 
+ * @see getOccurrences
+ * @see SAValue
+ */
 	template <typename TValue, typename TSpec>
 	inline void orderOccurrences(String<TValue, TSpec> &occString)
 	{
@@ -566,7 +654,29 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 ..remarks:$indexCreate$ calls the fibre corresponding $createXXX(..)$ function (e.g. @Function.createSuffixArray@).
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn Index#indexCreate
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates a specific @link Fibre @endlink.
+ * 
+ * @signature indexCreate(index, fibreTag[, algoTag])
+ * 
+ * @param fibreTag A tag that identifies the @link Fibre @endlink
+ * @param algoTag A tag that identifies the algorithm which is used to create
+ *                 the fibre. Default: The result of @link DefaultIndexCreator
+ *                 @endlink.
+ * @param index The @link Index @endlink object holding the fibre. Types: @link Index @endlink
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
+ *                 creation.
+ * 
+ * @section Remarks
+ * 
+ * <tt>indexCreate</tt> calls the fibre corresponding <tt>createXXX(..)</tt>
+ * function (e.g. @link createSuffixArray @endlink).
+ */
 	template <typename TText, typename TSpec, typename TSpecAlg>
 	inline bool indexCreate(Index<TText, TSpec> &index, FibreSA, TSpecAlg const alg) {
 	SEQAN_CHECKPOINT
@@ -632,7 +742,22 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 ..returns:A $bool$ which is $true$, iff the fibre is present.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn Index#indexSupplied
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns whether a specific @link Fibre @endlink is present.
+ * 
+ * @signature indexSupplied(index, fibreTag)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link Index @endlink
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. 
+ *                 Index Fibres
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt>, iff the fibre is
+ *                 present.
+ */
 	template <typename TText, typename TSpec, typename TFibre>
 	inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
 	SEQAN_CHECKPOINT
@@ -655,6 +780,27 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 If the fibre doesn't exist then @Function.indexCreate@ is called to create it.
 ..include:seqan/index.h
 */
+/*!
+ * @fn Index#indexRequire
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief On-demand creation of a specific @link Fibre @endlink.
+ * 
+ * @signature indexRequire(index, fibre_tag)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link Index @endlink
+ * @param fibre_tag A tag that identifies the @link Fibre @endlink
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
+ *                 creation.
+ * 
+ * @section Remarks
+ * 
+ * If the fibre already exists (@link indexSupplied @endlink is true) then
+ * <tt>indexRequire</tt> does nothing. If the fibre doesn't exist then @link
+ * indexCreate @endlink is called to create it.
+ */
 
 	template <typename TText, typename TSpec, typename TFibre>
 	inline bool indexRequire(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {

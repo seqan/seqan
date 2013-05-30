@@ -69,6 +69,62 @@ namespace SEQAN_NAMESPACE_MAIN
 ..see:Spec.IndexWotd
 ..include:seqan/index.h
 */
+/*! 
+ * @defgroup WOTDIndexFibres WOTD Index Fibres
+ * 
+ * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
+ *        IndexWotd @endlink index.
+ * 
+ * @section Remarks
+ * 
+ * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
+ * 
+ * TODO(holtgrew): Ask David.
+ * 
+ * @see Fibre
+ * @see getFibre
+ * @see IndexWotd
+ * 
+ * @tag WOTDIndexFibres#WotdDir
+ * 
+ * @brief The child table.
+ * 
+ * @section Remarks
+ * 
+ * TODO(holtgrew): Ask David.
+ * 
+ * @tag WOTDIndexFibres#WotdRawSA
+ * 
+ * @brief The raw suffix array.
+ * 
+ * @section Remarks
+ * 
+ * TODO(holtgrew): Ask David.
+ * 
+ * @tag WOTDIndexFibres#WotdText
+ * 
+ * @brief The original text the index should be based on.
+ * 
+ * @section Remarks
+ * 
+ * TODO(holtgrew): Ask David.
+ * 
+ * @tag WOTDIndexFibres#WotdRawText
+ * 
+ * @brief The raw text the index is really based on.
+ * 
+ * @section Remarks
+ * 
+ * TODO(holtgrew): Ask David.
+ * 
+ * @tag WOTDIndexFibres#WotdSA
+ * 
+ * @brief The suffix array.
+ * 
+ * @section Remarks
+ * 
+ * TODO(holtgrew): Ask David.
+ */
 	typedef FibreText		WotdText;
 	typedef FibreRawText	WotdRawText;
 	typedef FibreSA         WotdSA;
@@ -93,6 +149,30 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks:The fibres (see @Class.Index@ and @Metafunction.Fibre@) of this index are a partially sorted suffix array (see @Tag.WOTD Index Fibres.WotdSA@) and the wotd tree (see @Tag.WOTD Index Fibres.WotdDir@).
 ..include:seqan/index.h
 */
+/*!
+ * @class IndexWotd
+ * 
+ * @extends Index
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient
+ *        implementation of lazy suffix trees").
+ * 
+ * @signature Index<TText, IndexWotd<> >
+ * 
+ * @tparam TText The text type. Types: @link SequenceConcept @endlink
+ * 
+ * @section Remarks
+ * 
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
+ * are a partially sorted suffix array (see @link WOTDIndexFibres#WotdSA
+ * @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
+ * 
+ * Demo: Demo.Constraint Iterator
+ * 
+ * @see WOTD Index Fibres
+ */ 
 
 	struct WotdOriginal_;
 	typedef Tag<WotdOriginal_> const WotdOriginal;
@@ -1066,6 +1146,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
+//TODO(singer): The function createWotdIndex in never defined!
 /**
 .Function.createWotdIndex:
 ..summary:Builds a q-gram index on a sequence. 
@@ -1078,6 +1159,24 @@ namespace SEQAN_NAMESPACE_MAIN
 ..returns:Index contains the sorted list of qgrams. For each possible q-gram pos contains the first position in index that corresponds to this q-gram. 
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexWotd#createWotdIndex
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Builds a q-gram index on a sequence.
+ * 
+ * @signature createWotdIndex(sa, dir, text)
+ * 
+ * @param text The sequence. Types: @link SequnceConcept @endlink
+ * @param sa The resulting list in which all q-grams are sorted alphabetically. 
+ * @param dir The resulting array that indicates at which position in index the
+ *            corresponding q-grams can be found.
+ * 
+ * @return TReturn Index contains the sorted list of qgrams. For each possible
+ *                 q-gram pos contains the first position in index that
+ *                 corresponds to this q-gram.
+ */
 
 	// single sequence
 	template < typename TIndex >

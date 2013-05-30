@@ -67,6 +67,42 @@ namespace SEQAN_NAMESPACE_MAIN
 ...type:Spec.SuperMaxRepeats Iterator
 */
 
+/*H
+ * @class SuperMaxRepeatsIterator Super Max Repeats Iterator
+ * 
+ * @extends BottomUpIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator to search for all supermaximal repeats.
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ * 
+ * @tparam TContainer Type of an index that can be iterated with a bottom-up
+ *                    iterator. Types: @link IndexEsa @endlink
+ *
+ *
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, SuperMaxRepeats>::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >).
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ */
+
+/*H
+ * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ *
+ * brief The constructor
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >(index [, minLength]) 
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >(iterator) 
+ *
+ * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
+ *
+ * @param minLength Minimum length of the supermaximal repeats, default value is 1.
+ *
+ * @param iterator Another SuperMaxRepeats iterator. Types: @link SuperMaxRepeatsIterator @endlink
+ */
 	//////////////////////////////////////////////////////////////////////////////
 	// super-maximal repeats - suffix tree version
 	//////////////////////////////////////////////////////////////////////////////
@@ -155,6 +191,40 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another SuperMaxRepeatsFast iterator. (copy constructor)
 ...type:Spec.SuperMaxRepeatsFast Iterator
 */
+/*H
+ * @class SuperMaxRepeatsFastIterator Super Max Repeats Fast Iterator
+ *
+ * @extends BottomUpIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator to search for all supermaximal repeats (for enh. suffix
+ *        arrays only).
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+ * 
+ * @tparam TContainer Type of an index based on enhanced suffix array. Types:
+ *                    @link IndexEsa @endlink
+ * 
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, SuperMaxRepeatsFast>::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >).
+ */
+
+/*H
+ * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+ *
+ * brief The constructor
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >(iterator)
+ *
+ * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
+ *
+ * @param minLength Minimum length of the supermaximal repeats, default value is 1.
+ *
+ * @param iterator Another SuperMaxRepeatsFast iterator. Types: @link SuperMaxRepeatsFastIterator @endlink
+ */
 
 	//////////////////////////////////////////////////////////////////////////////
 	// supermaximal repeats - specialized for Enhanced Suffix Arrays
@@ -288,6 +358,41 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another MaxRepeats iterator. (copy constructor)
 ...type:Spec.MaxRepeats Iterator
 */
+/*H
+ * @class MaxRepeatsIterator Max Repeats Iterator
+ * 
+ * @extends BottomUpIterator
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterator to search for all maximal repeats.
+ * 
+ * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)
+ * 
+ * @tparam TContainer Type of an index that can be iterated with a bottom-up
+ *                    iterator. Types: IndexEsa
+ * 
+ * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ *               Iterator<TContainer, MaxRepeats>::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >).
+ * 
+ * Demo: Demo.Maximal Repeats
+ */
+
+/*H
+ * @fn Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
+ *
+ * brief The constructor
+ *
+ * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
+ * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)
+ *
+ * @param index The index to be used for the iteration. Types: @link IndexEsa @endlink
+ *
+ * @param minLength Minimum length of the supermaximal repeats, default value is 1.
+ *
+ * @param iterator Another MaxRepeats iterator. Types: @link MaxRepeatsIterator @endlink
+ */
 
 	//////////////////////////////////////////////////////////////////////////////
 	// maximal repeats - suffix tree version

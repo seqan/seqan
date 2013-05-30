@@ -66,6 +66,32 @@ namespace seqan {
 ..summary:The period of the repeat of type $TSize$.
 ..class:Class.Repeat
  */
+/*!
+ * @class Repeat
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Store information about a repeat.
+ * 
+ * @signature Repeat<TPos, TPeriod>
+ * 
+ * @tparam TPeriod Type to use for storing the repeat period. Default: 1
+ * @tparam TPos Type to use for storing positions.
+ * 
+ * @see findRepeats
+ * 
+ * @var VariableType Repeat::endPosition
+ * 
+ * @brief The end position of the repeat of type <tt>TPos</tt>.
+ * 
+ * @var VariableType Repeat::beginPosition
+ * 
+ * @brief The begin position of the repeat of type <tt>TPos</tt>.
+ * 
+ * @var VariableType Repeat::period
+ * 
+ * @brief The period of the repeat of type <tt>TSize</tt>.
+ */
 
 	template <typename TPos, typename TPeriod>
 	struct Repeat {
@@ -186,6 +212,43 @@ findRepeats(repeats, text, 3);
 ..see:Function.unknownValue
 ..include:seqan/index.h
 ..see:Class.Repeat
+ */
+/*!
+ * @fn findRepeats
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Search for repeats in a text.
+ * 
+ * @signature findRepeats(repeatString, text, minRepeatLength[, maxPeriod])
+ * 
+ * @param text The text to search repeats in. Types: @link SequenceConcept @endlink
+ * @param repeatString A @link String @endlink of @link Repeat @endlink objects.
+ * @param maxPeriod Optionally, the maximal period that reported repeats can
+ *                  have. Default: 1
+ * @param minRepeatLength The minimum length each reported repeat must have.
+ * 
+ * @section Remarks
+ * 
+ * Subsequences of undefined values/<tt>N</tt>s will always be reported.
+ * 
+ * @section Examples
+ * 
+ * The following demonstrates finding repeats of period 1.
+ * 
+ * @code{.cpp}
+ * String<Repeat<unsigned, unsigned> > repeats;
+ * Dna5String text = "CGATAAAACTNN";
+ * // repeat 0            AAAA
+ * // repeat 1                  NN
+ *  
+ * findRepeats(repeats, text, 3);
+ * // ==> length(repeats) == 2
+ * // ==> repeats[0] == {beginPosition:  4, endPosition:  8, period: 1}
+ * // ==> repeats[1] == {beginPosition: 11, endPosition: 13, period: 1}
+ * @endcode
+ * @see unknownValue
+ * @see Repeat
  */
 // TODO(holtgrew): minRepeatLength is 1-off.
 

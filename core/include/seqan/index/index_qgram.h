@@ -99,6 +99,122 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
 ..see:Spec.IndexQGram
 ..include:seqan/index.h
 */
+/*!
+ * @defgroup QGramIndexFibres Index QGram Fibres
+ * 
+ * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
+ *        IndexQGram @endlink.
+ * 
+ * @see Fibre
+ * @see getFibre
+ * @see IndexQGram
+ * 
+ * @tag QGramIndexFibres#QGramDir
+ * 
+ * @brief The directory/hash table.
+ * 
+ * @section Remarks
+ * 
+ * The directory contains for every possible q-gram hash value the start index
+ * of the q-gram bucket. A q-gram bucket is a contiguous interval in the suffix
+ * array (<tt>QGramSA</tt>, see above). Each suffix in this interval begins with
+ * the same q-gram. The end index is the start index of the next bucket.
+ * 
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * size type.
+ * 
+ * @tag QGramIndexFibres#QGramBucketMap
+ * 
+ * @brief Maps q-gram hashes to buckets. This fibre is used by the @link
+ *        OpenAddressing @endlink index and stores all parameters of the open
+ *        addressing hash function and hash value occupancy in the QGramDir
+ *        fibre. In contrast to @link OpenAddressing @endlink, @link IndexQGram
+ *        @endlink uses a trivial 1-to-1 mapping from q-gram hash values to
+ *        buckets. For that index the fibre is of type @link Nothing @endlink.
+ * 
+ * @tag QGramIndexFibres#QGramCountsDir
+ * 
+ * @brief The counts directory.
+ * 
+ * @section Remarks
+ * 
+ * The counts directory contains for every possible q-gram hash value the start
+ * index of the q-gram count bucket. A q-gram count bucket is a contiguous
+ * interval in the counts array (<tt>QGramCounts</tt>, see above). The end index
+ * is the start index of the next bucket.
+ * 
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * size type.
+ * 
+ * @tag QGramIndexFibres#QGramText
+ * 
+ * @brief The original text the index should be based on.
+ * 
+ * @tag QGramIndexFibres#QGramShape
+ * 
+ * @brief The shape the index is based on.
+ * 
+ * @section Remarks
+ * 
+ * The q-gram index needs an underlying @link Shape @endlink. This shape can be
+ * gapped or ungapped. The number of '1's (relevant positions) in the shape
+ * determines <tt>q</tt> and the size of the directory table.
+ * 
+ * Dynamic shapes (@link SimpleShape @endlink, @link GenericShape @endlink, ...)
+ * must be initialized before the index can be used.
+ * 
+ * @tag QGramIndexFibres#QGramSADir
+ * 
+ * @brief The union of suffix array and directory.
+ * 
+ * @section Remarks
+ * 
+ * In most applications a q-gram index consisting of both of these table is
+ * required. To efficiently create them at once use this tag for @link
+ * indexRequire @endlink or @link indexCreate @endlink.
+ * 
+ * @tag QGramIndexFibres#QGram_RawText
+ * 
+ * @brief The concatenation of all text sequences.
+ * 
+ * @section Remarks
+ * 
+ * <tt>QGramText</tt> and <tt>QGram_RawText</tt> fibres are equal by default.
+ * They differ if the index text is a set of strings. Then, raw text is the
+ * concatenation of all strings in this set.
+ * 
+ * @tag QGramIndexFibres#QGramCounts
+ * 
+ * @brief The counts array.
+ * 
+ * @section Remarks
+ * 
+ * Contains the numbers of occurrences per sequence of each q-gram, s.t. the
+ * numbers of the same q-gram are stored in a contiguous block (q-gram count
+ * bucket). A bucket contains entries (seqNo,count) of sequences with at least
+ * one q-gram occurrence. q-grams exceeding the end of the text are ignored. The
+ * beginning of each count bucket can be determined by the q-gram counts
+ * directory (<tt>QGramCountsDir</tt>, see below).
+ * 
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link SAValue @endlink of <tt>TIndex</tt>.
+ * 
+ * @tag QGramIndexFibres#QGramSA
+ * 
+ * @brief The suffix array.
+ * 
+ * @section Remarks
+ * 
+ * Contains all occurrences of q-grams, s.t. the occurrences of a single q-gram
+ * are stored in a contiguous block (q-gram bucket). q-grams exceeding the end
+ * of the text are ignored. The beginning of each bucket can be determined by
+ * the q-gram directory (<tt>QGramDir</tt>, see below).
+ * 
+ * It corresponds to a suffix array which is sorted by the first q-gram.
+ * 
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link SAValue @endlink of <tt>TIndex</tt>.
+ */
 
 	struct FibreDir_;			// directory/hash table, contains start indices of buckets
 	struct FibreSADir_;		// identifies algorithm to construct both SA and directory at once
@@ -149,6 +265,32 @@ On a 32bit system the q-gram length is limited to 3 for $char$ alphabets or 13-1
 Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you don't need q-grams to be sorted.
 ..include:seqan/index.h
 */
+/*!
+ * @class IndexQGram
+ * 
+ * @extends Index
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief An index based on an array of sorted q-grams.
+ * 
+ * @signature Index<TText, IndexQGram<TShapeSpec[, TSpec]> >
+ * 
+ * @tparam TSpec The specializing type. Types: @link OpenAddressing @endlink, Default: Default
+ * @tparam TText The text type. Types: @link String @endlink
+ * @tparam TShapeSpec The @link Shape @endlink specialization type.
+ * 
+ * @section Remarks
+ * 
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
+ * are a suffix array sorted by the first q characters (see @link QGramIndexFibres#QGramSA @endlink) and a q-gram directory (see @link QGramIndexFibres#QGramDir @endlink). The size of the q-gram directory is |\Sigma|^q. On
+ * a 32bit system the q-gram length is limited to 3 for <tt>char</tt> alphabets
+ * or 13-14 for @link Dna @endlink alphabets. Consider to use the @link
+ * OpenAddressing @endlink q-gram index for longer q-grams if you don't need
+ * q-grams to be sorted.
+ * 
+ * @see QGram Index Fibres
+ */
 
 	template < typename TShapeSpec, typename TSpec = Default >
 	struct IndexQGram {};
@@ -359,6 +501,21 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ..returns:A reference to the @Tag.QGram Index Fibres.QGramDir@ fibre (q-gram directory).
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#indexDir
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Shortcut for <tt>getFibre(.., QGramDir)</tt>.
+ * 
+ * @signature indexDir(index)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types:
+ *              IndexQGram
+ * 
+ * @return TReturn A reference to the @link QGramIndexFibres#QGramDir @endlink
+ *                 fibre (q-gram directory).
+ */
 
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec>, FibreDir>::Type & 
@@ -384,6 +541,22 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#dirAt
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Shortcut for <tt>value(indexDir(..), ..)</tt>.
+ * 
+ * @signature dirAt(position, index)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link
+ *              IndexQGram @endlink
+ * @param position A position in the array on which the value should be
+ *                 accessed.
+ * 
+ * @return TReturn A reference or proxy to the value.
+ */
 
 	template <typename TPos, typename TIndex>
 	inline typename Reference<typename Fibre<TIndex, FibreDir>::Type>::Type 
@@ -409,7 +582,21 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ..returns:A reference to the @Tag.QGram Index Fibres.QGramCounts@ fibre (counts array).
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#indexCounts
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Shortcut for <tt>getFibre(.., QGramCounts)</tt>.
+ * 
+ * @signature indexCounts(index)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link
+ *              IndexQGram @endlink
+ * 
+ * @return TReturn A reference to the @link QGramIndexFibres#QGramCounts
+ *                 @endlink fibre (counts array).
+ */
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec>, FibreCounts>::Type & 
 	indexCounts(Index<TText, TSpec> &index) {
@@ -433,6 +620,21 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ..returns:A reference to the @Tag.QGram Index Fibres.QGramCountsDir@ fibre (counts directory).
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#indexCountsDir
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Shortcut for <tt>getFibre(.., QGramCountsDir)</tt>.
+ * 
+ * @signature indexCountsDir(index)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link
+ *              IndexQGram @endlink
+ * 
+ * @return TReturn A reference to the @link QGramIndexFibres#QGramCountsDir
+ *                 @endlink fibre (counts directory).
+ */
 
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec>, FibreCountsDir>::Type & 
@@ -457,6 +659,21 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ..returns:A reference to the @Tag.QGram Index Fibres.QGramBucketMap@ fibre (maps q-gram hashes to buckets).
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#indexBucketMap
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Shortcut for <tt>getFibre(.., QGramBucketMap)</tt>.
+ * 
+ * @signature indexBucketMap(index)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link
+ *              IndexQGram @endlink
+ * 
+ * @return TReturn A reference to the @link QGramIndexFibres.QGramBucketMap
+ *                 @endlink fibre (maps q-gram hashes to buckets).
+ */
 
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec>, FibreBucketMap>::Type & 
@@ -483,7 +700,22 @@ Formally, this is a reference to the @Tag.QGram Index Fibres.QGramShape@ fibre.
 ...type:Class.Shape
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#indexShape
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Shortcut for <tt>getFibre(.., QGramShape)</tt>.
+ * 
+ * @signature indexShape(index)
+ * 
+ * @param index The @link Index @endlink object holding the fibre. Types: @link
+ *              IndexQGram @endlink
+ * 
+ * @return TReturn Returns a reference to the @link Shape @endlink object of a
+ *                 q-gram index. Formally, this is a reference to the @link
+ *                 QGramIndexFibres#QGramShape @endlink fibre. Types: @link Shape @endlink
+ */
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec>, FibreShape>::Type & 
 	indexShape(Index<TText, TSpec> &index) { 
@@ -507,7 +739,22 @@ Formally, this is a reference to the @Tag.QGram Index Fibres.QGramShape@ fibre.
 ..returns:The step size. If $x$ is returned every $x$'th q-gram is stored in the index.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#getStepSize
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Return the q-gram step size used for index creation.
+ * 
+ * @signature getStepSize(index)
+ * 
+ * @param index A q-gram index. Types: @link IndexQGram @endlink
+ * 
+ * @return TReturn The step size. If <tt>x</tt> is returned every <tt>x</tt>'th
+ *                 q-gram is stored in the index.
+ * 
+ * @see setStepSize
+ */
 	template <typename TText, typename TShapeSpec, typename TSpec>
 	inline typename Size<TText>::Type 
 	getStepSize(Index<TText, IndexQGram<TShapeSpec, TSpec> > const &index)
@@ -531,6 +778,30 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 ..see:Function.getStepSize
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#setStepSize
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Change the q-gram step size used for index creation.
+ * 
+ * @signature setStepSize(index, stepSize)
+ * 
+ * @param index A q-gram index. Types: @link IndexQGram @endlink
+ * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
+ * 
+ * @section Remarks
+ * 
+ * The default step size of a q-gram index is 1, which corresponds to all
+ * overlapping q-grams. To take effect of changing the <tt>stepSize</tt> the
+ * q-gram index should be empty or recreated.
+ * 
+ * A <tt>stepSize</tt> of 0 corresponds to
+ * <tt>stepSize=length(indexShape(index))</tt>, i.e. all non-overlapping
+ * q-grams.
+ * 
+ * @see getStepSize
+ */
 
 	template <typename TText, typename TShapeSpec, typename TSpec, typename TSize>
 	inline void
@@ -1227,7 +1498,39 @@ If bucketMap is of the type @Tag.Nothing@ the q-gram hash determines the bucket 
 The resulting tables must have appropriate size before calling this function.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#createQGramIndex
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Builds a q-gram index on a sequence.
+ * 
+ * @signature createQGramIndex(index)
+ * @signature createQGramIndex(sa, dir, bucketMap, text, shape, stepSize)
+ *            [DEPRECATED]
+ * 
+ * @param index The q-gram index. Types: @link IndexQGram @endlink
+ * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
+ * @param text The sequence.
+ * @param bucketMap Stores the q-gram hashes for the openaddressing hash maps,
+ *                  see @link indexBucketMap @endlink. If bucketMap is of the
+ *                  type @link Nothing @endlink the q-gram hash determines the
+ *                  bucket address in the index.
+ * @param shape The shape to be used. Types: @link Shape @endlink
+ * @param sa The resulting list in which all q-grams are sorted alphabetically.
+ * @param dir The resulting array that indicates at which position in index the
+ *            corresponding q-grams can be found.
+ * 
+ * @return TReturn Index contains the sorted list of qgrams. For each q-gram
+ *                 <tt>dir</tt> contains the first position in index that
+ *                 corresponds to this q-gram.
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * appropriate size before calling this function.
+ */
 	template < typename TIndex >
 	inline bool _qgramDisableBuckets(TIndex &)
 	{
@@ -1340,7 +1643,26 @@ The resulting tables must have appropriate size before calling this function.
 The resulting tables must have appropriate size before calling this function.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#createQGramIndexSAOnly
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Builds the suffix array of a q-gram index on a sequence.
+ * 
+ * @signature createQGramIndexSAOnly(sa, text, shape, stepSize)
+ * 
+ * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
+ * @param sa The resulting list in which all q-grams are sorted alphabetically.
+ * @param shape The shape to be used. q is the length of this shape Types: @link Shape @endlink
+ * @param text The sequence.
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * appropriate size before calling this function.
+ */
 	template < 
 		typename TSA, 
 		typename TText,
@@ -1512,6 +1834,35 @@ If bucketMap is of the type @Tag.Nothing@ the q-gram hash determines the bucket 
 The resulting tables must have appropriate size before calling this function.
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#createQGramIndexDirOnly
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Builds the directory of a q-gram index on a sequence.
+ * 
+ * @signature createQGramIndexDirOnly(dir, bucketMap, text, shape, stepSize)
+ * 
+ * @param bucketMap Stores the q-gram hashes for the openaddressing hash maps,
+ *                  see @link indexBucketMap @endlink. If bucketMap is of the
+ *                  type @link Nothing @endlink the q-gram hash determines the
+ *                  bucket address in the index.
+ * @param shape The shape to be used. Types: @link Shape @endlink
+ * @param text The sequence.
+ * @param dir The resulting array that indicates at which position in index the
+ *            corresponding q-grams can be found.
+ * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
+ * 
+ * @return TReturn Index contains the sorted list of qgrams. For each possible
+ *                 q-gram pos contains the first position in index that
+ *                 corresponds to this q-gram.
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * appropriate size before calling this function.
+ */
 
 	template <
 		typename TDir,
@@ -1584,7 +1935,34 @@ If bucketMap is of the type @Tag.Nothing@ the q-gram hash determines the bucket 
 The resulting tables must have appropriate size before calling this function.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#createCountArray
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Builds an index on a StringSet storing how often a q-gram occurs in
+ *        each sequence.
+ * 
+ * @signature createCountsArray(counts, dir, bucketMap, stringSet, shape,
+ *            stepSize)
+ * 
+ * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
+ * @param bucketMap Stores the q-gram hashes for the openaddressing hash maps,
+ *                  see @link indexBucketMap @endlink. If bucketMap is of the
+ *                  type @link Nothing @endlink the q-gram hash determines the
+ *                  bucket address in the index.
+ * @param shape The shape to be used. Types: @link Shape @endlink
+ * @param counts The resulting list of pairs (seqNo,count).
+ * @param stringSet The StringSet. Types: @link StringSet @endlink
+ * @param dir The resulting array that indicates at which position in the count
+ *            table the corresponding a certain q-gram can be found.
+ * 
+ * @section Remarks
+ * 
+ * This function should not be called directly. Please use @link indexCreate
+ * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * appropriate size before calling this function.
+ */
 	template < 
 		typename TCounts, 
 		typename TDir,
@@ -2241,7 +2619,31 @@ The fraction of common q-grams between sequence $i$ and $j$ is stored at positio
 It sums up the minimum number of q-gram occurrences between both sequences for each q-gram and normalizes it.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn IndexQGram#getKmerSimilarityMatrix
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates a matrix storing the number of common q-grams between all
+ *        pairs of sequences.
+ * 
+ * @signature getKmerSimilarityMatrix(index, distMat[, seqSet])
+ * 
+ * @param distMat The resulting q-gram similarity matrix. Types:
+ *                @link ContainerConcept @endlink
+ * @param seqSet Contains sequence numbers if only a subset of sequences should
+ *               be compared. Types: @link ContainerConcept @endlink
+ * @param index A q-gram index. Types: @link IndexQGram @endlink
+ * 
+ * @section Remarks
+ * 
+ * <tt>distMat</tt> need to be a container of a floating point type and will be
+ * resized to <tt>seqCount*seqCount</tt>, where <tt>seqCount</tt> is the number
+ * of sequences in the index/in <tt>seqSet</tt>. The fraction of common q-grams
+ * between sequence <tt>i</tt> and <tt>j</tt> is stored at position
+ * <tt>i*seqCount + j</tt>. It sums up the minimum number of q-gram occurrences
+ * between both sequences for each q-gram and normalizes it.
+ */
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TDistMatrix >
 	inline void getKmerSimilarityMatrix(
 		Index< TText, IndexQGram<TShapeSpec, TSpec> > &index, 
@@ -2472,6 +2874,31 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 ..note:The necessary index tables are built on-demand via @Function.indexRequire@ if index is not $const$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#range
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the suffix array interval borders of a q-gram in the index text.
+ * 
+ * @signature range(index, shape)
+ * 
+ * @param index A q-gram index. Types: @link IndexQGram @endlink
+ * @param shape A shape object. Types: @link Shape @endlink
+ * 
+ * @return TReturn All positions where the q-gram
+ *                 stored in <tt>shape</tt> occurs in the text (see @link QGramIndexFibres.QGramText @endlink) are 
+ *                 stored in a contiguous
+ *                 range of the suffix array. <tt>range</tt> returns begin and
+ *                 end position of this range. If the type of <tt>index</tt> is
+ *                 <tt>TIndex</tt> the return type is $Pair<Size<TIndex>::Type>.
+ * 
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ */
+
 
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
 	inline Pair<typename Size< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type>
@@ -2509,6 +2936,23 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 If the type of $index$ is $TIndex$ the return type is $SAValue<TIndex>::Type$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#getOccurrence
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns an occurrence a q-gram in the index text.
+ *
+ * @signature getOccurrence(index, shape)
+ * 
+ * @param index A q-gram index. Types: @link IndexQGram @endlink
+ * @param shape A shape object. Types: @link Shape @endlink
+ * 
+ * @return TReturn A position where the q-gram
+ *                 stored in <tt>shape</tt> occurs in the text (see @link QGramIndexFibres#QGramText @endlink). 
+ *                 Type: @link SAValue @endlink of the index type.
+ */
+
 
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
 	inline typename SAValue< Index< TText, IndexQGram<TShapeSpec, TSpec> > >::Type
@@ -2544,6 +2988,40 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 ..remarks:The necessary index tables are built on-demand via @Function.indexRequire@ if index is not $const$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#getOccurrences
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns all occurrences of a q-gram in the index text.
+ * 
+ * @signature getOccurrences(index, shape)
+ * 
+ * @param index A q-gram index. Types: IndexQGram
+ * @param shape A shape object. Types: Shape
+ * 
+ * @return TReturn All
+ *                 positions where the q-gram stored in <tt>shape</tt> occurs in
+ *                 the text (see @link QGramIndexFibres#QGramText @endlink).
+ *                 Tupes: @link Infix @endlink<@link Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
+ * 
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ * 
+ * Demo: Demo.Mummy
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ * 
+ * Demo: Demo.Maximal Unique Matches
+ * 
+ * @see isUnique
+ * @see getFrequency
+ * @see isPartiallyLeftExtensible
+ * @see isLeftMaximal
+ * @see orderOccurrences
+ */
 
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
 	inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
@@ -2582,7 +3060,33 @@ If the type of $index$ is $TIndex$ the return type is $Size<TIndex>::Type$.
 ..note:The necessary index tables are built on-demand via @Function.indexRequire@ if index is not $const$.
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#countOccurrences
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of occurrences of a q-gram in the index text.
+ * 
+ * @signature countOccurrences(index, shape)
+ * 
+ * @param index A q-gram index. Types: @link IndexQGram @endlink
+ * @param shape A shape object. Types: @link Shape @endlink
+ * 
+ * @return TReturn The number of positions where the
+ *                 q-gram stored in <tt>shape</tt> occurs in the text (see @link
+ *                 QGramIndexFibres#QGramText @endlink). Type: @link Size @endlink of the index type.
+ *                  
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ * 
+ * Demo: Demo.Supermaximal Repeats
+ * 
+ * Demo: Demo.Index countChildren
+ */
 
+    //TODO(singer): Why Size of FibreSA and not Size<Index>?
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
 	inline typename Size< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreSA>::Type const >::Type 
 	countOccurrences(
@@ -2623,6 +3127,33 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
 ..see:Function.countOccurrences
 ..include:seqan/index.h
 */
+/*!
+ * @fn IndexQGram#countOccurrencesMultiple
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of occurrences of a q-gram for every sequence of a
+ *        @link StringSet @endlink .
+ * 
+ * @signature countOccurrencesMultiple(index, shape)
+ * 
+ * @param index A q-gram index of a @link StringSet @endlink. Types: @link IndexQGram @endlink
+ * @param shape A shape object. Types: Shape
+ * 
+ * @return TReturn A sequence of @link Pair.pairs @endlink (seqNo,count),
+ *                 count>0. For every @link StringSet @endlink sequence the
+ *                 q-gram occurs in, seqNo is the sequence number and count the
+ *                 number of occurrences. If the type of <tt>index</tt> is
+ *                 <tt>TIndex</tt> the return type is <tt>Infix<Fibre<TIndex,
+ *                 QGramCounts>::Type const>::Type</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The necessary index tables are built on-demand via @link indexRequire
+ * @endlink if index is not <tt>const</tt>.
+ * 
+ * @see countOccurrences
+ */
 
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
 	inline typename Infix< typename Fibre< Index< TText, IndexQGram<TShapeSpec, TSpec> >, FibreCounts>::Type const >::Type 
