@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Andreas Gogol-Doering <doering@mdc-berlin.de>
+// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 // Support for writing and reading FASTA alignment files.
 // ==========================================================================

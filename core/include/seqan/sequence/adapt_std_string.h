@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Andreas Gogol-Doering <doering@mdc-berlin.de>
+// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Adaptions for STL strings to SeqAn strings.
