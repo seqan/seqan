@@ -557,6 +557,74 @@ public:
 // Class ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @class ToolDoc
+ * @headerfile <seqan/arg_parse.>
+ * @brief Container for string documentation on a command line tool.
+ * 
+ * @signature class ToolDoc;
+ * 
+ * @section Remarks
+ * 
+ * This class is generally not used directly by the user but through @link ArgumentParser @endlink. It allows to store
+ * and represent all information related to a command line tool that would normally go into a man page. It can be
+ * printed to STL streams in different formats, currently plain text, HTML and man pages are supported.
+ * 
+ * You can also use basic formatting in text. This formatting is tailored to the usage on the command line. Use
+ * <tt>\fB</tt> to start bold font, <tt>\fI</tt> to start italic font and <tt>\fP</tt> to use the previous font (of
+ * course, use correct escaping of the backslash in C strings, so use <tt>"\\fB"</tt>, <tt>"\\fI"</tt>, and
+ * <tt>"\\fP"</tt> in your code.
+ * 
+ * @section Examples
+ * 
+ * The following shows a brief example of how to use @link ToolDoc @endlink.
+ * 
+ * @code{.cpp}
+ * ToolDoc doc;
+ * setName(doc, "RazerS");
+ * setShortDescription(doc, "Read mapping with controllable sensitivity.");
+ * setDate(doc, "04 March 2012");
+ * setVersion(doc, "1.0");
+ * setCategory(doc, "Read Mapping");
+ * setManTitle(doc, "SeqAn Apps Reference Manual");
+ *  
+ * addSection(doc, "Synopsis");
+ * addText(doc, "\\fBrazers\\fP [\\fIOPTIONS\\fP] \\fIREFERENCE\\fP \\fIREADS\\fP", false);
+ * addText(doc,
+ *         "\\fBrazers\\fP [\\fIOPTIONS\\fP] \\fIREFERENCE\\fP \\fILEFT_READS\\fP "
+ *         "\\fIRIGHT_READS\\fP", false);
+ *  
+ * addSection(doc, "Description");
+ * addText(doc,
+ *         "RazerS is a read mapper with controllable, sensitivity.  This "
+ *         "means that you can find all read matches in the reference sequence "
+ *         "and optionally, you can trade lower sensitivity for better "
+ *         "performance.");
+ * addText(doc,
+ *         "What's special about RazerS is that you can control the sensitivity.");
+ *  
+ * addSection(doc, "Options");
+ * addSubSection(doc, "Main Options");
+ * addListItem(doc, "\\fB-id\\fP, \\fB--indels\\fP",
+ *             "Enable mapping with indels enabled.");
+ * addListItem(doc, "\\fB-i\\fP, \\fB--identity\\fP \\fIIDENTITY\\fP",
+ *             "Set minimal identity of matches to find.");
+ *  
+ * print(std::cout, doc, "text");
+ * @endcode
+ *
+ * @see ToolDoc#addText
+ * @see ToolDoc#addListItem
+ * @see ArgumentParser
+ */
+
+/*!
+ * @fn ToolDoc::ToolDoc
+ * @brief Constructor
+ * 
+ * @signature ToolDoc::ToolDoc()
+ */
+
 /**
 .Class.ToolDoc
 ..cat:Miscellaneous
@@ -692,6 +760,17 @@ public:
 // Function append()                                                  ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#append
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Append two @link ToolDoc @endlink objects.
+ * 
+ * @signature void append(a, b);
+ * 
+ * @param a This object is updated
+ * @param b This object is appended to <tt>b</tt>.
+ */
+
 /**
 .Function.ToolDoc#append
 ..summary:Append two @Class.ToolDoc@ objects.
@@ -736,6 +815,17 @@ inline void append(ToolDoc & a, ToolDoc const & b)
 // Function setName()                                                 ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#setName
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool name.
+ *
+ * @signature void setName(toolDoc, name);
+ *
+ * @param toolDoc The ToolDoc object to the set the name for.
+ * @param name    The name of the tool (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#setName
 ..summary:Set tool name for @Class.ToolDoc@ object.
@@ -759,6 +849,18 @@ inline void setName(ToolDoc & doc, CharString const & name)
 // Function getName()                                                 ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#getName
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool name.
+ *
+ * @signature CharString getName(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to the get the name for.
+ *
+ * @return CharString Resulting name (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#getName
 ..summary:Get tool name of @Class.ToolDoc@ object.
@@ -780,6 +882,17 @@ inline CharString const & getName(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 // Function setCategory()                                             ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setCategory
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool name.
+ *
+ * @signature void setName(toolDoc, name);
+ *
+ * @param toolDoc The ToolDoc object to the set the name for.
+ * @param name    The name of the tool (@link CharString @endlink).
+ */
 
 /**
 .Function.ToolDoc#setCategory
@@ -804,6 +917,18 @@ inline void setCategory(ToolDoc & doc, CharString const & category)
 // Function getCategory()                                             ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#getCategory
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool category.
+ *
+ * @signature CharString getCategory(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to the get the category for.
+ *
+ * @return CharString Resulting category (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#getCategory
 ..summary:Get tool category of @Class.ToolDoc@ object.
@@ -825,6 +950,17 @@ inline CharString const & getCategory(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 // Function setShortDescription()                                     ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setShortDescription
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool short description.
+ *
+ * @signature void setShortDescription(toolDoc, text);
+ *
+ * @param toolDoc The ToolDoc object to the set the short description for.
+ * @param text    The short description of the tool (@link CharString @endlink).
+ */
 
 /**
 .Function.ToolDoc#setShortDescription
@@ -849,6 +985,18 @@ inline void setShortDescription(ToolDoc & doc, CharString const & shortDescripti
 // Function getShortDescription()                                     ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#getShortDescription
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool short description.
+ *
+ * @signature CharString getShortDescription(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to the get the short description for.
+ *
+ * @return CharString Resulting short description (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#getShortDescription
 ..summary:Get short description of @Class.ToolDoc@ object.
@@ -870,6 +1018,17 @@ inline CharString const & getShortDescription(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 // Function setDate()                                                 ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setDate
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the date string.
+ *
+ * @signature void setName(toolDoc, str);
+ *
+ * @param toolDoc The ToolDoc object to the set the date string for.
+ * @param str     The date string of the tool (@link CharString @endlink).
+ */
 
 /**
 .Function.ToolDoc#setDate
@@ -894,6 +1053,18 @@ inline void setDate(ToolDoc & doc, CharString const & date)
 // Function getDate()                                                 ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#getDate
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the date.
+ *
+ * @signature CharString getDate(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to the get the date from.
+ *
+ * @return CharString Resulting date string (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#getDate
 ..cat:Miscellaneous
@@ -915,6 +1086,17 @@ inline CharString const & getDate(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 // Function setVersion()                                              ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setVersion
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the tool version string.
+ *
+ * @signature void setName(toolDoc, str);
+ *
+ * @param toolDoc The ToolDoc object to the set the version string for.
+ * @param str     The version string of the tool (@link CharString @endlink).
+ */
 
 /**
 .Function.ToolDoc#setVersion
@@ -939,6 +1121,18 @@ inline void setVersion(ToolDoc & doc, CharString const & version)
 // Function getVersion()                                              ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#getVersion
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool version string.
+ *
+ * @signature CharString getVersion(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to the get the version string.
+ *
+ * @return CharString Resulting version string (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#getVersion
 ..cat:Miscellaneous
@@ -960,6 +1154,17 @@ inline CharString const & getVersion(ToolDoc const & doc)
 // --------------------------------------------------------------------------
 // Function setManTitle()                                             ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setManTitle
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the man title.
+ *
+ * @signature void setTitle(toolDoc, title);
+ *
+ * @param toolDoc The ToolDoc object to the set the title for.
+ * @param title   The title of the tool (@link CharString @endlink).
+ */
 
 /**
 .Function.ToolDoc#setManTitle
@@ -984,6 +1189,18 @@ inline void setManTitle(ToolDoc & doc, CharString const & title)
 // Function getManTitle()                                             ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#getManTitle
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the tool man page title of.
+ *
+ * @signature CharString getManTitle(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to the get the man page title.
+ *
+ * @return CharString Resulting man page title (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#getManTitle
 ..cat:Miscellaneous
@@ -1005,6 +1222,17 @@ inline CharString const & getManTitle(ToolDoc & doc)
 // --------------------------------------------------------------------------
 // Function addSection()                                              ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#addSection
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Add a section with the given title.
+ *
+ * @signature void addSection(toolDoc, title);
+ *
+ * @param toolDoc The ToolDoc object to add a section for.
+ * @param title   The section title (@link CharString @endlink).
+ */
 
 /**
 .Function.ToolDoc#addSection
@@ -1029,6 +1257,17 @@ inline void addSection(ToolDoc & doc, CharString const & title)
 // Function addSubSection()                                           ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#addSubSection
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Add a subsection with the given title.
+ *
+ * @signature void addSubSection(toolDoc, title);
+ *
+ * @param toolDoc The ToolDoc object to add a subsection for.
+ * @param title   The subsection title (@link CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#addSubSection
 ..cat:Miscellaneous
@@ -1051,6 +1290,18 @@ inline void addSubSection(ToolDoc & doc, CharString const & title)
 // --------------------------------------------------------------------------
 // Function addText()                                                 ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#addText
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Add a text line/paragraph to ToolDoc.
+ *
+ * @signature void addText(toolDoc, text[, isParagraph]);
+ *
+ * @param toolDoc     The ToolDoc to add the text to.
+ * @param text        The text to add (@link CharString @endlink).
+ * @param isParagraph Whether to insert as paragraph or just a line (only one line break if not a paragraph).
+ */
 
 /**
 .Function.ToolDoc#addText
@@ -1084,6 +1335,18 @@ inline void addText(ToolDoc & doc, CharString const & text)
 // Function addListItem()                                             ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#addListItem
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Add a list item to a ToolDoc.
+ *
+ * @signature void addListItem(toolDoc, key, value);
+ *
+ * @param toolDoc The ToolDoc object to add the list item to.
+ * @param key     The key for the list (@link CharString @endlink).
+ * @param value   The value for the list (@link @CharString @endlink).
+ */
+
 /**
 .Function.ToolDoc#addListItem
 ..cat:Miscellaneous
@@ -1111,6 +1374,18 @@ inline void addListItem(ToolDoc & doc, CharString const & key, CharString const 
 // Function print()                                                   ToolDoc
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn ToolDoc#print
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Print ToolDoc object in a given format.
+ *
+ * @signature void print(stream, toolDoc, format);
+ *
+ * @param stream  The <tt>std::ostream</tt> to write to.
+ * @param toolDoc The ToolDoc to print.
+ * @param format  The format, one of {"html", "man", "txt"}.
+ */
+
 /**
 .Function.ToolDoc#print
 ..cat:Miscellaneous
@@ -1135,6 +1410,16 @@ inline void print(std::ostream & stream, ToolDoc const & doc, CharString const &
 // --------------------------------------------------------------------------
 // Function clearEntries()                                            ToolDoc
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#clearEntries
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Clear entries from ToolDoc.
+ *
+ * @signature void clearEntries(toolDoc);
+ *
+ * @param toolDoc The ToolDoc object to clear entries from.
+ */
 
 /**
 .Function.ToolDoc#clearEntries

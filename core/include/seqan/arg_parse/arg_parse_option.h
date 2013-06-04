@@ -46,6 +46,18 @@ namespace seqan {
 // Class ArgParseOption
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class ArgParseOption
+ * @extends ArgParseArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Store information for a specific command line option.
+ *
+ * @signature class ArgParseOption : ArgParseArgument;
+ *
+ * You can use the shortcut @link ArgumentParser#addOption @endlink for adding options to @link ArgumentParser @endlink
+ * object.
+ */
+
 /**
 .Class.ArgParseOption
 ..base:Class.ArgParseArgument
@@ -57,6 +69,37 @@ namespace seqan {
 ..see:Class.ArgParseArgument
 ..see:Class.ArgumentParser
 */
+
+/*!
+ * @fn ArgParseOption::ArgParseOption
+ * @brief Constructor.
+ *
+ * @signature ArgParseOption::ArgParseOption(shortName, longName, helpText, argumentType[, argumentLabel[, isList[, numValues]]]);
+ *
+ * @param shortName     The short name of the argument.
+ * @param longName      The long name of the argument (<tt>std::string</tt>).
+ * @param helpText      The text to display as help (<tt>std::string</tt>).
+ * @param argumentType  The type of the argument (@link ArgParseArgument::ArgumentType @endlink).
+ * @param argumentLabel The label for the value to use in the help display, e.g. 'INT' in '--value INT'
+ *                      (<tt>std::string</tt>).
+ * @param isList        Flag for whether this option can be given multiple times (<tt>bool</tt>, <tt>true</tt> for
+ *                      allowing multiple values).
+ * @param numValues     Number of command line arguments that each option should bind (<tt>unsigned</tt>).
+ *
+ * @section Short and Long Option Names
+ *
+ * Short option names are passed to the program following one dash (e.g. '-i', '-e').  Long optiongs are passed
+ * following two dashes (e.g. '--num-threads', '--error-rate').  The leading one or two dashes are not passed to the
+ * constructor of ArgParseOption, however.
+ *
+ * @section Naming Conventions
+ *
+ * <ul>
+ * <li>Keep the short name short, ideally to one character.</tt>
+ * <li>Only use lower-case characters in the long name, use dashes to separate words, only use alphanumeric characters
+ *     and dashes, no underline characters</li>.
+ * </ul>
+ */
 
 /**
 .Memfunc.ArgParseOption#ArgParseOption
@@ -149,6 +192,20 @@ inline bool isStringArgument(ArgParseOption const & me)
 // Function isBooleanOption()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgParseOption#isBooleanOption
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether an option is a switch.
+ *
+ * @signature bool isBooleanOption(option);
+ *
+ * @param option The ArgParseOption object to query.
+ *
+ * @return bool <tt>true</tt> if <tt>option</tt> is a switch and <tt>false</tt> otherwise.
+ *
+ * Flags are given without arguments, e.g. the <tt>-l</tt> flag in the Unix <tt>ls</tt> command.
+ */
+
 /**
 .Function.ArgParseOption#isBooleanOption
 ..class:Class.ArgParseOption
@@ -170,6 +227,20 @@ inline bool isBooleanOption(ArgParseOption const & me)
 // Function isHidden()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgParseOption#isHidden
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Return whether an option is hidden on the help screen.
+ *
+ * @signature bool isHidden(option);
+ *
+ * @param option The ArgParseOption object to query.
+ *
+ * @return bool <tt>true</tt> if it is hidden, <tt>false</tt> otherwise.
+ *
+ * By default, options are not hidden.
+ */
+
 /**
 .Function.ArgParseOption#isHidden
 ..class:Class.ArgParseOption
@@ -190,6 +261,17 @@ inline bool isHidden(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 // Function hideOption()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseOption#hideOption
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Hides the ArgParseOption from the help screen (or shows it again).
+ *
+ * @signature void hideOption(option[, hide]);
+ *
+ * @param option The ArgParseOption object to set the hidden flag of.
+ * @param hide   <tt>bool</tt> that indicates whether to hide the flag (default: <tt>true</tt>)
+ */
 
 /**
 .Function.ArgParseOption#hideOption
@@ -213,6 +295,20 @@ inline void hideOption(ArgParseOption & me, bool hide = true)
 // Function isRequired()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgParseOption#isRequired
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the option is mandatory.
+ *
+ * @signature bool isRequired(option);
+ *
+ * @param option The ArgParseOption object to query.
+ * 
+ * @return bool <tt>true</tt> if the option is mandatory and <tt>false</tt> if it not.
+ *
+ * By default, options are not mandatory.
+ */
+
 /**
 .Function.ArgParseOption#isRequired
 ..class:Class.ArgParseOption
@@ -233,6 +329,19 @@ inline bool isRequired(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 // Function setDefaultValue()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseOption#setDefaultValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the default value for the given option.
+ *
+ * @signature void setDefaultValue(option, v);
+ *
+ * @param option The ArgParseOption to set the default value for.
+ * @param v      The value to set, (any type that can be streamed into an <tt>std::stringstream</tt>).
+ */
+
+// TODO(holtgrew): Deprecate in favour of string-only variant?
 
 /**
 .Function.ArgParseOption#setDefaultValue
@@ -273,6 +382,22 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
 // Function addDefaultValue()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgParseOption#addDefaultValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Adds/appends a new value to the list of default values.
+ *
+ * @signature void setDefaultValue(option, v);
+ *
+ * @param option The ArgParseOption to appen the default value for.
+ * @param v      The value to append, (any type that can be streamed into an <tt>std::stringstream</tt>).
+ * 
+ * @section Remarks
+ *
+ * This function does not check any length restrictions for this value.
+ */
+
+
 /**
 .Function.ArgParseOption#addDefaultValue
 ..summary:Adds/appends a new value to the list of default values.
@@ -309,6 +434,19 @@ inline void addDefaultValue(ArgParseOption & me, const TValue & value)
 // Function setRequired()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgParseOption#setRequired
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Sets whether or not the option is mandatory.
+ *
+ * @signature void setRequired(option, required);
+ *
+ * @param option   The ArgParseOption to modify.
+ * @param required Flag whether the option is mandatory (<tt>bool</tt>).
+ *
+ * By default, options are not mandatory.
+ */
+
 /**
 .Function.ArgParseOption#setRequired
 ..class:Class.ArgParseOption
@@ -331,6 +469,18 @@ inline void setRequired(ArgParseOption & me, bool required)
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgParseOption#getArgumentLabel
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns the argument label.
+ *
+ * @signature std::string getArgumentLabel(option);
+ *
+ * @param option The ArgParseOption object to query.
+ *
+ * @return std::string The argument label string.
+ */
+
 inline std::string const getArgumentLabel(ArgParseOption const & me)
 {
     if (isBooleanOption(me))
@@ -342,6 +492,18 @@ inline std::string const getArgumentLabel(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 // Function getOptionName()                                    [ArgParseOption]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseOption#getOptionName
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns the name of the ArgParseOption in a well-formatted way.
+ *
+ * @signature std::string getOptionName(option);
+ *
+ * @param option The ArgParseOption object to query.
+ *
+ * @return std::string The option name string.
+ */
 
 /**
  .Function.ArgParseOption#getOptionName
@@ -372,6 +534,17 @@ inline std::string getOptionName(ArgParseOption const & me)
 // ----------------------------------------------------------------------------
 // Function write()                                            [ArgParseOption]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseOption#write
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Writes the basic informationa bout the ArgParseOption to the provided stream.
+ *
+ * @signature void write(stream, option);
+ *
+ * @param stream The @link StreamConcept stream @endlink to write to.
+ * @param option The ArgParseOption object to write to <tt>stream</tt>.
+ */
 
 /**
 .Function.ArgParseOption#write

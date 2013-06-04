@@ -289,6 +289,20 @@ inline std::string _getManual(ArgumentParser const & me)
 // Function writeCTD()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#writeCTD
+ * @headerfile <seqan/arg_parse.h>\
+ * @brief Export the app's interface description to a .ctd file.
+ *
+ * @signature bool writeCTD(parser[, stream]);
+ *
+ * @param parser The ArgumentParser to write the CTD file for.
+ * @param stream A <tt>std::ostream</tt> to write to.  If omitted an output file with the name form the "write-ctd"
+ *               parameter of the parser is used.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.writeCTD
 ..summary:Exports the app's interface description to a .ctd file.

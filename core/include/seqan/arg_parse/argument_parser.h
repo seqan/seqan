@@ -66,6 +66,64 @@ void setValidValues(ArgumentParser & me, std::string const & name, std::string c
 // Tags, Classes, Enums
 // ==========================================================================
 
+/*!
+ * @class ArgumentParser
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Parse the command line.
+ *
+ * @signature class ArgumentParser;
+ *
+ * Options are stored as @link ArgParseOption @endlink and @link ArgParseArgument @endlink objects.
+ *
+ * @section Remarks
+ *
+ * See the documentation of @link ToolDoc @endlink on how to format text.  Wherever possible, formatting is added
+ * automatically for you.  You have to use formatting in the following places: (1) usage lines, (2) option help texts,
+ * (3) description and additional text sections.
+ * 
+ * @section Examples
+ *
+ * The following gives a simple example of how to use the ArgumentParser class.
+ *
+ * @code{.cpp}
+ * ArgumentParser parser("alf");
+ * setShortDescription(parser, "Alignment free sequence comparison");
+ * setVersion(parser, "1.0");
+ * setDate(parser, "Jan 2010");
+ * 
+ * addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-i\\fP \\fIIN\\fP \\fB-o\\fP \\fIOUT\\fP");
+ * 
+ * addDescription(parser,
+ *                "ALF can be used to calculate the pairwise similarity of sequences "
+ *                "using alignment-free methods. All methods which are implemented are "
+ *                "based on k-mer counts.");
+ * 
+ * addOption(parser, ArgParseOption("i", "inputFile", "Name of the multi-FASTA input.",
+ *                                  ArgParseArgument(ArgParseArgument::INPUTFILE, "IN")));
+ * setRequired(parser, "i");
+ * 
+ * addOption(parser, ArgParseOption("o", "outputFile", "Name of the multi-FASTA input.",
+ *                                  ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUT")));
+ * setRequired(parser, "o");
+ * 
+ * addTextSection(parser, "See Also");
+ * addText(parser, "http://www.seqan.de/projects/alf");
+ * @endcode
+ *
+ * @see ArgParseArgument
+ * @see ArgParseOption
+ * @see ToolDoc
+ */
+
+/*!
+ * @fn ArgumentParser::ArgumentParser
+ * @brief Constructor
+ *
+ * @signature ArgumentParser::ArgumentParser([appName]);
+ *
+ * @param appName The name of the application (<tt>std::string</tt>), defaults to <tt>argv[0]</tt>.
+ */
+
 /**
 .Class.ArgumentParser
 ..cat:Miscellaneous
@@ -218,6 +276,19 @@ public:
 // Function hasOption()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#hasOption
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Query whether a certain option is registered in the parser.
+ *
+ * @signature bool hasOption(parser, name);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param name   The name to query for (<tt>std::string</tt>).
+ *
+ * @return bool <tt>true</tt> if there is such an option, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.ArgumentParser#hasOption
 ..class:Class.ArgumentParser
@@ -239,6 +310,17 @@ inline bool hasOption(ArgumentParser const & me, std::string const & name)
 // ----------------------------------------------------------------------------
 // Function addOption()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#addOption
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Adds an @link ArgParseOption @endlink to an ArgumentParser.
+ *
+ * @signature void addOption(parser, option);
+ *
+ * @param parser The ArgumentParser to add the option to.
+ * @param option The ArgParseOption to add to <tt>parser</tt>.
+ */
 
 /**
 .Function.ArgumentParser#addOption
@@ -271,6 +353,17 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
 // ----------------------------------------------------------------------------
 // Function addArgument()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#addArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Adds an @link ArgParseArgument @endlink to an ArgumentParser.
+ *
+ * @signature void addArgument(parser, arg);
+ *
+ * @param parser The ArgumentParser to add the argument to.
+ * @param arg    The ArgParseArgument to add to <tt>parser</tt>.
+ */
 
 /**
 .Function.ArgumentParser#addArgument
@@ -327,6 +420,19 @@ inline ArgumentParser::TOptionMapSize _getOptionIndex(ArgumentParser const & me,
 // Function getOption()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getOption
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns a reference to the specified option.
+ *
+ * @signature TOption getOption(parser, name);
+ *
+ * @param parser The parser to query.
+ * @param name   The short or long name of the option (<tt>std::string</tt>).
+ *
+ * @return TOption Reference to the @link ArgParseOption @endlink with the given short or long name.
+ */
+
 /**
 .Function.ArgumentParser#getOption
 ..class:Class.ArgumentParser
@@ -356,6 +462,18 @@ inline ArgParseOption const & getOption(ArgumentParser const & me, std::string c
 // Function setRequired()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#setRequired
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Sets whether or not the option with the givne name is mandatory.
+ *
+ * @signature void setRequired(parser, name[, required]).
+ *
+ * @param parser   The ArgumentParser to set the flag of.
+ * @param name     The short or long name of the option (<tt>std::string</tt>).
+ * @param required Whether or not the option is required (<tt>bool</tt>, default to <tt>true</tt>).
+ */
+
 /**
 .Function.ArgumentParser#setRequired
 ..class:Class.ArgumentParser
@@ -382,6 +500,18 @@ inline void setRequired(ArgumentParser & me, std::string const & name, bool requ
 // Function hideOption()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#hideOption
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Hides the ArgParseOption with the given name.
+ *
+ * @signature void hideOption(parser, name[, hide]).
+ *
+ * @param parser The ArgParseOption to the the hidden flag of.
+ * @param name   The short or long name of the option to modify.
+ * @param hide   Whether or not to hide the flag (<tt>bool</tt>, defaults to <tt>true</tt>).
+ */
+
 /**
 .Function.ArgumentParser#hideOption
 ..class:Class.ArgumentParser
@@ -406,6 +536,19 @@ inline void hideOption(ArgumentParser & me, std::string const & name, bool hide 
 // ----------------------------------------------------------------------------
 // Function getArgument()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns a reference to the given positional argument.
+ *
+ * @signature TArgument getArgument(parser, pos);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param pos    The position of the argument to return (<tt>unsigned</tt>, starting at 0).
+ *
+ * @return TArgument Reference to the argument with the given position.
+ */
 
 /**
 .Function.ArgumentParser#getArgument
@@ -438,6 +581,19 @@ inline ArgParseArgument const & getArgument(ArgumentParser const & me, unsigned 
 // Function isSet()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#isSet
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Query whether an option was set on the command line.
+ *
+ * @signature bool isSet(parser, name);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param name   The short or long name of the option (<tt>std::string</tt>).
+ *
+ * @return bool Whether or not the option was set on the command line or not.
+ */
+
 /**
 .Function.ArgumentParser#isSet
 ..class:Class.ArgumentParser
@@ -460,6 +616,19 @@ inline bool isSet(ArgumentParser const & me, std::string const & name)
 // ----------------------------------------------------------------------------
 // Function hasDefault()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#hasDefault
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Query whether an option has a default value.
+ *
+ * @signature bool hasDefault(parser, name);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param name   The short or long name of the option (<tt>std::string</tt>).
+ *
+ * @return bool Whether or not the option has a default value.
+ */
 
 /**
 .Function.ArgumentParser#hasDefault
@@ -509,6 +678,23 @@ inline bool _allArgumentsSet(ArgumentParser const & me)
 // Function getOptionValue()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getOptionValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Retrieve the value of an option.
+ *
+ * @signature bool getOptionValue(dest, parser, name[, pos]);
+ *
+ * @param dest   The variable to write the result to (the type is a template parameter and the value type of the option
+ *               must be convertible in the type of <tt>dest</tt> for the retrieval to work, also see result value).
+ * @param parser The ArgumentParser to get the value from.
+ * @param name   The short or long name of the option (<tt>std::string</tt>).
+ * @param pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
+ *
+ * @return bool <tt>true</tt> if the requested option was given on the command line and could be coverted to the type of
+ *              <tt>dest</tt>.
+ */
+
 /**
 .Function.ArgumentParser#getOptionValue
 ..class:Class.ArgumentParser
@@ -554,6 +740,17 @@ inline bool getOptionValue(TValue & val,
 // Function getOptionValueCount()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getOptionValueCount
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Query number of values stored for the specified option.
+ *
+ * @signature unsigned getOptionValueCount(parser, name);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param name   The short or long name of the option (<tt>string</tt>).
+ */
+
 /**
 .Function.ArgumentParser#getOptionValueCount
 ..class:Class.ArgumentParser
@@ -576,6 +773,17 @@ inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const
 // ----------------------------------------------------------------------------
 // Function getArgumentValueCount()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getArgumentValueCount
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Query number of values stored for the specified argument.
+ *
+ * @signature unsigned getArgumentValueCount(parser, pos);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param name   The position of the argument (<tt>unsigned</tt>, 0-based).
+ */
 
 /**
 .Function.ArgumentParser#getArgumentValueCount
@@ -601,6 +809,23 @@ inline unsigned getArgumentValueCount(ArgumentParser const & me, unsigned argume
 // ----------------------------------------------------------------------------
 // Function getArgumentValue()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getArgumentValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Retrieves the value of an argument given by its position.
+ *
+ * @signature bool getArgumentValue(dest, parser, pos[, no]);
+ *
+ * @param dest   The variable to write the result to (the type is a template parameter and the value type of the
+ *               argument must be convertible in the type of <tt>dest</tt> for the retrieval to work, also see result
+ *               value).
+ * @param parser The ArgumentParser to get the value from.
+ * @param pos    The position of the argument to get the value of.
+ * @param no     Optional position for multi-value arguments (<tt>unsigned</tt>, defaults to 0).
+ *
+ * @return bool <tt>true</tt> if the retrieval was successful, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.ArgumentParser#getArgumentValue
@@ -642,6 +867,19 @@ inline bool getArgumentValue(TValue & value,
 // Function getOptionValues()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#getOptionValues
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns all values of an option given on the command line.
+ *
+ * @signature TVector getOptionValues(parser, name);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param name   The short or long name of the option to get (<tt>std::string</tt>).
+ *
+ * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
+ */
+
 /**
 .Function.ArgumentParser#getOptionValues
 ..class:Class.ArgumentParser
@@ -665,6 +903,19 @@ inline std::vector<std::string> const & getOptionValues(ArgumentParser const & m
 // ----------------------------------------------------------------------------
 // Function getArgumentValues()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getArgumentValues
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns all values of an argument given on the command line.
+ *
+ * @signature TVector getArgumentValues(parser, pos);
+ *
+ * @param parser The ArgumentParser to query.
+ * @param pos    The position of the argument (<tt>unsigned</tt>, 0-based).
+ *
+ * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
+ */
 
 /**
 .Function.ArgumentParser#getArgumentValues
@@ -692,6 +943,18 @@ inline std::vector<std::string> const & getArgumentValues(ArgumentParser const &
 // Function setDefaultValue()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#setDefaultValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the default value of an option of an ArgumentParser.
+ *
+ * @signature void setDefaultValue(parser, name, v);
+ *
+ * @param parser The ArgumentParser to set the default value to.
+ * @param name   The short or long name of the argument (<tt>std::string</tt>).
+ * @param v      The value to set (template parameter, must be streamable into a <tt>std::stringstream</tt>).
+ */
+
 /**
 .Function.ArgumentParser#setDefaultValue
 ..class:Class.ArgumentParser
@@ -717,6 +980,18 @@ inline void setDefaultValue(ArgumentParser & me,
 // Function addDefaultValue()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#addDefaultValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Add/append a value to the default values for an option in an ArgumentParser.
+ *
+ * @signature void addDefaultValue(parser, name, v);
+ *
+ * @param parser The ArgumentParser to append the default value to.
+ * @param name   The short or long name of the argument (<tt>std::string</tt>).
+ * @param v      The value to append (template parameter, must be streamable into a <tt>std::stringstream</tt>).
+ */
+
 /**
 .Function.ArgumentParser#addDefaultValue
 ..class:Class.ArgumentParser
@@ -741,6 +1016,24 @@ inline void addDefaultValue(ArgumentParser & me,
 // ----------------------------------------------------------------------------
 // Function setMinValue()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setMinValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set smallest allowed value for an option or argument of an ArgumentParser.
+ *
+ * @signature void setMinValue(parser, name, v);
+ * @signature void setMinValue(parser, pos, v);
+ *
+ * @param parser The ArgumentParser to set the minimal value for.
+ * @param name   The name of the option to set the minimal value for (<tt>std::string</tt>).
+ * @param pos    The position of the argument to set the minimal value for (<tt>unsigned</tt>, 0-based).
+ * @param v      The minimal value to set (<tt>std::string</tt>).
+ *
+ * @section Remarks
+ *
+ * The option/argument must have an integer or double type.
+ */
 
 /**
 .Function.ArgumentParser#setMinValue
@@ -778,6 +1071,24 @@ inline void setMinValue(ArgumentParser & me,
 // Function setMaxValue()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#setMaxValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set largest allowed value for an option or argument of an ArgumentParser.
+ *
+ * @signature void setMaxValue(parser, name, v);
+ * @signature void setMaxValue(parser, pos, v);
+ *
+ * @param parser The ArgumentParser to set the maximal value for.
+ * @param name   The name of the option to set the maximal value for (<tt>std::string</tt>).
+ * @param pos    The position of the argument to set the maximal value for (<tt>unsigned</tt>, 0-based).
+ * @param v      The maximal value to set (<tt>std::string</tt>).
+ *
+ * @section Remarks
+ *
+ * The option/argument must have an integer or double type.
+ */
+
 /**
 .Function.ArgumentParser#setMaxValue
 ..class:Class.ArgumentParser
@@ -813,6 +1124,21 @@ inline void setMaxValue(ArgumentParser & me,
 // ----------------------------------------------------------------------------
 // Function setValidValues()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setValidValue
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set valid values for an argumetn or option of an ArgumentParser.
+ *
+ * @signature void setValidValues(parser, name, values);
+ * @signature void setValidValues(parser, pos, values);
+ *
+ * @param parser The ArgumentParser to set the default values to.
+ * @param name   The name of the option (<tt>std::string</tt>).
+ * @param pos    The position of the argument (<tt>unsigned</tt>, 0-based).
+ * @param values The values to set.  Either a <tt>std::string</tt> with the values as space-separated list
+ *               or a <tt>std::vector&lt;std::string&gt;</tt> with the values.
+ */
 
 /**
 .Function.ArgumentParser#setValidValues
@@ -869,6 +1195,20 @@ inline void setValidValues(ArgumentParser & me,
 // Function setHelpText()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ArgumentParser#setHelpText
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the help text of an option or argument.
+ *
+ * @signature void setHelpText(parser, name, text);
+ * @signature void setHelpText(parser, pos, text);
+ *
+ * @param parser The ArgumentParser object.
+ * @param name   The name of the option to set the help text for (<tt>std::string</tt>).
+ * @param pos    The position of the argument to set the help text for.
+ * @param text   The string to use for the help text (<tt>std::string</tt>).
+ */
+
 /**
 .Function.ArgumentParser#setHelpText
 ..class:Class.ArgumentParser
@@ -904,6 +1244,22 @@ inline void setHelpText(ArgumentParser & me,
 // ----------------------------------------------------------------------------
 // Function getFileFormatExtensions()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getFileFormatExtensions
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns file format extension given a format tag.
+ *
+ * @signature TVector getFormatExtension(tag);
+ * @signature TVector getFormatExtension(tagList);
+ * @signature TVector getFormatExtension(tagSelector);
+ *
+ * @param tag         A single file foramt, e.g. <tt>Fastq()</tt>.
+ * @param tagList     A list of file format (@link TagList @endlink).
+ * @param tagSelector A file format selector (@link TagSelector @endlink).
+ *
+ * @return TVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file format extensions.
+ */
 
 /**
 .Function.ArgumentParser#getFileFormatExtensions
