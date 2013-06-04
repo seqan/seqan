@@ -74,7 +74,7 @@ struct Host<Matrix<TValue, DIMENSION> >
 
 /*!
  * @class Matrix
- * @include <seqan/align.h>
+ * @headerfile <seqan/align.h>
  * @brief A simple n-dimensional matrix type.
  *
  * @signature template <typename TValue, unsigned DIMENSION = 0>
