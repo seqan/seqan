@@ -225,6 +225,8 @@ _storeOneAnnotation(
     typedef typename Value<TAnnotationStore>::Type      TAnnotation;
     typedef typename TAnnotation::TId                   TId;
 
+    SEQAN_ASSERT_EQ(length(fragStore.annotationStore), length(fragStore.annotationNameStore));
+
     // for lines in Gtf format get/add the parent gene first
     TId geneId = TAnnotation::INVALID_ID;
     if (!empty(ctx.gtfGeneId))
