@@ -38,7 +38,7 @@
 //#include <stdio.h>
 
 namespace SEQAN_NAMESPACE_MAIN
-{	
+{
 
 //////////////////////////////////////////////////////////////////////////////
 // Contig Store Configuration
@@ -705,6 +705,7 @@ _storeAppendAnnotationName (
 	TName & annotationName,
     TTypeId typeId)
 {
+    SEQAN_ASSERT_EQ(length(fragStore.annotationStore), length(fragStore.annotationNameStore));
 	if (!empty(annotationName) && getIdByName(fragStore.annotationNameStore, annotationName, annotationId, fragStore.annotationNameStoreCache))
     {
         do
@@ -714,14 +715,13 @@ _storeAppendAnnotationName (
                 return;
             ++annotationId;
         } while (annotationId < length(fragStore.annotationNameStore) && fragStore.annotationNameStore[annotationId] == annotationName);
-		return;
     }
 	// if the annotation is not in the store yet
 	// set the ID on the last entry after appending
 	annotationId = length(fragStore.annotationNameStore);
 	// append to annotationName store
 	appendName(fragStore.annotationNameStore, annotationName, fragStore.annotationNameStoreCache);
-//	std::cout << "added annotation:" << annotationName << std::endl;	
+//	std::cout << "added annotation:" << annotationName << std::endl;
 }
 
 template <typename TSpec, typename TConfig, typename TId, typename TName>
