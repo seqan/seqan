@@ -721,7 +721,9 @@ _storeAppendAnnotationName (
 	annotationId = length(fragStore.annotationNameStore);
 	// append to annotationName store
 	appendName(fragStore.annotationNameStore, annotationName, fragStore.annotationNameStoreCache);
-//	std::cout << "added annotation:" << annotationName << std::endl;
+    // we also need to append an annotation to store the typeId in case of duplicate annotation names
+    resize(fragStore.annotationStore, length(fragStore.annotationStore) + 1);
+    back(fragStore.annotationStore).typeId = typeId;
 }
 
 template <typename TSpec, typename TConfig, typename TId, typename TName>

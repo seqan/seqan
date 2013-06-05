@@ -225,16 +225,10 @@ _storeOneAnnotation(
     typedef typename Value<TAnnotationStore>::Type      TAnnotation;
     typedef typename TAnnotation::TId                   TId;
 
-    TId maxId = 0;
-
     // for lines in Gtf format get/add the parent gene first
     TId geneId = TAnnotation::INVALID_ID;
     if (!empty(ctx.gtfGeneId))
-    {
         _storeAppendAnnotationName(fragStore, geneId, ctx.gtfGeneId, (TId) TFragmentStore::ANNO_GENE);
-        if (maxId < geneId)
-            maxId = geneId;
-    }
 
     // if we have a parent transcript, get/add the parent transcript then
     if (!empty(ctx.parentName))
@@ -247,17 +241,11 @@ _storeOneAnnotation(
 //            append(ctx.parentName, "_1");
 
         if (ctx.parentKey == "transcript_id")
-        {
             // type is implicitly given (mRNA)
             _storeAppendAnnotationName(fragStore, ctx.annotation.parentId, ctx.parentName, (TId) TFragmentStore::ANNO_MRNA);
-        }
         else
-        {
             // type is unknown
             _storeAppendAnnotationName(fragStore, ctx.annotation.parentId, ctx.parentName);
-        }
-        if (maxId < ctx.annotation.parentId)
-            maxId = ctx.annotation.parentId;
     }
     else
         ctx.annotation.parentId = 0;    // if we have no parent, we are a child of the root
@@ -268,8 +256,6 @@ _storeOneAnnotation(
 
     // add annotation name of the current line
     _storeAppendAnnotationName(fragStore, ctx.annotationId, ctx.annotationName, ctx.annotation.typeId);
-    if (maxId < ctx.annotationId)
-        maxId = ctx.annotationId;
 
     for (unsigned i = 0; i < length(ctx.keys); ++i)
     {
@@ -286,8 +272,6 @@ _storeOneAnnotation(
             annotationAssignValueByKey(fragStore, ctx.annotation, ctx.keys[i], ctx.values[i]);
     }
 
-    if (length(fragStore.annotationStore) <= maxId)
-        resize(fragStore.annotationStore, maxId + 1, Generous());
     fragStore.annotationStore[ctx.annotationId] = ctx.annotation;
 
     TAnnotation & parent = fragStore.annotationStore[ctx.annotation.parentId];
