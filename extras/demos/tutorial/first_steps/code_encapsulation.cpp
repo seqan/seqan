@@ -26,7 +26,7 @@ seqan::String<int> computeScore(seqan::String<char> text, seqan::String<char> pa
 
 int main()
 {
-    seqan::String<char> text = "This is an awesome tutorial to get to now SeqAn!";
+    seqan::String<char> text = "This is an awesome tutorial to get to know SeqAn!";
     seqan::String<char> pattern = "tutorial";
     seqan::String<int> score = computeScore(text, pattern);
 
