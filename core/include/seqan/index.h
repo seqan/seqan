@@ -39,6 +39,7 @@
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
 #include <seqan/modifier.h>
+#include <seqan/parallel.h>
 
 #include <seqan/find.h>
 #include <seqan/misc/misc_set.h>
