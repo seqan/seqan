@@ -285,7 +285,33 @@ inline T atomicCas(T volatile & x, T cmp, T y)
 }
 
 #endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
-	
+
+
+// ----------------------------------------------------------------------------
+// Wrappers to use faster non-synced functions in serial implementations
+// ----------------------------------------------------------------------------
+
+template <typename T>
+inline T atomicCas(T & x, T cmp, T y, Serial)
+{
+    // In serial algorithms we avoid atomicCas, as it might not be available
+    // on each platform or could be slower than this non-synced variant
+    // TODO(weese): verify this in experiments --^
+    if (x == cmp)
+        return x = y;
+    else
+        return x;
+}
+
+template <typename T>
+inline T atomicCas(T volatile & x, T cmp, T y, Parallel)
+{
+    return atomicCas(x, cmp, y);
+}
+
+
+
+
 } // namespace seqan
 
 #endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
