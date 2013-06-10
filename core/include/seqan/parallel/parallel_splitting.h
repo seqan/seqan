@@ -62,18 +62,27 @@ computeSplitters(splitters, 10, 5);
 template <typename TPosString, typename TSize, typename TCount>
 void computeSplitters(TPosString & splitters, TSize size, TCount count)
 {
-    resize(splitters, count + 1);
-    splitters[0] = 0;
-    TSize blockLength = size / count;
-    TCount rest = size % count;
-    for (TCount i = 1; i <= count; ++i)
-    {
-        splitters[i] = splitters[i - 1] + blockLength;
-        if (i <= rest)
-            splitters[i] += 1;
-    }
+    typedef typename Value<TPosString>::Type TPos;
 
-    typedef typename Value<TPosString>::Type TPos SEQAN_TYPEDEF_FOR_DEBUG;
+    SEQAN_ASSERT_GEQ(count, (TCount)0);
+
+    resize(splitters, count + 1);
+
+    TSize blockLength = (size / count) + 1;
+    TCount rest = size % count;
+    TPos pos = 0;
+
+    TCount i = 0;
+
+    // the first (size % count) many blocks have length (size / count) + 1
+    for (; i < rest; ++i, pos += blockLength)
+        splitters[i] = pos;
+
+    // the remaining blocks have length (size / count)
+    --blockLength;
+    for (; i <= count; ++i, pos += blockLength)
+        splitters[i] = pos;
+
     SEQAN_ASSERT_EQ(back(splitters), static_cast<TPos>(size));
 }
 
