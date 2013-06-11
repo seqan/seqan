@@ -465,7 +465,6 @@ this function can be used to extract the sequence id of every fragment in the St
 		{
 			_seekLineBreak(it, itEnd);
 			assign(dst, infix(fasta, 1, it - itBeg));
-            // h4nn3s: shouldn't it be infix(fasta, itBeg +1, it -itBeg) ?
 		}
 	}
 
@@ -509,7 +508,6 @@ this function can be used to extract the sequence id up to the first whitespace 
 		{
 			_seekWhiteSpace(it, itEnd);
 			assign(dst, infix(fasta, 1, it - itBeg));
-            //h4nn3s: see above
 		}
 	}
 
