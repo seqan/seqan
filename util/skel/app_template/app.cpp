@@ -136,7 +136,7 @@ int main(int argc, char const ** argv)
 
     std::cout << "EXAMPLE PROGRAM\n"
               << "===============\n\n";
-    
+
     // Print the command line arguments back to the user.
     if (options.verbosity > 0)
     {
