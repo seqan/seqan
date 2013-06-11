@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Utility macros for parallelism.
 // ==========================================================================
@@ -38,6 +39,80 @@
 #define SEQAN_PARALLEL_PARALLEL_SPLITTING_H_
 
 namespace seqan {
+
+struct Equidistant_;
+typedef Tag<Equidistant_> Equidistant;
+
+/**
+.Class.Splitter
+..cat:Parallelism
+..summary:Splits an interval into subintervals.
+..signature:Splitter<TPosition[, TSpec]>
+..concept:Concept.ContainerConcept
+..param.TPosition:Type of the interval boundaries.
+..param.TSpec:Tag to select the way the values are sampled.
+...default:Equidistant
+..remarks:The Splitter splits an interval into subintervals whose boundaries are enumerated by the Splitter.
+It is a container whose length equals the number of subintervals + 1.
+..example:
+...text:Simple case for equidistant (default) splitting.
+...code:Splitter<unsigned> splitter(0, 10, 3);
+for (unsigned i = 0; i < length(splitter); ++i)
+    std::cout << splitter[i] << std::endl; 
+// outputs 0 4 7 10
+..include:seqan/parallel.h
+
+.Memfunc.Splitter#Splitter
+..summary:Constructor
+..signature:Splitter(beginPos, endPos, count)
+..param.beginPos:Left interval boundary.
+..param.endPos:Right interval boundary.
+..param.count:Number of subintervals.
+..class:Class.Splitter
+ */
+
+template <typename TPosition, typename TSpec = Equidistant>
+struct Splitter
+{
+    TPosition beginPos;
+    TPosition length;
+
+    TPosition blockLength;
+    TPosition rest;
+
+    Splitter(TPosition beginPos_, TPosition endPos, TPosition count):
+        beginPos(beginPos_),
+        length(count + 1),
+        blockLength((endPos - beginPos) / count),
+        rest((endPos - beginPos) % count)
+    {
+    }
+
+    TPosition operator[] (TPosition i)
+    {
+        SEQAN_ASSERT_LEQ(i, length);
+        return beginPos + blockLength * i + std::min(i, rest);
+    }
+};
+
+template <typename TPosition, typename TSpec>
+struct Size<Splitter<TPosition, TSpec> >
+{
+    typedef TPosition Type;
+};
+
+template <typename TPosition, typename TSpec>
+struct Value<Splitter<TPosition, TSpec> >
+{
+    typedef TPosition Type;
+};
+
+template <typename TPosition, typename TSpec>
+inline TPosition
+length(Splitter<TPosition, TSpec> const &splitter)
+{
+    return splitter.length;
+}
 
 /**
 .Function.computeSplitters
