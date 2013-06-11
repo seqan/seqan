@@ -9,10 +9,9 @@
 #include <numeric>
 #endif  // #ifdef PLATFORM_GCC
 
-using namespace seqan;
+#include <seqan/parallel.h>
 
-struct Parallel_;
-typedef Tag<Parallel_> Parallel;
+namespace seqan {
 
 #if defined(PLATFORM_GCC) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 
@@ -20,7 +19,7 @@ typedef Tag<Parallel_> Parallel;
 
 template <typename TAlign, typename TFunctorLess>
 inline void
-sortAlignedReads(TAlign & alignStore, TFunctorLess const & less, Parallel const &)
+sortAlignedReads(TAlign & alignStore, TFunctorLess const & less, Parallel)
 {
     __gnu_parallel::sort(
         begin(alignStore, Standard()),
@@ -30,7 +29,7 @@ sortAlignedReads(TAlign & alignStore, TFunctorLess const & less, Parallel const 
 
 template <typename TAlign, typename TFunctorLess>
 inline void
-sortAlignedReads(TAlign const & alignStore, TFunctorLess const & less, Parallel const &)
+sortAlignedReads(TAlign const & alignStore, TFunctorLess const & less, Parallel)
 {
     __gnu_parallel::sort(
         begin(const_cast<TAlign &>(alignStore), Standard()),
@@ -54,14 +53,14 @@ partialSum(TIntString & intString)
 
 template <typename TAlign, typename TFunctorLess>
 inline void
-sortAlignedReads(TAlign & alignStore, TFunctorLess const & less, Parallel const &)
+sortAlignedReads(TAlign & alignStore, TFunctorLess const & less, Parallel)
 {
     std::sort(begin(alignStore, Standard()), end(alignStore, Standard()), less);
 }
 
 template <typename TAlign, typename TFunctorLess>
 inline void
-sortAlignedReads(TAlign const & alignStore, TFunctorLess const & less, Parallel const &)
+sortAlignedReads(TAlign const & alignStore, TFunctorLess const & less, Parallel)
 {
     std::sort(begin(alignStore, Standard()), end(alignStore, Standard()), less);
 }
@@ -77,5 +76,7 @@ partialSum(TIntString & intString)
 }
 
 #endif  // #ifdef PLATFORM_GCC
+
+}
 
 #endif  // ifndef APPS_RAZERS_PARALLEL_STORE_H
