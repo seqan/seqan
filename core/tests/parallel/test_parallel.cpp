@@ -73,6 +73,7 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
     SEQAN_CALL_TEST(test_parallel_atomic_max);
 #endif  // #if !defined(__llvm__) && !defined(PLATFORM_WINDOWS_MINGW)
 
+    SEQAN_CALL_TEST(test_parallel_splitter_equidistant);
     SEQAN_CALL_TEST(test_parallel_splitting_compute_splitters);
 }
 SEQAN_END_TESTSUITE
