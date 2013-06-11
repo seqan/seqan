@@ -946,7 +946,7 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string co
             {
                 if (validValue != me.validValues.begin())
                     what << ", ";
-                what << ((isInputFileArgument(me) || isOutputFileArgument(me)) ? "*." : "") << *validValue;
+                what << ((isInputFileArgument(me) || isOutputFileArgument(me)) ? "*" : "") << *validValue;
             }
             what << "]";
             throw ParseException(what.str());
