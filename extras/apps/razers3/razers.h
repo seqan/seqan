@@ -646,6 +646,20 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 
 }
 
+
+template <typename TId>
+inline void
+cropSequenceId(TId &seqId)
+{
+    typedef Iterator<TId, Standard>::Type TIterator;
+    
+    TIterator itBeg = begin(id, Standard());
+    TIterator it = itBeg;
+    
+    _seekLineBreak(it, end(id, Standard()));
+    resize(seqId, it - itBeg);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Load multi-Fasta sequences with or w/o quality values
 template <typename TFSSpec, typename TFSConfig, typename TRazerSOptions>
@@ -657,39 +671,35 @@ bool loadReads(
     bool countN = !(options.matchN || options.outputFormat == 1);
 
     SequenceStream seqStream(fileName);
-    
-//    MultiFasta multiFasta;
-//    if (!open(multiFasta.concat, fileName, OPEN_RDONLY))
-//        return false;
-//
-//    AutoSeqFormat format;
-//    guessFormat(multiFasta.concat, format);
-//    split(multiFasta, format);
-
-//    unsigned seqCount = length(multiFasta);
 
     String<__uint64> qualSum;
     String<Dna5Q>    seq;
     CharString       qual;
     CharString       id;
 
+    unsigned seqCount = 0;
     unsigned kickoutcount = 0;
-//    for (unsigned i = 0; i < seqCount; ++i)
-    unsigned seqCount=0;
+
     while (!atEnd(seqStream))
     {
         ++seqCount;
-        readRecord(id, seq, qual, seqStream);
-        
-//        if (options.readNaming == 0 || options.readNaming == 3)
-//        {
-//            if (options.fullFastaId)
-//                assignSeqId(id, multiFasta[i], format);         // read full Fasta id
-//            else
-//                assignCroppedSeqId(id, multiFasta[i], format);  // read Fasta id up to the first whitespace
-//        }
-//        assignSeq(seq, multiFasta[i], format);                  // read Read sequence
-//        assignQual(qual, multiFasta[i], format);                // read ascii quality values
+
+        if (readRecord(id, seq, qual, seqStream) != 0)
+        {
+            std::cerr << "Read error in file " << fileName << std::endl;
+            return false;
+        }
+
+        if (options.readNaming == 0 || options.readNaming == 3)
+        {
+            if (!options.fullFastaId)
+                cropSequenceId(id);     // read Fasta id up to the first whitespace
+        }
+        else
+        {
+            clear(id);
+        }
+
         if (countN)
         {
             int count = 0;
