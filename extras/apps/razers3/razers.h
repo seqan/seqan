@@ -35,6 +35,7 @@
 #include <seqan/store.h>
 #include <seqan/pipe.h>
 #include <seqan/parallel.h>
+#include <seqan/seq_io.h>
 
 #ifdef RAZERS_PROFILE
 #include "profile_timeline.h"
@@ -655,15 +656,17 @@ bool loadReads(
 {
     bool countN = !(options.matchN || options.outputFormat == 1);
 
-    MultiFasta multiFasta;
-    if (!open(multiFasta.concat, fileName, OPEN_RDONLY))
-        return false;
+    SequenceStream seqStream(fileName);
+    
+//    MultiFasta multiFasta;
+//    if (!open(multiFasta.concat, fileName, OPEN_RDONLY))
+//        return false;
+//
+//    AutoSeqFormat format;
+//    guessFormat(multiFasta.concat, format);
+//    split(multiFasta, format);
 
-    AutoSeqFormat format;
-    guessFormat(multiFasta.concat, format);
-    split(multiFasta, format);
-
-    unsigned seqCount = length(multiFasta);
+//    unsigned seqCount = length(multiFasta);
 
     String<__uint64> qualSum;
     String<Dna5Q>    seq;
@@ -671,17 +674,22 @@ bool loadReads(
     CharString       id;
 
     unsigned kickoutcount = 0;
-    for (unsigned i = 0; i < seqCount; ++i)
+//    for (unsigned i = 0; i < seqCount; ++i)
+    unsigned seqCount=0;
+    while (!atEnd(seqStream))
     {
-        if (options.readNaming == 0 || options.readNaming == 3)
-        {
-            if (options.fullFastaId)
-                assignSeqId(id, multiFasta[i], format);         // read full Fasta id
-            else
-                assignCroppedSeqId(id, multiFasta[i], format);  // read Fasta id up to the first whitespace
-        }
-        assignSeq(seq, multiFasta[i], format);                  // read Read sequence
-        assignQual(qual, multiFasta[i], format);                // read ascii quality values
+        ++seqCount;
+        readRecord(id, seq, qual, seqStream);
+        
+//        if (options.readNaming == 0 || options.readNaming == 3)
+//        {
+//            if (options.fullFastaId)
+//                assignSeqId(id, multiFasta[i], format);         // read full Fasta id
+//            else
+//                assignCroppedSeqId(id, multiFasta[i], format);  // read Fasta id up to the first whitespace
+//        }
+//        assignSeq(seq, multiFasta[i], format);                  // read Read sequence
+//        assignQual(qual, multiFasta[i], format);                // read ascii quality values
         if (countN)
         {
             int count = 0;
