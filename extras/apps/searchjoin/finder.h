@@ -40,6 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index_extras.h>
+#include <seqan/parallel.h>
 
 #include "verifier.h"
 
@@ -55,13 +56,6 @@ using namespace seqan;
 
 struct Online_;
 typedef Tag<Online_>    Online;
-
-// ----------------------------------------------------------------------------
-// Tag Parallel
-// ----------------------------------------------------------------------------
-
-struct Parallel_;
-typedef Tag<Parallel_>  Parallel;
 
 // ----------------------------------------------------------------------------
 // Tag Top

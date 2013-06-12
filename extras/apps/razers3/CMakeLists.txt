@@ -63,6 +63,9 @@ add_executable (razers3_quality2prob quality2prob.cpp)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (razers3 ${SEQAN_LIBRARIES})
+target_link_libraries (razers3_simulate_reads ${SEQAN_LIBRARIES})
+target_link_libraries (razers3_quality2prob ${SEQAN_LIBRARIES})
+#target_link_libraries (razers3_compPHSens ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
