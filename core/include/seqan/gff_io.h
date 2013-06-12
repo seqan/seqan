@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Your Name <your.email@example.net>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Facade header for module gff_io.
 // ==========================================================================
@@ -51,7 +51,7 @@
 // First Header Group.
 // ===========================================================================
 
-#include <../../core/include/seqan/gff_io/gff_io_context.h>
-#include <../../core/include/seqan/gff_io/gff_io_base.h>
+#include <seqan/gff_io/gff_io_context.h>
+#include <seqan/gff_io/gff_io_base.h>
 
 #endif  // CORE_INCLUDE_SEQAN_GFF_IO_H_
