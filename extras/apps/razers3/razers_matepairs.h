@@ -115,63 +115,51 @@ bool loadReads(
 {
     bool countN = !(options.matchN || options.outputFormat == 1);
 
-    MultiFasta leftMates;
-    MultiFasta rightMates;
-
-    if (!open(leftMates.concat, fileNameL, OPEN_RDONLY))
-        return false;
-
-    if (!open(rightMates.concat, fileNameR, OPEN_RDONLY))
-        return false;
-
-    AutoSeqFormat formatL;
-    guessFormat(leftMates.concat, formatL);
-    split(leftMates, formatL);
-
-    AutoSeqFormat formatR;
-    guessFormat(rightMates.concat, formatR);
-    split(rightMates, formatR);
-
-    unsigned seqCount = length(leftMates);
-    if (seqCount != length(rightMates))
-        if (options._debugLevel > 1)
-        {
-            std::cerr << "Numbers of mates differ: " << seqCount << "(left) != " << length(rightMates) << "(right).\n";
-            return false;
-        }
+    SequenceStream seqStreamL(fileNameL);
+    SequenceStream seqStreamR(fileNameR);
 
     String<__uint64>    qualSum;
     String<Dna5Q>       seq[2];
     CharString          qual[2];
-    CharString          id[2];
+    CharString          seqId[2];
 
+    unsigned seqCount = 0;
     unsigned kickoutcount = 0;
     unsigned maxReadLength = 0;
-    for (unsigned i = 0; i < seqCount; ++i)
+
+    while (!atEnd(seqStreamL) && !atEnd(seqStreamR))
     {
+        ++seqCount;
+        
+        if (readRecord(seqId[0], seq[0], qual[0], seqStreamL) != 0)
+        {
+            std::cerr << "Read error in file " << fileNameL << std::endl;
+            return false;
+        }
+        if (readRecord(seqId[1], seq[1], qual[1], seqStreamR) != 0)
+        {
+            std::cerr << "Read error in file " << fileNameR << std::endl;
+            return false;
+        }
+
         if (options.readNaming == 0 || options.readNaming == 3)
         {
-            if (options.fullFastaId)
+            if (!options.fullFastaId)
             {
-                assignSeqId(id[0], leftMates[i], formatL);              // read full left Fasta id
-                assignSeqId(id[1], rightMates[i], formatR);             // read full right Fasta id
-            }
-            else
-            {
-                assignCroppedSeqId(id[0], leftMates[i], formatL);       // read left Fasta id up to the first whitespace
-                assignCroppedSeqId(id[1], rightMates[i], formatR);      // read right Fasta id up to the first whitespace
+                cropSequenceId(seqId[0]);  // read Fasta id up to the first whitespace
+                cropSequenceId(seqId[1]);
             }
             if (options.readNaming == 0)
             {
-                append(id[0], "/L", Exact());
-                append(id[1], "/R", Exact());
+                append(seqId[0], "/L", Exact());
+                append(seqId[1], "/R", Exact());
             }
         }
-
-        assignSeq(seq[0], leftMates[i], formatL);                       // read left Read sequence
-        assignSeq(seq[1], rightMates[i], formatR);                      // read right Read sequence
-        assignQual(qual[0], leftMates[i], formatL);                     // read left ascii quality values
-        assignQual(qual[1], rightMates[i], formatR);                    // read right ascii quality values
+        else
+        {
+            clear(seqId[0]);
+            clear(seqId[1]);
+        }
 
         if (countN)
         {
@@ -186,8 +174,8 @@ bool loadReads(
 //						std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
                         clear(seq[0]);
                         clear(seq[1]);
-                        clear(id[0]);
-                        clear(id[1]);
+                        clear(seqId[0]);
+                        clear(seqId[1]);
                         clear(qual[0]);
                         clear(qual[1]);
                         ++kickoutcount;
@@ -215,11 +203,22 @@ bool loadReads(
             for (unsigned i = 0; i < len; ++i)
                 qualSum[i] += getQualityValue(seq[j][i]);
         }
-        appendMatePair(store, seq[0], seq[1], id[0], id[1]);
+        appendMatePair(store, seq[0], seq[1], seqId[0], seqId[1]);
         if (maxReadLength < length(seq[0]))
             maxReadLength = length(seq[0]);
         if (maxReadLength < length(seq[1]))
             maxReadLength = length(seq[1]);
+    }
+
+
+    if (atEnd(seqStreamL) != atEnd(seqStreamR))
+    {
+        if (options._debugLevel > 1)
+        {
+            std::cerr << "Warning: Unexpected end in one of both paired-end files.\n";
+            return false;
+
+        }
     }
 
     // memory optimization
@@ -378,30 +377,24 @@ struct LessPairErrors3Way :
     {
         // read number
         if (b.readId == TReadMatch::INVALID_ID) return -1;
-
         if (a.readId == TReadMatch::INVALID_ID) return 1;
 
         unsigned matePairIdA = a.readId >> 1;
         unsigned matePairIdB = b.readId >> 1;
         if (matePairIdA < matePairIdB) return -1;
-
         if (matePairIdA > matePairIdB) return 1;
 
         // quality
         if (a.pairScore > b.pairScore) return -1;
-
         if (a.pairScore < b.pairScore) return 1;
 
         if (a.libDiff < b.libDiff) return -1;
-
         if (a.libDiff > b.libDiff) return 1;
 
         if (a.pairMatchId < b.pairMatchId) return -1;
-
         if (a.pairMatchId > b.pairMatchId) return 1;
 
         if (a.readId < b.readId) return -1;
-
         if (a.readId > b.readId) return 1;
 
         return 0;
