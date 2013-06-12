@@ -21,7 +21,7 @@ endif (MINGW OR (MSVC AND MSVC_VERSION LESS 1500))
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB)
+set (SEQAN_FIND_DEPENDENCIES OpenMP ZLIB BZip2)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

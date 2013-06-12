@@ -314,8 +314,12 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     // Need genome and reads (hg18.fa reads.fq)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
 	std::vector<std::string> seqExts = getFileFormatExtensions(seqan::AutoSeqFormat());
-    seqExts.push_back(".gz");	
-    seqExts.push_back(".bz2");	
+#ifdef SEQAN_HAS_ZLIB
+    seqExts.push_back(".gz");
+#endif
+#ifdef SEQAN_HAS_BZIP2
+    seqExts.push_back(".bz2");
+#endif
     setValidValues(parser, 0, seqExts);
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
