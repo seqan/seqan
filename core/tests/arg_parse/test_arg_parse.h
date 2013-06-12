@@ -682,7 +682,7 @@ SEQAN_DEFINE_TEST(test_input_file_invalid_type)
     ArgumentParser parser;
     setupInputFileParser(parser);
 
-    setValidValues(parser, "in", "fa");
+    setValidValues(parser, "in", ".fa");
 
     int argc = 3;
     const char * argv[3] = {A_IN_FILE_0, A_IN_FILE_2, A_IN_FILE_3};
@@ -700,7 +700,7 @@ SEQAN_DEFINE_TEST(test_input_file_valid_type)
     ArgumentParser parser;
     setupInputFileParser(parser);
 
-    setValidValues(parser, "in", "fasta FASTA fa");
+    setValidValues(parser, "in", ".fasta .FASTA .fa");
 
     int argc = 3;
     const char * argv[3] = {A_IN_FILE_0, A_IN_FILE_2, A_IN_FILE_3};
@@ -778,7 +778,7 @@ SEQAN_DEFINE_TEST(test_output_file_invalid_type)
     ArgumentParser parser;
     setupOutputFileParser(parser);
 
-    setValidValues(parser, "out", "fa");
+    setValidValues(parser, "out", ".fa");
 
     int argc = 3;
     const char * argv[3] = {A_OUT_FILE_0, A_OUT_FILE_2, A_OUT_FILE_3};
@@ -796,7 +796,7 @@ SEQAN_DEFINE_TEST(test_output_file_valid_type)
     ArgumentParser parser;
     setupOutputFileParser(parser);
 
-    setValidValues(parser, "out", "fasta FASTA fa");
+    setValidValues(parser, "out", ".fasta .FASTA .fa");
 
     int argc = 3;
     const char * argv[3] = {A_OUT_FILE_0, A_OUT_FILE_2, A_OUT_FILE_3};
