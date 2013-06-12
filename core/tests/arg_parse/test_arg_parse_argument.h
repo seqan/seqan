@@ -157,7 +157,7 @@ SEQAN_DEFINE_TEST(test_argument_valid_values)
                          "the given value 'not-this-or-that' is not in the list of allowed values [this, that]");
 
     ArgParseArgument filearg(ArgParseArgument::INPUTFILE);
-    setValidValues(filearg, "txt fasta");
+    setValidValues(filearg, ".txt .fasta");
 
     _assignArgumentValue(filearg, "textfile.txt");
     SEQAN_ASSERT_EQ(value(filearg.value, 0), "textfile.txt");
