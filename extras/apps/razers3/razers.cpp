@@ -522,6 +522,9 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
                 "\\fBrazers3\\fP \\fB-i\\fP \\fB96\\fP \\fB-tc\\fP \\fB12\\fP \\fB-o\\fP \\fBmapped.razers\\fP \\fBhg18.fa\\fP \\fBreads.fq\\fP",
                 "Map single-end reads with 4% error rate using 12 threads.");
     addListItem(parser,
+                "\\fBrazers3\\fP \\fB-i\\fP \\fB95\\fP \\fB-no-gaps\\fP \\fB-o\\fP \\fBmapped.razers\\fP \\fBhg18.fa\\fP \\fBreads.fq.gz\\fP",
+                "Map single-end gzipped reads with 5% error rate and no indels.");
+    addListItem(parser,
                 "\\fBrazers3\\fP \\fB-i\\fP \\fB94\\fP \\fB-rr\\fP \\fB95\\fP \\fB-tc\\fP \\fB12\\fP \\fB-ll\\fP \\fB280\\fP \\fB--le\\fP \\fB80\\fP \\fB-o\\fP \\fBmapped.razers\\fP \\fBhg18.fa\\fP \\fBreads_1.fq\\fP \\fBreads_2.fq\\fP",
                 "Map paired-end reads with up to 6% errors, 95% sensitivity, 12 threads, and only output aligned pairs with an outer distance of 200-360bp.");
 }
