@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
 // SEQAN_NO_GENERATED_FORWARDS: No forwards are generated for this file.
@@ -242,6 +243,11 @@ inline        __int64 atomicCas(       __int64 volatile & x,        __int64 cmp,
 inline       __uint64 atomicCas(      __uint64 volatile & x,       __uint64 cmp,       __uint64 y) { return _InterlockedCompareExchange64(reinterpret_cast<__int64 volatile *>(&x), y, cmp); }
 #endif  // #ifdef _WIN64
 
+
+template <typename T> inline T atomicPostInc(T volatile & x, Parallel) { return atomicInc(x) - 1; }
+template <typename T> inline T atomicPostDec(T volatile & x, Parallel) { return atomicDec(x) + 1; }
+
+
 #else  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 
 // ----------------------------------------------------------------------------
@@ -251,11 +257,23 @@ inline       __uint64 atomicCas(      __uint64 volatile & x,       __uint64 cmp,
 template <typename T>
 inline T atomicInc(T volatile & x)
 {
+    return __sync_add_and_fetch(&x, 1);
+}
+
+template <typename T>
+inline T atomicPostInc(T volatile & x)
+{
     return __sync_fetch_and_add(&x, 1);
 }
 
 template <typename T>
 inline T atomicDec(T volatile & x)
+{
+    return __sync_add_and_fetch(&x, -1);
+}
+
+template <typename T>
+inline T atomicPostDec(T volatile & x)
 {
     return __sync_fetch_and_add(&x, -1);
 }
@@ -263,19 +281,19 @@ inline T atomicDec(T volatile & x)
 template <typename T1, typename T2>
 inline T1 atomicAdd(T1 volatile & x, T2 y)
 {
-    return __sync_fetch_and_add(&x, y);
+    return __sync_add_and_fetch(&x, y);
 }
 
 template <typename T>
 inline T atomicOr(T volatile & x, T y)
 {
-    return __sync_fetch_and_or(&x, y);
+    return __sync_or_and_fetch(&x, y);
 }
 
 template <typename T>
 inline T atomicXor(T volatile & x, T y)
 {
-    return __sync_fetch_and_xor(&x, y);
+    return __sync_xor_and_fetch(&x, y);
 }
 
 template <typename T>
@@ -291,25 +309,23 @@ inline T atomicCas(T volatile & x, T cmp, T y)
 // Wrappers to use faster non-synced functions in serial implementations
 // ----------------------------------------------------------------------------
 
-template <typename T>
-inline T atomicCas(T & x, T cmp, T y, Serial)
-{
-    // In serial algorithms we avoid atomicCas, as it might not be available
-    // on each platform or could be slower than this non-synced variant
-    // TODO(weese): verify this in experiments --^
-    if (x == cmp)
-        return x = y;
-    else
-        return x;
-}
-
-template <typename T>
-inline T atomicCas(T volatile & x, T cmp, T y, Parallel)
-{
-    return atomicCas(x, cmp, y);
-}
-
-
+template <typename T>   inline T atomicInc(T          & x,             Serial)      { return ++x;                    }
+template <typename T>   inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
+template <typename T>   inline T atomicDec(T          & x,             Serial)      { return --x;                    }
+template <typename T>   inline T atomicPostDec(T      & x,             Serial)      { return x--;                    }
+template <typename T>   inline T atomicAdd(T          & x, T y,        Serial)      { return x = x + y;              }
+template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x = x | y;              }
+template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x = x ^ y;              }
+template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
+ 
+template <typename T>   inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
+template <typename T>   inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
+template <typename T>   inline T atomicDec(T volatile & x,             Parallel)    { return atomicDec(x);           }
+template <typename T>   inline T atomicPostDec(T volatile & x,         Parallel)    { return atomicPostDec(x);       }
+template <typename T>   inline T atomicAdd(T volatile & x, T y,        Parallel)    { return atomicAdd(x, y);        }
+template <typename T>   inline T atomicOr (T volatile & x, T y,        Parallel)    { return atomicOr(x, y);         }
+template <typename T>   inline T atomicXor(T volatile & x, T y,        Parallel)    { return atomicXor(x, y);        }
+template <typename T>   inline T atomicCas(T volatile & x, T cmp, T y, Parallel)    { return atomicCas(x, cmp, y);   }
 
 
 } // namespace seqan
