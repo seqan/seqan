@@ -53,8 +53,12 @@ An \epsilon-match is a matching region of minimal length and an error rate of at
 ..general:Class.Pattern
 ..general:Class.Finder
 ..cat:Searching
-..signature:Finder<TIndex, Swift<TSpec> >
+..signature:Finder<THaystack, Swift<TSpec> >
 ..signature:Pattern<TIndex, Swift<TSpec> >
+..param.THaystack: A haystack type.
+...type:Class.Index
+...type:Class.String
+...type:Class.StringSet
 ..param.TIndex: A q-gram index of needle(s).
 ...type:Spec.IndexQGram
 ..param.TSpec: Specifies the type of Swift filter.
@@ -70,8 +74,12 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 ..summary:The specialization for the general swift filter that finds epsilon matches between haystack and needle.
 ..general:Spec.Swift
 ..cat:Searching
-..signature:Finder<TIndex, Swift<SwiftLocal> >
+..signature:Finder<THaystack, Swift<SwiftLocal> >
 ..signature:Pattern<TIndex, Swift<SwiftLocal> >
+..param.THaystack: A haystack type.
+...type:Class.Index
+...type:Class.String
+...type:Class.StringSet
 ..param.TIndex: A q-gram index of needle(s).
 ...type:Spec.IndexQGram
 ..include:seqan/index.h
@@ -82,8 +90,12 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 ..summary:The specialization for the semi-global swift filter that finds regions of the haystack where a needle matches with an error rate less than \epsilon.
 ..general:Spec.Swift
 ..cat:Searching
-..signature:Finder<TIndex, Swift<SwiftSemiGlobal> >
+..signature:Finder<THaystack, Swift<SwiftSemiGlobal> >
 ..signature:Pattern<TIndex, Swift<SwiftSemiGlobal> >
+..param.THaystack: A haystack type.
+...type:Class.Index
+...type:Class.String
+...type:Class.StringSet
 ..param.TIndex: A q-gram index of needle(s).
 ...type:Spec.IndexQGram
 ..include:seqan/index.h
