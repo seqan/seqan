@@ -278,7 +278,7 @@ public:
 
                 _mod.errorPosOrig = posOrig;
                 _mod.errorPos = pos;
-                _mod.skipChar = (unsigned) orig[posOrig];
+                _mod.skipChar = ordValue(orig[posOrig]);
                 _mod.character = (0 == _mod.skipChar) ? 1 : 0;
                 assignValue(tmp, pos, (TValue) _mod.character);
                 ++pos;
@@ -627,7 +627,7 @@ goBegin(Iter<StringEnumerator<TObject, EditEnvironment<HammingDistance, DISTANCE
         {
             TModifier & mod = it.mod[i];
             mod.errorPos = (mDist - 1) - i;
-            mod.skipChar = (unsigned) it.orig[mod.errorPos];
+            mod.skipChar = ordValue(it.orig[mod.errorPos]);
             mod.character = (0 == mod.skipChar) ? 1 : 0;
             assignValue(it.tmp, mod.errorPos, (TValue) mod.character);
         }
@@ -753,16 +753,15 @@ operator++(Iter<StringEnumerator<TObject, EditEnvironment<HammingDistance, DISTA
                 // next error position
                 if (++(mod->errorPos) < (TSignedSize)(length(it.tmp) - i))
                 {
-                    mod->skipChar = (unsigned) it.orig[mod->errorPos];
+                    mod->skipChar = ordValue(it.orig[mod->errorPos]);
                     mod->character = (0 == mod->skipChar) ? 1 : 0;
                     assignValue(it.tmp, mod->errorPos, (TValue) mod->character);
 
                     for (; i > 0; )
                     {
-                        mod = &it.mod[i];
                         it.mod[i - 1].errorPos = mod->errorPos + 1;
-                        --i;
-                        mod->skipChar = (unsigned) it.orig[mod->errorPos];
+                        mod = &it.mod[--i];
+                        mod->skipChar = ordValue(it.orig[mod->errorPos]);
                         mod->character = (0 == mod->skipChar) ? 1 : 0;
                         assignValue(it.tmp, mod->errorPos, (TValue) mod->character);
                     }
@@ -928,7 +927,7 @@ operator++(Iter<StringEnumerator<TObject, EditEnvironment<LevenshteinDistance, D
                 if (mod->state != mod->DELETE_)
                 {
                     if (mod->state == mod->SUBST_)
-                        mod->skipChar = (unsigned) it.orig[mod->errorPosOrig];
+                        mod->skipChar = ordValue(it.orig[mod->errorPosOrig]);
                     else
                         mod->skipChar = -1;
                     mod->character = (0 == mod->skipChar) ? 1 : 0;
