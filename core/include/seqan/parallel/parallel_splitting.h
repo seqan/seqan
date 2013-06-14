@@ -72,25 +72,44 @@ for (unsigned i = 0; i < length(splitter); ++i)
  */
 
 template <typename TPosition, typename TSpec = Equidistant>
-struct Splitter
+class Splitter
 {
+public:
     TPosition beginPos;
-    TPosition length;
-
+    TPosition subintervalCount;
     TPosition blockLength;
     TPosition rest;
 
-    Splitter(TPosition beginPos_, TPosition endPos, TPosition count):
-        beginPos(beginPos_),
-        length(count + 1),
-        blockLength((endPos - beginPos) / count),
-        rest((endPos - beginPos) % count)
+    Splitter(TPosition beginPos_, TPosition endPos):
+        beginPos(beginPos_)
     {
+        // we choose the counts automatically and don't want to have empty jobs
+        _resize(*this, endPos - beginPos, _min(endPos - beginPos, (TPosition)omp_get_max_threads()));
     }
 
-    TPosition operator[] (TPosition i)
+    Splitter(TPosition beginPos_, TPosition endPos, Parallel):
+        beginPos(beginPos_)
     {
-        SEQAN_ASSERT_LEQ(i, length);
+        // we choose the counts automatically and don't want to have empty jobs
+        _resize(*this, endPos - beginPos, _min(endPos - beginPos, (TPosition)omp_get_max_threads()));
+    }
+
+    Splitter(TPosition beginPos_, TPosition endPos, Serial):
+        beginPos(beginPos_)
+    {
+        // we produce at most 1 job (or none if interval is empty)
+        _resize(*this, endPos - beginPos, _min(endPos - beginPos, (TPosition)1));
+    }
+    
+    Splitter(TPosition beginPos_, TPosition endPos, TPosition subintervalCount):
+        beginPos(beginPos_)
+    {
+        _resize(*this, endPos - beginPos, subintervalCount);
+    }
+
+    TPosition operator[] (TPosition i) const
+    {
+        SEQAN_ASSERT_LEQ_MSG(i, subintervalCount, "Trying to access an element behind the last one!");
         return beginPos + blockLength * i + std::min(i, rest);
     }
 };
@@ -111,7 +130,32 @@ template <typename TPosition, typename TSpec>
 inline TPosition
 length(Splitter<TPosition, TSpec> const &splitter)
 {
-    return splitter.length;
+    return splitter.subintervalCount;
+}
+
+template <typename TPosition, typename TSpec>
+inline void
+_resize(Splitter<TPosition, TSpec> &splitter, TPosition intervalLen, TPosition newCount)
+{
+    if (newCount != 0)
+    {
+        splitter.blockLength = intervalLen / newCount;
+        splitter.rest = intervalLen % newCount;
+    }
+    else
+    {
+        splitter.blockLength = 0;
+        splitter.rest = intervalLen;
+    }
+    splitter.subintervalCount = newCount;
+}
+
+template <typename TPosition, typename TSpec>
+inline TPosition
+resize(Splitter<TPosition, TSpec> &splitter, TPosition newCount)
+{
+    _resize(splitter, splitter.blockLength * splitter.subintervalCount + splitter.rest, newCount);
+    return newCount;
 }
 
 /**
