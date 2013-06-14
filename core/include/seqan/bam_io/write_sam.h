@@ -200,10 +200,7 @@ int write2(TStream & stream,
 
     SEQAN_PUT_TAB;
 
-    if (record.mapQ != 255)
-        res = streamPut(stream, static_cast<__uint16>(record.mapQ));
-    else
-        res = streamPut(stream, '*');
+    res = streamPut(stream, static_cast<__uint16>(record.mapQ));
     if (res != 0)
         return res;
 
