@@ -381,7 +381,7 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
 //    std::cerr << __FILE__ << ":" << __LINE__ << " -- " << tree << std::endl;
 
     // Handle special case of removing all of the singleton existing entry.
-    if (length(tree._journalNodes) == 1 && pos == 0 && front(tree._journalNodes).length == posEnd)
+    if (length(tree._journalNodes) == 1 && pos == 0 && (TPos)front(tree._journalNodes).length == posEnd)
     {
         clear(tree._journalNodes);
         return;
@@ -403,14 +403,14 @@ void recordErase(JournalEntries<TCargo, SortedArray> & tree,
     TPos beginShiftPos = 0;
 
 	TPos itPos = it - begin(tree._journalNodes, Standard());
-	if (it->virtualPosition == pos && it->length == posEnd - pos)
+	if (it->virtualPosition == pos && (TPos)it->length == posEnd - pos)
     {
 		// Remove the whole entry.
 		erase(tree._journalNodes, itPos);
 		delta = posEnd - pos;
 		beginShiftPos = itPos;
 	}
-    else if (it->virtualPosition == pos && it->length > posEnd - pos)
+    else if (it->virtualPosition == pos && (TPos)it->length > posEnd - pos)
     {
 		// Remove a prefix of the entry.
 		SEQAN_ASSERT_LT(pos, it->virtualPosition + it->length);
