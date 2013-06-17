@@ -64,10 +64,12 @@
 // extras modules
 #include <seqan/alignment_free.h>
 #include <seqan/find_motif.h>
+#include <seqan/gff_io.h>
 #include <seqan/journaled_set.h>
 #include <seqan/math.h>
 #include <seqan/parse_lm.h>
 #include <seqan/statistics.h>
+#include <seqan/vcf_io.h>
 
 // This test simply checks whether all functions are inline or templates.
 SEQAN_BEGIN_TESTSUITE(test_multiple_translation_units)
