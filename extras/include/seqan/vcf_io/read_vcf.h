@@ -151,7 +151,7 @@ void splitString(StringSet<CharString> & result,
 ..include:seqan/vcf_io.h
 */
 
-void _parseVcfContig(CharString & chromName, CharString const & headerValue)
+inline void _parseVcfContig(CharString & chromName, CharString const & headerValue)
 {
     if (length(headerValue) <= 2u)
         return;
