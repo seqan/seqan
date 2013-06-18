@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_parallel_splitter_equidistant)
     // Simple case.
     {
         Splitter<unsigned, Equidistant> splitters(0, 10, 2);
-        SEQAN_ASSERT_EQ(length(splitters), 3u);
+        SEQAN_ASSERT_EQ(length(splitters), 2u);
         SEQAN_ASSERT_EQ(splitters[0], 0u);
         SEQAN_ASSERT_EQ(splitters[1], 5u);
         SEQAN_ASSERT_EQ(splitters[2], 10u);
@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(test_parallel_splitter_equidistant)
     // Simple case with offset.
     {
         Splitter<unsigned, Equidistant> splitters(3, 13, 2);
-        SEQAN_ASSERT_EQ(length(splitters), 3u);
+        SEQAN_ASSERT_EQ(length(splitters), 2u);
         SEQAN_ASSERT_EQ(splitters[0], 3u);
         SEQAN_ASSERT_EQ(splitters[1], 8u);
         SEQAN_ASSERT_EQ(splitters[2], 13u);
@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_parallel_splitter_equidistant)
     // One chunk.
     {
         Splitter<unsigned, Equidistant> splitters(0, 10, 1);
-        SEQAN_ASSERT_EQ(length(splitters), 2u);
+        SEQAN_ASSERT_EQ(length(splitters), 1u);
         SEQAN_ASSERT_EQ(splitters[0], 0u);
         SEQAN_ASSERT_EQ(splitters[1], 10u);
     }
@@ -75,7 +75,7 @@ SEQAN_DEFINE_TEST(test_parallel_splitter_equidistant)
     // Case with empty chunks.
     {
         Splitter<unsigned, Equidistant> splitters(0, 3, 5);
-        SEQAN_ASSERT_EQ(length(splitters), 6u);
+        SEQAN_ASSERT_EQ(length(splitters), 5u);
         SEQAN_ASSERT_EQ(splitters[0], 0u);
         SEQAN_ASSERT_EQ(splitters[1], 1u);
         SEQAN_ASSERT_EQ(splitters[2], 2u);
