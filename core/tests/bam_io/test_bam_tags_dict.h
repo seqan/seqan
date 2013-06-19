@@ -468,6 +468,27 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_set_tag_value)
         assignTagsBamToSam(samTags, bamTags);
         SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:z\tXA:A:o"), CharString(samTags));
     }
+
+    // String value (replace).
+    {
+        CharString bamTags;
+        CharString samTags = "XX:A:x\tXY:Z:y\tXZ:A:z";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        setTagValue(tags, "XY", "Example string", 'Z');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:Z:Example string\tXZ:A:z"), CharString(samTags));
+    }
+    // String value (append).
+    {
+        CharString bamTags;
+        CharString samTags = "XX:A:x\tXY:A:y\tXZ:A:z";
+        assignTagsSamToBam(bamTags, samTags);
+        BamTagsDict tags(bamTags);
+        setTagValue(tags, "XA", "Example string", 'Z');
+        assignTagsBamToSam(samTags, bamTags);
+        SEQAN_ASSERT_EQ(CharString("XX:A:x\tXY:A:y\tXZ:A:z\tXA:Z:Example string"), CharString(samTags));
+    }
 }
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
