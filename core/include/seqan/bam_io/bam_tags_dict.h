@@ -684,7 +684,7 @@ bool _toBamTagValue(CharString & result, T const & val, char const typeC)
         unsigned valLen = length(val) + 1;
         resize(result, length(result) + valLen);
         char * dst = reinterpret_cast<char *>(&result[0] + oldSize);
-        char const * src = reinterpret_cast<char const *>(&val);
+        char const * src = reinterpret_cast<char const *>(val);
         memcpy(dst, src, valLen);
         *(dst + valLen - 1) = '\0';
     }
