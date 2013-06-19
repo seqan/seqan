@@ -244,8 +244,8 @@ inline       __uint64 atomicCas(      __uint64 volatile & x,       __uint64 cmp,
 #endif  // #ifdef _WIN64
 
 
-template <typename T> inline T atomicPostInc(T volatile & x, Parallel) { return atomicInc(x) - 1; }
-template <typename T> inline T atomicPostDec(T volatile & x, Parallel) { return atomicDec(x) + 1; }
+template <typename T> inline T atomicPostInc(T volatile & x) { return atomicInc(x) - 1; }
+template <typename T> inline T atomicPostDec(T volatile & x) { return atomicDec(x) + 1; }
 
 
 #else  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
