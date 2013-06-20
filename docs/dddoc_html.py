@@ -15,12 +15,15 @@ OUT_PATH = 'html'
 
 ################################################################################
 
-def createDocs(path, buildfull, indexonly):
+def createDocs(path, buildfull, indexonly, include_dirs):
     global globalDocsPath
     globalDocsPath = path
 
     global globalBuildFull
     globalBuildFull = buildfull
+
+    global includeDirs
+    includeDirs = include_dirs
     
     if not os.access(path, os.F_OK): 
         os.mkdir(path)
@@ -825,6 +828,7 @@ def writePage(fl, data):
     printTextblock(fl, data, "example")
     printLinkRek(fl, data, "demo")
     printFile(fl, data, "file")
+    printSnippet(fl, data, "snippet")
     printTextblock(fl, data, "output")
     
     printLink(fl, data, "concept")
@@ -1141,6 +1145,7 @@ def printGlossary(fl, data, category):
 def printFile(fl, data, category):
     # Note: This somehow works on the demos page.
     global globalDocsPath
+    global includeDirs
     
     filename = data[category].text()
     
@@ -1150,6 +1155,13 @@ def printFile(fl, data, category):
     # Return if the file name is empty.
     if not filename:
         return
+
+    # Try to build the file name from the include dirs.
+    for prefix in ['.'] + includeDirs:
+        filenameCandidate = os.path.join(prefix, filename)
+        if os.access(filenameCandidate, F_OK):
+            filename = filenameCandidate
+            break
 
     # Return if we cannot open the file.
     if (not os.access(filename, F_OK)):
@@ -1226,6 +1238,129 @@ def printFile(fl, data, category):
 
     f_out.close
 
+################################################################################
+
+def _loadSnippet(path, snippet_key):
+    result = []
+    current_key = None
+    current_lines = []
+    with open(path, 'rb') as f:
+        fcontents = f.read()
+    for line in fcontents.splitlines():
+        line = line.rstrip()  # Strip line ending and trailing whitespace.
+        if line.strip().startswith('//![') and line.strip().endswith(']'):
+            key = line.strip()[4:-1].strip()
+            if key == current_key:
+                if key == snippet_key:
+                    result = current_lines
+                current_lines = []
+                current_key = None
+            else:
+                current_key = key
+        elif current_key:
+            current_lines.append(line)
+    return result
+
+def printSnippet(fl, data, category):
+    # Note: This somehow works on the demos page.
+    global globalDocsPath
+    global includeDirs
+    
+    filename = data[category].text()
+    
+    filename = filename.replace("\n", "")
+    filename = filename.replace("\\", "/")
+
+    # Return if the file name is empty.
+    if not filename:
+        return
+
+    snippet_id = '<none>'
+    if '|' in filename:
+        filename, snippet_id = filename.split('|', 1)
+
+    # Try to build the file name from the include dirs.
+    for prefix in ['.'] + includeDirs:
+        filenameCandidate = os.path.join(prefix, filename)
+        if os.access(filenameCandidate, F_OK):
+            filename = filenameCandidate
+            break
+
+    # Return if we cannot open the file.
+    if (not os.access(filename, F_OK)):
+        global WARNING_COUNT
+        WARNING_COUNT += 1
+        print
+        print '!!  WARNING: unknown file "' + filename + '"'
+        return
+
+    # Read in file...
+    lines = _loadSnippet(filename, snippet_id)
+
+    if not lines:
+        print
+        print '!!  WARNING: unknown snippet "' + snippet_id + '" in "' + filename + '"'
+        return
+
+    linenumber = 0  # Of code, non-comment.
+    codemode = False
+
+    pos = filename.rfind("/")
+    if (pos >= 0): 
+        s = filename[pos+1:]
+    else: 
+        s = filename
+
+    #copy file
+    with open(os.path.join(globalDocsPath, s), "w") as f_out:
+        with open(filename, 'rb') as f2:
+            f_out.write(f2.read())
+
+    fl.write('<div class=codefile >')
+    line_no = 0  # Absolute in file.
+    for line in lines:
+        line_no += 1
+        is_comment = (line[0:3] == '///')
+
+        if is_comment:
+            if codemode:
+                fl.write('</table><div class=comment>')    
+                codemode = False
+            line_obj = dddoc.Line([], line, filename, line_no)
+            fl.write(translateText(line[3:], line_obj))
+
+        else:
+            if not codemode:
+                if (len(line) <= 1): continue
+                if linenumber: fl.write('</div>')
+                fl.write('<table cellspacing=0 cellpadding=0 class=codefiletab>')
+                codemode = True
+
+            linenumber += 1
+
+            fl.write('<tr>')
+            fl.write('<td align=right class=linenumber>')
+            fl.write(str(linenumber))
+            fl.write('</td>')
+
+            text = escapeHTML(line)
+            text = text.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;")
+            text = text.replace(" ", "&nbsp;")
+            text = text.replace("\n", "<br >")
+            fl.write('<td class=content><nobr>')
+            fl.write(text)
+            fl.write('</nobr></td>')        
+
+            fl.write('</tr>')
+
+    if codemode:
+        fl.write('</table>')
+    else:
+        fl.write('</div>')
+
+    fl.write('</div>')    
+    fl.write('<div class=section_headline>Snippet from "<a href="' + s + '">' + s + '</a>"</div>')
+
 
 ################################################################################
 
@@ -1299,6 +1434,11 @@ def subprintText(fl, data, subcategory = False):
         elif name == 'code': 
             s = translateCode(line.text())
             fl.write('<div class=code_sub_block>' + s + '</div>')
+            
+        elif name == 'snippet':
+            printSnippet(fl, data, 'snippet')
+            #s = translateCode(line.text())
+            #fl.write('<div class=code_sub_block>' + s + '</div>')
             
         elif name == 'output':
             s = translateCode(line.text())
@@ -1560,7 +1700,7 @@ def subprintField(fl, text):
     field = text[i+1:]
 
     data = dddoc.DATA[entry]
-    
+
     if   (field == "description"): printTextblock(fl, data, "description", False)
     elif (field == "signature"): printSignature(fl, data, "signature")
     elif (field == "param"): printTable(fl, data, "param", False)
@@ -1596,6 +1736,7 @@ def subprintField(fl, text):
     elif (field == "example"): printTextblock(fl, data, "example", False)
     elif (field == "demo"): printLinkRek(fl, data, "demo", False)
     elif (field == "file"): printFile(fl, data, "file")
+    elif (field == "snippet"): printSnippet(fl, data, "snippet")
     
     elif (field == "concept"): printLink(fl, data, "concept", False)
     elif (field == "status"): printTextblock(fl, data, "status", False)

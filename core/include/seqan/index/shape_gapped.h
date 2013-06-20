@@ -52,7 +52,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks:You can use this structure to define your one gapped shapes in conjunction with @Spec.GappedShape@.
 ...note:The shape $1100101$ corresponds to $HardwiredShape<1,3,2>$.
 ...note:The following predefined shapes are already available in $seqan/index/shape_predefined.h$:
-..file:seqan/index/shape_predefined.h
+..file:include/seqan/index/shape_predefined.h
 ..include:seqan/index.h
 */
 /*!

@@ -81,12 +81,14 @@ class DDDocRunner(object):
       doc_dirs    List of strings.  Names of directories with dddoc files.
     """
     
-    def __init__(self, index_only=False, doc_dirs=[], out_dir='html', demos_dir='.'):
+    def __init__(self, index_only=False, doc_dirs=[], out_dir='html',
+                 demos_dir='.', include_dirs=[]):
         """Initialize, arguments correspond to attributes."""
         self.index_only = index_only
         self.doc_dirs = doc_dirs
         self.out_dir = out_dir
         self.demos_dir = demos_dir
+        self.include_dirs = include_dirs
 
     def run(self, base_paths):
         """Run dddoc on the modules below the given path.
@@ -117,7 +119,7 @@ class DDDocRunner(object):
         print 'Creating HTML Documentation...'
         # html_creator = dddoc_html.HtmlDocCreator(app, self.out_dir, not modules, self.index_only)
         # html_creator.run()
-        dddoc_html.createDocs(self.out_dir, True, self.index_only)
+        dddoc_html.createDocs(self.out_dir, True, self.index_only, self.include_dirs)
 
         # Done, print end message.
         print 'Documentation created/updated.'
@@ -140,6 +142,9 @@ def main(argv):
                       default='../projects/library/demos',
                       help=('Directory to demos. Default: '
                             '"../projects/library/demos".'))
+    parser.add_option('-I', '--include-dirs', dest='include_dirs',
+                      action='append', default=[],
+                      help=('Path to directory for files and snippets.'))
     options, args = parser.parse_args(argv)
     print 'doc dirs: %s' % ', '.join(options.doc_dirs)
     print
@@ -151,7 +156,8 @@ def main(argv):
     # Create application object and run documentation generation.
     app = DDDocRunner(index_only=False, doc_dirs=options.doc_dirs,
                       out_dir=options.out_dir,
-                      demos_dir=options.demos_dir)
+                      demos_dir=options.demos_dir,
+                      include_dirs=options.include_dirs)
     return app.run(args)
     
 
