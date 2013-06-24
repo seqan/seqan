@@ -346,9 +346,12 @@ class TplDocsCreator(object):
         info = []
         # Get category types to index from DddocTree tree and build the index
         # data for this.
-        for cat_type in self.tree.find('globals.indexes').children.keys():
+        items = self.tree.find('globals.indexes').children.items()
+        key_entries = [(x[0], x[1].entry) for x in items if x[1].entry]
+        key_linenos = [(x[0], self.tree.entries[x[1][0]].line_no_begin) for x in key_entries]
+        cats = [x[0] for x in sorted(key_linenos, key=lambda a:a[1])]
+        for cat_type in cats:
             self._registerCategories(cat_type, search_index, long_search_index, info)
-        ## print search_index, long_search_index, info
         with open(destPath, 'wb') as f:
             s = 'var search_data = {"index":{"searchIndex":%s,"longSearchIndex":%s,"info":%s}};'
             f.write(s % (json.dumps(search_index), json.dumps(long_search_index), json.dumps(info)))

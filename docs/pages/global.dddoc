@@ -16,15 +16,17 @@
 ..Demo:Example Program
 .
 .globals.indexes:
-..Page:Overview
-..Concept:Concepts
 ..Class:Classes
+..Shortcut:Shortcuts
+..Concept:Concepts
+..Spec:Specializations
+..Function:Functions
 ..Enum:Enums
 ..Macro:Macros
-..Spec:Specializations
-..Shortcut:Shortcuts
-..Function:Functions
+..Page:Overview
 ..Metafunction:Metafunctions
+..Typedef:Typedefs
+...hidefromindex
 ..Tag:Tags
 ..Adaption:Adaptions
 ..Demo:Examples
