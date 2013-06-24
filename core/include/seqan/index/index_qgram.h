@@ -267,6 +267,8 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ..example
 ...text:The following code prints all occurrences of the gapped q-gram "AT-A" in "CATGATTACATA".
 ...file:demos/index/index_qgram.cpp
+...output:1
+4
 */
 /*!
  * @class IndexQGram

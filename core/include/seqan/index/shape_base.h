@@ -48,7 +48,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 /**
-.Class.Shape:
+.Class.Shape
 ..cat:Index
 ..summary:Stores hash value and shape for an ungapped or gapped q-gram.
 ..signature:Shape<TValue, TSpec>
@@ -57,6 +57,15 @@ namespace SEQAN_NAMESPACE_MAIN
 ...default:@Spec.SimpleShape@, for ungapped q-grams.
 ..remarks:The @Metafunction.ValueSize@ of Shape is the ValueSize of TValue which is the alphabet size.
 ..remarks:To get the span or the weight of a shape call @Function.length@ or @Function.weight@.
+..example
+...text:The following code shows how one can use a gapped shape to search for the pattern "ACxA" in a reference. First
+we assign a form to the shape and then compute the corresponding hash value. The hash value of a string and a Shape 
+object is unique, such that one can retrieve the string from a shape if the hash value is known.
+...file:demos/index/shape.cpp
+...output:The hash is: 4
+Hit at position: 0
+Hit at position: 14
+Hit at position: 17
 .Memfunc.Shape#Shape:
 ..class:Class.Shape
 ..summary:Constructor
