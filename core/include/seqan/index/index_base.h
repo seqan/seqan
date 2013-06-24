@@ -246,12 +246,46 @@ for @Class.Index@ based substring searches.
 ...type:Class.StringSet
 ...metafunction:Metafunction.Host
 ..param.TSpec:The index type.
-...default:The result of @Metafunction.DefaultIndexSpec@
+...type:Spec.IndexEsa
+...type:Spec.IndexWotd
+...type:Spec.IndexQGram
+...type:Spec.FMIndex
+...default:The result of @Metafunction.DefaultIndexSpec@: @Spec.IndexEsa@
 ...metafunction:Metafunction.Spec
-..remarks:An index contains various arrays or objects, also called fibres (see @Metafunction.Fibre@).
+..remarks:Indices allow fast dictionary look-ups and other advanced computations because they contain pre-computated
+information about the underlying text. These information are stored in so called fibres (see @Metafunction.Fibre@).
+..remarks:In order to search for a pattern one can use a @Class.Finder@ or an @Spec.VSTree Iterator@. The @Class.Finder@ 
+is especially useful when searching for exact matches while the @Spec.VSTree Iterator@ allows to iterate an index as if
+traversing a tree/trie.
 ..remarks:These fibres are created on demand depending on the requirements of an algorithm.
 ..include:seqan/index.h
+..example
+...text:The following code shows how to search for exact matches between the reference "tobeornottobe" and the
+pattern "to" with the means of a Finder.
+...file:demos/index/index_finder.cpp
+...output:Hit at position: 9
+Hit at position: 0
+...text:This code shows how an index can be used with iterators to achieve a tree like traversal in DFS of the text
+"tobeornottobe". In order to do so a Top-Down History iterator is used.
+...file:demos/index/index_iterator.cpp
+...output:
+be
+beornottobe
+e
+eornottobe
+nottobe
+o
+obe
+obeornottobe
+ornottobe
+ottobe
+rnottobe
+t
+tobe
+tobeornottobe
+ttobe
 */
+
 ///.Function.setHaystack.param.haystack.type:Class.Index
 
 template < 
