@@ -288,6 +288,14 @@ Strings can be used to store arbitrary values and can be used for large biologic
 ...default:$Alloc<>$, see @Spec.Alloc String@.
 ..implements:Concept.ContainerConcept
 ..include:seqan/sequence.h
+..example
+...text:This example shows a brute force pattern matching scheme for two character Strings. Creation of String "text" shows the usage of some available String operating functions. See class @Class.StringSet@ for an example of a String container with other than simple type values. See class @Class.Index@ example for efficiently finding the same pattern matches using an index. 
+...file:demos/sequence/string2.cpp
+...text:The output of this demo is:
+...output:to be
+Last sign is whitespace? 1
+tobeornottobe
+hit at 2 11
 */
 
 template <typename TValue, typename TSpec = Alloc<> >
