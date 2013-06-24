@@ -671,7 +671,7 @@ class HtmlHelper(object):
 
         Returns a list of pairs.  Each pair contains the type of the entry in
         the first and the text of the entry in the second component.  The type
-        is either 'TEXT' or 'CODE'.
+        is either 'TEXT' or 'COD'E.
         """
         result = []
         curr_type = None
@@ -737,6 +737,52 @@ class HtmlHelper(object):
                 txts.append('<p class="' + class_ + '">' + self.translateMarkup('\n'.join(lines), node=node) + '</p>')
         
         return '\n'.join(txts)
+
+    def _loadSnippet(self, path, snippet_key):
+        result = []
+        current_key = None
+        current_lines = []
+        with open(path, 'rb') as f:
+            fcontents = f.read()
+        for line in fcontents.splitlines():
+            line = line.rstrip()  # Strip line ending and trailing whitespace.
+            if line.strip().startswith('//![') and line.strip().endswith(']'):
+                key = line.strip()[4:-1].strip()
+                if key == current_key:
+                    if key == snippet_key:
+                        result = current_lines
+                    current_lines = []
+                    current_key = None
+                else:
+                    current_key = key
+            elif current_key:
+                current_lines.append(line)
+        return result
+
+    def includeSnippet(self, line, class_=None, node=None):
+        filename, snippet_id = line, '<none>'
+        if '|' in line:
+            filename, snippet_id = line.split('|', 1)
+        # Get path candidate.
+        if not os.path.exists(filename):
+            for inc_dir in self.include_dirs:
+                if os.path.exists(os.path.join(inc_dir, filename)):
+                    filename = os.path.join(inc_dir, filename)
+                    break
+        snippet_lines = self._loadSnippet(filename, snippet_id)
+        # Read in file.
+        with open(filename, 'rb') as f:
+            fcontents = f.read()
+        # Write out file to same directory as filename.
+        with open(os.path.join(self.out_path, os.path.basename(filename)), 'wb') as f:
+            f.write(fcontents)
+        # Create HTML to output.
+        chunks = self._splitIncludeFile(fcontents)
+        next_lineno = 1
+        txt = self._formatCode('\n'.join(snippet_lines), next_lineno)
+        if not class_:
+            class_ = ''
+        return '<p class="' + class_ + '">' + txt + '</p>'
 
 
 class DocsCreator(object):
