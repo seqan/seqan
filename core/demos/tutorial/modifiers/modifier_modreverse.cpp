@@ -1,4 +1,4 @@
-///A tutorial about the use of the reverse modifier.
+// FRAGMENT(main)
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/modifier.h>
