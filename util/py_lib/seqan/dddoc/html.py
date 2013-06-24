@@ -233,7 +233,7 @@ class TplDocsCreator(object):
                overwritten there.
     """
 
-    def __init__(self, error_logger, tree, tpl_path, out_path):
+    def __init__(self, error_logger, tree, tpl_path, out_path, include_dirs):
         """Initialize the DocsCreator object.
 
         Args:
@@ -247,7 +247,8 @@ class TplDocsCreator(object):
         self.tree = tree
         self.tpl_path = tpl_path
         self.out_path = out_path
-        self.html_helper = HtmlHelper(self.error_logger, self.tree, out_path)
+        self.include_dirs = include_dirs
+        self.html_helper = HtmlHelper(self.error_logger, self.tree, out_path, self.include_dirs)
 
     def good(self):
         return True
@@ -475,11 +476,12 @@ class MarkupParser(object):
 
 
 class HtmlHelper(object):
-    def __init__(self, error_logger, tree, out_path):
+    def __init__(self, error_logger, tree, out_path, include_dirs):
         self.error_logger = error_logger
         self.tree = tree
         self.markup_parser = MarkupParser(self.error_logger, tree, self)
         self.out_path = out_path
+        self.include_dirs = include_dirs
 
     def classHierarchyJS(self, node):
         def recurseDownwards(node):
@@ -711,6 +713,12 @@ class HtmlHelper(object):
             return ''
 
     def includeFile(self, filename, class_=None, node=None):
+        # Get path candidate.
+        if not os.path.exists(filename):
+            for inc_dir in self.include_dirs:
+                if os.path.exists(os.path.join(inc_dir, filename)):
+                    filename = os.path.join(inc_dir, filename)
+                    break
         # Read in file.
         with open(filename, 'rb') as f:
             fcontents = f.read()
@@ -732,7 +740,7 @@ class HtmlHelper(object):
 
 
 class DocsCreator(object):
-    def __init__(self, error_logger, tree, tpl_path, out_path):
+    def __init__(self, error_logger, tree, tpl_path, out_path, include_dirs):
         print >>sys.stderr, 'Setting up Docs Creator'
         self.tree = tree
         self.error_logger = error_logger
@@ -746,6 +754,7 @@ class DocsCreator(object):
         self.out_path = os.path.join(out_path, 'files')
         if not os.path.exists(self.out_path):
             os.makedirs(self.out_path)
+        self.include_dirs = include_dirs
 
     def good(self):
         return True  # TODO(holtgrew): Actually look for errors!
@@ -772,7 +781,7 @@ class DocsCreator(object):
                                                time=time,  # for now.strftime()
                                                iterable=lambda x: type(x) is list,
                                                core=core,
-                                               html=HtmlHelper(self.error_logger, self.tree, os.path.dirname(filename)),
+                                               html=HtmlHelper(self.error_logger, self.tree, os.path.dirname(filename), self.include_dirs),
                                                json=json)
                 f.write(res.encode('utf-8'))
 
@@ -815,18 +824,18 @@ class DocsCreator(object):
                                              now=datetime.datetime.utcnow(),
                                              time=time,  # for now.strftime()
                                              core=core,
-                                             html=HtmlHelper(self.error_logger, self.tree, os.path.dirname(filename)),
+                                             html=HtmlHelper(self.error_logger, self.tree, os.path.dirname(filename), self.include_dirs),
                                              json=json)
                     f.write(res.encode('utf-8'))
                 print >>sys.stderr, '.',
             print >>sys.stderr
 
 
-def createDocs(error_logger, tree, tpl_path, out_path):
+def createDocs(error_logger, tree, tpl_path, out_path, include_dirs):
     """Fire off the documentation creation."""
     # Things that are created from templates, data JavaScript creation for the
     # client-side JS-driven search.
-    creator1 = TplDocsCreator(error_logger, tree, tpl_path, out_path)
+    creator1 = TplDocsCreator(error_logger, tree, tpl_path, out_path, include_dirs)
     creator1.copyTemplates()
     creator1.createRootIndexPage()
     creator1.createPanelSearchIndex()
@@ -834,7 +843,7 @@ def createDocs(error_logger, tree, tpl_path, out_path):
     #return 0
     # Actually create the documentation content; things that will be displayed
     # on the right hand frame.
-    creator2 = DocsCreator(error_logger, tree, tpl_path, out_path)
+    creator2 = DocsCreator(error_logger, tree, tpl_path, out_path, include_dirs)
     creator2.copyFiles()
     creator2.createIndexPages()
     creator2.createPages()

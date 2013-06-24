@@ -32,13 +32,15 @@ class DDDocRunner(object):
       doc_dirs    List of strings.  Names of directories with dddoc files.
     """
     
-    def __init__(self, index_only=False, doc_dirs=[], out_dir='html', demos_dir='.', cache_only=False):
+    def __init__(self, index_only=False, doc_dirs=[], out_dir='html',
+                 demos_dir='.', cache_only=False, include_dirs=[]):
         """Initialize, arguments correspond to attributes."""
         self.index_only = index_only
         self.doc_dirs = doc_dirs
         self.out_dir = out_dir
         self.demos_dir = demos_dir
         self.cache_only = cache_only
+        self.include_dirs = include_dirs
 
     def run(self, base_paths):
         """Run dddoc on the modules below the given path.
@@ -71,7 +73,8 @@ class DDDocRunner(object):
         # Actually build the HTML files.
         print 'Creating HTML Documentation...'
         tpl_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tpl'))
-        res = html.createDocs(app.error_logger, app.dddoc_tree, tpl_path, self.out_dir)
+        res = html.createDocs(app.error_logger, app.dddoc_tree, tpl_path, self.out_dir,
+                              self.include_dirs)
 
         # Done, print end message.
         print 'Documentation created/updated.'
@@ -91,11 +94,14 @@ def main(argv):
                       help=('Read .dddoc files from this directory.  '
                             'Can be given multiple times.'))
     parser.add_option('-o', '--out-dir', dest='out_dir', default='html',
-                      help='Name of output dirctory.  Default: "html".')
+                      help='Name of output directory.  Default: "html".')
     parser.add_option('-e', '--demos-dir', dest='demos_dir',
                       default='../projects/library/demos',
                       help=('Directory to demos. Default: '
                             '"../projects/library/demos".'))
+    parser.add_option('-I', '--include-dir', dest='include_dirs',
+                      action='append', default=[],
+                      help='Paths to the directories for files and snippets.')
     parser.add_option('-c', '--cache-only', dest='cache_only', default=False,
                       action='store_true',
                       help='Ignore files if cache file exists.')
@@ -110,6 +116,7 @@ def main(argv):
     # Create application object and run documentation generation.
     app = DDDocRunner(index_only=False, doc_dirs=options.doc_dirs,
                       out_dir=options.out_dir,
+                      include_dirs=options.include_dirs,
                       demos_dir=options.demos_dir,
                       cache_only=options.cache_only)
     res = app.run(args)
