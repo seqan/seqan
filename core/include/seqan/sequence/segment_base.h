@@ -189,6 +189,11 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.TSpec:The specializing type.
 ...metafunction:Metafunction.Spec
 ...default:@Spec.InfixSegment@.
+..example.file:demos/sequence/infix.cpp
+..example.text:The output is as follows:
+..example.output:
+Infix: CGCG
+..include:seqan/sequence.h
 */
 
 struct InfixSegment {};

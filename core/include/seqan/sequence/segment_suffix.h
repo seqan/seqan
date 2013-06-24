@@ -71,6 +71,10 @@ namespace SEQAN_NAMESPACE_MAIN
     choose a specialization of @Class.Segment@.
 ..see:Spec.InfixSegment
 ..see:Metafunction.Suffix
+..example.file:demos/sequence/suffix.cpp
+..example.text:The output is as follows:
+..example.output:
+Suffix: AAAA
 ..include:seqan/sequence.h
 */
 

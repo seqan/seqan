@@ -69,6 +69,10 @@ namespace SEQAN_NAMESPACE_MAIN
     it is recommended to use the metafunction @Metafunction.Infix@ instead of explicitely
     choose a specialization of @Class.Segment@.
 ..see:Metafunction.Infix
+..example.file:demos/sequence/infix.cpp
+..example.text:The output is as follows:
+..example.output:
+Infix: CGCG
 ..include:seqan/sequence.h
 */
 
