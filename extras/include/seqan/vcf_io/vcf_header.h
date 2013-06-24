@@ -68,6 +68,10 @@ namespace seqan {
 .Memvar.VcfHeader#sampleNames
 ..class:Class.VcfHeader
 ..summary:Names of the samples (@Class.StringSet@<@Shortcut.CharString>).
+
+.Memvar.VcfHeader#headerRecords
+..class:Class.VcfHeader
+..summary:The meta information records (@Class.String@ of @Cass.VcfHeaderRecord@).
 */
 
 class VcfHeader
@@ -79,7 +83,7 @@ public:
     TNameStore_ sequenceNames;
     // The names of the samples.
     TNameStore_ sampleNames;
-
+    // Records for the meta information lines.
     String<VcfHeaderRecord> headerRecords;
 
     VcfHeader()
