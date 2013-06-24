@@ -48,6 +48,15 @@ namespace SEQAN_NAMESPACE_MAIN {
 ...default:int
 ..param.TSpec:The specializing type.
 ...default:$Tag.Simple$
+..example.snippet:demos/score/score.cpp|UsingScore
+..example.text:The output is as follows:
+..example.output:
+Score = 66
+Alignment:
+0     .    :    .    :    .
+  ACGTG--GATCGGTGACTTACGGACTG
+  |||||  ||   |||| ||||||||||
+  ACGTGTTGA---GTGA-TTACGGACTG
 ..include:seqan/score.h
 */
 template <typename TValue = int, typename TSpec = Simple>
