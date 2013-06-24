@@ -62,12 +62,25 @@ struct DefaultSeedConfig
 
 /**
 .Class.Seed:
-..summary:Describe a seed.
+..summary:A seed in a dotplot.
+..description:Stores the start and end positions in the horizonal and vertical dimension.
 ..cat:Seed Handling
 ..signature:Seed<TSpec, TConfig>
 ..param.TSpec:The seed specialization type.
 ..param.TConfig:The configuration object to use for this seed.
 ..include:seqan/seeds.h
+..example:
+...text:The following example shows the usage of three seed extension algorithms the tags @Tag.Seed Extension.MatchExtend@, @Tag.Seed Extension.UngappedXDrop@, and @Tag.Seed Extension.GappedXDrop@:
+...file:demos/seeds/seeds_extension.cpp
+...text:The output is as follows:
+...output:endPositionH(seed1) = 6
+endPositionV(seed1) = 6
+endPositionH(seed2) = 9
+endPositionV(seed2) = 9
+endPositionH(seed3) = 14
+endPositionV(seed3) = 13
+...text:This is an example for global seed chaining:
+...file:demos/seeds/seeds_chaining.cpp
 */
 
 template <typename TSpec, typename TConfig = DefaultSeedConfig>
