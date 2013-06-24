@@ -89,36 +89,8 @@ public:
 ..signature:FaiIndex
 ..summary:Data type for storing FAI indices.
 ..wiki:Tutorial/IndexedFastaIO|Tutorial: Indexed FASTA I/O
-..example.text:Build a FAI index from $argv[1]$.
-..example.code:
-#include <seqan/seq_io.h>
-
-seqan::FaiIndex faiIndex;
-int res = build(faiIndex, "path/to/file.fasta");
-if (res != 0)
-    std::cerr << "ERROR: Could not build the index!\n";
-..example.text:Load index, get sequence infix and a whole sequence for the sequence $chr1$ from FASTA file.
-..example.code:
-#include <seqan/seq_io.h>
-
-sean::FaiIndex faiIndex;
-int res = read(faiIndex, "path/to/file.fasta");
-if (res != 0)
-    std::cerr << "ERROR: Could not load FAI index path/to/file.fasta.fai\n";
-
-unsigned idx = 0;
-if (!getIdByName(faiIndex, "chr1", idx))
-    std::cerr << "ERROR: FAI index does not know about chr1.\n";
-
-// Load first 1000 characters of chr1.
-seqan::CharString seqChr1Prefix;
-if (readRegion(seqChr1Prefix, faiIdx, idx, 0, 1000) != 0)
-    std::cerr << "ERROR: Could not load chr1.\n";
-
-// Load all of chr1.
-seqan::CharString seqChr1;
-if (readSequence(seqChr1, faiIdx, idx) != 0)
-    std::cerr << "ERROR: Could not load chr1.\n";
+..example.text:The following example demonstrate the usage of the FAIIndex class.
+..example.file:demos/seq_io/fai_index_example.cpp
 ..include:seqan/seq_io.h
 
 .Memvar.FaiIndex#FaiIndex

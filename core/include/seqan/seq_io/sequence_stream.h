@@ -83,30 +83,14 @@ You do not have to specify any but you can force the @Class.SequenceStream@ to u
 When writing, you should specify a file type and format when constructing the @Class.SequenceStream@ object.
 Otherwise, it will default to writing out raw-text FASTA files.
 ..example.text:
-Read a sequence file $"example.fa"$ record by record.
+Read the sequence file (FASTA or FASTQ) from $argv[1]$ record by record.
+The identifiers and sequences of the stream are printed to stdout.
 See the documentation of @Function.SequenceStream#readRecord@, @Function.SequenceStream#readBatch@, and @Function.SequenceStream#readAll@ for more examples, including record-wise reading, reading in batches, and reading all records in a file.
+..example.file:demos/seq_io/sequence_stream_read.cpp
+..example.text:
+Open a SequenceStream for writing and write two sequences to it.
+..example.file:demos/seq_io/sequence_stream_write.cpp
 ..wiki:Tutorial/SimpleSeqIO|Simple Sequence I/O
-..example.code:
-// Create SequenceStream object for reading, optimized for reading single records.
-seqan::SequenceStream seqIO("example.fa");
-
-// Buffers for the sequence ids and characters.
-seqan::CharString id;
-seqan::Dna5QString seq;
-
-while (!atEnd(seqIO)))
-{
-    // Read next sequence from the file.  In case of sequences with qualities,
-    // the qualities are directly stored in the Dna5Q qualities.
-    int res = readRecord(id, seq, seqIO);
-    if (res != 0)
-        std::cerr << "Error reading file!\n";
-
-    // Extract qualities for printing, then print id, sequence, and qualities.
-    seqan::CharString quals;
-    assignQualityValues(quals, seq);
-    std::cout << id << '\t' << seq << '\t' << quals << '\n';
-}
 ..include:seqan/seq_io.h
 
 .Memfunc.SequenceStream#SequenceStream
