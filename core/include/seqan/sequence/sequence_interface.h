@@ -1539,7 +1539,7 @@ reserve(T & me,
 ..cat:Containers
 ..concept:Concept.ContainerConcept
 ..summary:Resizes a container. If the new length exceeds the old length the new elements are filled with copies of $value$.
-..signature:Size resize(object, newLength [value], [resizeTag])
+..signature:Size resize(object, newLength [,value [,resizeTag]])
 ..param.object: A container.
 ...type:Class.String
 ..param.newLength: The new length $object$ will get.
