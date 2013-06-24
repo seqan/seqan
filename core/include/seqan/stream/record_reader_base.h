@@ -62,6 +62,7 @@ struct DoublePass {};
 ..param.TStream:The @Concept.StreamConcept@ type to work on.
 ..param.TSpec:The record reader specialization to chose.
 ..see:Concept.StreamConcept
+..example.file:demos/input_output/record_reader.cpp
 ..include:seqan/stream.h
 
 .Memfunc.RecordReader#RecordReader
