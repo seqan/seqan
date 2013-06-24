@@ -6,6 +6,7 @@ import dddoc_html_trans
 import xml.sax
 import operator
 import sys
+import StringIO
 from os import F_OK
 
 
@@ -1142,13 +1143,16 @@ def printGlossary(fl, data, category):
 
 ################################################################################
 
-def printFile(fl, data, category):
+def printFile(fl=None, data=None, category=None, text=None):
     # Note: This somehow works on the demos page.
     global globalDocsPath
     global includeDirs
-    
-    filename = data[category].text()
-    
+
+    if fl is not None:
+        filename = data[category].text()
+    else:
+        filename = text
+
     filename = filename.replace("\n", "")
     filename = filename.replace("\\", "/")
 
@@ -1187,6 +1191,11 @@ def printFile(fl, data, category):
 
     #copy file
     f_out = open(os.path.join(globalDocsPath, s), "w")
+
+    fl_none = False
+    if fl is None:
+        fl_none = True
+        fl = StringIO.StringIO()
 
     fl.write('<div class=section_headline>File "<a href="' + s + '">' + s + '</a>"</div>')
 
@@ -1238,6 +1247,9 @@ def printFile(fl, data, category):
 
     f_out.close
 
+    if fl_none:
+        return fl.getvalue()
+
 ################################################################################
 
 def _loadSnippet(path, snippet_key):
@@ -1261,19 +1273,23 @@ def _loadSnippet(path, snippet_key):
             current_lines.append(line)
     return result
 
-def printSnippet(fl, data, category):
+def printSnippet(fl=None, data=None, category=None, text=None):
     # Note: This somehow works on the demos page.
     global globalDocsPath
     global includeDirs
-    
-    filename = data[category].text()
-    
+
+    if text is None:
+        filename = data[category].text()
+    else:
+        filename = text
+
     filename = filename.replace("\n", "")
     filename = filename.replace("\\", "/")
 
     # Return if the file name is empty.
     if not filename:
         return
+    #import pdb; pdb.set_trace()
 
     snippet_id = '<none>'
     if '|' in filename:
@@ -1316,6 +1332,11 @@ def printSnippet(fl, data, category):
         with open(filename, 'rb') as f2:
             f_out.write(f2.read())
 
+    fl_none = False
+    if fl is None:
+        fl_none = True
+        fl = StringIO.StringIO()
+            
     fl.write('<div class=codefile >')
     line_no = 0  # Absolute in file.
     for line in lines:
@@ -1360,6 +1381,9 @@ def printSnippet(fl, data, category):
 
     fl.write('</div>')    
     fl.write('<div class=section_headline>Snippet from "<a href="' + s + '">' + s + '</a>"</div>')
+
+    if fl_none:
+        return fl.getvalue()
 
 
 ################################################################################
@@ -1436,9 +1460,14 @@ def subprintText(fl, data, subcategory = False):
             fl.write('<div class=code_sub_block>' + s + '</div>')
             
         elif name == 'snippet':
-            printSnippet(fl, data, 'snippet')
-            #s = translateCode(line.text())
-            #fl.write('<div class=code_sub_block>' + s + '</div>')
+            s = printSnippet(text=line.text())
+            if s:
+                fl.write(s)
+            
+        elif name == 'file':
+            s = printFile(text=line.text())
+            if s:
+                fl.write(s)
             
         elif name == 'output':
             s = translateCode(line.text())

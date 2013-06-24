@@ -248,31 +248,10 @@ The implementation of Hirschberg's algorithm is further limited that it does not
 The implementation of the Myers-Hirschberg algorithm further limits this to only support edit distance (as scores, matches are scored with 0, mismatches are scored with -1).
 ..remarks:
 The examples below show some common use cases.
-..example.text:Global alignment of two sequences using an @Class.Align@ object and the Needleman-Wunsch algorithm.
-..example.code:
-Dna5String seqH = "CGATT";
-Dna5String seqV = "CGAAATT";
-
-Align<Dna5String> align;
-resize(rows(align), 2);
-assignSource(row(align, 0), seqH);
-assignSource(row(align, 0), seqV);
-Score<int, Simple> scoringScheme(2, -1, -2);
-AlignConfig<> alignConfig;
-
-int result = globalAlignment(align, scoringScheme, alignConfig,
-                             NeedlemanWunsch());
-..example.text:Global banded alignment of two sequences using two @Class.Gaps@ objects and the Gotoh algorithm.
-..example.code:
-Dna5String seqH = "CGATT";
-Gaps<Dna5String, ArrayGaps> gapsH(seqH);
-DnaString seqV = "CGAAATT";
-Gaps<Dna5String, AnchorGaps<> > gapsV(seqV);
-
-Score<int, Simple> scoringScheme(5, -3, -1, -5);
-AlignConfig<> alignConfig;
-
-int result = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -2, 2);
+..example.text:Global alignment of two sequences using an @Class.Align@ object and the Needleman-Wunsch algorithm. The Needleman-Wunsch algorithm is automatically selected since the scoring scheme uses linear gap costs.
+..example.file:demos/align/global_alignment_unbanded.cpp
+..example.text:Global banded alignment of two sequences using two @Class.Gaps@ objects and the Gotoh algorithm. The Gotoh algorithm is automatically selected since the scoring scheme uses affine gap costs.
+..example.file:demos/align/global_alignment_banded.cpp
 ..see:Function.localAlignment
 ..see:Function.globalAlignmentScore
 ..include:seqan/align.h
