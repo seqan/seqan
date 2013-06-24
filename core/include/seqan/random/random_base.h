@@ -56,6 +56,17 @@ struct MersenneTwister;
 ...default:@Spec.Mersenne Twister Rng@
 ..include:seqan/random.h
 ..wiki:Tutorial/Randomness|Tutorial: Randomness
+..example
+...text:The following code shows how to generate random numbers and shuffle a text.
+...file:demos/random/random.cpp
+...output:pickRandomNumber(rng) == 1608637542
+pickRandomNumber(rng, uniformDouble) == 0.950714
+pickRandomNumber(rng, uniformInt) == 27
+pickRandomNumber(rng, normal) == 0.419823
+pickRandomNumber(rng, logNormal) == 1.22431
+pickRandomNumber(rng, logNormal2) == 2.78004
+pickRandomNumber(rng, logNormal3) == 0.00155248
+shuffle("Hello World!") ==  o!reWlloHld
 */
 
 template <typename TSpec = MersenneTwister>
