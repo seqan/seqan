@@ -83,6 +83,15 @@ struct Owner {};
 ..param.TSpec:The specializing type for the StringSet.
 ...metafunction:Metafunction.Spec
 ...default:$Owner<Generous>$.
+..example.file:demos/sequence/stringset.cpp
+..example.text:The output is as follows:
+..example.output:
+Number of elements: 1
+Number of elements: 3
+Element 0: Hello World!
+Element 1: To be or not to be!
+Element 2: A man, a plan, a canal - Panama!
+Number of elements: 0
 ..include:sequence.h
  */
 template <typename TString, typename TSpec = Owner<> >
