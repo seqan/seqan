@@ -55,6 +55,8 @@ namespace seqan {
 ..cat:VCF I/O
 ..summary:High-level VCF I/O class.
 ..signature:class VcfStream
+..example:The following example demonstrates reading a VCF file and printing the variant locations.
+..example.file:demos/vcf_io/vcf_stream_read.cpp
 ..include:seqan/vcf_io.h
 
 .Memfunc.VcfStream#VcfStream
