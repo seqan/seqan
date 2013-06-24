@@ -106,7 +106,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
 ..implements:Concept.SequenceConcept
 ..summary:Efficient storage of gaps for a sequence.
 ..signature:Gaps<TSequence, TSpec>
-..description:
+..description.text:
 Gaps wrap a @Concept.SequenceConcept@ and allows to (1) insert gaps into the sequence and (2) select an infix of the gapped sequence (clipping).
 The gaps are not inserted into the underlying sequence (source) but stored separately.
 Using the clipping is optional and meant for selecting parts of the alignment as a part of the result of a local alignment algorithm.
@@ -114,14 +114,22 @@ Using the clipping is optional and meant for selecting parts of the alignment as
 ..description:
 In the figure above, the source sequence has seven characters, the gapped sequence has four gaps and thus consists of eleven characters.
 The gapped sequence is clipped to start at position 0 in the gapped sequence and to end at position 8 in the gapped sequence (the positions given as half-open intervals $[begin, end)$).
-..description:
+..description.text:
 The figure shows the three coordinate systems that are used with Gaps objects.
 The source position is the position in the underlying sequence.
 The unclipped view position is the position in the gapped sequence without gaps.
 The view position is the position in the gapped sequence but including the clipping:
 All (clipped) view positions have the clipping begin position subtracted from them.
-..description:
-
+..example.text:
+The following example shows the construction of the gaps object from the image above together with some calls to $toViewPosition$ and $toSourcePosition$.
+These functions allow the transformation between the source position and the clipped view position.
+..example.file:demos/align/gaps_example.cpp
+..example.text:This yields the following output:
+..example.output:Resulting gaps: GG-T-A-
+toSourcePosition(gaps, 0) == 1
+toSourcePosition(gaps, 4) == 4
+toViewPosition(gaps, 0) == -1
+toViewPosition(gaps, 5) == 9
 ..param.TSequence:The type of the underlying sequence.
 ...type:Concept.SequenceConcept
 ..param.TSpec:Specialization tag.
