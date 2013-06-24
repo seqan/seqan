@@ -312,6 +312,14 @@ SEQAN_CHECKPOINT
 ..param.TCargo:The cargo/id type.
 ...default:int
 ...remarks:If the intervals are not associated with cargos/IDs, they will be numbered consecutively.
+..example:The following example creates an integer interval tree with string keys.
+This tree is queried for keys of intervals that overlap the interval [550,900).
+...file:demos/misc/interval_tree_example.cpp
+...text:The resulting keys are:
+...output:
+gene
+exon2
+coding2
 ..include:seqan/misc/misc_interval_tree.h
 */
 template<typename TValue=int, typename TCargo=unsigned int>
