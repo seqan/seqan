@@ -193,19 +193,31 @@ in which $hayNo$ is the haystack index and $pos$ the local position of the hit.
 ..remarks:To reset the finder object and use it on another text or different text position, use $clear(finder)$
 Note that $clear(finder)$ doesn't move the text iterator. To start the search from the beginning or somewhere else in the text, use
 @Function.goBegin@ or @Function.setPosition@.
-..example.text:The following example shows how to restart a search from the beginning of a text.
-..example.code:
-CharString hstck = "I spy with my little eye something that is yellow";
-Finder<CharString> finder(hstck);
-
-Pattern<CharString, Horspool> p1("y");
-findAll(finder, p1);
-
-goBegin(finder);    // move Finder to the beginning of the text
-clear(finder);      // reset Finder
-
-Pattern<CharString, Horspool> p2("t");
-findAll(finder, p2);
+..example
+...text:The following example shows how one can search online for a pattern in a haystack. Note that it is neccessary to reset the finder befor searching for another pattern.
+...file:demos/finder/finder_online.cpp
+...output:Hit at position: 4
+Hit at position: 12
+Hit at position: 22
+Hit at position: 43
+Hit at position: 8
+Hit at position: 16
+Hit at position: 17
+Hit at position: 29
+Hit at position: 35
+Hit at position: 38
+...text:In contrast to the example above the code below shows how one can use a Finder with an index as base. Again, note that it is neccessary to reset the finder befor searching for another pattern.
+...file:demos/finder/finder_index.cpp
+...output:Hit at position: 12
+Hit at position: 4
+Hit at position: 22
+Hit at position: 43
+Hit at position: 38
+Hit at position: 8
+Hit at position: 35
+Hit at position: 29
+Hit at position: 17
+Hit at position: 16
 ..include:seqan/find.h
 */
 
