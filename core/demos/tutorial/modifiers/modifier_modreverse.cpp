@@ -8,7 +8,6 @@ using namespace seqan;
 
 int main ()
 {
-// FRAGMENT(string)
 	String<char> myString = "A man, a plan, a canal-Panama";
 // FRAGMENT(modifier)
 	ModifiedString< String<char>, ModReverse > myModifier(myString);
