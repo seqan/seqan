@@ -72,6 +72,8 @@
         $!html._formatCode(text[len('type=code:'):])!$
         <!--(elif text.startswith('type=console:'))-->
         <pre class="console">$!html.translateMarkup(text[len('type=console:'):])!$</pre>
+        <!--(elif text.startswith('type=output:'))-->
+        <pre class="console">$!html.translateMarkup(text[len('type=output:'):])!$</pre>
         <!--(elif text.startswith('type=file:'))-->
         $!html.includeFile(text[len('type=file:'):], node=tree.find(path))!$
         <!--(elif text.startswith('type=snippet:'))-->
