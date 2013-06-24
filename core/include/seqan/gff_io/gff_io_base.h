@@ -64,7 +64,7 @@ typedef Tag<TagGff_> const Gff;
 // ----------------------------------------------------------------------------
 
 /**
-// .Tag.File Format.tag.Gtf:
+.Tag.File Format.tag.Gtf:
     Gtf annotation file.
 ..include:seqan/gff_io.h
 */

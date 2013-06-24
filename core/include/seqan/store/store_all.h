@@ -82,14 +82,30 @@ struct FragmentStoreConfig
 ...default:$void$
 ..param.TConfig:The configuration struct.
 ...default:$FragmentStoreConfig<TSpec>$
-..remarks:The FragmentStore is a data structure specifically designed for read mapping,
+..description:
+The FragmentStore is a data structure specifically designed for read mapping,
 genome assembly or gene annotation. These tasks typically require lots of data structures that
-are related to each other like:
-...table:reads, mate-pairs, reference genome
-...table:pairwise alignments
-...table:genome annotation
-..example:Align objects are initialized as follows:
+are related to each other like: reads, mate-pairs, reference genome; pairwise alignments; genome annotation.
+..description:
+The FragmentStore subsumes all these data structures in an easy to use interface.
+It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting 
+of multiple contigs. Additionally, regions of the reference genome can be annotated with features like 'gene', 
+'mRNA', 'exon', 'intro' or custom features. The FragmentStore supports I/O functions to read/write a read
+alignment in @Tag.File Format.tag.Sam@ or @Tag.File Format.tag.Amos@ format and to read/write annotations in @Tag.File Format.tag.Gff@/@Tag.File Format.tag.Gtf@ format.
+..description:
+The FragmentStore can be compared with a database where each table (called "store") is implemented as a
+@Class.String@ member of the FragmentStore class. The rows of each table (implemented as structs) are 
+referred by their ids which are their positions in the string and not stored explicitly. 
+The only exception is the @Memvar.FragmentStore#alignedReadStore@ whose elements of type @Class.AlignedReadStoreElement@
+contain an id-member as they may be rearranged in arbitrary order, e.g. by increasing genomic positions or by readId. 
+Many stores have an associated name store to store element names. Each name store is a @Class.StringSet@ that stores the
+element name at the position of its id. All stores are present in the FragmentStore and empty if unused. The concrete types,
+e.g. the position types or read/contig alphabet, can be easily changed by defining a custom config struct which is a template
+parameter of the FragmentStore class.
+
+..example:Load read alignments and a reference genome and display the multiple alignment in a genomic range:
 ...file:demos/store/store_example.cpp
+...text:The staircase alignment looks as follows:
 ...output:
 ATTTAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
 ATTTAA  AATTACAAAATATAGTTGAAAGCTCTAACAATAGA   AACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGA  AGTCTCTTATGAATTAA
@@ -128,9 +144,10 @@ ATTTAAGAAATTACAAAATATAGTTGAAAGCTCT ACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCA     TGAAG
                                   AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
                                      AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
                                      AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
-..example:The following figure shows which tables represent the multiple read alignment:
+
+..example:
+...text:The following figures visualize the relations between the different stores:
 ...image:FragmentStore|Stores that are involved in the representation of a multiple read alignment.
-..example:The following figure shows which tables represent the annotation tree:
 ...image:AnnotationStore|Stores that are involved in the representation of a genome alignment.
 ..include:seqan/store.h
 
