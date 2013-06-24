@@ -99,11 +99,16 @@ typedef Tag<TagRaw_> Raw;
 ...metafunction:Metafunction.Spec
 ...default:@Spec.ArrayGaps@
 ..remarks:The default implementation of $Align$ stores the alignment in a set of @Class.Gaps|Gaps<TSource,TSpec>@ objects.
- Hence, the default implementation is row-based, so it will be faster to access the alignment row-wise than column-wise.
-..example.text:Align objects are initialized as follows:
-..example.snippet:demos/align/align.cpp|alignment computation
+Hence, the default implementation is row-based, so it will be faster to access the alignment row-wise than column-wise.
+..example.file:demos/align/align.cpp
 ..example.text:The output is as follows:
-..example.snippet:demos/align/align.cpp|alignment result
+..example.output:
+score = -4
+align
+  0     .    :
+    AGTTTAATCA
+    ||| | |  |
+    AGTAT-ACGA
 ..include:seqan/align.h
 */
 
