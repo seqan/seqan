@@ -1492,6 +1492,8 @@ _capacityReturned(T &,
 .Function.reserve:
 ..cat:Containers
 ..summary:Increases the capacity.
+..description:This function allows to increase the capacity but not the length of a container.
+...note:Use @Function.resize@ if you want to change the size of a container.
 ..concept:Concept.ContainerConcept
 ..signature:Size reserve(object, new_capacity [, resize_tag])
 ..param.object: A container.
@@ -1499,7 +1501,7 @@ _capacityReturned(T &,
 ..param.resize_tag: Specifies the strategy that is applied for changing the capacity. (optional)
 ...type:Tag.Overflow Strategy
 ...default:Specified by @Metafunction.DefaultOverflowExplicit@.
-..returns:The ammout of the requested capacity that was available.
+..returns:The amount of the requested capacity that was available.
 That is the function returns the minimum of $new_capacity$ and $capacity(me)$.
 ...metafunction:Metafunction.Size
 ..remarks:At the end of the operation, $capacity(me)$ can be larger than $new_capacity$.
