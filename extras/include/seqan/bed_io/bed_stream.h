@@ -85,7 +85,7 @@ namespace seqan {
 class BedStream
 {
 public:
-    typedef RecordReader<std::fstream, SinglePass<> > TReader_;
+    typedef RecordReader<std::istream, SinglePass<> > TReader_;
     typedef seqan::StringSet<seqan::CharString> TNameStore;
     typedef seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > TNameStoreCache;
     typedef BedIOContext<TNameStore, TNameStoreCache> TBedIOContext;
@@ -98,6 +98,8 @@ public:
     };
 
     std::auto_ptr<std::fstream> _stream;
+    std::ostream * _outStream;
+    std::istream * _inStream;
     CharString _filename;
     std::auto_ptr<TReader_> _reader;
     Mode _mode;
@@ -108,13 +110,13 @@ public:
     TNameStoreCache _sequenceNamesCache;
     TBedIOContext _context;
 
-    BedStream() : _mode(INVALID), _error(0), _isGood(true), _sequenceNamesCache(sequenceNames),
-                  _context(sequenceNames, _sequenceNamesCache)
+    BedStream() : _outStream(), _inStream(), _mode(INVALID), _error(0), _isGood(true),
+                  _sequenceNamesCache(sequenceNames), _context(sequenceNames, _sequenceNamesCache)
     {}
 
     BedStream(char const * filename, Mode mode = READ) :
-            _filename(filename), _mode(mode), _error(0), _isGood(true), _sequenceNamesCache(sequenceNames),
-            _context(sequenceNames, _sequenceNamesCache)
+            _outStream(), _inStream(), _filename(filename), _mode(mode), _error(0), _isGood(true),
+            _sequenceNamesCache(sequenceNames), _context(sequenceNames, _sequenceNamesCache)
     {
         _open(filename, mode);
     }
@@ -129,25 +131,45 @@ public:
 
         if (mode == READ)
         {
-            _stream.reset(new std::fstream);
-            _stream->open(toCString(_filename), std::ios::binary | std::ios::in);
-            if (!_stream->good())
+            if (_filename == "-")
             {
-                _isGood = false;
-                return false;
+                _stream.reset();
+                _inStream = &std::cin;
             }
-            _reader.reset(new TReader_(*_stream));
+            else
+            {
+                _stream.reset(new std::fstream);
+                _stream->open(toCString(_filename), std::ios::binary | std::ios::in);
+                if (!_stream->good())
+                {
+                    _isGood = false;
+                    return false;
+                }
+                _inStream = _stream.get();
+            }
+            _reader.reset(new TReader_(*_inStream));
+            _outStream = 0;
         }
         else if (mode == WRITE)
         {
-            _stream.reset(new std::fstream);
-            _stream->open(toCString(_filename), std::ios::binary | std::ios::out);
-            if (!_stream->good())
+            if (_filename == "-")
             {
-                _isGood = false;
-                return false;
+                _stream.reset();
+                _outStream = &std::cout;
             }
-            _reader.reset();
+            else
+            {
+                _stream.reset(new std::fstream);
+                _stream->open(toCString(_filename), std::ios::binary | std::ios::out);
+                if (!_stream->good())
+                {
+                    _isGood = false;
+                    return false;
+                }
+                _reader.reset();
+                _outStream = _stream.get();
+            }
+            _inStream = 0;
         }
         return true;
     }
@@ -261,7 +283,7 @@ template <typename TSpec>
 inline int writeRecord(BedStream & stream,
                        BedRecord<TSpec> const & record)
 {
-    int res = writeRecord(*stream._stream, record, stream._context, Bed());
+    int res = writeRecord(*stream._outStream, record, stream._context, Bed());
     if (res != 0)
         stream._isGood = false;
     return res;
@@ -285,7 +307,8 @@ inline int writeRecord(BedStream & stream,
 
 inline int flush(BedStream & stream)
 {
-    stream._stream->flush();
+    if (stream._stream.get())
+        stream._stream->flush();
     return 0;
 }
 
@@ -307,7 +330,8 @@ inline int flush(BedStream & stream)
 
 inline int close(BedStream & stream)
 {
-    stream._stream->close();
+    if (stream._stream.get())
+        stream._stream->close();
     return 0;
 }
 
