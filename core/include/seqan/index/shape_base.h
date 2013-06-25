@@ -32,6 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
+ //TODO(weese:) sync new documentation to old dddoc updates
+
 #ifndef SEQAN_HEADER_SHAPE_BASE_H
 #define SEQAN_HEADER_SHAPE_BASE_H
 
@@ -409,9 +411,14 @@ For gapped shapes this is the number of '1's.
 
 //____________________________________________________________________________
 
-/**.Function.hash:
+/**
+.Function.hash:
 ..cat:Index
 ..summary:Computes a (lower) hash value for a shape applied to a sequence.
+..description:The hash value (a.k.a. code) of a q-gram is the lexicographical rank of this q-gram in the set of all possible q-grams.
+For example, the hash value of the @Spec.Dna@ 3-gram AAG is 2 as there are only two 3-grams (AAA and AAC) having a smaller lexicographical rank.
+If @Function.hash@ is called with a gapped shape, the q-gram is the text subsequence of no-gap shape positions relative to the text iterator, e.g. a shape 1101 at the beginning of text ACGT corresponds to the 3-gram ACT.
+
 ..signature:hash(shape, it)
 ..signature:hash(shape, it, charsLeft)
 ..class:Class.Shape
@@ -419,11 +426,20 @@ For gapped shapes this is the number of '1's.
 ...type:Class.Shape
 ..param.it:Sequence iterator pointing to the first character of the shape.
 ..param.charsLeft:The distance of $it$ to the string end. 
-If $charsLeft$ is smaller than the shape's span, the hash value corresponds to the smallest shape beginning with $charsLeft$ characters.
+If $charsLeft$ is smaller than the shape's span, the hash value corresponds to the lexicographically smallest shape beginning with $charsLeft$ characters. The hash value of such a truncated shape corresponds to the shape applied to a text padded with the smallest alphabet characters.
 ..returns:Hash value of the shape.
 ..see:Function.hashNext
 ..see:Function.hashUpper
 ..see:Function.hash2
+..example:
+...text:Code example that computes hash values of 4-grams with different shapes starting at the beginning of a text.
+...file:demos/index/shape_hash.cpp
+...text:The resulting hexadecimal hash values of the three 4-mers GATT, GATC and GATA are:
+...output:
+0x8f
+0x8d
+0x8c
+..include:seqan/index.h
 */
 /*!
  * @fn Shape#hash
@@ -464,6 +480,26 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 		return me.hValue;
 	}
 
+/**
+.Function.hashInit:
+..cat:Index
+..summary:Preprocessing step of a pure @Function.hashNext@ loop.
+..description:Overlapping q-grams can efficiently be hashed by calling @Function.hash@ on the first text position and @Function.hashNext@ on succeeding, adjacent positions. One drawback of this scenario is that for-loops cannot start with the first position directly and become more complicated. As a remedy, @Function.hashInit@ was introduced which initializes the @Class.Shape@ to be used with @Function.hashNext@ on the first position directly.
+..signature:hashInit(shape, it)
+..class:Class.Shape
+..param.shape:Shape to be used for hashing.
+...type:Class.Shape
+..param.it:Sequence iterator pointing to the first text character of the shape.
+..see:Function.hashNext
+..example:
+...text:Two hash loop examples. The first loop uses @Function.hash@/@Function.hashNext@ while the second use @Function.hashInit@/@Function.hashNext@ and can process all hashes within the loop.
+...file:demos/index/shape_hash_init.cpp
+...text:The two loops produce the same hash values:
+...output:
+0	0	1	4	17	4	18	11	47	63	62	56	
+0	0	1	4	17	4	18	11	47	63	62	56
+..include:seqan/index.h
+*/
 	template <typename TValue, typename TIter>
 	inline void
 	hashInit(Shape<TValue, SimpleShape> &me, TIter it)
@@ -689,6 +725,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 .Function.hashNext:
 ..cat:Index
 ..summary:Computes the hash value for the adjacent shape.
+..description:Overlapping q-grams can efficiently be hashed by calling @Function.hash@ on the first text position and @Function.hashNext@ on succeeding, adjacent positions. Alternatively, @Function.hashInit@ can be used to replace the first @Function.hash@ call by another @Function.hashNext@ call and hence ease loops iterating all overlapping q-grams.
 ..signature:hashNext(shape, it)
 ..class:Class.Shape
 ..param.shape:Shape to be used for hashing.
@@ -696,6 +733,11 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 ..param.it:Sequence iterator pointing to the first character of the adjacent shape.
 ..returns:Hash value of the q-gram.
 ..remarks:@Function.hash@ has to be called before.
+..example:Hash loop example that outputs the hash values of all overlapping 3-grams using @Function.hash@ and @Function.hashNext@.
+...file:demos/index/shape_hash_next.cpp
+...text:The overlapping hash values are:
+...output:
+0	0	1	4	17	4	18	11	47	63	62	56	
 ..include:seqan/index.h
 */
 /*!

@@ -3,20 +3,22 @@
 
 using namespace seqan;
 
-int main()
+int main ()
 {
-    DnaString genome = "AAAACACAGTTTGA";
+    DnaString text = "AAAACACAGTTTGA";
     Shape<Dna, UngappedShape<3> > myShape;
 
-    // loop with hash() and hashNext() starts at position 1
-    std::cout << hash(myShape, begin(genome)) << '\t';
-    for (unsigned i = 1; i < length(genome) - length(myShape) + 1; ++i)
-        std::cout << hashNext(myShape, begin(genome) + i) << '\t';
+    // loop using hash() and hashNext() starts at position 1
+    std::cout << hash(myShape, begin(text)) << '\t';
+    for (unsigned i = 1; i < length(text) - length(myShape) + 1; ++i)
+        std::cout << hashNext(myShape, begin(text) + i) << '\t';
     std::cout << std::endl;
 
-    // loop with hashInit() and hashNext() starts at position 0
-    hashInit(myShape, begin(genome));
-    for (unsigned i = 0; i < length(genome) - length(myShape) + 1; ++i)
-        std::cout << hashNext(myShape, begin(genome) + i) << '\t';
+    // loop using hashInit() and hashNext() starts at position 0
+    hashInit(myShape, begin(text));
+    for (unsigned i = 0; i < length(text) - length(myShape) + 1; ++i)
+        std::cout << hashNext(myShape, begin(text) + i) << '\t';
     std::cout << std::endl;
+
+    return 0;
 }

@@ -10,7 +10,9 @@ int main ()
     Finder<TIndex> finder(index);
 
     // The Finder object has a pointer to the first, current and last hit
-    // Each consecutive call sets the current pointer to the appropriat hit
-    while(find(finder, "to"))
+    // Each consecutive call sets the current pointer to the appropriate hit
+    while (find(finder, "to"))
         std::cout << "Hit at position: " << position(finder) << std::endl;
+
+    return 0;
 }
