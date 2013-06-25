@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <seqan/base.h>
+#include <seqan/basic.h>
 #include <seqan/align.h>
 #include <seqan/file.h>  // for printint strings
 
