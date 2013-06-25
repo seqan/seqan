@@ -190,6 +190,28 @@ inline bool open(BedStream & stream, char const * filename, BedStream::Mode mode
 }
 
 // ----------------------------------------------------------------------------
+// Function addSequenceName()
+// ----------------------------------------------------------------------------
+
+/**
+.Function.BedStream#addSequenceName
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Add the name of a sequence to a @Class.BedStream@.
+..signature:void addSequenceName(bedStream, seqName);
+..param.bedStream:The @Class.BedStream@ to add the name to.
+...type:Class.BedStream
+..param.seqName:The name of the sequence to append.
+...type:Shortcut.CharString
+..include:seqan/bed_io.h
+*/
+
+inline void addSequenceName(BedStream & stream, CharString const & name)
+{
+    appendName(stream.sequenceNames, name, stream._sequenceNamesCache);
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
