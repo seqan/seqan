@@ -348,7 +348,7 @@ _beginDefault(T const & me,
 ...concept:Concept.ContainerConcept
 ..param.tag:An @Tag.Iterator Spec.iterator spec@ tag that specifies the kind of the iterator returned. (optional)
 ...default:Given by @Metafunction.DefaultGetIteratorSpec@.
-..returns:An iterator to the first item in $object$.
+..returns:An iterator to the first item in $object$. The type is the result of $Iterator<TContainer, TTag>::Type$ where $TContainer$ is the type of $object$ and $TTag$ is the type of $tag$.
 ...metafunction:Metafunction.Iterator
 ..remarks.text:If the container does not contain any items at all, the function may return 0.
 ..see:Function.end
@@ -539,7 +539,7 @@ _endDefault(T const & me,
 ...concept:Concept.ContainerConcept
 ..param.tag:An @Tag.Iterator Spec.iterator spec@ tag that specifies the kind of the iterator returned. (optional)
 ...default:Given by @Metafunction.DefaultGetIteratorSpec@.
-..returns:An iterator that points behind the last item in $object$.
+..returns:An iterator that points behind the last item in $object$. The type is the result of $Iterator<TContainer, TTag>::Type$ where $TContainer$ is the type of $object$ and $TTag$ is the type of $tag$.
 ...metafunction:Metafunction.Iterator
 ..remarks.text:If the container does not contain any items at all, the function may return 0.
 ..see:Function.begin
@@ -784,7 +784,7 @@ back(T & me)
 ...metafunction:Metafunction.Position
 ..param.tag:An @Tag.Iterator Spec.iterator spec@ tag that specifies the kind of the iterator returned. (optional)
 ...default:Given by @Metafunction.DefaultGetIteratorSpec@.
-..returns:An iterator to the item at position $pos$ in $object$.
+..returns:An iterator to the item at position $pos$ in $object$. The type is the result of $Iterator<TContainer, TTag>::Type$ where $TContainer$ is the type of $object$ and $TTag$ is the type of $tag$.
 ...metafunction:Metafunction.Iterator
 ..remarks:
 ...text:If $pos$ is out of range, then the behavior of the function is undefined.
