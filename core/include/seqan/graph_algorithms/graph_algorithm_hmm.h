@@ -46,16 +46,20 @@ namespace SEQAN_NAMESPACE_MAIN
 /**
 .Function.viterbiAlgorithm:
 ..cat:Graph
-..summary:Implements the viterbi algorithm.
-..signature:viterbiAlgorithm(hmm, seq, path)
+..summary:Implements the Viterbi algorithm
+..description:
+The Viterbi algorithm computes the most likely sequence of hidden states of the Hidden Markov Model $hmm$ given the sequence $seq$ using dynamic programming.
+The result is the most likely sequence of hidden states and returned in $path$.
+..signature:TProbability viterbiAlgorithm(hmm, seq, path);
 ..param.hmm:In-parameter:Input HMM.
 ...type:Spec.Hmm
 ..param.seq:In-parameter:Input sequence.
 ..param.path:Out-parameter:State path.
-..returns:TCargo
-...remarks:Probability of the path.
+..returns:Probability of the path, the type parameter $TCargo$ from type of $hmm$.
 ..see:Function.forwardAlgorithm
 ..see:Function.backwardAlgorithm
+..remarks:
+See the @http://en.wikipedia.org/wiki/Viterbi_algorithm|Wikipedia article on the Viterbi algorithm@ for an introduction to the algorithm itself.
 ..include:seqan/graph_algorithms.h
 */
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence, typename TPath>
@@ -316,17 +320,18 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.forwardAlgorithm:
+.Function.forwardAlgorithm
 ..cat:Graph
 ..summary:Implements the forward algorithm.
-..signature:forwardAlgorithm(hmm, seq)
+..description:Given a Hidden Markov Model $hmm$, the forward algorithm computes the probability of the sequence $seq$.
+..signature:TProbability forwardAlgorithm(hmm, seq);
 ..param.hmm:In-parameter:Input HMM.
 ...type:Spec.Hmm
 ..param.seq:In-parameter:Input sequence.
-..returns:TProbability
-...remarks:Probability of the sequence.
+..returns:Probability of the sequence $seq$, $TProbability$ is the type parameter $TCargo$ of the type of $hmm$.
 ..see:Function.viterbiAlgorithm
 ..see:Function.backwardAlgorithm
+..remarks:See the @http://en.wikipedia.org/wiki/Forward_algorithm|Wikipedia article on the Foward algorithm@ for an introduction to the algorithm itself.
 ..include:seqan/graph_algorithms.h
 */
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence>
@@ -479,17 +484,18 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.backwardAlgorithm:
+.Function.backwardAlgorithm
 ..cat:Graph
 ..summary:Implements the backward algorithm.
-..signature:backwardAlgorithm(hmm, seq)
+..description:Execute the backward algorithm on the Hidden Markov Model $hmm$ to get the probability of $seq$.
+..signature:TProbability backwardAlgorithm(hmm, seq);
 ..param.hmm:In-parameter:Input HMM.
 ...type:Spec.Hmm
 ..param.seq:In-parameter:Input sequence.
-..returns:TProbability
-...remarks:Probability of the sequence.
+..returns:Probability of the sequence $seq$.  $TProbability$ is the type parameter $TCargo$ of the type of $hmm$.
 ..see:Function.viterbiAlgorithm
 ..see:Function.forwardAlgorithm
+..remarks:See the @http://en.wikipedia.org/wiki/Forward-backward_algorithm|Wikipedia article on the Forward-backward algorithm@ for an introduction to the algorithm.
 ..include:seqan/graph_algorithms.h
 */
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence>
