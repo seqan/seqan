@@ -1,4 +1,4 @@
-#include <seqan/find.h>
+#include <seqan/sequence.h>
 #include <seqan/index.h>
 
 using namespace seqan;
@@ -10,10 +10,11 @@ int main()
     Shape<Dna, OneGappedShape> myShape;
     stringToShape(myShape, "1101");
 
-    unsigned correctHash = hash(myShape, "ACGA");  // could also be ACAA, ACCA, ACTA
-    std::cout << "The hash is: " << correctHash << std::endl;
+    // compute hash of a search pattern
+    unsigned hashedPattern = hash(myShape, "ACGA");
+    std::cout << "The hash is: " << hashedPattern << std::endl;
 
     for (unsigned i = 0; i < length(genome) - length(myShape) + 1; ++i)
-        if (hash(myShape, &genome[i]) == correctHash)
+        if (hash(myShape, begin(genome) + i) == hashedPattern)
             std::cout << "Hit at position: " << i <<std::endl;
 }
