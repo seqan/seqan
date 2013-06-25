@@ -35,6 +35,8 @@
 #ifndef SEQAN_HEADER_FIND_AHOCORASICK_H
 #define SEQAN_HEADER_FIND_AHOCORASICK_H
 
+// TODO(holtgrew): Needles should be a StringSet<CharString>!
+
 namespace SEQAN_NAMESPACE_MAIN
 {
 
@@ -53,6 +55,15 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks.text:The types of the keywords in the needle container and the haystack have to match.
 ..remarks.text:Matching positions do not come in order because we report beginning positions of matches.
 ..remarks.text:Likewise, if multiple keywords match at a given position no pre-specified order is guaranteed.
+..example.text:The following example program searches for three needles ($queries$) in two haystack sequences ($db$) using the Aho-Corasick algorithm.
+..example.file:demos/finder/finder_aho_corasick.cpp
+..example.remark:Note that you have to provide a String of Strings for the queries at the moment. This will be changed to a StringSet in the future.
+..example.text:When executed, this program will create the following output.
+..example.output:DB      POS     ENDPOS  TEXT
+0       0       4       MARD
+0       3       7       DPLY
+1       1       6       VGGGG
+1       6       9       AAA
 ..include:seqan/find.h
 */
 
