@@ -296,6 +296,25 @@ Strings can be used to store arbitrary values and can be used for large biologic
 Last sign is whitespace? 1
 tobeornottobe
 hit at 2 11
+
+.Memfunc.String#String
+..class:Class.String
+..signature:String::String()
+..signature:String::String(other)
+..signature:String::String(seq)
+..summary:Constructor
+..description:
+The $String$ class provides the default constructor and copy constructor.
+Additionally, you can construct a string from any sequence.
+..param.other:Another $String$ object of the same type.
+..param.seq:A sequence to copy into the $String$.
+...type:Concept.SequenceConcept
+..remarks:
+The third variant (construction from sequence) first reserves the necessary space and then copies over the characters from $seq$.
+During this copying, the source characters are implicitely casted/converted into the alphabet of the String.
+For example, @Spec.Dna@ characters can be converted to @Spec.Dna5@ characters and vice versa.
+The conversion can be lossy, e.g. when converting from @Spec.Dna5@ to @Spec.Dna@, all $N$ characters are replaced by $A$ characters.
+Similarly, when converting from $char$ to @Spec.Dna5@, all characters except ${A, a, C, c, G, g, T, t}$ are converted to $N$.
 */
 
 template <typename TValue, typename TSpec = Alloc<> >
