@@ -47,30 +47,60 @@ typedef Tag<Equidistant_> Equidistant;
 .Class.Splitter
 ..cat:Parallelism
 ..summary:Splits an interval into subintervals.
-..signature:Splitter<TPosition[, TSpec]>
-..concept:Concept.ContainerConcept
+..description:This class divides an interval into the disjoint union of subintervals and enumerates its boundaries.
+It can be used to parallelize large for-loops that iterate over a contiguous range of elements.
+The interval and the number of subintervals can be set in the constructor @Memfunc.Splitter#Splitter@.
+@Function.length@ and @Function.resize@ can be used to retrieve or change the number of subintervals later.
+In contrast to other containers the Splitter allows to access one more element than its length would imply to allow to retrieve the right boundary of each subinterval (see example code below).
+
+..signature:Splitter<TPosition, TSpec>
 ..param.TPosition:Type of the interval boundaries.
 ..param.TSpec:Tag to select the way the values are sampled.
-...default:Equidistant
-..remarks:The Splitter splits an interval into subintervals whose boundaries are enumerated by the Splitter.
-It is a container whose length equals the number of subintervals + 1.
+...default:Equidistant Splitter
 ..example:
-...text:Simple case for equidistant (default) splitting.
-...code:Splitter<unsigned> splitter(0, 10, 3);
-for (unsigned i = 0; i < length(splitter); ++i)
-    std::cout << splitter[i] << std::endl; 
-// outputs 0 4 7 10
+...text:Simple example for equidistant (default) splitting.
+...file:demos/parallel/splitter_example.cpp
+...output:
+[10,14)
+[14,17)
+[17,20)
 ..include:seqan/parallel.h
 
 .Memfunc.Splitter#Splitter
 ..summary:Constructor
-..signature:Splitter(beginPos, endPos, count)
+..signature:Splitter(beginPos, endPos[, subintervalCount])
+..signature:Splitter(beginPos, endPos, parallelTag)
 ..param.beginPos:Left interval boundary.
 ..param.endPos:Right interval boundary.
-..param.count:Number of subintervals.
+..param.subintervalCount:Number of subintervals.
+...default:The minimum of interval size and the number of available threads (returned by $omp_get_max_threads()$).
+...remarks:@Function.length@ and @Function.resize@ can be used to retrieve or change the number of subintervals later.
+..param.parallelTag:Tag to generically enable/disable parallelism. If its type is @Tag.Parallel@, the default number of subintervals is used.
+If it is @Tag.Serial@, only one subinterval is used.
+...types:Tag.Serial
+...types:Tag.Parallel
+...remarks:This tag should be used to write generic parallel algorithms and to switch between parallel and serial variants.
 ..class:Class.Splitter
  */
 
+/**
+.Spec.Equidistant Splitter
+..cat:Parallelism
+..general:Class.Splitter
+..summary:Splits an interval into equal-sized subintervals.
+..signature:Splitter<TPosition[, Equidistant]>
+..description:This @Class.Splitter@ specialization divides an interval into subintervals of (almost) equal length, i.e.
+two subintervals differ by at most 1 in size.
+..param.TPosition:Type of the interval boundaries.
+..example:
+...text:Simple example for equidistant splitting.
+...file:demos/parallel/splitter_example.cpp
+...output:
+[10,14)
+[14,17)
+[17,20)
+..include:seqan/parallel.h */
+ 
 template <typename TPosition, typename TSpec = Equidistant>
 class Splitter
 {
@@ -114,18 +144,23 @@ public:
     }
 };
 
+
+///.Metafunction.Size.param.T.type:Class.Splitter
 template <typename TPosition, typename TSpec>
 struct Size<Splitter<TPosition, TSpec> >
 {
     typedef TPosition Type;
 };
 
+///.Metafunction.Value.param.T.type:Class.Splitter
 template <typename TPosition, typename TSpec>
 struct Value<Splitter<TPosition, TSpec> >
 {
     typedef TPosition Type;
 };
 
+///.Function.length.param.object.type:Class.Splitter
+///.Function.length.class:Class.Splitter
 template <typename TPosition, typename TSpec>
 inline TPosition
 length(Splitter<TPosition, TSpec> const &splitter)
@@ -150,6 +185,8 @@ _resize(Splitter<TPosition, TSpec> &splitter, TPosition intervalLen, TPosition n
     splitter.subintervalCount = newCount;
 }
 
+///.Function.resize.param.object.type:Class.Splitter
+///.Function.resize.class:Class.Splitter
 template <typename TPosition, typename TSpec>
 inline TPosition
 resize(Splitter<TPosition, TSpec> &splitter, TPosition newCount)
