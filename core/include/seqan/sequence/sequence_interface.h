@@ -1116,8 +1116,10 @@ assign(TTarget const & target,
 // --------------------------------------------------------------------------
 
 /**
-.Function.append:
+.Function.append
 ..summary:Concatenate two containers.
+..description:This function allows to append the contents of one container to another.
+...notes:Appending a value/entry to a container can be done using @Function.appendValue@.
 ..cat:Content Manipulation
 ..concept:Concept.ContainerConcept
 ..signature:append(target, source [, limit] [,resize_tag])
@@ -1216,6 +1218,8 @@ append(TTarget const & target,
 /**
 .Function.appendValue:
 ..signature:appendValue(target, value [, resize_tag])
+..description:This function allows to append an element/value to a container.
+...notes:Appending the elements of a container to another container can be done using @Function.append@.
 ..cat:Content Manipulation
 ..concept:Concept.ContainerConcept
 ..summary:Appends a value to a container.
