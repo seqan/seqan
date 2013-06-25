@@ -237,8 +237,17 @@ template <typename TStream, typename TRecordSpec, typename TNameStore, typename 
 int writeRecord(TStream & out, BedRecord<TRecordSpec> const & record,
                 BedIOContext<TNameStore, TNameStoreCache> const & context, Bed const & /*tag*/)
 {
-    if (_writeBedRecord(out, record, nameStore(context)[record.rID]) != 0)
-        return 1;
+
+    if (record.rID == BedRecord<TRecordSpec>::INVALID_REFID)
+    {
+        if (_writeBedRecord(out, record, record.ref) != 0)
+            return 1;
+    }
+    else
+    {
+        if (_writeBedRecord(out, record, nameStore(context)[record.rID]) != 0)
+            return 1;
+    }
 
     if (empty(record.data))
     {

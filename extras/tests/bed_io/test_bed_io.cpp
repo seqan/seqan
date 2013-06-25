@@ -472,6 +472,61 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
     SEQAN_ASSERT_EQ(ss.str(), EXPECTED);
 }
 
+SEQAN_DEFINE_TEST(test_bed_bed_stream_read)
+{
+    seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
+    append(inPath, "/extras/tests/bed_io/example.bed");
+
+    seqan::BedStream bedStream(toCString(inPath));
+    SEQAN_ASSERT(isGood(bedStream));
+
+    seqan::BedRecord<seqan::Bed3> record1;
+    SEQAN_ASSERT_EQ(readRecord(record1, bedStream), 0);
+
+    SEQAN_ASSERT_EQ(record1.ref, "chr7");
+    SEQAN_ASSERT_EQ(record1.beginPos, 127471195);
+    SEQAN_ASSERT_EQ(record1.endPos, 127472363);
+    SEQAN_ASSERT_EQ(record1.data, "Pos1\t0\t+\t127471196\t127472363\t255,0,0");
+
+    seqan::BedRecord<seqan::Bed3> record2;
+    SEQAN_ASSERT_EQ(readRecord(record2, bedStream), 0);
+    SEQAN_ASSERT(atEnd(bedStream));
+
+    SEQAN_ASSERT_EQ(record2.ref, "chr8");
+    SEQAN_ASSERT_EQ(record2.beginPos, 127472362);
+    SEQAN_ASSERT_EQ(record2.endPos, 127473530);
+    SEQAN_ASSERT_EQ(record2.data, "Pos2\t0\t+\t127472363\t127473530\t255,0,0");
+}
+
+SEQAN_DEFINE_TEST(test_bed_bed_stream_write)
+{
+    seqan::CharString tmpPath = SEQAN_PATH_TO_ROOT();
+    append(tmpPath, ".bed");
+
+    seqan::BedStream bedStream(toCString(tmpPath), seqan::BedStream::WRITE);
+    SEQAN_ASSERT(isGood(bedStream));
+
+    seqan::BedRecord<seqan::Bed3> record1;
+    record1.ref = "chr7";
+    record1.beginPos = 127471195;
+    record1.endPos = 127472363;
+    record1.data = "Pos1\t0\t+\t127471196\t127472363\t255,0,0";
+    SEQAN_ASSERT_EQ(writeRecord(bedStream, record1), 0);
+
+    seqan::BedRecord<seqan::Bed3> record2;
+    record2.ref = "chr8";
+    record2.beginPos = 127472362;
+    record2.endPos = 127473530;
+    record2.data = "Pos2\t0\t+\t127472363\t127473530\t255,0,0";
+    SEQAN_ASSERT_EQ(writeRecord(bedStream, record2), 0);
+
+    close(bedStream);
+
+    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
+    append(goldPath, "/extras/tests/bed_io/example.bed");
+    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+}
+
 SEQAN_BEGIN_TESTSUITE(test_bed_io)
 {
     // Reading of BED records.
@@ -489,5 +544,9 @@ SEQAN_BEGIN_TESTSUITE(test_bed_io)
     SEQAN_CALL_TEST(test_bed_write_bed5_record);
     SEQAN_CALL_TEST(test_bed_write_bed6_record);
     SEQAN_CALL_TEST(test_bed_write_bed12_record);
+
+    // BED Stream
+    SEQAN_CALL_TEST(test_bed_bed_stream_read);
+    SEQAN_CALL_TEST(test_bed_bed_stream_write);
 }
 SEQAN_END_TESTSUITE

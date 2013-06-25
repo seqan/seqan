@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_STREAM_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_STREAM_H_
+#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
+#define SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
 
 #include <memory>
 #include <fstream>
@@ -49,39 +49,46 @@ namespace seqan {
 // ============================================================================
 
 /**
-.Class.VcfStream
-..cat:VCF I/O
-..summary:High-level VCF I/O class.
-..signature:class VcfStream
-..example:The following example demonstrates reading a VCF file and printing the variant locations.
-..example.file:demos/vcf_io/vcf_stream_read.cpp
-..include:seqan/vcf_io.h
+.Class.BedStream
+..cat:BED I/O
+..summary:High-level BED I/O class.
+..signature:class BedStream
+..example:The following example demonstrates reading a BED file and printing the variant locations.
+..example.file:demos/bed_io/bed_stream_read.cpp
+..include:seqan/bed_io.h
 
-.Memfunc.VcfStream#VcfStream
-..class:Class.VcfStream
+.Memfunc.BedStream#BedStream
+..class:Class.BedStream
 ..summary:Constructor.
-..signature:VcfStream::VcfStream()
-..signature:VcfStream::VcfStream(fileName, mode=READ)
+..signature:BedStream::BedStream()
+..signature:BedStream::BedStream(fileName, mode=READ)
 ..param.fileName:The path to the file to open.
 ...type:nolink:$char const *$
 ..param.mode:The open mode.
-...type:Enum.VcfStream\colon\colonMode
-...default:$VcfStream\colon\colonMode::READ$
-..see:Enum.VcfStream\colon\colonMode
+...type:Enum.BedStream\colon\colonMode
+...default:$BedStream\colon\colonMode::READ$
+..see:Enum.BedStream\colon\colonMode
 
-.Enum.VcfStream\colon\colonMode
-..cat:VCF I/O
-..summary:Open mode for the @Class.VcfStream@ class.
+.Memvar.BedStream#sequenceNames
+..class:Class.BedStream
+..summary:The names of the sequences (@Class.StringSet@ of @Shortcut.CharString@), updated when new sequences are seen in BED file.
+
+.Enum.BedStream\colon\colonMode
+..cat:BED I/O
+..summary:Open mode for the @Class.BedStream@ class.
 ..value.INVALID:Invalid open mode.
 ..value.READ:Open in read mode.
 ..value.WRITE:Open in write mode.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-class VcfStream
+class BedStream
 {
 public:
     typedef RecordReader<std::fstream, SinglePass<> > TReader_;
+    typedef seqan::StringSet<seqan::CharString> TNameStore;
+    typedef seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > TNameStoreCache;
+    typedef BedIOContext<TNameStore, TNameStoreCache> TBedIOContext;
 
     enum Mode
     {
@@ -96,18 +103,18 @@ public:
     Mode _mode;
     int _error;
     bool _isGood;
-    bool _headerWritten;
 
-    VcfHeader header;
-    VcfIOContext _context;
+    TNameStore sequenceNames;
+    TNameStoreCache _sequenceNamesCache;
+    TBedIOContext _context;
 
-    VcfStream() : _mode(INVALID), _error(0), _isGood(true), _headerWritten(false),
-                  _context(header.sequenceNames, header.sampleNames)
+    BedStream() : _mode(INVALID), _error(0), _isGood(true), _sequenceNamesCache(sequenceNames),
+                  _context(sequenceNames, _sequenceNamesCache)
     {}
 
-    VcfStream(char const * filename, Mode mode = READ) :
-            _filename(filename), _mode(mode), _error(0), _isGood(true), _headerWritten(false),
-            _context(header.sequenceNames, header.sampleNames)
+    BedStream(char const * filename, Mode mode = READ) :
+            _filename(filename), _mode(mode), _error(0), _isGood(true), _sequenceNamesCache(sequenceNames),
+            _context(sequenceNames, _sequenceNamesCache)
     {
         _open(filename, mode);
     }
@@ -119,7 +126,6 @@ public:
         _mode = mode;
         _error = 0;
         _isGood = true;
-        _headerWritten = false;
 
         if (mode == READ)
         {
@@ -131,13 +137,6 @@ public:
                 return false;
             }
             _reader.reset(new TReader_(*_stream));
-
-            int res = read(header, *_reader, _context, Vcf());
-            if (res != 0)
-            {
-                _error = res;
-                _isGood = false;
-            }
         }
         else if (mode == WRITE)
         {
@@ -167,25 +166,25 @@ public:
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#open
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Open a @Class.VcfStream@.
-..signature:bool open(vcfStream, fileName, mode)
-..param.vcfStream:The @Class.VcfStream@ to open.
-...type:Class.VcfStream
+.Function.BedStream#open
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Open a @Class.BedStream@.
+..signature:bool open(bedStream, fileName, mode)
+..param.bedStream:The @Class.BedStream@ to open.
+...type:Class.BedStream
 ..param.fileName:The path to the file to open.
 ...type:nolink:$char const *$
 ..param.mode:The open mode.
-...type:Enum.VcfStream\colon\colonMode
-...default:$VcfStream\colon\colonMode::READ$
+...type:Enum.BedStream\colon\colonMode
+...default:$BedStream\colon\colonMode::READ$
 ..returns:$true$ on success, $false$ on failure.
-..see:Function.VcfStream#isGood
-..see:Enum.VcfStream\colon\colonMode
-..include:seqan/vcf_io.h
+..see:Function.BedStream#isGood
+..see:Enum.BedStream\colon\colonMode
+..include:seqan/bed_io.h
 */
 
-inline bool open(VcfStream & stream, char const * filename, VcfStream::Mode mode = VcfStream::READ)
+inline bool open(BedStream & stream, char const * filename, BedStream::Mode mode = BedStream::READ)
 {
     return stream._open(filename, mode);
 }
@@ -195,23 +194,24 @@ inline bool open(VcfStream & stream, char const * filename, VcfStream::Mode mode
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#readRecord
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Read a record from a @Class.VcfStream@
-..signature:int readRecord(record, vcfStream)
-..param.record:The @Class.VcfRecord@ to read into.
-...type:Class.VcfRecord
-..param.vcfStream:The @Class.VcfStream@ to read from.
-...type:Class.VcfStream
+.Function.BedStream#readRecord
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Read a record from a @Class.BedStream@
+..signature:int readRecord(record, bedStream)
+..param.record:The @Class.BedRecord@ to read into.
+...type:Class.BedRecord
+..param.bedStream:The @Class.BedStream@ to read from.
+...type:Class.BedStream
 ..returns:$0$ on success, non-$0$ on failure.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-inline int readRecord(VcfRecord & record,
-                      VcfStream & stream)
+template <typename TSpec>
+inline int readRecord(BedRecord<TSpec> & record,
+                      BedStream & stream)
 {
-    int res = readRecord(record, *stream._reader, stream._context, Vcf());
+    int res = readRecord(record, *stream._reader, stream._context, Bed());
     if (res != 0)
         stream._isGood = false;
     return res;
@@ -222,31 +222,24 @@ inline int readRecord(VcfRecord & record,
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#writeRecord
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Write a record to a @Class.VcfStream@
-..signature:int writeRecord(vcfStream, record)
-..param.vcfStream:The @Class.VcfStream@ to write to.
-...type:Class.VcfStream
-..param.record:The @Class.VcfRecord@ to write.
-...type:Class.VcfRecord
+.Function.BedStream#writeRecord
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Write a record to a @Class.BedStream@
+..signature:int writeRecord(bedStream, record)
+..param.bedStream:The @Class.BedStream@ to write to.
+...type:Class.BedStream
+..param.record:The @Class.BedRecord@ to write.
+...type:Class.BedRecord
 ..returns:$0$ on success, non-$0$ on failure.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-inline int writeRecord(VcfStream & stream,
-                       VcfRecord const & record)
+template <typename TSpec>
+inline int writeRecord(BedStream & stream,
+                       BedRecord<TSpec> const & record)
 {
-    if (!stream._headerWritten)
-    {
-        int res = write(*stream._stream, stream.header, stream._context, Vcf());
-        if (res != 0)
-            stream._isGood = false;
-        stream._headerWritten = true;
-    }
-
-    int res = writeRecord(*stream._stream, record, stream._context, Vcf());
+    int res = writeRecord(*stream._stream, record, stream._context, Bed());
     if (res != 0)
         stream._isGood = false;
     return res;
@@ -257,18 +250,18 @@ inline int writeRecord(VcfStream & stream,
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#flush
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Flush to a @Class.VcfStream@
-..signature:int flush(vcfStream)
-..param.vcfStream:The @Class.VcfStream@ to flush.
-...type:Class.VcfStream
+.Function.BedStream#flush
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Flush to a @Class.BedStream@
+..signature:int flush(bedStream)
+..param.bedStream:The @Class.BedStream@ to flush.
+...type:Class.BedStream
 ..returns:$0$ on success, non-$0$ on failure.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-inline int flush(VcfStream & stream)
+inline int flush(BedStream & stream)
 {
     stream._stream->flush();
     return 0;
@@ -279,18 +272,18 @@ inline int flush(VcfStream & stream)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#close
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Closes a @Class.VcfStream@
-..signature:int close(vcfStream)
-..param.vcfStream:The @Class.VcfStream@ to close.
-...type:Class.VcfStream
+.Function.BedStream#close
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Closes a @Class.BedStream@
+..signature:int close(bedStream)
+..param.bedStream:The @Class.BedStream@ to close.
+...type:Class.BedStream
 ..returns:$0$ on success, non-$0$ on failure.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-inline int close(VcfStream & stream)
+inline int close(BedStream & stream)
 {
     stream._stream->close();
     return 0;
@@ -301,18 +294,18 @@ inline int close(VcfStream & stream)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#isGood
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Query a @Class.VcfStream@ for errors.
-..signature:bool isGood(vcfStream)
-..param.vcfStream:The @Class.VcfStream@ to query.
-...type:Class.VcfStream
+.Function.BedStream#isGood
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Query a @Class.BedStream@ for errors.
+..signature:bool isGood(bedStream)
+..param.bedStream:The @Class.BedStream@ to query.
+...type:Class.BedStream
 ..returns:$true$ if stream is good, $false$ otherwise.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-inline bool isGood(VcfStream const & stream)
+inline bool isGood(BedStream const & stream)
 {
     return stream._isGood;
 }
@@ -322,27 +315,27 @@ inline bool isGood(VcfStream const & stream)
 // ----------------------------------------------------------------------------
 
 /**
-.Function.VcfStream#atEnd
-..class:Class.VcfStream
-..cat:VCF I/O
-..summary:Query a @Class.VcfStream@ for being at the end of the file.
-..signature:bool atEnd(vcfStream)
-..param.vcfStream:The @Class.VcfStream@ to query.
-...type:Class.VcfStream
+.Function.BedStream#atEnd
+..class:Class.BedStream
+..cat:BED I/O
+..summary:Query a @Class.BedStream@ for being at the end of the file.
+..signature:bool atEnd(bedStream)
+..param.bedStream:The @Class.BedStream@ to query.
+...type:Class.BedStream
 ..returns:$true$ if stream is at the end, $false$ otherwise.
-..include:seqan/vcf_io.h
+..include:seqan/bed_io.h
 */
 
-inline bool atEnd(VcfStream const & stream)
+inline bool atEnd(BedStream const & stream)
 {
     return atEnd(*stream._reader);
 }
 
-inline bool atEnd(VcfStream & stream)
+inline bool atEnd(BedStream & stream)
 {
     return atEnd(*stream._reader);
 }
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_STREAM_H_
+#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_STREAM_H_
