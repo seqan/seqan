@@ -81,7 +81,7 @@ namespace seqan {
 class VcfStream
 {
 public:
-    typedef RecordReader<std::fstream, SinglePass<> > TReader_;
+    typedef RecordReader<std::istream, SinglePass<> > TReader_;
 
     enum Mode
     {
@@ -91,6 +91,8 @@ public:
     };
 
     std::auto_ptr<std::fstream> _stream;
+    std::ostream * _outStream;
+    std::istream * _inStream;
     CharString _filename;
     std::auto_ptr<TReader_> _reader;
     Mode _mode;
@@ -101,13 +103,13 @@ public:
     VcfHeader header;
     VcfIOContext _context;
 
-    VcfStream() : _mode(INVALID), _error(0), _isGood(true), _headerWritten(false),
+    VcfStream() : _outStream(), _inStream(), _mode(INVALID), _error(0), _isGood(true), _headerWritten(false),
                   _context(header.sequenceNames, header.sampleNames)
     {}
 
     VcfStream(char const * filename, Mode mode = READ) :
-            _filename(filename), _mode(mode), _error(0), _isGood(true), _headerWritten(false),
-            _context(header.sequenceNames, header.sampleNames)
+            _outStream(), _inStream(), _filename(filename), _mode(mode), _error(0), _isGood(true),
+            _headerWritten(false), _context(header.sequenceNames, header.sampleNames)
     {
         _open(filename, mode);
     }
@@ -123,14 +125,24 @@ public:
 
         if (mode == READ)
         {
-            _stream.reset(new std::fstream);
-            _stream->open(toCString(_filename), std::ios::binary | std::ios::in);
-            if (!_stream->good())
+            if (_filename == "-")
             {
-                _isGood = false;
-                return false;
+                _stream.reset();
+                _inStream = &std::cin;
             }
-            _reader.reset(new TReader_(*_stream));
+            else
+            {
+                _stream.reset(new std::fstream);
+                _stream->open(toCString(_filename), std::ios::binary | std::ios::in);
+                if (!_stream->good())
+                {
+                    _isGood = false;
+                    return false;
+                }
+                _inStream = _stream.get();
+            }
+            _reader.reset(new TReader_(*_inStream));
+            _outStream = 0;
 
             int res = read(header, *_reader, _context, Vcf());
             if (res != 0)
@@ -141,14 +153,24 @@ public:
         }
         else if (mode == WRITE)
         {
-            _stream.reset(new std::fstream);
-            _stream->open(toCString(_filename), std::ios::binary | std::ios::out);
-            if (!_stream->good())
+            if (_filename == "-")
             {
-                _isGood = false;
-                return false;
+                _stream.reset();
+                _outStream = &std::cout;
             }
-            _reader.reset();
+            else
+            {
+                _stream.reset(new std::fstream);
+                _stream->open(toCString(_filename), std::ios::binary | std::ios::out);
+                if (!_stream->good())
+                {
+                    _isGood = false;
+                    return false;
+                }
+                _reader.reset();
+                _outStream = _stream.get();
+            }
+            _inStream = 0;
         }
         return true;
     }
@@ -240,13 +262,13 @@ inline int writeRecord(VcfStream & stream,
 {
     if (!stream._headerWritten)
     {
-        int res = write(*stream._stream, stream.header, stream._context, Vcf());
+        int res = write(*stream._outStream, stream.header, stream._context, Vcf());
         if (res != 0)
             stream._isGood = false;
         stream._headerWritten = true;
     }
 
-    int res = writeRecord(*stream._stream, record, stream._context, Vcf());
+    int res = writeRecord(*stream._outStream, record, stream._context, Vcf());
     if (res != 0)
         stream._isGood = false;
     return res;
@@ -270,7 +292,8 @@ inline int writeRecord(VcfStream & stream,
 
 inline int flush(VcfStream & stream)
 {
-    stream._stream->flush();
+    if (stream._stream.get())
+        stream._stream->flush();
     return 0;
 }
 
@@ -292,7 +315,9 @@ inline int flush(VcfStream & stream)
 
 inline int close(VcfStream & stream)
 {
-    stream._stream->close();
+    // Close only when not stdout/stdin.
+    if (stream._stream.get())
+        stream._stream->close();
     return 0;
 }
 
