@@ -89,7 +89,7 @@
 ..cat:Searching
 ..summary:Approximate string matching.
 ..file:../core/demos/find_approx.cpp
-..output.code:
+..output.output:
 3: -1
 4: -1
 8: -1
@@ -124,7 +124,7 @@ banana matches with score -1
 ..summary:String matching using wildcards.
 ..file:../core/demos/find_wild.cpp
 ..output:
-...code:
+...output:
 22
 35
 49
@@ -141,7 +141,7 @@ banana matches with score -1
 ..summary:Modifier example for reverse strings.
 ..file:../core/demos/modifier_modreverse.cpp
 ..output:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make modifier_modreverse
 weese@tanne:~/seqan/demos$ ./modifier_modreverse
@@ -161,7 +161,7 @@ weese@tanne:~/seqan/demos$
 ..file:../core/demos/modifier_modview.cpp
 ..remarks:Take a look at the file seqan/modifier/modifier_functors.h to see what functors are already part of SeqAn.
 ..output:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make modifier_modview
 weese@tanne:~/seqan/demos$ ./modifier_modview
@@ -180,7 +180,7 @@ weese@tanne:~/seqan/demos$
 ..summary:How to combine modifiers.
 ..file:../core/demos/modifier_nested.cpp
 ..output:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make modifier_nested
 weese@tanne:~/seqan/demos$ ./modifier_nested
@@ -214,7 +214,7 @@ This is only an example for @Function.createSuffixArray@ and similar functions. 
 the more generic @Class.Finder@ class (see @Demo.Index Finder@ demo).
 ..file:../core/demos/index_sufarray.cpp
 ..output:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_sufarray
 weese@tanne:~/seqan/demos$ ./index_sufarray
@@ -229,7 +229,7 @@ weese@tanne:~/seqan/demos$
 ..description:This example shows how to use the @Class.Finder@ class for an @Class.Index@ search.
 ..file:../core/demos/index_find.cpp
 ..output:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_find
 weese@tanne:~/seqan/demos$ ./index_find
@@ -247,7 +247,7 @@ weese@tanne:~/seqan/demos$
 ..description:This example shows how to iterate over a suffix tree and print the number of children and the number of occurrences of the node representatitves.
 ..file:../core/demos/index_counting.cpp
 ..output:
-...code:
+...output:
 Representative  has 17 children  and 91 occurrences 
 Representative   has 5 children  and 16 occurrences 
 The node is a leaf 
@@ -365,7 +365,7 @@ The node is a leaf
 The @Class.Index@ was build for a given @Class.StringSet@.
 ..file:../core/demos/index_find_stringset.cpp
 ..output:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_find_stringset
 weese@tanne:~/seqan/demos$ ./index_find_stringset
@@ -388,7 +388,7 @@ example demonstrates how to iterate over all MUMs and output them.
 ..output
 ...text:The only maximal matches that occur in all 3 sequences are $"SeqAn"$ and $"sequence"$.
 They occur exactly once and thus are maximal unique matches.
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_mums
 weese@tanne:~/seqan/demos$ ./index_mums
@@ -417,7 +417,7 @@ example demonstrates how to iterate over all supermaximal repeats and output the
 ...text:The only supermaximal repeats of $"How many wood would a woodchuck chuck."$ of length at least 3
 are $" wood"$ and $"chuck"$. There are repeats of $" wo"$ which are maximal (see @Demo.Maximal Repeats@),
  ut not supermaximal, as $" wo"$ is part of the longer repeat $" wood"$.
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_supermaxrepeats
 weese@tanne:~/seqan/demos$ ./index_supermaxrepeats
@@ -446,7 +446,7 @@ $" wood"$ and $"chuck"$ are outputted. In $"How many wood would a woodchuck chuc
 $" wo"$ is a repeat of length 3 that occurs at two pairs
 of positions which are maximal repeats ($" a wood", "od woul"$ and $"ny wood", "od woul"$).
 Beside these there are no other maximal repeats of length at least 3.
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_maxrepeats
 weese@tanne:~/seqan/demos$ ./index_maxrepeats
@@ -477,7 +477,7 @@ piped the output to $sort$.
 @ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Chlamydia_trachomatis/NC_000117.fna|NC_000117.fna@,
 @ftp://ftp.ncbi.nih.gov/genomes/Bacteria/Chlamydia_trachomatis_A_HAR-13/NC_007429.fna|NC_007429.fna@) and
 saved the Fasta files to the demos directory.
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_mummy
 weese@tanne:~/seqan/demos$ ./index_mummy -h
@@ -530,7 +530,7 @@ The following example demonstrates how to iterate over all suffix tree nodes ful
 ..file:../core/demos/index_node_predicate.cpp
 ..output
 ...text:
-...code:
+...output:
 weese@tanne:~/seqan$ cd demos
 weese@tanne:~/seqan/demos$ make index_node_predicate
 weese@tanne:~/seqan/demos$ ./index_node_predicate
@@ -738,7 +738,7 @@ weese@tanne:~/seqan/demos$
 ..summary:Examples for how to start a motif search using SeqAn's Motif Finder.
 ..file:../extras/demos/find_motif.cpp
 ..output
-...code:
+...output:
 [0]: AGCC
 
 [0]: AGCC
