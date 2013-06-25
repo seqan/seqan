@@ -67,29 +67,19 @@ namespace seqan {
 ..cat:BAM I/O
 ..summary:Class that provides an easy to use interface for reading and writing SAM and BAM files.
 ..signature:BamStream
-..example.text:Stream through a SAM or BAM file.
-..example.code:
-seqan::BamStream bamIO("input.sam");
-
-// Access the header through `header(bamIO)`;
-
-seqan::BamAlignmentRecord record;
-while (!atEnd(bamIO))
-{
-    readRecord(record, bamIO);
-    // Process record...
-}
-..example.text:Write out a string of SAM or BAM files.
-..example.code:
-seqan::BamStream("output.sam", seqan::BamStream::WRITE);
-
-seqan::String<seqan::BamAlignmentRecord> records;
-// Fill records string here.
-
-// Set header through `header(bamIO)`.
-
-for (unsigned i = 0; i < length(record); ++i)
-    writeRecord(bamIO, records[i]);
+..example:Read and write SAM or BAM files.
+..example.file:demos/bam_io/bam_stream.cpp
+..example.text:The output is as follows:
+..example.output:
+@HD VN:1.3  SO:coordinate
+@SQ SN:ref  LN:45
+@SQ SN:ref2 LN:40
+r001    163 ref 7   30  8M4I4M1D3M  =   37  39  TTAGATAAAGAGGATACTG *   XX:B:S,12561,2,20,112
+r002    0   ref 9   30  1S2I6M1P1I1P1I4M2I  *   0   0   AAAAGATAAGGGATAAA   *
+r003    0   ref 9   30  5H6M    *   0   0   AGCTAA  *
+r004    0   ref 16  30  6M14N1I5M   *   0   0   ATAGCTCTCAGC    *
+r003    16  ref 29  30  6H5M    *   0   0   TAGGC   *
+r001    83  ref 37  30  9M  =   7   -39 CAGCGCCAT   *
 ..include:seqan/bam_io.h
 
 .Memfunc.BamStream#BamStream:
