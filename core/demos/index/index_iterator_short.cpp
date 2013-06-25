@@ -5,18 +5,19 @@ using namespace seqan;
 
 int main ()
 {
-    String<char> myString = "abracadabra";
+    String<char> myString = "tobeornottobe";
 
-    typedef Index< String<char> > TMyIndex;
-    TMyIndex myIndex(myString);
+    typedef Index< String<char> > TIndex;
+    TIndex index(myString);
 
 //![iteration]
-    Iterator< TMyIndex, TopDown< ParentLinks<Preorder> > >::Type myIterator(myIndex);
+    Iterator< TIndex, TopDown< ParentLinks<Postorder> > >::Type it(index);
 
-    while (!atEnd(myIterator))
+    goBegin(it);
+    while (!atEnd(it))
     {
-        std::cout << representative(myIterator) << std::endl;
-        ++myIterator;
+        std::cout << representative(it) << std::endl;
+        ++it;
     }
 //![iteration]
 
