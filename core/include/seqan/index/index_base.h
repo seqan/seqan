@@ -265,25 +265,33 @@ pattern "to" with the means of a Finder.
 ...file:demos/index/index_finder.cpp
 ...output:Hit at position: 9
 Hit at position: 0
-...text:This code shows how an index can be used with iterators to achieve a tree like traversal in DFS of the text
-"tobeornottobe". In order to do so a Top-Down History iterator is used.
+...text:This code shows how an index can be used with iterators to achieve a pre- and post-order tree like traversal
+in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used. Note 
 ...file:demos/index/index_iterator.cpp
 ...output:
-be
-beornottobe
-e
-eornottobe
-nottobe
-o
-obe
-obeornottobe
-ornottobe
-ottobe
-rnottobe
-t
-tobe
-tobeornottobe
+DFS pre-order traversal    DFS post-order traversal
+                           beornottobe
+be                         be
+beornottobe                eornottobe
+e                          e
+eornottobe                 nottobe
+nottobe                    obeornottobe
+o                          obe
+obe                        ornottobe
+obeornottobe               ottobe
+ornottobe                  o
+ottobe                     rnottobe
+rnottobe                   tobeornottobe
+t                          tobe
+tobe                       ttobe
+tobeornottobe              t
 ttobe
+...text:Note that you can achieve this behaviour also with specialized iterators. If you use
+...code:Iterator<TIndex, TopDown<ParentLinks<PreOrder> > >::Type 
+...text:or
+...code:Iterator<TIndex, TopDown<ParentLinks<PostOrder> > >::Type
+...text:you can rewrite the code from above like this:
+...snippet:demos/index/index_iterator_short.cpp|iteration
 */
 
 ///.Function.setHaystack.param.haystack.type:Class.Index
