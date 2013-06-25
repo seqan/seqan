@@ -119,8 +119,8 @@ enum ExtensionDirection
 .Function.extendSeed
 ..summary:Extends a seed.
 ..cat:Seed Handling
-..signature:extendSeed(seed, database, query, direction, MatchExtend)
-..signature:extendSeed(seed, database, query, direction, scoreMatrix, scoreDropOff, {UngappedXDrop, GappedXDrop})
+..signature:void extendSeed(seed, database, query, direction, MatchExtend);
+..signature:void extendSeed(seed, database, query, direction, scoreMatrix, scoreDropOff, {UngappedXDrop, GappedXDrop});
 ..class:Class.Seed
 ..param.seed: The seed to extend.
 ...type:Class.Seed
@@ -136,6 +136,7 @@ enum ExtensionDirection
 ...type:Spec.Simple Score
 ...remarks:Only used for the algorithms @Tag.Seed Extension.UngappedXDrop@ and @Tag.Seed Extension.GappedXDrop@
 ..remarks:You can use the tags, @Tag.Seed Extension.MatchExtend@, @Tag.Seed Extension.UngappedXDrop@, and @Tag.Seed Extension.GappedXDrop@.
+..example.text:The documentation of the class @Class.Seed@ contains an example for seed extension.
 ..include:seqan/seeds.h
 */
 
