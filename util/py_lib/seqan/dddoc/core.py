@@ -103,6 +103,7 @@ TEXT_CONTAINER_PATHS = [
     'Demo.*.summary',
     'Demo.*.description',
     'Demo.*.remarks',
+    'Demo.*.output',
     'Adaption.*.example',
     'Adaption.*.summary',
     'Adaption.*.description',
