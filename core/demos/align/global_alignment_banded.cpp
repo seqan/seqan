@@ -5,18 +5,20 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>  // for printint strings
 
+using namespace seqan;
+
 int main()
 {
-    seqan::Dna5String seqH = "CGATT";
-    seqan::Dna5String seqV = "CGAAATT";
+    Dna5String seqH = "CGATT";
+    Dna5String seqV = "CGAAATT";
 
-    seqan::Align<seqan::Dna5String> align;
+    Align<Dna5String> align;
     resize(rows(align), 2);
     assignSource(row(align, 0), seqH);
     assignSource(row(align, 1), seqV);
 
-    seqan::Score<int, seqan::Simple> scoringScheme(2, -1, -2);
-    seqan::AlignConfig<> alignConfig;
+    Score<int, Simple> scoringScheme(2, -1, -2);
+    AlignConfig<> alignConfig;
 
     int lDiag = -2;
     int uDiag = 2;
