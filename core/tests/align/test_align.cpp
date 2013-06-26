@@ -60,8 +60,25 @@
 
 #include "test_align_alignment_operations.h"
 
+
+SEQAN_DEFINE_TEST(test)
+{
+    using namespace seqan;
+    DnaString seqH = "TTTTAGCTTGCCTACCCCGTGAGTTCTGCACTCCAACGGCTATCGTAGTAAGGGGCTAAGATCCCGACTAGGAGGTGAAACACCGATGGATAGGTTACCAAAGTGATTTCACTCTATCCTCCCGTTCTTCATTCCCCAGGCAGTGACCTAAGACATCACCCAGTGGTGGCATTCCTGGAGAG";
+    DnaString seqV = "TTTTAGCTTGCCTACCCCGTGAGTTCTGCACTCCAACGGCTATCGTAGTAAGGGGCTCAGATCCCGACTAGGAGGTGAACACCGATGGATAGGTTACCAAAGGATTTCACGCTATCTTCCCGTTCTTCAATCCCCAGGCAGTGACCTAAGACATCTACCCAGGTGGTGGCATTCCTGGAGG";
+
+    Gaps<DnaString> gapsH(seqH);
+    Gaps<DnaString> gapsV(seqV);
+
+    globalAlignment(gapsH, gapsV, Score<int, EditDistance>(), AlignConfig<true, false, false, true>(), Gotoh());
+    std::cout << gapsH << std::endl;
+
+    std::cout << "\n" << gapsV << std::endl;
+}
+
 SEQAN_BEGIN_TESTSUITE(test_align)
 {
+//    SEQAN_CALL_TEST(test);
     // -----------------------------------------------------------------------
     // Test Gaps Data Structures.
     // -----------------------------------------------------------------------

@@ -200,7 +200,7 @@ template <typename TAlignConfig, typename TGapCosts, typename TGapsPlacement>
 struct SetupBandedChainAlignmentProfile_
 {
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
-    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps_, BandedChainInnerDPMatrix>, TGapCosts, TracebackOn<TGapsPlacement> > Type;
+    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps_, BandedChainInnerDPMatrix>, TGapCosts, TracebackOn<TracebackConfig_<CompleteTrace,TGapsPlacement> > > Type;
 };
 
 

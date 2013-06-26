@@ -106,17 +106,18 @@ public:
     typedef String<unsigned int> TMaxHostPositionString;
     typedef typename Value<TDPCell>::Type TScoreValue;
 
-    TScoreValue _maxScore;      // the maximal score detected
+//    TScoreValue _maxScore;      // the maximal score detected
+    TDPCell _maxScore;
     TScoutState * _dpScoutStatePtr;
     TMaxHostPositionString _maxHostPositions;    // the array containing all positions that have a maximal score
 
-    DPScout_() : _maxScore(MinValue<TScoreValue>::VALUE),
+    DPScout_() : _maxScore(),
                 _dpScoutStatePtr(0),
                 _maxHostPositions()
     {}
 
     DPScout_(TScoutState & scoutState) :
-                _maxScore(MinValue<TScoreValue>::VALUE),
+                _maxScore(),
                 _dpScoutStatePtr(&scoutState),
                 _maxHostPositions()
     {}
@@ -160,7 +161,7 @@ _reinitScout(DPScout_<TDPCell, BandedChainAlignmentScout> & dpScout)
 {
     typedef typename Value<TDPCell>::Type TScoreValue;
 
-    dpScout._maxScore = MinValue<TScoreValue>::VALUE;
+    dpScout._maxScore = TDPCell();
     resize(dpScout._maxHostPositions, 1, 0);
 }
 
@@ -255,15 +256,15 @@ _scoutBestScore(DPScout_<TDPCell, BandedChainAlignmentScout> & dpScout,
     // Now we have to track the optimal score from the last column or row.
     if (isLastColumn || isLastRow)
     {
-        if (_scoreOfCell(dpCell) >= maxScore(dpScout))
+        if (_scoreOfCell(dpCell) >= _scoreOfCell(dpScout._maxScore))
         {
-            if (_scoreOfCell(dpCell) == maxScore(dpScout))
+            if (_scoreOfCell(dpCell) == _scoreOfCell(dpScout._maxScore))
                 appendValue(dpScout._maxHostPositions, position(navigator));
             else
             {
                 resize(dpScout._maxHostPositions, 1);
                 dpScout._maxHostPositions[0] = position(navigator);
-                maxScore(dpScout) = _scoreOfCell(dpCell);
+                dpScout._maxScore = dpCell;
             }
         }
     }
@@ -290,14 +291,14 @@ template <typename TDPCell>
 inline typename Value<TDPCell>::Type &
 maxScore(DPScout_<TDPCell, BandedChainAlignmentScout> & scout)
 {
-	return scout._maxScore;
+	return _scoreOfCell(scout._maxScore);
 }
 
 template <typename TDPCell>
 inline typename Value<TDPCell>::Type const &
 maxScore(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
 {
-	return scout._maxScore;
+	return _scoreOfCell(scout._maxScore);
 }
 
 // ----------------------------------------------------------------------------

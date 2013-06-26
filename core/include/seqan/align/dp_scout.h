@@ -77,13 +77,14 @@ class DPScout_<TDPCell, Default>
 {
 public:
     typedef typename Value<TDPCell>::Type TScoreValue;
-    TScoreValue _maxScore;          // The maximal score.
+//    TScoreValue _maxScore;          // The maximal score.
+    TDPCell _maxScore;
     unsigned int _maxHostPosition;  // The corresponding host position within the underlying dp-matrix.
 
-    DPScout_() : _maxScore(MinValue<TScoreValue>::VALUE), _maxHostPosition(0) {}
+    DPScout_() : _maxScore(), _maxHostPosition(0) {}
 
     DPScout_(DPScoutState_<Default> const & /*state*/) :
-        _maxScore(MinValue<TScoreValue>::VALUE), _maxHostPosition(0) {}
+        _maxScore(), _maxHostPosition(0) {}
 
     DPScout_(DPScout_ const & other) :
         _maxScore(other._maxScore), _maxHostPosition(other._maxHostPosition) {}
@@ -149,9 +150,9 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
     (void)isLastColumn;
     (void)isLastRow;
 
-    if (_scoreOfCell(activeCell) > dpScout._maxScore)
+    if (_scoreOfCell(activeCell) > _scoreOfCell(dpScout._maxScore))
     {
-        dpScout._maxScore = _scoreOfCell(activeCell);
+        dpScout._maxScore = activeCell;
         dpScout._maxHostPosition = position(navigator);
     }
 }
@@ -165,7 +166,7 @@ template <typename TDPCell, typename TScoutSpec>
 inline typename Value<TDPCell>::Type const
 maxScore(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 {
-    return dpScout._maxScore;
+    return _scoreOfCell(dpScout._maxScore);
 }
 
 // ----------------------------------------------------------------------------

@@ -42,12 +42,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -59,22 +59,22 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
 
     value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
     value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
     value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
     value(traceMatrix, 2, 1) = +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::DIAGONAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_::VERTICAL_OPEN;
-    value(traceMatrix, 3, 1) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
-    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 1, 2) = +TraceBitMap_::DIAGONAL;
     value(traceMatrix, 2, 2) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::DIAGONAL;
-    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
-    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 1, 3) = +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
-    value(traceMatrix, 2, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 3) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 3, 3) = +TraceBitMap_::DIAGONAL;
 
     TDPTraceNavigator navigator;
@@ -142,12 +142,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -164,12 +164,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
 
     value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL;
     value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
-    value(traceMatrix, 2, 1) = +TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 3, 1) = +TraceBitMap_::NONE;
 
     value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
     value(traceMatrix, 1, 2) = +TraceBitMap_::NONE;
-    value(traceMatrix, 2, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 2) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 3, 2) = +TraceBitMap_::NONE;
 
     value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL;
@@ -197,12 +197,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -218,14 +218,14 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
 
     value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL;
     value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
-    value(traceMatrix, 2, 1) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 2, 1) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
     value(traceMatrix, 0, 2) = +TraceBitMap_::NONE;
-    value(traceMatrix, 1, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 2) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 2, 2) = +TraceBitMap_::NONE;
 
-    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL;
-    value(traceMatrix, 1, 3) = +TraceBitMap_::VERTICAL | +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 0, 3) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    value(traceMatrix, 1, 3) = +TraceBitMap_::VERTICAL | +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
     value(traceMatrix, 2, 3) = +TraceBitMap_::NONE;
 
     value(traceMatrix, 0, 4) = +TraceBitMap_::NONE;
@@ -254,12 +254,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -272,23 +272,23 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
     value(traceMatrix, 1, 0) = +TraceBitMap_::NONE;
     value(traceMatrix, 2, 0) = +TraceBitMap_::NONE;
-    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 4, 0) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 5, 0) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 6, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 4, 0) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 5, 0) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 6, 0) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
     value(traceMatrix, 0, 1) = +TraceBitMap_::NONE;
-    value(traceMatrix, 1, 1) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 1, 1) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 2, 1) = +TraceBitMap_::DIAGONAL;
-    value(traceMatrix, 3, 1) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 4, 1) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 4, 1) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
     value(traceMatrix, 5, 1) = +TraceBitMap_::NONE;
     value(traceMatrix, 6, 1) = +TraceBitMap_::NONE;
 
-    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 1, 2) = +TraceBitMap_::NONE;
     value(traceMatrix, 2, 2) = +TraceBitMap_::NONE;
-    value(traceMatrix, 3, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 4, 2) = +TraceBitMap_::NONE;
     value(traceMatrix, 5, 2) = +TraceBitMap_::NONE;
     value(traceMatrix, 6, 2) = +TraceBitMap_::NONE;
@@ -296,7 +296,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     value(traceMatrix, 0, 3) = +TraceBitMap_::NONE;
     value(traceMatrix, 1, 3) = +TraceBitMap_::NONE;
     value(traceMatrix, 2, 3) = +TraceBitMap_::NONE;
-    value(traceMatrix, 3, 3) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 3) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 4, 3) = +TraceBitMap_::NONE;
     value(traceMatrix, 5, 3) = +TraceBitMap_::NONE;
     value(traceMatrix, 6, 3) = +TraceBitMap_::NONE;
@@ -304,24 +304,24 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     value(traceMatrix, 0, 4) = +TraceBitMap_::NONE;
     value(traceMatrix, 1, 4) = +TraceBitMap_::NONE;
     value(traceMatrix, 2, 4) = +TraceBitMap_::NONE;
-    value(traceMatrix, 3, 4) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 4) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 4, 4) = +TraceBitMap_::NONE;
     value(traceMatrix, 5, 4) = +TraceBitMap_::NONE;
     value(traceMatrix, 6, 4) = +TraceBitMap_::NONE;
 
     value(traceMatrix, 0, 5) = +TraceBitMap_::NONE;
     value(traceMatrix, 1, 5) = +TraceBitMap_::NONE;
-    value(traceMatrix, 2, 5) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 2, 5) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 3, 5) = +TraceBitMap_::NONE;
     value(traceMatrix, 4, 5) = +TraceBitMap_::NONE;
     value(traceMatrix, 5, 5) = +TraceBitMap_::NONE;
     value(traceMatrix, 6, 5) = +TraceBitMap_::NONE;
 
     value(traceMatrix, 0, 6) = +TraceBitMap_::NONE;
-    value(traceMatrix, 1, 6) = +TraceBitMap_::HORIZONTAL;
-    value(traceMatrix, 2, 6) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 3, 6) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 4, 6) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 1, 6) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    value(traceMatrix, 2, 6) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 3, 6) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 4, 6) = +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
     value(traceMatrix, 5, 6) = +TraceBitMap_::NONE;
     value(traceMatrix, 6, 6) = +TraceBitMap_::NONE;
 
@@ -345,12 +345,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -385,12 +385,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_linear_gaps)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -434,12 +434,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsRight> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsRight> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -451,18 +451,18 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
 
     value(traceMatrix, 0, 0) = +TraceBitMap_::NONE;
     value(traceMatrix, 1, 0) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
-    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL;
-    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL;
+    value(traceMatrix, 2, 0) = +TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    value(traceMatrix, 3, 0) = +TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
     value(traceMatrix, 0, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 1, 1) = +TraceBitMap_::DIAGONAL;
     value(traceMatrix, 2, 1) = +TraceBitMap_::DIAGONAL;
-    value(traceMatrix, 3, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 3, 1) = +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
 
-    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL;
+    value(traceMatrix, 0, 2) = +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 1, 2) = +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
     value(traceMatrix, 2, 2) = +TraceBitMap_::DIAGONAL;
-    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL | +TraceBitMap_::DIAGONAL;
+    value(traceMatrix, 3, 2) = +TraceBitMap_::VERTICAL | +TraceBitMap_::DIAGONAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
 
 
     TDPTraceNavigator navigator;
@@ -483,12 +483,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsLeft> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsLeft> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -585,12 +585,12 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<GapsRight> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
     typedef typename TraceBitMap_::TTraceValue TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<GapsRight> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > >, NavigateColumnWise> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;

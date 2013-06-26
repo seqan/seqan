@@ -214,7 +214,7 @@ struct SetupAlignmentProfile_<SmithWaterman, TAlignConfig, TGapCosts, TTraceSwit
 template <typename TAlignConfig, typename TGapCosts, typename TTraceSwitch>
 struct SetupAlignmentProfile_<WatermanEggert, TAlignConfig, TGapCosts, TTraceSwitch>
 {
-    typedef DPProfile_<LocalAlignment_<SuboptimalAlignment>, TGapCosts, TracebackOn<GapsLeft> > Type;
+    typedef DPProfile_<LocalAlignment_<SuboptimalAlignment>, TGapCosts, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > Type;
 };
 
 
@@ -287,7 +287,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       TAlgoTag const & algoTag)
 {
-    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TTraceSegment, typename TSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue,
@@ -300,7 +300,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const & algoTag)
 {
     DPScoutState_<Default> noState;
-    return _setUpAndRunAlignment(traceSegments, noState, seqH, seqV, scoringScheme, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(traceSegments, noState, seqH, seqV, scoringScheme, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // Interface with AlignConfig.
@@ -356,7 +356,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const & algoTag)
 {
     return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig, algoTag,
-                                 GapsLeft());
+                                 TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TTraceSegment, typename TSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue,
@@ -387,7 +387,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const & algoTag)
 {
     DPScoutState_<Default> noState;
-    return _setUpAndRunAlignment(traceSegments, noState, seqH, seqV, scoringScheme, alignConfig, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(traceSegments, noState, seqH, seqV, scoringScheme, alignConfig, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // Interface without AlignConfig and with traceback disabled.
@@ -439,7 +439,7 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       TAlgoTag const & algoTag)
 {
-    return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
@@ -465,7 +465,7 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
     DPScoutState_<Default> noState;
-    return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, GapsLeft());
+    return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // Interface with AlignConfig and with traceback disabled.
@@ -523,7 +523,7 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
                       TAlgoTag const &)
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
-    return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, alignConfig, GapsLeft());
+    return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, alignConfig, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
@@ -552,7 +552,7 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
 {
     DPScoutState_<Default> noState;
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
-    return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, alignConfig, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, alignConfig, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // ----------------------------------------------------------------------------
@@ -588,12 +588,12 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
         scoreGapExtendVertical(scoringScheme, seqHEntry, seqVEntry) !=
         scoreGapOpenVertical(scoringScheme, seqHEntry, seqVEntry))
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, AffineGaps, TracebackOn<TGapsTag> >::Type TDPProfile;
         return _computeAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
     else
     {
-        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn<GapsLeft> >::Type TDPProfile;
+        typedef typename SetupAlignmentProfile_<TAlgoTag, AlignConfig<>, LinearGaps, TracebackOn<TGapsTag> >::Type TDPProfile;
         return _computeAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, DPBand_<BandOn>(lowerDiagonal, upperDiagonal), TDPProfile());
     }
 }
@@ -612,7 +612,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
     return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal,
-                                 algoTag, GapsLeft());
+                                 algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TTraceSegment, typename TSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue,
@@ -643,7 +643,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const & algoTag)
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
-    return _setUpAndRunAlignment(traceSegments, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(traceSegments, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // Interface with AlignConfig.
@@ -700,7 +700,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const & algoTag)
 {
     return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig,
-                                 lowerDiagonal, upperDiagonal, algoTag, GapsLeft());
+                                 lowerDiagonal, upperDiagonal, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 
@@ -735,7 +735,7 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
                       TAlgoTag const & algoTag)
 {
     return _setUpAndRunAlignment(traceSegments, seqH, seqV, scoringScheme, alignConfig, lowerDiagonal, upperDiagonal,
-                                 algoTag, GapsLeft());
+                                 algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // Interface without AlignConfig and with traceback disabled.
@@ -793,7 +793,7 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
     return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal, algoTag,
-                                 GapsLeft());
+                                 TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
@@ -807,7 +807,7 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
                       TAlgoTag const & algoTag)
 {
     DPScoutState_<Default> noState;
-    return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, lowerDiagonal, upperDiagonal, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 // Interface with AlignConfig and with traceback disabled.
@@ -870,7 +870,7 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
     return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, alignConfig, lowerDiagonal, upperDiagonal,
-                                 algoTag, GapsLeft());
+                                 algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
@@ -903,7 +903,7 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
                       TAlgoTag const & algoTag)
 {
     // Note that GapsLeft could be nothing, is unused in callee without traceback.
-    return _setUpAndRunAlignment(seqH, seqV, scoringScheme, alignConfig, lowerDiagonal, upperDiagonal, algoTag, GapsLeft());
+    return _setUpAndRunAlignment(seqH, seqV, scoringScheme, alignConfig, lowerDiagonal, upperDiagonal, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
 }  // namespace seqan

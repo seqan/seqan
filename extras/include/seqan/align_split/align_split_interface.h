@@ -311,10 +311,10 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     String<TTraceSegment> traceL;
     if (!banded)
         _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
-                              alignConfig, SplitAlignmentAlgo(), GapsLeft());
+                              alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsLeft>());
     else
         _setUpAndRunAlignment(traceL, scoutStateL, source(gapsContigL), source(gapsReadL), scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), GapsLeft());
+                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsLeft>());
     _adaptTraceSegmentsTo(gapsContigL, gapsReadL, traceL);
 
     // Get reversed versions of the right contig and read sequence.
@@ -334,10 +334,10 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     String<TTraceSegment> traceR;
     if (!banded)
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, SplitAlignmentAlgo(), GapsRight());
+                              alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsRight>());
     else
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), GapsRight());
+                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsRight>());
     // Reverse trace so it fits to the forward right sequences.  Also reverse the trace such that we can directly apply
     // it for the right alignment.
     _reverseTrace(traceR);

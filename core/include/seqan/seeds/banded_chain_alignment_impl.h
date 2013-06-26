@@ -392,7 +392,7 @@ _applyBandedChainTracking(TDPScout & scout,
 // Overload of _computeCell function to add functionality specific to the bande chain alignment.
 template <typename TDPScout, typename TTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
           typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TColumnDescriptor,
-          typename TCellDescriptor, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapsPlacement>
+          typename TCellDescriptor, typename TFreeEndGaps, typename TDPMatrixLocation, typename TTracebackConfig>
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
@@ -405,9 +405,9 @@ _computeCell(TDPScout & scout,
              TScoringScheme const & scoringScheme,
              TColumnDescriptor const &,
              TCellDescriptor const &,
-             DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > const &)
+             DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
     assignValue(
@@ -425,7 +425,7 @@ _computeCell(TDPScout & scout,
 
 template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
           typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TColumnType, typename TCellDescriptor,
-          typename TSpec, typename TDPMatrixLocation, typename TGapsPlacement>
+          typename TSpec, typename TDPMatrixLocation, typename TTracebackConfig>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
@@ -438,9 +438,9 @@ _computeCell(TDPScout & scout,
              TScoringScheme const & /*scoringScheme*/,
              MetaColumnDescriptor<DPInitialColumn, TColumnType> const & /*metaColumnDescriptor*/,
              TCellDescriptor const & /*cellDescriptor*/,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > const & /*dpProfile*/)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const & /*dpProfile*/)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
     typedef MetaColumnDescriptor<DPInitialColumn, TColumnType> TColumnDescriptor;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
@@ -479,7 +479,7 @@ _computeHorizontalInitCell(TDPScout & scout,
 // For DPInnerColumn.
 template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
           typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TGapsPlacement>
+          typename TTracebackConfig>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
@@ -492,9 +492,9 @@ _computeCell(TDPScout & scout,
              TScoringScheme const &,
              MetaColumnDescriptor<DPInnerColumn, PartialColumnTop> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
     _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
                                MetaColumnDescriptor<DPInnerColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
 }
@@ -502,7 +502,7 @@ _computeCell(TDPScout & scout,
 // For DPFinalColumn.
 template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
           typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TGapsPlacement>
+          typename TTracebackConfig>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
@@ -515,9 +515,9 @@ _computeCell(TDPScout & scout,
              TScoringScheme const &,
              MetaColumnDescriptor<DPFinalColumn, PartialColumnTop> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
     _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
                                MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
 }
@@ -529,7 +529,7 @@ _computeCell(TDPScout & scout,
 // For DPInnerColumn.
 template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
           typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TGapsPlacement>
+          typename TTracebackConfig>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
@@ -542,9 +542,9 @@ _computeCell(TDPScout & scout,
              TScoringScheme const &,
              MetaColumnDescriptor<DPInnerColumn, FullColumn> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
     _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
                                MetaColumnDescriptor<DPInnerColumn, FullColumn>(), FirstCell(), TDPProfile());
 }
@@ -552,7 +552,7 @@ _computeCell(TDPScout & scout,
 // For DPFinalColumn.
 template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
           typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TGapsPlacement>
+          typename TTracebackConfig>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
@@ -565,9 +565,9 @@ _computeCell(TDPScout & scout,
              TScoringScheme const &,
              MetaColumnDescriptor<DPFinalColumn, FullColumn> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TGapsPlacement> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
     _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
                                MetaColumnDescriptor<DPFinalColumn, FullColumn>(), FirstCell(), TDPProfile());
 }
@@ -717,7 +717,7 @@ _initiaizeBeginningOfBandedChain(TScoutState & scoutState,
 // first gap-area followed by the first anchor.
 template <typename TTraceSet, typename TScoutState, typename TSeed, typename TSeqH, typename TSeqV,
           typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps,
-          typename TGapsPlacement>
+          typename TTracebackConfig>
 inline typename Value<TScoreScheme>::Type
 _initializeBandedChain(TTraceSet & globalTraceSet,
                        TScoutState & scoutState,
@@ -727,7 +727,7 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
                        TSeqV const & seqV,
                        TScoreScheme const & scoreSchemeAnchor,
                        TScoreScheme const & scoreSchemeGap,
-                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TGapsPlacement> > const & dpProfile)
+                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackConfig> > const & dpProfile)
 {
     typedef typename Infix<TSeqH const>::Type TInfixH;
     typedef typename Infix<TSeqV const>::Type TInfixV;
@@ -784,7 +784,7 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
         // Call the basic alignment function.
         score = _computeAlignment(globalTraceSet, scoutState, infixH, infixV, scoreSchemeGap, DPBand_<BandOff>(),
                                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainInitialDPMatrix>, TGaps,
-                                             TracebackOn<TGapsPlacement> >());
+                                             TracebackOn<TTracebackConfig> >());
     }
     else
     {
@@ -837,17 +837,17 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
         {
             resize(localTraceSet, 1);
             score = _computeAlignment(localTraceSet[0], infixH, infixV, scoreSchemeGap, band,
-                      DPProfile_<GlobalAlignment_<TFreeEndGaps>, TGaps, TracebackOn<TGapsPlacement> >());
+                      DPProfile_<GlobalAlignment_<TFreeEndGaps>, TGaps, TracebackOn<TTracebackConfig> >());
         }
         else
             score = _computeAlignment(localTraceSet, scoutState, infixH, infixV, scoreSchemeGap, band,
-                      DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainInitialDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
+                      DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainInitialDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
     }
     else
     {
         if (gridEnd.i1 == length(seqH) && gridEnd.i2 == length(seqV))  // The anchor crosses the end of the matrix.
             score = _computeAlignment(localTraceSet, scoutState, infixH, infixV, scoreSchemeGap, band,
-                              DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
+                              DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
         else
             score = _computeAlignment(localTraceSet, scoutState, infixH, infixV, scoreSchemeGap, band, dpProfile);
     }
@@ -1006,7 +1006,7 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
 // ----------------------------------------------------------------------------
 
 template <typename TTraceSet, typename TDPScoutState, typename TSeed, typename TSeqH, typename TSeqV,
-          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TGapsPlacement>
+          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackConfig>
 inline typename Value<TScoreScheme>::Type
 _finishBandedChain(TTraceSet & globalTraceSet,
                    TDPScoutState & dpScoutState,
@@ -1016,7 +1016,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
                    TSeqV const & seqV,
                    TScoreScheme const & scoreSchemeAnchor,
                    TScoreScheme const & scoreSchemeGap,
-                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TGapsPlacement> > const & dpProfile)
+                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackConfig> > const & dpProfile)
 {
     //typedef typename Position<TSeqH const>::Type TPosH;
     //typedef typename Position<TSeqV const>::Type TPosV;
@@ -1086,7 +1086,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
             // TODO(rmaerker): Should we not set the nextGridOrigin to 0 as it is the case for the last rectangle? We want to compute the last full path.
             // Compute the last anchor which crosses the end of the global grid.
         TScoreValue score = _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band,
-                                  DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
+                                  DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
 
         _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
         if (!empty(localTraceSet))
@@ -1137,7 +1137,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     clear(localTraceSet);
     score = _computeAlignment(localTraceSet, dpScoutState, suffix(seqH, gridBegin.i1), suffix(seqV,gridBegin.i2),
                               scoreSchemeGap, DPBand_<BandOff>(), DPProfile_<BandedChainAlignment_<TFreeEndGaps,
-                              BandedChainFinalDPMatrix>, TGaps, TracebackOn<TGapsPlacement> >());
+                              BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
 
     _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
     if (!empty(localTraceSet))
@@ -1154,7 +1154,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
 // the gap between them using a standard dp algorithm.
 template <typename TTraceSet, typename TSeedSet, typename TSequenceH, typename TSequenceV, typename TScoreValue,
           typename TScoreSpecAnchor, typename TScoreSpecGap, typename TFreeEndGaps, typename TDPMatrixLocation,
-          typename TGapSpec, typename TGapsPlacement>
+          typename TGapSpec, typename TTracebackConfig>
 inline TScoreValue
 _computeAlignment(TTraceSet & globalTraceSet,
                   TSeedSet const & seedSet,
@@ -1164,9 +1164,9 @@ _computeAlignment(TTraceSet & globalTraceSet,
                   Score<TScoreValue, TScoreSpecGap> const & scoreSchemeGap,
                   unsigned bandExtension,
                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec,
-                             TracebackOn<TGapsPlacement> > const & profile)
+                             TracebackOn<TTracebackConfig> > const & profile)
 {
-    //typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec, TracebackOn<TGapsPlacement> > TAlignmentProfile;
+    //typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec, TracebackOn<TTracebackConfig> > TAlignmentProfile;
 
     typedef typename Position<TSequenceH>::Type TPosH;
     typedef typename Position<TSequenceV>::Type TPosV;
@@ -1218,7 +1218,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
             TTraceSet localTraceSet;
             score = _computeAlignment(localTraceSet, scoutState, suffix(seqH, gridBeginH), suffix(seqV, gridBeginV),
                               scoreSchemeGap, DPBand_<BandOff>(), DPProfile_<BandedChainAlignment_<TFreeEndGaps,
-                              BandedChainFinalDPMatrix>, TGapSpec, TracebackOn<TGapsPlacement> >());
+                              BandedChainFinalDPMatrix>, TGapSpec, TracebackOn<TTracebackConfig> >());
             _adaptLocalTracesToGlobalGrid(localTraceSet, Pair<TPosH, TPosV>(gridBeginH, gridBeginV));
             _glueTracebacks(globalTraceSet, localTraceSet);
         }

@@ -248,14 +248,15 @@ String<char> _translateTraceValue(TTraceValue const & traceValue)
         append(transcript, 'V');
     if ((traceValue & TraceBitMap_::HORIZONTAL) == TraceBitMap_::HORIZONTAL)
         append(transcript, 'H');
-    if ((traceValue & TraceBitMap_::MAX_FROM_VERTICAL_MATRIX) == TraceBitMap_::MAX_FROM_VERTICAL_MATRIX)
-        append(transcript, '|');
-    if ((traceValue & TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX) == TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX)
-        append(transcript, '-');
     if ((traceValue & TraceBitMap_::VERTICAL_OPEN) == TraceBitMap_::VERTICAL_OPEN)
         append(transcript, 'v');
     if ((traceValue & TraceBitMap_::HORIZONTAL_OPEN) == TraceBitMap_::HORIZONTAL_OPEN)
         append(transcript, 'h');
+    if ((traceValue & TraceBitMap_::MAX_FROM_VERTICAL_MATRIX) == TraceBitMap_::MAX_FROM_VERTICAL_MATRIX)
+        append(transcript, '|');
+    if ((traceValue & TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX) == TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX)
+        append(transcript, '-');
+
     if ((traceValue) == TraceBitMap_::NONE)
         append(transcript, '0');
     return transcript;

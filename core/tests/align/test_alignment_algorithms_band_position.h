@@ -42,8 +42,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -101,8 +101,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -157,8 +157,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -213,8 +213,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -269,8 +269,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -324,8 +324,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -380,8 +380,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -436,8 +436,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -492,8 +492,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -550,8 +550,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
     //012345678901
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -606,8 +606,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -662,8 +662,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -719,8 +719,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
     //012345678901
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -775,8 +775,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -831,8 +831,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -888,8 +888,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -944,8 +944,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1000,8 +1000,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1056,8 +1056,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1112,8 +1112,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1168,8 +1168,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1224,8 +1224,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1280,8 +1280,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1336,8 +1336,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1394,8 +1394,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1451,8 +1451,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1508,8 +1508,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1564,8 +1564,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1621,8 +1621,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1677,8 +1677,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";
@@ -1733,8 +1733,8 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
 {
     using namespace seqan;
 
-    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<GapsLeft> > TDPProfile;
-    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<GapsLeft> > TDPProfileOverlap;
+    typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
+    typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
 
     Dna5String strH = "AAACGTGCTTTA";
     Dna5String strV = "AAAGGCTTA";

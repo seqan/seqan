@@ -476,6 +476,9 @@ _computeUnbandedAlignment(TDPScout & scout,
                   seqVBegin, seqVEnd, scoringScheme,
                   MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
 
+    // If we compute only the single option. we need to check if there are other possibilities at the end.
+    // Traceback only from Diagonal, but could also come from vertical or horizontal.
+
 //    for (unsigned i = 0; i < length(recMatrix); ++i)
 //    {
 //        std::cout << recMatrix[i]._score << "\t";
@@ -1273,6 +1276,33 @@ void _printTracebackMatrix(TTraceMatrix & dpTraceMatrix)
     std::cout << std::endl;
 }
 
+template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
+inline void
+_correctTraceValue(TTraceNavigator &,
+                   DPScout_<DPCell_<TScoreValue, LinearGaps>, TDPScoutSpec> const &)
+{
+    // Nothing to do.
+}
+
+template <typename TTraceNavigator, typename TScoreValue, typename TDPScoutSpec>
+inline void
+_correctTraceValue(TTraceNavigator & traceNavigator,
+                   DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout)
+{
+    _setToPosition(traceNavigator, maxHostPosition(dpScout));
+    if (_verticalScoreOfCell(dpScout._maxScore) == _scoreOfCell(dpScout._maxScore))
+    {
+        value(traceNavigator) &= ~TraceBitMap_::DIAGONAL;
+        value(traceNavigator) |= TraceBitMap_::MAX_FROM_VERTICAL_MATRIX;
+    }
+    else if (_horizontalScoreOfCell(dpScout._maxScore) == _scoreOfCell(dpScout._maxScore))
+    {
+        value(traceNavigator) &= ~TraceBitMap_::DIAGONAL;
+        value(traceNavigator) |= TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX;
+    }
+
+}
+
 // ----------------------------------------------------------------------------
 // Function _computeAligmnment()
 // ----------------------------------------------------------------------------
@@ -1327,7 +1357,7 @@ _computeAlignment(TTraceTarget & traceSegments,
 
     resize(dpScoreMatrix);
     // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
-    if (IsSameType<TTraceFlag, TracebackOn<GapsLeft> >::VALUE || IsSameType<TTraceFlag, TracebackOn<GapsRight> >::VALUE)
+    if (IsTracebackEnabled_<TTraceFlag>::VALUE)
         resize(dpTraceMatrix);
 
     TDPScoreMatrixNavigator dpScoreMatrixNavigator;
@@ -1349,6 +1379,16 @@ _computeAlignment(TTraceTarget & traceSegments,
 
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return maxScore(dpScout);
+
+    if (IsSingleTrace_<TTraceFlag>::VALUE)
+    {
+        // Check if max was found at the bottom right corner of the matrix.
+        // This is also true if in last row, and last column
+//        if ((maxHostPosition(dpScout) + 1) == (end(dpTraceMatrix) - begin(dpTraceMatrix)))
+
+//            maxHostPosition(dpScout); // We only have the trace value not the score value.
+            _correctTraceValue(dpTraceMatrixNavigator, dpScout);
+    }
 
 //    _printTracebackMatrix(dpTraceMatrix);
     _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
