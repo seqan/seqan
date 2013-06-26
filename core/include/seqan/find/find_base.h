@@ -195,7 +195,7 @@ Note that $clear(finder)$ doesn't move the text iterator. To start the search fr
 @Function.goBegin@ or @Function.setPosition@.
 ..example
 ...text:The following example shows how one can search online for a pattern in a haystack. Note that it is neccessary to reset the finder befor searching for another pattern.
-...file:demos/finder/finder_online.cpp
+...file:demos/find/finder_online.cpp
 ...output:Hit at position: 4
 Hit at position: 12
 Hit at position: 22
@@ -207,7 +207,7 @@ Hit at position: 29
 Hit at position: 35
 Hit at position: 38
 ...text:In contrast to the example above the code below shows how one can use a Finder with an index as base. Again, note that it is neccessary to reset the finder befor searching for another pattern.
-...file:demos/finder/finder_index.cpp
+...file:demos/find/finder_index.cpp
 ...output:Hit at position: 12
 Hit at position: 4
 Hit at position: 22

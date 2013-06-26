@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..remarks.text:Matching positions do not come in order because we report beginning positions of matches.
 ..remarks.text:Likewise, if multiple keywords match at a given position no pre-specified order is guaranteed.
 ..example.text:The following example program searches for three needles ($queries$) in two haystack sequences ($db$) using the Aho-Corasick algorithm.
-..example.file:demos/finder/finder_aho_corasick.cpp
+..example.file:demos/find/finder_aho_corasick.cpp
 ..example.remark:Note that you have to provide a String of Strings for the queries at the moment. This will be changed to a StringSet in the future.
 ..example.text:When executed, this program will create the following output.
 ..example.output:DB      POS     ENDPOS  TEXT
