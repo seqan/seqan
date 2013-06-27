@@ -249,7 +249,7 @@ int write2(TStream & stream,
     SEQAN_PUT_TAB;
 
     if (record.tLen == BamAlignmentRecord::INVALID_LEN)
-        res = streamPut(stream, '*');
+        res = streamPut(stream, '0');
     else
         res = streamPut(stream, record.tLen);
     if (res != 0)
