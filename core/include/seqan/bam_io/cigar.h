@@ -166,8 +166,6 @@ getMDString(
     typedef typename Value<TMDString>::Type TMDChar;
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
-    typedef typename Value<typename Source<TGaps1>::Type>::Type TV1;
-    typedef typename Value<typename Source<TGaps2>::Type>::Type TV2;
 	char op, lastOp = ' ';
 	unsigned numOps = 0;
 
@@ -180,7 +178,7 @@ getMDString(
             op = 'D';
         } 
         else
-            op = (TV1(*it1) == TV2(*it2))? 'M': 'R';
+            op = (*it1 == *it2)? 'M': 'R';
         
         // append match run
         if (lastOp != op)
