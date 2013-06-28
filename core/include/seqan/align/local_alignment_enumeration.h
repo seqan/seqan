@@ -172,6 +172,7 @@ class LocalAlignmentEnumerator;
 .Class.LocalAlignmentEnumerator
 ..cat:Alignments
 ..summary:Enumerate local alignments using the Waterman-Eggert algorithm.
+..description:This is an abstract base class for the alignment enumeration; the specializations provide the actual implementaiton of banded and unbanded local aligment search.
 ..signature:LocalAlignmentEnumerator<TScore, TSpec>
 ..param.TScore:The @Class.Score@ type to use.
 ...type:Class.Score
