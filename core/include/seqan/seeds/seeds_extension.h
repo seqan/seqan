@@ -545,6 +545,35 @@ _updateExtendedSeed(TSeed & seed,
     SEQAN_ASSERT_GEQ(endDiagonal(seed), lowerDiagonal(seed));
 }
 
+// Limit score;  In the general case we cannot do this so we simply perform a check on the score mismatch values.
+template <typename TScoreValue, typename TScoreSpec, typename TAlphabet>
+void
+_extendSeedGappedXDropOneDirectionLimitScoreMismatch(Score<TScoreValue, TScoreSpec> & scoringScheme,
+                                                     TScoreValue minErrScore,
+                                                     TAlphabet * /*tag*/)
+{
+    // We cannot set a lower limit for the mismatch score since the score might be a scoring matrix such as Blosum62.
+    // Instead, we perform a check on the matrix scores.
+#if SEQAN_ENABLE_DEBUG
+    {
+        for (unsigned i = 0; i < valueSize<TAlphabet>(); ++i)
+            for (unsigned j = 0; j <= i; ++j)
+                SEQAN_ASSERT_GEQ_MSG(score(scoringScheme, TAlphabet(i), TAlphabet(j)), minErrScore,
+                                     "Mismatch score too small!, i = %u, j = %u");
+    }
+#endif  // #if SEQAN_ENABLE_DEBUG
+}
+
+// In the case of a SimpleScore, however, we can set this.
+template <typename TScoreValue, typename TAlphabet>
+void
+_extendSeedGappedXDropOneDirectionLimitScoreMismatch(Score<TScoreValue, Simple> & scoringScheme,
+                                                     TScoreValue minErrScore,
+                                                     TAlphabet * /*tag*/)
+{
+    setScoreMismatch(scoringScheme, std::max(scoreMismatch(scoringScheme), minErrScore));
+}
+
 template<typename TConfig, typename TQuerySegment, typename TDatabaseSegment, typename TScoreValue, typename TScoreSpec>
 TScoreValue
 _extendSeedGappedXDropOneDirection(
@@ -566,18 +595,9 @@ _extendSeedGappedXDropOneDirection(
     TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
     TScoreValue const minErrScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
     setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minErrScore));
-
-    // We cannot set a lower limit for the mismatch score since the score might be a scoring matrix such as Blosum62.
-    // Instead, we perform a check on the matrix scores.
-#if SEQAN_ENABLE_DEBUG
-    {
-        typedef typename Value<TQuerySegment>::Type TAlphabet;
-        for (unsigned i = 0; i < valueSize<TAlphabet>(); ++i)
-            for (unsigned j = 0; j <= i; ++j)
-                SEQAN_ASSERT_GEQ_MSG(score(scoringScheme, TAlphabet(i), TAlphabet(j)), minErrScore,
-                                     "Mismatch score too small!");
-    }
-#endif  // #if SEQAN_ENABLE_DEBUG
+    typename Value<TQuerySegment>::Type * tag;
+    (void)tag;
+    _extendSeedGappedXDropOneDirectionLimitScoreMismatch(scoringScheme, minErrScore, tag);
 
     TScoreValue gapCost = scoreGap(scoringScheme);
     TScoreValue undefined = minValue<TScoreValue>() - gapCost;
