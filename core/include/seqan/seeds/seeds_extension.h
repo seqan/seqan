@@ -136,6 +136,8 @@ enum ExtensionDirection
 ...type:Spec.Simple Score
 ...remarks:Only used for the algorithms @Tag.Seed Extension.UngappedXDrop@ and @Tag.Seed Extension.GappedXDrop@
 ..remarks:You can use the tags, @Tag.Seed Extension.MatchExtend@, @Tag.Seed Extension.UngappedXDrop@, and @Tag.Seed Extension.GappedXDrop@.
+..remarks:Note that the diagonals updated in $seed$ do not necessarily reflect the diagonals for the optimal extension but the diagonals used in all traces of the extension.
+However, they are guaranteed to include the optimal extension's trace.
 ..example.text:The documentation of the class @Class.Seed@ contains an example for seed extension.
 ..include:seqan/seeds.h
 */
@@ -562,9 +564,20 @@ _extendSeedGappedXDropOneDirection(
         return 0;
 
     TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
-    TScoreValue minGapScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
-    setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minGapScore));
-    setScoreMismatch(scoringScheme, _max(scoreMismatch(scoringScheme), minGapScore));
+    TScoreValue const minErrScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
+    setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minErrScore));
+
+    // We cannot set a lower limit for the mismatch score since the score might be a scoring matrix such as Blosum62.
+    // Instead, we perform a check on the matrix scores.
+#if SEQAN_ENABLE_DEBUG
+    {
+        typedef typename Value<TQuerySegment>::Type TAlphabet;
+        for (unsigned i = 0; i < valueSize<TAlphabet>(); ++i)
+            for (unsigned j = 0; j <= i; ++j)
+                SEQAN_ASSERT_GEQ_MSG(score(scoringScheme, TAlphabet(i), TAlphabet(j)), minErrScore,
+                                     "Mismatch score too small!");
+    }
+#endif  // #if SEQAN_ENABLE_DEBUG
 
     TScoreValue gapCost = scoreGap(scoringScheme);
     TScoreValue undefined = minValue<TScoreValue>() - gapCost;
@@ -624,8 +637,8 @@ _extendSeedGappedXDropOneDirection(
 
 			// Calculate matrix entry (-> antiDiag3[col])
 			TScoreValue tmp = _max(antiDiag2[i2-1], antiDiag2[i2]) + gapCost;
-			tmp = _max(tmp, antiDiag1[i1-1] + score(scoringScheme, sequenceEntryForScore(scoringScheme, querySeg, queryPos),
-			                                        sequenceEntryForScore(scoringScheme, databaseSeg, dbPos)));
+			tmp = _max(tmp, antiDiag1[i1 - 1] + score(scoringScheme, sequenceEntryForScore(scoringScheme, querySeg, queryPos),
+			                                          sequenceEntryForScore(scoringScheme, databaseSeg, dbPos)));
 			if (tmp < best - scoreDropOff)
             {
 				antiDiag3[i3] = undefined;

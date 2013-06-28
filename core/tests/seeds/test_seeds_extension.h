@@ -296,7 +296,7 @@ testSeedsExtensionGappedXDropExtension(TSeedSpec const &)
         TSeed seed(11, 9, 5);
 
         extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme, 7, GappedXDrop());
-        
+
         SEQAN_ASSERT_EQ(beginPositionV(seed), 4u);
         SEQAN_ASSERT_EQ(endPositionV(seed), 15u);
         SEQAN_ASSERT_EQ(beginPositionH(seed), 4u);
@@ -311,7 +311,7 @@ testSeedsExtensionGappedXDropExtension(TSeedSpec const &)
         TSeed seed(7, 7, 5);
 
         extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme, 7, GappedXDrop());
-        
+
         SEQAN_ASSERT_EQ(beginPositionV(seed), 6u);
         SEQAN_ASSERT_EQ(endPositionV(seed), 17u);
         SEQAN_ASSERT_EQ(beginPositionH(seed), 6u);
@@ -348,6 +348,106 @@ testSeedsExtensionGappedXDropExtension(TSeedSpec const &)
         SEQAN_ASSERT_EQ(endPositionH(seed), 26u);
         SEQAN_ASSERT_EQ(upperDiagonal(seed), 0);
         SEQAN_ASSERT_EQ(lowerDiagonal(seed), -9);
+    }
+
+    Blosum62 scoringScheme2;
+    setScoreGap(scoringScheme2, -9);
+
+    { // Test 11 (simple)
+        Peptide database = "CSNNHKMMMMAAGGW";
+        Peptide query =    "CSNNHKMMMMAAGGW";
+        TSeed seed(6, 6, 3);
+
+        extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme2, 1, GappedXDrop());
+
+        SEQAN_ASSERT_EQ(beginPositionV(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionV(seed), 15u);
+        SEQAN_ASSERT_EQ(beginPositionH(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionH(seed), 15u);
+        SEQAN_ASSERT_EQ(beginDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(endDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(upperDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(lowerDiagonal(seed), 0);
+    }
+    { // Test 12 (gaps)
+        Peptide database = "CSNNHK""MMMMAAGGW";
+        Peptide query =    "CSNNH" "MMMMAAGGW";
+        TSeed seed(6, 5, 3);
+
+        extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme2, 10, GappedXDrop());
+
+        SEQAN_ASSERT_EQ(beginPositionH(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionH(seed), 15u);
+        SEQAN_ASSERT_EQ(beginPositionV(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionV(seed), 14u);
+        SEQAN_ASSERT_EQ(beginDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(endDiagonal(seed), 1);
+        SEQAN_ASSERT_EQ(upperDiagonal(seed), 2);
+        SEQAN_ASSERT_EQ(lowerDiagonal(seed), -1);
+    }
+    { // Test 13 (good mismatches)
+        Peptide database = "CSNNHKMMMMAAGGW";
+        Peptide query =    "CSNNHRMLMLAAGGW";
+        TSeed seed(6, 6, 3);
+
+        extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme2, 10, GappedXDrop());
+
+        SEQAN_ASSERT_EQ(beginPositionH(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionH(seed), 15u);
+        SEQAN_ASSERT_EQ(beginPositionV(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionV(seed), 15u);
+        SEQAN_ASSERT_EQ(beginDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(endDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(upperDiagonal(seed), 1);
+        SEQAN_ASSERT_EQ(lowerDiagonal(seed), -1);
+    }
+    { // Test 14 (bad mismatches)
+        Peptide database = "CSNNHKMMMMAAGGW";
+        Peptide query =    "WWNNHKMMMMAAGLV";
+        TSeed seed(6, 6, 3);
+
+        extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme2, 10, GappedXDrop());
+
+        SEQAN_ASSERT_EQ(beginPositionH(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionH(seed), 15u);
+        SEQAN_ASSERT_EQ(beginPositionV(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionV(seed), 15u);
+        SEQAN_ASSERT_EQ(beginDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(endDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(upperDiagonal(seed), 1);
+        SEQAN_ASSERT_EQ(lowerDiagonal(seed), -1);
+    }
+    { // Test 15 (mixed mismatches)
+        Peptide database = "CSNNH""KMMMMAAGGW";
+        Peptide query =    "WSNNH" "MLMWAAGLV";
+        TSeed seed(6, 5, 3);
+
+        extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme2, 10, GappedXDrop());
+
+        SEQAN_ASSERT_EQ(beginPositionH(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionH(seed), 15u);
+        SEQAN_ASSERT_EQ(beginPositionV(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionV(seed), 14u);
+        SEQAN_ASSERT_EQ(beginDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(endDiagonal(seed), 1);
+        SEQAN_ASSERT_EQ(upperDiagonal(seed), 2);
+        SEQAN_ASSERT_EQ(lowerDiagonal(seed), -1);
+    }
+    { // Test 16
+        Peptide database = "CSNNH""KMMMMA"  "GWW";
+        Peptide query =    "WSNNH" "MLMWA""ARGWW";
+        TSeed seed(6, 5, 3);
+
+        extendSeed(seed, database, query, EXTEND_BOTH, scoringScheme2, 10, GappedXDrop());
+
+        SEQAN_ASSERT_EQ(beginPositionH(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionH(seed), 14u);
+        SEQAN_ASSERT_EQ(beginPositionV(seed), 0u);
+        SEQAN_ASSERT_EQ(endPositionV(seed), 13u);
+        SEQAN_ASSERT_EQ(beginDiagonal(seed), 0);
+        SEQAN_ASSERT_EQ(endDiagonal(seed), 1);
+        SEQAN_ASSERT_EQ(upperDiagonal(seed), 2);
+        SEQAN_ASSERT_EQ(lowerDiagonal(seed), -1);
     }
 }
 
