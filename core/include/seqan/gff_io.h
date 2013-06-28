@@ -53,5 +53,6 @@
 
 #include <seqan/gff_io/gff_io_context.h>
 #include <seqan/gff_io/gff_io_base.h>
+#include <seqan/gff_io/gff_stream.h>
 
 #endif  // CORE_INCLUDE_SEQAN_GFF_IO_H_
