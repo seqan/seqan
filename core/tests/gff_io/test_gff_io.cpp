@@ -53,5 +53,11 @@ SEQAN_BEGIN_TESTSUITE(test_gff_io)
     SEQAN_CALL_TEST(test_store_io_read_record_gtf_pseudogenes);
 	SEQAN_CALL_TEST(test_store_io_write_record_gtf);
 	SEQAN_CALL_TEST(test_store_io_write_record_context_gtf);
+
+    // Tests for GffStream.
+    SEQAN_CALL_TEST(test_store_io_gff_stream_read_record_gff);
+    SEQAN_CALL_TEST(test_store_io_gff_stream_read_record_gtf);
+    SEQAN_CALL_TEST(test_store_io_gff_stream_write_record_gff);
+    SEQAN_CALL_TEST(test_store_io_gff_stream_write_record_gtf);
 }
 SEQAN_END_TESTSUITE
