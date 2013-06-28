@@ -15,7 +15,7 @@
     <script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="../css/hierarchy-tree.css">
 </head>
-<body class="page" onload="initHierarchyCanvas(); setPermalink('@!cat + '.' + subcat!@');">
+<body class="page" onload="setPermalink('@!cat + '.' + subcat!@'); initHierarchyCanvas();">
 <div class="banner">
   <!--(if tree.find('globals.categories.' + cat))-->
   <div class="cat_type">@!tree.find('globals.categories.' + cat).text()!@</div>

@@ -599,6 +599,8 @@ seqan.doc.createDivs = function(id, node)
     function renderNode(node, isRoot/*=false*/)
     {
         //console.log(node)
+        if (node.label_pos === null)
+            return;  // not to be rendered (e.g. non-first concept)
         var rootClass = node.type;
         if (isRoot)
             rootClass = rootClass + ' root';
