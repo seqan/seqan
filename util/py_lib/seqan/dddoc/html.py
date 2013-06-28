@@ -301,7 +301,7 @@ class TplDocsCreator(object):
         else:
             type_num = TYPE_CLASS
         # Index functions.
-        for name, node in self.tree.find([cat_type]).children.iteritems():
+        for name, node in sorted(self.tree.find([cat_type]).children.iteritems()):
             ## if node.children.has_key('hidefromindex'):
             ##     continue  # Skip those that are not to appear in search.
             summary = ''
