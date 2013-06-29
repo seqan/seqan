@@ -116,7 +116,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
     streamWriteChar(stream, '\0');
 
     // Compare results.
-    char const * EXPECTED = "READNAME\t18\tREF\t31\t8\t10M\t*\t0\t*\tCGATCGATAA\tIIIIIIIIII\n";
+    char const * EXPECTED = "READNAME\t18\tREF\t31\t8\t10M\t*\t0\t0\tCGATCGATAA\tIIIIIIIIII\n";
     SEQAN_ASSERT_EQ(CharString(EXPECTED), CharString(buffer));
 }
 
