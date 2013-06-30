@@ -561,6 +561,9 @@ _extendSeedGappedXDropOneDirectionLimitScoreMismatch(Score<TScoreValue, TScoreSp
                 SEQAN_ASSERT_GEQ_MSG(score(scoringScheme, TAlphabet(i), TAlphabet(j)), minErrScore,
                                      "Mismatch score too small!, i = %u, j = %u");
     }
+#else
+    (void)scoringScheme;
+    (void)minErrScore;
 #endif  // #if SEQAN_ENABLE_DEBUG
 }
 
