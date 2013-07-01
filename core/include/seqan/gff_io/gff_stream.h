@@ -56,9 +56,13 @@ namespace seqan {
 ..summary:High-level GFF/GTF I/O class.
 ..description:The GffStream class allows to read and write GTF and GFF files.
 ..signature:class GffStream
+..remarks:
+Note that the class $GffStream$ allows to read both GFF 2, 3, and GTF.
+For writing, only GFF 3 and GTF are supported.
 ..example:The following example demonstrates reading a GFF file and printing the annotation locations.
 ..example.file:demos/gff_io/gff_stream_read.cpp
 ..include:seqan/gff_io.h
+..see:Enum.GffStream\colon\colonMode
 
 .Memfunc.GffStream#GffStream
 ..class:Class.GffStream

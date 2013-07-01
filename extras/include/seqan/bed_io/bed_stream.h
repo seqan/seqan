@@ -55,6 +55,7 @@ namespace seqan {
 ..signature:class BedStream
 ..example:The following example demonstrates reading a BED file and printing the variant locations.
 ..example.file:demos/bed_io/bed_stream_read.cpp
+..see:Enum.BedStream\colon\colonMode
 ..include:seqan/bed_io.h
 
 .Memfunc.BedStream#BedStream
