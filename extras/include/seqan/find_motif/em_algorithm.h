@@ -43,6 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /**
 .Function.em:
 ..summary:Represents the EM algorithm as used by MEME.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..cat:Motif Search
 ..signature:em(profile,dataset_start,t,l,oops_model)
 ..signature:em(profile,dataset_start,t,l,gamma,zoops_model)

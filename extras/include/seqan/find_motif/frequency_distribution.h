@@ -43,6 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..summary:Holds a collection of objects of a specific type, where each object represents
           the frequency (absolute or relative probability) of a particular residue which is a member
 		  of a fixed sequence alphabet.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..cat:Motif Search
 ..signature:FrequencyDistribution<TValue[, TSpec]>
 ..param.TValue:The type of sequence which is considered.

@@ -55,6 +55,7 @@ TType _computeNumOfTrials(TType const & t, TType const & l, TType const & d, TTy
 /**
 .Spec.Projection:
 ..summary: Represents the PROJECTION algorithm of Buhler and Tompa.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..general:Class.MotifFinder
 ..cat:Motif Search
 ..signature:MotifFinder<TValue, Projection, TRng>

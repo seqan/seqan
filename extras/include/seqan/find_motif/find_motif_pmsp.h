@@ -43,6 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /**
 .Spec.Pmsp:
 ..summary: Represents the Pmsp algorithm of Davila et al.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..general:Class.MotifFinder
 ..cat:Motif Search
 ..signature:MotifFinder<TValue, Pmsp, TRng>

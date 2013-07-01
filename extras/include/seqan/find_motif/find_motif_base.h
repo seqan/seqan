@@ -43,6 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..cat:Motif Search
 ..summary:Holds the algorithm parameter values and the motif instance(s) found by the appropriate
           motif discovery algorithm.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..cat:Motif Search
 ..signature:MotifFinder<TValue, TSpec, TRng>
 ..param.TValue:The type of sequences to be analyzed.

@@ -48,6 +48,7 @@ computeH(TType const & t, TType const & l, TType const & d, bool const & is_exac
 /**
 .Spec.EPatternBranching:
 ..summary: Represents the ePatternBranching algorithm of Davila and Rajasekaran.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..general:Class.MotifFinder
 ..cat:Motif Search
 ..signature:MotifFinder<TValue, EPatternBranching, TRng>

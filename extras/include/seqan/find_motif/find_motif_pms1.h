@@ -43,6 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /**
 .Spec.Pms1:
 ..summary: Represents the Pms1 algorithm developed by Rajasekaran et al.
+..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
 ..general:Class.MotifFinder
 ..cat:Motif Search
 ..signature:MotifFinder<TValue, Pms1, TRng>
