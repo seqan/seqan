@@ -62,7 +62,7 @@ For writing, only GFF 3 and GTF are supported.
 ..example:The following example demonstrates reading a GFF file and printing the annotation locations.
 ..example.file:demos/gff_io/gff_stream_read.cpp
 ..include:seqan/gff_io.h
-..see:Enum.GffStream\colon\colonMode
+..see:Enum.GffStream\colon\colonFileFormat
 
 .Memfunc.GffStream#GffStream
 ..class:Class.GffStream
