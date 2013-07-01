@@ -29,37 +29,43 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Umbrella header for the parallel module.
+// Basic parallel algorithms.
 // ==========================================================================
 
-#ifndef SEQAN_PARALLEL_H_
-#define SEQAN_PARALLEL_H_
+#ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_
+#define SEQAN_PARALLEL_PARALLEL_TAGS_H_
 
-//____________________________________________________________________________
-// Prerequisites
+namespace seqan {
 
-#include <seqan/basic.h>
-#include <seqan/platform.h>
+// ============================================================================
+// Forwards
+// ============================================================================
 
-//____________________________________________________________________________
-// Module Headers
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
 
-// Misc.
-#include <seqan/parallel/parallel_tags.h>
-#include <seqan/parallel/parallel_macros.h>
+// ============================================================================
+// Functions
+// ============================================================================
 
-// Atomic operations.
-#include <seqan/parallel/parallel_atomic_primitives.h>
-#include <seqan/parallel/parallel_atomic_misc.h>
+template < typename TIterator, typename TValue, typename TParallelTag >
+inline void 
+arrayFill(TIterator begin_,
+          TIterator end_, 
+          TValue const & value,
+          Parallel)
+{
+    Splitter<typename Size<TIterator>::Type> splitter(0, end_ - begin_, parallelTag);
 
-// Splitting.
-#include <seqan/parallel/parallel_splitting.h>
+    SEQAN_OMP_PRAGMA(parallel for)
+    for (int job = 0; job < (int)length(splitter); ++job)
+        arrayFill(begin_ + splitter[job], splitter[job + 1] - splitter[job], value, Serial());
+}
 
-// Parallel variants of basic algorithms
-#include <seqan/parallel/parallel_algorithms.h>
 
-//____________________________________________________________________________
+}  // namespace seqan
 
-#endif  // SEQAN_PARALLEL_H_
+#endif  // #ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_

@@ -186,6 +186,21 @@ struct GoEnd_;
 typedef Tag<GoEnd_> GoEnd;
 
 // ----------------------------------------------------------------------------
+// Tag Serial
+// ----------------------------------------------------------------------------
+
+/**
+.Tag.Serial:
+..cat:Parallelism
+..summary:Tag to select a non-parallel implementation of an algorithm.
+..tag.Serial:Select serial implementation of an algorithm.
+..include:seqan/parallel.h
+*/
+
+struct Serial_;
+typedef Tag<Serial_> Serial;
+
+// ----------------------------------------------------------------------------
 // Tag TagList<TTag, TNext>
 // ----------------------------------------------------------------------------
 

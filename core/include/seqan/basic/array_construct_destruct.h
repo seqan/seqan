@@ -658,6 +658,16 @@ arrayFill(TIterator1 begin_,
     ::std::fill_n(begin_, end_ - begin_, value);
 }
 
+template < typename TIterator, typename TValue, typename TParallelTag >
+inline void 
+arrayFill(TIterator begin_,
+          TIterator end_, 
+          TValue const & value,
+          Tag<TParallelTag>)
+{
+    arrayFill(begin_, end_, value);
+}
+
 // ----------------------------------------------------------------------------
 // Function arrayCopyForward() using iterators
 // ----------------------------------------------------------------------------
