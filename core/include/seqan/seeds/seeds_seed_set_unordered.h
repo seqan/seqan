@@ -310,8 +310,6 @@ _findSeedForCombination(
 // Function addSeed()
 // ---------------------------------------------------------------------------
 
-// TODO(holtgrew): Score not needed for Merge!
-
 template <typename TSeedSpec, typename TDistanceThreshold, typename TBandwidth, typename TScoreValue, typename TSequence0, typename TSequence1, typename TCombination>
 inline bool
 addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
@@ -357,13 +355,36 @@ addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
     return false;
 }
 
+// TODO(holtgrew): Score not needed for Merge!
+template <typename TSeedSpec, typename TDistanceThreshold>
+inline bool
+addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
+        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+        TDistanceThreshold const & maxDiagDist,
+        Merge const &)
+{
+    return addSeed(seedSet, seed, maxDiagDist, 0, Score<int, Simple>(), Nothing(), Nothing(), Merge());
+}
+
+template <typename TSeedSpec, typename TDistanceThreshold, typename TScoreValue>
+inline bool
+addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
+        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+        TDistanceThreshold const & maxDiagDist,
+        Score<TScoreValue, Simple> const & scoringScheme,
+        SimpleChain const &)
+{
+    return addSeed(seedSet, seed, maxDiagDist, 0, scoringScheme, Nothing(), Nothing(), SimpleChain());
+}
+
 template <typename TSeedSpec, typename TSeed>
-inline void
+inline bool
 addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
         TSeed const & seed,
         Single const &)
 {
     seedSet._seeds.insert(seed);
+    return true;    // Always returns true.
 }
 
 }  // namespace seqan

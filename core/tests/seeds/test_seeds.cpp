@@ -94,6 +94,8 @@ SEQAN_BEGIN_TESTSUITE(test_seeds)
 
     // Tests for unordered seed sets and simple seeds.
     SEQAN_CALL_TEST(test_seeds_seed_set_base_container_functions_simple_unordered);
+    SEQAN_CALL_TEST(test_seeds_seed_set_base_clear_simple);
+    SEQAN_CALL_TEST(test_seeds_seed_set_base_clear_chained);
 
     SEQAN_CALL_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_length_simple_unordered);
     SEQAN_CALL_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached_length_simple_unordered);

@@ -115,32 +115,63 @@ class SeedSet;
 
 /**
 .Function.SeedSet#addSeed:
-..summary:Adds a seed to an existing set.
+..summary:Adds a seed to an existing @Class.SeedSet@ using different algorithms for local chaining.
 ..cat:Seed Handling
-..signature:addSeed(set, beginPosH, beginPosV, length, tag)
-..signature:addSeed(set, beginPosH, beginPosV, endPosH, endPosV, tag)
-..signature:addSeed(set, seed, tag)
+..signature:addSeed(set, seed, distance, bandwidth, score, seqH, seqV, tag)
+..signature:addSeed(set, seed, distance, score, SimpleChain())
+..signature:addSeed(set, seed, distance, Merge())
+..signature:addSeed(set, seed, Single())
 ..class:Class.SeedSet
-..param.set:The set to which the new seed should be added.
+..param.set:The set to add the seed to.
 ...type:Class.SeedSet
-..param.beginPosH: Start position in database (horizontal).
-..param.beginPosV: Start position in query (vertical).
-..param.length: Length of the seed.
-..param.tag: The algorithm that should be used to add the new seed.
-...type:Tag.Local Chaining
-...remark: Note that not every algorithm can be used with each type of @Class.Seed@.
-..param.endPosH: End position in database (horizontal).
-..param.endPosV: End Position in query (vertical).
-..param.seed: The new Seed.
+..param.seed:The seed to be added.
 ...type:Class.Seed
+..param.seqH: Database sequence (horizontal).
+...type:Concept.SequenceConcept
+...remarks:Only required for @Tag.Local Chaining|Chaos Chaining@.
+..param.seqV: Query sequence (vertical).
+...type:Concept.SequenceConcept
+...remarks:Only required for @Tag.Local Chaining|Chaos Chaining@.
+..param.score:The scoring scheme.
+...type:Spec.Simple Score
+...remarks:Note, only @Tag.Local Chaining|Chaos and SimpleChain@ require the score.
+..param.distance:The maximal distance between the end point of the upper left and the begin point of the lower right @Class.Seed@ allowed for local chaining.
+...type:Concept.IntegerConcept
+...remarks: Note, only @Tag.Local Chaining| Chaos, SimpleChain and Merge@ require the distance information.
+..param.bandwidth: The window size to search for a chainable @Class.Seed@.
+...type:Concept.IntegerConcept
+...remarks: Note, only @Tag.Local Chaining|Chaos@ requires the bandwidth information.
+..param.tag: The algorithm that is used to add the new seed.
+...type:Tag.Local Chaining
+...remarks: Note that not every algorithm can be used with each type of @Class.Seed@. See special signatures above.
 ...remarks: The seed is copied and then added.
 ..returns:Boolean if successfully added.
 ...remarks:Always true for Tag Single.
+..example.file:demos/seeds/seeds_add_seed.cpp
+..example.text:The output is as follows:
+..example.output:
+Single Method:
+Seed: Seed<Simple, TConfig>(4, 5, 8, 9, lower diag = -1, upper diag = -1)
+Seed: Seed<Simple, TConfig>(10, 10, 15, 15, lower diag = 0, upper diag = 0)
+Seed: Seed<Simple, TConfig>(14, 14, 18, 18, lower diag = 0, upper diag = 0)
+Seed: Seed<Simple, TConfig>(21, 21, 24, 24, lower diag = 0, upper diag = 0)
+
+
+Merge Method:
+Seed: Seed<Simple, TConfig>(4, 5, 8, 9, lower diag = -1, upper diag = -1)
+Seed: Seed<Simple, TConfig>(10, 10, 18, 18, lower diag = 0, upper diag = 0)
+Seed: Seed<Simple, TConfig>(21, 21, 24, 24, lower diag = 0, upper diag = 0)
+
+
+Chaos Method:
+Seed: Seed<Simple, TConfig>(4, 5, 15, 15, lower diag = -1, upper diag = 0)
+Seed: Seed<Simple, TConfig>(14, 14, 18, 18, lower diag = 0, upper diag = 0)
+Seed: Seed<Simple, TConfig>(21, 21, 24, 24, lower diag = 0, upper diag = 0)
 ..include:seqan/seeds.h
 */
 
 /**
-.Function.SeedSet#addSeeds:
+.Intenral.Function.SeedSet#addSeeds:
 ..summary:Adds several seeds to an existing set. If a merging or chaining algorithm is used seeds are added if the merging or chaining fails.
 ..cat:Seed Handling
 ..signature:addSeed(set, container, tag)
@@ -239,6 +270,20 @@ inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
 {
     return score(seed) >= minScore(seedSet) && seedSize(seed) >= minSeedSize(seedSet);
 }
+
+// ---------------------------------------------------------------------------
+// Function clear()
+// ---------------------------------------------------------------------------
+
+///.Function.clear.param.object.type:Class.SeedSet
+template <typename TSeedSpec, typename TSeedSetSpec>
+inline void clear(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet)
+{
+    seedSet._seeds.clear();
+    seedSet._minScore = 0;
+    seedSet._minSeedSize = 0;
+}
+
 
 // Debugging / TikZ Output
 

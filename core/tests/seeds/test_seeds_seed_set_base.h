@@ -1460,4 +1460,31 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(ChainedSeed(), Unordered());
 }
 
+template <typename TSeed, typename TSeedSet>
+void testSeedsSeedSetBaseClear()
+{
+    using namespace seqan;
+    TSeedSet seedSet;
+
+    addSeed(seedSet, TSeed(0, 0, 4), Single());
+    addSeed(seedSet, TSeed(5, 5, 6), Single());
+
+    SEQAN_ASSERT_EQ(length(seedSet), 2u);
+    clear(seedSet);
+    SEQAN_ASSERT_EQ(length(seedSet), 0u);
+}
+
+SEQAN_DEFINE_TEST(test_seeds_seed_set_base_clear_simple)
+{
+    using namespace seqan;
+    testSeedsSeedSetBaseClear<Seed<Simple>, SeedSet<Simple> >();
+}
+
+SEQAN_DEFINE_TEST(test_seeds_seed_set_base_clear_chained)
+{
+    using namespace seqan;
+    testSeedsSeedSetBaseClear<Seed<ChainedSeed, DefaultSeedConfig>, SeedSet<ChainedSeed> >();
+}
+
+
 #endif  // TEST_SEEDS_TEST_SEEDS_SEED_SET_BASE_H_

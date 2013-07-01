@@ -52,15 +52,16 @@ namespace seqan {
 ..summary:Describes a seed with start and end position and diagonal upper and lower bounds.
 ..cat:Seed Handling
 ..general:Class.Seed
-..signature:Seed<TPosition, SimpleSeed>
-..param.TPosition:The type number that should be used. Must have negative numbers (e.g. int/long).
+..signature:Seed<Simple, TConfig>
+..param.TConfig:The configuration object used for the seed.
+...default:DefaultSeedConfig.
 
 .Memfunc.Simple Seed#Seed
 ..class:Spec.Simple Seed
 ..summary:Constructor
-..signature: Seed<TPosition, SimpleSeed> ()
-..signature: Seed<TPosition, SimpleSeed> (beginPosH, beginPosV, length)
-..signature: Seed<TPosition, SimpleSeed> (beginPosH, beginPosV, endPosH, endPosV)
+..signature: Seed<Simple, TConfig> ()
+..signature: Seed<Simple, TConfig> (beginPosH, beginPosV, length)
+..signature: Seed<Simple, TConfig> (beginPosH, beginPosV, endPosH, endPosV)
 ..param.beginPosH: Begin position in database (horizontal).
 ..param.beginPosV: Begin position in query (vertical).
 ..param.endPosH: End position in database (horizontal).

@@ -56,14 +56,15 @@ typedef Tag<Chained_> ChainedSeed;  // TODO(holtgrew): Chained already taken as 
 ..summary:Describes a seed with start and end position2 and diagonal upper and lower bounds.
 ..description:Additionaly diagonal segments between start and end position2 are stored.
 ..general:Class.Seed
-..signature:Seed<TPosition, ChainedSeed>
-..param.TPosition:The type of number that should be used. Must have negative numbers (e.g. int/long).
+..signature:Seed<ChainedSeed, TConfig>
+..param.TConfig:The configuration object used for the seed.
+...default:DefaultSeedConfig.
 
 .Memfunc.Chained Seed#Seed
 ..class:Spec.Chained Seed
 ..summary:Constructor
-..signature: Seed<TPosition, ChainedSeed> ()
-..signature: Seed<TPosition, ChainedSeed> (beginPosH, beginPosV, length)
+..signature: Seed<ChainedSeed, TConfig> ()
+..signature: Seed<ChainedSeed, TConfig> (beginPosH, beginPosV, length)
 ..param.beginPosH: Begin position in database (horizontal).
 ..param.beginPosV: Begin position in query (vertical).
 ..param.length: Length of the seed.
