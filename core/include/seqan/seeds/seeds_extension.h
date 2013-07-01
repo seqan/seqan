@@ -598,7 +598,7 @@ _extendSeedGappedXDropOneDirection(
     TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
     TScoreValue const minErrScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
     setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minErrScore));
-    typename Value<TQuerySegment>::Type * tag;
+    typename Value<TQuerySegment>::Type * tag = 0;
     (void)tag;
     _extendSeedGappedXDropOneDirectionLimitScoreMismatch(scoringScheme, minErrScore, tag);
 
