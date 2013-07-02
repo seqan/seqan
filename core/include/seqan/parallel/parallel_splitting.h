@@ -53,8 +53,8 @@ The interval and the number of subintervals can be set in the constructor @Memfu
 @Function.length@ and @Function.resize@ can be used to retrieve or change the number of subintervals later.
 In contrast to other containers the Splitter allows to access one more element than its length would imply to allow to retrieve the right boundary of each subinterval (see example code below).
 
-..signature:Splitter<TPosition, TSpec>
-..param.TPosition:Type of the interval boundaries.
+..signature:Splitter<TValue, TSpec>
+..param.TValue:Type of the interval boundaries.
 ..param.TSpec:Tag to select the way the values are sampled.
 ...default:Equidistant Splitter
 ..example:
@@ -88,10 +88,10 @@ If it is @Tag.Serial@, only one subinterval is used.
 ..cat:Parallelism
 ..general:Class.Splitter
 ..summary:Splits an interval into equal-sized subintervals.
-..signature:Splitter<TPosition[, Equidistant]>
+..signature:Splitter<TValue[, Equidistant]>
 ..description:This @Class.Splitter@ specialization divides an interval into subintervals of (almost) equal length, i.e.
 two subintervals differ by at most 1 in size.
-..param.TPosition:Type of the interval boundaries.
+..param.TValue:Type of the interval boundaries.
 ..example:
 ...text:Simple example for equidistant splitting.
 ...file:demos/parallel/splitter_example.cpp
@@ -101,43 +101,45 @@ two subintervals differ by at most 1 in size.
 [17,20)
 ..include:seqan/parallel.h */
  
-template <typename TPosition, typename TSpec = Equidistant>
+template <typename TValue, typename TSpec = Equidistant>
 class Splitter
 {
 public:
-    TPosition beginPos;
-    TPosition subintervalCount;
-    TPosition blockLength;
-    TPosition rest;
+    typedef typename Size<Splitter>::Type TSize;
 
-    Splitter(TPosition beginPos_, TPosition endPos):
+    TValue beginPos;
+    TSize subintervalCount;
+    TSize blockLength;
+    TSize rest;
+
+    Splitter(TValue beginPos_, TValue endPos):
         beginPos(beginPos_)
     {
         // we choose the counts automatically and don't want to have empty jobs
-        _resize(*this, endPos - beginPos, _min(endPos - beginPos, (TPosition)omp_get_max_threads()));
+        _resize(*this, endPos - beginPos, _min((TSize)(endPos - beginPos), (TSize)omp_get_max_threads()));
     }
 
-    Splitter(TPosition beginPos_, TPosition endPos, Parallel):
+    Splitter(TValue beginPos_, TValue endPos, Parallel):
         beginPos(beginPos_)
     {
         // we choose the counts automatically and don't want to have empty jobs
-        _resize(*this, endPos - beginPos, _min(endPos - beginPos, (TPosition)omp_get_max_threads()));
+        _resize(*this, endPos - beginPos, _min((TSize)(endPos - beginPos), (TSize)omp_get_max_threads()));
     }
 
-    Splitter(TPosition beginPos_, TPosition endPos, Serial):
+    Splitter(TValue beginPos_, TValue endPos, Serial):
         beginPos(beginPos_)
     {
         // we produce at most 1 job (or none if interval is empty)
-        _resize(*this, endPos - beginPos, _min(endPos - beginPos, (TPosition)1));
+        _resize(*this, endPos - beginPos, _min((TSize)(endPos - beginPos), (TSize)1));
     }
     
-    Splitter(TPosition beginPos_, TPosition endPos, TPosition subintervalCount):
+    Splitter(TValue beginPos_, TValue endPos, TSize subintervalCount):
         beginPos(beginPos_)
     {
         _resize(*this, endPos - beginPos, subintervalCount);
     }
 
-    TPosition operator[] (TPosition i) const
+    TValue operator[] (TSize i) const
     {
         SEQAN_ASSERT_LEQ_MSG(i, subintervalCount, "Trying to access an element behind the last one!");
         return beginPos + blockLength * i + std::min(i, rest);
@@ -146,31 +148,31 @@ public:
 
 
 ///.Metafunction.Size.param.T.type:Class.Splitter
-template <typename TPosition, typename TSpec>
-struct Size<Splitter<TPosition, TSpec> >
+template <typename TValue, typename TSpec>
+struct Size<Splitter<TValue, TSpec> >
 {
-    typedef TPosition Type;
+    typedef typename Difference<TValue>::Type Type;
 };
 
 ///.Metafunction.Value.param.T.type:Class.Splitter
-template <typename TPosition, typename TSpec>
-struct Value<Splitter<TPosition, TSpec> >
+template <typename TValue, typename TSpec>
+struct Value<Splitter<TValue, TSpec> >
 {
-    typedef TPosition Type;
+    typedef TValue Type;
 };
 
 ///.Function.length.param.object.type:Class.Splitter
 ///.Function.length.class:Class.Splitter
-template <typename TPosition, typename TSpec>
-inline TPosition
-length(Splitter<TPosition, TSpec> const &splitter)
+template <typename TValue, typename TSpec>
+inline typename Size<Splitter<TValue, TSpec> >::Type
+length(Splitter<TValue, TSpec> const &splitter)
 {
     return splitter.subintervalCount;
 }
 
-template <typename TPosition, typename TSpec>
+template <typename TValue, typename TSpec, typename TSize1, typename TSize2>
 inline void
-_resize(Splitter<TPosition, TSpec> &splitter, TPosition intervalLen, TPosition newCount)
+_resize(Splitter<TValue, TSpec> &splitter, TSize1 intervalLen, TSize2 newCount)
 {
     if (newCount != 0)
     {
@@ -187,9 +189,9 @@ _resize(Splitter<TPosition, TSpec> &splitter, TPosition intervalLen, TPosition n
 
 ///.Function.resize.param.object.type:Class.Splitter
 ///.Function.resize.class:Class.Splitter
-template <typename TPosition, typename TSpec>
-inline TPosition
-resize(Splitter<TPosition, TSpec> &splitter, TPosition newCount)
+template <typename TValue, typename TSpec, typename TSize>
+inline typename Size<Splitter<TValue, TSpec> >::Type
+resize(Splitter<TValue, TSpec> &splitter, TSize newCount)
 {
     _resize(splitter, splitter.blockLength * splitter.subintervalCount + splitter.rest, newCount);
     return newCount;

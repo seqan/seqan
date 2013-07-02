@@ -67,11 +67,11 @@ arrayFill(TIterator begin_,
           TValue const & value,
           Tag<TParallelTag> parallelTag)
 {
-    Splitter<typename Difference<TIterator>::Type> splitter(0, end_ - begin_, parallelTag);
+    Splitter<TIterator> splitter(begin_, end_, parallelTag);
 
     SEQAN_OMP_PRAGMA(parallel for)
     for (int job = 0; job < (int)length(splitter); ++job)
-        arrayFill(begin_ + splitter[job], begin_ + splitter[job + 1], value, Serial());
+        arrayFill(splitter[job], splitter[job + 1], value, Serial());
 }
 
 /**
