@@ -39,6 +39,7 @@
 
 #include <seqan/basic.h>
 
+#if !defined(_MSC_VER)  // Currently, there are some issues with MSVC and concepts.
 class EnableIfExample
 {
 public:
@@ -76,13 +77,16 @@ public:
     { /* ... */}
 //![disable if example function]
 };
+#endif  // #if !defined(_MSC_VER)
 
 int main()
 {
+#if !defined(_MSC_VER)
     EnableIfExample ex1(1);
     (void)ex1;
     EnableIfExample ex2("asdf");
     (void)ex2;
+#endif  // #if !defined(_MSC_VER)
 
     return 0;
 }
