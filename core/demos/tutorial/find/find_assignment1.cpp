@@ -11,12 +11,5 @@ int main()
 	appendValue(needles, "send");
 	appendValue(needles, "more");
 
-	Finder<CharString> finder(haystack);
-	Pattern<String<CharString>, WuManber> pattern(needles);
-	while (find(finder, pattern))
-	{
-		std::cout << '[' << beginPosition(finder) << ',' << endPosition(finder) << ")\t";
-		std::cout << position(pattern) << '\t' << infix(finder) << std::endl;
-	}
 	return 0;
 }
