@@ -1330,13 +1330,19 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 		TDirIterator it = begin(dir, Standard());
 		TDirIterator itEnd = end(dir, Standard());
 		TSize prevDiff = 0, sum = 0;
-		while (it != itEnd) 
+		for (; it != itEnd; ++it)
 		{
 			if (!TWithConstraints::VALUE || prevDiff != (TSize)-1)
+            {
                 sum += prevDiff;
-            prevDiff = *it;
-            *it = sum;
-			++it;
+                prevDiff = *it;
+                *it = sum;
+            }
+            else
+            {
+                prevDiff = *it; 
+                *it = (TSize)-1;    // disable bucket
+            }
 		}
 		return sum + prevDiff;
 	}
