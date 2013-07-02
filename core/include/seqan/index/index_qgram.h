@@ -1158,28 +1158,50 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 	//
 	
 	// map hashes 1:1 to directory
-	template < typename THashValue >
+	template < typename THashValue, typename TParallelTag >
 	inline THashValue
-	requestBucket(Nothing &, THashValue hash)
+	requestBucket(Nothing &, THashValue hash, Tag<TParallelTag>)
 	{
 		return hash;
 	}
 
-	template < typename THashValue >
+	template < typename THashValue, typename TParallelTag >
 	inline THashValue
-	getBucket(Nothing const &, THashValue hash)
+	getBucket(Nothing const &, THashValue hash, Tag<TParallelTag>)
 	{
 		return hash;
+	}
+
+    // backward compatibility wrappers
+	template < typename TBucketMap, typename THashValue >
+	inline THashValue
+	requestBucket(TBucketMap &bucketMap, THashValue hash)
+	{
+		return requestBucket(bucketMap, hash, Serial());
+	}
+
+	template < typename TBucketMap, typename THashValue >
+	inline THashValue
+	getBucket(TBucketMap const &bucketMap, THashValue hash)
+	{
+		return getBucket(bucketMap, hash, Serial());
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Counting sort - Step 1: Clear directory
-	template < typename TDir >
+	template < typename TDir, typename TParallelTag >
 	inline void
-	_qgramClearDir(TDir &dir, Nothing &)
+	_qgramClearDir(TDir &dir, Nothing &, Tag<TParallelTag> parallelTag)
 	{
-		arrayFill(begin(dir, Standard()), end(dir, Standard()), 0);
+		arrayFill(begin(dir, Standard()), end(dir, Standard()), 0, parallelTag);
 	}
+
+	template < typename TDir, typename TBucketMap >
+	inline void _qgramClearDir(TDir &dir, TBucketMap &bucketMap)
+    {
+        _qgramClearDir(dir, bucketMap, Serial());
+    }
+
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Counting sort - Step 2: Count q-grams
@@ -1254,9 +1276,13 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 	//////////////////////////////////////////////////////////////////////////////
 	// Counting sort - Step 3: Cumulative sum
     //
-    // a disabled bucket 3,2,x,4   (x = disabled)
-    // results in        0,0,3,x,5 (_qgramCummulativeSum)
-    // or in             0,3,5,x,9 (_qgramCummulativeSumAlt)
+    // a disabled bucket 3,2,x,4   (x = disabled)               y_i=sum_{j<=i} x_j
+    // results in        0,0,3,x,5 (_qgramCummulativeSum)       z_i=y_{i-2}
+    // or in             0,3,5,5,9 (_qgramCummulativeSumAlt)    z_i=y_{i-1}
+
+    //    3 2 1 x x 5
+    // 0 0 3 5 x x 6 11
+    //   0 3 5 6 6 6 11
 
 	// First two entries are 0.
 	// Step 4 increments the entries hash(qgram)+1 on-the-fly while filling the SA table.
@@ -1266,8 +1292,8 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 	_qgramCummulativeSum(TDir &dir, TWithConstraints)
 	{
 	SEQAN_CHECKPOINT
-		typedef typename Iterator<TDir, Standard>::Type			TDirIterator;
-		typedef typename Value<TDir>::Type						TSize;
+		typedef typename Iterator<TDir, Standard>::Type TDirIterator;
+		typedef typename Value<TDir>::Type              TSize;
 
 		TDirIterator it = begin(dir, Standard());
 		TDirIterator itEnd = end(dir, Standard());
@@ -1292,30 +1318,24 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 	}
 
 	// The first entry is 0.
-	// This function is used when Step 4 is ommited.
+	// This function is used when Steps 4 and 5 (fill SA, correct disabled buckets) are ommited.
 	template < typename TDir, typename TWithConstraints >
 	inline typename Value<TDir>::Type
 	_qgramCummulativeSumAlt(TDir &dir, TWithConstraints const)
 	{
 	SEQAN_CHECKPOINT
-		typedef typename Iterator<TDir, Standard>::Type			TDirIterator;
-		typedef typename Value<TDir>::Type						TSize;
+		typedef typename Iterator<TDir, Standard>::Type TDirIterator;
+		typedef typename Value<TDir>::Type              TSize;
 
 		TDirIterator it = begin(dir, Standard());
 		TDirIterator itEnd = end(dir, Standard());
 		TSize prevDiff = 0, sum = 0;
 		while (it != itEnd) 
 		{
-			if (TWithConstraints::VALUE && prevDiff == (TSize)-1)
-			{
-                sum += 0;
-                prevDiff = *it;
-                *it = (TSize)-1;                                // disable bucket
-			} else {
+			if (!TWithConstraints::VALUE || prevDiff != (TSize)-1)
                 sum += prevDiff;
-                prevDiff = *it;
-                *it = sum;
-			}
+            prevDiff = *it;
+            *it = sum;
 			++it;
 		}
 		return sum + prevDiff;
@@ -1346,7 +1366,7 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
 		typedef typename Iterator<TText const, Standard>::Type	TIterator;
 		typedef typename Value<TDir>::Type						TSize;
 
-		if (empty(shape)) return;
+		if (empty(shape) || length(text) < length(shape)) return;
 
 		TSize num_qgrams = length(text) - length(shape) + 1;
 		TIterator itText = begin(text, Standard());
@@ -1889,32 +1909,6 @@ The resulting tables must have appropriate size before calling this function.
 
 		// 2. count q-grams
 		_qgramCountQGrams(dir, bucketMap, text, shape, stepSize);
-
-		// 3. cumulative sum (Step 4 is ommited)
-		_qgramCummulativeSumAlt(dir, False());
-	}
-
-	template < 
-		typename TDir,
-		typename TBucketMap,
-		typename TString,
-		typename TSpec,
-		typename TShape,
-		typename TStepSize >
-	void createQGramIndexDirOnly(
-		TDir &dir,
-		TBucketMap &bucketMap,
-		StringSet<TString, TSpec> const &stringSet,
-		TShape &shape,
-		TStepSize stepSize)
-	{
-	SEQAN_CHECKPOINT
-
-		// 1. clear counters
-		_qgramClearDir(dir, bucketMap);
-
-		// 2. count q-grams
-		_qgramCountQGrams(dir, bucketMap, stringSet, shape, stepSize);
 
 		// 3. cumulative sum (Step 4 is ommited)
 		_qgramCummulativeSumAlt(dir, False());

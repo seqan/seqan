@@ -44,8 +44,12 @@ namespace SEQAN_NAMESPACE_MAIN
 	template <typename THashValue>
 	struct BucketMap 
 	{
-		String<THashValue>	qgramCode;
+        static const THashValue EMPTY;
+		String<THashValue> qgramCode;
 	};
+
+	template <typename THashValue>
+    const THashValue BucketMap<THashValue>::EMPTY = (THashValue)-1;
 
 	// use the index value type as shape value type
 	template < typename TObject, typename TShapeSpec >
@@ -199,13 +203,14 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Counting sort - Step 1: Clear directory
-	template < typename TDir, typename THashValue >
-	inline void _qgramClearDir(TDir &dir, BucketMap<THashValue> &bucketMap)
+	template < typename TDir, typename THashValue, typename TParallelTag >
+	inline void _qgramClearDir(TDir &dir, BucketMap<THashValue> &bucketMap, Tag<TParallelTag> parallelTag)
 	{
+        typedef BucketMap<THashValue> TBucketMap;
         if (!empty(dir))
-            arrayFill(begin(dir, Standard()), end(dir, Standard()), 0);
+            arrayFill(begin(dir, Standard()), end(dir, Standard()), 0, parallelTag);
         if (!empty(bucketMap.qgramCode))
-            arrayFill(begin(bucketMap.qgramCode, Standard()), end(bucketMap.qgramCode, Standard()), (THashValue)-1);
+            arrayFill(begin(bucketMap.qgramCode, Standard()), end(bucketMap.qgramCode, Standard()), TBucketMap::EMPTY, parallelTag);
 	}
 
     template < typename TBucketMap, typename TValue >
@@ -220,12 +225,12 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         return ((val * 43) ^ (val >> 20)) + val;
 #endif
     }
-    
 
-	template < typename THashValue, typename THashValue2 >
+	template < typename THashValue, typename THashValue2, typename TParallelTag >
 	inline THashValue
-	requestBucket(BucketMap<THashValue> &bucketMap, THashValue2 code)
+	requestBucket(BucketMap<THashValue> &bucketMap, THashValue2 code, Tag<TParallelTag> parallelTag)
 	{
+        typedef BucketMap<THashValue> TBucketMap;
 		typedef unsigned long TSize;
 		// get size of the index
 
@@ -242,42 +247,34 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         hlen -= 2;
 		h1 &= hlen;
 #endif
-		// was the entry empty?
-		if (bucketMap.qgramCode[h1] == (THashValue)-1)
-		{
-			bucketMap.qgramCode[h1] = code;
+		// was the entry empty or occupied by our code?
+        THashValue currentCode = atomicCas(bucketMap.qgramCode[h1], TBucketMap::EMPTY, code, parallelTag);
+        if (currentCode == TBucketMap::EMPTY || currentCode == code)
 			return h1;
-		}
-		// if not ...
-		else
-		{
-			// is it occupied by our code?
-			if (bucketMap.qgramCode[h1] == code)
-				return h1;
-            
-			// if not we have a collision -> probe for our code or an empty entry
-            //
-            // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
-            // otherwise do quadratic probing to avoid clustering (Cormen 1998)
-            register TSize delta = 0;
-            (void)delta;
-            do {
+
+        // if not we have a collision -> probe for our code or an empty entry
+        //
+        // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
+        // otherwise do quadratic probing to avoid clustering (Cormen 1998)
+        register TSize delta = 0;
+        (void)delta;
+        do {
 #ifdef SEQAN_OPENADDRESSING_COMPACT
-                h1 = (h1 + 1) % hlen;               // linear probing guarantees that all entries are visited
+            h1 = (h1 + 1) % hlen;               // linear probing guarantees that all entries are visited
 #else
-                h1 = (h1 + delta + 1) & hlen;       // for power2-sized tables the (i*i+i)/2 probing guarantees the same
-                ++delta;
+            h1 = (h1 + delta + 1) & hlen;       // for power2-sized tables the (i*i+i)/2 probing guarantees the same
+            ++delta;
 #endif
-            } while (bucketMap.qgramCode[h1] != (THashValue)-1 && bucketMap.qgramCode[h1] != code);
-            bucketMap.qgramCode[h1] = code;
-            return h1;
-		}
+            currentCode = atomicCas(bucketMap.qgramCode[h1], TBucketMap::EMPTY, code, parallelTag);
+        } while (currentCode != TBucketMap::EMPTY && currentCode != code);
+        return h1;
 	}
 
 	template < typename THashValue, typename THashValue2 >
 	inline THashValue
 	getBucket(BucketMap<THashValue> const &bucketMap, THashValue2 code)
 	{
+        typedef BucketMap<THashValue> TBucketMap;
 		typedef unsigned long TSize;
 		// get size of the index
 		
@@ -301,7 +298,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
         // otherwise do quadratic probing to avoid clustering (Cormen 1998)
         register TSize delta = 0;
         (void)delta;
-		while (bucketMap.qgramCode[h1] != code && bucketMap.qgramCode[h1] != (THashValue)-1)
+		while (bucketMap.qgramCode[h1] != code && bucketMap.qgramCode[h1] != TBucketMap::EMPTY)
 		{
 #ifdef SEQAN_OPENADDRESSING_COMPACT
 			h1 = (h1 + 1) % hlen;               // linear probing guarantees that all entries are visited
@@ -312,7 +309,17 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 		}
 		return h1;
 	}
-    
+
+    template <typename TBucketMap>
+    inline bool _emptyBucketMap(TBucketMap const &bucketMap)
+    {
+        return empty(bucketMap);
+    }
+
+    inline bool _emptyBucketMap(Nothing const &)
+    {
+        return false;
+    }
 
 	template <typename TObject, typename TShapeSpec>
 	inline __int64 _fullDirLength(Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> > const &index) 
