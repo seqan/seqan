@@ -552,7 +552,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 RecursionDirectionHorizontal const &,
                 DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    //typedef typename TraceBitMap_::TTraceValue TTraceValue;
     TScoreValue tmpGapOpenHorizontal = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
     activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
 
@@ -594,7 +594,7 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                 RecursionDirectionVertical const &,
                 DPProfile_<TAlgorithm, AffineGaps, TTracebackConfig> const &)
 {
-    typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    //typedef typename TraceBitMap_::TTraceValue TTraceValue;
     TScoreValue tmpGapOpenVertical = _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal);
     activeCell._verticalScore = _verticalScoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
 

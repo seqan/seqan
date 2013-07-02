@@ -159,7 +159,7 @@ template <typename TDPCell>
 inline void
 _reinitScout(DPScout_<TDPCell, BandedChainAlignmentScout> & dpScout)
 {
-    typedef typename Value<TDPCell>::Type TScoreValue;
+    //typedef typename Value<TDPCell>::Type TScoreValue;
 
     dpScout._maxScore = TDPCell();
     resize(dpScout._maxHostPositions, 1, 0);
