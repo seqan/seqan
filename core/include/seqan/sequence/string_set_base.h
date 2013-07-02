@@ -1016,7 +1016,7 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
 ..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
 ..param.delta:Increase the local offset of $pos$ by this value.
 ..param.text:Single sequence or @Class.StringSet@.
-..returns:Returns a $bool$ that which is $true$ if the position is still valid, i.e. 
+..returns:Returns a $bool$ which is $true$ if the position is still valid, i.e. 
 if it doesn't exceed the end of the referred sequence in the text.
 ..see:Function.posAdd
 ..see:Function.posInc
