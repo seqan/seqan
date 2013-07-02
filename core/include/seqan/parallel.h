@@ -40,8 +40,9 @@
 //____________________________________________________________________________
 // Prerequisites
 
-#include <seqan/basic.h>
 #include <seqan/platform.h>
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
 
 //____________________________________________________________________________
 // Module Headers
