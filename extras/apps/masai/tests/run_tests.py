@@ -77,7 +77,8 @@ def main(source_base, binary_base):
 
     for i in ['sa', 'esa', 'fm', 'qgram']:
         # Get file extensions for the given index type
-        exts=[file.split('.', 2).pop() for file in glob.glob(ph.inFile('adeno-index-%s.out.*' % i))]
+        exts = [os.path.basename(fname).split('.', 2)[-1]
+                for fname in glob.glob(ph.inFile('adeno-index-%s.out.*' % i))]
         conf = app_tests.TestConf(
             program=path_to_indexer,
             redir_stdout=ph.outFile('adeno-index-%s.stdout' % i),
