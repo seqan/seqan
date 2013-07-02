@@ -1846,12 +1846,18 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
  */
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline typename Iterator<Index<TText, TIndexSpec>, TSpec >::Type
-	begin(Index<TText, TIndexSpec> &index, TSpec const) 
+	begin(Index<TText, TIndexSpec> &index, TSpec const)
 	{
-		return typename Iterator<
-			Index<TText, TIndexSpec>, 
-			TSpec 
-		>::Type (index);
+		typedef Iter<Index<TText, TIndexSpec>, VSTree<TSpec> >	TIter;
+		typedef typename GetVSTreeIteratorTraits<TIter>::Type	TTraits;
+
+        typename Iterator<Index<TText, TIndexSpec>, TSpec>::Type it(index);
+
+        if (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
+            while (goDown(it)) ;
+        }
+
+		return it;
 	}
 
 ///.Function.goBegin.param.iterator.type:Spec.BottomUp Iterator
