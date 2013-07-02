@@ -76,7 +76,7 @@ arrayFill(TIterator begin_,
 
 /**
 .Function.sum
-..cat:Array Handling
+..cat:Miscellaneous
 ..summary:Returns the sum of all elements in a sequence.
 ..signature:sum(seq[, parallelTag])
 ..param.seq:A sequence of elements that should be summed.
@@ -124,7 +124,7 @@ sum(TSequence const &seq)
 
 /**
 .Function.partialSum
-..cat:Array Handling
+..cat:Miscellaneous
 ..summary:Computes the partial sum of a sequence.
 ..signature:partialSum(target, source[, parallelTag])
 ..param.source:A sequence of elements that should be partially summed.

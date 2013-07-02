@@ -888,6 +888,19 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
 // Function posPrev()
 // --------------------------------------------------------------------------
 
+/**
+.Function.posPrev
+..cat:Sequences
+..summary:Returns a position where the local offset is decreased by one.
+..signature:posPrev(pos)
+..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
+..returns:Returns a value of the same type as $pos$ where $seqOfs$ is decreased by one.
+..see:Function.posNext
+..see:Function.posInc
+..see:Function.posAdd
+..include:seqan/sequence.h
+*/
+
 template <typename TPos>
 inline TPos posPrev(TPos pos) {
     return pos - 1;
@@ -899,8 +912,56 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
 }
 
 // --------------------------------------------------------------------------
+// Function posInc()
+// --------------------------------------------------------------------------
+
+/**
+.Function.posInc
+..cat:Sequences
+..summary:Increments the local offset of a position type.
+..signature:posInc(pos)
+..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$. In both cases $seqOfs$ will be incremented by one.
+..see:Function.posNext
+..see:Function.posAdd
+..include:seqan/sequence.h
+*/
+
+template <typename TPos>
+inline void posInc(TPos &pos) {
+    ++pos;
+}
+
+template <typename TPos, typename TDelta>
+inline void posInc(TPos &pos, TDelta delta) {
+    pos += delta;
+}
+
+template <typename T1, typename T2, typename TPack>
+inline void posInc(Pair<T1, T2, TPack> & pos) {
+    ++pos.i2;
+}
+
+template <typename T1, typename T2, typename TPack, typename TDelta>
+inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
+    pos.i2 += delta;
+}
+
+// --------------------------------------------------------------------------
 // Function posNext()
 // --------------------------------------------------------------------------
+
+/**
+.Function.posNext
+..cat:Sequences
+..summary:Returns a position where the local offset is increased by one.
+..signature:posNext(pos)
+..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
+..returns:Returns a value of the same type as $pos$ where $seqOfs$ is increased by one.
+..see:Function.posPrev
+..see:Function.posInc
+..see:Function.posAdd
+..include:seqan/sequence.h
+*/
 
 template <typename TPos>
 inline TPos posNext(TPos pos) {
@@ -916,6 +977,20 @@ posNext(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 // Function posAdd()
 // --------------------------------------------------------------------------
+
+/**
+.Function.posAdd
+..cat:Sequences
+..summary:Returns a position where the local offset is increased by a value $delta$.
+..signature:posAdd(pos, delta)
+..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
+..param.delta:Increase the local offset of $pos$ by this value.
+..returns:Returns a value of the same type as $pos$ where $seqOfs$ is increased by $delta$.
+..see:Function.posAddAndCheck
+..see:Function.posInc
+..see:Function.posNext
+..include:seqan/sequence.h
+*/
 
 template <typename TPos, typename TDelta>
 inline TPos posAdd(TPos pos, TDelta delta) {
@@ -933,13 +1008,28 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
 // Function posAddAndCheck()
 // --------------------------------------------------------------------------
 
+/**
+.Function.posAddAndCheck
+..cat:Sequences
+..summary:Increases the local offset of a position by a value $delta$ and check for overflow.
+..signature:posAddAndCheck(pos, delta, text)
+..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
+..param.delta:Increase the local offset of $pos$ by this value.
+..param.text:Single sequence or @Class.StringSet@.
+..returns:Returns a $bool$ that which is $true$ if the position is still valid, i.e. 
+if it doesn't exceed the end of the referred sequence in the text.
+..see:Function.posAdd
+..see:Function.posInc
+..include:seqan/sequence.h
+*/
+
 template <typename TPos, typename TDelta, typename TSequence>
-inline TPos posAddAndCheck(TPos & pos, TDelta delta, TSequence const & sequence) {
+inline bool posAddAndCheck(TPos & pos, TDelta delta, TSequence const & sequence) {
     return (pos += delta) < length(sequence);
 }
 
 template <typename TPos, typename TDelta, typename TSequence, typename TSpec>
-inline TPos posAddAndCheck(TPos & pos, TDelta delta, StringSet<TSequence, TSpec> const & stringSet)
+inline bool posAddAndCheck(TPos & pos, TDelta delta, StringSet<TSequence, TSpec> const & stringSet)
 {
     typedef StringSet<TSequence, TSpec> TStringSet;
     typedef typename StringSetLimits<TStringSet const>::Type TLimits;
@@ -965,6 +1055,20 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
 // --------------------------------------------------------------------------
 // Function posSub()
 // --------------------------------------------------------------------------
+
+/**
+.Function.posSub
+..cat:Sequences
+..summary:Returns a position where the local offset is decreased by a value $delta$.
+..signature:posSub(pos, delta)
+..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
+..param.delta:Decrease the local offset of $pos$ by this value.
+..returns:Returns a value of the same type as $pos$ where $seqOfs$ is decreased by $delta$.
+..see:Function.posAdd
+..see:Function.posInc
+..see:Function.posNext
+..include:seqan/sequence.h
+*/
 
 template <typename TA, typename TB>
 inline TA posSub(TA a, TB b) {
