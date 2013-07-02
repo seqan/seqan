@@ -45,6 +45,7 @@
 #include "test_parallel_atomic_primitives.h"
 #include "test_parallel_atomic_misc.h"
 #include "test_parallel_splitting.h"
+#include "test_parallel_algorithms.h"
 
 SEQAN_BEGIN_TESTSUITE(test_parallel) {
 #if defined(_OPENMP)
@@ -75,5 +76,7 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
 
     SEQAN_CALL_TEST(test_parallel_splitter_equidistant);
     SEQAN_CALL_TEST(test_parallel_splitting_compute_splitters);
+    SEQAN_CALL_TEST(test_parallel_sum);
+    SEQAN_CALL_TEST(test_parallel_partial_sum);
 }
 SEQAN_END_TESTSUITE

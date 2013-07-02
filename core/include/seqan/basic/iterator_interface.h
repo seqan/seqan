@@ -451,6 +451,10 @@ setValue(T const * & ptr,
 ..include:seqan/basic.h
 */
 
+/*
+
+// disabled auto-sequence interface #valueiscontainer
+
 template <typename T>
 inline
 typename Container<T>::Type &
@@ -460,6 +464,7 @@ container(T me)
     SEQAN_CHECKPOINT;
     return me;
 }
+*/
 
 // ---------------------------------------------------------------------------
 // Function position()
@@ -484,14 +489,20 @@ container(T me)
 ..include:seqan/basic.h
 */
 
+/*
+
+// disabled auto-sequence interface #valueiscontainer
+
 template <typename T>
 inline typename Position<T>::Type
-position(T * /*me*/)
+position(T * )
 {
     // TODO(holtgrew): Default implementation with auto-sequences, remove?
     SEQAN_CHECKPOINT;
     return 0;
 }
+
+*/
 
 template <typename TContainer, typename TIterator>
 inline typename Position<TContainer>::Type
@@ -897,7 +908,7 @@ inline void
 goNil(TIterator * & me)
 {
     SEQAN_CHECKPOINT;
-    me = 0;
+    me = NULL;
 }
 
 // ---------------------------------------------------------------------------
@@ -931,7 +942,7 @@ inline bool
 atNil(TIterator * me)
 {
     SEQAN_CHECKPOINT;
-    return me == 0;
+    return me == NULL;
 }
 
 }  // namespace seqan

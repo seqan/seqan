@@ -648,22 +648,22 @@ arrayDestruct(TIterator1 begin_,
 
 // TODO(holtgrew): Redirects to fill_n. What are the exact semantics here? Do the array elements have to be initialized already? fill_n uses assignment, not copy construction!
 
-template<typename TIterator1, typename TIterator2, typename TValue>
+template <typename TIterator, typename TValue>
 inline void 
-arrayFill(TIterator1 begin_,
-          TIterator2 end_, 
+arrayFill(TIterator begin_,
+          TIterator end_,
           TValue const & value)
 {
     SEQAN_CHECKPOINT;
     ::std::fill_n(begin_, end_ - begin_, value);
 }
 
-template < typename TIterator, typename TValue, typename TParallelTag >
+template <typename TIterator, typename TValue>
 inline void 
 arrayFill(TIterator begin_,
           TIterator end_, 
           TValue const & value,
-          Tag<TParallelTag>)
+          Serial)
 {
     arrayFill(begin_, end_, value);
 }

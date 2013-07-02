@@ -77,8 +77,8 @@ In contrast to other containers the Splitter allows to access one more element t
 ...remarks:@Function.length@ and @Function.resize@ can be used to retrieve or change the number of subintervals later.
 ..param.parallelTag:Tag to generically enable/disable parallelism. If its type is @Tag.Parallel@, the default number of subintervals is used.
 If it is @Tag.Serial@, only one subinterval is used.
-...types:Tag.Serial
-...types:Tag.Parallel
+...type:Tag.Serial
+...type:Tag.Parallel
 ...remarks:This tag should be used to write generic parallel algorithms and to switch between parallel and serial variants.
 ..class:Class.Splitter
  */
