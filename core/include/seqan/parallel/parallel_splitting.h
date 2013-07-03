@@ -151,7 +151,7 @@ public:
 template <typename TValue, typename TSpec>
 struct Size<Splitter<TValue, TSpec> >
 {
-    typedef typename Difference<TValue>::Type Type;
+    typedef typename MakeUnsigned<typename Difference<TValue>::Type>::Type Type;
 };
 
 ///.Metafunction.Value.param.T.type:Class.Splitter
