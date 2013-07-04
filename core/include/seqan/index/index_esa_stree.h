@@ -1860,6 +1860,13 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 		return it;
 	}
 
+	template < typename TText, typename TIndexSpec, class TSpec >
+    inline typename Iterator<Index<TText, TIndexSpec>, BottomUp<TSpec> >::Type
+    begin(Index<TText, TIndexSpec> &index, BottomUp<TSpec> const)
+    {
+        return typename Iterator<Index<TText, TIndexSpec>, BottomUp<TSpec> >::Type(index);
+    }
+
 ///.Function.goBegin.param.iterator.type:Spec.BottomUp Iterator
 ///.Function.goBegin.class:Spec.BottomUp Iterator
 ///.Function.goBegin.param.iterator.type:Spec.TopDownHistory Iterator
