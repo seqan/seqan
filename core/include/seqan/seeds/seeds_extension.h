@@ -87,20 +87,20 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
 .Enum.Extension Direction
 ..cat:Seed Handling
 ..summary:The direction in which a seed should be extended.
+..value.EXTEND_NONE:Perform no extension.
 ..value.EXTEND_LEFT:Extend the seed to the left.
 ..value.EXTEND_RIGHT:Extend the seed to the right.
 ..value.EXTEND_BOTH:Extend the seed in both directions.
-..value.EXTEND_NONE:Perform no extension.
 ..see:Function.extendSeed
 ..include:seqan/seeds.h
 */
 
 enum ExtensionDirection
 {
-    EXTEND_LEFT,
-    EXTEND_RIGHT,
-    EXTEND_BOTH,
-	EXTEND_NONE
+    EXTEND_NONE  = 0,
+    EXTEND_LEFT  = 1,
+    EXTEND_RIGHT = 2,
+    EXTEND_BOTH  = 3
 };
 
 // ===========================================================================
