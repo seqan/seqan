@@ -679,6 +679,11 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 ..returns:The length of the sequence returned by @Function.representative@
 ...type:Metafunction.Size|Size type of the underlying index
 ..include:seqan/index.h
+..example
+...text:The following code shows a simple example how the function @Function.repLength@ is used.
+...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
+...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
+The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#repLength
@@ -1201,6 +1206,11 @@ are stored in a contiguous range of the suffix array.
 $range$ returns begin and end position of this range for occurrences of @Function.representative@.
 If $iterator$'s container type is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 ..include:seqan/index.h
+..example
+...text:The following code shows a simple example how the function @Function.range@ is used.
+...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
+...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
+The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#range
@@ -1479,6 +1489,11 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..returns:An @Spec.InfixSegment@ of the text of an index (see @Tag.ESA Index Fibres.EsaText@).
 If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaText>::Type const>::Type$.
 ..include:seqan/index.h
+..example
+...text:The following code shows a simple example how the @Function.range@ is used.
+...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
+...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
+The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#representative
@@ -1789,6 +1804,11 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ..param.iterator:An iterator of a suffix tree.
 ...type:Spec.TopDown Iterator
 ..include:seqan/index.h
+..example
+...text:The following code shows a simple example how the @Function.range@ is used.
+...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
+...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
+The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 /*!
  * @fn VSTreeIterator#goRoot
@@ -1815,17 +1835,37 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 
 /**
 .Function.Index#begin
-..summary:Returns an iterator pointing to the root not of the virtual suffix tree of the index.
+..summary:Returns an iterator pointing to the root node of the virtual string tree/trie of an index. The only exception are @Tag.DFS Order.Postorder@ iterators, where begin returns an iterator pointing to the leftmost node in the tree/trie.
 ..signature:begin(index, tag)
 ..class:Class.Index
 ..param.index:The index to be traversed
 ...type:Spec.IndexEsa
 ...type:Spec.IndexDfi
 ...type:Spec.IndexWotd
+...type:Spec.FMIndex
+...type:Spec.IndexSa
 ..param.tag:The specialisation of the iterator to be returned by the function.
 ...type:Spec.VSTree Iterator
 ..returns:Returns an iterator pointing to the root not of the virtual suffix tree of the index.
 ...type:nolink:$The result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type$
+..example
+...text:The following example shows the usage of the @Function.begin@ function. Note that in the first case @Function.begin@ returns an iterator pointing to the root node, while in the second case @Function.begin@ returns a pointer to the left most node.
+...file:demos/index/index_begin_atEnd_representative.cpp
+...output:
+A
+AA
+ATAA
+TA
+TAA
+TATAA
+--------------------------------
+AA
+ATAA
+A
+TAA
+TATAA
+TA
+
 */
 //TODO(singer): The summary is not entirely true!!!
 /*!
@@ -1996,6 +2036,11 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ..returns:$true$ if the edge or path to go down exists, otherwise $false$.
 ...type:nolink:bool
 ..include:seqan/index.h
+..example
+...text:The following code shows a simple example how the function @Function.goDown@ is used.
+...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
+...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
+The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 //TODO(singer): The lcp stuff need to be adapted
 /*!
@@ -2320,6 +2365,24 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 ..returns:$true$ if the iterator could be moved, otherwise $false$.
 ...type:nolink:bool
 ..include:seqan/index.h
+..example
+...text:The following code shows how the function @Function.goUp@ is used.
+...file:demos/index/index_iterator.cpp
+...output:be
+beornottobe
+e
+eornottobe
+nottobe
+o
+obe
+obeornottobe
+ornottobe
+ottobe
+rnottobe
+t
+tobe
+tobeornottobe
+ttobe
 */
 /*!
  * @fn TopDownHistoryIterator#goUp
@@ -2724,6 +2787,39 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 		return !value(it).range.i2;
 	}
 
+/**
+.Function.VSTree Iterator#atEnd
+..class:Spec.VSTree Iterator
+..concept:Concept.ContainerConcept
+..concept:Concept.RootedIteratorConcept
+..cat:Iteration
+..summary:Determines whether an virtual string tree iterator is at the end position.
+..signature:bool atEnd(iterator)
+..param.iterator:An iterator.
+...type:Spec.BottomUp Iterator
+...type:Spec.TopDownHistory Iterator
+...concept:Concept.RootedIteratorConcept
+..returns:$true$ if $iterator$ points behind the last item of the container, otherwise $false$.
+..include:seqan/index.h
+..example
+...text:The following example shows the usage of the @Function.atEnd@ function. 
+...file:demos/index/index_begin_atEnd_representative.cpp
+...output:
+A
+AA
+ATAA
+TA
+TAA
+TATAA
+--------------------------------
+AA
+ATAA
+A
+TAA
+TATAA
+TA
+
+*/
 ///.Function.atEnd.param.iterator.type:Spec.BottomUp Iterator
 ///.Function.atEnd.class:Spec.BottomUp Iterator
 ///.Function.atEnd.param.iterator.type:Spec.TopDownHistory Iterator
@@ -2752,6 +2848,15 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..returns:$true$ if $iterator$ points to the root of the tree, otherwise $false$.
 ...type:nolink:bool
 ..include:seqan/index.h
+..example
+...text:The following example shows the usage of the @Function.isRoot@ function. 
+...file:demos/index/index_begin_atEnd_representative_bottomUp.cpp
+...output:AA
+ATAA
+A
+TAA
+TATAA
+TA
 */
 /*!
  * @fn VSTreeIterator#isRoot
@@ -3048,6 +3153,17 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 ..returns:The number of different sequences containing the @Function.representative@.
 ..see:Function.getOccurrences
 ..include:seqan/index.h
+..example
+...text:The following code how @Function.getFrequency@ is used. Note that the result of alternative 1 and 2 is the same, however alternative one copies a string which requires more memory.
+...file:demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
+...output:SSI occurs in 2 sequences.
+Hit in sequence 0 at position 5
+Hit in sequence 1 at position 4
+Hit in sequence 0 at position 2
+----------------------------
+Hit in sequence 0 at position 5
+Hit in sequence 1 at position 4
+Hit in sequence 0 at position 2
 */
 /*!
  * @fn VSTreeIterator#getFrequency

@@ -107,6 +107,32 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
 	template <typename TSpec = void>
 	struct VSTree;
 
+/**
+.Tag.TopDown
+..summary:Tag that specifies a @Spec.VSTree Iterator@ to traverse the virtual string tree from the root towards the leafs.
+..cat:Index
+..tag.Preorder:Pre-order traversal of the virtual string tree.
+..tag.Postorder:Post-order traversal of the virtual string tree.
+..tag.ParentLinks:A top down iterator with the possibility to go back up again.
+..example
+...text:The following example shows how a the @Tag.TopDown@ tag is used.
+...file:demos/index/index_begin_atEnd_representative.cpp
+...output:
+A
+AA
+ATAA
+TA
+TAA
+TATAA
+--------------------------------
+AA
+ATAA
+A
+TAA
+TATAA
+TA
+
+*/
 		// top down traversal iterators
 		template <typename TSpec = Preorder>
 		struct TopDown {};					// starts in the suffix tree root and can go down and go right
@@ -115,6 +141,22 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
 			template < typename TSpec = Preorder >
 			struct ParentLinks {};			// .. can also go up
 
+/**
+.Tag.BottomUp
+..summary:Tag that specifies a @Spec.VSTree Iterator@ to traverse the virtual string tree from the root towards the leafs.
+..cat:Index
+..tag.Postorder:Post-order traversal of the virtual string tree.
+..example
+...text:The following example shows how a the @Tag.BottomUp@ tag is used.
+...file:demos/index/index_begin_atEnd_representative_bottomUp.cpp
+...output:
+AA
+ATAA
+A
+TAA
+TATAA
+TA
+*/
 		// bottom up traversal iterators
 		template <typename TSpec = Postorder>
 		struct BottomUp {};					// starts in the first node of a depth-first-search and can go next
@@ -366,15 +408,18 @@ The entries are the characters left of the corresponding suffix in the suffix ar
 
 /**
 .Spec.IndexEsa:
-..summary:An index based on an enhanced suffix array.
+..summary:The enhanced suffix array index is very fast index, requiring more memory than other indices.
+In addition to the suffix array an lcp (longest common prefix) table and a child table (containing structural 
+information of the suffix tree) are provided.
 ..cat:Index
 ..general:Class.Index
 ..signature:Index<TText, IndexEsa<> >
 ..param.TText:The text type.
 ...type:Class.String
-..remarks:The fibres (see @Class.Index@ and @Metafunction.Fibre@) of this index are a suffix array (see @Tag.ESA Index Fibres.EsaSA@), a lcp table (see @Tag.ESA Index Fibres.EsaLcp@), etc.
-..remarks:This index can be accessed as a Suffix Tree using the @Spec.VSTree Iterator@ classes.
-..include:seqan/index.h
+...type:Class.StringSet
+..remarks:The main fibres (see @Class.Index@ and @Metafunction.Fibre@) of this index are a suffix array
+(see @Tag.ESA Index Fibres.EsaSA@), a lcp table (see @Tag.ESA Index Fibres.EsaLcp@) and a child table (see @Tag.ESA Index Fibres.EsaChildtab@).
+..remarks:This index can be accessed as a Suffix Tree using the @Spec.VSTree Iterator@ classes.  ..include:seqan/index.h
 */
 /*!
  * @class IndexEsa

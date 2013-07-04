@@ -248,7 +248,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
 
 /**
 .Spec.IndexQGram:
-..summary:An index based on an array of sorted q-grams.
+..summary:An index based on an array of sorted q-grams. Especially useful for q-gram/k-mer searches.
 ..cat:Index
 ..general:Class.Index
 ..signature:Index<TText, IndexQGram<TShapeSpec[, TSpec]> >

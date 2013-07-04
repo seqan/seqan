@@ -877,19 +877,23 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 /**
 .Function.getFibre:
 ..summary:Returns a specific fibre of a container.
-..signature:getFibre(container, fibreTag)
+..signature:getFibre(index, fibreTag)
 ..class:Class.Index
 ..cat:Index
 ..param.container:The container holding the fibre.
 ...type:Class.Index
 ..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
 ...type:Tag.ESA Index Fibres
+...type:Tag.QGram Index Fibres
+...type:Tag.WOTD Index Fibres
+...type:Tag.FM Index Fibres
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
-..example.code:
-Index< String<char> > index_esa("tobeornottobe");
-
-String<char> & text = getFibre(indexEsa, EsaText());
+..example
+...text:The following code shows a simple example how the function @Function.getFibre@ is used.
+...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
+...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
+The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
 
 /*!
@@ -1055,8 +1059,25 @@ String<char> & text = getFibre(indexEsa, EsaText());
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.length.param.object.type:Class.Index
-///.Function.length.remarks:If $object$ is of type @Class.Index@, the number of characters in the raw underlying text of the index is returned.
+/**
+.Function.Index#length
+..cat:Index
+..summary:The number of characters in the underlying text of the index is returned.
+..signature:length(index)
+..class:Class.Index
+..param.index:The index to return the number of characters of.
+...type:Class.Index
+..returns:The number of characters in the raw underlying text of the index is returned.
+...metafunction:Metafunction.Size
+..remarks:If the underlying text is a @Class.StringSet@ then the sum of all characters of the sequneces in the string
+set is returned.
+..include:seqan/index.h
+..example
+...text:The following code shows how @Function.length@ can be used on an index in order to determine the number of characters in the underlying text.
+...file:demos/index/index_length_countSequences.cpp
+...output:Hit at position: < 1 , 2 >
+Hit at position: < 0 , 0 >
+ */
 
 /*!
  * @fn Index#length
@@ -1093,6 +1114,12 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..returns:The number of sequences in the index' underlying text.
 ...metafunction:Metafunction.Size
 ..include:seqan/index.h
+..example
+...text:The following code shows how @Function.countSequences@ can be used on an index in order to determine the number of sequences in the underlying text (which can be a @Class.StringSet@).
+...file:demos/index/index_length_countSequences.cpp
+...output:Hit at position: < 1 , 2 >
+Hit at position: < 0 , 0 >
+
  */
 
 /*!
@@ -1184,7 +1211,21 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ...type:Spec.IndexEsa
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
-*/
+..example
+...text:The following code shows how the BWT of a text can be computed.
+...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+...output:BWT	Suffices
+P	PI
+S	SIPPI
+S	SISSIPPI
+M	MISSISSIPPI
+I	I
+P	PPI
+I	IPPI
+S	SSIPPI
+S	SSISSIPPI
+I	ISSIPPI
+I	ISSISSIPPI*/
 
 /*!
  * @fn Index#textAt
@@ -1309,7 +1350,21 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ...type:Spec.IndexEsa
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
-*/
+..example
+...text:The following code shows how the BWT of a text can be computed.
+...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+...output:BWT	Suffices
+P	PI
+S	SIPPI
+S	SISSIPPI
+M	MISSISSIPPI
+I	I
+P	PPI
+I	IPPI
+S	SSIPPI
+S	SSISSIPPI
+I	ISSIPPI
+I	ISSISSIPPI*/
 /*!
  * @fn IndexEsa#saAt
  * 
@@ -1377,13 +1432,13 @@ String<char> & text = getFibre(indexEsa, EsaText());
 
 //////////////////////////////////////////////////////////////////////////////
 /**
-.Function.lcpAt:
+.Function.IndexEsa#lcpAt:
 ..summary:Shortcut for $value(indexLcp(..), ..)$.
 ..cat:Index
 ..signature:lcpAt(position, index)
-..class:Class.Index
+..class:Spec.IndexEsa
 ..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
@@ -1416,13 +1471,13 @@ String<char> & text = getFibre(indexEsa, EsaText());
 
 //////////////////////////////////////////////////////////////////////////////
 /**
-.Function.lcpeAt:
+.Function.IndexEsa#lcpeAt:
 ..summary:Shortcut for $value(indexLcpe(..), ..)$.
 ..cat:Index
 ..signature:lcpeAt(position, index)
-..class:Class.Index
+..class:Spec.IndexEsa
 ..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
@@ -1461,7 +1516,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..signature:childAt(position, index)
 ..class:Spec.IndexEsa
 ..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
@@ -1484,7 +1539,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..signature:bwtAt(position, index)
 ..class:Spec.IndexEsa
 ..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference or proxy to the value.
 ..include:seqan/index.h
@@ -1543,15 +1598,29 @@ String<char> & text = getFibre(indexEsa, EsaText());
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.indexText:
-..summary:Shortcut for $getFibre(.., EsaText)$.
+..summary:Shortcut for $getFibre(index, FibreText())$.
 ..cat:Index
 ..signature:indexText(index)
 ..class:Class.Index
 ..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaText@ fibre (original text).
+...type:Class.Index
+..returns:A reference to the text fibre (original text).
 ..include:seqan/index.h
-*/
+..example
+...text:The following code shows how the BWT of a text can be computed.
+...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+...output:BWT	Suffices
+P	PI
+S	SIPPI
+S	SISSIPPI
+M	MISSISSIPPI
+I	I
+P	PPI
+I	IPPI
+S	SSIPPI
+S	SSISSIPPI
+I	ISSIPPI
+I	ISSISSIPPI*/
 /*!
  * @fn Index#indexText
  * 
@@ -1639,15 +1708,29 @@ String<char> & text = getFibre(indexEsa, EsaText());
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Function.indexSA:
-..summary:Shortcut for $getFibre(.., EsaSA)$.
+..summary:Shortcut for $getFibre(.., FibreSA)$.
 ..cat:Index
 ..signature:indexSA(index)
 ..class:Class.Index
 ..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaSA@ fibre (suffix array).
+...type:Class.Index
+..returns:A reference to the suffix array fibre.
 ..include:seqan/index.h
-*/
+..example
+...text:The following code shows how the BWT of a text can be computed.
+...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+...output:BWT	Suffices
+P	PI
+S	SIPPI
+S	SISSIPPI
+M	MISSISSIPPI
+I	I
+P	PPI
+I	IPPI
+S	SSIPPI
+S	SSISSIPPI
+I	ISSIPPI
+I	ISSISSIPPI*/
 //TODO(singer) The function in not only defined for the esa index
 /*!
  * @fn IndexEsa#indexSA
@@ -1711,12 +1794,12 @@ String<char> & text = getFibre(indexEsa, EsaText());
 
 //////////////////////////////////////////////////////////////////////////////
 /**
-.Function.indexLcp:
+.Function.IndexEsa#indexLcp:
 ..summary:Shortcut for $getFibre(.., EsaLcp)$.
 ..cat:Index
 ..signature:indexLcp(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
+..class:Spec.IndexEsa
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaLcp@ fibre (lcp table).
 ..include:seqan/index.h
@@ -1746,12 +1829,12 @@ String<char> & text = getFibre(indexEsa, EsaText());
 
 //////////////////////////////////////////////////////////////////////////////
 /**
-.Function.indexLcpe:
+.Function.IndexEsa#indexLcpe:
 ..summary:Shortcut for $getFibre(.., EsaLcpe)$.
 ..cat:Index
 ..signature:indexLcpe(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
+..class:Spec.IndexEsa
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaLcpe@ fibre (enhanced lcp table).
 ..include:seqan/index.h
@@ -1812,12 +1895,12 @@ String<char> & text = getFibre(indexEsa, EsaText());
 
 //////////////////////////////////////////////////////////////////////////////
 /**
-.Function.indexChildtab:
+.Function.IndexEsa#indexChildtab:
 ..summary:Shortcut for $getFibre(.., EsaChildtab)$.
 ..cat:Index
 ..signature:indexChildtab(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
+..class:Spec.IndexEsa
+..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaChildtab@ fibre (child table).
 ..include:seqan/index.h
@@ -1852,7 +1935,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..class:Class.Index
 ..summary:This functions opens an index from disk.
 ..signature:open(index, fileName [, mode])
-..param.dictionary:The index to be opened.
+..param.index:The index to be opened.
 ...type:Class.Index
 ..param.fileName:C-style character string containing the file name.
 ..param.mode:The combination of flags defining how the file should be opened.
@@ -1863,6 +1946,11 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/index.h
+..example
+...text:The following code shows how the function @Function.open@ is used with indices.
+...file:demos/index/index_open_save.cpp
+...output:1
+1
 */
 /*!
  * @fn Index#open
@@ -1923,7 +2011,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ..summary:This functions saves an index to disk.
 ..signature:save(index, fileName [, mode])
 ..param.index:The index to be saved to disk.
-...type:Class.RankDictionary
+...type:Class.Index
 ..param.fileName:C-style character string containing the file name.
 ..param.mode:The combination of flags defining how the file should be opened.
 ...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
@@ -1933,6 +2021,11 @@ String<char> & text = getFibre(indexEsa, EsaText());
 ...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/index.h
+..example
+...text:The following code shows how the function @Function.open@ is used with indices.
+...file:demos/index/index_open_save.cpp
+...output:1
+1
 */
 
 }

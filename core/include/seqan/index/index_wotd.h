@@ -140,7 +140,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /**
 .Spec.IndexWotd:
-..summary:An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix trees").
+..summary:This index represents a lazy suffix tree, meaning that a path from the tree of the index in only computed,
+if it is traversed. For details see Giegerich et al., "Efficient implementation of lazy suffix trees".
 ..cat:Index
 ..general:Class.Index
 ..signature:Index<TText, IndexWotd<> >
