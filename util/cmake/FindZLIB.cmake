@@ -49,6 +49,8 @@ FIND_LIBRARY(ZLIB_LIBRARY
         ${ZLIB_NAMES}
     PATHS
         "[HKEY_LOCAL_MACHINE\\SOFTWARE\\GnuWin32\\Zlib;InstallPath]/lib"
+    PATH_SUFFIXES
+        "" lib lib32
 )
 
 if (MSVC)
