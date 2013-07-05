@@ -1,3 +1,12 @@
+# Suppress conditional jump problems in ld-2.13.so on wheezy.
+{
+    supp_ld_2_13_so_wheezy
+    Memcheck:Cond
+    fun:index
+    fun:expand_dynamic_string_token
+    ...
+}
+
 # Suppress overlap problems in STL priority queue's pop from Seqan's
 # topological sort.
 {
