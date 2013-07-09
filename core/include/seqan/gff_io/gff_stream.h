@@ -79,7 +79,6 @@ For writing, only GFF 3 and GTF are supported.
 .Memvar.GffStream#fileFormat
 ..class:Class.GffStream
 ..summary:File format to use for writing.
-...type:GffStream\colon\colonFileFormat
 
 .Memvar.GffStream#sequenceNames
 ..class:Class.GffStream
@@ -229,7 +228,7 @@ public:
 ...type:Enum.GffStream\colon\colonMode
 ...default:$GffStream\colon\colonMode::READ$
 ..param.fileFormat:File format to use for writing.
-...type:Enum.GffStream\colon\coloneFileFormat
+...type:Enum.GffStream\colon\colonFileFormat
 ..returns:$true$ on success, $false$ on failure.
 ..see:Function.GffStream#isGood
 ..see:Enum.GffStream\colon\colonMode

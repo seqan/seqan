@@ -139,7 +139,7 @@ of the rank of a specified character at a specified position.
 ..signature:SequenceBitMask<TValue>
 ..param.TValue:The value type of the .
 ..include:seqan/index.h
-..remarks:This data structure is optimized for very small alphabets, such as @Spec.Dna$ or @Spec.Dna5@. Consider using a @Spec.WaveletTree@ if your alphabet size is larger.
+..remarks:This data structure is optimized for very small alphabets, such as @Spec.Dna@ or @Spec.Dna5@. Consider using a @Spec.WaveletTree@ if your alphabet size is larger.
 */
 template <typename TValue>
 class RankDictionary<SequenceBitMask<TValue> >

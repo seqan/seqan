@@ -162,7 +162,7 @@ nameStore(BedIOContext<TNameStore, TNameStoreCache> const & context)
 ...type:Class.BedIOContext
 ..see:Typedef.BedIOContext#TNameStoreCache
 ..include:seqan/bed_io.h
-..see:Function.nameStore
+..see:Function.BedIOContext#nameStore
 */
 
 // TODO(holtgrew): Rename to referenceNameStoreCache

@@ -626,7 +626,7 @@ posOfMax(FrequencyDistribution<TValue, TSpec> & me)
 //////////////////////////////////////////////////////////////////////////////
 
 /**
-.Function.sum:
+.Function.FrequencyDistribution#sum
 ..class:Class.FrequencyDistribution
 ..summary:Determines the sum of all frequencies in a given @Class.FrequencyDistribution@ object.
 ..cat:Motif Search

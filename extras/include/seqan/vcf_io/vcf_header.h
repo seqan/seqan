@@ -63,15 +63,15 @@ namespace seqan {
 
 .Memvar.VcfHeader#sequenceNames
 ..class:Class.VcfHeader
-..summary:Names of the sequences (@Class.StringSet@<@Shortcut.CharString>).
+..summary:Names of the sequences (@Class.StringSet@<@Shortcut.CharString@>).
 
 .Memvar.VcfHeader#sampleNames
 ..class:Class.VcfHeader
-..summary:Names of the samples (@Class.StringSet@<@Shortcut.CharString>).
+..summary:Names of the samples (@Class.StringSet@<@Shortcut.CharString@>).
 
 .Memvar.VcfHeader#headerRecords
 ..class:Class.VcfHeader
-..summary:The meta information records (@Class.String@ of @Cass.VcfHeaderRecord@).
+..summary:The meta information records (@Class.String@ of @Class.VcfHeaderRecord@).
 */
 
 class VcfHeader
