@@ -52,6 +52,27 @@ namespace SEQAN_NAMESPACE_MAIN
 Every node can uniquely be mapped to an interval of the suffix array containing all suffixes of the node's subtree.
 This interval and some extra information constitute the @Metafunction.VertexDescriptor@ returned by the @Function.value@ function of the iterator.
 ..include:seqan/index.h
+..example
+...text:This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
+in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
+...file:demos/index/index_iterator.cpp
+...output:
+
+be
+beornottobe
+e
+eornottobe
+nottobe
+o
+obe
+obeornottobe
+ornottobe
+ottobe
+rnottobe
+t
+tobe
+tobeornottobe
+ttobe
 */
 /*!
  * @class VSTreeIterator VSTree Iterator
@@ -2787,10 +2808,10 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 		return !value(it).range.i2;
 	}
 
+//..concept:Concept.ContainerConcept
 /**
 .Function.VSTree Iterator#atEnd
 ..class:Spec.VSTree Iterator
-..concept:Concept.ContainerConcept
 ..concept:Concept.RootedIteratorConcept
 ..cat:Iteration
 ..summary:Determines whether an virtual string tree iterator is at the end position.

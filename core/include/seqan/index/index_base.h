@@ -238,7 +238,7 @@ for @Class.Index@ based substring searches.
 //////////////////////////////////////////////////////////////////////////////
 /**
 .Class.Index:
-..summary:Contains preprocessing data of a fixed text. Allows fast dictionary look-up and advanced computations.
+..summary:Contains preprocessing data of a fixed text. In combination with a @Class.Finder@ or a @Spec.VSTree Iterator@ it allows fast dictionary look-up and advanced computations.
 ..cat:Index
 ..signature:Index<TText[, TSpec]>
 ..param.TText:The text type.
@@ -254,7 +254,7 @@ for @Class.Index@ based substring searches.
 ...metafunction:Metafunction.Spec
 ..remarks:Indices allow fast dictionary look-ups and other advanced computations because they contain pre-computated
 information about the underlying text. These information are stored in so called fibres (see @Metafunction.Fibre@).
-..remarks:In order to search for a pattern one can use a @Class.Finder@ or an @Spec.VSTree Iterator@. The @Class.Finder@ 
+..remarks:In order to search for a pattern one can use a @Class.Finder@ or a @Spec.VSTree Iterator@. The @Class.Finder@ 
 is especially useful when searching for exact matches while the @Spec.VSTree Iterator@ allows to iterate an index as if
 traversing a tree/trie.
 ..remarks:These fibres are created on demand depending on the requirements of an algorithm.
