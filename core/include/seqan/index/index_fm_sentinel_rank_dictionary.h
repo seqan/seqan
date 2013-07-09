@@ -34,6 +34,8 @@
 
 // TODO(singer): sentinel
 
+//SEQAN_NO_DDDOC:do not generate documentation for this file
+
 #ifndef INDEX_FM_Sentinel_RANK_DICTIONARY_H_
 #define INDEX_FM_Sentinel_RANK_DICTIONARY_H_
 

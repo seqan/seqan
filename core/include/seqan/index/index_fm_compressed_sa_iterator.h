@@ -32,6 +32,8 @@
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
+//SEQAN_NO_DDDOC:do not generate documentation for this file
+
 #ifndef INDEX_FM_COMPRESSED_SA_ITERATOR_H_
 #define INDEX_FM_COMPRESSED_SA_ITERATOR_H_
 

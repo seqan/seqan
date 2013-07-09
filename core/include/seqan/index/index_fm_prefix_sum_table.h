@@ -32,6 +32,8 @@
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
+//SEQAN_NO_DDDOC:do not generate documentation for this file
+
 #ifndef INDEX_FM_PREFIX_SUM_TABLE_H_
 #define INDEX_FM_PREFIX_SUM_TABLE_H_
 

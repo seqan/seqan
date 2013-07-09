@@ -35,6 +35,8 @@
 #ifndef INDEX_FM_RIGHT_ARRAY_BINARY_TREE_ITERATOR_H
 #define INDEX_FM_RIGHT_ARRAY_BINARY_TREE_ITERATOR_H
 
+//SEQAN_NO_DDDOC:do not generate documentation for this file
+
 namespace seqan {
 
 // ==========================================================================

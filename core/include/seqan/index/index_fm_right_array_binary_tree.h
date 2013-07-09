@@ -32,6 +32,8 @@
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
+//SEQAN_NO_DDDOC:do not generate documentation for this file
+
 #ifndef INDEX_FM_RIGHT_ARRAY_BINARY_TREE_H
 #define INDEX_FM_RIGHT_ARRAY_BINARY_TREE_H
 
