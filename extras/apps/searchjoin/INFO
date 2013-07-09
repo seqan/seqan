@@ -5,8 +5,8 @@ License: BSD
 Copyright: 2008-2013, FU Berlin
 Status: stable
 Description: String Similarity Search/Join.
-  Implementation of scalable algorithms for optimal string similarity search and
-  join.
+  Implementation of scalable algorithms for optimal string similarity search
+  and join.
   .
   Our methods are variations of those applied in Masai, our recently published
   tool for mapping high-throughput DNA sequencing data with unpreceded speed

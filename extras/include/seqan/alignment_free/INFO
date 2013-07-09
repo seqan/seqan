@@ -8,4 +8,6 @@ Description: Alignment-free comparison of sequences.
  SeqAn module with code for alignment free comparison of sequences and some
  code for computing word statistics.
  .
- See: Jonathan Göke et al. (to appear).
+ See: Jonathan Göke, Marcel H. Schulz, Julia Lasserre, and Martin Vingron.
+ Estimation of Pairwise Sequence Similarity of Mammalian Enhancers with Word
+ Neighbourhood Counts. Bioinformatics (2012).
