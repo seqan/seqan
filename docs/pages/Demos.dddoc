@@ -260,7 +260,7 @@ Number of sequences: 4
 
 .Demo.Index lcpAt, saAt:
 ..cat:Index
-..summary:Example for using the functions @Function.saAt@ and @Function.lcpAt@ for esa indices.
+..summary:Example for using the functions @Function.saAt@ and @Function.IndexEsa#lcpAt@ for esa indices.
 ..description:This example shows how to create an esa index for a string set and how to contruct the lcp table.
 Then the program iterates over the lcp table and outputs the corresponding suffixes.
 ..file:../core/demos/index_lcp.cpp
@@ -423,7 +423,7 @@ Then the program iterates over the lcp table and outputs the corresponding suffi
 154 0 < 0 , 36 > ysis.
 ..demofor:Class.Index
 ..demofor:Function.saAt
-..demofor:Function.lcpAt
+..demofor:Function.IndexEsa#lcpAt
 .
 
 

@@ -22,7 +22,7 @@ int main ()
     indexRequire(myIndex, EsaLcp() );
     indexRequire(myIndex, EsaSA());
     
-///We iterate over the lcp table and output the position, the value of the lcp table and the corresponding suffix using the functions @Function.saAt@ and @Function.lcpAt@.
+///We iterate over the lcp table and output the position, the value of the lcp table and the corresponding suffix using the functions @Function.saAt@ and @Function.IndexEsa#lcpAt@.
 
     for ( Size<TMyIndex>::Type i=0; i<length(myIndex); ++i){
         SAValue<TMyIndex>::Type p = saAt(i,myIndex);

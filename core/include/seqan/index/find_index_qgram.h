@@ -45,6 +45,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /**
 .Tag.Index Find Algorithm
+..summary:Tags to specialise the search strategies.
 ..tag.QGramFindLookup:q-gram search.
 Finds q-grams in a @Spec.IndexQGram@ index using the hash table.
 ..include:seqan/index.h

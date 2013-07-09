@@ -880,7 +880,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 ..signature:getFibre(index, fibreTag)
 ..class:Class.Index
 ..cat:Index
-..param.container:The container holding the fibre.
+..param.index:The index holding the fibre.
 ...type:Class.Index
 ..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
 ...type:Tag.ESA Index Fibres

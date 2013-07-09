@@ -161,7 +161,7 @@ String<char> & text = getFibre(indexEsa, EsaText());
 */
 /**
 .Function.resize.param.object.type:Class.CompressedSA
-.Function.rezize.class:Class.CompressedSA
+.Function.resize.class:Class.CompressedSA
 */
 /**
 .Function.CompressedSA#open
@@ -762,7 +762,7 @@ by a 1 form the string of the right subtree. Therefore, only the bit string of t
 */
 /**
 .Function.empty.param.object.type:Class.RankSupportBitString
-.Function.class:Class.RankSupportBitString
+.Function.empty:Class.RankSupportBitString
 */
 /**
 .Function.isSetBit
@@ -1042,17 +1042,10 @@ goLeftChild(it); // go to left child of root node
 /**
 .Function.RightArrayBinaryTree Iterator#goRight
 ..class:Spec.RightArrayBinaryTree Iterator
+..summary:Iterates to the next sibling in a tree.
+..signature:bool goRight(iterator)
 ..param.iterator:
 ...type:Spec.RightArrayBinaryTree Iterator
-..example.code:
-String<Dna5> genome = "ACGTACGT";
-RightArrayBinaryTree<Dna5> waveletTreeStructure(genome);
-
-Iterator<RightArrayBinaryTree<Dna5>, TopDown<> >::Type it;
-it = begin(waveletTreeStructure); // go to root node
-
-goDown(it); // go to left child of root node
-goRight(it); // go to right child of root node
 */
 /**
 .Function.goRightChild
@@ -1078,20 +1071,9 @@ goRightChild(it); // go to right child of root node
 .Function.goUp.class:Spec.RightArrayBinaryTree Iterator
 */
 /**
-.Function.RightArrayBinaryTree Iterator#isLeaf
+.Function.isLeaf
 ..class:Spec.RightArrayBinaryTree Iterator
 ..param.iterator.type:Spec.RightArrayBinaryTree Iterator
-..example:
-...text:Code example for the @Spec.RightArrayBinaryTree Iterator@:
-...code:
-String<Dna5> genome = "ACGTACGT";
-RightArrayBinaryTree<Dna5> waveletTreeStructure(genome);
-
-Iterator<RightArrayBinaryTree<Dna5>, TopDown<> >::Type it;
-it = begin(waveletTreeStructure); // go to root node
-
-goRightChild(it); // go to right child of root node
-goUp(it); // go to root node
 */
 /**
 .Function.RightArrayBinaryTree Iterator#setCharacter
@@ -1114,19 +1096,9 @@ setCharacter(it,'T'); // sets the character of the root's
                       // right child to 'T'
 */
 /**
-.Function.RightArrayBinaryTree Iterator#isRoot
+.Function#isRoot
 ..class:Spec.RightArrayBinaryTree Iterator
 ..param.iterator.type:Spec.RightArrayBinaryTree Iterator
-..example
-...text:Code example for the @Spec.RightArrayBinaryTree Iterator@:
-...code:
-String<Dna5> genome = "ACGTACGT";
-RightArrayBinaryTree<Dna5> waveletTreeStructure(genome);
-
-Iterator<RightArrayBinaryTree<Dna5>, TopDown<> >::Type it;
-it = begin(waveletTreeStructure); // go to root node
-
-isRoot(it) // returns true
 */
 ///.Function.begin.param.object.type:Class.RightArrayBinaryTree
 ///.Function.begin.class:Spec.RightArrayBinaryTree Iterator
