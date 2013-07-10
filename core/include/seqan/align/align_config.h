@@ -74,7 +74,7 @@ It indicates at what ends gaps are free, the so-called free ends-space alignment
 ..signature:AlignConfig<bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, TSpec>
 ..param.TOP:If true then 0's in top row.
 ...default:$false$
-..param.LEFT:If true then 0's in the left row.
+..param.LEFT:If true then 0's in the left column.
 ...default:$false$
 ..param.RIGHT:If true then maximum is also searched in the last column.
 ...default:$false$

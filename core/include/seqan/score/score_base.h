@@ -127,14 +127,15 @@ sequenceEntryForScore(TScore const & /*scoringScheme*/, TSequence const & seq, T
 .Function.scoreGapOpenHorizontal
 ..class:Class.Score
 ..cat:Scoring
-..signature:scoreGapOpenHorizontal(score, entry1, entry2)
+..signature:scoreGapOpenHorizontal(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one (horizontal).
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two (vertical).
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for opening a horizontal gap after $entry1$.
+..summary:Returns the score for opening a gap in horizontal direction.
+..remarks:Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
@@ -150,19 +151,19 @@ scoreGapOpenHorizontal(
     return scoreGapOpen(me);
 }
 
-
 /**
 .Function.scoreGapOpenVertical
 ..class:Class.Score
 ..cat:Scoring
-..signature:scoreGapOpenVertical(score, entry1, entry2)
+..signature:scoreGapOpenVertical(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one (horizontal).
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two (vertical).
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for opening a vertical gap after $entry2$.
+..summary:Returns the score for opening a gap in vertical direction.
+..remarks:Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
@@ -178,18 +179,18 @@ scoreGapOpenVertical(
     return scoreGapOpen(me);
 }
 
-
 /**
 .Function.scoreGapExtendHorizontal
 ..cat:Scoring
-..signature:scoreGapExtendHorizontal(score, entry1, entry2)
+..signature:scoreGapExtendHorizontal(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one (horizontal).
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two (vertical).
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for extending a horizontal gap after $entry1$.
+..summary:Returns the score for extending a gap in horizontal direction.
+..remarks:Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
@@ -205,18 +206,18 @@ scoreGapExtendHorizontal(
     return scoreGapExtend(me);
 }
 
-
 /**
 .Function.scoreGapExtendVertical
 ..cat:Scoring
-..signature:scoreGapExtendVertical(score, entry1, entry2)
+..signature:scoreGapExtendVertical(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one (horizontal).
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two (vertical).
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for extending a vertical gap after $entry2$.
+..summary:Returns the score for extending a gap in vertical direction.
+..remarks:Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
@@ -232,18 +233,18 @@ scoreGapExtendVertical(
     return scoreGapExtend(me);
 }
 
-
 /**
 .Function.scoreGapHorizontal
 ..cat:Scoring
-..signature:scoreGapHorizontal(score, entry1, entry2)
+..signature:scoreGapHorizontal(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one (horizontal).
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two (vertical).
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for a horizontal gap after $entry1$.
+..summary:Returns the score for a gap in horizontal direction.
+..remarks:Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
@@ -259,18 +260,18 @@ scoreGapHorizontal(
     return scoreGap(me);
 }
 
-
 /**
 .Function.scoreGapVertical
 ..cat:Scoring
-..signature:scoreGapVertical(score, entry1, entry2)
+..signature:scoreGapVertical(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one (horizontal).
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two (vertical).
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for a vertical gap after $entry2$.
+..summary:Returns the score for a gap in vertical direction.
+..remarks:Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
@@ -286,18 +287,17 @@ scoreGapVertical(
     return scoreGap(me);
 }
 
-
 /**
 .Function.score
 ..cat:Scoring
-..signature:score(score, entry1, entry2)
+..signature:score(score, entryH, entryV)
 ..param.score:The scoring scheme to use.
 ...type:Class.Score
-..param.entry1:Entry in sequence one.
+..param.entryH:Entry in sequence one.
 ...type:Metafunction.Score#SequenceEntryForScore
-..param.entry2:Entry in sequence two.
+..param.entryV:Entry in sequence two.
 ...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for aligning the characters $valH$ and $valV$.
+..summary:Returns the score for aligning the entries $entryH$ and $entryV$.
 ..see:Function.Score#sequenceEntryForScore
 ..see:Class.ConsensusScoreSequenceEntry
 ..include:seqan/score.h
