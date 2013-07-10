@@ -77,11 +77,6 @@ if (WIN32)
         endif ()
       endif ()
 
-      # Break out if contribs could be found.
-      if (DEFINED SEQAN_CONTRIB_BASE)
-        break ()  # found contribs at current path
-      else (DEFINED SEQAN_CONTRIB_BASE)
-
 	  # Debug help.
       #if (NOT DEFINED SEQAN_CONTRIB_BASE)
       #	message("SEQAN_CONTRIB_BASE is undefined!")
@@ -111,6 +106,12 @@ if (WIN32)
 	  endif (IS_DIRECTORY ${SEQAN_CONTRIB_BASE})
 
       message(STATUS "CMAKE_FIND_ROOT_PATH is \"${CMAKE_FIND_ROOT_PATH}\".")
+
+      # Break out if contribs could be found.
+      if (DEFINED SEQAN_CONTRIB_BASE)
+        break ()  # found contribs at current path
+      endif (DEFINED SEQAN_CONTRIB_BASE)
+
     endforeach ()  # all contrib versions.
 endif (WIN32)
 
