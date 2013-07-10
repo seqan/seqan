@@ -145,7 +145,7 @@ inline bool
 lexicalCast2(TTarget & target, TSource const & source)
 {
     std::istringstream str(source);
-    return (str >> target);
+    return bool(str >> target);
 }
 
 template < typename TTarget, typename TValue, typename TSpec>
@@ -153,7 +153,7 @@ inline bool
 lexicalCast2(TTarget & target, String<TValue, TSpec> const & source)
 {
     std::istringstream str(toCString(source));
-    return (str >> target);
+    return bool(str >> target);
 }
 
 }

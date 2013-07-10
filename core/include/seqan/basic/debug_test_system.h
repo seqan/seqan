@@ -48,6 +48,7 @@
 #include <cstdlib>   // exit()
 #include <cstdio>
 #include <cstdarg>   // va_start, va_list, va_end
+#include <algorithm> // min()
 #include <set>
 #include <vector>
 #include <string>
