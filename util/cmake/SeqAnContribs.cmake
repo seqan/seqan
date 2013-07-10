@@ -35,62 +35,67 @@
 # ============================================================================
 
 if (WIN32)
-    # The contrib version we look for.
-	set (_SEQAN_CONTRIB_VERSION D20111031)
-	set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
-	
-	# Determine architecture for the precompiled contribs.
-	if (CMAKE_GENERATOR MATCHES ".*Win64")
+    # For all contrib versions...
+	foreach (_SEQAN_CONTRIB_VERSION D20111031 D20130710)
+	  set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
+	  
+	  # Determine architecture for the precompiled contribs.
+	  if (CMAKE_GENERATOR MATCHES ".*Win64")
 		set (CONTRIB_ARCH "x64")
-	else ()
+	  else ()
 		set (CONTRIB_ARCH "x86")
-	endif ()
+	  endif ()
 
-	# Try to figure out where the user installed the contrib.  We expect
-	# it to be either in C:\, or one of the Program Files dirs.
-	#
-	# First, look into Program Files on 64 bit.
-	if (DEFINED ENV{ProgramW6432})
+	  # Try to figure out where the user installed the contrib.  We expect
+	  # it to be either in C:\, or one of the Program Files dirs.
+	  #
+	  # First, look into Program Files on 64 bit.
+	  if (DEFINED ENV{ProgramW6432})
 		if (IS_DIRECTORY "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-			set (SEQAN_CONTRIB_BASE "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		  set (SEQAN_CONTRIB_BASE "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 		endif (IS_DIRECTORY "$ENV{ProgramW6432}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-	endif (DEFINED ENV{ProgramW6432})
-	# Try out Program Files for 32bit Windows.
-	if (NOT DEFINED SEQAN_CONTRIB_BASE)
+	  endif (DEFINED ENV{ProgramW6432})
+	  # Try out Program Files for 32bit Windows.
+	  if (NOT DEFINED SEQAN_CONTRIB_BASE)
 		if (IS_DIRECTORY "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-			set (SEQAN_CONTRIB_BASE "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		  set (SEQAN_CONTRIB_BASE "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 		endif (IS_DIRECTORY "$ENV{ProgramFiles}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-	endif (NOT DEFINED SEQAN_CONTRIB_BASE)
-	# Try out on C:/.
-	if (NOT DEFINED SEQAN_CONTRIB_BASE)
+	  endif (NOT DEFINED SEQAN_CONTRIB_BASE)
+	  # Try out on C:/.
+	  if (NOT DEFINED SEQAN_CONTRIB_BASE)
 		if (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		  set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 		elseif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-			set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+		  set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 		endif (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-	endif (NOT DEFINED SEQAN_CONTRIB_BASE)
-    # Try to fall back to x64 on C:\ (MinGW is only available as 32 bit).
-    set (CONTRIB_ARCH "x64")
-    if (NOT DEFINED SEQAN_CONTRIB_BASE)
+	  endif (NOT DEFINED SEQAN_CONTRIB_BASE)
+      # Try to fall back to x64 on C:\ (MinGW is only available as 32 bit).
+      set (CONTRIB_ARCH "x64")
+      if (NOT DEFINED SEQAN_CONTRIB_BASE)
         if (IS_DIRECTORY "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
-            set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+          set (SEQAN_CONTRIB_BASE "C:/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
         endif ()
-    endif ()
+      endif ()
 
-	# Debug help.
-    #if (NOT DEFINED SEQAN_CONTRIB_BASE)
-    #	message("SEQAN_CONTRIB_BASE is undefined!")
-    #else (NOT DEFINED SEQAN_CONTRIB_BASE)
-    #	message("SEQAN_CONTRIB_BASE is ${SEQAN_CONTRIB_BASE}")
-    #endif (NOT DEFINED SEQAN_CONTRIB_BASE)
+      # Break out if contribs could be found.
+      if (DEFINED SEQAN_CONTRIB_BASE)
+        break ()  # found contribs at current path
+      else (DEFINED SEQAN_CONTRIB_BASE)
 
-	# Try to figure out the generator.
-	if (IS_DIRECTORY ${SEQAN_CONTRIB_BASE})
+	  # Debug help.
+      #if (NOT DEFINED SEQAN_CONTRIB_BASE)
+      #	message("SEQAN_CONTRIB_BASE is undefined!")
+      #else (NOT DEFINED SEQAN_CONTRIB_BASE)
+      #	message("SEQAN_CONTRIB_BASE is ${SEQAN_CONTRIB_BASE}")
+      #endif (NOT DEFINED SEQAN_CONTRIB_BASE)
+
+	  # Try to figure out the generator.
+	  if (IS_DIRECTORY ${SEQAN_CONTRIB_BASE})
 		if (CMAKE_GENERATOR MATCHES "^Visual Studio .*")
-			string (REGEX REPLACE "^Visual Studio ([0-9]+).*$" "\\1" SEQAN_CONTRIB_VARIANT ${CMAKE_GENERATOR})
-			set (SEQAN_CONTRIB_VARIANT "vs${SEQAN_CONTRIB_VARIANT}")
+		  string (REGEX REPLACE "^Visual Studio ([0-9]+).*$" "\\1" SEQAN_CONTRIB_VARIANT ${CMAKE_GENERATOR})
+		  set (SEQAN_CONTRIB_VARIANT "vs${SEQAN_CONTRIB_VARIANT}")
 		elseif (CMAKE_GENERATOR STREQUAL "MinGW Makefiles")
-			set (SEQAN_CONTRIB_VARIANT mingw)
+		  set (SEQAN_CONTRIB_VARIANT mingw)
 		endif (CMAKE_GENERATOR MATCHES "^Visual Studio .*")
 
         #message(STATUS "SEQAN_CONTRIB_BASE    is ${SEQAN_CONTRIB_BASE}")
@@ -101,10 +106,11 @@ if (WIN32)
 
 		# Extend CMAKE_FIND_ROOT_PATH.
 		if (IS_DIRECTORY ${SEQAN_CONTRIB_PATH})
-			set (CMAKE_FIND_ROOT_PATH ${SEQAN_CONTRIB_PATH} ${CMAKE_FIND_ROOT_PATH})
+		  set (CMAKE_FIND_ROOT_PATH ${SEQAN_CONTRIB_PATH} ${CMAKE_FIND_ROOT_PATH})
 		endif (IS_DIRECTORY ${SEQAN_CONTRIB_PATH})
-	endif (IS_DIRECTORY ${SEQAN_CONTRIB_BASE})
+	  endif (IS_DIRECTORY ${SEQAN_CONTRIB_BASE})
 
-    message(STATUS "CMAKE_FIND_ROOT_PATH is \"${CMAKE_FIND_ROOT_PATH}\".")
+      message(STATUS "CMAKE_FIND_ROOT_PATH is \"${CMAKE_FIND_ROOT_PATH}\".")
+    endforeach ()  # all contrib versions.
 endif (WIN32)
 
