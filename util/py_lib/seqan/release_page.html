@@ -135,13 +135,13 @@
         <th>Version</th>
         <th>Platform Independent Download</th>
       </tr>
-      <!--(for version in seqan_library.versions.values())-->
+      <!--(for version in sorted(seqan_library.versions.values(), key=lambda x:x.version, reverse=True))-->
       <tr>
         <td id="@!version.version!@">@!version.version!@</td>
         <td>
         <!--(for f in FORMATS)-->#!
           <!--(if version.packages['src'].archs['src'].files.get(f))-->#!
-           <a href="@!version.packages['src'].archs['src'].files[f]!@">@!f!@</a>
+           <a href="seqan-library/@!version.packages['src'].archs['src'].files[f]!@">@!f!@</a>
           <!--(end)-->
         <!--(end)-->
         </td>
@@ -163,12 +163,12 @@
         <th>Mac</th>
         <th>Windows</th>
       </tr>
-      <!--(for version in seqan_apps.versions.values())-->
+      <!--(for version in sorted(seqan_apps.versions.values(), key=lambda x:x.version, reverse=True))-->
       <tr>
         <td>@!version.version!@</td>
-        @!packages_cell(prefix=software.name, packages=version.packages['Linux'])!@
-        @!packages_cell(prefix=software.name, packages=version.packages['Mac'])!@
-        @!packages_cell(prefix=software.name, packages=version.packages['Windows'])!@
+        @!packages_cell(prefix='seqan-apps', packages=version.packages['Linux'])!@
+        @!packages_cell(prefix='seqan-apps', packages=version.packages['Mac'])!@
+        @!packages_cell(prefix='seqan-apps', packages=version.packages['Windows'])!@
       </tr>
       <!--(end)-->
     </table>
@@ -185,7 +185,7 @@
       <li><a href="@!software.name!@">@!software.name!@</a></li>
     <!--(end)-->
 <!-- end: custom -->
-                                <div class="last_updated"><small class="dimmed"> Last Update 12. September 2012 </small></div>
+                                <div class="last_updated"><small class="dimmed">Last Update @!utc_time!@</small></div>
                             </div>
                         </div>
                     </div>

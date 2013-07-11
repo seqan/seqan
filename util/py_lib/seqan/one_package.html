@@ -132,7 +132,7 @@
           <th>Mac</th>
           <th>Windows</th>
         </tr>
-        <!--(for version in software.versions.values())-->
+        <!--(for version in sorted(software.versions.values(), key=lambda x:x.version, reverse=True))-->
           <tr>
             <td>@!version.version!@</td>
             @!packages_cell(prefix=software.name, packages=version.packages['Linux'])!@
@@ -142,7 +142,7 @@
         <!--(end)-->
       </table>
 <!-- end: custom -->
-                                <div class="last_updated"><small class="dimmed"> Last Update 12. September 2012 </small></div>
+                                <div class="last_updated"><small class="dimmed"> Last Update @!utc_time!@</small></div>
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import os
 import os.path
 import re
 import sys
+import time
 import xml.sax.saxutils
 
 import pyratemp
@@ -192,6 +193,7 @@ def work(options):
                     seqan_apps=db.seqan_apps,
                     seqan_library=db.seqan_library,
                     softwares=db.softwares,
+                    utc_time=time.strftime('%a, %d %b %Y %H:%M:%S UTC', time.gmtime()),
                     sorted=sorted))
     # Load and render package template.
     tpl = pyratemp.Template(filename=PACKAGE_TPL_PATH)
@@ -200,6 +202,7 @@ def work(options):
         print >>sys.stderr, 'Writing %s.' % out_path
         with open(out_path, 'wb') as f:
             f.write(tpl(FORMATS=FORMATS,
+                        utc_time=time.strftime('%a, %d %b %Y %H:%M:%S UTC', time.gmtime()),
                         software=software,
                         sorted=sorted))
     # Write out RSS feeds for the packages.
