@@ -590,6 +590,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // -----------------------------------------------------------------------
 
     SEQAN_CALL_TEST(test_align_integrate_align);
+    SEQAN_CALL_TEST(test_align_integrate_align_infix_of_infix);
 
     // -----------------------------------------------------------------------
     // Test Printing.

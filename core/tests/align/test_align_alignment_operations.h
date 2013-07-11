@@ -197,4 +197,67 @@ SEQAN_DEFINE_TEST(test_align_integrate_align)
     }
 }
 
+SEQAN_DEFINE_TEST(test_align_integrate_align_infix_of_infix)
+{
+    using namespace seqan;
+    // Case: both align objects are infixes
+    {
+        Dna5String seqH = "NNNANANANANAAAAACGATCGATATAA";
+        Dna5String seqV =        "NNNGGNNAACGATCGATT";
+
+        Infix<Dna5String>::Type seqHInf1 = infix(seqH, 3, length(seqH)-1);
+        Infix<Dna5String>::Type seqVInf1 = infix(seqV, 1, length(seqV));
+
+        // ANANANANAAAAACGATCGATATA
+        //      NNGGNNAACGATCGATT
+
+        Infix<Dna5String>::Type seqHInf2 = infix(seqHInf1, 3, length(seqHInf1)-1);
+        Infix<Dna5String>::Type seqVInf2 = infix(seqVInf1, 1, length(seqVInf1));
+
+        //    NANANAAAAACGATCGATAT
+        //       NGGNNAACGATCGATT
+
+        Align<typename Infix<Dna5String>::Type> alignInf1;
+        resize(rows(alignInf1), 2);
+        assignSource(row(alignInf1, 0), seqHInf1);
+        assignSource(row(alignInf1, 1), seqVInf1);
+        insertGaps(row(alignInf1, 1), 0, 5);
+        insertGaps(row(alignInf1, 1), length(row(alignInf1, 1)), 2);
+
+        // ANANANANAAAAACGATCGATATA
+        // -----NNGGNNAACGATCGATT--
+
+        SEQAN_ASSERT_EQ(row(alignInf1, 0),
+                        CharString("ANANANANAAAAACGATCGATATA"));
+        SEQAN_ASSERT_EQ(row(alignInf1, 1),
+                        CharString("-----NNGGNNAACGATCGATT--"));
+
+        Align<typename Infix<Dna5String>::Type> alignInf2;
+        resize(rows(alignInf2), 2);
+        assignSource(row(alignInf2, 0), seqHInf2);
+        assignSource(row(alignInf2, 1), seqVInf2);
+
+        //    NANANAAAAACGATCGATAT
+        //       NGGNNAACGATCGATT
+
+        insertGaps(row(alignInf2, 0), 5, 2);
+        insertGaps(row(alignInf2, 1), 7, 2);
+
+        //    NANAN--AAAAACGATCGATAT
+        //       NGGNNAA--CGATCGATT
+
+        SEQAN_ASSERT_EQ(row(alignInf2, 0),
+                        CharString("NANAN--AAAAACGATCGATAT"));
+        SEQAN_ASSERT_EQ(row(alignInf2, 1),
+                        CharString("NGGNNAA--CGATCGATT"));
+
+
+        integrateAlign(alignInf1, alignInf2);
+
+        SEQAN_ASSERT_EQ(row(alignInf1, 0),
+                        CharString("ANANANAN--AAAAACGATCGATATA"));
+        SEQAN_ASSERT_EQ(row(alignInf1, 1),
+                        CharString("-----NNGGNNAA--CGATCGATT--"));
+    }
+}
 #endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_
