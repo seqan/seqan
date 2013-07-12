@@ -120,6 +120,24 @@ streamPut(Stream<TStream> & stream, char const c)
     return streamWriteChar(stream, c);
 }
 
+// Important special case of ::std::string.
+
+template <typename TStream>
+inline int
+streamPut(Stream<TStream> & stream, ::std::string const & source)
+{
+    return (streamWriteBlock(stream, source.data(), source.length()) == source.length())  ?   0 : 1;
+}
+
+// Important special case of ::std::stringstream.
+
+template <typename TStream>
+inline int
+streamPut(Stream<TStream> & stream, ::std::stringstream const & source)
+{
+    return streamPut(stream, source.str());
+}
+
 // Important special case of CharString.
 
 template <typename TStream, typename TSpec>

@@ -455,6 +455,19 @@ streamPut(::std::stringstream & stream,
                 == length(buf))  ?   0 : 1;
 }
 
+inline int
+streamPut(::std::stringstream & stream, ::std::string const & source)
+{
+    return (streamWriteBlock(stream, source.data(), source.length()) == source.length())  ?   0 : 1;
+}
+
+inline int
+streamPut(::std::stringstream & stream, ::std::stringstream const & source)
+{
+    stream << source.rdbuf();
+    return stream.fail();
+}
+
 // --- wildcard
 
 template <typename TSource>
@@ -497,6 +510,19 @@ streamPut(::std::ostringstream & stream, String<char, TSpec> const & source)
 {
     return (streamWriteBlock(stream, toCString(source), length(source))
                 == length(source))  ?   0 : 1;
+}
+
+inline int
+streamPut(::std::ostringstream & stream, ::std::string const & source)
+{
+    return (streamWriteBlock(stream, source.data(), source.length()) == source.length())  ?   0 : 1;
+}
+
+inline int
+streamPut(::std::ostringstream & stream, ::std::stringstream const & source)
+{
+    stream << source.rdbuf();
+    return stream.fail();
 }
 
 // --- wildcard

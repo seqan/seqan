@@ -36,6 +36,8 @@
 // ==========================================================================
 
 #include <fstream>
+#include <sstream>
+#include <string>
 
 #ifndef SEQAN_STREAM_ADAPT_FSTREAM_H_
 #define SEQAN_STREAM_ADAPT_FSTREAM_H_
@@ -498,6 +500,19 @@ streamPut(::std::fstream & stream,
                 == length(buf))  ?   0 : 1;
 }
 
+inline int
+streamPut(::std::fstream & stream, ::std::string const & source)
+{
+    return (streamWriteBlock(stream, source.data(), source.length()) == source.length())  ?   0 : 1;
+}
+
+inline int
+streamPut(::std::fstream & stream, ::std::stringstream const & source)
+{
+    stream << source.rdbuf();
+    return stream.fail();
+}
+
 // --- wildcard
 
 template <typename TSource>
@@ -540,6 +555,19 @@ streamPut(::std::ofstream & stream, String<char, TSpec> const & source)
 {
     return (streamWriteBlock(stream, toCString(source), length(source))
                 == length(source))  ?   0 : 1;
+}
+
+inline int
+streamPut(::std::ofstream & stream, ::std::string const & source)
+{
+    return (streamWriteBlock(stream, source.data(), source.length()) == source.length())  ?   0 : 1;
+}
+
+inline int
+streamPut(::std::ofstream & stream, ::std::stringstream const & source)
+{
+    stream << source.rdbuf();
+    return stream.fail();
 }
 
 // --- wildcard
