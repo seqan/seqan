@@ -50,6 +50,47 @@ inline void clear(BamAlignmentRecord & record);
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @enum BamFlags
+ * @headerfile <seqan/bam_io.h>
+ * @brief Shortcuts to the bitmask flags for BAM/SAM files.
+ *
+ * @signature enum BamFlags;
+ *
+ * @var BamFlags BAM_FLAG_MULTIPLE = 0x0001;
+ * @brief Template has multiple fragments in sequencing.
+ *
+ * @var BamFlags BAM_FLAG_ALL_PROPER = 0x0002;
+ * @brief All fragments in the template are properly mapped.
+ *
+ * @var BamFlags BAM_FLAG_UNMAPPED = 0x0004;
+ * @brief This fragment is unmapped.
+ *
+ * @var BamFlags BAM_FLAG_NEXT_UNMAPPED = 0x0008;
+ * @brief Next fragment in template is unmapped.
+ *
+ * @var BamFlags BAM_FLAG_RC = 0x0010;
+ * @brief Fragment is reverse-complemented.
+ *
+ * @var BamFlags BAM_FLAG_NEXT_RC = 0x0020;
+ * @brief Next fragment in template is reverse-complemented.
+ *
+ * @var BamFlags BAM_FLAG_FIRST = 0x0040;
+ * @brief This fragment is the first one in its template.
+ *
+ * @var BamFlags BAM_FLAG_LAST = 0x0080;
+ * @brief This fragment is the last one in its template (second in case of paired sequencing).
+ *
+ * @var BamFlags BAM_FLAG_SECONDARY = 0x0100;
+ * @brief Secondary alignment.
+ *
+ * @var BamFlags BAM_FLAG_QC_NO_PASS = 0x0200;
+ * @brief Does not pass quality controls.
+ *
+ * @var BamFlags BAM_FLAG_DUPLICATE = 0x0400;
+ * @brief PCR or optical duplicate.
+ */
+
 /**
 .Enum.BamFlags
 ..cat:BAM I/O
@@ -84,6 +125,87 @@ enum BamFlags
     BAM_FLAG_QC_NO_PASS    = 0x0200,
     BAM_FLAG_DUPLICATE     = 0x0400
 };
+
+/*!
+ * @class BamAlignmentRecord
+ * @headerfile <seqan/bam_io.h>
+ * @brief Represent a record from a BAM or SAM file.
+ *
+ * @signature class BamAlignmentRecord.
+ *
+ * @section Remarks
+ *
+ * While also used to represent SAM records, the type is called <tt>BamAlignmentRecord</tt> since the data directly
+ * reflects a BAM records (0-based positions, identify references by id, and tags are stored in BAM format.
+ */
+
+/*!
+ * @fn BamAlignmentRecord::BamAlignmentRecord
+ * @brief Default constructor.
+ *
+ * @signature BamAlignmentRecord::BamAlignmentRecord();
+ */
+
+/*!
+ * @var __uint32 BamAlignmentRecord::INVALID_POS
+ * @brief Static member with invalid sentinel/position value.
+ *
+ * @var __uint32 BamAlignmentRecord::INVALID_REFID
+ * @brief Static member with invalid sentinel/position value.
+ *
+ * @var __uint32 BamAlignmentRecord::INVALID_LEN
+ * @brief Static member with invalid/sentinel reference ids (-1 as in BAM/SAM).
+ *
+ * @var CharString BamAlignmentRecord::qName
+ * @brief The query/read name.
+ *
+ * Note that the reads of a template all of the same query name and are differentiated by their position
+ * and the <tt>BAM_FLAG_FIRST</tt>/<tt>BAM_FLAG_LAST</tt> flag values.
+ *
+ * @var __uint16 BamAlignmentRecord::flag
+ * @brief The flag of this mapping.
+ *
+ * See @link BamFlags @endlink for flag constants and also see the <tt>hasFlag*()</tt> functions.
+ *
+ * @var __int32 BamAlignmentRecord::rID
+ * @brief ID of reference for this fragment mapping (0-based, <tt>INVALID_REFID</tt> for '*').
+ *
+ * @var __int32 BamAlignmentRecord::beginPos
+ * @brief Begin position of the alignment (0-based, <tt>INVALID_POS</tt> for '*').
+ *
+ * @var __uint8 BamAlignmentRecord::mapQ;
+ * @brief Mapping quality (255 for '*').
+ *
+ * @var __uint16 BamAlignmentRecord::bin;
+ * @brief The bin of the alignment, automatically computed when writing BAM.
+ *
+ * @var String<CigarElement<> > BamAlignmentRecord::cigar;
+ * @brief The CIGAR string for the BAM alignment.
+ *
+ * @var __int32 BamAlignmentRecord::rNextId;
+ * @brief The ID of the reference where the next fragment in this template aligns.
+ *
+ * <tt>INVALID_REFID</tt> for '*'.
+ *
+ * @var __int32 BamAlignmentRecord::pNext;
+ * @brief Position on the reference where the next fragment in this template aligns.
+ *
+ * <tt>INVALID_POS</tt> for '*'.
+ *
+ * @var __int32 BamAlignmentRecord::tLen;
+ * @brief The inferred template size.
+ *
+ * <tt>INVALID_LEN</tt> for '*'.
+ *
+ * @var CharString BamAlignmentRecord::seq;
+ * @brief The fragment sequence.
+ *
+ * @var CharString BamAlignmentRecord::qual;
+ * @brief The PHRED quality values of the sequence (as in SAM), empty for '*'.
+ *
+ * @var CharString BamAlignmentRecords::tags;
+ * @brief Raw BAM tag string, use @link BamTagsDict @endlink for comfortable access.
+ */
 
 /**
 .Class.BamAlignmentRecord
@@ -218,6 +340,17 @@ public:
 // Function clear()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#clear
+ * @brief Clear BamAlignmentRecord.
+ *
+ * @signature void clear(record);
+ *
+ * @param record The BamAlignmentRecord to clear.
+ *
+ * Clears all strings and resets it to default initialization state.
+ */
+
 ///.Function.clear.param.object.type:Class.BamAlignmentRecord
 ///.Function.clear.class:Class.BamAlignmentRecord
 
@@ -242,6 +375,18 @@ clear(BamAlignmentRecord & record)
 // ----------------------------------------------------------------------------
 // Function hasFlagMultiple()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#hasFlagMultiple
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "multiple" flag set.
+ * 
+ * @signature bool hasFlagMultiple(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.hasFlagMultiple
@@ -275,6 +420,18 @@ hasFlagMultiple(BamAlignmentRecord const & record)
 // Function hasFlagAllProper()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#hasFlagAllProper
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "all properly aligned" flag set.
+ * 
+ * @signature bool hasFlagAllProper(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.hasFlagAllProper
 ..class:Class.BamAlignmentRecord
@@ -306,6 +463,18 @@ hasFlagAllProper(BamAlignmentRecord const & record)
 // ----------------------------------------------------------------------------
 // Function hasFlagUnmapped()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#hasFlagUnmapped
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "unmapped" flag set.
+ * 
+ * @signature bool hasFlagUnmapped(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.hasFlagUnmapped
@@ -339,6 +508,18 @@ hasFlagUnmapped(BamAlignmentRecord const & record)
 // Function hasFlagNextUnmapped()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#hasFlagNextUnmapped
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "next unmapped" flag set.
+ * 
+ * @signature bool hasFlagNextUnmapped(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.hasFlagNextUnmapped
 ..class:Class.BamAlignmentRecord
@@ -370,6 +551,18 @@ hasFlagNextUnmapped(BamAlignmentRecord const & record)
 // ----------------------------------------------------------------------------
 // Function hasFlagRC()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#hasFlagRC
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "reverse-complemented" flag set.
+ * 
+ * @signature bool hasFlagRC(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.hasFlagRC
@@ -403,6 +596,18 @@ hasFlagRC(BamAlignmentRecord const & record)
 // Function hasFlagNextRC()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#hasFlagNextRC
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "next reverse-complemented" flag set.
+ * 
+ * @signature bool hasFlagNextRC(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.hasFlagNextRC
 ..class:Class.BamAlignmentRecord
@@ -434,6 +639,18 @@ hasFlagNextRC(BamAlignmentRecord const & record)
 // ----------------------------------------------------------------------------
 // Function hasFlagFirst()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#hasFlagFirst
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "first in template" flag set.
+ * 
+ * @signature bool hasFlagFirst(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.hasFlagFirst
@@ -467,6 +684,18 @@ hasFlagFirst(BamAlignmentRecord const & record)
 // Function hasFlagLast()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#hasFlagLast
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "last in template" flag set.
+ * 
+ * @signature bool hasFlagLast(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.hasFlagLast
 ..class:Class.BamAlignmentRecord
@@ -498,6 +727,18 @@ hasFlagLast(BamAlignmentRecord const & record)
 // ----------------------------------------------------------------------------
 // Function hasFlagSecondary()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#hasFlagSecondary
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "secondary" flag set.
+ * 
+ * @signature bool hasFlagSecondary(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.hasFlagSecondary
@@ -531,6 +772,18 @@ hasFlagSecondary(BamAlignmentRecord const & record)
 // Function hasFlagQCNoPass()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#hasFlagQCNoPass
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "did not pass QC" flag set.
+ * 
+ * @signature bool hasFlagQCNoPass(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.hasFlagQCNoPass
 ..class:Class.BamAlignmentRecord
@@ -563,6 +816,18 @@ hasFlagQCNoPass(BamAlignmentRecord const & record)
 // Function hasFlagDuplicate()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#hasFlagDuplicate
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return true if a @link BamAlignmentRecord @endlink has the "duplicate" flag set.
+ * 
+ * @signature bool hasFlagDuplicate(record);
+ * 
+ * @param record The BamAlignmentRecord to query.
+ * 
+ * @return bool <tt>true</tt> if the flag is set, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.hasFlagDuplicate
 ..class:Class.BamAlignmentRecord
@@ -594,6 +859,18 @@ hasFlagDuplicate(BamAlignmentRecord const & record)
 // ----------------------------------------------------------------------------
 // Function getAlignmentLengthInRef()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#getAlignmentLengthInRef
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return the alignment length in the record's projection in the reference.
+ * 
+ * @signature unsigned getAlignmentLengthInRef(record);
+ * 
+ * @param record The BamAlignmentRecord to compute length for.
+ * 
+ * @return unsigned The alignment length.
+ */
 
 /**
 .Function.getAlignmentLengthInRef

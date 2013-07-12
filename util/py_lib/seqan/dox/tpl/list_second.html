@@ -22,7 +22,7 @@
 
 <ul id="full_list" class="class">
   {% for name, entry in doc.second_level_entries|dictsort %}
-  <li><!--<a class="toggle"></a>--> <span class="label_{{ entry.kind }} object_link"><a href="../{{name|name_to_path}}" title="{{name}} ({{entry.kind}})">{{name}}</a></li>
+  <li><!--<a class="toggle"></a>--> <span class="label_{{ entry.kind }} object_link"><a href="../{{entry|name_to_path}}" title="{{name}} ({{entry.kind}})">{{name}}</a></li>
   {% endfor %}
 </ul>
 
