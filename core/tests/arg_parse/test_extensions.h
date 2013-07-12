@@ -61,20 +61,24 @@ void failExceptionTest()
         {                                                                           \
             if(std::string(ex.what()) != _message)                                  \
             {                                                                       \
-                std::cerr << "Got correct exception but wrong message: '" <<        \
-                ex.what() << "' != '" <<                                            \
-                _message << "'" << std::endl;                                       \
+                std::cerr << __FILE__ << ":" << __LINE__                            \
+                          << " Got correct exception but wrong message: '"          \
+                          << ex.what() << "' != '"                                  \
+                          << _message << "'" << std::endl;                          \
                 failExceptionTest();                                                \
             }                                                                       \
             caughtException = true;                                                 \
         }                                                                           \
         catch(...)                                                                  \
         {                                                                           \
-            std::cerr << "Got wrong exception: " << #_exception_type << std::endl;  \
+            std::cerr << __FILE__ << ":" << __LINE__ << " Got wrong exception: "    \
+                      << #_exception_type << std::endl;                             \
             failExceptionTest();                                                    \
         }                                                                           \
-        if (!caughtException) {                                                     \
-            std::cerr << "No exception thrown!" << std::endl;                       \
+        if (!caughtException)                                                       \
+        {                                                                           \
+            std::cerr << __FILE__ << ":" << __LINE__ << " No exception thrown!"     \
+                      << std::endl;                                                 \
             failExceptionTest();                                                    \
         }                                                                           \
     } while(false)
