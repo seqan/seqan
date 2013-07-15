@@ -64,14 +64,14 @@
 ..summary:Flag ($0$/$1$) to indicate whether this is a pre-release (i.e. SVN version).
 ..signature:SEQAN_VERSION_PRE_RELEASE
 ..include:seqan/version.h
-*/ 
+*/
 
 #define SEQAN_VERSION_MAJOR 1
 
-#define SEQAN_VERSION_MINOR 4
+#define SEQAN_VERSION_MINOR 5
 
-#define SEQAN_VERSION_PATCH 1
+#define SEQAN_VERSION_PATCH 0
 
-#define SEQAN_VERSION_PRE_RELEASE 0
+#define SEQAN_VERSION_PRE_RELEASE 1
 
 #endif  // SEQAN_VERSION_H_
