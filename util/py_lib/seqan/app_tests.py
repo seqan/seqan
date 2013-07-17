@@ -51,7 +51,7 @@ def md5ForFile(f, block_size=2**20):
 # Valgrind flags, taken from CMake output, ideally given to test script by CMake?
 SUPPRESSIONS = '--suppressions=' + os.path.join(os.path.dirname(__file__), '..', '..', 'seqan.supp')
 VALGRIND_FLAGS = [SUPPRESSIONS] + '--error-exitcode=1 -q --tool=memcheck --leak-check=yes --show-reachable=yes --workaround-gcc296-bugs=yes --num-callers=50 --'.split()
-VALGRIND_PATH = '/group/agabi/software/bin/valgrind'
+VALGRIND_PATH = '/usr/bin/valgrind'
 
 class TestConf(object):
     """Configuration for one tests.
