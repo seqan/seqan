@@ -481,7 +481,7 @@ value(ModifiedString<THost, ModReverse> const & me, TPos pos)
 // Function begin()                               [ModReverse ModifiedString]
 // --------------------------------------------------------------------------
 
-template < typename THost, typename TTag >
+template < typename THost>
 inline typename Iterator< ModifiedString<THost, ModReverse> const >::Type 
 begin(ModifiedString<THost, ModReverse> const & me)
 {
