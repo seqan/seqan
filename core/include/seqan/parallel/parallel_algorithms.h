@@ -51,6 +51,22 @@ namespace seqan {
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function arrayFill
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayFill
+ * @brief Fill a range.
+ *
+ * @signature void arrayFill(begin, end, value, parallelTag);
+ *
+ * @param[out] begin       The beginning of the range to fill.
+ * @param[out] end         The end of the range to fill.
+ * @param[in]  value       The value to fill <tt>[begin, end)</tt>.
+ * @param[in]  parallelTag The tag to use for parallelism, one of <tt>Serial</tt> and <tt>Parallel</tt>.
+ */
+
 /**
 .Function.arrayFill
 ..signature:arrayFill(begin, end, value, parallelTag)
@@ -73,6 +89,29 @@ arrayFill(TIterator begin_,
     for (int job = 0; job < (int)length(splitter); ++job)
         arrayFill(splitter[job], splitter[job + 1], value, Serial());
 }
+
+// ----------------------------------------------------------------------------
+// Function sum
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn sum
+ * @brief Returns the sum of all elements in a sequence.
+ *
+ * @signature TValue sum(seq[, parallelTag);
+ *
+ * @param[in] seq         The sequence to sum up, o ftype <tt>TSequence</tt>.
+ * @param[in] parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt> and <tt>Parallel</tt>,
+ *                        default is <tt>Serial</tt>.
+ *
+ * @return TValue The sum of the elements in <tt>seq</tt>, of type <tt>Value&lt;TSequence&gt;::Type</tt>.
+ *
+ * @section Remarks
+ *
+ * The sequence alphabet must support the <tt>operator+</tt> and conversion from zero.
+ *
+ * @see partialSum
+ */
 
 /**
 .Function.sum
@@ -121,6 +160,31 @@ sum(TSequence const &seq)
 {
     return sum(seq, Serial());
 }
+
+// ----------------------------------------------------------------------------
+// Function partialSum
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn partialSum
+ * @headerfile <seqan/parallel.h>
+ * @brief Computes the partial sum of a sequence.
+ * 
+ * @signature TValue partialSum(target, source[, parallelTag])
+ * 
+ * @param[in]  source      A sequence of elements that should be partially summed.  The sequence alphabet must support
+ *                         the <tt>operator+</tt> and conversion from zero, the type is <tt>TSource</tt>.
+ * @param[in]  parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt>, <tt>Parallel</tt>, default is
+ *                         <tt>Serial</tt>.
+ * @param[out] targ et     The resulting partial sum.  This sequence will have the same length as <tt>source</tt> and
+ *                         contains at position <tt>i</tt> the sum of elements <tt>source[0]</tt>, <tt>source[1]</tt>,
+ *                         ..., <tt>source[i]</tt>.
+ * 
+ * @return TValue The sum of all elements in <tt>source</tt>.  The returned value equals the last value in target.
+ *                <tt>TValue</tt> is <tt>Value&lt;TSource&gt;::Type</tt>.
+ * 
+ * @see sum
+ */
 
 /**
 .Function.partialSum

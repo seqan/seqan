@@ -51,6 +51,19 @@ namespace seqan {
 // Tag Parallel
 // ----------------------------------------------------------------------------
 
+/*!
+ * @defgroup ParallelismTags Parallelism Tags
+ * @brief Tags for enabling/disabling parallelism.
+ *
+ * @tag ParallelismTags#Parallel
+ * @headerfile <seqan/parallel.h>
+ * @brief Tag to select the parallel implementation of an algorithm.
+ *
+ * @tag ParallelismTags#Serial
+ * @headerfile <seqan/parallel.h>
+ * @brief Tag to select the serial implementation of an algorithm.
+ */
+
 /**
 .Tag.Parallel:
 ..cat:Parallelism

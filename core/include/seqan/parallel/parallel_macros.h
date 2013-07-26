@@ -37,6 +37,42 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_MACROS_H_
 #define SEQAN_PARALLEL_PARALLEL_MACROS_H_
 
+/*!
+ * @macro SEQAN_OMP_PRAGMA
+ * @brief Portable conditional <tt>#pragma</tt> issuing if OpenMP is enabled.
+ *
+ * @signature SEQAN_OMP_PRAGMA(x)
+ *
+ * @param x The string to issue behind <tt>#pragma omp</tt>.
+ *
+ * @section Remarks
+ *
+ * This macro uses portable pragma generation, dependent on the macro <tt>_OPENMP</tt> being defined (as by
+ * the OpenMP standard).
+ *
+ * This is useful for disabling OpenMP pragmas on compilers that do not support OpenMP or when OpenMP is not enabled to
+ * suppress warnings.
+ *
+ * @section Example
+ *
+ * Parallelize loop with OpenMP if OpenMP is enabled:
+ *
+ * @code{.cpp}
+ * SEQAN_OMP_PRAGMA(parallel for)  // becomes: #pragma omp parallel for
+ * for (int i = 0; i < x; ++i)
+ * {
+ *     // Do work.
+ * }
+ * @endcode
+ *
+ * Make an addition atomic if OpenMP is enabled:
+ *
+ * @code{.cpp}
+ * SEQAN_OMP_PRAGMA(parallel atomic)  // becomes: #pragma omp parallel atomic
+ * i += 1;
+ * @endcode
+ */
+
 /**
 .Macro.SEQAN_OMP_PRAGMA
 ..summary:Portable conditional $#pragma$ issuing if OpenMP is enabled.

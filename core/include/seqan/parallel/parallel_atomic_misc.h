@@ -57,6 +57,31 @@ namespace seqan {
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function atomicMax()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn atomicMax
+ * @headerfile <seqan/parallel.h>
+ * @brief Lock-free implemenattion of <tt>x = max(x, y)</tt>.
+ *
+ * @signature void atomicMax(x, y);
+ *
+ * @param[in,out] x Integer to set to <tt>max(x, y)</tt>.
+ * @param[in]     y Other integer.
+ *
+ * @section Remarks
+ *
+ * This is equivalent to
+ *
+ * @code{.cpp}
+ * atomic {
+ *     x = max(x, y);
+ * }
+ * @endcode
+ */
+
 /**
 .Function.atomicMax
 ..summary:Lock-free implementation of $x = max(x, y)$.
@@ -73,6 +98,7 @@ atomic {
 ..header:seqan/parallel.h
 ..see:Function.atomicMin
  */
+
 template <typename T>
 inline void
 atomicMax(T volatile & x, T y)
@@ -83,6 +109,31 @@ atomicMax(T volatile & x, T y)
         val = atomicCas(x, val, m);
     }
 }
+
+// ----------------------------------------------------------------------------
+// Function atomicMin()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn atomicMin
+ * @headerfile <seqan/parallel.h>
+ * @brief Lock-free implemenattion of <tt>x = min(x, y)</tt>.
+ *
+ * @signature void atomicMin(x, y);
+ *
+ * @param[in,out] x Integer to set to <tt>min(x, y)</tt>.
+ * @param[in]     y Other integer.
+ *
+ * @section Remarks
+ *
+ * This is equivalent to
+ *
+ * @code{.cpp}
+ * atomic {
+ *     x = min(x, y);
+ * }
+ * @endcode
+ */
 
 /**
 .Function.atomicMin
@@ -100,6 +151,7 @@ atomic {
 ..header:seqan/parallel.h
 ..see:Function.atomicMax
  */
+
 template <typename T>
 inline void
 atomicMin(T volatile & x, T y)
