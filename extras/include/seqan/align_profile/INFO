@@ -1,0 +1,13 @@
+Name: align_profile
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: BSD 3-clause
+Copyright: 2013, FU Berlin
+Status: alpha
+Description: Sequence-to-profile alignment.
+ This module contains the ProfileSeq Score specialization for aligning
+ sequences to profiles and utility code to help for performing such
+ alignments.
+ .
+ The ProfileSeq Score class is based on the code in the consensus module
+ by Tobias Rausch.
