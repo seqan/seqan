@@ -47,6 +47,68 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BamIOContext
+ * @headerfile <seqan/bam_io.h>
+ * @brief The I/O context to use for BAM I/O.
+ * 
+ * @signature template <typename TNameStore, typename TNameStoreCache = NameStoreCache<TNameStore> >
+ *            class BamIOContext;
+ * 
+ * @tparam TNameStore      The name store class.
+ * @tparam TNameStoreCache The name store cache class.  Defaults to @link NameStoreCache @endlink &lt;TNameStore&gtl;.
+ * 
+ * @section Examples
+ * 
+ * Creating a @link BamIOContext @endlink for a raw @link StringSet @endlink of @link CharString @endlink.
+ * 
+ * @code{.cpp}
+ * StringSet<CharString> nameStore;
+ * NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
+ * BamIOContext<StringSet<CharString> > bamIOContext(nameStore, nameStoreCache);
+ * // ...
+ * @endcode
+ *
+ * Using a @link BamIOContext @endlink with a @link FragmentStore @endlink.
+ * 
+ * @code{.cpp}
+ * typedef FragmentStore<>::TContigNameStore         TNameStore;
+ * typedef NameStoreCache<TNameStore>                TNameStoreCache;
+ * FragmentStore<> store;
+ * // Optionally, do something with store.
+ * typedef BamIOContext<TNameStore, TNameStoreCache> TBamIOContext;
+ * TBamIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
+ * // ...
+ * @endcode
+ */
+
+/*!
+ * @fn BamIOContext::BamIOContext
+ * @headerfile <seqan/bam_io.h>
+ * @brief Constructor.
+ * 
+ * @signature BamIOContext::BamIOContext();
+ * 
+ * @section Remarks
+ * 
+ * Only the default constructor is provided.
+ */
+
+/*!
+ * @typedef BamIOContext::TNameStore
+ * 
+ * @brief The name store class.
+ 
+ * @signature typedef (...) BamIOContext::TNameStore;
+ */
+
+/*!
+ * @typedef BamIOContext::TNameStoreCache
+ * @brief The name store cache class.
+ *
+ * @signature typedef (...) BamIOContext::TNameStoreCache;
+ */
+
 /**
 .Class.BamIOContext
 ..cat:BAM I/O
@@ -118,6 +180,17 @@ public:
 // Function nameStore()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamIOContext#nameStoreCache
+ * @brief Return reference to name store cache from @link BamIOContext @endlink.
+ * 
+ * @signature TNameStoreRef nameStoreCache(context);
+ * 
+ * @param context The @link BamIOContext @endlink to query.
+ *
+ * @return TNameStoreRef A reference to the TNameStore of the context.
+ */
+
 /**
 .Function.BamIOContext#nameStore
 ..class:Class.BamIOContext
@@ -150,6 +223,18 @@ nameStore(BamIOContext<TNameStore, TNameStoreCache> const & context)
 // ----------------------------------------------------------------------------
 // Function nameStoreCache()
 // ----------------------------------------------------------------------------
+
+/*
+ * @fn BamIOContext#nameStore
+ * @headerfile <seqan/bam_io.h>
+ * @brief Return reference to name store from @link BamIOContext @endlink.
+ * 
+ * @signature TNameStoreCacheRef nameStore(context);
+ *
+ * @param context The @link BamIOContext @endlink to query.
+ *
+ * @return TNameStoreCacheRef A reference to the TNameStoreCache of the context.
+ */
 
 /**
 .Function.BamIOContext#nameStoreCache

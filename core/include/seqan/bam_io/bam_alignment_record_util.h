@@ -158,6 +158,38 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
 // Function bamRecordToAlignment()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamAlignmentRecord#bamRecordToAlignment
+ * @headerfile <seqan/bam_io.h>
+ * @brief Construct an @link Align @endlink object from a BamAlignmentRecord object.
+ *
+ * @signature void bamRecordToAlignment(align, reference, record);
+ *
+ * @param align     The @link Align @endlink object to create the alignment object in.
+ * @param reference The string with the reference that <tt>record</tt> lies on.
+ * @param record    The @link BamAlignmentRecord @endlink to construct alignment from.
+ *
+ * The function will resize <tt>align</tt> to have two rows.  The part of the reference that the read from
+ * <tt>record</tt> aligns to will be copied to the first row and the sequence from record will be copied to the second
+ * row (and reverse-complemented if appropriate).  Then, the gaps from the CIGAR string in <tt>record</tt> will be
+ * copied to <tt>align</tt>.
+ *
+ * @section Example
+ *
+ * Here is an example:
+ *
+ * @code{.cpp}
+ * StringSet<Dna5String> references;
+ * BamAlignment record;
+ * // Read references and record.
+ * Align<Dna5String> align;
+ * if (record.rID != BamAlignmentRecord::INVALID_REFID)
+ *     bamRecordToAlignment(align, references[record.refId], record);
+ * @endcode
+ */
+
+// TODO(holtgrew): Convert into full example.
+
 /**
 .Function.bamRecordToAlignment
 ..class:Class.BamAlignmentRecord

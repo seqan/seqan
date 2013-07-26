@@ -301,6 +301,19 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
     }
 }
 
+/*!
+ * @fn assignTagsSamToBam
+ * @headerfile <seqan/bam_io.h>
+ * @brief Assign tags in SAM format to tags in BAM format.
+ *
+ * @signature void assignTagsBamToSam(bamTags, samTags);
+ *
+ * @param bamTags[out] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target BAM tags.
+ * @param samTags[in] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source SAM tags.
+ *
+ * @see assignTagsBamToSam
+ */
+
 /**
 .Function.assignTagsSamToBam
 ..cat:BAM I/O
@@ -609,6 +622,19 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
         SEQAN_ASSERT_FAIL("Invalid tag type: %c!", t);
     }
 }
+
+/*!
+ * @fn assignTagsBamToSam
+ * @headerfile <seqan/bam_io.h>
+ * @brief Assign tags in BAM format to tags in SAM format.
+ *
+ * @signature void assignTagsBamToSam(samTags, bamTags);
+ *
+ * @param samTags[out] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the target SAM tags.
+ * @param bamTags[in] A sequence of <tt>char</tt> (e.g. @link CharString @endlink) for the source BAM tags.
+ *
+ * @see assignTagsSamToBam
+ */
 
 /**
 .Function.assignTagsBamToSam

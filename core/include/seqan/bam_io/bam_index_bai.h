@@ -93,6 +93,26 @@ struct BaiBamIndexBinData_
 // Spec BAI BamIndex
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class BaiBamIndex
+ * @extends BamIndex
+ * @brief Access to BAI (samtools-style)
+ *
+ * @signature template <>
+ *            class BamIndex<Bai>;
+ */
+
+/*!
+ * @fn BaiBamIndex::BamIndex
+ * @brief Constructor.
+ *
+ * @signature BamIndex::BamIndex();
+ *
+ * @section Remarks
+ *
+ * Only the default constructor is provided.
+ */
+
 /**
 .Spec.BAI BamIndex
 ..cat:BAM I/O
@@ -179,6 +199,8 @@ _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 	for (k =  585 + (beg>>17); k <=  585 + (end>>17); ++k) appendValue(list, k);
     for (k = 4681 + (beg>>14); k <= 4681 + (end>>14); ++k) appendValue(list, k);
 }
+
+// TODO(holtgrew): Switch order of hasAlignments and stream, stream is state.
 
 template <typename TNameStore, typename TNameStoreCache>
 inline bool
@@ -321,6 +343,8 @@ jumpToRegion(Stream<Bgzf> & stream,
 ..returns:$bool$ indicating success.
 ..include:seqan/bam_io.h
 */
+
+// TODO(holtgrew): Parameter order, see jumpToRegion()!
 
 template <typename TNameStore, typename TNameStoreCache>
 bool jumpToOrphans(Stream<Bgzf> & stream,

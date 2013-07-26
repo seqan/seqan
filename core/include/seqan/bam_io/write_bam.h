@@ -35,6 +35,7 @@
 // ==========================================================================
 
 // TODO(holtgrew): Add buffer to context?
+// TODO(holtgrew): Rename to writeRecord from write2! Go over deprecated alias!
 
 #ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
 #define CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
@@ -60,6 +61,23 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 // Function writeRecord()                                             BamHeader
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SamBamIO#write2
+ * @brief Write a record to a SAM/BAM file.
+ *
+ * @signature int writeRecord(stream, record, context, tag);
+ * @signature int writeRecord(stream, header, context, tag);
+ *
+ * @param[in,out] stream  The @link StreamConcept Stream @endlink to write to.
+ * @param[out]    record  The @link BamAlignmentRecord @endlink object to write out.
+ * @param[out]    header  The @link BamHeader @endlink object to write out.
+ * @param[in,out] context The BamIOContext object to use.
+ * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
+ *
+ * @return int A status code, 0 on success, != 0 on failure.
+ */
+
 
 template <typename TStream, typename TNameStore, typename TNameStoreCache>
 int write2(TStream & stream,

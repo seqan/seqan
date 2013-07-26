@@ -45,6 +45,20 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BamIndex
+ * @headerfile <seqan/bam_io.h>
+ *
+ * @brief Access to BAM indices.
+ *
+ * @signature template <typename TSpec>
+ *            class BamIndex;
+ *
+ * @section Remarks
+ *
+ * This is an abstract class, don't use it itself but its specializations.
+ */
+
 /**
 .Class.BamIndex
 ..cat:BAM I/O
@@ -65,6 +79,51 @@ class BamIndex;
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function BamIndex#jumpToRegion
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamIndex#jumpToRegion
+ * @brief Seek in BAM BGZF stream using an index.
+ *
+ * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
+ * jumps to the first alignment in this region, if any.
+ *
+ * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ *
+ * @param[in,out] stream        The @link BgzfStream @endlink to jump with.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
+ *                              alignments.
+ * @param[in,out] bamIOContext  The @link BamIOContext @endlink to use for jumping.
+ * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
+ * @param[in]     pos           The begin of the region to jump to.
+ * @param[in]     posEnd        The end of the region to jump to.
+ * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
+ *
+ * @return bool true if seeking was successful, false if not.
+ *
+ * @section Remarks
+ *
+ * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ */
+
+// ----------------------------------------------------------------------------
+// Function jumpToOrphans
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamIndex#jumpToOrphans
+ * @brief Seek to orphans block in BAM BGZF stream using an index.
+ *
+ * @signature bool jumpToOrphans(stream, hasAlignments, bamIOContext, index);
+ *
+ * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
+ * @param[in,out] bamIOContext   The @link BamIOContext @endlink to use for the state.
+ * @param[in]     index          The index to use for jumping.
+ */
 
 }  // namespace seqan
 

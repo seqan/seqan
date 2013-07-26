@@ -47,6 +47,54 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BamTagsDict
+ * @headerfile <seqan/bam_io.h>
+ * @brief Indexes start positions of BAM tags in a @link CharString @endlink and provides a dict-like API.
+ *
+ * @signature class BamTagsDict;
+ *
+ * @section Example
+ *
+ * @code{.cpp}
+ * CharString samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
+ * CharString bamStr;
+ * assignSamToBam(bamStr, samStr);
+ * BamTagsDict tags(bamStr);
+ * std::cerr << length(tags) << std::endl;  // #=> "3"
+ * for (unsigned i = 0; i < length(tags); ++i)
+ * {
+ *     std::cerr << getTagKey(tags, i) << " -> " << getTagValue(tags, i) << std::endl;
+ *     if (getTagValue(tags, i)[0] == 'i')  // is 32 bit integer
+ *     {
+ *         __int32 x = 0;
+ *         bool res = extractTagValue(x, tags, i);
+ *         SEQAN_ASSERT_MSG(res, "Not a valid integer at pos %u!", i);
+ *         std::cerr << "     " << x << std::endl;
+ *     }
+ * }
+ * @endcode
+ *
+ * Output is:
+ *
+ * @code{.cpp}
+ * "AA -> Zvalue1"
+ * "AB -> Zvalue2"
+ * "AC -> i<binary representation of 30>"
+ *     -> "      30"
+ * @endcode
+ *
+ * @see getBamTypeSize
+ * @see getBamTypeChar
+ */
+
+/*!
+ * @fn BamTagsDict::BamTagsDict
+ * @brief Constructor
+ *
+ * @signature BamTagsDict::BamTagsDict();
+ */
+
 /**
 .Class.BamTagsDict
 ..cat:BAM I/O
@@ -138,6 +186,17 @@ host(BamTagsDict const & bamTags)
 // Function hasIndex()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamTagsDict#hasIndex
+ * @brief Returns whether the BamTagsDict has an index.
+ *
+ * @signature bool hasIndex(dict);
+ *
+ * @param dict The @link BamTagsDict @endlink to query.
+ *
+ * @return bool true if <tt>dict</tt> has an index and false otherwise.
+ */
+
 /**
 .Function.BamTagsDict#hasIndex
 ..class:Class.BamTagsDict
@@ -149,6 +208,8 @@ host(BamTagsDict const & bamTags)
 ..returns:$bool$
 ..include:<seqan/store_ex.h>
 */
+
+// TODO(holtgrew): Remove non-const variante.
 
 inline bool
 hasIndex(BamTagsDict const & bamTags)
@@ -165,6 +226,20 @@ hasIndex(BamTagsDict & bamTags)
 // ----------------------------------------------------------------------------
 // Function getBamTypeSize()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn getBamTypeSize
+ * @brief Return size of the type identified by a type char.
+ *
+ * @signature int getBamTypeSize(c);
+ *
+ * @param c A <tt>char</tt> that identifies a type.
+ *
+ * @return int The size of the type in bytes, -1 vor variable-sized types, -2 for invalid paramters.
+ *
+ * @see BamTagsDict
+ * @see getBamTypeChar
+ */
 
 // Return sizeof() of the type identified with the given char.  Returns -2 if not
 // valid, -1 if of variable length.
@@ -209,6 +284,15 @@ getBamTypeSize(char c)
 // ----------------------------------------------------------------------------
 // Function buildIndex()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#buildIndex
+ * @brief Build index for a BamTagsDict  object.
+ *
+ * @signature void buildIndex(bamTags);
+ *
+ * @param[in,out] bamTags The BamTagsDict object to build the index for.
+ */
 
 /**
 .Function.BamTagsDict#buildIndex
@@ -295,6 +379,17 @@ setHost(BamTagsDict & me, CharString const & host_)
 // Function length()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamTagsDict#length
+ * @brief Returns the number of entries in a BamTagsDict.
+ *
+ * @signature unsigned length(tagsDict);
+ *
+ * @param tagsDict The BamTagsDict object to query for its length.
+ *
+ * @return unsigned The number of entries in the BamTagsDict.
+ */
+
 ///.Function.length.param.object.type:Class.BamTagsDict
 
 inline unsigned
@@ -310,6 +405,16 @@ length(BamTagsDict const & tags)
 // ----------------------------------------------------------------------------
 // Function getTagType()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#getTagType
+ * @brief Returns the tag type char for an entry of a BamTagsDict.
+ *
+ * @signature char getTagType(tags, idx);
+ *
+ * @param[in] tags The BamTagsDict to query.
+ * @param[in] idx  The position for which to retrieve the type.
+ */
 
 /**
 .Function.BamTagsDict#getTagType
@@ -335,6 +440,18 @@ getTagType(BamTagsDict & tags, TPos idx)
 // ----------------------------------------------------------------------------
 // Function getTagKey()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#getTagKey
+ * @brief Return key of a tag by index.
+ *
+ * @signature TKey getTagKey(tagsDict, idx);
+ *
+ * @param[in] tagsDict The BamTagsDict to query.
+ * @param[in] idx      The index of the dict entry.
+ *
+ * @return TKey An infix of a @link CharString @endlink.  Will be a two-character char sequence.
+ */
 
 /**
 .Function.BamTagsDict#getTagKey
@@ -370,6 +487,19 @@ getTagKey(BamTagsDict const & tags, TPos idx)
 // Function findTagKey()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamTagsDict#findTagKey
+ * @brief Find a tag by its key for a @link BamTagsDict @endlink object.
+ *
+ * @signature bool findTagKey(idx, tagsDict, name);
+ *
+ * @param[out] idx      The index of the tag is stored here (<tt>unsigned</tt>).
+ * @param[in]  tagsDict The BamTagsDict to query.
+ * @param[in]  name     The key to query for: @link CharString @endlink.
+ *
+ * @return bool true if the key could be found and false otherwise.
+ */
+
 /**
 .Function.BamTagsDict#findTagKey
 ..summary:Find a tag by its key for a @Class.BamTagsDict@ object.
@@ -402,6 +532,25 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
 // ----------------------------------------------------------------------------
 // Function getTagValue()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#getTagValue
+ * @brief The value of a tag by its key.
+ *
+ * @signature CharString getTagValue(tagsDict, idx);
+ *
+ * @param[in] tagsDict The tags dict to query.
+ * @param[in] idx      The index of the entry to query for its value.
+ *
+ * @return CharString the raw tags data.
+ *
+ * @section Remarks
+ *
+ * Note that you will get <tt>&lt;type char&gt; + payload</tt> in the case of @link BamTagsDict @endlink.
+ *
+ * See documentation of @link BamTagsDict @endlink for an example.
+ */
+ 
 
 /**
 .Function.BamTagsDict#getTagValue
@@ -467,6 +616,27 @@ getTagValue(BamTagsDict const & tags, TPos idx)
 // ----------------------------------------------------------------------------
 // Function extractTagValue()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#extractTagValuej
+ * @brief Extract and cast "atomic" value from tags string with index <tt>idx</tt>.
+ * 
+ * @signature bool extractTagValue(dest, tags, idx)
+ * 
+ * @param[out] dest The variable to write the value to.The value is first copied in a variable of the type indicated in
+ *                  the BAM file. Then it is cast into the type of <tt>dest</tt>.
+ *
+ * @param[in] tags The BamTagsDict object to query.
+ * @param[in] idx  The integer index in the dict to use.
+ * 
+ * @return bool true if the value could be extracted.
+ * 
+ * @section Remarks
+ * 
+ * The function only works for atomic types such as <tt>int</tt>, not for <tt>char*</tt> or arrays.
+ * 
+ * See @link BamTagsDict @endlink for an example.
+ */
 
 /**
 .Function.BamTagsDict#extractTagValue
@@ -562,6 +732,31 @@ extractTagValue(TDest & dest, BamTagsDict & tags, TIdx idx)
 // Function getBamTypeChar()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn getBamTypeChar
+ * @brief Return char identifying the type of the argument type.
+ *
+ * @signature char getBamTypeChar<T>();
+ *
+ * @tparam T The type to query for its type char.
+ *
+ * @section Remarks
+ * 
+ * Note that this function is defined for the <tt>__int16</tt>, <tt>__uint16</tt> etc. but not for the types
+ * <tt>short</tt>, <tt>int</tt> etc. An exception are 8-bit characters/char, where it is defined for <tt>__int8</tt>,
+ * <tt>__uint8</tt>, and <tt>char</tt> unless <tt>char</tt> is equal to one of the other two types. This is important
+ * when used in @link BamTagsDict#setTagValue @endlink etc. since BAM gives type chars for printable characters, signed
+ * 8-bit numbers and unsigned 8-bit numbers.
+ * 
+ * If <tt>__int8</tt> and <tt>__uint8</tt> are not identical to <tt>char</tt>, we can make this decision from the type,
+ * otherwise we cannot and we will give the integer types a higher precedence.
+ * 
+ * In your programs, this should not make any difference, only the written SAM/BAM will differ.
+ *
+ * @see BamTagsDict
+ * @see BamTypeTypeSize
+ */
+
 /**
 .Function.getBamTypeChar
 ..class:Class.BamTagsDict
@@ -606,6 +801,73 @@ inline char getBamTypeChar()
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Test me!
+
+/*!
+ * @fn BamTagsDict#setTagValue
+ * 
+ * @headerfile seqan/bam_io.h
+ * 
+ * @brief Set the value of a tag through a @link BamTagsDict @endlink.
+ * 
+ * @signature bool setTagValue(tags, key, val[, typeC]);
+ * 
+ * @param[in,out] tags  The BamTagsDict to modify.
+ * @param[in]     key   The key of the tag.Must be a string of length 2. Types: CharString
+ * @param[in]     val   The value to set the the tag to.
+
+ * @param[in]     typeC BAM type char to use.For portability (so the generated files are the same on all platforms), use
+ *                      a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
+ *                      for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
+
+ * 
+ * @return bool true on success, false on failure.  This function can fail if the key is not a valid tag id (e.g. does
+ *              not have length 2) or if the type of <tt>val</tt> is not an atomic value or a string (anything but
+ *              <tt>char *</tt>, <tt>char const *</tt>, a character, integer or float type is invalid).
+ * 
+ * @section Remarks
+ * 
+ * Note that <tt>setTagValue</tt> does not cast the type, so <tt>typeC</tt> only influences the type character written
+ * out but <tt>val</tt> is written out in binary without modification.
+ * 
+ * @section Examples
+ * 
+ * An example setting some atomic tag values.
+ * 
+ * @code{.cpp}
+ * CharString rawTagsText;
+ * BamTagsDict tags(rawTagsText);
+ * setTagValue(tags, "XA", 9);    // int
+ * setTagValue(tags, "XB", 9u);   // unsigned int
+ * setTagValue(tags, "XC", 'X');  // char
+ * @endcode
+ *
+ * If <tt>char</tt> is equal to <tt>__int8</tt> or <tt>__uint8</tt> then the last line produces an entry with type 'c'
+ * or 'C'. To make sure that the type char 'A' (for "printable character") is written to the file, give it explicitely:
+ * 
+ * @code{.cpp}
+ * setTagValue(tags, "XC", 'X', 'A');  // Overrwrite XC, enforce type 'printable character'.
+ * @endcode
+ *
+ * Note that on most systems <tt>int</tt>s have a width of 32 bytes, but the C++ standard leaves this open. For all
+ * types but characters, you should not give an explicit type char but use one of the types with explicit width and
+ * signed/unsigned qualifier such as <tt>__int32</tt>, <tt>__uint32</tt> etc.
+ * 
+ * @code{.cpp}
+ * // The following is not recommended since the type of <tt>x</tt> is not "unsigned 32 bit int."
+ * __int32 x = -1;
+ * setTagValue(tags, "XB", x, 'I');
+ * // Instead, explicitely use an unsigned type if you need one.  Note that your compiler
+ * // might warn you about assigning -1 to an unsigned variable so you know that you are
+ * // probably doing something unintended.
+ * __uint32 y = -1;
+ * setTagValue(tags, "XB", y);
+ *  
+ * // Do not do this!
+ * setTagValue(tags, "XA", 9, 'f');    // BOGUS since 9 is not a floating point number.
+ * @endcode
+ *
+ * @see getBamTypeChar
+ */
 
 /**
 .Function.BamTagsDict#setTagValue
@@ -742,6 +1004,18 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val)
 // ----------------------------------------------------------------------------
 // Function eraseTag()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamTagsDict#eraseTag
+ * @brief Erase a tag from BamTagsDict.
+ *
+ * @signature bool eraseTag(tagsDict, key);
+ *
+ * @param[in,out] tagsDict The BamTagsDict to erase the tag from.
+ * @param[in]     key      The key of the tag to ersae, of type @link CharString @endlink.
+ *
+ * @return bool true if the tag was present for erasing, false if not.
+ */
 
 /**
 .Function.BamTagsDict#eraseTag

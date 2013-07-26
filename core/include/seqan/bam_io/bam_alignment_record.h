@@ -131,7 +131,7 @@ enum BamFlags
  * @headerfile <seqan/bam_io.h>
  * @brief Represent a record from a BAM or SAM file.
  *
- * @signature class BamAlignmentRecord.
+ * @signature class BamAlignmentRecord;
  *
  * @section Remarks
  *
@@ -179,8 +179,8 @@ enum BamFlags
  * @var __uint16 BamAlignmentRecord::bin;
  * @brief The bin of the alignment, automatically computed when writing BAM.
  *
- * @var String<CigarElement<> > BamAlignmentRecord::cigar;
- * @brief The CIGAR string for the BAM alignment.
+ * @var TCigarString BamAlignmentRecord::cigar;
+ * @brief The CIGAR string for the BAM alignment (of type String<CigarElement<> >).
  *
  * @var __int32 BamAlignmentRecord::rNextId;
  * @brief The ID of the reference where the next fragment in this template aligns.

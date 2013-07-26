@@ -49,6 +49,19 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @defgroup SamBamIO SAM/BAM I/O
+ * @brief Tags for identifying SAM/BAM format.
+ */
+
+/*!
+ * @tag SamBamIO#Bam
+ * @brief Identify the BAM format.
+ *
+ * @tag SamBamIO#Sam
+ * @brief Identify the SAM format.
+ */
+
 /**
 .Tag.Bam
 ..cat:BAM I/O
@@ -72,6 +85,22 @@ typedef Tag<Bam_> Bam;
 // ----------------------------------------------------------------------------
 // Function readRecord()                                              BamHeader
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SamBamIO#readRecord
+ * @brief Read a record from a SAM/BAM file.
+ *
+ * @signature int readRecord(record, context, stream, tag);
+ * @signature int readRecord(header, context, stream, tag);
+ *
+ * @param[out]    record  The @link BamAlignmentRecord @endlink object to read the information into.
+ * @param[out]    header  The @link BamHeader @endlink object to read the header information into.
+ * @param[in,out] context The BamIOContext object to use.
+ * @param[in,out] stream  The @link StreamConcept Stream @endlink to read from.
+ * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
+ *
+ * @return int A status code, 0 on success, != 0 on failure.
+ */
 
 /**
 .Function.readRecord

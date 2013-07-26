@@ -49,6 +49,46 @@ namespace seqan {
 // struct CigarElement
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class CigarElement
+ * @headerfile <seqan/bam_io.h>
+ * @brief One entry of a CIGAR string.
+ * 
+ * @signature template <typename TOperation = char, typename TCount = unsigned>
+ *            class CigarElement;
+ * 
+ * @tparam TOperation Type to use for storing operations, defaults to <tt>char</tt>.
+ * @tparam TCount Type to use for storing counts, defaults to <tt>unsigned</tt>.
+ */
+
+/*!
+ * @fn CigarElement::CigarElement
+ * @brief Constructor
+ * 
+ * @signature CigarElement::CigarElement();
+ * @signature CigarElement::CigarElement(operation, count);
+ * 
+ * @param[in] operation The operation to use, of type <tt>TOperation</tt>.
+ * @param[in] count     The operation count, of type <tt>TCount</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The default constructor initialized both @link CigarElement#operation @endlink and @link CigarElement#count @endlink
+ * with <tt>0</tt>.
+ */
+
+/*!
+ * @var TCount CigarElement::count
+ * 
+ * @brief The number of operations.
+ */
+
+/*!
+ * @var TOperation CigarElement::operation
+ * 
+ * @brief The described operation.
+ */
+
 /**
 .Class.CigarElement
 ..cat:Fragment Store

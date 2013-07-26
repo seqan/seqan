@@ -62,6 +62,70 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BamStream
+ * @headerfile <seqan/bam_io.h>
+ * @brief Class that provides an easy to use interface for reading and writing SAM and BAM files.
+ * 
+ * @signature class BamStream;
+ * 
+ * @section Example
+ * 
+ * Read and write SAM or BAM files.
+ * 
+ * @include demos/bam_io/bam_stream.cpp
+ * 
+ * The output is as follows:
+ *
+ * @code
+ * @HD VN:1.3  SO:coordinate
+ * @SQ SN:ref  LN:45
+ * @SQ SN:ref2 LN:40
+ * r001    163 ref 7   30  8M4I4M1D3M  =   37  39  TTAGATAAAGAGGATACTG *   XX:B:S,12561,2,20,112
+ * r002    0   ref 9   30  1S2I6M1P1I1P1I4M2I  *   0   0   AAAAGATAAGGGATAAA   *
+ * r003    0   ref 9   30  5H6M    *   0   0   AGCTAA  *
+ * r004    0   ref 16  30  6M14N1I5M   *   0   0   ATAGCTCTCAGC    *
+ * r003    16  ref 29  30  6H5M    *   0   0   TAGGC   *
+ * r001    83  ref 37  30  9M  =   7   -39 CAGCGCCAT   *
+ * @endcode
+ */
+
+/*!
+ * @fn BamStream::BamStream
+ * @brief Constructor
+ *
+ * @signature BamStream::BamStream([fileName[, mode[, format]]]);
+ *
+ * @param[in] fileName The path to the SAM or BAM file to load, <tt>char const *</tt>.
+ * @param[in] mode     The open mode, of type @link BamStream::OperationMode @endlink, defaults to <tt>READ</tt>.
+ * @param[in] format   The format, of type @link BamStream::Format @endlink, defaults to <tt>AUTO</tt>.
+ */
+
+/*!
+ * @var THeader BamStream::header
+ * @brief The @link BamHeader @endlink of the @link BamStream @endlink object.
+ * 
+ * SAM and BAM files have a header.  When writing SAM or BAM files, you have to fill this member before writing @link
+ * BamAlignmentRecord @endlinks.  Upon writing the first record, the header will be written out.
+ * 
+ * When reading BAM files, the header will be read upon opening the file. When reading SAM files, any header will be
+ * read upon opening the file.
+ * 
+ * Note that there is a special case when reading SAM records: If there is no header, or records refer to reference
+ * sequences that are previously unknown when reading SAM then a new entry is added to @link BamHeader#sequenceInfos
+ * @endlink.
+ */
+
+/*!
+ * @var TBamIOContext BamStream::bamIOContext
+ * 
+ * @brief The @link BamIOContext @endlink object to use for reading and writing @link BamAlignmentRecord @endlinks.
+ * 
+ * When reading, the <tt>bamIOContext</tt> will be updated automatically.  When reading SAM, new reference sequences can
+ * be introduced "on the fly" when a new sequence appears.  When writing, the <tt>bamIOContext</tt> is automatically
+ * filled/reset when the first record is written.
+ */
+
 /**
 .Class.BamStream
 ..cat:BAM I/O
@@ -132,9 +196,40 @@ When writing, the $bamIOContext$ is automatically filled/reset when the first re
 ..summary:Select the format to use for reading/writing.
 ..value.AUTO:Auto-detect format from file content on reading and from the file name on writing. If Auto-detection fails, SAM is used.
 ..value.SAM:Force reading/writing of SAM.
-..value.BAM:Force reading/writing of SAM.
+..value.BAM:Force reading/writing of BAM.
 ..include:seqan/bam_io.h
 */
+
+/*!
+ * @enum BamStream::OperationMode
+ * @brief Selects teh operation mode of a @link BamStream @endlink.
+ * @see BamStream
+ *
+ * @signature enum BamStream::OperationMode;
+ *
+ * @var BamStream::OperationMode READ;
+ * @brief Enum value for reading.
+ *
+ * @var BamStream::OperationMode WRITE;
+ * @brief Enum value for writing.
+ */
+
+/*!
+ * @enum BamStream::Format
+ * @brief Select the format to use for reading/writing.
+ *
+ * @signature enum BamStream::Format;
+ *
+ * @var BamStream::Format AUTO;
+ * @brief Auto-detect the format from file content on reading and from the file name on writing.  If auto-detection
+ *        fails, SAM is used.
+ *
+ * @var BamStream::Format SAM;
+ * @brief Force reading/writing of SAM.
+ *
+ * @var BamStream::Format BAM;
+ * @brief Force reading/writing of BAM.
+ */
 
 class BamStream
 {
@@ -236,6 +331,23 @@ inline BamStream::BamStream(char const * filename, OperationMode mode, Format fo
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#open
+ * @brief Open a @link BamStream @endlink object for reading/writing.
+ * 
+ * @signature int open(bamIO, fileName[, mode[, format]]);
+ * 
+ * @param[in,out] bamIO    The @link BamStream @endlink object to open. Types: BamStream
+ * @param[in]     fileName The path to the file to open, <tt>char const *</tt>.
+ * @param[in]     mode     The mode to open the file in, optional, of type @link BamStream::Mode @endlink, defaults to
+ *                         <tt>BamStream::READ</tt>.
+ * @param[in]     format   The format to use, inferred from file contents (reading) or file name (writing) by default.
+ *                         the path to the file to open, of type @link BamStream::Format @endlink, defaults to
+ *                         <tt>AUTO</tt>.
+ * 
+ * @return int A status code, 0 on success, a value <tt>!= 0</tt> on errors.
+ */
 
 /**
 .Function.BamStream#open
@@ -355,6 +467,17 @@ inline int open(BamStream & bamIO,
 // Function reset()
 // ----------------------------------------------------------------------------
 
+/*
+ * @fn BamStream#reset
+ * @brief Reset @link BamStream @endlink object to status after construction.
+ * 
+ * @signature void reset(stream);
+ * 
+ * @param stream The @link BamStream @endlink object to reset.
+ *
+ * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
+ */
+
 /**
 .Function.BamStream#reset
 ..class:Class.BamStream
@@ -374,6 +497,21 @@ inline int reset(BamStream & bamIO)
 // ----------------------------------------------------------------------------
 // Function flush()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#flush
+ * @brief Flush output when writing.
+ * 
+ * @signature int flush(stream);
+ * 
+ * @param stream The @link BamStream @endlink object to flush.
+ * 
+ * @return int A status code, 0 on success, <tt>!= 0</tt> on errors.
+ *
+ * @section Remarks
+ *
+ * This will write out the header if no record has been written out yet.
+ */  
 
 /**
 .Function.BamStream#flush
@@ -400,6 +538,17 @@ inline int flush(BamStream & bamIO)
 // ----------------------------------------------------------------------------
 // Function close()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#close
+ * @brief Close BamStream object's underlying file.
+ * 
+ * @signature int close(stream);
+ * 
+ * @param stream[in,out] The @link BamStream @endlink object to close.
+ * 
+ * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
+ */
 
 /**
 .Function.BamStream#close
@@ -429,6 +578,21 @@ inline int close(BamStream & bamIO)
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamStream#atEnd
+ * @brief Check whether a @link BamStream @endlink object is at end when reading.
+ * 
+ * @signature bool atEnd(stream);
+ * 
+ * @param[in] stream The @link BamStream @endlink object to query.
+ * 
+ * @return bool true in case of the stream being at the end, false otherwise.
+ *
+ * @section Remarks
+ *
+ * The stream will only be guaranteed at the end after trying to read <b>after</b> the last character.
+ */
+
 /**
 .Function.BamStream#atEnd
 ..class:Class.BamStream
@@ -456,6 +620,17 @@ inline bool atEnd(BamStream & bamIO)
 // Function isGood()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamStream#isGood
+ * @brief Check whether the @link BamStream @endlink object has is in the failure state.
+ * 
+ * @signature bool isGood(stream);
+ * 
+ * @param stream The @link BamStream @endlink object to query.
+ * 
+ * @return bool true if the stream is not in an error state and false otherwise.
+ */
+
 /**
 .Function.BamStream#isGood
 ..class:Class.BamStream
@@ -475,6 +650,19 @@ inline bool isGood(BamStream const & bamIO)
 // ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#readRecord
+ * @brief Read one @link BamAlignmentRecord @endlink from a @link BamStream @endlink.
+ * 
+ * @signature int readRecord(record, stream);
+ * 
+ * @param[out]   record    The @link BamAlignmentRecord @endlink to read the next alignment record into.  Of type
+ *                         @link BamAlignmentRecord @endlink.
+ * @param[in,out] stream   The @link BamStream @endlink object to read from.
+ * 
+ * @return int A status code, 0 on success.
+ */
 
 /**
 .Function.BamStream#readRecord
@@ -499,6 +687,18 @@ inline int readRecord(BamAlignmentRecord & record, BamStream & bamIO)
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#writeRecord
+ * @brief Write one @link BamAlignmentRecord @endlink to a @link BamStream @endlink.
+ * 
+ * @signature int writeRecord(stream, record);
+ * 
+ * @param[in,out] bamIO  The @link BamStream @endlink object to write to.
+ * @param[in]     record The @link BamAlignmentRecord @endlink to write out.
+ *
+ * @return int A status code, 0 on success.
+ */
 
 /**
 .Function.BamStream#writeRecord
@@ -526,6 +726,21 @@ inline int writeRecord(BamStream & bamIO, BamAlignmentRecord const & record)
 // Function fileSize()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamStream#fileSize
+ * @brief Returns the size of the file in bytes as stored on the disk.
+ *
+ * @signature __int64 fileSize(stream);
+ *
+ * @param[in] stream The @link BamStream @endlink to query.
+ *
+ * @return __int64 The size of the file on the disk.
+ *
+ * @section Remarks
+ *
+ * This only works when reading.
+ */
+
 // Returns size of file in bytes as stored on the disk.
 
 inline __int64 fileSize(BamStream const & bamIO)
@@ -538,6 +753,25 @@ inline __int64 fileSize(BamStream const & bamIO)
 // ----------------------------------------------------------------------------
 // Function positionInFile()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#positionInFile
+ * @brief Approximate byte position in file, to be used for progress display, not for seeking.
+ *
+ * @signature __int64 positionInFile(stream);
+ *
+ * @param[in] stream The @link BamStream @endlink to query for its position in the file.
+ *
+ * @return __int64 The position in the file.
+ *
+ * @section Remarks
+ *
+ * This function returns the "approximate" position in the file and only works when the file is opened in BAM format.
+ * It is meant for progress display in connection with @link BamStream#fileSize @endlink and not for jumping within the
+ * file.  The position is approximate in the sense that it points between the block boundaries of the BGZ file.
+ */
+
+// TODO(holtgrew): Review this functionality, extend, fix.
 
 // Returns "approximate" byte position in file.  To be used for progress display, not for seeking.  For this, we have to
 // implement streamTell() and streamSeek() for BamStream.  This works for BAM only at the moment.
@@ -552,6 +786,32 @@ inline __int64 positionInFile(BamStream const & bamIO)
 // ----------------------------------------------------------------------------
 // Function jumpToRegion()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#jumpToRegion
+ * @brief Seek in BamStream using an index.
+ *
+ * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
+ * jumps to the first alignment in this region, if any.
+ *
+ * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ *
+ * @param[in,out] stream        The @link BamStream @endlink to jump with.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
+ *                              alignments.
+ * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
+ * @param[in]     pos           The begin of the region to jump to.
+ * @param[in]     posEnd        The end of the region to jump to.
+ * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
+ *
+ * @return bool true if seeking was successful, false if not.
+ *
+ * @section Remarks
+ *
+ * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ *
+ * @see BamIndex#jumpToRegion
+ */
 
 #if SEQAN_HAS_ZLIB
 inline bool jumpToRegion(BamStream & bamIO, bool & hasAlignments, __int32 refId, __int32 pos, __int32 posEnd, BamIndex<Bai> const & index)
@@ -569,6 +829,19 @@ inline bool jumpToRegion(BamStream & bamIO, bool & hasAlignments, __int32 refId,
 // ----------------------------------------------------------------------------
 // Function jumpToOrphans()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamStream#jumpToOrphans
+ * @brief Seek to orphans block in BamStream using an index.
+ *
+ * @signature bool jumpToOrphans(stream, hasAlignments, index);
+ *
+ * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
+ * @param[in]     index          The index to use for jumping.
+ *
+ * @see BamIndex#jumpToOrphans
+ */
 
 #if SEQAN_HAS_ZLIB
 inline bool jumpToOrphans(BamStream & bamIO, BamIndex<Bai> const & index)
