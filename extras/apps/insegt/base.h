@@ -24,65 +24,22 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-//////////////////////////////////////////////////////////////////////////////
-// skip entry until whitespace
-//////////////////////////////////////////////////////////////////////////////
-template<typename TFile, typename TChar>
-inline bool
-_parseSkipEntryUntilWhitespace(TFile& file, TChar& c)
-{
-//IOREV _duplicate_ _hasCRef_ there is similar functions; return value unclear
-    if (c== ' ' || c== '\t' || c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) return false;
-    
-    while (!_streamEOF(file)) {
-        c = _streamGet(file);
-        if (c== ' ' || c== '\t' || c == '\n' || (c == '\r' && _streamPeek(file) != '\n')) break;
-    }
-    return true; 
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// skip word
-//////////////////////////////////////////////////////////////////////////////
-
-template<typename TFile, typename TChar>
-inline bool
-_parse_skipWord(TFile& file, TChar& c)
-{
-//IOREV _duplicate_ and ambigous, since Word usually refers to a string of anything printable and non-whitespace (not just letters)
-	if (!_parseIsLetter(c)) return false;
-	
-	while (!_streamEOF(file)) {
-		c = _streamGet(file);
-		if (!_parseIsLetter(c)) break; 
-	}
-	return true; 
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Converts a double to a character and writes it to stream
-//////////////////////////////////////////////////////////////////////////////
-
 template <typename TStream>
 inline void
-_streamPutDouble(TStream & target,
-			  double number)
+_streamPutDouble(TStream & target, double number)
 {
-//IOREV _duplicate_ of another function (if not it should be moved to io-module)
 SEQAN_CHECKPOINT
-	char str[BitsPerValue<double>::VALUE];
-	sprintf(str, "%f", number);
-	_streamWrite(target, str);
+    char str[BitsPerValue<double>::VALUE];
+    sprintf(str, "%f", number);
+    streamPut(target, str);
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // create possible tuples with length n:
 //////////////////////////////////////////////////////////////////////////////
 template<typename TStringSet, typename TSpec, typename TConfig, typename TId>
 inline void
-create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TStringSet &annoIds, const TId &parentId, const unsigned &n)	
+create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, const TStringSet &annoIds, const TId &parentId, const unsigned &n)	
 {
 	typedef typename Iterator<TStringSet>::Type 				TSetIter;
 	typedef typename Value<TStringSet>::Type 				TString;
@@ -110,7 +67,7 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TSt
 			itStrEnd = end(annoIds[j]);
 			for ( ; itStr != itStrEnd; goNext(itStr))
 			{
-				if (getValue(itStr) != INVALID_ANNO_ID && getValue(me.annotationStore, getValue(itStr)).parentId == parentId)
+				if (getValue(itStr) != INVALID_ANNO_ID && getValue(fragStore.annotationStore, getValue(itStr)).parentId == parentId)
 				{
 					appendValue(value(tempAnnoIds, j - i), getValue(itStr), Generous() );
 				}
@@ -134,7 +91,7 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TSt
 //////////////////////////////////////////////////////////////////////////////
 template<typename TStringSet, typename TSpec, typename TConfig, typename TId>
 inline void
-create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TStringSet &annoIds, const TId &parentId, const unsigned &n)	
+create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, const TStringSet &annoIds, const TId &parentId, const unsigned &n)	
 {
 	typedef typename Iterator<TStringSet>::Type TIter;
 	
@@ -145,7 +102,7 @@ create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &me, const TStr
 	for (unsigned i = 1; i <= n && i <= length(annoIds); ++i)
 	{
 		clear(tempTupleSet);
-		create_nTuple(tempTupleSet, me, annoIds, parentId, i);
+		create_nTuple(tempTupleSet, fragStore, annoIds, parentId, i);
 		
 		it = begin(tempTupleSet);
 		itEnd = end(tempTupleSet);

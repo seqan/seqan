@@ -11,7 +11,7 @@
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  fragStoreRCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
   Lesser General Public License for more details.
 
  ============================================================================
@@ -51,7 +51,7 @@ template<typename TTupleCountStore, typename TTupleCountStore_Fusion, typename T
 inline void
 buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore, 
 		     TTupleCountStore_Fusion & tupleCountStore_Fusion, 
-		     FragmentStore<TSpec, TConfig> &  me, 
+		     FragmentStore<TSpec, TConfig> &  fragStore, 
 		     TReadAnnoStore & readAnnoStore, 
 		     unsigned n, 
 		     bool exact_nTuple)
@@ -73,8 +73,8 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 	static const TReadId INVALID_READ_ID = TReadStoreElement::INVALID_ID;
 	static const TId INVALID_ANNO_ID = TAnnotationStoreElement::INVALID_ID;
 	
-	resize(tupleCountStore, length(me.annotationStore)); 
-	resize(tupleCountStore_Fusion, length(me.annotationStore)); 
+	resize(tupleCountStore, length(fragStore.annotationStore)); 
+	resize(tupleCountStore_Fusion, length(fragStore.annotationStore)); 
 	
 	bool validMate;
 	TReadIter itRead = begin(readAnnoStore);
@@ -119,23 +119,23 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 				annoIds = getValue(itRead).annoIds;
 				clear(tupleSet);
 				// create all Tuple of length n:
-				if (exact_nTuple && n <= length(annoIds)) create_nTuple(tupleSet, me, annoIds, getValue(itP), n);
+				if (exact_nTuple && n <= length(annoIds)) create_nTuple(tupleSet, fragStore, annoIds, getValue(itP), n);
 				// create all max-Tuple (whole read) for current parentId:
-				else if (!exact_nTuple && n == 0) create_nTuple(tupleSet, me, annoIds, getValue(itP), length(annoIds));	
+				else if (!exact_nTuple && n == 0) create_nTuple(tupleSet, fragStore, annoIds, getValue(itP), length(annoIds));	
 				// create all tuple >= n for current parentId:
-				else if (!exact_nTuple) create_Tuple(tupleSet, me, annoIds, getValue(itP), n);	
+				else if (!exact_nTuple) create_Tuple(tupleSet, fragStore, annoIds, getValue(itP), n);	
 				if (!empty(tupleSet))
 				{
 					// create if necessary list of all possible tuples for second matepair-read:
 					readId = position(itRead, readAnnoStore);
-					matePairId = getValue(me.readStore, readId).matePairId;
+					matePairId = getValue(fragStore.readStore, readId).matePairId;
 					clear(secTupleSet);
 					if (matePairId != INVALID_READ_ID)
 					{
-						if(getValue(getValue(me.matePairStore, matePairId).readId, 0) == readId)
-							secReadId = getValue(getValue(me.matePairStore, matePairId).readId, 1);
+						if(getValue(getValue(fragStore.matePairStore, matePairId).readId, 0) == readId)
+							secReadId = getValue(getValue(fragStore.matePairStore, matePairId).readId, 1);
 						else
-							secReadId = getValue(getValue(me.matePairStore, matePairId).readId, 0);
+							secReadId = getValue(getValue(fragStore.matePairStore, matePairId).readId, 0);
 				
 						if ( secReadId != INVALID_READ_ID )	
 						{
@@ -148,18 +148,18 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 								firstAnnoId2 = front(front(annoIds));	// can't be INVALID_ID, because parents was checked
 							
 								// check if current read-position is smaller than the position of the second read -> tuple are ordered by position
-								if ( (getValue(me.annotationStore, firstAnnoId1).beginPos <= 
-									getValue(me.annotationStore,firstAnnoId1).endPos && 
-								      getValue(me.annotationStore, firstAnnoId1).beginPos < 
-								      	getValue(me.annotationStore, firstAnnoId2).endPos) ||
-								     (getValue(me.annotationStore, firstAnnoId1).beginPos > 
-								     	getValue(me.annotationStore, firstAnnoId1).endPos && 
-								      getValue(me.annotationStore, firstAnnoId1).endPos < 
-								      	getValue(me.annotationStore, firstAnnoId2).beginPos)  ) 
+								if ( (getValue(fragStore.annotationStore, firstAnnoId1).beginPos <= 
+									getValue(fragStore.annotationStore,firstAnnoId1).endPos && 
+								      getValue(fragStore.annotationStore, firstAnnoId1).beginPos < 
+								      	getValue(fragStore.annotationStore, firstAnnoId2).endPos) ||
+								     (getValue(fragStore.annotationStore, firstAnnoId1).beginPos > 
+								     	getValue(fragStore.annotationStore, firstAnnoId1).endPos && 
+								      getValue(fragStore.annotationStore, firstAnnoId1).endPos < 
+								      	getValue(fragStore.annotationStore, firstAnnoId2).beginPos)  ) 
 								{	
-									if (exact_nTuple && n <= length(annoIds)) create_nTuple(secTupleSet, me, annoIds, getValue(itP), n);
-									else if (!exact_nTuple && n == 0) create_nTuple(secTupleSet, me, annoIds, getValue(itP), length(annoIds));		
-									else if (!exact_nTuple) create_Tuple(secTupleSet, me, annoIds, getValue(itP), n);
+									if (exact_nTuple && n <= length(annoIds)) create_nTuple(secTupleSet, fragStore, annoIds, getValue(itP), n);
+									else if (!exact_nTuple && n == 0) create_nTuple(secTupleSet, fragStore, annoIds, getValue(itP), length(annoIds));		
+									else if (!exact_nTuple) create_Tuple(secTupleSet, fragStore, annoIds, getValue(itP), n);
 								}
 							}
 							else if (!empty(getValue(readAnnoStore, secReadId).parentIds)) 	// parent of matepair different -> possible transfusion
@@ -170,23 +170,23 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 								firstAnnoId2 = front(front(annoIds));	// can't be INVALID_ID, because parents was checked
 							
 								// check if current read-position is smaller than the position of the second read -> tuple are ordered by position
-								if ( (getValue(me.annotationStore, firstAnnoId1).beginPos <= 
-									getValue(me.annotationStore,firstAnnoId1).endPos && 
-								      getValue(me.annotationStore, firstAnnoId1).beginPos < 
-								      	getValue(me.annotationStore, firstAnnoId2).endPos) ||
-								     (getValue(me.annotationStore, firstAnnoId1).beginPos > 
-								     	getValue(me.annotationStore, firstAnnoId1).endPos && 
-								      getValue(me.annotationStore, firstAnnoId1).endPos < 
-								      	getValue(me.annotationStore, firstAnnoId2).beginPos)  ) 
+								if ( (getValue(fragStore.annotationStore, firstAnnoId1).beginPos <= 
+									getValue(fragStore.annotationStore,firstAnnoId1).endPos && 
+								      getValue(fragStore.annotationStore, firstAnnoId1).beginPos < 
+								      	getValue(fragStore.annotationStore, firstAnnoId2).endPos) ||
+								     (getValue(fragStore.annotationStore, firstAnnoId1).beginPos > 
+								     	getValue(fragStore.annotationStore, firstAnnoId1).endPos && 
+								      getValue(fragStore.annotationStore, firstAnnoId1).endPos < 
+								      	getValue(fragStore.annotationStore, firstAnnoId2).beginPos)  ) 
 								{	
 									itP2 = begin(value(readAnnoStore, secReadId).parentIds);
 									itP2End = end(value(readAnnoStore, secReadId).parentIds);
 									clear(tempSecTupleSet);
 									for ( ; itP2 != itP2End; goNext(itP2))
 									{
-										if (exact_nTuple && n <= length(annoIds)) create_nTuple(tempSecTupleSet, me, annoIds, getValue(itP2), n);
-										else if (!exact_nTuple && n == 0) create_nTuple(tempSecTupleSet, me, annoIds, getValue(itP2), length(annoIds));		
-										else if (!exact_nTuple) create_Tuple(tempSecTupleSet, me, annoIds, getValue(itP2), n);
+										if (exact_nTuple && n <= length(annoIds)) create_nTuple(tempSecTupleSet, fragStore, annoIds, getValue(itP2), n);
+										else if (!exact_nTuple && n == 0) create_nTuple(tempSecTupleSet, fragStore, annoIds, getValue(itP2), length(annoIds));		
+										else if (!exact_nTuple) create_Tuple(tempSecTupleSet, fragStore, annoIds, getValue(itP2), n);
 
 										itSecTuple = begin(tempSecTupleSet);
 										itSecTupleEnd = end(tempSecTupleSet);
@@ -251,17 +251,17 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 					
 									if (empty(getValue(itTuple))) 							
 									{
-										beginPos1 = getValue(me.annotationStore, firstAnnoId1).beginPos;
-										endPos1 = getValue(me.annotationStore, firstAnnoId1).endPos;
+										beginPos1 = getValue(fragStore.annotationStore, firstAnnoId1).beginPos;
+										endPos1 = getValue(fragStore.annotationStore, firstAnnoId1).endPos;
 									}
 									else
 									{
-										beginPos1 = getValue(me.annotationStore, back(getValue(itTuple))).beginPos;
-										endPos1 = getValue(me.annotationStore, back(getValue(itTuple))).endPos;
+										beginPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).beginPos;
+										endPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).endPos;
 									}
 									// begin position of first annotation in tuple of second read
-									beginPos2 = getValue(me.annotationStore, front(getValue(itSecTuple))).beginPos; 
-									endPos2 = getValue(me.annotationStore, front(getValue(itSecTuple))).endPos;
+									beginPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).beginPos; 
+									endPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).endPos;
 									if ( (beginPos1 <= endPos1 && endPos1 < beginPos2) ||			// no overlapping annotations allowed
 									     (endPos1 < beginPos1 && beginPos1 < endPos2) )
 									{
@@ -311,18 +311,18 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 						
 								if (empty(getValue(itTuple))) 							
 								{
-									beginPos1 = getValue(me.annotationStore, firstAnnoId1).beginPos;
-									endPos1 = getValue(me.annotationStore, firstAnnoId1).endPos;
+									beginPos1 = getValue(fragStore.annotationStore, firstAnnoId1).beginPos;
+									endPos1 = getValue(fragStore.annotationStore, firstAnnoId1).endPos;
 								}
 								else
 								{
-									beginPos1 = getValue(me.annotationStore, back(getValue(itTuple))).beginPos;
-									endPos1 = getValue(me.annotationStore, back(getValue(itTuple))).endPos;
+									beginPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).beginPos;
+									endPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).endPos;
 								}
 	
 								// begin position of first annotation in tuple of second read
-								beginPos2 = getValue(me.annotationStore, front(getValue(itSecTuple))).beginPos; 
-								endPos2 = getValue(me.annotationStore, front(getValue(itSecTuple))).endPos;
+								beginPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).beginPos; 
+								endPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).endPos;
 								if ( (beginPos1 <= endPos1 && endPos1 < beginPos2) ||			// no overlapping annotations allowed
 								     (endPos1 < beginPos1 && beginPos1 < endPos2) )
 								{
@@ -361,7 +361,7 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 
 template<typename TFile, typename TTupleCountStore_Fusion, typename TSpec, typename TConfig>
 inline void
-createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion & tupleCountStore_Fusion, FragmentStore<TSpec, TConfig> & me, unsigned thresholdCount, double thresholdRPKM)
+createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion & tupleCountStore_Fusion, FragmentStore<TSpec, TConfig> & fragStore, unsigned thresholdCount, double thresholdRPKM)
 {
 	typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore 	TAnnotationStore;
 	typedef typename Value<TAnnotationStore>::Type 				TAnnotationStoreElement;
@@ -393,7 +393,7 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 		TTupelIter itIdEnd;
 		for ( ; itCountStore != itCountStoreEnd; goNext(itCountStore))
 		{
-			currentElement = getValue(me.annotationStore, position(itCountStore, tupleCountStore_Fusion));
+			currentElement = getValue(fragStore.annotationStore, position(itCountStore, tupleCountStore_Fusion));
 
 			/*
 			itT = begin(getValue(itCountStore).readConnections);
@@ -407,7 +407,7 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 				if (getValue(itC) >= thresholdCount && getValue(itN) >= thresholdRPKM)
 				{
 					// contig-name
-					_streamWrite(tupleOutput_Fusion, getValue(me.contigNameStore, currentElement.contigId));
+					streamPut(tupleOutput_Fusion, getValue(fragStore.contigNameStore, currentElement.contigId));
 					itId = begin(getValue(itT));
 					itIdEnd = end(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -415,34 +415,34 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							_streamWrite(tupleOutput_Fusion, "~");
-							_streamWrite(tupleOutput_Fusion, getValue(me.contigNameStore, getValue(me.annotationStore, getValue(itId)).contigId));
+							streamPut(tupleOutput_Fusion, "~");
+							streamPut(tupleOutput_Fusion, getValue(fragStore.contigNameStore, getValue(fragStore.annotationStore, getValue(itId)).contigId));
 						}
 					}
-					_streamPut(tupleOutput_Fusion, '\t');					
+					streamPut(tupleOutput_Fusion, '\t');					
 
 					// parent-names
-					_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, currentElement.parentId));
+					streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, currentElement.parentId));
 					itId = begin(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
 					{
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							_streamWrite(tupleOutput_Fusion, "~");
-							_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, getValue(me.annotationStore, getValue(itId)).parentId));
+							streamPut(tupleOutput_Fusion, "~");
+							streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(fragStore.annotationStore, getValue(itId)).parentId));
 						}
 					}
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, '\t');
 					
 					// orientation
 					if ( currentElement.beginPos <= currentElement.endPos )
 					{
-						_streamWrite(tupleOutput_Fusion, "+");
+						streamPut(tupleOutput_Fusion, "+");
 					}
 					else
 					{
-						_streamWrite(tupleOutput_Fusion, "-");
+						streamPut(tupleOutput_Fusion, "-");
 					}
 					itId = begin(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -450,21 +450,21 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							_streamWrite(tupleOutput_Fusion, "~");
-							if ( getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos )
+							streamPut(tupleOutput_Fusion, "~");
+							if ( getValue(fragStore.annotationStore, getValue(itId)).beginPos <= getValue(fragStore.annotationStore, getValue(itId)).endPos )
 							{
-								_streamWrite(tupleOutput_Fusion, "+");
+								streamPut(tupleOutput_Fusion, "+");
 							}
 							else
 							{
-								_streamWrite(tupleOutput_Fusion, "-");
+								streamPut(tupleOutput_Fusion, "-");
 							}
 						}
 					}
-					_streamWrite(tupleOutput_Fusion, "\t");
+					streamPut(tupleOutput_Fusion, "\t");
 
 					// first annotationId of tuple (store implicit)
-					_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, position(itCountStore, tupleCountStore_Fusion)));
+					streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, position(itCountStore, tupleCountStore_Fusion)));
 					// other annotationIds
 					itId = begin(getValue(itT));
 					itIdEnd = end(getValue(itT));
@@ -472,23 +472,23 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 					{
 						if (getValue(itId) != INVALID_ID)
 						{
-							_streamWrite(tupleOutput_Fusion, ":");
-							_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, getValue(itId)));
+							streamPut(tupleOutput_Fusion, ":");
+							streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(itId)));
 						}
 						else
 						{
-							_streamWrite(tupleOutput_Fusion, "~");
+							streamPut(tupleOutput_Fusion, "~");
 							goNext(itId);
-							_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, getValue(itId)));
+							streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(itId)));
 						}
 					}
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, '\t');
 					// tuple count
-					_streamPutInt(tupleOutput_Fusion, getValue(itC));
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, getValue(itC));
+					streamPut(tupleOutput_Fusion, '\t');
 					// normalized tuple count
 					_streamPutDouble(tupleOutput_Fusion, getValue(itN));
-					_streamPut(tupleOutput_Fusion, '\n');
+					streamPut(tupleOutput_Fusion, '\n');
 				}
 			}
 			*/
@@ -502,7 +502,7 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 			{if (getValue(itC) >= thresholdCount && getValue(itN) >= thresholdRPKM)
 				{
 					// contig-name
-					_streamWrite(tupleOutput_Fusion, getValue(me.contigNameStore, currentElement.contigId));
+					streamPut(tupleOutput_Fusion, getValue(fragStore.contigNameStore, currentElement.contigId));
 					itId = begin(getValue(itT));
 					itIdEnd = end(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -510,20 +510,20 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							_streamWrite(tupleOutput_Fusion, "^");
-							_streamWrite(tupleOutput_Fusion, getValue(me.contigNameStore, getValue(me.annotationStore, getValue(itId)).contigId));
+							streamPut(tupleOutput_Fusion, "^");
+							streamPut(tupleOutput_Fusion, getValue(fragStore.contigNameStore, getValue(fragStore.annotationStore, getValue(itId)).contigId));
 						}
 					}
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, '\t');
 				
 					// parent-name
 					if (currentElement.parentId == INVALID_ID )
 					{
-						_streamWrite(tupleOutput_Fusion, "NO_PARENT");
+						streamPut(tupleOutput_Fusion, "NO_PARENT");
 					}
 					else
 					{
-						_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, currentElement.parentId));
+						streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, currentElement.parentId));
 					}
 					itId = begin(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -531,28 +531,28 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							if (getValue(me.annotationStore, getValue(itId)).parentId == INVALID_ID)
+							if (getValue(fragStore.annotationStore, getValue(itId)).parentId == INVALID_ID)
 							{
-								_streamWrite(tupleOutput_Fusion, "^");
-								_streamWrite(tupleOutput_Fusion, "NO_PARENT");
+								streamPut(tupleOutput_Fusion, "^");
+								streamPut(tupleOutput_Fusion, "NO_PARENT");
 							}
 							else
 							{
-								_streamWrite(tupleOutput_Fusion, "^");
-								_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, getValue(me.annotationStore, getValue(itId)).parentId));
+								streamPut(tupleOutput_Fusion, "^");
+								streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(fragStore.annotationStore, getValue(itId)).parentId));
 							}
 						}
 					}
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, '\t');
 
 					// orientation
 					if ( currentElement.beginPos <= currentElement.endPos )
 					{
-						_streamWrite(tupleOutput_Fusion, "+");
+						streamPut(tupleOutput_Fusion, "+");
 					}
 					else
 					{
-						_streamWrite(tupleOutput_Fusion, "-");
+						streamPut(tupleOutput_Fusion, "-");
 					}
 					itId = begin(getValue(itT));
 					for ( ; itId != itIdEnd; goNext(itId))
@@ -560,49 +560,49 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 						if (getValue(itId) == INVALID_ID)
 						{
 							goNext(itId);
-							_streamWrite(tupleOutput_Fusion, "^");
-							if ( getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos )
+							streamPut(tupleOutput_Fusion, "^");
+							if ( getValue(fragStore.annotationStore, getValue(itId)).beginPos <= getValue(fragStore.annotationStore, getValue(itId)).endPos )
 							{
-								_streamWrite(tupleOutput_Fusion, "+");
+								streamPut(tupleOutput_Fusion, "+");
 							}
 							else
 							{
-								_streamWrite(tupleOutput_Fusion, "-");
+								streamPut(tupleOutput_Fusion, "-");
 							}
 						}
 					}
-					_streamWrite(tupleOutput_Fusion, "\t");
+					streamPut(tupleOutput_Fusion, "\t");
 				
 					// first annotationId of tuple
-					_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, position(itCountStore, tupleCountStore_Fusion)));
+					streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, position(itCountStore, tupleCountStore_Fusion)));
 			
 					// other annotationIds of first read
 					itId = begin(getValue(itT));
 					itIdEnd = end(getValue(itT));
 					for ( ; itId != itIdEnd && getValue(itId) != INVALID_ID; goNext(itId))
 					{
-						_streamWrite(tupleOutput_Fusion, ":");
-						_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, getValue(itId)));
+						streamPut(tupleOutput_Fusion, ":");
+						streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(itId)));
 					}
 					goNext(itId);
-					_streamWrite(tupleOutput_Fusion, "^");
+					streamPut(tupleOutput_Fusion, "^");
 		
 					// annotationIds of second read
-					_streamWrite(tupleOutput_Fusion, getValue(me.annotationNameStore, getValue(itId)));
+					streamPut(tupleOutput_Fusion, getValue(fragStore.annotationNameStore, getValue(itId)));
 					goNext(itId);
 					for ( ; itId != itIdEnd; goNext(itId))
 					{
-						_streamWrite(tupleOutput_Fusion, ":");
-						_streamWrite(tupleOutput_Fusion,getValue(me.annotationNameStore, getValue(itId)) );
+						streamPut(tupleOutput_Fusion, ":");
+						streamPut(tupleOutput_Fusion,getValue(fragStore.annotationNameStore, getValue(itId)) );
 					}
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, '\t');
 					
 					// tuple count
-					_streamPutInt(tupleOutput_Fusion, getValue(itC));
-					_streamPut(tupleOutput_Fusion, '\t');
+					streamPut(tupleOutput_Fusion, getValue(itC));
+					streamPut(tupleOutput_Fusion, '\t');
 					// normalized tuple count
 					_streamPutDouble(tupleOutput_Fusion, getValue(itN));
-					_streamPut(tupleOutput_Fusion, '\n');
+					streamPut(tupleOutput_Fusion, '\n');
 				}
 			}
 		}
@@ -614,7 +614,7 @@ createTupleCountGFF_Fusion(TFile & tupleOutput_Fusion, TTupleCountStore_Fusion &
 //////////////////////////////////////////////////////////////////////////////
 template<typename TTupleCountStore_Fusion, typename TSpec, typename TConfig>
 inline void
-normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, FragmentStore<TSpec, TConfig> &me)
+normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, FragmentStore<TSpec, TConfig> &fragStore)
 {
 	typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore 	TAnnotationStore;
 	typedef typename Value<TAnnotationStore>::Type				TAnnotationStoreElement;
@@ -636,7 +636,7 @@ normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, Fra
 	
 	static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
 	
-	TReadStoreSize readNo = length(me.readStore) - length(me.matePairStore);
+	TReadStoreSize readNo = length(fragStore.readStore) - length(fragStore.matePairStore);
 
 	if (!empty(tupleCountStore_Fusion))
 	{
@@ -669,10 +669,10 @@ normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, Fra
 					{	
 						if (getValue(itId) != INVALID_ID)
 						{
-							if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
+							if (getValue(fragStore.annotationStore, getValue(itId)).beginPos <= getValue(fragStore.annotationStore, getValue(itId)).endPos)
+								tupleLength += getValue(fragStore.annotationStore, getValue(itId)).endPos - getValue(fragStore.annotationStore, getValue(itId)).beginPos;
 							else
-								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
+								tupleLength += getValue(fragStore.annotationStore, getValue(itId)).beginPos - getValue(fragStore.annotationStore, getValue(itId)).endPos;
 						}
 					}
 					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
@@ -696,10 +696,10 @@ normalizeTupleCounts_Fusion(TTupleCountStore_Fusion &tupleCountStore_Fusion, Fra
 					{
 						if (getValue(itId) != INVALID_ID)
 						{
-							if (getValue(me.annotationStore, getValue(itId)).beginPos <= getValue(me.annotationStore, getValue(itId)).endPos)
-								tupleLength += getValue(me.annotationStore, getValue(itId)).endPos - getValue(me.annotationStore, getValue(itId)).beginPos;
+							if (getValue(fragStore.annotationStore, getValue(itId)).beginPos <= getValue(fragStore.annotationStore, getValue(itId)).endPos)
+								tupleLength += getValue(fragStore.annotationStore, getValue(itId)).endPos - getValue(fragStore.annotationStore, getValue(itId)).beginPos;
 							else
-								tupleLength += getValue(me.annotationStore, getValue(itId)).beginPos - getValue(me.annotationStore, getValue(itId)).endPos;
+								tupleLength += getValue(fragStore.annotationStore, getValue(itId)).beginPos - getValue(fragStore.annotationStore, getValue(itId)).endPos;
 						}
 					}
 					value(itN) = ((double)1000000000 * (double)getValue(itC)) / ((double)readNo * (double)tupleLength);
@@ -719,7 +719,7 @@ getResults_Fusion(TReadAnnoStore & readAnnoStore,
 	   TAnnoCountStore & annoCountStore,
 	   TTupleCountStore & tupleCountStore, 
 	   TTupleCountStore_Fusion & tupleCountStore_Fusion, 
-	   FragmentStore<TSpec, TConfig> & me, 
+	   FragmentStore<TSpec, TConfig> & fragStore, 
 	   unsigned tupelSize,
 	   bool exact_nTuple,
 	   unsigned offsetInterval,
@@ -739,13 +739,13 @@ getResults_Fusion(TReadAnnoStore & readAnnoStore,
 	typedef 	 String<AlignIntervalsStoreElement<> > 			TAlignIntervalsStore;
 	typedef typename Iterator<TAlignIntervalsStore>::Type 			TAlignIntervalsStoreIter;
 	
-	resize(readAnnoStore, length(me.readStore));
+	resize(readAnnoStore, length(fragStore.readStore));
 	
 	TIntervalTree intervalTree;
 	
 	// extract intervals from alignedReadStore and store them in AlignIntervalsStore:
 	TAlignIntervalsStore alignIntervalsStore;
-	buildAlignIntervalsStore(alignIntervalsStore, me, thresholdGaps);
+	buildAlignIntervalsStore(alignIntervalsStore, fragStore, thresholdGaps);
 
 	if (!empty(alignIntervalsStore))
 	{
@@ -761,25 +761,25 @@ getResults_Fusion(TReadAnnoStore & readAnnoStore,
 		{
 			// get ids from alignedReadStore (same position as in alignIntervalsStore):
 			alignPos = position(it, alignIntervalsStore);
-			contigId = getValue(me.alignedReadStore, alignPos).contigId;
-			readId = getValue(me.alignedReadStore, alignPos).readId;
+			contigId = getValue(fragStore.alignedReadStore, alignPos).contigId;
+			readId = getValue(fragStore.alignedReadStore, alignPos).readId;
 			// get respective intervalTree
-			if (unknownO ||  getValue(me.alignedReadStore, alignPos).beginPos <= getValue(me.alignedReadStore, alignPos).endPos)
-				intervalTree = begin(me.intervalTreeStore_F, Standard()) + contigId; 	//getValue(me.intervalTreeStore_F, contigId);
+			if (unknownO ||  getValue(fragStore.alignedReadStore, alignPos).beginPos <= getValue(fragStore.alignedReadStore, alignPos).endPos)
+				intervalTree = begin(fragStore.intervalTreeStore_F, Standard()) + contigId; 	//getValue(fragStore.intervalTreeStore_F, contigId);
 			else 
-				intervalTree = begin(me.intervalTreeStore_R, Standard()) + contigId;        //getValue(me.intervalTreeStore_R, contigId);
+				intervalTree = begin(fragStore.intervalTreeStore_R, Standard()) + contigId;        //getValue(fragStore.intervalTreeStore_R, contigId);
 			
 			// get annotationStore-Ids for these intervals:
 			clear(ids);
 			if ((*intervalTree).interval_counter != 0)
-				getIdsForRead(ids, me, *intervalTree, getValue(it).intervals, offsetInterval);
+				getIdsForRead(ids, fragStore, *intervalTree, getValue(it).intervals, offsetInterval);
 			// assign Ids from mapped annotations to readAnnoStore:
 			value(readAnnoStore, readId).contigId = contigId;
-			assignToReadAnnoStore(readAnnoStore, me, readId, ids);
+			assignToReadAnnoStore(readAnnoStore, fragStore, readId, ids);
 		}
 	}
-	buildAnnoCountStore(annoCountStore, me, readAnnoStore);
-	buildTupleCountStore_Fusion(tupleCountStore, tupleCountStore_Fusion,  me, readAnnoStore, tupelSize, exact_nTuple);
+	buildAnnoCountStore(annoCountStore, fragStore, readAnnoStore);
+	buildTupleCountStore_Fusion(tupleCountStore, tupleCountStore_Fusion,  fragStore, readAnnoStore, tupelSize, exact_nTuple);
 }
 
 
