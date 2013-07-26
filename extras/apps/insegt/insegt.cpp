@@ -18,8 +18,6 @@
 //#include <seqan/misc/misc_cmdparser.h>
 
 #include "base.h"
-#include "read_gff.h"
-#include "read_gtf.h"
 #include "create_gff.h"
 #include "fusion.h"
 #include "overlap_module.h"
