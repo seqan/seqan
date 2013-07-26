@@ -34,9 +34,7 @@ add_executable (insegt
                 base.h
                 create_gff.h
                 fusion.h
-                overlap_module.h
-                read_gff.h
-                read_gtf.h)
+                overlap_module.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (insegt ${SEQAN_LIBRARIES})
