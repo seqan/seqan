@@ -318,13 +318,8 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     _adaptTraceSegmentsTo(gapsContigL, gapsReadL, traceL);
 
     // Get reversed versions of the right contig and read sequence.
-
-    // TODO(holtgrew): We have to copy here because the modified iterator's container() is broken.
-
-    TContigSeqR revContigR(source(gapsContigR));
-    reverse(revContigR);
-    TReadSeqR revReadR(source(gapsReadR));
-    reverse(revReadR);
+    ModifiedString<TContigSeqR, ModReverse> revContigR(source(gapsContigR));
+    ModifiedString<TReadSeqR, ModReverse> revReadR(source(gapsReadR));
 
     // Compute trace and split score sequence for the right alignment.
 
@@ -337,7 +332,8 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
                               alignConfig, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsRight>());
     else
         _setUpAndRunAlignment(traceR, scoutStateR, revContigR, revReadR, scoringScheme,
-                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(), TracebackConfig_<CompleteTrace, GapsRight>());
+                              alignConfig, lowerDiagonal, upperDiagonal, SplitAlignmentAlgo(),
+                              TracebackConfig_<CompleteTrace, GapsRight>());
     // Reverse trace so it fits to the forward right sequences.  Also reverse the trace such that we can directly apply
     // it for the right alignment.
     _reverseTrace(traceR);

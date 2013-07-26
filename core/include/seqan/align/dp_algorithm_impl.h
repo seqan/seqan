@@ -545,7 +545,7 @@ _computeBandedAlignment(TDPScout & scout,
     // otherwise it only can be PartialColumnMiddle or PartialColumnBottom depending where the lower diagonal is.
 
     // Check for single initialization cells in InitialColumn and FinalColumn.
-    if (seqHIterBegin == end(seqH) - 1)
+    if (seqHIterBegin == end(seqH, Rooted()) - 1)
     {
         // Set the iterator to the begin of the track.
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), FirstCell());
@@ -562,7 +562,7 @@ _computeBandedAlignment(TDPScout & scout,
             _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, true, false);
         return;
     }
-    if (seqHIterEndColumnBottom == begin(seqH))
+    if (seqHIterEndColumnBottom == begin(seqH, Rooted()))
     {
         // Set the iterator to the begin of the track.
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell());
@@ -698,7 +698,7 @@ _computeBandedAlignment(TDPScout & scout,
     // ============================================================================
 
     // Check where the last track of the column is located.
-    if (seqHIter - begin(seqH) < seqHlength - 1)  // Case 1: The band ends before the final column is reached.
+    if (seqHIter - begin(seqH, Rooted()) < seqHlength - 1)  // Case 1: The band ends before the final column is reached.
     {
         // Set the iterator to the begin of the track.
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), FirstCell());
@@ -715,7 +715,7 @@ _computeBandedAlignment(TDPScout & scout,
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom> >, LastCell>::VALUE)
             _scoutBestScore(scout, value(dpScoreMatrixNavigator), dpTraceMatrixNavigator, false, true);
     }
-    else if (seqHIter == end(seqH) - 1) // Case 2: The band ends somewhere in the final column of the matrix.
+    else if (seqHIter == end(seqH, Rooted()) - 1) // Case 2: The band ends somewhere in the final column of the matrix.
     {
         // Case2a: The band ends in the last cell of the final column.
         if (upperDiagonal(band) == seqHlength - seqVlength)
