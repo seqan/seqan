@@ -417,6 +417,25 @@ _computeTrack(TDPScout & scout,
 //}
 
 // ----------------------------------------------------------------------------
+// Function _computeUnbandedAlignmentHelperTerminate()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline bool //TODO(C++11) constexpr
+_computeAlignmentHelperCheckTerminate(DPScout_<TDPCell, TSpec > const & /**/)
+{
+    return false;
+}
+
+template <typename TDPCell, typename TSpec>
+inline bool
+_computeAlignmentHelperCheckTerminate(DPScout_<TDPCell,Terminator_<TSpec> > const & s)
+{
+    return _terminationCriteriumIsMet(s);
+}
+
+
+// ----------------------------------------------------------------------------
 // Function _computeUnbandedAlignment()
 // ----------------------------------------------------------------------------
 
@@ -464,6 +483,11 @@ _computeUnbandedAlignment(TDPScout & scout,
                       sequenceEntryForScore(scoringScheme, seqV, 0),
                       seqVBegin, seqVEnd, scoringScheme,
                       MetaColumnDescriptor<DPInnerColumn, FullColumn>(), dpProfile);
+
+        if (_computeAlignmentHelperCheckTerminate(scout))
+        {
+                return;
+        }
     }
 
     // ============================================================================
@@ -627,6 +651,11 @@ _computeBandedAlignment(TDPScout & scout,
                       seqVBegin, seqVEnd, scoringScheme,
                       MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), dpProfile);
 
+    if (_computeAlignmentHelperCheckTerminate(scout))
+    {
+            return;
+    }
+
     // ============================================================================
     // MAIN DP
     // ============================================================================
@@ -641,6 +670,10 @@ _computeBandedAlignment(TDPScout & scout,
                       sequenceEntryForScore(scoringScheme, seqV, 0),
                       seqVBegin, seqVEnd, scoringScheme,
                       MetaColumnDescriptor<DPInnerColumn, PartialColumnTop>(), dpProfile);
+        if (_computeAlignmentHelperCheckTerminate(scout))
+        {
+                return;
+        }
     }
 
     // TODO(rmaerker): Check if putting the if-statement before the actual algorithm can speedup the code.
@@ -659,6 +692,11 @@ _computeBandedAlignment(TDPScout & scout,
                           sequenceEntryForScore(scoringScheme, seqV, 0),
                           seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInnerColumn, FullColumn>(), dpProfile);
+
+            if (_computeAlignmentHelperCheckTerminate(scout))
+            {
+                    return;
+            }
         }
     }
     else  // Compute the second part of the band, where the band is not bounded by the top and bottom of the matrix
@@ -672,6 +710,10 @@ _computeBandedAlignment(TDPScout & scout,
                           sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
                           seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInnerColumn, PartialColumnMiddle>(), dpProfile);
+            if (_computeAlignmentHelperCheckTerminate(scout))
+            {
+                    return;
+            }
         }   // We might want to track the current cell here, since this is the first cell that crosses the bottom.
         if (TrackingEnabled_<DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom> >, LastCell>::VALUE)
         {
@@ -691,6 +733,10 @@ _computeBandedAlignment(TDPScout & scout,
                       sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
                       seqVBegin, seqVEnd, scoringScheme,
                       MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), dpProfile);
+        if (_computeAlignmentHelperCheckTerminate(scout))
+        {
+                return;
+        }
     }
 
     // ============================================================================

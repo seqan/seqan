@@ -525,7 +525,7 @@ void _computeTraceback(TTarget & target,
                                                           coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL),
                                                           band, seqHSize, seqVSize);
 
-    if (IsGlobalAlignment_<TAlgorithm>::VALUE)
+    if (TraceTail_<TAlgorithm>::VALUE)
     {
         if (tracebackCoordinator._currRow != seqVSize)
             _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
@@ -542,7 +542,7 @@ void _computeTraceback(TTarget & target,
 
     // Record last detected fragment.
     _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, fragmentLength, lastTraceValue);
-    if (IsGlobalAlignment_<TAlgorithm>::VALUE)
+    if (TraceHead_<TAlgorithm>::VALUE)
     {
         // Record leading gaps if any.
         if (tracebackCoordinator._currRow != 0u)

@@ -262,6 +262,35 @@ struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
     IsGlobalAlignment_<TAlgoSpec>{};
 
 // ----------------------------------------------------------------------------
+// Metafunction TraceTail_
+// ----------------------------------------------------------------------------
+
+// define whether to include the 'tail' of an alignment in the trace
+template <typename TSpec>
+struct TraceTail_ :
+    IsGlobalAlignment_<TSpec>{};
+
+// ----------------------------------------------------------------------------
+// Metafunction TraceHead_
+// ----------------------------------------------------------------------------
+
+// define whether to include the 'head' of an alignment in the trace
+template <typename TSpec>
+struct TraceHead_ :
+    IsGlobalAlignment_<TSpec>{};
+
+// ----------------------------------------------------------------------------
+// Metafunction HasTerminationCriterium_
+// ----------------------------------------------------------------------------
+
+// check whether an algorithm has an early termination criterium
+// if an algorithm has this, it will get a DPscout that can be terminated
+// see dp_scout.h for more info
+template <typename TSpec>
+struct HasTerminationCriterium_ :
+    False {};
+
+// ----------------------------------------------------------------------------
 // Metafunction IsLocalAlignment_
 // ----------------------------------------------------------------------------
 
