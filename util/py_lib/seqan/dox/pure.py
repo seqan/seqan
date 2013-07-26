@@ -73,7 +73,7 @@ def doMain(args):
     # Generate documentation.
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logger = logging.getLogger()
-    processor = proc_doc.DocProcessor(logger=logger, include_dir=args.base_dir)
+    processor = proc_doc.DocProcessor(logger=logger, include_dirs=args.base_dirs)
     try:
         doc_proc = processor.run(master_doc)
     except dox_parser.ParserError, e:
@@ -99,7 +99,7 @@ def main():
     parser.add_argument('--image-dir', dest='image_dirs', default=[],
                         action='append', help='Path to image directory.')
     parser.add_argument('-b', '--base-dir', help='Base directory for @include.',
-                        default='.', dest='base_dir')
+                        default=['.'], dest='base_dirs', action='append')
     args = parser.parse_args()
     #if not args.inputs:
     #    parser.error('Missing input.')

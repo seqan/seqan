@@ -88,7 +88,10 @@ class ProcDoc(object):
         elif '::' in x.name:
             self.second_level_entries[x.name] = x
             first, second = splitSecondLevelEntry(x.name)
-            self.top_level_entries[first].registerSubentry(x)
+            if not first in self.top_level_entries:
+                print >>sys.stderr, "WARNING: Unknown top level entry %s" % first
+            else:
+                self.top_level_entries[first].registerSubentry(x)
         else:
             self.top_level_entries[x.name] = x
         
@@ -836,39 +839,45 @@ class EntryConverter(object):
         """Convert a RawBody to a TextNode."""
         res = TextNode(type='div')
         for p in raw_body.paragraphs:
-            if p.getType() == 'paragraph':
-                if not p.text.text.strip():
-                    continue  # Skip whitespace
-                p = self.rawTextToTextNode(p.text)
-                p.type = 'p'
-                res.addChild(p)
-            elif p.getType() == 'section':
-                h = self.rawTextToTextNode(p.heading)
-                h.type = 'h%d' % p.level
-                res.addChild(h)
-            elif p.getType() == 'include':
-                ftype = os.path.splitext(p.path.text)[1]
-                code_text = self.doc_proc.include_mgr.loadFile(p.path.text)
-                proc_include = TextNode(type='code', attrs={'type': ftype})
-                proc_include.addChild(TextNode(text=code_text, verbatim=True))
-                res.addChild(proc_include)
-            elif p.getType() == 'snippet':
-                ftype = os.path.splitext(p.path.text)[1]
-                code_text = self.doc_proc.include_mgr.loadSnippet(p.path.text, p.name.text)
-                proc_snippet = TextNode(type='code', attrs={'type': ftype})
-                proc_snippet.addChild(TextNode(text=code_text, verbatim=True))
-                res.addChild(proc_snippet)
-            elif p.getType() == 'code':
-                code_text = p.text.text
-                type = '.txt'
-                m = re.match(r'^{[^}]+}', code_text)
-                if m:
-                    type = m.group(0)[1:-1]
-                code_text = code_text[len(type) + 2:].strip()
-                #print [repr(t.val) for t in p.text.tokens]
-                x = TextNode(type='code', attrs={'type':type})
-                x.addChild(TextNode(text=code_text, verbatim=True))
-                res.addChild(x)
+            try:
+                if p.getType() == 'paragraph':
+                    if not p.text.text.strip():
+                        continue  # Skip whitespace
+                    p = self.rawTextToTextNode(p.text)
+                    p.type = 'p'
+                    res.addChild(p)
+                elif p.getType() == 'section':
+                    h = self.rawTextToTextNode(p.heading)
+                    h.type = 'h%d' % p.level
+                    res.addChild(h)
+                elif p.getType() == 'include':
+                    ftype = os.path.splitext(p.path.text)[1]
+                    code_text = self.doc_proc.include_mgr.loadFile(p.path.text)
+                    proc_include = TextNode(type='code', attrs={'type': ftype})
+                    proc_include.addChild(TextNode(text=code_text, verbatim=True))
+                    res.addChild(proc_include)
+                elif p.getType() == 'snippet':
+                    ftype = os.path.splitext(p.path.text)[1]
+                    code_text = self.doc_proc.include_mgr.loadSnippet(p.path.text, p.name.text)
+                    proc_snippet = TextNode(type='code', attrs={'type': ftype})
+                    proc_snippet.addChild(TextNode(text=code_text, verbatim=True))
+                    res.addChild(proc_snippet)
+                elif p.getType() == 'code':
+                    code_text = p.text.text
+                    type = '.txt'
+                    m = re.match(r'^{[^}]+}', code_text)
+                    if m:
+                        type = m.group(0)[1:-1]
+                    code_text = code_text[len(type) + 2:].strip()
+                    #print [repr(t.val) for t in p.text.tokens]
+                    x = TextNode(type='code', attrs={'type': type})
+                    x.addChild(TextNode(text=code_text, verbatim=True))
+                    res.addChild(x)
+            except inc_mgr.IncludeException, e:
+                print >>sys.stderr, "WARNING: %s" % e
+                n = TextNode(type='div', attrs={'class': 'note warning'})
+                n.children.append(TextNode(text=str(e)))
+                res.addChild(n)
         return res
 
     def process(self, raw_entry):
@@ -1131,16 +1140,16 @@ class DocProcessor(object):
     """Convert a RawDoc object into a ProcDoc object.
 
     @ivar converters: Dict that maps RawEntry kinds to Converter objects.
-    @ivar include_dir: The base path for including files  that can be used in
-                       the @include and @snippet commands.
+    @ivar include_dirs: The bases path for including files that can be used in
+                        the @include and @snippet commands.
     @ivar include_mgr: inc_mgr.IncludeManager object for file/snippet
                        inclusion.
     """
     
-    def __init__(self, logger=None, include_dir='.'):
+    def __init__(self, logger=None, include_dirs=['.']):
         self.logger = logger
-        self.include_dir = include_dir
-        self.include_mgr = inc_mgr.IncludeManager(self.include_dir)
+        self.include_dirs = list(include_dirs)
+        self.include_mgr = inc_mgr.IncludeManager(self.include_dirs)
         self.converters = {
             'class': ClassConverter(self),
             'concept': ConceptConverter(self),

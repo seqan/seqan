@@ -76,3 +76,8 @@ form.search input { margin-left: 5px; width: 250px; border: 1px solid #99f; -moz
   display: none;
 }
 #processing img { display: block; position: absolute; bottom: 30px; left: 44%; }
+
+.note.warning
+{
+    background: #ffe5e5; border-color: #e9dada;
+}
