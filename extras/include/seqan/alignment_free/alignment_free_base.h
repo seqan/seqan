@@ -35,10 +35,25 @@
 // and N2.
 // ==========================================================================
 
+// TODO(holtgrew): Make struct a class here.
+
 #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_BASE_H_
 #define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_BASE_H_
 
 namespace seqan {
+
+/*!
+ * @class AFScore
+ * @headerfile <seqan/alignment_free.h>
+ * @brief Used to specify parameters and methods for alignment-free sequence comparison.
+ * 
+ * @signature template <typename TSpec>
+ *            struct AFScore;
+ * 
+ * @tparam TSpec Tag for specialization.
+ * 
+ * @see alignmentFreeComparison
+ */
 
 /**
 .Class.AFScore:
@@ -53,6 +68,37 @@ namespace seqan {
 template <typename TSpec>
 struct AFScore;
 
+/*!
+ * @class D2AFScore D2 AFScore
+ * @extends AFScore
+ * @headerfile <seqan/alignment_free.h>
+ * 
+ * @brief D2 computes the inner product of the kmer count vectors.
+ * 
+ * @signature template <>
+ *            struct AFScore;
+ * 
+ * @section Remarks
+ * 
+ * D2 can be used for alignment-free sequence comparison
+ * 
+ * Lippert RA, et al. Distributional regimes for the number of k-word matches between two random sequences. Proc. Natl
+ * Acad. Sci. USA 2002.
+ *
+ * @var VariableType D2AFScore::kmerSize
+ * @brief Size of the kmers
+ * 
+ * @fn D2AFScore::AFScore
+ * 
+ * @brief Constructor
+ * 
+ * @signature AFScore::AFScore(kmerSize, verbose);
+ * 
+ * @param[in] verbose  This option will report progress to standard output (<tt>bool</tt).
+ * @param[in] kmerSize Size of kmer (<tt>unsigned</tt>).
+ * 
+ * @see alignmentFreeComparison
+ */
 
 /**
 .Spec.D2 AFScore
@@ -94,6 +140,43 @@ struct AFScore<D2>
     {}
 };
 
+/*!
+ * @class D2StarAFScore D2Star AFSScore
+ * @extends AFScore
+ * @headerfile <seqan/alignment_free.h>
+ * @brief D2Star computes the inner product of the standardised kmer count vectors.
+ * 
+ * @signature template <>
+ *            struct AFScore<D2Star>;
+ * 
+ * @section Remarks
+ * 
+ * D2Star can be used for alignment-free sequence comparison, this version calculates the background model on the
+ * concatenation of both sequences
+ * 
+ * Reinert, G.; Chew, D.; Sun, F. & Waterman, M. S. Alignment-Free Sequence Comparison (I): Statistics and Power. J
+ * Comput Biol, 2009.
+ * 
+ * @fn D2StarAFScore::AFScore
+ * @brief Constructor
+ * @signature AFScore::AFScore(kmerSize, bgModelOrder, verbose);
+ * 
+ * @param[in] kmerSize      Size of kmer, <tt>unsigned</tt>.
+ * @param[in] bgModelOrder Order of the background Markov model, <tt>unsigned</tt>.
+ * @param[in] verbose      This option will report progress to standard output, <tt>bool</tt>.
+ * 
+ * @see alignmentFreeComparison
+ * 
+ * @var unsigned D2StarAFScore::kmerSize
+ * @brief Size of the kmers.
+ * 
+ * @var CharString D2StarAFScore::outputFile
+ * @brief When specified, all kmerWeights will be written to this file, for every sequence, and for every sequence
+ *        comparison.
+ * 
+ * @var unsigned D2StarAFScore::bgModelOrder
+ * @brief Order of the background model.
+ */
 
 /**
 .Spec.D2Star AFScore
@@ -149,6 +232,61 @@ struct AFScore<D2Star>
     {}
 };
 
+/*!
+ * @class N2AFScore N2 AFScore
+ * @extends AFScore
+ * @headerfile <seqan/alignment_free.h>
+ * @brief N2 computes the inner product of the standardised neighbourhood kmer count vectors.
+ * 
+ * @signature template <>
+ *            struct AFScore<N2>;
+ * 
+ * @section Remarks
+ * 
+ * N2 can be used for alignment-free sequence comparison.
+ *
+ * Jonathan Goeke, Marcel H. Schulz, Julia Lasserre, and Martin Vingron.
+ Estimation of Pairwise Sequence Similarity of Mammalian Enhancers with Word Neighbourhood Counts. Bioinformatics
+ (2012). 
+ * 
+ * @fn N2AFScore::AFScore
+ * 
+ * @brief Constructor
+ * 
+ * @signature AFScore::AFScore(kmerSize, bgModelOrder, outputFile, verbose);
+ * @signature AFScore::AFScore(kmerSize, bgModelOrder, revCom, outputFile, verbose);
+ * @signature AFScore::AFScore(kmerSize, bgModelOrder, revCom, mismatch, mismatchWeight, outputFile, verbose);
+ * 
+ * @param[in] kmerSize       Size of kmer, <tt>unsigned</tt>.
+ * @param[in] bgModelOrder   Order of the background Markov model, <tt>unsigned</tt>.
+ * @param[in] outputFile     When specified, all normalised and standardised kmer neighbourhood counts will be written
+ *                           to this file for every sequence, @link CharString @endlink.
+ * @param[in] revCom         Scoring of reverse complements words [''/'max'/'min'/'mean'/'both_strands'/],
+ *                           @link CharString @endlink.
+ * @param[in] verbose        This option will report progress to standard output, bool, default is false.
+ * @param[in] mismatch       Includes words with one mismatch into the word neighbourhood, unsigned, 0 or 1.
+ * @param[in] mismatchWeight Weight of word counts with one mismatch, double.
+ * 
+ * @see alignmentFreeComparison
+ * 
+ * @var VariableType N2AFScore::kmerSize
+ * @brief Size of the kmers
+ * 
+ * @var VariableType N2AFScore::mismatchWeight
+ * @brief Weight for approximate word matches
+ * 
+ * @var VariableType N2AFScore::revCom
+ * @brief Scoring of reverse complements words [''/'max'/'min'/'mean'/'both_strands'/]
+ * 
+ * @var VariableType N2AFScore::outputFile
+ * @brief When specified, all kmerWeights for every sequence will be written to this file.
+ * 
+ * @var VariableType N2AFScore::bgModelOrder
+ * @brief Order of the background model
+ * 
+ * @var VariableType N2AFScore::mismatches
+ * @brief Approximate word matches [0(exact)/1(one mismatch)]
+ */
 
 /**
 .Spec.N2 AFScore
@@ -273,6 +411,39 @@ struct AFScore<N2>
     };
 };
 
+/*!
+ * @class D2zAFScore D2zAFScore
+ * @extends AFScore
+ * @headerfile <seqan/alignment_free.h>
+ * @brief D2z computes a z-score of the inner product of kmer count vectors
+ * 
+ * @signature template <>
+ *            struct AFScore<D2z>;
+ * 
+ * @section Remarks
+ * 
+ * D2z can be used for alignment-free sequence comparison. The algorithm differs from the original implementation by the
+ * way masked sequences are handled
+ * 
+ * Kantorovitz, M. R.; Robinson, G. E. & Sinha, S. A statistical method for alignment-free comparison of regulatory
+ * sequences. Bioinformatics, 2007.
+ * 
+ * @fn D2zAFScore::AFScore
+ * 
+ * @brief Constructor
+ * 
+ * @signature AFScore::AFScore(kmerSize, bgModelOrder[, verbose]);
+ * 
+ * @param[in] kmerSize     Size of kmer, unsigned.
+ * @param[in] bgModelOrder Order of the background Markov model, unsigned.
+ * @param[in] verbose      This option will report progress to standard output, bool, default is false.
+ * 
+ * @var unsigned D2zAFScore::bgModelOrder
+ * @brief Order of the background model
+ * 
+ * @var unsigned D2zAFScore::kmerSize
+ * @brief Size of the kmers
+ */ 
 
 /**
 .Spec.D2z AFScore
