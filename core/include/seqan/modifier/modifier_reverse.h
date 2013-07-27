@@ -323,6 +323,9 @@ template <typename THost, typename TDelta>
 inline ModifiedIterator<THost, ModReverse> &
 operator-=(ModifiedIterator<THost, ModReverse> & me, TDelta delta)
 {
+    typedef typename Position<THost>::Type TPos;
+    typedef typename MakeSigned<TPos>::Type TSignedPos;
+
     if (delta > 0)
     {
         if (cargo(me)._atEnd)
@@ -334,7 +337,7 @@ operator-=(ModifiedIterator<THost, ModReverse> & me, TDelta delta)
     }
     else
     {
-        if (position(host(me)) < -delta)
+        if ((TSignedPos)position(host(me)) < -(TSignedPos)delta)
         {
             cargo(me)._atEnd = true;
             ++delta;
