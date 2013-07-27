@@ -51,6 +51,18 @@ struct Uniform;
 // Classes
 // ===========================================================================
 
+/*!
+ * @class UniformPdf Uniform Pdf
+ * @headerfile <seqan/random.h>
+ * @extends Pdf
+ * @brief Uniform distribution probability density function over a closed interval [min, max];
+ *
+ * @signature template <typename T>
+ *            class Pdf<Uniform<T> >;
+ *
+ * @tparam T The number type to use (integer or floating point).
+ */
+
 /**
 .Spec.Uniform Pdf
 ..signature:Pdf<Uniform<T> >
@@ -69,7 +81,16 @@ public:
     T _min;
     T _max;
 
-// TODO(holtgrew): Switch to [begin, end) instead of [min, max] style?
+/*!
+ * @fn UniformPdf::Pdf
+ * @brief Constructor for uniform Pdf.
+ *
+ * @signature Pdf::Pdf(min, max);
+ *
+ * @param[in] min The smallest value of the interval, of the Value type of the Pdf.
+ * @param[in] max The largest value of the interval, of the Value type of the Pdf.
+ */
+
 /**
 .Memfunc.Uniform Pdf#Pdf
 ..class:Spec.Uniform Pdf

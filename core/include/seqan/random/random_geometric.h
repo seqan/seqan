@@ -50,6 +50,20 @@ struct GeometricFairCoin {};
 // Classes
 // ===========================================================================
 
+/*!
+ * @class GeometricPdf
+ * @headerfile <seqan/random.h>
+ * @extends Pdf
+ * @brief Geometric probability density function with <i>p = 0.5</i>.
+ *
+ * The PDF is implemented efficiently without using any floating point arithmetics, just some bit operations.
+ *
+ * @fn GeometricPdf::Pdf
+ * @brief Constructor
+ *
+ * @signature Pdf::Pdf();
+ */
+
 /**
 .Spec.Geometric Pdf
 ..signature:Pdf<GeometricFairCoin>

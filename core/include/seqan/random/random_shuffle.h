@@ -55,6 +55,16 @@ namespace seqan {
 // Functions
 // ===========================================================================
 
+/*!
+ * @fn shuffle
+ * @brief Shuffle the given container.
+ *
+ * @signature void shuffle(container, rng);
+ *
+ * @param[in,out] container The container to shuffle.
+ * @param[in,out] rng       The random number generator to use.
+ */
+
 /**
 .Function.shuffle
 ..summary:Shuffle the given container.

@@ -51,6 +51,19 @@ struct RngFunctor {};
 // Classes
 // ===========================================================================
 
+/*!
+ * @class RngFunctor
+ * @extends Rng
+ * @headerfile <seqan/random.h>
+ * @brief Functor wrapper for random number generation.
+ *
+ * @signature template <typename TRng, typename TPdf>
+ *            class Rng<RngFunctor<TRng, TPdf> >;
+ *
+ * @tparam TRng The random number generator type to use.
+ * @tparam TPdf The probability density function type to use.
+ */
+
 /**
 .Spec.Rng Functor
 ..general:Class.Rng
@@ -67,7 +80,18 @@ class Rng<RngFunctor<TRng, TPdf> >
 public:
     TRng & _rng;
     TPdf & _pdf;
-    
+
+/*!
+ * @fn RngFunctor::Rng
+ * @headerfile <seqan/random.h>
+ * @brief Constructor.
+ *
+ * @signature Rng::Rng(rng, pdf);
+ *
+ * @param[in] rng A reference to the underlying Rng to use.
+ * @param[in] pdf A reference to the underlying Pdf to use.
+ */
+
 /**
 .Memfunc.Rng Functor#Rng
 ..class:Spec.Rng Functor

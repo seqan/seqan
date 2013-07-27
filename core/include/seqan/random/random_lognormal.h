@@ -51,6 +51,21 @@ typedef Tag<Normal_> Normal;
 struct LogNormal_;
 typedef Tag<LogNormal_> LogNormal;
 
+/*!
+ * @defgroup LognormalConstructionTags
+ * @brief Specify parameters for lognormal distribution construction.
+ *
+ * @tag LognormalConstructionTags#MuSigma
+ * @headerfile <seqan/random.h>
+ * @brief Tag to specify that the given parameters are mu and sigma of the underlying normal distribution for lognormal
+ *        distributions.
+ *
+ * @tag LognormalConstructionTags#MeanStdDev
+ * @headerfile <seqan/random.h>
+ * @brief Tag to specify that the given parameters are mean and standard deviation of the underlying normal distribution
+ *        for lognormal distributions.
+ */
+
 /**
 .Tag.Lognormal Construction:
 ..summary:Specify parameters for lognormal distribution construction.
@@ -72,6 +87,33 @@ typedef Tag<MeanStdDev_> MeanStdDev;
 // ===========================================================================
 // Classes
 // ===========================================================================
+
+/*!
+ * @class LogNormalPdf Log-Normal Pdf
+ * @headerfile <seqan/random.h>
+ * @extends Pdf
+ * @brief Log-normal probability density function.
+ *
+ * @signature template <>
+ *            class Pdf<LogNormal>;
+ *
+ * @section Remarks
+ *
+ * Note that you can construct this either with mu/sigma of the underlying normal distribution (default) or with the
+ * mean and standard deviation of the log-normal distribution.
+ *
+ * 
+ * @fn LogNormalPdf::Pdf
+ * @brief Constructor for log-normal Pdf.
+ *
+ * @signature Pdf::Pdf(mu,   sigma[, MuSigma()]);
+ * @signature Pdf::Pdf(mean, stdDev, MeanStdDev());
+ *
+ * @param mu     Mean of the underlying normal distribution, double.
+ * @param sigma  Standard deviation of the underlying normal distribution, double.
+ * @param mean   Mean of the log-normal distribution, double.
+ * @param stdDev Standard deviation of the log-normal distribution, double.
+ */
 
 /**
 .Spec.Log-Normal Pdf

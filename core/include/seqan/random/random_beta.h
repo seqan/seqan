@@ -61,6 +61,30 @@ typedef Tag<MeanStdDev_> MeanStdDev;
 // Classes
 // ===========================================================================
 
+/*!
+ * @class BetaPdf Beta Pdf
+ * @extends Pdf
+ * @headerfile <seqan/random.h>
+ * @brief Probability density function for the Beta function.
+ *
+ * @signature template <>
+ *            class Pdf<Beta>;
+ *
+ *
+ * @fn BetaPdf::Pdf
+ * @brief Constructor for the beta Pdf.
+ *
+ * Use the tags <tt>AlphaBeta</tt> and <tt>MeanStdDev</tt> to select the meaning of the two parameters.
+ *
+ * @signature Pdf::Pdf(alpha, beta[,  AlphaBeta()]);
+ * @signature Pdf::Pdf(mu,    sigma, MeanStdDev());
+ *
+ * @param[in] alpha Alpha value for the beta distribution, <tt>double</tt>.
+ * @param[in] beta  Beta value for the beta distribution, <tt>double</tt>.
+ * @param[in] mu    Mean value for the beta distribution, <tt>double</tt>.
+ * @param[in] sigma Standard deviation value for the beta distribution, <tt>double</tt>.
+ */
+
 /**
 .Spec.Beta Pdf
 ..signature:Pdf<Beta>

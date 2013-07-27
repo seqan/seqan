@@ -51,6 +51,15 @@ typedef Tag<Normal_> Normal;
 // Classes
 // ===========================================================================
 
+/*!
+ * @class NormalPdf Normal Pdf
+ * @extends Pdf
+ * @headerfile <seqan/random.h>
+ *
+ * @signature template <>
+ *            class Pdf<Normal>;
+ */
+
 /**
 .Spec.Normal Pdf
 ..signature:Pdf<Normal>
@@ -67,6 +76,16 @@ class Pdf<Normal>
 public:
     double _mu;
     double _sigma;
+
+/*!
+ * @fn NormalPdf::Pdf
+ * @brief Constructor for normal distribution Pdf.
+ *
+ * @signature Pdf::pdf(mu, sigma);
+ *
+ * @param[in] mu    Mean of the normal distribution, double.
+ * @param[in] sigma Standard deviation of the normal distribution, double.
+ */
 
 /**
 .Memfunc.Normal Pdf#Pdf

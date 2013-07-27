@@ -52,6 +52,16 @@ struct MersenneTwister {};
 // Classes
 // ===========================================================================
 
+/*!
+ * @class MersenneTwisterRng
+ * @extends Rng
+ * @headerfile <seqan/random.h>
+ * @brief Mersenne Twister 19937 Random Number Generator.
+ *
+ * @signature template <>
+ *            class Rng<MersenneTwister>;
+ */
+
 /**
 .Spec.Mersenne Twister Rng
 ..general:Class.Rng
@@ -67,6 +77,14 @@ class Rng<MersenneTwister>
 public:
     ext::MTRand _mtRand;
 
+/*!
+ * @fn MersenneTwisterRng::Rng
+ * @brief Constructor Mersenne Twister Rng.
+ *
+ * @signature Rng::Rng([seed]);
+ *
+ * @param seed The <tt>unsigned</tt> value to use for seeding, defaults to 0.
+ */
 
 /**
 .Memfunc.Mersenne Twister Rng#Rng
@@ -116,6 +134,16 @@ pickRandomNumber(Rng<MersenneTwister> & mt)
     return mt._mtRand.randInt();
 }
 
+/*!
+ * @fn MersenneTwisterRng#reSeed
+ * @brief Reset and re-seed Mersenne Twister Rng.
+ *
+ * @signature reSeed(mt[, seed]);
+ *
+ * @param[in,out] mt   The MersenneTwisterRng to re-seed.
+ * @param[in]     seed The <tt>unsigned</tt> to use for re-seeding, defaults to 0.
+ */
+
 /**
 .Function.reSeed
 ..class:Spec.Mersenne Twister Rng
@@ -132,19 +160,11 @@ pickRandomNumber(Rng<MersenneTwister> & mt)
 */
 
 inline void
-reSeed(Rng<MersenneTwister> & mt, __uint32 const seed)
+reSeed(Rng<MersenneTwister> & mt, __uint32 const seed = 0)
 {
     SEQAN_CHECKPOINT;
 
     mt._mtRand.seed(seed);
-}
-
-inline void
-reSeed(Rng<MersenneTwister> & mt)
-{
-    SEQAN_CHECKPOINT;
-
-    reSeed(mt, 0);
 }
 
 }  // namespace seqan

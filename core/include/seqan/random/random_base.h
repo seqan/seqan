@@ -46,6 +46,36 @@ namespace seqan {
 // Forward to MersenneTwister, really defined in random_mt19937.h.
 struct MersenneTwister;
 
+/*!
+ * @class Rng
+ * @headerfile <seqan/random.h>
+ * @brief Random Number Generator
+ *
+ * @signature template <[typename TSpec]>
+ *                     class Rng;
+ *
+ * @tparam TSpec Tag for selecting the specialization.  Defaults to MersenneTwister.
+ *
+ * @section Examples
+ *
+ * The following code shows how to generate random numbers and shuffle a text.
+ *
+ * @include demos/random/random.cpp
+ *
+ * @code{.txt}
+ * pickRandomNumber(rng) == 1608637542
+ * pickRandomNumber(rng, uniformDouble) == 0.950714
+ * pickRandomNumber(rng, uniformInt) == 27
+ * pickRandomNumber(rng, normal) == 0.419823
+ * pickRandomNumber(rng, logNormal) == 1.22431
+ * pickRandomNumber(rng, logNormal2) == 2.78004
+ * pickRandomNumber(rng, logNormal3) == 0.00155248
+ * shuffle("Hello World!") ==  o!reWlloHld
+ * @endcode
+ *
+ * @see http://trac.seqan.de/wiki/Tutorial/Randomness
+ */
+
 /**
 .Class.Rng:
 ..summary:Random Number Generator
@@ -59,7 +89,8 @@ struct MersenneTwister;
 ..example
 ...text:The following code shows how to generate random numbers and shuffle a text.
 ...file:demos/random/random.cpp
-...output:pickRandomNumber(rng) == 1608637542
+...output:
+pickRandomNumber(rng) == 1608637542
 pickRandomNumber(rng, uniformDouble) == 0.950714
 pickRandomNumber(rng, uniformInt) == 27
 pickRandomNumber(rng, normal) == 0.419823
@@ -71,6 +102,19 @@ shuffle("Hello World!") ==  o!reWlloHld
 
 template <typename TSpec = MersenneTwister>
 class Rng;
+
+/*!
+ * @class Pdf
+ * @headerfile <seqan/random.h>
+ * @brief Probability Density Function
+ *
+ * @signature template <typename TSpec>
+ *            class Pdf;
+ *
+ * @tparam TSpec Tag for selecting the specialization.
+ *
+ * @see http://trac.seqan.de/wiki/Tutorial/Randomness
+ */
 
 /**
 .Class.Pdf:
@@ -89,6 +133,15 @@ class Pdf;
 // Classes
 // ===========================================================================
 
+/*!
+ * @fn Rng::operator()
+ * @brief Function all operator.
+ *
+ * @signature TValue Rng::operator()();
+ *
+ * @return TValue Random number, TValue can be retrieved with Rng#Value.
+ */
+
 /**
 .Memfunc.Rng#operator()
 ..class:Class.Rng
@@ -100,9 +153,53 @@ class Pdf;
 // Metafunctions
 // ===========================================================================
 
+/*!
+ * @mfn Pdf#Value
+ * @brief Value type of a Pdf.
+ *
+ * @signature Value<TPdf>::Type
+ *
+ * @tparam TPdf The Pdf for the value type.
+ * 
+ * @return Type The value type of the Pdf.
+ */
+
 ///.Metafunction.Value.param.T.type:Class.Pdf
 ///.Metafunction.Value.class:Class.Pdf
 // specification only
+
+/*!
+ * @mfn Rng#Value
+ * @brief Value type of a Rng.
+ *
+ * @signature Value<TRng>::Type
+ * 
+ * @tparam TRng the Rng to get the value type for.
+ *
+ * @return Type the value type for the Rng.
+ */
+
+/*!
+ * @mfn Rng#MinValue
+ * @brief Smallest value that a Rng can return.
+ *
+ * @signature MinValue<TRng>::VALUE;
+ *
+ * @tparam TRng The Rng object to get the smallest value for.
+ *
+ * @return VALUE The smallest value a Rng can return.
+ */
+
+/*!
+ * @mfn Rng#MaxValue
+ * @brief Largest value that a Rng can return.
+ *
+ * @signature MaxValue<TRng>::VALUE;
+ *
+ * @tparam TRng The Rng object to get the largest value for.
+ *
+ * @return VALUE The largest value a Rng can return.
+ */
 
 ///.Metafunction.Value.param.T.type:Class.Rng
 ///.Metafunction.Value.class:Class.Rng
@@ -151,6 +248,20 @@ struct MinValue<Rng<TSpec> const>
 template <typename TSpec>
 const typename Value<Rng<TSpec> const>::Type MinValue<Rng<TSpec> const>::VALUE = MinValue<typename Value<Rng<TSpec> const>::Type>::VALUE;
 
+/*!
+ * @mfn GetDefaultRng
+ * @headerfile <seqan/random.h>
+ * @brief Return the default Rng to use in a given class, specialization, or algorithm.
+ *
+ * @signature GetDefaultRng<T>::Type;
+ *
+ * @tparam T The type or tag to get the default Rng for.
+ *
+ * @return Type The Rng type to use.
+ *
+ * @see defaultRng
+ */
+
 /**
 .Metafunction.GetDefaultRng
 ..cat:Random
@@ -171,6 +282,23 @@ struct GetDefaultRng
 // Functions
 // ===========================================================================
 
+/*!
+ * @fn Rng#pickRandomNumber
+ * @brief Pick a random number using a random number generator, possibly using a probability density function.
+ *
+ * @signature TValue pickRandomNumber(rng[, pdf]);
+ *
+ * @param[in,out] rng The Rng to use.
+ * @param[in]     pdf The probability density function to use.
+ *
+ * @return TValue A random number.  TValue is the value type of the rng if pdf is not given.  If pdf is given
+ *                then it is of the value type of pdf.
+ *
+ * @section Remarks
+ *
+ * For more details see the <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Tutorial on Randomness</a>.
+ */
+
 /**
 .Function.pickRandomNumber
 ..class:Class.Rng
@@ -187,6 +315,28 @@ struct GetDefaultRng
 ..returns:Random number as specified in pdf, if any, or rng. For more details refer to the SeqAn Tutorial.
  */
 // specification only
+
+/*!
+ * @fn defaultRng
+ * @headerfile <seqan/random.h>
+ * @brief Return the default random number generator object of a given type.
+ *
+ * @signature TRng defaultRng<TRng>();
+ *
+ * @tparam TRng The random number generator type to construct.
+ *
+ * @return TRng Default random number generator of the given type TRng.
+ *
+ * @section Remarks
+ *
+ * The random number generator will be default constructed, i.e. with the default seed.
+ *
+ * This function is NOT thread-safe!  Also, data structures and functions using defaultRng are not thread-safe.  Data
+ * structures using global random number generator state should use pointers.  This way, the random number generator
+ * state to be used can be set to be thread-local.
+ *
+ * @see GetDefaultRng
+ */
 
 /**
 .Function.defaultRng
