@@ -40,6 +40,22 @@ template <typename TAlgorithm, typename TFloat, typename TAlphabet>
 void _numOccurrences(TFloat &nW, String<TAlphabet>& haystack, StringSet<String<TAlphabet> >& needle, TAlgorithm const &);
 
 /*
+ * @fn _zscore
+ * @headerfile <seqan/statistics.h>
+ * @brief Auxiliary function to compure the z-score index for a set of patterns w.r.t. a set of text strings and a
+ *        MarkovMovel.
+ * 
+ * @signature TFloat _zscore(W, X, M, tag);
+ *
+ * @param W   The StringSet to use as the words.
+ * @param X   The StringSet to use as the text.
+ * @param M   The MarkovModel to use.
+ * @param tag The tag to select the algorithm.
+ *
+ * @return TFloat The z-score, TFloat is the TFloat from the MarkovModel M.
+ */
+
+/*
 .Function._zscore:
 ..summary:Auxiliary function to compute the z-score index for a set of patterns w.r.t. a set of text strings and a MarkovModel
 ..signature:template <TFloat,TStringSet,TAlphabet,TSpec,tTAlgorithm>_zscore(W,X,M, algorithmTag)
@@ -86,6 +102,19 @@ TFloat _zscore(TStringSet W,  TStringSet& X, MarkovModel<TAlphabet, TFloat, TSpe
 }
 
 /*
+ * @fn _numOccurences
+ * @headerfile <seqan/statistics.h>
+ * @brief Auxiliary function to compute the number of occurences of a set of patterns in a set of text strings.
+ *
+ * @signature void _numOccurences(W, haystack, needle, algoTag);
+ *
+ * @param[in,out] W        A counter, incremented by the number of occurences.
+ * @param[in]     haystack The text strings.
+ * @param[in]     needle   The set of patterns.
+ * @param[in]     algoTag  The tag to select the online text search algorithm with.
+ */
+
+/*
 .Function._numOccurrences:
 ..summary:Auxiliary function to compute the number of occurrences of a set of patterns in a set of text strings
 ..signature:template <tTAlgorithm,TFloat,TAlphabet,TStringSet>_numOccurrences(W,haystack,needle)
@@ -114,6 +143,18 @@ void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<T
 	}
 }
 
+/*
+ * @fn _computeExpecttation
+ * @brief Auxiliary function to compute the expectation for a set of patterns w.r.t. a text string  and a MarkovModel.
+ *
+ * @signature TFloat _computeExpectation(mm, W, n);
+ *
+ * @param mm The MarkovModel.
+ * @param W  The set of patterns, StringSet.
+ * @param n  The length of the string, unsigned.
+ *
+ * @return TFloat the expectation valuefor W w.r.t. a string and M.
+ */
 
 /*
 .Function._computeExpectation:
@@ -147,6 +188,25 @@ TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
 
 
 /*
+ * @fn _computeVariance
+ * @headerfile <seqan/statistics.h>
+ * @brief Auxiliary function to compute the variance for a set of patterns w.r.t. a set of text strings and a MarkovModel.
+ * 
+ * @signature TFloat _computeVariance(W, X, M);
+ *
+ * @param[in] W The set of words.
+ * @param[in] X The text set.
+ * @param[in] M The MarkovModel to use.
+ * @param[in] E
+ *
+ * @return TFloat The variance for W w.r.t. X and M.
+ *
+ * @section Remarks
+ *
+ * If the alphabet is Dna, then the suitable correction factors are computed.
+ */
+
+/*
 .Function._computevariance:
 ..summary:Auxiliary function to compute the variance for a set of patterns w.r.t. a set of text strings and a MarkovModel
 ..signature:template <TFloat,TStringSet,TAlphabet,TSpec>_computevariance(W,X,M)
@@ -163,6 +223,8 @@ TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
 ..remarks:If the alphabet is Dna, then the suitable correction factors are computed.
 ..include:seqan/statistics.h
 */
+
+// TODO(holtgrew): W could become const-ref.
 
 template <typename TFloat, typename TAlphabet, typename TSpec>
 TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlphabet> > &X, MarkovModel<TAlphabet, TFloat, TSpec> &M, TFloat &E)
@@ -251,6 +313,19 @@ TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlp
 	return V;
 }
 
+/*!
+ * @fn _overlapExpectation
+ * @headerfile <seqan/statistics.h>
+ * @brief Auxiliary function necessary when correction factors have to be computed.
+ *
+ * @signature TFloat _overlapExpectation(W, M, n);
+ *
+ * @param W The set of words.
+ * @param M The MarkovModel to use for the computation.
+ * @param n The length of the text.
+ *
+ * @return TFloat The expectation value for overlapping, TFloat is the TFloat from the type of M.
+ */
 
 /*
 .Function._overlapExpectation:
@@ -302,6 +377,16 @@ TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabe
 }
 
 /*
+ * @fn _addReverseComplemenents
+ * @headerfile <seqan/statistics.h>
+ * @brief Computes the reverse complemenets of a set of strings in the input.
+ * 
+ * @signature void _addReverseComplements(ss);
+ *
+ * @param ss A String set to expand.
+ */
+
+/*
 .Function._addReveseComplements:
 ..summary:Computes the reverse complements of a set of strings in input.
 ..signature:<TStringSet> void _addReveseComplements(needle)
@@ -327,6 +412,22 @@ void _addReveseComplements(StringSet<String<TAlphabet> > &stringSet)
 
 typedef Dna TDnaAlphabet;
 typedef String<TDnaAlphabet> TDnaSequence;
+
+/*!
+ * @fn zscore
+ * @headerfile <seqan/statistics.h>
+ * @brief Computes the z-score index for a set of patterns w.r.t. a set of text strings and a MarkovModel.
+ *
+ * @signature TFloat zscore(W, X, M, algoTag);
+ *
+ * @param W       The StringSet of pattern strings.
+ * @param X       The StringSet of text strings.
+ * @param M       The MarkovModel object.
+ * @param algoTag The algorithm to exploit to compute the number of occurrences of patterns in the text strings
+ *                (see @link AhoCorasick @endlink etc.).
+ *
+ * @return TFloat The z-score for W w.r.t. X and M, TFloat is the TFloat from the type of M.
+ */
 
 /**
 .Function.zscore:
@@ -407,6 +508,19 @@ TFloat zscore(StringSet<TDnaSequence> W,  StringSet<TDnaSequence> &X, MarkovMode
 	return z_score;
 }
 
+/*!
+ * @fn variance
+ * @headerfile <seqan/statistics.h>
+ * @brief Computes the variance for a set of patterns w.r.t a set of text strings and a MarkovModel.
+ *
+ * @signature TFloat variance(W, X, M);
+ *
+ * @param W The StringSet of word strings.
+ * @param X The StringSet of text strings.
+ * @param M The MarkovModel to use.
+ *
+ * @return TFloat The variance for W w.r.t. X and M, TFloat is the TFloat from the type of M.
+ */
 
 /**
 .Function.variance:
@@ -471,6 +585,20 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
 
   return var;
 }
+
+/*!
+ * @fn expectation 
+ * @headerfile <seqan/statistics.h>
+ * @brief Computes the expectation for a set of patterns w.r.t a set of text strings and a MarkovModel.
+ *
+ * @signature TFloat expectation(W, X, M);
+ *
+ * @param W The StringSet of word strings.
+ * @param X The StringSet of text strings.
+ * @param M The MarkovModel to use.
+ *
+ * @return TFloat The expectation for W w.r.t. X and M, TFloat is the TFloat from the type of M.
+ */
 
 /**
 .Function.expectation:
