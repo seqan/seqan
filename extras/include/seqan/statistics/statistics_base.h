@@ -313,7 +313,7 @@ TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlp
 	return V;
 }
 
-/*!
+/*
  * @fn _overlapExpectation
  * @headerfile <seqan/statistics.h>
  * @brief Auxiliary function necessary when correction factors have to be computed.
