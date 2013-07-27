@@ -28,9 +28,9 @@ def printParserError(e):
         # Load line with error and print it with an indicator of the error.
         fcontents = open(e.token.file_name).read()
         lines = fcontents.splitlines()
-        if e.token.lineno > len(lines):
+        if e.token.lineno + 1 >= len(lines):
             return  # Invalid line number.
-        print >>sys.stderr, '%s' % lines[e.token.lineno].rstrip()
+        print >>sys.stderr, '%s' % lines[e.token.lineno + 1].rstrip()
         print >>sys.stderr, e.token.column * ' ' + '^'
     else:
         print >>sys.stderr, 'ERROR: %s' % msg
