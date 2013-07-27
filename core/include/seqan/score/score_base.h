@@ -39,6 +39,10 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
+/*!
+ * @class Score
+ */
+
 /**
 .Class.Score:
 ..cat:Miscellaneous

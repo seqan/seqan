@@ -60,6 +60,24 @@ namespace seqan {
 // Function addToProfile()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn addToProfile
+ * @headerfile <seqan/align_profile.h>
+ * @brief Sequence-to-profile alignment with sequence integration.
+ *
+ * <tt>seq</tt> will be aligned to <tt>profile</tt>.  Then, it is integrated into <tt>profile</tt> by incrementing the
+ * <tt>count</tt> member of the <tt>profile</tt> entries.
+ *
+ * @signature void addToProfile(profile, seq[, lDiag, uDiag]);
+ *
+ * @param[in,out] profile The profile to add <tt>seq</tt> to.  @link AllocString @endlink of @link ProfileChar @endlink.
+ * @param[in]     seq     @link String @endlink to align to <tt>profile</tt>.
+ * @param[in]     lDiag   Lower diagonal for alignment, <tt>int</tt>.
+ * @param[in]     uDiag   Upper diagonal for alignment, <tt>int</tt>.
+ */
+
+// TODO(holtgrew): Add example?
+
 /**
 .Function.addToProfile
 ..cat:Alignments
