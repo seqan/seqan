@@ -16,3 +16,6 @@ TODOs
  * Do we need modules?
 
  * imbalanced @code/@endlink causes quiet suppression
+
+ * Create a documentation checklist:
+  * each top level item (class, global function, global metafucntion etc) must have a @headerfile set.

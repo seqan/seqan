@@ -111,7 +111,7 @@ class RawDoc(object):
 
 class RawEntry(object):
     """One top-level entry of the documentation.
-    
+   
     @ivar name  The identifier of the entry.
     @ivar title The title of the entry.
     @ivar brief A string object with a brief summary of the entry.

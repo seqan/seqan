@@ -73,6 +73,10 @@ class ProcDoc(object):
         self.registerEntry(x)
         self.second_level_entries[x.name] = x
         first, second = splitSecondLevelEntry(x.name)
+        if not first in self.top_level_entries:
+            msg = 'Unknown type %s' % first
+            token = x.raw_entry.name.tokens[0]
+            raise dox_parser.ParserError(msg=msg, token=token)
         if first:
 #            print '%s => %s as %s' % (x.name, second, x.kind)
             self.top_level_entries[first].registerSubentry(x)
