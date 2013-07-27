@@ -37,7 +37,21 @@
 #ifndef SEQAN_SCORE_SCORE_EDIT_H_
 #define SEQAN_SCORE_SCORE_EDIT_H_
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
+
+/*!
+ * @class EditDistanceScore
+ * @extends Score
+ * @headerfile <seqan/score.h>
+ * @brief Edit distance scoring scheme.
+ *
+ * <tt>EditDistance</tt> is a synonym for <tt>LevenshteinDistance</tt>.
+ *
+ * @signature template <typename TValue>
+ *            class Score<TValue, EditDistance>;
+ *
+ * @tparam TValue The score value type to use.
+ */
 
 /**
 .Spec.EditDistance
@@ -60,6 +74,15 @@ public:
     Score() {}
 };
 
+// TODO(holtgrew): Remove this?
+
+/*!
+ * @typedef EditDistanceScoreShortcut EditDistance
+ * @headerfile <seqan/score.h>
+ * @brief Edit distance scoring scheme shortcut.
+ *
+ * @signature typedef Score<int, EditDistance> EditDistanceScore;
+ */
 
 /**
 .Shortcut.EditDistanceScore:

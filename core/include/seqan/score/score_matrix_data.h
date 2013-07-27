@@ -54,7 +54,7 @@
 #ifndef SEQAN_SCORE_SCORE_MATRIX_DATA_H_
 #define SEQAN_SCORE_SCORE_MATRIX_DATA_H_
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 /*
 .Tag.Blosum30_:
@@ -64,6 +64,13 @@ namespace SEQAN_NAMESPACE_MAIN {
  */
 struct Blosum30_ {};
 
+/*!
+ * @typedef Blosum30
+ * @headerfile <seqan/score.h>
+ * @brief BLOSUM30 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum30_> > Blosum30;
+ */
 
 /**
 .Shortcut.Blosum30:
@@ -132,6 +139,13 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum30_> {
  */
 struct Blosum45_ {};
 
+/*!
+ * @typedef Blosum45
+ * @headerfile <seqan/score.h>
+ * @brief BLOSUM45 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum45_> > Blosum45;
+ */
 
 /**
 .Shortcut.Blosum45:
@@ -199,6 +213,13 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum45_> {
  */
 struct Blosum62_ {};
 
+/*!
+ * @typedef Blosum62
+ * @headerfile <seqan/score.h>
+ * @brief BLOSUM62 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum62_> > Blosum62;
+ */
 
 /**
 .Shortcut.Blosum62:
@@ -266,6 +287,13 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum62_> {
  */
 struct Blosum80_ {};
 
+/*!
+ * @typedef Blosum80
+ * @headerfile <seqan/score.h>
+ * @brief BLOSUM80 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Blosum80_> > Blosum80;
+ */
 
 /**
 .Shortcut.Blosum80:
@@ -333,6 +361,13 @@ struct ScoringMatrixData_<int, AminoAcid, Blosum80_> {
  */
 struct Pam40_ {};
 
+/*!
+ * @typedef Pam40
+ * @headerfile <seqan/score.h>
+ * @brief PAM40 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam40_> > Pam40;
+ */
 
 /**
 .Shortcut.Pam40:
@@ -403,6 +438,13 @@ struct ScoringMatrixData_<int, AminoAcid, Pam40_> {
  */
 struct Pam120_ {};
 
+/*!
+ * @typedef Pam120
+ * @headerfile <seqan/score.h>
+ * @brief PAM120 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam120_> > Pam120;
+ */
 
 /**
 .Shortcut.Pam120:
@@ -472,6 +514,13 @@ struct ScoringMatrixData_<int, AminoAcid, Pam120_> {
  */
 struct Pam200_ {};
 
+/*!
+ * @typedef Pam200
+ * @headerfile <seqan/score.h>
+ * @brief PAM200 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam200_> > Pam200;
+ */
 
 /**
 .Shortcut.Pam200:
@@ -541,6 +590,13 @@ struct ScoringMatrixData_<int, AminoAcid, Pam200_> {
  */
 struct Pam250_ {};
 
+/*!
+ * @typedef Pam250
+ * @headerfile <seqan/score.h>
+ * @brief PAM250 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Pam250_> > Pam250;
+ */
 
 /**
 .Shortcut.Pam250:
@@ -610,6 +666,13 @@ struct ScoringMatrixData_<int, AminoAcid, Pam250_> {
  */
 struct Vtml200_ {};
 
+/*!
+ * @typedef Vtml200
+ * @headerfile <seqan/score.h>
+ * @brief VTML200 scoring matrix.
+ *
+ * @signature typedef Score<int, ScoreMatrix<AminoAcid, Vtml200_> > Vtml200;
+ */
 
 /**
 .Shortcut.Vtml200:

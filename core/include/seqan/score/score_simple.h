@@ -37,7 +37,19 @@
 #ifndef SEQAN_SCORE_SCORE_SIMPLE_H_
 #define SEQAN_SCORE_SCORE_SIMPLE_H_
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
+
+/*!
+ * @class SimpleScore
+ * @extends Score
+ * @headerfile <seqan/score.h>
+ * @brief Simple scoring scheme that has scores for matches, mismatches, opening gaps and extending gaps.
+ *
+ * @signature template <typename TValue>
+ *            class Score<TValue, Simple>;
+ *
+ * @tparam TValue The score value to use.
+ */
 
 /**
 .Spec.Simple Score
@@ -76,6 +88,21 @@ public:
         SEQAN_CHECKPOINT;
     }
 
+/*!
+ * @fn SimpleScore::Score
+ * @brief Constructor
+ *
+ * @signature Score::Score();
+ * @signature Score::Score(score);
+ * @signature Score::Score(match, mismatch, gap[, gapOpen]);
+ *
+ * @param[in] score   Other SimpleScore object to copy from.
+ * @param[in] match   Match score value, type TValue, default 0.
+ * @param[in] msmatch Mismatch score value, type TValue, default -1.
+ * @param[in] gap     Gap extension value, type TValue, default -1.
+ * @param[in] gapOpen Gap open value (defaults to gap), type TValue.
+ */
+
 /**
 .Memfunc.Score#Score:
 ..class:Class.Score
@@ -105,6 +132,13 @@ public:
     }
 };
 
+/*!
+ * @typedef SimpleScoreShortcut
+ * @headerfile <seqan/score.h>
+ * @brief Simple scoring scheme.
+ *
+ * @signature typedef Score<int, Simple> SimpleScore;
+ */
 
 /**
 .Shortcut.SimpleScore:
@@ -117,6 +151,16 @@ public:
 */
 typedef Score<int, Simple> SimpleScore;
 
+/*!
+ * @fn SimpleScore#scoreMatch
+ * @brief Match score
+ *
+ * @signature TValue scoreMatch(score);
+ *
+ * @param[in] score The SimpleScore scoring scheme.
+ * 
+ * @return TValue The match score.
+ */
 
 /**
 .Function.scoreMatch:
@@ -138,6 +182,16 @@ scoreMatch(Score<TValue, TSpec> const & me) {
     return me.data_match;
 }
 
+/*!
+ * @fn SimpleScore#setScoreMatch
+ * @brief Set match score.
+ *
+ * @signature void setScoreMatch(score, value);
+ *
+ * @param[in,out] score The SimpleScore scoring scheme to set the value for.
+ * @param[in]     value The value to set the match score to.
+ */
+
 /**
 .Function.setScoreMatch:
 ..class:Class.Score
@@ -157,6 +211,17 @@ setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
     SEQAN_CHECKPOINT;
     me.data_match = value;
 }
+
+/*!
+ * @fn SimpleScore#scoreMismatch
+ * @brief Set mismatch score.
+ *
+ * @signature TValue scoreMismatch(score);
+ *
+ * @param[in] score The SimpleScore to query for its mismatch score.
+ * 
+ * @return TValue The mismatch score.
+ */
 
 /**
 .Function.scoreMismatch:
@@ -179,6 +244,15 @@ scoreMismatch(Score<TValue, TSpec> const & me) {
     return me.data_mismatch;
 }
 
+/*!
+ * @fn SimpleScore#setScoreMismatch
+ * @brief Set mismatch score.
+ *
+ * @signature void setScoreMismatch(score, value);
+ *
+ * @param[in,out] score The SimpleScore scoring scheme to set the mismatch value for.
+ * @param[in]     value The value to set the mismatch score to.
+ */
 
 /**
 .Function.setScoreMismatch:
@@ -200,6 +274,16 @@ setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
     me.data_mismatch = value;
 }
 
+/*!
+ * @fn SimpleScore#scoreGapExtend
+ * @brief Set gap extension score.
+ *
+ * @signature TValue scoreGapExtend(score);
+ *
+ * @param[in] score The SimpleScore to query for its gap extension score.
+ * 
+ * @return TValue The gap extension score.
+ */
 
 /**
 .Function.scoreGapExtend:
@@ -243,6 +327,16 @@ setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
     me.data_gap_extend = value;
 }
 
+/*!
+ * @fn SimpleScore#scoreGapOpen
+ * @brief Set gap open score.
+ *
+ * @signature TValue scoreGapOpen(score);
+ *
+ * @param[in] score The SimpleScore to query for its gap open score.
+ * 
+ * @return TValue The gap open score.
+ */
 
 /**
 .Function.scoreGapOpen:
@@ -266,6 +360,16 @@ scoreGapOpen(Score<TValue, TSpec> const & me) {
 }
 
 
+/*!
+ * @fn SimpleScore#setScoreGapOpen
+ * @brief Set gap open score.
+ *
+ * @signature void setScoreGapOpen(score, value);
+ *
+ * @param[in,out] score The SimpleScore scoring scheme to set the gap open value for.
+ * @param[in]     value The value to set the gap open score to.
+ */
+
 /**
 .Function.setScoreGapOpen:
 ..class:Class.Score
@@ -285,6 +389,17 @@ setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
     SEQAN_CHECKPOINT;
     me.data_gap_open = value;
 }
+
+/*!
+ * @fn SimpleScore#scoreGap
+ * @brief Set gap score.
+ *
+ * @signature TValue scoreGap(score);
+ *
+ * @param[in] score The SimpleScore to query for its gap score.
+ * 
+ * @return TValue The gap score.
+ */
 
 
 /**
@@ -311,6 +426,15 @@ scoreGap(Score<TValue, TSpec> const & me) {
     return scoreGapExtend(me);
 }
 
+/*!
+ * @fn SimpleScore#setScoreGap
+ * @brief Set gap score.
+ *
+ * @signature void setScoreGap(score, value);
+ *
+ * @param[in,out] score The SimpleScore scoring scheme to set the gap value for.
+ * @param[in]     value The value to set the gap score to.
+ */
 
 /**
 .Function.setScoreGap:

@@ -39,7 +39,7 @@
 
 // TODO(holtgrew): If the complex type conversions are necessary, a static_cast<> is more C++ and explicit.
 
-namespace SEQAN_NAMESPACE_MAIN {
+namespace seqan {
 
 template <typename TValue, typename TSequenceValue, typename TSpec>
 struct ScoringMatrixData_;
@@ -48,6 +48,29 @@ struct ScoringMatrixData_;
 template <typename TSequenceValue = AminoAcid, typename TSpec = Default>
 struct ScoreMatrix;
 
+/*!
+ * @class MatrixScore
+ * @headerfile <seqan/score.h>
+ * @extends Score
+ * @brief A general scoring matrix.
+ *
+ * @signature template <typename TValue, typename TSeqValue, typename TSpec>
+ *            class Score<TValue, ScoreMatrix<[TSeqValue[, TSpec]]> >;
+ *
+ * @tparam TValue    The score value.
+ * @tparam TSeqValue The alphabet type, defaults to AminoAcid.
+ * @tparam TSpec     Further specialization, defaults to Default.
+ *
+ * @fn MatrixScore::Score
+ * @brief Constructor
+ *
+ * @signature MatrixScore::Score(gapExtend[, gapOpen]);
+ * @signature MatrixScore::Score(fileName, gapExtend[, gapOpen]);
+ *
+ * @param[in] fileName  Path to load the matrix from, type is <tt>char const *</tt>.
+ * @param[in] gapExtend Gap extension score, type is TValue.
+ * @param[in] gapOpen   Gap open score, defaults to gapExtend, type is TValue.
+ */
 
 /**
 .Spec.Score Matrix:
@@ -147,6 +170,18 @@ score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1,
 }
 
 
+/*!
+ * @fn MatrixScore#setScore
+ * @brief Set the substitution score between to values.
+ *
+ * @signature void setScore(score, x, y, v);
+ *
+ * @param[in,out] score The MatrixScore to set the value for.
+ * @param[in]     x     The substituted alphabet value.
+ * @param[in]     y     The alphabet value to substitute x for.
+ * @param[in]     v     The score value to set.
+ */
+
 /**
 .Function.setScore:
 ..class:Spec.Score Matrix
@@ -171,6 +206,19 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
     sc.data_tab[i * TScore::VALUE_SIZE + j] = score;
 }
 
+/*!
+ * @fn MatrixScore#setDefaultScoreMatrix
+ * @brief Set the score matrix of a Score to one of the default matrixes.
+ *
+ * @signature void setScore(score, tag);
+ *
+ * @param[in,out] score The MatrixScore to update.
+ * @param[in]     tag   The tag to select the default matrix from, one of Default, Blosum30, Blosum62, and Blosum80.
+ *
+ * @section Remarks
+ *
+ * If Default is used for tag then the matrix will be filled with default-constructed TValue values.
+ */
 
 /**
 .Function.setDefaultScoreMatrix:

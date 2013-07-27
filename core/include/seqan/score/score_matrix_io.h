@@ -279,6 +279,17 @@ read(RecordReader<TStream, SinglePass<> > & fl,
 // Function loadScoreMatrix()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Score#loadScoreMatrix
+ * @brief Load a score matrix from a file.
+ *
+ * @signature void loadScoreMatrix(score, fileName[, meta]);
+ *
+ * @param[in,out] score    The MatrixScore to load.
+ * @param[in]     fileName The path to the file to load, CharString.
+ * @param[out]    meta     Meta information is stored here, CharString.
+ */
+
 /**
 .Function.loadScoreMatrix
 ..cat:Input/Output
@@ -381,6 +392,19 @@ _sprintfValue(char * buf, double val)
 // ----------------------------------------------------------------------------
 // Function write()                                         [Spec.Score Matrix]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn MatrixScore#write
+ * @brief Write a score matrix to a stream.
+ *
+ * @signature int write(stream, scoreMatrix[, meta]);
+ *
+ * @param[in,out] stream      Stream to write to.
+ * @param[out]    scoreMatrix MatrixScore object.
+ * @param[out]    meta        Meta information is stored here.
+ *
+ * @return int Status code, 0 on success, a different value on errors.
+ */
 
 /**
 .Function.Score Matrix#write
