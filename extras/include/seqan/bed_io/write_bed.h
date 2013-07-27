@@ -61,6 +61,22 @@ namespace seqan {
 // Function writeRecord()                                      [Bed3 BedRecord]
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedRecord#writeRecord
+ * @brief Write a BED record to a file.
+ * 
+ * @signature int writeRecord(stream, record[, context], Bed());
+ * 
+ * @param[in]     record  The BedRecord to write.
+ * @param[in,out] stream  @link StreamConcept Stream @endlink object to write to.
+ * @param[in,out] context The optional BedIOContext to use.
+ * 
+ * @return int Status code, 0 on success, other values on errors.
+ * 
+ * When <tt>context</tt> is given, the first field is written from the sequence with index <tt>record.rID</tt> in the
+ * context's name store.
+ */
+
 /**
 .Function.BedRecord#writeRecord
 ..cat:BED I/O

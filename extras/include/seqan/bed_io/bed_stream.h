@@ -48,6 +48,42 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BedStream
+ * @headerfile <seqan/bed_io.h>
+ * @brief High-level BED I/O class.
+ * 
+ * @signature class BedStream;
+ * 
+ * @section Examples
+ * 
+ * The following example demonstrates reading a BED file and printing the annotation locations.
+ * 
+ * @include demos/bed_io/bed_stream_read.cpp
+ * 
+ * @see BedStream::Mode
+ */
+
+/*!
+ * @fn BedStream::BedStream
+ * @brief Constructor.
+ * 
+ * @signature BedStream::BedStream();
+ * @signature BedStream::BedStream(fileName[, mode = READ]);
+ * 
+ * @param[in] mode     The open mode (@link BedStream::Mode @endlink).
+ * @param[in] fileName The path to the file to open (<tt>char const *</tt>).
+ * 
+ * @see BedStream::Mode
+ */
+
+/*!
+ * @var TCharStringSet BedStream::sequenceNames
+ * @brief The names of the sequences (@link StringSet @endlink of @link CharString @endlink)
+ *
+ * The string set is updated when new sequences are seen in BED file.
+ */
+
 /**
 .Class.BedStream
 ..cat:BED I/O
@@ -82,6 +118,25 @@ namespace seqan {
 ..value.WRITE:Open in write mode.
 ..include:seqan/bed_io.h
 */
+
+/*!
+ * @enum BedStream::Mode
+ * @headerfile <seqan/bed_io.h>
+ * @brief Open mode for the @link BedStream @endlink class.
+ * 
+ * @see BedStream
+ * @see BedStream#open
+ * @see BedStream#BedStream
+ * 
+ * @var BedStream::Mode BedStream::READ;
+ * @brief Open in read mode.
+ * 
+ * @var BedStream::Mode BedStream::WRITE;
+ * @brief Open in write mode.
+ * 
+ * @var BedStream::Mode BedStream::INVALID;
+ * @brief Invalid open mode.
+ */
 
 class BedStream
 {
@@ -188,6 +243,23 @@ public:
 // Function open()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedStream#open
+ * @brief Open a @link BedStream @endlink.
+ * 
+ * @signature bool open(bedStream, fileName[, mode = READ]);
+ * 
+ * @param[in,out] bedStream The @link BedStream @endlink to open. Types: BedStream
+ * @param[in]     fileName  The path to the file to open, <tt>char const 8</tt>
+ * @param[in]     mode      The open mode, type is @link BedStream::Mode @endlink.
+ * 
+ * @return TReturn <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
+ * 
+ * @see BedStream#isGood
+ * @see BedStream::Mode
+ */
+
 /**
 .Function.BedStream#open
 ..class:Class.BedStream
@@ -216,6 +288,16 @@ inline bool open(BedStream & stream, char const * filename, BedStream::Mode mode
 // Function addSequenceName()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedStream#addSequenceName
+ * @brief Add the name of a sequence to a @link BedStream @endlink.
+ * 
+ * @signature void addSequenceName(bedStream, seqName);
+ * 
+ * @param[in,out] bedStream The @link BedStream @endlink to add the name to.
+ * @param[in]     seqName   The name of the sequence to append.
+ */
+
 /**
 .Function.BedStream#addSequenceName
 ..class:Class.BedStream
@@ -237,6 +319,18 @@ inline void addSequenceName(BedStream & stream, CharString const & name)
 // ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BedStream#readRecord
+ * @brief Read a record from a @link BedStream @endlink.
+ * 
+ * @signature int readRecord(record, bedStream);
+ * 
+ * @param[out]    record    The @link BedRecord @endlink to read into.
+ * @param[in,out] bedStream The @link BedStream @endlink to read from.
+ * 
+ * @return int A status code, 0 on success, different value on failure.
+ */
 
 /**
 .Function.BedStream#readRecord
@@ -266,6 +360,18 @@ inline int readRecord(BedRecord<TSpec> & record,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedStream#writeRecord
+ * @brief Write a record to a @link BedStream @endlink
+ * 
+ * @signature int writeRecord(bedStream, record);
+ * 
+ * @param[in,out] bedStream The @link BedStream @endlink to write to.
+ * @param[in]     record    The @link BedRecord @endlink to write.
+ * 
+ * @return int A status code, 0 on success, different value on failure.
+ */
+
 /**
 .Function.BedStream#writeRecord
 ..class:Class.BedStream
@@ -294,6 +400,17 @@ inline int writeRecord(BedStream & stream,
 // Function flush()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedStream#flush
+ * @brief Flush to a @link BedStream @endlink
+ * 
+ * @signature int flush(bedStream);
+ * 
+ * @param[in,out] bedStream The @link BedStream @endlink to flush.
+ * 
+ * @return int Status code, 0 on success, other value on failure.
+ */
+
 /**
 .Function.BedStream#flush
 ..class:Class.BedStream
@@ -316,6 +433,17 @@ inline int flush(BedStream & stream)
 // ----------------------------------------------------------------------------
 // Function close()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BedStream#close
+ * @brief Closes a @link BedStream @endlink
+ * 
+ * @signature int close(bedStream);
+ * 
+ * @param[in,out] bedStream The @link BedStream @endlink to close.
+ * 
+ * @return int A status code, 0 on success, different value on failure.
+ */
 
 /**
 .Function.BedStream#close
@@ -340,6 +468,19 @@ inline int close(BedStream & stream)
 // Function isGood()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedStream#isGood
+ * @brief Query a @link BedStream @endlink for errors.
+ * 
+ * @signature bool isGood(bedStream);
+ * 
+ * @param[in] bedStream The @link BedStream @endlink to query.
+ *
+ * @return TReturn <tt>true</tt> if stream is good, <tt>false</tt> otherwise.
+ *
+ * @see BedStream#open
+ */
+
 /**
 .Function.BedStream#isGood
 ..class:Class.BedStream
@@ -360,6 +501,17 @@ inline bool isGood(BedStream const & stream)
 // ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BedStream#atEnd
+ * @brief Query a @link BedStream @endlink for being at the end of the file.
+ * 
+ * @signature bool atEnd(bedStream);
+ * 
+ * @param bedStream The @link BedStream @endlink to query.
+ * 
+ * @return bool <tt>true</tt> if stream is at the end, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.BedStream#atEnd

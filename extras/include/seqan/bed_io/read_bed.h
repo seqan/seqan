@@ -64,6 +64,25 @@ typedef Tag<Bed_> Bed;
 // Function readRecord()                                            [BedRecord]
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedRecord#readRecord
+ * @brief Read a BED record from a file.
+ * 
+ * @signature int readRecord(record, reader[, context], Bed());
+ * 
+ * @param[out]    record  BedRecord object to write to. Types: BedRecord
+ * @param[in,out] context The optional BedIOContext to use.
+ * @param[in,out] reader  The SinglePassRecordReader to use.
+ * 
+ * @return int Status code, 0 on success, other value on errors.
+ * 
+ * The type of the parameter <tt>record</tt> decides which fields are interpreted.  The remainder of the line (excluding
+ * the line break) is written to <tt>record.data</tt>.
+ * 
+ * When <tt>context</tt> is given, the <tt>rID</tt> field is filled and the context's name store may be updated if a
+ * previously unknown reference occurs.
+ */
+
 /**
 .Function.BedRecord#readRecord
 ..cat:BED I/O

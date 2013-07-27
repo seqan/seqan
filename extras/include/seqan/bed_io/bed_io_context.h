@@ -49,6 +49,66 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BedIOContext
+ * @headerfile <seqan/bed_io.h>
+ * @brief The I/O context to use for BED I/O.
+ * 
+ * @signature template <typename TNameStore, typename TNameStoreCache = NameStoreCache<TNameStore> >
+ *            class BedIOContext;
+ * 
+ * @tparam TNameStore      The name store class.
+ * @tparam TNameStoreCache The name store cache class.
+ * 
+ * @section Examples
+ * 
+ * Creating a BedIOContext for a raw StringSet of CharString.
+ * 
+ * @code{.cpp}
+ * StringSet<CharString> nameStore;
+ * NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
+ * BedIOContext<StringSet<CharString> > bedIOContext(nameStore, nameStoreCache);
+ * // ...
+ * @endcode
+ *
+ * Using a @link BedIOContext @endlink with a @link FragmentStore @endlink.
+ * 
+ * @code{.cpp}
+ * typedef FragmentStore<>::TContigNameStore         TNameStore;
+ * typedef NameStoreCache<TNameStore>                TNameStoreCache;
+ * FragmentStore<> store;
+ * // Optionally, do something with store.
+ * typedef BedIOContext<TNameStore, TNameStoreCache> TBedIOContext;
+ * TBedIOContext bedIOContext(store.contigNameStore, store.contigNameStoreCache);
+ * // ...
+ * @endcode
+ */
+
+/*!
+ * @typedef BedIOContext::TNameStoreCache
+ * @brief The name store cache class.
+ *
+ * @signature typedef (...) BedIOContext::TNameStoreCache;
+ * 
+ * @see BedIOContext#nameStoreCache
+ */
+
+/*!
+ * @typedef BedIOContext::TNameStore
+ * @brief The name store class.
+ *
+ * @signature typedef (...) BedIOContext::TNameStoreCache;
+ * 
+ * @see BedIOContext#nameStore
+ */
+
+/*!
+ * @fn BedIOContext::BedIOContext
+ * @brief Constructor.
+ * 
+ * @signature BedIOContext::BedIOContext();
+ */
+
 /**
 .Class.BedIOContext
 ..cat:BED I/O
@@ -119,6 +179,20 @@ public:
 // Function nameStore()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedIOContext#nameStore
+ * @brief Return reference to name store from BedIOContext.
+ * 
+ * @signature TNameStore nameStore(context);
+ * 
+ * @param[in] context The BedIOContext to query.
+ *
+ * @return TNameStoreCache A reference to the name store.
+ * 
+ * @see BedIOContext#TNameStore
+ * @see BedIOContext#nameStoreCache
+ */
+
 /**
 .Function.BedIOContext#nameStore
 ..class:Class.BedIOContext
@@ -151,6 +225,21 @@ nameStore(BedIOContext<TNameStore, TNameStoreCache> const & context)
 // ----------------------------------------------------------------------------
 // Function nameStoreCache()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BedIOContext#nameStoreCache
+ * 
+ * @brief Return reference to name store cache from BedIOContext.
+ * 
+ * @signature TNameStoreCache nameStoreCache(context);
+ * 
+ * @param[in] context The BedIOContext to query.
+ *
+ * @return TNameStoreCache A reference to the name store cache.
+ * 
+ * @see BedIOContext#TNameStoreCache
+ * @see BedIOContext#nameStore
+ */
 
 /**
 .Function.BedIOContext#nameStoreCache
