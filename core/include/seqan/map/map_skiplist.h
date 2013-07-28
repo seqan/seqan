@@ -40,6 +40,24 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+/*!
+ * @class Skiplist
+ * @extends Map
+ * @headerfile <seqan/map.h>
+ * 
+ * @brief General purpose map container.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            class Map;
+ * 
+ * @tparam TSpec  The specializing type.
+ * @tparam TValue The type of value stored in the map.
+ * 
+ * @section Remarks
+ * 
+ * The skiplist takes in average an oberhead of only two pointers per value stored in the map.
+ */
+
 /**
 .Spec.Skiplist:
 ..cat:Map
@@ -535,6 +553,23 @@ _skiplistFind(Map<TValue, Skiplist<TSpec> > & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Map#find
+ * @headerfile <seqan/map.h>
+ * @brief Find a value in a map.
+ * 
+ * @signature TIterator find(map, key);
+ * 
+ * @param[in] map A map. Types: Map
+ * @param[in] key A key.
+ * 
+ * @return TIterator An iterator to the first value in <tt>map</tt> of the given key, if there is any.  An iterator
+ *                   to the fist value in <tt>map</tt> with key &gt; <tt>key</tt>, otherwise.
+ * 
+ * @see Map#value
+ * @see Map#cargo
+ */
+
 /**
 .Function.Map#find:
 ..cat:Map
@@ -613,6 +648,23 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 //creates entry if necessary
 
+/*!
+ * @fn Map#value
+ * @brief Returns a value given a key.
+ * 
+ * @signature TReference find(map, key);
+ * 
+ * @param map A map.
+ * @param key A key.
+ * 
+ * @return TReference The first value in <tt>map</tt> of the given key, if there is any.  Otherwise, a new value
+ *                    that is inserted to <tt>map</tt>.
+ * 
+ * @section Remarks
+ * 
+ * Do not change the key of a value in the map.
+ */
+
 /**
 .Function.Map#value:
 ..cat:Map
@@ -663,6 +715,19 @@ value(Map<TValue, Skiplist<TSpec> > & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Map#cargo
+ * @brief Returns a cargo given a key.
+ * 
+ * @signature TCargo find(map, key);
+ * 
+ * @param map A map.
+ * @param key A key.
+ * 
+ * @return TReturn The cargo of the first value in <tt>map</tt> of the given key, if there is any.  Otherwise, the
+ *                 cargo of a new value that is inserted to <tt>map</tt>.
+ */
+
 /**
 .Function.Map#cargo:
 ..cat:Map
@@ -691,6 +756,29 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Map#insert
+ * @brief Insert new value into map.
+ * 
+ * @signature void insert(map, value);
+ * @signature void insert(map, key, cargo);
+ * 
+ * @param cargo A cargo.
+ * @param value A value that is added to <tt>map</tt>.
+ * @param key A key.
+ * @param map A map.
+ * 
+ * @section Remarks
+ * 
+ * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.  If there is already a
+ * value of that key in <tt>map</tt>, the value of this element is changed to <tt>cargo</tt>.
+ * 
+ * If <tt>value</tt> is specified, and there is already a value in map of that key, than the cargo of this value is
+ * changed to cargo.cargo(value).
+ * 
+ * Use Map#add instead to insert multiple values of the same key.
+ */
 
 /**
 .Function.Map#insert:
@@ -734,6 +822,23 @@ insert(Map<TValue, Skiplist<TSpec> > & me,
 
 //////////////////////////////////////////////////////////////////////////////
 //multiple key insert
+
+/*!
+ * @fn Map#add
+ * @brief Insert another value into a multi map.
+ * 
+ * @signature void add(map, value);
+ * @signature void add(map, key, cargo);
+ * 
+ * @param cargo A cargo.
+ * @param value A value that is added to <tt>map</tt>.
+ * @param key A key.
+ * @param map A map. Types: Skiplist
+ * 
+ * @section Remarks
+ * 
+ * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.
+ */
 
 /**
 .Function.Map#add:
@@ -802,6 +907,24 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Map#erase
+ * @brief Removes a value from a map.
+ * 
+ * @signature void erase(map, key);
+ * @signature void erase(map, iterator);
+ * 
+ * @param map      A map. Types: Map
+ * @param key      The key of a value in <tt>map</tt>.
+ * @param iterator An iterator to a value in <tt>map</tt>.
+ * 
+ * @section Remarks
+ * 
+ * Removes the first value in <tt>map</tt> of the given key, if there is any.
+ * 
+ * Use @link Map#eraseAll @endlink to remove all values of the given key in a multi map.
+ */
+
 /**
 .Function.Map#erase:
 ..cat:Map
@@ -846,6 +969,20 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Map#eraseAll
+ * @brief Removes a value from a map.
+ * 
+ * @signature void eraseAll(map, key);
+ * 
+ * @param map A map. Types: Skiplist
+ * @param key The key of a value in <tt>map</tt>.
+ * 
+ * @section Remarks
+ * 
+ * Removes all values in <tt>map</tt> of the given key, if there is any.
+ */
 
 /**
 .Function.Map#eraseAll:
@@ -992,6 +1129,18 @@ mapValue(Map<TValue, Skiplist<TSpec> > & me,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Map#hasKey
+ * @brief Determines whether a map contains a value given key.
+ * 
+ * @signature bool hasKey(map, key);
+ * 
+ * @param map A map. Types: Map
+ * @param key A key.
+ * 
+ * @return bool <tt>true</tt>, if there is a value in <tt>map</tt> of that key, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.Map#hasKey:

@@ -38,6 +38,24 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
+/*!
+ * @class VectorSet
+ * @extends Map
+ * @headerfile <seqan/map.h>
+ * @brief A fast map for small key types.
+ * 
+ * @signature template <typename TValue[, typename TSpec]>
+ *            class Map;
+ * 
+ * @tparam TValue The type of value stored in the map.
+ * @tparam TSpec  The specializing type.  <tt>TSpec</tt> is used as specialization for the String type that is
+ *                used to store the values, defaults to <tt>Alloc&lt;&gt;</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The memory needed is linear to the number different values the @link Key.key type @endlink of <tt>TValue</tt> can
+ * get.  So do not use this map for large key types.
+ */
 
 /**
 .Spec.VectorSet:

@@ -50,6 +50,18 @@ cargo(::std::map<TKey,TCargo, TCompare, TAlloc> & me, TKey2 const & _key);
 template <typename TSpec = Default>
 struct Skiplist;
 
+/*!
+ * @class Map
+ * @headerfile <seqan/map.h>
+ * @brief Set/dictionary container.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            class Map;
+ * 
+ * @tparam TSpec  The specializing type. Default: @link Skiplist @endlink
+ * @tparam TValue Type of values that are stored in the map. Use a Pair<Key, Cargo> to implement a dictionary
+ *                mapping from <tt>Key</tt> to <tt>Cargo</tt>.
+ */
 
 /**
 .Class.Map:
@@ -101,6 +113,16 @@ struct MapValueImpl_<TMap, Nothing>
 	typedef bool Type;
 };
 
+/*!
+ * @mfn Map#MapValue
+ * @brief Type of the map value type.
+ * 
+ * @signature MapValue<T>::Type
+ * @tparam T A map type. Types: Map
+ * 
+ * @return Type the map value type.
+ */
+
 /**
 .Metafunction.MapValue:
 ..cat:Map
@@ -144,6 +166,35 @@ struct ImplMapValue_<Nothing>
 		return hasKey(me, _key);
 	}
 };
+
+/*!
+ * @fn Map#mapValue
+ * @brief Subscript operator <tt>[ ]</tt> of maps.
+ * 
+ * @signature TMapValue mapValue(map, key);
+ * 
+ * @param map A map. Types: Map
+ * @param key A key.
+ * 
+ * @return TMapValue If <tt>map</tt> is a set: The same as Map#hasKey.  If <tt>map</tt> is a dictionary: The same as
+ *                   Map#value.
+ * 
+ * @section Remarks
+ * 
+ * Usually, Map#value implements the subscript operator <tt>[ ]</tt>, but for maps, this operator is implemented in
+ * <tt>mapValue</tt>. The semantic of this operator depends on the kind of map: If the map has a Cargo.cargo, than
+ * <tt>mapValue(map, key)</tt> returns the cargo of the (first) value in the map of the given key. If the map has no
+ * Cargo.cargo, than the function returns a <tt>true</tt>, if <tt>key</tt> is in <tt>map</tt>, or <tt>false</tt>
+ * otherwise.
+ * 
+ * @section Remarks
+ *
+ * There is no way to create a set of Pair, since it is always interpreted as a key/value pair.  If you need a key type
+ * that holds two members, define your own key type.
+ * 
+ * You may overload Key and Cargo for your own value type in order to define, what part of your value type is used as
+ * key and what as cargo.
+ */
 
 /**
 .Function.mapValue:
