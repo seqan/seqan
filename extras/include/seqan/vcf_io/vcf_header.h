@@ -49,6 +49,31 @@ namespace seqan {
 // Class VcfHeader
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class VcfHeader
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Store VCF Header information.
+ * 
+ * @signature class VcfHeader;
+ * 
+ *
+ * @fn VcfHeader::VcfHeader
+ * @brief Constructor.
+ * 
+ * @signature VcfHeader::VcfHeader()
+ *
+ * 
+ * @var TRecords VcfHeader::headerRecords
+ * 
+ * @brief The meta information records (String of VcfHeaderRecord).
+ * 
+ * @var TNames VcfHeader::sequenceNames
+ * @brief Names of the sequences (StringSet of CharString).
+ * 
+ * @var TNames VcfHeader::sampleNames
+ * @brief Names of the samples (StringSet of CharString).
+ */
+
 /**
 .Class.VcfHeader
 ..cat:VCF I/O
@@ -101,6 +126,15 @@ public:
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn VcfHeader#clear
+ * @brief Clear a VcfHeader.
+ * 
+ * @signature void clear(header);
+ *
+ * @param[in,out] header VcfHeader to clear.
+ */
 
 /**
 .Function.VcfHeader#clear

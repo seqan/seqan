@@ -57,6 +57,22 @@ namespace seqan {
 // Function write()                                                 [VcfHeader]
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Should become writeRecord?
+
+/*!
+ * @fn VcfIO#write
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Write a VcfHeader.
+ *
+ * @signature int write(stream, header, context, Vcf());
+ *
+ * @param[in,out] stream  The StreamConcept to write to.
+ * @param[out]    header  The VcfHeader to write.
+ * @param[in,out] context VcfIOContext to use.
+ *
+ * @return int A status code, 0 on success, a different value otherwise.
+ */
+
 /**
 .Function.VCF I/O#write
 ..cat:VCF I/O
@@ -102,6 +118,21 @@ int write(TStream & stream,
 // ----------------------------------------------------------------------------
 // Function writeRecord()                                           [VcfRecord]
 // ----------------------------------------------------------------------------
+
+
+/*!
+ * @fn VcfIO#writeRecord
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Write a VcfRecord.
+ *
+ * @signature int writeRecord(stream, record, context, Vcf());
+ *
+ * @param[in,out] stream  The StreamConcept to write to.
+ * @param[out]    record  The VcfRecord to write.
+ * @param[in,out] context VcfIOContext to use.
+ *
+ * @return int A status code, 0 on success, a different value otherwise.
+ */
 
 /**
 .Function.VCF I/O#writeRecord

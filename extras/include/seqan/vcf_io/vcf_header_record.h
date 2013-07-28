@@ -50,6 +50,39 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 // Class VcfHeaderRecord
 // ----------------------------------------------------------------------------
+/*!
+ * @class VcfHeaderRecord
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Store key/value pair for VCF header records.
+ * 
+ * @signature class VcfHeaderRecord;
+ * 
+ * @var CharString VcfHeaderRecord::key
+ * @brief Key of the header record.
+ * 
+ * @var CharString VcfHeaderRecord::value
+ * @brief Value of the header record.
+ */
+
+/*!
+ * @fn VcfHeaderRecord::VcfHeaderRecord
+ * @brief Constructor
+ * 
+ * @signature VcfHeaderRecord::VcfHeaderRecord();
+ * @signature VcfHeaderRecord::VcfHeaderRecord(key, value);
+ * 
+ * @param[in] key   Key of the header record, CharString.
+ * @param[in] value Key of the header record, CharString.
+ */
+
+/*!
+ * @fn VcfHeaderRecord#clear
+ *
+ * @brief Clear a VcfHeaderRecord.
+ * @signature void clear(record);
+ * 
+ * @param[in,out] record The VcfHeaderRecord to clear.
+ */
 
 /**
 .Class.VcfHeaderRecord

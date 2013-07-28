@@ -49,6 +49,41 @@ namespace seqan {
 // Class VcfHeader
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class VcfIOContext
+ * @headerfile <seqan/vcf_io.h>
+ * @brief The I/O context to use for VCF I/O.
+ * 
+ * @signature class VcfIOContext;
+ * 
+ * VcfIOContext objects store the names of (and provide a cache for) reference and sample names.  StringSet of
+ * CharString are used for the name stores.
+ * 
+ * @var TNamesPtr VcfIOContext::sequenceNames
+ * @brief Names of the reference sequences, pointer to StringSet of CharString.
+ * 
+ * @var TNameStoreCache VcfIOContext::sequenceNamesCache
+ * @brief Name store cache for of the reference names, NameStoreCache of CharString.
+ * 
+ * @var TNamesPtr VcfIOContext::sampleNames
+ * @brief Names of the samples, pointer to StringSet of CharString.
+ * 
+ * @var TNameStoreCache VcfIOContext::sampleNamesCache
+ * @brief Name store cache for the sample names, NameStoreCache of CharString.
+ */
+
+/*!
+ * @fn VcfIOContext::VcfIOContext
+ * @brief Constructor.
+ * 
+ * @signature VcfIOContext::VcfIOContext();
+ * @signature VcfIOContext::VcfIOContext(sequenceNames, sampleNames);
+ *
+ * @section Remarks
+ * 
+ * Default constructor or construction with references to sequence and sample names.
+ */
+
 /**
 .Class.VcfIOContext
 ..cat:VCF I/O

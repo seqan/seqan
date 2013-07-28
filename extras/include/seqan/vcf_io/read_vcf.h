@@ -64,7 +64,23 @@ typedef Tag<Vcf_> Vcf;
 // Function splitString
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document.
+// TODO(holtgrew): Move?
+
+/*!
+ * @fn splitString
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Split at splitter or whitespace/non-whitespace boundary.
+ * 
+ * The string is split at whitespace/non-whitespace boundary if splitter == '\xff'.
+ *
+ * @signature void splitString(result, str, splitter, quoteChar);
+ *
+ * @param[out] result    A StringSet of CharString for the result.
+ * @param[in]  str       A CharString to split.
+ * @param[in]  splitter  A to use as the splitter.  If this is '\xff' then <tt>str</tt> will be split at
+ *                       whitespace/non-whitespace boundaries.  Defaults to '\xff'.
+ * @param[in]  quoteChar The char to split at, defaults to '"'.
+ */
 
 // Split at splitter, split at whitespace/non-whitespace boundary if splitter == '\xff'.
 
@@ -135,6 +151,25 @@ void splitString(StringSet<CharString> & result,
 // ----------------------------------------------------------------------------
 // Function read()                                                  [VcfHeader]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @defgroup VcfIO VCF I/O
+ * @brief Routines for VCF I/O.
+ */
+
+/*!
+ * @fn VcfIO#read
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Read a VcfHeader.
+ *
+ * @signature int read(header, reader, context, Vcf());
+ *
+ * @param[out]    header  The VcfHeader to read into.
+ * @param[in,out] reader  The SinglePassRecordReader to use for reading.
+ * @param[in,out] context VcfIOContext to use.
+ *
+ * @return int A status code, 0 on success, a different value otherwise.
+ */
 
 /**
 .Function.VCF I/O#read
@@ -242,6 +277,20 @@ int read(VcfHeader & header,
 // ----------------------------------------------------------------------------
 // Function readRecord()                                            [VcfHeader]
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn VcfIO#readRecord
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Read a VcfRecord.
+ *
+ * @signature int readRecord(header, reader, context, Vcf());
+ *
+ * @param[out]    header  The VcfRecord to read into.
+ * @param[in,out] reader  The SinglePassRecordReader to use for reading.
+ * @param[in,out] context VcfIOContext to use.
+ *
+ * @return int A status code, 0 on success, a different value otherwise.
+ */
 
 /**
 .Function.VCF I/O#readRecord
