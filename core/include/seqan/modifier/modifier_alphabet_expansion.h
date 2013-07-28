@@ -40,6 +40,36 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): Rename ot ExpandedAlphabet?
+
+/*!
+ * @class AlphabetExpansion
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier that adds a character to an alphabet.
+ * 
+ * @signature template <typename TAlphabet, char CHAR[, typename TSpec]>
+ *            class ModifiedAlphabet<TAlphabet, ModExpand<CHAR,TSpec> >;
+ *
+ * @tparam TAlphabet Original value type.
+ * @tparam CHAR      <tt>char</tt> character that specifies, what value should added to the alphabet.  <tt>CHAR</tt>
+ *                   should not be a <tt>char</tt> that already stands for a value in <tt>TAlphabet</tt>.  For
+ *                   example, do not use <tt>'A'</tt> or <tt>'a'</tt> as <tt>CHAR</tt> when expanding Dna.
+ * @tparam TSpec     Optional specialization tag.  This modifier is intended to expand SimpleType classes, default is <tt>Default</tt>.
+ *
+ * @section Remarks
+ *
+ * Some values of <tt>CHAR</tt> have special meaning:
+ *
+ * <dl>
+ *   <dt><tt>'-'</tt></dt>
+ *   <dd>A gap character.  The value in the expanded alphabet that corresponds to <tt>'-'</tt> will be returned
+ *       by the function gapValue.</dd>
+ *
+ *   <dt><tt>'$'</tt></dt>
+ *   <dd>An end of string character.</dd>
+ * </dl>
+ */
+
 /**
 .Spec.Alphabet Expansion:
 ..summary:Modifier that adds a character to an alphabet.

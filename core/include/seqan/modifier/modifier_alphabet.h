@@ -40,6 +40,18 @@ namespace seqan
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ModifiedAlphabet
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifies value types.
+ *
+ * @signature template <typename TAlphabet, typename TSpec>
+ *            class ModifiedAlphabet;
+ *
+ * @tparam TAlphabet The original alphabet type.
+ * @tparam TSpec     The modifier type.
+ */
+
 /**
 .Class.ModifiedAlphabet:
 ..summary:Modifies value types.

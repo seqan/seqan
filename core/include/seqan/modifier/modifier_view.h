@@ -54,6 +54,34 @@ namespace seqan
 // Class ModView
 // --------------------------------------------------------------------------
 
+/*!
+ * @class ModViewModifiedIterator
+ * @extends ModifiedIterator
+ * @headerfile <seqan/modifier.h>
+ *
+ * @brief Transforms the character of a host using a custom functor.
+ *
+ * @signature template <typename THost, typename TFunctor>
+ *            class ModifiedIterator<THost, ModView<TFunctor> >;
+ *
+ * @tparam THost    The host iterator.
+ * @tparam TFunctor A unary functor type.
+ */
+
+/*!
+ * @class ModViewModifiedString
+ * @extends ModifiedString
+ * @headerfile <seqan/modifier.h>
+ *
+ * @brief Transforms the character of a host using a custom functor.
+ *
+ * @signature template <typename THost, typename TFunctor>
+ *            class ModifiedString<THost, ModView<TFunctor> >;
+ *
+ * @tparam THost    The host iterator.
+ * @tparam TFunctor A unary functor type.
+ */
+
 /**
 .Spec.ModView:
 ..summary:Transforms the characters of the $THost$ string/iterator using a custom function.

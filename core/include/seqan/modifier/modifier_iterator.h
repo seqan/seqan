@@ -53,6 +53,23 @@ template <typename THost, typename TSpec> class ModifiedString;
 // Class ModifiedIterator
 // --------------------------------------------------------------------------
 
+/*!
+ * @class ModifiedIterator
+ * @implements RandomAccessIteratorConcept
+ * @headerfile <seqan/modifier.h>
+ * @brief Allows you to modify arbitrary iterators by specializing what differs from an origin.
+ *
+ * @signature template <typename THost[, typename TSpec]>
+ *            class ModifiedIterator;
+ *
+ * @tparam THost The host iterator type.
+ * @tparam TSpec Tag used for the specialization, defaults to void.
+ *
+ * @section Remarks
+ *
+ * THost can also be a modified iterator, so you can create custom iterators by combining predefined ones.
+ */
+
 /**
 .Class.ModifiedIterator:
 ..summary:Allows to modify arbitrary iterators by specializing what differs from an origin.

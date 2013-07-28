@@ -55,6 +55,30 @@ namespace seqan
 // Class ModReverse Iterator
 // --------------------------------------------------------------------------
 
+/*!
+ * @class ModReverseIterator
+ * @extends ModifiedIterator
+ * @headerfile <seqan/modifier.h>
+ * @brief Mirror the characters from begin to end.
+ *
+ * @signature template <typename THost>
+ *            class ModifiedIterator<THost, ModReverse>;
+ *
+ * @tparam THost original iterator.
+ */
+
+/*!
+ * @class ModReverseString
+ * @extends ModifiedString
+ * @headerfile <seqan/modifier.h>
+ * @brief Mirror the characters from begin to end.
+ *
+ * @signature template <typename THost>
+ *            class ModifiedString<THost, ModReverse>;
+ *
+ * @tparam THost original string.
+ */
+
 /**
 .Spec.ModReverse:
 ..summary:Mirrors the characters from begin to end.
@@ -572,6 +596,23 @@ end(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
 // --------------------------------------------------------------------------
 // Function reverse()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn reverse
+ * @headerfile <seqan/modifier.h>
+ * @brief Reverse a container in-place.
+ *
+ * @signature void reverse(sequence);
+ * @signature void reverse(stringSet);
+ *
+ * @param[in,out] sequence  The sequence to reverse in-place.
+ * @param[in,out] stringSet The StringSet to reverse in-place.
+ *
+ * @section Remarks
+ *
+ * StringSet objects are reverse element-wise, i.e. the entries are reverse-complemented but their order itself
+ * remains the same.
+ */
 
 /**
 .Function.reverse

@@ -53,6 +53,37 @@ template <typename T> struct InnermostHost_;
 // Class ModifierString
 // --------------------------------------------------------------------------
 
+/*!
+ * @class ModifiedString
+ * @implements SequenceConcept
+ * @headerfile <seqan/modifier.h>
+ * @brief Allows you to generate modified versions of a string in a non-inplace way.
+ *
+ * @signature template <typename THost[, typename TSpec]>
+ *            class ModifiedString;
+ *
+ * @tparam THost The host sequence.
+ * @tparam TSpec The specialization tag, defaults to <tt>void</tt>.
+ *
+ * @section Remarks
+ *
+ * THost can also be a modified string, so you can create nest modified strings to create custom combinations.
+ *
+ * @section Examples
+ *
+ * @file demos/modifier/modified_stirng.cpp
+ *
+ * The output is als follows:
+ *
+ * @code{.txt}
+ * TATACGCGAAAA
+ * AAAAGCGCATAT
+ * 
+ * TATACGCGTTTT
+ * TTTTGCGCATAT
+ * @endcode
+ */
+
 /**
 .Class.ModifiedString:
 ..summary:Allows to modify arbitrary strings by specializing what differs from an origin.

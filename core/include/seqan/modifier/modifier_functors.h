@@ -54,6 +54,18 @@ namespace seqan
 // Class FunctorUpcase
 // --------------------------------------------------------------------------
 
+/*!
+ * @class FunctorUpcase
+ * @headerfile <seqan/modifier.h>
+ * @brief Functor that returns the upper case character for a given character.
+ *
+ * @signature template <typename TInType[, typename TResult]>
+ *            struct FunctorUpcase;
+ *
+ * @tparam TInType The parameter/input type.
+ * @tparam TResult The return/result type, defaults to TInType.
+ */
+
 /**
 .Class.FunctorUpcase
 ..cat:Modifier
@@ -77,6 +89,18 @@ struct FunctorUpcase : public std::unary_function<InType, Result>
 // Class FunctorLowcase
 // --------------------------------------------------------------------------
 
+/*!
+ * @class FunctorLowcase
+ * @headerfile <seqan/modifier.h>
+ * @brief Functor that returns the lower case character for a given character.
+ *
+ * @signature template <typename TInType[, typename TResult]>
+ *            struct FunctorLowcase;
+ *
+ * @tparam TInType The parameter/input type.
+ * @tparam TResult The return/result type, defaults to TInType.
+ */
+
 /**
 .Class.FunctorLowcase
 ..cat:Modifier
@@ -99,6 +123,18 @@ struct FunctorLowcase : public std::unary_function<InType, Result>
 // --------------------------------------------------------------------------
 // Class FunctorConvert
 // --------------------------------------------------------------------------
+
+/*!
+ * @class FunctorConvert
+ * @headerfile <seqan/modifier.h>
+ * @brief Functor that converts between two types.
+ *
+ * @signature template <typename TInType, typename TOutType>
+ *            struct FunctorConvert;
+ *
+ * @tparam TInType  The parameter/input type.
+ * @tparam TOutType The return/result type, defaults to TInType.
+ */
 
 /**
 .Class.FunctorConvert
@@ -150,6 +186,21 @@ char const TranslateTableRna5ToRna5Complement_<T>::VALUE[5] = {'U', 'G', 'C', 'A
 // --------------------------------------------------------------------------
 // Class FunctorComplement
 // --------------------------------------------------------------------------
+
+/*!
+ * @class FunctorComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Functor that returns the complement nucleotide for a given nucleotide.
+ *
+ * @signature template <typename TValue>
+ *            struct FunctorComplement.
+ *
+ * @tparam TValue The value type.
+ *
+ * @section Remarks
+ *
+ * If TValue is char, then the characters are complemented as Dna5.
+ */
 
 /**
 .Class.FunctorComplement:

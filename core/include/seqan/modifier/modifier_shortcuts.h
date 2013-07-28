@@ -86,6 +86,13 @@ namespace seqan
 ..see:Class.FunctorComplement
 */
 
+/*!
+ * @typedef DnaStringComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the complement of DnaString.
+ *
+ * @signature typedef ModifiedString<DnaString, ModView<FunctorComplementDna> > > DnaStringComplement;
+ */
 
 /**
 .Shortcut.DnaStringComplement:
@@ -100,6 +107,14 @@ namespace seqan
 ..see:Class.FunctorComplement
 */
 
+/*!
+ * @typedef Dna5StringComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the complement of Dna5String.
+ *
+ * @signature typedef ModifiedString<Dna5String, ModView<FunctorComplementDna> > > DnaStringComplement;
+ */
+
 /**
 .Shortcut.Dna5StringComplement:
 ..cat:Modifier
@@ -112,6 +127,14 @@ namespace seqan
 ..see:Spec.ModView
 ..see:Class.FunctorComplement
 */
+
+/*!
+ * @typedef RnaStringComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the complement of RnaString.
+ *
+ * @signature typedef ModifiedString<RnaString, ModView<FunctorComplementDna> > > DnaStringComplement;
+ */
 
 /**
 .Shortcut.RnaStringComplement:
@@ -126,6 +149,14 @@ namespace seqan
 ..see:Class.FunctorComplement
 */
 
+/*!
+ * @typedef Rna5StringComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the complement of Rna5String.
+ *
+ * @signature typedef ModifiedString<Rna5String, ModView<FunctorComplementDna> > > DnaStringComplement;
+ */
+
 /**
 .Shortcut.Rna5StringComplement:
 ..cat:Modifier
@@ -139,6 +170,13 @@ namespace seqan
 ..see:Class.FunctorComplement
 */
 
+/*!
+ * @typedef DnaStringReverse
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse of a DnaString.
+ *
+ * @signature typedef ModifiedString<DnaString, ModReverse> DnaStringReverse;
+ */
 
 /**
 .Shortcut.DnaStringReverse:
@@ -152,6 +190,14 @@ namespace seqan
 ..see:Spec.ModReverse
 */
 
+/*!
+ * @typedef Dna5StringReverse
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse of a Dna5String.
+ *
+ * @signature typedef ModifiedString<Dna5String, ModReverse> DnaStringReverse;
+ */
+
 /**
 .Shortcut.Dna5StringReverse:
 ..cat:Modifier
@@ -163,6 +209,14 @@ namespace seqan
 ..see:Class.ModifiedString
 ..see:Spec.ModReverse
 */
+
+/*!
+ * @typedef RnaStringReverse
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse of a RnaString.
+ *
+ * @signature typedef ModifiedString<RnaString, ModReverse> DnaStringReverse;
+ */
 
 /**
 .Shortcut.RnaStringReverse:
@@ -176,6 +230,14 @@ namespace seqan
 ..see:Spec.ModReverse
 */
 
+/*!
+ * @typedef Rna5StringReverse
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse of a Rna5String.
+ *
+ * @signature typedef ModifiedString<Rna5String, ModReverse> DnaStringReverse;
+ */
+
 /**
 .Shortcut.Rna5StringReverse:
 ..cat:Modifier
@@ -188,6 +250,13 @@ namespace seqan
 ..see:Spec.ModReverse
 */
 
+/*!
+ * @typedef DnaStringReverseComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse-complement of a DnaString.
+ *
+ * @signature typedef ModifiedString<ModifiedString<DnaString, ModView<FunctorComplement<Dna5> >, ModReverse> DnaStringReverseComplement;
+ */
 
 /**
 .Shortcut.DnaStringReverseComplement:
@@ -203,6 +272,14 @@ namespace seqan
 ..see:Class.FunctorComplement
 */
 
+/*!
+ * @typedef Dna5StringReverseComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse-complement of a Dna5String.
+ *
+ * @signature typedef ModifiedString<ModifiedString<Dna5String, ModView<FunctorComplement<Dna55> >, ModReverse> Dna5StringReverseComplement;
+ */
+
 /**
 .Shortcut.Dna5StringReverseComplement:
 ..cat:Modifier
@@ -217,6 +294,14 @@ namespace seqan
 ..see:Class.FunctorComplement
 */
 
+/*!
+ * @typedef RnaStringReverseComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse-complement of a RnaString.
+ *
+ * @signature typedef ModifiedString<ModifiedString<RnaString, ModView<FunctorComplement<Rna5> >, ModReverse> RnaStringReverseComplement;
+ */
+
 /**
 .Shortcut.RnaStringReverseComplement:
 ..cat:Modifier
@@ -230,6 +315,14 @@ namespace seqan
 ..see:Spec.ModView
 ..see:Class.FunctorComplement
 */
+
+/*!
+ * @typedef Rna5StringReverseComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Modifier for the reverse-complement of a Rna5String.
+ *
+ * @signature typedef ModifiedString<ModifiedString<Rna5String, ModView<FunctorComplement<Rna55> >, ModReverse> Rna5StringReverseComplement;
+ */
 
 /**
 .Shortcut.Rna5StringReverseComplement:
@@ -290,6 +383,23 @@ typedef ModifiedString<
 // Function complement()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn complement
+ * @headerfile <seqan/modifier.h>
+ * @brief Complement a sequence or a StringSet in-place.
+ * 
+ * @signature void complement(sequence);
+ * @signature void complement(stringSet);
+ * 
+ * @param[in,out] stringSet The StringSet to complement.
+ * @param[in,out] sequence  The SequenceConcept to complement.
+ *
+ * @section Remarks
+ *
+ * Complementing only works for alphabets where a <tt>FunctorComplement&lt;T&gt;</tt> is implemented.  SeqAn comes with
+ * such definitions for Dna, Dna5, Rna, Rna5.
+ */
+
 /**
 .Function.complement
 ..cat:Modifier
@@ -348,6 +458,27 @@ inline void complement(StringSet<TSequence, TSpec> const & stringSet)
 // Function reverseComplement()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn reverseComplement
+ * @headerfile <seqan/modifier.h>
+ * @brief Reverse-complement a sequence or a StringSet in-place.
+ * 
+ * @signature void reverseComplement(sequence);
+ * @signature void reverseComplement(stringSet);
+ * 
+ * @param[in,out] stringSet The StringSet to complement.
+ * @param[in,out] sequence  The SequenceConcept to complement.
+ *
+ * @section Remarks
+ *
+ * StringSet objects are reverse-complemented element-wise, i.e. the order of the sequences stays the same but the
+ * sequences in the StringSet themselves are reverse-complemented.
+ *
+ * Complementing only works for alphabets where a <tt>FunctorComplement&lt;T&gt;</tt> is implemented.  SeqAn comes with
+ * such definitions for Dna, Dna5, Rna, Rna5.
+ */
+
+
 /**
 .Function.reverseComplement:
 ..cat:Modifier
@@ -404,6 +535,18 @@ inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet)
 // Function toLower()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn toLower
+ * @headerfile <seqan/modifier.h>
+ * @brief Convert characters in sequence or StringSet to lower case in-place.
+ *
+ * @signature void toLower(sequence);
+ * @signature void toLower(stringSet);
+ *
+ * @param[in,out] sequence  The SequenceConcept to convert to lower-case.
+ * @param[in,out] stringSet The StringSet to convert to lower-case.
+ */
+
 /**
 .Function.toLower:
 ..cat:Modifier
@@ -458,6 +601,18 @@ inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
 // --------------------------------------------------------------------------
 // Function toUpper()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn toUpper
+ * @headerfile <seqan/modifier.h>
+ * @brief Convert characters in sequence or StringSet to upper case in-place.
+ *
+ * @signature void toUpper(sequence);
+ * @signature void toUpper(stringSet);
+ *
+ * @param[in,out] sequence  The SequenceConcept to convert to upper-case.
+ * @param[in,out] stringSet The StringSet to convert to upper-case.
+ */
 
 /**
 .Function.toUpper:
