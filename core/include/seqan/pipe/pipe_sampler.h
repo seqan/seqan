@@ -67,6 +67,36 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): Documentation bug with DC!
+
+/*!
+ * @class Sampler
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * @brief Outputs m-tuples beginning at a position of difference cover DC.
+ * 
+ * @signature template <typename TInput, unsigned M[, typename TPack]>
+ *            class Pipe<TInput, Sampler<M, TPack> >;
+ * 
+ * @tparam TInput The type of the pipeline module this module reads from.
+ * @tparam m      The tuple size.
+ * @tparam TPack  Specifies the packing method of the tuples (<tt>void</tt> = no packing), default is <tt>Pack</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The output type is a Pair of size type and Tuple of input elements and length m (i.e. <tt>Pair<Size<TInput>::Type,
+ * Tuple<Value<TInput>::Type, m, TPack> ></tt>).
+ * 
+ * The first output field contains the number of remaining pipe elements. The m-tuple in the second field contains the
+ * first m elements of them. The m-tuples are substrings of the input stream beginning at positions <tt>i</tt>, with
+ * <tt>(n-i) mod m</tt> is element of the set DC (n is the input stream length).
+ * 
+ * @section Examples
+ * 
+ * The set <tt>{1,2,4}</tt> is represented by <tt>int DC[] = { 3, 1, 2, 4 }</tt>.
+ * 
+ * @see Bit Packed Tuple
+ */
 
 /**
 .Spec.Sampler:

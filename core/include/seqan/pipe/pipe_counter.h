@@ -52,6 +52,25 @@ namespace SEQAN_NAMESPACE_MAIN
 		> Type;
 	};
 
+/*!
+ * @class Counter
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * @brief Extends the input stream by a second field which enumerates the elements.
+ *
+ * @signature template <typename TInput>
+ *            Pipe<TInput, Counter>;
+ * 
+ * @tparam TInput The type of the pipeline module this module reads from.
+ * 
+ * @section Remarks
+ * 
+ * The output type is a Pair of input type and size type (i.e.  <tt>Pair<Value<TInput>::Type, Size<TInput>::Type></tt>).
+ * 
+ * The first output field is the original input stream.
+ * 
+ * The second output field begins with 0 and increases by 1 per element.
+ */ 
 
 /**
 .Spec.Counter:

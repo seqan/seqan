@@ -78,6 +78,23 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename TFunctor::result_type Type;
 	};
 
+/*!
+ * @class Filter
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * @brief Applies a specific function to the input stream.
+ * 
+ * @signature template <typename TInput, typename TFunctor>
+ *            struct Pipe<TInput, Filter<TFunctor> >;
+ * 
+ * @tparam TFunctor A unary function (see STL's <tt>unary_function</tt>).  The argument type of <tt>TFunctor</tt>
+ *                  must be <tt>VALUE&lt;TInput&gt;::Type</tt>.
+ * @tparam TInput   The type of the pipeline module this module reads from.
+ * 
+ * @section Remarks
+ * 
+ * The output type of this pipe is the result type of <tt>TFunctor</tt>.
+ */
 
 /**
 .Spec.Filter:
@@ -99,6 +116,16 @@ namespace SEQAN_NAMESPACE_MAIN
     {
 		TInput      &in;
         TFunctor    F;
+
+/*!
+ * @fn Filter::Pipe
+ * @brief Constructor
+ * 
+ * @signature Pipe::Pipe(in[, func]);
+ * 
+ * @param[in] in   Reference to an input pipe.
+ * @param[in] func A TFunctor object (copy constructor).
+ */
         
 /**
 .Memfunc.Filter#Pipe:

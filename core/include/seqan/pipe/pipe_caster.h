@@ -52,6 +52,23 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef TValue Type;
 	};
 
+/*!
+ * @class Caster
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * @brief Casts the input type in a specific output type.
+ * 
+ * @signature template <typename TInput, typename TValue[, typename TSpec]>
+ *            class Pipe<TInput, Caster<TValue, TSpec> >;
+ * 
+ * @tparam TInput The type of the pipeline module this module reads from.
+ * @tparam TValue The new output type.
+ * @tparam TSpec  <tt>CasterReinterpret</tt> (default) or <tt>CasterConvert</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The input stream is casted using <tt>reinterpret_cast&lt;TValue&gt;</tt>.
+ */
 
 /**
 .Spec.Caster:

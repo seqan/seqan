@@ -45,6 +45,18 @@ namespace SEQAN_NAMESPACE_MAIN
 	};
 */
 
+/*!
+ * @class Source
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * @brief Pipelining adaptor for arbitrary containers or iterators.
+ * 
+ * @signature template <typename TInput>
+ *            class Pipe<TInput, Source<> >;
+ * 
+ * @tparam TInput The type of container or iterator this module reads from.
+ */
+
 /**
 .Spec.Source:
 ..cat:Pipelining

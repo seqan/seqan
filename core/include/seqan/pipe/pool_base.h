@@ -38,6 +38,21 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+/*!
+ * @class PoolConfigSize
+ * @extends PoolSpec
+ * @headerfile <seqan/pipe.h.
+ * @brief Configuration of Pool.
+ * 
+ * @signature template <typename TSize[, typename TFile]>
+ *            struct PoolConfigSize;
+ * 
+ * @tparam TSize The Pool's size type.
+ * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
+ * 
+ * @see PoolConfig
+ */ 
+
 /**
 .Spec.PoolConfigSize:
 ..cat:Pipelining
@@ -58,6 +73,25 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef TFile File;
     };
 
+/*!
+ * @class PoolConfig
+ * @extends PoolSpec
+ * @headerfile <seqan/pipe.h>
+ * @brief Configuration of Pool.
+ * 
+ * @signature template <typename TFile>
+ *            struct PoolConfig;
+ * 
+ * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
+ * 
+ * @section Remarks
+ * 
+ * Using this configuration spec., the Pool's size type is <tt>Size&lt;TFile&gt;::Type</tt>.  To use a custom size type
+ * PoolConfigSize should be used.
+ * 
+ * @see PoolConfigSize
+ */
+
 /**
 .Spec.PoolConfig:
 ..cat:Pipelining
@@ -77,6 +111,24 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef TFile File;
     };
 
+/*!
+ * @class PoolSpec
+ * @extends Pool
+ * @headerfile <seqan/pipe.h>
+ * @brief Stores/Retrieves all elements to/from disk.
+ * 
+ * @signature template <typename TValue, typename TConfig>
+ *            class Pool<TValue, PoolSpec<TConfig> >;
+ * 
+ * @tparam TConfig Configuration Spec.  Defines destination function, size type, and file type.
+ *                 Types: PoolConfig, PoolConfigSize
+ * @tparam TValue  The value type, that is the type of the stream elements.
+ * 
+ * @section Remarks
+ * 
+ * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
+ */
+
 /**
 .Spec.PoolSpec:
 ..cat:Pipelining
@@ -95,6 +147,24 @@ namespace SEQAN_NAMESPACE_MAIN
     struct PoolSpec {
         typedef TConfig Config;
     };
+
+/*!
+ * @class Pool
+ * @headerfile <seqan/pipe.h>
+ * @brief Pools are push- and pop-passive pipeline modules.
+ * 
+ * @signature template <typename TValue[, typename TSpec]>
+ *            class Pool;
+ * 
+ * @tparam TSpec  The specializing type. Default: PoolSpec&lt;&gt;, see PoolSpec.
+ * @tparam TValue The value type, that is the type of the stream elements.
+ * 
+ * @section Remarks
+ * 
+ * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by default).
+ * 
+ * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
+ */
 
 /**
 .Class.Pool:
@@ -1089,6 +1159,20 @@ namespace SEQAN_NAMESPACE_MAIN
         me.pop(Ref_);
     }
 
+/*!
+ * @fn Pool#push
+ * @brief Appends an item at the end of an input stream.
+ * 
+ * @signature void push(object, val);
+ * 
+ * @param[in,out] object A push-passive pipeline module.
+ * @param[in]     val    Item to be pushed.
+ * 
+ * @section Remarks
+ * 
+ * The function <tt>push</tt> can only be called within a write process surrounded by beginWrite and endWrite.
+ */
+
 /**
 .Function.push:
 ..class:Class.Pool
@@ -1159,7 +1243,27 @@ namespace SEQAN_NAMESPACE_MAIN
 	    inline bool control(Pool< TValue, TSpec > &me, ControlEndRead const &) {
 		    return me.endRead();
 	    }
-    	
+
+/*!
+ * @fn Pool#beginWrite
+ * @headerfile <seqan/pipe.h>
+ * @brief Initiates a write process.
+ * 
+ * @signature bool beginWrite(object);
+ * 
+ * @param object A push-passive pipeline module.
+ * 
+ * @return bool <tt>true</tt> on success, false on failure.
+ * 
+ * @section Remarks
+ * 
+ * <tt>beginWrite</tt> prepares a Pool for succeeding writes.
+ * 
+ * A write process must be terminated with endWrite.  Nested write processes are not allowed.
+ * 
+ * @see endWrite
+*/
+
 /**
 .Function.beginWrite
 ..class:Class.Pool
@@ -1180,6 +1284,23 @@ namespace SEQAN_NAMESPACE_MAIN
 SEQAN_CHECKPOINT
 		    return me.beginWrite();
         }
+
+/*!
+ * @fn Pool#endWrite
+ * @brief Terminates a write process.
+ * 
+ * @signature bool endWrite(pool);
+ * 
+ * @param pool A push-passive pipeline module.
+ * 
+ * @return bool true on success, false on failure.
+ * 
+ * @section Remarks
+ * 
+ * <tt>endWrite</tt> closes the input stream and frees resources possibly allocated by beginWrite 
+ * 
+ * @see beginWrite
+ */
 
 /**
 .Function.endWrite:

@@ -74,6 +74,30 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef Pair<typename Size<TInput>::Type, EchoType>			Type;
     };
 
+/*!
+ * @class Echoer
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * 
+ * @brief Outputs tuples of the <tt>echoRepeats</tt> last elements of the input stream.
+ * 
+ * @signature template <typename Input, unsigned ECHO_REPEATS, bool OMIT_FIRST>
+ *            class Pipe;
+ * 
+ * @tparam TInput       The type of the pipeline module this module reads from.
+ * @tparam ECHO_REPEATS The tuple length.The tuples contain elements <tt>in[i]in[i-1]...in[i-(echoRepeats-1)]</tt>.
+ * @tparam OMIT_FIRST   Omit half filled tuples.  If <tt>true</tt>, the output stream is <tt>echoRepeats-1</tt>
+ *                      elements shorter than the input stream.  If <tt>false</tt>, the lengths are identical and the
+ *                      tuple is filled with blanks (default constructed elements) for undefined entries.
+ * 
+ * @section Remarks
+ * 
+ * The output type is a @link Tuple @endlink of input elements and length <tt>echoRepeats</tt> (i.e.
+ * <tt>Tuple<Value<TInput>::Type, echoRepeats></tt>).
+ * 
+ * The tuples are sequences of the form <tt>in[i]in[i-1]in[i-2]..in[i-echoRepeats+1]</tt>. For <tt>omitFirst=false</tt>
+ * <tt>i</tt> begins with 0 and for <tt>omitFirst=true</tt> <tt>i</tt> begins with <tt>echoRepeats-1</tt>.
+ */
 
 /**
 .Spec.Echoer:

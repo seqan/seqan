@@ -60,6 +60,25 @@ namespace SEQAN_NAMESPACE_MAIN
 		> Type;
 	};
 
+/*!
+ * @class Joiner
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * @brief Joins two or three input streams.
+ * 
+ * @signature template <typename TInput1, typename TInput2>
+ *            class Pipe<Bundle3<TInput1, TInput2>, Joiner>;
+ * @signature template <typename TInput1, typename TInput2, typename TInput3>
+ *            class Pipe<Bundle3<TInput1, TInput2, TInput3>, Joiner>;
+ * 
+ * @tparam TInput1 The type of the first pipeline module this module reads from.
+ * @tparam TInput2 The type of the second pipeline module this module reads from.
+ * @tparam TInput3 The type of the third pipeline module this module reads from.
+ * 
+ * @section Remarks
+ * 
+ * The output type is a packed Pair or Triple of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
+ */
 
 /**
 .Spec.Joiner:

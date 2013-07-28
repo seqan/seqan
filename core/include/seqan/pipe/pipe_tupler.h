@@ -90,6 +90,33 @@ namespace SEQAN_NAMESPACE_MAIN
         }
     };
 
+/*!
+ * @class Tupler
+ * @extends Pipe
+ * @headerfile <seqan/pipe.h>
+ * 
+ * @brief Outputs tuples of the <tt>tupleLen</tt> consecutive elements of the input stream.
+ *
+ * @signature template <typename TInput, unsigned TUPLE_LEN, bool OMIT_LAST>
+ *            class Pipe<TInput, Tupler<TUPLE_LEN, OMIT_LAST> >;
+ * 
+ * @tparam TInput    The type of the pipeline module this module reads from.
+ * @tparam TUPLE_LEN The tuple length.The tuples contain elements <tt>in[i]in[i+1]...in[i+(tupleLen-1)]</tt>.
+ * @tparam OMIT_LAST Omit half filled tuples.If <tt>true</tt>, the output stream is <tt>tupleLen-1</tt> elements
+ *                   shorter than the input stream.  If <tt>false</tt>, the lengths are identical and the last tuples
+ *                   are filled with blanks (default constructed elements) for undefined entries.
+ * 
+ * @section Remarks
+ * 
+ * The output type is a @link Tuple @endlink of input elements and length
+ * <tt>tupleLen</tt> (i.e. <tt>Tuple<Value<TInput>::Type, tupleLen></tt>).
+ * 
+ * The tuples are sequences of the form
+ * <tt>in[i]in[i-1]in[i-2]..in[i-tupleLen+1]</tt>. For <tt>omitLast=false</tt>
+ * <tt>i</tt> begins with 0 and for <tt>omitLast=true</tt> <tt>i</tt> begins
+ * with <tt>tupleLen-1</tt>.
+ */
+
 /**
 .Spec.Tupler:
 ..cat:Pipelining
