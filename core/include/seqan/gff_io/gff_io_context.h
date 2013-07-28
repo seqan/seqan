@@ -47,6 +47,66 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class GffIOContext
+ * @headerfile <seqan/bam_io.h>
+ * @brief The I/O context to use for GFF I/O.
+ * 
+ * @signature template <typename TNameStore, typename TNameStoreCache = NameStoreCache<TNameStore> >
+ *            class GffIOContext;
+ * 
+ * @tparam TNameStore      The name store class.
+ * @tparam TNameStoreCache The name store cache class, default: NameStoreCache<TNameStore>.
+ * 
+ * @section Examples
+ * 
+ * Creating a GffIOContext for a raw StringSet of CharString.
+ * 
+ * @code{.cpp}
+ * StringSet<CharString> nameStore;
+ * NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
+ * GffIOContext<StringSet<CharString> > bamIOContext(nameStore, nameStoreCache);
+ * // ...
+ * @endcode
+ *
+ * Using a GffIOContext with a FragmentStore.
+ * 
+ * @code{.cpp}
+ * typedef FragmentStore<>::TContigNameStore         TNameStore;
+ * typedef NameStoreCache<TNameStore>                TNameStoreCache;
+ * FragmentStore<> store;
+ * // Optionally, do something with store.
+ * typedef GffIOContext<TNameStore, TNameStoreCache> TGffIOContext;
+ * TGffIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
+ * // ...
+ * @endcode
+ *
+ *
+ * @fn GffIOContext::GffIOContext
+ * @brief Constructor.
+ * @signature GffIOContext::GffIOContext();
+ * 
+ * @section Remarks
+ * 
+ * Only the default constructor is provided.
+ * 
+ *
+ * @typedef GffIOContext::TNameStore
+ * @brief The name store class.
+ *
+ * @signature typedef (...) TNameStore;
+ * 
+ * @see GffIOContext#nameStore
+ * 
+ *
+ * @typedef GffIOContext::TNameStoreCache
+ * @brief The name store cache class.
+ *
+ * @signature typedef (...) TNameStoreCache;
+ * 
+ * @see GffIOContext#nameStoreCache
+ */
+
 /**
 .Class.GffIOContext
 ..cat:GFF I/O
@@ -117,6 +177,20 @@ public:
 // Function nameStore()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GffIOContext#nameStore
+ * @brief Return reference to name store from @link GffIOContext @endlink.
+ * 
+ * @signature TNameStore nameStore(context);
+ * 
+ * @param[in] context The GffIOContext to query.
+ * 
+ * @return Reference to the name store of the context (TNameStore).
+ *
+ * @see GffIOContext#TNameStore
+ * @see GffIOContext#nameStoreCache
+ */
+
 /**
 .Function.GffIOContext#nameStore
 ..class:Class.GffIOContext
@@ -149,6 +223,20 @@ nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
 // ----------------------------------------------------------------------------
 // Function nameStoreCache()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffIOContext#nameStoreCache
+ * @brief Return reference to name store cache from @link GffIOContext @endlink.
+ * 
+ * @signature TNameStoreCache nameStoreCache(context);
+ * 
+ * @param[in] context The GffIOContext to query.
+ *
+ * @return TNameStoreCache A reference to the NameStoreCache of the context.
+ * 
+ * @see GffIOContext#TNameStoreCache
+ * @see GffIOContext#nameStore
+ */
 
 /**
 .Function.GffIOContext#nameStoreCache

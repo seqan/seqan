@@ -49,6 +49,18 @@ namespace seqan {
 // Tag Gff
 // ----------------------------------------------------------------------------
 
+/*!
+ * @defgroup GffIO GFF I/O
+ * @brief I/O functionality for the GFF and GTF file formats.
+ */
+
+/*!
+ * @tag GffIO#Gff
+ * @brief Tag for selecting the GFF format.
+ *
+ * @signature typedef Tag<TagGff_> const Gff;
+ */
+
 /**
 .Tag.File Format.tag.Gff:
     Gff annotation file.
@@ -63,6 +75,13 @@ typedef Tag<TagGff_> const Gff;
 // Tag Gtf
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag GffIO#Gtf
+ * @brief Tag for selecting the GTF format.
+ *
+ * @signature typedef Tag<TagGtf_> const Gtf;
+ */
+
 /**
 .Tag.File Format.tag.Gtf:
     Gtf annotation file.
@@ -76,6 +95,72 @@ typedef Tag<TagGtf_> const Gtf;
 // ----------------------------------------------------------------------------
 // Class GffRecord
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class GffRecord
+ * @headerfile <seqan/gff_io.h>
+ * @brief Represent a record from a Gff file.
+ *
+ * @signature class GffRecord;
+ *
+ * @var __int32 GffRecord::INVALID_POS
+ * @brief Static member with invalid/sentinel position value.
+ *
+ * @var __int32 GffRecord::INVALID_IDX
+ * @brief Static member with invalid/sentinel rID value.
+ *
+ * @fn GffRecord::INVALID_SCORE
+ * @brief Returns invalid score (NaN float value).
+ *
+ * @signature float GffRecord::INVALID_SCORE();
+ * 
+ * @var CharString GffRecord::ref
+ * @brief The sequence name of the record.
+ *
+ * @var __int32 GffRecord::rID
+ * @brief Integer representing ref, defaults to INVALID_IDX.
+ * 
+ * @var CharString GffRecord::source
+ * @brief The source of the record.
+ * 
+ * @var CharString GffRecord::type
+ * @brief The type of the record.
+ * 
+ * @var __int32 GffRecord::beginPos
+ * @brief The begin position of the record.
+ * 
+ * @var __int32 GffRecord::endPos
+ * @brief The end position of the record.
+ * 
+ * @var float GffRecord::score
+ * @brief The score of the record.
+ * 
+ * @var char GffRecord::strand
+ * @brief The strand the record belongs to.
+ * 
+ * @var char GffRecord::phase
+ * @brief The phase of the record.
+ * 
+ * @section Remarks
+ * 
+ * For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.  The
+ * phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of
+ * this feature to reach the first base of the next codon
+ * 
+ * @var TCharStringSet GffRecord::tagName
+ * @brief The names of the attributes of the record, StringSet of CharString.
+ * 
+ * @var TCharStringSet GffRecord::tagValue
+ * @brief The values of the attributes of the record, StringSet of CharString.
+ * 
+ * @section Remarks
+ * 
+ * For each value there is a name associated in GffRecord::tagName.
+ *
+ * @section Remarks
+ * 
+ * For each name there is a value associated in GffRecord::tagValue.
+ */
 
 /**
 .Class.GffRecord
@@ -293,6 +378,15 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reade
 // Function clear
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GffRecord#clear
+ * @brief Reset a @link GffRecord @endlink object.
+ * 
+ * @signature void clear(record);
+ * 
+ * @param[in,out] record The GffRecord to reset.
+ */
+
 /**
 .Function.GffRecord#clear
 ..class:Class.GffRecord
@@ -316,6 +410,22 @@ inline void clear(GffRecord & record)
 // ----------------------------------------------------------------------------
 // Function readRecord
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffIO#readRecord
+ * @brief Read one GFF/GTF record from a SinglePassRecordReader.
+ *
+ * @signature int readRecord(record, reader[, context, [, tag]]);
+ *
+ * @param[out]    record  The GffRecord to write the results to.
+ * @param[in,out] reader  The SinglePassRecordReader to use for reading.
+ * @param[in,out] context The GffIOContext to use for reading.  If present then ref will be translated to rID using the
+ *                        reference name store from context.
+ * @param[in]     tag     The format to read from, one of Gtf and Gff.  Note that the parser transparently parses both
+ *                        GFF and GTF.
+ *
+ * @return int A status code, 0 on success, a different value on failures.
+ */
 
 /**
 .Function.GffRecord#readRecord
@@ -596,6 +706,18 @@ _writeSemicolonSensitive(TTargetStream & target, TString & temp)
 // ----------------------------------------------------------------------------
 // Function writeRecord
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffIO#writeRecord
+ * @brief Writes on GFF/GTF record to a stream.
+ *
+ * @signature int writeRecord(stream, record);
+ *
+ * @param[in,out] stream The StreamConcept to write to.
+ * @param[in]     record The GffRecord to write.
+ *
+ * @return int A status code, 0 on success, a different value on errors.
+ */
 
 /**
 .Function.GffRecord#writeRecord

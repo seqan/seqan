@@ -50,6 +50,51 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class GffStream
+ * @headerfile <seqan/gff_io.h>
+ * @brief High-level GFF/GTF I/O class.
+ * 
+ * @signature class GffStream;
+ * 
+ * The GffStream class allows to read and write GTF and GFF files.
+ * 
+ * @section Remarks
+ * 
+ * Note that the class <tt>GffStream</tt> allows to read both GFF 2, 3, and GTF.  For writing, only GFF 3 and GTF are
+ * supported.
+ * 
+ * @section Examples
+ * 
+ * The following example demonstrates reading a GFF file and printing the annotation locations.
+ * 
+ * @include demos/gff_io/gff_stream_read.cpp
+ * 
+ * @see GffStream::FileFormat
+ * 
+ *
+ * @var TCharStringSet GffStream::sequenceNames
+ * @brief The names of the sequences (StringSet of CharString), updated when new sequences are seen in GFF file.
+ * 
+ * @var GffStream::FileFormat GffStream::fileFormat
+ * @brief File format to use for writing.
+ * 
+ *
+ * @fn GffStream::GffStream
+ * @brief Constructor.
+ * 
+ * @signature GffStream::GffStream();
+ * @signature GffStream::GffStream(fileName[, mode=READ[, fileFormat=GFF]]);
+ * 
+ * @param[in] fileName   The path to the file to open, <tt>char const *</tt>.
+ * @param[in] mode       The open mode, GffStream::Mode, default is READ.
+ * @param[in] fileFormat The open mode, GffStream::FileFormat, default is auto-detect.
+ * 
+ * @see GffStream::Mode
+ *
+ * @see GffStream#open
+ */
+
 /**
 .Class.GffStream
 ..cat:GFF I/O
@@ -99,6 +144,43 @@ For writing, only GFF 3 and GTF are supported.
 ..value.GTF:GTF file format.
 ..include:seqan/gff_io.h
 */
+
+/*!
+ * @enum GffStream::FileFormat
+ * @headerfile <seqan/gff_io.h>
+ *
+ * @signature enum GffStream::FileFormat;
+ * 
+ * @brief File format for writing in the @link GffStream @endlink class.
+ * 
+ * @see GffStream
+ * 
+ * @var GffStream::FileFormat GffStream::GFF
+ * @brief GFF file format.
+ * 
+ * @var GffStream::FileFormat GffStream::GTF
+ * @brief GTF file format.
+ */
+
+/*!
+ * @enum GffStream::Mode
+ * @headerfile <seqan/gff_io.h>
+ * @brief Open mode for the GffStream class.
+ * 
+ * @signature enum GffStream::Mode;
+ *
+ * @see GffStream#open
+ * @see GffStream#GffStream
+ * 
+ * @var GffStream::Mode GffStream::READ
+ * @brief Open in read mode.
+ * 
+ * @var GffStream::Mode GffStream::WRITE
+ * @brief Open in write mode.
+ * 
+ * @var GffStream::Mode GffStream::INVALID
+ * @brief Invalid open mode.
+ */
 
 class GffStream
 {
@@ -214,6 +296,23 @@ public:
 // Function open()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GffStream#open
+ * @brief Open a GffStream .
+ * 
+ * @signature bool open(gffStream, fileName[, mode[, fileFormat]]);
+ * 
+ * @param[in,out] gffStream  The GffStream to open.
+ * @param[in]     fileName   The path to the file to open, <tt>char const *</tt>.
+ * @param[in]     mode       The open mode, GffStream::Mode, defaults to <tt>GffStream::Mode::READ</tt>.
+ * @param[in]     fileFormat File format to use for writing, GffStream::FileFormat.
+ * 
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ * 
+ * @see GffStream#isGood
+ * @see GffStream::Mode
+ */
+
 /**
 .Function.GffStream#open
 ..class:Class.GffStream
@@ -246,6 +345,16 @@ inline bool open(GffStream & stream, char const * filename, GffStream::Mode mode
 // Function addSequenceName()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GffStream#addSequenceName
+ * @brief Add the name of a sequence to a GffStream .
+ * 
+ * @signature void addSequenceName(gffStream, seqName);
+ * 
+ * @param[in,out] gffStream The GffStream to add the name to
+ * @param[in]     seqName   The name of the sequence to append, CharString.
+ */
+
 /**
 .Function.GffStream#addSequenceName
 ..class:Class.GffStream
@@ -267,6 +376,18 @@ inline void addSequenceName(GffStream & stream, CharString const & name)
 // ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffStream#readRecord
+ * @brief Read a record from a GffStream
+ * 
+ * @signature int readRecord(record, gffStream);
+ * 
+ * @param[out]    record    The GffRecord to read into, GffRecord.
+ * @param[in,out] gffStream The GffStream to read from, GffStream.
+ * 
+ * @return int <tt>0</tt> on success, non-<tt>0</tt> on failure.
+ */
 
 /**
 .Function.GffStream#readRecord
@@ -294,6 +415,18 @@ inline int readRecord(GffRecord & record,
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffStream#writeRecord
+ * @brief Write a record to a GffStream.
+ *
+ * @signature int writeRecord(gffStream, record);
+ * 
+ * @param[in,out] gffStream The GffStream to write to.
+ * @param[in]     record    The GffRecord to write.
+ * 
+ * @return int <tt>0</tt> on success, non-<tt>0</tt> on failure.
+ */
 
 /**
 .Function.GffStream#writeRecord
@@ -326,6 +459,17 @@ inline int writeRecord(GffStream & stream,
 // Function flush()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GffStream#flush
+ * @brief Flush to a GffStream.
+ * 
+ * @signature int flush(gffStream);
+ * 
+ * @param[in,out] gffStream The GffStream to flush. Types: GffStream
+ * 
+ * @return int <tt>0</tt> on success, non-<tt>0</tt> on failure.
+ */
+
 /**
 .Function.GffStream#flush
 ..class:Class.GffStream
@@ -348,6 +492,17 @@ inline int flush(GffStream & stream)
 // ----------------------------------------------------------------------------
 // Function close()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffStream#close
+ * @brief Closes a GffStream
+ * 
+ * @signature int close(gffStream);
+ * 
+ * @param[in,out] gffStream The GffStream to close. Types: GffStream
+ * 
+ * @return int <tt>0</tt> on success, non-<tt>0</tt> on failure.
+ */
 
 /**
 .Function.GffStream#close
@@ -372,6 +527,17 @@ inline int close(GffStream & stream)
 // Function isGood()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GffStream#isGood
+ * @brief Query a GffStream for errors.
+ * 
+ * @signature bool isGood(gffStream);
+ * 
+ * @param[in] gffStream The GffStream to query.
+ * 
+ * @return bool <tt>true</tt> if stream is good, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.GffStream#isGood
 ..class:Class.GffStream
@@ -392,6 +558,17 @@ inline bool isGood(GffStream const & stream)
 // ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GffStream#atEnd
+ * @brief Query a GffStream for being at the end of the file.
+ * 
+ * @signature bool atEnd(gffStream);
+ * 
+ * @param[in] gffStream The GffStream to query. Types: GffStream
+ * 
+ * @return bool <tt>true</tt> if stream is at the end, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.GffStream#atEnd
