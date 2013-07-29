@@ -389,13 +389,13 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 // Function globalAlignmentScore()                        [banded, 2 Strings]
 // ----------------------------------------------------------------------------
 
-template <typename TAlphabetH, typename TSpecH,
-          typename TAlphabetV, typename TSpecV,
+template <typename TSequenceH,
+          typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
           typename TAlgoTag>
-TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
-                                 String<TAlphabetV, TSpecV> const & seqV,
+TScoreValue globalAlignmentScore(TSequenceH const & seqH,
+                                 TSequenceV const & seqV,
                                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
                                  AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                                  int lowerDiag,
@@ -407,12 +407,12 @@ TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
 
 // Interface without AlignConfig<>.
 
-template <typename TAlphabetH, typename TSpecH,
-          typename TAlphabetV, typename TSpecV,
+template <typename TSequenceH,
+          typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlgoTag>
-TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
-                                 String<TAlphabetV, TSpecV> const & seqV,
+TScoreValue globalAlignmentScore(TSequenceH const & seqH,
+                                 TSequenceV const & seqV,
                                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
                                  int lowerDiag,
                                  int upperDiag,
@@ -424,12 +424,12 @@ TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
 
 // Interface without algorithm tag.
 
-template <typename TAlphabetH, typename TSpecH,
-          typename TAlphabetV, typename TSpecV,
+template <typename TSequenceH,
+          typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
-TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
-                                 String<TAlphabetV, TSpecV> const & seqV,
+TScoreValue globalAlignmentScore(TSequenceH const & seqH,
+                                 TSequenceV const & seqV,
                                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
                                  AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
                                  int lowerDiag,
@@ -443,11 +443,11 @@ TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
 
 // Interface without AlignConfig<> and algorithm tag.
 
-template <typename TAlphabetH, typename TSpecH,
-          typename TAlphabetV, typename TSpecV,
+template <typename TSequenceH,
+          typename TSequenceV,
           typename TScoreValue, typename TScoreSpec>
-TScoreValue globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
-                                 String<TAlphabetV, TSpecV> const & seqV,
+TScoreValue globalAlignmentScore(TSequenceH const & seqH,
+                                 TSequenceV const & seqV,
                                  Score<TScoreValue, TScoreSpec> const & scoringScheme,
                                  int lowerDiag,
                                  int upperDiag)

@@ -391,18 +391,16 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
 }
 
 // Interface without AlignConfig and with traceback disabled.
-template <typename TDPScoutStateSpec, typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV,
-          typename TScoreValue, typename TScoreSpec, typename TAlgoTag, typename TGapsTag>
+template <typename TDPScoutStateSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue, 
+         typename TScoreSpec, typename TAlgoTag, typename TGapsTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
 _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
-                      String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       TAlgoTag const &,
                       TGapsTag const & /*unused*/)
 {
-    typedef String<TAlphabetH, TSpecH> const TSequenceH;
-    typedef String<TAlphabetV, TSpecV> const TSequenceV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -430,23 +428,23 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     }
 }
 
-template <typename TDPScoutStateSpec, typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV,
-          typename TScoreValue, typename TScoreSpec, typename TAlgoTag>
+template <typename TDPScoutStateSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue,
+         typename TScoreSpec, typename TAlgoTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
 _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
-                      String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       TAlgoTag const & algoTag)
 {
     return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, algoTag, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
-template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
-          typename TScoreSpec, typename TAlgoTag, typename TGapsTag>
+template <typename TSequenceH, typename TSequenceV, typename TScoreValue, typename TScoreSpec, typename TAlgoTag,
+         typename TGapsTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
-_setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+_setUpAndRunAlignment(TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       TAlgoTag const &,
                       TGapsTag const & gapsTag)
@@ -455,11 +453,10 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
     return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, gapsTag);
 }
 
-template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
-          typename TScoreSpec, typename TAlgoTag>
+template <typename TSequenceH, typename TSequenceV, typename TScoreValue, typename TScoreSpec, typename TAlgoTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
-_setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+_setUpAndRunAlignment(TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       TAlgoTag const &)
 {
@@ -469,21 +466,19 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
 }
 
 // Interface with AlignConfig and with traceback disabled.
-template <typename TDPScoutStateSpec, typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV,
-          typename TScoreValue, typename TScoreSpec, bool TTop, bool TRight, bool TLeft, bool TBottom,
-          typename TACSpec, typename TAlgoTag, typename TGapsTag>
+template <typename TDPScoutStateSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue,
+         typename TScoreSpec, bool TTop, bool TRight, bool TLeft, bool TBottom, typename TACSpec, typename TAlgoTag,
+         typename TGapsTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
 _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
-                      String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> const &,
                       TAlgoTag const &,
                       TGapsTag const & /*unused*/)
 {
     typedef AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> TAlignConfig;
-    typedef String<TAlphabetH, TSpecH> const TSequenceH;
-    typedef String<TAlphabetV, TSpecV> const TSequenceV;
     typedef Score<TScoreValue, TScoreSpec> TScoringScheme;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceH>::Type TSequenceHEntry;
     typedef typename SequenceEntryForScore<TScoringScheme, TSequenceV>::Type TSequenceVEntry;
@@ -511,13 +506,13 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     }
 }
 
-template <typename TDPScoutStateSpec, typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV,
-          typename TScoreValue, typename TScoreSpec, bool TTop, bool TRight, bool TLeft, bool TBottom,
+template <typename TDPScoutStateSpec, typename TSequenceH, typename TSequenceV, typename TScoreValue,
+         typename TScoreSpec, bool TTop, bool TRight, bool TLeft, bool TBottom,
           typename TACSpec, typename TAlgoTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
 _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
-                      String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+                      TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> const & alignConfig,
                       TAlgoTag const &)
@@ -526,12 +521,12 @@ _setUpAndRunAlignment(DPScoutState_<TDPScoutStateSpec> & dpScoutState,
     return _setUpAndRunAlignment(dpScoutState, seqH, seqV, scoringScheme, alignConfig, TracebackConfig_<SingleTrace, GapsLeft>());
 }
 
-template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
+template <typename TSequenceH, typename TSequenceV, typename TScoreValue,
           typename TScoreSpec, bool TTop, bool TRight, bool TLeft, bool TBottom, typename TACSpec, typename TAlgoTag,
           typename TGapsTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
-_setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+_setUpAndRunAlignment(TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> const & alignConfig,
                       TAlgoTag const & algoTag,
@@ -541,11 +536,11 @@ _setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
     return _setUpAndRunAlignment(noState, seqH, seqV, scoringScheme, alignConfig, algoTag, gapsTag);
 }
 
-template <typename TAlphabetH, typename TSpecH, typename TAlphabetV, typename TSpecV, typename TScoreValue,
+template <typename TSequenceH, typename TSequenceV, typename TScoreValue,
           typename TScoreSpec, bool TTop, bool TRight, bool TLeft, bool TBottom, typename TACSpec, typename TAlgoTag>
 typename Value<Score<TScoreValue, TScoreSpec> >::Type
-_setUpAndRunAlignment(String<TAlphabetH, TSpecH> const & seqH,
-                      String<TAlphabetV, TSpecV> const & seqV,
+_setUpAndRunAlignment(TSequenceH const & seqH,
+                      TSequenceV const & seqV,
                       Score<TScoreValue, TScoreSpec> const & scoringScheme,
                       AlignConfig<TTop, TRight, TLeft, TBottom, TACSpec> const & alignConfig,
                       TAlgoTag const & algoTag)
