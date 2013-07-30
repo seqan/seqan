@@ -63,6 +63,16 @@ namespace seqan {
 // Function isTerminal()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn isTerminal
+ * @headerfile <seqan/misc/misc_termina.h>
+ * @brief Check whether we are printing to a terminal.
+ *
+ * @signature bool isTerminal();
+ *
+ * @return bool true if we are on the terminal, false otherwise.
+ */
+
 /**
 .Function.isTerminal()
 ..cat:Miscellaneous
@@ -102,6 +112,20 @@ inline bool isTerminal()
 // Function isAnsiColorTerminal()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn isAnsiColorTerminal
+ * @headerfile <seqan/misc/misc_terminal.h>
+ * @brief Check whether we are printing to a terminal that supports ANSI color codes.
+ *
+ * @signature bool isAnsiColorTerminal();
+ *
+ * @return bool true if we are in a terminal and the terminal interprets ANSI color code.s
+ *
+ * @section Remarks
+ *
+ * Currently, we assume that UNIX terminals support color while Windows terminals and non-terminals do not.
+ */
+
 /**
 .Function.isAnsiColorTerminal
 ..cat:Miscellaneous
@@ -131,6 +155,38 @@ inline bool isAnsiColorTerminal()
 // ----------------------------------------------------------------------------
 // Function getTerminalSize()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn getTerminalSize
+ * @headerfile <seqan/misc/misc_terminal.h>
+ * @brief Retrieve size of terminal.
+ *
+ * @signature bool getTerminalSize(cols, rows);
+ *
+ * @param[out] cols An <tt>unsigned</tt> value the column count is written to.
+ * @param[out] rows An <tt>unsigned</tt> value the row count is written to.
+ *
+ * @return bool true on success, false otherwise.
+ *
+ * @section Remarks
+ *
+ * On Windows, <tt>rows</tt> contains the number o frows in the terminal <b>buffer</b>, not the window.
+ *
+ * @section Examples
+ *
+ * The following demonstrates the usage.
+ *
+ * @code{.cpp}
+ * #include <seqan/misc/misc_terminal.h>
+ *
+ * // ...
+ *
+ * unsigned rows = 0, cols = 0;
+ * bool success = getTerminalSize(cols, rows);
+ * std::cout << "rows == " << rows << ", cols == " << cols
+ *           << ", success == " << success << "\n";
+ * @endcode
+ */
 
 /**
 .Function.getTerminalSize

@@ -59,6 +59,20 @@ namespace seqan {
 // Function memset()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn memset
+ * @headerfile <seqa/misc/misc_memset.h>
+ * @brief An implementation of <tt>memset</tt> with fixed number of bytes using Metaprogramming.
+ *
+ * @signature template <unsigned SIZE>
+ *            void memset(ptr[, c]);
+ *
+ * @tparam SIZE The number of bytes to reset, i.e. the values in <tt>[ptr, ptr + SIZE)</tt> are set to <tt>c</tt>.
+ *
+ * @param[in,out] ptr The first position to reset.
+ * @param[in]     c   The value to set to.
+ */
+
 /**
 .Function.memset
 ..cat:Memory

@@ -49,6 +49,23 @@ namespace seqan {
 // Classes, Structs, Enums, Tags
 // ============================================================================
 
+/*!
+ * @class UnionFind
+ * @headerfile <seqan/misc/misc_union_find.h>
+ * @brief Union-Find data structure.
+ *
+ * @signature template <typename T>
+ *            class UnionFind;
+ *
+ * @tparam T The integer type the data structure operates on.
+ *
+ * @section Remarks
+ *
+ * The data structure uses union by rank and path compresison to achieve almost linear running time.
+ *
+ * Note that internally T is used as signed, so not the whole range is available if T is unsigned.
+ */
+
 /**
 .Class.UnionFind
 ..cat:Miscellaneous
@@ -78,6 +95,15 @@ public:
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn UnionFind#Value
+ * @brief Returns the value type for the given UnionFind specialization.
+ *
+ * @signature Value<TUnionFind>::Type
+ *
+ * @tparam TUnionFind The UnionFind specialization to query for its value type.
+ */
+
 ///.Metafunction.Value.param.T.type:Class.UnionFind
 ///.Metafunction.Value.class:Class.UnionFind
 
@@ -101,6 +127,15 @@ struct Value<UnionFind<TValue> const>
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn UnionFind#Value
+ * @brief Returns the get-value type for the given UnionFind specialization.
+ *
+ * @signature Value<TUnionFind>::Type
+ *
+ * @tparam TUnionFind The UnionFind specialization to query for its get-value type.
+ */
+
 ///.Metafunction.GetValue.param.T.type:Class.UnionFind
 ///.Metafunction.GetValue.class:Class.UnionFind
 
@@ -123,6 +158,15 @@ struct GetValue<UnionFind<TValue> const>
 // ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn UnionFind#Size
+ * @brief Returns the size type for the given UnionFind specialization.
+ *
+ * @signature Size<TUnionFind>::Type
+ *
+ * @tparam TUnionFind The UnionFind specialization to query for its size type.
+ */
 
 ///.Metafunction.Size.param.T.type:Class.UnionFind
 ///.Metafunction.Size.class:Class.UnionFind
@@ -151,6 +195,15 @@ struct Size<UnionFind<TValue> const>
 // Function clear()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn UnionFind#clear
+ * @brief Clear the Union-Find data structure.
+ *
+ * @signature void clear(uf);
+ *
+ * @param[in,out] uf The Union-Find object to clear
+ */
+
 ///.Function.clear.param.object.type:Class.UnionFind
 ///.Function.clear.class:Class.UnionFind
 
@@ -166,6 +219,17 @@ clear(UnionFind<TValue> & unionFind)
 // Function length()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn UnionFind#length
+ * @brief Returns the number of entries in the Union-Find object.
+ *
+ * @signature TSize length(uf);
+ *
+ * @param[in] uf The Union-Find object to query.
+ *
+ * @return TSize The length of the Union-Find object.  TSize is the size type of uf.
+ */
+
 ///.Function.length.param.object.type:Class.UnionFind
 ///.Function.length.class:Class.UnionFind
 
@@ -180,6 +244,19 @@ length(UnionFind<TValue> const & unionFind)
 // ----------------------------------------------------------------------------
 // Function reserve()
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Remove resize tag, return value?
+
+/*!
+ * @fn UnionFind#reverse
+ * @brief Reserve memory for the Union-Find object.
+ *
+ * @signature TSize reserve(uf, size, tag);
+ *
+ * @param[in,out] uf    The Union-Find object to reserve memory in.
+ * @param[in]     size  The number of elements to reserve.
+ * @param[in]     tag   The tag to use for reserving (defaults to <tt>Generous()</tt>).
+ */
 
 ///.Function.reserve.param.object.type:Class.UnionFind
 ///.Function.reserve.class:Class.UnionFind
@@ -197,6 +274,20 @@ reserve(UnionFind<TValue> & unionFind,
 // ----------------------------------------------------------------------------
 // Function resize()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn UnionFind#resize
+ * @brief Allocate number of elements for the Union-Find object.
+ *
+ * The UF dat structure is resized to the given <tt>size</tt>, the value for each element is set to -1, i.e. they
+ * are singletons by default.
+ *
+ * @signature TSize resize(uf, size, tag);
+ *
+ * @param[in,out] uf    The Union-Find object to resize.
+ * @param[in]     size  The number of elements to reserve.
+ * @param[in]     tag   The tag to use for reserving (defaults to <tt>Generous()</tt>).
+ */
 
 ///.Function.resize.param.object.type:Class.UnionFind
 ///.Function.resize.class:Class.UnionFind
@@ -216,6 +307,18 @@ resize(UnionFind<TValue> & unionFind,
 // Function resizeVertexMap()
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Change parameter order for resizeVertexMap()!
+
+/*!
+ * @fn UnionFind#resizeVertexMap
+ * @brief Resize Union-Find data structure to appropriate size for a vertex map.
+ *
+ * @signature TSize resizeVertexMap(g, uf);
+ *
+ * @param[in]     g  The graph to use for getting the vertex number.
+ * @param[in,out] uf The Union-Find object to resize.
+ */
+
 ///.Function.resizeVertexMap.param.pm.type:Class.UnionFind
 ///.Function.resizeVertexMap.class:Class.UnionFind
 ///.Function.resizeVertexMap.remarks:If $pm$ is of type @Class.UnionFind@ then the $prototype$ parameter is not available.
@@ -224,15 +327,27 @@ template <typename TSpec, typename TValue>
 inline
 typename Size<UnionFind<TValue> >::Type
 resizeVertexMap(Graph<TSpec> const & g,
-                 UnionFind<TValue> & unionFind)
+                UnionFind<TValue> & unionFind)
 {
     clear(unionFind);
     return resize(unionFind, numVertices(g));
 }
 
 // ----------------------------------------------------------------------------
-// Function find()
+// Function findSet()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn UnionFind#findSet
+ * @brief Return set identifier, given an element identifier.
+ *
+ * @signature TValue findSet(uf, q);
+ *
+ * @param[in] uf  The Union-Find object to query.
+ * @param[in] q   The value to get the set identifier for.
+ *
+ * @see UnionFind#joinSets
+ */
 
 /**
 .Function.findSet:
@@ -275,6 +390,27 @@ findSet(UnionFind<TValue> & unionFind,
 // ----------------------------------------------------------------------------
 // Function joinSets()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn UnionFind#joinSets
+ * @brief UNION() operation for Union-Find data structure.
+ *
+ * @signature void joinSets(uf, left, right);
+ *
+ * @param[in,out] uf    The type the data structure operates on.
+ * @param[in]     left  Representant of the left set to union.
+ * @param[in]     right Representant of the right set to union.
+ *
+ * @section Remarks
+ *
+ * This function is called <tt>join</tt> and not <tt>union</tt> since <tt>union</tt> is a reserved keyword in the
+ * C and C++ programming languages.
+ *
+ * Note that you most likely want to put return values of <tt>findSet()</tt> as the values for <tt>left</tt> and
+ * <tt>right</tt>.
+ *
+ * @see UnionFind#findSet
+ */
 
 /**
 .Function.joinSets
