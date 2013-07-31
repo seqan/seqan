@@ -555,7 +555,8 @@ public:
             {
                 for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_mmapReaderSinglePass); ++i)
                 {
-                    res = seqan::readRecord(id, seq, qual, *_mmapReaderSinglePass, tag);
+                    if ((res = seqan::readRecord(id, seq, qual, *_mmapReaderSinglePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                     appendValue(quals, qual);
@@ -566,7 +567,8 @@ public:
             {
                 for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_mmapReaderDoublePass); ++i)
                 {
-                    res = seqan::readRecord(id, seq, qual, *_mmapReaderDoublePass, tag);
+                    if ((res = seqan::readRecord(id, seq, qual, *_mmapReaderDoublePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                     appendValue(quals, qual);
@@ -581,7 +583,8 @@ public:
         {
             for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_gzReader); ++i)
             {
-                res = seqan::readRecord(id, seq, qual, *_gzReader, tag);
+                if ((res = seqan::readRecord(id, seq, qual, *_gzReader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
                 appendValue(quals, qual);
@@ -596,7 +599,8 @@ public:
         {
             for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_bz2Reader); ++i)
             {
-                res = seqan::readRecord(id, seq, qual, *_bz2Reader, tag);
+                if ((res = seqan::readRecord(id, seq, qual, *_bz2Reader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
                 appendValue(quals, qual);
@@ -634,7 +638,8 @@ public:
             {
                 for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_mmapReaderSinglePass); ++i)
                 {
-                    res = seqan::readRecord(id, seq, *_mmapReaderSinglePass, tag);
+                    if ((res = seqan::readRecord(id, seq, *_mmapReaderSinglePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                 }
@@ -644,7 +649,8 @@ public:
             {
                 for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_mmapReaderDoublePass); ++i)
                 {
-                    res = seqan::readRecord(id, seq, *_mmapReaderDoublePass, tag);
+                    if ((res = seqan::readRecord(id, seq, *_mmapReaderDoublePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                 }
@@ -658,7 +664,8 @@ public:
         {
             for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_gzReader); ++i)
             {
-                res = seqan::readRecord(id, seq, *_gzReader, tag);
+                if ((res = seqan::readRecord(id, seq, *_gzReader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
             }
@@ -672,7 +679,8 @@ public:
         {
             for (unsigned i = 0; (res == 0) && (i < num) && !seqan::atEnd(*_bz2Reader); ++i)
             {
-                res = seqan::readRecord(id, seq, *_bz2Reader, tag);
+                if ((res = seqan::readRecord(id, seq, *_bz2Reader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
             }
@@ -716,9 +724,10 @@ public:
         case SeqIOFileType_::FILE_TYPE_TEXT:
             if (!_hintDoublePass)
             {
-                while (!seqan::atEnd(*_mmapReaderSinglePass))
+                while (!seqan::atEnd(*_mmapReaderSinglePass) && res == 0)
                 {
-                    res = seqan::readRecord(id, seq, qual, *_mmapReaderSinglePass, tag);
+                    if ((res = seqan::readRecord(id, seq, qual, *_mmapReaderSinglePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                     appendValue(quals, qual);
@@ -727,9 +736,10 @@ public:
             }
             else
             {
-                while (!seqan::atEnd(*_mmapReaderDoublePass))
+                while (!seqan::atEnd(*_mmapReaderDoublePass) && res == 0)
                 {
-                    res = seqan::readRecord(id, seq, qual, *_mmapReaderDoublePass, tag);
+                    if ((res = seqan::readRecord(id, seq, qual, *_mmapReaderDoublePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                     appendValue(quals, qual);
@@ -742,9 +752,10 @@ public:
         case SeqIOFileType_::FILE_TYPE_GZ:
         case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
-            while (!seqan::atEnd(*_gzReader))
+            while (!seqan::atEnd(*_gzReader) && res == 0)
             {
-                res = seqan::readRecord(id, seq, qual, *_gzReader, tag);
+                if ((res = seqan::readRecord(id, seq, qual, *_gzReader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
                 appendValue(quals, qual);
@@ -757,9 +768,10 @@ public:
 #if SEQAN_HAS_BZIP2
         case SeqIOFileType_::FILE_TYPE_BZ2:
         {
-            while (!seqan::atEnd(*_bz2Reader))
+            while (!seqan::atEnd(*_bz2Reader) && res == 0)
             {
-                res = seqan::readRecord(id, seq, qual, *_bz2Reader, tag);
+                if ((res = seqan::readRecord(id, seq, qual, *_bz2Reader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
                 appendValue(quals, qual);
@@ -794,9 +806,10 @@ public:
         case SeqIOFileType_::FILE_TYPE_TEXT:
             if (!_hintDoublePass)
             {
-                while (!seqan::atEnd(*_mmapReaderSinglePass))
+                while (!seqan::atEnd(*_mmapReaderSinglePass) && res == 0)
                 {
-                    res = seqan::readRecord(id, seq, *_mmapReaderSinglePass, tag);
+                    if ((res = seqan::readRecord(id, seq, *_mmapReaderSinglePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                 }
@@ -804,9 +817,10 @@ public:
             }
             else
             {
-                while (!seqan::atEnd(*_mmapReaderDoublePass))
+                while (!seqan::atEnd(*_mmapReaderDoublePass) && res == 0)
                 {
-                    res = seqan::readRecord(id, seq, *_mmapReaderDoublePass, tag);
+                    if ((res = seqan::readRecord(id, seq, *_mmapReaderDoublePass, tag)) != 0)
+                        continue;
                     appendValue(ids, id);
                     appendValue(seqs, seq);
                 }
@@ -818,9 +832,11 @@ public:
         case SeqIOFileType_::FILE_TYPE_GZ:
         case SeqIOFileType_::FILE_TYPE_GZ_DIRECT:
         {
-            while (!seqan::atEnd(*_gzReader))
+            while (!seqan::atEnd(*_gzReader) && res == 0)
             {
-                res = seqan::readRecord(id, seq, *_gzReader, tag);
+                if ((res = seqan::readRecord(id, seq, *_gzReader, tag)) != 0)
+                    continue;
+
                 appendValue(ids, id);
                 appendValue(seqs, seq);
             }
@@ -832,9 +848,10 @@ public:
 #if SEQAN_HAS_BZIP2
         case SeqIOFileType_::FILE_TYPE_BZ2:
         {
-            while (!seqan::atEnd(*_bz2Reader))
+            while (!seqan::atEnd(*_bz2Reader) && res == 0)
             {
-                res = seqan::readRecord(id, seq, *_bz2Reader, tag);
+                if ((res = seqan::readRecord(id, seq, *_bz2Reader, tag)) != 0)
+                    continue;
                 appendValue(ids, id);
                 appendValue(seqs, seq);
             }
