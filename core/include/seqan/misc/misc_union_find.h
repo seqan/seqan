@@ -128,7 +128,7 @@ struct Value<UnionFind<TValue> const>
 // ----------------------------------------------------------------------------
 
 /*!
- * @mfn UnionFind#Value
+ * @mfn UnionFind#GetValue
  * @brief Returns the get-value type for the given UnionFind specialization.
  *
  * @signature Value<TUnionFind>::Type
