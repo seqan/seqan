@@ -19,3 +19,4 @@ TODOs
 
  * Create a documentation checklist:
   * each top level item (class, global function, global metafucntion etc) must have a @headerfile set.
+  * all global interface functions for a type must be implemented in the same header/module.

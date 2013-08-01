@@ -23,14 +23,14 @@ def printParserError(e):
         msg = 'Parse error'
     if e.token:
         # Print location and error message.
-        location = [e.token.file_name, e.token.lineno, e.token.column]
+        location = [e.token.file_name, e.token.lineno + 1, e.token.column]
         print >>sys.stderr, '%s:%d:%d: error: %s' % tuple(location + [msg])
         # Load line with error and print it with an indicator of the error.
         fcontents = open(e.token.file_name).read()
         lines = fcontents.splitlines()
-        if e.token.lineno + 1 >= len(lines):
+        if e.token.lineno >= len(lines):
             return  # Invalid line number.
-        print >>sys.stderr, '%s' % lines[e.token.lineno + 1].rstrip()
+        print >>sys.stderr, '%s' % lines[e.token.lineno].rstrip()
         print >>sys.stderr, e.token.column * ' ' + '^'
     else:
         print >>sys.stderr, 'ERROR: %s' % msg
