@@ -52,6 +52,37 @@ namespace seqan {
 // Class SimpleType
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class SimpleType
+ * @implements FiniteOrderedAlphabetConcept
+ * @headerfile <seqan/basic.h>
+ * 
+ * @brief Implementation for "simple" types.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            class SimpleType;
+ * 
+ * @tparam TSpec  Specialization tag.
+ * @tparam TValue Type that stores the values of an instance.  TValue must be a simple type.
+ * 
+ * @section Remarks
+ * 
+ * A "simple type" is a C++ type that can be constructed without constructor, destructed without destructor and copied
+ * without copy constructor or assignment operator.  All basic types (like <tt>char</tt>, <tt>int</tt> or
+ * <tt>float</tt>) are simple. Pointers, references and arrays of simple types are simple.  POD types ("plain old data
+ * types"), that are - simplified spoken - C++-types that already existed in C, are simple too.
+ * 
+ * Arrays of simple types can be copied very fast by memory manipulation routines, but the default implementation of
+ * functions like arrayCopyForward and arrayCopy are not optimized for simple types this way.  But for classes derived
+ * from <tt>SimpleType</tt>, optimized variants of array manipulation functions are applied.
+ * 
+ * Note that simple types need not to be derived or specialized from <tt>SimpleType</tt>, but it could be convenient to
+ * do so.
+ * 
+ * @see IsSimple
+ * @see SimpleConceptType
+ */
+
 /**
 .Class.SimpleType:
 ..cat:Basic

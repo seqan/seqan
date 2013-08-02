@@ -79,6 +79,27 @@ struct BitsPerValue<bool>
 
 // TODO(holtgrew): This should probably become a concept.
 
+/*!
+ * @mfn IsCharType
+ * @headerfile <seqan/basic.h>
+ * 
+ * @brief Return whether the argument is <tt>char</tt>, <tt>wchar_t</tt>, <tt>char const</tt>, or <tt>wchar_t
+ *               const</tt>.
+ * 
+ * @signature IsCharType<T>::Type;
+ * @signature IsCharType<T>::VALUE;
+ * 
+ * @tparam T Type to check type of.
+ * 
+ * @section Remarks
+ * 
+ * This metafunction is used to enable and disable templated adaptions of arrays to sequences for builtin character
+ * types only.
+ * 
+ * The return value is <tt>True</tt>/<tt>true</tt> for <tt>char</tt>, <tt>wchar_t</tt>, <tt>char const</tt>, and
+ * <tt>wchar_t const</tt>.
+ */
+
 /**
 .Metafunction.IsCharType
 ..cat:Alphabets

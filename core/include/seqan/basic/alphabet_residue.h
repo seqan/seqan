@@ -71,6 +71,27 @@ template <typename T> struct BaseAlphabet;
 // Specialization Dna
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class Dna
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @brief Alphabet for DNA.
+ * 
+ * @signature typedef SimpleType<unsigned char, Dna_> Dna;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>Dna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
+ * 3</tt>.
+ * 
+ * Objects of type <tt>Dna</tt> can be converted to various other types and vice versa.  An object that has a value not
+ * in <tt>{'A', 'C', 'G', 'T'}</tt> is converted to <tt>'A'</tt>.
+ * 
+ * @see Dna5
+ * @see DnaString
+ * @see DnaIterator
+ */
+
 /**
 .Spec.Dna
 ..cat:Alphabets
@@ -109,6 +130,27 @@ struct BitsPerValue< Dna >
 // ----------------------------------------------------------------------------
 // Specialization Dna5
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class Dna5
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @brief Alphabet for DNA including 'N' character.
+ * 
+ * @signature typedef SimpleType<unsigned char, Dna5_> Dna5;
+ * 
+ * @section Remarks
+ * 
+ * The @link ValueSize @endlink of <tt>Dna5</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1,
+ * 'G' = 2, 'T' = 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
+ * 
+ * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.  An object that has a value not
+ * in <tt>{'A', 'C', 'G', 'T'}</tt> is converted to <tt>'N'</tt>.
+ * 
+ * @see Dna5Iterator
+ * @see Dna5String
+ * @see Dna
+ */
 
 /**
 .Spec.Dna5:
@@ -155,6 +197,28 @@ unknownValueImpl(Dna5 *)
 // ----------------------------------------------------------------------------
 // Specialization DnaQ
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class DnaQ
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @implements AlphabetWithQualitiesConcept
+ * @brief Alphabet for DNA plus PHRED quality.
+ * 
+ * @signature typedef SimpleType<unsigned char, DnaQ_> DnaQ;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>DnaQ</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
+ * 3</tt>.
+ * 
+ * Objects of type <tt>DnaQ</tt> can be converted to various other types and vice versa.
+ * 
+ * Note that the default quality value is set to 60.
+ * 
+ * @see Dna5Q
+ * @see Dna
+ */
 
 /**
 .Spec.DnaQ:
@@ -252,6 +316,28 @@ void assignQualityValue(char & q, DnaQ c)
 // ----------------------------------------------------------------------------
 // Specialization Dna5Q
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class Dna5Q
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @implements AlphabetWithQualitiesConcept
+ * @brief Alphabet for DNA plus PHRED quality including 'N' character.
+ * 
+ * @signature typedef SimpleType<unsigned char, Dna5Q_> Dna5Q;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>Dna5Q</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
+ * 3</tt>. The 'N' character ("unknown nucleotide") is encoded by 4.
+ * 
+ * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.
+ * 
+ * Note that the default quality value is set to 60.
+ * 
+ * @see Dna5
+ * @see DnaQ
+ */
 
 /**
 .Spec.Dna5Q
@@ -380,6 +466,29 @@ void assignQualityValue(char & q, Dna5Q c)
 // Specialization Rna
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class Rna
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @brief Alphabet for RNA.
+ * 
+ * @signature typedef SimpleType<unsigned char, Rna_> Rna;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>Rna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
+ * 3</tt>.
+ * 
+ * Objects of type <tt>Rna</tt> can be converted to various other types and vice versa.  An object that has a value not
+ * in <tt>{'A', 'C', 'G', 'U'}</tt> is converted to <tt>'A'</tt>.
+ * 
+ * <tt>Rna</tt> is typedef for <tt>SimpleType<char,Rna_></tt>, while <tt>Rna_</tt> is a helper specialization tag class.
+ * 
+ * @see Rna5
+ * @see RnaString
+ * @see RnaIterator
+ */
+
 /**
 .Spec.Rna:
 ..cat:Alphabets
@@ -418,6 +527,27 @@ struct BitsPerValue<Rna>
 // ----------------------------------------------------------------------------
 // Specialization Rna5
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class Rna5
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @brief Alphabet for RNA including 'N' character.
+ * 
+ * @signature typedef SimpleType<unsigned char, Rna5_> Rna5;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>Rna5</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
+ * 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
+ * 
+ * Objects of type <tt>Rna5</tt> can be converted to various other types and vice versa.  An object that has a value not
+ * in <tt>{'A', 'C', 'G', 'U'}</tt> is converted to <tt>'N'</tt>.
+ * 
+ * @see Rna5Iterator
+ * @see Rna5String
+ * @see Rna
+ */
 
 /**
 .Spec.Rna5:
@@ -464,6 +594,28 @@ unknownValueImpl(Rna5 *)
 // Specialization Iupac
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): We should support retrieval of nucleotides represented by a IUPAC char.
+
+/*!
+ * @class Iupac
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @brief Iupac code for DNA.
+ * 
+ * @signature typedef SimpleType<unsigned char, Iupac_> Iupac;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>Iupac</tt> is 16.  The nucleotides are enumerated from 0 to 19 in this order: 'U'=0, 'T', 'A',
+ * 'W', 'C', 'Y', 'M', 'H', 'G', 'K', 'R', 'D', 'S', 'B', 'V', 'N'=15.
+ * 
+ * Objects of type <tt>Iupac</tt> can be converted to various other types and vice versa.  Unknown values are converted
+ * to <tt>'N'</tt>.
+ *
+ * @see IupacString
+ * @see IupacIterator
+ */
+
 /**
 .Spec.Iupac:
 ..cat:Alphabets
@@ -507,6 +659,33 @@ unknownValueImpl(Iupac *)
 // ----------------------------------------------------------------------------
 // Specialization AminoAcid
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class AminoAcid
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * @brief IUPAC code for amino acids.
+ * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
+ * 
+ * @section Remarks
+ * 
+ * The ValueSize of <tt>AminoAcid</tt> is 24.
+ * 
+ * The amino acids are enumerated from 0 to 15 in this order:
+ * 
+ * 'A'=0, 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'=19.
+ * 
+ * The remaining 4 symbols are:
+ * 
+ * 'B'=20 (Aspartic Acid, Asparagine), 'Z'=21 (Glutamic Acid, Glutamine), 'X'=22 (unknown), '*'=23 (terminator)
+ * 
+ * Objects of type <tt>AminoAcid</tt> can be converted to <tt>char</tt> and vice versa.  Unknown values are converted to
+ * <tt>'X'</tt>.
+ * 
+ * @see ValueSize
+ * @see PeptideIterator
+ * @see Peptide
+ */
 
 /**
 .Spec.AminoAcid:
@@ -553,6 +732,20 @@ unknownValueImpl(AminoAcid *)
 // ----------------------------------------------------------------------------
 // Specialization Finite
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class Finite
+ * @extends SimpleType
+ * @headerfile <seqan/basic.h>
+ * 
+ * @brief A finite alphabet of a fixed size.
+ * 
+ * @signature template <typename TValue, unsigned SIZE>
+ *            class SimpleType<TValue, Finite<SIZE> >;
+ * 
+ * @tparam TValue The type that is use to store the values.
+ * @tparam SIZE   The ValueSize of the alphabet.
+ */
 
 /**
 .Spec.Finite:

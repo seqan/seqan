@@ -142,6 +142,27 @@ struct InternalValueSize_
 // Metafunction BytesPerValue
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn BytesPerValue
+ * @headerfile <seqan/basic.h>
+ * @brief Number of bytes needed to store a value.
+ * 
+ * @signature BytesPerValue<T>::VALUE
+ * 
+ * @tparam T The type to query.
+ * 
+ * @return VALUE The number of bytes to store on T object.
+ *
+ * @section Remarks
+ *
+ * By default, this function returns <tt>ceil(BitsPerValue&lt;T&gt;::VALUE)</tt>.  For built-in types, this is the same
+ * as <tt>sizeof(T)</tt>.
+ * 
+ * @see ValueSize
+ * @see BitsPerValue
+ * @see IntegralForValue
+ */
+
 /**
 .Metafunction.BytesPerValue:
 ..cat:Basic
@@ -164,6 +185,56 @@ struct BytesPerValue
 // ----------------------------------------------------------------------------
 // Metafunction IntegralForValue
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn IntegralForValue
+ * @headerfile <seqan/basic.h>
+ * @brief Returns an itegral type that provides sufficient space to store a value.
+ * 
+ * @signature IntegralForValue<T>::Type
+ * 
+ * @tparam T The type to query.
+ * 
+ * @return Type An integral type.
+ * 
+ * @section Remarks
+ * 
+ * The type is the smallest unsigned integral type that has a size of at least BytesPerValue bytes.
+ *
+ * <table>
+ *   <tr>
+ *     <th>sizeof(T) in bytes</th>
+ *     <th>integral types</t>
+ *   </tr>
+ *   <tr>
+ *     <td>1</td>
+ *     <td><tt>unsigned char</tt></td>
+ *   </tr>
+ *   <tr>
+ *     <td>2</td>
+ *     <td><tt>unsigned short</tt></td>
+ *   </tr>
+ *   <tr>
+ *     <td>3</td>
+ *     <td><tt>unsigned int</tt></td>
+ *   </tr>
+ *   <tr>
+ *     <td>4</td>
+ *     <td><tt>unsigned int</tt></td>
+ *   </tr>
+ *   <tr>
+ *     <td>&gt; 4</td>
+ *     <td><tt>__int64</tt></td>
+ *   </tr>
+ * </table>
+ * 
+ * Note that the returned integral type cannot store <tt>T</tt> values, if <tt>T</tt> takes more than 8 bytes, since
+ * there exists no integral type that provides sufficient space to store types of this size.
+ * 
+ * @see ValueSize
+ * @see BitsPerValue
+ * @see BytesPerValue
+ */
 
 /**
 .Metafunction.IntegralForValue:

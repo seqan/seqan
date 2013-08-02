@@ -49,6 +49,27 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class ProfileChar
+ * 
+ * @headerfile seqan/basic.h
+ * 
+ * @brief Alphabet type for profiles over another alphabet.
+ * 
+ * @signature template <typename TValue[, typename TCount[, typename TSpec]]>
+ *            class ProfileChar;
+ * 
+ * @tparam TValue The underlying alphabet type.
+ * @tparam TCount The type to use for counting, default: <tt>unsigned int</tt>.
+ * @tparam TSpec  Specialization tag, default: <tt>void</tt>
+ */
+
+/*!
+ * @var VariableType ProfileChar::count[]
+ * 
+ * @brief Array of ValueSize elements, giving counts in profile.
+ */
+
 /**
 .Class.ProfileChar
 ..summary:Alphabet type for profiles over another alphabet.
@@ -142,6 +163,17 @@ public:
 // Metafunction ValueSize
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn ProfileChar#ValueSize
+ * @brief Number of different values a value type object can have.
+ * 
+ * @signature ValueSize<T>::VALUE;
+ * 
+ * @tparam T The type to query.
+ * 
+ * @return VALUE Number of different values T can have.
+ */
+
 ///.Metafunction.ValueSize.param.T.type:Class.ProfileChar
 ///.Metafunction.ValueSize.class:Class.ProfileChar
 
@@ -155,6 +187,24 @@ struct ValueSize<ProfileChar<TValue, TCount, TSpec> >
 // ----------------------------------------------------------------------------
 // Metafunction SourceValue
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn ProfileChar#SourceValue
+ * @brief Returns underlying value for ProfileChar.
+ * 
+ * @signature SourceValue<T>::Type
+ * 
+ * @tparam T Type to query.
+ * 
+ * @return Type The type of the underlying character.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * typedef ProfileChar<Dna5>               TProfileChar;
+ * typedef SourceValue<TProfileChar>::Type TType;  // Is Dna.
+ * @endcode
+ */
 
 /**
 .Metafunction.SourceValue
