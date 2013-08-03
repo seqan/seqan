@@ -265,7 +265,7 @@ struct DisableIf2<true, T> {};
  * The following shows an example on how to properly use <tt>SEQAN_CTOR_ENABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet core/demos/basic/enable_if.cpp enable if example constructor
+ * @snippet demos/basic/enable_if.cpp enable if example constructor
  */
 
 /**
@@ -309,7 +309,7 @@ To avoid an unused argument warning, call $ignoreUnusedVariableWarning(dummy)$ i
  * The following shows an example on how to properly use <tt>SEQAN_CTOR_DISABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet core/demos/basic/enable_if.cpp disable if example constructor
+ * @snippet demos/basic/enable_if.cpp disable if example constructor
  */
 
 /**
@@ -358,7 +358,7 @@ String(T const & s, SEQAN_CTOR_DISABLE_IF(IsProxy<T> >)) :  // macro must be ext
  * The following shows an example on how to properly use <tt>SEQAN_FUNC_ENABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet core/demos/basic/enable_if.cpp enable if example function
+ * @snippet demos/basic/enable_if.cpp enable if example function
  */
 
 /**
@@ -412,7 +412,7 @@ length(TContainer & cont)
  * The following shows an example on how to properly use <tt>SEQAN_FUNC_DISABLE_IF</tt> as the last argument to the
  * constructor and suppressing the unused variable warning for the dummy parameter.
  *
- * @snippet core/demos/basic/enable_if.cpp disable if example function
+ * @snippet demos/basic/enable_if.cpp disable if example function
  */
 
 /**

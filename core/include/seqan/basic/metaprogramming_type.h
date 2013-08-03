@@ -58,6 +58,21 @@ namespace seqan {
 // Metafunction IsSameType
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn IsSamEtype
+ * @headerfile <seqan/basic.h>
+ * @brief Metaprogramming type comparison.
+ *
+ * @signature IsSameType<T1, T2>::Type;
+ * @signature IsSameType<T1, T2>::VALUE;
+ *
+ * @tparam T1 Left-hand argument.
+ * @tparam T2 Right-hand argument.
+ *
+ * @return Type  Either True or False, depending on whether T1 is the same type as T2.
+ * @return VALUE The same as <tt>Type::VALUE</tt>.
+ */ 
+
 /**
 .Metafunction.IsSameType
 ..cat:Metaprogramming
@@ -79,6 +94,25 @@ struct IsSameType<Type1, Type1> : True {};
 // ----------------------------------------------------------------------------
 // Metafunction MakeUnsigned
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn MakeUnsigned
+ * @headerfile <seqan/basic.h>
+ * @brief Convert an integral value into its unsigned variant.
+ *
+ * Returns T itself if T is not signed.
+ *
+ * @signature MakeUnsigned<T>::Type;
+ *
+ * @tparam T Input integral type.
+ *
+ * @return Type The unsigned version of T.
+ *
+ * @section Remarks
+ *
+ * The function is defined for all builtin integral types and with a fallback to that returns T if T is not a built-in
+ * integral value.  You can specialize the metafunction for your custom types.
+ */
 
 /**
 .Metafunction.MakeUnsigned:
@@ -112,7 +146,7 @@ struct MakeUnsigned<T const>
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
-/**
+/*
 .Internal.MakeUnsigned_:
 ..signature:MakeUnsigned_<T>
 ..status:deprecated, please use @Metafunction.MakeUnsigned@
@@ -124,6 +158,25 @@ struct MakeUnsigned_ : MakeUnsigned<T> {};
 // ----------------------------------------------------------------------------
 // Metafunction MakeSigned
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn MakeSigned
+ * @headerfile <seqan/basic.h>
+ * @brief Convert an integral value into its signed variant.
+ *
+ * Returns T if T is already signed.
+ *
+ * @signature MakeSigned<T>::Type;
+ *
+ * @tparam T Input integral type.
+ *
+ * @return Type The signed version of T.
+ *
+ * @section Remarks
+ *
+ * The function is defined for all builtin integral types and with a fallback to that returns T if T is not a built-in
+ * integral value.  You can specialize the metafunction for your custom types.
+ */
 
 /**
 .Metafunction.MakeSigned:
@@ -158,7 +211,7 @@ struct MakeSigned<T const>
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
-/**
+/*
 .Internal.MakeSigned_:
 ..signature:MakeSigned_<T>
 ..status:deprecated, please use @Metafunction.MakeSigned@
@@ -170,6 +223,18 @@ struct MakeSigned_ : MakeSigned<T> {};
 // ----------------------------------------------------------------------------
 // Metafunction RemoveReference
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn RemoveReference
+ * @headerfile <seqan/basic.h>
+ * @brief Converts a (reference) type into the same type without a reference.
+ *
+ * @signature RemoveReference<T>::Type;
+ *
+ * @tparam T The input type.
+ *
+ * @return Type A corresponding non-reference type, e.g. <tt>int</tt> for <tt>T = &amp; int</tt>.
+ */
 
 /**
 .Metafunction.RemoveReference:
@@ -184,7 +249,7 @@ struct MakeSigned_ : MakeSigned<T> {};
 */
 
 // TODO(holtgrew): Internal metafunction superflous?
-/**
+/*
 .Internal.RemoveReference_:
 ..signature:RemoveReference_<T>
 ..status:deprecated, please use @Metafunction.RemoveReference@
@@ -207,6 +272,18 @@ struct RemoveReference_ : RemoveReference<T> {};
 // Metafunction RemoveConst
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn RemoveConst
+ * @headerfile <seqan/basic.h>
+ * @brief Converts a (const) type into the corresponding non-const type.
+ *
+ * @signature RemoveConst<T>::Type;
+ *
+ * @tparam T Input type.
+ *
+ * @return Type A corresponding non-const type, e.g. <tt>int</tt> for <tt>T = const int</tt>.
+ */
+
 /**
 .Metafunction.RemoveConst:
 ..cat:Basic
@@ -218,7 +295,7 @@ struct RemoveReference_ : RemoveReference<T> {};
 ..include:seqan/basic.h
 */
 
-/**
+/*
 .Internal.RemoveConst_:
 ..signature:RemoveConst_<T>
 ..status:deprecated, please use @Metafunction.RemoveConst@
@@ -285,7 +362,7 @@ struct CopyConst_<TFrom const, TTo>
 
 // TODO(holtgrew): Make public, complete documentation.
 
-/**
+/*
 .Internal.IsConst_:
 ..signature:IsConst_<T>
 ..returns:@Tag.Logical Values.tag.True@ if $T$ is $t const$, otherwise @Tag.Logical Values.tag.False@.
@@ -305,7 +382,7 @@ struct IsConst_<T const> : True
 
 // TODO(holtgrew): Make public, complete documentation or deletion candidate.
 
-/**
+/*
 .Internal.ClassIdentifier_:
 ..signature:void * ClassIdentifier_<T>::getID()
 ..returns:A void * that identifies $T$.
