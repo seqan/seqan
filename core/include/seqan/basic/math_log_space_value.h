@@ -52,6 +52,33 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class LogProb
+ * @headerfile <seqan/basic.h>
+ * @brief Value type for computation in log-space.
+ * 
+ * @signature template <[typename T]>
+ *            class LogProb;
+ * 
+ * @tparam T Floating number type to use as the basic, defaults to <tt>double</tt>.
+ * 
+ * @section Remarks
+ * 
+ * Internally, the logarithms of the original values are stored.  This is numerically more stable for multiplications
+ * and large numbers.
+ * 
+ * This type can be used like an ordinary <tt>double</tt> or <tt>float</tt> value.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * LogProb<double> x = 10;
+ * x *= 3;
+ * x += 4;
+ * int y = x;
+ * @endcode
+ */
+
 /**
 .Class.LogProb
 ..summary:Value type for computation in log-space.

@@ -78,6 +78,18 @@ inline TValue _intPow(TValue a, TExponent b)
 // Function log2()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn log2
+ * @headerfile <seqan/basic.h>
+ * @brief Computes floored logarithm of base 2 for integer types
+ * 
+ * @signature unsigned log2(i);
+ * 
+ * @param i An integer type.
+ * 
+ * @return unsigned The largest integer smaller or equal than the logarithm of <tt>i</tt>.
+ */
+
 /**
 .Function.log2
 ..cat:Miscellaneous
