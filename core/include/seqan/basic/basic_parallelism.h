@@ -40,6 +40,31 @@
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
 
+/*!
+ * @macro SEQAN_ENABLE_PARALLELISM
+ * @include <seqan/basic.h>
+ * @brief Indicates whether parallelism is enabled with value 0/1.
+ *
+ * @signature SEQAN_ENABLE_PARALLELISM
+ *
+ * By default, set to 1 if <tt>_OPENMP</tt> is defined and set to 0 otherwise.
+ *
+ * @section Examples
+ *
+ * If you want to change tihs value then you have to define this value before include any SeqAn header.
+ *
+ * @code{.cpp}
+ * #define SEQAN_ENABLE_PARALLELISM 0  // ALWAYS switch off parallelism!
+ *
+ * #include <seqan/basic.h>
+ *
+ * int main(int argc, char ** argv)
+ * {
+ *     return 0;
+ * }
+ * @endcode
+ */
+
 /**
 .Macro.SEQAN_ENABLE_PARALLELISM
 ..summary:Indicates whether parallelism is enabled with value 0/1.

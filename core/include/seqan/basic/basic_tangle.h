@@ -32,11 +32,14 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
+// TODO(holtgrew): This header contains code that does not clearly belongs somewhere else.
+
 #ifndef CORE_INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
 #define CORE_INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
 
 namespace seqan {
 
+// TODO(holtgrew): Remove this define.
 #define SEQAN_NAMESPACE_MAIN seqan
 
 // ============================================================================
@@ -103,6 +106,27 @@ struct Cargo<Pair<TKey, TCargo, TSpec> >
 // Function assignQualities()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn assignQualities
+ * @headerfile <seqan/basic.h>
+ * @brief Assign quality values between strings.
+ * 
+ * @signature void assignQualities(target, source);
+ * 
+ * @param[out] target Target string, can be a String of DnaQ or Dna5Q characters.
+ * @param[in]  source Source string.  Can be a String of int or char.
+ * 
+ * @section Remarks
+ * 
+ * The target is resized to the length of source.  This function calls assignQualityValue for all entries of
+ * <tt>target</tt> and <tt>source</tt>, look at the documentation of assignQualityValue on how the values of
+ * <tt>source</tt> are interpreted.
+ * 
+ * Note that qualities are expected to be in PHRED scale.
+ * 
+ * @see assignQualityValue
+ */
+
 /**
 .Function.assignQualities
 ..cat:Alphabets
@@ -121,7 +145,7 @@ Note that qualities are expected to be in PHRED scale.
 ..include:seqan/basic.h
 */
 
-// TODO(holtgrew): Uncomment, place somewhere that knows both iterators and assignQualityValue.
+// TODO(holtgrew): Uncomment, place somewhere that knows both iterators and assignQualityValue, maybe in module sequence?
 template <typename TDest, typename TSource>
 void assignQualities(TDest &dst, TSource const &src)
 {

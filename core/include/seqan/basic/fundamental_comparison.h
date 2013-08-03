@@ -57,6 +57,47 @@ template <typename TValue> typename ValueSize<TValue>::Type ordValue(TValue cons
 // Metafunctions
 // ============================================================================
 
+/*!
+ * @mfn CompareType
+ * @headerfile <seqan/basic.h>
+ * @brief Type to convert other types for comparisons.
+ * 
+ * @signature CompareType<T1, T2>::Type;
+ * 
+ * @tparam T2 Type of the right operand of a comparison.
+ * @tparam T1 Type of the left operand of a comparison.
+ * 
+ * @return Type The resulting type to convert other type to.
+ * 
+ * @section Remarks
+ * 
+ * Comparisons are for example operators like <tt>==</tt> or <tt><</tt>.
+ * 
+ * Do not implement, implement CompareTypeImpl instead.
+ * 
+ * Note that there is no rule that guarantees that <tt>CompareType&lt;T1, T2&gt;::Type</tt> is the same as
+ * <tt>CompareType&lt;T2, T1&gt;::Type</tt>.  It is also possible, that only one of these two types is defined.
+ * 
+ * This metafunction is used for the implementation of comparisons that involve SimpleType.
+ * 
+ * @see CompareTypeImpl
+ */
+
+/*!
+ * @mfn CompareTypeImpl
+ * @headerfile <seqan/basic.h>
+ * @brief Implementation of CompareType.
+ * 
+ * @signature CompareTypeImpl<T1, T2>::Type;
+ * 
+ * @tparam T2 Type of the right operand of a comparison.
+ * @tparam T1 Type of the left operand of a comparison.
+ * 
+ * @return Type The type to use for the comparison.
+ * 
+ * @see CompareType
+ */
+
 /**
 .Metafunction.CompareType
 ..cat:Basic

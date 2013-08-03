@@ -64,6 +64,27 @@ namespace seqan {
 
 // TODO(holtgrew): This has to go to alphabet sub module, storage section, adaption.
 
+/*!
+ * @mfn IsSimple
+ * @headerfile <seqan/basic.h>
+ * @brief Tests type to be simple.
+ * 
+ * @signature IsSimple<T>::Type;
+ * 
+ * @tparam T Type that is tested.
+ * 
+ * @return Type Either True or False, depending on T being a "POD" type.
+ * 
+ * @section Remarks
+ * 
+ * A simple type is a type that does not need constructors to be created, a destructor to be destroyed, and copy
+ * assignment operators or copy constructors to be copied.  All POD ("plain old data") types are simple, but some
+ * non-POD types could be simple too, e.g. some specializations of SimpleType.
+ * 
+ * @see SimpleType
+ * @see SimpleConcept
+ */
+
 /**
 .Metafunction.IsSimple
 ..cat:Basic
@@ -221,6 +242,23 @@ getValue(T * me)
 // ----------------------------------------------------------------------------
 // Function valueConstruct() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn valueConstruct
+ * @headerfile <seqan/basic.h>
+ * @brief Constructs an object at specified position.
+ * 
+ * @signature void valueConstruct(iterator [, param [, move_tag]]);
+ * 
+ * @param iterator Pointer or iterator to position where the object should be constructed.
+ * @param param    Parameter that is forwarded to constructor.
+ * @param moveTag  Instance of the move tag.  If the tag is specified, it is forwarded to the constructor, so the
+ *                 constructed object must support move construction.
+ * 
+ * @section Remarks
+ * 
+ * The type of the destructed object is the value type of <tt>iterator</tt>.
+ */
 
 /**
 .Function.valueConstruct
@@ -380,6 +418,20 @@ struct ValueDestructorProxy_
     static inline void destruct(TIterator) {}
 };
 
+/*!
+ * @fn valueDestruct
+ * @headerfile <seqan/basic.h>
+ * @brief Destoys an object at specified position.
+ * 
+ * @signature void valueDestruct(iterator);
+ * 
+ * @param iterator Pointer or iterator to position where the object should be destructed.
+ * 
+ * @section Remarks
+ * 
+ * The type of the constructed object is the value type of <tt>iterator</tt>.
+ */
+
 /**
 .Function.valueDestruct
 ..cat:Content Manipulation
@@ -413,6 +465,23 @@ valueDestruct(TIterator it)
 // ----------------------------------------------------------------------------
 // Function arrayConstruct() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayConstruct
+ * @headerfile <seqan/basic.h>
+ * @brief Construct objects in a given memory buffer.
+ * 
+ * @signature void arrayConstruct(begin, end[, value]);
+ * 
+ * @param begin Iterator to the begin of the range that is to be constructed.
+ * @param end   Iterator behind the end of the range.
+ * @param value Argument that is forwarded to the constructor.  An appropriate constructor is required.  If
+ *              <tt>value</tt> is not specified, the default constructor is used.
+ * 
+ * @section Remarks
+ * 
+ * The type of the constructed Objects is the value type of <tt>begin</tt> and <tt>end</tt>.
+ */
 
 /**
 .Function.arrayConstruct
@@ -486,6 +555,23 @@ arrayConstruct(TIterator1 begin_,
 // Function arrayConstructCopy() using iterators
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn arrayConstructCopy
+ * @headerfile <seqan/basic.h>
+ * @brief Copy constructs an array of objects into in a given memory buffer.
+ * 
+ * @signature void arrayConstructCopy(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceBegin Iterator to the first element of the source range.
+ * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
+ *                    type as <tt>sourceBegin</tt>.
+ * @param target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
+ *                    specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
+ *                    the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
+ *                    store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate (copy-) constructor that
+ *                    constructs an target objects given a source object is required.
+ */
+
 /**
 .Function.arrayConstructCopy
 ..cat:Array Handling
@@ -536,6 +622,23 @@ arrayConstructCopy(TSource1 source_begin,
 // ----------------------------------------------------------------------------
 // Function arrayConstructMove() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayConstructMove
+ * @headerfile <seqan/basic.h>
+ * @brief Move constructs an array of objects into in a given memory buffer.
+ * 
+ * @signature void arrayConstructMove(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> should have the same
+ *                    type as <tt>sourceBegin</tt>.
+ * @param sourceBegin Iterator to the first element of the source range.
+ * @param target      Pointer to the memory block the new objects will be constructed in.  The type of <tt>target</tt>
+ *                    specifies the type of the constructed objects: If <tt>T*</tt> is the type of <tt>target</tt>, then
+ *                    the function constructs objects of type <tt>T</tt>.  The memory buffer should be large enough to
+ *                    store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate move constructor that
+ *                    constructs an target objects given a source object is required.
+ */
 
 /**
 .Function.arrayConstructMove
@@ -591,6 +694,21 @@ arrayConstructMove(TSource1 source_begin,
 // Function arrayDestruct() using iterators
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn arrayDestruct
+ * @headerfile <seqan/basic.h>
+ * @brief Destroys an array of objects.
+ * 
+ * @signature void arrayDestruct(begin, end);
+ * 
+ * @param begin Iterator to the begin of the range that is to be destructed.
+ * @param end   Iterator behind the end of the range.
+ * 
+ * @section Remarks
+ * 
+ * This function does not deallocates the memory.
+ */
+
 /**
 .Function.arrayDestruct
 ..cat:Array Handling
@@ -632,6 +750,23 @@ arrayDestruct(TIterator1 begin_,
 
 // TODO(holtgrew): What is the advantage over arrayConstruct() with prototype?
 
+/*!
+ * @fn arrayFill
+ * @headerfile <seqan/basic.h>
+ * @brief Assigns one object to each element of a range.
+ * 
+ * @signature void arrayFill(begin, end, value[, parallelTag]);
+ * 
+ * @param begin       Iterator to the begin of the range that is to be filled.
+ * @param end         Iterator behind the end of the range.
+ * @param value       Argument that is assigned to all <tt>count</tt> objects in <tt>array</tt>.
+ * @param parallelTag Tag to enable/disable parallelism. Types: Serial, Parallel
+ * 
+ * @section Remarks
+ * 
+ * All objects <tt>target_begin[0]</tt> to <tt>target_begin[count-1]</tt> are set to <tt>value</tt>.
+ */
+
 /**
 .Function.arrayFill
 ..cat:Array Handling
@@ -671,6 +806,28 @@ arrayFill(TIterator begin_,
 // ----------------------------------------------------------------------------
 // Function arrayCopyForward() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayCopyForward
+ * @headerfile <seqan/basic.h>
+ * @brief Copies a range of objects into another range of objects starting from the first element.
+ * 
+ * @signature void arrayCopyForward(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                    as <tt>sourceBegin</tt>.
+ * @param sourceBegin Iterator to the first element of the source array.
+ * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                    long as the source range.
+ * 
+ * @section Remarks
+ * 
+ * Be careful if source and target range overlap, because in this case some source elements could be accidently
+ * overwritten before they are copied.
+ * 
+ * If there is no need for the source elements to persist, consider to use arrayMoveForward instead to improve
+ * performance.
+ */
 
 /**
 .Function.arrayCopyForward
@@ -712,6 +869,33 @@ arrayCopyForward(TSource1 source_begin,
 // ----------------------------------------------------------------------------
 // Function arrayCopyBackward() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayCopyBackward
+ * @headerfile <seqan/basic.h>
+ * @brief Copies a range of objects into another range of objects starting from the last element.
+ * 
+ * @signature void arrayCopyBackward(source_begin, source_end, target);
+ * 
+ * @param sourceBegin Iterator to the first element of the source array.
+ * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                    as <tt>source_begin</tt>.
+ * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                    long as the source range.
+ * 
+ * @section Remarks
+ * 
+ * Be careful if source and target range overlap, because in this case some source elements could be accidently
+ * overwritten before they are moved.
+ * 
+ * If source and target do not overlap, consider to use the function arrayCopyForward instead that is faster in some
+ * cases.
+ * 
+ * If there is no need for the source elements to persist, consider to use arrayMoveBackward instead to improve
+ * performance.
+ * 
+ * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>::std::copy_backward</tt>.
+ */
 
 /**
 .Function.arrayCopyBackward
@@ -759,6 +943,29 @@ arrayCopyBackward(TSource1 source_begin,
 // Function arrayCopy() using iterators
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn arrayCopy
+ * 
+ * @headerfile seqan/basic.h
+ * 
+ * @brief Copies a range of objects into another range of objects.
+ * 
+ * @signature void arrayCopy(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
+ *                    as <tt>sourceBegin</tt>.
+ * @param sourceBegin Iterator to the first element of the source range.
+ * @param target      Iterator to the first element of the target range.The target capacity should be at least as long
+ *                    as the source range.
+ * 
+ * @section Remarks
+ * 
+ * If source and target range do not overlap, consider to use arrayCopyForward instead to improve performance.
+ * 
+ * If there is no need for the source elements to persist, consider to use arrayMoveForward instead to improve
+ * performance.
+ */
+
 /**
 .Function.arrayCopy
 ..cat:Array Handling
@@ -799,6 +1006,28 @@ inline void arrayCopy(TSource1 source_begin,
 // ----------------------------------------------------------------------------
 // Function arrayMoveForward() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayMoveForward
+ * @headerfile <seqan/basic.h>
+ * @brief Moves a range of objects into another range of objects starting from the first element.
+ * 
+ * @signature void arrayMoveForward(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                    as <tt>sourceBegin</tt>.
+ * @param sourceBegin Iterator to the first element of the source array.
+ * @param target      Iterator to the first element of the target array.  The target capacity should be at least as
+ *                    long as the source range.
+ * 
+ * @section Remarks
+ * 
+ * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
+ * to use arrayCopyForward instead.
+ * 
+ * Be careful if source and target range overlap, because in this case some source elements could be accidently
+ * overwritten before they are moved.
+ */
 
 /**
 .Function.arrayMoveForward
@@ -847,6 +1076,33 @@ arrayMoveForward(TSource1 source_begin,
 // ----------------------------------------------------------------------------
 // Function arrayMoveBackward() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayMoveBackward
+ * @headerfile <seqan/basic.h>
+ * @brief Moves a range of objects into another range of objects starting from the last element.
+ * 
+ * @signature void arrayMoveBackward(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceEnd   Iterator behind the last element of the source array.  <tt>sourceEnd</tt> must have the same type
+ *                    as <tt>sourceBegin</tt>.
+ * @param sourceBegin Iterator to the first element of the source array.
+ * @param target      Iterator to the first element of the target array.The target capacity should be at least as long
+ *                    as the source range.
+ * 
+ * @section Remarks
+ * 
+ * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
+ * to use arrayCopyBackward instead.
+ * 
+ * Be careful if source and target range overlap, because in this case some source elements could be accidently
+ * overwritten before they are moved.
+ * 
+ * If source and target do not overlap, consider to use the function arrayMoveForward instead that is faster in some
+ * cases.
+ * 
+ * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>::std::copy_backward</tt>.
+ */
 
 /**
 .Function.arrayMoveBackward
@@ -900,6 +1156,29 @@ arrayMoveBackward(TSource1 source_begin,
 // Function arrayMove using iterators
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn arrayMove
+ * @headerfile <seqan/basic.h>
+ * @brief Moves a range of objects into another range of objects.
+ *
+ * @signature void arrayMove(sourceBegin, sourceEnd, target);
+ * 
+ * @param sourceBegin Iterator to the first element of the source range.
+ * @param sourceEnd   Iterator behind the last element of the source range.  <tt>sourceEnd</tt> must have the same type
+ *                    as <tt>sourceBegin</tt>.
+ * @param target      Iterator to the first element of the target range.  The target capacity should be at least as
+ *                    long as the source range.
+ * 
+ * @section Remarks
+ * 
+ * The function possibly clears (but does not destroy) the source elements.  If source elements must persist, consider
+ * to use arrayCopy instead.
+ * 
+ * If source and target range do not overlap, consider to use arrayMoveForward instead to improve performance.
+ * 
+ * Don't confuse this function with the standard <tt>move</tt> function that resembles arrayCopy.
+ */
+
 /**
 .Function.arrayMove
 ..cat:Array Handling
@@ -944,6 +1223,30 @@ arrayMove(TSource1 source_begin,
 // ----------------------------------------------------------------------------
 // Function arrayClearSpace() using iterators
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn arrayClearSpace
+ * @headerfile <seqan/basic.h>
+ * @brief Destroys the begin of an array and keeps the rest.
+ * 
+ * @signature void arrayClearSpace(arrBegin, arrLength, keepFrom, moveTo);
+ * 
+ * @param arrBegin  Pointer to the first element of the array.
+ * @param keepFrom  Offset of the first object that will be kept.
+ * @param arrLength Length of the array.
+ * @param moveTo    Offset the first kept object will get at the end of the function.
+ * 
+ * @section Remarks
+ * 
+ * The objects <tt>arr[keep_from]</tt> to <tt>arr[arr_length-1]</tt> are moved to the area beginning at positions
+ * <tt>move_to</tt>. All objects in <tt>arr[0]</tt> to <tt>arr[keep_from-1]</tt> are destroyed. After this function, the
+ * first <tt>move_to</tt> positions of the array are free and dont contain objects.
+ * 
+ * The array must have at least enough space to store <tt>arr_length + move_to - keep_from</tt> objects.
+ * 
+ * The objects from <tt>arr[0]</tt> to <tt>arr[array_length-1]</tt> have to be initialized/constructed, arrays beyond
+ * <tt>arr[array_length-1]</tt> are assumed not to be constructed. If this assumption is violated, memory might leak.
+ */
 
 /**
 .Function.arrayClearSpace

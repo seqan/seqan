@@ -55,18 +55,6 @@ namespace seqan {
 // Function arrayFill
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn arrayFill
- * @brief Fill a range.
- *
- * @signature void arrayFill(begin, end, value, parallelTag);
- *
- * @param[out] begin       The beginning of the range to fill.
- * @param[out] end         The end of the range to fill.
- * @param[in]  value       The value to fill <tt>[begin, end)</tt>.
- * @param[in]  parallelTag The tag to use for parallelism, one of <tt>Serial</tt> and <tt>Parallel</tt>.
- */
-
 /**
 .Function.arrayFill
 ..signature:arrayFill(begin, end, value, parallelTag)
