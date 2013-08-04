@@ -57,6 +57,17 @@ void assignValue(TDest &, TSource const &);
 // Metafunctions
 // ============================================================================
 
+/*!
+ * @mfn HasMoveConstructor
+ * @headerfile <seqan/basic.h>
+ * @brief Query whether a class has a move constructor.
+ * 
+ * @signature HasMoveConstructor<T>::Type;
+ * @signature HasMoveConstructor<T>::VALUE;
+ * 
+ * @tparam T Type to query for availability of move constructor.
+ */
+
 /**
 .Metafunction.HasMoveConstructor
 ..summary:Query whether a class has a move constructor.
@@ -81,6 +92,19 @@ struct HasMoveConstructor
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn assign
+ * @headerfile <seqan/basic.h>
+ * @brief Assigns one object to another object.
+ *
+ * @signature void assign(target, source);
+ *
+ * @param[out] target Reference to assign to.
+ * @param[in]  source Value to assign.
+ *
+ * Assign value of source to target.
+ */
 
 /**
 .Function.assign
@@ -144,6 +168,17 @@ assign(Proxy<TTargetSpec> & target,
 // Function set()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn set
+ * @headerfile <seqan/basic.h>
+ * @brief Assigns one object to another object avoiding to copy contents.
+ *
+ * @signature set(target, source);
+ *
+ * @param[out] target Reference to the set to source.
+ * @param[in]  source Value to set to target.
+ */
+
 /**
 .Function.set
 ..summary:Assigns one object to another object avoiding to copy contents.
@@ -196,6 +231,17 @@ set(TTarget const & target,
 // ----------------------------------------------------------------------------
 // Function move()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn move
+ * @headerfile <seqan/basic.h>
+ * @brief Hands over content from one object to another object.
+ *
+ * @signature void move(target, source);
+ *
+ * @param[out] target Where to move source to.
+ * @param[in]  source What to move to target.
+ */
 
 /**
 .Function.move

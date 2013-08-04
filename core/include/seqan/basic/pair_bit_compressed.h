@@ -47,6 +47,30 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BitPackedPair
+ * @extends Pair
+ * @headerfile <seqan/basic.h>
+ * @brief Stores two arbitrary objects. Saves memory by packing bits with bit fields.
+ *
+ * @signature template <typename T1, typename T2, unsigned BITSIZE1, unsigned BITSIZE2>
+ *            class Pass;
+ *
+ * @tparam T1       Type of first entry.
+ * @tparam T2       Type of second entry.
+ * @tparam BITSIZE1 Number of bits to store for <tt>T1</tt>.
+ * @tparam BITSIZE2 Number of bits to store for <tt>T2</tt>.
+ *
+ * Useful for external storage.
+ *
+ * @section Remarks
+ *
+ * Memory access could be slower. Direct access to members by pointers is not allowed.
+ *
+ * Functions <tt>value()</tt> is not implemented yet since there it would require using a proxy. Use
+ * <tt>getValue()</tt>, <tt>assignValue()</tt>, <tt>moveValue()</tt>, <tt>setValue()</tt> instead.
+ */
+
 /**
 .Spec.Bit Packed Pair:
 ..cat:Aggregates

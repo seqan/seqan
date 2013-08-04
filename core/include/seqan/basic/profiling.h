@@ -177,6 +177,24 @@ namespace seqan
     inline ProfileFile_* & _proPFileStream()    { return ProfileData_<>::_proPFileStream; }
 //IOREV
 
+/*!
+ * @fn cpuTime
+ * @headerfile <seqan/basic.h>
+ * @brief Returns the cpu time in seconds.
+ * 
+ * @signature double cpuTime();
+ * 
+ * @return double CPU time stamp in seconds.
+ * 
+ * @section Remarks
+ * 
+ * Calls <tt>clock</tt> to retrieve the processor time used by the running thread. This implies that the thread's
+ * processor time does not tick if the thread is suspended. While this has its advantages, benchmarks should generally
+ * focus on wall clock time, not processor time. Wall clock time is returned by sysTime.
+ * 
+ * @see sysTime
+ */
+
 /**
 .Function.cpuTime
 ..cat:Miscellaneous
@@ -206,6 +224,42 @@ Wall clock time is returned by @Function.sysTime@.
         return (ProfileData_<>::_proCpuTimeOffset + now) / (_proFloat)CLOCKS_PER_SEC;
     }
 
+/*!
+ * @fn sysTime
+ * @headerfile <seqan/basic.h>
+ * @brief Returns the system time in seconds.
+ * 
+ * @signature double sysTime();
+ * 
+ * @return double A <tt>double</tt>, system time stamp in seconds. Types: nolink:double
+ * 
+ * @section Remarks
+ * 
+ * In contrast to cpuTime, the system time corresponds to the wall clock time under Linux and Mac OS X.  Under Windows
+ * sysTime returns the result of cpuTime.
+ * 
+ * Use this for benchmarking uner Linux and Mac Os X.
+ * 
+ * Calls <tt>clock_gettime</tt> under Linux and <tt>gettimeofday</tt> under Mac OS X.
+ * 
+ * @section Examples
+ * 
+ * We can use sysTime to instrument our code for profiling/timing information quite robustly. The following demonstrates
+ * how the Function.sysTime is used in many SeqAn apps for collecting timing information.
+ * 
+ * @code{.cpp}
+ * bool printTiming = true;
+ *  
+ * // ...
+ *  
+ * double startTime = sysTime();
+ * // Do some complex calculation.
+ * if (printTiming)
+ *     std::cerr << "Some complex calculation too " << sysTime() - startTime << " s." << std::endl;
+ * @endcode
+ *
+ * @see cpuTime
+ */
 
 /**
 .Function.sysTime

@@ -54,6 +54,49 @@ namespace seqan {
 // Tag Tag<T>
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class Tag
+ * @headerfile <seqan/basic.h>
+ * @brief Template for tag definition.
+ * 
+ * @signature template <typename T>
+ *            struct Tag;
+ *
+ * @tparam T Any parameter less types.
+ * 
+ * @section Remarks
+ * 
+ * This <tt>struct</tt> is defined such that parameter less tags are easier recognizeable.  This is best explained with
+ * the example below.
+ * 
+ * @section Examples
+ * 
+ * Usually, tags are defined in the following way.
+ * 
+ * @code{.cpp}
+ * struct SomeTag_;
+ * typedef Tag<SomeTag_> SomeTag;
+ * @endcode
+ *
+ * They are then used as follows.
+ * 
+ * @code{.cpp}
+ * template <typename T>
+ * void f(T const & x, SomeTag const & tag)
+ * {
+ *     // ...
+ * }
+ *  
+ * // Somewhere else:
+ * f(3, SomeTag());
+ * @endcode
+ *
+ * This has the advantages that (1) the type of tag parameters is printed as <tt>Tag<SomeTag_></tt> in compiler error
+ * traces.  Furthermore, (2) parameter less tags can be defined redundantly in multiple headers and we can still
+ * instantiate them anywhere where they are declared.  The latter (2) cannot be achieved with only forward declaration
+ * (<tt>struct SomeTag;</tt>) or full declarations (<tt>struct SomeTag {};</tt>) everywhere.
+ */
+
 /**
 .Tag.Tag
 ..cat:Fundamental
@@ -91,6 +134,14 @@ struct Tag {};
 // Tag Default
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag Default
+ * @headerfile <seqan/basic.h>
+ * @brief Tag that specifies default behaviour.
+ *
+ * @signature typedef Tag<Default_> Default;
+ */
+
 /**
 .Tag.Default:
 ..cat:Basic
@@ -104,6 +155,16 @@ typedef Tag<Default_> Default;
 // ----------------------------------------------------------------------------
 // Tag Nothing
 // ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Should use Tag<>.
+
+/*!
+ * @tag Nothing
+ * @headerfile <seqan/basic.h>
+ * @brief Tag tha trepresents an absent parameter or absent type.
+ *
+ * @signature struct Nothing {};
+ */
 
 /**
 .Tag.Nothing:
@@ -120,6 +181,47 @@ struct Nothing {};
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): This should probably go into basic_transport.h.
+
+/*!
+ * @tag Move
+ * @headerfile <seqan/align.h>
+ * @brief Switch to force move.
+ *
+ * @signature typedef Tag<Move_> Move;
+ * 
+ * @section Remarks
+ * 
+ * The difference between move constructor and copy constructor is that the source object is not copied but moved into
+ * the target object.  The source object can lose its content and will be empty after this operation in this case.  A
+ * move constructor can sigificantly faster than a copy constructor.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * String source("hello");
+ * String target(source, Move()); // source is moved to target
+ * std::cout << source; //nothing printed since source lost content
+ * std::cout << target; //"hello"
+ * @endcode
+ *
+ * Move constructors are like copy-constructors.  However, their argument is not const.
+ * 
+ * @code{.cpp}
+ * class Klass
+ * {
+ * public:
+ *     seqan::String m;
+ *  
+ *     // Copy constructor, other is left untouched.
+ *     Klass(Klass const & other) { ... }
+ *  
+ *     // Move constructor, leaves other and its members in an "empty" state.
+ *     Klass(Klass & other, seqan::Move const &) { ... }
+ * };
+ * @endcode
+ *
+ * @see move
+ */
 
 /**
 .Tag.Move Switch:
@@ -189,6 +291,14 @@ typedef Tag<GoEnd_> GoEnd;
 // Tag Serial
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag Serial
+ * @headerfile <seqan/basic.h>
+ * @brief Tag to select a non-parallel implementation of an algorithm.
+ *
+ * @signature typedef<Serial_> Serial;
+ */
+
 /**
 .Tag.Serial:
 ..cat:Parallelism
@@ -203,6 +313,18 @@ typedef Tag<Serial_> Serial;
 // ----------------------------------------------------------------------------
 // Tag TagList<TTag, TNext>
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class TagList
+ * @headerfile <seqan/basic.h>
+ * @brief A structure to represent a list of tags.
+ *
+ * @signature template <[typename TTag[, typename TSubList]]>
+ *            struct TagList;
+ *
+ * @tparam TTag     The tag of the front for the list.
+ * @tparam TSubList Nested list.
+ */
 
 /**
 .Tag.TagList:
@@ -226,6 +348,23 @@ struct TagList
 // ----------------------------------------------------------------------------
 // Class TagSelector
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class TagSelector
+ * @headerfile <seqan/basic.h>
+ * @brief A structure to select a tag from a @link TagList @endlink.
+ * 
+ * @signature template <typename TTagList>
+ *            struct TagSelector;
+ * 
+ * @tparam TTagList A tag list.
+ */
+
+/*!
+ * @var T TagSelector::tagId
+ * @headerfile <seqan/basic.h>
+ * @brief Stores the index of a Tag in the tag list.
+ */
 
 /**
 .Class.TagSelector:
@@ -292,6 +431,14 @@ value(TagSelector<TTagList> const &selector)
 
 // TODO(holtgrew): Should probably not be defined here.
 
+/*!
+ * @tag DotDrawing
+ * @headerfile <seqan/basic.h>
+ * @brief Switch to trigger drawing in dot format.
+ *
+ * @signature typedef Tag<DotDrawing_> DotDrawing;
+ */
+
 /**
 .Tag.DotDrawing
 ..cat:Input/Output
@@ -306,12 +453,38 @@ typedef Tag<DotDrawing_> DotDrawing;
 // TODO(holtgrew): Should probably not be defined here.
 // TODO(holtgrew): Are these used at all?
 
+/*!
+ * @tag HammingDistance
+ * @headerfile <seqan/basic.h>
+ * @brief Hamming distance.
+ *
+ * @signature typedef Tag<HammingDistance_> HammingDistance;
+ */
+
 /**
 .Tag.HammingDistance
 ..cat:Basic
 ..summary:Switch to trigger Hamming distance, which is a measure of character substitutions.
 ..include:seqan/basic.h
 */
+
+// TODO(holtgrew): Why ambiguous here? Edit distance is the more common name.
+
+/*!
+ * @tag LevenshteinDistance
+ * @headerfile <seqan/basic.h>
+ * @brief Levenshtein distance.
+ *
+ * @signature typedef Tag<LevenshteinDistance_> LevenshteinDistance;
+ */
+
+/*!
+ * @tag EditDistance
+ * @headerfile <seqan/basic.h>
+ * @brief Edit distance.
+ *
+ * @signature typedef Tag<LevenshteinDistance_> EditDistance;
+ */
 
 /**
 .Tag.LevenshteinDistance
@@ -347,8 +520,16 @@ typedef Tag<Blat_> Blat;
 // Metafunction LENGTH for TagLists
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Is this defined here or is it just a forward?
-// (weese): This is the definition.
+/*!
+ * @mfn TagList#LENGTH
+ * @brief Return the length of a tag list.
+ *
+ * @signature LENGTH<TTagList>::VALUE;
+ *
+ * @tparam TTagList The TagList to query for its length.
+ *
+ * @return VALUE The length of the TagList.
+ */
 
 ///.Metafunction.LENGTH.param.T.type:Tag.TagList
 
@@ -373,6 +554,17 @@ struct LENGTH<TagList<TTag, TSubList> >
 // ----------------------------------------------------------------------------
 // Metafunction TagListValue
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn TagList#TagListValue
+ * @brief A metafunction to retrieve a tag from a TagList.
+ *
+ * @signature TagListValue<TagList, TAG_ID>::Type;
+ *
+ * @tparam TagList The TagList to query.
+ * @tparam TAG_ID  An index of a tag in the tag list (<tt>int</tt>.  This value must be in
+ *                 <tt>0..LENGTH&lt;TTagList&gt;::VALUE -1</tt>.
+ */
 
 /**
 .Metafunction.TagListValue:
@@ -410,6 +602,36 @@ struct TagListValue<TagList<TTag, TSubList>, I>:
 // ----------------------------------------------------------------------------
 // Metafunction TagListGetIndex
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Find
+ * @headerfile <seqan/basic.h>
+ * @brief A metafunction to retrieve the index of a tag in the TagList.
+ * 
+ * @signature Find<TTagList, TSearchTag>::VALUE;
+ * 
+ * @tparam TSearchTag A tag to retrieve the index of.
+ * @tparam TTagList   A tag list.
+ * 
+ * @return VALUE This meta-function can be used to test whether the value of a TagSelector equals a specific tag.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * AutoSeqStreamFormat format;
+ * if (format.tagId == TagListGetIndex<AutoSeqStreamFormat, Fasta>::VALUE)
+ * {
+ *     // do something specific to Fasta format
+ * }
+ *  
+ * // or even shorter:
+ *  
+ * if (isEqual(format.tagId, Fasta()))
+ * {
+ *     // do something specific to Fasta format
+ * }
+ * @endcode
+ */
 
 /**
 .Metafunction.Find:

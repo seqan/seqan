@@ -47,6 +47,25 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class Proxy
+ * @headerfile <seqan/basic.h>
+ * @brief Emulates object of another class.
+ *
+ * @signature template <typename TSpec>
+ *            class Proxy;
+ *
+ * @tparam TSpec The specializing types.
+ *
+ * @section Remarks
+ *
+ * Use Value to get the emulated type. An instance of <tt>Proxy</tt> behaves like an object of its value
+ * type. <tt>Proxy</tt> can be used as reference type (see Reference).
+ * 
+ * Note that functions that are both general and specialized for the value type should be specialized for
+ * <tt>Proxy<TSpec></tt> too, since otherwise the general version will be called.
+ */
+
 /**
 .Class.Proxy:
 ..cat:Basic
@@ -73,6 +92,17 @@ class Proxy;
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Proxy#Spec
+ * @brief Return specialization tag of Proxy.
+ *
+ * @signature Spec<TProxy>::Type;
+ *
+ * @tparam TProxy The proxy type to query.
+ *
+ * @return Type The specializing tag.
+ */
 
 ///.Metafunction.Spec.param.T.type:Class.Proxy
 ///.Metafunction.Spec.class:Class.Proxy

@@ -47,6 +47,25 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BitPackedTuple
+ * @extends Tuple
+ * @headerfile <seqan/basic.h>
+ * @brief A fixed-size tuple of values.  Memory is saved by packing bits.
+ *
+ * @signature template <typename TValue, unsigned SIZE>
+ *            class Tuple<TValue, SIZE, BitPacked<> >;
+ *
+ * @tparam TValue The value type.
+ * @tparam SIZE   The length of the tuple.
+ *
+ * The characters are stored as bit sequence in an ordinal type (char, ..., __int64).
+ *
+ * @section Remarks
+ *
+ * Only useful for small alphabets as small tuple sizes (|Sigma|^size &lt;= 2^64 as for Dna or AminoAcid m-grams).
+ */
+
 /**
 .Spec.Bit Packed Tuple:
 ..cat:Aggregates

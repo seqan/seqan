@@ -53,6 +53,23 @@ namespace seqan {
 // TODO(holtgrew): Is volatile pointer the correct name?
 // TODO(holtgrew): Metafunctions etc. missing.
 
+/*!
+ * @class VolatilePtr
+ * @headerfile <seqan/basic.h>
+ * @brief Helper data structure for handling volatile data.
+ *
+ * @signature template <typename T>
+ *            class VolatilePtr;
+ *
+ * @tparam T The pointed-to type.
+ *
+ * Allows you to handle volatile data (used by ext. string during swapping).
+ *
+ * Imagine volatile pointers as nodes in an undirected graph.  When you assign one to another then they are connected.
+ * All pointers in a connection component points to the same value.  By calling nukeCopies you can destroy
+ * the component and set all pointers to <tt>NULL</tt>.
+ */
+
 /**
 .Class.VolatilePtr
 ..summary:Helper data structure for handling volatile data.
@@ -192,7 +209,16 @@ struct VolatilePtr
 // ----------------------------------------------------------------------------
 // Function nukeCopies()
 // ----------------------------------------------------------------------------
-    
+
+/*!
+ * @fn VolatilePtr#nukeCopies
+ * @brief Reset all pointers connected to a given one.
+ *
+ * @signature void nukeCopies(ptr);
+ *
+ * @param ptr One pointer of the connected component to reset.
+ */
+ 
 /**
 .Function.nukeCopies
 ..class:Class.VolatilePtr

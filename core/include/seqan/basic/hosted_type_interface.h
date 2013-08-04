@@ -50,6 +50,18 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @concept HostedConcept
+ * @brief Concept for types that have a host.
+ *
+ * @signature concept HostedConcept;
+ * 
+ * @section Remarks
+ * 
+ * The functions of this concept assume that the hosted object exports a function <tt>_dataHost</tt> that returns a
+ * reference to a holder type of <tt>Host<T>::Type &</tt>.
+ */
+
 /**
 .Concept.HostedConcept Type
 ..summary:Concept for types that have a host.
@@ -61,6 +73,16 @@ namespace seqan {
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+/*!
+ * @mfn HostedConcept#Host
+ * @brief Type of the object a given object depends on.
+ * 
+ * @signature Host<T>::Type
+ * 
+ * @tparam T Type for which the host type is determined.
+ * @return Type The Host type.
+ */
 
 /**
 .Metafunction.Host
@@ -82,6 +104,17 @@ struct Host;
 // ----------------------------------------------------------------------------
 // Function emptyHost()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn HostedConcept#emptyHost
+ * @brief Query emptiness state of a hosted object.
+ * 
+ * @signature bool emptyHost(object);
+ * 
+ * @param object The object query state of host of.
+ * 
+ * @return bool <tt>true</tt> if the host is empty, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.emptyHost
@@ -107,6 +140,17 @@ emptyHost(T const & me)
 // Function dependentHost()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn HostedConcept#dependentHost
+ * @brief Query dependent state of a hosted object.
+ * 
+ * @signature void clearHost(object);
+ * 
+ * @param object The object query state of host of.
+ * 
+ * @return bool <tt>true</tt> if the host is dependent, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.dependentHost
 ..cat:Dependent Object
@@ -131,6 +175,15 @@ dependentHost(T const & me)
 // Function clearHost()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn HostedConcept#clearHost
+ * @brief Clear the host of the given object.
+ * 
+ * @signature void clearHost(object);
+ * 
+ * @param[in,out] object The object to clear the host of.
+ */
+
 /**
 .Function.clearHost
 ..cat:Dependent Object
@@ -153,6 +206,20 @@ clearHost(T & me)
 // ----------------------------------------------------------------------------
 // Function createHost()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn HostedConcept#createHost
+ * @brief Construct the host of the given object.
+ * 
+ * @signature void createHost(object[, host]);
+ * 
+ * @param object The object to copy construct the host of.
+ * @param host   The object to copy in host creation.
+ * 
+ * @section Remarks
+ * 
+ * If <tt>host</tt> is given then it is used for copy creation.  Otherwise, the default constructor is used.
+ */
 
 /**
 .Function.createHost
@@ -189,6 +256,17 @@ createHost(T & me,
 // Function host()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn HostedConcept#host
+ * @brief The object a given object depends on.
+ * 
+ * @signature THostRef host(object);
+ * 
+ * @param object An object.
+ *
+ * @return THostRef Reference to the host object.
+ */
+
 /// TODO(holtgrew): Move documentation here?
 
 ///.Function.host.concept:Concept.HostedConcept Type
@@ -213,6 +291,23 @@ host(T const & me)
 // ----------------------------------------------------------------------------
 // Function setHost()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn HostedConcept#setHost
+ * @brief Sets the host of an object.
+ * 
+ * @signature void setHost(object, host);
+ * 
+ * @param host   The new host. Types: String
+ * @param object The object that will get a new host.
+ * 
+ * @section Remarks
+ * 
+ * After this operation, <tt>object</tt> depends on <tt>host</tt>.
+ * 
+ * Note that setting the host can invalidate <tt>object</tt>.  For example, if one changes the host of a Segment object,
+ * it is possible that begin- and end-position of the segment does not fit into the new host sequence.
+ */
 
 /// TODO(holtgrew): Move documentation here?
 
@@ -241,6 +336,16 @@ setHost(T & me,
 // Function assignHost()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn HostedConcept#assignHost
+ * @brief Assign to the host of a given value.
+ * 
+ * @signature void assignHost(object, host);
+ * 
+ * @param host   The object to assign as host.
+ * @param object The object to assign the host of.
+ */
+
 /**
 .Function.assignHost
 ..cat:Dependent Object
@@ -266,6 +371,16 @@ assignHost(T & me,
 // ----------------------------------------------------------------------------
 // Function moveHost()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn HostedConcept#moveHost
+ * @brief Assign to the host of a given value.
+ * 
+ * @signature void moveHost(object, host);
+ * 
+ * @param host The object to move-assign as host.
+ * @param object The object to move-assign the host of.
+ */
 
 /**
 .Function.moveHost

@@ -50,6 +50,18 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class IteratorProxy
+ * @extends Proxy
+ * @headerfile <seqan/basic.h>
+ * @brief Proxy that is implemented by an iterator.
+ *
+ * @signature template <typename TIterator>
+ *            class Proxy<IteratorProxy<TIterator> >;
+ *
+ * @tparam TIterator The iterator to store internally.
+ */
+
 /**
 .Spec.Iterator Proxy
 ..cat:Proxies

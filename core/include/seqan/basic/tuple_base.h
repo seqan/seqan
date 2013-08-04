@@ -61,6 +61,19 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
     typedef TValue Type;
 };
 
+/*!
+ * @class Tuple
+ * @include <seqan/basic.h>
+ * @brief A constant-size tuple of the same type.
+ *
+ * @signature template <typename TValue, unsigned SIZE[, typename TSpec]>
+ *            class Tuple;
+ *
+ * @tparam TValue The value that the tuple should be over.
+ * @tparam SIZE   The number of entries in the tuple.
+ * @tparam TSpec  Specialization tag, optional;  defaults to void.
+ */
+
 /**
 .Class.Tuple:
 ..cat:Aggregates
@@ -183,6 +196,17 @@ struct Tuple<TValue, SIZE, Pack>
 // Metafunction LENGTH
 // -----------------------------------------------------------------------
 
+/*!
+ * @mfn Tuple#LENGTH
+ * @brief Return the length of a tuple.
+ *
+ * @signature LENGTH<TTuple>::VALUE;
+ *
+ * @tparam TTuple The tuple to query for its length.
+ *
+ * @return VALUE The length of the tuple.
+ */
+
 ///.Metafunction.LENGTH.param.T.type:Class.Tuple
 ///.Metafunction.LENGTH.class:Class.Tuple
 
@@ -195,6 +219,17 @@ struct LENGTH<Tuple<TValue, SIZE, TSpec> >
 // -----------------------------------------------------------------------
 // Metafunction Value
 // -----------------------------------------------------------------------
+
+/*!
+ * @mfn Tuple#Value
+ * @brief Return the value type of a tuple.
+ *
+ * @signature Value<TTuple>::Type;
+ *
+ * @tparam TTuple The tuple type to query for its value type.
+ *
+ * @return Type The resulting value type.
+ */
 
 ///.Metafunction.Value.param.T.type:Class.Tuple
 ///.Metafunction.Value.class:Class.Tuple

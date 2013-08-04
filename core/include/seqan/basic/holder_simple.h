@@ -53,6 +53,22 @@ namespace seqan {
 #pragma warning( disable: 4521 )
 #endif  // PLATFORM_WINDOWS_VS
 
+/*!
+ * @class SimpleHolder
+ * @extends Holder
+ * @headerfile <seqan/basic.h>
+ * @brief Simple copying wrapper without any additional state.
+ * 
+ * @signature template <typename TValue>
+ *            class Holder<TValue, Simple>;
+ * 
+ * @tparam TValue Type of the managed object.
+ * 
+ * @section Remarks
+ * 
+ * This holder stores a copy of the value.
+ */
+
 /**
 .Spec.Simple Holder
 ..cat:Holders

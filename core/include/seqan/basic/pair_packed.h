@@ -51,6 +51,26 @@ namespace seqan {
 // Specialization Packed Pair
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class PackedPair
+ * @extends Pair
+ * @headerfile <seqan/basic.h>
+ * @brief Stores two arbitrary objects. Saves memory by disabling memory alignment.
+ *
+ * @signature template <typename T1, typename T2>
+ *            class Pair<T1, T2, Pack>;
+ *
+ * @tparam T1 The type of the first object.
+ * @tparam T2 The type of the second object.
+ *
+ * Useful for external storage.
+ *
+ * Memory access could be slower.  Direct access to members by pointers is not allowed on all platforms.
+ *
+ * Functions <tt>value()</tt> is not implemented yet since there it would require using a proxy.  Use
+ * <tt>getValue()</tt>, <tt>assignValue()</tt>, <tt>moveValue()</tt>, <tt>setValue()</tt> instead.
+ */
+
 /**
 .Spec.Packed Pair:
 ..cat:Aggregates

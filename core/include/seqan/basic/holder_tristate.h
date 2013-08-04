@@ -59,6 +59,34 @@ template <typename TValue> inline size_t length(TValue * me);
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class TristateHolder
+ * @extends Holder
+ * @headerfile <seqan/basic.h>
+ * @brief Holder that can be empty, dependent, or owner.
+ * 
+ * @signature template <typename TValue>
+ *            class Holder<TValue, Tristate>;
+ * 
+ * @tparam TValue Type of the managed object.
+ * 
+ * @section Remarks
+ * 
+ * A tristate holder <tt>A</tt> that holds an object <tt>B</tt> has one of the following states:
+ *
+ * <ul>
+ *   <li>owner: <tt>A</tt> is the owner of <tt>B</tt>. If <tt>A</tt> is destroyed, <tt>B</tt> will be destroyed
+ *       automatically.</li>
+ *   <li>dependent: <tt>A</tt> depends on <tt>B</tt>. <tt>B</tt> should not be destroyed as long as <tt>A</tt> is
+ *       used.</li>
+ *   <li>empty: there is currently no object reference stored in the holder <tt>A</tt>.</li>
+ * </ul>
+ * 
+ * The state of the holder can be determined by empty and dependent.
+ * 
+ * If a holder object is in owner state when destructed, the owned object is destructed as well.
+ */
+
 /**
 .Spec.Tristate Holder
 ..cat:Holders

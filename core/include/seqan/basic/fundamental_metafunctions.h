@@ -60,6 +60,20 @@ namespace seqan {
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Value
+ * @headerfile <seqan/basic.h>
+ * @brief Type of the items in the container or behind an iterator.
+ *
+ * @signature Value<T[, I]>::Type;
+ *
+ * @tparam T The type to query for its value type.
+ * @tparam I Optional int, for types with multiple entries.  Defaults to 0.
+ *
+ * The value type of a container T is the type of the elements in T.  for example, the value type of a sequence of int
+ * is int.
+ */
+
 /**
 .Metafunction.Value:
 ..cat:Fundamental
@@ -84,6 +98,23 @@ struct Value;
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn GetValue
+ * @headerfile <seqan/basic.h>
+ * @brief Type for reading values.
+ *
+ * @signature GetValue<T>::Type;
+ *
+ * @tparam T Type of the value-holding object.
+ *
+ * Depending on T, the GetValue-type can either be Value&lt;T&gt;::Type & or Value&lt;T&gt;::Type.
+ *
+ * @section Remarks
+ *
+ * <tt>GetValue</tt> is the return type of @Function.getValue@ that allows a (read-only) access to objects.  Do not
+ * confuse it with value that returns a reference to the value.
+ */
+
 /**
 .Metafunction.GetValue:
 ..cat:Fundamental
@@ -106,6 +137,17 @@ struct GetValue;
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Reference
+ * @headerfile <seqan/basic.h>
+ * @brief Reference type.
+ *
+ * @signature Reference<T>::Type;
+ *
+ * @tparam T A type.
+ *
+ * @return Type Either <tt>Value&lt;T&gt;Type &</tt> or a proxy object Proxy for <tt>T</tt>.
+
 /**
 .Metafunction.Reference:
 ..cat:Fundamental
@@ -125,6 +167,18 @@ struct Reference;
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Size
+ * @headerfile <seqan/basic.h>
+ * @brief Type of an object that is suitable to hold size information.
+ *
+ * @signature Size<T>::Type;
+ *
+ * @tparam Type for which the size type is determined.
+ *
+ * @returns Type Size type of <tt>T</tt>.
+ */
+
 /**
 .Metafunction.Size:
 ..cat:Fundamental
@@ -142,6 +196,18 @@ struct Size;
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Difference
+ * @headerfile <seqan/basic.h>
+ * @brief Difference type.
+ *
+ * @signature Difference<T>::Type;
+ *
+ * @tparam Type for which the difference type is determined.
+ *
+ * @returns Type Difference type of <tt>T</tt>.
+ */
 
 /**
 .Metafunction.Difference:
@@ -163,6 +229,18 @@ struct Difference;
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Position
+ * @headerfile <seqan/basic.h>
+ * @brief Position type.
+ *
+ * @signature Position<T>::Type;
+ *
+ * @tparam Type for which the position type is determined.
+ *
+ * @returns Type position type of <tt>T</tt>.
+ */
+
 /**
 .Metafunction.Position
 ..cat:Fundamental
@@ -182,6 +260,19 @@ struct Position;
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
+
+
+/*!
+ * @mfn Spec
+ * @headerfile <seqan/basic.h>
+ * @brief The spec of a class. 
+ *
+ * @signature Spec<T>::Type;
+ *
+ * @tparam T Type for which the spec type is determined.
+ *
+ * @returns Type Spec type of <tt>T</tt>.
+ */
 
 /**
 .Metafunction.Spec
@@ -222,6 +313,18 @@ struct Spec<T const> : Spec<T>
 // ----------------------------------------------------------------------------
 // Metafunction DeepestSpec
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn DeepestSpec
+ * @headerfile <seqan/basic.h>
+ * @brief The deepest spec of a class with nested template arguments.
+ *
+ * @signature DeepestSpec<T>::Type;
+ *
+ * @tparam T Type for which the deepest spec type is determined.
+ *
+ * @returns Type Size type of <tt>T</tt>.
+ */
 
 /**
 .Metafunction.DeepestSpec:

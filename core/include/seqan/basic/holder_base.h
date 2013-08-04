@@ -56,6 +56,49 @@ namespace seqan {
 // Class Holder
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class Holder
+ * @headerfile <seqan/basic.h>
+ * @brief Manages relationship to another object.
+ * 
+ * @signature template <typename TValue[, typename TSpec>
+ *            class Holder;
+ * 
+ * @tparam TSpec  The specializing type. Default: <tt>Tristate</tt>
+ * @tparam TValue Type of the managed object.
+ * 
+ * @section Remarks
+ * 
+ * The main purpose of this class is to facilitate the handling of member objects. If we want class <tt>A</tt> to be
+ * dependent on or the owner of another object of class <tt>B</tt>, then we add a data member of type <tt>Holder<B></tt>
+ * to <tt>A</tt>.  <tt>Holder</tt> offers some useful access functions and stores the kind of relationship between
+ * <tt>A</tt> and <tt>B</tt>.
+ * 
+ * @see Holder#create
+ * @see Holder#setValue
+ */
+
+/*
+ * @fn Holder::Holder
+ * @brief Constructor.
+ *
+ * You can construct a Holder using the default constructor, copy from another Holder, or directly with a value to hold.
+ *
+ * @signature Holder::Holder();
+ * @signature Holder::Holder(other);
+ * @signature Holder::Holder(value);
+ *
+ * @param[in] other Other Holder to copy from.
+ * @param[in] value The value to hold.
+ *
+ * @section Remarks
+ *
+ * The main purpose of this class is to facilitate the handling of member objects.  If we want a class <tt>A</tt> to be
+ * dependent on or the owner or another object of class <tt>B</tt> then we add a data member of type
+ * <tt>Holder&lt;B&gt;</tt> to <tt>A</tt>.  Holder offers some useful access functions and stores the kind of
+ * relationship between <tt>A</tt> and <tt>B</tt>.
+ */
+
 /**
 .Class.Holder:
 ..cat:Basic
@@ -100,9 +143,31 @@ struct Holder;
 // Metafunctions
 // ============================================================================
 
+/*!
+ * @mfn Holder#GetValue
+ * @brief Return get-value type of Holder.
+ *
+ * @signature GetValue<THolder>::Type;
+ *
+ * @tparam THolder The Holder to query for its value type.
+ *
+ * @return Type The get-value type for its holder.
+ */
+
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Holder#Value
+ * @brief Return value type of Holder.
+ *
+ * @signature Value<THolder>::Type;
+ *
+ * @tparam THolder The Holder to query for its value type.
+ *
+ * @return Type The value type for its holder.
+ */
 
 ///.Metafunction.Value.param.T.type:Class.Holder
 
@@ -131,6 +196,17 @@ struct Value<Holder<TValue * const, TSpec> >
 // Metafunction Spec
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Holder#Spec
+ * @brief Return the specialization tag for a Holder.
+ *
+ * @signature Spec<THolder>::Type;
+ *
+ * @tparam THolder The Holder to query for its value type.
+ *
+ * @return Type The resulting specialization tag.
+ */
+
 ///.Metafunction.Spec.param.T.type:Class.Holder
 ///.Metafunction.Spec.class:Class.Holder
 
@@ -149,6 +225,17 @@ struct Spec<Holder<TValue, TSpec> const>
 // ----------------------------------------------------------------------------
 // Metafunction Reference
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn Holder#Reference
+ * @brief Return the reference type of a Holder.
+ *
+ * @signature Reference<THolder>::Type;
+ *
+ * @tparam THolder The holder to query for its reference type.
+ *
+ * @return Type The resulting reference type.
+ */
 
 ///.Metafunction.Reference.param.T.type:Class.Holder
 ///.Metafunction.Reference.class:Class.Holder
@@ -178,8 +265,198 @@ struct Reference<Holder<TValue *, TSpec> const>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function create()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#create
+ * @brief Makes an object to owner of its content.
+ * 
+ * @signature void create(holder[, object]);
+ * 
+ * @param holder The Holder to create the object of.
+ * @param object Object from which a copy is made and stored in <tt>holder</tt>.
+ * 
+ * @section Remarks
+ * 
+ * After this operation, <tt>holder</tt> will be in state 'owner'.  If <tt>object</tt> is specified, <tt>holder</tt>
+ * will hold a copy of <tt>object</tt> at the end of this function.  If <tt>object</tt> is not specified, the action
+ * depends on the former state of <tt>holder</tt>:
+ *
+ * <ul>
+ *   <li>If the state of <tt>holder</tt> was 'empty', a new object is default constructed and stored into
+ *       <tt>holder</tt>.</li>
+ *   <li>If the state of <tt>holder</tt> was 'dependent', a copy of the former object is made and stored into
+ *       <tt>holder</tt>.</li>
+ *   <li>If the state of <tt>holder</tt> was already 'owner', nothing happens.</li>
+ * </ul>
+ * 
+ * It is guaranteed, that after calling this function <tt>source</tt> and <tt>target</tt> can be used independently.
+ */
+
+// ----------------------------------------------------------------------------
+// Function detach()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#detach
+ * @brief Makes an object independent from other objects.
+
+ * @signature void detach(holder);
+ * 
+ * @param[in,out] holder The Holder to detach.
+ * 
+ * @section Remarks
+ * 
+ * After this function, <tt>holder</tt> does not depends from any other entity outside of <tt>holder</tt>, like a source
+ * or a host, and dependent(holer) returns <tt>false</tt>
+ */
+
+// ----------------------------------------------------------------------------
+// Function setValue()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#setValue
+ * @brief Makes holder dependent.
+ * 
+ * @signature void setValue(holder, object);
+ * 
+ * @param holder A holder object. Types: Holder
+ * @param object Object from which <tt>holder</tt> will be dependent.
+ * 
+ * @section Remarks
+ * 
+ * After this operation, <tt>holder</tt> will be dependent in state 'dependent'.
+ */
+
+// ----------------------------------------------------------------------------
+// Function empty()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#empty
+ * @brief Test a Holder for being empty.
+ * 
+ * @signature bool empty(holder);
+ * 
+ * @param holder A Holder.
+ * @return bool <tt>true</tt> if <tt>holder</tt> contains no elements, otherwise <tt>false</tt>.
+ * 
+ * @section Remarks
+ * 
+ * <tt>empty(x)</tt> is guaranteed to be at least as fast as <tt>length(me) == 0</tt>, but can be significantly faster
+ * in some cases.
+ * 
+ * @see length
+ * @see emptyHost
+ */
+
+// ----------------------------------------------------------------------------
+// Function assignValue()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#assignValue
+ * 
+ * @headerfile seqan/basic.h
+ * @headerfile seqan/sequence.h
+ * 
+ * @brief Assigns value to item.
+ * 
+ * @signature assignValue(object, value)
+ * @signature assignValue(container, pos, value)
+ * 
+ * @param object An object that holds a value or points to a value. Types:
+ *               Holder, Iter Concepts: Concept.BasicOutputIteratorConcept
+ * @param container A container. Types: SparseString, char array Concepts:
+ *                  Concept.ContainerConcept
+ * @param pos Position of the item in <tt>container</tt> to that <tt>value</tt>
+ *            is assigned.
+ * @param value A value that is assigned to the item <tt>object</tt> holds or
+ *              points to.
+ * 
+ * @section Remarks
+ * 
+ * This function is similar to @link assign @endlink. The difference is, that
+ * <tt>assignValue</tt> just changes a value stored in <tt>object</tt> or the
+ * value <tt>object</tt> points to, while @link assign @endlink changes the
+ * whole object.
+ * 
+ * If <tt>object</tt> is a container (that is <tt>pos</tt> is not specified),
+ * the whole content of <tt>object</tt> is replaced by <tt>value</tt>.
+ * 
+ * If <tt>value</tt> is not used again after calling this function,     then
+ * consider to use @link moveValue @endlink that could be faster in some cases
+ * instead.
+ * 
+ * @see assign
+ * @see moveValue
+ */
+
+// ----------------------------------------------------------------------------
+// Function dependent()
+// ----------------------------------------------------------------------------
+
+/*
+ * @fn Holder#dependent
+ * @headerfile <seqan/basic.h>
+ * @brief Test whether Holder depends on other objects.
+ * 
+ * @signature bool dependent(holder);
+ * 
+ * @param holder The Holder to query;
+ * 
+ * @return bool <tt>true</tt> if <tt>object</tt> depends one some other object, <tt>false</tt> otherwise.
+ * 
+ * @section Remarks
+ * 
+ * An object "<tt>a</tt>" depends on another object "<tt>b</tt>", if changing "<tt>b</tt>" can invalidate "<tt>a</tt>";
+ * especially the destruction of "<tt>b</tt>" invalidates "<tt>a</tt>".
+ */
+
+// ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#clear
+ * @brief Clear/destruct the Holder's value.
+ *
+ * @signature void clear(holder);
+ *
+ * @param[in] holder The Holder to clear.
+ */
+
+// ----------------------------------------------------------------------------
+// Function value()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#value
+ * @brief Return a reference to the value of the holder.
+ *
+ * @signature TReference value(holder);
+ *
+ * @param[in] holder The Holder to query for its reference.
+ *
+ * @return TReference The reference of the Holder's value.
+ */
+
+// ----------------------------------------------------------------------------
 // Function getValue()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Holder#getValue
+ * @brief Return the get-value of the holder.
+ *
+ * @signature TGetValue getValue(holder);
+ *
+ * @param[in] holder The Holder to query for its get-value type.
+ *
+ * @return TGetValue The get-value of the Holder.
+ */
 
 // TODO(holtgrew): We would rather have only one here.
 
