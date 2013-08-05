@@ -147,6 +147,7 @@ struct GetValue;
  * @tparam T A type.
  *
  * @return Type Either <tt>Value&lt;T&gt;Type &</tt> or a proxy object Proxy for <tt>T</tt>.
+ */
 
 /**
 .Metafunction.Reference:
