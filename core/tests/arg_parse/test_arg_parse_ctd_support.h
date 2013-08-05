@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
-// Tests for arg_parse/arg_parse_option.h.
+// Tests for arg_parse/arg_parse_ctd_support.h.
 // ==========================================================================
 
 #ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
@@ -57,10 +57,15 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
 
     addOption(parser, seqan::ArgParseOption("d", "double", "set a double option", seqan::ArgParseArgument::DOUBLE));
     addOption(parser, seqan::ArgParseOption("i", "integer", "set an integer option", seqan::ArgParseArgument::INTEGER));
+    setMinValue(parser, "i", "1");
+    setMaxValue(parser, "i", "10");
     addOption(parser, seqan::ArgParseOption("j", "int64", "set a 64 bit integer option", seqan::ArgParseArgument::INT64));
     addOption(parser, seqan::ArgParseOption("s", "string", "set a string option", seqan::ArgParseArgument::STRING, "", true));
+    setValidValues(parser, "s", "a b c");
     addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUTFILE));
+    setValidValues(parser, "f", "fasta");
     addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "o", "sam");
     addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will be advanced in the ctd", seqan::ArgParseArgument::STRING));
 
     hideOption(parser, "hi");
@@ -76,7 +81,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".ctd");
 
-    std::ofstream ofstream(toCString(outPath));
+    std::ofstream ofstream(toCString(outPath), std::ofstream::out | std::ofstream::binary);
     writeCTD(parser, ofstream);
     ofstream.close();
 
