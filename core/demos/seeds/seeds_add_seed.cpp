@@ -32,11 +32,11 @@ int main()
     clear(seedSet);
     if(!addSeed(seedSet, seed0, 2, Merge()))
         addSeed(seedSet, seed0, Single());
-    if(!addSeed(seedSet, seed1, Single()))
+    if(!addSeed(seedSet, seed1, 2, Merge()))
         addSeed(seedSet, seed1, Single());
-    if(!addSeed(seedSet, seed2, Single()))
+    if(!addSeed(seedSet, seed2, 2, Merge()))
         addSeed(seedSet, seed2, Single());
-    if(!addSeed(seedSet, seed3, Single()))
+    if(!addSeed(seedSet, seed3, 2, Merge()))
         addSeed(seedSet, seed3, Single());
 
     std::cout << "Merge Method:" << std::endl;
