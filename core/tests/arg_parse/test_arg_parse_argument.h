@@ -117,14 +117,25 @@ SEQAN_DEFINE_TEST(test_argument_invalid_cast)
 {
     ArgParseArgument doubleArg(ArgParseArgument::DOUBLE);
 
+    _checkValue(doubleArg, "6.0221418e23");
     _assignArgumentValue(doubleArg, "6.0221418e23");
+    _checkValue(doubleArg);
     SEQAN_ASSERT_EQ(getArgumentValue(doubleArg), "6.0221418e23");
 
+    _checkValue(doubleArg, "-6.022");
     _assignArgumentValue(doubleArg, "-6.022");
+    _checkValue(doubleArg);
     SEQAN_ASSERT_EQ(getArgumentValue(doubleArg), "-6.022");
 
+    // Test _checkValue() with value.
     SEQAN_TEST_EXCEPTION(ParseException,
-                         _assignArgumentValue(doubleArg, "-6.022aaa"),
+                         _checkValue(doubleArg, "-6.022aaa"),
+                         "the given value '-6.022aaa' cannot be casted to double");
+
+    // Test _checkValue() after assignment.
+    _assignArgumentValue(doubleArg, "-6.022aaa");
+    SEQAN_TEST_EXCEPTION(ParseException,
+                         _checkValue(doubleArg),
                          "the given value '-6.022aaa' cannot be casted to double");
 }
 
@@ -134,14 +145,28 @@ SEQAN_DEFINE_TEST(test_argument_min_max_boundaries)
     setMinValue(arg, "1");
     setMaxValue(arg, "6.0221418e23");
 
+    _checkValue(arg, "1");
     _assignArgumentValue(arg, "1"); // should just work without throwing any exception
+    _checkValue(arg);
     SEQAN_ASSERT_EQ(getArgumentValue(arg), "1");
+    // Test _checkValue() with argument and value.
     SEQAN_TEST_EXCEPTION(ParseException,
-                         _assignArgumentValue(arg, "-1"),
+                         _checkValue(arg, "-1"),
+                         "the given value '-1' is not in the interval [1:6.0221418e23]");
+    // Test _checkValue() after assignment.
+    _assignArgumentValue(arg, "-1");
+    SEQAN_TEST_EXCEPTION(ParseException,
+                         _checkValue(arg),
                          "the given value '-1' is not in the interval [1:6.0221418e23]");
 
+    // Tests _checkValue() with argument and value.
     SEQAN_TEST_EXCEPTION(ParseException,
-                         _assignArgumentValue(arg, "6.0321418e23"),
+                         _checkValue(arg, "6.0321418e23"),
+                         "the given value '6.0321418e23' is not in the interval [1:6.0221418e23]");
+    // Test _checkValue() after assignment.
+    _assignArgumentValue(arg, "6.0321418e23");
+    SEQAN_TEST_EXCEPTION(ParseException,
+                         _checkValue(arg),
                          "the given value '6.0321418e23' is not in the interval [1:6.0221418e23]");
 }
 
@@ -150,10 +175,18 @@ SEQAN_DEFINE_TEST(test_argument_valid_values)
     ArgParseArgument arg(ArgParseArgument::STRING);
     setValidValues(arg, "this that");
 
+    _checkValue(arg, "this");
     _assignArgumentValue(arg, "this");
+    _checkValue(arg);
     SEQAN_ASSERT_EQ(getArgumentValue(arg), "this");
+    // Test _checkValue() with argument and value.
     SEQAN_TEST_EXCEPTION(ParseException,
-                         _assignArgumentValue(arg, "not-this-or-that"),
+                         _checkValue(arg, "not-this-or-that"),
+                         "the given value 'not-this-or-that' is not in the list of allowed values [this, that]");
+    // Test _checkValue after assignment.
+    _assignArgumentValue(arg, "not-this-or-that");
+    SEQAN_TEST_EXCEPTION(ParseException,
+                         _checkValue(arg),
                          "the given value 'not-this-or-that' is not in the list of allowed values [this, that]");
 
     ArgParseArgument filearg(ArgParseArgument::INPUTFILE);
@@ -162,13 +195,30 @@ SEQAN_DEFINE_TEST(test_argument_valid_values)
     _assignArgumentValue(filearg, "textfile.txt");
     SEQAN_ASSERT_EQ(value(filearg.value, 0), "textfile.txt");
 
+    // Test getFileExtension() function.
+    SEQAN_ASSERT_EQ(getFileExtension(filearg), ".txt");
+
     // different case should also work
     _assignArgumentValue(filearg, "textfile.tXT");
     SEQAN_ASSERT_EQ(value(filearg.value, 0), "textfile.tXT");
-    
+
+    // Test getFileExtension() function.
+    SEQAN_ASSERT_EQ(getFileExtension(filearg), ".txt");
+
+    // Test getFileExtension() function with explicit file extension.
+    filearg._fileExtensions.push_back(".fa");
+    SEQAN_ASSERT_EQ(getFileExtension(filearg), ".fa");
+    SEQAN_ASSERT_EQ(getFileExtension(filearg, 0), ".fa");
+
+    // Test _checkValue() with argument and value.
     SEQAN_TEST_EXCEPTION(ParseException,
-                         _assignArgumentValue(filearg, "not-a-validfile.qxt"),
-                         "the given value 'not-a-validfile.qxt' is not in the list of allowed file extensions [*.txt, *.fasta]");
+                         _checkValue(filearg, "not-a-validfile.qxt"),
+                         "the given path 'not-a-validfile.qxt' does not have one of the valid file extensions [*.txt, *.fasta]; the file extension was overridden to be '.fa'");
+    // Test _checkValue after assignment.
+    _assignArgumentValue(filearg, "not-a-validfile.qxt");
+    SEQAN_TEST_EXCEPTION(ParseException,
+                         _checkValue(filearg),
+                         "the given path 'not-a-validfile.qxt' does not have one of the valid file extensions [*.txt, *.fasta]; the file extension was overridden to be '.fa'");
 }
 
 #endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_

@@ -97,17 +97,27 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_input_file_missing);
     SEQAN_CALL_TEST(test_input_file_invalid_type);
     SEQAN_CALL_TEST(test_input_file_valid_type);
+    SEQAN_CALL_TEST(test_input_file_extension);
+
+    SEQAN_CALL_TEST(test_input_file_auto_file_ext_option);  // automatic --${name}-file-ext option.
 
     SEQAN_CALL_TEST(test_output_file_short);
     SEQAN_CALL_TEST(test_output_file_long);
     SEQAN_CALL_TEST(test_output_file_missing);
     SEQAN_CALL_TEST(test_output_file_invalid_type);
     SEQAN_CALL_TEST(test_output_file_valid_type);
+    SEQAN_CALL_TEST(test_output_file_extension);
+    SEQAN_CALL_TEST(test_output_file_extension_targz);
+    SEQAN_CALL_TEST(test_output_file_explicit_extension_valid);
+    SEQAN_CALL_TEST(test_output_file_explicit_extension_invalid);
 
+    // Test for arguments.
     SEQAN_CALL_TEST(test_argument_string);
     SEQAN_CALL_TEST(test_argument_not_all_set);
     SEQAN_CALL_TEST(test_argument_double);
     SEQAN_CALL_TEST(test_argument_not_a_double);
+
+    SEQAN_CALL_TEST(test_argument_auto_file_ext_option);  // automatic --${name}-file-ext option.
 
     // Test list of n-tuples arguments
     SEQAN_CALL_TEST(test_int_list_option);

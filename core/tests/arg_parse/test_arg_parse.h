@@ -85,6 +85,11 @@ const char * A_OUT_FILE_0 = "test";
 const char * A_OUT_FILE_1 = "-o";
 const char * A_OUT_FILE_2 = "--out";
 const char * A_OUT_FILE_3 = "output.fasta";
+const char * A_OUT_FILE_4 = "output.tar.gz";
+const char * A_OUT_FILE_5 = "output.txt";
+const char * A_OUT_FILE_6 = "--out-file-ext";
+const char * A_OUT_FILE_7 = "fasta";
+const char * A_OUT_FILE_8 = "txt";
 
 const char * A_ARGUMENT_0 = "test";
 const char * A_ARGUMENT_1 = "argument1";
@@ -691,7 +696,7 @@ SEQAN_DEFINE_TEST(test_input_file_invalid_type)
     std::stringstream outputStream;
 
     SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
-    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given value 'input.fasta' is not in the list of allowed file extensions [*.fa]\n");
+    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given path 'input.fasta' does not have one of the valid file extensions [*.fa]\n");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 }
 
@@ -715,6 +720,89 @@ SEQAN_DEFINE_TEST(test_input_file_valid_type)
     CharString value;
     SEQAN_ASSERT(getOptionValue(value, parser, "in"));
     SEQAN_ASSERT_EQ(value, "input.fasta");
+}
+
+SEQAN_DEFINE_TEST(test_input_file_extension)
+{
+    ArgumentParser parser;
+    setupInputFileParser(parser);
+
+    setValidValues(parser, "in", ".fasta .FASTA .fa");
+
+    int argc = 3;
+    const char * argv[3] = {A_IN_FILE_0, A_IN_FILE_2, A_IN_FILE_3};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    std::string value;
+    value = getOptionFileExtension(parser, "in");
+    SEQAN_ASSERT_EQ(value, ".fasta");
+}
+
+// Test that an automatic --${OPTION}-file-ext option is added with the same list flag and number of values.
+SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
+{
+    std::vector<std::string> expectedValidValues;
+    expectedValidValues.push_back("fa");
+    expectedValidValues.push_back("TXT");
+
+    // No list, one value.
+    {
+        ArgumentParser parser;
+
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE));
+        setValidValues(parser, "long", ".fa .TXT");
+
+        SEQAN_ASSERT_NOT(hasOption(parser, "short-file-ext"));
+        SEQAN_ASSERT(hasOption(parser, "long-file-ext"));
+
+        ArgParseOption & option = getOption(parser, "long-file-ext");
+        SEQAN_ASSERT(isStringArgument(option));
+        SEQAN_ASSERT_NOT(isListArgument(option));
+        SEQAN_ASSERT_EQ(numberOfAllowedValues(option), 1u);
+        SEQAN_ASSERT(option.validValues == expectedValidValues);
+    }
+
+    // No list, two values.
+    {
+        ArgumentParser parser;
+
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE,
+                                         "label", false, 2));
+        setValidValues(parser, "long", ".fa .TXT");
+
+        SEQAN_ASSERT_NOT(hasOption(parser, "short-file-ext"));
+        SEQAN_ASSERT(hasOption(parser, "long-file-ext"));
+
+        ArgParseOption & option = getOption(parser, "long-file-ext");
+        SEQAN_ASSERT(isStringArgument(option));
+        SEQAN_ASSERT_NOT(isListArgument(option));
+        SEQAN_ASSERT_EQ(numberOfAllowedValues(option), 2u);
+        SEQAN_ASSERT(option.validValues == expectedValidValues);
+    }
+
+    // List.
+    {
+        ArgumentParser parser;
+
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE,
+                                         "label", true));
+        setValidValues(parser, "long", ".fa .TXT");
+
+        SEQAN_ASSERT_NOT(hasOption(parser, "short-file-ext"));
+        SEQAN_ASSERT(hasOption(parser, "long-file-ext"));
+
+        ArgParseOption & option = getOption(parser, "long-file-ext");
+        SEQAN_ASSERT(isStringArgument(option));
+        SEQAN_ASSERT(isListArgument(option));
+        SEQAN_ASSERT_EQ(numberOfAllowedValues(option), 1u);
+        SEQAN_ASSERT(option.validValues == expectedValidValues);
+    }
 }
 
 SEQAN_DEFINE_TEST(test_output_file_short)
@@ -787,7 +875,7 @@ SEQAN_DEFINE_TEST(test_output_file_invalid_type)
     std::stringstream outputStream;
 
     SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
-    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given value 'output.fasta' is not in the list of allowed file extensions [*.fa]\n");
+    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given path 'output.fasta' does not have one of the valid file extensions [*.fa]\n");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 }
 
@@ -811,6 +899,92 @@ SEQAN_DEFINE_TEST(test_output_file_valid_type)
     CharString value;
     SEQAN_ASSERT(getOptionValue(value, parser, "out"));
     SEQAN_ASSERT_EQ(value, "output.fasta");
+}
+
+SEQAN_DEFINE_TEST(test_output_file_extension)
+{
+    ArgumentParser parser;
+    setupOutputFileParser(parser);
+
+    setValidValues(parser, "out", ".fasta .FASTA .fa");
+
+    int argc = 3;
+    const char * argv[3] = {A_OUT_FILE_0, A_OUT_FILE_2, A_OUT_FILE_3};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    CharString value;
+    value = getOptionFileExtension(parser, "out");
+    SEQAN_ASSERT_EQ(value, ".fasta");
+}
+
+SEQAN_DEFINE_TEST(test_output_file_extension_targz)
+{
+    ArgumentParser parser;
+    setupOutputFileParser(parser);
+
+    setValidValues(parser, "out", ".tar.gz .tar");
+
+    int argc = 3;
+    const char * argv[3] = {A_OUT_FILE_0, A_OUT_FILE_2, A_OUT_FILE_4};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    CharString value;
+    value = getOptionFileExtension(parser, "out");
+    SEQAN_ASSERT_EQ(value, ".tar.gz");
+}
+
+// Value with invalid extension given on command line but overridden with valid extension.
+SEQAN_DEFINE_TEST(test_output_file_explicit_extension_valid)
+{
+    ArgumentParser parser;
+    setupOutputFileParser(parser);
+
+    setValidValues(parser, "out", ".fasta .FASTA .fa");
+
+    int argc = 5;
+    const char * argv[5] = {A_OUT_FILE_0, A_OUT_FILE_2, A_OUT_FILE_5, A_OUT_FILE_6, A_OUT_FILE_7};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, std::cerr, std::cerr), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    CharString value;
+    value = getOptionFileExtension(parser, "out");
+    SEQAN_ASSERT_EQ(value, ".fasta");
+}
+
+// Value with valid extension given on command line but overridden with invalid extension.
+SEQAN_DEFINE_TEST(test_output_file_explicit_extension_invalid)
+{
+    ArgumentParser parser;
+    setupOutputFileParser(parser);
+
+    setValidValues(parser, "out", ".fasta .FASTA .fa");
+
+    int argc = 5;
+    const char * argv[5] = {A_OUT_FILE_0, A_OUT_FILE_2, A_OUT_FILE_3, A_OUT_FILE_6, A_OUT_FILE_8};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
+    SEQAN_ASSERT_EQ(error_stream.str(), "test: the given path 'output.fasta' does not have one of the valid file extensions [*.fasta, *.FASTA, *.fa]; the file extension was overridden to be '.txt'\n");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
 }
 
 SEQAN_DEFINE_TEST(test_argument_string)
@@ -881,6 +1055,62 @@ SEQAN_DEFINE_TEST(test_argument_not_a_double)
     SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_ERROR);
     SEQAN_ASSERT_EQ(error_stream.str(), "test: the given value 'argument1' cannot be casted to double\n");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
+}
+
+SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
+{
+    std::vector<std::string> expectedValidValues;
+    expectedValidValues.push_back("fa");
+    expectedValidValues.push_back("TXT");
+
+    // No list, one value.
+    {
+        ArgumentParser parser;
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+        setValidValues(parser, 0, "fa TXT");
+
+        SEQAN_ASSERT(hasOption(parser, "arg-1-file-ext"));
+
+        ArgParseOption & option = getOption(parser, "arg-1-file-ext");
+        SEQAN_ASSERT(isStringArgument(option));
+        SEQAN_ASSERT_NOT(isListArgument(option));
+        SEQAN_ASSERT_EQ(numberOfAllowedValues(option), 1u);
+        SEQAN_ASSERT(option.validValues == expectedValidValues);
+    }
+
+    // NB: tuple arguments unsupported
+
+    // List, one value.
+    {
+        ArgumentParser parser;
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "LABEL", true));
+        setValidValues(parser, 0, "fa TXT");
+
+        SEQAN_ASSERT(hasOption(parser, "arg-1-file-ext"));
+
+        ArgParseOption & option = getOption(parser, "arg-1-file-ext");
+        SEQAN_ASSERT(isStringArgument(option));
+        SEQAN_ASSERT(isListArgument(option));
+        SEQAN_ASSERT_EQ(numberOfAllowedValues(option), 1u);
+        SEQAN_ASSERT(option.validValues == expectedValidValues);
+    }
+
+    // Second argument, just to make sure.
+    {
+        ArgumentParser parser;
+        addArgument(parser, ArgParseArgument(ArgParseArgument::DOUBLE));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+        setValidValues(parser, 1, "fa TXT");
+
+        SEQAN_ASSERT(hasOption(parser, "arg-2-file-ext"));
+
+        ArgParseOption & option = getOption(parser, "arg-2-file-ext");
+
+        SEQAN_ASSERT(isStringArgument(option));
+        SEQAN_ASSERT_NOT(isListArgument(option));
+        SEQAN_ASSERT_EQ(numberOfAllowedValues(option), 1u);
+        SEQAN_ASSERT(option.validValues == expectedValidValues);
+    }
 }
 
 SEQAN_DEFINE_TEST(test_isDouble)

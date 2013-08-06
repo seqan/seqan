@@ -419,7 +419,7 @@ inline void addDefaultValue(ArgParseOption & me, const TValue & value)
         strm << value;
 
         // check if all constraints are satisfied
-        _checkValue(me, strm.str());
+        _checkValue(me, strm.str(), me.defaultValue.size());
 
         // add defaultValue
         me.defaultValue.push_back(strm.str());

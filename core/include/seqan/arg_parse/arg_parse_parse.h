@@ -79,162 +79,236 @@ namespace seqan {
 ..include:seqan/arg_parse.h
 */
 
+// Helper class for parsing command line arguments.
+//
+// Putting things into its a class allows us to structure the parsing in a fine way.
+
+class ArgumentParserHelper_
+{
+public:
+    typedef ArgumentParser::TArgumentMapSize TArgumentPosition;
+
+    // Reference to the ArgumentParser to parse for.
+    ArgumentParser & parser;
+    // The argc and argv from the main() method.
+    int argc;
+    const char ** argv;
+
+    // The parser's state is stored in the following variables.
+
+    // The special argument "--" is ignored as an option and only arguments can follow.  The following flag holds the
+    // state that this token was seen.
+    bool seenDashDash;
+    // The index of the current positional argument.
+    TArgumentPosition currentArgument;
+
+    ArgumentParserHelper_(ArgumentParser & parser, int argc, const char * argv[])
+            : parser(parser), argc(argc), argv(argv), seenDashDash(false), currentArgument(0)
+    {}
+
+    void reset()
+    {
+        seenDashDash = false;
+        currentArgument = 0;
+    }
+
+    // Perform the argument parsing.
+    void parseArgs()
+    {
+        reset();  // reset state
+
+        // Parse binary name from command line if it was not set.
+        if (empty(getAppName(parser)))
+            _parseAppName(parser, argv[0]);
+
+        for (int argi = 1; argi < argc; ++argi)
+        {
+            if (seenDashDash || strlen(argv[argi]) == 0 || argv[argi][0] != '-')
+                // Handle as position argument if we have seen "--" or does not start with dash.
+                handleArgument(argv[argi]);
+            else if (strcmp(argv[argi], "--") == 0)
+                // If this is "--" then ignore the argument itself but set the seen flag for it.
+                seenDashDash = true;
+            else
+                // This is an option.
+                handleOption(argi, argv[argi]);
+        }
+    }
+
+private:
+
+    // Handle the given string as an argument.
+    //
+    // Throw ParseException in case of too many arguments.
+    void handleArgument(char const * argStr)
+    {
+        // Check whether we have the largest number of allowed arguments already.
+        if (parser.argumentList.size() <= currentArgument)
+            throw ParseException("Too many arguments!");
+
+        ArgParseArgument & argument = getArgument(parser, currentArgument);
+        _assignArgumentValue(argument, argStr);
+
+        if (!isListArgument(argument))
+            ++currentArgument;
+    }
+
+    // Handle the given string as an option.
+    //
+    // Throw InvalidOptionException if there is a formal error (== "-") or invalid option naparser.
+    //
+    // Throw MissingArgumentException in case of --key=value option but the option requires multiple values.
+    void handleOption(int & argi, std::string arg)
+    {
+        if (arg == "-")
+            throw InvalidOptionException("-");
+
+        if (arg[1] == '-')
+            handleLongOption(argi, arg);
+        else
+            handleShortOption(argi, arg);
+    }
+
+    // Handle the given string as a long option.
+    void handleLongOption(int & argi, std::string const & arg)
+    {
+        // We will store the option name and the value in these variables.
+        std::string longOpt = arg;
+        std::string val;
+
+        // Split option in case of --key=value format.
+        size_t t = arg.find('=');
+        if (t != std::string::npos)  // is --key=value option
+        {
+            val = arg.substr(t + 1);
+            longOpt = arg.substr(0, t);
+        }
+        longOpt.erase(0, 2);
+
+        // Guard against invalid option names.
+        if (!hasOption(parser, longOpt))
+            throw InvalidOptionException(longOpt);
+
+        // Parse out the values for the option from the command line arguments.
+        ArgParseOption & opt = getOption(parser, longOpt);
+        if (t != std::string::npos)  // was --key=value option
+        {
+            // We can only assign one value in this case.  If the option expected more than one value then this is an
+            // error.
+            if (numberOfAllowedValues(opt) != 1)
+                throw MissingArgumentException(longOpt);
+            // If everything is fine then we can assign the value to the option.
+            _assignArgumentValue(opt, val);
+        }
+        else if (isBooleanOption(opt))
+        {
+            // Handling boolean options is simple.
+            _assignArgumentValue(opt, "true");
+        }
+        else
+        {
+            // If we reach here, we have a --key value option and might require multiple values.
+
+            // Guard against missing values.
+            if (argi + (int)numberOfAllowedValues(opt) >= argc)
+                throw MissingArgumentException(longOpt);
+            // We have sufficient values, get them from argv and assign them to the option.
+            for (int t = 0; t < (int)numberOfAllowedValues(opt); ++t)
+                _assignArgumentValue(opt, argv[++argi]);
+        }
+    }
+
+    // Handle the given string as a short option.
+    void handleShortOption(int & argi, std::string const & arg)
+    {
+        // Parse out the short option.  This is made complicated because the user can concatenate multiple short options
+        // into one.  NB: we do not check for and warn about possible ambiguities.
+        //
+        // We enumerate the possible option names starting from left to right, then sorted descendingly by length.
+        // Boolean options can be squished together in this way without further restrictions.  If the option requires
+        // additional arguments then it has to be the last in the short options.
+
+        for (unsigned s = 1; s < arg.size(); ++s)
+        {
+            unsigned e = arg.size();
+            for (; s < e; --e)
+            {
+                if (hasOption(parser, arg.substr(s, e - s)))
+                {
+                    ArgParseOption & opt = getOption(parser, arg.substr(s, e - s));
+                    s = --e;  // advance in squished options;  s > e if at end
+
+                    // Boolean options are easy to handle.
+                    if (isBooleanOption(opt))
+                    {
+                        _assignArgumentValue(opt, "true");
+                        continue;
+                    }
+
+                    // Handle option with values.
+                    if (e < arg.size() - 1)
+                    {
+                        std::stringstream what;
+                        what << "invalid combination of arguments -- " << arg << std::endl;
+                        throw ParseException(what.str());
+                    }
+
+                    // Handle the case of too few options.
+                    if (argi + (int)numberOfAllowedValues(opt) >= argc)
+                        throw MissingArgumentException(opt.shortName);
+
+                    // Assign the required option value.s
+                    for (int t = 0; t < (int)numberOfAllowedValues(opt); ++t)
+                        _assignArgumentValue(opt, argv[++argi]);
+                }
+            }
+
+            // No option was found.
+            if (s == e)
+                throw InvalidOptionException(arg.substr(s));
+        }
+    }
+};
+
+// Parser driver function.
 inline ArgumentParser::ParseResult parse(ArgumentParser & me,
                                          int argc,
                                          const char * argv[],
                                          std::ostream & outputStream,
                                          std::ostream & errorStream)
 {
-    typedef ArgumentParser::TArgumentMapSize TArgumentPosition;
-
-    TArgumentPosition currentArgument = 0;
-
-    // if the appName wasn't set .. parse from command line
-    if (empty(getAppName(me)))
-        _parseAppName(me, argv[0]);
-
-    // we use exceptions here as an indicator for parse errors
     try
     {
-        for (int arg = 1; arg < argc; ++arg)
+        // Perform the parsing without any valid value checking on the argument values.
+        ArgumentParserHelper_ parserHelper(me, argc, argv);
+        parserHelper.parseArgs();
+
+        // Copy the file extensions from the "--${NAME}-file-ext" options to "--${NAME}".
+        for (unsigned i = 0; i < me.optionMap.size(); ++i)
         {
-            if (argv[arg][0] == '-')  // this is possibly an option value
-            {
-                const std::string inParam = argv[arg];
-                unsigned len = length(inParam);
-
-                if (len == 1)
-                {
-                    throw InvalidOptionException("-");
-                }
-                else if (inParam[1] != '-') // maybe a combination of multiple bool opts
-                {
-                    for (unsigned s = 1; s < len; ++s)
-                    {
-                        unsigned e = len;
-                        for (; s < e; --e)
-                        {
-                            if (hasOption(me, inParam.substr(s, e - s)))
-                            {
-                                ArgParseOption & opt = getOption(me, inParam.substr(s, e - s));
-                                s = --e;
-                                if (isBooleanOption(opt))
-                                    _assignArgumentValue(opt, "true");
-                                else
-                                {
-                                    if (e < len - 1)
-                                    {
-                                        std::stringstream what;
-                                        what << "invalid combination of arguments -- " << inParam << std::endl;
-                                        throw ParseException(what.str());
-                                    }
-
-                                    // assign the following values to this option
-                                    if (arg + static_cast<int>(numberOfAllowedValues(opt)) < argc)
-                                    {
-                                        for (int t = 0; t < static_cast<int>(numberOfAllowedValues(opt)); ++t)
-                                            _assignArgumentValue(opt, argv[++arg]);
-                                    }
-                                    else  // no value available
-                                    {
-                                        throw MissingArgumentException(opt.shortName);
-                                    }
-                                }
-                            }
-                        }
-                        if (s == e)
-                        {
-                            throw InvalidOptionException(inParam.substr(s));
-                        }
-                    }
-                }
-                else if (inParam[1] == '-')  // this is a long option
-                {
-                    unsigned t = 2;
-                    std::string longOpt, val;
-                    for (; t < len && inParam[t] != '='; ++t)
-                        longOpt += inParam[t];
-
-                    if (t < len) // this one is a --name=value option
-                        val = inParam.substr(t + 1);
-
-                    // We might already have a value
-                    if (hasOption(me, longOpt))
-                    {
-                        ArgParseOption & opt = getOption(me, longOpt);
-
-                        if (!empty(val))
-                        {
-                            // we can only assign one value since it was set by --longOpt=val
-                            if (numberOfAllowedValues(opt) == 1)
-                                _assignArgumentValue(opt, val);
-                            else
-                                throw MissingArgumentException(longOpt);
-                        }
-                        else if (isBooleanOption(opt))
-                            _assignArgumentValue(opt, "true");
-                        else if (arg + static_cast<int>(numberOfAllowedValues(opt)) < argc)
-                        {
-                            for (int t = 0; t < static_cast<int>(numberOfAllowedValues(opt)); ++t)
-                                _assignArgumentValue(opt, argv[++arg]);
-                        }
-                        else  // no value available
-                        {
-                            throw MissingArgumentException(longOpt);
-                        }
-
-                    }
-                    else
-                        throw InvalidOptionException(longOpt);
-                }
-            }
-            else  // this seems to be a normal argument
-            {
-                // check if we have that much arguments
-                if (me.argumentList.size() > currentArgument)
-                {
-                    ArgParseArgument & argument = getArgument(me, currentArgument);
-                    _assignArgumentValue(argument, argv[arg]);
-
-                    if (!isListArgument(argument))
-                        ++currentArgument;
-                }
-                else
-                {
-                    throw ParseException("Too many arguments!");
-                }
-            }
+            ArgParseOption & opt = me.optionMap[i];
+            std::string longExtName = opt.longName + "-file-ext";
+            std::string shortExtName = opt.shortName + "-file-ext";
+            if (!opt.longName.empty() && hasOption(me, longExtName))
+                opt._fileExtensions = getArgumentValues(getOption(me, longExtName));
+            else if (!opt.shortName.empty() && hasOption(me, shortExtName))
+                opt._fileExtensions = getArgumentValues(getOption(me, longExtName));
         }
-        if (hasOption(me, "version") && isSet(me, "version"))
+        // Copy the file extensions from the "--arg-${NUM}-file-ext" options to the argument.
+        for (unsigned i = 0; i < me.argumentList.size(); ++i)
         {
-            printVersion(me, outputStream);
-            return ArgumentParser::PARSE_VERSION;
+            ArgParseArgument & arg = me.argumentList[i];
+            std::stringstream ss;
+            ss << "arg-" << (i + 1) << "-file-ext";
+            if (hasOption(me, ss.str()))
+                arg._fileExtensions = getArgumentValues(getOption(me, ss.str()));
         }
-        if (hasOption(me, "write-ctd") && isSet(me, "write-ctd"))
-        {
-            if (writeCTD(me))
-                return ArgumentParser::PARSE_WRITE_CTD;
-            else
-                return ArgumentParser::PARSE_ERROR;
-        }
-        if (isSet(me, "help"))
-        {
-            printHelp(me, outputStream);
-            return ArgumentParser::PARSE_HELP;
-        }
-        if (isSet(me, "export-help"))
-        {
-            std::string format;
-            getOptionValue(format, me, "export-help");
-            printHelp(me, outputStream, format);
-            return ArgumentParser::PARSE_EXPORT_HELP;
-        }
-        if (argc == 1 && (me.argumentList.size() > 0 || !_allRequiredSet(me)))
-        {
-            // print short help and exit
-            printShortHelp(me, errorStream);
-            return ArgumentParser::PARSE_HELP;
-        }
+
+        // Check all arguments for their values.
+        for (unsigned i = 0; i < me.optionMap.size(); ++i)
+            _checkValue(me.optionMap[i]);
+        for (unsigned i = 0; i < me.argumentList.size(); ++i)
+            _checkValue(me.argumentList[i]);
     }
     catch (ParseException & ex)
     {
@@ -242,25 +316,52 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_ERROR;
     }
 
+    // Handle the special options.
+    if (hasOption(me, "version") && isSet(me, "version"))
+    {
+        printVersion(me, outputStream);
+        return ArgumentParser::PARSE_VERSION;
+    }
+    else if (hasOption(me, "write-ctd") && isSet(me, "write-ctd"))
+    {
+        if (writeCTD(me))
+            return ArgumentParser::PARSE_WRITE_CTD;
+        else
+            return ArgumentParser::PARSE_ERROR;
+    }
+    else if (isSet(me, "help"))
+    {
+        printHelp(me, outputStream);
+        return ArgumentParser::PARSE_HELP;
+    }
+    else if (isSet(me, "export-help"))
+    {
+        std::string format;
+        getOptionValue(format, me, "export-help");
+        printHelp(me, outputStream, format);
+        return ArgumentParser::PARSE_EXPORT_HELP;
+    }
+    else if (argc == 1 && (me.argumentList.size() > 0 || !_allRequiredSet(me)))
+    {
+        // print short help and exit
+        printShortHelp(me, errorStream);
+        return ArgumentParser::PARSE_HELP;
+    }
+
+    // In case that everything is fine, we can now return OK.
     if (_allRequiredSet(me) && _allArgumentsSet(me))
         return ArgumentParser::PARSE_OK;
-    else
-    {
-        // find missing options
-        if (!_allRequiredSet(me))
-        {
-            for (unsigned o = 0; o < length(me.optionMap); ++o)
-                if (!isSet(me.optionMap[o]) && isRequired(me.optionMap[o]))
-                    errorStream << getAppName(me) << ": Missing value for option: " << getOptionName(me.optionMap[o]) << std::endl;
-        }
-        // and arguments
-        if (!_allArgumentsSet(me))
-        {
-            errorStream << getAppName(me) << ": Not enough arguments were provided." << std::endl;
-        }
-        errorStream << "Try '" << getAppName(me) << " --help' for more information.\n";
-        return ArgumentParser::PARSE_ERROR;
-    }
+
+    // Otherwise, we check which options missed values.
+    if (!_allRequiredSet(me))
+        for (unsigned o = 0; o < length(me.optionMap); ++o)
+            if (!isSet(me.optionMap[o]) && isRequired(me.optionMap[o]))
+                errorStream << getAppName(me) << ": Missing value for option: " << getOptionName(me.optionMap[o]) << std::endl;
+    // and arguments
+    if (!_allArgumentsSet(me))
+        errorStream << getAppName(me) << ": Not enough arguments were provided." << std::endl;
+    errorStream << "Try '" << getAppName(me) << " --help' for more information.\n";
+    return ArgumentParser::PARSE_ERROR;
 }
 
 inline ArgumentParser::ParseResult parse(ArgumentParser & me,

@@ -6,6 +6,9 @@
 The second one contains formating &lt;bla&gt;.
 </manual>
 	<cli>
+		<clielement optionIdentifier="--write-ctd-file-ext" isList="false">
+			<mapping referenceName="test_app.write-ctd-file-ext" />
+		</clielement>
 		<clielement optionIdentifier="--double" isList="false">
 			<mapping referenceName="test_app.double" />
 		</clielement>
@@ -21,8 +24,14 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--in" isList="false">
 			<mapping referenceName="test_app.in" />
 		</clielement>
+		<clielement optionIdentifier="--in-file-ext" isList="false">
+			<mapping referenceName="test_app.in-file-ext" />
+		</clielement>
 		<clielement optionIdentifier="--out" isList="false">
 			<mapping referenceName="test_app.out" />
+		</clielement>
+		<clielement optionIdentifier="--out-file-ext" isList="false">
+			<mapping referenceName="test_app.out-file-ext" />
 		</clielement>
 		<clielement optionIdentifier="--hidden" isList="false">
 			<mapping referenceName="test_app.hidden" />
@@ -40,13 +49,16 @@ The second one contains formating &lt;bla&gt;.
 	</cli>
 	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="test_app" description="This is a test-app.">
+			<ITEM name="write-ctd-file-ext" value="" type="string" description="Override file extension for --write-ctd" required="false" advanced="true" />
 			<ITEM name="double" value="" type="double" description="set a double option" required="false" advanced="false" />
 			<ITEM name="integer" value="" type="int" description="set an integer option" restrictions="1:10" required="false" advanced="false" />
 			<ITEM name="int64" value="" type="int" description="set a 64 bit integer option" required="false" advanced="false" />
 			<ITEMLIST name="string" type="string" description="set a string option" restrictions="a,b,c" required="false" advanced="false" >
 			</ITEMLIST>
 			<ITEM name="in" value="" type="input-file" description="set an input file" supported_formats="*.fasta" required="false" advanced="false" />
+			<ITEM name="in-file-ext" value="" type="string" description="Override file extension for --in" restrictions="fasta" required="false" advanced="true" />
 			<ITEM name="out" value="" type="output-file" description="set an output file" supported_formats="*.sam" required="false" advanced="false" />
+			<ITEM name="out-file-ext" value="" type="string" description="Override file extension for --out" restrictions="sam" required="false" advanced="true" />
 			<ITEM name="hidden" value="" type="string" description="a hidden option - will be advanced in the ctd" required="false" advanced="true" />
 			<ITEM name="argument-0" value="" type="double" description="Double Argument" required="true" advanced="false" />
 			<ITEM name="argument-1" value="" type="string" description="Documentated Argument with formating" required="true" advanced="false" />

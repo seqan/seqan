@@ -62,6 +62,12 @@ void addOption(ArgumentParser & me, ArgParseOption const & opt);
 void hideOption(ArgumentParser & me, std::string const & name, bool hide);
 void setValidValues(ArgumentParser & me, std::string const & name, std::string const & values);
 
+// Required in addOption() and addArgument().
+inline void hideOption(ArgumentParser & me, std::string const & name, bool hide = true);
+inline ArgParseOption & getOption(ArgumentParser & me, std::string const & name);
+inline void setValidValues(ArgumentParser & me, std::string const & name, std::vector<std::string> const & values);
+inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
+
 // ==========================================================================
 // Tags, Classes, Enums
 // ==========================================================================
@@ -335,6 +341,22 @@ inline bool hasOption(ArgumentParser const & me, std::string const & name)
 ..include:seqan/arg_parse.h
 */
 
+void _copyValidValuesToFileExt(ArgumentParser & me, std::string const & name)
+{
+    // Copy valid values, remove leading dots.
+    ArgParseOption & option = getOption(me, name);
+    if (isInputFileArgument(option) || isOutputFileArgument(option))
+    {
+        std::string longName = option.longName.empty() ? option.shortName : option.longName;
+        longName += "-file-ext";
+        std::vector<std::string> validValues = option.validValues;
+        for (unsigned i = 0; i < length(validValues); ++i)
+            if (!validValues[i].empty() && validValues[i][0] == '.')
+                validValues[i].erase(0, 1);
+        setValidValues(me, longName, validValues);
+    }
+}
+
 inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
 {
     // check if an option with the same identifiers was already registered
@@ -348,6 +370,23 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
         me.shortNameMap.insert(std::make_pair(opt.shortName, length(me.optionMap) - 1));
     if (!empty(opt.longName))
         me.longNameMap.insert(std::make_pair(opt.longName, length(me.optionMap) - 1));
+
+    // handle the case of input and output option: add a string option --${name}-file-ext.
+    if (isInputFileArgument(opt) || isOutputFileArgument(opt))
+    {
+        std::string longName = opt.longName.empty() ? opt.shortName : opt.longName;
+        longName += "-file-ext";
+        std::string helpText = "Override file extension for --";
+        helpText += opt.longName;
+
+        // Add option, copy list argument, number of allowed values.
+        addOption(me, ArgParseOption("", longName, helpText, ArgParseOption::STRING, "EXT",
+                                     isListArgument(opt), numberOfAllowedValues(opt)));
+        // Hide option.
+        hideOption(me, longName);
+        // Copy valid values, remove leading dots.
+        _copyValidValuesToFileExt(me, opt.longName);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -378,6 +417,23 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
 ..include:seqan/arg_parse.h
 */
 
+void _copyValidValuesToFileExt(ArgumentParser & me, unsigned no)
+{
+    // Copy valid values, remove leading dots.
+    ArgParseArgument & arg = getArgument(me, no);
+    if (isInputFileArgument(arg) || isOutputFileArgument(arg))
+    {
+        std::stringstream longNameSS;
+        longNameSS << "arg-" << (no + 1) << "-file-ext";
+        std::string longName = longNameSS.str();
+        std::vector<std::string> validValues = arg.validValues;
+        for (unsigned i = 0; i < length(validValues); ++i)
+            if (!validValues[i].empty() && validValues[i][0] == '.')
+                validValues[i].erase(0, 1);
+        setValidValues(me, longName, validValues);
+    }
+}
+
 inline void addArgument(ArgumentParser & me, ArgParseArgument const & arg)
 {
     // check previous arguments
@@ -394,6 +450,25 @@ inline void addArgument(ArgumentParser & me, ArgParseArgument const & arg)
     SEQAN_CHECK(arg._numberOfValues == 1, "n-Tuple of arguments are not supported.");
 
     me.argumentList.push_back(arg);
+
+    // handle the case of input and output option: add a string option --${name}-file-ext.
+    if (isInputFileArgument(arg) || isOutputFileArgument(arg))
+    {
+        std::stringstream longNameSS;
+        longNameSS << "arg-" << me.argumentList.size() << "-file-ext";
+        std::string longName = longNameSS.str();
+        std::stringstream helpTextSS;
+        helpTextSS << "Override file extension for argument " << me.argumentList.size();
+        std::string helpText = helpTextSS.str();
+
+        // Add option, copy list argument, number of allowed values.
+        addOption(me, ArgParseOption("", longName, helpText, ArgParseOption::STRING, "EXT",
+                                     isListArgument(arg), numberOfAllowedValues(arg)));
+        // Hide option.
+        hideOption(me, longName);
+        // Copy valid values, remove leading dots.
+        _copyValidValuesToFileExt(me, me.argumentList.size() - 1);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -527,7 +602,7 @@ inline void setRequired(ArgumentParser & me, std::string const & name, bool requ
 ..include:seqan/arg_parse.h
 */
 
-inline void hideOption(ArgumentParser & me, std::string const & name, bool hide = true)
+inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
     hideOption(getOption(me, name), hide);
@@ -737,6 +812,49 @@ inline bool getOptionValue(TValue & val,
 }
 
 // ----------------------------------------------------------------------------
+// Function getOptionFileExtension()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getOptionFileExtension
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Retrieve the file extension of a file option.
+ *
+ * @signature std::string getOptionFileExtension(parser, name[, pos]);
+ *
+ * Can be overridden by <tt>--${name}-file-ext</tt>.
+ *
+ * @param parser The ArgumentParser to get the value from.
+ * @param name   The short or long name of the option (<tt>std::string</tt>).
+ * @param pos    Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
+ *
+ * @return std::string The extension of the option. Empty if not set or no extension.
+ */
+
+/**
+.Function.ArgumentParser#getOptionFileExtension
+..class:Class.ArgumentParser
+..summary:Returns the extension of a file option.
+..cat:Miscellaneous
+..signature:std::string getOptionFileExtension(parser, name[, argNo]);
+..param.parser:The @Class.ArgumentParser@ object.
+...type:Class.ArgumentParsre
+..param.name:The name of the option.
+..param.argNo:An optional index for multi-value options.
+...type:nolink:$unsigned$
+..returns:A $std::string$ with the extension. Empty if no extension or empty value.
+*/
+
+inline std::string getOptionFileExtension(ArgumentParser const & me,
+                                          std::string const & name,
+                                          unsigned argNo = 0)
+{
+    SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
+
+    return getFileExtension(getOption(me, name), argNo);
+}
+
+// ----------------------------------------------------------------------------
 // Function getOptionValueCount()
 // ----------------------------------------------------------------------------
 
@@ -861,6 +979,53 @@ inline bool getArgumentValue(TValue & value,
                              unsigned argumentPosition)
 {
     return getArgumentValue(value, me, argumentPosition, 0);
+}
+
+// ----------------------------------------------------------------------------
+// Function getArgumentFileExtension()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getArgumentFileExtension
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Retrieve the file extension of a file argument.
+ *
+ * @signature std::string argumentFileExtension(parser, pos[, argNo]);
+ *
+ * Can be overridden by <tt>--arg-${pos}-file-ext</tt>.
+ *
+ * @param parser The ArgumentParser to get the value from.
+ * @param pos    The position of the argument to query (<tt>unsigned</tt>).
+ * @param argNo  Optional position for multi-value options (<tt>unsigned</tt>, defaults to 0).
+ *
+ * @return std::string The extension of the argument if any.
+ */
+
+/**
+.Function.ArgumentParser#getArgumentFileExtension
+..class:Class.ArgumentParser
+..summary:Returns the extension of a file argument.
+..cat:Miscellaneous
+..signature:std::string argumentFileExtension(parser, argPos[, argNo]);
+..param.parser:The @Class.ArgumentParser@ object.
+...type:Class.ArgumentParsre
+..param.argPos:The position of the argument.
+...type:nolink:$unsigned$
+..param.argNo:An optional index for multi-value arguments.
+...type:nolink:$unsigned$
+..returns:A $std::string$ with the extension. Empty if no extension or empty value.
+*/
+
+inline std::string getArgumentFileExtension(ArgumentParser const & me,
+                                            unsigned argumentPosition,
+                                            unsigned argNo = 0)
+{
+    SEQAN_CHECK(me.argumentList.size() > argumentPosition,
+                "Argument Parser has only %d arguments.",
+                me.argumentList.size());
+
+
+    return getFileExtension(getArgument(me, argumentPosition), argNo);
 }
 
 // ----------------------------------------------------------------------------
@@ -1126,7 +1291,7 @@ inline void setMaxValue(ArgumentParser & me,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn ArgumentParser#setValidValue
+ * @fn ArgumentParser#setValidValues
  * @headerfile <seqan/arg_parse.h>
  * @brief Set valid values for an argumetn or option of an ArgumentParser.
  *
@@ -1161,6 +1326,7 @@ inline void setValidValues(ArgumentParser & me,
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
     setValidValues(getOption(me, name), values);
+    _copyValidValuesToFileExt(me, name);
 }
 
 inline void setValidValues(ArgumentParser & me,
@@ -1169,6 +1335,7 @@ inline void setValidValues(ArgumentParser & me,
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
     setValidValues(getOption(me, name), values);
+    _copyValidValuesToFileExt(me, name);
 }
 
 inline void setValidValues(ArgumentParser & me,
@@ -1179,6 +1346,7 @@ inline void setValidValues(ArgumentParser & me,
                 "Argument Parser has only %d arguments.",
                 me.argumentList.size());
     setValidValues(getArgument(me, argumentPosition), values);
+    _copyValidValuesToFileExt(me, argumentPosition);
 }
 
 inline void setValidValues(ArgumentParser & me,
@@ -1189,6 +1357,7 @@ inline void setValidValues(ArgumentParser & me,
                 "Argument Parser has only %d arguments.",
                 me.argumentList.size());
     setValidValues(getArgument(me, argumentPosition), values);
+    _copyValidValuesToFileExt(me, argumentPosition);
 }
 
 // ----------------------------------------------------------------------------
