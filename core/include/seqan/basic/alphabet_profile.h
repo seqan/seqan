@@ -127,8 +127,8 @@ public:
         count[ordValue(TValue(other_data))] = 1;
     }
 
-    template <typename TSpec>
-    ProfileChar(Proxy<TSpec> const & proxy)
+    template <typename TSpec2>
+    ProfileChar(Proxy<TSpec2> const & proxy)
     {
         memset<ValueSize<ProfileChar>::VALUE * sizeof(TCount), (unsigned char) 0>(count);
         assign(*this, getValue(proxy));
