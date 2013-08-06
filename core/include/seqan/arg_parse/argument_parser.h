@@ -341,7 +341,7 @@ inline bool hasOption(ArgumentParser const & me, std::string const & name)
 ..include:seqan/arg_parse.h
 */
 
-void _copyValidValuesToFileExt(ArgumentParser & me, std::string const & name)
+inline void _copyValidValuesToFileExt(ArgumentParser & me, std::string const & name)
 {
     // Copy valid values, remove leading dots.
     ArgParseOption & option = getOption(me, name);
