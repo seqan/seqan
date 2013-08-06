@@ -1,0 +1,61 @@
+                               Mason Simulator
+                         Methylation Level Simulator
+
+                      http://www.seqan.de/projects/mason
+                              Version 2.0alpha2
+                                 August, 2013
+
+                               Manuel Holtgrewe
+
+------------------------------------------------------------------------------
+Table of Contents
+------------------------------------------------------------------------------
+
+  1. Overview
+  2. Examples
+  3. Reference and Contact
+  4. File Formats
+
+------------------------------------------------------------------------------
+1. Overview
+------------------------------------------------------------------------------
+
+Mason Simulator is the read simulator from the Mason package.
+
+The simulator has the following features:
+
+  * Single-end and paired-end data,
+  * Illumina, 454, and Sanger error models,
+  * simulate haplotypes directly from VCF file,
+  * BS-Seq simulation, and
+  * low main memory usage
+
+------------------------------------------------------------------------------
+2. Examples
+------------------------------------------------------------------------------
+
+You can find the binary "mason_simulator" in the directory "bin" and the
+example file in the directory "examples".
+
+------------------------------------------------------------------------------
+2.1 Help
+------------------------------------------------------------------------------
+
+The command:
+
+  $ mason_simulator --help
+
+prints the help for Mason Simulator.
+
+------------------------------------------------------------------------------
+3. Reference and Contact
+------------------------------------------------------------------------------
+
+In case of questions and problems please contact the mailing list
+
+  https://lists.fu-berlin.de/listinfo/seqan-dev
+
+or file a bug at
+
+  http://trac.seqan.de/newticket
+

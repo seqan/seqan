@@ -1,0 +1,23 @@
+MASON SIMULATOR
+===============
+
+____INITIALIZING______________________________________________________________
+
+Opening reference and variants file ... OK
+Initializing fragment-to-contig distribution ... OK
+Initializing simulation threads ... OK
+Opening output file simulator.left6.fq ... OK
+Opening output file simulator.right6.fq ... OK
+
+____READ SIMULATION___________________________________________________________
+
+Distributing fragments to 2 contigs (2 haplotypes each) ... OK
+
+Simulating Reads:
+  1 (allele 1) .. (443 fragments) OK
+  1 (allele 2) .. (467 fragments) OK
+  2 (allele 1) .. (41 fragments) OK
+  2 (allele 2) .. (49 fragments) OK
+  Done simulating reads.
+
+Joining temporary files ... OK

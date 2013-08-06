@@ -1,0 +1,14 @@
+MASON GENOME SIMULATOR
+======================
+
+__OPTIONS____________________________________________________________________
+
+VERBOSITY  	1
+
+SEED       	1
+
+OUTPUT FILE	genome.test2.fasta
+CONTIG LENS	1000, 100
+
+__SIMULATING GENOME__________________________________________________________
+

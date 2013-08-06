@@ -1,0 +1,7 @@
+Name: mason2
+Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+License: 3-clause BSD
+Copyright: 2013, FU Berlin
+Status: under development
+Description: A package for the simulation of genomic/NGS data
