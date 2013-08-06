@@ -417,7 +417,7 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
 ..include:seqan/arg_parse.h
 */
 
-void _copyValidValuesToFileExt(ArgumentParser & me, unsigned no)
+inline void _copyValidValuesToFileExt(ArgumentParser & me, unsigned no)
 {
     // Copy valid values, remove leading dots.
     ArgParseArgument & arg = getArgument(me, no);
