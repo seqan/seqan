@@ -45,6 +45,12 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TSpec>
+class Proxy;
+
+template <typename TSpec>
+struct IteratorProxy;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -119,6 +125,13 @@ public:
     {
         memset<ValueSize<ProfileChar>::VALUE * sizeof(TCount), (unsigned char) 0>(count);
         count[ordValue(TValue(other_data))] = 1;
+    }
+
+    template <typename TSpec>
+    ProfileChar(Proxy<TSpec> const & proxy)
+    {
+        memset<ValueSize<ProfileChar>::VALUE * sizeof(TCount), (unsigned char) 0>(count);
+        assign(*this, getValue(proxy));
     }
 
     // ------------------------------------------------------------------------

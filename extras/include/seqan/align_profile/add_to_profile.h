@@ -86,17 +86,16 @@ namespace seqan {
 ..signature:void addToProfile(profile, seq[, lDiag, uDiag]);
 */
 
-template <typename TChar, typename TValue, typename TSpec, typename TChar2, typename TSpec2>
+template <typename TChar, typename TValue, typename TSpec, typename TSpec2>
 void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
-                  String<TChar2, TSpec2> /*const*/ & seq,
+                  String<TChar, TSpec2> /*const*/ & seq,
                   int lDiag = minValue<int>(),
                   int uDiag = maxValue<int>())  // non-const because of holder issues
 {
     typedef ProfileChar<TChar, TValue, TSpec> TProfileChar;
-    TProfileChar const EMPTY_CHAR;  // prototype used for initializing
 
     typedef String<TProfileChar> TProfileString;
-    typedef String<TChar2, TSpec2> TSequence;
+    typedef String<TChar, TSpec2> TSequence;
 
     // Define gaps and scoring scheme.
     Gaps<TProfileString> gapsH(profile);
@@ -127,12 +126,12 @@ void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
     //     }
     //     else
     //     {
-    //         TProfileChar c = *itH;
+    //         TProfileChar c = (TProfileChar)*itH;
     //         std::cout << "(" << c.count[0] << ", " << c.count[1] << ", " << c.count[2] << ", " << c.count[3] << ", " << c.count[4] << ")\n";
     //     }
-    // }
-    // std::cout << "VERTICAL\n";
-    // std::cout << gapsV << "\n";
+    //}
+    //std::cout << "VERTICAL\n";
+    //std::cout << gapsV << "\n";
 
     itH = begin(gapsH, Standard());
     SEQAN_ASSERT_EQ(length(gapsH), length(gapsV));
@@ -141,28 +140,28 @@ void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
         if (isGap(itH))
         {
             SEQAN_ASSERT_NOT_MSG(isGap(itV), "Must not generate gaps columns!");
-            appendValue(buffer, EMPTY_CHAR);
+            appendValue(buffer, TProfileChar());
             back(buffer).count[valueSize<TChar>()] += 1;
-            back(buffer).count[ordValue(*itV)] += 1;
+            back(buffer).count[ordValue(TChar(*itV))] += 1;
         }
         else
         {
             TProfileChar c = *itH;
             appendValue(buffer, c);
             if (isGap(itV))
-                back(buffer).count[valueSize<TChar2>()] += 1;
+                back(buffer).count[valueSize<TChar>()] += 1;
             else
-                back(buffer).count[ordValue(*itV)] += 1;
+                back(buffer).count[ordValue(TChar(*itV))] += 1;
         }
     }
 
-    // std::cout << "--- AFTER ----\n";
-    // std::cout << "HORIZONTAL\n";
-    // for (typename Iterator<TProfileString>::Type it = begin(buffer, Standard()); it != end(buffer, Standard()); ++it)
-    // {
-    //     std::cout << "(" << it->count[0] << ", " << it->count[1] << ", " << it->count[2] << ", "
-    //               << it->count[3] << ", " << it->count[4] << ")\n";
-    // }
+    //std::cout << "--- AFTER ----\n";
+    //std::cout << "HORIZONTAL\n";
+    //for (typename Iterator<TProfileString>::Type it = begin(buffer, Standard()); it != end(buffer, Standard()); ++it)
+    //{
+    //    std::cout << "(" << it->count[0] << ", " << it->count[1] << ", " << it->count[2] << ", "
+    //              << it->count[3] << ", " << it->count[4] << ")\n";
+    //}
 
     swap(buffer, profile);
 }
