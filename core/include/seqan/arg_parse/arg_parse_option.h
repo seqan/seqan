@@ -363,14 +363,14 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
         std::stringstream strm;
         strm << value;
 
-        // check if all constraints are satisfied
-        _checkValue(me, strm.str());
-
         // clear old values
         me.defaultValue.clear();
 
         // add defaultValue
         me.defaultValue.push_back(strm.str());
+
+        // check if all constraints are satisfied
+        _checkValue(me, strm.str());
     }
     catch (ParseException & ex)
     {
@@ -418,11 +418,11 @@ inline void addDefaultValue(ArgParseOption & me, const TValue & value)
         std::stringstream strm;
         strm << value;
 
-        // check if all constraints are satisfied
-        _checkValue(me, strm.str(), me.defaultValue.size());
-
         // add defaultValue
         me.defaultValue.push_back(strm.str());
+
+        // check if all constraints are satisfied
+        _checkValue(me, strm.str(), me.defaultValue.size() - 1);
     }
     catch (ParseException & ex)
     {
