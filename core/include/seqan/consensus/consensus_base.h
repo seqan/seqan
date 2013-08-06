@@ -43,6 +43,8 @@ namespace SEQAN_NAMESPACE_MAIN
 // Segment Match Generation tag
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): This apparently belongs into graph_msa?
+
 /**
 .Tag.Segment Match Generation.value.OverlapLibrary:
 	Segment matches from overlap alignments.
@@ -57,6 +59,18 @@ typedef Tag<OverlapLibrary_> const OverlapLibrary;
 //////////////////////////////////////////////////////////////////////////////
 // Consensus tag
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @defgroup ConsensusCallingTags Consensus Calling Tags
+ *
+ * @tag ConsensusCallingTags#MajorityVote
+ * @headerfile <seqan/consensus.h>
+ * @brief Consensus based on the most common character.
+ *
+ * @tag ConsensusCallingTags#Bayesian
+ * @headerfile <seqan/consensus.h>
+ * @brief Consensus based on a bayesian probability.
+ */
 
 /**
 .Tag.Consensus Calling:
@@ -426,6 +440,47 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
 
 
 //////////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn consensusAligment
+ * @headerfile <seqan/consensus.h>
+ * @brief Compute consensus alignment.
+ * 
+ * @signature void consensusAlignment(alignmentGraph, beginEndPos[, options])
+ * 
+ * @param[out] alignmentGraph  Alignment graph to build.
+ * @param[in]  options         Optional settings for the consenus alignment, type: <tt>ConsensusOptions</tt>.
+ * @param[in]  beginEndPos     Interval start and end position for the read's alignment; <tt>String&lt;Pair&lt;TPos, TPos&gt; &gt;</tt>.
+ * 
+ * @section Example
+ * 
+ * @code{.cpp}
+ * #include <seqan/sequence.h>
+ * #include <seqan/graph_align.h>
+ * #include <seqan/consensus.h>
+ *  
+ * int main()
+ * {
+ *     using namespace seqan;
+ *  
+ *     typedef StringSet<Dna5String> TStringSet;
+ *     typedef Graph<Alignment<TStringSet, void, WithoutEdgeId> > TAlignGraph;
+ *  
+ *     TStringSet readSet;
+ *     String<Pair<TSize> > begEndPos;
+ *  
+ *     appendValue(readSet, "CCCAGTGA");
+ *     appendValue(begEndPos, Pair<TSize>(0, 5));
+ *     appendValue(readSet, "AGGGACTGT");
+ *     appendValue(begEndPos, Pair<TSize>(3, 9));
+ *  
+ *     TAlignGraph alignmentGraph(readSet);
+ *     consensusAlignment(alignmentGraph, begEndPos);
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ */
 
 /**
 .Function.consensusAligment

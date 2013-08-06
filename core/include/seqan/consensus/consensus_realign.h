@@ -518,6 +518,26 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 
 //////////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn reAlign
+ * @headerfile <seqan/consensus.h>
+ * @brief Perform realignment using the Anson-Myers realignment.
+ *
+ * @signature void reAlign(fragStore, consensusScore, contigID, [realignmentMethod,] bandwidth, includeReference);
+ *
+ * @param[in,out] fragStore        The @link FragmentStore @endlink with the alignment to realign.
+ * @param[in]     consensusScore   The @link Score @endlink to use for scoring alignments.
+ * @param[in]     contigID         The integer id of the contig to realign.
+ * @param[in]     bandwidth        The bandwidth to use for realignment.
+ * @param[in]     includeReference A <tt>bool</tt> flag that indicates whether to include the reference as a pseudo-read.
+ *
+ * @section Remarks
+ *
+ * If <tt>includeReference</tt> then the reference of the given contig will be used as a pseudo-read.  In this case, the
+ * reference will be replaced by the consensus.  When included as a pseudo-read, the alignment of the consensus relative
+ * to the original refernence can be used to call variants.
+ */
+
 // TODO(holtgrew): realignmentMethod should not be optional or moved to the end of the list.
 // TODO(holtgrew): The method should be selected with an enum instead of an int.
 /**

@@ -96,6 +96,19 @@ public:
 // Class ConsensusScoreSequenceEntry
 // --------------------------------------------------------------------------
 
+/*!
+ * @class ConsensusScoreSequenceEntry
+ * @headerfile <seqan/consensus.h>
+ * @brief Wrapper for a pointer to a sequence and a position in this sequence.
+ *
+ * @signature template <typename TSequence>
+ *            class ConsensusScoreSequenceEntry;
+ *
+ * @tparam TSequence The sequence type this entry type is for.
+ *
+ * This is used for unified interfaces for position dependent and independetn scores.
+ */
+
 /**
 .Class.ConsensusScoreSequenceEntry
 ..cat:Alignments
@@ -106,7 +119,7 @@ public:
 ...type:Concept.SequenceConcept
 ..see:Metafunction.Score#SequenceEntryForScore
 ..see:Function.Score#sequenceEntryForScore
-..include:seqan/score.h
+..include:seqan/consensus.h
 */
 
 template <typename TSequence>
@@ -125,6 +138,17 @@ public:
     ConsensusScoreSequenceEntry(TSequence const & seq, TPosition2 pos) : _seq(&seq), _pos(pos)
     {}
 };
+
+/*!
+ * @fn ConsensusScoreSequenceEntry#host
+ * @brief Returns reference to sequence from entry.
+ * 
+ * @signature TSequence host(entry);
+ * 
+ * @param[in] entry The entry to query for its host.
+ * 
+ * @return TSequence A reference to the underlying sequence.
+ */
 
 /**
 .Function.ConsensusScoreSequenceEntry#host
@@ -152,6 +176,18 @@ host(ConsensusScoreSequenceEntry<TSequence> const & entry)
     return *entry._seq;
 }
 
+/*!
+ * @fn ConsensusScoreSequenceEntry#position
+ * @brief Returns position stored in <tt>entry</tt>.
+ * 
+ * @signature TPosition position(entry);
+ * 
+ * @param[in] entry The entry to query.
+ * 
+ * @return TPosition The position of the entry.  The type is
+ *                   <tt>ConsensusScoreSequenceEntry&lt;TSequence&gt;::TPosition</tt>.
+ */
+
 /**
 .Function.ConsensusScoreSequenceEntry#position
 ..cat:Alignments
@@ -169,6 +205,17 @@ position(ConsensusScoreSequenceEntry<TSequence> const & entry)
 {
     return entry._pos;
 }
+
+/*!
+ * @fn ConsensusScoreSequenceEntry#value
+ * @brief Returns value of character referenced by <tt>entry</tt>.
+ * 
+ * @signature TValue value(entry);
+ *
+ * @param entry The entry to query.
+ *
+ * @return TValue The value of the sequence at the current position.
+ */
 
 /**
 .Function.ConsensusScoreSequenceEntry#value
