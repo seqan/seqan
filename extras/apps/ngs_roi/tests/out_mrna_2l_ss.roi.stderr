@@ -1,0 +1,21 @@
+BAM TO ROI
+==========
+
+__OPTIONS_____________________________________________________________________
+
+INPUT FILE       	micro_rna_sorted_2l.bam
+OUTPUT FILE      	out_mrna_2l_ss.roi
+
+STRAND SPECIFIC  	YES
+USE PAIRED INFO  	YES
+LINK OVER SKIPPED	NO
+
+__OPENING FILES_______________________________________________________________
+
+Opening micro_rna_sorted_2l.bam ...OK
+Opening out_mrna_2l_ss.roi ...OK
+__BUILD ROI___________________________________________________________________
+
+Working ... OK
+
+Done.

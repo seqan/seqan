@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<tool id="roi_sort" name="ROI Sorting">
+    <description>Sort ROI file</description>
+
+    <command interpreter="bash">
+    roi_sort.sh -i $input -o $output $reverse
+    #if str($by) == 'position'             # -p #end if
+    #if str($by) == 'text_column'        # -c $column #end if
+    #if str($by) == 'numeric_column' # -n $column #end if
+    </command>
+
+    <!--
+      Input Files and Parameters
+    -->
+    <inputs>
+        <param name="input" format="roi" type="data" label="ROI file to sort." />
+
+        <param name="by" type="select" label="Sort by">
+            <option value="position">position</option>
+            <option value="text_column">column as text</option>
+            <option value="numeric_column">column as number</option>
+        </param>
+
+        <param name="column" type="integer" label="Column to sort by" value="5" />
+
+        <param name="reverse" type="boolean" label="reverse" truevalue="-r" falsevalue="" />
+    </inputs>
+
+    <!--
+        Output Files
+    -->
+    <outputs>
+        <data name="output" format="roi" label="${input.name}_sorted_${by}" />
+    </outputs>
+
+    <!--
+      Recognize errors by return code and not output to stderr.
+    -->
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+        <exit_code range=":-1" level="fatal" />
+    </stdio>
+
+    <!--
+      Tool Help
+    -->
+    <help>No help yet.</help>
+</tool>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+Data types for the NGS ROI repository.
+-->
+<datatypes>
+    <registration>
+        <!-- ROI data type.  Seed bam2roi -h for a description of the format. -->
+        <datatype extension="roi" type="galaxy.datatypes.tabular:Tabular" subclass="True"/>
+    </registration>
+</datatypes>

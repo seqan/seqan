@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool id="roi_feature_projection" name="ROI Feature Projection">
+    <description>Intersect ROIs with GFF/BED</description>
+
+    <command>
+    <!-- First, create link for the input files -->
+    #if $roi_intersect_genome# ln -s ${roi_intersect_genome} ${roi_intersect_genome}.${roi_intersect_genome.ext}; #end if
+    #if $roi_intersect_in_roi# ln -s ${roi_intersect_in_roi} ${roi_intersect_in_roi}.${roi_intersect_in_roi.ext}; #end if
+    #if $roi_intersect_out_roi# touch ${roi_intersect_out_roi}; ln -s ${roi_intersect_out_roi} ${roi_intersect_out_roi}.roi; #end if
+    #if $roi_intersect_in_features # ln -s ${roi_intersect_in_features} ${roi_intersect_in_features}.${roi_intersect_in_features.ext}; #end if
+
+    <!-- Call the feature projection on the links -->
+    roi_feature_projection $roi_intersect_strand_specific
+    --in-roi ${roi_intersect_in_roi}.${roi_intersect_in_roi.ext}
+    --in-features ${roi_intersect_in_features}.${roi_intersect_in_features.ext}
+    --out-roi ${roi_intersect_out_roi}.roi
+    --mode $roi_intersect_mode
+    #if $roi_intersect_genome#        --genome ${roi_intersect_genome}.${roi_intersect_genome.ext} #end if
+    #if $verbosity #                  $verbosity #end if
+    #if $roi_intersect_gff_type #    --gff-type $roi_intersect_gff_type #end if
+    #if $roi_intersect_gff_group_by# --gff-group-by $roi_intersect_gff_group_by #end if
+    ;
+
+    <!-- Get rid of the links again -->
+    #if $roi_intersect_genome# rm -f ${roi_intersect_genome}.${roi_intersect_genome.ext}; #end if
+    #if $roi_intersect_in_roi# rm -f ${roi_intersect_in_roi}.${roi_intersect_in_roi.ext}; #end if
+    #if $roi_intersect_in_roi# rm -f ${roi_intersect_out_roi}.roi; #end if
+    #if $roi_intersect_in_features# rm -f ${roi_intersect_in_features}.${roi_intersect_in_features.ext}; #end if
+    </command>
+
+    <!--
+      Input Files and Parameters
+    -->
+    <inputs>
+        <param label="BED, GFF, or GTF file to read." type="data" name="roi_intersect_in_features" format="bed,gff,gtf" />
+        <param label="ROI file to read." type="data" name="roi_intersect_in_roi" format="roi" />
+        <param label="Path to FASTA file with genome; optional.  When given, this is used for computing the overall region's C+G content." type="data" name="roi_intersect_genome" format="fasta,fa" optional="true" />
+
+        <param type="select" name="verbosity">
+          <option value="--quiet">verbose</option>
+          <option value="" selected="true">normal</option>
+          <option value="--verbose">verbose</option>
+          <option value="--very-verbose">very verbose</option>
+        </param>
+
+        <param type="text" name="roi_intersect_gff_type" value="" label="The GFF/GTF record type (value of third column) to keep.  Keep all if not set or input file type is not GFF/GTF." />
+        <param type="text" name="roi_intersect_gff_group_by" value="" label='The GFF/GTF tag to use for grouping, e.g. "Parent", "transcript_id". No grouping if empty.  When using the grouping feature, the --mode is automatically set to projection.' />
+        <param falsevalue="" truevalue="--strand-specific" type="boolean" name="roi_intersect_strand_specific" label="Enable strand-specific mode if set." />
+
+        <param type="select" name="roi_intersect_mode" value="projection" label="The mode in which to combine the ROI and BED/GFF file.  See section Combination Modes below for details.">
+            <option value="projection" selected="true">projection</option>
+            <option value="intersection">intersection</option>
+            <option value="union">union</option>
+            <option value="difference">difference</option>
+        </param>
+    </inputs>
+
+    <!--
+      Recognize errors by return code and not output to stderr.
+    -->
+
+    <outputs>
+        <data label="${roi_intersect_in_roi} &amp; ${roi_intersect_in_features}"
+              name="roi_intersect_out_roi" format="roi" />
+    </outputs>
+ 
+    <!--
+      Recognize errors by return code and not output to stderr.
+    -->
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+        <exit_code range=":-1" level="fatal" />
+    </stdio>
+
+    <!--
+      Tool Help
+    -->
+    <help>No help yet.</help>
+
+    <!--
+      Dependencies
+    -->
+    <requirements>
+        <requirement type="python-module">Cheetah</requirement>
+        <requirement type="binary">roi_feature_projection</requirement>
+    </requirements>
+</tool>

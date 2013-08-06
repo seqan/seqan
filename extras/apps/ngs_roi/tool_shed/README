@@ -1,0 +1,28 @@
+Dependencies
+============
+
+ * ngsroi R package (shipped as tar.gz, in R subfolder)
+ * R packages: getopt
+ * samtools binary (apparently for SAM upload)
+ * Python packages: Cheetah, matplotlib
+ * ngs_roi binaries:
+
+   svn co http://svn.seqan.de/seqan/trunk seqan-trunk
+   pushd seqan-trunk/sandbox
+   svn co https://projets.pasteur.fr/.../jagla jagla
+   popd
+   mkdir -p seqan-trunk-build/release && cd seqan-trunk-build/release
+   cmake ../../seqan-trunk
+   pushd sandbox/jagla/apps/ngs_roi
+   make
+   popd
+   ls bin/*
+
+Notes
+=====
+
+You have to allow full HTML output for the tool to work properly.
+
+Edit your univers_wsgi.ini to include the line
+
+  sanitize_all_html = False
