@@ -112,11 +112,23 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
     
+    String(String & source)
+        : data_begin(0),
+          data_end(0),
+          data_capacity(0)
+    {
+        reserve(*this, capacity(source), Exact());
+        if (length(source) > 0u)
+            assign(*this, source);
+        SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
+    }
+
     String(String const & source)
         : data_begin(0),
           data_end(0),
           data_capacity(0)
     {
+        reserve(*this, capacity(source), Exact());
         if (length(source) > 0u)
             assign(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");

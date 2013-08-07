@@ -1672,7 +1672,6 @@ _reallocateStorage(
     String<TValue, TSpec> & me,
     TSize new_capacity)
 {
-    SEQAN_CHECKPOINT;
     return _allocateStorage(me, new_capacity);
 }
 
@@ -1685,14 +1684,9 @@ _reallocateStorage(
 {
     typedef typename Size<String<TValue, TSpec> >::Type TStringSize;
     if (static_cast<TStringSize>(new_capacity) <= capacity(me))
-    {
         return 0;
-    }
-    else
-    {
-        SEQAN_CHECKPOINT;
-        return _reallocateStorage(me, new_capacity);
-    }
+
+    return _reallocateStorage(me, new_capacity);
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TSize2>
@@ -1705,15 +1699,10 @@ _reallocateStorage(
 {
     typedef typename Size<String<TValue, TSpec> >::Type TStringSize;
     if (static_cast<TStringSize>(new_capacity) <= capacity(me))
-    {
         return 0;
-    }
-    else
-    {
-        SEQAN_CHECKPOINT;
-        if (new_capacity > limit) new_capacity = limit;
-        return _reallocateStorage(me, new_capacity);
-    }
+
+    if (new_capacity > limit) new_capacity = limit;
+    return _reallocateStorage(me, new_capacity);
 }
 
 template <typename TValue, typename TSpec, typename TSize>
@@ -1725,15 +1714,10 @@ _reallocateStorage(
 {
     typedef typename Size<String<TValue, TSpec> >::Type TStringSize;
     if (static_cast<TStringSize>(new_capacity) <= capacity(me))
-    {
         return 0;
-    }
-    else
-    {
-        SEQAN_CHECKPOINT;
-        new_capacity = computeGenerousCapacity(me, new_capacity);
-        return _reallocateStorage(me, new_capacity);
-    }
+
+    new_capacity = computeGenerousCapacity(me, new_capacity);
+    return _reallocateStorage(me, new_capacity);
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TSize2>
@@ -1746,16 +1730,11 @@ _reallocateStorage(
 {
     typedef typename Size<String<TValue, TSpec> >::Type TStringSize;
     if (static_cast<TStringSize>(new_capacity) <= capacity(me))
-    {
         return 0;
-    }
-    else
-    {
-        SEQAN_CHECKPOINT;
-        new_capacity = computeGenerousCapacity(me, new_capacity);
-        if (new_capacity > limit) new_capacity = limit;
-        return _reallocateStorage(me, new_capacity);
-    }
+
+    new_capacity = computeGenerousCapacity(me, new_capacity);
+    if (new_capacity > limit) new_capacity = limit;
+    return _reallocateStorage(me, new_capacity);
 }
 
 template <typename TValue, typename TSpec, typename TSize>
