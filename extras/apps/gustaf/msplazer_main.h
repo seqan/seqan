@@ -40,7 +40,8 @@
 #include "../../../core/apps/stellar/stellar_output.h"
 
 #include "msplazer.h"
-#include "msplazer_out.h"
+#include "msplazer_out_mine.h"
+// #include "msplazer_out.h"
 #include "msplazer_algorithms.h"
 #include "stellar_routines.h"
 #include "create_stellarmatches_from_file.h"

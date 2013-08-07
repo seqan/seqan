@@ -37,12 +37,36 @@
 
 #include <iostream>
 #include <fstream>
+#include <seqan/gff_io.h>
 #include <seqan/file.h>
 
 #include "../../../core/apps/stellar/stellar.h"
 #include "msplazer.h"
 
 using namespace seqan;
+
+/**
+.Tag.DotDrawingMSplazer
+..cat:Input/Output
+..summary:Switch to trigger drawing in dot format.
+..value.DotDrawingMSplazer:Graphs in dot format.
+..include:seqan/msplazer.h
+*/
+
+struct DotDrawingMSplazer_;
+typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazer;
+
+/**
+.Tag.DotDrawingMSplazerBestChain
+..cat:Input/Output
+..summary:Switch to trigger drawing in dot format.
+..value.DotDrawingMSplazerBestChain:Best chain graphs in dot format.
+..include:seqan/msplazer.h
+*/
+
+struct DotDrawingMSplazerBestChain_;
+typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazerBestchain;
+
 
 /**
 .Function.write:
@@ -53,11 +77,11 @@ using namespace seqan;
 ...type:Tag.DotDrawingMSplazer
 ..include:seqan/msplazer.h
  */
-template <typename TFile, typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch,
+template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile, 
           typename TBreakpoint, typename TPos, typename TMatchAlloc>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
 void
-write(TFile & file,
+write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstream f; f.open(..); if (!f.good()) ... ; write(f, ...);  // write(std::cerr/std::cout, ...
       // MSplazerChain<TGraph, TVertexDescriptor, TScoreAlloc, TBreakpointAlloc, // Requires Value<SparsePropertyMap> specialisation in msplazer.h
       MSplazerChain<TGraph, TVertexDescriptor, TScoreAlloc, SparsePropertyMap<TBreakpoint, TPos>,
                     TMatchAlloc> const & msplazerchain,
@@ -71,20 +95,19 @@ write(TFile & file,
     typedef typename TBreakpoint::TId TId;
 
     // _writeGraphType(file,g,DotDrawing());
-    _streamWrite(file, "digraph G {\n");
-    _streamPut(file, '\n');
-    _streamWrite(file, "/* Graph Attributes */\n");
-    _streamWrite(file, "graph [rankdir = LR, clusterrank = local];\n");
-    _streamPut(file, '\n');
-    _streamWrite(file, "/* Node Attributes */\n");
-    _streamWrite(file,
-                 "node [shape = rectangle, fillcolor = white, style = filled, fontname = \"Times-Italic\"];\n");
-    _streamPut(file, '\n');
-    _streamWrite(file, "/* Edge Attributes */\n");
-    _streamWrite(file, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
-    _streamPut(file, '\n');
+    out << "digraph G {\n";
+    out << '\n';
+    out << "/* Graph Attributes */\n";
+    out << "graph [rankdir = LR, clusterrank = local];\n";
+    out << '\n';
+    out << "/* Node Attributes */\n";
+    out << "node [shape = rectangle, fillcolor = white, style = filled, fontname = \"Times-Italic\"];\n";
+    out << '\n';
+    out << "/* Edge Attributes */\n";
+    out << "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n";
+    out << '\n';
 
-    _streamWrite(file, "/* Nodes */\n");
+    out << "/* Nodes */\n";
     typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
     TConstIter it(msplazerchain.graph);
     unsigned i = 0;
@@ -94,71 +117,203 @@ write(TFile & file,
         TId sId;
         if (i < length(queryMatches))
         {
-            _streamPutInt(file, *it);
-            _streamWrite(file, " [label = \"");
-            _streamWrite(file, "chr: ");
+            out << *it;
+            out << " [label = \"";
+            out << "chr: ";
             _getShortId(sId, queryMatches[i].id);
-            _streamWrite(file, sId);
-            _streamWrite(file, "\\n db: ");
-            _streamPutInt(file, queryMatches[i].begin1 + 1);
-            _streamWrite(file, "...");
-            _streamPutInt(file, queryMatches[i].end1 + 1);
-            _streamWrite(file, "  ");
-            _streamWrite(file, (queryMatches[i].orientation ? '+' : '-'));
-            _streamWrite(file, "\\n read: ");
-            _streamPutInt(file, queryMatches[i].begin2 + 1);
-            _streamWrite(file, "...");
-            _streamPutInt(file, queryMatches[i].end2 + 1);
-            _streamWrite(file, "\\n");
-            _streamPutInt(file, i);
-            _streamWrite(file, "\"];\n");
+            out << sId;
+            out << "\\n db: ";
+            out << queryMatches[i].begin1 + 1;
+            out << "...";
+            out << queryMatches[i].end1 + 1;
+            out << "  ";
+            out << (queryMatches[i].orientation ? '+' : '-');
+            out << "\\n read: ";
+            out << queryMatches[i].begin2 + 1;
+            out << "...";
+            out << queryMatches[i].end2 + 1;
+            out << "\\n";
+            out << i;
+            out << "\"];\n";
         }
         else if (!atEndV)
         {
-            _streamPutInt(file, *it);
-            _streamWrite(file, " [label = \"start");
-            _streamWrite(file, "\"];\n");
+            out << *it;
+            out << " [label = \"start";
+            out << "\"];\n";
             atEndV = true;
         }
         else if (atEndV)
         {
-            _streamPutInt(file, *it);
-            _streamWrite(file, " [label = \"end");
-            _streamWrite(file, "\\n");
-            _streamPutInt(file, queryLength + 1);
-            _streamWrite(file, "\"];\n");
+            out << *it;
+            out << " [label = \"end";
+            out << "\\n";
+            out << queryLength + 1;
+            out << "\"];\n";
         }
         else
             std::cerr << "in writing dot: default vertex??" << std::endl;
         ++i;
     }
 
-    _streamPut(file, '\n');
-    _streamWrite(file, "/* Edges */\n");
+    out << '\n';
+    out << "/* Edges */\n";
     typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
     TConstEdIter itEd(msplazerchain.graph);
-    // bpC = 0;
     for (; !atEnd(itEd); ++itEd)
     {
         TVertexDescriptor sc = sourceVertex(itEd);
         TVertexDescriptor tr = targetVertex(itEd);
-        _streamPutInt(file, sc);
-        _writeEdgeType(file, msplazerchain.graph, DotDrawing());
-        _streamPutInt(file, tr);
-        _streamWrite(file, " [label = \"");
-        _streamPutInt(file, getCargo(*itEd));
+        out << sc;
+        _writeEdgeType(out, msplazerchain.graph, DotDrawing());
+        out << tr;
+        out << " [label = \"";
+        out << getCargo(*itEd);
         TBreakpoint bp;
         bool foundBP = getProperty(msplazerchain.breakpoints, value(itEd), bp);
         if (foundBP)
-        {
-            _streamWrite(file, "*");
-            // _streamPutInt(file, bpC);
-            // ++bpC;
-        }
-        _streamWrite(file, "\"];\n");
+            out << "*";
+        out << "\"];\n";
     }
-    _streamPut(file, '\n');
-    _streamWrite(file, "}\n");
+        out << '\n'
+        << "}\n";
+}
+
+// DotWriting call for read graphs
+template <typename TSequence, typename TId, typename TMSplazerChain>
+void _writeDotfiles(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
+                    StringSet<TSequence> const & queries,
+                    String<TMSplazerChain> & queryChains,
+                    MSplazerOptions const & msplazerOptions)
+{
+    for (unsigned i = 0; i < length(queryChains); ++i)
+    {
+        if (!queryChains[i].isEmpty)
+        {
+            std::string fn = "read" + toString(i + 1) + '_' + toString(msplazerOptions.jobName) + ".dot";
+            std::ofstream f( toCString("read" + toString(i + 1) + '_' + toString(msplazerOptions.jobName) + ".dot"));
+            if (!f.good())
+                std::cerr << "Error while writing dot files!" << std::endl;
+            write(f, queryChains[i], stellarMatches[i].matches, length(queries[i]), DotDrawingMSplazer());
+            f.close();
+        }
+    }
+}
+
+template <typename TBreakpoint>
+void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
+{
+    typedef typename TBreakpoint::TId TId;
+    TId sId;
+    typedef typename TBreakpoint::TPos TPos;
+    _getShortId(sId, bp.startSeqId);
+    record.ref = sId;
+    record.source = "GUSTAF";
+    record.type = bp.svtype;
+    record.beginPos = bp.startSeqPos;
+    if (bp.svtype == "deletion" || bp.svtype == "inversion")
+        record.endPos = bp.endSeqPos;
+    else
+        record.endPos = bp.startSeqPos + 1;
+    if (bp.startSeqStrand)
+        record.strand = '+';
+    else
+        record.strand = '-';
+
+    appendValue(record.tagName, "ID");
+    appendValue(record.tagValue, toString(id));
+    if (bp.svtype == "insertion")
+    {
+        appendValue(record.tagName, "size");
+        appendValue(record.tagValue, '-' + toString(length(bp.insertionSeq)));
+        appendValue(record.tagName, "seq");
+        appendValue(record.tagValue, bp.insertionSeq);
+    }
+    else if (bp.svtype == "deletion")
+    {
+        appendValue(record.tagName, "size");
+        appendValue(record.tagValue, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
+    }
+    else
+    {
+        appendValue(record.tagName, "endChr");
+        _getShortId(sId, bp.endSeqId);
+        appendValue(record.tagValue, sId);
+        appendValue(record.tagName, "endPos");
+        appendValue(record.tagValue, toString(bp.endSeqPos));
+        appendValue(record.tagName, "endStrand");
+        if (bp.endSeqStrand)
+            appendValue(record.tagValue, '+');
+        else
+            appendValue(record.tagValue, '-');
+    }
+    appendValue(record.tagName, "support");
+    appendValue(record.tagValue, toString(bp.support));
+    appendValue(record.tagName, "supportIds");
+
+    std::stringstream s;
+    for (unsigned i = 0; i < length(bp.supportIds); ++i)
+    {
+        s << bp.supportIds[i];
+        s << ',';
+    }
+
+    appendValue(record.tagValue, s.str());
+    appendValue(record.tagName, "breakpoint");
+    appendValue(record.tagValue, toString(bp.readStartPos + 1));
+}
+
+// Breakpoint writing call
+template <typename TBreakpoint>
+bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
+                             MSplazerOptions const & msplazerOptions)
+{
+    // Creating GFF record and writing to gff file
+    std::string fn_gff = toString(msplazerOptions.breakpointOutFile);
+    GffStream gffOut(fn_gff.c_str(), GffStream::WRITE);
+    if (!isGood(gffOut))
+        std::cerr << "Error while opening breakpoint file!" << std::endl;
+
+    GffRecord gff_record;
+    for (unsigned i = 0; i < length(globalBreakpoints); ++i)
+    {
+        if (globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= msplazerOptions.support)
+        {
+            // Fill record
+            _fillGffRecord(gff_record, globalBreakpoints[i], i);
+            // Write record
+            if (writeRecord(gffOut, gff_record) != 0)
+                std::cerr << "Error while writing breakpoint gff record!" << std::endl;
+            clear(gff_record);
+        }
+    }
+
+    std::cout << " completed writing " << msplazerOptions.breakpointOutFile << std::endl;
+    return 0;
+}
+
+// /////////////////////////////////////////////////////////////////////////////
+// Writes parameters from options object to std::cout
+template <typename TOptions>
+void
+_writeParams(TOptions & options)
+{
+// IOREV _notio_
+    // Output user specified parameters
+    // if (options.outDir != "")
+    //  std::cout << "Output directory        : " << options.outDir << std::endl;
+    if (options.jobName != "")
+        std::cout << "Job name        : " << options.jobName << std::endl;
+    std::cout << "Thresholds:" << std::endl;
+    std::cout << "  overlap threshold (oth)          : " << options.simThresh << std::endl;
+    std::cout << "  gap threshold (gth)              : " << options.gapThresh << std::endl;
+    std::cout << "  inital gap threshold (ith)       : " << options.initGapThresh << std::endl;
+    std::cout << "Penalties:" << std::endl;
+    std::cout << "  translocation penalty (tp)       : " << options.diffDBPen << std::endl;
+    std::cout << "  inversion penalty (ip)           : " << options.diffStrandPen << std::endl;
+    std::cout << "  order penalty (op)               : " << options.diffOrderPen << std::endl;
+
+    std::cout << "  required read support (st)       : " << options.support << std::endl;
 }
 
 /**TODO(ktrappe): Add write functionality for SAM/VCF format
@@ -300,99 +455,6 @@ void _writeSamFile(CharString outfile,
         }
         file2.close();
     }
-}
-
-// DotWriting call for read graphs
-template <typename TSequence, typename TId, typename TMSplazerChain>
-void _writeDotfiles(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
-                    StringSet<TSequence> const & queries,
-                    String<TMSplazerChain> & queryChains,
-                    MSplazerOptions const & msplazerOptions)
-{
-    for (unsigned i = 0; i < length(queryChains); ++i)
-    {
-        if (!queryChains[i].isEmpty)
-        {
-            // if(length(stellarMatches[i].matches) > 45){
-            // String< char > fn = toString(msplazerOptions.outDir) + "read" + toString(i+1) + '_'
-            // + toString(msplazerOptions.queryFile) + '_' + toString(msplazerOptions.databaseFile) + ".dot";
-            String<char> fn = "read" + toString(i + 1) + '_' + toString(msplazerOptions.jobName) + ".dot";
-            // std::cerr  << fn << std::endl;
-            FILE * strmWrite = fopen(toCString(fn), "w");
-            // write(strmWrite, queryChains[i].graph, DotDrawing());
-            write(strmWrite, queryChains[i], stellarMatches[i].matches, length(queries[i]), DotDrawingMSplazer());
-
-            fclose(strmWrite);
-            // std::cerr << " completed dot write in: " << i << std::endl;
-        }
-    }
-}
-
-// Breakpoint writing call
-template <typename TBreakpoint>
-bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
-                             MSplazerOptions const & msplazerOptions)
-{
-    // String<char> fn = toString(msplazerOptions.outDir) + toString(msplazerOptions.jobName) + toString(fileName);
-    String<char> fn = toString(msplazerOptions.breakpointOutFile);
-    // std::cerr  << fn << std::endl;
-    FILE * strmWrite = fopen(toCString(fn), "w");
-
-    // std::ofstream file;
-    /*file.open(toCString(fileName), ::std::ios_base::out | ::std::ios_base::app);
-    if (!strmWrite.is_open()) {
-        std::cerr << "Could not open output file." << std::endl;
-        return 1;
-    }
-
-    if (!open(f, filename, "rb"))
-    {
-        std::cerr << "ERROR: GZip file has the wrong format!" << std::endl;
-        return 1;
-    }
-    */
-    /*
-    _streamWrite(strmWrite, "Global breakpoints found on best Chains sorted according to genome Ids\n");
-    _streamWrite(strmWrite, "Database file: ");
-    _streamWrite(strmWrite, msplazerOptions.databaseFile);
-    _streamPut(strmWrite, '\n');
-    */
-    // _streamPut(strmWrite, BreakpointFileHeader());
-    // print bps
-    for (unsigned i = 0; i < length(globalBreakpoints); ++i)
-    {
-        // if(globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= msplazerOptions.support)
-        if (globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= msplazerOptions.support)
-            _streamWrite(strmWrite, globalBreakpoints[i], i);
-        // _streamPut(strmWrite, '\n');
-    }
-    fclose(strmWrite);
-    std::cout << " completed writing " << msplazerOptions.breakpointOutFile << std::endl;
-    return 0;
-}
-
-// /////////////////////////////////////////////////////////////////////////////
-// Writes parameters from options object to std::cout
-template <typename TOptions>
-void
-_writeParams(TOptions & options)
-{
-// IOREV _notio_
-    // Output user specified parameters
-    // if (options.outDir != "")
-    //  std::cout << "Output directory        : " << options.outDir << std::endl;
-    if (options.jobName != "")
-        std::cout << "Job name        : " << options.jobName << std::endl;
-    std::cout << "Thresholds:" << std::endl;
-    std::cout << "  overlap threshold (oth)          : " << options.simThresh << std::endl;
-    std::cout << "  gap threshold (gth)              : " << options.gapThresh << std::endl;
-    std::cout << "  inital gap threshold (ith)       : " << options.initGapThresh << std::endl;
-    std::cout << "Penalties:" << std::endl;
-    std::cout << "  translocation penalty (tp)       : " << options.diffDBPen << std::endl;
-    std::cout << "  inversion penalty (ip)           : " << options.diffStrandPen << std::endl;
-    std::cout << "  order penalty (op)               : " << options.diffOrderPen << std::endl;
-
-    std::cout << "  required read support (st)       : " << options.support << std::endl;
 }
 
 #endif  // #ifndef SANDBOX_MY_SANDBOX_APPS_MSPLAZER_MSPLAZER_OUT_H_
