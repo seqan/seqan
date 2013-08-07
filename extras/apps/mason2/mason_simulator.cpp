@@ -1011,7 +1011,7 @@ public:
             throw MasonIOException("Could not open left/single-end output file.");
         std::cerr << " OK\n";
 
-        if (!empty(options.outFileNameRight))
+        if (!options.forceSingleEnd && !empty(options.outFileNameRight))
         {
             std::cerr << "Opening output file " << options.outFileNameRight << " ...";
             open(outSeqsRight, toCString(options.outFileNameRight), seqan::SequenceStream::WRITE);

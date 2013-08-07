@@ -655,6 +655,9 @@ struct MasonSimulatorOptions
     // Number of reads/pairs to simulate.
     int numFragments;
 
+    // Whether to force single-end simulation although !empty(outFileNameRight).
+    bool forceSingleEnd;
+    
     // Path to input methylation FASTA file.
     seqan::CharString methFastaInFile;
     // Path to output sequence files for left (and single end) and right reads.
@@ -680,7 +683,8 @@ struct MasonSimulatorOptions
     Roche454SequencingOptions rocheOptions;
 
     MasonSimulatorOptions() :
-            verbosity(1), seed(0), seedSpacing(2048), numThreads(1), chunkSize(64*1024), numFragments(0)
+            verbosity(1), seed(0), seedSpacing(2048), numThreads(1), chunkSize(64*1024), numFragments(0),
+            forceSingleEnd(false)
     {}
 
     // Add options to the argument parser.  Calls addOptions() on the nested *Options objects.
@@ -798,6 +802,9 @@ struct MasonFragmentSequencingOptions
 
     // The seed to use for random number generation.
     int seed;
+
+    // Whether to force single-end simulation although !empty(outFileNameRight).
+    bool forceSingleEnd;
 
     // Path to input file.
     seqan::CharString inputFileName;

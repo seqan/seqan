@@ -1110,6 +1110,9 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
     setMinValue(parser, "num-threads", "1");
     setDefaultValue(parser, "num-threads", "1");
 
+    addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
+                                            "file is given."));
+
     addOption(parser, seqan::ArgParseOption("", "chunk-size", "Number of fragments to simulate in one batch.",
                                             seqan::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "chunk-size", "65536");
@@ -1206,6 +1209,7 @@ void MasonSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser
     getOptionValue(numThreads, parser, "num-threads");
     getOptionValue(chunkSize, parser, "chunk-size");
     getOptionValue(numFragments, parser, "num-fragments");
+    getOptionValue(forceSingleEnd, parser, "force-single-end");
     getOptionValue(methFastaInFile, parser, "meth-fasta-in");
     getOptionValue(outFileNameLeft, parser, "out");
     getOptionValue(outFileNameRight, parser, "out-right");
@@ -1231,7 +1235,7 @@ void MasonSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser
 
     // Configure simulation of pairs and mates depending on output files.
     seqOptions.simulateQualities = (endsWith(outFileNameLeft, ".fastq") || endsWith(outFileNameLeft, ".fq"));
-    seqOptions.simulateMatePairs = !empty(outFileNameRight);
+    seqOptions.simulateMatePairs = !forceSingleEnd && !empty(outFileNameRight);
     methOptions.simulateMethylationLevels = !empty(methFastaInFile);
 }
 
@@ -1249,6 +1253,7 @@ void MasonSimulatorOptions::print(std::ostream & out) const
         << "SEED\t" << seed << "\n"
         << "SEED SPACING\t" << seedSpacing << "\n"
         << "\n"
+        << "FORCE SINGLE END\t" << getYesNoStr(forceSingleEnd) << "\n"
         << "NUM FRAGMENTS\t" << numFragments << "\n"
         << "\n"
         << "NUM THREADS\t" << numThreads << "\n"
@@ -1257,6 +1262,7 @@ void MasonSimulatorOptions::print(std::ostream & out) const
         << "METHYLATION FASTA IN\t" << methFastaInFile << "\n"
         << "OUTPUT FILE LEFT\t" << outFileNameLeft << "\n"
         << "OUTPUT FILE RIGHT\t" << outFileNameRight << "\n"
+        << "PAIRED END SIMULATION\t" << getYesNoStr(!forceSingleEnd && !empty(outFileNameRight)) << "\n"
         << "\n";
     matOptions.print(out);
     out << "\n";
@@ -1515,6 +1521,9 @@ void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) 
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUTFILE, "OUT2"));
     setValidValues(parser, "out-right", "fa fasta fq fastq");
 
+    addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
+                                            "is given."));
+
     // Add options of the component options.
     seqOptions.addOptions(parser);
     illuminaOptions.addOptions(parser);
@@ -1552,6 +1561,7 @@ void MasonFragmentSequencingOptions::getOptionValues(seqan::ArgumentParser const
     getOptionValue(inputFileName, parser, "in");
     getOptionValue(outFileNameLeft, parser, "out");
     getOptionValue(outFileNameRight, parser, "out-right");
+    getOptionValue(forceSingleEnd, parser, "force-single-end");
 
     // Get options for the other components that we use.
     seqOptions.getOptionValues(parser);
@@ -1567,7 +1577,7 @@ void MasonFragmentSequencingOptions::getOptionValues(seqan::ArgumentParser const
 
     // Configure simulation of pairs and mates depending on output files.
     seqOptions.simulateQualities = (endsWith(outFileNameLeft, ".fastq") || endsWith(outFileNameLeft, ".fq"));
-    seqOptions.simulateMatePairs = !empty(outFileNameRight);
+    seqOptions.simulateMatePairs = !forceSingleEnd && !empty(outFileNameRight);
 }
 
 // ----------------------------------------------------------------------------
