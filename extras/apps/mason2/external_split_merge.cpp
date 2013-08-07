@@ -43,6 +43,42 @@ void IdSplitter::open()
     close();
     for (unsigned i = 0; i < numContigs; ++i)
     {
+#if defined(PLATFORM_WINDOWS_VS)
+	    char fileNameBuffer[1000];
+		char filePathBuffer[1000];
+		//  Gets the temp path env string (no guarantee it's a valid path).
+		DWORD dwRetVal = 0;
+		dwRetVal = GetTempPath(1000,            // length of the buffer
+							   filePathBuffer); // buffer for path
+		if (dwRetVal > 1000 || (dwRetVal == 0))
+		{
+			std::cerr << "GetTempPath failed" << std::endl;
+			exit(1);
+		}
+
+		UINT uRetVal   = 0;
+		uRetVal = GetTempFileName(filePathBuffer,   // directory for tmp files
+								  TEXT("MASON_"),   // temp file name prefix
+								  1,                // create unique name
+								  fileNameBuffer);  // buffer for name
+
+		if (uRetVal == 0)
+		{
+			std::cerr << "GetTempFileName failed" << std::endl;
+			exit(1);
+		}
+
+		// The file exists now and is already closed.
+
+		DeleteFile(fileNameBuffer);
+		files.push_back(fopen(fileNameBuffer, "w+b"));
+#elif defined(PLATFORM_WINDOWS_MINGW)
+		char fileNameBuffer[1000];
+		tmpnam(fileNameBuffer);
+        files.push_back(fopen(fileNameBuffer, "w+b"));
+        remove(fileNameBuffer);
+#else  // POSIX (Linux/Mac)
+		// Create temporary file using POSIX API, open with <cstdio>, delete, close POSIX.
         char const * tmpdir = 0;
         if ((tmpdir = getenv("TMPDIR")) == NULL)
             tmpdir = "/tmp";
@@ -53,6 +89,7 @@ void IdSplitter::open()
         files.push_back(fopen(pathTpl.c_str(), "w+b"));
         remove(pathTpl.c_str());
         ::close(fd);
+#endif
 
         if (!files.back())
         {

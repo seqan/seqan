@@ -15,7 +15,7 @@ message (STATUS "Configuring extras/apps/mason2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-#set (SEQAN_FIND_DEPENDENCIES NONE)
+set (SEQAN_FIND_DEPENDENCIES ZLIB)
 find_package (SeqAn REQUIRED)
 
 # Enable C++11 in GCC and/or CLANG.

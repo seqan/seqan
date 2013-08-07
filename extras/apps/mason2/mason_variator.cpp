@@ -521,7 +521,7 @@ public:
 
             // Perform experiment for SNP and small indel.
             bool isSnp = (pickRandomNumber(rng, pdf) < options.snpRate);
-            double isIndel = (pickRandomNumber(rng, pdf) < options.smallIndelRate);
+            bool isIndel = (pickRandomNumber(rng, pdf) < options.smallIndelRate);
             int const MAX_TRIES = 1000;
             int tryNo = 0;
             for (; isSnp && isIndel && (tryNo < MAX_TRIES); ++tryNo)

@@ -273,7 +273,7 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
     unsigned const MAX_TRIES = 1000;
     for (unsigned tryNo = 0; tryNo < MAX_TRIES; ++tryNo)
     {
-        fragLength = pickRandomNumber(rng, pdf);
+        fragLength = static_cast<int>(pickRandomNumber(rng, pdf));
         if (fragLength <= 0 || fragLength > (int)contigLength)
             continue;  // Try again
 

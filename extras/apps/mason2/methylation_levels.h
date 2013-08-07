@@ -105,7 +105,7 @@ struct MethylationLevels
         SEQAN_ASSERT_GEQ(level, 0.0);
         SEQAN_ASSERT_LEQ(level, 1.0);
         // std::cerr << "forward[i] = " << levelToChar(round(level / 0.0125)) << " ~ " << (level / 0.0125) << " ~ " << level << "\n";
-        char c = levelToChar(round(level / 0.0125));
+        char c = levelToChar(static_cast<char>(round(level / 0.0125)));
         SEQAN_ASSERT_NEQ((int)c, (int)'>');
         forward[i] = std::max(reverse[i], c);
     }
@@ -122,7 +122,7 @@ struct MethylationLevels
         SEQAN_ASSERT_GEQ(level, 0.0);
         SEQAN_ASSERT_LEQ(level, 1.0);
         // std::cerr << "reverse[" << i << "] = " << levelToChar(round(level / 0.0125)) << " ~ " << (level / 0.0125) << " ~ " << level << "\n";
-        char c = levelToChar(round(level / 0.0125));
+        char c = levelToChar(static_cast<char>(round(level / 0.0125)));
         SEQAN_ASSERT_NEQ((int)c, (int)'>');
         reverse[i] = std::max(reverse[i], c);
     }

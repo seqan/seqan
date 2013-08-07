@@ -80,7 +80,7 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
             double x = 1.0;
             while (x == 1.0)
                 x = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<double> >(0, 1));
-            int num = x / 0.25;
+            int num = static_cast<int>(x / 0.25);
 
             // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
 
