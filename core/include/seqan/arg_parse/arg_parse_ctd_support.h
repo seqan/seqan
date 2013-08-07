@@ -408,7 +408,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
             type = "input-file";
         else if (isOutputFileArgument(opt))
             type = "output-file";
-        else if (isStringArgument(opt))
+        else if (isStringArgument(opt) || isBooleanOption(opt))
             type = "string";
 
         // set up restrictions
