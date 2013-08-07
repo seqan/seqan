@@ -1084,6 +1084,7 @@ parseCommandLine(MasonSimulatorOptions & options, int argc, char const ** argv)
     setShortDescription(parser, "Read Simulation");
     setVersion(parser, "2.0");
     setDate(parser, "July 2012");
+    setCategory(parser, "Simulators");
 
     // Define usage line and long description.
     addUsageLine(parser,

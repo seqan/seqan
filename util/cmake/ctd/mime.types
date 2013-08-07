@@ -4,6 +4,7 @@ application/x-masic masic mas
 application/x-gsi gsi
 application/x-z-gsi gsi.gz
 application/x-gff gff
+application/x-gtf gtf
 application/x-razers razers
 application/x-eland eland
 application/x-masai raw
@@ -20,7 +21,6 @@ application/x-fastq fastq fq
 application/x-masic masic mas
 application/x-gsi gsi
 application/x-z-gsi gsi.gz
-application/x-gff gff
 application/x-razers razers
 application/x-eland eland
 application/x-masai raw

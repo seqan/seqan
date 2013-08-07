@@ -8,6 +8,7 @@
  <mimetype name="GSI" binary="false" ext="gsi" description="Gold Standard Intervals"/>
  <mimetype name="ZGSI" binary="true" ext="gsi.gz" description="GZiped Gold Standard Intervals"/>
  <mimetype name="GFF" binary="false" ext="gff" description="General Feature Format"/>
+ <mimetype name="GTF" binary="false" ext="gtf" description="Gene transfer format"/> 
  <mimetype name="RAZERS" binary="false" ext="razers" description="RazerS read mapping format"/>
  <mimetype name="ELAND" binary="false" ext="eland" description="ELAND read mapping format"/>
  <mimetype name="MASAI" binary="true" ext="raw" description="Masai read mapping format"/>

@@ -97,6 +97,22 @@ target_link_libraries (mason_simulator ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_splicing ${SEQAN_LIBRARIES} mason_sim)
 target_link_libraries (mason_tests ${SEQAN_LIBRARIES} mason_sim)
 
+
+
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include mason executables in CTD structure.
+set (SEQAN_CTD_EXECUTABLES 
+    ${SEQAN_CTD_EXECUTABLES} 
+    mason_genome
+    mason_frag_sequencing
+    mason_variator
+    mason_materializer
+    mason_simulator
+    CACHE INTERNAL "")
+
 # ----------------------------------------------------------------------------
 # Installation
 # ----------------------------------------------------------------------------
