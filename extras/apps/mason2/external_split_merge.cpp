@@ -59,7 +59,7 @@ void IdSplitter::open()
 		UINT uRetVal   = 0;
 		uRetVal = GetTempFileName(filePathBuffer,   // directory for tmp files
 								  TEXT("MASON_"),   // temp file name prefix
-								  1,                // create unique name
+								  0,                // create unique name
 								  fileNameBuffer);  // buffer for name
 
 		if (uRetVal == 0)
