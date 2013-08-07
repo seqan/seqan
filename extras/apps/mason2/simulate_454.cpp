@@ -235,7 +235,7 @@ Roche454SequencingSimulator::Roche454SequencingSimulator(
         TRng & rng,
         SequencingOptions const & seqOptions,
         Roche454SequencingOptions const & roche454Options) :
-        SequencingSimulator(rng, seqOptions), roche454Options(roche454Options)
+        SequencingSimulator(rng, seqOptions), roche454Options(roche454Options), model(new Roche454Model())
 {
     _initModel();
 }
@@ -396,17 +396,20 @@ void Roche454SequencingSimulator::simulateRead(
         }
     }
 
-    // Write out sequencing information info if configured to do so.
+    // Write out extended sequencing information info if configured to do so.  We always write out the sample position
+    // and alignment information.
+    info.cigar = cigar;
+    unsigned len = 0;
+    _getLengthInRef(cigar, len);
+    info.beginPos = (dir == LEFT) ? beginPosition(frag) : (beginPosition(frag) + length(frag) - len);
+    info.isForward = (strand == FORWARD);
+
     if (seqOptions->embedReadInfo)
     {
-        info.cigar = cigar;
-        unsigned len = 0;
-        _getLengthInRef(cigar, len);
         if (dir == LEFT)
             info.sampleSequence = prefix(frag, len);
         else
             info.sampleSequence = suffix(frag, length(frag) - len);
-        info.isForward = (strand == FORWARD);
         if (strand == REVERSE)
             reverseComplement(info.sampleSequence);
     }

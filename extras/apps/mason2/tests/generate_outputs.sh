@@ -2,11 +2,11 @@
 #
 # We create variants from a randomly generated genome.
 
-GENOME=../../../../../seqan-clean-build/debug/bin/mason_genome
-METHYLATION=../../../../../seqan-clean-build/debug/bin/mason_methylation
-VARIATOR=../../../../../seqan-clean-build/debug/bin/mason_variator
-MATERIALIZER=../../../../../seqan-clean-build/debug/bin/mason_materializer
-SIMULATOR=../../../../../seqan-clean-build/debug/bin/mason_simulator
+GENOME=../../../../../seqan-trunk-build/debug/bin/mason_genome
+METHYLATION=../../../../../seqan-trunk-build/debug/bin/mason_methylation
+VARIATOR=../../../../../seqan-trunk-build/debug/bin/mason_variator
+MATERIALIZER=../../../../../seqan-trunk-build/debug/bin/mason_materializer
+SIMULATOR=../../../../../seqan-trunk-build/debug/bin/mason_simulator
 
 # ============================================================
 # mason_genome
@@ -64,6 +64,10 @@ echo $?
 # mason_simulator
 # ============================================================
 
+# ------------------------------------------------------------
+# Illumina Tests
+# ------------------------------------------------------------
+
 # Without VCF variants, FASTQ output, with SAM alignments, paired-end
 echo "${SIMULATOR} -n 1000 -ir random.fasta -o simulator.left1.fq -or simulator.right1.fq -oa simulator.out1.sam >simulator.out1.stdout 2>simulator.out1.stderr"
 ${SIMULATOR} -n 1000 -ir random.fasta -o simulator.left1.fq -or simulator.right1.fq -oa simulator.out1.sam >simulator.out1.stdout 2>simulator.out1.stderr
@@ -97,4 +101,13 @@ echo $?
 # Without VCF variants, FASTQ output, no SAM alignment, paired-end, BS-seq.
 echo "${SIMULATOR} -n 1000 -ir random.fasta --meth-fasta-in random_meth1.fasta -iv random_var1.vcf --methylation-levels --enable-bs-seq -o simulator.left6.fq -or simulator.right6.fq >simulator.out6.stdout 2>simulator.out6.stderr"
 ${SIMULATOR} -n 1000 -ir random.fasta --meth-fasta-in random_meth1.fasta -iv random_var1.vcf --methylation-levels --enable-bs-seq -o simulator.left6.fq -or simulator.right6.fq >simulator.out6.stdout 2>simulator.out6.stderr
+echo $?
+
+# ------------------------------------------------------------
+# 454 Tests
+# ------------------------------------------------------------
+
+# Without VCF variants, FASTQ output, with SAM alignments, paired-end
+echo "${SIMULATOR} -v --seq-technology 454 -n 1000 -ir random.fasta -o simulator.left8.fq -oa simulator.out8.sam --fragment-mean-size 800 --454-read-length-mean 200 --454-read-length-stddev 20 >simulator.out8.stdout 2>simulator.out8.stderr"
+${SIMULATOR} -v --seq-technology 454 -n 1000 -ir random.fasta -o simulator.left8.fq -oa simulator.out8.sam --fragment-mean-size 800 --454-read-length-mean 200 --454-read-length-stddev 20 >simulator.out8.stdout 2>simulator.out8.stderr
 echo $?

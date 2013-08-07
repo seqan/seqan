@@ -300,6 +300,8 @@ def main(source_base, binary_base):
     # Test mason_simulator
     # ============================================================
 
+    # Illumina Model
+    
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
@@ -465,6 +467,34 @@ def main(source_base, binary_base):
                   transforms),
                  (ph.inFile('simulator.out6.stderr'),
                   ph.outFile('simulator.out6.stderr'),
+                  transforms),
+                 ])
+    conf_list.append(conf)
+
+    # 454 Model
+    
+    conf = app_tests.TestConf(
+        program=path_to_simulator,
+        args=['--seq-technology', '454',
+              '--fragment-mean-size', '800',
+              '--454-read-length-mean', '200',
+              '--454-read-length-stddev', '20',
+              '-n', '1000', '-v',
+              '-ir', ph.inFile('random.fasta'),
+              '-o', ph.outFile('simulator.left8.fq'),
+              '-oa', ph.outFile('simulator.out8.sam'),
+              ],
+        redir_stdout=ph.outFile('simulator.out8.stdout'),
+        redir_stderr=ph.outFile('simulator.out8.stderr'),
+        to_diff=[(ph.inFile('simulator.left8.fq'),
+                  ph.outFile('simulator.left8.fq')),
+                 (ph.inFile('simulator.out8.sam'),
+                  ph.outFile('simulator.out8.sam')),
+                 (ph.inFile('simulator.out8.stdout'),
+                  ph.outFile('simulator.out8.stdout'),
+                  transforms),
+                 (ph.inFile('simulator.out8.stderr'),
+                  ph.outFile('simulator.out8.stderr'),
                   transforms),
                  ])
     conf_list.append(conf)

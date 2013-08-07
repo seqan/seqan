@@ -271,7 +271,8 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
 {
     int fragLength = 0;
     unsigned const MAX_TRIES = 1000;
-    for (unsigned tryNo = 0; tryNo < MAX_TRIES; ++tryNo)
+    unsigned tryNo = 0;
+    for (; tryNo < MAX_TRIES; ++tryNo)
     {
         fragLength = static_cast<int>(pickRandomNumber(rng, pdf));
         if (fragLength <= 0 || fragLength > (int)contigLength)
@@ -285,6 +286,12 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
         frag.endPos = beginPos + fragLength;
         SEQAN_ASSERT_LEQ(frag.endPos, (int)contigLength);
         break;
+    }
+
+    if (tryNo == MAX_TRIES)
+    {
+        std::cerr << "WARNING: Tried " << MAX_TRIES << " times to sample fragment from contig of size "
+                  << contigLength << ".  Giving up.\n";
     }
 }
 
