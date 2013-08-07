@@ -18,6 +18,11 @@ message (STATUS "Configuring extras/apps/mason2")
 set (SEQAN_FIND_DEPENDENCIES ZLIB)
 find_package (SeqAn REQUIRED)
 
+if (NOT ZLIB_FOUND)
+  message (STATUS "  ZLIB not found: MASON2 will not be built.")
+  return ()
+endif (NOT ZLIB_FOUND)
+
 # Enable C++11 in GCC and/or CLANG.
 #if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 #    add_definitions ("-std=c++0x")

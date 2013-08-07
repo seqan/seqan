@@ -64,6 +64,7 @@ def main(source_base, binary_base):
                          'extras/apps/mason2/tests') + os.sep,
             '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
+        app_tests.NormalizeScientificExponentsTransform(),
         ]
 
     # ============================================================
