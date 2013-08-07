@@ -53,13 +53,13 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record)
     SEQAN_ASSERT_EQ(record.beginPos, 0);
     SEQAN_ASSERT_EQ(record.endPos, 3);
     SEQAN_ASSERT_EQ(record.strand, '+');
-    SEQAN_ASSERT_EQ(record.len, 3);
+    SEQAN_ASSERT_EQ(record.len, 3u);
     SEQAN_ASSERT_EQ(record.name, "region0");
-    SEQAN_ASSERT_EQ(record.countMax, 4);
+    SEQAN_ASSERT_EQ(record.countMax, 4u);
     SEQAN_ASSERT_EQ(length(record.count), 3u);
-    SEQAN_ASSERT_EQ(record.count[0], 1);
-    SEQAN_ASSERT_EQ(record.count[1], 2);
-    SEQAN_ASSERT_EQ(record.count[2], 4);
+    SEQAN_ASSERT_EQ(record.count[0], 1u);
+    SEQAN_ASSERT_EQ(record.count[1], 2u);
+    SEQAN_ASSERT_EQ(record.count[2], 4u);
 }
 
 SEQAN_DEFINE_TEST(test_roi_read_roi_record_context)
@@ -82,13 +82,13 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record_context)
     SEQAN_ASSERT_EQ(record.beginPos, 0);
     SEQAN_ASSERT_EQ(record.endPos, 3);
     SEQAN_ASSERT_EQ(record.strand, '+');
-    SEQAN_ASSERT_EQ(record.len, 3);
+    SEQAN_ASSERT_EQ(record.len, 3u);
     SEQAN_ASSERT_EQ(record.name, "region0");
-    SEQAN_ASSERT_EQ(record.countMax, 4);
+    SEQAN_ASSERT_EQ(record.countMax, 4u);
     SEQAN_ASSERT_EQ(length(record.count), 3u);
-    SEQAN_ASSERT_EQ(record.count[0], 1);
-    SEQAN_ASSERT_EQ(record.count[1], 2);
-    SEQAN_ASSERT_EQ(record.count[2], 4);
+    SEQAN_ASSERT_EQ(record.count[0], 1u);
+    SEQAN_ASSERT_EQ(record.count[1], 2u);
+    SEQAN_ASSERT_EQ(record.count[2], 4u);
 
     SEQAN_ASSERT_EQ(length(refNames), 1u);
     SEQAN_ASSERT_EQ(refNames[0], "I");
