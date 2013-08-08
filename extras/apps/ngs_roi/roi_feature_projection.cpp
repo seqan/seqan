@@ -68,7 +68,7 @@ struct RoiIntersectOptions
         PROJECTION,
         INTERSECTION,
         UNION,
-        DIFFERENCE
+        DIFF
     };
 
     // Verbosity level.  0 -- quiet, 1 -- normal, 2 -- verbose, 3 -- very verbose.
@@ -327,8 +327,8 @@ public:
             case RoiIntersectOptions::UNION:
                 intersectOptions.mode = IntersectBedOptions::UNION;
                 break;
-            case RoiIntersectOptions::DIFFERENCE:
-                intersectOptions.mode = IntersectBedOptions::DIFFERENCE;
+            case RoiIntersectOptions::DIFF:
+                intersectOptions.mode = IntersectBedOptions::DIFF;
                 break;
             default:
                 SEQAN_FAIL("Cannot reach here!");
@@ -713,7 +713,7 @@ char const * combinationModeStr(RoiIntersectOptions::CombinationMode m)
             return "intersection";
         case RoiIntersectOptions::UNION:
             return "union";
-        case RoiIntersectOptions::DIFFERENCE:
+        case RoiIntersectOptions::DIFF:
             return "difference";
         default:
             return "INVALID";
@@ -900,7 +900,7 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
     else if (tmp == "union")
         options.mode = RoiIntersectOptions::UNION;
     else if (tmp == "difference")
-        options.mode = RoiIntersectOptions::DIFFERENCE;
+        options.mode = RoiIntersectOptions::DIFF;
     options.strandSpecific = isSet(parser, "strand-specific");
 
     getOptionValue(options.gffType, parser, "gff-type");

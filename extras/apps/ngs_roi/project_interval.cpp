@@ -102,7 +102,7 @@ void IntersectBed::processFirstBedRecord()
     }
 
     // When computing symmetric difference, we write out the BED record as ROI if there is no overlapping ROI record.
-    if (options.mode == IntersectBedOptions::DIFFERENCE)
+    if (options.mode == IntersectBedOptions::DIFF)
     {
         if (roiRecords.empty() || roiRecords.front().beginPos >= bedRecords.front().endPos)
         {
@@ -114,9 +114,9 @@ void IntersectBed::processFirstBedRecord()
     if (roiRecords.empty())
         return;
 
-    // When in DIFFERENCE mode:  Mark all ROI records overlapping with current front BED record as such and stop.
+    // When in DIFF mode:  Mark all ROI records overlapping with current front BED record as such and stop.
     typedef std::list<TRoiRecord>::/*const_*/iterator TRoiIter;
-    if (options.mode == IntersectBedOptions::DIFFERENCE)
+    if (options.mode == IntersectBedOptions::DIFF)
     {
         for (TRoiIter it = roiRecords.begin(); it != roiRecords.end(); ++it)
             if (overlap(*it, bedRecords.front()))
@@ -187,7 +187,7 @@ void IntersectBed::cleanRoiRecords()
     while (!roiRecords.empty() && (bedRecords.empty() || roiRecords.front().endPos <= bedRecords.front().beginPos))
     {
         // Remove data from front ROI, write it out, remove it.
-        if (options.mode == IntersectBedOptions::DIFFERENCE && back(roiRecords.front().data)[0] == '.')
+        if (options.mode == IntersectBedOptions::DIFF && back(roiRecords.front().data)[0] == '.')
         {
             clear(roiRecords.front().data);
             writeRecord(out, roiRecords.front(), seqan::Roi());
@@ -283,7 +283,7 @@ void IntersectBed::updateConnectivity(seqan::String<bool> & bitmap,
             for (unsigned i = 0; i < length(bitmap); ++i)
                 bitmap[i] = true;
             break;
-        case IntersectBedOptions::DIFFERENCE:
+        case IntersectBedOptions::DIFF:
         default:
             SEQAN_FAIL("Cannot reach here!");
     }
@@ -346,7 +346,7 @@ void IntersectBed::writeRois(seqan::String<bool> const & bitmap,
             // Use whole range, including overlaps to the left of right.
             appendValue(pairs, TIntPair(0, length(counts)));
             break;
-        case IntersectBedOptions::DIFFERENCE:
+        case IntersectBedOptions::DIFF:
             SEQAN_FAIL("Difference does not implemented yet!");
             break;
         default:

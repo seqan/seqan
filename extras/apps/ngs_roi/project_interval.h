@@ -61,7 +61,7 @@ struct IntersectBedOptions
         PROJECTION,
         INTERSECTION,
         UNION,
-        DIFFERENCE
+        DIFF
     };
 
     CombinationMode mode;
