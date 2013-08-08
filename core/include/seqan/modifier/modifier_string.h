@@ -44,6 +44,8 @@ namespace seqan
 // ==========================================================================
 
 template <typename T> struct InnermostHost_;
+template <typename TType, typename TTestType> struct IsConstructible;
+template <typename TType, typename TTestType> struct IsAnInnerHost;
 
 // ==========================================================================
 // Classes
@@ -113,8 +115,6 @@ public:
     typedef typename Pointer_<THost>::Type       THostPointer_;
     typedef typename Cargo<ModifiedString>::Type TCargo_;
 
-    typedef typename InnermostHost_<ModifiedString>::Type TInnermostHost_;
-
     mutable THostPointer_ _host;
     TCargo_ _cargo;
 
@@ -124,36 +124,24 @@ public:
 
     // Construct with the actual host.
     explicit
-    ModifiedString(THost & host) : _host(_toPointer(host)), _cargo()
+    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host)), _cargo()
     {}
 
-    // Constructor for creating a ModifiedString with const host with a non-const host.
+    // Constructor for creating a ModifiedString with const host from a non-const host.
     template <typename THost_>
     explicit
-    ModifiedString(THost_ const & host,
-                   SEQAN_CTOR_ENABLE_IF(IsSameType<THost, THost_>)) :
+    ModifiedString(THost_ & host,
+                   SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
             _host(_toPointer(host)), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }
 
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant.
+    // Constructor for an inner host type; hand down to _host which is a ModifiedString itself.
     template <typename THost_>
     explicit
     ModifiedString(THost_ & host,
-                   SEQAN_CTOR_ENABLE_IF(And<Not<IsSameType<TInnermostHost_, THost> >,
-                                            IsSameType<TInnermostHost_, THost_> >)) :
-            _host(host), _cargo()
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant.
-    template <typename THost_>
-    explicit
-    ModifiedString(THost_ const & host,
-                   SEQAN_CTOR_ENABLE_IF(And<Not<IsSameType<TInnermostHost_, THost> >,
-                                            IsSameType<TInnermostHost_, THost_> >)) :
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
             _host(host), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
@@ -173,6 +161,26 @@ public:
 // This metafunction returns the innermost host type for a ModifiedString cascade.
 
 // Recurse down const/non-const.
+
+template <typename TType, typename TTestType>
+struct IsConstructible:
+    Or<IsSameType<TType, TTestType>,
+       IsSameType<TType, TTestType const> > {};
+
+template <typename TType, typename TTestType>
+struct IsAnInnerHost: False {};
+
+template <typename THost, typename TSpec, typename TTestType>
+struct IsAnInnerHost<ModifiedString<THost, TSpec>, TTestType>:
+    If<IsConstructible<THost, TTestType>,
+       True,
+       IsAnInnerHost<THost, TTestType> > {};
+
+template <typename THost, typename TSpec, typename TTestType>
+struct IsAnInnerHost<ModifiedString<THost, TSpec> const, TTestType>:
+    IsAnInnerHost<ModifiedString<THost, TSpec>, TTestType> {};
+
+
 
 template <typename THost, typename TInnerSpec, typename TOuterSpec>
 struct InnermostHost_<ModifiedString<ModifiedString<THost, TInnerSpec> const, TOuterSpec> >
@@ -557,26 +565,26 @@ length(ModifiedString<THost, TSpec> const & me)
 // --------------------------------------------------------------------------
 // Function begin()
 // --------------------------------------------------------------------------
-
-template <typename THost, typename TSpec>
-inline typename Iterator<ModifiedString<THost, TSpec> const>::Type 
-begin(ModifiedString<THost, TSpec> const & me)
-{
-    typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
-    TResult tmp(begin(host(me)));
-    _copyCargo(tmp, me);
-    return tmp;
-}
-
-template <typename THost, typename TSpec>
-inline typename Iterator<ModifiedString<THost, TSpec> >::Type 
-begin(ModifiedString<THost, TSpec> & me)
-{
-    typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
-    TResult tmp(begin(host(me)));
-    _copyCargo(tmp, me);
-    return tmp;
-}
+//
+//template <typename THost, typename TSpec>
+//inline typename Iterator<ModifiedString<THost, TSpec> const>::Type 
+//begin(ModifiedString<THost, TSpec> const & me)
+//{
+//    typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
+//    TResult tmp(begin(host(me)));
+//    _copyCargo(tmp, me);
+//    return tmp;
+//}
+//
+//template <typename THost, typename TSpec>
+//inline typename Iterator<ModifiedString<THost, TSpec> >::Type 
+//begin(ModifiedString<THost, TSpec> & me)
+//{
+//    typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
+//    TResult tmp(begin(host(me)));
+//    _copyCargo(tmp, me);
+//    return tmp;
+//}
 
 template <typename THost, typename TSpec, typename TTagSpec>
 inline typename Iterator<ModifiedString<THost, TSpec> const, Tag<TTagSpec> const>::Type 
@@ -601,26 +609,26 @@ begin(ModifiedString<THost, TSpec> & me, Tag<TTagSpec> const tag_)
 // --------------------------------------------------------------------------
 // Function end()
 // --------------------------------------------------------------------------
-
-template < typename THost, typename TSpec >
-inline typename Iterator< ModifiedString<THost, TSpec> const >::Type 
-end(ModifiedString<THost, TSpec> const & me)
-{
-    typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
-    TResult tmp(end(host(me)));
-    _copyCargo(tmp, me);
-    return tmp;
-}
-
-template < typename THost, typename TSpec >
-inline typename Iterator< ModifiedString<THost, TSpec> >::Type 
-end(ModifiedString<THost, TSpec> & me)
-{
-    typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
-    TResult tmp(end(host(me)));
-    _copyCargo(tmp, me);
-    return tmp;
-}
+//
+//template < typename THost, typename TSpec >
+//inline typename Iterator< ModifiedString<THost, TSpec> const >::Type 
+//end(ModifiedString<THost, TSpec> const & me)
+//{
+//    typedef typename Iterator<ModifiedString<THost, TSpec> >::Type TResult;
+//    TResult tmp(end(host(me)));
+//    _copyCargo(tmp, me);
+//    return tmp;
+//}
+//
+//template < typename THost, typename TSpec >
+//inline typename Iterator< ModifiedString<THost, TSpec> >::Type 
+//end(ModifiedString<THost, TSpec> & me)
+//{
+//    typedef typename Iterator<ModifiedString<THost, TSpec> const>::Type TResult;
+//    TResult tmp(end(host(me)));
+//    _copyCargo(tmp, me);
+//    return tmp;
+//}
 
 template < typename THost, typename TSpec, typename TTagSpec >
 inline typename Iterator< ModifiedString<THost, TSpec> const, Tag<TTagSpec> const >::Type 

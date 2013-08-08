@@ -145,13 +145,14 @@ public:
 
     // Construct with the actual host.
     explicit
-    ModifiedString(THost & host) : _host(_toPointer(host)), _cargo()
+    ModifiedString(typename Parameter_<THost>::Type & host) : _host(_toPointer(host)), _cargo()
     {}
 
     // Constructor for creating a ModifiedString with const host with a non-const host.
     template <typename THost_>
-    explicit ModifiedString(THost_ const & host,
-                            SEQAN_CTOR_ENABLE_IF(IsSameType<THost, THost_>)) :
+    explicit
+    ModifiedString(THost_ & host,
+                   SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
             _host(_toPointer(host)), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
@@ -161,19 +162,7 @@ public:
     template <typename THost_>
     explicit
     ModifiedString(THost_ & host,
-                   SEQAN_CTOR_ENABLE_IF(And<Not<IsSameType<TInnermostHost_, THost> >,
-                                            IsSameType<TInnermostHost_, THost_> >)) :
-            _host(host), _cargo()
-    {
-        ignoreUnusedVariableWarning(dummy);
-    }
-
-    // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Const variant.
-    template <typename THost_>
-    explicit
-    ModifiedString(THost_ const & host,
-                   SEQAN_CTOR_ENABLE_IF(And<Not<IsSameType<TInnermostHost_, THost> >,
-                                            IsSameType<TInnermostHost_, THost_> >)) :
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
             _host(host), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);

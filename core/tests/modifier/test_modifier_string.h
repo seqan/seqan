@@ -56,9 +56,13 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_metafunctions)
 
 SEQAN_DEFINE_TEST(test_modifier_modified_string_construct)
 {
-    typedef seqan::Dna5String                           TString;
-    typedef seqan::ModifiedString<TString>              TInnerModifiedString;
-    typedef seqan::ModifiedString<TInnerModifiedString> TOuterModifiedString;
+    typedef seqan::Dna5String                                       TString;
+    typedef seqan::ModifiedString<TString>                          TInnerModifiedString;
+    typedef seqan::ModifiedString<TString const>                    TInnerConstModifiedString;
+    typedef seqan::ModifiedString<TInnerModifiedString>             TOuterModifiedString;
+    typedef seqan::ModifiedString<TInnerModifiedString const>       TOuterConstModifiedString;
+    typedef seqan::ModifiedString<TInnerConstModifiedString>        TOuterModifiedConstString;
+    typedef seqan::ModifiedString<TInnerConstModifiedString const>  TOuterConstModifiedConstString;
 
     // Default Construction with one level.
     {
@@ -68,14 +72,25 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_construct)
     // Construct with underlying string and one level.
     {
         TString original;
-        TInnerModifiedString inner(original);
+        TInnerModifiedString        inner(original);
+        TInnerConstModifiedString   innerC(original);
+        TOuterModifiedString        outer(original);
+        TOuterModifiedConstString   outerC(original);
+        TOuterModifiedString        outer2(inner);
+        TOuterModifiedConstString   outer2C(innerC);
+//        TOuterModifiedString        outer3(innerC);     // should fail
     }
 
     // Construct with underlying string and two levels.
     {
+        // standard way
         TString original;
         TInnerModifiedString inner(original);
         TOuterModifiedString outer(inner);
+
+        TOuterConstModifiedString outer1(inner);
+        TOuterModifiedConstString outerC(original);
+        TOuterConstModifiedConstString outerCC(original);
     }
 
     // Construct with underlying string and two levels, direct construction.
