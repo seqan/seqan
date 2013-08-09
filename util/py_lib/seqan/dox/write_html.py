@@ -191,7 +191,7 @@ class PathConverter(object):
             path = '%s_%s.html' % (entry.kind, escapeName(entry.name))
             title = None
             if entry.kind == 'page':
-                title = list(entry.title.children)
+                title = entry.title
             return path, title
         elif self.doc.entries.get(name):
             first, second = proc_doc.splitSecondLevelEntry(name)

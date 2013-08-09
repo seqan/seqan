@@ -79,6 +79,7 @@ class File(object):
         @returns List of Comment objects.
         """
         comments = []
+        # Search for comments using regular expressions.
         def callback(match):
             if not any([match.group(0).startswith('/%s' % s) for s in self.start_markers]):
                 return match.group(0)
@@ -92,6 +93,7 @@ class File(object):
             offset_line = start_line + 1
             offset_col = 3
             raw_text = match.group(0)
+            # TODO(holtgrew)
             proc_text = self._stripText(raw_text, offset_col)
             comments.append(Comment(start_line, start_col, start, end_line, end_col, end,
                                     offset_line, offset_col, proc_text, raw_text))

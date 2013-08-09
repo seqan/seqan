@@ -20,7 +20,7 @@ import migration
 class FileNameSource(object):
     def __init__(self, paths):
         self.paths = paths
-        self.extensions = ['.h', '.cpp']
+        self.extensions = ['.h', '.cpp', '.dox']
         self.ignore = ['.svn']
 
     def generate(self):
