@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ macro.title|transtext(top=False) }}{% endblock %}
+{% block title %}{{ macro.title|e }}{% endblock %}
 
 {% block content %}
-<h1 class="macro title">Macro: {{ macro.title|transtext(top=False) }}</h1>
+<h1 class="macro title">Macro: {{ macro.title|e }}</h1>
 
 {{ sections.top_box(macro) }}
 

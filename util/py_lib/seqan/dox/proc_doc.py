@@ -221,6 +221,7 @@ class ProcEntry(object):
 
     @ivar kind: The kind of the entry, string.
     @ivar name: The name of the entry, string.
+    @ivar title_str: A string with the title.
     @ivar brief: A brief description, a text-typed TextNode or None.
     @ivar body: A TextNode object with children for the documentation body.
     @ivar sees: A list of link-typed TextNode objects, can be empty.
@@ -231,7 +232,7 @@ class ProcEntry(object):
 
     def __init__(self, name, title=None, brief=None, body=None, sees=[]):
         self.name = name
-        self.title = title
+        self.title_str = title
         self.brief = brief
         self.body = body
         self.sees = list(sees)
@@ -265,6 +266,10 @@ class ProcEntry(object):
         visitor.visit(self.body)
         for see in self.sees:
             visitor.visit(see)
+
+    @property
+    def title(self):
+        return self.title_str or self.name
 
     @property
     def location(self):

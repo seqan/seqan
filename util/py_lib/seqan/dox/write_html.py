@@ -91,7 +91,12 @@ class TextNodeToHtml(object):
         if text_node.type == '<text>':
             self.res.append(text_node.text)
         elif text_node.type == 'code':
-            self.res.append(self.convertCode(text_node.children[0].text))
+            if text_node.attrs.get('type') == '.cpp':
+                self.res.append(self.convertCode(text_node.children[0].text))
+            elif text_node.attrs.get('type') == '.console':
+                self.res.append('<pre class="console">' + escapeForXml(text_node.children[0].text) + '</pre>')
+            else:
+                self.res.append('<pre class="code">' + escapeForXml(text_node.children[0].text) + '</pre>')
         else:
             self.res += self.openTag(text_node)
             for c in text_node.children:
@@ -369,42 +374,49 @@ class HtmlWriter(object):
 
     def generatePages(self, doc):
         """Generate pages for proc_doc.Documentation entries."""
+        try:
+            import pygments, pygments.lexers, pygments.formatters
+            pygments_style = pygments.formatters.HtmlFormatter().get_style_defs('.highlight')
+        except ImportError:
+            pygments_style = '<!-- pygments not available -->'
+
         for entry in doc.top_level_entries.values():
             path = self.path_manager.getEntryPath(entry)
             self.log('Creating %s', path)
-            self.generatePage(entry, path, doc)
+            self.generatePage(entry, path, doc, pygments_style)
 
-    def generatePage(self, entry, path, doc):
+    def generatePage(self, entry, path, doc, pygments_style):
         """Generate page for entry to file at path."""
+
         if entry.kind == 'page':
-            html = self.tpl_manager.render('page.html', page=entry, doc=doc)
+            html = self.tpl_manager.render('page.html', page=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'concept':
-            html = self.tpl_manager.render('concept.html', concept=entry, doc=doc)
+            html = self.tpl_manager.render('concept.html', concept=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'class':
-            html = self.tpl_manager.render('class.html', klass=entry, doc=doc)
+            html = self.tpl_manager.render('class.html', klass=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'enum':
-            html = self.tpl_manager.render('enum.html', enum=entry, doc=doc)
+            html = self.tpl_manager.render('enum.html', enum=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'adaption':
-            html = self.tpl_manager.render('adaption.html', adaption=entry, doc=doc)
+            html = self.tpl_manager.render('adaption.html', adaption=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'shortcut':
-            html = self.tpl_manager.render('shortcut.html', shortcut=entry, doc=doc)
+            html = self.tpl_manager.render('shortcut.html', shortcut=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind in ['global_function', 'member_function',
                             'interface_function']:
-            html = self.tpl_manager.render('function.html', function=entry, doc=doc)
+            html = self.tpl_manager.render('function.html', function=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind in ['global_metafunction', 'interface_metafunction']:
-            html = self.tpl_manager.render('metafunction.html', metafunction=entry, doc=doc)
+            html = self.tpl_manager.render('metafunction.html', metafunction=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'group':
-            html = self.tpl_manager.render('group.html', group=entry, doc=doc)
+            html = self.tpl_manager.render('group.html', group=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'tag':
-            html = self.tpl_manager.render('tag.html', tag=entry, doc=doc)
+            html = self.tpl_manager.render('tag.html', tag=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'macro':
-            html = self.tpl_manager.render('macro.html', macro=entry, doc=doc)
+            html = self.tpl_manager.render('macro.html', macro=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'global_typedef':
-            html = self.tpl_manager.render('typedef.html', typedef=entry, doc=doc)
+            html = self.tpl_manager.render('typedef.html', typedef=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'global_variable':
-            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc)
+            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc, pygments_style=pygments_style)
         elif entry.kind == 'variable':
-            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc)
+            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc, pygments_style=pygments_style)
         else:
             assert False, entry.kind
         with open(self.path_manager.getEntryPath(entry), 'w') as f:

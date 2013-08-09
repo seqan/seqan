@@ -326,3 +326,19 @@ pre.code .rubyid_backref,
 pre.code .rubyid_nth_ref { color: #6D79DE; }
 pre.code .regexp, .dregexp { color: #036A07; }
 pre.code a { border-bottom: 1px dotted #bbf; }
+
+.highlight
+{
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+pre.console
+{
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 3px;
+    font-weight: 600;
+    color: lightgray;
+    margin-left: 3%;
+    margin-right: 3%;
+}

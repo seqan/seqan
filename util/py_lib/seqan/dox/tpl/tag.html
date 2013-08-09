@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}{{ tag.title|transtext(top=False) }}{% endblock %}
+{% block title %}{{ tag.title|e }}{% endblock %}
 
 {% block content %}
-<h1>Tag: {{ tag.title|transtext(top=False) }}</h1>
+<h1>Tag: {{ tag.title|e }}</h1>
 
 {{ sections.top_box(tag) }}
 

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}{{ page.title|transtext(top=False) }}{% endblock %}
+{% block title %}{{ page.title|e }}{% endblock %}
 
 {% block content %}
 <div id="filecontents">
-<h1>{{ page.title|transtext(top=False) }}</h1>
+<h1>{{ page.title|e }}</h1>
 
 <div class="docstring">
   <div class="discussion">
