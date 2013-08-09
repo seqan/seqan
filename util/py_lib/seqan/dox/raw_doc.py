@@ -749,6 +749,37 @@ class RawPage(RawEntry):
         return ''.join(res)
 
 
+class RawMainPage(RawPage):
+    """The main page in the documentation."""
+    
+    def __init__(self, briefs=[]):
+        RawPage.__init__(self, briefs=briefs)
+        self.command = 'mainpage'
+    
+    def getType(self):
+        return 'page'
+
+    def getFormatted(self, formatter):
+        res = []
+        if self.title.text:
+            res.append(formatter.formatCommand(self.command, self.title.text))
+        else:
+            res.append(formatter.formatCommand(self.command, 'NO TITLE'))
+        if self.briefs:
+            res.append('\n')
+        for x in self.briefs:
+            res.append(x.getFormatted(formatter))
+        if not self.body.empty:
+            res.append('\n')
+        res += self.body.getFormatted(formatter)
+        if self.sees:
+            res.append('\n')
+        for x in self.sees:
+            res.append(x.getFormatted(formatter))
+        res.append('\n')
+        return ''.join(res)
+
+
 class RawGroup(RawEntry):
     """A group in the documentation."""
 

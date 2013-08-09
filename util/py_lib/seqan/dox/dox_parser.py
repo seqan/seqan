@@ -13,6 +13,7 @@ import re
 import sys
 
 import raw_doc
+import lexer
 import dox_tokens
 
 
@@ -351,6 +352,7 @@ class TopLevelState(object):
                          'COMMAND_MACRO':        'macro',
                          'COMMAND_METAFUNCTION': 'metafunction',
                          'COMMAND_PAGE':         'page',
+                         'COMMAND_MAINPAGE':     'mainpage',
                          'COMMAND_DEFGROUP':     'group',
                          'COMMAND_VARIABLE':     'var',
                          'COMMAND_TAG':          'tag',
@@ -574,6 +576,22 @@ class PageState(GenericDocState):
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
 
 
+class MainPageState(GenericDocState):
+    """State for a documentation main page."""
+        
+    def __init__(self, parser):
+        GenericDocState.__init__(self, parser, raw_doc.RawMainPage, 'mainpage')
+        self.allowed_commands = set(['COMMAND_CODE',
+                                     'COMMAND_SEE', 'COMMAND_BRIEF',
+                                     'COMMAND_SECTION', 'COMMAND_SUBSECTION',
+                                     'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
+
+    def entered(self):
+        GenericDocState.entered(self)
+        self.name_read = True
+        self.name_tokens = [lexer.Token('IDENTIFIER', 'mainpage', 0, 0, 0)]
+
+
 class GroupState(GenericDocState):
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawGroup, 'group')
@@ -695,6 +713,7 @@ class Parser(object):
             'metafunction': MetafunctionDocState(self),
             'concept':      ConceptDocState(self),
             'page':         PageState(self),
+            'mainpage':     MainPageState(self),
             'group':        GroupState(self),
             'var':          VariableState(self),
             'tag':          TagState(self),
