@@ -41,6 +41,7 @@
 
 #include <functional>
 #include <list>
+#include <utility>  // std::forward()
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
