@@ -151,7 +151,7 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-#else
+#else // SEQAN_CXX11_STANDARD
 
     // Constructor for an inner host type; forward host to hosted type.
     template <typename THost_>
@@ -172,8 +172,21 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-#endif
+#endif // SEQAN_CXX11_STANDARD
 
+    template <typename TPos>
+    inline typename Reference<ModifiedString>::Type
+    operator[](TPos pos)
+    {
+        return value(*this, pos);
+    }
+
+    template <typename TPos> 
+    inline typename Reference<ModifiedString const>::Type  
+    operator[](TPos pos) const 
+    { 
+        return value(*this, pos); 
+    }
 };
 
 // ==========================================================================
