@@ -342,3 +342,10 @@ pre.console
     margin-left: 3%;
     margin-right: 3%;
 }
+
+
+a.error
+{
+    color: red;
+    font-weight: boldest;
+}

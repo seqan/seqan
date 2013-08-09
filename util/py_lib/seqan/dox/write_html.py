@@ -241,7 +241,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             a_node.attrs['class'] = class_attr
             if a_node.attrs.get('href'):
                 del a_node.attrs['href']
-            a_node.addChild(target_title)
+            #a_node.addChild(target_title)
             
     def _replaceNode(self, text_node):
         if text_node.type == '<text>':

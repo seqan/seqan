@@ -893,7 +893,7 @@ class EntryConverter(object):
         entry = self.entry_class(name=raw_entry.name.text)
         # Convert the title
         if raw_entry.title.text:
-            entry.title = self.rawTextToTextNode(raw_entry.title)
+            entry.title_str = raw_entry.title.text
         # Convert first brief member.  We already warned about duplicate ones
         # elsewhere.
         if raw_entry.briefs:
