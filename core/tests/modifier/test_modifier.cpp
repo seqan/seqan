@@ -89,6 +89,7 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
 
     // Test modifier view string.
     SEQAN_CALL_TEST(test_modifier_view_iterator_metafunctions);
+    SEQAN_CALL_TEST(test_modifier_view_iterator_metafunctions);
     SEQAN_CALL_TEST(test_modifier_view_iterator);
     // SEQAN_CALL_TEST(test_modifier_view_const_iterator);
     SEQAN_CALL_TEST(test_modifier_view_string_caesar_chiffre);

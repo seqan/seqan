@@ -137,7 +137,23 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-    // Constructor for an inner host type; hand down to _host which is a ModifiedString itself.
+#ifdef SEQAN_CXX11_STANDARD
+
+    // Constructor for an inner host type; forward host to hosted type.
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ && host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
+                                            typename RemoveReference<THost>::Type,
+                                            typename RemoveReference<THost_>::Type >)) :
+            _host(std::forward<THost_>(host)), _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+#else
+
+    // Constructor for an inner host type; forward host to hosted type.
     template <typename THost_>
     explicit
     ModifiedString(THost_ & host,
@@ -146,6 +162,18 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
+
+    template <typename THost_>
+    explicit
+    ModifiedString(THost_ const & host,
+                   SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
+            _host(host), _cargo()
+    {
+        ignoreUnusedVariableWarning(dummy);
+    }
+
+#endif
+
 };
 
 // ==========================================================================
@@ -164,8 +192,10 @@ public:
 
 template <typename TType, typename TTestType>
 struct IsConstructible:
-    Or<IsSameType<TType, TTestType>,
-       IsSameType<TType, TTestType const> > {};
+    If<IsLightWeight<TType>,
+       IsSameType<TType const, TTestType const>,
+       Or<IsSameType<TType, TTestType>,
+          IsSameType<TType, TTestType const> > > {};
 
 template <typename TType, typename TTestType>
 struct IsAnInnerHost: False {};
@@ -179,7 +209,6 @@ struct IsAnInnerHost<ModifiedString<THost, TSpec>, TTestType>:
 template <typename THost, typename TSpec, typename TTestType>
 struct IsAnInnerHost<ModifiedString<THost, TSpec> const, TTestType>:
     IsAnInnerHost<ModifiedString<THost, TSpec>, TTestType> {};
-
 
 
 template <typename THost, typename TInnerSpec, typename TOuterSpec>

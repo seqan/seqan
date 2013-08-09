@@ -295,6 +295,22 @@ struct Source<T const>:
 {
 };
 
+
+//____________________________________________________________________________
+
+/**
+.Metafunction.IsLightWeight:
+..cat:Metafunctions
+..summary:Determines whether an object can efficiently be passed by copy.
+..signature:IsLightWeight<T>::Type
+..param.T:A type.
+..returns.param.Type:@Tag.Logical Values.tag.True@ if the object is light-weight and can efficiently be copied, e.g. @Class.Segment@, otherwise @Tag.Logical Values.tag.False@.
+*/
+
+template <typename T>
+struct IsLightWeight:
+    False {};
+
 //____________________________________________________________________________
 
 /**

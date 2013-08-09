@@ -98,6 +98,27 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_construct)
         TString original;
         TOuterModifiedString outer((TInnerModifiedString(original)));
     }
+
+    {
+        typedef seqan::ModifiedString<seqan::Infix<TString>::Type> TModifiedString;
+
+        TString original;
+        TModifiedString modified(original);
+        TModifiedString modified2(suffix(original, 0));
+    }
+
+    {
+        TString original;
+        typedef seqan::Infix<TString const>::Type TFragment;
+        TFragment frag = infix(original, 0, 0);
+        
+        typedef seqan::ModifiedString<TFragment>            TInnerModifiedString;
+        typedef seqan::ModifiedString<TInnerModifiedString> TOuterModifiedString;
+
+        TInnerModifiedString modified(frag);
+        TOuterModifiedString modified2(frag);
+        TOuterModifiedString modified3(suffix(frag, 0));
+    }
 }
 
 SEQAN_DEFINE_TEST(test_modifier_modified_string_assignment)

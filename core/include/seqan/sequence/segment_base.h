@@ -410,6 +410,15 @@ struct IsSequence< Segment<THost, TSpec> > :
 
 //////////////////////////////////////////////////////////////////////////////
 
+///.Metafunction.IsLightWeight.param.T.type:Class.Segment
+
+template <typename THost, typename TSpec>
+struct IsLightWeight< Segment<THost, TSpec> > :
+    True {};
+
+
+//////////////////////////////////////////////////////////////////////////////
+
 ///.Function.atBegin.param.iterator.type:Class.Segment
 ///.Function.atBegin.class:Class.Segment
 ///.Function.atEnd.param.iterator.type:Class.Segment

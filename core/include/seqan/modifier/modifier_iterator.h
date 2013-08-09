@@ -94,14 +94,21 @@ public:
     TCargo_ _cargo;
 
     // Constructors
-    
     ModifiedIterator() : _host(), _cargo()
     {}
-    
-    template <typename T>
-    explicit
-    ModifiedIterator(T & host) : _host(host)
+
+//    ModifiedIterator(ModifiedIterator &_origin) :
+//			_host(_origin._host), _cargo(_origin._cargo)
+//    {}
+
+    ModifiedIterator(ModifiedIterator const & _origin) :
+			_host(_origin._host), _cargo(_origin._cargo)
     {}
+
+//    template <typename T>
+//    explicit
+//    ModifiedIterator(T & host) : _host(host)
+//    {}
 
     template <typename T>
     explicit

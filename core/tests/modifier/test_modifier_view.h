@@ -83,8 +83,10 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator)
     using namespace seqan;
 
     typedef CaesarChiffre<char> TFunctor;
-    typedef Iterator<CharString, Rooted>::Type TIterator;
-    typedef ModifiedIterator<TIterator, ModView<TFunctor> > TModifiedIterator;
+    typedef Iterator<CharString, Standard>::Type    TIterator;
+    typedef Iterator<CharString, Rooted>::Type      TRootedIterator;
+    typedef ModifiedIterator<TIterator, ModView<TFunctor> >         TModifiedIterator;
+    typedef ModifiedIterator<TRootedIterator, ModView<TFunctor> >   TModifiedRootedIterator;
 
     // The string and functor we will work with.
     CharString myString = "This is a nice string!";
@@ -100,20 +102,23 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator)
 
     // Test the various ways to construct the iterator with both a
     // container and a functor.
+//    {
+//        TModifiedIterator it(myFunctor);  // (weese:) removed this one, as it makes no sense to have this constructor
+//    }
     {
-        TModifiedIterator it(myFunctor);
-    }
-    {
-        TModifiedIterator it(begin(myString, Rooted()), myFunctor);
+        TModifiedIterator it(begin(myString, Standard()), myFunctor);
+        TModifiedIterator it2(begin(myString, Rooted()), myFunctor);
+        TModifiedRootedIterator itR(begin(myString, Rooted()), myFunctor);
+//        TModifiedIterator it3(itR);
     }
     {
         TModifiedIterator it;
         TModifiedIterator it2(it);
     }
-    {
-        TModifiedIterator const IT(myFunctor);
-        TModifiedIterator it(IT);
-    }
+//    {
+//        TModifiedIterator const IT(myFunctor);  // (weese:) removed this one, as it makes no sense to have this constructor
+//        TModifiedIterator it(IT);
+//    }
 
     // Test value() and getValue().
     {

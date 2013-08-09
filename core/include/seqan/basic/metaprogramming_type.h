@@ -29,6 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: David Weese <david.weese@fu-berlin.de>
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // Metaprogramming for querying and modifying types.
@@ -242,19 +243,21 @@ struct MakeSigned_ : MakeSigned<T> {};
 ..summary:Converts a (reference) type into the same type without reference.
 ..signature:RemoveReference<T>::Type
 ..param.T:Input type.
-..returns.param.Type:A corresponding non-reference type, e.g. $int$ for $T$ = $&int$.
+..returns.param.Type:A corresponding non-reference type, e.g. $int$ for $T$ = $int &$.
 ...default:$T$
 ..include:seqan/basic.h
 ..see:Metafunction.RemoveConst
 */
 
-// TODO(holtgrew): Internal metafunction superflous?
-/*
-.Internal.RemoveReference_:
-..signature:RemoveReference_<T>
-..status:deprecated, please use @Metafunction.RemoveReference@
-..returns:$t$ if $T$ is $t &$, otherwise $T$.
-*/
+#ifdef SEQAN_CXX11_STANDARD
+
+template <typename T>
+struct RemoveReference
+{
+	typedef typename std::remove_reference<T>::type Type;
+};
+
+#else
 
 template <typename T>
 struct RemoveReference
@@ -265,8 +268,7 @@ struct RemoveReference
 template <typename T>
 struct RemoveReference<T &> : RemoveReference<T> {};
 
-template <typename T>
-struct RemoveReference_ : RemoveReference<T> {};
+#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction RemoveConst
