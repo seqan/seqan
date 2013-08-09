@@ -480,7 +480,7 @@ class ProcTParam(object):
         self.type = None
         self.desc = TextNode()
 
-    def visitTextNode(self, visitor):
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         visitor.visit(self.desc)
 
@@ -496,7 +496,7 @@ class ProcReturn(object):
         self.type = None
         self.desc = TextNode()
 
-    def visitTextNode(self, visitor):
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         visitor.visit(self.desc)
 
@@ -525,15 +525,15 @@ class ProcFunction(ProcCodeEntry):
         else:
             return 'global_function'
 
-    def visitTextNode(self, visitor):
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
-        ProcCodeEntry.visitTextNode(self, visitor)
+        ProcCodeEntry.visitTextNodes(self, visitor)
         for p in self.params:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         for p in self.tparams:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         for p in self.returns:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         
     def addParam(self, p):
         self.params.append(p)
@@ -565,13 +565,13 @@ class ProcMacro(ProcCodeEntry):
         else:
             return 'macro'
 
-    def visitTextNode(self, visitor):
+    def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
-        ProcCodeEntry.visitTextNode(self, visitor)
+        ProcCodeEntry.visitTextNodes(self, visitor)
         for p in self.params:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         for p in self.returns:
-            p.visitTextNode(p)
+            p.visitTextNodes(visitor)
         
     def addParam(self, p):
         self.params.append(p)
