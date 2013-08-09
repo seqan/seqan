@@ -1024,7 +1024,6 @@ class FunctionConverter(CodeEntryConverter):
             proc_param = ProcParam()
             proc_param.name = p.name.text
             if p.inout:
-                import pdb; pdb.set_trace();
                 proc_param.in_out = self.in_out_map.get(p.inout.val[1:-1])
             proc_param.desc = self.rawTextToTextNode(p.text)
             function.addParam(proc_param)
