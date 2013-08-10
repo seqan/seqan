@@ -17,6 +17,13 @@ import raw_doc
 import write_html
 import migration
 
+
+# The expected HTML tags, useful for differentiating between F<T>::Type and real tags.
+EXPECTED_TAGS = ['a', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'em', 'i', 'b',
+                 'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'tt',
+                 'table', 'tbody', 'tr', 'th', 'td', 'caption']
+
+
 class FileNameSource(object):
     def __init__(self, paths):
         self.paths = paths
@@ -73,7 +80,8 @@ def doMain(args):
     # Generate documentation.
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logger = logging.getLogger()
-    processor = proc_doc.DocProcessor(logger=logger, include_dirs=args.base_dirs)
+    processor = proc_doc.DocProcessor(logger=logger, include_dirs=args.base_dirs,
+                                      expected_tags=args.expected_tags)
     try:
         doc_proc = processor.run(master_doc)
     except dox_parser.ParserError, e:
@@ -100,6 +108,8 @@ def main():
                         action='append', help='Path to image directory.')
     parser.add_argument('-b', '--base-dir', help='Base directory for @include.',
                         default=['.'], dest='base_dirs', action='append')
+    parser.add_argument('--expected-tags', help='Expected tags, warn about other tags.',
+                        action='append', default=EXPECTED_TAGS)
     args = parser.parse_args()
     #if not args.inputs:
     #    parser.error('Missing input.')

@@ -1,0 +1,20 @@
+/*!
+@mainpage SeqAn API Documentation
+
+SeqAn is the open source C++ library of efficient algorithms and data structures for the analysis of sequences with the focus on biological data.
+
+SeqAn applies a unique generic design that guarantees high performance, generality, extensibility, and integration with other libraries.
+
+SeqAn is easy to use and simplifies the development of new software tools with a minimal loss of performance.
+
+@section Getting Started
+
+Follow the <a href="http://trac.seqan.de/wiki/Tutorial/GettingStarted" target="_top">getting started instructions</a> to install SeqAn on your system.
+
+A good starting point for learning more about SeqAn is to read the <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">SeqAn Tutorial</a> in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki" target="_top">SeqAn Wiki</a>.
+This will introduce you into the basic concepts of the library and give you an overview about the content of the library.
+
+Refer to the glossary if you encounter questionable terminology.
+
+The collection of example programs in this documentation and the assignments in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">Tutorial</a> demonstrate how to use the data structures and functions offered by SeqAn.
+ */

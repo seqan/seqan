@@ -8,6 +8,7 @@ and cross-linking.
 
 import textwrap
 import dox_tokens
+import raw_doc
 
 
 class DoxFormatter(object):
@@ -872,11 +873,15 @@ class RawSection(object):
 class RawInclude(object):
     """An @include statement.
 
-    @ivar path: A RawText object with the path to the included file.
+    @ivar path   A RawText object with the path to the included file.
+    @ivar text   Alias of path.
+    @ivar tokens List of tokens for the include statement.
     """
 
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, tokens):
+        self.tokens = list(tokens)
+        self.path = RawText(tokens)
+        self.text = self.path
 
     def getType(self):
         return 'include'
@@ -892,13 +897,18 @@ class RawInclude(object):
 class RawSnippet(object):
     """A @snippet statement.
 
+    @ivar tokens: A list of Token object.
     @ivar path: A RawText object with the path to the included file.
     @ivar name: The name of the snippet, a RawText.
+    @ivar text: Alias to path, such that the begin token can be retrieved by
+                looking at text in exception handling.
     """
 
-    def __init__(self, path, name):
-        self.path = path
-        self.name = name
+    def __init__(self, path_tokens, name_tokens):
+        self.tokens = path_tokens + name_tokens
+        self.path = raw_doc.RawText(path_tokens)
+        self.name = raw_doc.RawText(name_tokens)
+        self.text = self.path
 
     def getType(self):
         return 'snippet'

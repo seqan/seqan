@@ -317,7 +317,7 @@ class HtmlWriter(object):
     def makedirs(self):
         for path in self.out_dirs.values():
             if not os.path.exists(path):
-                self.log('Creating directory %s', path)
+                #self.log('Creating directory %s', path)
                 os.makedirs(path)
 
     def copyStaticFiles(self):
@@ -362,14 +362,14 @@ class HtmlWriter(object):
     def translateLinks(self, doc):
         link_converter = LinkConverter(doc)
         for proc_entry in doc.entries.values():
-            self.log('    * %s', proc_entry.name)
+            #self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(link_converter)
 
     def updateImagePaths(self, doc):
         """Appends image output directory to src attributes."""
         updater = ImagePathUpdater(doc, 'img')
         for proc_entry in doc.entries.values():
-            self.log('    * %s', proc_entry.name)
+            #self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(updater)
 
     def generatePages(self, doc):
@@ -382,7 +382,7 @@ class HtmlWriter(object):
 
         for entry in doc.top_level_entries.values():
             path = self.path_manager.getEntryPath(entry)
-            self.log('Creating %s', path)
+            #self.log('Creating %s', path)
             self.generatePage(entry, path, doc, pygments_style)
 
     def generatePage(self, entry, path, doc, pygments_style):

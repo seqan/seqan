@@ -91,9 +91,18 @@ class File(object):
             end_line = string.count(text, '\n', 0, end)
             end_col = end - string.rfind(text, '\n', 0, end) - 1
             offset_line = start_line + 1
-            offset_col = 3
             raw_text = match.group(0)
-            # TODO(holtgrew)
+            # Compute offset column.
+            idx = raw_text.find('\n') + 1
+            for offset_col in xrange(idx, len(raw_text)):
+                if raw_text[offset_col] not in [' ', '\t']:
+                    break
+            if raw_text[offset_col] == '*':
+                offset_col += 1
+                if raw_text[offset_col] in [' ', '\t']:
+                    offset_col += 1
+            offset_col -= idx
+
             proc_text = self._stripText(raw_text, offset_col)
             comments.append(Comment(start_line, start_col, start, end_line, end_col, end,
                                     offset_line, offset_col, proc_text, raw_text))

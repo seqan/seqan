@@ -93,7 +93,8 @@ class ProcDoc(object):
             self.second_level_entries[x.name] = x
             first, second = splitSecondLevelEntry(x.name)
             if not first in self.top_level_entries:
-                print >>sys.stderr, "WARNING: Unknown top level entry %s" % first
+                token = x.raw_entry.name.tokens[0]
+                dox_parser.printTokenError(token, 'Unknown top level entry %s' % first, 'error')
             else:
                 self.top_level_entries[first].registerSubentry(x)
         else:
@@ -688,11 +689,12 @@ class HtmlTagParser(HTMLParser.HTMLParser):
 class RawTextToTextNodeConverter(object):
     """Convert raw text including HTML tags to text node."""
 
-    def __init__(self, strip_lt_line_space=False):
+    def __init__(self, strip_lt_line_space=False, expected_tags=set()):
         self.tag_stack = []
         self.node_stack = []
         self.current = None
         self.strip_lt_line_space = strip_lt_line_space
+        self.expected_tags = expected_tags
         # Processing text between inline @begintag @endtag is done by first
         # scanning over the tokens and then processing the tokens in between
         # recursively with a new RawTextToTextNodeConverter.
@@ -710,6 +712,9 @@ class RawTextToTextNodeConverter(object):
         """
         self.html_parser.parse(token.val)
         tag_name = self.html_parser.tag
+        if tag_name not in self.expected_tags:
+            msg = 'Unknown tag "%s".' % tag_name
+            dox_parser.printTokenError(token, msg, 'warning')
 
         if self.html_parser.is_open:  # Opening tag.
             self.tag_stack.append(self.html_parser.tag)
@@ -725,17 +730,17 @@ class RawTextToTextNodeConverter(object):
             elif self.tag_stack and self.tag_stack[-1] != tag_name:
                 # incorrect closing, pop and return
                 args = (tag_name, self.tag_stack[-1])
-                print >>sys.stderr, 'WARNING: Closing wrong tag %s instead of %s' % args
+                dox_parser.printTokenError(token, 'Closing wrong tag %s instead of %s' % args, 'warning')
                 self.tag_stack.pop()
                 return
             else:  # not self.tag_stack
-                print >>sys.stderr, 'WARNING: Closing tag without opening %s!' % tag_name
+                dox_parser.printTokenError(token, 'Closing tag without opening %s!' % tag_name, 'warning')
             # Pop from node stack.
             if self.node_stack:
                 self.current = self.node_stack[-1]
                 self.node_stack.pop()
             else:
-                print >>sys.stderr, 'WARNING: Having closed too many tags!'
+                dox_parser.printTokenError(token, 'Having closed too many tags!', 'warning')
 
     def handleCommand(self, token):
         """Handle command for the given token."""
@@ -814,7 +819,7 @@ class RawTextToTextNodeConverter(object):
                 self.current.addChild(TextNode(text=t.val))
             at_line_start = t.type in ['EMPTY_LINE', 'BREAK']
         if self.current_cmd:
-            print >>sys.stderr, 'WARNING: Open command %s!' % self.current_cmd
+            dox_parser.printTokenError(t, 'Open command %s!' % self.current_cmd, 'warning')
         return root
 
     def process(self, raw_entry):
@@ -841,7 +846,8 @@ class EntryConverter(object):
                                       space for lines.
         @param verbatim: Whether or not to convert HTML tags.
         """
-        converter = RawTextToTextNodeConverter(strip_lt_line_space)
+        converter = RawTextToTextNodeConverter(
+            strip_lt_line_space, expected_tags=self.doc_proc.expected_tags)
         return converter.run(raw_text, verbatim)
 
     def bodyToTextNode(self, raw_body):
@@ -883,7 +889,8 @@ class EntryConverter(object):
                     x.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(x)
             except inc_mgr.IncludeException, e:
-                print >>sys.stderr, "WARNING: %s" % e
+                e2 = dox_parser.ParserError(msg=str(e), token=p.text.tokens[0])
+                dox_parser.printParserError(e2)
                 n = TextNode(type='div', attrs={'class': 'note warning'})
                 n.children.append(TextNode(text=str(e)))
                 res.addChild(n)
@@ -940,8 +947,9 @@ class CodeEntryConverter(EntryConverter):
                     sig_entry = sig_parser.SigParser(s.text.text).parse()
                     entry.addSignatureEntry(sig_entry)
                 except sig_parser.SigParseException, e:
-                    print >>sys.stderr, '\nWARNING: Could not parse signature: %s' % e
-                    print >>sys.stderr, 'Signature is: %s' % s.text.text.strip()
+                    pass
+                    #print >>sys.stderr, '\nWARNING: Could not parse signature: %s' % e
+                    #print >>sys.stderr, 'Signature is: %s' % s.text.text.strip()
                 
         return entry
 
@@ -1153,12 +1161,15 @@ class DocProcessor(object):
                         the @include and @snippet commands.
     @ivar include_mgr: inc_mgr.IncludeManager object for file/snippet
                        inclusion.
+    @ivar expected_tags: Iterateable of expected tag names.  Will warn in
+                         conversion about unexpected tags if hit.
     """
     
-    def __init__(self, logger=None, include_dirs=['.']):
+    def __init__(self, logger=None, include_dirs=['.'], expected_tags=[]):
         self.logger = logger
         self.include_dirs = list(include_dirs)
         self.include_mgr = inc_mgr.IncludeManager(self.include_dirs)
+        self.expected_tags = set(expected_tags)
         self.converters = {
             'class': ClassConverter(self),
             'concept': ConceptConverter(self),
@@ -1199,7 +1210,7 @@ class DocProcessor(object):
         step since they might encode enum values.
         """
         self.log('  1) Converting Top-Level Entries.')
-        print 'doc.entries', [e.name.text for e in doc.entries]
+        #print 'doc.entries', [e.name.text for e in doc.entries]
         for raw_entry in doc.entries:
             # Get fitting converter or warn if there is none.
             kind = raw_entry.getType()
@@ -1214,7 +1225,7 @@ class DocProcessor(object):
             # Perform conversion.
             proc_entry = converter.process(raw_entry)
             # Store object in ProcDoc.
-            self.log('    * %s (%s)' % (proc_entry.name, proc_entry))
+            #self.log('    * %s (%s)' % (proc_entry.name, proc_entry))
             res.addTopLevelEntry(proc_entry)
 
     def convertSecondLevelEntries(self, doc, res):
@@ -1234,7 +1245,7 @@ class DocProcessor(object):
             # Perform conversion.
             proc_entry = converter.process(raw_entry)
             # Store object in ProcDoc.
-            self.log('    * %s' % proc_entry.name)
+            #self.log('    * %s' % proc_entry.name)
             res.addSecondLevelEntry(proc_entry)
 
     def convertVariables(self, doc, res):
@@ -1249,7 +1260,7 @@ class DocProcessor(object):
             # Perform conversion.
             proc_entry = converter.process(raw_entry)
             # Store object in ProcDoc.
-            self.log('    * %s %s' % (proc_entry.type, proc_entry.name))
+            #self.log('    * %s %s' % (proc_entry.type, proc_entry.name))
             res.addVariable(proc_entry)
 
     def checkLinks(self, doc, res):

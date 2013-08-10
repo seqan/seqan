@@ -12,9 +12,28 @@ import itertools
 import re
 import sys
 
+import termcolor
+
 import raw_doc
 import lexer
 import dox_tokens
+
+
+def printTokenError(token, msg, level='error'):
+    """Print user-friendly error at location token."""
+    # Print location and error message.
+    location = (token.file_name, token.lineno + 1, token.column)
+    location_str = termcolor.colored('%s:%d:%d:' % location, 'white', attrs=['bold'])
+    error_str = termcolor.colored('%s:' % level, 'red', attrs=['bold'])
+    msg = termcolor.colored(msg, 'white', attrs=['bold'])
+    print >>sys.stderr, '%s %s %s' % (location_str, error_str, msg)
+    # Load line with error and print it with an indicator of the error.
+    fcontents = open(token.file_name).read()
+    lines = fcontents.splitlines()
+    if token.lineno >= len(lines):
+        return  # Invalid line number.
+    print >>sys.stderr, '%s' % lines[token.lineno].rstrip()
+    print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
 
 
 def printParserError(e):
@@ -23,16 +42,7 @@ def printParserError(e):
     if not e.msg:
         msg = 'Parse error'
     if e.token:
-        # Print location and error message.
-        location = [e.token.file_name, e.token.lineno + 1, e.token.column]
-        print >>sys.stderr, '%s:%d:%d: error: %s' % tuple(location + [msg])
-        # Load line with error and print it with an indicator of the error.
-        fcontents = open(e.token.file_name).read()
-        lines = fcontents.splitlines()
-        if e.token.lineno >= len(lines):
-            return  # Invalid line number.
-        print >>sys.stderr, '%s' % lines[e.token.lineno].rstrip()
-        print >>sys.stderr, e.token.column * ' ' + '^'
+        printTokenError(e.token, e.msg)
     else:
         print >>sys.stderr, 'ERROR: %s' % msg
 
@@ -284,7 +294,7 @@ class IncludeState(object):
         self.tokens = []
 
     def getEntry(self):
-        return raw_doc.RawInclude(raw_doc.RawText(self.tokens))
+        return raw_doc.RawInclude(self.tokens)
 
     def handle(self, token):
         if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
@@ -308,8 +318,7 @@ class SnippetState(object):
         self.name_tokens = []
 
     def getEntry(self):
-        return raw_doc.RawSnippet(raw_doc.RawText(self.path_tokens),
-                                  raw_doc.RawText(self.name_tokens))
+        return raw_doc.RawSnippet(self.path_tokens, self.name_tokens)
 
     def handle(self, token):
         if token.type in dox_tokens.LINE_BREAKS or token.type == 'EOF':
