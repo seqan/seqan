@@ -59,11 +59,23 @@ namespace seqan {
 // Function endsWith()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn endsWith
+ * @headerfile <seqan/sequence.h>
+ *
+ * @signature bool endsWith(str, suffix);
+ *
+ * @param[in] str    The string to check.
+ * @param[in] suffix The suffix to check for.
+ *
+ * @return bool <tt>true</tt> if <tt>suffix</tt> is a suffix of <tt>str</tt>.
+ */
+
 /**
 .Function.endsWith
 ..concept:Class.String
 ..cat:Input/Output
-..signature:startsWith(str, suffix)
+..signature:endsWith(str, suffix)
 ..summary:Check whether a sequence ends with a given suffix.
 ..param.str:The string to check.
 ..param.suffix:The suffix to check for.
@@ -85,6 +97,18 @@ inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
 // ----------------------------------------------------------------------------
 // Function startsWith()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn startsWith
+ * @headerfile <seqan/sequence.h>
+ *
+ * @signature bool startsWith(str, prefix);
+ *
+ * @param[in] str    The string to check.
+ * @param[in] prefix The prefix to check for.
+ *
+ * @return bool <tt>true</tt> if <tt>prefix</tt> is a prefix of <tt>str</tt>.
+ */
 
 /**
 .Function.startsWith
