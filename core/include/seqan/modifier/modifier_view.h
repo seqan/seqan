@@ -161,7 +161,7 @@ public:
 
     // Construct with the actual host.
     explicit
-    ModifiedString(typename Parameter_<THost>::Type & host) : _host(_toPointer(host)), _cargo(), tmp_value()
+    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host)), _cargo(), tmp_value()
     {}
 
     // Construct with the functor.
@@ -182,7 +182,7 @@ public:
     }
 
     // Construct with the actual host; variant with functor.
-    ModifiedString(typename Parameter_<THost>::Type & host, TFunctor const & functor) :
+    ModifiedString(typename Parameter_<THost>::Type host, TFunctor const & functor) :
             _host(_toPointer(host)), _cargo(), tmp_value()
     {
         cargo(*this).func = functor;
