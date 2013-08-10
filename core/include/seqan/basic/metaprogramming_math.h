@@ -74,7 +74,7 @@ namespace seqan {
  *
  * @section Example
  *
- * @snippet core/demos/basic/metaprogramming_math.cpp log2 call
+ * @snippet demos/basic/metaprogramming_math.cpp log2 call
  */
 
 /**
@@ -114,7 +114,7 @@ template <> struct Log2<0> { static const __uint64 VALUE = 0; };
  *
  * @section Example
  *
- * @snippet core/demos/basic/metaprogramming_math.cpp log2floor call
+ * @snippet demos/basic/metaprogramming_math.cpp log2floor call
  */
 
 /**
@@ -153,7 +153,7 @@ template <> struct Log2Floor<0> { static const __uint64 VALUE = 0; };
  *
  * @return __uint64 b<sup>e</sup
  *
- * @snippet core/demos/basic/metaprogramming_math.cpp power call
+ * @snippet demos/basic/metaprogramming_math.cpp power call
  */
 
 /**

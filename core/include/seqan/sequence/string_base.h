@@ -160,11 +160,11 @@ struct Alloc {};
  * are models for the @link SequenceConcept sequence concept @endlink but extend the sequence concept by allowing
  * implicit conversion of other sequence into strings as long as the element conversion works:
  *
- * @snippet core/demos/sequence/string.cpp initializing strings
+ * @snippet demos/sequence/string.cpp initializing strings
  *
  * Aside from that, the usual operations (appending, insertion, removing, element access) are available as well.
  *
- * @snippet core/demos/sequence/string.cpp usual operations
+ * @snippet demos/sequence/string.cpp usual operations
  *
  * Strings have a size (the actual number of elements) and a capacity (the number of elements that memory has
  * been allocated for).  Note that clearing a string does not free the memory (as the STL, SeqAn assumes that
@@ -172,7 +172,7 @@ struct Alloc {};
  * the user can force a re-allocation of the memory such that the string afterward uses the minimal amount
  * of memory to accomodate all of its objects.
  *
- * @snippet core/demos/sequence/string.cpp clear and resize
+ * @snippet demos/sequence/string.cpp clear and resize
  *
  * @see StringSet
  */

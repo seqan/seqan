@@ -66,7 +66,7 @@ namespace seqan {
  *
  * The following shows a complete example of using the Switch statement.
  *
- * @snippet core/demos/basic/metaprogramming_switch.cpp switch demo
+ * @snippet demos/basic/metaprogramming_switch.cpp switch demo
  */
 
 // TODO(holtgrew): Use Tag<>?
@@ -226,13 +226,13 @@ struct Switch<TAG, NilCase>
  * We define the following worker to print an integer.  The first argument is of <tt>Nothing</tt> as a dummy.  Note that
  * the parameter is not const.
  *
- * @snippet core/demos/basic/metaprogramming_control.cpp print worker
+ * @snippet demos/basic/metaprogramming_control.cpp print worker
  *
  * The following shows an example calling <tt>PrintWorker::body()</tt> through Loop.  We have to create a local variable
  * since the first parameter is not const.  The reason for this is that the parameter can also be used for a mutable
  * object that holds some state.
  *
- * @snippet core/demos/basic/metaprogramming_control.cpp print worker call loop reverse
+ * @snippet demos/basic/metaprogramming_control.cpp print worker call loop reverse
  *
  * @see LoopReverse
  */
@@ -316,13 +316,13 @@ public:
  * We define the following worker to print an integer.  The first argument is of <tt>Nothing</tt> as a dummy.  Note that
  * the parameter is not const.
  *
- * @snippet core/demos/basic/metaprogramming_control.cpp print worker
+ * @snippet demos/basic/metaprogramming_control.cpp print worker
  *
  * The following shows an example calling <tt>PrintWorker::body()</tt> through LoopReverse.  We have to create a local
  * variable since the first parameter is not const.  The reason for this is that the parameter can also be used for a
  * mutable object that holds some state.
  *
- * @snippet core/demos/basic/metaprogramming_control.cpp print worker call loop
+ * @snippet demos/basic/metaprogramming_control.cpp print worker call loop
  *
  * @see Loop
  */
