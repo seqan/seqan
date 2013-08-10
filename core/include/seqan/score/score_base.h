@@ -61,7 +61,7 @@ namespace seqan {
  *
  * The output is as follows:
  *
- * @code{.txt}
+ * @code{.console}
  * Score = 66
  * Alignment:
  * 0     .    :    .    :    .

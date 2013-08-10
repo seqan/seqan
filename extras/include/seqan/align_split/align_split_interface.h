@@ -422,7 +422,7 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  *
  * For example:
  *
- * @code{.txt}
+ * @code{.console}
  * reference  AGCATGTTAGATAAGATAGC-----------TGTGCTAGTAGGCAGTCAGCGCCAT
  *            ||||||||||||||||||||           |||||||||||||||||||||||||
  * read       AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT
@@ -432,7 +432,7 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * the left part of the reference and the right part of B aligns well to the right part of the reference.  Together,
  * both reads span the whole reference and overlap with an insertion in the reference.
  * 
- * @code{.txt}
+ * @code{.console}
  * reference  AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT
  *            |||||||||||||||||| | ||
  *            AGCATGTTAGATAAGATATCCGTCC
@@ -444,7 +444,7 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * 
  * The resulting alignment of the left/right parts is depicted below. The square brackets indicate clipping positions.
  * 
- * @code{.txt}
+ * @code{.console}
  * reference  AGCATGTTAGATAAGATA    [GCTGTGCTAGTAGGCAGTCAGCGCCAT
  *            ||||||||||||||||||    [ | ||
  *            AGCATGTTAGATAAGATA    [TCCGTCC

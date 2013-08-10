@@ -79,7 +79,7 @@ typedef Tag<TagRaw_> Raw;
  *
  * The output is as follows:
  *
- * @code{.txt}
+ * @code{.console}
  * score = -4
  * align
  *   0     .    :

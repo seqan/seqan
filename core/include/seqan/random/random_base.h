@@ -62,7 +62,7 @@ struct MersenneTwister;
  *
  * @include demos/random/random.cpp
  *
- * @code{.txt}
+ * @code{.console}
  * pickRandomNumber(rng) == 1608637542
  * pickRandomNumber(rng, uniformDouble) == 0.950714
  * pickRandomNumber(rng, uniformInt) == 27

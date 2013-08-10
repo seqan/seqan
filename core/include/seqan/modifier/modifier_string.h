@@ -77,7 +77,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  *
  * The output is als follows:
  *
- * @code{.txt}
+ * @code{.console}
  * TATACGCGAAAA
  * AAAAGCGCATAT
  * 
