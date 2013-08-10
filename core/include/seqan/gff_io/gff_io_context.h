@@ -56,7 +56,7 @@ namespace seqan {
  *            class GffIOContext;
  * 
  * @tparam TNameStore      The name store class.
- * @tparam TNameStoreCache The name store cache class, default: NameStoreCache<TNameStore>.
+ * @tparam TNameStoreCache The name store cache class, default: NameStoreCache&lt;TNameStore&gt;.
  * 
  * @section Examples
  * 

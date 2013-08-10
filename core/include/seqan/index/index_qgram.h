@@ -2896,7 +2896,7 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
  *                 stored in a contiguous
  *                 range of the suffix array. <tt>range</tt> returns begin and
  *                 end position of this range. If the type of <tt>index</tt> is
- *                 <tt>TIndex</tt> the return type is $Pair<Size<TIndex>::Type>.
+ *                 <tt>TIndex</tt> the return type is <tt>Pair&lt;Size&lt;TIndex&gt;::Type&gt;</tt>.
  * 
  * @section Remarks
  * 

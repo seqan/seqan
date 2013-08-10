@@ -78,7 +78,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @section Note The following predefined shapes are already available in
  * <tt>seqan/index/shape_predefined.h</tt>:
  * 
- * @include core/include/seqan/index/shape_predefined.h
+ * @include include/seqan/index/shape_predefined.h
  * 
  * @see GappedShape
  * @see GenericShape#Shape

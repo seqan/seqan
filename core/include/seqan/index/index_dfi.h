@@ -97,7 +97,7 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
  * 
  * @signature Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >
  * 
- * @tparam TText The text type. Types: @link String @endling, @link StringSet @endlink
+ * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
  * @tparam TPred An arbitrary frequency predicate
  * @tparam TPredHull A monotonic hull of <tt>TPred</tt>
  * 

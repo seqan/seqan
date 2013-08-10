@@ -70,7 +70,7 @@ namespace seqan {
  * @section Remarks
  * 
  * The main purpose of this class is to facilitate the handling of member objects. If we want class <tt>A</tt> to be
- * dependent on or the owner of another object of class <tt>B</tt>, then we add a data member of type <tt>Holder<B></tt>
+ * dependent on or the owner of another object of class <tt>B</tt>, then we add a data member of type <tt>Holder&lt;B&gt;</tt>
  * to <tt>A</tt>.  <tt>Holder</tt> offers some useful access functions and stores the kind of relationship between
  * <tt>A</tt> and <tt>B</tt>.
  * 

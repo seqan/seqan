@@ -95,7 +95,7 @@ namespace seqan {
  * @section Naming Conventions
  *
  * <ul>
- * <li>Keep the short name short, ideally to one character.</tt>
+ * <li>Keep the short name short, ideally to one character.</li>
  * <li>Only use lower-case characters in the long name, use dashes to separate words, only use alphanumeric characters
  *     and dashes, no underline characters</li>.
  * </ul>

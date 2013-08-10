@@ -91,7 +91,7 @@ namespace seqan {
  * f(3, SomeTag());
  * @endcode
  *
- * This has the advantages that (1) the type of tag parameters is printed as <tt>Tag<SomeTag_></tt> in compiler error
+ * This has the advantages that (1) the type of tag parameters is printed as <tt>Tag&lt;SomeTag_&gt;</tt> in compiler error
  * traces.  Furthermore, (2) parameter less tags can be defined redundantly in multiple headers and we can still
  * instantiate them anywhere where they are declared.  The latter (2) cannot be achieved with only forward declaration
  * (<tt>struct SomeTag;</tt>) or full declarations (<tt>struct SomeTag {};</tt>) everywhere.

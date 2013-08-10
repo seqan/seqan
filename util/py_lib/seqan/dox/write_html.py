@@ -329,7 +329,7 @@ class HtmlWriter(object):
             for f in files:
                 in_path = os.path.join(in_dir, f)
                 out_path = os.path.join(self.out_dirs[kind], f)
-                self.log('  Copying %s => %s', in_path, out_path)
+                #self.log('  Copying %s => %s', in_path, out_path)
                 shutil.copyfile(in_path, out_path)
 
     def copyDocImages(self):
@@ -341,7 +341,7 @@ class HtmlWriter(object):
             for f in files:
                 in_path = join(image_dir, f)
                 out_path = os.path.join(self.out_dirs['img'], f)
-                self.log('  Copying %s => %s', in_path, out_path)
+                #self.log('  Copying %s => %s', in_path, out_path)
                 shutil.copy(in_path, out_path)
 
     def generateTopFrameSet(self):

@@ -59,7 +59,7 @@ namespace seqan {
  * @section Remarks
  * 
  * The functions of this concept assume that the hosted object exports a function <tt>_dataHost</tt> that returns a
- * reference to a holder type of <tt>Host<T>::Type &</tt>.
+ * reference to a holder type of <tt>Host&lt;T&gt;::Type &</tt>.
  */
 
 /**

@@ -109,7 +109,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @section Remarks
  * 
  * The output type is a @link Tuple @endlink of input elements and length
- * <tt>tupleLen</tt> (i.e. <tt>Tuple<Value<TInput>::Type, tupleLen></tt>).
+ * <tt>tupleLen</tt> (i.e. <tt>Tuple&lt;Value&lt;TInput&gt;::Type, TUPLE_LEN&gt;</tt>).
  * 
  * The tuples are sequences of the form
  * <tt>in[i]in[i-1]in[i-2]..in[i-tupleLen+1]</tt>. For <tt>omitLast=false</tt>

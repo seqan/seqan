@@ -98,7 +98,7 @@ class Fragment;
  * @param upperDiag    Optional upper diagonal (<tt>int</tt>).
  * @param algorithmTag Tag to select the alignment algorithm (see @link AlignmentAlgorithmTags @endlink).
  *
- * @return TScoreVal Score value of the resulting alignment.  Of type <tt>Value<TScore>::Type</tt> where
+ * @return TScoreVal Score value of the resulting alignment.  Of type <tt>Value&lt;TScore&gt;::Type</tt> where
  *                   <tt>TScore</tt> is the type of <tt>scoringScheme</tt>.
  * 
  * There exist multiple overloads for this function with four configuration dimensions.

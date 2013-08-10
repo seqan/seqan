@@ -194,8 +194,8 @@ TA
  * @tparam TIterator A @link VSTreeIterator @endlink.
  * 
  * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
- *                 if <tt>TIterator</tt> is <tt>VSTree<TopDown<ParentLinks<> >
- *                 ></tt> or <tt>VSTree<TopDown<ParentLinks<Preorder> > ></tt>.
+ *                 if <tt>TIterator</tt> is <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;&gt; &gt; &gt;</tt>
+ *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
  */
 
 	template <typename TIterator>

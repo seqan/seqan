@@ -587,7 +587,7 @@ SEQAN_CHECKPOINT
  * @signature void pop(object[, ref]);
  * 
  * @param[in,out] object A pop-passive pipeline module. Types: Pipe, Pool
- * @param[out]    ref    Reference to the result.  Result type is <tt>Value<TObject>::Type</tt> for <tt>object</tt>
+ * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
  * 
  * @section Remarks

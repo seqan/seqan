@@ -75,7 +75,7 @@ typedef Tag<TagRaw_> Raw;
  *
  * Here is an example of using an Align object with @link globalAlignment @endlink.
  *
- * @include core/demos/align/align.cpp
+ * @include demos/align/align.cpp
  *
  * The output is as follows:
  *

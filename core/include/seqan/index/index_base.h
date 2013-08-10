@@ -343,7 +343,7 @@ template <
  * <table border="1">
  * <tr>
  *   <td>FibreSA</td>
- *   <td>Suffix array fibre.  A string of @link TextConcept#SAValue SAValue<TText>::Type @endlink.</td>
+ *   <td>Suffix array fibre.  A string of @link TextConcept#SAValue SAValue&lt;TText&gt;::Type @endlink.</td>
  * </tr>
  * </table>
  *

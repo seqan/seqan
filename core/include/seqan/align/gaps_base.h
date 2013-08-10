@@ -83,7 +83,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * @tparam TSequence The type of the underlying sequence.
  * @tparam TSpec     Tag for specialization.
  *
- * Gaps wrap a @link SequenceConcept Sequence endlink@ and allows to (1) insert gaps into the sequence and (2) select
+ * Gaps wrap a @link SequenceConcept Sequence @endlink and allows to (1) insert gaps into the sequence and (2) select
  * an infix of the gapped sequence (clipping).  The gaps are not inserted into the underlying sequence (source) but
  * stored separately.  Using the clipping is optional and meant for selecting parts of the alignment as a part of the
  * result of a local alignment algorithm.

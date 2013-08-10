@@ -279,7 +279,7 @@
  * @return TSize The number of elements in the compressed suffix array. Types: The result of @link Size @endlink of the
  * compressed suffix array.
  *
- * @section Note If the new length is smaller than the actual one then the last <bb>x<bb> items of the compressed suffix array
+ * @section Note If the new length is smaller than the actual one then the last <tt>x<tt> items of the compressed suffix array
  * are deleted with x = oldLength - newLength.
  */
 
@@ -383,7 +383,6 @@
  */
 
 /*!
- *!
  * @class LfTable
  * 
  * @headerfile seqan/Index.h
@@ -956,7 +955,7 @@
  * 
  * @signature createRankDictionary(dictionary, text)
  * 
- * @param text A text to be transfered into a wavelet tree. Types: @link String #endlink
+ * @param text A text to be transfered into a wavelet tree. Types: @link String @endlink
  * @param dictionary The dictionary.
  */
 
@@ -1172,7 +1171,7 @@
  * @return TSize The number of elements in the rank-support-bit string. Types: The result of @link Size @endlink of the
  * rank-support-bit string.
  *
- * @section Note If the new length is smaller than the actual one then the last <bb>x<bb> items of the rank-support-bit string
+ * @section Note If the new length is smaller than the actual one then the last <tt>x<tt> items of the rank-support-bit string
  * are deleted with x = oldLength - newLength.
  */
 
@@ -1721,7 +1720,7 @@
  * @signature getFibre(dictionary, fibreTag)
  * 
  * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
- *                 @link SentinelRankDictionaryFibres SentinelRankDictionary Fibres
+ *                 @link SentinelRankDictionaryFibres SentinelRankDictionary Fibres @endlink.
  * @param dictionary The dictionary holding the fibre.
  * 
  * @return TReturn A reference to the @link Fibre @endlink object.
@@ -1977,7 +1976,7 @@
  * @return TSize The number of elements in the  sparse string. Types: The result of @link Size @endlink of the
  * sparse string.
  *
- * @section Note If the new length is smaller than the actual one then the last <bb>x<bb> items of the compressed suffix array
+ * @section Note If the new length is smaller than the actual one then the last <tt>x<tt> items of the compressed suffix array
  * are deleted with x = oldLength - newLength.
  */
 

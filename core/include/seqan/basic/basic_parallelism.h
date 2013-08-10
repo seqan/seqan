@@ -42,7 +42,7 @@
 
 /*!
  * @macro SEQAN_ENABLE_PARALLELISM
- * @include <seqan/basic.h>
+ * @headerfile <seqan/basic.h>
  * @brief Indicates whether parallelism is enabled with value 0/1.
  *
  * @signature SEQAN_ENABLE_PARALLELISM

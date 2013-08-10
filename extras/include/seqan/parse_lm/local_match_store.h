@@ -208,8 +208,8 @@ struct LocalMatchStoreConfig
  * 
  * @section Remarks
  * 
- * The LocalMatchStore provides information about matches.  Similar to the @link FragmentStore, the information is split
- * into multiple sub stores.  Each sub store stores a part of the information.
+ * The LocalMatchStore provides information about matches.  Similar to the @link FragmentStore @endlink, the
+ * information is split into multiple sub stores.  Each sub store stores a part of the information.
  * 
  * The LocalMatchStore#matchStore stores the information about a match.  The LocalMatchStore#sequenceNameStore stores
  * the sequence names.  These both sub stores are "core stores", they are filled with consistent information, i.e. for

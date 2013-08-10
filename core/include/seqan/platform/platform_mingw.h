@@ -34,13 +34,13 @@
 
 /*!
  * @macro PLATFORM_WINDOWS
- * @include <seqan/platform.h>
+ * @headerfile <seqan/platform.h>
  * @brief Defined if the compiler targets Windows (MSVC or MinGW).
  *
  * @signature #define PLATFORM_WINDOWS
  *
  * @macro PLATFORM_WINDOWS_MINGW
- * @include <seqan/platform.h>
+ * @headerfile <seqan/platform.h>
  * @brief Defined if the compiler is MinGW.
  *
  * @signature #define PLATFORM_WINDOWS_MINGW

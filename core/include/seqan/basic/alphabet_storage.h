@@ -204,7 +204,7 @@ struct BytesPerValue
  * <table>
  *   <tr>
  *     <th>sizeof(T) in bytes</th>
- *     <th>integral types</t>
+ *     <th>integral types</th>
  *   </tr>
  *   <tr>
  *     <td>1</td>

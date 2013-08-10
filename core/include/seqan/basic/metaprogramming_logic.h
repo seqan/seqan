@@ -233,7 +233,7 @@ struct Eval<true> : True {};
  * @tparam TBool The tag to negate.
  *
  * @return Type  The inverted TBool.
- * @return VALUE Shortcut for <tt>Not<TBool>::Type::VALUE</tt>.
+ * @return VALUE Shortcut for <tt>Not&lt;TBool&gt;::Type::VALUE</tt>.
  *
  * @section Example
  *
@@ -286,7 +286,7 @@ struct Not<True> : False {};
  * @tparam BOOL The <tt>bool</tt> value to negate.
  *
  * @return Type  The corresponding Tag for <tt>!BOOL</tt> (<tt>True</tt>/<tt>False</tt>).
- * @return VALUE Shortcut for <tt>NotC<BOOL>::Type::VALUE</tt>.
+ * @return VALUE Shortcut for <tt>NotC&lt;BOOL&gt;::Type::VALUE</tt>.
  *
  * @section Example
  *

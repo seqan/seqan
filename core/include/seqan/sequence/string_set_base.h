@@ -61,13 +61,13 @@ struct Owner {};
  *            class StringSet;
  *
  * @tparam TString The type of the string to store in the string set.
- * @tparam TSpec   A tag for selecting the specialization of the string set.  Default: <tt>Owner<Generous></tt>.
+ * @tparam TSpec   A tag for selecting the specialization of the string set.  Default: <tt>Owner&lt;Generous&gt;</tt>.
  *
  * String sets are containers for strings.  They have two advantages over a string of strings:
  *
  * First, they allow to express the common intent in Bioinformatics to have a list of strings, e.g. for the
  * chromosomes of a genome.  This facilitates writing generic data structures and algorithms to operate on single
- * strings and genomes which is captured by the @link TextConcept@.
+ * strings and genomes which is captured by the @link TextConcept @endlink.
  *
  * Second, the @link DependentStringSet @endlink specialization allows to create subsets of string sets without
  * storing copies of strings and identifying strings by a common id.

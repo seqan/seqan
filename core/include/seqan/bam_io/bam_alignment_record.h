@@ -203,7 +203,7 @@ enum BamFlags
  * @var CharString BamAlignmentRecord::qual;
  * @brief The PHRED quality values of the sequence (as in SAM), empty for '*'.
  *
- * @var CharString BamAlignmentRecords::tags;
+ * @var CharString BamAlignmentRecord::tags;
  * @brief Raw BAM tag string, use @link BamTagsDict @endlink for comfortable access.
  */
 

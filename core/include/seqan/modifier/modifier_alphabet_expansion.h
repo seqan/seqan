@@ -64,7 +64,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *   <dt><tt>'-'</tt></dt>
  *   <dd>A gap character.  The value in the expanded alphabet that corresponds to <tt>'-'</tt> will be returned
  *       by the function gapValue.</dd>
- *
  *   <dt><tt>'$'</tt></dt>
  *   <dd>An end of string character.</dd>
  * </dl>

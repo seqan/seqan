@@ -68,7 +68,7 @@ class LocalAlignmentEnumerator;
  *
  * <ul>
  *   <li>Waterman MS, Eggert M: A new algorithm for best subsequence alignments with application to tRNA-rRNA
- *       comparisons. J Mol Biol 1987, 197(4):723-728.</lI.
+ *       comparisons. J Mol Biol 1987, 197(4):723-728.</li>
  * </ul>
  */
 

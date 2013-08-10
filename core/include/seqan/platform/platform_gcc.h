@@ -34,7 +34,7 @@
 
 /*!
  * @macro PLATFORM_GCC
- * @include <seqan/platform.h>
+ * @headerfile <seqan/platform.h>
  * @brief Defined if the compiler is GCC (or compatible).
  *
  * @signature #define PLATFORM_GCC

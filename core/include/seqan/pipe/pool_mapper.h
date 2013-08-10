@@ -98,7 +98,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @section Remarks
  * 
- * Using this configuration spec., the Mapper's size type is <tt>Size<TFile>::Type</tt>. To use a custom size type
+ * Using this configuration spec., the Mapper's size type is <tt>Size&lt;TFile&gt;::Type</tt>. To use a custom size type
  * MapperConfigSize should be used.
  * 
  * @see MapperConfigSize

@@ -63,7 +63,7 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
 
 /*!
  * @class Tuple
- * @include <seqan/basic.h>
+ * @headerfile <seqan/basic.h>
  * @brief A constant-size tuple of the same type.
  *
  * @signature template <typename TValue, unsigned SIZE[, typename TSpec]>

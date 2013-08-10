@@ -79,7 +79,7 @@ typedef Tag<Bed12_> Bed12;
  * are used and the rest is kept as application dependent data.
  * 
  * The BedRecord class allows for storing BED records. The various subclasses provide access to 3, 4, 5, 6, or 12 fields
- * of the BED format. For example, a <tt>BedRecord<Bed5></tt> has members variables for the first 5 columns of a BED
+ * of the BED format. For example, a <tt>BedRecord&lt;Bed&gt;></tt> has members variables for the first 5 columns of a BED
  * file. The remaining data is stored as the @link CharString @endlink member variable <tt>data</tt>.
  * 
  * @section Remarks
@@ -197,7 +197,7 @@ class BedRecord;
 // ----------------------------------------------------------------------------
 
 /*!
- * @class Bed3BedRecord
+ * @class Bed3Record
  * @extends BedRecord
  * @headerfile <seqan/bed_io.h>
  * @brief BedRecord with 3 fields.
@@ -255,8 +255,8 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
- * @class Bed4BedRecord
- * @extends Bed3BedRecord
+ * @class Bed4Record
+ * @extends Bed3Record
  * @headerfile <seqan/bed_io.h>
  * @brief BedRecord with 4 fields.
  * 
@@ -265,7 +265,7 @@ public:
  * 
  * This BedRecord specialization stores the first four fields (ref, beginPos, endPos, name) of a BED file.
  * 
- * @var CharString Bed4BedRecord::name
+ * @var CharString Bed4Record::name
  * @brief The name of the interval (@link CharString @endlink).
  */
 
@@ -306,8 +306,8 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
- * @class Bed5BedRecord
- * @extends Bed4BedRecord
+ * @class Bed5Record
+ * @extends Bed4Record
  * @headerfile <seqan/bed_io.h>
  * 
  * @brief BedRecord with 5 fields.
@@ -317,7 +317,7 @@ public:
  * 
  * This BedRecord specialization stores the first five fields (ref, beginPos, endPos, name, score) of a BED file.
  * 
- * @var CharString Bed5 BedRecord::score
+ * @var CharString Bed5Record::score
  * @brief The score of the interval (stored as @link CharString @endlink to allow more flexible annotation).
  * 
  * @section Remarks
@@ -363,8 +363,8 @@ public:
 // ----------------------------------------------------------------------------
 
 /*!
- * @class Bed6BedRecord
- * @extends Bed5BedRecord
+ * @class Bed6Record
+ * @extends Bed5Record
  * @headerfile <seqan/bed_io.h>
  * 
  * @brief BedRecord with 6 fields.
@@ -374,7 +374,7 @@ public:
  * 
  * This BedRecord specialization stores the first six fields (ref, beginPos, endPos, name, score, strand) of a BED file.
  * 
- * @var char Bed6BedRecord::strand
+ * @var char Bed6Record::strand
  * @brief The strand of the interval (stored as <tt>char</tt>, one of <tt>.</tt>, '-', and <tt>+</tt>).
  * 
  * Defaults to '.'.
@@ -420,7 +420,7 @@ public:
 /*!
  * @class BedRgb
  * @headerfile <seqan/bed_io.h>
- * @brief RGB color for @link Bed12BedRecord @endlink.
+ * @brief RGB color for @link Bed12Record @endlink.
  * 
  * @signature class BedRgb;
  * 
@@ -511,22 +511,22 @@ public:
  *
  * This @link BedRecord @endlink specialization stores all fields of a BED file.
  *
- * @var __int32 Bed12BedRecord::itemRgb
+ * @var __int32 Bed12Record::itemRgb
  * @brief RGB color of item (@link BedRgb @endlink).
  * 
- * @var __int32 Bed12BedRecord::blockCount
+ * @var __int32 Bed12Record::blockCount
  * @brief The number of blocks.
  * 
- * @var TIntString Bed12BedRecord::blockBegins
+ * @var TIntString Bed12Record::blockBegins
  * @brief The begin positions of the blocks (@link AllocString @endlink of <tt>__int32</tt>).
  * 
- * @var TIntString Bed12BedRecord::blockSizes
+ * @var TIntString Bed12Record::blockSizes
  * @brief The sizes of the blocks (@link AllocString @endlink of <tt>__int32</tt>).
  * 
- * @var __int32 Bed12BedRecord::thickBegin
+ * @var __int32 Bed12Record::thickBegin
  * @brief The begin position of thick drawing.
  * 
- * @var __int32 Bed12BedRecord::thickEnd
+ * @var __int32 Bed12Record::thickEnd
  * @brief The end position of thick drawing.
  */
 

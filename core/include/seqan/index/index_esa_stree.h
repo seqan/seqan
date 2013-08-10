@@ -192,7 +192,7 @@ The iterator starts in the root node by default.
  * root node of the virtual tree/trie.
  * 
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, TopDown<TSpec> >::Type (which is Iter<TContainer, VSTree< TopDown<TSpec> > >).
+ *               Iterator&t;TContainer, TopDown&lt;TSpec&gt; &gt;::Type (which is Iter&lt;TContainer, VSTree&lt;TopDown&lt;TSpec&gt; &gt; &gt;).
  */
 /*!
  * @fn TopDownIterator::Iterator
@@ -327,7 +327,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  *                    IndexDfi, IndexEsa, IndexWotd
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, TopDown<ParentLinks<TSpec> > >::Type (which is Iter<TContainer, VSTree<ParentLinks<TopDown<TSpec> > > >).
+ *               Iterator&lt;TContainer, TopDown&lt;ParentLinks&lt;TSpec&gt; &gt; &gt;::Type (which is Iter&lt;TContainer, VSTree&lt;ParentLinks&lt;TopDown&lt;TSpec&gt; &gt; &gt; &gt;).
  *
  * 
  * @section Remarks
@@ -471,7 +471,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  *                    @link IndexEsa @endlink
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, BottomUp<TSpec> >::Type (which is Iter<TContainer, VSTree<BottomUp<TSpec> > >).
+ *               Iterator&lt;TContainer, BottomUp&lt;TSpec&gt; &gt;::Type (which is Iter&lt;TContainer, VSTree&lt;BottomUp&lt;TSpec&gt; &gt; &gt;).
  * 
  * @fn BottomUp Iterator::Iterator
  * 
@@ -1273,7 +1273,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  *                 stored in a contiguous
  *                 range of the suffix array. <tt>range</tt> returns begin and
  *                 end position of this range. If the type of <tt>index</tt> is
- *                 <tt>TIndex</tt> the return type is $Pair<Size<TIndex>::Type>.
+ *                 <tt>TIndex</tt> the return type is <tt>Pair&lt;Size&lt;TIndex&gt;::Type&gt;</tt>.
  * 
  * @section Remarks
  * 
@@ -2677,9 +2677,9 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
  * 
- * @return TReturn A single character of type <tt>Value<TIndex>::Type</tt> which
- *                 is identical to <tt>Value<Fibre<TIndex,
- *                 EsaRawText>::Type>::Type</tt>.
+ * @return TReturn A single character of type <tt>Value&lt;TIndex&gt;::Type</tt> which
+ *                 is identical to <tt>Value&lt;Fibre&lt;TIndex,
+ *                 EsaRawText&gt;::Type&gt;::Type</tt>.
  */
 
 	template < typename TIndex, class TSpec >

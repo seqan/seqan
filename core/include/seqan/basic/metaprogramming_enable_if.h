@@ -64,7 +64,7 @@ namespace seqan {
  * LogicMetaprogramming logical metaprogramming metafunctions @endlink.
  *
  * <b>Enable-if is an advanced technique and mostly interesting if you want to extend the SeqAn library with generic
- * algorithms.  The average developer does not have to know about this technique.</tt>.
+ * algorithms.  The average developer does not have to know about this technique.</b>.
  *
  * @see LogicalValuesTags
  * @see LogicMetaprogramming

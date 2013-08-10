@@ -93,7 +93,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @section Remarks
  * 
  * The output type is a @link Tuple @endlink of input elements and length <tt>echoRepeats</tt> (i.e.
- * <tt>Tuple<Value<TInput>::Type, echoRepeats></tt>).
+ * <tt>Tuple&lt;Value&lt;TInput&lt;::Type, echoRepeats&gt;</tt>).
  * 
  * The tuples are sequences of the form <tt>in[i]in[i-1]in[i-2]..in[i-echoRepeats+1]</tt>. For <tt>omitFirst=false</tt>
  * <tt>i</tt> begins with 0 and for <tt>omitFirst=true</tt> <tt>i</tt> begins with <tt>echoRepeats-1</tt>.

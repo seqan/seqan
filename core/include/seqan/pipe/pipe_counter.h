@@ -65,7 +65,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @section Remarks
  * 
- * The output type is a Pair of input type and size type (i.e.  <tt>Pair<Value<TInput>::Type, Size<TInput>::Type></tt>).
+ * The output type is a Pair of input type and size type (i.e.  <tt>Pair&lt;Value&lt;TInput&gt;::Type, Size&lt;TInput&gt;::Type</tt>).
  * 
  * The first output field is the original input stream.
  * 

@@ -84,8 +84,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @section Remarks
  * 
- * The output type is a Pair of size type and Tuple of input elements and length m (i.e. <tt>Pair<Size<TInput>::Type,
- * Tuple<Value<TInput>::Type, m, TPack> ></tt>).
+ * The output type is a Pair of size type and Tuple of input elements and length m (i.e. <tt>Pair&lt;Size&lt;TInput&gt;::Type,
+ * Tuple&lt;Value&lt;TInput&gt;::Type, m, TPack&gt; &gt;</tt>).
  * 
  * The first output field contains the number of remaining pipe elements. The m-tuple in the second field contains the
  * first m elements of them. The m-tuples are substrings of the input stream beginning at positions <tt>i</tt>, with

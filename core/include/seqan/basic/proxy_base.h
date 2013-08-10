@@ -63,7 +63,7 @@ namespace seqan {
  * type. <tt>Proxy</tt> can be used as reference type (see Reference).
  * 
  * Note that functions that are both general and specialized for the value type should be specialized for
- * <tt>Proxy<TSpec></tt> too, since otherwise the general version will be called.
+ * <tt>Proxy&lt;TSpec&gt;</tt> too, since otherwise the general version will be called.
  */
 
 /**

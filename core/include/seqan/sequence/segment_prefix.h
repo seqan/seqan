@@ -54,7 +54,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename THost>
  *            class Segment<THost, PrefixSegment>;
  *
- * @tparam THost The underlying @link SequenceConcept sequence@ type.
+ * @tparam THost The underlying @link SequenceConcept sequence @endlink type.
  */
 
 /**

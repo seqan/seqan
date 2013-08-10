@@ -69,7 +69,7 @@ struct UnmaskedAlphabet_<const TAlphabet>
  * @signature void countKmers(kmerCounts, bgFrequencies, sequence, k);
  * @signature void countKmers(kmerCounts, bgModel, sequence, k);
  * 
- * @param[out] kmerCounts    @link String of <tt>unsigned</tt> with kmer counts for every k-mer.
+ * @param[out] kmerCounts    @link String @endlink of <tt>unsigned</tt> with kmer counts for every k-mer.
  * @param[out] bgFrequencies @link String @endlink of background frequencies (<tt>double</tt>) representing the model.
  * @param[out] bgModel       @link MarkovModel @endlink to use.
  * @param[in]  sequence      @link String @endlink (sequence) where k-mers are counted.
@@ -1083,7 +1083,7 @@ void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TSt
  * 
  * @param[out] stringSet    StringSet containing string Types: StringSet
  * @param[in]  string       String Types: String
- * @param[out] dnaStringSet StringSet<DnaString> created from dna5String by cutting out all Ns from dna5String.
+ * @param[out] dnaStringSet StringSet&lt;DnaString&gt; created from dna5String by cutting out all Ns from dna5String.
  * @param[in]  dna5String   DNA5 String where all Ns should be removed, the remaining sequences will be stored in dnaStringSet.
  * 
  * @section Examples
