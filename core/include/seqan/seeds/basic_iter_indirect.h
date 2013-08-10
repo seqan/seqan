@@ -57,15 +57,13 @@ public:
     TWrappedIter _wrappedIter;
     
     Iter() : _wrappedIter(0)
-    { SEQAN_CHECKPOINT; }
+    {}
 
-    Iter(Iter const & other)
-            : _wrappedIter(other._wrappedIter)
-    { SEQAN_CHECKPOINT; }
+    Iter(Iter const & other) : _wrappedIter(other._wrappedIter)
+    {}
 
-    Iter(TWrappedIter const & wrappedIter)
-            : _wrappedIter(wrappedIter)
-    { SEQAN_CHECKPOINT; }
+    Iter(TWrappedIter const & wrappedIter) : _wrappedIter(wrappedIter)
+    {}
 };
 
 // ===========================================================================

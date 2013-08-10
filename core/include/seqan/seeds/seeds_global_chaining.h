@@ -63,6 +63,18 @@ typedef Tag<SparseChaining_> SparseChaining;
 // Functions
 // ===========================================================================
 
+/*!
+ * @fn chainSeedsGlobally
+ * @headerfile <seqan/seeds.h>
+ * @brief Global chaining of seeds.
+ *
+ * @signature void chainSeedsGlobally(target, seedSet, tag);
+ *
+ * @param[out] target  A @link ContainerConcept container @endlink to append the seeds to.
+ * @param[in]  seedSet The SeedSet object to get the seeds from.
+ * @param[in]  tag     The tag to select the algorithm with (currently only <tt>SparseChaining</tt> is supported).
+ */
+
 // TODO(holtgrew): Implement scored!
 /**
 .Function.chainSeedsGlobally

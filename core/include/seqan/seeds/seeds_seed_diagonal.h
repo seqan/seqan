@@ -48,6 +48,29 @@ namespace seqan {
 // Class SeedDiagonal
 // ---------------------------------------------------------------------------
 
+/*!
+ * @class SeedDiagonal
+ * @headerfile <seqan/seeds.h>
+ * @brief Store the information about a seed segment.
+ * 
+ * @signature template <typename TPosition, typename TSize>
+ *            class SeedDiagonal;
+ * 
+ * @tparam TSize The type to use for the seed length.
+ * @tparam TPosition The type to use for positions.
+ */
+
+/*
+ * @var TPosition SeedDiagonal::beginPositionH
+ * @brief The position in the database sequence (horizontal).
+ * 
+ * @var TPosition SeedDiagonal::beginPositionV
+ * @brief The position in the query sequence (vertical).
+ *
+ * @var TSize SeedDiagonal::length
+ * @brief The length of the diagonal.
+ */
+
 /**
 .Class.SeedDiagonal
 ..summary:Store the information about a seed segment.
@@ -93,6 +116,17 @@ public:
 // Metafunction Position
 // ---------------------------------------------------------------------------
 
+/*!
+ * @mfn SeedDiagonal#Position
+ * @brief The position type of a @link SeedDiagonal @endlink.
+ * 
+ * @signature Position<TSeed>::Type;
+ * 
+ * @tparam TSeed The seed diagonal to query for its position type. Types: Seed
+ *
+ * @return Type The position type of <tt>TSeed</tt>.
+ */
+
 /**
 .Metafunction.SeedDiagonal#Position
 ..cat:Seed Handling
@@ -117,6 +151,17 @@ struct Position<SeedDiagonal<TPosition, TSize> const> : Position<SeedDiagonal<TP
 // ---------------------------------------------------------------------------
 // Metafunction Size
 // ---------------------------------------------------------------------------
+
+/*!
+ * @mfn SeedDiagonal#Size
+ * @brief The position type of a @link SeedDiagonal @endlink.
+ * 
+ * @signature Size<TSeed>::Type
+ * 
+ * @tparam TSeed The seed diagonal to query for its position type. Types: Seed
+ * 
+ * @return Type The size type of <tt>TSeed</tt>.
+ */
 
 /**
 .Metafunction.SeedDiagonal#Size

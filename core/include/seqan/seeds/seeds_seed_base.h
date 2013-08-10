@@ -47,6 +47,29 @@ namespace seqan {
 // Class DefaultSeedConfig
 // ---------------------------------------------------------------------------
 
+/*!
+ * @class DefaultSeedConfig
+ * @headerfile <seqan/seeds.h>
+ * @brief Default configuration for seeds without score.
+ *
+ * @signature struct DefaultSeedConfig.
+ *
+ * @section Remarks
+ *
+ * The default definition is as follows.  You use this as a blueprint for your own TConfig struct for a Seed or SeedSet
+ * class.
+ *
+ * @code{.cpp}
+ * struct DefaultSeedConfig
+ * {
+ *     typedef size_t TPosition;
+ *     typedef size_t TSize;
+ *     typedef MakeSigned_<size_t>::Type TDiagonal;
+ *     typedef int TScoreValue;
+ * };
+ * @endcode
+ */
+
 // Default configuration for seeds without score.
 struct DefaultSeedConfig
 {
@@ -59,6 +82,37 @@ struct DefaultSeedConfig
 // ---------------------------------------------------------------------------
 // Class Seed
 // ---------------------------------------------------------------------------
+
+/*!
+ * @class Seed
+ * @headerfile <seqan/seeds.h>
+ * @brief Stores the start and end positions in the horizonal and vertical dimension.
+ *
+ * @signature template <typename TSpec, typename TConfig>
+ *            class Seed;
+ *
+ * @tparam TSpec   The seed specialization type.
+ * @tparam TConfig The configuration object to use for this seed.
+ *
+ * @section Examples
+ *
+ * The following example shows the usage of three seed extension algorithms using the tags <tt>MaxExtend</tt>,
+ * <tt>UnGappedXDrop</tt>, and <tt>GappedXDrop</tt>.
+ *
+ * @include demos/seeds/seeds_extension.cpp
+ *
+ * @code{.console}
+ * endPositionV(seed1) = 6
+ * endPositionH(seed2) = 9
+ * endPositionV(seed2) = 9
+ * endPositionH(seed3) = 14
+ * endPositionV(seed3) = 13
+ * @endcode
+ *
+ * Here is an example for global seed chaining:
+ *
+ * @include demos/seeds/seeds_chaining.cpp
+ */
 
 /**
 .Class.Seed:
@@ -94,6 +148,17 @@ class Seed;
 // Metafunction Position
 // ---------------------------------------------------------------------------
 
+/*!
+ * @mfn Seed#Position
+ * @brief The position type of a Seed.
+ *
+ * @signature Position<TSeed>::Type;
+ *
+ * @tparam TSeed The Seed type to query.
+ *
+ * @return Type The position type of <tt>TSeed</tt>.
+ */
+
 /**
 .Metafunction.Seed#Position
 ..cat:Seed Handling
@@ -118,6 +183,17 @@ struct Position<Seed<TSpec, TConfig> const> : Position<Seed<TSpec, TConfig> >
 // ---------------------------------------------------------------------------
 // Metafunction Size
 // ---------------------------------------------------------------------------
+
+/*!
+ * @mfn Seed#Size
+ * @brief The size type of a Seed.
+ *
+ * @signature Size<TSeed>::Type;
+ *
+ * @tparam TSeed The Seed to query for its size type.
+ *
+ * @return Type The size type of <tt>TSeed</tt>.
+ */
 
 /**
 .Metafunction.Seed#Size
@@ -145,6 +221,17 @@ struct Size<Seed<TSpec, TConfig> const> : Size<Seed<TSpec, TConfig> >
 // Metafunction Diagonal
 // ---------------------------------------------------------------------------
 
+/*!
+ * @mfn Seed#Diagonal
+ * @brief The diagonal type of a Seed.
+ *
+ * @signature Diagonal<TSeed>::Type;
+ *
+ * @tparam TSeed The Seed to query for its diagonal type.
+ *
+ * @return Type The diagonal type of <tt>TSeed</tt>.
+ */
+
 /**
 .Metafunction.Seed#Diagonal
 ..cat:Seed Handling
@@ -170,8 +257,19 @@ struct Diagonal<Seed<TSpec, TConfig> const>
         : Diagonal<Seed<TSpec, TConfig> > {};
 
 // ---------------------------------------------------------------------------
-// Metafunction Diagonal
+// Metafunction SeedScore
 // ---------------------------------------------------------------------------
+
+/*!
+ * @mfn Seed#SeedScore
+ * @brief The seed score type of a Seed.
+ *
+ * @signature SeedScore<TSeed>::Type;
+ *
+ * @tparam TSeed The Seed to query for its seed score type.
+ *
+ * @return Type The seed score type of <tt>TSeed</tt>.
+ */
 
 /**
 .Metafunction.Seed#SeedScore
@@ -219,6 +317,17 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // Function beginPositionH()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#beginPositionH
+ * @brief Return the begin position of the seed in the database (horizontal direction).
+ *
+ * @signature TPosition beginPositionH(seed);
+ *
+ * @param[in] seed The seed to query.
+ *
+ * @return TPosition The begin position.  <tt>TPosition</tt> is the position type of <tt>seed</tt>.
+ */
+
 /**
 .Function.Seed#beginPositionH
 ..summary: Returns the begin position of the seed in the database.
@@ -234,6 +343,18 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // ---------------------------------------------------------------------------
 // Function endPositionH()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#endPositionH
+ * @brief Return the end position of the seed in the database (horizontal direction).
+ *
+ * @signature TPosition endPositionH(seed);
+ *
+ * @param[in] seed The seed to query.
+ *
+ * @return TPosition The end position.  <tt>TPosition</tt> is the position type of <tt>seed</tt>.
+ */
+
 
 /**
 .Function.Seed#endPositionH
@@ -251,6 +372,16 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // Function setBeginPositionH()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#setBeginPositionH
+ * @brief Sets the begin position of the seed in the database (horizontal direction).
+ *
+ * @signature void setBeginPositionH(seed, pos);
+ *
+ * @param[in,out] seed The Seed to set the horizontal begin position for.
+ * @param[in]     pos  The value to set for the horizontal begin position.
+ */
+
 /**
 .Function.Seed#setBeginPositionH
 ..summary: Sets the begin position of the seed in the database.
@@ -265,6 +396,16 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // ---------------------------------------------------------------------------
 // Function setEndPositionH()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#setEndPositionH
+ * @brief Sets the end position of the seed in the database (horizontal direction).
+ *
+ * @signature void setEndPositionH(seed, pos);
+ *
+ * @param[in,out] seed The Seed to set the horizontal end position for.
+ * @param[in]     pos  The value to set for the horizontal end position.
+ */
 
 /**
 .Function.Seed#setEndPositionH
@@ -282,6 +423,17 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // Function beginPositionV()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#beginPositionV
+ * @brief Return the begin position of the seed in the query (vertical direction).
+ *
+ * @signature TPosition beginPositionV(seed);
+ *
+ * @param[in] seed The seed to query.
+ *
+ * @return TPosition The begin position.  <tt>TPosition</tt> is the position type of <tt>seed</tt>.
+ */
+
 /**
 .Function.Seed#beginPositionV
 ..summary: Returns the begin position of the seed in the query.
@@ -297,6 +449,17 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // ---------------------------------------------------------------------------
 // Function endPositionV()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#endPositionV
+ * @brief Return the end position of the seed in the query (vertical direction).
+ *
+ * @signature TPosition endPositionV(seed);
+ *
+ * @param[in] seed The seed to query.
+ *
+ * @return TPosition The end position.  <tt>TPosition</tt> is the position type of <tt>seed</tt>.
+ */
 
 /**
 .Function.Seed#endPositionV
@@ -314,6 +477,16 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // Function setBeginPositionV()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#setBeginPositionV
+ * @brief Sets the begin position of the seed in the query (vertical direction).
+ *
+ * @signature void setBeginPositionV(seed, pos);
+ *
+ * @param[in,out] seed The Seed to set the vertical begin position for.
+ * @param[in]     pos  The value to set for the vertical begin position.
+ */
+
 /**
 .Function.Seed#setBeginPositionV
 ..summary: Sets the begin position of the seed in the query.
@@ -330,6 +503,16 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // Function setEndPositionV()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#setEndPositionV
+ * @brief Sets the end position of the seed in the query (vertical direction).
+ *
+ * @signature void setEndPositionV(seed, pos);
+ *
+ * @param[in,out] seed The Seed to set the vertical end position for.
+ * @param[in]     pos  The value to set for the vertical end position.
+ */
+
 /**
 .Function.Seed#setEndPositionV
 ..summary: Returns the end position of the seed in the query.
@@ -345,6 +528,17 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 // ---------------------------------------------------------------------------
 // Function lowerDiagonal()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#lowerDiagonal
+ * @brief Return the leftmost diagonal of the seed (minimum diagonal value).
+ *
+ * @signature TDiagonal lowerDiagonal(seed);
+ *
+ * @param[in] seed The seed to query for its lower diagonal.
+ *
+ * @return TDiagonal The lower diagonal value.  TDiagonal is the diagonal type of <tt>seed</tt>.
+ */
 
 /**
 .Function.Seed#lowerDiagonal
@@ -369,6 +563,16 @@ lowerDiagonal(Seed<TSpec, TConfig> const & seed)
 // Function setLowerDiagonal()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#setLowerDiagonal
+ * @brief Set a new value for the leftmost diagonal of a seed.
+ *
+ * @signature void setLowerDigonal(seed, diag);
+ *
+ * @param seed[in,out] The Seed to set the diagonal value for.
+ * @param diag[in]     The value to set for the diagonal.
+ */
+
 /**
 .Function.Seed#setLowerDiagonal
 ..summary: Sets a new value for the leftmost diagonal.
@@ -391,6 +595,17 @@ setLowerDiagonal(Seed<TSpec, TConfig> & seed, TDiagonal newDiag)
 // ---------------------------------------------------------------------------
 // Function upperDiagonal()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#upperDiagonal
+ * @brief Return the rightmost diagonal of the seed (maximum diagonal value).
+ *
+ * @signature TDiagonal upperDiagonal(seed);
+ *
+ * @param[in] seed The seed to query for its upper diagonal.
+ *
+ * @return TDiagonal The upper diagonal value.  TDiagonal is the diagonal type of <tt>seed</tt>.
+ */
 
 /**
 .Function.Seed#upperDiagonal
@@ -415,6 +630,16 @@ upperDiagonal(Seed<TSpec, TConfig> const & seed)
 // Function setUpperDiagonal()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#setUpperDiagonal
+ * @brief Set a new value for the rightmost diagonal of a seed.
+ *
+ * @signature void setUpperDigonal(seed, diag);
+ *
+ * @param seed[in,out] The Seed to set the diagonal value for.
+ * @param diag[in]     The value to set for the diagonal.
+ */
+
 /**
 .Function.Seed#setUpperDiagonal
 ..summary: Sets a new value for the rightmost diagonal.
@@ -438,6 +663,18 @@ setUpperDiagonal(Seed<TSpec, TConfig> & seed,
 // ---------------------------------------------------------------------------
 // Function seedSize()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#seedSize
+ * @brief Returns the number of matches and mismatches of the seed.  This is the longest true diagonal fitting into
+ *        its dimensions.
+ *
+ * @signature TSize seedSize(seed);
+ *
+ * @param[in] seed The Seed to query for its size.
+ *
+ * @return TSize The size of the type.  TSize is the size type of <tt>seed</tt>.
+ */
 
 /**
 .Function.Seed#seedSize
@@ -468,6 +705,17 @@ seedSize(Seed<TSpec, TConfig> const & seed)
 
 // Computed values, based on properties returned by getters.
 
+/*!
+ * @fn Seed#beginDiagonal
+ * @brief Return the begin diagonal of a Seed.
+ *
+ * @signature TDiagonal beginDiagonal(seed);
+ *
+ * @param[in] seed The Seed to query for its begin diagonal.
+ *
+ * @return TDiagonal The diagonal of the Seed's begin position.  TDiagonal is the diagonal type of <tt>seed</tt>.
+ */
+
 // TODO(holtgrew): Rename to getBeginDiagonal.
 /**
 .Function.Seed#beginDiagonal
@@ -492,6 +740,17 @@ beginDiagonal(Seed<TSpec, TConfig> const & seed)
 // Function endDiagonal()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#endDiagonal
+ * @brief Return the end diagonal of a Seed.
+ *
+ * @signature TDiagonal endDiagonal(seed);
+ *
+ * @param[in] seed The Seed to query for its end diagonal.
+ *
+ * @return TDiagonal The diagonal of the Seed's end position.  TDiagonal is the diagonal type of <tt>seed</tt>.
+ */
+
 /**
 .Function.Seed#endDiagonal
 ..summary:Returns the diagonal of the end point.
@@ -515,6 +774,18 @@ endDiagonal(Seed<TSpec, TConfig> const & seed)
 // Function score()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn Seed#score
+ * @brief Return the score of a Seed.
+ *
+ * @signature TSeedScore score(seed);
+ *
+ * @param[in] seed The Seed to query for its score.
+ *
+ * @return TSeedScore The score value of the seed.  TSeedScore can be queried from the type of <tt>seed</tt> using
+ *                    @link Seed#SeedScore @endlink.
+ */
+
 /**
 .Function.Seed#score
 ..summary:Returns the score of the seed.
@@ -537,6 +808,17 @@ score(TSeed const & seed)
 // ---------------------------------------------------------------------------
 // Function setScore()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#setScore
+ * @brief Set the Seed score value.
+ *
+ * @signature void setScore(seed, scoreVal);
+ *
+ * @param[in,out] seed     The Seed to set the score value of.
+ * @param[in]     scoreVal The score value to set.  The type can queried from the type of <tt>seed</tt> using
+ *                         @link Seed#SeedScore @endlink.
+ */
 
 /**
 .Function.Seed#setScore

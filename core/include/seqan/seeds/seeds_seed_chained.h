@@ -50,10 +50,35 @@ namespace seqan {
 struct Chained_;
 typedef Tag<Chained_> ChainedSeed;  // TODO(holtgrew): Chained already taken as template in file. Maybe prefer non-parameterized types for simpler names.
 
+/*!
+ * @class ChainedSeed
+ * @implements ContainerConcept
+ * @extends Seed
+ * @headerfile <seqan/seeds.h>
+ *
+ * @brief Describes a seed with start and end position2 and diagonal upper and lower bounds.
+ *
+ * @signature template <[typename TConfig]>
+ *            class Seed<ChainedSeed, TConfig>;
+ *
+ * @tparam TConfig The configuration to use for the chained seed specialization.
+ *
+ *
+ * @fn ChainedSeed::Seed
+ * @brief Constructor
+ *
+ * @signature Seed::Seed();
+ * @signature Seed::Seed(beginPosH, beginPosV, length);
+ *
+ * @param[in] beginPosH Begin position in dat abase (horizontal).
+ * @param[in] beginPosV Begin position in query (vertical).
+ * @param[in] length    The length of the seed.
+ */
+
 /**
 .Spec.Chained Seed
 ..cat:Seed Handling
-..summary:Describes a seed with start and end position2 and diagonal upper and lower bounds.
+..summary:
 ..description:Additionaly diagonal segments between start and end position2 are stored.
 ..general:Class.Seed
 ..signature:Seed<ChainedSeed, TConfig>
@@ -106,6 +131,17 @@ public:
 // Metafunction Value
 // ---------------------------------------------------------------------------
 
+/*!
+ * @mfn ChainedSeed#Value
+ * @brief The type of the diagonals in the ChainedSeed.
+ *
+ * @signature Value<TChainedSeed>::Type;
+ *
+ * @tparam TChainedSeed The seed to query for its diagonal object type.
+ *
+ * @return Type The resulting diagonal seed.
+ */
+
 /**
 .Metafunction.Chained Seed#Value
 ..cat:Seed Handling
@@ -141,6 +177,17 @@ struct Value<Seed<ChainedSeed, TConfig> const>
 // Metafunction Reference
 // ---------------------------------------------------------------------------
 
+/*!
+ * @mfn ChainedSeed#Reference
+ * @brief Reference to the seed diagonal type.
+ *
+ * @signature Reference<TChainedSeed>::Type;
+ *
+ * @tparam TChainedSeed The seed to query for the reference to diagonal values.
+ *
+ * @return Type Reference to the contained seeds.
+ */
+
 /**
 .Metafunction.Chained Seed#Reference
 ..cat:Seed Handling
@@ -171,6 +218,18 @@ struct Reference<Seed<ChainedSeed, TConfig> const>
 // ---------------------------------------------------------------------------
 // Metafunction Iterator
 // ---------------------------------------------------------------------------
+
+/*!
+ * @mfn ChainedSeed#Iterator
+ * @brief The type for iterating over the diagonals in a seed.
+ *
+ * @signature Iterator<TChainedSeed[, Tag]>::Type;
+ *
+ * @tparam TChainedSeed The seed to query for the diagonal iterator type.
+ * @tparam Tag          The tag to select the iterator with.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
+ *
+ * @return Type Reference to the contained seeds.
+ */
 
 /**
 .Metafunction.Chained Seed#Iterator
@@ -288,6 +347,18 @@ endPositionV(Seed<ChainedSeed, TConfig> const & seed)
 // Function length()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn ChainedSeed#length
+ * @brief Returns the number of diagonals in the ChainedSeed.
+ *
+ * @signature TSize length(seed);
+ *
+ * @param[in] seed The ChainedSeed to query for its number of diagonals.
+ *
+ * @return TSize The number of diagonals in the ChainedSeed.  TSize is the @link ChainedSeed#Size @endlink type of
+ *               <tt>seed</tt>
+ */
+
 /**
 .Function.Chained Seed#length
 ..summary:Returns the number of diagonals in the chained seed.
@@ -309,6 +380,16 @@ length(Seed<ChainedSeed, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 // Function appendDiagonal()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn ChainedSeed#appendDiagonal
+ * @brief Adds a digional to a ChainedSeed.
+ *
+ * @signature void appendSeed(seed, diagonal);
+ *
+ * @param[in,out] seed     The ChainedSeed to which the digonal should be added.
+ * @param[in]     diagonal The SeedDiagional to add to <tt>seed</tt>.
+ */
 
 /**
 .Function.appendDiagonal
@@ -343,6 +424,16 @@ appendDiagonal(Seed<ChainedSeed, TConfig> & seed,
 // Function truncateDiagonals()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn ChainedSeed#truncateDiagonals
+ * @brief Removes diagonals from the given first one to the end of the seed's diagonals.
+ *
+ * @signature void truncateDiagonals(seed, first);
+ *
+ * @param[in,out] seed  The ChainedSeed to truncate diagonals from.
+ * @param[in]     first An iterator into the ChainedSeed, as returned by @link ChainedSeed#Iterator @endlink.
+ */
+
 /**
 .Function.truncateDiagonals
 ..summary:Removes diagonals from the given first one to the end of the seed's diagonals.
@@ -367,6 +458,16 @@ truncateDiagonals(Seed<ChainedSeed, TConfig> & seed,
 // ---------------------------------------------------------------------------
 // Function begin()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn ChainedSeed#begin
+ * @brief Returns an iterator to the beginning of the ChainedSeed's diagonals.
+ *
+ * @signature TIter begin(seed[, tag]);
+ *
+ * @param[in] seed The ChainedSeed to the begin iterator for.
+ * @param[in] tag  A tag for selecting the type of the iterator, one of <tt>Standard</tt> and <tt>Rooted</tt>.
+ */
 
 /**
 .Function.Chained Seed#begin
@@ -394,6 +495,16 @@ begin(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
 // Function end()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn ChainedSeed#end
+ * @brief Returns an iterator to the end of the ChainedSeed's diagonals.
+ *
+ * @signature TIter end(seed[, tag]);
+ *
+ * @param[in] seed The ChainedSeed to the end iterator for.
+ * @param[in] tag  A tag for selecting the type of the iterator, one of <tt>Standard</tt> and <tt>Rooted</tt>.
+ */
+
 /**
 .Function.Chained Seed#end
 ..summary:Returns an iterator to the end of the seed diagonals.
@@ -420,6 +531,17 @@ end(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
 // Function front()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn ChainedSeed#front
+ * @brief Returns a reference to the first ChainedSeed diagonal.
+ *
+ * @signature TReference front(seed);
+ *
+ * @param[in] seed The ChainedSeed to query.
+ *
+ * @return TReference Reference to first ChainedSeed diagonal.  TReference is the reference type of <tt>seed</tt>.
+ */
+
 /**
 .Function.Chained Seed#front
 ..summary:Returns a reference to the first seed diagonal.
@@ -445,6 +567,17 @@ front(Seed<ChainedSeed, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 // Function back()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn ChainedSeed#back
+ * @brief Returns a reference to the ChainedSeed diagonal.
+ *
+ * @signature TReference back(seed);
+ *
+ * @param[in] seed The ChainedSeed to query.
+ *
+ * @return TReference Reference to the last ChainedSeed diagonal.  TReference is the reference type of <tt>seed</tt>.
+ */
 
 /**
 .Function.Chained Seed#back

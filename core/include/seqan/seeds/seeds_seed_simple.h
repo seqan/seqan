@@ -47,6 +47,32 @@ namespace seqan {
 // Class Simple Seed
 // ---------------------------------------------------------------------------
 
+/*!
+ * @class SimpleSeed
+ * @headerfile <seqan/seeds.h>
+ * @brief Describes a seed with start and end position and diagonal upper and lower bounds.
+ *
+ * @signature template <[typename TConfig]>
+ *            class Seed<Simple, TConfig>;
+ *
+ * @tparam TConfig The configuration to use.  Defaults to DefaultSeedConfig.
+ */
+
+/*!
+ * @fn SimpleSeed::Seed
+ * @brief Constructor
+ *
+ * @signature Seed::Seed();
+ * @signature Seed::Seed(beginPosH, beginPosV, length);
+ * @signature Seed::Seed(beginPosH, beginPosV, endPosH, endPosV);
+ *
+ * @param beginPosH[in] The begin position in the horizontal position.
+ * @param beginPosV[in] The begin position in the vertical position.
+ * @param length[in]    The length of the seed (in both directions).
+ * @param endPosH[in]   The end position in the horizontal position.
+ * @param endPosV[in]   The end position in the vertical position.
+ */
+
 /**
 .Spec.Simple Seed
 ..summary:Describes a seed with start and end position and diagonal upper and lower bounds.

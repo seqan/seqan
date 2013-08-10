@@ -58,6 +58,29 @@ namespace seqan {
 // Tags Seed Extension
 // ---------------------------------------------------------------------------
 
+/*!
+ * @defgroup SeedExtensionTags
+ * @brief Tags for selecting seed extension algorithm.
+ *
+ * @tag SeedExtensionTags#MatchExtend
+ * @headerfile <seqan/seeds.h>
+ * @brief Extends a seed until a mismatch occurs.
+ *
+ * @signature typedef Tag<MatchExtend_> const MatchExtend;
+ *
+ * @tag SeedExtensionTags#UnGappedXDrop
+ * @headerfile <seqan/seeds.h>
+ * @brief Ungapped extension of a seed until score drops below a given value.
+ *
+ * @signature typedef Tag<UngappedXDrop_> const UnGappedXDrop;
+ *
+ * @tag SeedExtensionTags#GappedXDrop
+ * @headerfile <seqan/seeds.h>
+ * @brief Gapped extension of a seed until score drops below a given value; only works for SimpleSeed.
+ *
+ * @signature typedef Tag<GappedXDrop_> const GappedXDrop;
+ */
+
 /**
 .Tag.Seed Extension
 ..cat:Seed Handling
@@ -82,6 +105,26 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
 // ---------------------------------------------------------------------------
 
 // TODO(holtgrew): Put into class?
+
+/*!
+ * @enum ExtensionDirection
+ * @headerfile <seqan/seeds.h>
+ * @brief Direction for seed extension.
+ *
+ * @signature enum ExtensionDirection;
+ *
+ * @var ExtensionDirection EXTEND_NONE = 0;
+ * @brief Perform no extension.
+ *
+ * @var ExtensionDirection EXTEND_LEFT = 0;
+ * @brief Perform extension towards the left.
+ *
+ * @var ExtensionDirection EXTEND_RIGHT = 0;
+ * @brief Perform extension towards the right.
+ *
+ * @var ExtensionDirection EXTEND_BOTH = 0;
+ * @brief Perform extension to both directions.
+ */
 
 /**
 .Enum.Extension Direction
@@ -114,6 +157,40 @@ enum ExtensionDirection
 // ---------------------------------------------------------------------------
 // Function extendSeed                                           [MatchExtend]
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn Seed#extendSeed
+ * @headerfile <seqan/seeds.h>
+ * @brief Extends a seed.
+ * 
+ * @signature void extendSeed(seed, database, query, direction, MatchExtend);
+ * @signature void extendSeed(seed, database, query, direction, scoringScheme, scoreDropOff, xDropTag);
+ *
+ * @param seed[in,out]      The seed to extend.
+ * @param database[in]      The database (horizontal) sequence.
+ * @param query[in]         The query (vertical) sequence.
+ * @param direction[in]     The extension direction.  Type: @link ExtensionDirection @endlink.
+ * @param scoringScheme[in] The @link Score @endlink object to use for scoring alignments and gaps.
+ * @param scoreDropOff[in]  The score drop after which the extension should stop.  The extension stops if this value is
+ *                          exceeded.  Only given for when using an x-drop algorithm.
+ * @param xDropTag[in]      Tag for selecting x-drop method, one of <tt>UnGappedXDrop</tt> and <tt>GappedXDrop</tt>.
+ * 
+ * @section Remarks
+ * 
+ * You can use the tags, <tt>MatchExtend</tt>, <tt>UnGappedXDrop</tt>, and <tt>GappedXDrop</tt>.
+ * 
+ * Note that the diagonals updated in <tt>seed</tt> do not necessarily reflect the diagonals for the optimal extension
+ * but the diagonals used in all traces of the extension.  However, they are guaranteed to include the optimal
+ * extension's trace.
+ * 
+ * @section Examples
+ * 
+ * The documentation of the class @link Seed @endlink contains an example for
+ * seed extension.
+ * 
+ * @see ExtensionDirection
+ * @see SeedExtensionTags
+ */
 
 /**
 .Function.extendSeed
