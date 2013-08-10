@@ -1093,7 +1093,7 @@
  * @param bitString The bit string. Types: @link RankSupportBitString @endlink
  * @param pos Position of a bit.
  * 
- * @return TReturn @link Value @endlink of @link Fibre @endlink of the rank-support-bit string.
+ * @return TReturn @link RankSupportBitString#Value @endlink of @link RankSupportBitString#Fibre @endlink of the rank-support-bit string.
  */
 
 /*!
@@ -1134,11 +1134,11 @@
  * 
  * @signature getFibre(bitString, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link RankSupportBitString#Fibre @endlink. Types:
  *                 @link RankSupportBitStringFibres RankSupportBitString Fibres @endlink.
  * @param bitString The rank-support-bit string holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link RankSupportBitString#Fibre @endlink object.
  */
 
 /*!

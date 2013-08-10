@@ -554,7 +554,7 @@ SEQAN_CHECKPOINT
  * 
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
  * 
- * @see pop
+ * @see Pipe#pop
  */
 
 /**
@@ -687,7 +687,7 @@ SEQAN_CHECKPOINT
  * 
  * A read process must be terminated with endRead. Nested read processes are not allowed.
  * 
- * @see endRead
+ * @see Pipe#endRead
  */
 
 /**
@@ -728,7 +728,7 @@ SEQAN_CHECKPOINT
  * <tt>endRead</tt> closes the output stream, frees resources possibly allocated by beginRead, and typically calls
  * <tt>endRead</tt> of the input pipeline modules.
  * 
- * @see beginRead
+ * @see Pipe#beginRead
  */
 
 /**

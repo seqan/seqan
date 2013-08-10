@@ -1074,7 +1074,7 @@ class RawDeprecated(object):
 class RawSee(object):
     """A representation of a @see entry.
     
-    @ivar value The @see clauses's parameter.
+    @ivar text The @see clauses's parameter.
     """
     
     def __init__(self, text):

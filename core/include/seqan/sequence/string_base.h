@@ -224,7 +224,7 @@ struct Alloc {};
  * @signature TPos posGlobalize(pos, limits)
  * 
  * @param pos A local or global position (pair or integer value). Types: Pair
- * @param limits The limits string returned by @link stringSetLimits @endlink.
+ * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
  * @return TPos The corresponding global position of <tt>pos</tt>. If
  *                 <tt>pos</tt> is an integral type <tt>pos</tt> is returned. If
@@ -240,7 +240,7 @@ struct Alloc {};
  * @signature TSeqNo getSeqNo(pos[, limits])
  * 
  * @param pos A position. Types: Pair
- * @param limits The limits string returned by @link stringSetLimits @endlink.
+ * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
  * @return TSeqNo A single integer value that identifies the string within the
  *                stringset <tt>pos</tt> points at.If <tt>limits</tt> is

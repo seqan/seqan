@@ -383,7 +383,7 @@ For gapped shapes this is the number of '1's.
  * 
  * @section Remarks
  * 
- * For ungapped shapes the return value is the result of the @link length
+ * For ungapped shapes the return value is the result of the @link Shape#length
  * @endlink function. For gapped shapes this is the number of '1's.
  */
 	template <typename TValue, typename TSpec>
@@ -458,9 +458,9 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
  * 
  * @return TReturn Hash value of the shape.
  * 
- * @see hashNext
- * @see hashUpper
- * @see hash2
+ * @see Shape#hashNext
+ * @see Shape#hashUpper
+ * @see Shape#hash2
  * @see unhash
  */
 	template <typename TValue, typename TIter>
@@ -680,15 +680,15 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
  * @param it Sequence iterator pointing to the first character of the shape.
  * 
  * @return TReturn Upper hash value of the shape. The hash value corresponds to
- *                 the maximal @link hash @endlink value of a shape beginning
+ *                 the maximal @link Shape#hash @endlink value of a shape beginning
  *                 with <tt>min(charsLeft,length(shape))</tt> characters + 1.
  * 
  * @section Remarks
  * 
- * This function in conjunction with @link hash @endlink is useful to search a
+ * This function in conjunction with @link Shape#hash @endlink is useful to search a
  * q-gram index for p-grams with p<q.
  * 
- * @see hash
+ * @see Shape#hash
  */
 
 	template <typename TValue, typename TSpec, typename TIter, typename TSize>
@@ -757,9 +757,9 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
  * 
  * @section Remarks
  * 
- * @link hash @endlink has to be called before.
+ * @link Shape#hash @endlink has to be called before.
  * 
- * @see hash
+ * @see Shape#hash
  */
 	template <typename TValue, typename TSpec, typename TIter>
 	inline typename Value< Shape<TValue, TSpec> >::Type
@@ -808,10 +808,10 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
  * 
  * @return TReturn Hash value of the shape.
  * 
- * @see hash2Next
- * @see hash2Upper
- * @see unhash
- * @see hash
+ * @see Shape#hash2Next
+ * @see Shape#hash2Upper
+ * @see Shape#unhash
+ * @see Shape#hash
  */
 
 	template <typename TValue, typename TSpec, typename TIter, typename TSize>
@@ -870,15 +870,15 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * @param it Sequence iterator pointing to the first character of the shape.
  * 
  * @return TReturn Upper hash value of the shape. The hash value corresponds to
- *                 the maximal @link hash2 @endlink value of a shape beginning
+ *                 the maximal @link Shape#hash2 @endlink value of a shape beginning
  *                 with the <tt>min(charsLeft,length(shape))</tt> characters + 1
  * 
  * @section Remarks
  * 
- * This function in conjunction with @link hash2 @endlink is useful to search a
+ * This function in conjunction with @link Shape#hash2 @endlink is useful to search a
  * q-gram index for p-grams with p<q.
  * 
- * @see hash2
+ * @see Shape#hash2
  */
 	template <typename TValue, typename TSpec, typename TIter, typename TSize>
 	inline typename Value< Shape<TValue, TSpec> >::Type
@@ -950,10 +950,10 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * 
  * @section Remarks
  * 
- * @link hash @endlink has to be called before with <tt>shape</tt> on the left
+ * @link Shape#hash @endlink has to be called before with <tt>shape</tt> on the left
  * adjacent q-gram.
  * 
- * @see hash2
+ * @see Shape#hash2
  */
 
 	template <typename TValue, typename TSpec, typename TIter, typename TSize>
@@ -1006,19 +1006,19 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Inverse of the @link hash @endlink function; for ungapped shapes.
+ * @brief Inverse of the @link Shape#hash @endlink function; for ungapped shapes.
  * 
  * @signature unhash(result, hash, q)
  * 
  * @param q The <tt>q</tt>-gram length. Types: nolink:<tt>unsigned</tt>
- * @param hash The hash value previously computed with @link hash @endlink.
+ * @param hash The hash value previously computed with @link Shape#hash @endlink.
  *             Types:
  * @param result String to write the result to. Types: @link String @endlink
  * 
  * @section Remarks
  * 
- * @see hash
- * @see hash2
+ * @see Shape#hash
+ * @see Shape#hash2
  */
 	template <typename TString, typename THash>
 	inline void unhash(TString &result, THash hash, unsigned q)

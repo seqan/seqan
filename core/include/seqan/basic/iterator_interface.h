@@ -53,7 +53,7 @@ namespace seqan {
  * @defgroup ContainerIteratorTags Container Iterator Tags
  *
  * The tags <tt>Standard</tt> and <tt>Rooted</tt> can be used for selecting specific iterator types with the
- * @link Container#Iterator @endlink metafunction.  Rooted iterators also carry a pointer to the container
+ * @link ContainerConcept#Iterator @endlink metafunction.  Rooted iterators also carry a pointer to the container
  * they are iterating whereas standard iterators do not carry this information.
  *
  * @tag ContainerIteratorTags#Standard

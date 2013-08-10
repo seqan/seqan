@@ -808,7 +808,7 @@ I	ISSISSIPPI
  * 
  * @headerfile seqan/index.h
  * 
- * @brief On-demand creation of a specific @link Fibre @endlink.
+ * @brief On-demand creation of a specific @link Index#Fibre @endlink.
  * 
  * @signature indexRequire(index, fibre_tag)
  * 

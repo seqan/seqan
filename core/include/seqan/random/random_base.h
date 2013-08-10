@@ -113,7 +113,7 @@ class Rng;
  *
  * @tparam TSpec Tag for selecting the specialization.
  *
- * @see http://trac.seqan.de/wiki/Tutorial/Randomness
+ * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Randomness Tutorial</a>.
  */
 
 /**

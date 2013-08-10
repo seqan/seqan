@@ -170,7 +170,7 @@ For writing, only GFF 3 and GTF are supported.
  * @signature enum GffStream::Mode;
  *
  * @see GffStream#open
- * @see GffStream#GffStream
+ * @see GffStream::GffStream
  * 
  * @var GffStream::Mode GffStream::READ
  * @brief Open in read mode.

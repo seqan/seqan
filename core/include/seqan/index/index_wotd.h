@@ -166,7 +166,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
+ * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
  * are a partially sorted suffix array (see @link WOTDIndexFibres#WotdSA
  * @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
  * 

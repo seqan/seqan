@@ -1344,7 +1344,7 @@ inline void addText(ToolDoc & doc, CharString const & text)
  *
  * @param toolDoc The ToolDoc object to add the list item to.
  * @param key     The key for the list (@link CharString @endlink).
- * @param value   The value for the list (@link @CharString @endlink).
+ * @param value   The value for the list (@link CharString @endlink).
  */
 
 /**

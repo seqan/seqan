@@ -205,7 +205,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @param tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
  *            When left out, @link DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
  *
- * @return TIterator Iterator to the beginning of the container, the type is selected by @link Iterator @endlink with
+ * @return TIterator Iterator to the beginning of the container, the type is selected by @link ContainerConcept#Iterator @endlink with
  *                   the given (or default) tag.
  *
  * When empty, <tt>begin(c) == end(c)</tt>.
@@ -221,7 +221,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @param tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
  *            When left out, @link DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
  *
- * @return TIterator Iterator to the end of the container, the type is selected by @link Iterator @endlink with
+ * @return TIterator Iterator to the end of the container, the type is selected by @link ContainerConcept#Iterator @endlink with
  *                   the given (or default) tag.
  *
  * When empty, <tt>begin(c) == end(c)</tt>.
@@ -424,7 +424,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  *
  * @signature TReference SequenceConcept::operator[](pos);
  *
- * @param pos Position in the sequence (convertible to @link Container#Position position @endlink type).
+ * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TReference A reference to into the container with position <tt>pos</tt>.
  */
@@ -438,7 +438,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  * @signature TReference value(seq, pos);
  *
  * @param seq The sequence to get value in.
- * @param pos Position in the sequence (convertible to @link Container#Position position @endlink type).
+ * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
  * @return TReference A reference to into the container with position <tt>pos</tt>.
  */
@@ -452,9 +452,9 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  * @signature TGetValue getValue(seq, pos);
  *
  * @param seq The sequence to get value in.
- * @param pos Position in the sequence (convertible to @link Container#Position position @endlink type).
+ * @param pos Position in the sequence (convertible to @link ContainerConcept#Position position @endlink type).
  *
- * @return TGetValue The get-value (type is @link GetValue @endlink of the sequence type).
+ * @return TGetValue The get-value (type is @link ContainerConcept#GetValue @endlink of the sequence type).
  */
 
 /*!
@@ -529,7 +529,7 @@ SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
  * @param seq Sequence to resize.
  * @param len Length to resize <tt>seq</tt> to.
  * @param val When increasing the size, <tt>val</tt> is used to fill new entries.  When omitted,
- *            <tt>TValue()</tt> is used where <tt>TValue</tt> is the @link Container#Value @endlink
+ *            <tt>TValue()</tt> is used where <tt>TValue</tt> is the @link ContainerConcept#Value @endlink
  *            type of the sequence.
  */
 

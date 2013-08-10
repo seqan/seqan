@@ -1261,7 +1261,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * A write process must be terminated with endWrite.  Nested write processes are not allowed.
  * 
- * @see endWrite
+ * @see Pool#endWrite
 */
 
 /**
@@ -1299,7 +1299,7 @@ SEQAN_CHECKPOINT
  * 
  * <tt>endWrite</tt> closes the input stream and frees resources possibly allocated by beginWrite 
  * 
- * @see beginWrite
+ * @see Pool#beginWrite
  */
 
 /**

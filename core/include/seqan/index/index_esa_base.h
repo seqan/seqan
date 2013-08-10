@@ -436,7 +436,7 @@ information of the suffix tree) are provided.
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
+ * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
  * are a suffix array (see @link ESA Index Fibres.EsaSA @endlink), a lcp table
  * (see @link ESA Index Fibres.EsaLcp @endlink), etc.
  * 

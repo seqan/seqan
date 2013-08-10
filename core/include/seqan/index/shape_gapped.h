@@ -250,7 +250,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @section Remarks
  * 
  * A GenericShape must be initialized first with a valid shape. To do so, call
- * @link stringToShape @endlink.
+ * @link Shape#stringToShape @endlink.
  * 
  * @see GappedShape
  * @see OneGappedShape

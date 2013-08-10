@@ -158,8 +158,8 @@ struct InternalValueSize_
  * By default, this function returns <tt>ceil(BitsPerValue&lt;T&gt;::VALUE)</tt>.  For built-in types, this is the same
  * as <tt>sizeof(T)</tt>.
  * 
- * @see ValueSize
- * @see BitsPerValue
+ * @see FiniteOrderedAlphabetConcept#ValueSize
+ * @see AlphabetConcept#BitsPerValue
  * @see IntegralForValue
  */
 
@@ -231,8 +231,8 @@ struct BytesPerValue
  * Note that the returned integral type cannot store <tt>T</tt> values, if <tt>T</tt> takes more than 8 bytes, since
  * there exists no integral type that provides sufficient space to store types of this size.
  * 
- * @see ValueSize
- * @see BitsPerValue
+ * @see FiniteOrderedAlphabetConcept#ValueSize
+ * @see AlphabetConcept#BitsPerValue
  * @see BytesPerValue
  */
 

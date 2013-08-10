@@ -95,7 +95,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * The set <tt>{1,2,4}</tt> is represented by <tt>int DC[] = { 3, 1, 2, 4 }</tt>.
  * 
- * @see Bit Packed Tuple
+ * @see BitPackedTuple
  */
 
 /**

@@ -163,7 +163,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * @return VALUE The largest value that <tt>T</tt> can represent.
  * 
- * @see OrderedalphabetConcept#maxValue
+ * @see OrderedAlphabetConcept#maxValue
  */
 
 /*!
@@ -177,14 +177,14 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * 
  * @return VALUE The smallest value that <tt>T</tt> can represent.
  * 
- * @see minValue
+ * @see OrderedAlphabetConcept#minValue
  */
 
 /*!
  * @fn OrderedAlphabetConcept#supremumValueImpl
  * @brief Implements maxValue.
  * 
- * @signature T supremumValueImpl(valuePointerTag)
+ * @signature T supremumValueImpl(valuePointerTag);
  * 
  * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to point
  *                            to a valid object, so it is possible to use a null pointer here.
@@ -200,7 +200,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * Deprecated, will be removed in favour of OrderedAlphabetConcept#MaxValue.
  * 
- * @see maxValue
+ * @see OrderedAlphabetConcept#maxValue
  */
 
 /*!
@@ -223,9 +223,9 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * Deprecated, will be removed in favour of MaxValue.
  * 
- * @see supremumValueImpl
- * @see minValue
- * @see MaxValue
+ * @see OrderedAlphabetConcept#supremumValueImpl
+ * @see OrderedAlphabetConcept#minValue
+ * @see OrderedAlphabetConcept#MaxValue
  */
 
 /*!
@@ -247,7 +247,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * Deprecated, will be removed in favour of MinValue.
  * 
- * @see minValue
+ * @see OrderedAlphabetConcept#minValue
  */
 
 /*!
@@ -270,9 +270,9 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * Deprecated, will be removed in favour of MinValue.
  * 
- * @see infimumValueImpl
- * @see maxValue
- * @see MinValue
+ * @see OrderedAlphabetConcept#infimumValueImpl
+ * @see OrderedAlphabetConcept#maxValue
+ * @see OrderedAlphabetConcept#MinValue
  */
 
 /**
@@ -432,7 +432,7 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * compliant way to return the number of values for these types.
  * 
  * Note that you cannot get pointers or references to <tt>ValueSize&lt;T&gt;::VALUE</tt> in your program.  You can use
- * @link valueSize @endlink in your programs without problems, though.  When you get problems in your tests, use the
+ * @link FiniteOrderedAlphabetConcept#valueSize @endlink in your programs without problems, though.  When you get problems in your tests, use the
  * "unary plus" workaround from the examples section.
  * 
  * @section Examples
@@ -475,7 +475,7 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * 
  * @return T Number of values in type <tt>T</tt>.
  * 
- * @see ValueSize
+ * @see FiniteOrderedAlphabetConcept#ValueSize
  */
 
 /**
@@ -595,7 +595,7 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
  * 
  * This function implements gapValue.  It is recommended to use gapValue rather than <tt>gapValueImpl</tt>.
  * 
- * @see gapValue
+ * @see AlphabetWithGapsConcept#gapValue
  */
 
 /*!
@@ -614,7 +614,7 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
  * The function is implemented in gapValueImpl.  Do not specialize <tt>gapValue</tt>, specialize link gapValueImpl
  * instead!
  * 
- * @see gapValueImpl
+ * @see AlphabetWithGapsConcept#gapValueImpl
  */
 
 /**
@@ -691,8 +691,7 @@ SEQAN_CONCEPT_REFINE(AlphabetWithGapsConcept, (TValue), (AlphabetConcept))
  * 
  * @return TReturn The "unknown" value.
  * 
- * @see findRepeats
- * @see unknownValueImpl
+ * @see AlphabetWithUnknownValueConcept#unknownValueImpl
  */
 
 /*!
@@ -710,7 +709,7 @@ SEQAN_CONCEPT_REFINE(AlphabetWithGapsConcept, (TValue), (AlphabetConcept))
  * 
  * This function implements unknownValue.  It is recommended to use gapValue rather than <tt>gapValueImpl</tt>.
  * 
- * @see unknownValue
+ * @see AlphabetWithUnknownValueConcept#unknownValue
  */
 
 /**
@@ -815,7 +814,7 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * std::cout << getQualityValue(seq[1]) << std::endl; // Default value 60
  * @endcode
  *
- * @see assignQualityValue
+ * @see AlphabetWithQualitiesConcept#assignQualityValue
  * @see convertQuality
  */
 
@@ -835,7 +834,7 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * If <tt>q</tt> is a <tt>char</tt> then <tt>'!'</tt> is subtracted from <tt>q</tt>.  This is useful for ASCII encoded
  * PHRED scores.
  * 
- * @see getQualityValue
+ * @see AlphabetWithQualitiesConcept#getQualityValue
  * @see convertQuality
  * @see assignQualities
  */

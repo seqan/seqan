@@ -124,7 +124,7 @@ struct Cargo<Pair<TKey, TCargo, TSpec> >
  * 
  * Note that qualities are expected to be in PHRED scale.
  * 
- * @see assignQualityValue
+ * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
 
 /**

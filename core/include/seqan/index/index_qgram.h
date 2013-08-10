@@ -1875,7 +1875,7 @@ The resulting tables must have appropriate size before calling this function.
  * @signature createQGramIndexDirOnly(dir, bucketMap, text, shape, stepSize)
  * 
  * @param bucketMap Stores the q-gram hashes for the openaddressing hash maps,
- *                  see @link indexBucketMap @endlink. If bucketMap is of the
+ *                  see @link IndexQGram#indexBucketMap @endlink. If bucketMap is of the
  *                  type @link Nothing @endlink the q-gram hash determines the
  *                  bucket address in the index.
  * @param shape The shape to be used. Types: @link Shape @endlink
@@ -1890,8 +1890,8 @@ The resulting tables must have appropriate size before calling this function.
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
- * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * This function should not be called directly. Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */
 
@@ -3083,7 +3083,7 @@ If the type of $index$ is $TIndex$ the return type is $Size<TIndex>::Type$.
  *                  
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire
+ * The necessary index tables are built on-demand via @link Index#indexRequire
  * @endlink if index is not <tt>const</tt>.
  * 
  * Demo: Demo.Supermaximal Repeats

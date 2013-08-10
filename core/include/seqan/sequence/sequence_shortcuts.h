@@ -41,6 +41,15 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @typedef CharString
+ * @headerfile <seqan/sequence.h>
+ * @brief An AllocString with char alphabet.
+ *
+ * @signature typedef String<char> CharString;
+ */
+
 /**
 .Shortcut.CharString:
 ..cat:Strings

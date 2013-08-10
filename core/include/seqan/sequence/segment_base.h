@@ -161,8 +161,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @snippet demos/sequence/segment.cpp basic operations
  *
- * You can get the type of the infix/prefix/suffix of a sequence using @link Sequence#Infix @endlink,
- * @link Sequence#Prefix @endlink, and @link Sequence#Suffix @endlink.  These metafunctions will
+ * You can get the type of the infix/prefix/suffix of a sequence using @link SequenceConcept#Infix @endlink,
+ * @link SequenceConcept#Prefix @endlink, and @link SequenceConcept#Suffix @endlink.  These metafunctions will
  * "flatten" the type such that using these metafunctions, the infix of an infix is an infix and not
  * an Infix Segment with an Infix Segment as its host.  Instead, it will again be an Infix Segment
  * of the host of the inner type.

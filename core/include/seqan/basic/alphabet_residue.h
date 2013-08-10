@@ -682,7 +682,7 @@ unknownValueImpl(Iupac *)
  * Objects of type <tt>AminoAcid</tt> can be converted to <tt>char</tt> and vice versa.  Unknown values are converted to
  * <tt>'X'</tt>.
  * 
- * @see ValueSize
+ * @see FiniteOrderedAlphabetConcept#ValueSize
  * @see PeptideIterator
  * @see Peptide
  */

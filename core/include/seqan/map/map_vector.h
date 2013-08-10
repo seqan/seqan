@@ -53,7 +53,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @section Remarks
  * 
- * The memory needed is linear to the number different values the @link Key.key type @endlink of <tt>TValue</tt> can
+ * The memory needed is linear to the number different values the Key type of <tt>TValue</tt> can
  * get.  So do not use this map for large key types.
  */
 

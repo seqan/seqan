@@ -634,9 +634,8 @@ private:
  * @param refinedConcepts Identifiers of concepts that are refined by the new
  *                        concept.Refined concepts are implicitly integrated
  *                        into the requirements of the new concept.This is a
- *                        sequence of the Boost Preprocessor Library, read @link
- *                        boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.
- *                        html more @endlink.
+ *                        sequence of the Boost Preprocessor Library, read
+ *                        <a href="http://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>
  * 
  * @section Remarks
  * 

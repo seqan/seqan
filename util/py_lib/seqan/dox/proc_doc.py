@@ -152,6 +152,7 @@ class TextNode(object):
     @ivar attrs: A dict object mapping attribute names to string values.
     @ivar children: A list of TextNode objects.
     @ivar text: The text value of a node, a string.
+    @ivar tokens: For links, this is the list of tokens in the @link command.
     """
 
     def __init__(self, type='<text>', verbatim=False, text='', attrs={}):
@@ -781,6 +782,7 @@ class RawTextToTextNodeConverter(object):
             link_text_node = conv.run(link_text)
             link_text_node.type = 'a'
             link_text_node.attrs = {'href': 'seqan:' + target_token.val}
+            link_text_node.tokens = [target_token]
             self.current.addChild(link_text_node)
         self.tokens_cmd = []
         self.current_cmd = None
@@ -913,6 +915,7 @@ class EntryConverter(object):
             link = self.rawTextToTextNode(see.text)
             link.type = 'a'
             link.attrs['href'] = 'seqan:%s' % see.text.text
+            link.tokens = list(see.text.tokens)
             entry.sees.append(link)
         # Store the raw entry in the processed ones.
         entry.raw_entry = raw_entry
@@ -1153,6 +1156,35 @@ class TextNodeVisitor(object):
         pass
 
 
+class LinkChecker(TextNodeVisitor):
+    """Check raw link targets.
+
+    Raw links are links of the form <a href="seqan:$target">$label</a>.
+    """
+    
+    def __init__(self, doc):
+        self.doc = doc
+
+    def visit(self, text_node):
+        if not text_node or text_node.type == '<text>':
+            return
+        if text_node.type == 'a':
+            self._checkLink(text_node)
+        else:
+            for i, c in enumerate(text_node.children):
+                self.visit(text_node.children[i])
+
+    def _checkLink(self, a_node):
+        if not a_node.attrs.get('href', '').startswith('seqan:'):
+            return
+        target = a_node.attrs['href'][6:]
+        # TODO(holtgrew): Catch target_title being None, target_path not found!
+        if target not in self.doc.entries:
+            # TODO(holtgrew): Cannot resolve from TextNode to Token :(
+            msg = 'Cannot find documentation entry "%s".' % target
+            dox_parser.printTokenError(a_node.tokens[0], msg, 'error')
+
+
 class DocProcessor(object):
     """Convert a RawDoc object into a ProcDoc object.
 
@@ -1270,7 +1302,9 @@ class DocProcessor(object):
         @implements.
         """
         self.log('  3) Checking References.')
-        self.logWarning('    WARNING: Not implemented yet!')
+        link_checker = LinkChecker(res)
+        for proc_entry in res.entries.values():
+            proc_entry.visitTextNodes(link_checker)
 
     def buildInheritanceLists(self, doc):
         """Build lists regarding the inheritance in the classes and concepts in doc.
