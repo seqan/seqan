@@ -49,6 +49,34 @@ namespace seqan {
 
 struct PositionIterator;
 
+/*!
+ * @class PositionIterator
+ * @extends Iter
+ * @headerfile <seqan/basic.h>
+ * @brief Adapts a position iterator to a rooted iterator.
+ *
+ * @signature template <typename TContainer>
+ *            class Iter<TContainer, PositionIterator>;
+ *
+ * @tparam TContainer The container to create an iterator for.
+ *
+ * @section Remarks
+ *
+ * PositionIterators provide the concept RootedIteratorConcept.
+ *
+ *
+ * @fn PositionIterator::Iter
+ * @brief Constructor
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(other);
+ * @signature Iter::Iter(container[, position]);
+ *
+ * @param[in] other     Other PositionIterator to copy from.
+ * @param[in] container A TContainer to get an iterator to.
+ * @param[in] position  The position to create the iterator at, defauls to 0.
+ */
+
 /**
 .Spec.Position Iterator
 ..cat:Iterators

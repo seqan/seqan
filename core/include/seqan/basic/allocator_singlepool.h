@@ -50,6 +50,29 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class SinglePoolAllocator
+ * @extends Allocator
+ * @headerfile <seqan/basic.h>
+ * @brief Allocator that pools memory blocks of a specific size.
+ *
+ * @signature template <unsigned SIZE, typename TParentAllocator>
+ *            class Allocator;
+ *
+ * @tparam SIZE             The size of the blocks.
+ * @tparam TParentAllocator The parent allocator to use.
+ *
+ * @section Remarks
+ *
+ * A pool allocator allocates several memory blocks at once.  Freed blocks are not immediately deallocated but
+ * recycled in subsequential allocations.  This way, the number of calls to the heap manager is reduced, and that
+ * might speed up memory management.
+ *
+ * The single pool allocator only pools memory blocks of size $SIZE$.  Blocks of other sizes are allocated and
+ * deallocated using an allocator of type $ParentAllocator$. Using the single pool allocator for blocksizes larger
+ * than a few KB is not advised.
+ */
+
 /**
 .Spec.Single Pool Allocator:
 ..cat:Allocators

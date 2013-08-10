@@ -50,6 +50,34 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class ToStdAllocator
+ * @headerfile <seqan/basic.h>
+ * @brief Emulates standard conform allocator.
+ * 
+ * @signature template <typename THost, typename TValue>
+ *            class ToStdAllocator;
+ * 
+ * @tparam TValue Type of allocated items.
+ * @tparam THost  Type of the host allocator object.This object is used to call @link allocate @endlink and
+ *                @link deallocate @endlink.
+ * 
+ * @section Remarks
+ * 
+ * The member functions <tt>allocate</tt> and <tt>deallocate</tt> of <tt>ToStdAllocator</tt> call the (globale)
+ * functions @link allocate @endlink and @link deallocate @endlink, respectively. The globale functions get an allocator
+ * object as their first arguments. This allocator object is not the <tt>ToStdAllocator</tt> object itself, but the host
+ * object that was given to the constructor.
+ * 
+ * @fn ToStdAllocator#ToStdAllocator
+ * 
+ * @brief Constructor
+ * 
+ * @signature ToStdAllocator::ToStdAllocator(host);
+ * 
+ * @param host The host object that is used as allocator for @link allocate @endlink and @link deallocate @endlink.
+ */
+
 /**
 .Class.ToStdAllocator:
 ..summary:Emulates standard conform allocator.
@@ -179,6 +207,18 @@ struct StdAllocator
 // ----------------------------------------------------------------------------
 // Function host()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn ToStdAllocator#host
+ * @headerfile <seqan/basic.h>
+ * @brief The object a given object depends on.
+ * 
+ * @signature THost host(allocator);
+ * 
+ * @param allocator The allocator to query.
+ * 
+ * @return THost The host object.
+ */
 
 /**
 .Function.host

@@ -49,6 +49,24 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class MultiPoolAllocator
+ * @headerfile <seqan/basic.h>
+ * @brief Allocator that pools memory blocks.
+ *
+ * @signature template <typename TParentAllocator, unsigned BLOCKING_LIMIT>
+ *            class Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> >;
+ *
+ * @tparam TParentAllocator Th eparent allocator.
+ * @tparam BLOCKING_LIMIT The maximum size for memory blocks to be pooled (default is 256).
+ *
+ * Freed blocks are not immediately deallocated but recycled in subsequential allocations.  This way, th enumber of
+ * calls to the heap manager is reduced and that might speed up memory management.
+ *
+ * Note that memory block larger than <tt>BLOCKING_LIMIT</tt> are not pooled but immediately allocated and deallocated
+ * using <tt>ParentAllocator</tt>.
+ */
+
 /**
 .Spec.Multi Pool Allocator:
 ..cat:Allocators

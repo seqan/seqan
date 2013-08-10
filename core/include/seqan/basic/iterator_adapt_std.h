@@ -73,6 +73,23 @@ struct StdContainerIterator;
 
 // TODO(holtgrew): Rename ot STL Adaptor Iterator?
 
+/*!
+ * @class StdAdaptorIterator
+ * @extends Iter
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Adapt STL iterators to SeqAn iterators.
+ *
+ * @signature template <typename TContainer>
+ *            class Iter<TContaier, StdIteratorAdaptor>;
+ *
+ * @tparam TContainer The container to iterate over.
+ *
+ * @section Remarks
+ *
+ * This type is a wrapper around STL iterators that has a conversion operator back to the underlying iterator.
+ */
+
 /**
 .Spec.STD Adaptor Iterator
 ..general:Class.Iter

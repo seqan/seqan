@@ -49,6 +49,22 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class SimpleAllocator
+ * @headerfile <seqan/basic.h>
+ * @brief General purpose allocator.
+ *
+ * @signature template <typename TParentAllocator>
+ *            class Allocator<SimpleAlloc<TParentAllocator> >;
+ *
+ * @tparam TParentAllocator An allocator that is used by the simple allocator to allocate memory.
+ *
+ * @section Remarks
+ *
+ * The tag Default used as TparentAllocator means that the default implementations of <tt>allocate</tt> and
+ * <tt>deallocate</tt> are used.
+ */
+
 /**
 .Spec.Simple Allocator:
 ..cat:Allocators
@@ -136,6 +152,20 @@ parentAllocator(Allocator<SimpleAlloc<TParentAllocator> > & me)
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Allocator#clear
+ * @brief Deallocates all memory blocks.
+ *
+ * @signature void clear(allocator);
+ *
+ * @param[in,out] The allocator to clear.
+ *
+ * @section Remarks
+ *
+ * This function deallocates all memory block sthat were allocated using <tt>allocate()</tt> for <tt>allocator</tt>.
+ * The memory is not pooled but directly passed back to the heap manager.
+ */
 
 // TODO(holtgrew): Using #-functions messes up search results.
 /**

@@ -54,6 +54,23 @@ template <typename TValue, typename TSpec> struct Holder;
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @defgroup AllocatorUsageTags Allocator Usage
+ * @brief The purpose of an allocated memory block.
+ * 
+ * @tag AllocatorUsageTags#TagAllocateUnspecified
+ * @headerfile <seqan/basic.h>
+ * @brief Not specified.
+ * 
+ * @tag AllocatorUsageTags#TagAllocateTemp
+ * @headerfile <seqan/basic.h>
+ * @brief Temporary memory.
+ * 
+ * @tag AllocatorUsageTags#TagAllocateStorage
+ * @headerfile <seqan/basic.h>
+ * @brief Memory for storing container content.
+ */
+
 /**
 .Tag.Allocator Usage:
 ..cat:Memory
@@ -76,6 +93,30 @@ typedef Tag<AllocateTemp_> TagAllocateTemp;
 
 struct AllocateStorage_;
 typedef Tag<AllocateStorage_> TagAllocateStorage;
+
+/*!
+ * @class Allocator
+ * @headerfile <seqan/basic.h>
+ * @brief Manager for allocated memory.
+ * 
+ * @signature template <typename TSpec>
+ *            class Allocator;
+ * 
+ * @tparam TSpec The specializing type.
+ * 
+ * @section Remarks
+ * 
+ * There are two reasons for using non-trivial allocators:
+ *
+ * <ol>
+ *   <li>Allocators support the function @link Allocator#clear @endlink for a fast deallocation of all allocated
+ *       memory blocks.</li>
+ *   <li>Some allocators are faster in allocating an deallocating memory.  Pool allocators like e.g.
+ *       @link SinglePoolAllocator @endlink or @link MultiPoolAllocator @endlink speed up
+ *       @link Allocator#allocate @endlink, @link Allocator#deallocate * @endlink, and
+ *       @link Allocator#clear @endlink for pooled memory blocks.</li>
+ * </ol>
+ */
 
 /**
 .Class.Allocator:
@@ -122,6 +163,38 @@ struct Spec<Allocator<TSpec> >
 // ----------------------------------------------------------------------------
 // Function allocate()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Allocator#allocate
+ * @headerfile <seqan/basic.h>
+ * @brief Allocates memory from heap.
+ * 
+ * @signature void allocate(allocator, data, count[, usageTag]);
+ * 
+ * @param[in]     count     Number of items that could be stored in the allocated memory.  The type of the allocated
+ *                          items is given by the type of <tt>data</tt>.
+ * @param[in]     usageTag  A tag the specifies the purpose for the allocated memory.  Values:
+ *                          @link AllocatorUsageTags @endlink.
+ * @param[in,out] allocator Allocator object.  <tt>allocator</tt> is conceptually the "owner" of the allocated
+ *                          memory.  Objects of all types can be used as allocators.  If no special behavior is
+ *                          implemented,  default functions allocation/deallocation are applied that uses standard
+ *                          <tt>new</tt> and <tt>delete</tt> operators. Types: Allocator
+ * 
+ * @section Remarks
+ * 
+ * The function allocates at least <tt>count*sizeof(data)</tt> bytes.  The allocated memory is large enough  to hold
+ * <tt>count</tt> objects of type <tt>T</tt>, where <tt>T *</tt> is type of <tt>data</tt>.
+ * 
+ * These objects are not constructed by <tt>allocate</tt>.
+ * 
+ * Use e.g. one of the functions @link valueConstruct @endlink, @link arrayConstruct @endlink, @link arrayConstructCopy
+ * @endlink or @link arrayFill @endlink to construct the objects. A <tt>new</tt> operator which is part of the C++
+ * standard (defined in <tt><new></tt>)  can also be used to construct objects at a given memory address.
+ * 
+ * @section Remarks
+ * 
+ * All allocated memory blocks should be deallocated by the corresponding function @link Allocator#deallocate @endlink.
+ */
 
 /**
 .Function.allocate
@@ -233,6 +306,34 @@ allocate(T &,
 // ----------------------------------------------------------------------------
 // Function deallocate()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Allocator#deallocate
+ * @headerfile <seqan/basic.h>
+ * @brief Deallocates memory.
+ * 
+ * @signature void deallocate(object, data, count[, usageTag])
+ * 
+ * @param count    Number of items that could be stored in the allocated memory.
+ * @param usageTag A tag the specifies the purpose for the allocated memory.
+ *                 Values: @link AllocatorUsageTags @endlink.
+ * @param object   Allocator object.<tt>object</tt> is conceptually the "owner" of the allocated memory.  Objects of
+ *                 all types can be used as allocators.  If no special behavior is implemented,  default
+ *                 functions allocation/deallocation are applied that uses standard  <tt>new</tt> and <tt>delete</tt>
+ *                 operators. Types: Allocator
+ * @param data     Pointer to allocated memory that was allocated by <tt>allocate</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The values for <tt>object</tt>, <tt>count</tt> and <tt>usageTag</tt> should be the same that was used when
+ * <tt>allocate</tt> was called. The value of <tt>data</tt> should be the same that was returned by <tt>allocate</tt>.
+ * 
+ * <tt>deallocate</tt> does not destruct objects.
+ * 
+ * Use e.g. one of the functions @link valueDestruct @endlink or @link arrayDestruct @endlink to destruct the objects.
+ * <tt>delete</tt> and <tt>delete []</tt> operators which are part of the C++ standard (defined in <tt><new></tt>)  can
+ * also be used to destruct objects at a given memory address.
+ */
 
 /**
 .Function.deallocate
