@@ -90,29 +90,19 @@ class ModifiedIterator
 public:
     typedef typename Cargo<ModifiedIterator>::Type TCargo_;
 
-    Holder<THost, Simple> _host;
+    THost _host;
     TCargo_ _cargo;
 
-    // Constructors
-    ModifiedIterator() : _host(), _cargo()
+    ModifiedIterator()
     {}
 
-//    ModifiedIterator(ModifiedIterator &_origin) :
-//			_host(_origin._host), _cargo(_origin._cargo)
-//    {}
-
-    ModifiedIterator(ModifiedIterator const & _origin) :
-			_host(_origin._host), _cargo(_origin._cargo)
+    template <typename TOtherHost>
+    ModifiedIterator(ModifiedIterator<TOtherHost, TSpec> const & origin):
+			_host(origin._host), _cargo(origin._cargo)
     {}
 
-//    template <typename T>
-//    explicit
-//    ModifiedIterator(T & host) : _host(host)
-//    {}
-
-    template <typename T>
     explicit
-    ModifiedIterator(T const & host) : _host(host)
+    ModifiedIterator(THost const & host): _host(host)
     {}
 };
 
@@ -213,7 +203,7 @@ struct Host<ModifiedIterator<THost, TSpec> >
 template <typename THost, typename TSpec>
 struct Host<ModifiedIterator<THost, TSpec> const>
 {
-    typedef THost Type;
+    typedef THost const Type;
 };
 
 // --------------------------------------------------------------------------
@@ -239,19 +229,19 @@ struct Container<ModifiedIterator<THost, TSpec> const>
 // ==========================================================================
 
 // --------------------------------------------------------------------------
-// Function _dataHost()
+// Function host()                                         [ModifiedIterator]
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline Holder<THost, Simple> &
-_dataHost(ModifiedIterator<THost, TSpec> & me) 
+inline typename Host<ModifiedIterator<THost, TSpec> >::Type &
+host(ModifiedIterator<THost, TSpec> & me)
 {
     return me._host;
 }
-	
+
 template <typename THost, typename TSpec>
-inline Holder<THost, Simple> const &
-_dataHost(ModifiedIterator<THost, TSpec> const & me) 
+inline typename Host<ModifiedIterator<THost, TSpec> const>::Type &
+host(ModifiedIterator<THost, TSpec> const & me)
 {
     return me._host;
 }

@@ -36,10 +36,6 @@
 #ifndef SEQAN_HEADER_MODIFIER_REVERSE_H
 #define SEQAN_HEADER_MODIFIER_REVERSE_H
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 namespace seqan
 {
 
@@ -526,63 +522,39 @@ end(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
 ..include:seqan/modifier.h
 */
 
-template < typename TSequence >
+template < typename TSequence, typename TParallelTag >
 inline void
-reverse(TSequence & sequence) 
+reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
 {
-    typedef typename Value<TSequence>::Type					TValue;
+    typedef typename Position<TSequence>::Type              TPos;
+    typedef typename Iterator<TSequence, Standard>::Type    TIter;
+    
+    TIter itBeg = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
 
-#if defined (_OPENMP) && defined (SEQAN_PARALLEL)
-    // OpenMP does not support for loop with iterators. Therefore use index variables.
-    typedef typename Position<TSequence>::Type				TPos;
-    typedef typename MakeSigned_<TPos>::Type				TSignedPos;
-
-    TSignedPos pMid = length(sequence) / 2;
-
-#pragma omp parallel for if(length(sequence) > 1000000)
-    for(TSignedPos p1 = 0; p1 < pMid; ++p1) {
-        TPos p2 = length(sequence) - 1 - p1;
-        TValue tmp = sequence[p1];
-        sequence[p1] = sequence[p2];
-        sequence[p2] = tmp;
+    SEQAN_OMP_PRAGMA(parallel for)
+    for (int job = 0; job < (int)length(splitter); ++job)
+    {
+        TIter it1 = itBeg + splitter[job];
+        TIter it2 = itEnd - (splitter[job] + 1);
+        TIter it1End = itBeg + splitter[job + 1];
+        for (; it1 != it1End; ++it1, --it2)
+            std::swap(*it1, *it2);
     }
-#else
-    typedef typename Iterator<TSequence, Standard>::Type	TIter;
-    TIter it1 = begin(sequence, Standard());
-    TIter it2 = it1 + (length(sequence) - 1);
-    TIter itMid = it1 + length(sequence) / 2;
-
-    for(; it1 != itMid; ++it1, --it2) {
-        TValue tmp = *it1;
-        *it1 = *it2;
-        *it2 = tmp;
-    }
-#endif
 }
 
-template < typename TSequence >
+template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void
-reverse(TSequence const & sequence) 
+reverse(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
 {
-    reverse(const_cast<TSequence &>(sequence));
-}
+    typedef typename Position<StringSet<TSequence, TSpec> >::Type   TPos;
+    typedef typename MakeSigned<TPos>::Type                         TSPos;
 
-template < typename TSequence, typename TSpec >
-inline void
-reverse(StringSet<TSequence, TSpec> & stringSet) 
-{
-    unsigned seqCount = length(stringSet);
-    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-        reverse(stringSet[seqNo]);
-}
-
-template < typename TSequence, typename TSpec >
-inline void
-reverse(StringSet<TSequence, TSpec> const & stringSet) 
-{
-    unsigned seqCount = length(stringSet);
-    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-        reverse(stringSet[seqNo]);
+    TSPos seqCount = length(stringSet);
+    SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
+    for (TSPos seqNo = 0; seqNo < seqCount; ++seqNo)
+        reverse(stringSet[seqNo], Serial());
 }
 
 template <typename TValue>
@@ -591,6 +563,21 @@ reverse(std::list<TValue> & list)
 {
     list.reverse();
 }
+
+template < typename TText >
+inline void
+reverse(TText & text)
+{
+    reverse(text, Parallel());
+}
+
+template < typename TText >
+inline void
+reverse(TText const & text) 
+{
+    reverse(const_cast<TText &>(text));
+}
+
 
 // --------------------------------------------------------------------------
 // Function reverseString()

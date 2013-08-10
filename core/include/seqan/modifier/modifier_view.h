@@ -113,12 +113,17 @@ class ModifiedIterator<THost, ModView<TFunctor> >
 public:
     typedef typename Cargo<ModifiedIterator>::Type TCargo_;
 
-    Holder<THost, Simple>   _host;
+    THost _host;
     TCargo_ _cargo;
 
-    mutable typename Value<ModifiedIterator>::Type	tmp_value;
+    mutable typename Value<ModifiedIterator>::Type tmp_value;
 
-    ModifiedIterator() : _host(), _cargo()
+    ModifiedIterator()
+    {}
+
+    template <typename TOtherHost>
+    ModifiedIterator(ModifiedIterator<TOtherHost, ModView<TFunctor> > & origin):
+			_host(origin._host), _cargo(origin._cargo)
     {}
 
     explicit
@@ -129,12 +134,6 @@ public:
     {
         cargo(*this).func = functor;
     }
-
-//    explicit
-//    ModifiedIterator(TFunctor const & functor) : _host(), _cargo()
-//    {
-//        cargo(*this).func = functor;
-//    }
 };
 
 // --------------------------------------------------------------------------

@@ -109,7 +109,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator)
         TModifiedIterator it(begin(myString, Standard()), myFunctor);
         TModifiedIterator it2(begin(myString, Rooted()), myFunctor);
         TModifiedRootedIterator itR(begin(myString, Rooted()), myFunctor);
-//        TModifiedIterator it3(itR);
+        TModifiedIterator it3(itR);
     }
     {
         TModifiedIterator it;

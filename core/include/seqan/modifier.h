@@ -45,6 +45,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/parallel.h>
 
 // --------------------------------------------------------------------------
 // Modified Alphabets
