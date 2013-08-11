@@ -217,20 +217,36 @@ SEQAN_DEFINE_TEST(test_modifier_modified_string_cascade)
 
 SEQAN_DEFINE_TEST(test_modifier_modified_iterator_construct)
 {
-    typedef seqan::Dna5String                                 TString;
-    typedef typename seqan::Iterator<seqan::Dna5String>::Type TIter;
-    typedef seqan::ModifiedIterator<TIter>                    TModifiedIter;
+    using namespace seqan;
+
+    typedef Dna5String                          TString;
+    typedef Iterator<TString, Standard>::Type   TIterator;
+    typedef Iterator<TString, Rooted>::Type     TRootedIterator;
+    typedef ModifiedIterator<TIterator>         TModifiedIterator;
+    typedef ModifiedIterator<TRootedIterator>   TModifiedRootedIterator;
 
     // Default construction.
     {
-        TModifiedIter itM;
+        TModifiedIterator itM;
     }
 
     // Construction from host iterator.
     {
         TString seq = "CGAT";
-        TIter it = begin(seq);
-        TModifiedIter itM(it);
+        TIterator it = begin(seq);
+        TModifiedIterator itM(it);
+    }
+    {
+        TString seq = "CGAT";
+        TModifiedIterator it(begin(seq, Standard()));
+        TModifiedIterator it2(begin(seq, Rooted()));
+        TModifiedRootedIterator itR(begin(seq, Rooted()));
+        TModifiedIterator it3(itR);
+    }
+    {
+        TModifiedIterator it;
+        TModifiedIterator it2(it);
+        ignoreUnusedVariableWarning(it2);
     }
 }
 
