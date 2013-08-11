@@ -42,6 +42,22 @@ namespace SEQAN_NAMESPACE_MAIN
 // Simple Finder
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class SimplePattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief A brute force online searching algorithm.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, Simple>;
+ * 
+ * @tparam TNeedle The needle type.  Types: @link SequenceConcept @endlink.
+ * 
+ * @section Remarks
+ * 
+ * This specialization should only be used if no other is applicable.
+ */
+
 /**
 .Spec.Simple Finder:
 ..summary:A brute force online searching algorithm.

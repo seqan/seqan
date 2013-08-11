@@ -44,6 +44,30 @@ namespace SEQAN_NAMESPACE_MAIN
 // MyersUkkonen
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class MyersPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Provides fast approximate searching of one string in another using Myer's fast bit-parallel algorithm with
+ *        application of the Ukkonen- trick.
+ * 
+ * @signature template <typename TNeedle[, typename TSpec[, typename TFindBeginPatternSpec]]>
+ *            class Pattern<TNeedle, Myers<TSpec, TFindBeginPatternSpec> >;
+ * 
+ * @tparam TSpec   Specialization tag.  This could be @link FindInfix @endlink for infix search or <tt>FindPrefix</tt>
+ *                 for prefix search. Default: Tag.FindInfix
+ * @tparam TFindBeginPatternSpec 
+ *               Specialization of @link Pattern @endlink used to find the begin of matches.This must be a finder for
+ *               prefix search, e.g. @link DPSearch <tt>DPSearch&lt;TScore, FindPrefix&gt;</tt> @endlink or @link
+ *               MyersPattern <tt>Myers&lt;FindPrefix&gt;</tt> @endlink. Specify <tt>void</tt> to suppress prefix
+ *               searching. Default: @link DefaultFindBeginPatternSpec @endlink
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
+ */
+
 /**
 .Spec.Myers:
 ..cat:Searching
@@ -82,11 +106,24 @@ struct AlignTextBanded; // search query in a parallelogram
 // TODO(holtgrew): Really deprecated?
 //deprecated shortcuts:
 
+/*!
+ * @typedef MyersUkkonen
+ * 
+ * @brief Semi-global (query-global, text-local) pattern matching without
+ *        findBegin() support.
+ * 
+ * @signature typedef Myers<FindInfix, True, void> MyersUkkonen;
+ * 
+ * @section Deprecated
+ *
+ * deprecated, use <tt>Myers&lt;FindInfix&gt;</tt>
+ */
+
 /**
 .Shortcut.MyersUkkonen:
 ..status:deprecated, use $Myers<FindInfix>$
 ..cat:Searching
-..summary:Semin-global (query-global, text-local) pattern matching without findBegin() support.
+..summary:Semi-global (query-global, text-local) pattern matching without findBegin() support.
 ..signature:MyersUkkonen
 ..shortcutfor:Spec.Myers
 ...signature:Myers<FindInfix, void>
@@ -97,6 +134,13 @@ struct AlignTextBanded; // search query in a parallelogram
 */
 typedef Myers<FindInfix, True, void> MyersUkkonen;
 
+/*!
+ * @typedef MyersUkkonenGlobal
+ * 
+ * @brief Global (query-global, text-global) pattern matching without findBegin() support.
+ * 
+ * @signature typedef Myers<FindInfix, True, void> MyersUkkonenGlobal;
+ */
 
 /**
 .Shortcut.MyersUkkonenGlobal:
@@ -113,6 +157,13 @@ typedef Myers<FindInfix, True, void> MyersUkkonen;
 */
 typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
+/*!
+ * @typedef MyersUkkonenBanded
+ * 
+ * @brief Global (query-global, text-local) pattern matching without findBegin() support.
+ * 
+ * @signature Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
+ */
 
 /**
 .Shortcut.MyersUkkonenBanded:
@@ -127,6 +178,14 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 ..see:Shortcut.MyersUkkonenGlobal
 ..see:Shortcut.MyersUkkonenGlobalBanded
 */
+
+/*!
+ * @typedef MyersUkkonenGlobalBanded
+ * 
+ * @brief Global (query-global, text-global) pattern matching without findBegin() support.
+ * 
+ * @signature Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
+ */
 
 /**
 .Shortcut.MyersUkkonenGlobalBanded:

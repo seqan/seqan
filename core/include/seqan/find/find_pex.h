@@ -61,6 +61,26 @@ struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder >
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn Pattern#PexMultiFinder
+ * @headerfile <seqan/find.h>
+ * @brief Determines the multiple exact string matching algorithm used by the Pex algorithm.
+ *
+ * @signature PexMultiFinder<Pattern<TNeedle,Pex<TVerification, TMultiFinder> > >::Type;
+ *
+ * @tparam TMultiFinder The specification for the multiple exact string matching algorithm that should be used
+ *                      with the Pex algorithm. 
+ *
+ * @returns Type Pattern type of the multiple exact string matching algorithm for the specified Pattern.
+ *
+ * @section Remarks
+ *
+ * For a description of Pattern usage, see @link Pattern @endlink.
+ * 
+ * Overload this metafunction if you want to use something else for verification then
+ * <tt>Pattern&lt;String&lt;Segment&l;tNeedle&gt; &gt;, TMultiFinder&gt;</tt>.
+ */
+
 /**
 .Metafunction.PexMultiFinder:
 ..cat:Searching
@@ -95,6 +115,27 @@ struct PexRange_{
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class PexPattern
+ * @headerfile <seqan/find.h>
+ * @brief Provides a fast approximate string matching filter that splits the needle into several pieces that are
+ *        searched with a multiple exact string matching algorithm and later verified.
+ *
+ * @signature template <typename TNeedle, typename TVerification, typename TMultiFinder>
+ *            class Pattern<TNeedle, Pex<TVerification, TMultiFinder> >;
+ *
+ * @tparam TNeedle       The needle type.
+ * @tparam TVerification Determines if the hierarchical verification proposed by Navarro and Beaza-Yates is used or
+ *                       not.
+ * @tparam TMultiFinder  Specifies the algorithm for th emultiple exact string matching algorithm.  Type: AhoCorasick.
+ *
+ * @section Remarks
+ *
+ * There are two defaults available: <tt>PexHierarchical</tt> and <tt>PexNonHiearchical</tt> (e.g.
+ * <tt>Pattern&lt;CharString&gt;, PexHierarchical&gt;</tt> that both use the @link AhoCorasick @endlink algorithm for
+ * the multiple exact string matching.
+ */
+
 /**
 .Spec.Pex:
 ..summary: Provides a fast approximate string matching filter that splits the needle into several pieces that are searched with a multiple exact string matching algorithm and later verified.
@@ -111,6 +152,19 @@ struct PexRange_{
 */
 ///.Class.Pattern.param.TSpec.type:Spec.Pex
 
+/*!
+ * @class HierarchicalPexPattern
+ * @extends PexPattern
+ * @headerfile <seqan/find.h>
+ * @brief By using this specialization, the hierarchircal verification is enabled.
+ *
+ * @signature template <typename TNeedle, typename TMultiFinder>
+ *            class Pattern<TNeedle, Pex<Hierarchical, TMultiFinder> >;
+ *
+ * @tparam TNeedle      The needle type.
+ * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
+ */
+
 /**
 .Spec.Hierarchical:
 ..summary: By using this Specialization the hierarchical verification is enabled.
@@ -123,6 +177,20 @@ struct PexRange_{
 ..include:seqan/find.h
 */
 ///.Spec.Pex.param.TVerification.type:Spec.Hierarchical
+
+/*!
+ * @class NonHierarchicalPexPattern
+ * @extends PexPattern
+ * @headerfile <seqan/find.h>
+ * @brief By using this specialization, the hierarchircal verification is disabled.
+ *
+ * @signature template <typename TNeedle, typename TMultiFinder>
+ *            class Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder> >;
+ *
+ * @tparam TNeedle      The needle type.
+ * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
+ */
+
 /**
 .Spec.NonHierarchical:
 ..summary: By using this Specialization the hierarchical verification is disabled.

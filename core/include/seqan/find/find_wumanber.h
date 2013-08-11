@@ -42,6 +42,18 @@ namespace SEQAN_NAMESPACE_MAIN
 // WuManber
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class WuManberPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Online algorithm for multi-pattern search.
+ *
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, WuManber>;
+ *
+ * @tparam TNeedle The type of the needle to search for.  Type: @link SequenceConcept @endlink.
+ */
+
 /**
 .Spec.WuManber:
 ..general:Class.Pattern

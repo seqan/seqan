@@ -42,6 +42,35 @@ namespace SEQAN_NAMESPACE_MAIN
 // MultiBfam
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class MultiBfamPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Multi-Pattern Backward Factor Automaton Matching.
+ * 
+ * @signature template <typename TNeedle, typename TAutomaton>
+ *            class Pattern<TNeedle, MultiBfam<TAutomaton> >;
+ * 
+ * @tparam TAutomaton A tag that specifies the used automaton. Default: @link OracleMultiBfam @endlink.
+ * @tparam TNeedle    The needle type. Types: String
+ * 
+ * @see BfamPattern
+ */
+
+/*!
+ * @class OracleMultiBfamPattern
+ * @extends MultiBfamPattern
+ * @headerfile <seqan/find.h>
+ * @brief Multi-Pattern Backward Factor Automaton Matching using an oracle automaton.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, MultiBfam<Oracle> >;
+ * 
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @see OracleBfamPattern
+ */
+
 /**
 .Spec.MultiBfam:
 ..general:Class.Pattern

@@ -42,6 +42,24 @@ namespace SEQAN_NAMESPACE_MAIN
 // Multiple ShiftAnd
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class MultipleShiftAndPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Multiple exact string matching using bit parallelism.
+ *
+ * The total size of the patterns should fit into a computer word.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, MultipleShiftAnd>;
+ * 
+ * @tparam TNeedle The needle type, a string of keywords. Types: String
+ * 
+ * @section Remarks
+ * 
+ * The types of all keywords in the needle and the haystack have to match.
+ */
+
 /**
 .Spec.MultipleShiftAnd:
 ..summary: Multiple exact string matching using bit parallelism. The total size of the patterns should fit into a computer word.

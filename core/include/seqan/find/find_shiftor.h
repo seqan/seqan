@@ -42,6 +42,24 @@ namespace SEQAN_NAMESPACE_MAIN
 // ShiftOr
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ShiftOrPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Exact string matching using bit parallelism.
+ *
+ * The Shift-Or algorithm is applicable to search small patterns in texts using a small alphabet.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, ShiftOr>;
+ * 
+ * @tparam TNeedle The needle type. Types: @link String @endlink.
+ * 
+ * @section Remarks
+ * 
+ * The types of the needle and the haystack have to match.
+ */
+
 /**
 .Spec.ShiftOr:
 ..summary: Exact string matching using bit parallelism. The Shift-Or algorithm is applicable to search small patterns in texts using a small alphabet.

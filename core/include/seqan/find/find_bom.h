@@ -42,6 +42,62 @@ namespace SEQAN_NAMESPACE_MAIN
 // BomAlgo
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class BfamPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Backward Factor Automaton Matching algorithm.
+ * 
+ * @signature template <typename TNeedle, typename TAutomaton>
+ *            class Pattern<TNeedle, Bfam<TAutomaton> >;
+ * 
+ * @tparam TAutomaton A tag that specifies the used automaton. Default: <tt>Bfam&lt;Oracle&gt;.
+ * @tparam TNeedle    The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * To be used in combination with the default specialization of @link Finder @endlink.
+ * 
+ * @see MultiBfamPattern
+ */
+
+/*!
+ * @class OracleBfamPattern
+ * @extends BfamPattern
+ * @headerfile <seqan/find.h>
+ * @brief Backward Oracle Matching algorithm.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, Bfam<Oracle> >;
+ * 
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * To be used in combination with the default specialization of @link Finder @endlink.
+ * 
+ * @see TrieBfamPattern
+ * @see OracleMultiBfamPattern
+ */
+
+/*!
+ * @class TrieBfamPattern
+ * @extends BfamPattern
+ * @headerfile <seqan/find.h>
+ * @brief Backward Suffix Trie Matching algorithm.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, Bfam<Trie> >;
+ * 
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * To be used in combination with the default specialization of @link Finder @endlink.
+ * 
+ * @see OracleBfam
+ */
+
 /**
 .Spec.Bfam:
 ..summary:Backward Factor Automaton Matching algorithm.

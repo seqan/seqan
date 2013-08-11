@@ -42,6 +42,22 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
+/*!
+ * @class HammingSimplePattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief A brute force online searching algorithm for approximate string matching with hamming distance.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, HammingSimple>;
+ * 
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * This specialization should only be used if no other is applicable or for verification purposes.
+ */
+
 /**
 .Spec.HammingSimpleFinder:
 ..summary:A brute force online searching algorithm for approximate string matching with hamming distance.

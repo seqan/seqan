@@ -46,6 +46,24 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TScore, typename TSpec = FindInfix, typename TFindBeginPatternSpec = typename DefaultFindBeginPatternSpec<TScore>::Type>
 struct DPSearch {};
 
+/*!
+ * @class DPSearchPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief A dynamic programming algorithm for approximate string-matching with a user-definable scoring function.
+ * 
+ * @signature template <typename TNeedle, typename TScore[, typename TSpec[, typename TFindBeginPatternSpec]]>
+ *            class Pattern<TNeedle, DPSearch<TScore[, TSpec[, TFindBeginPatternSpec]]> >;
+ * 
+ * @tparam TScore  The scoring function. Types: Score
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * The algorithm is based on the Sellers/Needleman-Wunsch dynamic progamming algorithm. The <tt>Pattern</tt> object only
+ * contains the right-most column of the dynamic programming matrix.
+ */
+
 /**
 .Spec.DPSearch:
 ..cat:Searching
@@ -242,6 +260,17 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
+/*!
+ * @fn DPSearchPattern#scoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief The minimal score a match must reach in approximate searching.
+ *
+ * @signature TScoreValue scoreLimit(pattern);
+ *
+ * @param[in] pattern The DPSearchPattern to query.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 /**.Function.scoreLimit
 ..cat:Searching
@@ -262,6 +291,19 @@ SEQAN_CHECKPOINT
 }
 
 //____________________________________________________________________________
+
+/*!
+ * @fn DPSearchPattern#setSoreLimit
+ * @headerfile <seqan/find.h>
+ * @brief Set the minimal score a match must reach in approximate serach..
+ *
+ * @signature void setScoreLimit(pattern, limit);
+ *
+ * @param[in,out] pattern The DPSearchPattern to set the limit for.
+ * @param[in]     limit   The limit score value to set.
+ *
+ * @return TScoreValue The score limit value.
+ */
 
 /**.Function.setScoreLimit
 ..cat:Searching
@@ -285,6 +327,19 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 // returns the score of the last hit position found (note:position = end of occurrence in haystack)
+
+/*!
+ * @fn DPSearchPattern#getScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last found match in approximate searching.
+ *
+ * @signature TScoreValue getScore(pattern);
+ *
+ * @param[in] pattern A DPSearchPattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the vlaue
+ *                     is undefined.
+ */
 
 /**.Function.getScore
 ..cat:Searching

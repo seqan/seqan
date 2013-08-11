@@ -44,6 +44,43 @@ namespace SEQAN_NAMESPACE_MAIN
 // AhoCorasick
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AhoCorasickPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Multiple exact string matching using Aho-Corasick.
+ *
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, AhoCorasick>;
+ *
+ * @tparam TNeedle The needle type, a string of keywords.
+ *
+ * @section Remarks
+ *
+ * The types of the keywords in the needle container and the haystack have to match.
+ * 
+ * Matching positions do not come in order because we report beginning positions of matches.
+ * 
+ * Likewise, if multiple keywords match at a given position no pre-specified order is guaranteed.
+ * 
+ * @section Examples
+ * 
+ * The following example program searches for three needles (<tt>queries</tt>) in two haystack sequences (<tt>db</tt>)
+ * using the Aho-Corasick algorithm.
+ * 
+ * @include demos/find/finder_aho_corasick.cpp
+ * 
+ * When executed, this program will create the following output.
+ * 
+ * @code{.console}
+ * DB      POS     ENDPOS  TEXT
+ * 0       0       4       MARD
+ * 0       3       7       DPLY
+ * 1       1       6       VGGGG
+ * 1       6       9       AAA
+ * @endcode
+ */
+
 /**
 .Spec.AhoCorasick:
 ..summary: Multiple exact string matching using Aho-Corasick.

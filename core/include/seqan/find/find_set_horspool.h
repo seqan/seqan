@@ -42,6 +42,23 @@ namespace SEQAN_NAMESPACE_MAIN
 // Set Horspool Algorithm
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class SetHorspoolPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * 
+ * @brief Multiple exact string matching using set horspool algorithm.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, SetHorspool>;
+ * 
+ * @tparam TNeedle The needle type, a string of keywords.  Types: @link SequenceConcept @endlink.
+ * 
+ * @section Remarks
+ * 
+ * The types of all keywords in the needle and the haystack have to match.
+ */
+
 /**
 .Spec.SetHorspool:
 ..summary: Multiple exact string matching using set horspool algorithm.

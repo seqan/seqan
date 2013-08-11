@@ -55,7 +55,18 @@ struct Myers;
 
 //____________________________________________________________________________
 
-// TODO(holtgrew): Difference to DefaultPattern?
+/*!
+ * @mfn DefaultFindBeginPatternSpec
+ * @headerfile <seqan/find.h>
+ * @brief Type of the default <tt>findBegin</tt> pattern specialization, given a score.
+ *
+ * @signature DefaultBeginPatternSpec<TScore>::Type;
+ *
+ * @tparam TScore The score to query.
+ *
+ * @return Type The pattern specialization to use as a default.
+ */
+
 /**
 .Metafunction.DefaultFindBeginPatternSpec:
 ..cat:Searching
@@ -329,6 +340,26 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
 
 //find begin main interface 
 
+/*!
+ * @fn findBegin
+ * @headerfile <seqan/find.h>
+ * @brief Search the begin of an approximate match.
+ *
+ * @signature bool findBegin(finder, pattern[, limit]);
+ *
+ * @param finder[in,out]  The Finder object to search through.
+ * @param pattern[in,out] The Pattern object to search for.  This must be a pattern for approximate string matching.
+ * @param limit[in]       The score limit.  The default is the limit used during the last <tt>find</tt> call, see
+ *                        <tt>getScore</tt>.  All occurences that score at least <tt>limit</tt> are reported.
+ *
+ * @return bool <tt>true</tt> indicates a match, <tt>false</tt> indicates no match.
+ *
+ * @section Remarks
+ *
+ * The function <tt>find</tT> successfully called be called - that is an end position was found - before calling
+ * findBegin to find a begin position.
+ */
+
 /**
 .Function.findBegin:
 ..summary:Search the begin of an approximate match.
@@ -368,6 +399,19 @@ findBegin(TFinder & finder,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn getBeginScore
+ * @headerfile <seqan/find.h>
+ * @brief Score of the last match found by @link findBegin @endlink during approximate searching.
+ *
+ * @signature TScoreValue getBeginScore(pattern);
+ *
+ * @param[in] pattern A Pattern that can be used for approximate searching.
+ *
+ * @return TScoreValue The score of the lst match found using <tt>pattern</tt>.  The value is set after successfully
+ *                     call of @link findBegin @endlink.  If no match was found, the value is undefined.
+ */
 
 /**.Function.getBeginScore
 ..cat:Searching

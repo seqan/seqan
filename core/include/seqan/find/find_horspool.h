@@ -42,6 +42,19 @@ namespace SEQAN_NAMESPACE_MAIN
 // Horspool
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class HorspoolPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * 
+ * @brief Exact string matching using Horspool's algorithm (1980).
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, Horspool>;
+ * 
+ * @tparam TNeedle The needle type. Types: String
+ */
+
 /**
 .Spec.Horspool:
 ..summary: Exact string matching using Horspool's algorithm (1980).

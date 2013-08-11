@@ -45,6 +45,30 @@ namespace SEQAN_NAMESPACE_MAIN
 // ShiftAnd with Wildcards
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class WildShiftAndPattern
+ * @headerfile <seqan/find.h>
+ * @brief Exact string matching with wildcards using bit parallelism.
+ *
+ * The Shift-And algorithm is applicable to search small patterns in texts using small alphabets.
+ *
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, WildShiftAnd>;
+ *
+ * @tparam TNeedle The needle type.  Type: @link SequenceConcept @endlink.
+ *
+ * @section Remarks
+ *
+ * The supported wildcards are <tt>*</tt> (zero or more occurrence), <tt>+</tt> (one or more occurrences), <tt>?</tt>
+ * (optional character), <tt>.</tt> (every character), character classes (e.g. <tt>[a-z]</tt>) and bounded repeats (e.g.
+ * <tt>{n,m}</tt>).
+ * 
+ * After the find-Method returned the Finder will point to the last position of the occurrence
+ * 
+ * We encourage the user to intialize the Pattern with a <tt>String&lt;char&gt;</tt> (@link setHost @endlink or the
+ * C'tor). If you use for instance <tt>String&lt;Dna&gt;</tt> instead you won't be able to specify wildcards.
+ */
+
 /**
 .Spec.WildShiftAnd:
 ..summary: Exact string matching with wildcards using bit parallelism. The Shift-And algorithm is applicable to search small patterns in texts using a small alphabet.

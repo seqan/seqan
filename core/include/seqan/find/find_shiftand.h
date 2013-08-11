@@ -42,6 +42,24 @@ namespace SEQAN_NAMESPACE_MAIN
 // ShiftAnd
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ShiftAndPattern
+ * @extends Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Exact string matching using bit parallelism.
+ *
+ * The Shift-And algorithm is applicable to search small patterns in texts using a small alphabet.
+ * 
+ * @signature template <typename TNeedle>
+ *            class Pattern<TNeedle, ShiftAnd>;
+ * 
+ * @tparam TNeedle The needle type. Types: String
+ * 
+ * @section Remarks
+ * 
+ * The types of the needle and the haystack have to match.
+ */
+
 /**
 .Spec.ShiftAnd:
 ..summary: Exact string matching using bit parallelism. The Shift-And algorithm is applicable to search small patterns in texts using a small alphabet.

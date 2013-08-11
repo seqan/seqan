@@ -41,10 +41,27 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace seqan {
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @class Pattern
+ * @headerfile <seqan/find.h>
+ * @brief Holds the needle and precprocessing data (depends on algorithm).
+ *
+ * @signature template <typename TNeedle[, typename TSpec]>
+ *            class Pattern;
+ *
+ * @tparam TNeedle The needle type.  Types: @link TextConcept @endlink.
+ * @tparam TSpec   The specializing type; gives the online algorithm to use for the search.  Defaults to the result of
+ *                 @link DefaultPattern @endlink.
+ *
+ * @section Remarks
+ *
+ * If <tt>Needle</tt> is a StringSet then <tt>position(pattern)</tt> returns a pair with the index of the currently
+ * matching needle and the position in the needle.
+ */
 
 /**
 .Class.Pattern:
@@ -87,6 +104,16 @@ public:
 };
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn Pattern#Container
+ * @brief Returns the needle type of the pattern.
+ *
+ * @signature Container<TPattern>::Type
+ *
+ * @tparam TPattern The pattern to query for its needle type.
+ *
+ * @return Type The needle type.
+ */
 
 template <typename TNeedle, typename TSpec>
 struct Container< Pattern<TNeedle, TSpec> > {
@@ -97,6 +124,17 @@ template <typename TNeedle, typename TSpec>
 struct Container< Pattern<TNeedle, TSpec> const > {
 	typedef TNeedle const Type;
 };
+
+/*!
+ * @mfn Pattern#Host
+ * @brief Returns the host type of the pattern.
+ *
+ * @signature Host<TPattern>::Type
+ *
+ * @tparam TPattern The pattern to query for its host type.
+ *
+ * @return Type The host type.
+ */
 
 ///.Metafunction.Host.param.T.type:Class.Pattern
 ///.Metafunction.Host.class:Class.Pattern
@@ -110,21 +148,64 @@ struct Host< Pattern<TNeedle, TSpec> const > {
 	typedef TNeedle const Type;
 };
 
+/*!
+ * @fn Pattern#Value
+ * @brief Returns the value type of the underlying pattern.
+ *
+ * @signature Value<TPattern>::Type
+ *
+ * @tparam TPattern The Pattern to query.
+ *
+ * @return Type The value type.
+ */
 
 template <typename TPattern, typename TSpec>
 struct Value< Pattern<TPattern, TSpec> > {
 	typedef typename Value<TPattern>::Type Type;
 };
 
+/*!
+ * @fn Pattern#Position
+ * @brief Returns the position type of the underlying pattern.
+ *
+ * @signature Position<TPattern>::Type
+ *
+ * @tparam TPattern The Pattern to query.
+ *
+ * @return Type The position type.
+ */
+
 template <typename TPattern, typename TSpec>
 struct Position< Pattern<TPattern, TSpec> > {
 	typedef typename Position<TPattern>::Type Type;
 };
 
+/*!
+ * @fn Pattern#Difference
+ * @brief Returns the difference type of the underlying pattern.
+ *
+ * @signature Difference<TPattern>::Type
+ *
+ * @tparam TPattern The Pattern to query.
+ *
+ * @return Type The difference type.
+ */
+
 template <typename TPattern, typename TSpec>
 struct Difference< Pattern<TPattern, TSpec> > {
 	typedef typename Difference<TPattern>::Type Type;
 };
+
+/*!
+ * @fn Pattern#Size
+ * @brief Returns the size type of the underlying pattern.
+ *
+ * @signature Size<TPattern>::Type
+ *
+ * @tparam TPattern The Pattern to query.
+ *
+ * @return Type The size type.
+ */
 
 template <typename TPattern, typename TSpec>
 struct Size< Pattern<TPattern, TSpec> > {
@@ -133,6 +214,15 @@ struct Size< Pattern<TPattern, TSpec> > {
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Pattern#ScoringScheme
+ * @brief Returns the scoring scheme type of an approximate search algorithm.
+ *
+ * @signature ScoringScheme<TPattern>::Type;
+ *
+ * @tparam TPattern The Pattern to query for its scoring scheme type.  Default: EditDistanceScore.
+ */
 
 /**
 .Metafunction.ScoringScheme:
@@ -256,6 +346,17 @@ segment(Pattern<TNeedle, TSpec> const & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Pattern#host
+ * @brief Query a Pattern for its host.
+ *
+ * @signature THost host(pattern);
+ *
+ * @param[in] pattern The Pattern to query for its host.
+ *
+ * @return THost Reference to the host.
+ */
+
 ///.Function.host.param.object.type:Class.Pattern
 ///.Function.host.class:Class.Pattern
 
@@ -277,6 +378,21 @@ SEQAN_CHECKPOINT
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Pattern#needle
+ * @brief Returns the needle of a Pattern object (not implemented for some online-algorithms).
+ *
+ * @signature TNeedle needle(pattern);
+ *
+ * @param[in] pattern The Pattern to query for its needle.
+ *
+ * @return TNeedle Reference ot the needle object.
+ *
+ * @section Remarks
+ *
+ * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function Pattern#host.
+ */
 
 /**
 .Function.needle:
@@ -310,6 +426,17 @@ needle(TObject const &obj)
 }
 
 
+/*!
+ * @fn Pattern#position
+ * @brief Return the position of the last match in the pattern.
+ *
+ * @signature TPosition position(pattern);
+ *
+ * @param[in] pattern The Pattern to query for its position.
+ *
+ * @return TPosition The position of the last match in the pattern.
+ */
+
 ///.Function.position.param.iterator.type:Class.Pattern
 ///.Function.position.class:Class.Pattern
 
@@ -326,6 +453,16 @@ needle(Pattern<TNeedle, TSpec> const & obj)
 {
 	return host(obj);
 }
+
+/*!
+ * @fn Pattern#setNeedle
+ * @brief Sets the needle of a Pattern object and optionall induces preprocessing.
+ *
+ * @signature void setNeedle(pattern, needle);
+ *
+ * @param[in,out] pattern The pattern to set the needle for.
+ * @param[in]     needle  The needle to set.
+ */
 
 /**
 .Function.setNeedle:
@@ -348,6 +485,17 @@ setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
 
 
 //____________________________________________________________________________
+
+/*!
+ * @fn Pattern#scoringScheme
+ * @brief The scoring scheme used for finding or aligning.
+ *
+ * @signature TScoringScheme scoringScheme(pattern);
+ *
+ * @param[in] pattern The Pattern to query for its scoring scheme.
+ *
+ * @return TScoringScheme The scoring scheme of the pattern.
+ */
 
 /**.Function.scoringScheme
 ..cat:Searching
@@ -379,6 +527,16 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
+/*!
+ * @fn Pattern#setScoringScheme
+ * @brief Sets the scoring scheme used for finding or aligning.
+ *
+ * @signature void setScoringScheme(pattern, score);
+ *
+ * @param[in,out] pattern The pattern to set the scoring scheme for.
+ * @param[in]     score   The scoring scheme to set.
+ */
+
 /**.Function.setScoringScheme
 ..cat:Searching
 ..summary:Sets the @glos:Scoring Scheme|scoring scheme@ used for finding or aligning.
@@ -400,6 +558,6 @@ setScoringScheme(Pattern<TNeedle, TSpec> & /*me*/,
 }
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...
