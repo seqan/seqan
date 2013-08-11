@@ -171,11 +171,12 @@ goPrevious(ModifiedIterator<THost, ModReverse> & me)
 // Function goEnd()                             [ModReverse ModifiedIterator]
 // --------------------------------------------------------------------------
 
-template <typename THost>
+template <typename THost, typename TContainer>
 inline void
-goEnd(ModifiedIterator<THost, ModReverse> & me)
+goEnd(ModifiedIterator<THost, ModReverse> & me,
+      TContainer & container)
 {
-    goBegin(host(me));
+    goBegin(host(me), host(container));
     cargo(me)._atEnd = true;
 }
 
@@ -183,12 +184,15 @@ goEnd(ModifiedIterator<THost, ModReverse> & me)
 // Function goBegin()                           [ModReverse ModifiedIterator]
 // --------------------------------------------------------------------------
 
-template <typename THost>
+template <typename THost, typename TContainer>
 inline void
-goBegin(ModifiedIterator<THost, ModReverse> & me)
+goBegin(ModifiedIterator<THost, ModReverse> & me,
+        TContainer & container)
 {
-    goEnd(host(me));
-    if (atBegin(host(me)))
+    typedef typename Host<TContainer>::Type THostContainer;
+    typename Parameter_<THostContainer>::Type hostContainer = host(container);
+    goEnd(host(me), hostContainer);
+    if (atBegin(host(me), hostContainer))
     {
         cargo(me)._atEnd = true;
     }
@@ -198,6 +202,22 @@ goBegin(ModifiedIterator<THost, ModReverse> & me)
         goPrevious(host(me));
     }
 }
+
+//template <typename THost>
+//inline void
+//goBegin(ModifiedIterator<THost, ModReverse> & me)
+//{
+//    goEnd(host(me));
+//    if (atBegin(host(me)))
+//    {
+//        cargo(me)._atEnd = true;
+//    }
+//    else
+//    {
+//        cargo(me)._atEnd = false;
+//        goPrevious(host(me));
+//    }
+//}
 
 // --------------------------------------------------------------------------
 // Function operator+=()                        [ModReverse ModifiedIterator]
