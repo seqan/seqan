@@ -47,6 +47,29 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @enum FileMappingMode
+ * @headerfile <seqan/file.h>
+ * @brief Flags to determine the mapping mode of mapFileSegment.
+ *
+ * @var FileMappingMode MAP_RDONLY = 1;
+ * @brief Map the segment in read-only mode.
+ *
+ * @var FileMappingMode MAP_WRONLY = 2;
+ * @brief Map the segment in write-only mode.
+ *
+ * @var FileMappingMode MAP_RDWR = 3;
+ * @brief Map the segment for reading and writing.
+ *
+ * @var FileMappingMode MAP_COPYONWRITE = 4;
+ * @brief Write accesses are not written back to file and not shared among different mappings.
+ *
+ * @section Remarks
+ *
+ * The mapping mode must be compatible to the open mode of a @link FileMapping @endlink, e.g. <tt>MAP_RDWR</tt> is not
+ * allowed if the file mapping was opened with <tt>OPEN_RDONLY</tt>.
+ */
+
 /**
 .Enum.FileMappingMode
 ..cat:Sequences
@@ -67,6 +90,27 @@ enum FileMappingMode {
     MAP_RDWR = 3,
     MAP_COPYONWRITE = 4
 };
+
+/*!
+ * @enum FileMappingAdvise
+ * @headerfile <seqan/file.h>
+ * @brief Enum with MMAP advise values.
+ *
+ * @var FileMappingAdvise MAP_NORMAL;
+ * @brief There is no advise on the given address range.
+ *
+ * @var FileMappingAdvise MAP_RANDOM;
+ * @brief The address range will be accessed with random access memory pattern.
+ *
+ * @var FileMappingAdvise MAP_SEQUENTIAL;
+ * @brief The address range will be accessed sequentially.
+ *
+ * @var FileMappingAdvise MAP_WILLNEED;
+ * @brief The address range in the advise will be needed in the future.
+ *
+ * @var FileMappingAdvise MAP_DONTNEED;
+ * @brief The address range in the advise will not be needed any more.
+ */
 
 /**
 .Enum.FileMappingAdvise
@@ -103,6 +147,20 @@ enum FileMappingAdvise {
 
 #endif
 
+/*!
+ * @class FileMapping
+ * @headerfile <seqan/file.h>
+ * @brief A structure to memory-map a file.
+ *
+ * @signature template <typename TSpec>
+ *            stuct FileMapping;
+ *
+ * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
+ *
+ * @section Remarks
+ *
+ * This structure represents both a file and its memory mapping.
+ */
 
 /**
 .Class.FileMapping:
@@ -249,6 +307,22 @@ _unmapFile(FileMapping<TSpec> &mapping)
     return result;
 }
 
+/*!
+ * @fn FileMapping#open
+ * @brief Open a file to be mapped into memory.
+ *
+ * @signature bool open(fileMapping, fileName[, openMode]);
+ *
+ * @param[in,out] fileMapping The FileMapping to open.
+ * @param[in]     fileName    The path to the fie.
+ * @param[in]     openMode    The mode to open the file in, flags from @link FileOpenMode @endlink to combine
+ *                            using OR.  Write-only mode is not supported, use <tt>OPEN_RDWR</tt> if you need
+ *                            write access.  If you omit the <tt>OPEN_APPEND</tt> flag in write mode, the file
+ *                            will be cleared when opened.  Default: <tt>OPEN_RDWR | OPEN_CREATe | OPEN_APPEND</tt>.
+ *
+ * @return bool <tt>true</tt> if the opening was successful, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.FileMapping#open:
 ..class:Class.FileMapping
@@ -298,6 +372,17 @@ open(FileMapping<TSpec> &mapping, TFile const &file)
     return false;
 }
 
+/*!
+ * @fn FileMapping#openTemp
+ * @brief Open a temporary file to be mapped into memory.
+ *
+ * @signature bool openTemp(fileMapping);
+ *
+ * @param[in,out] fileMapping The FileMapping to open using a temporary file.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.FileMapping#openTemp:
 ..class:Class.FileMapping
@@ -322,6 +407,17 @@ openTemp(FileMapping<TSpec> &mapping)
     return result;
 }
 
+/*!
+ * @fn FileMapping#close
+ * @brief Close a file and its memory mapping.
+ * 
+ * @signature bool close(mapping);
+ *
+ * @param[in,out] mapping The FileMapping to close
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.FileMapping#close:
 ..class:Class.FileMapping
@@ -344,6 +440,18 @@ close(FileMapping<TSpec> &mapping)
     _initialize(mapping);
     return result;
 }
+
+/*!
+ * @fn FileMapping#closeAndResize
+ * @brief Close a memory mapping and resize and close the underlying file.
+ *
+ * @signature bool closeAndResize(mapping, newFileSize);
+ *
+ * @param[in,out] mapping     The FileMapping to close.
+ * @param[in]     newFileSize The size the file should have after closing.
+ *
+ * @return bool <tt>true</tt> indicating success, <tt>false</tt> failure.
+ */
 
 /**
 .Function.FileMapping#closeAndResize:
@@ -371,6 +479,17 @@ closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
     return result;
 }
 
+/*!
+ * @fn FileMapping#length
+ * @brief Return the file size of a memory mapping.
+ * 
+ * @signature TSize length(mapping);
+ *
+ * @param[in] mapping The FileMapping to return the length for.
+ *
+ * @return TSize The file size.  TSize is the size type of the file, as returned by the Size metafunction.
+ */
+
 /**
 .Function.FileMapping#length:
 ..class:Class.FileMapping
@@ -396,6 +515,23 @@ length(FileMapping<TSpec> const &mapping)
 {
     return mapping.fileSize;
 }
+
+/*!
+ * @fn FileMapping#resize
+ * @brief Resize the underlying file.
+ *
+ * @signature bool resize(mapping, newFileSize);
+ *
+ * @param[in,out] mapping     The FileMapping to resize.
+ * @param[in]     newFileSize The new file size to set.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
+ *
+ * @section Remarks
+ *
+ * On Windows, all existing file mappings must be unmapped via @link FileMapping#unmapFileSegment @endlink before
+ * claling this function.
+ */
 
 /**
 .Function.FileMapping#resize:
@@ -425,6 +561,26 @@ resize(FileMapping<TSpec> &mapping, TSize newFileSize)
     result &= _mapFile(mapping, newFileSize);
     return result;
 }
+
+/*!
+ * @fn FileMapping#flushFileSegment
+ * @brief Wait for all outstanding transactions of a memory-mapped file segment.
+ *
+ * @signature bool flushFileSegment(fileMapping, addr, beginPos, size);
+ *
+ * @param[in,out] fileMapping A FileMapping object.
+ * @param[in]     addr        A pointer to the beginning of memory-mapped segment in memory (returned by a prior
+ *                            call of @link FileMapping#mapFileSegment @endlink.
+ * @param[in]     beginPos    The absolute start address of the segment in bytes.
+ * @param[in]     size        The segment length in bytes.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
+ * @section Remarks
+ *
+ * This function has no effect under Windows.  On all other platforms it calls <tt>msync</tt>.  This function is only
+ * needed to synchronize file accesses in non-shared-memory environments.
+ */
 
 /**
 .Function.flushFileSegment:
@@ -457,6 +613,21 @@ flushFileSegment(FileMapping<TSpec> &, void *addr, TPos beginPos, TSize size)
 #endif
 }
 
+/*!
+ * @fn FileMapping#cancelFileSegment
+ * @brief Cancel all outstanding transactions of a memory-mapped file segment.
+ *
+ * @signature bool cancelFileSegment(fileMapping, addr, beginPos, size);
+ *
+ * @param[in,out] fileMapping The FileMapping object.
+ * @param[in]     addr        A pointer to the beginning of the memory-mapped segment in memory (returned by a prior
+ *                            call of FileMapping#mapFileSegment).
+ * @param[in]     beginPos    the absolute start address of the segment in bytes.
+ * @param[in]     size        The segment length in bytes.
+ *
+ * @returns bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.cancelFileSegment:
 ..class:Class.FileMapping
@@ -486,6 +657,26 @@ cancelFileSegment(FileMapping<TSpec> &, void *addr, TPos fileOfs, TSize size)
     return (msync(addr, size + fileOfs, MS_INVALIDATE) == 0);
 #endif
 }
+
+/*!
+ * @fn FileMapping#adviseFileSegment
+ * @brief Give advise about use of a memory-mapped file segment.
+ *
+ * @signature bool adviseFileSegment(fileMapping, advise, addr, fileOfs, size);
+ *
+ * @param[in,out] fileMapping The FileMapping object to adsive segment in.
+ * @param[in]     advise      The advise type.  Type: @link FileMappingAdvise @endlink.
+ * @param[in]     addr        A pointer t othe beginning of the memory-mapped segment in memory (returned by a
+ *                            prior call of @link FileMapping#mapFileSegment @endlink).
+ * @param[in]     fileOfs     The absolute start address of the segment in bytes.
+ * @param[in]     size        The segment length in bytes.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
+ * @section Remarks
+ *
+ * This function has no effect on Windows.  On all other platforms it calls <tt>posix_madvise</tt>.
+ */
 
 /**
 .Function.adviseFileSegment:
@@ -519,6 +710,22 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
     return (posix_madvise(static_cast<char*>(addr) + fileOfs, size, advise) == 0);
 #endif
 }
+
+/*!
+ * @fn FileMapping#mapFileSegment
+ * @brief Map a segment of a file into memory.
+ *
+ * @signature TPtr mapFileSegment(fileMapping, fileOfs[, size[, mode]]);
+ *
+ * @param[in,out] fileMapping A FileMapping object.
+ * @param[in]     fileOfs     The absolute start address of the segment in bytes.
+ * @param[in]     size        The segment length in bytes.
+ * @param[in]     mode        The mapping access mode.  Default rread/write open mode of the underlying file.
+ *                            Type: @link FileMappingMode @endlink.
+ *
+ * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  TPtr is
+ *              <tt>void *</tt>.
+ */
 
 /**
 .Function.mapFileSegment:
@@ -608,6 +815,19 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs = 0)
     return mapFileSegment(mapping, fileOfs, length(mapping) - fileOfs);
 }
 
+/*!
+ * @fn FileMapping#unmappedFileSegment
+ * @brief Unmap a memory-mapped file segment.
+ *
+ * @signature bool unmappedFileSegment(fileMapping, addr, size);
+ *
+ * @param[in,out] fileMapping A FileMapping object.
+ * @param[in]     addr        The pointer to the beginning of the memory-mapped segment in memory.  Type: <tt>void*</tt>.
+ * @param[in]     size        The segment length in bytes.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.unmapFileSegment:
 ..class:Class.FileMapping
@@ -639,6 +859,22 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
         SEQAN_FAIL("unmapFileSegment(%x,%i) failed: \"%s\"", (unsigned long)addr, size, strerror(errno));
     return result;
 }
+
+/*!
+ * @fn FileMapping#remapFileSegment
+ * @brief Change the size of a memory-mapped file segment.
+ *
+ * @signature TPtr remapFileSegment(fileMapping, oldAddr, oldFileOfs, oldSize, newSize);
+ *
+ * @param[in,out] fileMapping The FileMapping object.
+ * @param[in]     oldAddr     The address returned by @link FileMaping#mapFileSegment @endlink.
+ * @param[in]     oldFileOfs  The <tt>fileOfs</tt> parameter used in @link FileMaping#mapFileSegment @endlink.
+ * @param[in]     oldSize     The <tt>size</tt> parameter used in @link FileMaping#mapFileSegment @endlink.
+ * @param[in]     newSize     the new segment length in bytes.
+ *
+ * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  Type:
+ *              <tt>void*</tt>.
+ */
 
 /**
 .Function.remapFileSegment:

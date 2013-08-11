@@ -60,6 +60,22 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     //////////////////////////////////////////////////////////////////////////////
     // generic open/close interface
 
+/*!
+ * @fn File#open
+ * @brief Opens a file, stream, or persistent string.
+ *
+ * @signature bool open(file, fileName, openMode);
+ *
+ * @param[in,out] file     The File to open.
+ * @param[in]     fileName A <tt>char const *</tt> string containing the file name.
+ * @param[in]     openMode Combination of flags defining how the file should be opened.  See @link FileOpenMode
+ *                         @endlink for more details.  Type: <tt>int</tt>.  If you omit the <tt>OPEN_APPEND</tt> flag in
+ *                         write mode, the file will be cleared when opened.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                         OPEN_APPEND</tt>.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.open:
 ..class:Class.File
@@ -90,6 +106,24 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 //IOREV
 		return open(me, fileName, DefaultOpenMode<File<TSpec> >::VALUE);
     }
+
+/*!
+ * @fn File#openTemp
+ * @brief Opens a temporary file.
+ *
+ * @signature bool openTemp(file);
+ *
+ * @param[in,out] file The File object to open the temporary file.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
+ * @section Remarks
+ *
+ * After closing this file will be deleted automatically.  The openmode (see @link File#open @endlink) is <tt>OPEN_RDWR
+ * | OPEN_CREATE</tt>.
+ *
+ * @return bool <tt>true</tt> on success <tt>false</tt> on failure.
+ */
 
 /**
 .Function.openTemp:
@@ -124,7 +158,18 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 	{
 //IOREV _stub_ _nodoc_ This is currently a no-op. Is that intended?
 	}
-    
+
+/*!
+ * @fn File#close
+ * @brief Close a file.
+ *
+ * @signature bool close(file);
+ *
+ * @param[in,out] file The File object to close.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.close:
 ..class:Class.File
@@ -155,6 +200,23 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     //////////////////////////////////////////////////////////////////////////////
     // generic read(At)/write(At) interface
 
+/*!
+ * @fn File#read
+ * @brief Loads record from a file.
+ *
+ * @signature bool read(file, memPtr, count);
+ *
+ * @param[in,out] file   The File object.
+ * @param[out]    memPtr A pointer to the first destination record in memory.
+ * @param[in]     count  The amount of records to be read.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
+ * @section Remarks
+ *
+ * The records are read from the position pointed to by the current file pointer (see @link File#seek @endlink).
+ */
+
 /**
 .Function.read:
 ..class:Class.File
@@ -178,7 +240,24 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
         TFileSize nbytes = (TFileSize)count * (TFileSize)sizeof(TValue);
 		return me.read(memPtr, nbytes) == nbytes;
     }
-    
+
+/*!
+ * @fn File#write
+ * @brief Saves records to a file.
+ *
+ * @signature bool write(file, memPtr, count);
+ *
+ * @param[in,out] file   The File object.
+ * @param[in]     memPtr Pointer to the source for the data to write.
+ * @param[in]     count  The number of records to write.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ *
+ * @section Remarks
+ *
+ * The records are written at the position pointed to by th ecurrent file pointer (see @link File#seek @endlink).
+ */
+
 /**
 .Function.write:
 ..class:Class.File
@@ -203,6 +282,20 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 		return me.write(memPtr, nbytes) == nbytes;
     }
 
+/*!
+ * @fn File#readAt
+ * @brief Loads records from a specific position in a file.
+ *
+ * @signature bool readAt(file, memPtr, count, fileOfs);
+ *
+ * @param[in,out] file    The File object to read from.
+ * @param[out]    memPtr  A pointer to the first destination record in memory.
+ * @param[in]     count   The amount of records to be read.
+ * @param[in]     fileOfs The absolute file position in bytes measured from the beginning.
+ *
+ * @return bool <tt>true</tt> on success and <tt>false</tt> on failure.
+ */
+
 /**
 .Function.readAt:
 ..class:Class.File
@@ -226,7 +319,21 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 		seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
 		return read(me, memPtr, count);
     }
-    
+
+/*!
+ * @fn File#writeAt
+ * @brief Saves records to a specific position in a file.
+ *
+ * @signature bool writeAt(file, memPtr, count, fileOfs);
+ *
+ * @param[in,out] file    The File object to write to.
+ * @param[in]     memPtr  Pointer to the memory to write.
+ * @param[in]     count   The amount of records to be written.
+ * @param[in]     fileOfs The absolute file position in bytes measured from the beginning.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.writeAt:
 ..class:Class.File
@@ -255,6 +362,21 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     //////////////////////////////////////////////////////////////////////////////
     // generic seek/tell/size/resize interface
+
+/*!
+ * @fn File#seek
+ * @brief Changes the current file pointer.
+ *
+ * @signature TPosition seek(file, fileOfs[, origin]);
+ *
+ * @param[in,out] file    The File object to seek in.
+ * @param[in]     fileOfs A file offset measured in bytes relative to <tt>origin</tt>.
+ * @param[in]     origin  Selects the origin from where to calculate the new position.  One of <tt>SEEK_BEGIN</tt>,
+ *                        <tt>SEEK_CURRENT</tt>, and <tt>SEEK_END<tt> (origin is beginning, current pointer, end of
+ *                        the file).  Default: <tt>SEEK_BEGIN</tt>.
+ *
+ * @return TPosition The new file position measured in bytes from the beginning.
+ */
 
 /**
 .Function.seek:
@@ -292,6 +414,18 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 //IOREV
 		return seek(me, fileOfs, SEEK_BEGIN);
 	}
+
+/*!
+ * @fn File#tell
+ * @brief Gets the current file pointer.
+ *
+ * @signature TPosition tell(file);
+ *
+ * @param[in] file The File object to query for the current position.
+ *
+ * @return TPosition The current position in the file.
+ */
+
 /**
 .Function.tell:
 ..class:Class.File
@@ -311,6 +445,15 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
         return me.tell();
     }
 
+/*!
+ * @fn File#rewind
+ * @brief Sets the current file pointer to the beginning of a file.
+ *
+ * @signature void rewind(file);
+ *
+ * @param[in,out] file The file to reset the file pointer of.
+ */
+
 /**
 .Function.rewind:
 ..class:Class.File
@@ -329,7 +472,18 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 //IOREV
 		seek(me, 0);
     }
-    
+
+/*!
+ * @fn File#size
+ * @brief Return the file size.
+ *
+ * @signature TSize size(file);
+ *
+ * @param[in] file The File object to query for its size.
+ *
+ * @return TSize The file size measured in bytes.
+ */
+
 /**
 .Function.size:
 ..class:Class.File
@@ -352,6 +506,16 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
         return result;
     }
 
+/*!
+ * @fn File#resize
+ * @brief A file object.
+ *
+ * @signature void resize(file, newLength);
+ *
+ * @param[in,out] file      The File object to resize.
+ * @param[in]     newLength The file size in bytes to resize to in bytes.
+ */
+
 /**
 .Function.resize:
 ..class:Class.File
@@ -372,6 +536,17 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
         setEof(me);
         seek(me, old_pos, SEEK_BEGIN);
     }
+
+/*!
+ * @fn File#setEof
+ * @brief Sets the file end to the current pointer.
+ *
+ * @signature bool setEof(file);
+ *
+ * @param[in,out] file The File object to set the end of.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
 
 /**
 .Function.setEof:
@@ -495,6 +670,22 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     //////////////////////////////////////////////////////////////////////
     // queue-less request based pseudo asychronous read/write
 
+/*!
+ * @fn File#asyncReadAt
+ * @brief Asynchronously loads records from a specific position in a file.
+ *
+ * @signature bool asyncReadAt(file, memPtr, count, fileOfs, request);
+ *
+ * @param[in,out] file    The File object to read from.
+ * @param[out]    memPtr  A pointer to the first destination record in memory.
+ * @param[in]     count   The amount of records to be read.
+ * @param[in]     fileOfs The absolute file position in bytes measured from the beginning.
+ * @param[in]     request Reference to a structure that will be associated with this asynchronous request.  Type:
+ *                        @link AsyncRequest @endlink.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.asyncReadAt:
 ..class:Class.File
@@ -521,7 +712,22 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 //IOREV _stub_ see general discussion about AsynRequest
         return readAt(me, memPtr, count, fileOfs);
     }
-    
+
+/*!
+ * @fn File#asyncWriteAt
+ * @brief Asynchronously writes records to a specific position in a file.
+ *
+ * @signature bool asyncWriteAt(file, memPtr, count, fileOfs, request);
+ *
+ * @param[in,out] file    The File object.
+ * @param[in]     memPtr  A pointer to the first source record in memory.
+ * @param[in]     count   The amount of records to be written.
+ * @param[in]     fileOfs The absolute file position in bytes measured form the beginning.
+ * @param[in]     request Reference to a structure that will be associated with this asynchronous request.
+ *
+ * @return bool <tt>true</tt> on succcess, <tt>false</tt> on failure.
+ */
+
 /**
 .Function.asyncWriteAt:
 ..class:Class.File
@@ -553,6 +759,15 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 	//////////////////////////////////////////////////////////////////////
     // pseudo queue specific functions
 
+/*!
+ * @fn File#flush
+ * @brief Waits for all open requests to complete.
+ *
+ * @signature void flush(file);
+ *
+ * @param[in,out] file The File object to flush.
+ */
+
 /**
 .Function.flush:
 ..class:Class.File
@@ -570,6 +785,24 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 	{
 //IOREV _noop_ specialized for async file access but not for sync
 	}
+
+/*!
+ * @fn File#waitFor
+ * @brief Waits for an asychronous request to complete.
+ *
+ * @signature bool waitFor(request[, timeout]);
+ *
+ * @param[in,out] request Reference to an AsyncRequest.
+ * @param[in]     timeout A timeout value in milliseconds.  A value of 0 can be used to test for completion without
+ *                        waiting.  Default: 0.
+ *
+ * @return bool <tt>true</tt> on completion, <tt>false</tt> on timeout.
+ *
+ * @section Remarks
+ *
+ * <tt>waitfor</tt> block sand suspends the calling thread process until <tt>request</tt> is completed or after
+ * <tt>timeout</tt> milliseconds.
+ */
 
 /**
 .Function.waitFor:
@@ -607,6 +840,18 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 	{
 //IOREV _noop_ see general discussion about AsynRequest
 	}
+
+/*!
+ * @fn File#cancel
+ * @brief Cancels an asynchronous request.
+ *
+ * @signature bool cancel(file, request);
+ *
+ * @param[in,out] file    The File to cancel the request for.
+ * @param[in]     request Reference to an AsyncRequest object.  Type: @link AsyncRequest @endlink.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
 
 /**
 .Function.cancel:

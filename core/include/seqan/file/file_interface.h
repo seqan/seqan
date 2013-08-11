@@ -39,6 +39,22 @@
 
 namespace seqan {
 
+/*!
+ * @class SyncFile
+ * @headerfile <seqan/file.h>
+ * @brief File structure supporting synchronous input/output access.
+ *
+ * @signature template <[typename TSpec]>
+ *            class File<Sync<TSpec> >;
+ *
+ * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
+ *
+ * @section Remarks
+ *
+ * This class supports pseudo-asynchronous access methods, i.e. the method to initiate an I/O request blocks until the
+ * request completion.
+ */
+
 /**
 .Spec.Sync:
 ..cat:Files
@@ -53,6 +69,17 @@ namespace seqan {
     struct Sync;
 //IOREV
 
+/*!
+ * @class AsyncFile
+ * @headerfile <seqan/file.h>
+ * @brief File structure supporting asynchronous input/output access.
+ *
+ * @signature template <[typename TSpec]>
+ *            class File<Async<TSpec> >;
+ *
+ * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
+ */
+
 /**
 .Spec.Async:
 ..cat:Files
@@ -66,6 +93,16 @@ namespace seqan {
     struct Async;
 //IOREV
 
+/*!
+ * @class File
+ * @headerfile <seqan/file.h>
+ * @brief Represents a file.
+ *
+ * @signature template <[typename TSpec]>
+ *            class File;
+ *
+ * @tparam TSpec Specializing type.  Default: <tt>Async&lt;&gt;</tt>.
+ */
 
 /**
 .Class.File:
@@ -80,6 +117,57 @@ namespace seqan {
 	template <typename TSpec = Async<> >
     class File;
 //IOREV
+
+/*!
+ * @enum FileOpenMode
+ * @headerfile <seqan/file.h>
+ * @brief Flags to select th eopen mode of a @link File @endlink or external string.
+ *
+ * @section Remarks
+ *
+ * These flags can be comined via the <tt>|</tt> operator (bitwise OR).  The defualt open mode is <tt>OPEN_RDWR |
+ * OPEN_CREATE | OPEN_APPEND</tt>.
+ *
+ * If you omit the <tt>OPEN_APPEND</tt> flag in write mode, the file will be truncated to size 0 when opened.
+ *
+ * @var FileOpenMode OPEN_RDONLY
+ * @brief Open in read-only mode.
+ *
+ * @var FileOpenMode OPEN_WRONLY
+ * @brief Open in write-only mode.
+ *
+ * @var FileOpenMode OPEN_RDWR
+ * @brief Open for reading and writing.
+ *
+ * @var FileOpenMode OPEN_CREATE
+ * @brief Create the file if it does not yet exists.
+ *
+ * @var FileOpenMode OPEN_APPEND
+ * @brief Keep the existing data.  If this flag is not given then the file is cleared in write mode.
+ *
+ * @var FileOpenMode OPEN_QUIET
+ * @brief Don't print any warning message if the file could not be opened.
+ *
+ * @var FileOpenMode OPEN_MASK
+ * @brief (Internal) Bitmask to extract the read/write open mode.
+ *
+ * @section Examples
+ *
+ * Code example to test for read-only mode:
+ *
+ * @code{.cpp}
+ * if (openMode & OPEN_MASK == OPEN_READ)
+ *     // do something if opened in read-only mode
+ * @endlink
+ *
+ * @var FileOpenMode OPEN_ASYNC
+ * @brief (Internal) Open the file for asynchronous file access.  For asynchronous file access, use the @link AsyncFile
+ *                   @endlink.
+ *
+ * @var FileOpenMode OPEN_TEMPORARY
+ * @brief (Internal) Open automatically delete the file after close.  Use the <tt>openTemp</tt> methods to open
+ *        temporary files.
+ */
 
 /**
 .Enum.FileOpenMode
@@ -139,6 +227,21 @@ if (openMode & OPEN_MASK == OPEN_READ)
     // you have to call release(AsyncRequest<T>) after a finished *event based* transfer
 	struct AsyncDummyRequest {};
 //IOREV
+
+/*!
+ * @class AsyncRequest
+ * @headerfile <seqan/file.h>
+ * @brief Associated with an asynchronous I/O request.
+ *
+ * @signature template <typenam TFile>
+ *            struct AsyncRequest;
+ *
+ * @tparam TFile The file type.
+ *
+ * @section Remarks
+ *
+ * This structure is used to identify asynchronous requests after their initiation.
+ */
 
 /**
 .Class.AsyncRequest:

@@ -57,6 +57,18 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+/*!
+ * @class MMapConfig
+ * @headerfile <seqan/file>
+ * @brief Configuration for MMapStrings.
+ *
+ * @signature template <[typename TFile, [typename TSize]]>
+ *            class MMapConfig;
+ *
+ * @tparam TFile The file type to use for the memory mapped string.  Defaults to <tt>File&lt;&gt;</tt>
+ * @tparam TSize The size type to use.  Defaults to <tt>size_t</tt>.
+ */
+
     template < typename TFile_ = File<>,				// default file type
                typename TSize_ = size_t >				// size type
     struct MMapConfig {
@@ -73,6 +85,41 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
     // Memory Mapped String
     //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @class MMapString
+ * @headerfile <seqan/file.h>
+ * @brief String that is stored in external memory using direct memory mapping.
+ *
+ * @signature template <typename TValue[, typename TConfig]>
+ *            class String<TValue, MMap<TConfig> >;
+ *
+ * @tparam TValue  The value type to use for the items/characters.
+ * @tparam TConfig The configuration to use for the underlying file.  Default: MMapConfig.
+ *
+ * @section Remarks
+ *
+ * The MMap String enables to access sequences larger than the available physical memory (RAM) by using external memory
+ * (e.g. Hard disk, Network storage, ...) mapped into memory.  The size of the string is limited by external memory and
+ * the logical address space (4GB on a 32bit OS).  See the String constructor for more details.
+ *
+ * This string also supports fast appending and removing of values at the end.
+ */
+
+/*!
+ * @fn MMapString::String
+ * @brief Constructor.
+ *
+ * @signature String::String();
+ * @signature String::String(file);
+ * @signature String::String(fileName[, openMode]);
+ *
+ * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensture that
+ *                         <tt>file</tt> is open as the string will not call <tt>open</tt> and <tt>close</tt>
+ *                         on the file.
+ * @param[in]     fileName The path to open. Type: <tt>char const *</tt>
+ * @param[in,out] openMode The open mode.
+ */
 
 /**
 .Spec.MMap String:
@@ -306,6 +353,15 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
+/*!
+ * @fn MMapString#flush
+ * @brief Waits for all open read/write requests to complete.
+ *
+ * @signature void flush(str);
+ *
+ * @param[in,out] str The MMapString to flush.
+ */
+
     template < typename TValue, typename TConfig >
 	inline bool
 	flush(String<TValue, MMap<TConfig> > &me)
@@ -317,6 +373,20 @@ SEQAN_CHECKPOINT
             0,
             (TFileSize)capacity(me) * (TFileSize)sizeof(TValue));
 	}
+
+/*!
+ * @fn MMapString#mmapAdvise
+ * @brief Call advise function for memory mapped files.
+ *
+ * @signature bool mmapAdvise(mmapString, scheme[, beginPos, size]);
+ *
+ * @param mmapString The MMapString to call advise in.
+ * @param scheme     The memory access scheme to use.  Type: FileMappingAdvise.
+ * @param beginPos   Begin position in the string for the advise call.
+ * @param size       Size of the range used for the advise call.
+ *
+ * @return bool <tt>true</tt> if the advise was successful, <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.mmapAdvise
@@ -512,6 +582,19 @@ SEQAN_CHECKPOINT
 ///.Function.open.param.string.type:Spec.MMap String
 ///.Function.open.class:Spec.MMap String
 
+/*!
+ * @fn MMapString#open
+ * @brief Open the MMapString's underlying file from a path.
+ *
+ * @signature bool open(str, fileName[, openMode]);
+ *
+ * @param[in,out] str      The MMapString to open.
+ * @param[in]     fileName Path to the file to open. Type: <tt>char const *</tt>.
+ * @param[in]     openMode The open mode. Type: <tt>int</tt>.
+ *
+ * @return bool <tt>true</tt> if the operation succeeded and <tt>false</tt> otherwise.
+ */
+
 	template < typename TValue, typename TConfig >
     inline bool 
     open(String<TValue, MMap<TConfig> > &me, const char *fileName, int openMode) 
@@ -545,6 +628,17 @@ SEQAN_CHECKPOINT
 
 ///.Function.openTemp.param.string.type:Spec.MMap String
 ///.Function.openTemp.class:Spec.MMap String
+
+/*!
+ * @fn MMapString#openTemp
+ * @signature Open an MMapString using an temporary file.
+ *
+ * @signature bool openTemp(str);
+ *
+ * @param[in,out] str The MMapString to open using temporary file.
+ *
+ * @return bool <tt>true</tt> if opening succeeded, <tt>false</tt> otherwise.
+ */
 
 	template < typename TValue, typename TConfig >
     inline bool 
@@ -598,6 +692,17 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 ///.Function.close.param.string.type:Spec.MMap String
 ///.Function.close.class:Spec.MMap String
+
+/*!
+ * @fn MMapString#close
+ * @brief Close the MMapString.
+ *
+ * @signature bool close(str);
+ *
+ * @param[in] str The MMapString to close the file of.
+ *
+ * @return bool <tt>true</tt> if the closing succeeded, <tt>false</tt> otherwise.
+ */
 
 	template < typename TValue, typename TConfig >
     inline bool 

@@ -54,6 +54,99 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+/*!
+ * @class ExternalConfig
+ * @headerfile <seqan/file.h>
+ * @brief Standard configuration for the @link ExternalString @endlink.
+ *
+ * @signature template <[typename TFile[, unsigned PAGE_SIZE[, unsigned FRAMES]]>
+ *            struct ExternalConfig;
+ *
+ * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
+ * @tparam PAGE_SIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
+ *                   calculations.  Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ *
+ * @section Remarks
+ *
+ * When using this configuration, the Size type of the ExternalString is <tt>unsigned</tt>.  Thus, with this configuration at most 4.294.967.296 values can be stored in an ExternalString on a 32 bit system.
+ *
+ * For a larger size type use ExternalConfigLarge.
+ */
+
+/*!
+ * @class ExternalConfigLarge
+ * @headerfile <seqan/file.h>
+ * @brief Large size type configuration for the @link ExternalString @endlink.
+ *
+ * @signature template <[typename TFile[, unsigned PAGE_SIZE[, unsigned FRAMES]]>
+ *            struct ExternalConfigLarge;
+ *
+ * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
+ * @tparam PAGE_SIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
+ *                   calculations.  Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ *
+ * @section Remarks
+ *
+ * When using this configuration ,th eSize type o fthe ExternalString is Size type of <tt>TFile</tt>.  Normally, this is
+ * a 64 bit integer.  For a smaller size type use ExternalConfig.
+ *
+ * Some data structures store size types values (e.g. suffix arrays in indices).  To save memory, you should think o
+ * fusing ExternalConfig.
+ */
+
+/*!
+ * @class ExternalConfigSize
+ * @headerfile <seqan/file.h>
+ * @brief Arbitrary size type configuration for @link ExternalString @endlink.
+ *
+ * @signature template <typename TSize[, typename TFile[, unsigned PAGE_SIZE[, unsigned FRAMEs]]]>
+ *            class ExternalConfigSize;
+ *
+ * @tparam TSize The size type of the ExternalString.
+ * @tparam TFile Type of file the ExternalString will be based on.  Defaults to <tt>File&lt;&gt;</tt>.
+ * @tparam PAGE_SIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
+ *                   calculations.  Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ */
+
+/*!
+ * @class ExternalString External String
+ * @headerfile <seqan/file.h>
+ * @brief String that is stored in external memory.
+ *
+ * @signature template <typename TValue[, typename TConfig]>
+ *            class String<TValue, External<TConfig> >;
+ *
+ * @tparam TValue  The type that is used for the items/characters stored in the string.
+ * @tparam TConfig A structure to confgure the external string.  Defaults to <tt>ExternalConfigLarge&lt;&gt;.  See
+ *                 ExternalConfig, ExternalConfigLarge, and ExternalConfigSize.
+ *
+ * @section Remarks
+ *
+ * The External String enables to access sequences larger than the available internal memory (RAM) by using external
+ * memory (e.g. Hard disk, Network storage, ...) via a File object.  Sequences of nearly arbitrary size can be accessed
+ * even larger than the logically addressable memory, i.e. they can in particular contain more than 2^32 elements on a
+ * 32bit system (see Tag.ExternalConfigLarge).  See the String constructor for more details.
+ *
+ * This String also supports fast appending and removing of values at the end (see Block String, appendValue)
+ *
+ * The External String implements a LRU mechanism to swap out pages.  The External String's Iterator detects a forward or
+ * backward iteration and asynchronously prefetches pages that certainly will be accessed and automatically swaps out
+ * pages that certainly won't be accessed any more in the iteration process.
+ *
+ * The String is implemented like a virtual memory manager.  It divides its character sequence into pages of a fixed
+ * length (e.g. 1MB) and maintains a page table with information for each page (e.g. resides in memory or was swapped
+ * out, is dirty and needs to be saved, ...).  Besides the page table the String also contains a size-limited list of
+ * page frames.  A page frame is reserved internal memory for a page.  When accessing values of a page that is stored in
+ * external memory, the page is loaded to a page frame first.  In case that there is no page frame free, another page is
+ * swapped out before to free a page frame.
+ */
+
 /**
 .Spec.External String:
 ..cat:Strings
@@ -1141,6 +1234,33 @@ you should think of using @Tag.ExternalConfig@.
 		String(String &) { SEQAN_ASSERT_FAIL("Aborted attempt to copy a String<..,External<..> >"); }  // TODO(holtgrew): Actually, this should be an ABORT
 		String(String const &) { SEQAN_ASSERT_FAIL("Aborted attempt to copy a String<..,External<..> >"); }  // TODO(holtgrew): Actually, this should be an ABORT
 
+/*!
+ * @fn ExternalString::String
+ * @brief Constructor
+ *
+ * @signature String::String();
+ * @signature String::String(file);
+ * @signature String::String(fileName[, openMode]);
+ *
+ * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensture that
+ *                         <tt>file</tt> is open as the string will not call <tt>open</tt> and <tt>close</tt>
+ *                         on the file.
+ * @param[in]     fileName The path to open. Type: <tt>char const *</tt>
+ * @param[in,out] openMode The open mode.
+ *
+ * @section Remarks
+ *
+ * When a file or file name is given, this file will be used for the ExternalString.  If the file exists, this file will
+ * be used and determines the strings length and content.  If the file doesn't exist, a new and empty file will be
+ * created and used for the string.  In both cases, the string won't delete the file in the destructor.
+ *
+ * When no file is given (default c'tor) the string will be empty and no file is used until the string needs to swap out
+ * page frames.  Then a temporary file will be used which will be deleted when the string is destroyed.
+ *
+ * Instead of giving file or fileName to the constructor, you could also use the default constructor and call open or
+ * openTemp afterwards to reach the same behaviour.
+ */
+
 /**
 .Memfunc.External String#String:
 ..class:Spec.External String
@@ -1642,7 +1762,16 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                 SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*f), strerror(errno));
         }
 	}
-	
+
+/*!
+ * @fn ExternalString#flush
+ * @brief Waits for all open read/write requests to complete.
+ *
+ * @signature void flush(str);
+ *
+ * @param[in,out] str The ExternalString to flush.
+ */
+
 /**
 .Function.flush:
 ..signature:flush(string)
@@ -1745,6 +1874,20 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
         }
 	}
 //____________________________________________________________________________
+
+/*!
+ * @fn ExternalString#open
+ * @brief Open the ExternalString's underlying file from a path.
+ *
+ * @signature bool open(str, fileName[, openMode]);
+ *
+ * @param[in,out] str      The ExternalString to open.
+ * @param[in]     fileName Path to the file to open. Type: <tt>char const *</tt>.
+ * @param[in]     openMode The open mode. Type: <tt>int</tt>.
+ *
+ * @return bool <tt>true</tt> if the operation succeeded and <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.open:
 ..signature:open(string, fileName[, openMode]))
@@ -1814,6 +1957,17 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		return me._file;
     }
 
+/*!
+ * @fn ExternalString#openTemp
+ * @signature Open an ExternalString using an temporary file.
+ *
+ * @signature bool openTemp(str);
+ *
+ * @param[in,out] str The ExternalString to open using temporary file.
+ *
+ * @return bool <tt>true</tt> if opening succeeded, <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.openTemp:
 ..signature:openTemp(string)
@@ -1861,6 +2015,18 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 		return true;
 	}
 //____________________________________________________________________________
+
+/*!
+ * @fn ExternalString#close
+ * @brief Close the external string.
+ *
+ * @signature bool close(str);
+ *
+ * @param[in] str The ExternalString to close the file of.
+ *
+ * @return bool <tt>true</tt> if the closing succeeded, <tt>false</tt> otherwise.
+ */
+    
 /**
 .Function.close:
 ..signature:close(string)
