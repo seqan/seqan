@@ -571,11 +571,20 @@ reverse(TText & text)
     reverse(text, Parallel());
 }
 
+// const variants for segments/modifiers
+
 template < typename TText >
 inline void
 reverse(TText const & text) 
 {
-    reverse(const_cast<TText &>(text));
+    reverse(const_cast<TText &>(text), Parallel());
+}
+
+template < typename TText, typename TParallelTag >
+inline void
+reverse(TText const & text, Tag<TParallelTag> parallelTag)
+{
+    reverse(const_cast<TText &>(text), parallelTag);
 }
 
 
