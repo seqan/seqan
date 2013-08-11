@@ -151,6 +151,14 @@ namespace SEQAN_NAMESPACE_MAIN
 ..status:deprecated, will be removed in favour of @Shortcut.MultiSeqFile@
 */
 
+/*!
+ * @typedef MultiSeqFile
+ * @headerfile <seqan/file.h>
+ * @brief A sequence file mapped in memory as a StringSet of concatenated sequence file fragments.
+ *
+ * @typedef StringSet<String<char, MMap<> >, Owner<ConcatDirect<> > > MultiSeqFile;
+ */
+
 /**
 .Shortcut.MultiSeqFile
 ..summary:A sequence file mapped in memory as a StringSet of concatenated sequence file fragments.
@@ -239,6 +247,21 @@ namespace SEQAN_NAMESPACE_MAIN
 // File Formats - Fasta
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn guessFormat
+ * @headerfile <seqan/file.h>
+ * @brief Guesses a file format from the contents of a sequence file.
+ *
+ * @signature bool guessFormat(text, formatTag);
+ *
+ * @param[in] text      A string storing the contents of a sequence file.
+ * @param[in] formatTag A file format tag.
+ *
+ * @return bool <tt>true</tt> if the format represented by <tt>formatTag</tt> was recognized in <tt>text</tt>.
+ *
+ * @see guessFormatFromFilename
+ */
+
 /**
 .Function.guessFormat:
 ..summary:Guesses a file format from the contents of a sequence file.
@@ -264,7 +287,20 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _doc_ in competition with file_format_guess.h:guessFileFormat()
 		return seq[0] == '>';
 	}
-	
+
+/*!
+ * @fn guessFormatFromFilename
+ * @headerfile <seqan/file.h>
+ * @brief Guesses a file format from a sequence file name.
+ *
+ * @signature bool guessFormatFromFilename(fileName, formatTag);
+ *
+ * @param[in] fileName  A filename of a sequence file.
+ * @param[in] formatTag A file format tag.
+ *
+ * @return bool <tt>true</tt> if the format represented by <tt>formatTag</tt> was recognized in <tt>fileName</tt>.
+ */
+
 /**
 .Function.guessFormatFromFilename:
 ..summary:Guesses a file format from a sequence file name.
@@ -329,6 +365,30 @@ namespace SEQAN_NAMESPACE_MAIN
         _getFileFormatExtensions(stringSet, TTagList());
     }
 
+/*!
+ * @fn split
+ * @headerfile <seqan/file.h>
+ * @brief Divides the contents of a sequence file into sequence file fragments separated by a file format specific
+ *        delimiter.
+ *
+ * @signature void split(stringSet, formatTag);
+ *
+ * @param[in,out] stringSet A @link ConcatDirectStringSet @endlink.  The <tt>concat</tt> member (concatenation string)
+ *                          contains the contents of a sequence file.
+ * @param[in]     formatTag A file format tag.
+ *
+ * @section Remarks
+ *
+ * The @link CocatDirectStringSet#concat @endlink member should contain the contents of the sequence file by a prior
+ * call of <tt>open</tt>.
+ *
+ * This function expects a @link ConcatDirectStringSet @endlink and divides the underlying concatenation string into
+ * sequence fragments separated by a file format specific delimiter.
+ *
+ * After calling this function, the StringSet length is the number of sequence fragments and each fragment can be
+ * retrieve by <tt>value</tt> or <tt>getValue</tt>.
+ */
+
 /**
 .Function.split:
 ..summary:Divides the contents of a sequence file into sequence file fragments separated by a file format specific delimiter.
@@ -372,6 +432,23 @@ After calling this function, the StringSet length is the number of sequence frag
             appendValue(me.limits, 0);
         appendValue(me.limits, itEnd - itBeg);
     }
+
+/*!
+ * @fn assignSeq
+ * @headerfile <seqan/file.h>
+ * @brief Extracts the sequence part of a sequence file fragment.
+ *
+ * @signature void assignSeq(sequence, seqFragment, formatTag);
+ *
+ * @param[out] sequence    The resulting sequence of the fragment.  Type: @link String @endlink.
+ * @param[in]  seqFragment A sequence file fragment.  Type: @link String @endlink.
+ * @param[in]  formatTag   A file format tag.  Type: @link AutoSeqFormat @endlink.
+ *
+ * @section Remarks
+ *
+ * After calling <tt>split</tt> on a @link ConcatDirectStringSet @endlink to dvide a file into fragments, this function
+ * can be used to extract the sequence of every fragment in the @link StringSet @endlink.
+ */
 
 /**
 .Function.assignSeq:
@@ -427,6 +504,23 @@ this function can be used to extract the sequence of every fragment in the Strin
 		resize(dst, dit - begin(dst, Standard()));
 	}
 
+/*!
+ * @fn assignSeqId
+ * @headerfile <seqan/file.h>
+ * @brief Extracts the sequence id of a sequence file fragment.
+ *
+ * @signature void assignSeqId(id, seqFragment, fragmentTag);
+ *
+ * @param[out] id          The resulting sequence id of the fragment.  Type: @link CharString @endlink.
+ * @param[in]  seqFragment A sequence file fragment.  Type: @link CharString @endlink.
+ * @param[in]  fragmentTag A flie format.
+ *
+ * @section Remarks
+ *
+ * After calling <tt>split</tt> on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this function
+ * can be used to extrac the sequence id of every fragment in the @link StringSet @endlink.
+ */
+
 /**
 .Function.assignSeqId:
 ..summary:Extracts the sequence id of a sequence file fragment.
@@ -467,6 +561,24 @@ this function can be used to extract the sequence id of every fragment in the St
 			assign(dst, infix(fasta, 1, it - itBeg));
 		}
 	}
+
+/*!
+ * @fn assignCroppedSeqId
+ * @headerfile <seqan/file>
+ * @brief Extracts the sequence id up to the first whitespace of a sequence file fragment.
+ *
+ * @signature void assignCroppedSeqId(id, seqFragment, formatTag);
+ *
+ * @param[out] id          The resulting cropped sequence id of the fragment (e.g. Fasta ID).  The resulting id
+ *                         contains no whitespaces.  Type: @link CharString @endlink.
+ * @param[out] seqFragment A sequence file fragment.  Type: @link CharString @endlink.
+ * @param[in]  formatTag   A file format tag.
+ *
+ * @section Remarks
+ *
+ * After calling <tt>split</tt> on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this function
+ * can e used to extract the sequence id up to the first whitespace of every fragment in the @link StringSet @endlink.
+ */
 
 /**
 .Function.assignCroppedSeqId:
@@ -511,6 +623,25 @@ this function can be used to extract the sequence id up to the first whitespace 
 		}
 	}
 
+/*!
+ * @fn assignQual
+ * @headerfile <seqan/file.h>
+ *
+ * @brief Extracts the quality values o a sequence file fragment.
+ *
+ * @signature void assignQual(qualities, seqFragment, formatTag);
+ *
+ * @param[out] qualities   The result quality values encoded in ASCII.  The quality values are in encoded in ASCII
+ *                         and must be manuall converted into zero-based values.  Type: @link CharString @endlink.
+ * @param[in]  seqFragment A sequence file fragment.
+ * @param[in]  formatTag   A file format tag.
+ *
+ * @section Remarks
+ *
+ * After calling <tt>split</tt> on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this function
+ * can be used to extrac the sequence quality values of every fragment in the StringSet.
+ */
+
 /**
 .Function.assignQual:
 ..summary:Extracts the quality values of a sequence file fragment.
@@ -540,7 +671,25 @@ this function can be used to extract the sequence quality values of every fragme
 //IOREV _doc_
 		clear(dst);
 	}
-	
+
+/*!
+ * @fn assignQualId
+ * @headerfile <seqan/file.h>
+ * @brief Extracts the quality value id of a sequence file fragment.
+ *
+ * @signature void assignQualId(id, seqFragment, formatTag);
+ *
+ * @param[out] id          The resulting quality value id of a sequence (e.g. Fastq Quality ID).  Type: @link CharString
+ *                         @endlink.
+ * @param[in]  seqFragment A sequence file framant.  Type: @link String @endlink.
+ * @param[in]  formatTag   A file format tag.
+ *
+ * @section Remarks
+ *
+ * After calling <tt>split</tt> on a @link ConcatDirectStringSet @endlink to divide a file into fragments, this function
+ * can be used to extrac the sequence quality value id of every fragment in the StringSet.
+ */
+
 /**
 .Function.assignQualId:
 ..summary:Extracts the quality value id of a sequence file fragment.
@@ -1127,6 +1276,16 @@ typedef Tag<TagRaw_> Raw; //IOREV
 // File Formats - Auto-Format
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AutoSeqFormat
+ * @extends TagSelector
+ * @headerfile <seqan/file.h>
+ * @brief Auto-detects and stores a file format.
+ *
+ * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
+ * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
+ */
+
 /**
 .Class.AutoSeqFormat
 ..summary:Auto-detects and stores a file format.
@@ -1385,6 +1544,27 @@ typedef Tag<TagRaw_> Raw; //IOREV
 //////////////////////////////////////////////////////////////////////////////
 // Directory import
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn appendSeqs
+ * @headerfile <seqan/file.h>
+ * @brief Appends all sequences stored in files of a dirctory to a StringSet.
+ *
+ * @signature void appendSeqs(seqSet, dirName, formatTag);
+ *
+ * @param[out] seqSet    A @link StringSet @endlink of sequences to append to.
+ * @param[in]  dirName   A path to a dirctory or single file.
+ * @param[in]  formatTag A file format tag.
+ *
+ * @section Remarks
+ *
+ * This function scans a directory and searches for filenames corresponding to the sequence format stored in
+ * <tt>formatTag</tt>, opens them and appends their contained sequences to the <tt>seqSet</tt>.  If <tt>formatTag</tt>
+ * is a @link AutoSeqFormat @endlink object, the file form is set to the first known sequence format guessed from a file
+ * name.
+ *
+ * @see assignSeq
+ */
 
 /**
 .Function.appendSeqs:
