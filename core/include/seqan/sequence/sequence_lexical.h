@@ -88,7 +88,7 @@ typedef Tag<TagPrefixGreater_> const TagPrefixGreater;
  *
  * @signature DefaultPrefixOrder<T>::Type;
  *
- * @param T The type to query for the prefix order.
+ * @tparam T The type to query for the prefix order.
  *
  * @return Type The prefix order tag type of T, see @link PrefixOrderTags @endlink.
  */

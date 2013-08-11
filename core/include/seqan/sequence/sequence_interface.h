@@ -420,7 +420,7 @@ struct AllowsFastRandomAccess<T const>
  * In this example, <tt>b1</tt> is <tt>true</tt., since the segment object returned by <tt>infix()</tt> is just a filter
  * and uses the buffer of it's host object str.
  *
- * <tt>String<char>(str)</tt> constructs a temporary copy of <tt>str</tt>, so these two strings have different id values.
+ * <tt>String&lt;char&gt;(str)</tt> constructs a temporary copy of <tt>str</tt>, so these two strings have different id values.
  *
  * The result of the last comparison depends on the implementation of <tt>toCString</tt> and cannot be predicted at
  * compile time.
@@ -688,10 +688,10 @@ begin(TValue const * me,
  *
  * @section Examples
  * CharString str = "ABCDEF";
- * std::cout << beginPosition(str) << std::endl;
+ * std::cout &lt;&lt; beginPosition(str) &lt;&lt; std::endl;
  * 
- * Infix<CharString >::Type myInfix = infix(str, 1, 5);
- * std::cout << beginPosition(myInfix) << std::endl;
+ * Infix&lt;CharString&gt;::Type myInfix = infix(str, 1, 5);
+ * std::cout &lt;&lt; beginPosition(myInfix) &lt;&lt; std::endl;
  * @code{.cpp}
  * @endcode
  */
