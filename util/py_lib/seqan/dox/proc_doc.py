@@ -162,7 +162,7 @@ class TextNode(object):
         if verbatim:
             self.text = text
         else:
-            self.text = escapeForXml(text)
+            self.text = text.replace('<', '&lt;').replace('>', '&gt;')
 
     def __str__(self):
         attrs = (repr(self.type), repr(self.text), repr(self.attrs), len(self.children))
@@ -794,7 +794,7 @@ class RawTextToTextNodeConverter(object):
         self.current = TextNode(type='div')
         root = self.current
         at_line_start = True
-        for i, t in enumerate(raw_text.tokens):
+        for i, t in enumerate(self.fixEntityTokens(raw_text.tokens)):
             if self.current_cmd:  # collect token in self.tokens_cmd
                 self.handleCommand(t)
                 continue
@@ -823,6 +823,40 @@ class RawTextToTextNodeConverter(object):
         if self.current_cmd:
             dox_parser.printTokenError(t, 'Open command %s!' % self.current_cmd, 'warning')
         return root
+
+    def fixEntityTokens(self, tokens):
+        """Fix entities on a list of tokens.
+
+        Ampersands opening entities that are not closed (i.e. EOF or space are
+        hit) are replaced by '&amp;'.
+        """
+        res = []
+        buf = []  # Buffer when an ampersand was opened
+        in_entity = False
+        for token in tokens:
+            if token.val == '&':  # type is PUNCTUATION
+                in_entity = True
+                buf.append(token)
+            elif any(c.isspace() for c in token.val):
+                if in_entity:
+                    buf[0].val = '&amp;'
+                res += buf
+                res.append(token)
+                in_entity = False
+                buf = []
+            elif token.val == ';':  # type is PUNCTUATION
+                in_entity = False
+                res += buf
+                res.append(token)
+                buf = []
+            elif in_entity:
+                buf.append(token)
+            else:
+                res.append(token)
+        if in_entity:
+            buf[0].val = '&amp;'
+            res += buf
+        return res
 
     def process(self, raw_entry):
         raise Exception('Not implemented!')
