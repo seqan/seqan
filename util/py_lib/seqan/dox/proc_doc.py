@@ -771,7 +771,9 @@ class RawTextToTextNodeConverter(object):
                 print >>sys.stderr, 'WARNING: Empty @link @endlink.'
                 return
             # Get link target.
-            target_token = self.tokens_cmd.pop(0)
+            target_tokens = []
+            while self.tokens_cmd and self.tokens_cmd[0].type != 'SPACE':
+                target_tokens.append(self.tokens_cmd.pop(0))
             # Trim leading whitespace again.
             while self.tokens_cmd and isWhitespace(self.tokens_cmd[0]):
                 self.tokens_cmd.pop(0)
@@ -781,8 +783,8 @@ class RawTextToTextNodeConverter(object):
             conv = RawTextToTextNodeConverter()
             link_text_node = conv.run(link_text)
             link_text_node.type = 'a'
-            link_text_node.attrs = {'href': 'seqan:' + target_token.val}
-            link_text_node.tokens = [target_token]
+            link_text_node.attrs = {'href': 'seqan:' + ''.join([t.val for t in target_tokens])}
+            link_text_node.tokens = target_tokens
             self.current.addChild(link_text_node)
         self.tokens_cmd = []
         self.current_cmd = None
@@ -840,6 +842,7 @@ class RawTextToTextNodeConverter(object):
             elif any(c.isspace() for c in token.val):
                 if in_entity:
                     buf[0].val = '&amp;'
+                    dox_parser.printTokenError(buf[0], 'Unclosed entity!', 'warning')
                 res += buf
                 res.append(token)
                 in_entity = False
@@ -855,6 +858,7 @@ class RawTextToTextNodeConverter(object):
                 res.append(token)
         if in_entity:
             buf[0].val = '&amp;'
+            dox_parser.printTokenError(buf[0], 'Unclosed entity!', 'warning')
             res += buf
         return res
 
