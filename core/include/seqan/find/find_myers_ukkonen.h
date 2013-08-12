@@ -114,9 +114,7 @@ struct AlignTextBanded; // search query in a parallelogram
  * 
  * @signature typedef Myers<FindInfix, True, void> MyersUkkonen;
  * 
- * @section Deprecated
- *
- * deprecated, use <tt>Myers&lt;FindInfix&gt;</tt>
+ * @deprecated Use <tt>Myers&lt;FindInfix&gt;</tt> instead.
  */
 
 /**

@@ -283,7 +283,7 @@ struct Needle<Segment<THost, TSpec> const>
 ...remarks:Leave empty for online pattern matching (see @Class.Pattern@).
 ...remarks:If $THaystack$ is an @Class.Index@, then $TSpec$ specifies the index search algorithm.
 ..remarks:$position(finder)$ returns the position of the current hit in the haystack.
-If $THaystack$ is a set of strings or an index of a set of strings, then $position(finder)$ returns a @Class.Pair@ $(hayNo, pos)$,
+If $THaystack$ is a set of strings or an index of a set of strings, then $position(finder)$ returns a @Class.Pair@$(hayNo, pos)$,
 in which $hayNo$ is the haystack index and $pos$ the local position of the hit.
 ..remarks:To reset the finder object and use it on another text or different text position, use $clear(finder)$
 Note that $clear(finder)$ doesn't move the text iterator. To start the search from the beginning or somewhere else in the text, use

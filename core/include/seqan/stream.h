@@ -84,6 +84,7 @@
 
 #include <seqan/stream/stream_base.h>
 #include <seqan/stream/stream_char_array.h>
+#include "../../../extras/include/seqan/file/file_stream.h"
 #if SEQAN_HAS_ZLIB
 // Enable Stream<GZFile> and Stream<Bgzf> if available.
 #include <seqan/stream/stream_gz_file.h>

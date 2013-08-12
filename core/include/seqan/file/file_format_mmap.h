@@ -156,7 +156,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/file.h>
  * @brief A sequence file mapped in memory as a StringSet of concatenated sequence file fragments.
  *
- * @typedef StringSet<String<char, MMap<> >, Owner<ConcatDirect<> > > MultiSeqFile;
+ * @signature typedef StringSet<String<char, MMap<> >, Owner<ConcatDirect<> > > MultiSeqFile;
  */
 
 /**

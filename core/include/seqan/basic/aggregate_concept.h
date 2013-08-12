@@ -45,6 +45,30 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @concept AggregateConcept
+ * 
+ * @brief Aggregate types contain a fixed number of fixed-size values (pairs, triples, tuples).
+ * 
+ * @section Remarks
+ * 
+ * Stream output operators are not shown in the function list below, but required.
+ * 
+ * Comparison operators are not shown in the function list below, but required.
+ */
+
+/*!
+ * @fn AggregateConcept#operator<<
+ * @brief Stream output operator.
+ *
+ * @signature TStream AggregateConcept::operator<<(stream, aggregate);
+ *
+ * @param stream    The <tt>std::ostream</tt> to write to.
+ * @param aggregate The aggregate type to write to the stream.
+ *
+ * @return TStream Reference to <tt>stream</tt> after writing <tt>aggregate</tt> to it.
+ */
+
 /**
 .Concept.AggregateConcept
 ..summary:Aggregate types contain a fixed number of fixed-size values.
