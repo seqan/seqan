@@ -751,6 +751,8 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
     seqan::ArgumentParser parser("roi_feature_projection");
+    setCategory(parser, "NGS ROI Analysis");
+
     // Set short description, version, and date.
     setShortDescription(parser, "Region Of Interest Projection.");
     setVersion(parser, "0.1");

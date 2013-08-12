@@ -69,10 +69,12 @@ class ParametersNode(object):
     :ivar children: children of the node
     :type children: dict with name to node mapping
     :ivar cli_element: CLIElement that this parameter is mapped to.
+    :ivar required: Whether or not this parameter is required.
+    :type required: bool
     """
     
     def __init__(self, kind='', name='', description='', value='', type_='', tags='',
-                 restrictions='', supported_formats=''):
+                 restrictions='', supported_formats='', required=False):
         """Initialize the object."""
         self.kind = kind
         self.name = name
@@ -86,6 +88,7 @@ class ParametersNode(object):
         self.parent = None  # not set, usually a list
         self.children = {}
         self.cli_element = None
+        self.required = required
 
     def computePath(self, is_root=True, path=[]):
         """Compute path entry from parent links.
@@ -120,8 +123,8 @@ class ParametersNode(object):
     def __str__(self):
         """Return string representation."""
         t = (self.name, self.description, self.value, self.type_, self.tags,
-             self.supported_formats, self.children, self.path)
-        return 'ParametersNode(%s, %s, %s, %s, %s, %s, %s, path=%s)' % tuple(map(repr, t))
+             self.supported_formats, self.children, self.path, self.required)
+        return 'ParametersNode(%s, %s, %s, %s, %s, %s, %s, path=%s, %s)' % tuple(map(repr, t))
 
     def __repr__(self):
         """Return programmatic representation, same as __str__()."""
@@ -204,6 +207,9 @@ class CTDHandler(xml.sax.handler.ContentHandler):
             # Create the top level Tool object.
             self.tool = Tool()
             self.result = self.tool
+            if not attrs.get('name'):
+                raise CTDFormatException('No attribute "name" in <tool> tag.')
+            self.tool.name = attrs.get('name')
         elif self.stack == ['tool', 'cli', 'clielement']:
             # Create a new CLIElement object for a <clieelement> tag.
             if not attrs.get('isList'):
@@ -241,7 +247,8 @@ class CTDHandler(xml.sax.handler.ContentHandler):
             tags = attrs.get('tags')
             description = attrs.get('description')
             restrictions = attrs.get('restrictions')
-            supported_formats = attrs.get('supported_formats')
+            required = attrs.get('required') == 'true'
+            supported_formats = attrs.get('supported_formats', '')
             kind = {'ITEM': 'item', 'ITEMLIST': 'itemlist'}[self.stack[-1]]
             child = ParametersNode(
                 kind=kind, name=name, description=description, value=value,
@@ -259,9 +266,7 @@ class CTDHandler(xml.sax.handler.ContentHandler):
 
     def characters(self, content):
         """Handle characters in XML file."""
-        if self.stack == ['tool', 'name']:
-            self.tool.name += content
-        elif self.stack == ['tool', 'executableName']:
+        if self.stack == ['tool', 'executableName']:
             self.tool.executable_name += content
         elif self.stack == ['tool', 'version']:
             self.tool.version += content
@@ -463,7 +468,7 @@ class GalaxyWriter(XMLWriter):
 
     def addInputParam(self, param_node):
         """Add a ParametersNode object if it is to go to <inputs>."""
-        if param_node.tags and 'output file' in param_node.tags.split(','):
+        if param_node.type_ == 'output-file':
             return  # Skip output files
         if param_node.kind not in ['item', 'itemlist']:
             return  # Skip if not item.
@@ -472,7 +477,7 @@ class GalaxyWriter(XMLWriter):
         args = {}
         if param_node.tags and 'required' not in param_node.tags.split(','):
             args['optional'] = 'true'  # false would be default
-        if param_node.tags and 'input file' in param_node.tags.split(','):
+        if param_node.type_ == 'input-file':
             args['type'] = 'data'
             args['format'] = ','.join([x.replace('*', '').replace('.', '')
                                        for x in param_node.supported_formats.split(',')])
@@ -512,12 +517,12 @@ class GalaxyWriter(XMLWriter):
             
     def addOutputParam(self, param_node):
         """Add a ParametersNode object if it is to go to <inputs>."""
-        if not param_node.tags or not 'output file' in param_node.tags.split(','):
+        if param_node.type_ != 'output-file':
             return  # Only add for output files.
         if param_node.name.endswith('-file-ext'):
             return  # Skip if extension to override.
         args = {}
-        if '.'  in param_node.supported_formats:
+        if '.' in param_node.supported_formats:
             args['format'] = param_node.supported_formats.split(',')[0].split('.')[-1]
         else:
             args['format'] = param_node.supported_formats.split(',')[0].split('*')[-1]

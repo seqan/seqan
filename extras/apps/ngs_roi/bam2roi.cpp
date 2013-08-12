@@ -131,6 +131,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
     seqan::ArgumentParser parser("bam2roi");
+    setCategory(parser, "NGS ROI Analysis");
 
     // Set short description, version, and date.
     setShortDescription(parser, "Create ROI from BAM file.");

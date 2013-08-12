@@ -44,16 +44,9 @@ class PlotThumbnailsRunner(object):
     def __init__(self, args):
         self.args = args
 
-    def _mkLinks(self):
-        """Create symlink."""
-        subprocess.call(['ln', '-s', self.args.in_file, self.args.in_file + '.roi'])
-
-    def _rmLinks(self):
-        """Remove symlink."""
-        subprocess.call(['rm', '-f', self.args.in_file + '.roi'])
-
     def run(self):
-        cmd_args = ['-if', self.args.in_file + '.roi',
+        cmd_args = ['-if', self.args.in_file,
+                    '--in-file-ext', 'roi',
                     '-o', os.path.join(self.args.out_dir, 'thumbnail_'),
                     '--max-rois', self.args.max_rois,
                     '--max-value', self.args.max_value,
@@ -67,10 +60,8 @@ class PlotThumbnailsRunner(object):
         #import pdb; pdb.set_trace()
         import sys
         print >>sys.stderr, 'Running %s' % ' '.join(cmd_args)
-        self._mkLinks()
         p = subprocess.Popen(cmd_args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         res = p.wait()
-        self._rmLinks()
         if res:
             print 'ERROR', p.stdin, p.stderr
         return res

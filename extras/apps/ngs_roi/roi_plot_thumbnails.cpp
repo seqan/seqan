@@ -279,7 +279,8 @@ seqan::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("roi_plot_grids");
+    seqan::ArgumentParser parser("roi_plot_thumbnails");
+    setCategory(parser, "NGS ROI Analysis");
 
     // Set short description, version, and date.
     setShortDescription(parser, "Create plot grids for ROI file.");

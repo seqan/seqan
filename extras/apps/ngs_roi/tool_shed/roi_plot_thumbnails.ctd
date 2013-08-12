@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool name="RoiPlotThumbnails" version="0.1" docurl="http://www.seqan.de" category="NGS ROI Analysis" >
+	<executableName>roi_plot_thumbnails</executableName>
+	<description>Create plot grids for ROI file.</description>
+	<manual>Create PNG images with plot grids to OUT${i}.png from ROI records in IN.roi.
+</manual>
+	<cli>
+		<clielement optionIdentifier="--write-ctd-file-ext" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.write-ctd-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--verbose" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.verbose" />
+		</clielement>
+		<clielement optionIdentifier="--vverbose" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.vverbose" />
+		</clielement>
+		<clielement optionIdentifier="--input-file" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.input-file" />
+		</clielement>
+		<clielement optionIdentifier="--input-file-file-ext" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.input-file-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--output-prefix" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.output-prefix" />
+		</clielement>
+		<clielement optionIdentifier="--output-prefix-file-ext" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.output-prefix-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--max-rois" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.max-rois" />
+		</clielement>
+		<clielement optionIdentifier="--max-value" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.max-value" />
+		</clielement>
+		<clielement optionIdentifier="--num-cols" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.num-cols" />
+		</clielement>
+		<clielement optionIdentifier="--num-rows" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.num-rows" />
+		</clielement>
+		<clielement optionIdentifier="--plot-height" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.plot-height" />
+		</clielement>
+		<clielement optionIdentifier="--plot-width" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.plot-width" />
+		</clielement>
+		<clielement optionIdentifier="--border-width" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.border-width" />
+		</clielement>
+		<clielement optionIdentifier="--spacing" isList="false">
+			<mapping referenceName="roi_plot_thumbnails.spacing" />
+		</clielement>
+	</cli>
+	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<NODE name="roi_plot_thumbnails" description="Create plot grids for ROI file.">
+			<ITEM name="write-ctd-file-ext" value="" type="string" description="Override file extension for --write-ctd" required="false" advanced="true" />
+			<ITEM name="verbose" value="false" type="string" description="Verbose mode." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="vverbose" value="false" type="string" description="Very verbose mode." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="input-file" value="" type="input-file" description="ROI to plot." supported_formats="*.roi" required="true" advanced="false" />
+			<ITEM name="input-file-file-ext" value="" type="string" description="Override file extension for --input-file" restrictions="roi" required="false" advanced="true" />
+			<ITEM name="output-prefix" value="" type="output-file" description="Prefix of output file." required="true" advanced="false" />
+			<ITEM name="output-prefix-file-ext" value="" type="string" description="Override file extension for --output-prefix" required="false" advanced="true" />
+			<ITEM name="max-rois" value="20000" type="int" description="Maximal number of plots to create (0 for all)." restrictions="0:" required="false" advanced="false" />
+			<ITEM name="max-value" value="0" type="int" description="Fix maximal y value.  0 for no limit.." restrictions="0:" required="false" advanced="false" />
+			<ITEM name="num-cols" value="40" type="int" description="Number of plots in one row." restrictions="1:" required="false" advanced="false" />
+			<ITEM name="num-rows" value="50" type="int" description="Number of plots in one column." restrictions="1:" required="false" advanced="false" />
+			<ITEM name="plot-height" value="30" type="int" description="Height of one plot in px." restrictions="1:" required="false" advanced="false" />
+			<ITEM name="plot-width" value="30" type="int" description="Width of one plot in px." restrictions="1:" required="false" advanced="false" />
+			<ITEM name="border-width" value="0" type="int" description="Border width." restrictions="0:" required="false" advanced="false" />
+			<ITEM name="spacing" value="2" type="int" description="Space between plots." required="false" advanced="false" />
+		</NODE>
+	</PARAMETERS>
+</tool>

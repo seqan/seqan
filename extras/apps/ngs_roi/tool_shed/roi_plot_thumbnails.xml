@@ -17,24 +17,6 @@
     #if $ucsc_org    # --ucsc-org $ucsc_org #end if
     #if $ucsc_db     # --ucsc-db $ucsc_db #end if
     #if $ucsc_chr_prefix # --ucsc-chr-prefix "$ucsc_chr_prefix" #end if
-
-    &amp;&amp;
-
-    ln -s ${input} ${input}.${input.ext}
-
-    ;
-
-    roi_plot_thumbnails -if $input -o "${out_file.files_path}/thumbnail_"
-    #if $max_rois    # --max-rois $max_rois #end if
-    #if $num_rows    # --num-rows $num_rows #end if
-    #if $num_cols    # --num-cols $num_cols #end if
-    #if $plot_height # --plot-height $plot_height #end if
-    #if $plot_width  # --plot-width $plot_width #end if
-    #if $max_value   # --max-value $max_value #end if
-
-    ;
-
-    rm -f ${input}.${input.ext}
   </command>
   <inputs>
     <param name="input" format="roi" type="data" label="ROI file to generate statistics for."/>

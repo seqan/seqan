@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool name="RoiFeatureProjection" version="0.1" docurl="http://www.seqan.de" category="NGS ROI Analysis" >
+	<executableName>roi_feature_projection</executableName>
+	<description>Region Of Interest Projection.</description>
+	<manual>Compute the projection of a ROI file to regions from a BED or GFF file.  The result is a ROI file where each interval from the BED/GFF/GTF file that overlapped with one input ROI file is a region of interest, with the coverage counts projected to the new region of interest.
+</manual>
+	<cli>
+		<clielement optionIdentifier="--write-ctd-file-ext" isList="false">
+			<mapping referenceName="roi_feature_projection.write-ctd-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--quiet" isList="false">
+			<mapping referenceName="roi_feature_projection.quiet" />
+		</clielement>
+		<clielement optionIdentifier="--verbose" isList="false">
+			<mapping referenceName="roi_feature_projection.verbose" />
+		</clielement>
+		<clielement optionIdentifier="--very-verbose" isList="false">
+			<mapping referenceName="roi_feature_projection.very-verbose" />
+		</clielement>
+		<clielement optionIdentifier="--in-roi" isList="false">
+			<mapping referenceName="roi_feature_projection.in-roi" />
+		</clielement>
+		<clielement optionIdentifier="--in-roi-file-ext" isList="false">
+			<mapping referenceName="roi_feature_projection.in-roi-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--in-features" isList="false">
+			<mapping referenceName="roi_feature_projection.in-features" />
+		</clielement>
+		<clielement optionIdentifier="--in-features-file-ext" isList="false">
+			<mapping referenceName="roi_feature_projection.in-features-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--out-roi" isList="false">
+			<mapping referenceName="roi_feature_projection.out-roi" />
+		</clielement>
+		<clielement optionIdentifier="--out-roi-file-ext" isList="false">
+			<mapping referenceName="roi_feature_projection.out-roi-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--genome" isList="false">
+			<mapping referenceName="roi_feature_projection.genome" />
+		</clielement>
+		<clielement optionIdentifier="--genome-file-ext" isList="false">
+			<mapping referenceName="roi_feature_projection.genome-file-ext" />
+		</clielement>
+		<clielement optionIdentifier="--mode" isList="false">
+			<mapping referenceName="roi_feature_projection.mode" />
+		</clielement>
+		<clielement optionIdentifier="--strand-specific" isList="false">
+			<mapping referenceName="roi_feature_projection.strand-specific" />
+		</clielement>
+		<clielement optionIdentifier="--gff-type" isList="false">
+			<mapping referenceName="roi_feature_projection.gff-type" />
+		</clielement>
+		<clielement optionIdentifier="--gff-group-by" isList="false">
+			<mapping referenceName="roi_feature_projection.gff-group-by" />
+		</clielement>
+	</cli>
+	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<NODE name="roi_feature_projection" description="Region Of Interest Projection.">
+			<ITEM name="write-ctd-file-ext" value="" type="string" description="Override file extension for --write-ctd" required="false" advanced="true" />
+			<ITEM name="quiet" value="false" type="string" description="Set verbosity to a minimum." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="verbose" value="false" type="string" description="Enable verbose output." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="very-verbose" value="false" type="string" description="Enable very verbose output." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="in-roi" value="" type="input-file" description="ROI file to read." supported_formats="*.roi" required="true" advanced="false" />
+			<ITEM name="in-roi-file-ext" value="" type="string" description="Override file extension for --in-roi" restrictions="roi" required="false" advanced="true" />
+			<ITEM name="in-features" value="" type="input-file" description="BED, GFF, or GTF file to read." supported_formats="*.bed,*.gff,*.gtf" required="true" advanced="false" />
+			<ITEM name="in-features-file-ext" value="" type="string" description="Override file extension for --in-features" restrictions="bed,gff,gtf" required="false" advanced="true" />
+			<ITEM name="out-roi" value="" type="output-file" description="ROI file to write." supported_formats="*.roi" required="true" advanced="false" />
+			<ITEM name="out-roi-file-ext" value="" type="string" description="Override file extension for --out-roi" restrictions="roi" required="false" advanced="true" />
+			<ITEM name="genome" value="" type="input-file" description="Path to FASTA file with genome; optional.  When given, this is used for computing the overall region&apos;s C+G content." supported_formats="*.fasta,*.fa" required="false" advanced="false" />
+			<ITEM name="genome-file-ext" value="" type="string" description="Override file extension for --genome" restrictions="fasta,fa" required="false" advanced="true" />
+			<ITEM name="mode" value="projection" type="string" description="The mode in which to combine the ROI and BED/GFF file.  See section Combination Modes below for details." restrictions="intersection,projection,union,difference" required="false" advanced="false" />
+			<ITEM name="strand-specific" value="false" type="string" description="Enable strand-specific mode if set." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="gff-type" value="" type="string" description="The GFF/GTF record type (value of third column) to keep.  Keep all if not set or input file type is not GFF/GTF." required="false" advanced="false" />
+			<ITEM name="gff-group-by" value="" type="string" description="The GFF/GTF tag to use for grouping, e.g. &quot;Parent&quot;, &quot;transcript_id&quot;. No grouping if empty.  When using the grouping feature, the --mode is automatically set to projection." required="false" advanced="false" />
+		</NODE>
+	</PARAMETERS>
+</tool>

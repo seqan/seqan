@@ -1,77 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool id="bam2roi" name="BAM to ROI">
-    <command>
-    <!-- First, create link for the input file -->
-    ln -s ${bam2roi_input_file} ${bam2roi_input_file}.${bam2roi_input_file.ext};
-    touch ${bam2roi_output_file};
-    ln -s ${bam2roi_output_file} ${bam2roi_output_file}.${bam2roi_output_file.ext};
-    
-    <!-- Call bam2roi -->
-    bam2roi
-    $bam2roi_verbosity
+<tool id="bam2roi" name="Bam2roi">
+    <command>bam2roi
+    $bam2roi_verbose
+    $bam2roi_very_verbose
+    --input-file "$bam2roi_input_file"
+    --output-file "$bam2roi_output_file"
     $bam2roi_strand_specific
     $bam2roi_ignore_pairing
     $bam2roi_link_over_skipped
-    --input-file $bam2roi_input_file.${bam2roi_input_file.ext}
-    --output-file $bam2roi_output_file.${bam2roi_output_file.ext};
-
-    <!-- Get rid of links again -->
-    rm -f ${bam2roi_input_file}.${bam2roi_input_file.ext};
-    rm -f ${bam2roi_output_file}.${bam2roi_output_file.ext};
-    </command>
-
+    #if $bam2roi_input_file
+        --input-file-file-ext ${bam2roi_input_file.ext}
+    #end if
+    #if $bam2roi_output_file
+        --output-file-file-ext ${bam2roi_output_file.ext}
+    #end if</command>
     <description>Create ROI from BAM file.</description>
-    
-    <!--
-      Input Files and Parameters
-    -->
     <inputs>
-        <param name="bam2roi_input_file" type="data" format="sam,bam"
-               label="Input File"
-               help="SAM/BAM formatted file.  Must be sorted by coordinate." />
-
-        <param name="bam2roi_ignore_pairing" type="boolean" falsevalue="" truevalue="--ignore-pairing"
-               label="Ignore paired information"
-               help="By default, a whole fragment/template extends a ROI for paired-end data.  When selected, reads are treated as in the single-end case." />
-        <param name="bam2roi_link_over_skipped" type="boolean" falsevalue="" truevalue="--link-over-skipped"
-               label="Link over skipped bases"
-               help="When selected, a ROI continues over skipped bases." />
-        <param name="bam2roi_strand_specific" type="boolean" falsevalue="" truevalue="--strand-specific"
-               label="Compute strand-specific ROIs"
-               help="When selected, the strands of the reads alignments are considered, e.g. there can be two or more ROIs on different strands that would overlap on the same strand." />
-
-        <param name="bam2roi_verbosity" type="select" label="Verbosity" force_select="true">
-            <option value="" selected="true">normal</option>
-            <option value="--verbose">verbose</option>
-            <option value="--very-verbose">very verbose</option>
-        </param>
+        <param falsevalue="" truevalue="--verbose" type="boolean" name="bam2roi_verbose" label="Verbose mode." />
+        <param falsevalue="" truevalue="--very-verbose" type="boolean" name="bam2roi_very_verbose" label="Very verbose mode." />
+        <param falsevalue="" truevalue="--link-over-skipped" type="boolean" name="bam2roi_link_over_skipped" label="Link over skipped bases in the read alignment." />
+        <param falsevalue="" truevalue="--ignore-pairing" type="boolean" name="bam2roi_ignore_pairing" label="Ignore paired information.  Also see Section ROI Creation Details." />
+        <param label="SAM/BAM formatted file.  Must be sorted by coordinate." type="data" name="bam2roi_input_file" format="sam,bam" />
+        <param falsevalue="" truevalue="--strand-specific" type="boolean" name="bam2roi_strand_specific" label="Calculate strand-specific ROIs (see section Strand Specificness below." />
     </inputs>
-    
-    <!--
-      Output Files
-    -->
     <outputs>
-        <data label="${bam2roi_input_file.name}.roi" name="bam2roi_output_file" format="roi" />
+        <data label="Output file with regions of interest." name="bam2roi_output_file" format="roi" />
     </outputs>
-
-    <!--
-      Recognize errors by return code and not output to stderr.
-    -->
     <stdio>
         <exit_code range="1:" level="fatal" />
         <exit_code range=":-1" level="fatal" />
     </stdio>
-
-    <!--
-      Tool Help
-    -->
-    <help>No help yet.</help>
-
-    <!--
-      Dependencies
-    -->
-    <requirements>
-        <requirement type="binary">bam2roi</requirement>
-        <requirement type="python-module">Cheetah</requirement>
-    </requirements>
 </tool>
