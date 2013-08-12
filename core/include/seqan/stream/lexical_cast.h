@@ -39,6 +39,47 @@
 
 namespace seqan {
 
+/*!
+ * @fn lexicalCast
+ * @headerfile <seqan/stream.h>
+ * @brief Cast from a String-type to a numerical type
+ * 
+ * @signature template <typename TTarget>
+ *            TTarget lexicalCast<TTarget>(source);
+ * 
+ * @tparam TTarget Target type to cast to.
+ *
+ * @param[in] source The string to be read from.  Type: @link SequenceConcept @endlink.
+ * 
+ * @return TTarget Value of Type TTarget with cast contents of source.
+ * 
+ * @section Remarks
+ * 
+ * Return value undefined if casting fails, see @link lexicalCast2 @endlink for a more robust variant.
+ * 
+ * This function uses <tt>std::istringstream</tt> internally, so right now "123foobar" will be succesfully cast to an
+ * int of 123.
+ * 
+ * @section Examples
+ * 
+ * Using <tt>lexicalCast<>()</tt> is easy but not as robust as @link lexicalCast2 @endlink: We cannot detect parsing or
+ * conversion errors.
+ * 
+ * @code{.cpp}
+ * unsigned u = 0;
+ * int i = 0;
+ * double = 0;
+ * bool success = false;
+ *  
+ * u = lexicalCast<unsigned>( "3");   // => u is 3.
+ * u = lexicalCast<unsigned>("-3");   // => u is undefined.
+ * i = lexicalCast<int>("-3");        // => i is -3.
+ * d = lexicalCast<double>("-3.99");  // => d is -3.99.
+ * @endcode
+ *
+ * @see lexicalCast2
+ */
+
 /**
 .Function.lexicalCast
 ..cat:Input/Output
@@ -103,6 +144,41 @@ lexicalCast(String<TValue, TSpec> & source)
     return lexicalCast<TTarget>(const_cast<String<TValue, TSpec> const &>(source));
 }
 
+/*!
+ * @fn lexicalCast2
+ * @headerfile seqan/stream.h
+ * @brief Cast from a String-type to a numerical type
+ * 
+ * @signature bool lexicalCast2(target, source);
+ * 
+ * @param[out] target Object to hold result of cast.
+ * @param[in]  source The string to be read from.  Type: @link SequenceConcept @endlink.
+
+ * @return bool <tt>true</tt> if cast was successful, <tt>false</tt> otherwise.
+ * 
+ * @section Remarks
+ * 
+ * Uses istringstream internally, so right now "123foobar" will be succesfully cast to an int of 123.
+ * 
+ * @section Examples
+ * 
+ * Using lexicalCast2 is straightforward and we can detect errors.
+ * 
+ * @code{.cpp}
+ * unsigned u = 0;
+ * int i = 0;
+ * double = 0;
+ * bool success = false;
+ *  
+ * success = lexicalCast2(u, "3");      // => success is true, u is 3.
+ * success = lexicalCast2(u, "-3");     // => success is false, u is undefined.
+ * success = lexicalCast2(i, "-3");     // => success is true, i is -3.
+ * success = lexicalCast2(d, "-3.99");  // => success is true, d is -3.99.
+ * @endcode
+ *
+ * @see lexicalCast
+ */
+
 /**
 .Function.lexicalCast2
 ..cat:Input/Output
@@ -137,8 +213,6 @@ success = lexicalCast2(u, "-3");     // => success is false, u is undefined.
 success = lexicalCast2(i, "-3");     // => success is true, i is -3.
 success = lexicalCast2(d, "-3.99");  // => success is true, d is -3.99.
  */
-
-// TODO(holtgrew): Why is the result of lexicalCast2(unsigned, "3.99") true?
 
 template < typename TTarget, typename TSource >
 inline bool

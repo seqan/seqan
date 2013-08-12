@@ -56,6 +56,26 @@ namespace seqan {
 // Functions
 // ============================================================================
 
+// TODO(holtgrew): These functions do not really belong to the RecordReader concept.
+
+/*!
+ * @fn RecordReader#readRecord
+ * @brief Reads one records (e.g. a single DNA sequence and its meta data) from a @link Concept.StreamConcept @endlink
+ *        by the means of a @link RecordReader @endlink.
+ *
+ * @signature int readRecord(OUTPUT, reader, tag);
+ *
+ * @param[out]    OUTPUT A format-specific value for one record, can also be multiple parameters.
+ * @param[in,out] reader A @link RecordReader @endlink to read from.
+ * @param[in]     tag    A format-specific tag.
+ *
+ * @return int A return code.  0 on success, non-0 value on error.
+ *
+ * @section Remarks
+ *
+ * If not noted otherwise, only a Single-Pass implementation is available for the given format.
+ */
+
 /**
 .Function.readRecord
 ..class:Class.RecordReader
@@ -70,6 +90,23 @@ namespace seqan {
 ..see:Function.read2
 ..include:seqan/stream.h
 */
+
+/*!
+ * @fn RecordReader#read
+ * @brief Reads an entire document from a @link StreamConcept @endlink by the means of a @link RecordReader @endlink.
+ *
+ * @signature int read2(OUTPUT, reader, tag);
+ *
+ * @param[out]    OUTPUT A format-specific value with records, can also be multiple parameters.
+ * @param[in,out] reader A @link RecordReader @endlink to read from.
+ * @param[in]     tag    A format-specific tag.
+ *
+ * @return int A return code.  0 on success, non-0 value on error.
+ *
+ * @section Remarks
+ *
+ * If not noted otherwise, only a Single-Pass implementation is available for the given format.
+ */
 
 /**
 .Function.read2

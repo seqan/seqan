@@ -58,6 +58,31 @@ inline void close(Stream<BZ2File> & stream);
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class BZ2FileStream
+ * @extends Stream
+ * @headerfile <seqan/stream.h>
+ * @brief Wrapper for <tt>BZFILE *</tt> streams from bzlib.
+ *
+ * @signature template<>
+ *            class Stream<BZ2File>;
+ *
+ * @section Remarks
+ *
+ * This is only available if @link SEQAN_HAS_BZIP2 @endlink is set to 1.
+ *
+ * Not copy constructable.
+ *
+ *
+ * @fn BZ2FileStream::Stream();
+ * @fn BZ2FileStream::Stream(bzFile);
+ *
+ * @param[in] bzFile The <tt>BZFILE *</tt> to open.
+ *
+ * The file <tt>bzFile</tt> must already be open when constructed with the second variant.  <tt>bzFile</tt> will
+ * <b>not</b> be closed when the stream is destructed but has to be closed manually.
+ */
+
 /**
 .Spec.BZ2 File Stream
 ..cat:Input/Output

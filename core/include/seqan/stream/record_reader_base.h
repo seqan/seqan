@@ -54,6 +54,31 @@ struct SinglePass {};
 template <typename TSpec = void>
 struct DoublePass {};
 
+/*!
+ * @class RecordReader
+ * @headerfile <seqan/stream.h>
+ * @brief Buffer management when reading from @link ConceptStream streams @endlink.
+ *
+ * @signature template <typename TStream, typename TSpec>
+ *            class RecordReader;
+ *
+ * @tparam TStream The @link ConceptStream @endlink to read from.
+ * @tparam TSpec   The record reader specialization type.
+ *
+ * @section Examples
+ *
+ * @include demos/input_output/record_reader.cpp
+ *
+ * @fn RecordReader::RecordReader
+ * @brief Constructor.
+ *
+ * @signature RecordReader::RecordReader();
+ * @signature RecordReader::RecordReader(stream[, bufferSize]);
+ *
+ * @param[in] stream     The @link StreamConcept @endlink to read from.
+ * @param[in] bufferSize The size of the buffer to use.  Type: <tt>unsigned</tt>.
+ */
+
 /**
 .Class.RecordReader
 ..cat:Input/Output
@@ -87,6 +112,20 @@ class RecordReader;
 // Metafuction Position
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn RecordReader#Position
+ * @brief Returns the position tpye to use in @link RecordReader#position @endlink and @link RecordReader#setPosition @endlink.
+ *
+ * @signature Position<TReader>::Type;
+ *
+ * @tparam TReader The RecordReader to query for its position type.
+ *
+ * @return Type The resulting position type.
+ *
+ * @see RecordReader#position
+ * @see RecordReader#setPosition
+ */
+
 /**
 .Metafunction.RecordReader#Position
 ..class:Class.RecordReader
@@ -114,6 +153,101 @@ struct Position<RecordReader<TStream, TSpec> const> :
 // ============================================================================
 // Functions
 // ============================================================================
+
+/*!
+ * @fn RecordReader#resultCode
+ * @brief Return current status code of the reader/underlying stream.
+ *
+ * @signature int resultCode(reader);
+ *
+ * @param[in] reader The RecordReader to query for its status code.
+ *
+ * @return int The status code, 0 for no errors, non-0 value for errors.
+ */
+
+/*!
+ * @fn RecordReader#value
+ * @brief Return the current value (character) of the reader.
+ *
+ * This is undefined if the reader is at the end or an error occured.
+ *
+ * @signature char value(reader);
+ *
+ * @param[in] reader The RecordReader to read from.
+ *
+ * @return char The resulting character.
+ */
+
+/*!
+ * @fn RecordReader#goNext
+ * @brief Advance to the next position in the stream.
+ *
+ * @signature bool goNext(reader);
+ *
+ * @param[in,out] reader The RecordReader to advance.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
+ */
+
+/*!
+ * @fn RecordReader#nextIs
+ * @brief Query whether the next record is of a given type.
+ * 
+ * @signature bool nextIs(reader, tag)
+ * 
+ * @param[in,out] reader The @link RecordReader @endlink to peek into.  Remains unchanged.
+ * @param[in]     tag    Tag to select the given record type.
+ * 
+ * @return bool Indicating whether the next record in <tt>reader</tt> is of type given by tag.
+ * 
+ * @section Remarks
+ * 
+ * The checks are mostly heuristic, mostly looking at one or few characters from reader.
+ */
+
+/*!
+ * @fn RecordReader#atEnd
+ * @brief Returns <tt>true</tt> if there is no more data to be read.
+ * 
+ * @signature bool atEnd(reader);
+ * 
+ * @param reader The @link RecordReader @endlink to query the state of.
+ * 
+ * @return bool This function returns <tt>true</tt> if the file is at end or there was an error reading.  It returns
+ *              <tt>false</tt> if there is more data to read.  In parsing functions, you can use @link
+ *              RecordReader#resultCode @endlink to get the result to return from your parsing function.
+ * 
+ * @see RecordReader#value
+ * @see RecordReader#resultCode
+ */
+
+/*!
+ * @fn RecordReader#position
+ * @brief Returns the current position of the reader.
+ *
+ * @signature TPosition position(reader);
+ *
+ * @param[in] reader The RecordReader to query.
+ *
+ * @return TPosition The resulting position.  Use @link RecordReader#Position @endlink to retrieve.
+ */
+
+/*!
+ * @fn RecordReader#setPosition
+ * @brief Sets the current position of the reader.
+ *
+ * @signature void setPosition(reader, pos);
+ *
+ * @param[in,out] reader The RecordReader to set the position of.
+ * @param[in]     pos    The position to set.
+ *
+ * @section Remarks
+ *
+ * The underlying data source has to support setting the position.  For RecordReader objects reading from strings this
+ * always works.  When reading from streams, setting the position must be supported by the underlying stream
+ *
+ * @see RecordReader#position
+ */
 
 /**
 .Function.RecordReader#resultCode

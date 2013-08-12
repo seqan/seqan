@@ -49,9 +49,24 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO(holtgrew): Also use mmadvise to mark used memory as such?
-
-// TODO(holtgrew): This could easily be adjusted to work for any string specialization by adding another layer, signature would then be RecordReader<TFile, SinglePass<StringReader<TStringSpec> > >.
+/*!
+ * @class StringSinglePassRecordReader
+ * @extends SinglePassRecordReader
+ * @headerfile <seqan/stream.h>
+ * @brief RecordReader specializaton for single-pass reading from strings.
+ *
+ * @signature template <typename TString>
+ *            class RecordReader<TString, SinglePass<StringReader> >;
+ *
+ * @tparam TMMapString The @link String @endlink to read from.
+ *
+ * @section Remarks
+ *
+ * This RecordReader does not have any buffers but uses the string directly.  You can use @link MMapString @endlink to
+ * read from memory mapped files.
+ *
+ * Not default or copy constructable.
+ */
 
 /**
 .Spec.Single-Pass String RecordReader

@@ -35,8 +35,29 @@
 // ==========================================================================
 
 // ==========================================================================
-// We add documentation for Ctype.h here for completeness.
+// We add documentation for cctype here for completeness.
 // ==========================================================================
+
+/*!
+ * @fn isalnum
+ * @headerfile <cctype>
+ * @brief Check if character is alphanumeric.
+ * 
+ * @signature bool isalnum(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is alphanumeric.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/isalnum/
+ * @see cppreference.com/wiki/string/character_classes
+ * @see readAlphaNums
+ * @see readIdentifier
+ */
 
 /**
 .Function.isalnum:
@@ -52,6 +73,26 @@
 ..include:<cctype>
 */
 
+/*!
+ * @fn isalpha
+ * @headerfile <cctype>
+ * @brief Check if character is a upper or lowercase letter
+ * 
+ * @signature bool isalpha(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a character.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/isalpha/
+ * @see cppreference.com/wiki/string/character_classes
+ * @see readLetters
+ */
+
 /**
 .Function.isalpha:
 ..summary:Check if character is a upper or lowercase letter
@@ -65,6 +106,27 @@
 ..see:http://www.cppreference.com/wiki/string/character_classes
 ..include:<cctype>
 */
+
+/*!
+ * @fn isdigit
+ * @headerfile <cctype>
+ * @brief Check if character is a digit
+ * 
+ * @signature bool isdigit(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a digit.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/isdigit/
+ * @see cppreference.com/wiki/string/character_classes
+ * @see readDigits
+ * @see readFloat
+ */
 
 /**
 .Function.isdigit:
@@ -80,6 +142,25 @@
 ..include:<cctype>
 */
 
+/*!
+ * @fn iscntrl
+ * @headerfile <cctype>
+ * @brief Check if character is a control character
+ * 
+ * @signature bool iscntrl(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a control character.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/iscntrl/
+ * @see cppreference.com/wiki/string/character_classes
+ */
+
 /**
 .Function.iscntrl:
 ..summary:Check if character is a control character
@@ -93,6 +174,26 @@
 ..see:http://www.cppreference.com/wiki/string/character_classes
 ..include:<cctype>
 */
+
+/*!
+ * @fn isprint
+ * @headerfile <cctype>
+ * @brief Check if character is printable, i.e. not a control character
+ * 
+ * @signature bool isprint(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/isprint/
+ * @see cppreference.com/wiki/string/character_classes
+ * @see isgraph
+ */
 
 /**
 .Function.isprint:
@@ -108,6 +209,29 @@
 ..see:Function.isgraph
 ..include:<cctype>
 */
+
+/*!
+ * @fn isgraph
+ * @headerfile <cctype>
+ * @brief Check if character is printable and not white space
+ * 
+ * @signature bool isgraph(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/isgraph/
+ * @see cppreference.com/wiki/string/character_classes
+ * @see isprint
+ * @see isspace
+ * @see readGraphs
+ * @see skipUntilGraph
+ */
 
 /**
 .Function.isgraph:
@@ -125,6 +249,33 @@
 ..include:<cctype>
 */
 
+/*!
+ * @fn isspace
+ * @headerfile <cctype>
+ * @brief Check if character is a white-space character
+ * 
+ * @signature bool isspace(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a printable character.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, plain c and listed for completeness.
+ * 
+ * NOTE: White-Space contains more than space and tab characters, if you want to check for that, use Function.isblank
+ * instead!
+ * 
+ * @see cplusplus.com/reference/clibrary/cctype/isspace/
+ * @see cppreference.com/wiki/string/character_classes
+ * @see isblank
+ * @see readUntilWhitespace
+ * @see skipUntilWhitespace
+ * @see isgraph
+ * @see readDna5IgnoringWhitespaces
+ * @see skipWhitespaces
+ */
 
 /**
 .Function.isspace:
@@ -141,6 +292,32 @@
 ..see:Function.isblank
 ..include:<cctype>
 */
+
+/*!
+ * @fn isblank
+ * @headerfile seqan/stream.h
+ * @brief Check if character is either ' ' or '\t'.
+ * 
+ * @signature bool isblank(c);
+ * 
+ * @param c The character to be checked. Type: <tt>int</tt>
+ * 
+ * @return bool <tt>true</tt> (non-zero) if <tt>c</tt> is a blank character.
+ * 
+ * @section Remarks
+ * 
+ * This is non-SeqAn, specified in POSIX and listed for completeness.
+ * 
+ * For visual studio, we define it ourselves.
+ * 
+ * @see opengroup.org/onlinepubs/009695399/functions/isblank.html
+ * @see cppreference.com/wiki/string/character_classes
+ * @see isspace
+ * @see readLineStripTrailingBlanks
+ * @see skipUntilBlank
+ * @see skipBlanks
+ * @see readUntilBlank
+ */
 
 /**
 .Function.isblank:

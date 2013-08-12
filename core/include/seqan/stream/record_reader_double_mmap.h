@@ -49,7 +49,23 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO(holtgrew): This could easily be adjusted to work for any string specialization by adding another layer, signature would then be RecordReader<TFile, DoublePass<StringReader<TStringSpec> > >.
+/*!
+ * @class StringDoublePassRecordReader
+ * @extends DoublePassRecordReader
+ * @headerfile <seqan/stream.h>
+ * @brief RecordReader specialization for double-pass reading.
+ *
+ * @signature template <typename TString>
+ *            class RecordReader<TString, DoublePass<StringReader> >;
+ *
+ * @tparam TString The @link String @endlink specialization to use for reading from.
+ *
+ * @section Remarks
+ *
+ * This RecordReader does not have any buffers but uses the string directly.
+ *
+ * Not default or copy constructable.
+ */
 
 /**
 .Spec.Double-Pass String RecordReader

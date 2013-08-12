@@ -93,6 +93,29 @@ struct BgzfCacheEntry_
     __int64 endOffset;
 };
 
+/*!
+ * @class BgzfStream
+ * @extends Stream
+ * @headerfile <seqan/stream.h>
+ * @brief Reading and writing of BGZF data.
+ *
+ * @section Remarks
+ *
+ * Not copy constructable, not assignable.
+ *
+ * BGZF is the Block GZip Format which is used as the underlying format for BAM and TABIX.  Data is written out
+ * compressed with gzip but the uncompressed data is split into blocks with a maximum block size.  It is therefore
+ * possible to jump to beginnings of blocks in the resulting files, decompress the block and then jump into the block
+ * itself.
+ *
+ * @section Examples
+ *
+ * Stream<Bgzf> stream;
+ * if (!open(stream, "myfile.bam", "r"))
+ *     return 1;  // error
+ * // ... work
+ */
+
 /**
 .Spec.BGZF Stream
 ..cat:Input/Output
@@ -698,7 +721,20 @@ _bgzfDeflateBlock(Stream<Bgzf> & stream, int blockLength)
 // Function attachToFile
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Rename to "reopen"? Is not not a better term, I guess.
+/*!
+ * @fn BGZF Stream#attachToFile
+ * @brief Attach to already open input/output POSIX file.
+ *
+ * @signature void attachToFile(stream, fileHandle, mode);
+ * 
+ * @param[in,out] stream     Stream to attach to file. Types: BGZF Stream
+ * @param[in]     fileHandle The file handle to attach to.  Type: <tt>int</tt>
+ * @param[in]     mode       The mode flag the file was opened with. Type: <tt>int</tt>
+ * 
+ * @section Remarks
+ * 
+ * A previously opened file is closed.
+ */
 
 /**
 .Function.attachToFile
@@ -731,6 +767,22 @@ attachToFile(Stream<Bgzf> & stream, int fileHandle, int mode)
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BgzfStream#open
+ * @brief Open a stream.
+ *
+ * @signature bool open(stream, fileName, mode);
+ *
+ * @param[in,out] stream   The stream to open.
+ * @param[in]     fileName The path to the file to open.  Type: <tt>char const *</tt>.
+ * @param[in]     mode     The mode for opening.
+ *
+ * @section Remarks
+ *
+ * You can append <tt>0-9</tt> or <tt>u</tt> or <tt>w</tt> in <tt>mode</tt>. for setting the compression level to 0-9 or
+ * "no compression".
+ */
 
 /**
 .Function.open
@@ -925,6 +977,17 @@ streamReadChar(char & c, Stream<Bgzf> & stream)
 // ----------------------------------------------------------------------------
 // Function checkEofIsValid()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn BgzfStream#checkEofIsValid
+ * @brief Check that the EOF marker is present in BGZF (e.g. BAM) file.
+ *
+ * @signature bool checkEofIsValid(stream);
+ *
+ * @param[in] stream The BgzfStream to check.
+ *
+ * @return bool true if the marker is present and false otherwise.
+ */
 
 /**
 .Function.checkEof

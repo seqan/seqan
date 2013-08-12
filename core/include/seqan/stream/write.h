@@ -56,6 +56,24 @@ namespace seqan {
 // Functions
 // ============================================================================
 
+// TODO(holtgrew): These functions do not really belong to the Stream concept.
+
+/*!
+ * @fn StreamConcept#writeRecord
+ * @headerfile <seqan/stream.h>
+ * @brief Write one record (e.g. a single DNA-sequence and its meta data) to a @link StreamConcept @endlink
+ * 
+ * @signature int writeRecord(stream, RECORD, tag);
+ * 
+ * @param[in]     RECORD possibly multiple fields (e.g. meta and sequence)
+ * @param[in]     tag    The file format tag
+ * @param[in,out] stream The Stream object to write to. Type: StreamConcept
+ *
+ * @return int An integer with the status code (0 on success).
+ * 
+ * @see StreamConcept#write2
+ */
+
 /**
 .Function.writeRecord
 ..cat:Input/Output
@@ -68,6 +86,24 @@ namespace seqan {
 ..see:Function.write2
 ..include:seqan/stream.h
 */
+
+/*!
+ * @fn StreamConcept#write2
+ * @headerfile <seqan/stream.h>
+ * @brief Writes an entire document to a @link StreamConcept @endlink.
+ * 
+ * @signature write2(stream, DOCUMENT, tag);
+ * 
+ * @param[in,out] stream   The Stream object to write to. Types: StreamConcept
+ * @param[in]     DOCUMENT Format specific possibly multiple StringSets (e.g. of meta and sequences).
+ * @param[in]     tag      The file format tag
+ * 
+ * @section Status
+ *
+ * Should be renamed to "write" once the old IO-Code is removed
+ * 
+ * @see StreamConcept#writeRecord
+ */
 
 /**
 .Function.write2

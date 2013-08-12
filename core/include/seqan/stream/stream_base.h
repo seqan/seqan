@@ -47,6 +47,18 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class Stream
+ * @implements StreamConcept
+ * @headerfile <seqan/stream.h>
+ * @brief Abstract base class to fulfill the @link StreamConcept stream concept @endlink.
+ *
+ * @signature template <typename TSpec>
+ *            class Stream;
+ *
+ * @tparam TSpec The specializing type.
+ */
+
 /**
 .Class.Stream
 ..cat:Input/Output
@@ -80,6 +92,26 @@ class Stream;
 // ============================================================================
 // Functions
 // ============================================================================
+
+/*!
+ * @fn Stream#open
+ * @brief Open a stream.
+ *
+ * @signature bool open(stream, fileName, mode);
+ *
+ * @param[in,out] stream   The stream to open.
+ * @param[in]     fileName The path to the file to open.  Type: <tt>char const *</tt>.
+ * @param[in]     mode     The mode for opening.
+ */
+
+/*!
+ * @fn Stream#close
+ * @brief Close a stream.
+ *
+ * @signature void close(stream);
+ *
+ * @param[in,out] stream The Stream to close.
+ */
 
 // ----------------------------------------------------------------------------
 // Function atEnd()

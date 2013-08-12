@@ -47,6 +47,14 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @concept StreamConcept
+ * @headerfile <seqan/stream.h>
+ * @brief Concept for I/O streams.
+ *
+ * @signature concept StreamConcept;
+ */
+
 /**
 .Concept.StreamConcept
 ..summary:Concept for I/O streams.
@@ -55,6 +63,69 @@ namespace seqan {
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+/*!
+ * @defgroup StreamFeatureTags Stream Feature Tags
+ * @brief Tags to select a given feature for querying in @link Stream#HasStreamFeature @endlink.
+ *
+ *
+ * @tag StreamFeatureTags#IsInput
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether the stream supports @link StreamConcept#streamReadChar @endlink and @link
+ *        StreamConcept#streamReadBlock @endlink.
+ *
+ * @signature typedef Tag<IsInput_> IsInput;
+ *
+ *
+ * @tag StreamFeatureTags#IsOutput
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether the stream supports @link StreamConcept#streamWriteChar @endlink and @link
+ *        StreamConcept#streamWriteBlock @endlink.
+ *
+ * @signature typedef Tag<IsInput_> IsOutput;
+ *
+ *
+ * @tag StreamFeatureTags#HasPeek
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether the stream supports @link StreamConcept#streamPeek @endlink.
+ *
+ * @signature typedef Tag<HasPeek_> HasPeek;
+ *
+ *
+ * @tag StreamFeatureTags#HasFilename
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether the stream can have a file name.
+ *
+ * @signature typedef Tag<HasFilename_> HasFilename;
+ *
+ *
+ * @tag StreamFeatureTags#SeekOriginBegin
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether it is possible to @link StreamConcept#streamSeek @endlink with <tt>SEEK_SET</tt>.
+ *
+ * @signature typedef Tag<OriginBegin_> OriginBegin;
+ *
+ *
+ * @tag StreamFeatureTags#SeekOriginCurrent
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether it is possible to @link StreamConcept#streamSeek @endlink with <tt>SEEK_CUR</tt>.
+ *
+ * @signature typedef Tag<OriginCurrent_> OriginCurrent;
+ *
+ *
+ * @tag StreamFeatureTags#SeekOriginEnd
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether it is possible to @link StreamConcept#streamSeek @endlink with <tt>SEEK_END</tt>.
+ *
+ * @signature typedef Tag<OriginEnd_> OriginEnd;
+ *
+ *
+ * @tag StreamFeatureTags#Tell
+ * @headerfile <seqan/stream.h>
+ * @brief Query whether the stream has a @link StreamConcept#streamTell @endlink function.
+ *
+ * @signature typedef Tag<Tell_> Tell;
+ */
 
 /**
 .Tag.Stream Feature
@@ -98,6 +169,23 @@ struct Seek;
 struct Tell_;
 typedef Tag<Tell_> Tell;
 
+/*!
+ * @mfn StreamConcept#HasStreamFeature
+ * @brief Query features of a stream type.
+ *
+ * @signature HasStreamFeature<TStream, TTag>::Type;
+ *
+ * @tparam TStream The strema type to query the property of.
+ * @tparam TTag    A tag to select a feature.
+ *
+ * @return Type Either <tt>True</tt> or <tt>False</tt>.
+ *
+ * @section Remarks
+ *
+ * Note that this only checks whether the type principally has this feature.  For example, if a stream wraps a Unix pipe
+ * internally, seek might always fail.
+ */
+
 /**
 .Metafunction.HasStreamFeature
 ..concept:Concept.StreamConcept
@@ -119,6 +207,245 @@ struct HasStreamFeature;
 // ============================================================================
 // Functions
 // ============================================================================
+
+/*!
+ * @fn StreamConcept#streamSeek
+ * @headerfile <seqan/stream.h>
+ * @brief Perform a seek operation on the stream.
+ * 
+ * @signature int streamSeek(stream, delta, origin);
+ * 
+ * @param[in,out] stream The stream object to seek on.
+ * @param[in]     delta  The (relative) position.  Type: <tt>__int64</tt>
+ * @param[in]     origin Where to seek from, we use the integers from &lt;cstdio&gt;.  Possible values are
+ *                <tt>SEEK_SET</tt>, <tt>SEEK_CUR</tt>, and <tt>SEEK_END</tt>. Type: <tt>int</tt>
+ * 
+ * @return int A status code, 0 on success, non-0 value on errors.
+ *
+ * @see streamTell
+ */
+
+/*!
+ * @fn StreamConcept#streamPut
+ * @headerfile <seqan/stream.h>
+ * @brief Write different types to stream
+ * 
+ * @signature int streamPut(stream, source);
+ * 
+ * @param[in,out] stream The stream object to write to. Types: StreamConcept
+ * @param[in]     source The data to write to the stream.
+ *
+ * @return int A status code, 0 on success, non-0 value on errors.
+ * 
+ * @section Remarks
+ * 
+ * Implementation note: for some specializations of @link StreamConcept @endlink certain conversions take place through
+ * stringstream and a buffer of size 1023.  It follows that the result of the conversion cannot be longer.  However this
+ * should only effect numericals right now.  If you still encounter truncated strings with another type, convert to
+ * <tt>const char*</tt> manually before writing.
+ * 
+ * @see streamWriteChar
+ * @see streamWriteBlock
+ */
+
+/*!
+ * @fn StreamConcept#streamWriteBlock
+ * @headerfile <seqan/stream.h>
+ * @brief Write a block of bytes from a buffer into a stream.
+ * 
+ * @signature TReturn streamWriteBlock(stream, source, count);
+ * 
+ * @param[in,out] stream The stream object to write to. Types: StreamConcept
+ * @param[in]     source The data to write to the stream. Types: nolink:<tt>char *</tt>
+ * @param[in]     count  The number of bytes to write to the stream.
+ * 
+ * @return TSize The number of successfully written objects.
+ * 
+ * @section Examples
+ * 
+ * Copying data from a std::fstream into another std::fstream using SeqAn's stream adaption.
+ * 
+ * @code{.cpp}
+ * #include <fstream>
+ * #include <seqan/sequence.h>
+ * #include <seqan/stream.h>
+ *  
+ * int main()
+ * {
+ *     std::fstream in("in.txt", std::ios::binary | std::ios::in);
+ *     std::fstream out("out.txt", std::ios::binary | std::ios::in);
+ *  
+ *     seqan::CharString buffer;
+ *     resize(buffer, 1000);
+ *  
+ *     while (!seqan::atEnd(in) && seqan::streamError(in) == 0)
+ *     {
+ *         int num = seqan::streamReadBlock(&buffer[0], in, length(buffer));
+ *         seqan::streamWriteBlock(out, &buffer[0], num);
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ *
+ * @see streamWriteChar
+ * @see streamPut
+ */
+
+/*!
+ * @fn StreamConcept#streamPeek
+ * @headerfile <seqan/stream.h>
+ * @brief Read next character from stream without advancing current position.
+ * 
+ * @signature int streamPeek(c, stream);
+ * 
+ * @param[out]    c      The read character is written here. Type: <tt>char &amp;</tt>.
+ * @param[in,out] stream The stream object to read from.
+ * 
+ * @return int 0 on success, otherwise the error value from the underlying string system.
+ * 
+ * @section Remarks
+ * 
+ * Note that this might involve two calls into the stream library, e.g. for cstdio streams, it involves a call to both
+ * <tt>getc()</tt> and <tt>ungetc()</tt>.
+ * 
+ * @see streamReadChar
+ * @see streamReadBlock
+ */
+
+/*!
+ * @fn StreamConcept#streamReadBlock
+ * @headerfile <seqan/stream.h>
+ * @brief Read a block of bytes into a buffer.
+ * 
+ * @signature TSize streamReadBlock(target, stream, maxLen)
+ * 
+ * @param maxLen maximal number of characters to read. Types:
+ *               nolink:<tt>size_t</tt>
+ * @param target The buffer to read into. There has to be enough space for
+ *               <tt>maxLen</tt> bytes. Types: nolink:<tt>char *</tt>
+ * @param stream The stream to read from. Types: StreamConcept
+ * 
+ * @return TSize Number of read bytes.
+ * 
+ * @section Examples
+ * 
+ * Copying data from a std::fstream into another std::fstream using SeqAn's stream adaption.
+ * 
+ * @code{.cpp}
+ * #include <fstream>
+ * #include <seqan/sequence.h>
+ * #include <seqan/stream.h>
+ *  
+ * int main()
+ * {
+ *     std::fstream in("in.txt", std::ios::binary | std::ios::in);
+ *     std::fstream out("out.txt", std::ios::binary | std::ios::in);
+ *  
+ *     seqan::CharString buffer;
+ *     resize(buffer, 1000);
+ *  
+ *     while (!seqan::atEnd(in) && seqan::streamError(in) == 0)
+ *     {
+ *         int num = seqan::streamReadBlock(&buffer[0], in, length(buffer));
+ *         seqan::streamWriteBlock(out, &buffer[0], num);
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ *
+ * @see streamPeek
+ * @see streamReadChar
+ */
+
+/*!
+ * @fn StreamConcept#streamTell
+ * @headerfile <seqan/stream.h>
+ * @brief Get the position in the current stream.
+ * 
+ * @signature TPos streamTell(stream);
+ * 
+ * @param[in] stream The stream object to query the current position for.
+ * 
+ * @return TPos The position within the stream.
+ * 
+ * @see streamSeek
+ */
+
+/*!
+ * @fn StreamConcept#streamError
+ * @headerfile <seqan/stream.h>
+ * @brief Return the stream's error code.
+ *
+ * @signature int streamError(stream);
+ * 
+ * @param[in] stream The stream object to query.
+ * 
+ * @return int An error code, 0 is used for "no errors."
+ */
+
+/*!
+ * @fn StreamConcept#streamWriteChar
+ * @headerfile <seqan/stream.h>
+ * @brief Write one character to the stream.
+ * 
+ * @signature int streamWriteChar(stream, c);
+ * 
+ * @param[in,out] stream The stream object to write to.
+ * @param[in]     c      The character to write to the stream. Types: <tt>char</tt>
+ * 
+ * @return int Error code, 0 on success.
+ * 
+ * @see streamWriteBlock
+ * @see streamPut
+ */
+
+/*!
+ * @fn StreamConcept#streamReadChar
+ * @headerfile <seqan/stream.h>
+ * @brief Read next character from stream and advance the current position.
+ * 
+ * @signature int streamReadChar(c, stream);
+ * 
+ * @param[out]    c      The read character is written here. Types: <tt>char &amp;</tt>
+ * @param[in,out] stream The stream object to read from.
+ * 
+ * @return TReturn <tt>int</tt>, 0 on success, otherwise the error value from the underlying string system.
+ * 
+ * @see streamPeek
+ * @see streamReadBlock
+ */
+
+/*!
+ * @fn StreamConcept#streamEof
+ * @headerfile <seqan/stream.h>
+ * @brief Check end-of-file state of a @link StreamConcept @endlink.
+ * 
+ * @signature bool streamEof(stream);
+ * 
+ * @param[in] stream The stream object to check.
+ * 
+ * @return bool true if the stream is in end-of-file state, false otherwise.
+ * 
+ * @section Remarks
+ * 
+ * Note that the exact behaviour depends on the underlying implementation. With <tt>FILE *</tt> streams, the stream can
+ * be in the end-of-file state from the point where the last character was read or from the point where the user tried
+ * to read beyond the end of the file.
+ */
+
+/*!
+ * @fn StreamConcept#streamFlush
+ * @headerfile <seqan/stream.h>
+ * @brief Flush the underlying stream.
+ * 
+ * @signature int streamFlush(stream);
+ * 
+ * @param[in,out] stream The stream object to flush.
+ * 
+ * @return int with an error code, 0 on success.
+ */
 
 /**
 .Function.streamPeek

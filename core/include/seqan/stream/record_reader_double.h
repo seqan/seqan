@@ -48,6 +48,22 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class DoublePassRecordReader
+ * @extends RecordReader
+ * @headerfile <seqan/stream.h.
+ * @brief Record reader specialization for double-pass reading.
+ *
+ * @signature template <typename TStream>
+ *            class RecordReader<TStream, DoublePass>;
+ *
+ * @tparam TStream The @link StreamConcept @endlink type to use for reading.
+ *
+ * @section Remarks
+ *
+ * Not default or copy constructable.
+ */
+
 /**
 .Spec.Double-Pass RecordReader
 ..cat:Input/Output
@@ -182,6 +198,19 @@ _fillNextBuffer(RecordReader<TFile, DoublePass<> > & recordReader)
 // Function startFirstPass()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn DoublePassRecordReader#startFirstPass
+ * @brief Start the first reading pass.
+ *
+ * @signature void startFirstPass(reader);
+ *
+ * @param[in,out] reader The RecordReader to start the first pass with.
+ *
+ * @section Remarks
+ *
+ * Calling this function will memoize the current position in the buffer to return to in second pass.
+ */
+
 /**
 .Function.startFirstPass
 ..class:Spec.Double-Pass RecordReader
@@ -244,6 +273,19 @@ _jumpToNextBuffer(RecordReader<TFile, DoublePass<> > & recordReader)
 // ----------------------------------------------------------------------------
 // Function startSecondPass()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn DoublePassRecordReader#startSecondPass
+ * @brief Start the second reading pass.
+ *
+ * @signature void startSecondPass(reader);
+ *
+ * @param[in,out] reader The RecordReader to start the second pass with.
+ *
+ * @section Remarks
+ *
+ * This will reset the position in the buffer.
+ */
 
 /**
 .Function.startSecondPass

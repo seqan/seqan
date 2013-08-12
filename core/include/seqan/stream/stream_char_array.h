@@ -49,6 +49,44 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class CharArrayStream
+ * @extends Stream
+ * @headerfile <seqan/stream.h>
+ * @brief Thin wrapper around <tt>char *</tt> to the @link StreamConcept @endlink concept.
+ * 
+ * @signature template <typename TPointer>
+ *            class Stream<CharArray<TPointer> >;
+ * 
+ * @tparam TPointer Specification of the pointer type to work on.
+ * 
+ * @section Remarks
+ * 
+ * This class consists of the <tt>char *</tt>, another <tt>char *</tt> to the beginning of the array and a flag
+ * signifying EOF.
+ * 
+ * Note that this is a bounded string variant and might have some performance problems.
+ * 
+ * @section Examples
+ * 
+ * Create a Char Array Stream from a @link CharString @endlink.
+ * 
+ * @code{.cpp}
+ * CharString buffer = "This is a text.";
+ * Stream<CharArray<char const *> > stream(&buffer[0], &buffer[0] + length(buffer));
+ * @endcode
+ *
+ *
+ * @fn CharArrayStream::Stream
+ * 
+ * @brief Constructor
+ * 
+ * @signature CharArrayStream(ptr, ptrEnd);
+ * 
+ * @param[in] ptrEnd The <tt>char *</tt> that works as the end of the stream.
+ * @param[in] ptr    The <tt>char *</tt> that works as the beginning of the stream.
+ */
+
 /**
 .Spec.Char Array Stream
 ..cat:Input/Output

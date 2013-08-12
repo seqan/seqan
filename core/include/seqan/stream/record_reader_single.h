@@ -55,6 +55,23 @@ _refillBuffer(RecordReader<TFile, SinglePass<void> > & recordReader);
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class SinglePassRecordReader
+ * @extends RecordReader
+ * @headerfile <seqan/stream.h>
+ * @brief RecordReader specialization for single-pass reading.
+ *
+ * @signature template <typename TStream[, typename TSpec]>
+ *            class RecordReader<TStream, TSpec>;
+ *
+ * @tparam TStream The @link StreamConcept @endlink to work on.
+ * @tparam TSpec   Specializing type.  Defaults to <tt>void</tt>.
+ *
+ * @section Remarks
+ *
+ * Is neither default nor copy constructable.
+ */
+
 /**
 .Spec.Single-Pass RecordReader
 ..cat:Input/Output

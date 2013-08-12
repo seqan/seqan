@@ -53,6 +53,30 @@ inline void close(Stream<GZFile> & stream);
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class GzFileStream
+ * @headerfile <seqan/stream.h>
+ * @brief Allows to open gzip-compressed files.
+ *
+ * This is only available if @link SEQAN_HAS_ZLIB @endlink is set to 1.
+ *
+ * Not copy constructable.
+ *
+ *
+ * @fn GzFileStream::Stream
+ * @brief Constructor.
+ *
+ * @signature Stream::Stream();
+ * @signature Stream::Stream(gzFile);
+ *
+ * @param[in] gzFile A <tt>gzFile</tt> to wrap.
+ *
+ * @section Remarks
+ *
+ * When <tt>gzFile</tt> is given then the GZFileStream object does nto own the underlying <tt>gzFile</tt> and will serve
+ * as a simple wrapper.  The underlying file is not closed when the GzFileStream object is destroyed.
+ */
+
 /**
 .Spec.GZ File Stream
 ..cat:Input/Output
@@ -271,6 +295,22 @@ open(Stream<GZFile> & stream, char const * filename, char const * mode)
 // ----------------------------------------------------------------------------
 // Function isDirect()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GzFileStream#isDirect
+ * @brief Query a GzFileStream for being "direct."
+ *
+ * @signature bool isDirect(gzStream);
+ *
+ * @param[in] gzStream The GzFileStream to query.
+ *
+ * @return bool <tt>true</tt> indicates that the file is opened uncompressed ("direct").
+ *
+ * @section Remarks
+ *
+ * GzFileStream objects can also open uncompressed files (at a possible performance cost).  Such functionality is
+ * provided directly by zlib.
+ */
 
 /**
 .Function.isDirect
