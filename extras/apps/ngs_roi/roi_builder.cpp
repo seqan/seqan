@@ -226,6 +226,7 @@ int RoiBuilder::writeRecord(seqan::RoiRecord & record,
         at += (x == 'A' || x == 'T');
     }
     double cgContent = (cg + at == 0) ? 0 : 1.0 * cg / (cg + at);
+	cgContent = floor(cgContent * 10000.0) / 10000.0;  // flooring to 4 digits
     snprintf(buffer, 99, "%4.4f", cgContent);
     appendValue(record.data, buffer);
 
