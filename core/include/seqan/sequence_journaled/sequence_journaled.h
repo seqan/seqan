@@ -53,6 +53,20 @@ namespace seqan {
 // Specialization Journaled String
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class JournaledString
+ * @extends String
+ * @headerfile <seqan/sequence_journaled.h>
+ * @brief Journaled versions of arbitrary underlying strings.
+ *
+ * @signature <typename THostSpec[, typename TJournalSpec[, typename TBufferSpec]]>
+ *            class String<Journaled<THostSpec, TJournalSpec, TBufferSpec> >;
+ *
+ * @tparam THostSpec    Specialization type for the host string.
+ * @tparam TJournalSpec Specialization type for the journal.  Default: <tt>SortedArray</tt>.
+ * @tparam TBufferSpec  Specialization type for the buffer string.  Default: <tt>Alloc&lt;&gt;</tt>.
+ */
+
 /**
 .Spec.Journaled String
 ..cat:Sequences
@@ -167,6 +181,17 @@ public:
 // Metafunction Host
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn JournaledString#Host
+ * @brief The host type.
+ *
+ * @signature Host<TJournaledString>::Type;
+ *
+ * @tparam TJournaledString The JournaldString to get the host type for.
+ *
+ * @return Type The host type.
+ */
+
 /**
 .Metafunction.Host
 ..param.T.type:Spec.Journaled String
@@ -188,6 +213,17 @@ struct Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
 // ----------------------------------------------------------------------------
 // Metafunction InsertionBuffer
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn JournaledString#InsertionBuffer
+ * @brief Return type of insertion buffer string for a journaled string.
+ *
+ * @signature InsertionBuffer<TJournaledString>::Type;
+ *
+ * @tparam TJournaledString The journaled string to get the insertion buffer type for.
+ *
+ * @return Type The insertion buffer type.
+ */
 
 /**
 .Metafunction.InsertionBuffer
@@ -310,6 +346,17 @@ struct Value<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > co
 // ----------------------------------------------------------------------------
 // Metafunction JournalType
 // ----------------------------------------------------------------------------
+
+/*!
+ * @mfn JournaledString#JournalType
+ * @brief Query a JournaledString for its journal type.
+ *
+ * @signature JournalType<TJournaledString>::Type;
+ *
+ * @tparam TJournaledString The JournaledString to query.
+ *
+ * @return Type the journal type.
+ */
 
 /**
 .Metafunction.JournalType
@@ -441,6 +488,16 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
 // Function setHost
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn JournaledString#setHost
+ * @brief Set the host of a JournaledString.
+ *
+ * @signature void setHost(js, str);
+ *
+ * @param js  The JournaledString to set the host for.
+ * @param str The string to set as the host.
+ */
+
 /**
 .Function.setHost:
 ..class:Spec.Journaled String
@@ -462,6 +519,17 @@ setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journ
 // ----------------------------------------------------------------------------
 // Function host
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledString#host
+ * @brief Return the host of a JournaledString.
+ *
+ * @signature THost host(js);
+ *
+ * @param[in] js The JournaledString to query.
+ *
+ * @return THost Reference to the host of <tt>js</tt>.
+ */
 
 /**
 .Function.host:
@@ -491,6 +559,15 @@ host(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & jo
 // Function clear
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn JournaledString#clear
+ * @brief Remove all changes from the journal, resetting the JournaledString to its state after construction.
+ *
+ * @signature void clear(js);
+ *
+ * @param[in,out] js The JournaledString to clear.
+ */
+
 /**
 .Function.clear:
 ..class:Spec.Journaled String
@@ -511,6 +588,15 @@ clear(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
 // ----------------------------------------------------------------------------
 // Function flatten
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledString#flatten
+ * @brief Apply the journal to the underlying string, modifying the underlying string.
+ *
+ * @signature void flatten(js);
+ *
+ * @param[in,out] js The JournaledString to flatten.
+ */ 
 
 /**
 .Function.flatten:
@@ -794,6 +880,18 @@ getValue(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const 
 // Function virtualToHostPosition()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn JournaledString#virtualToHostPosition
+ * @brief Translates virtual (view) position to position in host.
+ *
+ * @signature TPos virtualToHostPosition(js, pos);
+ *
+ * @param js  The JournaledString to translate the position for.
+ * @param pos The virtual position to translate.
+ *
+ * @return TPos Position in the host.
+ */
+
 /**
 .Function.Journaled String#virtualToHostPosition
 ..class:Spec.Journaled String
@@ -822,6 +920,18 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
 //---------------------------------------------------
 // function hostToVirtualPosition()
 //---------------------------------------------------
+
+/*!
+ * @fn JournaledString#hostToVirtualPosition
+ * @brief Translates host position to virtual position.
+ *
+ * @signature TPos virtualToHostPosition(js, pos);
+ *
+ * @param js  The JournaledString to translate the position for.
+ * @param pos The host position to translate.
+ *
+ * @return TPos The virtual view position.
+ */
 
 /**
 .Function.Journaled String#hostToVirtualPosition
