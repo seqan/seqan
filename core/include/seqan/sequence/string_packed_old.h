@@ -54,7 +54,7 @@ struct HostIterator;
 // Specialization Packed String
 // --------------------------------------------------------------------------
 
-/*!
+/*
  * @class PackedString Packed String
  * @extends String
  * @headerfile <seqan/sequence.h>
