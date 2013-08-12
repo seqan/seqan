@@ -187,11 +187,11 @@ public:
         std::vector<std::pair<int, int> > points;
         for (unsigned i = 0; i < length(counts); ++i)
         {
-            int x = startPos.first + (double)i / numPoints * options.plotWidth;
+            int x = static_cast<int>(startPos.first + (double)i / numPoints * options.plotWidth);
             unsigned val = counts[i];
             if (options.maxValue != 0 && (int)val >= options.maxValue)
                 val = options.maxValue;
-            int y = startPos.second + options.plotHeight - val / h * options.plotHeight;
+            int y = static_cast<int>(startPos.second + options.plotHeight - val / h * options.plotHeight);
             points.push_back(std::make_pair(x, y));
         }
         canvas.polyline(points);

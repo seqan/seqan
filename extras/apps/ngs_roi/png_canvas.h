@@ -94,7 +94,7 @@ public:
     // Compute perceptive grayscale value.
     unsigned char grayScale() const
     {
-        return r * 0.3 + g * 0.59 + b * 0.11;
+        return static_cast<unsigned char>(r * 0.3 + g * 0.59 + b * 0.11);
     }
 
     // Return the color white.
