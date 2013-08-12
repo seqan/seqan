@@ -49,6 +49,25 @@ namespace seqan {
 // Spec JournaledSet
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class JournaledSet
+ * @extends StringSet
+ * @headerfile <seqan/journaled_set.h>
+ *
+ * @brief A StringSet storing the strings as members.  It can store a global reference sequence to which all members can
+ * be journaled if they are of type @link JournaledString @endlink.
+ *
+ * @section Remarks
+ * 
+ * The strings are internally stored in a <tt>String<TString></tt> object and the character position type is a @link
+ * Pair @endlink <tt>(seqNo, seqOfs)</tt> where seqNo identifies the string within the stringset and seqOfs identifies
+ * the position within this string.
+ * 
+ * The global reference is of type <tt>Host<TString></tt>. Only strings of type @link Journaled String @endlink or
+ * <tt>Host&lt;</tt>@link Journaled String @endlink<tt>&gt;</tt> can be used for the advanced functionality supported by this string
+ * set.
+ */
+
 /**
 .Spec.Journaled Set:
 ..summary:A string set storing the string as members. It can store a global reference sequence to which
@@ -75,6 +94,30 @@ typedef Tag<JournaledSet_> JournaledSet;
 
 template <typename TString>
 class JournalTraceBuffer;
+
+/*!
+ * @defgroup JoinStrategiesTags Join Strategies Tags
+ * @brief Tags used for selecting journaling strategies when joining a JournaledString to a global reference sequence.
+ *
+ *
+ * @tag JoinStrategiesTags#JournaledManhattan
+ * @headerfile <seqan/sequence_journaled.h>
+ * @brief Constructs a @link JournaledString @endlink based on Manhattan distance.
+ *
+ * This strategy is very fast on the cost of memory.
+ *
+ * @signature typedef Tag<JournaledManhattan_> JournaledManhattan.
+ *
+ *
+ * @tag JoinStrategiesTags#JournaledCompact
+ * @headerfile <seqan/sequence_journaled.h>
+ * @brief Computes an optimal alignment to construct a @link JournaledString @endlink.
+ *
+ * This strategy is slow but depending on the scoring function minimizes the memory requirements for the computed @link
+ * JournaledSet @endlink.
+ *
+ * @signature typedef Tag<JournaledCompact_> JournaledCompact;
+ */
 
 /**
 .Tag.Join Strategies
@@ -108,6 +151,22 @@ typedef Tag<JournaledCompact_> JournaledCompact;
 // Spec GlobalAlign
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class GlobalAlign
+ * @headerfile <seqan/journaled_set.h>
+ * @brief Selects a global alignment method to join a @link JournaledString @endlink to a global reference sequence.
+ *
+ * @signature template <[typename TStrategy]>
+ *            struct GlobalAlign;
+ *
+ * @tparam TStrategy The strategy to use to compute the journal.
+ *
+ * @section Remarks
+ *
+ * If @link JournaledManhatten @endlink is selected, then the resulting @link JournaledString @endlink consists of one
+ * insertion node covering the complete joined sequence.
+ */
+
 /**
 .Spec.GlobalAlign:
 ..summary:Selects a global alignment method to join a @Spec.Journaled String@ to a global reference sequence.
@@ -131,6 +190,22 @@ struct GlobalAlign{};
 // Spec GlobalChain
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class GlobalChain
+ * @headerfile <seqan/journaled_set.h>
+ * @brief Selects an anchor-based method to join a @link JournaledString @endlink to a global reference sequence.
+ *
+ * @signature template <[typename TStrategy]>
+ *            struct GlobalChain;
+ *
+ * @tparam TStrategy The strategy used to compute the journal.
+ *
+ * @section Remarks
+ *
+ * The JournaledManhattan strategy fills the gaps between the anchors with a single insertion node whil the
+ * corresponding part of the reference sequence is deleted.
+ */
+
 /**
 .Spec.GlobalChain:
 ..summary:Selects an anchor based method to join a @Spec.Journaled String@ to a global reference sequence.
@@ -153,6 +228,22 @@ struct GlobalChain{};
 // ----------------------------------------------------------------------------
 // Class JoinConfig
 // ----------------------------------------------------------------------------
+
+/*!
+ * @class JoinConfig
+ * @headerfile <seqan/journaled_set.h>
+ * @brief Specifies the strategy and all necessary parameters used to journal a sequence to a reference sequence.
+ *
+ * @signature template <[typename TMethod]>
+ *            struct JoinConfig;
+ *
+ * @tparam TMethod The method type.
+ *
+ * @section Remarks
+ *
+ * SeqAn offers two general methods to compute the journal.  The first one uses a @link globalAlignment @endlink
+ * function and the second one uses an anchor based approach.
+ */
 
 /**
 .Class.JoinConfig:

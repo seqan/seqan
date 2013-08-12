@@ -285,6 +285,17 @@ inline void assignValue(
 // Function globalReference()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Journaled Set#globalReference
+ * @brief Returns the global reference sequence of a @link Journaled Set @endlink.
+ * 
+ * @signature THost globalReference(stringSet);
+ * 
+ * @param stringSet The JournaledStringSet that stores the sequences. Types: Journaled Set
+ * 
+ * @return THost Reference to the host.
+ */
+
 /**
 .Function.globalReference:
 ..summary:Returns the global reference sequence of a @Spec.Journaled Set@.
@@ -310,6 +321,20 @@ globalReference(StringSet<TString, Owner<JournaledSet> > const & journalSet)
 // ----------------------------------------------------------------------------
 // Function setGlobalReference()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn Journaled Set#setGlobalReference
+ * @brief Sets the global reference of a @link Journaled Set @endlink.
+ * 
+ * @signature void setGlobalReference(stringSet, ref);
+ * 
+ * @param stringSet The string set that stores the sequences. Types: JournaledSet
+ * @param ref       The new reference sequence of the Journaled Set.
+ * 
+ * @section Remarks
+ * 
+ * Uses an @link Holder @endlink to store a reference to the new global reference sequence instead of copying it.
+ */
 
 /**
 .Function.setGlobalReference:
@@ -337,6 +362,17 @@ setGlobalReference(StringSet<TString, Owner<JournaledSet> > & journalSet,
 // ----------------------------------------------------------------------------
 // Function createGlobalReference()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn JournaledSet#createGlobalReference
+ * @brief Creates the global reference of a @link JournaledSet @endlink.
+ *
+ * @signature void createGlobalReference(stringSet, ref);
+ *
+ * @param[in,out] stringSet The JournaledStringSet that stores the sequences.
+ * @param[in]     ref       The new reference sequence of the JournaledSet.  Stores a copy of the passed global
+ *                          reference sequence.
+ */
 
 /**
 .Function.createGlobalReference:

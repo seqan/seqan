@@ -53,6 +53,19 @@ namespace seqan {
 // Functions
 // ============================================================================
 
+/*!
+ * @fn JournaledSet#join
+ * @brief Joins a @link JournaledString @endlink to a @link JournaledSet @endlink by computing and journaling
+ *        differences to the global reference sequence.
+ *
+ * @signature void join(stringSet, pos, joinConfig);
+ *
+ * @param[in,out] stringSet  The JournaledSet to join to.
+ * @param[in]     pos        The position of the JournaledString within the string set.
+ * @param[in]     joinConfig A @link JoinConfig @endlink object that specifies the method and the method's strategy
+ *                           to compute the differences.
+ */
+
 /**
 .Function.join:
 ..summary:Joins a @Spec.Journaled String@ to a @Spec.Journaled Set@ by computing and journaling differences to the global
