@@ -568,7 +568,7 @@ public:
                     clear(gffRecord);
 
                     // Get current position to check for sortedness of GFF.
-                    std::pair<seqan::CharString, unsigned> oldPos(gffRecord.ref, gffRecord.beginPos);
+                    std::pair<seqan::CharString, __uint32> oldPos(gffRecord.ref, gffRecord.beginPos);
 
                     // Read next records
                     if (atEnd(gffReader))
