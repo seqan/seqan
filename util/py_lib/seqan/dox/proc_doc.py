@@ -974,8 +974,7 @@ class CodeEntryConverter(EntryConverter):
             entry.addHeaderfile(s.text.text.strip())
         # Add deprecation messages as list of TextNodes.
         for s in raw_entry.deprecation_msgs:
-            entry.addDeprecationMsg(self.rawTextToTextNode(s.text, strip_lt_line_space=True,
-                                                           verbatim=True))
+            entry.addDeprecationMsg(self.rawTextToTextNode(s.text, strip_lt_line_space=True))
         # Add signatures as a text node with code.
         for s in raw_entry.signatures:
             entry.addSignature(self.rawTextToTextNode(s.text, strip_lt_line_space=True,

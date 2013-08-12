@@ -1,14 +1,8 @@
 TODOs
 -----
 
- * Type of a @var
- * Type of a @var, especially for enum values.
  * warn about missing return types etc.
  * generated tokens could have annotation, generated text should have its own type
- * HTML Tags in @deprecated
- * proper HTML entity escaping
- * Formatting for @link TextConcept#StringSetLimits @endlink is broken.
- * +/- 1 bug in dox for printing errors when processing tags.
 
  * dot inheritance diagrams
  * Class/Concept/etc. overview pages
