@@ -286,7 +286,7 @@ inline void assignValue(
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn Journaled Set#globalReference
+ * @fn JournaledSet#globalReference
  * @brief Returns the global reference sequence of a @link Journaled Set @endlink.
  * 
  * @signature THost globalReference(stringSet);
