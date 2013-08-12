@@ -104,8 +104,8 @@ struct Tuple<TValue, SIZE, BitPacked<> >
 {
     typedef typename BitVector_<SIZE * BitsPerValue<TValue>::VALUE>::Type TBitVector;
 
-    static const __uint64 BIT_MASK = (1 << BitsPerValue<TValue>::VALUE) - 1;
-    static const __uint64 MASK = ((__uint64)1 << (SIZE * BitsPerValue<TValue>::VALUE)) - 1;
+    static const __uint64 BIT_MASK = (1ull << BitsPerValue<TValue>::VALUE) - 1ull;
+    static const __uint64 MASK = (1ull << (SIZE * BitsPerValue<TValue>::VALUE)) - 1ull;
 
     // -----------------------------------------------------------------------
     // Members
@@ -198,7 +198,7 @@ struct Tuple<TValue, SIZE, BitPacked<> >
         SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
         SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
 
-        unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
+        register unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
         i = (i & ~(BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
         return source;
     }
@@ -258,7 +258,7 @@ assignValue(Tuple<TValue, SIZE, BitPacked<> > & me,
     SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
     SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
 
-    unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
+    register unsigned shift = ((SIZE - 1 - k) * BitsPerValue<TValue>::VALUE);
     me.i = (me.i & ~(me.BIT_MASK << shift)) | (TBitVector)ordValue(source) << shift;
     return source;
 }

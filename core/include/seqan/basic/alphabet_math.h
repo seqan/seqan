@@ -74,7 +74,7 @@ struct MaximumValueDouble_ { static const double VALUE; };
 template <typename T>
 const T MaximumValueUnsigned_<T>::VALUE = ~(T)0;
 template <typename T>
-const T MaximumValueSigned_<T>::VALUE = ( (((T)1 <<(BitsPerValue<T>::VALUE - 2)) - 1) <<1) + 1;
+const T MaximumValueSigned_<T>::VALUE = ((((T)1 <<(BitsPerValue<T>::VALUE - 2)) - 1) << 1) + 1;
 template <typename T>
 const float MaximumValueFloat_<T>::VALUE = FLT_MAX;
 template <typename T>
