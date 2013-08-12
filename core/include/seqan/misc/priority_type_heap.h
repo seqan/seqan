@@ -37,6 +37,20 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @class PriorityHeap
+ * @headerfile <seqan/misc/priority_type_heap.h>
+ * @extends PriorityType
+ * @brief Stores the priority data on a heap.
+ *
+ * @signature template <[typename TValue[, typename TLess]]>
+ *            class PriorityType;
+ *
+ * @tparam TValue The value type.  Default: <tt>int</tt>.
+ * @tparam TLess  The less-than comparator.  Default: <tt>std::less&lt;TValue&gt;</tt>.
+ */
+
 /**
 .Spec.PriorityHeap
 ..cat:Miscellaneous
@@ -125,6 +139,18 @@ SEQAN_CHECKPOINT
 
 
 // Return the `best' element
+
+/*!
+ * @fn PriorityType#top
+ * @brief Reference to the item with the highest priority.
+ *
+ * @signature TReference top(priorityType);
+ *
+ * @param priorityType The PriorityType to query.
+ *
+ * @return TReference The result, reference to Value type.
+ */
+
 /**
 .Function.PriorityType#top:
 ..summary:Reference to the item with the highest priority.
@@ -175,6 +201,12 @@ SEQAN_CHECKPOINT
 
 /////////////////////////////////////////////////////////////////////////////////
 //  lower priority of first element in queue 
+
+/*!
+ * @fn PriorityType#adjustTop
+ * @brief Adjusts the priority of the first item.
+ */
+
 /**
 .Function.adjustTop
 ..cat:Miscellaneous
@@ -200,6 +232,17 @@ SEQAN_CHECKPOINT
 
 /////////////////////////////////////////////////////////////////////////////////
 /// Push a new element
+
+/*!
+ * @fn PriorityType#push
+ * @brief Inserts a new item and adjusts the priority queue if necessary.
+ *
+ * @signature void push(pt, element);
+ *
+ * @param[in,out] pt      The PriorityType to push to.
+ * @param[in]     element The element to push.
+ */
+
 /**
 .Function.PriorityType#push:
 ..summary:Inserts a new item and adjusts the priority queue if necessary.
@@ -255,6 +298,16 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 /// Pop 'best' element
+
+/*!
+ * @fn PriorityType#pop
+ * @brief Deletes item with the highest priority and adjusts the priority queue.
+ *
+ * @signature void push(pt);
+ *
+ * @param[in,out] pt      The PriorityType to pop from.
+ */
+
 /**
 .Function.PriorityType#pop:
 ..summary:Deletes item with the highest priority and adjusts the priority queue.

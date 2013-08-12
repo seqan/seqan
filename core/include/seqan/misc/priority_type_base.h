@@ -44,6 +44,18 @@ struct PriorityHeap;
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class PriorityType
+ * @headerfile <seqan/misc/priority_type_base.h>
+ * @brief STores items in such a way that the item with the highest priority is at the top.
+ *
+ * @signature template <[typename TValue[, typename TLess[, typename TSpec]]]>
+ *            class PriorityType;
+ *
+ * @tparam TValue The value type.  Default: <tt>int</tt>.
+ * @tparam TLess  The less-than comparator.  Default: <tt>std::less&lt;TValue&gt;</tt>.
+ * @tparam TSpec  The specialization.  Default: <tt>PriorityHeap</tt>.
+ */
 
 /**
 .Class.PriorityType:

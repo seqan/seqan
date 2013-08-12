@@ -41,6 +41,19 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+/*!
+ * @class Deque
+ * @implements ContainerConcept
+ * @headerfile <seqan/basic.h>
+ * @brief A double-ended queue implementation on top of a @link String @endlink.
+ *
+ * @signature template <typename TValue[, typename TSpec]>
+ *            class Deque;
+ *
+ * @tparam TValue The value type.
+ * @tparam TSpec  Specialization tag for the String.  Default: <tt>Alloc&lt;&gt;</tt>.
+ */
+
 /**
 .Class.Dequeue:
 ..cat:Miscellaneous
