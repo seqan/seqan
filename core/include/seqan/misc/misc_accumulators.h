@@ -1,5 +1,5 @@
 // ==========================================================================
-//                            misc_accumulators.h
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -64,6 +64,24 @@ typedef Tag<Sum_> Sum;
 struct Count_;
 typedef Tag<Count_> Count;
 
+/*!
+ * @class Accumulator
+ * @headerfile <seqan/misc/misc_accumulators.h>
+ * @brief Accumulator base class.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            struct Accumulator;
+ * 
+ * @tparam TSpec  The specialization tag.
+ * @tparam TValue The type of the values to accumulate.
+ * 
+ * @section Remarks
+ * 
+ * Accumulators are for computing statistics on streams of values.
+ * 
+ * Currently, this is only meant for accumulating integers.
+ */
+
 /**
 .Class.Accumulator
 ..cat:Miscellaneous
@@ -78,6 +96,44 @@ typedef Tag<Count_> Count;
 
 template <typename TValue, typename TSpec>
 struct Accumulator;
+
+/*!
+ * @class AverageAccumulator
+ * @extends Accumulator
+ * @headerfile <seqan/misc/misc_accumulators.h>
+ * @brief Accumulator for computing averages.
+ * 
+ * @signature template <typename TValue>
+ *            struct Accumulator<TValue, Average>;
+ * 
+ * @tparam TValue The type of the values to compute the average of.
+ * 
+ * @section Remarks
+ * 
+ * The average of an empty sequence is defined to be 0.
+ * 
+ * @section Examples
+ * 
+ * This program shows how to use the Average Accumulator.
+ * 
+ * @code{.cpp}
+ * Accumulator<int, Average> acc;
+ * push(acc, 1);
+ * push(acc, 2);
+ * push(acc, 3);
+ * std::cout << "average: " << average(acc) << "\n"
+ *           << "sum:     " << sum(acc) << "\n"
+ *           << "count:   " << count(acc) << "\n";
+ * @endcode
+ *
+ * The output is then:
+ * 
+ * @code{.console}
+ * average: 2
+ * sum:     6
+ * count:   3
+ * @endcode
+ */
 
 /**
 .Spec.Average Accumulator
@@ -124,6 +180,17 @@ struct Accumulator<TValue, Average>
 // Metafunction Value                                       Average Accumulator
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn Accumulator#Value
+ * @brief Return the type of the values to accumulate.
+ *
+ * @signature Value<TAccumulator>::Type;
+ *
+ * @tparam TAccumulator The Accumulator type to query.
+ *
+ * @return Type The value type.
+ */
+
 ///.Metafunction.Value.param.T.type:Class.Accumulator
 ///.Metafunction.Value.class:Class.Accumulator
 
@@ -142,6 +209,17 @@ struct Value<Accumulator<TValue, Average> const > : Value<Accumulator<TValue, Av
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): This could probably go to basic, as a part of an "AlgorithmState" concept?
+
+/*!
+ * @mfn Accumulator#Result
+ * @brief Return the type for accumulation results.
+ *
+ * @signature Result<TAccumulator>::Type;
+ *
+ * @tparam TAccumulator The Accumulator type to query.
+ *
+ * @return Type The result type.
+ */
 
 /**
 .Metafunction.Result
@@ -209,6 +287,16 @@ struct Result<Accumulator<TValue, Average> const, Sum> : Result<Accumulator<TVal
 // Function push()                                                  Accumulator
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn Accumulator#push
+ * @brief Include value into sequence of values to accumulate.
+ *
+ * @signature void push(acc, x);
+ *
+ * @param[in,out] acc The Accumulator to push the value to.
+ * @param[in]     x   The value to include in the accumulation.
+ */
+
 /**
 .Function.Accumulator#push
 ..cat:Miscellaneous
@@ -220,6 +308,19 @@ struct Result<Accumulator<TValue, Average> const, Sum> : Result<Accumulator<TVal
 ..param.x:The value to push.
 ..returns:$void$
 */
+
+// ----------------------------------------------------------------------------
+// Function clear()                                                 Accumulator
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Accumulator#clear
+ * @brief Clear the current accumulator state.
+ *
+ * @signature void clear(acc);
+ *
+ * @param[in,out] acc The Accumulator to clear.
+ */
 
 // ----------------------------------------------------------------------------
 // Function clear()                                         Average Accumulator
@@ -250,6 +351,17 @@ push(Accumulator<TValue, Average> & acc, TValue2 value)
 // Function average()                                       Average Accumulator
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn AverageAccumulator#average
+ * @brief Return the average of the included values.
+ *
+ * @signtature TResult average(acc);
+ *
+ * @param[in] acc The Accumulator to compute the average for.
+ *
+ * @return TResult The average of the values.
+ */
+
 /**
 .Function.Accumulator#average
 ..cat:Miscellaneous
@@ -276,6 +388,17 @@ average(Accumulator<TValue, Average> const & acc)
 // Function sum()                                           Average Accumulator
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn AverageAccumulator#sum
+ * @brief Return the sum of the included values.
+ *
+ * @signtature TResult sum(acc);
+ *
+ * @param[in] acc The Accumulator to compute the sum for.
+ *
+ * @return TResult The sum of the values.
+ */
+
 /**
 .Function.Accumulator#sum
 ..cat:Miscellaneous
@@ -298,6 +421,17 @@ sum(Accumulator<TValue, Average> const & acc)
 // ----------------------------------------------------------------------------
 // Function count()                                         Average Accumulator
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn AverageAccumulator#count
+ * @brief Return the number of included values.
+ *
+ * @signtature TResult count(acc);
+ *
+ * @param[in] count The number of values pushed to the accumulator.
+ *
+ * @return TResult The number of pushed values.
+ */
 
 /**
 .Function.Accumulator#count
