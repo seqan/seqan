@@ -2,8 +2,8 @@
 #
 # Output generation for roi_intersect
 
-PROJECT="../../../../../../seqan-argparse-build/debug/bin/roi_feature_projection"
-BAM2ROI="../../../../../../seqan-argparse-build/debug/bin/bam2roi"
+PROJECT="../../../../../seqan-trunk-build/debug-clang/bin/roi_feature_projection"
+BAM2ROI="../../../../../seqan-trunk-build/debug-clang/bin/bam2roi"
 
 # ----------------------------------------------------------------------------
 # Projection to BED or GFF/GTF in BED style.
