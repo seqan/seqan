@@ -270,17 +270,36 @@ iter(Proxy<IteratorProxy<TIterator> > const & me)
 // TODO(holtgrew): Deletion candidate, why should a proxy provide the iterator interface?
 
 template <typename TIterator>
-typename GetValue<Proxy<IteratorProxy<TIterator> > >::Type
+inline typename GetValue<Proxy<IteratorProxy<TIterator> > >::Type
 getValue(Proxy<IteratorProxy<TIterator> > & me)
 {
     return getValue(iter(me));
 }
 
 template <typename TIterator>
-typename GetValue<Proxy<IteratorProxy<TIterator> > const>::Type
+inline typename GetValue<Proxy<IteratorProxy<TIterator> > const>::Type
 getValue(Proxy<IteratorProxy<TIterator> > const & me)
 {
     return getValue(iter(me));
+}
+
+// ------------------------------------------------------------------------
+// Function assign()
+// ------------------------------------------------------------------------
+
+// additional const definitions (that are not covered by default assign() definition)
+template <typename TIterator, typename TValue>
+inline void
+assign(Proxy<IteratorProxy<TIterator> > const & me, TValue & value)
+{
+    me = value;
+}
+
+template <typename TIterator, typename TValue>
+inline void
+assign(Proxy<IteratorProxy<TIterator> > const & me, TValue const & value)
+{
+    me = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -288,7 +307,8 @@ getValue(Proxy<IteratorProxy<TIterator> > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TStream, typename TIterator>
-TStream & operator<<(TStream & stream, Proxy<IteratorProxy<TIterator> > const & it)
+inline TStream &
+operator<<(TStream & stream, Proxy<IteratorProxy<TIterator> > const & it)
 {
     stream << getValue(it);
     return stream;

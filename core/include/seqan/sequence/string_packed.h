@@ -113,6 +113,13 @@ struct PackedTraits_
     {
         return (len + VALUES_PER_HOST_VALUE - 1) / VALUES_PER_HOST_VALUE;
     }
+
+    static inline
+    typename Size<typename Host<TPackedString>::Type>::Type
+    toHostLength1(typename Size<TPackedString>::Type len)
+    {
+        return (len == 0)? 0: 1 + (len + VALUES_PER_HOST_VALUE - 1) / VALUES_PER_HOST_VALUE;
+    }
 };
 
 /**
@@ -143,28 +150,21 @@ public:
     typedef PackedTraits_<String>       TTraits;
 
     THost data_host;
-    TSize data_length;
 
-    String():
-        data_length(0)
+    String()
     {
     }
 
     template <typename TSource>
-    String(TSource & source):
-        data_length(0)
+    String(TSource & source)
     {
+        reserve(*this, capacity(source), Exact());
         assign(*this, source);
     }
     template <typename TSource>
-    String(TSource const & source):
-        data_length(0)
+    String(TSource const & source)
     {
-        assign(*this, source);
-    }
-    String(String const & source):
-        data_length(0)
-    {
+        reserve(*this, capacity(source), Exact());
         assign(*this, source);
     }
 
@@ -196,7 +196,7 @@ public:
     inline typename Reference<String const>::Type 
     operator[](TPos pos) const
     {
-        return data_host[pos / TTraits::VALUES_PER_HOST_VALUE][pos % TTraits::VALUES_PER_HOST_VALUE];
+        return data_host[1 + pos / TTraits::VALUES_PER_HOST_VALUE][pos % TTraits::VALUES_PER_HOST_VALUE];
     }
 };
 
@@ -231,12 +231,14 @@ public:
           data_iterator(begin(host(container), Standard())),
           localPos(0)
     {
+        ++data_iterator;
     }
 
     Iter(TPackedString &container, TPosition pos_):
           data_iterator(begin(host(container), Standard())),
           localPos(0)
     {
+        ++data_iterator;
         *this += pos_;
     }
 
@@ -426,6 +428,18 @@ struct TempCopy_<String<TValue, Packed<THostspec> > >
 // Functions for Packed String
 // ****************************************************************************
 
+// ----------------------------------------------------------------------------
+// Function std::swap()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline void
+swap(String<TValue, Packed<THostspec> > & a,
+     String<TValue, Packed<THostspec> > & b)
+{
+    std::swap(a.data_host, b.data_host);
+}
+
 // --------------------------------------------------------------------------
 // Function host
 // --------------------------------------------------------------------------
@@ -455,7 +469,10 @@ template <typename TValue, typename THostspec>
 inline typename Size<String<TValue, Packed<THostspec> > const>::Type
 length(String<TValue, Packed<THostspec> > const & me) 
 {
-    return me.data_length;
+    if (empty(host(me)))
+        return 0;
+    else
+        return front(host(me)).i;
 }
 
 // --------------------------------------------------------------------------
@@ -469,8 +486,13 @@ _setLength(
     TSize new_length)
 {
     typedef String<TValue, Packed<THostspec> > TString;
-    me.data_length = new_length;
-    _setLength(host(me), PackedTraits_<TString>::toHostLength(new_length));
+    if (new_length == 0)
+    {
+        _setLength(host(me), 0);
+        return;
+    }
+    _setLength(host(me), 1 + PackedTraits_<TString>::toHostLength(new_length));
+    front(host(me)).i = new_length;
 }
 
 // --------------------------------------------------------------------------
@@ -490,7 +512,9 @@ _assignCopyPackedString(TTarget & target,
     typedef typename Size<TTarget>::Type TSize;
 
     assign(host(target), host(source), tag);
-    TSize new_length_limit = length(host(target)) * PackedTraits_<TTarget>::VALUES_PER_HOST_VALUE;
+    if (empty(host(target)))
+        return;
+    TSize new_length_limit = (length(host(target)) - 1) * PackedTraits_<TTarget>::VALUES_PER_HOST_VALUE;
     _setLength(target, _min((TSize)length(source), new_length_limit));
 }
 
@@ -503,9 +527,11 @@ _assignCopyPackedString(TTarget & target,
 {
     typedef typename Size<TTarget>::Type TSize2;
 
-    TSize2 host_limit = PackedTraits_<TTarget>::toHostLength(limit);
+    TSize2 host_limit = PackedTraits_<TTarget>::toHostLength1(limit);
     assign(host(target), host(source), host_limit, tag);
-    TSize2 new_length_limit = length(host(target)) * PackedTraits_<TTarget>::VALUES_PER_HOST_VALUE;
+    if (empty(host(target)))
+        return;
+    TSize2 new_length_limit = (length(host(target)) - 1) * PackedTraits_<TTarget>::VALUES_PER_HOST_VALUE;
     _setLength(target, _min((TSize2)length(source), _min(new_length_limit, (TSize2)limit)));
 }
 
@@ -640,7 +666,7 @@ value(String<TValue, Packed<THostspec> > const & me,
 {
     typedef String<TValue, Packed<THostspec> > TPackedString;
     typedef PackedTraits_<TPackedString> TTraits;
-    return me.data_host[pos / TTraits::VALUES_PER_HOST_VALUE][pos % TTraits::VALUES_PER_HOST_VALUE];
+    return me.data_host[1 + pos / TTraits::VALUES_PER_HOST_VALUE][pos % TTraits::VALUES_PER_HOST_VALUE];
 } 
 
 // --------------------------------------------------------------------------
@@ -654,8 +680,9 @@ capacity(String<TValue, Packed<THostspec> > const & me)
     typedef String<TValue, Packed<THostspec> > TPackedString;
     typedef PackedTraits_<TPackedString> TTraits;
     typedef typename Size<TPackedString>::Type TSize;
-    
-    return capacity(host(me)) * (TSize)TTraits::VALUES_PER_HOST_VALUE;
+
+    TSize cap = capacity(host(me));
+    return (cap == 0)? 0: (cap - 1) * (TSize)TTraits::VALUES_PER_HOST_VALUE;
 }
 
 // --------------------------------------------------------------------------
@@ -667,7 +694,17 @@ inline void
 clear(String<TValue, Packed<THostspec> > & me)
 {
     clear(host(me));
-    _setLength(me, 0);
+}
+
+// --------------------------------------------------------------------------
+// Function shrinkToFit()
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline void 
+shrinkToFit(String<TValue, Packed<THostspec> > & me)
+{
+    shrinkToFit(host(me));
 }
 
 /*
@@ -945,9 +982,12 @@ arrayConstructCopy(Iter<TPackedString, Packed<TSpec> > source_begin,
 // TODO(weese): it should be not necessary to overload construct/destruct functions for POD/Simple types (IsSimple == true)
 template < typename TPackedString, typename TSpec >
 inline void
-arrayConstruct(Iter<TPackedString, Packed<TSpec> >,
-               Iter<TPackedString, Packed<TSpec> >)
+arrayConstruct(Iter<TPackedString, Packed<TSpec> > begin_,
+               Iter<TPackedString, Packed<TSpec> > end_)
 {
+    // TODO(weese:) actually, I don't want this default zero-initialization for POD/Simple types
+    // If someone still needs zero-fill resize, he/she should use the function below
+    arrayFill(begin_, end_, typename Value<TPackedString>::Type());
 }
 
 template < typename TPackedString, typename TSpec, typename TParam >
@@ -988,12 +1028,12 @@ struct ClearSpaceStringPacked_
         typename Size<T>::Type size)
     {
         typedef typename Size<T>::Type TSize;
-        TSize wanted_host_length = PackedTraits_<T>::toHostLength(size);
+        TSize wanted_host_length = PackedTraits_<T>::toHostLength1(size);
         TSize new_host_length = resize(host(seq), wanted_host_length, TExpand());
+        if (new_host_length == 0)
+            return 0;
         if (new_host_length < wanted_host_length)
-        {
-            size = new_host_length * PackedTraits_<T>::VALUES_PER_HOST_VALUE;
-        }
+            size = (new_host_length - 1) * PackedTraits_<T>::VALUES_PER_HOST_VALUE;
         _setLength(seq, size);
         return size;
     }
@@ -1005,10 +1045,8 @@ struct ClearSpaceStringPacked_
         typename Size<T>::Type size,
         typename Size<T>::Type limit)
     {
-        if (limit < size)
-        {
+        if (size > limit)
             size = limit;
-        }
         return _clearSpace_(seq, limit);
     }
 
@@ -1041,34 +1079,21 @@ struct ClearSpaceStringPacked_
         TSize old_length = length(seq);
         TSize old_size = end - start;
         TSize wanted_new_length = _min(old_length + size - old_size, limit);
-        TSize wanted_host_length = PackedTraits_<T>::toHostLength(wanted_new_length);
+        TSize wanted_host_length = PackedTraits_<T>::toHostLength1(wanted_new_length);
         TSize new_host_length = resize(host(seq), wanted_host_length, TExpand());
 
         TSize new_length;
         if (new_host_length < wanted_host_length)
         {
-            new_length = new_host_length * PackedTraits_<T>::VALUES_PER_HOST_VALUE;
+            new_length = (new_host_length == 0)? 0: (new_host_length - 1) * PackedTraits_<T>::VALUES_PER_HOST_VALUE;
             if (new_length <= start + size)
-            {
                 goto FINISH;
-            }
             old_length = new_length - size + old_size;
         }
         else
         {
             new_length = wanted_new_length;
         }
-/*
-        //move [end:right_end] to [start + size:..]
-        if (old_size > size)
-        {//move rest to left
-            ::std::copy(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq, end + size - old_size, Standard()));
-        }
-        else
-        {//move rest to right
-            ::std::copy_backward(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq,  new_length, Standard()));
-        }
-*/
         arrayCopy(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq, end + size - old_size, Standard()));
 
 FINISH:
@@ -1158,11 +1183,8 @@ reserve(
     TSize_ new_capacity,
     Tag<TExpand> tag)
 {
-
-    typedef String<TValue, Packed<TSpec> > TString;
-    typedef typename Size<TString>::Type TSize;
-    TSize ret_value = reserve(host(seq), PackedTraits_<TString>::toHostLength(new_capacity), tag);
-    return ret_value * PackedTraits_<TString>::VALUES_PER_HOST_VALUE;
+    reserve(host(seq), PackedTraits_<String<TValue, Packed<TSpec> > >::toHostLength1(new_capacity), tag);
+    return capacity(seq);
 }
 
 // ****************************************************************************

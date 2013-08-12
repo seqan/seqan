@@ -535,7 +535,7 @@ SEQAN_DEFINE_TEST(String_Packed)
 	TestStringBasics<String<Dna, Packed<> > >();
 	TestStringBasics<String<Dna5, Packed<> > >();
 
-//	TestStringResize<String<char, Packed<> > >();
+	TestStringResize<String<char, Packed<> > >();
 	TestStringResize<String<Dna, Packed<> > >();
 	TestStringResize<String<Dna5, Packed<> > >();
 

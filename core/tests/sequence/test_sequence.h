@@ -157,7 +157,7 @@ template <typename T>
 class StringTestCommon : public StringTest<T>
 {};
 
-typedef 
+typedef
     seqan::TagList<String<Dna5, External<> >, 
 //     seqan::TagList<char,        seqan::TagList<seqan::External<> > >, seqan::TagList<
     seqan::TagList<String< int, External<> >, 
@@ -166,9 +166,11 @@ typedef
 //     seqan::TagList<char,        seqan::TagList<seqan::MMap<> > >, seqan::TagList<
     seqan::TagList<String<int, MMap<> >,
     seqan::TagList<String<CountingChar, MMap<> >, 
+    seqan::TagList<String<Dna, Packed<> >,
     seqan::TagList<String<Dna5, Packed<> >,
+    seqan::TagList<String<char, Packed<> >,
     //     seqan::TagList<char,        seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-    seqan::TagList<String<int, Packed<> >, 
+    seqan::TagList<String<int, Packed<> >,
     seqan::TagList<String<Dna5, Array<100> >, 
 //     seqan::TagList<char,        seqan::TagList<seqan::Array<100> > >, seqan::TagList<
     seqan::TagList<String<int, Array<100> >, 
@@ -182,7 +184,7 @@ typedef
     seqan::TagList<String<int, Alloc<> >, 
     seqan::TagList<String<CountingChar, Alloc<> >//, seqan::TagList<
 //     seqan::TagList<char,        seqan::TagList<seqan::CStyle> >
-    > > > > > > > > > > > > > > > > > // > > > > > > >
+    > > > > > > > > > > > > > > > > > > > // > > > > > > >
     StringTestCommonTypes;
 // typedef seqan::TagList<
 //     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::External<> > >, seqan::TagList<
@@ -800,8 +802,6 @@ void testSequenceSwap(String<TValue, External<> > & /*Tag*/) {}
 template <typename TValue>
 void testSequenceSwap(String<TValue, MMap<> > & /*Tag*/) {}
 template <typename TValue>
-void testSequenceSwap(String<TValue, Packed<> > & /*Tag*/) {}
-template <typename TValue>
 void testSequenceSwap(String<TValue, Block<> > & /*Tag*/) {}
 template <typename TValue>
 void testSequenceSwap(String<TValue, Array<100> > & /*Tag*/) {}
@@ -831,9 +831,6 @@ void testSequenceAssignValue(TString & /*Tag*/)
     assignValue(string, 1, TValue('G'));
     SEQAN_ASSERT_EQ(string[1], TValue('G'));
 }
-
-template <typename TValue>
-void testSequenceAssignValue(String<TValue, Packed<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, AssignValue)
 {
@@ -887,10 +884,6 @@ void testSequenceAppend(TString & /*Tag*/)
         SEQAN_ASSERT(string1 == "ACGTACGTACGTTTGGATTAACCC");
     }
 }
-
-// TODO(singer): no viable overloaded '='
-template <typename TValue>
-void testSequenceAppend(seqan::String<TValue, seqan::Packed<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Append)
 {
@@ -948,11 +941,11 @@ void testSequenceBack(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    typedef typename Reference<TString>::Type TReference;
     TString string("ACGT");
 
     // val is a reference in contrast to the const version of back().
-    TValue & val = back(string);
+    TReference val = back(string);
     val = 'A';
     SEQAN_ASSERT_EQ(val, string[length(string) - 1]);
 }
@@ -963,18 +956,13 @@ void testSequenceBack(TString const & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    typedef typename Reference<TString const>::Type TReference;
     TString const string("ACGT");
 
     // val is not a reference in contrast to the non const version of back().
-    TValue val = back(string);
+    TReference val = back(string);
     SEQAN_ASSERT_EQ(val, string[length(string) - 1]);
 }
-
-template <typename TValue>
-void testSequenceBack(String<TValue, Packed<> > & /*Tag*/) {}
-template <typename TValue>
-void testSequenceBack(String<TValue, Packed<> > const & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Back)
 {
@@ -1205,8 +1193,6 @@ template <typename TValue>
 void testSequenceErase(String<TValue, MMap<> > & /*Tag*/) {}
 template <typename TValue>
 void testSequenceErase(String<TValue, Block<> > & /*Tag*/) {}
-template <typename TValue>
-void testSequenceErase(String<TValue, Packed<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Erase)
 {
@@ -1266,11 +1252,11 @@ void testSequenceFront(TString & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    typedef typename Reference<TString>::Type TReference;
     TString string("ACGT");
 
     // val is a reference in contrast to the const version of front()
-    TValue & val = front(string);
+    TReference val = front(string);
     val = 'A';
     SEQAN_ASSERT_EQ(val, string[0]);
 }
@@ -1281,18 +1267,13 @@ void testSequenceFront(TString const & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
-    TString string("ACGT");
+    typedef typename Reference<TString const>::Type TReference;
+    TString const string("ACGT");   // TODO(weese:) reenable non-const string here (need to fix Proxy vs. SimpleType comparison first)
 
     // val is not a reference in contrast to the non const version of front()
-    TValue val = front(string);
+    TReference val = front(string);
     SEQAN_ASSERT_EQ(val, string[0]);
 }
-
-template <typename TValue>
-void testSequenceFront(String<TValue, Packed<> > & /*Tag*/) {}
-template <typename TValue>
-void testSequenceFront(String<TValue, Packed<> > const & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Front)
 {
@@ -1371,8 +1352,6 @@ template <typename TValue>
 void testSequenceInsert(String<TValue, External<> > & /*Tag*/) {} 
 template <typename TValue>
 void testSequenceInsert(String<TValue, Block<> > & /*Tag*/) {} 
-template <typename TValue>
-void testSequenceInsert(String<TValue, Packed<> > & /*Tag*/) {} 
 
 SEQAN_TYPED_TEST(StringTestCommon, Insert)
 {
@@ -1395,11 +1374,11 @@ void testSequenceInsertValue(TString & /*Tag*/)
 
     // Test of inserting into an empty string.
     TString string("");
-    insert(string, 0, 'A');
+    insertValue(string, 0, 'A');
     SEQAN_ASSERT_EQ(string, "A");
 
     // Test of inserting into a non empty string.
-    insert(string, 0, 'C');
+    insertValue(string, 0, 'C');
     SEQAN_ASSERT_EQ(string, "CA");
 }
 
@@ -1407,8 +1386,6 @@ template <typename TValue>
 void testSequenceInsertValue(String<TValue, External<> > & /*Tag*/) {} 
 template <typename TValue>
 void testSequenceInsertValue(String<TValue, Block<> > & /*Tag*/) {} 
-template <typename TValue>
-void testSequenceInsertValue(String<TValue, Packed<> > & /*Tag*/) {} 
 
 SEQAN_TYPED_TEST(StringTestCommon, InsertValue)
 {
@@ -1512,17 +1489,15 @@ SEQAN_TYPED_TEST(StringTestCommon, Length)
 template <typename TString>
 void testSequenceMoveValue(TString & /*Tag*/)
 {
+    typedef typename Value<TString>::Type TValue;
     using namespace seqan;
 
     TString string("");
 
     resize(string, 2);
     moveValue(string, 1, 'G');
-    SEQAN_ASSERT_EQ(string[1], 'G');
+    SEQAN_ASSERT_EQ(string[1], TValue('G'));
 }
-
-template <typename TValue>
-void testSequenceMoveValue(String<TValue, Packed<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, MoveValue)
 {
@@ -1577,8 +1552,6 @@ template <typename TValue>
 void testSequenceReplace(String<TValue, External<> > & /*Tag*/) {}
 template <typename TValue>
 void testSequenceReplace(String<TValue, Block<> > & /*Tag*/) {}
-template <typename TValue>
-void testSequenceReplace(String<TValue, Packed<> > & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Replace)
 {
@@ -1599,15 +1572,15 @@ void testSequenceReserve(TString & /*Tag*/)
 
     TString string("");
 
-    reserve(string, 0);
+    reserve(string, 0u);
     SEQAN_ASSERT_EQ(capacity(string), 0u);
 
-    reserve(string, 1000);
+    reserve(string, 1000u);
     SEQAN_ASSERT_GEQ(capacity(string), 10u);
 
     // If the the new capacity is smaller than the current one
     // the new capacity must be larger or equal to the current length.
-    reserve(string, 1);
+    reserve(string, 1u);
     SEQAN_ASSERT_GEQ(capacity(string), length(string));
 }
 
@@ -1646,12 +1619,15 @@ void testSequenceResize(TString & /*Tag*/)
     //SEQAN_ASSERT_EQ(string[0], TValue());
 
     resize(string, 0);
+    std::cout<<string<<std::endl;
     SEQAN_ASSERT_EQ(length(string), 0u);
     
     resize(string, 5);
     SEQAN_ASSERT_EQ(length(string), 5u);
 
+    std::cout<<string<<std::endl;
     resize(string, 10, TValue('C'));
+    std::cout<<string<<std::endl;
     SEQAN_ASSERT_EQ(string[0], TValue());
     SEQAN_ASSERT_EQ(string[5], TValue('C'));
 }
@@ -1678,18 +1654,18 @@ SEQAN_TYPED_TEST(StringTestCommon, Resize)
 template <typename TString>
 void testSequenceValue(TString & /*Tag*/)
 {
-    using namespace seqan;
-
     typedef typename Value<TString>::Type TValue;
+    typedef typename Reference<TString>::Type TReference;
+    using namespace seqan;
 
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
     TString string("ACAC");
-    TValue & value_ = value(string, 0);
-    SEQAN_ASSERT_EQ(value_, 'A');
+    TReference ref = value(string, 0);
+    SEQAN_ASSERT_EQ(ref, TValue('A'));
 
-    value_ = 'G';
-    SEQAN_ASSERT_EQ(value_, 'G');
+    ref = 'G';
+    SEQAN_ASSERT_EQ(ref, TValue('G'));
     SEQAN_ASSERT_EQ(string, "GCAC");
 }
 
@@ -1699,12 +1675,12 @@ void testSequenceValue(TString const & /*Tag*/)
 {
     using namespace seqan;
 
-    typedef typename Value<TString>::Type TValue;
+    typedef typename Reference<TString const>::Type TReference;
 
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
     TString const string("ACAC");
-    TString const & value_ = value(string, 0);
+    TReference value_ = value(string, 0);
     SEQAN_ASSERT_EQ(value_, 'A');
 }
 
@@ -1716,10 +1692,6 @@ template <typename TValue>
 void testSequenceValue(String<TValue, MMap<> > & /*Tag*/) {}
 template <typename TValue>
 void testSequenceValue(String<TValue, MMap<> > const & /*Tag*/) {}
-template <typename TValue>
-void testSequenceValue(String<TValue, Packed<> > & /*Tag*/) {}
-template <typename TValue>
-void testSequenceValue(String<TValue, Packed<> > const & /*Tag*/) {}
 
 SEQAN_TYPED_TEST(StringTestCommon, Value)
 {
