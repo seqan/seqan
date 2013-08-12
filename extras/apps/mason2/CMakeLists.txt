@@ -64,8 +64,8 @@ add_library (mason_sim
              simulate_sanger.cpp
              variation_size_tsv.h
              vcf_materialization.cpp
-             vcf_materialization.h
-             )
+             vcf_materialization.h)
+target_link_libraries (mason_sim ${SEQAN_LIBRARIES})
 
 
 # Simulate random genomes.
