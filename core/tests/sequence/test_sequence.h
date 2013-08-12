@@ -1619,15 +1619,12 @@ void testSequenceResize(TString & /*Tag*/)
     //SEQAN_ASSERT_EQ(string[0], TValue());
 
     resize(string, 0);
-    std::cout<<string<<std::endl;
     SEQAN_ASSERT_EQ(length(string), 0u);
     
     resize(string, 5);
     SEQAN_ASSERT_EQ(length(string), 5u);
 
-    std::cout<<string<<std::endl;
     resize(string, 10, TValue('C'));
-    std::cout<<string<<std::endl;
     SEQAN_ASSERT_EQ(string[0], TValue());
     SEQAN_ASSERT_EQ(string[5], TValue('C'));
 }
