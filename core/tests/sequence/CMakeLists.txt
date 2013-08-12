@@ -37,14 +37,10 @@ add_executable (test_sequence
                test_stringset.h)
 target_link_libraries (test_sequence ${SEQAN_LIBRARIES})
 
-# Only compile sequence tests if explicitely enabled.
-option (SEQAN_COMPILE_SEQUENCE_TESTS_V2 "Enable new sequence tests." FALSE)
-if (SEQAN_COMPILE_SEQUENCE_TESTS_V2)
 add_executable (test_sequence_v2 test_sequence_v2.cpp
                test_sequence.h
                test_segment_beta.h)
 target_link_libraries (test_sequence_v2 ${SEQAN_LIBRARIES})
-endif ()
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
