@@ -91,6 +91,26 @@ struct NameStoreLess_
 // class NameStoreCache
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class NameStoreCache
+ * @headerfile <seqan/misc/misc_name_store_cache.h>
+ * @brief Stores a mapping from names to ids.
+ *
+ * @signature template <typename TNameStore[, typename TName]>
+ *            class NameStoreCache;
+ *
+ * @tparam TNameStore The type to use for the name store.  Usually a @link StringSet @endlink.
+ * @tparam TName      The type to use for the names.  Defaults to <tt>Value&lt;TNameStore&gt;::Type</tt>.
+ *
+ *
+ * @fn NameStoreCache::NameStoreCache
+ * @brief Constructor
+ *
+ * @signature NameStoreCache::NameStoreCache(nameStore);
+ *
+ * @param[in] nameStore The name store to manage the cache for.
+ */
+
 /**
 .Class.NameStoreCache
 ..summary:Stores a mapping from names to ids.
@@ -146,6 +166,15 @@ public:
 // refresh()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn NameStoreCache#refresh
+ * @brief Recreate a NameStoreCache.
+ *
+ * @signature void refresh(cache);
+ *
+ * @param[in,out] nameStore The NameStoreCache to refresh.
+ */
+
 /**
 .Function.refresh:
 ..class:Class.NameStoreCache
@@ -171,6 +200,21 @@ refresh(NameStoreCache<TNameStore, TName> &cache)
 // ----------------------------------------------------------------------------
 // getIdByName()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn NameStoreCache#getIdByName
+ * @brief Get id/index of a string in a name store using a NameStoreCache.
+ *
+ * @signature bool getIdByName(nameStore, name, idx[, cache]);
+ *
+ * @param[in]     nameStore The name store to search the name in.
+ * @param[in]     name      The name to search in the name store.
+ * @param[out]    idx       The variable to store the id/index at.
+ * @param[in,out] cache     The NameStoreCache to use for speeding up the lookup.  If omitted then a linear
+ *                          search is used.
+ *
+ * @return bool <tt>true</tt> if the name could be found and <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.getIdByName:
@@ -251,6 +295,17 @@ getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, Na
 // ----------------------------------------------------------------------------
 // appendName()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn NameStoreCache#appendName
+ * @brief Append a name to a name store and register it in the cache.
+ *
+ * @signature void appendName(nameStore, name, cache);
+ *
+ * @param[in,out] nameStore The name store to append the name to.
+ * @param[in]     name      The name to append to the store.
+ * @param[in,out] cache     The NameStoreCache to use for faster access.
+ */
 
 /**
 .Function.appendName:
