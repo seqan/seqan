@@ -702,12 +702,12 @@ clear(String<TValue, Packed2<THostspec> > & me)
 // --------------------------------------------------------------------------
 // Function _clearSpace()
 //
-// Helper struct ClearSpaceStringPacked_.
+// Helper struct ClearSpaceStringPacked2_.
 // --------------------------------------------------------------------------
 
 //implementation for all expand tags other than "limit"
 template <typename TExpand>
-struct ClearSpaceStringPacked_
+struct ClearSpaceStringPacked2_
 {
     template <typename T>
     static inline typename Size<T>::Type
@@ -856,7 +856,7 @@ _clearSpace(String<TValue, Packed2<THostspec> > & me,
         Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size);
+    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
 template<typename TValue, typename THostspec, typename TExpand>
@@ -867,7 +867,7 @@ _clearSpace(String<TValue, Packed2<THostspec> > & me,
         Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, limit);
+    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size, limit);
 }
 
 template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
@@ -879,7 +879,7 @@ _clearSpace(String<TValue, Packed2<THostspec> > & me,
             Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
+    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
 template<typename TValue, typename THostspec, typename TPosition, typename TExpand>
@@ -892,7 +892,7 @@ _clearSpace(String<TValue, Packed2<THostspec> > & me,
             Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
-    return ClearSpaceStringPacked_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
+    return ClearSpaceStringPacked2_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
 }
 
 // --------------------------------------------------------------------------

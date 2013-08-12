@@ -448,13 +448,22 @@ template <typename TMe>
 void TestStringResize()
 {
 	TMe str1;
-	resize(str1, 50);
+	resize(str1, 5, 1);
+	SEQAN_ASSERT_EQ(length(str1), 5u);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 1)), 1);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 3)), 1);
+
+	resize(str1, 50, 2);
 	SEQAN_ASSERT_EQ(length(str1), 50u);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 4)), 1);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 5)), 2);
 
 	resize(str1, 100, 3);
 	SEQAN_ASSERT_EQ(length(str1), 100u);
-	SEQAN_ASSERT_EQ(getValue(str1, 51), 3);
-	SEQAN_ASSERT_EQ(getValue(str1, 99), 3);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 49)), 2);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 50)), 3);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 51)), 3);
+	SEQAN_ASSERT_EQ((int)ordValue(getValue(str1, 99)), 3);
 
 }
 
@@ -524,9 +533,90 @@ SEQAN_DEFINE_TEST(String_Packed)
     SEQAN_CHECKPOINT;
 	TestStringBasics<String<char, Packed<> > >();
 	TestStringBasics<String<Dna, Packed<> > >();
+	TestStringBasics<String<Dna5, Packed<> > >();
 
-	TestStringResize<String<char, Packed<> > >();
+//	TestStringResize<String<char, Packed<> > >();
+	TestStringResize<String<Dna, Packed<> > >();
+	TestStringResize<String<Dna5, Packed<> > >();
 
+    typedef String<Dna5, Packed<> > TPackedString;
+    Dna5String str1;
+    TPackedString str2;
+    Dna5String motif = "AGAGCCCTGACACACTGATTATGACACGTAAGACTCTGAGAGTCCGTGTCTCTATAG";
+
+    for (int i = 0; i < 5; ++i)
+    {
+        append(str1, "GATTACATATA", Exact());
+        append(str2, "GATTACATATA", Exact());
+        SEQAN_ASSERT_EQ(str1, str2);
+    }
+
+    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    {
+        appendValue(str1, (Dna5)(i % 5), Exact());
+        appendValue(str2, (Dna5)(i % 5), Exact());
+        SEQAN_ASSERT_EQ(str1, str2);
+    }
+
+    resize(str1, 131, 'G', Exact());
+    resize(str2, 131, 'G', Exact());
+    SEQAN_ASSERT_EQ(str1, str2);
+
+    insert(str1, 19, "ACGTACGT", Exact());
+    insert(str2, 19, "ACGTACGT", Exact());
+    SEQAN_ASSERT_EQ(str1, str2);
+
+    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    {
+        Dna5String str1_ = str1;
+        TPackedString str2_ = str2;
+
+        insertValue(str1_, 64-i, (Dna5)(i % 5), Exact());
+        insertValue(str2_, 64-i, (Dna5)(i % 5), Exact());
+        SEQAN_ASSERT_EQ(str1_, str2_);
+    }
+
+    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    {
+        Dna5String str1_ = str1;
+        TPackedString str2_ = str2;
+
+        insert(str1_, 64-i, "ACGTACGT", Exact());
+        insert(str2_, 64-i, "ACGTACGT", Exact());
+        SEQAN_ASSERT_EQ(str1_, str2_);
+    }
+
+    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+        for (int j = 0; j < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++j)
+        {
+            Dna5String str1_ = str1;
+            TPackedString str2_ = str2;
+
+            insert(str1_, 64-i, suffix(motif,j), Exact());
+            insert(str2_, 64-i, suffix(motif,j), Exact());
+            SEQAN_ASSERT_EQ(str1_, str2_);
+        }
+
+    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+    {
+        Dna5String str1_ = str1;
+        TPackedString str2_ = str2;
+
+        erase(str1_, 64-i);
+        erase(str2_, 64-i);
+        SEQAN_ASSERT_EQ(str1_, str2_);
+    }
+
+    for (int i = 0; i < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++i)
+        for (int j = 0; j < PackedTraits_<TPackedString>::VALUES_PER_HOST_VALUE; ++j)
+        {
+            Dna5String str1_ = str1;
+            TPackedString str2_ = str2;
+
+            erase(str1_, 64-i, 65-i+j);
+            erase(str2_, 64-i, 65-i+j);
+            SEQAN_ASSERT_EQ(str1_, str2_);
+        }
 }
 
 //////////////////////////////////////////////////////////////////////////////

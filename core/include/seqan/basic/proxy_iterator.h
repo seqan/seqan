@@ -113,7 +113,7 @@ public:
     // ------------------------------------------------------------------------
 
     Proxy const &
-    operator=(Proxy const & _other)
+    operator=(Proxy const & _other) const
     {
         SEQAN_CHECKPOINT;
         assignValue(data_iterator, getValue(_other.data_iterator));
@@ -121,7 +121,7 @@ public:
     }
 
     Proxy const &
-    operator=(TValue_ const & _value)
+    operator=(TValue_ const & _value) const
     {
         SEQAN_CHECKPOINT;
         assignValue(data_iterator, _value);
@@ -131,12 +131,6 @@ public:
     // ------------------------------------------------------------------------
     // Type conversion operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
-
-    operator TAccessorNotConst_()
-    {
-        SEQAN_CHECKPOINT;
-        return getValue(data_iterator);
-    }
 
     operator TAccessorNotConst_() const
     {

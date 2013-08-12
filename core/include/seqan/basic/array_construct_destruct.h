@@ -922,8 +922,8 @@ arrayCopyForward(TSource1 source_begin,
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
 _arrayCopyBackwardDefault(TSource1 source_begin, 
-                           TSource2 source_end, 
-                           TTarget target_begin)
+                          TSource2 source_end,
+                          TTarget target_begin)
 {
     SEQAN_CHECKPOINT;
     ::std::copy_backward(source_begin, source_end, target_begin + (source_end - source_begin));
@@ -994,13 +994,10 @@ inline void arrayCopy(TSource1 source_begin,
                       TSource2 source_end, 
                       TTarget target_begin)
 {
-    if ((void *) source_begin >= (void *) target_begin) {
-        SEQAN_CHECKPOINT;
+    if (target_begin <= source_begin)
         arrayCopyForward(source_begin, source_end, target_begin);
-    } else {
-        SEQAN_CHECKPOINT;
+    else
         arrayCopyBackward(source_begin, source_end, target_begin);
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1211,13 +1208,10 @@ arrayMove(TSource1 source_begin,
           TSource2 source_end,
           TTarget target_begin)
 {
-    if ((void *) source_begin >= (void *) target_begin) {
-        SEQAN_CHECKPOINT;
+    if (target_begin <= source_begin)
         arrayMoveForward(source_begin, source_end, target_begin);
-    } else {
-        SEQAN_CHECKPOINT;
+    else
         arrayMoveBackward(source_begin, source_end, target_begin);
-    }
 }
 
 // ----------------------------------------------------------------------------
