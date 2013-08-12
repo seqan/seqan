@@ -38,7 +38,7 @@
       <option value="">this frame</option>
     </param>
 
-    <param name="igv_host" type="text" label="Host for the IGV link." value="localhost" />
+    <param name="igv_host" type="text" label="Host for the IGV link." value="localhost"  />
     <param name="igv_port" type="integer" label="Port for the IGV link." value="60151" />
 
     <param name="ucsc_org" type="text" label="UCSC Genome Browser org value." value="human" />

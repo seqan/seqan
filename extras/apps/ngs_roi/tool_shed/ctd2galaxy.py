@@ -475,7 +475,7 @@ class GalaxyWriter(XMLWriter):
         if param_node.name.endswith('-file-ext'):
             return  # Skip if extension to override.
         args = {}
-        if param_node.tags and 'required' not in param_node.tags.split(','):
+        if not param_node.required:
             args['optional'] = 'true'  # false would be default
         if param_node.type_ == 'input-file':
             args['type'] = 'data'
@@ -542,7 +542,7 @@ class GalaxyWriter(XMLWriter):
             # The name of the variable that is used.
             var_name = '$' + ce.mapping_path.replace('-', '_').replace('.', '_')
             # Check whether it is optional.
-            optional = bool(ce.param_node.tags and 'required' not in ce.param_node.tags.split(','))
+            optional = not ce.param_node.required
             # Check whether it is a boolean.
             bool_param = False
             if ce.param_node.type_ == 'string' and ce.param_node.restrictions and \

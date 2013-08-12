@@ -46,7 +46,7 @@ class PlotThumbnailsRunner(object):
 
     def run(self):
         cmd_args = ['-if', self.args.in_file,
-                    '--in-file-ext', 'roi',
+                    '--input-file-file-ext', 'roi',
                     '-o', os.path.join(self.args.out_dir, 'thumbnail_'),
                     '--max-rois', self.args.max_rois,
                     '--max-value', self.args.max_value,

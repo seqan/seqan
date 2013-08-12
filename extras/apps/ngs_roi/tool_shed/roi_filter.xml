@@ -29,6 +29,13 @@
     </inputs>
 
     <!--
+        Output Files
+    -->
+    <outputs>
+        <data name="output" format="roi" label="${input.name}_filtered_col_${column}" />
+    </outputs>
+
+    <!--
       Recognize errors by return code and not output to stderr.
     -->
     <stdio>

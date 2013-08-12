@@ -78,6 +78,7 @@ struct RoiIntersectOptions
     seqan::CharString inputRoiFile;
     // Path to intervals file to read.
     seqan::CharString inputIntervalsFile;
+    seqan::CharString inputIntervalsFileExt;  // extension for type
 
     // Output ROI file.
     seqan::CharString outputRoiFile;
@@ -891,6 +892,7 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 
     getOptionValue(options.inputRoiFile, parser, "in-roi");
     getOptionValue(options.inputIntervalsFile, parser, "in-features");
+    options.inputIntervalsFileExt = getOptionFileExtension(parser, "in-features");
     getOptionValue(options.outputRoiFile, parser, "out-roi");
 
     seqan::CharString tmp;
@@ -922,7 +924,7 @@ int RoiIntersectApp::doStreaming()
     if (empty(options.gffGroupBy))
     {
         // Grouping is not ative, project against BED (or GFF/GTF reduced to BED information).
-        if (endsWith(options.inputIntervalsFile, ".bed"))
+        if (options.inputIntervalsFileExt == ".bed")
         {
             IntersectDriver<IntersectWithBedConfig> driver(outRoi, inIntervals, inRoi, options);
             return driver.run();
