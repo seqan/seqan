@@ -127,10 +127,10 @@ public:
     {}
 
     explicit
-    ModifiedIterator(THost const & host) : _host(host), _cargo()
+    ModifiedIterator(THost const & host) : _host(host)
     {}
 
-    ModifiedIterator(THost const & host, TFunctor const & functor) : _host(host), _cargo()
+    ModifiedIterator(THost const & host, TFunctor const & functor) : _host(host)
     {
         cargo(*this).func = functor;
     }
@@ -146,26 +146,24 @@ class ModifiedString<THost, ModView<TFunctor> >
 public:
     typedef typename Pointer_<THost>::Type       THostPointer_;
     typedef typename Cargo<ModifiedString>::Type TCargo_;
-    
-    typedef typename InnermostHost_<ModifiedString>::Type TInnermostHost_;
 
-    THostPointer_ _host;
+    mutable THostPointer_ _host;
     TCargo_ _cargo;
 
-    mutable typename Value<ModifiedString>::Type	tmp_value;
+    mutable typename Value<ModifiedString>::Type tmp_value;
 
     // Default constructor.
-    ModifiedString() : _host(), _cargo()
+    ModifiedString()
     {}
 
     // Construct with the actual host.
     explicit
-    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host)), _cargo(), tmp_value()
+    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host))
     {}
 
     // Construct with the functor.
     explicit
-    ModifiedString(TFunctor const & functor) : _host(), _cargo(), tmp_value()
+    ModifiedString(TFunctor const & functor)
     {
         cargo(*this).func = functor;
     }
@@ -175,14 +173,14 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host)), _cargo(), tmp_value()
+            _host(_toPointer(host))
     {
         ignoreUnusedVariableWarning(dummy);
     }
 
     // Construct with the actual host; variant with functor.
     ModifiedString(typename Parameter_<THost>::Type host, TFunctor const & functor) :
-            _host(_toPointer(host)), _cargo(), tmp_value()
+            _host(_toPointer(host))
     {
         cargo(*this).func = functor;
     }
@@ -193,7 +191,7 @@ public:
     ModifiedString(THost_ & host,
                    TFunctor const & functor,
                    SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host)), _cargo(), tmp_value()
+            _host(_toPointer(host))
     {
         ignoreUnusedVariableWarning(dummy);
         cargo(*this).func = functor;
@@ -208,7 +206,7 @@ public:
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
                                             typename RemoveReference<THost>::Type,
                                             typename RemoveReference<THost_>::Type >)) :
-            _host(std::forward<THost_>(host)), _cargo(), tmp_value()
+            _host(std::forward<THost_>(host))
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -221,7 +219,7 @@ public:
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
                                             typename RemoveReference<THost>::Type,
                                             typename RemoveReference<THost_>::Type >)) :
-            _host(std::forward<THost_>(host)), _cargo(), tmp_value()
+            _host(std::forward<THost_>(host))
     {
         ignoreUnusedVariableWarning(dummy);
         cargo(*this).func = functor;
@@ -234,7 +232,7 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host), _cargo(), tmp_value()
+            _host(host)
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -244,7 +242,7 @@ public:
     explicit
     ModifiedString(THost_ const & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host), _cargo(), tmp_value()
+            _host(host)
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -256,7 +254,7 @@ public:
     ModifiedString(THost_ & host,
                    TFunctor const & functor,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host), _cargo(), tmp_value()
+            _host(host)
     {
         ignoreUnusedVariableWarning(dummy);
         cargo(*this).func = functor;
@@ -269,7 +267,7 @@ public:
     ModifiedString(THost_ const & host,
                    TFunctor const & functor,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host), _cargo(), tmp_value()
+            _host(host)
     {
         ignoreUnusedVariableWarning(dummy);
         cargo(*this).func = functor;
@@ -423,6 +421,17 @@ inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > const>::Type
 getValue(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
 {
     return cargo(me).func(getValue(host(me), pos));
+}
+
+// --------------------------------------------------------------------------
+// Function assignModViewFunctor()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TFunctor>
+inline void
+assignModViewFunctor(ModifiedString<THost, ModView<TFunctor> > & me, TFunctor const & functor)
+{
+    cargo(me).func = functor;
 }
 
 // --------------------------------------------------------------------------

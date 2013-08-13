@@ -56,7 +56,6 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions)
         bool res = IsSameType<TExpected, TResult>::VALUE;
         SEQAN_ASSERT(res);
     }
-    // TODO(holtgrew): Should the modified iterator actually have a value function?
     {
         typedef char TExpected;
         typedef Value<TModifiedIterator>::Type TResult;
@@ -223,8 +222,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_upper_case)
     for (size_t i = 0; i < length(originalStr); ++i)
         SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
-    // TODO(holtgrew): This does not compile.
-//     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
+    SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
     CharString modifiedStrCopy = modifiedStr;
     SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
@@ -250,8 +248,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_low_case)
     for (size_t i = 0; i < length(originalStr); ++i)
         SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
-    // TODO(holtgrew): This does not compile.
-//     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
+    SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
     CharString modifiedStrCopy = modifiedStr;
     SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
@@ -290,23 +287,84 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
 {
     using namespace seqan;
 
-    typedef CaesarChiffre<char> TFunctor;
-    typedef ModifiedString<ModifiedString<CharString, ModView<TFunctor> >, ModView<TFunctor> > TModifiedString;
+    {
+        typedef CaesarChiffre<char> TFunctor;
+        typedef ModifiedString<ModifiedString<CharString, ModView<TFunctor> >, ModView<TFunctor> > TModifiedString;
 
-    CharString originalStr = "This is a test!";
-    CharString const EXPECTED_RESULT = "Wklv lv d whvw!";
+        CharString originalStr = "This is a test!";
+        CharString const EXPECTED_RESULT = "Wklv lv d whvw!";
 
-    TFunctor func1(1), func2(2);
-    TModifiedString modifiedStr(originalStr, func1);
-    // TODO(holtgrew): Because of the copy-as-a-pointer behaviour of ModifiedString, assigning nested mod view functor is hard/impossible.
-    cargo(modifiedStr._host).func = func2;
-    // assignModViewFunctor(modifiedStr, func1);
-    // assignModViewFunctor(host(modifiedStr), func2);
+        TFunctor func1(1), func2(2);
+        TModifiedString modifiedStr(originalStr, func1);
+        assignModViewFunctor(modifiedStr, func1);
+        assignModViewFunctor(host(modifiedStr), func2);
 
-    SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
+        SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
 
-    CharString modifiedStrCopy = modifiedStr;
-    SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
+        CharString modifiedStrCopy = modifiedStr;
+        SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
+    }
+    // test nested reverse/view modifiers and independence of order
+    {
+        Dna5String str = "CGATN";
+        Dna5String const EXPECTED_STRING = "NATCG";
+
+        ModifiedString<
+			ModifiedString<	Dna5String, ModView< FunctorComplement<Dna5> > >, 
+			ModReverse
+		> modifiedString1(str);
+
+        ModifiedString<
+			ModifiedString<	Dna5String, ModReverse >,
+			ModView< FunctorComplement<Dna5> >
+		> modifiedString2(str);
+        
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString1);
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString2);
+    }
+    // test const in different nesting levels
+    {
+        Dna5String str = "CGATN";
+        Dna5String const EXPECTED_STRING = "NATCG";
+
+        // test independence of nesting order
+        ModifiedString<
+			ModifiedString<	Dna5String const, ModView< FunctorComplement<Dna5> > >,
+			ModReverse
+		> modifiedString1(str);
+
+        ModifiedString<
+			ModifiedString<	Dna5String const, ModReverse >,
+			ModView< FunctorComplement<Dna5> >
+		> modifiedString2(str);
+
+        ModifiedString<
+			ModifiedString<	Dna5String const, ModView< FunctorComplement<Dna5> > > const,
+			ModReverse
+		> modifiedString3(str);
+
+        ModifiedString<
+			ModifiedString<	Dna5String const, ModReverse > const,
+			ModView< FunctorComplement<Dna5> >
+		> modifiedString4(str);
+        
+        ModifiedString<
+			ModifiedString<	Dna5String, ModReverse > const,
+			ModView< FunctorComplement<Dna5> >
+		> modifiedString5(str);
+        
+        ModifiedString<
+			ModifiedString<	Dna5String, ModReverse > const,
+			ModView< FunctorComplement<Dna5> >
+		> modifiedString6(str);
+        
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString1);
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString2);
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString3);
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString4);
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString5);
+        SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString6);
+    }
 }
 
 // Test the convert() function.

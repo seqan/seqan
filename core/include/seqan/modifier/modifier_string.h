@@ -119,12 +119,12 @@ public:
     TCargo_ _cargo;
 
     // Default constructor.
-    ModifiedString() : _host(), _cargo()
+    ModifiedString()
     {}
 
     // Construct with the actual host.
     explicit
-    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host)), _cargo()
+    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host))
     {}
 
     // Constructor for creating a ModifiedString with const host from a non-const host.
@@ -132,7 +132,7 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host)), _cargo()
+            _host(_toPointer(host))
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -146,7 +146,7 @@ public:
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
                                             typename RemoveReference<THost>::Type,
                                             typename RemoveReference<THost_>::Type >)) :
-            _host(std::forward<THost_>(host)), _cargo()
+            _host(std::forward<THost_>(host))
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -158,7 +158,7 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host), _cargo()
+            _host(host)
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -167,7 +167,7 @@ public:
     explicit
     ModifiedString(THost_ const & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host), _cargo()
+            _host(host)
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -492,53 +492,21 @@ _toParameter(ModifiedString<THost, TSpec> const & me)
 }
 
 // --------------------------------------------------------------------------
-// Function _fromPointer()
-// --------------------------------------------------------------------------
-
-// TODO(holtgrew): Replace with _toParameter()?
-
-template <typename T>
-T &
-_fromPointer(T * ptr)
-{
-    return *ptr;
-}
-
-template <typename T>
-T const &
-_fromPointer(T const * ptr)
-{
-    return *ptr;
-}
-
-template <typename THost, typename TSpec>
-ModifiedString<THost, TSpec> _fromPointer(ModifiedString<THost, TSpec> & me)
-{
-    return me;
-}
-
-template <typename THost, typename TSpec>
-ModifiedString<THost, TSpec> _fromPointer(ModifiedString<THost, TSpec> const & me)
-{
-    return me;
-}
-
-// --------------------------------------------------------------------------
 // Function host()
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline typename Parameter_<THost>::Type
+inline THost &
 host(ModifiedString<THost, TSpec> & me)
 {
-    return _toParameter(_fromPointer(me._host));
+    return _dereference<THost &>(me._host);
 }
 
 template <typename THost, typename TSpec>
-inline typename Parameter_<THost>::Type
+inline THost &
 host(ModifiedString<THost, TSpec> const & me)
 {
-    return _toParameter(_fromPointer(me._host));
+    return _dereference<THost &>(me._host);
 }
 
 // --------------------------------------------------------------------------

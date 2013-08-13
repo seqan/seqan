@@ -553,6 +553,10 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
     TIter itEnd = end(sequence, Standard());
     Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
 
+    // disable multi-threading if sequence is too small
+    if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && length(sequence) < 10000)
+        resize(splitter, 1);
+
     SEQAN_OMP_PRAGMA(parallel for)
     for (int job = 0; job < (int)length(splitter); ++job)
     {

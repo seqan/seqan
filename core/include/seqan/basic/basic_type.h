@@ -580,6 +580,27 @@ SEQAN_CHECKPOINT
     return _object;
 }
 
+// --------------------------------------------------------------------------
+// Function _dereference()
+// --------------------------------------------------------------------------
+
+// explicitly give desired dereferenced type as first argument,
+// e.g. _dereference<int>(int*) or _dereference<Segment<..> &>(Segment<..> &)
+template <typename T>
+inline T
+_dereference(typename RemoveReference<T>::Type & ptr)
+{
+    return ptr;
+}
+
+template <typename T>
+inline T
+_dereference(typename RemoveReference<T>::Type * ptr)
+{
+    return *ptr;
+}
+
+
 //____________________________________________________________________________
 
 /*!

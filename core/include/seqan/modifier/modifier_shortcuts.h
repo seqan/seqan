@@ -500,6 +500,7 @@ inline void reverseComplement(TSequence & sequence)
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
+// (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence >
 inline void reverseComplement(TSequence const & sequence) 
 {
@@ -523,6 +524,7 @@ inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet)
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
+// (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence, typename TSpec >
 inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet)
 {
@@ -568,6 +570,7 @@ inline void toLower(TSequence & sequence)
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
+// (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence >
 inline void toLower(TSequence const & sequence) 
 {
@@ -590,6 +593,7 @@ inline void toLower(StringSet<TSequence, TSpec> & stringSet)
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
+// (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence, typename TSpec >
 inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
 {
@@ -634,6 +638,7 @@ inline void toUpper(TSequence & sequence)
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
+// (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence >
 inline void toUpper(TSequence const & sequence) 
 {
@@ -656,6 +661,7 @@ inline void toUpper(StringSet<TSequence, TSpec> & stringSet)
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
+// (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence, typename TSpec >
 inline void toUpper(StringSet<TSequence, TSpec> const & stringSet)
 {
