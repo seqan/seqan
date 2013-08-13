@@ -51,6 +51,23 @@ namespace seqan {
 // Tags, Classes, Enums
 // ==========================================================================
 
+/*!
+ * @enum TokenizeResult
+ * @headerfile <seqan/stream.h>
+ * @brief Enum with return values for Tokenization operations.
+ *
+ * @signature enum TokenizeResult;
+ *
+ * @var TokenizeResult SUCCESS = 0;
+ * @brief Reading the specified data succeeded.
+ *
+ * @var TokenizeResult EOF_BEFORE_SUCCESS = 1024;
+ * @brief End of file was reached before the read/skip operation succeeded.
+ *
+ * @var TokenizeResult NO_SUCCESS = 1025;
+ * @brief The pattern was not found but we are not at EOF (may be returned when tokenizing on limited scope.
+ */
+
 /**
 .Enum.TokenizeResult
 ..cat:Input/Output
@@ -97,12 +114,14 @@ typedef Tag<Identifier__> Identifier_;
 // Metafunctions
 // ==========================================================================
 
-// none
-
-
 // ==========================================================================
 // Functions
 // ==========================================================================
+
+/*!
+ * @defgroup FileFormatTokenization File Format Tokenization
+ * @brief Helper code for tokenization when reading from @link RecordReader @endlink.
+ */
 
 // ----------------------------------------------------------------------------
 // helper functions for tags
@@ -560,6 +579,30 @@ _readAndCompareWithStr(TRecordReader & reader,
 
 // ----------------------- the real deal ------------------------------------
 
+/*!
+ * @fn FileFormatTokenization#readUntilOneOf
+ * @headerfile <seqan/stream.h>
+ * @brief Read characters from RecordReader into buffer until one of the given character is encountered.
+ *
+ * @signature int readUntilOneOf(buffer, reader, c1[, c2[, c3[, c4[, c5]]]]);
+ *
+ * @param[in,out] buffer The buffer to write to.  Type: @link SequenceConcept @endlink.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     c1     One of the characters to look for.  Type: <tt>char</tt>.
+ * @param[in]     c2     One of the characters to look for.  Type: <tt>char</tt>.
+ * @param[in]     c3     One of the characters to look for.  Type: <tt>char</tt>.
+ * @param[in]     c4     One of the characters to look for.  Type: <tt>char</tt>.
+ * @param[in]     c5     One of the characters to look for.  Type: <tt>char</tt>.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>on</b> the found character and the character itself is not written to the buffer.  Note that
+ * even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF) occured.
+ */
+
 /**
 .Function.readUntilOneOf
 ..class:Class.RecordReader
@@ -666,6 +709,28 @@ readUntilOneOf(TBuffer & buffer, RecordReader<TStream, TPass> & reader, char c1,
     return EOF_BEFORE_SUCCESS;
 }
 
+/*!
+ * @fn FileFormatTokenization#readUntilWhitespace
+ * @headerfile <seqan/stream.h>
+ * @brief Read characters from stream into buffer until a @link isspace whitespace @endlink is encountered.
+ *
+ * @signature int readUntilBlank(buffer, reader);
+ *
+ * @param[in,out] buffer The buffer to write to.  Type: @link SequenceConcept @endlink.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.  Consider using @link
+ * readUntilBlank @endlink for reading until space or tab.
+ *
+ * This function stops <b>on</b> the found character and the character itself is not written to the buffer.  Note that
+ * even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF) occured.
+ */
+
 /**
 .Function.readUntilWhitespace
 ..class:Class.RecordReader
@@ -701,6 +766,25 @@ readUntilWhitespace(TBuffer & buffer,
                        Whitespace_());
 }
 
+/*!
+ * @fn FileFormatTokenization#readUntilBlank
+ * @headerfile <seqan/stream.h>
+ * @brief Read characters from stream into buffer until a @link isblank blank @endlink is encountered.
+ *
+ * @signature int readUntilBlank(buffer, reader);
+ *
+ * @param[in,out] buffer The buffer to write to.  Type: @link SequenceConcept @endlink.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>on</b> the found character and the character itself is not written to the buffer.  Note that
+ * even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF) occured.
+ */
+
 /**
 .Function.readUntilBlank
 ..class:Class.RecordReader
@@ -734,6 +818,26 @@ readUntilBlank(TBuffer & buffer,
                        reader,
                        Blank_());
 }
+
+/*!
+ * @fn FileFormatTokenization#readUntilChar
+ * @headerfile <seqan/stream.h>
+ * @brief Read characters from stream into buffer until a given character is read.
+ *
+ * @signature int readUntilChar(buffer, reader, c);
+ *
+ * @param[in,out] buffer The buffer to write to.  Type: @link SequenceConcept @endlink.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     c      The <tt>char</tt> to look for.
+ *
+ * @return int 0 if there was no error and non-0 if there were errors.  A special value is @link TokenizeResult
+ *             EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>on</b> the found character and the character itself is not written to the buffer.  Note that
+ * even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF) occured.
+ */
 
 /**
 .Function.readUntilChar
@@ -780,6 +884,26 @@ readUntilChar(TBuffer & buffer,
     return EOF_BEFORE_SUCCESS;
 }
 
+/*!
+ * @fn FileFormatTokenization#readNChars
+ * @headerfile <seqan/stream.h>
+ * @brief Read fixed number of characters from stream into buffer until a given character is read.
+ *
+ * @signature int readUntilChar(buffer, reader, n);
+ *
+ * @param[in,out] buffer The buffer to write to.  Type: @link SequenceConcept @endlink.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     n      The number of characters to read.  Type: <tt>unsigned</tt>.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops after <tt>n</tt> read characters.  Note that even when an error occurs, <tt>buffer</tt> will
+ * contain the characters read until the error (or EOF) occured.
+ */
+
 /**
 .Function.readNChars
 ..class:Class.RecordReader
@@ -823,6 +947,28 @@ readNChars(TBuffer & buffer,
     }
     return 0;
 }
+
+/*!
+ * @fn FileFormatTokenization#readNCharsIgnoringWhitespace
+ * @headerfile <seqan/stream.h>
+ * @brief Read fixed number of non-whitespace characters.
+ *
+ * @signature int readUntilChar(buffer, reader, n);
+ *
+ * @param[in,out] buffer The buffer to write to.  Type: @link SequenceConcept @endlink.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     n      The number of non-whitespace characters to read.  Type: <tt>unsigned</tt>.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.
+ *
+ * This function stops after <tt>n</tt> read non-whitespace characters.  Note that even when an error occurs,
+ * <tt>buffer</tt> will contain the characters read until the error (or EOF) occured.
+ */
 
 /**
 .Function.readNCharsIgnoringWhitespace
@@ -887,6 +1033,20 @@ readNCharsIgnoringWhitespace(TBuffer & buffer,
     return _readNCharsIgnoringType(buffer, reader, n, Whitespace_());
 }
 
+/*!
+ * @fn FileFormatTokenization#skipNChars
+ * @headerfile <seqan/stream.h>
+ * @brief Skip a fixed number of characters.
+ *
+ * @signature int skipNChars(reader, n);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     n      The number of characters to read.  Type: <tt>unsinged</tt>.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ */
+
 /**
 .Function.skipNChars
 ..class:Class.RecordReader
@@ -921,6 +1081,26 @@ skipNChars(RecordReader<TStream, TPass> & reader,
     }
     return 0;
 }
+
+/*!
+ * @fn FileFormatTokenization#skipNCharsIgnoringWhitespace
+ * @headerfile <seqan/stream.h>
+ * @brief Skip a fixed number of non-whitespace characters.
+ *
+ * @signature int skipNChars(reader, n);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     n      The number of characters to read.  Type: <tt>unsinged</tt>.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.
+ */
+
+
 /**
 .Function.skipNCharsIgnoringWhitespace
 ..class:Class.RecordReader
@@ -969,8 +1149,26 @@ skipNCharsIgnoringWhitespace(RecordReader<TStream, TPass> & reader,
     return _skipNCharsIgnoringType(reader, n, Whitespace_());
 }
 
+/*!
+ * @fn FileFormatTokenization#skipUntilWhitespace
+ * @headerfile <seqan/stream.h>
+ * @brief Skip until the first whitespace character is encountered.
+ *
+ * @signature int skipUntilWhitespace(reader);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.  Consider using @link
+ * skipUntilBlank @endlink for skipping until space or tab.
+ *
+ * The reader will stop <b>on</b> the first whitespace character.
+ */
 
-// ---
 /**
 .Function.skipUntilWhitespace
 ..class:Class.RecordReader
@@ -999,6 +1197,23 @@ skipUntilWhitespace(RecordReader<TStream, TPass> & reader)
     return _skipHelper(reader, Whitespace_());
 }
 
+/*!
+ * @fn FileFormatTokenization#skipUntilBlank
+ * @headerfile <seqan/stream.h>
+ * @brief Skip until the first blank character is encountered.
+ *
+ * @signature int skipUntilBlank(reader);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The reader will stop <b>on</b> the first blank character.
+ */
+
 /**
 .Function.skipUntilBlank
 ..class:Class.RecordReader
@@ -1026,6 +1241,25 @@ skipUntilBlank(RecordReader<TStream, TPass> & reader)
     return _skipHelper(reader, Blank_());
 }
 
+/*!
+ * @fn FileFormatTokenization#skipUntilGraph
+ * @headerfile <seqan/stream.h>
+ * @brief Skip until the first printable character is encountered.
+ *
+ * @signature int skipUntilGraph(reader);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The reader will stop <b>on</b> the first printable character.
+ *
+ * @see isgraph
+ */
+
 /**
 .Function.skipUntilGraph
 ..class:Class.RecordReader
@@ -1051,6 +1285,24 @@ skipUntilGraph(RecordReader<TStream, TPass> & reader)
     SEQAN_CHECKPOINT
     return _skipHelper(reader, Graph_());
 }
+
+/*!
+ * @fn FileFormatTokenization#skipUntilChar
+ * @headerfile <seqan/stream.h>
+ * @brief Skip until the a given character is found.
+ *
+ * @signature int skipUntilChar(reader, c);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     c      The <tt>char</tt> to search for.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The reader will stop <b>on</b> the first found location of <tt>c</tt>.
+ */
 
 /**
 .Function.skipUntilChar
@@ -1090,6 +1342,24 @@ skipUntilChar(RecordReader<TStream, TPass> & reader,
     }
     return EOF_BEFORE_SUCCESS;
 }
+
+/*!
+ * @fn FileFormatTokenization#skipUntilString
+ * @headerfile <seqan/stream.h>
+ * @brief Skip until the a given string is found.
+ *
+ * @signature int skipUntilString(reader, str);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     str    The @link SequenceConcept @endlink to find.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The reader will stop <b>behind</b> the location of <tt>str</tt>.
+ */
 
 /**
 .Function.skipUntilString
@@ -1136,6 +1406,24 @@ skipUntilString(RecordReader<TStream, TPass> & reader,
      * which definitely leads to misses. */
 }
 
+/*!
+ * @fn FileFormatTokenization#skipTabOrLineBreak
+ * @headerfile <seqan/stream.h>
+ * @brief Skip over tab or line break characters (<tt>'\r' or '\n'</tt>).
+ *
+ * @signature int skipTabOrLineBreak(reader);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The reader will stop <b>behind</b> the (possibly empty) sequence of tab or line break characters (regex:
+ * <tt>[\r\n\t]</tt>).
+ */
+
 /**
 .Function.readUntilTabOrLineBreak
 ..class:Class.RecordReader
@@ -1169,6 +1457,27 @@ readUntilTabOrLineBreak(TBuffer & buffer,
 
 // ---
 
+/*!
+ * @fn FileFormatTokenization#readLetters
+ * @headerfile <seqan/tokenize.h>
+ * @brief Read from a RecordReader as long as the characters are letters (in @link isalpha alpha @endlink class).
+ *
+ * @signature int readLetters(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to read the data into.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The function will stop <b>after</b> the last read character.
+ * 
+ * Note that even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF)
+ * occured.
+ */
+
 /**
 .Function.readLetters
 ..class:Class.RecordReader
@@ -1201,6 +1510,27 @@ readLetters(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
                        false);
 }
 
+/*!
+ * @fn FileFormatTokenization#readDigits
+ * @headerfile <seqan/tokenize.h>
+ * @brief Read from a RecordReader as long as the characters are digits (in @link isdigit digit @endlink class).
+ *
+ * @signature int readDigits(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to read the data into.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The function will stop <b>after</b> the last read character.
+ * 
+ * Note that even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF)
+ * occured.
+ */
+
 /**
 .Function.readDigits
 ..class:Class.RecordReader
@@ -1232,6 +1562,27 @@ readDigits(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
                        false);
 }
 
+/*!
+ * @fn FileFormatTokenization#readGraphs
+ * @headerfile <seqan/tokenize.h>
+ * @brief Read from a RecordReader as long as the characters are printable (in @link isgraph graph @endlink class).
+ *
+ * @signature int readGraphs(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to read the data into.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The function will stop <b>after</b> the last read character.
+ * 
+ * Note that even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF)
+ * occured.
+ */
+
 /**
 .Function.readGraphs
 ..cat:Input/Output
@@ -1258,6 +1609,27 @@ readGraphs(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
     SEQAN_CHECKPOINT
     return _readHelper(buffer, reader, Graph_(), false);
 }
+
+/*!
+ * @fn FileFormatTokenization#readFlaot
+ * @headerfile <seqan/tokenize.h>
+ * @brief Read characters from @link RecordReader @endlink as long as the string is a valid floating point numbers.
+ *
+ * @signature int readFloat(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to read the data into.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The function will stop <b>after</b> the last read character.
+ * 
+ * Note that even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF)
+ * occured.
+ */
 
 /**
 .Function.readFloat
@@ -1351,6 +1723,27 @@ readFloat(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
     return 0;
 }
 
+/*!
+ * @fn FileFormatTokenization#readAlphaNums
+ * @headerfile <seqan/tokenize.h>
+ * @brief Read from a RecordReader as long as the characters are alphanumeric (in @link isalnum alnum @endlink class).
+ *
+ * @signature int readAlphaNums(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to read the data into.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The function will stop <b>after</b> the last read character.
+ * 
+ * Note that even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF)
+ * occured.
+ */
+
 /**
 .Function.readAlphaNums
 ..class:Class.RecordReader
@@ -1382,6 +1775,27 @@ readAlphaNums(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
                        false);
 }
 
+/*!
+ * @fn FileFormatTokenization#readIdentifier
+ * @headerfile <seqan/tokenize.h>
+ * @brief Read from a RecordReader as long as the characters form an identifier (alnum, <tt>'-'</tt>, <tt>'_'</tt>).
+ *
+ * @signature int readIdentifier(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to read the data into.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * The function will stop <b>after</b> the last read character.
+ * 
+ * Note that even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF)
+ * occured.
+ */
+
 /**
 .Function.readIdentifier
 ..cat:Input/Output
@@ -1407,6 +1821,26 @@ readIdentifier(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 {
     return _readHelper(buffer, reader, Identifier_(), false);
 }
+
+/*!
+ * @fn FileFormatTokenization#skipWhitespaces
+ * @headerfile <seqan/stream.h>
+ * @brief Advance RecordReader until a whitespace occurs.
+ *
+ * @signature int skipWhitespaces(reader);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.  Consider using @link
+ * skipBlanks @endlink for skipping blanks.
+ *
+ * This function stops <b>after</b> the last skipped.
+ */
 
 /**
 .Function.skipWhitespaces
@@ -1435,6 +1869,20 @@ skipWhitespaces(RecordReader<TStream, TPass> & reader)
     SEQAN_CHECKPOINT
     return _skipHelper(reader, Whitespace_(), false);
 }
+
+/*!
+ * @fn FileFormatTokenization#skipChar
+ * @headerfile <seqan/stream.h>
+ * @brief Skip one character that must be equal to a given one for this function to succeed.
+ *
+ * @signature int skipChar(reader, c);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     c      The <tt>char</tt> to skip.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ */
 
 /**
 .Function.skipChar
@@ -1466,6 +1914,23 @@ skipChar(RecordReader<TStream, TPass> & reader, char const c)
     return 0;
 }
 
+/*!
+ * @fn FileFormatTokenization#skipBlanks
+ * @headerfile <seqan/stream.h>
+ * @brief Advance RecordReader until a blank occurs.
+ *
+ * @signature int skipBlanks(reader);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>after</b> the last skipped.
+ */
+
 /**
 .Function.skipBlanks
 ..class:Class.RecordReader
@@ -1492,6 +1957,25 @@ skipBlanks(RecordReader<TStream, TPass> & reader)
     SEQAN_CHECKPOINT
     return _skipHelper(reader, Blank_(), false);
 }
+
+/*!
+ * @fn FileFormatTokenization#readLine
+ * @headerfile <seqan/stream.h>
+ * @brief Read a line from a RecordReader into a buffer.
+ *
+ * @signature int readLine(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to append the read data to.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops on the beginning of the next line (if there is any).  End of line characters are not written to
+ * buffer.  Works on ANSI, Mac, and Unix EOL.
+ */
 
 /**
 .Function.readLine
@@ -1558,6 +2042,25 @@ readLine(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
     return EOF_BEFORE_SUCCESS;
 }
 
+/*!
+ * @fn FileFormatTokenization#readLineStripTrailingBlanks
+ * @headerfile <seqan/stream.h>
+ * @brief Read a line from a RecordReader into a buffer and remove trailing blanks.
+ *
+ * @signature int readLineStripTrailingBlanks(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to append the read data to.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops on the beginning of the next line (if there is any).  End of line characters and all trailing
+ * whitespaces are not written to buffer.  Works on ANSI, Mac, and Unix EOL.
+ */
+
 /**
 .Function.readLineStripTrailingBlanks
 ..class:Class.RecordReader
@@ -1603,6 +2106,25 @@ readLineStripTrailingBlanks(TBuffer & buffer,
     return 0;
 }
 
+/*!
+ * @fn RecordReader#skipLine
+ * @headerfile <seqan/stream.h>
+ * @brief Skip a line in stream and go to beginning of next
+ * 
+ * @signature int skipLine(reader);
+ * 
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * 
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ * 
+ * @section Remarks
+ * 
+ * This function stops on the beginning of the next line, if there is a next line
+ * 
+ * Works on ANSI EOL and on Unix EOL.
+ */
+
 /**
 .Function.skipLine
 ..class:Class.RecordReader
@@ -1635,6 +2157,27 @@ skipLine(RecordReader<TStream, TPass> & reader)
 
     return resultCode(reader);
 }
+
+/*!
+ * @fn RecordReader#countLine
+ * @headerfile <seqan/stream.h>
+ * @brief Count characters in a line excluding <tt>'\r'</tt> and <tt>'\n'</tt>.
+ * 
+ * @signature int countLine(num, reader);
+ *
+ * @param[in,out] num    The <tt>unsigned</tt> to increment.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * 
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ * 
+ * @section Remarks
+ * 
+ * This function stops on the beginning of the next line, if there is a next line (even though newline characters are
+ * not counted).
+ * 
+ * Works on ANSI EOL and on Unix EOL.
+ */
 
 /**
 .Function.countLine
@@ -1673,6 +2216,24 @@ countLine(unsigned & count, RecordReader<TStream, TPass> & reader)
     return resultCode(reader);
 }
 
+/*!
+ * @fn FileFormatTokenization#readDna5IgnoringWhitespaces
+ * @headerfile <seqan/stream.h>
+ * @brief Read characters from stream as long as they are DNA5 characters, skipping whitespaces.
+ *
+ * @signature int readDna5IgnoringWhitespaces(buffer, reader);
+ *
+ * @param[in,out] buffer The @link String @endlink to append the read data to.
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>on</b> the first non-matching character, whitespaces such as newlines are discarded.
+ */
+
 /**
 .Function.readDna5IgnoringWhitespaces
 ..class:Class.RecordReader
@@ -1705,6 +2266,25 @@ readDna5IgnoringWhitespaces(TBuffer & buffer,
 } 
 // this would read a fasta or fastq sequence, since meta and qualities begin 
 // with special chars
+
+/*!
+ * @fn FileFormatTokenization#sipUntilLineBeginsWithChar
+ * @headerfile <seqan/stream.h>
+ * @brief Skip input until the first graphical (see @link isgraph @endlink) character of a line is equal to c.
+ *
+ * @signature int skipUntilLineBeginsWithChar(reader, c);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     c      The <tt>char</tt> to look for.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>on</b> the first occurence of <tt>c</tt> at the beginning of a line (ignoring leading
+ * whitespace).
+ */
 
 /**
 .Function.skipUntilLineBeginsWithChar
@@ -1747,6 +2327,25 @@ skipUntilLineBeginsWithChar(RecordReader<TStream, TPass> & reader,
         return EOF_BEFORE_SUCCESS;
     return r;
 }
+
+/*!
+ * @fn FileFormatTokenization#sipUntilLineBeginsWithStr
+ * @headerfile <seqan/stream.h>
+ * @brief Skip input until a line begins with str (str itself must begin with a printable character).
+ *
+ * @signature int skipUntilLineBeginsWithChar(reader, str);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     c      The @link SequenceConcept @endlink to look for.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>behind</b> the first occurence of <tt>str</tt> at the beginning of a line.  The function skips
+ * over leading whitespace.
+ */
 
 /**
 .Function.skipUntilLineBeginsWithStr
@@ -1794,6 +2393,25 @@ skipUntilLineBeginsWithStr(RecordReader<TStream, TPass> & reader,
         return EOF_BEFORE_SUCCESS;
     return r;
 }
+
+/*!
+ * @fn FileFormatTokenization#sipUntilLineBeginsWithOneCharOfStr
+ * @headerfile <seqan/stream.h>
+ * @brief Skip input until a line begins with one of the character in str.
+ *
+ * @signature int skipUntilLineBeginsWithOneCharOfStr(reader, str);
+ *
+ * @param[in,out] reader The @link RecordReader @endlink to read from.
+ * @param[in]     str    The @link SequenceConcept @endlink with the characters to look for.
+ *
+ * @return int 0 if there was no error on reading or non-0 if there were errors.  A special value is
+ *             @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
+ *
+ * @section Remarks
+ *
+ * This function stops <b>on</b> the first found occurence.  All characters in <tt>str</tt> must be printable (see @link
+ * isgraph @endlink).
+ */
 
 /**
 .Function.skipUntilLineBeginsWithOneCharOfStr
