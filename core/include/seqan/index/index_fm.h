@@ -334,14 +334,16 @@ inline void clear(Index<TText, FMIndex<TOccSpec, TSpec> > & index)
 
 // This function computes the length of the bwt string.
 template <typename TText>
-unsigned _computeBwtLength(TText const & text)
+inline typename Size<TText>::Type
+_computeBwtLength(TText const & text)
 {
     return length(text) + 1;
 }
 
 // This function computes the length of the bwt string.
 template <typename TText, typename TSetSpec>
-unsigned _computeBwtLength(StringSet<TText, TSetSpec> const & text)
+inline typename Size<TText>::Type
+_computeBwtLength(StringSet<TText, TSetSpec> const & text)
 {
     return lengthSum(text) + countSequences(text);
 }
@@ -683,7 +685,7 @@ inline bool _indexCreate(Index<TText, FMIndex<TIndexSpec, TSpec > > & index, TTe
 
     TTempSA tempSA;
     
-	resize(tempSA, length(text), Exact());
+	resize(tempSA, lengthSum(text), Exact());
 	createSuffixArray(tempSA,
 			text,
 			Skew7());
@@ -812,8 +814,11 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 
     String<FmIndexInfo_> infoString;
 
-    name = fileName;    append(name, ".txt");
-    if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+    if (IsSameType<TSpec, CompressText>::VALUE)
+    {
+        name = fileName;    append(name, ".txt");
+        if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+    }
 
     name = fileName;    append(name, ".sa");
     if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
@@ -878,9 +883,12 @@ inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const ch
     String<FmIndexInfo_> infoString;
     FmIndexInfo_ info = { index.compressionFactor, sizeof(TSAValue), index.n };
     appendValue(infoString, info);
-
-    name = fileName;    append(name, ".txt");
-    if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+    
+    if (IsSameType<TSpec, CompressText>::VALUE)
+    {
+        name = fileName;    append(name, ".txt");
+        if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
+    }
 
     name = fileName;    append(name, ".sa");
     if (!save(getFibre(index, FibreSA()), toCString(name), openMode)) return false;

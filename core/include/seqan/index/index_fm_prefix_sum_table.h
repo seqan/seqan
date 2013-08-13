@@ -89,13 +89,13 @@ struct GetValue<PrefixSumTable<TChar, TSpec> const>
 template <typename TChar, typename TSpec>
 struct Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>
 {
-    typedef String<unsigned> Type;
+    typedef String<unsigned long> Type;
 };
 
 template <typename TChar, typename TSpec>
 struct Fibre<PrefixSumTable<TChar, TSpec> const, FibreEntries>
 {
-    typedef String<unsigned> const Type;
+    typedef String<unsigned long> const Type;
 };
 
 // ----------------------------------------------------------------------------
