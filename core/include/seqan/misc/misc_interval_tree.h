@@ -486,7 +486,7 @@ coding2
 */
 template<typename TValue=int, typename TCargo=unsigned int>
 class IntervalTree
-
+{
 public:
 	typedef Graph<Directed<void,WithoutEdgeId> > TGraph;
 	typedef IntervalAndCargo<TValue,TCargo> TInterval;
