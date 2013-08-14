@@ -200,6 +200,20 @@ _appendSegmentMatches(StringSet<String<TValue, TStrSpec>, Dependent<TSpec> > con
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn globalMsaAlignment
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Compute a global multiple sequence alignment.
+ *
+ * @signature void globalMsaAlignment(align, score);
+ *
+ * @param[in,out] align An @link AlignmentGraph @endlink containing two or more sequences.
+ * @param[in]     score The @link Score @endlink to use for computing the alignment.
+ *
+ * The resulting alignment is stored in <tt>align</tt>.
+ */
+
 /**
 .Function.globalMsaAlignment:
 ..class:Spec.Alignment Graph

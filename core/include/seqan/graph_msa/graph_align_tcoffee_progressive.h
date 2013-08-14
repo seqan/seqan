@@ -113,6 +113,18 @@ _createAlignmentGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn progressiveAlignment
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Perform a progressive multiple sequence alignment (MSA).
+ *
+ * @signature void progressiveAlignment(inputGraph, guideTree, outputGraph);
+ *
+ * @param[in]  inputGraph  A @link AlignmentGraph @endlink with multiple sequence information.
+ * @param[in]  guideTree   A @link Tree @endlink to use as the guide tree.
+ * @param[out] outputGraph An @link AlignmentGraph @endlink for the final MSA.
+ */
+
 /**
 .Function.progressiveAlignment
 ..class:Spec.Alignment Graph

@@ -66,6 +66,16 @@ _roundToSignificantFigures(double num, int n)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn njTree
+ * @headerfile <seqan/graph_msa.h>
+ * @brief computes a guid etree from a distance matrix.
+ *
+ * @signature void njTree(mat, tree);
+ *
+ * @param[in]  mat  A @link String @endlink of pairwise distance values, representing a square matrix.
+ * @param[out] tree The guide tree.
+ */
 
 /**
 .Function.njTree
@@ -311,6 +321,34 @@ njTree(String<TValue, TStringSpec> const & matIn,
 // Unweighted Pair Group Mean Average (UPGMA)
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @defgroup UpgmaConfiguratorTags
+ * @brief Tags for configuring the guide tree construction.
+ *
+ * @tag UpgmaConfiguratorTags#UpgmaMin
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Uses the min operation in the UPGMA algorithm.
+ *
+ * @signature typedef Tag<UpgmaMin_> const UpgmaMin;
+ *
+ * @tag UpgmaConfiguratorTags#UpgmaMax
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Uses the max operation in the UPGMA algorithm.
+ *
+ * @signature typedef Tag<UpgmaMax_> const UpgmaMax;
+ *
+ * @tag UpgmaConfiguratorTags#UpgmaAvg
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Uses the avg operation in the UPGMA algorithm.
+ *
+ * @signature typedef Tag<UpgmaAvg_> const UpgmaAvg;
+ *
+ * @tag UpgmaConfiguratorTags#UpgmaWeightAvg
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Uses the weighted avg operation in the UPGMA algorithm.
+ *
+ * @signature typedef Tag<UpgmaAvg_> const UpgmaWeightAvg;
+ */
 
 /**
 .Tag.Upgma Configurator:
@@ -878,6 +916,21 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn upgmaTree
+ * @headerfile <seqan/graph_msa.h>
+ * @brief Computes a guide tree from a distance matrix.
+ *
+ * @signature void upgmaTree(mat, tree[, tag]);
+ *
+ * @param[in]  mat  A matrix with pairwise distance values.  Can be a @link String @endlink representing a (dense)
+ *                  square matrix or a @link UndirectedGraph @endlink where each edge weight corresponds to the
+ *                  distance between sequence i and j (if the edge is present).
+ * @param[out] tree An undirected guide tre.
+ * @param[in]  tag  Tag indicating how to calcualte the cluster distances.  See: @link UpgmaConfiguratorTags @endlink.
+ *                  Default: <tt>UpgmaWeightAvg</tt>.
+ */
 
 /**
 .Function.upgmaTree

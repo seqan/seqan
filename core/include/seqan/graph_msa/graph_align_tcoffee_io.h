@@ -50,6 +50,28 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @tag AlignmentGraphFormatTags#TCoffeLib
+ * @brief T-Coffee library format to read and write an @link AlignmentGraph @endlink.
+ *
+ * @signature typedef Tag<TCoffeeLib_> const TCoffeeLib;
+ *
+ * @tag AlignmentGraphFormatTags#BlastLib
+ * @brief A BLAST library format to read and write an @link AlignmentGraph @endlink.
+ *
+ * @signature typedef Tag<BlastLib_> const BlastLib;
+ *
+ * @tag AlignmentGraphFormatTags#MummerLib
+ * @brief A MUMMER library format to read and write an @link AlignmentGraph @endlink.
+ *
+ * @signature typedef Tag<MummerLib_> const MummerLib;
+ *
+ * @tag AlignmentGraphFormatTags#NewickFormat
+ * @brief NewickFormat to write a guide tree.
+ *
+ * @signature typedef Tag<NewickFormat_> const NewickFormat;
+ */
+
 /**
 .Tag.Alignment Graph Format.value.TCoffeeLib:
 	T-Coffee library format to read and write an alignment graph.
