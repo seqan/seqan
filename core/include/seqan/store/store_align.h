@@ -42,6 +42,94 @@ namespace SEQAN_NAMESPACE_MAIN
 // Aligned Read Store
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AlignedReadStoreElement
+ * @headerfile <seqan/store.h>
+ * @brief Represents an alignment of a read to a contig.
+ *
+ * @signature template <typename TPos, typename TGapAnchors[, typename TSpec]>
+ *            struct AlignedReadStoreElement;
+ *
+ * @tparam TPos        The position type to use.
+ * @tparam TGapAnchors Type of a read @link GapAnchor @endlink.
+ * @tparam TSpec       The specializing type.  Default: <tt>void</tt>.
+ *
+ * Value type of the @link FragmentStore::alignedReadStore @endlink.  In contrast to all other @link FragmentStore
+ * @endlink stores, the @link AlignedReadStoreElement::id @endlink of an aligned read is explicitely stored as a member
+ * to allow for reordering the @link FragmentStore::alignedReadStore @endlink and still recover the id.
+ */
+
+/*!
+ * @fn AlignedReadStoreElement::AlignedReadStoreElement
+ * @brief Constructor.
+ *
+ * @signature AlignedReadStoreElement::AlignedReadStoreElement();
+ * @signature AlignedReadStoreElement::AlignedReadStoreElement(id, readId, contigId, beginPos, endPos[, gaps]);
+ *
+ * @param[in] id       The alignment id refers to associated alignment information in @link
+ *                     FragmentStore::alignQualityStore @endlink or @link FragmentStore::alignedReadTagStore @endlink.
+ * @param[in] readId   Refers to the aligned read in the @link FragmentStore::readStore @endlink.
+ * @param[in] contigID Refers to the contig in the @link FragmentStore::contigStore @endlink the read is aligned to.
+ * @param[in] beginPos Begin position of the alignment in gap-space.
+ * @param[in] endPos   End position of the alignment in gap-space.
+ * @param[in] gaps     A @link String @endlink of @link GapAnchor @endlink objects.
+ *
+ * The default constructors sets all ids to <tt>AlignedReadStoreElement::INVALID_ID</tt> and @link
+ * AlignedReadStoreElement::beginPos @endlink and @link AlignedReadStoreElement::endPos @endlink to 0.
+ */
+
+ /*!
+ * @typedef AlignedReadStoreElement::TId
+ * @brief Type of all store ids.
+ *
+ * <tt>TId</tt> is the result of <tt>Id&lg;AlignedReadStoreElement&lgt;&gt; &gt;::Type</tt>, see @link Id @endlink.
+ *
+ * @typedef AlignedReadStoreElement::TPos
+ * @brief Type of the @link AlignedReadStoreElement::beginPos @endlink and @link AlignedReadStoreElement::endPos
+ *        @endlink.
+ *
+ * @typedef AlignedReadStoreElement::TGapAnchors
+ * @brief Type of the @link AlignedReadStoreElement::gaps @endlink member.
+ *
+ * @typedef AlignedReadStoreElement::TSpec
+ * @brief The specializing type.
+ */
+
+/*!
+ * @var TId AlignedReadStoreElement::INVALID_ID;
+ * @brief Constant expression that is the value of an invalid id.
+ *
+ * @var TId AlignedReadStoreElement::id;
+ * @brief The alignment id refers to associated alignment information in @link FragmentStore::alignQualityStore
+ *        @endlink or @link FragmentStore::alignedReadTagStore @endlink.
+ *
+ * @var TId AlignedReadStoreElement::readId;
+ * @brief Refers to the aligned read in @link FragmentStore::readStore @endlink.
+ *
+ * @var TId AlignedReadStoreElement::contigId;
+ * @brief Refers to the contig in the @link FragmentSTore::contigStore @endlink that the read is aligned with.
+ *
+ * @var TId AlignedReadStoreElement::pairMatchId;
+ * @brief Two read alignments having the same pairMatchId form a valid pair match.  If it equals <tt>INVALID_ID</tt>
+ *        then the read is either not paired or could not be aligned as part of a pair.
+ *
+ * @var TPos AlignedReadStoreElement::beginPos;
+ * @brief Begin position in gap-space.
+ *
+ * If beginPos &lt; endPos then the read is aligned to the reverse strand where beginPos and endPos are the
+ * corresponding positions on the forward strand.
+ *
+ * @var TPos AlignedReadStoreElement::endPos;
+ * @brief End position in gap-space.
+ *
+ * If beginPos &lt; endPos then the read is aligned to the reverse strand where beginPos and endPos are the
+ * corresponding positions on the forward strand.
+ *
+ * @var TGaps AlignedReadStoreElement::gaps;
+ * @brief String of read @link GapAnchor @endlink objects.  Can be used to create a @link AnchorGaps @endlink
+ *        alignment row.
+ */
+
 /**
 .Class.AlignedReadStoreElement
 ..summary:Represents an alignment between read and contig.
@@ -188,6 +276,36 @@ AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AlignQualityStoreElement
+ * @headerfile <seqan/store.h>
+ * @brief Stores the alignment qualities.
+ *
+ * @signature template <typename TScore[, typename TSpec]>
+ *            struct AlignQualityStoreElement;
+ *
+ * @tparam TScore Type to store align and pair score values.
+ * @tparam TSpec  The specializing type.  Default: <tt>void</tt>.
+ *
+ * Value type of @link FragmentStore::alignQualityStore @endlink string.
+ *
+ *
+ * @fn AlignQualityStoreElement::AlignQualityStoreElement
+ * @brief Constructor, sets all members to 0.
+ *
+ * @signature AlignQualityStoreElement::AlignQualityStoreElement();
+ * 
+ *
+ * @var TScore AlignQualityStoreElement::pairScore;
+ * @brief Combined score of both alignmetns and pair match.
+ *
+ * @var TScore AlignQualityStoreElement::score;
+ * @brief Score of the alignment.
+ *
+ * @var TCount AlignQualityStoreElement::errors;
+ * @brief Absolute number of errors in the alignment (<tt>unsigned char</tt>).
+ */
+
 /**
 .Class.AlignQualityStoreElement
 ..summary:Stores alignment qualities.
@@ -246,6 +364,51 @@ struct AlignQualityStoreElement
 //////////////////////////////////////////////////////////////////////////////
 // Sorting tags
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @defgroup SortAlignedReadTags Tags for sortAlignedReads
+ * @brief Tags to select a specific field to sort the @link FragmentStore::alignedReadStore @endlink by.
+ *
+ * @see sortAlignedReads
+ * @see lowerBoundAlignedReads
+ * @see upperBoundAlignedReads
+ *
+ * @tag SortAlignedReadTags#SortContigId
+ * @headerfile <seqan/store.h>
+ * @brief Sort aligned reads by @link AlignedReadStoreElement::contigId @endlink.
+ *
+ * @signature typedef Tag<SortContigId_> const SortContigId;
+ *
+ * @tag SortAlignedReadTags#SortId
+ * @headerfile <seqan/store.h>
+ * @brief Sort aligned reads by @link AlignedReadStoreElement::id @endlink.
+ *
+ * @signature typedef Tag<SortId_> const SortId;
+ *
+ * @tag SortAlignedReadTags#SortBeginPos
+ * @headerfile <seqan/store.h>
+ * @brief Sort aligned reads by @link AlignedReadStoreElement::beginPos @endlink.
+ *
+ * @signature typedef Tag<SortBeginPos_> const SortBeginPos;
+ *
+ * @tag SortAlignedReadTags#SortEndPos
+ * @headerfile <seqan/store.h>
+ * @brief Sort aligned reads by @link AlignedReadStoreElement::endPos @endlink.
+ *
+ * @signature typedef Tag<SortEndPos_> const SortEndPos;
+ *
+ * @tag SortAlignedReadTags#SortPairMatchId
+ * @headerfile <seqan/store.h>
+ * @brief Sort aligned reads by @link AlignedReadStoreElement::pairMatchId @endlink.
+ *
+ * @signature typedef Tag<SortPairMatchId_> const SortPairMatchId;
+ *
+ * @tag SortAlignedReadTags#SortReadId
+ * @headerfile <seqan/store.h>
+ * @brief Sort aligned reads by @link AlignedReadStoreElement::readId @endlink.
+ *
+ * @signature typedef Tag<SortReadId_> const SortReadId;
+ */
 
 /**
 .Tag.sortAlignedRead Tags
@@ -384,6 +547,72 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO(holtgrew): Maybe add equalRangeAlignedReads?
+
+/*!
+ * @fn sortAlignedReads
+ * @headerfile <seqan/store.h>
+ * @brief Stably read alignments, e.g. in @link FragmentStore::alignedReadStore @endlink.
+ *
+ * @signature void sortAlignedReads(alignStore, sortTag);
+ * @signature void sortAlignedReads(alignStore, lessFunctor);
+ *
+ * @param[in,out] alignStore  The @link SequenceConcept sequence @endlink of @link AlignedReadStoreElement @endlink
+ *                            to be sorted, e.g. @link FragmentStore::alignedReadStore @endlink.
+ * @param[in]     sortTag     Tag for selecting the member to sort by.  See @link SortAlignedReadTags @endlink.
+ * @param[in]     lessFunctor A functor to pass to <tt>std::stable_sort</tt> for sorting the sequence.
+ *
+ * @see SortAlignedReadTags
+ * @see lowerBoundAlignedReads
+ * @see upperBoundAlignedReads
+ */
+
+/*!
+ * @fn lowerBoundAlignedReads
+ * @headerfile <seqan/store.h>
+ * @brief Performs a binary lower bound search on read alignments.
+ *
+ * @signature TIter1 lowerBoundAlignedReads(alignStore, value, sortTag);
+ * @signature TIter2 lowerBoundAlignedReads(itBegin, itEnd, value, sortTag);
+ *
+ * @param[in,out] alignStore  The @link SequenceConcept sequence @endlink of @link AlignedReadStoreElement @endlink
+ *                            to be searched, e.g. @link FragmentStore::alignedReadStore @endlink.
+ * @param[in]     itBegin     Iterator to the begin of the sequence to search.
+ * @param[in]     itEnd       Iterator to the end of the sequence to search.
+ * @param[in]     value       The value to search for.
+ * @param[in]     sortTag     Tag for selecting the member to compare by.  See @link SortAlignedReadTags @endlink.
+ *
+ * @return TIter1 Iterator to the lower bound item.  If <tt>TAlignStore</tt> is the type of <tt>align</store> then
+ *                TIter1 is the result of <tt>Iterator&lt;TAlignStore, Standard&gt;::Type</tt>.
+ * @return TIter2 Iterator to the lower bound item.  Has the same type as <tt>itBegin</tt> and <tt>itEnd</tt>.
+ *
+ * @see SortAlignedReadTags
+ * @see sortAlignedReads
+ * @see upperBoundAlignedReads
+ */
+
+/*!
+ * @fn upperBoundAlignedReads
+ * @headerfile <seqan/store.h>
+ * @brief Performs a binary upper bound search on read alignments.
+ *
+ * @signature TIter1 upperBoundAlignedReads(alignStore, value, sortTag);
+ * @signature TIter2 upperBoundAlignedReads(itBegin, itEnd, value, sortTag);
+ *
+ * @param[in,out] alignStore  The @link SequenceConcept sequence @endlink of @link AlignedReadStoreElement @endlink
+ *                            to be searched, e.g. @link FragmentStore::alignedReadStore @endlink.
+ * @param[in]     itBegin     Iterator to the begin of the sequence to search.
+ * @param[in]     itEnd       Iterator to the end of the sequence to search.
+ * @param[in]     value       The value to search for.
+ * @param[in]     sortTag     Tag for selecting the member to compare by.  See @link SortAlignedReadTags @endlink.
+ *
+ * @return TIter1 Iterator to the upper bound item.  If <tt>TAlignStore</tt> is the type of <tt>align</store> then
+ *                TIter1 is the result of <tt>Iterator&lt;TAlignStore, Standard&gt;::Type</tt>.
+ * @return TIter2 Iterator to the upper bound item.  Has the same type as <tt>itBegin</tt> and <tt>itEnd</tt>.
+ *
+ * @see SortAlignedReadTags
+ * @see sortAlignedReads
+ * @see lowerBoundAlignedReads
+ */
 
 /**
 .Function.sortAlignedReads

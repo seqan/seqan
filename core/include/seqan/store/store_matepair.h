@@ -42,6 +42,39 @@ namespace SEQAN_NAMESPACE_MAIN
 // Mate Store
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class MatePairStoreElement
+ * @brief Represents a mate pair.
+ *
+ * @signature template <[typename TSpec]>
+ *            struct MatePairStoreElement;
+ *
+ * @tparam TSpec The specializing type.
+ *
+ * A mate pair consists of two reads sequences from opposite ends of the same fragment.  The insert size of a mate pair
+ * is the inferred size of the fragment.
+ *
+ *
+ * @fn MatePairStoreElement::MatePairStoreElement
+ * @brief Constructor.
+ *
+ * @signature MatePairStoreElement::MatePairStoreElement();
+ *
+ * Initialize all member values to INVALID_ID.
+ */
+
+/*!
+ * @var TId MatePairStoreElement::INVALID_ID;
+ * @brief Constant to represent an invalid id.
+ *
+ * @var TId MatePairStoreElement::libId;
+ * @brief Refers to a library in the @link FragmentStore::libraryStore @endlink or is INVALID_ID if the mate pair
+ *        has no library.
+ *
+ * @var TId[2] MatePairStoreElement::readId;
+ * @brief Refers to two paried reads in @link FragmentStore::readStore @endlink or is INVALID_ID values.
+ */
+
 /**
 .Class.MatePairStoreElement
 ..summary:Represents a mate-pair.

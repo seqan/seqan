@@ -44,6 +44,8 @@ namespace SEQAN_NAMESPACE_MAIN
 // Contig Store Configuration
 //////////////////////////////////////////////////////////////////////////////
 
+// TODO(holtgrew): Document.
+
 template <typename TSpec = void>
 struct FragmentStoreConfig 
 {
@@ -71,6 +73,317 @@ struct FragmentStoreConfig
 //////////////////////////////////////////////////////////////////////////////
 // Fragment Store
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @class FragmentStore
+ * @headerfile <seqan/store.h>
+ * @brief Multi-container to store contigs, reads, multiple read alignments and genome annotations.
+ *
+ * @signature template <[typename TSpec[, typename TConfig]]>
+ *            class FragmentStore;
+ *
+ * @tparam TSpec   The specialializing type.  Default: <tt>void</tt>.
+ * @tparam TConfig The configuration struct.  Default: <tt>FragmentStoreConfig&lt;TSpec&gt;</tt>.
+ *
+ * The FragmentStore is a data structure specifically designed for read mapping, genome assembly or gene
+ * annotation. These tasks typically require lots of data structures that are related to each other like: reads,
+ * mate-pairs, reference genome; pairwise alignments; genome annotation.
+ *
+ * The FragmentStore subsumes all these data structures in an easy to use interface.  It represents a multiple alignment
+ * of millions of reads or mate-pairs against a reference genome consisting of multiple contigs.  Additionally, regions
+ * of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intro' or custom features.  The
+ * FragmentStore supports I/O functions to read/write a read alignment in Sam or Amos format and to read/write
+ * annotations in Gff/Gtf format.
+ * 
+ * The FragmentStore can be compared with a database where each table (called "store") is implemented as a String member
+ * of the FragmentStore class.  The rows of each table (implemented as structs) are referred by their ids which are
+ * their positions in the string and not stored explicitly.  The only exception is the alignedReadStore whose elements
+ * of type AlignedReadStoreElement contain an id-member as they may be rearranged in arbitrary order, e.g. by increasing
+ * genomic positions or by readId.  Many stores have an associated name store to store element names.  Each name store
+ * is a StringSet that stores the element name at the position of its id.  All stores are present in the FragmentStore
+ * and empty if unused.  The concrete types, e.g. the position types or read/contig alphabet, can be easily changed by
+ * defining a custom config struct which is a template parameter of the FragmentStore class.
+ *
+ * @section Examples
+ *
+ * Load read alignments and a reference genome and display the multiple alignment in a genomic range:
+ *
+ * @include demos/store/store_example.cpp
+ *
+ * @code{.console}
+ * ATTTAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
+ * ATTTAA  AATTACAAAATATAGTTGAAAGCTCTAACAATAGA   AACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGA  AGTCTCTTATGAATTAA
+ * ATTTA GAAATTACAAAATATAGTTGAAAGCTCTAACAATA ACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTG AGACAAGTCTCTTATGAATTAA
+ * attta GAAATTACAAAATATAGTTGAAAGCTCTAACAATAG    AACCAAGCAGAAGAAAGAGGCTCAGAACTTGAAGA  AGTCTCTTATGAATTAA
+ * ATTTAA   ATTACAAAATATAGTTGAAAGATCTAACAATAGAC    CCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAA     TTATGAATTAA
+ * ATTTAAGAA TTACAAAATATAGTTGAAAGCTCTAACAATAGACT     AAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAG     TATGAATTAA
+ * ATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA     GCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTC    ATGAATTAA
+ * ATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA      CAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCT    TGAATTAA
+ * ATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA      CAGAAGAAAGAGGTTCANANNNTGANGACAAGTCT    TGAATTAA
+ * ATTTAAGAAATT CAAAATATAGTTGAAAGCTCTAACAATAGACTAAA       GAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCT   GAATTAA
+ * ATTTAAGAAAT   AAAATATAGTTGAAAGCTCTAACAATAGACTAAAC       AAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCGT  GAATTAA
+ * ATTTAAGAAAT   AAAATATAGTTGAAAGCTCTAACAATAGACTAAAC       AAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTT   AATTAA
+ * ATTTAAGAAAT    AAATATAGTTGAAAGCTCTAACAATAGACTAAACC        GAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATG
+ * ATTTAAGAAATT   AAATATAGTTGAAAGCTCTAACAATAGACTAAACC          AAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGA
+ * ATTTAAGAAATT    AATATAGTTGAAAGCTCTAACAATAGACTAAACCAA        AAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGA
+ * ATTTAAGAAATTACA  ATATAGTTGAAAGCTCTAACAATAGACTAAACCAA          GAGGTTCAGAACTTGAAGACAAGTCTCTTATGAAT
+ * ATTTAAGAAATTACAA   ATAGTTGAAAGCTCTAACAATAGACTAAACCAAGC        GAGGTTCAGAACTTGAAGACAAGTCTCTTATGAAT
+ * ATTTAAGAAATTACAAAATA AGTTGAAAGCTCTAACAATAGACTAAACCAAGCAG       AGGTTCAGAACTTGAAGACAAGTCTCTTATGAATT
+ * ATTTAAGAAATTACAAAATAT  TTGAAAGCTCTAACAATAGACTAAACCAAGCAGAA      GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
+ * ATTTAAGAAATTACAAAATATA   GAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAG TTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
+ * ATTTAAGAAATTACAAAATATAGTTGAA    CTAACAATAGACTAAACCAAGCAGAAGAAAGAGTT      CTTGAAGACAAGTCTCTTATGAATTAA
+ * ATTTAAGAAATTACAAAATATAGTTGAAA   CTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT      TTGAAGACAAGTCTCTTATGAATTAA
+ * ATTTAAGAAATTACAAAATATAGTTGAAAG   TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT       TGAAGACAAGTCTCTTATGAATTAA
+ * ATTTAAGAAATTACAAAATATAGTTGAAAGCTCT ACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCA     TGAAGACAAGTCTCTTATGAATTAA
+ *   TTAAGAAATTACAAAATATAGTTGAAAGCTCTAAC    GACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTT AAGACAAGTCTCTTATGAATTAA
+ *    TAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGA                     GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
+ *           TTACAAAATATAGTTGAAAGCTCTAACAATAGACT                   GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
+ *                    ATAGTTGAAAGCTCTAACAATAGACTAAACCAAGC           GTTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
+ *                           AAAGCTCTAACAATAGACTAAACCAAGCAGAAGAA      TCAGAACTTGAAGACAAGTCTCTTATGAATTAA
+ *                           AAAGCTCTAACAATAGACTAAACCAAGCAGAAGAA               NAAGACAAGTCTCTTATGAATTAA
+ *                            AAGCTCTAACAATAGACTAAACCAAGCAGAAGAAA              GAAGACAAGTCTCTTATGAATTAA
+ *                                  TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT               AGTCTCTTATGAATTAA
+ *                                  TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT                GTCTCTTATGAATTAA
+ *                                   AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
+ *                                   AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
+ *                                      AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
+ *                                      AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
+ * @endcode
+ *
+ * @section Remarks
+ *
+ * The following figures visualize the relations between the different stores:
+ *
+ * <img width="597" height="363" src="FragmentStore.png" title="Stores that are involved in the representation of a multiple read alignment." />
+ *
+ * <img width="597" height="363" src="AnnotationStore.png" title="Stores that are involved in the representation of a genome alignment." />
+ */
+
+/*!
+ * @typedef FragmentStore::TReadStore
+ * @brief Type of the @link FragmentStore::readStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TReadStore;
+ *
+ *
+ * @typedef FragmentStore::TReadSeqStore
+ * @brief Type of the @link FragmentStore::readSeqStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TReadSeqStore;
+ *
+ *
+ * @typedef FragmentStore::TMatePairStore
+ * @brief Type of the @link FragmentStore::matePairStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TMatePairStore;
+ *
+ *
+ * @typedef FragmentStore::TContigFileStore
+ * @brief Type of the @link FragmentStore::contigFileStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TContigFileStore;
+ *
+ *
+ * @typedef FragmentStore::TContigStore
+ * @brief Type of the @link FragmentStore::contigStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TContigStore;
+ *
+ *
+ * @typedef FragmentStore::TAlignedReadStore
+ * @brief Type of the @link FragmentStore::alignedReadStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAlignedReadStore;
+ *
+ *
+ * @typedef FragmentStore::TAnnotationStore
+ * @brief Type of the @link FragmentStore::annotationStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAnnotationStore;
+ *
+ *
+ * @typedef FragmentStore::TAlignQualityStore
+ * @brief Type of the @link FragmentStore::alignQualityStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAlignQualityStore;
+ *
+ *
+ * @typedef FragmentStore::TAlignedReadTagStore
+ * @brief Type of the @link FragmentStore::alignedReadTagStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAlignedReadTagStore;
+ *
+ *
+ * @typedef FragmentStore::TReadNameStore
+ * @brief Type of the @link FragmentStore::readNameStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TReadNameStore;
+ *
+ *
+ * @typedef FragmentStore::TMatePairNameStore
+ * @brief Type of the @link FragmentStore::matePairNameStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TMatePairNameStore;
+ *
+ *
+ * @typedef FragmentStore::TLibraryNameStore
+ * @brief Type of the @link FragmentStore::libraryNameStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TLibraryNameStore;
+ *
+ *
+ * @typedef FragmentStore::TContigNameStore
+ * @brief Type of the @link FragmentStore::contigNameStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TContigNameStore;
+ *
+ *
+ * @typedef FragmentStore::TAnnotationNameStore
+ * @brief Type of the @link FragmentStore::annotationNameStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAnnotationNameStore;
+ *
+ *
+ * @typedef FragmentStore::TAnnotationTypeStore
+ * @brief Type of the @link FragmentStore::annotationTypeStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAnnotationTypeStore;
+ *
+ *
+ * @typedef FragmentStore::TAnnotationKeyStore
+ * @brief Type of the @link FragmentStore::annotationKeyStore @endlink member.
+ *
+ * @signature typedef (..) TFragmentStore::TAnnotationKeyStore;
+ */
+
+/*!
+ * @var FragmentStore::TReadStore FragmentStore::readStore;
+ * @brief A @link String @endlink that maps from readId to matePairId.
+ *
+ * The value type is @link ReadStoreElement @endlink.
+ *
+ *
+ * @var FragmentStore::TReadSeqStore FragmentStore::readSeqStore;
+ * @brief @link StringSet @endlink that maps from readId to readSeq.
+ *
+ *
+ * @var FragmentStore::TMatePairStore FragmentStore::matePairStore;
+ * @brief @link String @endlink that maps from matePairId to (readId[2], libId).
+ *
+ * The value type is @link MatePairStoreElement @endlink.
+ *
+ *
+ * @var FragmentStore::TLibraryStore FragmentStore::libraryStore;
+ * @brief @link String @endlink that maps from libId to (mean, std).
+ *
+ * Value type is @link LibraryStoreElement @endlink.
+ *
+ *
+ * @var FragmentStore::TContigFileStore FragmentStore::contigFileStore;
+ * @brief @link String @endlink that maps from contigId to (contigSeq, contigGaps, contigFileId).
+ *
+ * Value type is @link ContigFile @endlink.
+ *
+ *
+ * @var FragmentStore::TContigStore FragmentStore::contigStore;
+ * @brief @link String @endlink that maps from contigId to (contigSeq, contigGaps, contigFileId).
+ *
+ * Value type is @link ContigStoreElement @endlink.
+ *
+ *
+ * @var FragmentStore::TAlignedReadStore FragmentStore::alignedReadStore;
+ * @brief @link String @endlink that stores (alignId, readId, contigId, pairMatchId, beginPos, endPos, gapAnchors).
+ *
+ * The value type is @link AlignedReadStoreElement @endlink.
+ *
+ * @section Remarks
+ *
+ * You can sort <tt>alignedReadStore</tt> using @link sortAlignedRead @endlink.  After sorting, you can use the
+ * functions @link lowerBoundAlignedReads @endlink and @link upperBoundAlignedReads @endlink to perform a binary search,
+ * e.g. for accessing only a subrange.
+ *
+ *
+ * @see lowerBoundAlignedReads
+ * @see upperBoundAlignedReads
+ * @see sortAlignedReads
+ *
+ *
+ * @var FragmentStore::TAlignQualityStore FragmentStore::alignQualityStore;
+ * @brief @link String @endlink that maps from alignId to (pairScore, score, errors).
+ *
+ * The value type is @link AlignQualityStoreElement @endlink.
+ *
+ *
+ * @var FragmentStore::TAlignedReadTagStore FragmentStore::alignedReadTagStore;
+ * @brief @link StringSet @endlink that maps from alignId to alignTag.
+ *
+ *
+ * @var FragmentStore::TReadNameStore FragmentStore::readNameStore;
+ * @brief @link StringSet @endlink that maps from readId to readName.
+ *
+ *
+ * @var FragmentStore::TContigNameStore FragmentStore::matePairNameStore;
+ * @brief @link StringSet @endlink that maps from contigId to matePairName.
+ *
+ *
+ * @var FragmentStore::TLibraryNameStore FragmentStore::libraryNameStore;
+ * @brief A @link StringSet @endlink that maps from libId to libName.
+ *
+ *
+ * @var FragmentStore::TContigNameStore FragmentStore::contigNameStore;
+ * @brief @link StringSet @endlink that maps from contigId to contigName.
+ *
+ *
+ * @var FragmentStore::TAnnotationNameStore FragmentStore::annotationNameStore;
+ * @brief @link StringSet @endlink that maps from annoId to annoName;
+ *
+ *
+ * @var FragmentStore::TAnnotationTypeStore FragmentStore::annotationTypeStore;
+ * @brief @link StringSet @endlink that maps from typeId to the type name of an annotation, e.g. "gene" or "exon".
+ *        typeId is a member of the @link AnnotationStoreElement @endlink.
+ *
+ * @section Remarks
+ *
+ * There are @link FragmentStore::PredefinedAnnotationTypes predefined type ids @endlink for commonly used types
+ * e.g. <tt>ANNO_GENE</tt> or <tt>ANNO_EXON</tt> which can be used to set the @link AnnotationStoreElement::typeId
+ * @endlink directly as a fast alternative to @link getType @endlink and @link setType @endlink.
+ *
+ *
+ * @var FragmentStore::TAnnotationKeyStore FragmentStore::annotationKeyStore;
+ * @brief @link StringSet @endlink that maps from keyId to the name of a key.  The keyId is used to address @link
+ *        AnnotationStoreElement::values @endlink of an annotation.
+ */
+
+/*!
+ * @enum FragmentStore::PredefinedAnnotationTypes
+ * @brief The @link FragmentStore @endlink predefines some commonly used @link AnnotationStoreElement::typeId @endlink
+ *        values.  They can be used to compare or set the @link AnnotationStoreElement::typeId @endlink directly as
+ *        a fast alternative to @link getType @endlink and @link setType @endlink.
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_ROOT;
+ * @brief The root node ("<node>").
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_GENE;
+ * @brief A gene ("gene").
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_MRNA;
+ * @brief An mRNA sequence, aka transcript ("mRNA").
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_CDS;
+ * @brief A coding region ("CDS");
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_EXON;
+ * @brief An exon ("exon").
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_FIVE_PRIME_UTR;
+ * @brief A 5' untranslated region ("five_prime_UTR").
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_INTRON;
+ * @brief An intron ("intron").
+ *
+ * @var FragmentStore::PredefinedAnnotationTypes ANNO_THREE_PRIME_UTR;
+ * @brief A 3' untranslated region ("three_prime_UTR").
+ */
 
 /**
 .Class.FragmentStore
@@ -901,6 +1214,17 @@ annotationGetValueByKey (
 		return "";
 }
 
+/*!
+ * @fn FragmentStore#clearContigs
+ * @brief REvmoes all contigs from a FragmentStore.
+ *
+ * @signature void clearContigs(store);
+ *
+ * @param[in,out] store The FragmentStore to remove all contigs from.
+ *
+ * This function clears the @link FragmentStore::contigStore @endlink and @link FragmentStore::contigNameStore @endlink.
+ */
+
 /**
 .Function.clearContigs
 ..class:Class.FragmentStore
@@ -927,6 +1251,17 @@ clearContigs(FragmentStore<TSpec, TConfig> &me)
 // Read Store Accessors
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore::clearReads
+ * @brief Removes all reds from a FragmentStore.
+ *
+ * @signature void clearReads(store);
+ *
+ * @param[in,out] store The FragmentStore to remove all reads from.
+ *
+ * Clears the @link FragmentStore::readStore @endlink, @link FragmentStore::readSeqStore @endlink, and @link
+ * FragmentStore::readNameStore @endlink.
+
 /**
 .Function.clearReads
 ..class:Class.FragmentStore
@@ -948,6 +1283,29 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
 	clear(me.readNameStore);
     refresh(me.readNameStoreCache);
 }
+
+/*!
+ * @fn FragmentStore#appendRead
+ * @brief Append a read to a FragmentStore.
+ *
+ * @signature TSize appendRead(store, read[, matePairId]);
+ * @signature TSize appendRead(store, read, name[, matePairId]);
+ *
+ * @param[in,out] store      The FragmentStore to append the read to.
+ * @param[in]     read       The read sequence.  Type: @link SequenceConcept @endlink.
+ * @param[in]     name       The name of the read.  Type: @link CharString @endink.
+ * @param[in]     matePairId ID of the mate-pair that this read is part of.  Default:
+ *                           <tt>FragmentStore::INVALID_ID</tt> which corresponds to an unmated read.
+ *
+ * @return TSize The readId of the newly appended read.  TSize is the size type of the @link FragmentStore::readStore
+ *               @endlink.
+ *
+ * This funciton appends a single read to the @link FragmentStore::readStore @endlink and @link
+ * FragmentStore::readSeqStore @endlink.
+ *
+ * @see FragmentStore#getRead
+ */
+ 
 
 /**
 .Function.appendRead:
@@ -1033,6 +1391,19 @@ appendRead(
 	return appendRead(me, read, name, TReadStoreElement::INVALID_ID);
 }
 
+/*!
+ * @fn FragmentStore#getRead
+ * @brief Returns the read with the given readId.
+ *
+ * @signature TRead getRead(store, id);
+ *
+ * @param[in] store The FragmentStore to query for the read.
+ * @param[in] id    The id of the read.
+ *
+ * @return TRead The entry from the @link FragmentStore::readStore @endlink.  TRead is the value type of the @link
+ *               FragmentStore::readStore @endlink.
+ */
+
 /**
 .Function.getRead
 ..summary:Returns the read with the given $readId$.
@@ -1055,6 +1426,31 @@ getRead(
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn FragmentStore#appendAlignedRead
+ * @brief Appends an aligned read entyr to a fragment store.
+ *
+ * @signature TSize appendAlignedRead(store, readId, contigId, beginPos, endPos[, pairMatchId]);
+ *
+ * @param[in,out] store       The FragmentStore to append to.
+ * @param[in]     readId      The id of the read to append an alignment for.
+ * @param[in]     contigId    The id of the contig of the alignment.
+ * @param[in]     beginPos    The begin position of the alignment.
+ * @param[in]     endPos      The end position of the alignment.
+ * @param[in]     pairMatchId The id of the alignedRead pair.  Default: 
+ *                            <tt>FragmentStore::INVALID_ID</tt> which corresponds to an unmated read.
+ *
+ * @return TSize The alignedReadId of the alignment.
+ *
+ * @section Remarks
+ *
+ * This function appends a single read alignment to the @link FragmentStore::alignedReadStore @endlink.  Note that this
+ * really only adds a match.  To generate a global alignment out of all these matches, use @link
+ * FragmentStore#convertMatchesToGlobalAlignment @endlink.
+ *
+ * @see FragmentStore#appendRead
+ */
 
 /**
 .Function.appendAlignedRead:
@@ -1115,17 +1511,39 @@ appendAlignedRead(
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#appendMatePair
+ * @brief Appends the two reads of a mate pair to a FragmentStore.
+ *
+ * @signature TSize appendMatePair(store, readSeq1, readSeq2[, name1, name2]);
+ *
+ * @param[in,out] store    The FragmentStore to append the mate pair to.
+ * @param[in]     readSeq1 The read sequence of the first read.
+ * @param[in]     readSeq2 The read sequence of the second read.
+ * @param[in]     name1    The read name of the first read.
+ * @param[in]     name2    The read name of the first read.
+ *
+ * @return TSize The matePairId of the newly appended mate pair.  TSize is the size type of the @link
+ *               FragmentStore::matePairStore @endlink.
+ *
+ * @section Remarks
+ *
+ * This function appends two reads to the @link FragmentStore::readStore @endlink and @link FragmentStore::readSeqStore
+ * @endlink and a mate pair entry for both them to the @link FragmentStore::matePairStore @endlink.  If names are given,
+ * they are appended to @link FragmentStore::readNameStore @endlink.
+ */
+
 /**
 .Function.appendMatePair
 ..class:Class.FragmentStore
 ..summary:Appends two paired-end reads to a fragment store.
 ..cat:Fragment Store
-..signature:appendMatePair(store, readId1, readId2)
-..signature:appendMatePair(store, readId1, readId2, name1, name2)
+..signature:appendMatePair(store, readSeq1, readSeq2)
+..signature:appendMatePair(store, readSeq1, readSeq2, name1, name2)
 ..param.store:The fragment store.
 ...type:Class.FragmentStore
-..param.readId1:The read sequence of the first read.
-..param.readId2:The read sequence of the second read.
+..param.readSeq1:The read sequence of the first read.
+..param.readSeq2:The read sequence of the second read.
 ..param.name1:The read name of the first read.
 ..param.name2:The read name of the second read.
 ..returns:The $matePairId$ of the newly appended mate-pair.
@@ -1194,6 +1612,25 @@ appendMatePair(
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#compactAlignedRead
+ * @brief Remove invalid aligned reads and rename the alignId's sequentially beginning with 0.
+ *
+ * @signature TSize compactAlignedReads(store);
+ *
+ * @param[in,out] store The FragmentStore to compact the aligned reads of.
+ *
+ * @returns TSize The new size of the @link FragmentStore::alignedReadStore @endlink.  TSize is the size type of the
+ *                @link FragmentStore::alignedReadStore @endlink.
+ *
+ * @section Remarks
+ *
+ * This function removes all entries from the @link FragmentStore::alignedReadStore @endlink whose alignId is equal to
+ * <tt>INVALID_ID</tt> as well as orphan entries in @link FragmentStore::alignQualityStore @endlink.  Afterwards, the
+ * alignIds are renamed sequentially beginning with 0.  This function can be used to remove alignments which are flagged
+ * by previously setting their id to INVALID_ID.
+ */
+
 /**
 .Function.compactAlignedReads
 ..class:Class.FragmentStore
@@ -1252,6 +1689,24 @@ compactAlignedReads(FragmentStore<TSpec, TConfig> &me)
 	return newId;
 }
 
+/*!
+ * @fn FragmentStore#compactPairMatchIds
+ * @brief Renames pairMatchId sequentially beginning with 0.
+ *
+ * @signature TSize compactPairMatchIds(store);
+ *
+ * @param[in,out] store The FragmentStore to compact pair match ids of.
+ *
+ * @return TSize The number of pair matches.  TSize is the size type of @link FragmentStore::alignedReadStore @endlink.
+ *
+ * @section Remarks
+ *
+ * This function renames the pairMatchId in the @link FragmentStore::alignedReadStore @endlink sequentially beginning
+ * with 0.  Two read alignments can be identified to be pair match if they have the same pairMatchId.  Please note that
+ * paired reads not necessarily have to map as a pair match, e.g. if they are on different ocntigs or have the same
+ * orientation or a wrong insert size.
+ */
+
 /**
 .Function.compactPairMatchIds
 ..class:Class.FragmentStore
@@ -1302,6 +1757,22 @@ compactPairMatchIds(FragmentStore<TSpec, TConfig> &me)
 	return newId + 1;
 }
 
+/*!
+ * @fn FragmentStore#calculateInsertSizes
+ * @brief Calcualtes a string wtih insert sizes for each pair match.
+ *
+ * @signature void calculateInsertSizes(insertSizes, store);
+ *
+ * @param[out] insertSizes A @link String @endlink of insert sizes.  This string is accordingly resized and can be
+ *                         addressed by the pairMatchId.
+ * @param[in]  store       The @link FragmentStore @endlink to compute the insert sizes for.
+ *
+ * @section Remarks
+ *
+ * This function calls @link FragmentStore#compactPairMatchIds @endlink first and calcualte the insert size for every
+ * pair match.  The insert size of a pair match is the outer distance between the two matches.
+ */
+
 /**
 .Function.calculateInsertSizes
 ..summary:Calculates a string with insert sizes for each pair match.
@@ -1350,6 +1821,19 @@ calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> 
 	}
 }
 
+/*!
+ * @fn FragmentStore#getMateNo
+ * @brief Returns the mate number for a read given a readId.
+ *
+ * @signature int getMateNo(store, readId);
+ *
+ * @param[in] store  The FragmentStore with the read.
+ * @param[in] readId The readId.
+ *
+ * @return int The mate number (0 for the first mate, 1 for the second mate) of the read in its mate pair or -1 if the
+ *             read is not paired.
+ */
+
 /**
 .Function.getMateNo
 ..summary:Returns the mate number of read for a given $readId$.
@@ -1385,6 +1869,19 @@ getMateNo(FragmentStore<TSpec, TConfig> const &me, TId readId)
 	}
 	return -1;
 }
+
+/*!
+ * @fn FragmentStore#calculateMateIndices
+ * @brief Calculates a string that maps the readId of a read to the readId of its mate.
+ *
+ * @signature void calculateMateIndices(mateIndices, store);
+ *
+ * @param[out] mateIndices A @link String @endlink with the resulting mate indices.  This string is accordingly resized
+ *                         and can be addressed by the readId.
+ * @param[in]  store       The @link FragmentStore @endlink.
+ *
+ * Entries of reads without a mate contain <tt>INVALID_ID</tt>.
+ */
 
 /**
 .Function.calculateMateIndices
@@ -1427,6 +1924,22 @@ calculateMateIndices(TMateIndexString &mateIndices, FragmentStore<TSpec, TConfig
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AlignedReadLayout
+ * @headerfile <seqan/store>
+ * @brief Stores a two dimensional visible layout of a multi-read alignment.
+ *
+ * @signature struct AlignedReadLayout.
+ *
+ *
+ * @var TContigRows AlignedReadLayout#contigRows;
+ * @brief 2D multi-read layout.
+ *
+ * Stores for a contig and row the ids of aligned reads from left to right.  <tt>contigRows[contigId][row]</tt> stores
+ * the alignId of all aligned reads from left to right assigned to the same row.  <tt>row</tt> is the row of the
+ * alignment in the multiple sequence alignment and contigId the id of the reference contig.
+ */
+
 /**
 .Class.AlignedReadLayout
 ..summary:Stores a 2-dimensional visible layout of a multi-read alignment.
@@ -1450,6 +1963,20 @@ struct AlignedReadLayout
 	TContigRows contigRows;			// rows string, each row is a string of ids of alignedReads from left to right
 	String<Pair<int> > mateCoords;	// coords of mate pair
 };
+
+/*!
+ * @fn AlignedReadLayout#layoutAlignment
+ * @brief Calculates a visible layout of aligned reads.
+ *
+ * @signature void layoutAlignment(layout, store);
+ *
+ * @param[out] layout The resulting layout structure.
+ * @param[in]  store  The FragmentStore.
+ *
+ * For each contig, thisf unction layouts all reads in rows from up to down reusing empty row spaces.
+ *
+ * @see printAlignment
+ */
 
 /**
 .Function.layoutAlignment
@@ -1542,6 +2069,26 @@ inline void _printContig(
 {
 	write(stream, contigGaps, "", format);
 }
+
+/*!
+ * @fn AlignedReadLayout#printAlignment
+ * @brief Prints a window of the visible layout of reads into a std::outstream.
+ *
+ * @signature void printAlignment(stream, format, layout, store, contigID, posBegin, posEnd, lineBegin, lineEnd);
+ *
+ * @param[in,out] stream    The std::ostream to print to.
+ * @param[in]     format    The output format, e.g. <tt>Raw</tt>.
+ * @param[in]     layout    The @link AligedReadLayout @endlink computed earlier in @link layoutAlignment @endlink.
+ * @param[in]     store     The FragmentStore that this layout belongs to.
+ * @param[in]     contigID  The id of the contig for the alignments to print.
+ * @param[in]     posBegin  The begin position of the window.
+ * @param[in]     posEnd    The end position of the window.
+ * @param[in]     lineBegin The first line of the window.
+ * @param[in]     lineEnd   The end line of the window.
+ *
+ * The window coordinates (beginPos, ...) may be chosen bigger than the lyaout is.  The empty space is then filled with
+ * spaces.
+ */
 
 /**
 .Function.printAlignment
@@ -1682,6 +2229,31 @@ void printAlignment(
 		stream << '\n';
 	}
 }
+
+/*!
+ * @fn FragmentStore#convertMatchesToGlobalAlignment
+ * @brief Converts all matches to a multiple global alignment in gap-space.
+ * 
+ * @signature void convertMatchesToGlobalAlignment(store, score);
+ * 
+ * @param[in,out] store The fragment store. Types: FragmentStore
+ * @param[in]     score A score object used by @link globalAlignment @endlink in this function.
+ * 
+ * @section Remarks
+ * 
+ * Before calling this function all <tt>gaps</tt> structures in @link FragmentStore::alignedReadStore @endlink and @link
+ * FragmentStore::contigStore @endlink must be empty, i.e. there are no gaps in the alignments.  This function iterates
+ * over entries in the @link FragmentStore::alignedReadStore @endlink and semi-global aligns each read to its contig
+ * segments given by begin and end position.  Gaps introduced by these pair-wise alignments are then inserted to the
+ * affected contig and reads correspondingly.
+ * 
+ * The invariant that positions in the @link FragmentStore::alignedReadStore @endlink are in gap-space holds before
+ * (there were no gaps in alignments) and after calling this functions.
+ * 
+ * If the @link FragmentStore::alignQualityStore @endlink of the @link FragmentStore @endlink is empty when
+ * <tt>convertMatchesToGlobalAlignment()</tt> is called then the @link FragmentStore::alignQualityStore @endlink is
+ * filled with the edit distance scores.
+ */
 
 /**
 .Function.convertMatchesToGlobalAlignment
@@ -2019,6 +2591,26 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
     // std::cerr << "(int)length(store.contigStore[0].gaps) == " << (int)length(store.contigStore[0].gaps) << '\n';
     // printAlignment(std::cout, Raw(), layout, store, 0, -10, (int)(length(store.contigStore[0].seq) * 1.1), 0, 40);
 }
+
+/*!
+ * @fn FragmentStore#convertPairWiseToGlobalAlignment
+ * @brief Converts pairwise alignments to a multiple global alignment.
+ * 
+ * @signature void convertPairWiseToGlobalAlignment(store, pairwiseContigGaps);
+ * 
+ * @param[in,out] store The fragment store. Types: FragmentStore
+ * @param[in,out] pairwiseContigGaps
+ *                      A @link String @endlink of anchored contig gaps for every pairwise alignment.
+ * 
+ * @section Remarks
+ * 
+ * Before calling this function the <tt>gaps</tt> structures in the @link FragmentStore::contigStore @endlink must be
+ * empty, i.e. there are no gaps in the contig. The pairwise alignment gaps of the reads are stored in the <tt>gaps</tt>
+ * structure in the @link FragmentStore::alignedReadStore @endlink, whereas the pairwise alignment gaps of the contig
+ * are stored in the <tt>pairwiseContigGaps</tt> string.
+ * 
+ * After calling this functions all positions in the @link FragmentStore::alignedReadStore @endlink are in gap-space.
+ */
 
 /**
 .Function.convertPairWiseToGlobalAlignment

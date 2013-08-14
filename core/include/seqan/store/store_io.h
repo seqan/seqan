@@ -75,6 +75,20 @@ typedef Tag<TagAmos_> const Amos;
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#getClrRange
+ * @brief Get the "clear" range of a read alignment.
+ *
+ * The clear range of a read alignment is the range of the part of the alignmetn that is not clipped.
+ *
+ * @signature void getClrRange(store, alignEl, begClr, endClr);
+ *
+ * @param[in]  store    The FragmentStore to work on.
+ * @param[in]  alignEl  The @link AlignedReadElement @endlink to work on.
+ * @param[out] begClr   Begin of the clear range.
+ * @param[out] endClr   End of the clear range.
+ */
+
 
 /**
 .Function.getClrRange
@@ -139,6 +153,19 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn FragmentStore#read
+ * @brief Read the contents of a FragmentStore from a file.
+ *
+ * @signature int read(file, store, tag);
+ *
+ * @param[in,out] file  The @link StreamConcept @endlink to read from.
+ * @param[in,out] store The FragmentStore to append to.
+ * @param[in]     tag   The format to read from.  Can be Amos or Sam.
+ *
+ * @return int 0 in the case of success, non-0 value in case of errors.
+ */
 
 /**
 .Function.read
@@ -765,6 +792,19 @@ read(TFile & file,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#write
+ * @brief Write the contents of a FragmentStore to a file.
+ *
+ * @signature int write(file, store, tag);
+ *
+ * @param[in,out] file  The @link StreamConcept @endlink to write to.
+ * @param[in]     store The FragmentStore to write to the file.
+ * @param[in]     tag   The format to write out.  Types: Sam or Amos.
+ *
+ * @return int 0 in case of success, 1 in case of errors.
+ */
+
 /**
 .Function.write
 ..cat:Fragment Store
@@ -1147,6 +1187,19 @@ write(TFile & target,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#writeContigs
+ * @brief Write contigs from FragmentStore into a @link StreamConcept @endlink.
+ *
+ * @signature bool writeContigs(file, store, tag);
+ *
+ * @param[in,out] file  The @link StreamConcept @endlink to write to.
+ * @param[in]     store The FragmentStore to write contigs of.
+ * @param[in]     tag   A tag for the sequence format.
+ *
+ * @return bool true on success, false on errors.
+ */ 
+
 /**
 .Function.writeContigs
 ..class:Class.FragmentStore
@@ -1170,6 +1223,25 @@ bool writeContigs(TStream & file, FragmentStore<TFSSpec, TFSConfig> & store, TFo
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn FragmentStore#loadContigs
+ * @brief Load contigs into a FragmentStore.
+ *
+ * @signature bool loadContigs(store, fileName[, loadSeqs]);
+ * @signature bool loadContigs(store, fileNameList[, loadSeqs]);
+ *
+ * @param[in,out] store        The FragmentStore to append the contigs to.
+ * @param[in]     fileName     A @link CharString @endlink with the name of the file to load.
+ * @param[in]     fileNameList A @link StringSet @endlink of @link CharString @endlink with a list of file names to
+ *                             load.
+ * @param[in]     loadSeqs     A <tt>bool</tt> indicating whether to load lazily.  If <tt>true</tt> then sequences are
+ *                             loaded immediately.  If <tt>false</tt>, an emptycontig with a reference to the file is
+ *                             created.  Its sequence can be loaded on demand by @link FragmentStore#lockContig
+ *                             @endlink and @link FragmentStore#loadContig @endlink.
+ *
+ * @return bool true in case of success and false in case of error.
+ */
 
 /**
 .Function.loadContigs
@@ -1261,6 +1333,18 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, TFileNames const &fil
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#loadContig
+ * @brief Manually load a contig sequence.
+ *
+ * @signature bool loadContig(store, contigId);
+ *
+ * @param[in,out] store    The FragmentStore to load the contig for.
+ * @param[in]     contigId The id of the contig that was created earlier by @link FragmentStore#loadContigs @endlink.
+ *
+ * @return bool true on success, false on failure.
+ */
+
 /**
 .Function.loadContig
 ..class:Class.FragmentStore
@@ -1297,6 +1381,20 @@ bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn FragmentStore#lockContig
+ * @brief Locks a contig sequence from being removed.
+ *
+ * This function increases the contig usage counter by 1 and ensures that the contig sequence is loaded.
+ *
+ * @signature bool lockContig(store, contigId);
+ *
+ * @param[in,out] store    The FragmentStore to lock the contig for.
+ * @param[in]     contigId The id of the contig that was created earlier by @link FragmentStore#loadContigs @endlink.
+ *
+ * @return bool true on success, false on failure.
+ */
+
 /**
 .Function.lockContig
 ..summary:Locks a contig sequence from being removed.
@@ -1324,6 +1422,20 @@ bool lockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 	return loadContig(store, _id);
 }
 
+/*!
+ * @fn FragmentStore#unlockContig
+ * @brief Removes a previous contig lock.
+ *
+ * This function decreases the contig usage counter by 1.
+ *
+ * @signature bool unlockContig(store, contigId);
+ *
+ * @param[in,out] store    The FragmentStore to unlock the contig for.
+ * @param[in]     contigId The id of the contig that was created earlier by @link FragmentStore#loadContigs @endlink.
+ *
+ * @return bool true on success, false on failure.
+ */
+
 /**
 .Function.unlockContig
 ..summary:Removes a previous contig lock.
@@ -1344,6 +1456,20 @@ bool unlockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 	--store.contigStore[_id].usage;
 	return true;
 }
+
+/*!
+ * @fn FragmentStore#unlockAndFreeContig
+ * @brief Removes a previous contig lock and clears the sequence if no further lock exists.
+ *
+ * This function decreases the contig usage counter by 1 and frees the sequences' memory if the counter equals 0.
+ *
+ * @signature bool unlockContig(store, contigId);
+ *
+ * @param[in,out] store    The FragmentStore to unlock the contig for.
+ * @param[in]     contigId The id of the contig that was created earlier by @link FragmentStore#loadContigs @endlink.
+ *
+ * @return bool true on success, false on failure.
+ */
 
 /**
 .Function.unlockAndFreeContig
@@ -1377,6 +1503,17 @@ bool unlockAndFreeContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 	return false;
 }
 
+/*!
+ * @fn FragmentStore#lockContigs
+ * @brief Locks all contig sequences from being remove.
+ *
+ * @signature bool lockContigs(store);
+ *
+ * @param[in,out] store    The FragmentStore to lock the contigs for.
+ *
+ * @return bool true in case of success, false in case of errors.
+ */
+
 /**
 .Function.lockContigs
 ..summary:Locks all contig sequences from being removed. 
@@ -1398,6 +1535,17 @@ bool lockContigs(FragmentStore<TSpec, TConfig> &store)
 	return result;
 }
 
+/*!
+ * @fn FragmentStore#unlockContigs
+ * @brief Unlocks all contig sequences.
+ *
+ * @signature bool unlockContigs(store);
+ *
+ * @param[in,out] store    The FragmentStore to unlock the contigs for.
+ *
+ * @return bool true in case of success, false in case of errors.
+ */
+
 /**
 .Function.unlockContigs
 ..summary:Removes a previous lock for all contigs.
@@ -1418,6 +1566,17 @@ bool unlockContigs(FragmentStore<TSpec, TConfig> &store)
 		result &= unlockContig(store, _id);
 	return result;
 }
+
+/*!
+ * @fn FragmentStore#unlockAndFreeContigs
+ * @brief Unlocks all contig sequences and clears sequences without lock.
+ *
+ * @signature bool unlockAndFreeContigs(store);
+ *
+ * @param[in,out] store    The FragmentStore to unlock the contigs for.
+ *
+ * @return bool true in case of success, false in case of errors.
+ */
 
 /**
 .Function.unlockAndFreeContigs
@@ -1442,6 +1601,25 @@ bool unlockAndFreeContigs(FragmentStore<TSpec, TConfig> &store)
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn FragmentStore#loadReads
+ * @brief Loads reads into FragmentStore
+ *
+ * When two file names are given thent he files are expected to containt he same number of reads and reads with the same
+ * index are assumed to be mate pairs.  Mate pairs are stored internally in an "interleaved mode": a read is read from
+ * each file before reading the next one.
+ *
+ * @signature bool loadReads(store, fileName);
+ * @signature bool loadReads(store, fileNameL, fileNameR);
+ *
+ * @param[in,out] store     The FragmentStore to append the reads to.
+ * @param[in]     fileName  Path to single-end read file.
+ * @param[in]     fileNameL Path to left read file in case of paired reads.
+ * @param[in]     fileNameR Path to right read file in case of paired reads.
+ *
+ * @return bool true in case of success, false in case of errors.
+ */
 
 /**
 .Function.loadReads

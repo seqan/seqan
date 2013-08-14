@@ -42,6 +42,31 @@ namespace SEQAN_NAMESPACE_MAIN
 // Read Store
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ReadStoreElement
+ * @headerfile <seqan/store.h>
+ * @brief Represents a single read (without sequence).
+ *
+ * @signature template <[typename TSpec]>
+ *            struct ReadStoreElement;
+ *
+ * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
+ *
+ *
+ * @fn ReadStoreElement::ReadStoreElement();
+ *
+ * Sets matePairId to INVALID_id.
+ */
+
+/*!
+ * @var TId ReadStoreElement::matePairId;
+ * @brief Refers to a mate pair in the @link FragmentStore::matePairStore @endlink or is INVALID_ID if the read is
+ *        not paired.
+ *
+ * @var TId ReadStoreElement::INVALID_ID;
+ * @brief Constant to represetn an invalid id.
+ */
+
 /**
 .Class.ReadStoreElement
 ..summary:Represents a single read (without sequence).

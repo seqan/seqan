@@ -42,6 +42,39 @@ namespace SEQAN_NAMESPACE_MAIN
 // Library Store
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class LibraryStoreElement
+ * @headerfile <seqan/store.h>
+ * @brief Represents a fragment library.
+ *
+ * @signature template <[typename TMean[, typename TStd[, typename TSpec]]]>
+ *            struct LibraryStoreElement;
+ *
+ * @tparam TMean The type to use for storing library size means.  Default: <tt>double</tt>.
+ * @tparam TStd  The type to use for storing library size standard deviations.  Default: <tt>double</tt>.
+ * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
+ *
+ * Valkue type of the @link FragmentStore::libraryStore @endlink string.
+ *
+ * A fragment library is a set of mate pairs having a certain distribution of interst sizes.
+ *
+ *
+ * @fn LibraryStoreElement::LibraryStoreElement
+ * @brief Consctrutor.
+ *
+ * @signature LibraryStoreElement::LibraryStoreElement();
+ *
+ * Initializes all members to 0.
+ */
+
+/*!
+ * @var TMean LibraryStoreElement::mean;
+ * @brief The library size mean.
+ *
+ * @var TStd LibraryStoreElement::std;
+ * @brief The library size standard deviation.
+ */ 
+
 /**
 .Class.LibraryStoreElement
 ..summary:Represents a fragment library.

@@ -42,6 +42,80 @@ namespace SEQAN_NAMESPACE_MAIN
 // Contig Store
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ContigStoreElement
+ * @headerfile <seqan/store.h>
+ * @brief Represents a single contig.
+ *
+ * @signature template <typename TContigSeq, typename TGapAnchor[, typename TSpec]>
+ *            class ContigStoreElement;
+ *
+ * @tparam TContigSeq Type to store the contig sequence.
+ * @tparam TGapAnchor Type of the @link GapAnchor @endlink.
+ * @tparam TSpec      Specializing type.  Default: <tt>void</tt>.
+ *
+ * Value type of the @link FragmentStore::contigStore @endlink string.
+ *
+ *
+ * @fn ContigStoreElement::ContigStoreElement
+ * @brief Constructor.
+ *
+ * @signature ContigStoreElement::ContigStoreElement();
+ *
+ * Set fileId to INVALID_ID and usage, fileBeginPos, fileEndPos to 0.
+ */
+
+/*!
+ * @typedef ContigStoreElement::TContigSeq
+ * @brief Type fo the seq member.
+ *
+ * @signature typedef (...) ContigStoreElement::TContigSeq;
+ *
+ * @typedef ContigStoreElement::TGapAnchors
+ * @brief Type of the gaps member.
+ *
+ * @signature typedef (...) ContigStoreElement::TGapAnchors;
+ *
+ *
+ * @typedef ContigStoreElement::TPos
+ * @brief Type of the fileBeginPos and fileEndPos emmbers.
+ *
+ * @signature typedef (...) ContigStoreElement::TPos;
+ *
+ *
+ * @typedef ContigStoreElement::TSpec
+ * @brief The specializing type.
+ *
+ * @signature typedef (...) ContigStoreElement::TSpec;
+ */
+
+/*!
+ * @var TContigSeq ContigStoreElement::seq;
+ * @brief Contig sequence.
+ *
+ * @var TGaps ContigStoreElement::gaps;
+ * @brief String of contig @link GapAnchor @endlink objects.  CAn be used to create a @link AnchorGaps @endlink
+ *        alignment row.
+ *
+ * @var unsigned ContigStoreElement::usage;
+ * @brief Count the number of locks.
+ *
+ * @see FragmentStore#lockContig
+ *
+ * @var TId ContigStoreElement::fileId;
+ * @brief Refers to a file in the @link FragmentStore::contigFileStore @endlink or is INVALID_ID if the contig has no
+ *        file association.
+ *
+ * @var TPos ContigStoreElement::fileBeginPos
+ * @brief Begin position of the contig sequence fragment in the file.
+ *
+ * @var TPos ContigStoreElement::fileEndPos
+ * @brief End position of the contig sequence fragment in the file.
+ *
+ * @var TId ContigStoreElement::INVALID_ID;
+ * @brief Constant to represent an invalid.
+ */
+
 /**
 .Class.ContigStoreElement
 ..summary:Represents a single contig.
@@ -148,6 +222,32 @@ ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<type
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ContigFile
+ * @headerfile <seqan/store.h>
+ * @brief Represents a file containing contigs.
+ *
+ * @signature template <[typename TSpec]>
+ *            class ContigFile;
+ *
+ * @tparam TSpec The specializing type.  Default: <tt>void</tt>.
+ *
+ * @section Remarks
+ *
+ * Value type of @link FragmentStore#contigFileStore @endlink string.
+ */
+
+/*!
+ * @var CharString ContigFile::fileName;
+ * @brief Contig file name.
+ *
+ * @var AutoSeqFormat ContigFile::format;
+ * @brief Stores the contig file format, auto-detect in @link FragmentStore#loadContigs @endlink.
+ *
+ * @var TId ContigFile::firstContigId;
+ * @brief The contigId of the first sequence in the file.  Subsequent contig sequences have an increasing contigId.
+ */
+
 /**
 .Class.ContigFile
 ..summary:Represents a file containing contigs.
@@ -204,3 +304,5 @@ ContigFile<TSpec_>::INVALID_ID = MaxValue<typename Id<ContigFile<TSpec_> >::Type
 }// namespace SEQAN_NAMESPACE_MAIN
 
 #endif //#ifndef SEQAN_HEADER_...
+
+//  LocalWords:  ContigFile

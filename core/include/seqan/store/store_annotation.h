@@ -42,6 +42,89 @@ namespace SEQAN_NAMESPACE_MAIN
 // Annotation Store
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AnnotationStoreElement
+ * @headerfile <seqan/store.h>
+ * @brief Represents an annotation of a genomic feature.
+ *
+ * @signature template <typename TPos[, typename TSpec]>
+ *            struct AnnotationStoreElement;
+ *
+ * @tparam TPos  The position type to use.
+ * @tparam TSpec The specializing type.
+ *
+ * Value type of the @link FragmentStore::annotationStore @endlink stirng.  The id of an annotation (aka annotationId)
+ * is not stored explicitly as it is implicitly given byt he position in the @link FragmentStore::annotationStore
+ * @endlink.
+ *
+ *
+ * @fn AnnotationStoreElement::AnnotationStoreElement()
+ * @brief Constructor.
+ *
+ * @signature AnnotationStoreElement::AnnotationStoreElement();
+ *
+ * The default constructor sets all members to <tt>INVALID_ID</tt> and beginPos and endPos to <tt>INVALID_POS</tt>.
+ */
+
+/*!
+ * @typedef AnnotationStoreElement::TId
+ * @brief Type of annotationId and contigId.
+ *
+ * @signature typedef (...) TAnnotationStoreElement::TId;
+ *
+ * TId is the result of <tt>Id&lt;AnnotationStoreElement&lt;&gt; &gt;::Type</tt>, see @link Id @endlink.
+ *
+ *
+ * @typedef AnnotationStoreElement::TPos
+ * @brief Type of the @link AnnotationStoreElement::beginPos @endlink and @link AnnotationStoreElement::endPos
+ *        @endlink.
+ *
+ * @signature typedef (...) TAnnotationStoreElement::TPos;
+ *
+ * @typedef AnnotationStoreElement::TValues
+ * @brief @link StringSet @endlink type of the @link AnnotatioStoreElement::values @endlink member.
+ *
+ * @signature typedef (...) TAnnotationStoreElement::TValues;
+ */
+
+/*!
+ * @var TId AnnotationStoreElement::INVALID_ID;
+ * @brief Constant to represent an invalid id.
+ *
+ * @var TId AnnotationStoreElement::INVALID_POS;
+ * @brief Constant to represent an invalid position.
+ *
+ * @var TId AnnotationStoreElement::contigId;
+ * @brief Refers to the contig in @link FragmentStore::contigStore @endlink that the annotation is part of.
+ *
+ * @var TPos AnnotationStoreElement::beginPos;
+ * @brief Begin position of the annotation in gap space.
+ *
+ * If endPos &lt; beginPos then the annotation feature is located on the reverse strand where beginPos and endPos are
+ * the corresponding positions on the forward strand.
+ *
+ * @var TPos AnnotationStoreElement::endPos;
+ * @brief End position of the annotation in gap space.
+ *
+ * If endPos &lt; beginPos then the annotation feature is located on the reverse strand where beginPos and endPos are
+ * the corresponding positions on the forward strand.
+ *
+ * @var TValues AnnotationStoreElement::values;
+ * @brief @link StringSet @endlink that stores additional values addressed by keyId.
+ *
+ * The GFF and FTF file formats allow to define user-specific key-value pairs.  The set of all keys addressed by keyId
+ * are stored in @link FragmentStore::annotationKeyStore @endlink.
+ *
+ * @var TId AnnotationStoreElement::parentId;
+ * @brief The id of the parent annotation.
+ *
+ * @var TId AnnotationStoreElement::nextSiblingId;
+ * @brief The id of the right sibling annotation.
+ *
+ * @var TId AnnotationStoreElement::lastChildId;
+ * @brief The id of the parent annotation.
+ */
+
 /**
 .Class.AnnotationStoreElement
 ..summary:Represents an annotation of a contig feature.
@@ -188,6 +271,71 @@ AnnotationStoreElement<TPos, TSpec>::INVALID_POS = MaxValue<TPos>::VALUE;
 template <typename TSpec = void>
 struct AnnotationTree {};
 
+/*!
+ * @class AnnotationTreeIterator
+ * @extends Iter
+ * @headerfile <seqan/store.h>
+ * @brief Iterator of the annotation tree represetned by a @link FragmentStore @endlink.
+ *
+ * This iterator can move @link AnnotationTreeIterator#goDown down @endlink, @link AnnotationTreeIterator#goRight right
+ * @endlink, and @link AnnotationTreeIterator#goUp up @endlink in the tree and supports a preorder DFS traversal using
+ * the functions @link AnnotationTreeIterator#goBegin @endlink, @link AnnotationTreeIterator#goNext @endlink, and @link
+ * AnnotationTreeIterator#atEnd @endlink.
+ *
+ * Preorder means that the iterator visits the node befor it visits its children.
+ *
+ * To obtain the type of the AnnotationTreeIterator for a FragmentStore specializiation <tt>TFragmentStore</tt>, you can
+ * use the metafunction @link ContainerConcept#Iterator Iterator @endlink as follows:
+ * <tt>Iterator&lt;TFragmentStore&gt;::Type</tt>.
+ *
+ * @signature template <typename TFragmentStore>
+ *            class Iter<TFragmentStore, AnnotationTree<> >;
+ *
+ * @tparam TFragmentStore The FragmentStore to iterate over.
+ *
+ * @section Remarks
+ *
+ * To access the annotation, the iterator points to, use @link AnnotationTreeIterator#getAnnotation @endlink.  The
+ * annotation id is returned by @link AnnotationTreeIterator#value @endlink.
+ *
+ * @section Example
+ *
+ * <img src="AnnotationTree.png" title="Typical annotation tree hierarchy." />
+ *
+ * A new annotation iterator can be instantiated as follows:
+ *
+ * @code{.cpp}
+ * FragmentStore<> store;
+ * Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
+ * it = begin(store, AnnotationTree<>());
+ * @endcode
+ *
+ * Or shorter:
+ *
+ * @code{.cpp}
+ * FragmentStore<> store;
+ * Iterator<FragmentStore<>, AnnotationTree<> >::Type it(store);
+ * @endcode
+ *
+ *
+ * @fn AnnotationTreeIterator::AnnotationTreeIterator
+ * @brief Constructor
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(store[, startInNode]);
+ *
+ * @param[in] store       The FragmentStore with the annotation tree to iterate.
+ * @param[in] startInNode Annotation id of the ndoe the iterator should start at.  Default: 0, the root node id.
+ *
+ * The @link Container#begin @endlink function can also be used to create a tree iterator that starts in the root node:
+ *
+ * @code{.cpp}
+ * FragmentStore<> store;
+ * Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
+ * it = begin(store, AnnotationTree<>());
+ * @endcode
+ */
+
 /**
 .Spec.AnnotationTree Iterator:
 ..cat:FragmentStore
@@ -316,6 +464,17 @@ container(Iter< TFragmentStore, AnnotationTree<TSpec> > const &it) {
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AnnotationTreeIterator#getAnnotation
+ * @brief Returns the current annotation.
+ *
+ * @signature TAnnotation getAnnotation(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query for its annotation.
+ *
+ * @return TAnnotation A reference to the AnnotationStoreElement the iterator points to.
+ */
+
 /**
 .Function.getAnnotation
 ..class:Spec.AnnotationTree Iterator
@@ -327,6 +486,8 @@ container(Iter< TFragmentStore, AnnotationTree<TSpec> > const &it) {
 ..returns:A reference to the @Class.AnnotationStoreElement@ the iterator points at.
 ..include:seqan/store.h
 */
+
+// TODO(holtgrew): Better use Reference in both cases?
 
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationStore>::Type
@@ -341,6 +502,20 @@ getAnnotation(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 {
 	return value(it.store->annotationStore, it._id);
 }
+
+/*!
+ * @fn AnnotationTreeIterator#getName
+ * @brief Returns the identifier of the current annotation.
+ *
+ * @signature TName getName(it);
+ *
+ * @param[in] it An AnnotationTreeIterator to query.
+ *
+ * @return TName The name of the current annotation.  This is a reference to the corresponding position in @link
+ *               FragmentStore::annotatioNameStore @endlink.
+ *
+ * @see AnnotationTreeIterator#setName
+ */
 
 /**
 .Function.AnnotationTree Iterator#getName
@@ -364,6 +539,18 @@ getName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 	return getAnnoName(*it.store, it._id);
 }
 
+/*!
+ * @fn AnnotationTreeIterator#setName
+ * @brief Sets the identifier of the current annotation.
+ *
+ * @signature void setName(it, name);
+ *
+ * @param[in,out] it   Iterator to the annotation to set the name for.
+ * @param[in]     name The new identifier of the annotation pointed to by it.
+ *
+ * @see AnnotationTreeIterator#getName
+ */
+
 /**
 .Function.AnnotationTree Iterator#setName
 ..class:Spec.AnnotationTree Iterator
@@ -386,6 +573,18 @@ setName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TName const & n
 		resize(it.store->annotationNameStore, it._id + 1);
 	it.store->annotationNameStore[it._id] = name;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#getParentName
+ * @brief Returns the identifier of the parent node in the annotationt ree of the current annotation.
+ *
+ * @signature TName getParentName(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to get the name for.
+ *
+ * @return TName The name of the parent of the current annotation.  This is a reference to the corresponding value in
+ *               @link FragmentStore::annotationNameStore @endlink.
+ */
 
 /**
 .Function.getParentName
@@ -416,6 +615,21 @@ getParentName(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AnnotationTreeIterator#getType
+ * @brief Returns the type name of the current annotation.
+ *
+ * @signature TSeq getType(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query for its type.
+ *
+ * @return The name of the current annotation, e.g. "exon" or "mRNA".  This is a reference to an entry in @link
+ *         FragmentStore::annotationTypeStore @endlink.
+ *
+ * @see AnnotationTreeIterator#setType
+ */
+
 /**
 .Function.getType
 ..class:Spec.AnnotationTree Iterator
@@ -437,6 +651,18 @@ getType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 {
 	return getAnnoType(*it.store, getAnnotation(it).typeId);
 }
+
+/*!
+ * @fn AnnotationTreeIterator#setType
+ * @brief Sets the type name of the current annotation.
+ *
+ * @signature void setType(it, typeName);
+ *
+ * @param[in,out] it       The iterator to the annotation to set the type name for.
+ * @param[in]     typeName The name of the type (e.g. "exon" or "mRNA").  Type: @link SequenceConcept @endlink.
+ *
+ * @see AnnotationTreeIterator#getType
+ */
 
 /**
 .Function.setType
@@ -460,6 +686,23 @@ setType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TTypeName & typ
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AnnotationTreeIterator#getUniqueName
+ * @brief Returns a unique name of the current annotation.
+ *
+ * @signature CharString getUniqueName(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ *
+ * @return CharString A unique name of the current annotation.
+ *
+ * Some annotation file formats do not require that every annotation has a non-empty name.  This function returns the
+ * name if non-emtpy and otherwise generates one using the type an id.
+ *
+ * @see AnnotationTreeIterator#getName
+ */
+
 /**
 .Function.getUniqueName
 ..class:Spec.AnnotationTree Iterator
@@ -484,6 +727,19 @@ getUniqueName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AnnotationTreeIterator#clearValues
+ * @brief Clear all key-value pairs of a given annotation.
+ *
+ * @signature void clearValues(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to clear all key-value pairs of the current annotation.
+ *
+ * @see AnnotationTreeIterator#assignValueByKey
+ * @see AnnotationTreeIterator#getValueByKey
+ */
+
 /**
 .Function.clearValues
 ..class:Spec.AnnotationTree Iterator
@@ -503,6 +759,20 @@ clearValues(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 {
 	clear(getAnnotation(it).values);
 }
+
+/*!
+ * @fn AnnotationTreeIterator#assignValueByKey
+ * @brief Add or update a key-value pair of the current annotation.
+ *
+ * @signature void assignValueByKey(it, key, value);
+ *
+ * @param[in,out] it    The AnnotationTreeIterator to
+ * @param[in]     key   The key whose value should be changed.  Type: @link SequenceConcept @endlink.
+ * @param[in]     value The value that should be assigned.  Type: @link SequenceConcept @endlink.
+ *
+ * @see AnnotationTreeIterator#clearValues
+ * @see AnnotationTreeIterator#getValueByKey
+ */
 
 /**
 .Function.assignValueByKey
@@ -530,6 +800,20 @@ assignValueByKey(
 {
 	annotationAssignValueByKey(*it.store, getAnnotation(it), key, value);
 }
+
+/*!
+ * @fn AnnotationTreeIterator#getValueByKey
+ * @brief Retrieve a key's value in the current annotation.
+ *
+ * @signature bool getValueByKey(it, key, value);
+ *
+ * @param[in]  it    The AnnotationTreeIterator for which to retrieve the key.
+ * @param[in]  key   The key to get the value for.
+ * @param[out] value The resulting value.
+ *
+ * @see AnnotationTreeIterator#clearValues
+ * @see AnnotationTreeIterator#assignValueByKey
+ */
 
 /**
 .Function.getValueByKey
@@ -592,6 +876,16 @@ goEnd(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 
 	it._id = TAnnotation::INVALID_ID;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#goTo
+ * @brief Moves the iterator to an arbitrary node giving its annotationId.
+ *
+ * @signature void goTo(it, annoId);
+ *
+ * @param[in,out] it     The AnnotationTreeIterator to move.
+ * @param[in]     annoId The id of the annotation to move to.
+ */
 
 /**
 .Function.goTo
@@ -661,6 +955,15 @@ goNext(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	}
 }
 
+/*!
+ * @fn AnnotationTreeIterator#goNextRight
+ * @brief Go to the next node in preorder DFS skipping the current node's subtree.
+ *
+ * @signature void goNextUp(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to
+ */
+
 /**
 .Function.AnnotationTree Iterator#goNextRight
 ..class:Spec.AnnotationTree Iterator
@@ -687,6 +990,15 @@ goNextRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	}
 }
 
+/*!
+ * @fn AnnotationTreeIterator#goNextUp
+ * @brief Go to the next node in preorder DFS skipping the subtrees of the current node and all of its siblings.
+ *
+ * @signature void goNextUp(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to
+ */
+
 /**
 .Function.AnnotationTree Iterator#goNextUp
 ..class:Spec.AnnotationTree Iterator
@@ -704,7 +1016,7 @@ template <typename TFragmentStore, typename TSpec>
 inline void
 goNextUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 {
-	// preorder dfs
+	// preorder DFS
 	while (goUp(it) && !goRight(it)) ;
 	if (isRoot(it)) {
 		clear(it);
@@ -713,6 +1025,15 @@ goNextUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AnnotationTreeIterator#goRoot
+ * @brief Move the iterator down to the tree root.
+ *
+ * @signature void goRoot(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to move.
+ */
 
 /**
 .Function.AnnotationTree Iterator#goRoot
@@ -733,6 +1054,20 @@ goRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 {
 	it._id = 0;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#goUp
+ * @brief Move the iterator down to the parent in the annotation tree.
+ *
+ * @signature bool goUp(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to move.
+ *
+ * @return bool <tt>true</tt> if the iterator could be moved and <tt>false</tt> otherwise.
+ *
+ * @see AnnotationTreeIterator#goDown
+ * @see AnnotationTreeIterator#goRight
+ */
 
 /**
 .Function.AnnotationTree Iterator#goUp
@@ -766,6 +1101,20 @@ goUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	return false;
 }
 
+/*!
+ * @fn AnnotationTreeIterator#goDown
+ * @brief Move the iterator down to the leftmost child in the annotation tree.
+ *
+ * @signature bool goDown(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to move.
+ *
+ * @return bool <tt>true</tt> if the iterator could be moved and <tt>false</tt> otherwise.
+ *
+ * @see AnnotationTreeIterator#goUp
+ * @see AnnotationTreeIterator#goRight
+ */
+
 /**
 .Function.AnnotationTree Iterator#goDown
 ..class:Spec.AnnotationTree Iterator
@@ -797,6 +1146,20 @@ goDown(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	}
 	return false;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#goRight
+ * @brief Move the iterator right to the next sibling in the annotation tree.
+ *
+ * @signature bool goRight(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to move.
+ *
+ * @return bool <tt>true</tt> if the iterator could be moved and <tt>false</tt> otherwise.
+ *
+ * @see AnnotationTreeIterator#goUp
+ * @see AnnotationTreeIterator#goDown
+ */
 
 /**
 .Function.AnnotationTree Iterator#goRight
@@ -836,6 +1199,21 @@ goRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AnnotationTreeIterator#nodeUp
+ * @brief Returns a new iterator to the parent node of the current annotation in the annotation tree.
+ *
+ * @signature TIter nodeUp(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ *
+ * @return TIter Iterator to the parent node.
+ *
+ * @see AnnotationTreeIterator#nodeDown
+ * @see AnnotationTreeIterator#nodeRight
+ */
+
 /**
 .Function.AnnotationTree Iterator#nodeUp
 ..class:Spec.AnnotationTree Iterator
@@ -860,6 +1238,20 @@ nodeUp(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 	return tmp;
 }
 
+/*!
+ * @fn AnnotationTreeIterator#nodeDown
+ * @brief Returns a new iterator to the first child node of the current annotation in the annotation tree.
+ *
+ * @signature TIter nodeDown(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ *
+ * @return TIter Iterator to the first child node of it.
+ *
+ * @see AnnotationTreeIterator#nodeUp
+ * @see AnnotationTreeIterator#nodeRight
+ */
+
 /**
 .Function.AnnotationTree Iterator#nodeDown
 ..class:Spec.AnnotationTree Iterator
@@ -883,6 +1275,20 @@ nodeDown(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 	goDown(tmp);
 	return tmp;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#nodeRight
+ * @brief Returns a new iterator to the right sibling of the current annotation in the annotation tree.
+ *
+ * @signature TIter nodeRight(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ *
+ * @return TIter Iterator to the right sibling of it.
+ *
+ * @see AnnotationTreeIterator#nodeUp
+ * @see AnnotationTreeIterator#nodeDown
+ */
 
 /**
 .Function.AnnotationTree Iterator#nodeRight
@@ -986,6 +1392,20 @@ _cyclicListRemove(TAnnotationStore & annotationStore, TId _id, TId lastChildId)
 	return lastChildId;
 }
 
+/*!
+ * @fn AnnotationTreeIterator#createLeftChild
+ * @brief Create a new leftmost child of the current node and returns an iterator to it.
+ *
+ * @signature TIter createLeftChild(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator to create a left child for.
+ *
+ * @return TIter Iterator to the new child.
+ *
+ * @see AnnotationTreeIterator#createRightChild
+ * @see AnnotationTreeIterator#createSibling
+ */
+
 /**
 .Function.createLeftChild
 ..class:Spec.AnnotationTree Iterator
@@ -1023,6 +1443,20 @@ createLeftChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	childIter._id = childId;
 	return childIter;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#createRightChild
+ * @brief Creates a new rightmost child of the current node and returns an iterator to it.
+ *
+ * @signature TIter createRightChild(it);
+ *
+ * @param[in,out] it The AnnotationTreeIterator that was just created.
+ *
+ * @return TIter Iterator to the new child.
+ *
+ * @see AnnotationTreeIterator#createLeftChild
+ * @see AnnotationTreeIterator#createSibling
+ */
 
 /**
 .Function.createRightChild
@@ -1062,6 +1496,20 @@ createRightChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	childIter._id = childId;
 	return childIter;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#createSibling
+ * @brief Creates a new right sibling of the current node and return an iterator to it.
+ *
+ * @signature TIter createSibling(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to create the sibling for.
+ *
+ * @return TIter Iterator to the new sibling.
+ *
+ * @see AnnotationTreeIterator#createLeftChild
+ * @see AnnotationTreeIterator#createRightChild
+ */
 
 /**
 .Function.createSibling
@@ -1108,6 +1556,15 @@ createSibling(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AnnotationTreeIterator#isRoot
+ * @brief Return a boolean indicating whether the annotation is the root.
+ *
+ * @signature bool isRoot(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ */
+
 /**
 .Function.isRoot:
 ..class:Spec.AnnotationTree Iterator
@@ -1125,6 +1582,15 @@ isRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 	return it.store->annotationStore[it._id].parentId == TAnnotation::INVALID_ID;
 }
 
+/*!
+ * @fn AnnotationTreeIterator#isLeaf
+ * @brief Return a boolean indicating whether the annotation is a leaf.
+ *
+ * @signature bool isLeaf(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ */
+
 /**
 .Function.isLeaf:
 ..class:Spec.AnnotationTree Iterator
@@ -1141,6 +1607,15 @@ isLeaf(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
 //	if (it._id >= length(it.store->annotationStore)) return false;
 	return it.store->annotationStore[it._id].lastChildId == TAnnotation::INVALID_ID;
 }
+
+/*!
+ * @fn AnnotationTreeIterator#isLastChild
+ * @brief Returns a boolean value that indicates whether the current node is the last child.
+ *
+ * @signature bool isLastChild(it);
+ *
+ * @param[in] it The AnnotationTreeIterator to query.
+ */
 
 /**
 .Function.isLastChild

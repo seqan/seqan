@@ -50,6 +50,14 @@ namespace SEQAN_NAMESPACE_MAIN {
 template <typename TSpec>
 struct Ucsc_;
 
+/*!
+ * @tag Ucsc
+ * @headerfile <seqan/store.h>
+ * @brief UCSC Genome browser annotation file (aka knownGene format).
+ *
+ * @signature typedef Tag<Ucsc<UcscKnownGene_> > const Ucsc;
+ */
+
 /**
 .Tag.File Format.tag.Ucsc:
     Ucsc Genome Browser annotation file (a.k.a. knownGene format).
@@ -58,6 +66,14 @@ struct Ucsc_;
 
 struct UcscKnownGene_;
 typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
+
+/*!
+ * @tag UcscIsoforms
+ * @headerfile <seqan/store.h>
+ * @brief UCSC Genome browser annotation file (aka knownIsoforms format).
+ *
+ * @signature typedef Tag<Ucsc<UcscKnownIsoforms_> > const UcscIsoforms;
+ */
 
 /**
 .Tag.File Format.tag.UcscIsoforms:
