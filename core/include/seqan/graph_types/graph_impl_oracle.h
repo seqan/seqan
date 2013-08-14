@@ -30,6 +30,8 @@
 //
 // ==========================================================================
 
+// TODO(holtgrew): We should probably specialize Automaton for this.
+
 #ifndef SEQAN_HEADER_GRAPH_IMPL_ORACLE_H
 #define SEQAN_HEADER_GRAPH_IMPL_ORACLE_H
 
@@ -104,6 +106,18 @@ _addLetterToOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Automaton#createOracle
+ * @brief Creates a factor oracle into an Automaton object.
+ *
+ * @signature void createOracle(g, text);
+ *
+ * @param[out] g    The oracle to create.
+ * @param[in]  text A @link String @endlink to create the oracle with.
+ *
+ * @see Automaton#createOracleOnReverse
+ */
+
 /**
 .Function.createOracle
 ..class:Spec.Oracle
@@ -138,6 +152,18 @@ createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#createOracleOnReverse
+ * @brief Creates a factor oracle on the reversed string.
+ *
+ * @signature void createOracleOnReverse(g, text);
+ *
+ * @param[out] g    The oracle to create.
+ * @param[in]  text A @link String @endlink to create the oracle with.
+ *
+ * @see Automaton#createOracle
+ */
 
 /**
 .Function.createOracleOnReverse

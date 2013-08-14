@@ -42,6 +42,23 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class HmmGraph
+ * @extends Graph
+ * @headerfile <seqan/graph_types.h>
+ * @brief A grap representing a Hidden Markov Model (HMM).
+ *
+ * An HMM is a directed graph with edges labeled with transition probabilities and emission profiles for each vertex.
+ * Vertices correspond to states in an HMM.
+ *
+ * @signature template <[typename TAlphabet[, typename TCargo[, typename TSpec]]]>
+ *            class Graph<Hmm<TAlphabet, TCargo, TSpec> >;
+ *
+ * @tparam TAlphabet The alphabet of the HMM.  Default: @link Dna @endlink.
+ * @tparam TCargo    The edge cargos.  Default: <tt>void</tt>.
+ * @tparam TSpec     The specialization type.  Default: <tt>Default</tt>.  Use <tt>WithoutEdgeIds</tt> here to omit
+ *                   edge ids.  NB: if edges do not store ids then external property maps do not work.
+ */
 
 /**
 .Spec.Hmm:
@@ -615,6 +632,17 @@ write(TFile & target,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#assignBeginState
+ * @headerfile <seqan/graph_types.h>
+ * @brief Assigns a begin state.
+ *
+ * @signature void assignBeginState(hmm, v);
+ *
+ * @param[in,out] hmm The @link HmmGraph @endlink to assign the begin state of.
+ * @param[in]     v   The descriptor of the vertex to assign as begin state.
+ */
+
 /**
 .Function.assignBeginState
 ..class:Spec.Hmm
@@ -641,6 +669,17 @@ assignBeginState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmGraph#assignEndState
+ * @headerfile <seqan/graph_types.h>
+ * @brief Assigns a end state.
+ *
+ * @signature void assignEndState(hmm, v);
+ *
+ * @param[in,out] hmm The @link HmmGraph @endlink to assign the end state of.
+ * @param[in]     v   The descriptor of the vertex to assign as end state.
+ */
 
 /**
 .Function.assignEndState:
@@ -669,6 +708,17 @@ assignEndState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#beginState
+ * @brief Return a reference to the begin state vertex descriptor.
+ *
+ * @signature TVertexDescriptor beginState(hmm);
+ *
+ * @param[in] hmm The @link HmmGraph @endlink to get the vertex descriptor of.
+ *
+ * @return TVertexDescriptor A reference to the begin state vertex descriptor.
+ */
+
 /**
 .Function.beginState:
 ..class:Spec.Hmm
@@ -689,6 +739,17 @@ beginState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmGraph#endState
+ * @brief Return a reference to the end state vertex descriptor.
+ *
+ * @signature TVertexDescriptor endState(hmm);
+ *
+ * @param[in] hmm The @link HmmGraph @endlink to get the vertex descriptor of.
+ *
+ * @return TVertexDescriptor A reference to the end state vertex descriptor.
+ */
 
 /**
 .Function.endState:
@@ -711,6 +772,17 @@ endState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#getBeginState
+ * @brief Return the begin state vertex descriptor.
+ *
+ * @signature TVertexDescriptor getBeginState(hmm);
+ *
+ * @param[in] hmm The @link HmmGraph @endlink to get the vertex descriptor of.
+ *
+ * @return TVertexDescriptor The begin state vertex descriptor.
+ */
+
 /**
 .Function.getBeginState:
 ..class:Spec.Hmm
@@ -732,6 +804,17 @@ getBeginState(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#getEndState
+ * @brief Return the end state vertex descriptor.
+ *
+ * @signature TVertexDescriptor getEndState(hmm);
+ *
+ * @param[in] hmm The @link HmmGraph @endlink to get the vertex descriptor of.
+ *
+ * @return TVertexDescriptor The end state vertex descriptor.
+ */
+
 /**
 .Function.getEndState:
 ..class:Spec.Hmm
@@ -752,6 +835,21 @@ getEndState(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmGraph#getTransitionProbability
+ * @brief Returns the transition probability, stored as the cargo.
+ *
+ * @signature TCargo getTransitionProbability(hmm, state1, state2);
+ * @signature TCargo getTransitionProbability(hmm, e);
+ *
+ * @param[in] hmm    The @link HmmGraph @endlink to get transition probability for.
+ * @param[in] state1 Return transition probability from start state1.
+ * @param[in] state2 Return transition probability to target state2.
+ * @param[in] e      An edge descriptor.
+ *
+ * @return TCargo Return the transition probability.
+ */
 
 /**
 .Function.getTransitionProbability:
@@ -797,6 +895,21 @@ getTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const&,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#transitionProbability
+ * @brief Returns a reference to transition probability, stored as the cargo.
+ *
+ * @signature TCargo getTransitionProbability(hmm, state1, state2);
+ * @signature TCargo getTransitionProbability(hmm, e);
+ *
+ * @param[in] hmm    The @link HmmGraph @endlink to get transition probability for.
+ * @param[in] state1 Return transition probability from start state1.
+ * @param[in] state2 Return transition probability to target state2.
+ * @param[in] e      An edge descriptor.
+ *
+ * @return TCargo Returns a reference to the transition probability.
+ */
+
 /**
 .Function.transitionProbability:
 ..class:Spec.Hmm
@@ -839,6 +952,19 @@ transitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >&,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmGraph#assignTransitionProbability
+ * @brief Assigns a new transition probability to an existing edge.
+ *
+ * @signature void assignTransitionProbability(hmm, state1, state2, prob);
+ * @signature void assignTransitionProbability(hmm, e, prob);
+ *
+ * @param[in] hmm    The @link HmmGraph @endlink to get transition probability for.
+ * @param[in] state1 Assign transition probability from start state1.
+ * @param[in] state2 Assign probability to target state2.
+ * @param[in] e      Assign probability to edge with this edge descriptor.
+ */
 
 /**
 .Function.assignTransitionProbability:
@@ -884,6 +1010,19 @@ assignTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >&,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#getEmissionsProbability
+ * @brief Returns the emissions probability.
+ *
+ * @signature TCargo getEmissionProbability(hmm, state, symbol);
+ *
+ * @param[in] hmm    The @link HmmGraph @endlink to query.
+ * @param[in] state  A vertex descriptor with the source state.
+ * @param[in] symbol The symbol.  Type: <tt>TAlphabet</tt>.
+ *
+ * @return TCargo The emission probability.
+ */
+
 /**
 .Function.getEmissionProbability:
 ..class:Spec.Hmm
@@ -911,6 +1050,19 @@ getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#emissionsProbability
+ * @brief Returns a reference to the emissions probability.
+ *
+ * @signature TCargo emissionProbability(hmm, state, symbol);
+ *
+ * @param[in] hmm    The @link HmmGraph @endlink to query.
+ * @param[in] state  A vertex descriptor with the source state.
+ * @param[in] symbol The symbol.  Type: <tt>TAlphabet</tt>.
+ *
+ * @return TCargo Reference to the emission probability.
+ */
+
 /**
 .Function.emissionProbability:
 ..class:Spec.Hmm
@@ -937,6 +1089,18 @@ emissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmGraph#assignEmissionsProbability
+ * @brief Assigns a new emission probability.
+ *
+ * @signature void assignEmissionProbability(hmm, state, symbol, eProb);
+ *
+ * @param[in,out] hmm    The @link HmmGraph @endlink to query.
+ * @param[in]     state  A vertex descriptor with the source state.
+ * @param[in]     symbol The symbol.  Type: <tt>TAlphabet</tt>.
+ * @param[in]     eProb  Emission probability to assign.
+ */
 
 /**
 .Function.assignEmissionProbability:
@@ -969,6 +1133,17 @@ assignEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#assignSilentStatus
+ * @brief Assigns a silent status to a state.
+ *
+ * @signature void assignSilentStatus(hmm, v, silent);
+ *
+ * @param[in] hmm    The HmmGraph to assign the silent status in.
+ * @param[in] v      Vertex descriptor of the state to assign silent status.
+ * @param[in] silent A bool with the silent status.
+ */
+
 /**
 .Function.assignSilentStatus:
 ..class:Spec.Hmm
@@ -996,6 +1171,18 @@ assignSilentStatus(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmGraph#silentStatus
+ * @brief Return reference to silent status flag.
+ *
+ * @signature TBoolRef silentStatus(hmm, v);
+ *
+ * @param[in] hmm    The HmmGraph to assign the silent status in.
+ * @param[in] v      Vertex descriptor of the state to assign silent status.
+ *
+ * @return TBoolRef Reference to bool silent status flag.
+ */
+
 /**
 .Function.silentStatus:
 ..class:Spec.Hmm
@@ -1020,6 +1207,18 @@ silentStatus(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmGraph#isSilent
+ * @brief Indicates whether a state is silent or not.
+ *
+ * @signature bool isSilent(hmm, v);
+ *
+ * @param[in] hmm The HmmGraph to query.
+ * @param[in] v   Vertex descriptor of the state to query.
+ *
+ * @return bool true if the state is silent and false if not.
+ */
 
 /**
 .Function.isSilent:

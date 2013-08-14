@@ -68,7 +68,7 @@ public:
  * <img src="automatonGraph.png" title="An automaton where 0 is the start state" />
  *
  * @signature template <[typename TAlphabet[, typename TCargo[, typename TSpec]]]>
- *            class Graph<Automaton<TAlphabet, TCargo, TSpec> >;
+ *            class Graph<Automaton<TAlphabet, TCargo, TSpec>;
  *
  * @tparam TAlphabet The alphabet type used for transition labels.  Default: <tt>char</tt>.
  * @tparam TCargo    The cargo type that can be attached to the edges.  Default: <tt>void</tt>.

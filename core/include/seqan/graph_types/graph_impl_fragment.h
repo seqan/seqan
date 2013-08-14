@@ -41,6 +41,19 @@ namespace SEQAN_NAMESPACE_MAIN
 // Fragment Specs
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class ExactFragment
+ * @extends Fragment
+ * @headerfile <seqan/graph_types.h>
+ * @brief A type for ungapped, pairwise segment matches.
+ *
+ * @signature template <[typename TSize[, typename TSpec]]>
+ *            class Fragment<TSize, ExactFragment<TSpec> >;
+ *
+ * @tparam TSize The size type of the underlying sequence.  Default: <tt>Size&lt;CharString&gt;Type</tt>.
+ * @tparam TSpec Specializing type.  Default: <tt>ExactFragment&lt;&gt;</tt>.
+ */
+
 /**
 .Spec.ExactFragment
 ..cat:Alignments
@@ -59,6 +72,22 @@ template<typename TSpec = Default>
 struct ExactFragment;	
 
 
+/*!
+ * @class ExactReversableFragment
+ * @extends Fragment
+ * @headerfile <seqan/graph_types.h>
+ * @brief A type for ungapped, pairwise segment matches that maybe in reverse orientation.
+ *
+ * Compared to the @link ExactFragment @endlink specialzing type of @link Fragment @endlink, a @link
+ * ExactReversableFragment @endlink stores an additional bool value to indicate whether a match is in reverse
+ * orientation or not.
+ *
+ * @signature template <[typename TSize[, typename TSpec]]>
+ *            class Fragment<TSize, ExactReversableFragment<TSpec> >;
+ *
+ * @tparam TSize The size type of the underlying sequence.  Default: <tt>Size&lt;CharString&gt;Type</tt>.
+ * @tparam TSpec Specializing type.  Default: <tt>ExactFragment&lt;&gt;</tt>.
+ */
 
 /**
 .Spec.ExactReversableFragment
@@ -83,6 +112,32 @@ struct ExactReversableFragment;
 // Default Fragment is the exact one
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class Fragment
+ * @headerfile <seqan/graph_types.h>
+ * @brief A type for pairwise segment matches.
+ *
+ * @signature template <[typename TSize[, typename TSpec]]>
+ *            class Fragment;
+ *
+ * @tparam TSize The size type of the underlying sequence.  Default: <tt>Size&lt;CharString&gt;Type</tt>.
+ * @tparam TSpec Specializing type.  Default: <tt>ExactFragment&lt;&gt;</tt>.
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * // Construct fragment.
+ * unsigned seqId1 = 0, beg1 = 0, seqId2 = 32, beg2 = 42, len = 33;
+ * Fragment<> fragment(seqId1, beg1, seqId2, beg2, len);
+ * 
+ * // Update fragment's properties.
+ * fragmentBegin(fragment, 0) = 10;
+ * fragmentBegin(fragment, 1) = 10;
+ * sequenceId(fragment, 0) = 33;
+ * sequenceId(fragment, 1) = 44;
+ * fragmentLength(fragment) += 42;
+ * @endcode
+ */
 
 /**
 .Class.Fragment:
@@ -145,6 +200,20 @@ public:
     TId seqId2;
     TSize begin2;
     TSize len;
+
+/*!
+ * @fn ExactFragment::Fragment
+ * @brief Constructor.
+ *
+ * @signature Fragment::Fragment();
+ * @signature Fragment::Fragment(seqID1, beg1, seqID2, beg2, l);
+ *
+ * @param[in] seqID1  ID of the first sequence.  Type: <tt>TId</tt>.
+ * @param[in] beg1    Begin position of segment match in first sequence.  Type: <tt>TSize</tt>.
+ * @param[in] seqID2  ID of the second sequence.  Type: <tt>TId</tt>.
+ * @param[in] beg2    Begin position of segment match in second sequence.  Type: <tt>TSize</tt>.
+ * @param[in] l       The length of the segment match.  Type: <tt>TSize</tt>.
+ */
   
 /**
 .Memfunc.ExactFragment#Fragment:
@@ -226,6 +295,21 @@ public:
     TSize len;
     bool reversed;
 
+/*!
+ * @fn ExactReversableFragment::Fragment
+ * @brief Constructor.
+ *
+ * @signature Fragment::Fragment();
+ * @signature Fragment::Fragment(seqID1, beg1, seqID2, beg2, l[, reversed]);
+ *
+ * @param[in] seqID1   ID of the first sequence.  Type: <tt>TId</tt>.
+ * @param[in] beg1     Begin position of segment match in first sequence.  Type: <tt>TSize</tt>.
+ * @param[in] seqID2   ID of the second sequence.  Type: <tt>TId</tt>.
+ * @param[in] beg2     Begin position of segment match in second sequence.  Type: <tt>TSize</tt>.
+ * @param[in] l        The length of the segment match.  Type: <tt>TSize</tt>.
+ * @param[in] reversed A bool; <tt>true</tt> if the segments match in reverse orientation, <tt>false</tt> otherwise.
+ */
+
 /**
 .Memfunc.ExactReversableFragment#Fragment:
 ..class:Spec.ExactReversableFragment
@@ -302,6 +386,17 @@ operator<(Fragment<TSize, ExactReversableFragment<TSpec> > const & left,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Fragment#label
+ * @brief Access to the Fragment's label.
+ *
+ * @signature TInfix label(frag, stringSet, seqID);
+ *
+ * @param[in] frag      The Fragment to query.
+ * @param[in] stringSet The @link StringSet @endlink with the sequences.
+ * @param[in] seqID     The id of the sequence for which the label should be retrieved.
+ */
+
 /**
 .Function.label
 ..class:Class.Fragment
@@ -325,6 +420,20 @@ label(Fragment<TSize, TSpec> const& f,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Fragment#sequenceId
+ * @brief Access to the sequence ID of a fragment.
+ *
+ * @signature TId sequenceId(frag, seqNum);
+ *
+ * @param[in] frag   A Fragment.
+ * @param[in] seqNum The sequence number fo rwhich the id should be retrieved.  Note that @link Fragment @endlink
+                     stores information about exactly two sequences which can be accessed with seqNum 0 or 1 but whose
+                     ids may differ from their seqNum.
+ *
+ * @return TId Reference to the sequence fragment id member.
+ */
+
 /**
 .Function.sequenceId
 ..class:Class.Fragment
@@ -345,6 +454,18 @@ sequenceId(Fragment<TSize, TSpec> const& f,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Fragment#fragmentBegin
+ * @label Return fragment begin.
+ *
+ * @signature TSize fragmentBegin(frag, seqId);
+ *
+ * @param[in] frag  The Fragment to query.
+ * @param[in] seqId The id of the sequence to get the begin for.
+ *
+ * @return TSize Reference to the fragment begin position member.
+ */
 
 /**
 .Function.fragmentBegin
@@ -377,6 +498,17 @@ fragmentLength(Fragment<TSize, TSpec> const& f,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Fragment#fragmentLength
+ * @brief Return fragment begin.
+ *
+ * @signature TSize fragmentLength(frag);
+ *
+ * @param[in] frag The Fragment to query for its length.
+ *
+ * @return TSize Reference to the Fragment's length.
+ */
 
 /**
 .Function.fragmentLength
@@ -535,6 +667,17 @@ getProjectedPosition(Fragment<TSize, ExactReversableFragment<TSpec> > const& f,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn ExactReversableFragment#isReversed
+ * @brief Return whether a segment match is in reverse orientation.
+ *
+ * @signature bool isReversed(frag);
+ *
+ * @param[in] frag The Fragment to query for reverseness.
+ *
+ * @return bool <tt>true</tt> if the fragment is reversed and <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.isReversed

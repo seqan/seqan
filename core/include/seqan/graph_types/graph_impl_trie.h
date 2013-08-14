@@ -30,6 +30,8 @@
 //
 // ==========================================================================
 
+// TODO(holtgrew): We should probably specialize Automaton for this.
+
 #ifndef SEQAN_HEADER_GRAPH_IMPL_TRIE_H
 #define SEQAN_HEADER_GRAPH_IMPL_TRIE_H
 
@@ -111,6 +113,23 @@ _addStringToTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Automaton#createTrie
+ * @brief Creates a trie in an Automaton.
+ *
+ * @signature createTrie(g, terminalStateMap, keywords);
+ *
+ * @param[in,out] g        Automaton object to create the trie in.
+ * @param[in]     terminalStateMap
+ *                         An external property map.  The type must be <tt>String&lt;String&lt;unsigned&gt;&gt;</tt>
+ *                         since a number of keywords can end in each vertex of the trie.  This is the case in the
+ *                         Aho-Corasick algorithm if one pattern is a suffix of another pattern.  Hence, we must
+ *                         associate with every vertex a set of indices that correspond to keywords.
+ * @param[in]     keywords A set of strings.
+ *
+ * @see Automaton#createTrieOnReverse
+ */
+
 /**
 .Function.createTrie
 ..class:Spec.Trie
@@ -148,6 +167,23 @@ createTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#createTrieOnReverse
+ * @brief Creates a trie for all reversed keywords.
+ *
+ * @signature createTrie(g, terminalStateMap, keywords);
+ *
+ * @param[in,out] g        Automaton object to create the trie in.
+ * @param[in]     terminalStateMap
+ *                         An external property map.  The type must be <tt>String&lt;String&lt;unsigned&gt;&gt;</tt>
+ *                         since a number of keywords can end in each vertex of the trie.  This is the case in the
+ *                         Aho-Corasick algorithm if one pattern is a suffix of another pattern.  Hence, we must
+ *                         associate with every vertex a set of indices that correspond to keywords.
+ * @param[in]     keywords A set of strings.
+ *
+ * @see Automaton#createTrie
+ */
 
 /**
 .Function.createTrieOnReverse
@@ -194,8 +230,17 @@ createTrieOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 	}
 }
 
-
-
+/*!
+ * @fn Automaton#createSuffixTrie
+ * @brief Creates a trie of all suffixes of a text.
+ *
+ * @signature void createSuffixTrie(g, terminalStateMap, text);
+ *
+ * @param[out] g                The Automaton to create the suffix trie in.
+ * @param[out] terminalStateMap An external property map; of type <tt>String&lt;String&lt;unsigned&gt; &gt;</tt>.
+ * @param[in]  text             A @link TextConcept @endlink object.
+ */
+ 
 /**
 .Function.createSuffixTrie
 ..class:Spec.Trie
