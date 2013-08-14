@@ -73,6 +73,27 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn breadthFirstSearch
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Implements a breadth-first search on a graph.
+ * 
+ * @signature void breadthFirstSearch(g, source, predecessor, distance);
+ * 
+ * @param[in]  g           Undirected Graph, Directed Graph
+ * @param[in]  source      A vertex descriptor.  The breadth-first search is started from this vertex.
+ *                         Types: VertexDescriptor
+ * @param[out] predecessor A property map.  The predecessor map stores implicitly the breadth-first tree.
+ * @param[out] distance    A property map.  The distance map indicates at what depth a vertex was discovered.
+ * 
+ * @section Remarks
+ * 
+ * Breadth-first search computes the distance from source to all reachable vertices.  It also produces a breath-first
+ * tree where each node has a predecessor/parent.
+ * 
+ * @see depthFirstSearch
+ */
+
 /**
 .Function.breadthFirstSearch:
 ..cat:Graph
@@ -183,6 +204,27 @@ _dfsVisit(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn depthFirstSearch
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Implements a depth-first search on a graph.
+ * 
+ * @signature void depthFirstSearch(g, predecessor, discovery, finish);
+ * 
+ * @param[in]  g           A graph. Types: Undirected Graph, Directed Graph
+ * @param[out] predecessor A property map.Predecessor subgraph produced by the depth-first search.
+ * @param[out] discovery   A property map.The discovery time of a vertex v.
+ * @param[out] finish      A property map.The time when v's adjacency list has been fully explored.
+ * 
+ * @section Remarks
+ * 
+ * In contrast to a breadth-first search the depth-first search is repeated from multiple sources if the graph is not
+ * connected.  Hence, depth-first search produces a depth-first forest.  To ensure each vertex ends up in exactly one
+ * tree we need not just a distance but a discovery and finishing time.
+ * 
+ * @see breadthFirstSearch
+ */
+
 /**
 .Function.depthFirstSearch:
 ..cat:Graph
@@ -249,6 +291,22 @@ depthFirstSearch(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn topologicalSort
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Performs a topological sort on a directed acyclic graph (DAG).
+ * 
+ * @signature void topologicalSort(g, topSort);
+ * 
+ * @param[in]  g       A directed acyclic graph. Types: Directed Graph
+ * @param[out] topSort A topological ordering of the vertices. Types: String.
+ * 
+ * @section Remarks
+ * 
+ * A topological sort is a linear ordering of all its vertices such that if the graph contains an edge (u,v) then u
+ * appears before v in the ordering.
+ */
+
 /**
 .Function.topologicalSort:
 ..cat:Graph
@@ -305,6 +363,20 @@ topologicalSort(Graph<TSpec> const & g,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn stronglyConnectedComponents
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Decomposes a directed graph into its strongly connected components.
+ * @signature TSize stronglyConnectedComponents(g, components)
+ * 
+ * @param[in]  g A directed graph. Types: Directed Graph
+ * @param[out] components
+ *               A property map.Each vertex is mapped to a component id.  If two vertices share the same id they are
+ *               in the same component.
+ * 
+ * @return TSize Number of strongly connected components, Size type of g.
+ */
 
 /**
 .Function.stronglyConnectedComponents:
@@ -418,6 +490,59 @@ _connectedComponentVisit(Graph<TSpec> const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn connectedComponents
+ * 
+ * @headerfile seqan/graph_algorithms.h
+ * 
+ * @brief Decomposes an undirected graph into its connected components.
+ * 
+ * @signature TSize connectedComponents(g, components);
+ * 
+ * @param[in]  g An undirected graph. Types: Undirected Graph
+ * @param[out] components
+ *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id
+ *               they are in the same component.
+ * 
+ * @return TSize The number of components.
+ * 
+ * @section Examples
+ * 
+ * A simple example on how to use this function.
+ * 
+ * @code{.cpp}
+ * // Build Input.
+ * Graph<Undirected<> > graph;
+ * for (unsigned i = 0; i < 5; ++i)
+ *     addVertex(graph);
+ * addEdge(graph, 0, 1);
+ * addEdge(graph, 0, 3);
+ * addEdge(graph, 2, 4);
+ * String<unsigned> components;
+ * unsigned numComponents = 0;
+ *  
+ * // Call Algorithm.
+ * numComponents = connectedComponents(g, components);
+ *  
+ * // Print Result.
+ * std::cout << "Number of components: " << numComponents << std::endl;
+ * std::cout << std::endl << "Vertex -> Component" << std::endl;
+ * for (unsigned i = 0; i < length(components); ++i)
+ *     std::cout << i << " -> " << components[i] << std::endl;
+ * @endcode
+ * The output now is:
+ * 
+ * @code{.console}
+ * Number of components: 2
+ *  
+ * Vertex -> Component
+ * 0 -> 0
+ * 1 -> 0
+ * 2 -> 1
+ * 3 -> 0
+ * 4 -> 1
+ * @endcode
+ */
 
 /**
 .Function.connectedComponents:
@@ -504,6 +629,23 @@ connectedComponents(Graph<TSpec> const& g_source,
 // Prim's algorithm
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn primsAlgorithm
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes a minimum spanning tree on a graph.
+ * 
+ * @signature void primsAlgorithm(g, source, weight, predecessor);
+ * 
+ * @param[in] g      An undirected graph. Types: Undirected Graph
+ * @param[in] source A source vertex. Types: VertexDescriptor
+ * @param[in] weight Edge weights.
+ * @param[out] predecessor
+ *                   A property map.  A property map that represents predecessor relationships among vertices.  It
+ *                   determines a minimum spanning tree.
+ * 
+ * @see kruskalsAlgorithm
+ */
 
 /**
 .Function.primsAlgorithm:
@@ -648,6 +790,23 @@ struct LessPairI1_ :
 	}
 };
 
+/*!
+ * @fn kruskalsAlgorithm
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes a minimum spanning tree on a graph.
+ * 
+ * @signature void primsAlgorithm(g, source, weight, predecessor);
+ * 
+ * @param[in] g      An undirected graph. Types: Undirected Graph
+ * @param[in] source A source vertex. Types: VertexDescriptor
+ * @param[in] weight Edge weights.
+ * @param[out] predecessor
+ *                   A property map.  A property map that represents predecessor relationships among vertices.  It
+ *                   determines a minimum spanning tree.
+ * 
+ * @see primsAlgorithm
+ */
+
 /**
 .Function.kruskalsAlgorithm:
 ..cat:Graph
@@ -711,6 +870,27 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
 // ----------------------------------------------------------------------------
 // Weakly Connected Components
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn weaklyConnectedComponents
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Compute weakly connected components of a directed graph.
+ * 
+ * @signature TSize weaklyConnectedComponents(g, components)
+ * 
+ * @param[in]  g A directed graph. Types: Directed Graph
+ * @param[out] components
+ *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id they
+ *               are in the same component.
+ * 
+ * @return TSize The number of weakly connected components.  TSize is <tt>Size<TGraph>::Type</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The running time is <tt>O(n a(n, n))</tt> where <tt>a</tt> is the inverse Ackermann function and thus almost linear.
+ * The union find data structure is used since the graph implementations do not allow the efficient iteration of
+ * in-edges.
+ */
 
 /**
 .Function.weaklyConnectedComponents:
@@ -906,6 +1086,25 @@ _relax(Graph<TSpec> const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn dagShortestPath
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes shortest paths from a single source in a directed acyclic graph (DAG).
+ * 
+ * @signature void dagShortestPath(g, source, weight, predecessor, distance);
+ * 
+ * @param[out] predecessor A property map.  A property map that represents predecessor relationships among vertices.
+ *                         It determines a shortest-paths tree.
+ * @param[out] distance    A property map.  Indicates for each vertex th distance from the source.
+ * @param[out] weight      A weight map.  In a directed acyclic graph edge weights can be negative because no cycles
+ *                         do exist.
+ * @param[in] g            A directed acyclic graph. Types: Directed Graph
+ * @param[in] source       A source vertex. Types: VertexDescriptor
+ * 
+ * @see bellmanFordAlgorithm
+ * @see dijkstra
+ */
+
 /**
 .Function.dagShortestPath:
 ..cat:Graph
@@ -964,6 +1163,32 @@ dagShortestPath(Graph<TSpec> const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn bellmanFordAlgorithm
+ * 
+ * @headerfile seqan/graph_algorithms.h
+ * 
+ * @brief Computes shortest paths from a single source in a directed graph.
+ * 
+ * @signature bool bellmanFordAlgorithm(g, source, weight, predecessor, distance)
+ * 
+ * @param[in]  g           A directed graph. Types: Directed Graph
+ * @param[in]  source      A source vertex. Types: VertexDescriptor
+ * @param[in]  weight      A weight map.A property map with edge weights.  Edge weights may be negative.
+ * @param[out] predecessor A property map.  A property map that represents predecessor relationships among vertices.
+ *                         It determines a shortest-paths tree.
+ * @param[out] distance    A property map.Indicates for each vertex the distance from the source.
+ * 
+ * @return bool true if the graph has no negative weight cycles, false otherwise.
+ * 
+ * @section Remarks
+ * 
+ * Edge weights may be negative in the Bellman-Ford algorithm.  The out parameters are only valid if the algorithm
+ * returns true.
+ * 
+ * @see dagShortestPath
+ * @see dijkstra
+ */
 
 /**
 .Function.bellmanFordAlgorithm:
@@ -1037,6 +1262,27 @@ bellmanFordAlgorithm(Graph<TSpec> const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn dijkstra
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes shortest paths from a single source in a graph.
+ * @signature void dijkstra(g, source, weight, predecessor, distance);
+ * 
+ * @param[out] predecessor A property map.  A property map that represents predecessor relationships among vertices.
+ *                         It determines a shortest-paths tree.
+ * @param[out] distance    A property map.Indicates for each vertex the distance from the source.
+ * @param[in]  g           A graph. Types: Directed Graph
+ * @param[in]  source      A source vertex.  Types: VertexDescriptor
+ * @param[in]  weight      A weight map.  A property map with edge weights. Edge weights have to be nonnegative.
+ * 
+ * @section Remarks
+ * 
+ * Edge weights have to be nonnegative.
+ * 
+ * @see dagShortestPath
+ * @see bellmanFordAlgorithm
+ */
 
 /**
 .Function.dijkstra:
@@ -1289,6 +1535,24 @@ _extendShortestPaths(TMatrix& local,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn allPairsShortestPath
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Finds shortest paths between all pairs of vertices in a graph.
+ * @signature void allPairsShortestPath(g, weight, distance, predecessor);
+ * 
+ * @param[out] predecessor A matrix with predecessors.  Entry (i,j) in this matrix indicates the predecessor of j on
+ *                         a shortest path from vertex i to vertex j.  You can use <tt>_printAllPairsShortestPath(g,
+ *                         predecessor, i, j)</tt> to print the shortest path from i to j. Types: Matrix
+ * @param[out] distance    A matrix with distances.Entry (i,j) in this matrix indicates the distance from vertex i to
+ *                         vertex j. Types: Matrix
+ * @param[in]  weight      A weight map.A property map with edge weights.  Edge weights may be negative.
+ * @param[in]  g           A directed graph. Types: Directed Graph
+ * 
+ * @see floydWarshallAlgorithm
+ */
+
 /**
 .Function.allPairsShortestPath:
 ..cat:Graph
@@ -1338,6 +1602,29 @@ allPairsShortestPath(Graph<TSpec> const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn floydWarshallAlgorithm
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Finds shortest paths between all pairs of vertices in a graph.
+ * 
+ * @signature void floydWarshallAlgorithm(g, weight, distance, predecessor);
+ * 
+ * @param[out] predecessor A matrix with predecessors.  Entry (i,j) in this matrix indicates the predecessor of j on
+ *                         a shortest path from vertex i to vertex j.  You can use <tt>_printAllPairsShortestPath(g,
+ *                         predecessor, i, j)</tt> to print the shortest path from i to j.  Types: Matrix
+ * @param[out] distance    A matrix with distances.Entry (i,j) in this matrix indicates the distance from vertex i
+ *                         to vertex j.  Types: Matrix
+ * @param[in]  weight      A weight map.  A property map with edge weights.  Edge weights may be negative.
+ * @param[in]  g           A directed graph.  Types: Directed Graph
+ * 
+ * @section Remarks
+ * 
+ * The graph must be free of negative-weight cycles.
+ * 
+ * @see allPairsShortestPath
+ */
+
 /**
 .Function.floydWarshallAlgorithm:
 ..cat:Graph
@@ -1399,6 +1686,19 @@ floydWarshallAlgorithm(Graph<TSpec> const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn transitiveClosure
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Determines whether there is a path between any two given vertices or not.
+ * 
+ * @signature void transitiveClosure(g, closure);
+ * 
+ * @param[out] closure A matrix which indicates the closure.  Entry (i,j) in this matrix indicates whether there is a
+ *                     path from i to j in the graph or not.  Types: Matrix
+ * @param[in]   g      A directed graph.  Types: Directed Graph
+ */
+
 /**
 .Function.transitiveClosure:
 ..cat:Graph
@@ -1537,6 +1837,24 @@ _getMinimumAug(Graph<TSpec> const& rG,
 // Ford Fulkerson
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn fordFulkersonAlgorithm
+ * 
+ * @headerfile seqan/graph_algorithms.h
+ * 
+ * @brief Computes a maximum flow in a directed graph.
+ * 
+ * @signature TValue fordFulkeronAlgorithm(g, source, sink, capacity, flow);
+ * 
+ * @param[out] flow     A property map with the flow of each edge.
+ * @param[in]  capacity A property map of edge capacities.
+ * @param[in]  sink     A sink vertex.  Types: VertexDescriptor
+ * @param[in]  g        A directed graph.  Types: Directed Graph
+ * @param[in]  source   A source vertex.  Types: VertexDescriptor
+ * 
+ * @return TValue The value of the flow.  TValue is the Value tpye of the type of flow.
+ */
 
 /**
 .Function.fordFulkersonAlgorithm:

@@ -30,6 +30,8 @@
 //
 // ==========================================================================
 
+// TODO(holtgrew): Move this away?
+
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_LIS_HIS_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_LIS_HIS_H
 
@@ -89,6 +91,24 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn longestIncreasingSubsequence
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes the longest increasing subsequence.
+ *
+ * @signature void longestIncreasingSubsequence(str, pos);
+ *
+ * @param[in]  str An arbitrary @link SequenceConcept @endlink object.
+ * @param[out] pos A String with the positions that belong to the longest increasing subsequence.
+ *
+ * @section Remarks
+ *
+ * The last position in <tt>pos</tt> indicates the first element in the longets increasing subsequence.
+ *
+ * @link heaviestIncreasingSubsequence
+ * @link longestCommonSubsequence
+ */
 
 /**
 .Function.longestIncreasingSubsequence:
@@ -164,6 +184,22 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn longestCommonSubsequence
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes the longest common subsequence.
+ *
+ * @signature void longestCommonSubsequence(str1, str2, nSize, pos);
+ *
+ * @param[in]  str1  An arbitrary @link SequenceConcept @endlink object.
+ * @param[in]  str2  A second arbitrary @link SequenceConcept @endlink object.
+ * @param[in]  nSize The neighbourhood size to use.
+ * @param[out] pos   A String with pairs of positions that indicate the longest common subsequence.
+ *
+ * @link heaviestIncreasingSubsequence
+ * @link longestIncreasingSubsequence
+ */
 
 /**
 .Function.longestCommonSubsequence:
@@ -299,6 +335,26 @@ globalAlignment(TAlign& align,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn heaviestIncreasingSubsequence
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Computes the heaviest increasing subseqnece.
+ *
+ * @signature void heaviestIncreasingSubsequence(str, weights, pos);
+ *
+ * @param[in]  str     An arbitrary @link SequenceConcept @endlink object.
+ * @param[in]  weights A String with a weight for each position in the string.
+ * @param[out] pos     A String with positions that indicate the members of the heaviest increasing subsequence.
+ *
+ * @section Remarks
+ *
+ * The last position in pos indicates the first member of the heviest increasing subsequence.  Note that only members
+ * that contribute a weight are selected, that is, positions with associated 0 weights are ignored.
+ *
+ * @link longestCommonSubsequence
+ * @link longestIncreasingSubsequence
+ */
 
 /**
 .Function.heaviestIncreasingSubsequence:

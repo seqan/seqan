@@ -43,6 +43,37 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @defgroup HmmAlgorithms HMM Algorithms
+ * @brief Algorithms on @link HmmGraph @endlink objects.
+ */
+
+/*!
+ * @fn viterbiAlgorithm
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Implements the Viterbi algorithm for Hidden Markov Models.
+ * 
+ * @signature TProbability viterbiAlgorithm(hmm, seq, path);
+ * 
+ * @param[in]  hmm  The @link HmmGraph @endlink to use.
+ * @param[in]  seq  Input sequence.
+ * @param[out] path The state path;  String of vertex descriptors.
+ * 
+ * @return TCargo Probability of the path, the type parameter <tt>TCargo</tt> from type of <tt>hmm</tt>.
+ * 
+ * The Viterbi algorithm computes the most likely sequence of hidden states of the Hidden Markov Model <tt>hmm</tt>
+ * given the sequence <tt>seq</tt> using dynamic programming.  The result is the most likely sequence of hidden states
+ * and returned in <tt>path</tt>.
+ * 
+ * @section Remarks
+ * 
+ * See the <a href="http://wikipedia.org/wiki/Viterbi_algorithm"> Wikipedia article on the Viterbi algorithm</a> for an
+ * introduction to the algorithm itself.
+ * 
+ * @see HmmAlgorithms#forwardAlgorithm
+ * @see HmmAlgorithms#backwardAlgorithm
+ */
+
 /**
 .Function.viterbiAlgorithm:
 ..cat:Graph
@@ -319,6 +350,29 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmAlgorithms#forwardAlgorithm
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Given a Hidden Markov Model <tt>hmm</tt>, the forward algorithm computes the probability of the sequence
+ *        <tt>seq</tt>.
+ *
+ * @signature TProbability forwardAlgorithm(hmm, seq);
+ *
+ * @param[in] hmm The @link HmmGraph @endlink with the HMM to use.
+ * @param[in] seq Input sequence to use in the forward algorithm.
+ *
+ * @return TProbability The probability of the sequence <tt>seq</tt>.  <tt>TProbability</tt> is the type parameter
+ *                      <tt>TCargo</tt> of the type of <tt>hmm</tt>.
+ *
+ * @section Remarks
+ *
+ * See the <a href="http://en.wikipedia.org/wiki/Forward_algorithm">Wikipedia article on the Forward algorithm</a> for
+ * an introduction to the algorithm itself.
+ *
+ * @see HmmAlgorithms#viterbiAlgorithm
+ * @see HmmAlgorithms#backwardAlgorithm
+ */
+
 /**
 .Function.forwardAlgorithm
 ..cat:Graph
@@ -483,6 +537,29 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn HmmAlgorithms#backwardAlgorithm
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Given a Hidden Markov Model <tt>hmm</tt>, the backward algorithm computes the probability of the sequence
+ *        <tt>seq</tt>.
+ *
+ * @signature TProbability backwardAlgorithm(hmm, seq);
+ *
+ * @param[in] hmm The @link HmmGraph @endlink with the HMM to use.
+ * @param[in] seq Input sequence to use in the backward algorithm.
+ *
+ * @return TProbability The probability of the sequence <tt>seq</tt>.  <tt>TProbability</tt> is the type parameter
+ *                      <tt>TCargo</tt> of the type of <tt>hmm</tt>.
+ *
+ * @section Remarks
+ *
+ * See the <a href="http://en.wikipedia.org/wiki/Forward-backward_algorithm">Wikipedia article on the Forward-backward
+ * algorithm</a> for an introduction to the algorithm itself.
+ *
+ * @see HmmAlgorithms#viterbiAlgorithm
+ * @see HmmAlgorithms#forwardAlgorithm
+ */
+
 /**
 .Function.backwardAlgorithm
 ..cat:Graph
@@ -509,6 +586,25 @@ backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn HmmAlgorithms#generateSequence
+ * @headerfile <seqan/graph_algorithms.h>
+ * @brief Generates random state and alphabet sequence of a given HMM.
+ *
+ * @signature void generateSequence(hmm, seq, states, numSeq, maxLen);
+ *
+ * @param[in] hmm     The @link HmmGraph @endlink to use.
+ * @param[out] seq    A @link StringSet @endlink of alphabet sequences.
+ * @param[out] states A @link SequenceConcept @endlink object of state sequences.
+ * @param[in]  numSeq The number of sequences to generate.
+ * @param[in]  maxLen The maximum length of the sequences.  The sequences might be shorter if the ends tate is reached
+ *                    before maxLen.
+ *
+ * @section Remarks
+ *
+ * Because of silent states, generated alphabet and state sequences might have different lengths.
+ */
 
 /**
 .Function.generateSequence:

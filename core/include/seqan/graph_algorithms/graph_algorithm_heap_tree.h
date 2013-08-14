@@ -30,6 +30,8 @@
 //
 // ==========================================================================
 
+// TODO(holtgrew): Remove, nobody implements such simple heaps as trees.
+
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_HEAP_TREE_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_HEAP_TREE_H
 
