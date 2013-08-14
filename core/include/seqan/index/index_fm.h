@@ -342,7 +342,7 @@ _computeBwtLength(TText const & text)
 
 // This function computes the length of the bwt string.
 template <typename TText, typename TSetSpec>
-inline typename Size<TText>::Type
+inline typename Size<typename StringSetLimits<TText>::Type>::Type
 _computeBwtLength(StringSet<TText, TSetSpec> const & text)
 {
     return lengthSum(text) + countSequences(text);

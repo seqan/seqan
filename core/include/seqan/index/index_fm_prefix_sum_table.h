@@ -86,16 +86,17 @@ struct GetValue<PrefixSumTable<TChar, TSpec> const>
 // ----------------------------------------------------------------------------
 // Metafunction clear
 // ----------------------------------------------------------------------------
+// TODO(singer): change the type to be dependent on a template argument
 template <typename TChar, typename TSpec>
 struct Fibre<PrefixSumTable<TChar, TSpec>, FibreEntries>
 {
-    typedef String<unsigned long> Type;
+    typedef String<unsigned long long> Type;
 };
 
 template <typename TChar, typename TSpec>
 struct Fibre<PrefixSumTable<TChar, TSpec> const, FibreEntries>
 {
-    typedef String<unsigned long> const Type;
+    typedef String<unsigned long long> const Type;
 };
 
 // ----------------------------------------------------------------------------
