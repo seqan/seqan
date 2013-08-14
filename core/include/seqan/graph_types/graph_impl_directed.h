@@ -43,6 +43,21 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class DirectedGraph
+ * @extends Graph
+ * @brief A directed graph that stores the edges in an adjacency list.
+ *
+ * <img src="directedGraph.png" title="A directed graph." />
+ *
+ * @signature template <[typename TCargo[, typename TSpec]]>
+ *            class Graph<Directed<TCargo, TSpec> >;
+ *
+ * @tparam TCargo The cargo type that can be attached to the edges.  Default: <tt>void</tt>.
+ * @tparam TSpec  The specializing type.  Default: <tt>Default</tt>.  Use <tt>WithoutEdgeId</tt> here to omit edge
+ *                ids.  NB: if edges do not store ids then external property maps do not work.
+ */
+
 /**
 .Spec.Directed Graph:
 ..cat:Graph

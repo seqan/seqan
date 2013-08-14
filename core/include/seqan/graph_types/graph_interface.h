@@ -61,6 +61,34 @@ struct Hmm;
 // Graph
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class Graph
+ * @headerfile <seqan/graph_types.h>
+ * @brief Graph class.
+ *
+ * @signature template <[typename TSpec]>
+ *            class Graph;
+ *
+ * @tparam TSpec The specializing type.  Default: Directed&lt;&gt;.
+ *
+ * @section Examples
+ *
+ * This is an example for Dijktra's algorithm on a directed graph with an external property map.  The property map
+ * labels the edges with weights.  The xample only outputs distances, not th edetails of the paths.
+ *
+ * @include demos/graph/graph_algo_dijkstra.cpp
+ *
+ * The output of the distances is as follows:
+ *
+ * @code{.console}
+ * Distance from 0 to 0: 0
+ * Distance from 0 to 1: 8
+ * Distance from 0 to 2: 9
+ * Distance from 0 to 3: 5
+ * Distance from 0 to 4: 7
+ * @endcode
+ */
+
 /**
 .Class.Graph:
 ..cat:Graph
@@ -333,6 +361,268 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Graph#transpose
+ * @brief Transposes a graph, either in place or from source to dest.
+ *
+ * @signature void transpose(source, dest);
+ * @signature void transpose(g);
+ *
+ * @param[in]     source The input @link Graph @endlink.
+ * @param[in]     dest   The output @link Graph @endlink.
+ * @param[in,out] g      The @link Graph @endlink to transpose.
+ */
+
+/*!
+ * @fn Graph#numEdges
+ * @brief Returns the number of edges in a graph.
+ *
+ * @signature TSize numEdges(g);
+ *
+ * @param[in] g The @link Graph @endlink to query for its number of edges.
+ *
+ * @return TSize The number of edges.  TSize is the size type of g.
+ */
+
+/*!
+ * @fn Graph#numVertices
+ * @brief Returns the number of vertices in a graph.
+ *
+ * @signature TSize numVertices(g);
+ *
+ * @param[in] g The @link Graph @endlink to query for its number of vertices.
+ *
+ * @return TSize The number of vertices.  TSize is the size type of g.
+ */
+
+/*!
+ * @fn Graph#empty
+ * @brief Returns whether there are no vertices and edges in the graph or not.
+ *
+ * @signature bool empty(g);
+ *
+ * @param[in] g true if g is empty and valse if not.
+ */
+
+/*!
+ * @fn Graph#clearEdges
+ * @brief Removes all edges from a graph.
+ *
+ * @signature void clearEdges(g);
+ *
+ * @param[in,out] g The graph to remove the edges from.
+ */
+
+/*!
+ * @fn Graph#clear
+ * @brief Remove all edges and vertices from a graph.
+ *
+ * @signature void clear(g);
+ *
+ * @param[in,out] g The graph to remove edges and vertices from.
+ */
+
+/*!
+ * @fn Graph#outDegree
+ * @brief Return out degree of a vertex.
+ *
+ * @signature TSize outDegree(g, v);
+ *
+ * @param[in] g The Graph to query.
+ * @param[in] v The descriptor of the vertex to query for its out degree.
+ *
+ * @return TSize The number of out edges from vertex v.
+ */
+
+/*!
+ * @fn Graph#inDegree
+ * @brief Return in degree of a vertex.
+ *
+ * @signature TSize inDegree(g, v);
+ *
+ * @param[in] g The Graph to query.
+ * @param[in] v The descriptor of the vertex to query for its in degree.
+ *
+ * @return TSize The number of in edges to vertex v.
+ */
+
+/*!
+ * @fn Graph#degree
+ * @brief Return degree of a vertex.
+ *
+ * @signature TSize degree(g, v);
+ *
+ * @param[in] g The Graph to query.
+ * @param[in] v The descriptor of the vertex to query for its degree.
+ *
+ * @return TSize The number of edges adjacent to vertex v.
+ */
+
+/*!
+ * @fn Graph#addVertex
+ * @brief Add a vertex to a graph.
+ *
+ * @signature TVertextDescriptor addVertex(g);
+ *
+ * @param[in,out] g The Graph to add a vertex to.
+ *
+ * @return TVertexDescriptor The descriptor of the added vertex.
+ */
+
+/*!
+ * @fn Graph#removeVertex
+ * @brief Remove a vertex from a Graph.
+ *
+ * @signature void removeVertex(g, v);
+ *
+ * @param[in,out] g The Graph to remove the vertex from.
+ * @param[in]     v The descriptor of the vertex to remove.
+ */
+
+// TODO(holtgrew): Specialize for automatons.x
+/*!
+ * @fn Graph#addEdge
+ * @brief Adds a new edge to a graph, either with or without cargo.
+ *
+ * @signatures TEdgeDescriptor addEdge(g, source, target, label[, cargo]);
+ * @signatures TEdgeDescriptor addEdge(g, source, target, cargo);
+ *
+ * @param[in,out] g      The Graph to add the edge to.
+ * @param[in]     source Descriptor of the source vertex.
+ * @param[in]     source Descriptor of the target vertex.
+ * @param[in]     label  Label of the edge, of alphabet type of the Automaton.
+ * @param[in]     cargo  Cargo object for the edge.
+ *
+ * @return TEdgeDescriptor Descriptor of the added edge.
+ *
+ * @section Remarks
+ *
+ * For Automaton objects, a label is required but the label can only be given for Automatons.
+ */
+
+/*!
+ * @fn Graph#removeEdge
+ * @brief Removes an edge from the graph.  For automatons, a label is required.
+ *
+ * @signature void removeEdge(g, source, target[, label]);
+ * @signature void removeEdge(g, e);
+ *
+ * @param[in,out] g      The Graph to remove the edge from.
+ * @param[in]     source Descriptor of the source vertex.
+ * @param[in]     target Descriptor of the target vertex.
+ * @param[in]     e      Descriptor of the edge to remove.
+ */
+
+/*!
+ * @fn Graph#removeInEdges
+ * @brief Removes the incoming edges of a given vertex.
+ *
+ * @signature void removeOutEdges(g, v);
+ *
+ * @param[in] g The Graph to remove the edges from.
+ * @param[in] v The descriptor of the vertex to remove incoming edges from.
+ */
+
+/*!
+ * @fn Graph#removeOutEdges
+ * @brief Removes the outgoing edges of a given vertex.
+ *
+ * @signature void removeOutEdges(g, v);
+ *
+ * @param[in] g The Graph to remove the edges from.
+ * @param[in] v The descriptor of the vertex to remove outgoing edges from.
+ */
+
+/*!
+ * @fn Graph#targetVertex
+ * @brief Returns the target vertex of an edge.
+ *
+ * @signature TVertexDescriptor targetVertex(g, e);
+ * @signature TVertexDescriptor targetVertex(it);
+ *
+ * @param[in] g  The Graph the edge is in.
+ * @param[in] e  The descriptor of the edge to remove.
+ * @param[in] it An edge iterator.
+ *
+ * @section Remarks
+ *
+ * In a tree, the target vertex is always the child.  In an undirected graph, the larger vertex descriptor of the two
+ * end points i the target.  For an out-edge iterator, the target is always the OutEdgeIterator has <b>not</b> been
+ * initialized with.
+ */
+
+/*!
+ * @fn Graph#sourceVertex
+ * @brief Returns the source vertex of an edge.
+ *
+ * @signature TVertexDescriptor sourceVertex(g, e);
+ * @signature TVertexDescriptor sourceVertex(it);
+ *
+ * @param[in] g  The Graph the edge is in.
+ * @param[in] e  The descriptor of the edge to remove.
+ * @param[in] it An edge iterator.
+ *
+ * @section Remarks
+ *
+ * In a tree, the source vertex is always the child.  In an undirected graph, the larger vertex descriptor of the two
+ * end points i the source.  For an out-edge iterator, the source is always the OutEdgeIterator has been initialized
+ * with.
+ */
+
+/*!
+ * @fn Graph#getAdjacencyMatrix
+ * @brief Build an adjacency matrix representation of the graph.
+ *
+ * @signature void getAdjacencyMatrix(g, matrix);
+ *
+ * @param[in]  g      The Graph to compute ajacency matrix for.
+ * @param[out] matrix The Matrix to fill with the adjacency matrix values.
+ */
+
+/*!
+ * @fn Graph#findEdge
+ * @brief Finds an edge.
+ *
+ * @signature TEdgeDescriptor findEdge(g, v, c);
+ * @signature TEdgeDescriptor findEdge(g, v, w);
+ *
+ * @param[in] g The Graph to query.
+ * @param[in] v The descriptor of the source vertex.
+ * @param[in] c An edge label.
+ * @param[in] w The descriptor of the target descriptor.
+ *
+ * @return TEdgeDescriptor Edge descriptor of the found edge.  0 if not present.  NB: in automatons, there is
+ *                         always a valid edge descriptor but the target may be nil.
+ *
+ * @section Remarks
+ *
+ * In an automaton, an edge is uniquely defined by a vertex and a label.  In all other graphs, two adjacent vertices
+ * uniquely define an edge.  If tehre are multiple edges between two vertices then the behaviour is undefined.
+ */
+
+/*!
+ * @fn Graph#clearVertices
+ * @brief Removes all vertices from a graph.
+ *
+ * @signature void clearVertices(g);
+ *
+ * @param[in,out] g The graph to remove the vertices from.
+ */
+
+/*!
+ * @fn Graph#getNil
+ * @brief Returning a "nil" value for graphs.
+ *
+ * Usefulf or various graph algorithms, e.g. missing predecessors or vertices that have not been visited.
+ *
+ * @signature T getNil(ptr);
+ * @signature T getNil<T>();
+ *
+ * @param[in] ptr Pointer to T to select the type.
+ *
+ * @return T Pseudo nil value for type T.
+ */
+
 /**
 .Function.getNil
 ..class:Class.Graph
@@ -356,7 +646,6 @@ template <typename T>
 inline T
 getNil()
 {
-SEQAN_CHECKPOINT
 	T * _tag = 0;
 	return getNil(_tag);
 }
@@ -426,6 +715,21 @@ _createVertices(Graph<TSpec>& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Graph#addEdges
+ * @brief Shortcut to add multiple edges at once; vertices are created implicitely.
+ *
+ * @signature void addEdges(graph, edges, size);
+ *
+ * @param[in,out] graph The Graph to add the edges to.
+ * @param[in]     edges An array of vertex descriptions.
+ * @param[in]     size  Size of the array.  Must be a even.
+ *
+ * It is assumed that the edges in <tt>edges</tt> are stored as an array of vertex ids: <tt>source1, target1, source2,
+ * target2, ...</tt>.  For a tree, the root must be the first vertex in this array and the enumeration is <tt>parent,
+ * child, parent, child</tt>.
+ */
 
 /**
 .Function.addEdges

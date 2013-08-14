@@ -41,6 +41,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class UndirectedGraph
+ * @extends Graph
+ * @headerfile <seqan/graph_types.h>
+ * @brief An undirected graph that stores the edges in an adjacency list.
+ *
+ * <img src="undirectedGraph.png" title="An undirected graph with multiple components." />
+ *
+ * @signature template <[typename TCargo[, typename Spec]]>
+ *            class Graph<Undirected<TCargo, TSpec> >;
+ *
+ * @tparam TCargo The cargo type that can be attached to the edges.  Default: <tt>void</tt>.
+ * @tparam TSpec  The specializing type.  Default: <tt>Default</tt>.  NB: if edges do not store ids then external
+ *                property maps do not work.
+ */
+
 /**
 .Spec.Undirected Graph:
 ..cat:Graph

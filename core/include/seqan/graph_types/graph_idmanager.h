@@ -41,6 +41,19 @@ namespace SEQAN_NAMESPACE_MAIN
 // IdManager
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class IdManager
+ * @headerfile <seqan/graph_types.h>
+ * @brief ID manager that provides uniq ids for vertices and edges.
+ *
+ * @signature template <typename TIdType, typename TSpec>
+ *            class IdManager;
+ *
+ * @tparam TIdType The type to use for storing IDs.  Use the Value metafunctio to get the id type managed by
+ *                 a given IdManager.
+ * @tparam TSpec   Specializing type.
+ */
+
 /**
 .Class.IdManager:
 ..cat:Graph
@@ -103,6 +116,13 @@ class IdManager
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn IdManager#Value
+ * @brief Return the value type of an IdManager.
+ *
+ * @signature Value<TIdManager>::Type;
+ */
+
 ///.Metafunction.Value.param.T.type:Class.IdManager
 ///.Metafunction.Value.class:Class.IdManager
 
@@ -119,6 +139,13 @@ struct Value<IdManager<TIdType, TSpec> const>
 };
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @mfn IdManager#Spec
+ * @brief Return the specializing type of an IdManager.
+ *
+ * @signature Spec<TIdManager>::Type;
+ */
 
 ///.Metafunction.Spec.param.T.type:Class.IdManager
 ///.Metafunction.Spec.class:Class.IdManager
@@ -140,6 +167,17 @@ struct Spec<IdManager<TIdType, TSpec> const>
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn IdManager#obatinId
+ * @brief Obatains a new id from the id manager.
+ *
+ * @signature TId obtainId(manager);
+ *
+ * @param[in,out] manager IdManager to get ids from.
+ *
+ * @return TId A new unique id.
+ */
 
 /**
 .Function.obtainId
@@ -177,6 +215,16 @@ obtainId(IdManager<TIdType, TSpec>& idm)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn IdManager#releaseId
+ * @brief Releases a given id so it can be reused later on.
+ *
+ * @signature void releaseId(manager, id);
+ *
+ * @param[in,out] manager The IdManager to use.
+ * @param[in]     id      The ID to release.
+ */
+
 /**
 .Function.releaseId
 ..class:Class.IdManager
@@ -212,6 +260,15 @@ releaseId(IdManager<TIdType, TSpec>& idm,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn IdManager#releaseAll
+ * @brief Releases all ids handled by this IdManager.
+ *
+ * @signature void releaseAll(manager);
+ *
+ * @param[in,out] manager The IdManager to release the ids from.
+ */
+
 /**
 .Function.releaseAll
 ..class:Class.IdManager
@@ -237,6 +294,17 @@ releaseAll(IdManager<TIdType, TSpec>& idm)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn IdManager#getIdUpperBound
+ * @brief Returns the largest distributed id plus 1.
+ *
+ * @signature TId getIdUpperBound(manager);
+ *
+ * @param[in] manager The IdManager to query.
+ *
+ * @return TId The return value is guaranteed to be an upper bound on all distributed ids.
+ */
+
 /**
 .Function.getIdUpperBound
 ..class:Class.IdManager
@@ -259,6 +327,17 @@ getIdUpperBound(IdManager<TIdType, TSpec> const& idm)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn IdManager#getIdLowerBound
+ * @brief Returns the smalles distributed id.
+ *
+ * @signature TId getIdLowerBound(manager);
+ *
+ * @param[in] manager The IdManager to query.
+ *
+ * @return TId The smallest obtained id so far.
+ */
 
 /**
 .Function.getIdLowerBound
@@ -287,6 +366,16 @@ getIdLowerBound(IdManager<TIdType, TSpec> const& idm)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn IdManager#idCount
+ *
+ * @signature TId idCount(manager);
+ *
+ * @param[in] manager The IdManager to query.
+ *
+ * @return TId The number of ids obtained so far.
+ */
+
 /**
 .Function.idCount:
 ..class:Class.IdManager
@@ -309,6 +398,17 @@ idCount(IdManager<TIdType, TSpec> const& idm)
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn IdManager#idInUse
+ *
+ * @signature bool idInUse(manager, id);
+ *
+ * @param[in] manager The IdManager to query.
+ * @param[in] id      The id to check for.
+ *
+ * @return bool true if the id is already in use and false otherwise.
+ */
 
 /**
 .Function.idInUse:
@@ -336,6 +436,18 @@ idInUse(IdManager<TIdType, TSpec> const& idm,
 //////////////////////////////////////////////////////////////////////////////
 // Dummy IdManager
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @class CountingIdManager
+ * @extends IdManager
+ * @headerfile <seqan/graph_types.h>
+ * @brief IdManager that just counts the number of ids in use.
+ *
+ * @signature template <typename TSpec>
+ *            class IdManager<void, TSpec>;
+ *
+ * @tparam TSpec Specializing type.
+ */
 
 /**
 .Spec.Counting IdManager:

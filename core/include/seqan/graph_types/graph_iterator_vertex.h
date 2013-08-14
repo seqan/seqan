@@ -42,6 +42,33 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class VertexIterator
+ * @extends Iter
+ * @brief Vertex iterator for @link Graph @endlink.
+ *
+ * @signature Iterator<TGraph, VertexIterator>::Type;
+ * @signature template <typename TGraph, typename TSpec>
+ *            class Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >;
+ *
+ * @tparam TGraph The graph to iterate the edges of.
+ *
+ * The first signature is the signature of the corresponding @link Graph#Iterator @endlink metafunction call.  The
+ * second call is the internal definition of the type.  You should always get this type using the metafunction call from
+ * the first signature.
+ *
+ *
+ * @fn VertexIterator::VertexIterator
+ * @brief Constructor
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(iter);
+ * @signature Iter::Iter(graph);
+ *
+ * @param[in] iter  Other OutEdgeIterator to copy from.
+ * @param[in] graph The @link Graph @endlink to iterate vertices of.
+ */
+
 /**
 .Spec.Vertex Iterator:
 ..cat:Graph
@@ -259,6 +286,8 @@ operator * (Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO(holtgrew): Add GraphIterator class that has hostGraph() function?
 
 /**
 .Function.hostGraph

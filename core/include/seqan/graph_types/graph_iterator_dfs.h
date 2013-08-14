@@ -40,6 +40,37 @@ namespace SEQAN_NAMESPACE_MAIN
 // Graph DfsIterator
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class DfsPreorderIterator
+ * @extends Iter
+ * @headerfile <seqan/graph_types.h>
+ * @brief Iterate vertices of a graph in depth-first preorder fashion.
+ *
+ * @signature Iterator<TGraph, DfsPreorderIterator>::Type;
+ * @signature template <typename TGraph, typename TSpec>
+ *            class Iter<TGraph, GraphIterator<InternalDfsPreorderIterator<TSpec> >;
+ *
+ * @tparam TGraph The graph to iterate the vertices of.
+ *
+ * Preorder means that a vertex is visited before its neighbours are.
+ *
+ * The first signature is the signature of the corresponding @link Graph#Iterator @endlink metafunction call.  The
+ * second call is the internal definition of the type.  You should always get this type using the metafunction call from
+ * the first signature.
+ *
+ *
+ * @fn DfsPreorderIterator::DfsPreorderIterator
+ * @brief Constructor.
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(iter);
+ * @signature Iter::Iter(graph, v);
+ *
+ * @param[in] iter  Other DfsPreorderIterator to copy from.
+ * @param[in] graph The @link Graph @endlink to iterate vertices in DFS preorder fashion.
+ * @param[in] v     The descriptor of the vertex to start DFS preorder iteration.
+ */
+
 /**
 .Spec.Dfs Preorder Iterator:
 ..cat:Graph

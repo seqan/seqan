@@ -41,6 +41,35 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class AdjacencyIterator
+ * @extends Iter
+ * @headerfile <seqan/graph_types.h>
+ * @brief Adjacent edge iterator for a @link Graph @endlink.
+ *
+ * @signature AdjacencyIterator<TGraph, AdjacencyIterator>::Type;
+ * @signature template <typename TGraph, typename TSpec>
+ *            class Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> >;
+ *
+ * @tparam TGraph The graph to iterate the vertices of.
+ *
+ * The first signature is the signature of the corresponding @link Graph#Iterator @endlink metafunction call.  The
+ * second call is the internal definition of the type.  You should always get this type using the metafunction call from
+ * the first signature.
+ *
+ *
+ * @fn AdjacencyIterator::AdjacencyIterator
+ * @brief Constructor
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(iter);
+ * @signature Iter::Iter(graph, v);
+ *
+ * @param[in] iter  Other AdjacencyIterator to copy from.
+ * @param[in] graph The @link Graph @endlink to iterate vertices for.
+ * @param[in] v     The descriptor of the vertex to iterate adjacent edges of.
+ */
+
 /**
 .Spec.Adjacency Iterator:
 ..cat:Graph

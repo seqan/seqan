@@ -41,6 +41,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class Tree
+ * @headerfile <seqan/graph_types.h>
+ * @extends Graph
+ * @brief A tree.
+ *
+ * A Tree has a distinct root and directed edges.  The source vertex of each edge is the parent vertex, the target
+ * vertex of each edge is the child.  Trees provide fast access to child vertices and the parent.
+ *
+ * @signature template <[typename TCargo[, typename TSpec]]>
+ *            class Graph<Tree<TCargo, TSpec> >;
+ *
+ * @tparam TCargo The cargo type that can be attached to the edges.  Default: <tt>void</tt>.
+ * @tparam TSpec  Specializing type.  Default: <tt>Default</tt>.
+ */
+
 /**
 .Spec.Tree:
 ..cat:Graph
@@ -752,6 +768,16 @@ write(TFile & target,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Tree#assignRoot
+ * @brief Assign a new root vertex to the tree.
+ *
+ * @signature void assignRoot(t, v);
+ *
+ * @param[in,out] t The Tree to assign the root for.
+ * @param[in]     v A vertex descriptor.
+ */
+
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void
 assignRoot(Graph<Tree<TCargo, TSpec> >& g,
@@ -765,6 +791,15 @@ assignRoot(Graph<Tree<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Tree#createRoot
+ * @brief Creates the root for the tree.
+ *
+ * @signature void createRoot(t);
+ *
+ * @param[in,out] t The Tree to create the root for.
+ */
+
 template<typename TCargo, typename TSpec>
 inline void
 createRoot(Graph<Tree<TCargo, TSpec> >& g)
@@ -774,6 +809,17 @@ createRoot(Graph<Tree<TCargo, TSpec> >& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#root
+ * @signature Gets reference to the root of the tree.
+ *
+ * @signature TVertexDescriptor root(t);
+ *
+ * @param[in] t The Tree to query for its root.
+ *
+ * @return TVertexDescriptor Reference to the root's vertex descriptor.
+ */
 
 template<typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type&
@@ -785,6 +831,17 @@ root(Graph<Tree<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Tree#getRoot
+ * @signature Gets the root of the tree.
+ *
+ * @signature TVertexDescriptor getRoot(t);
+ *
+ * @param[in] t The Tree to query for its root.
+ *
+ * @return TVertexDescriptor The root's vertex descriptor.
+ */
+
 template<typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
 getRoot(Graph<Tree<TCargo, TSpec> > const& g)
@@ -794,6 +851,18 @@ getRoot(Graph<Tree<TCargo, TSpec> > const& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#isRoot
+ * @signature Tests whether a given vertex is the root or not.
+ *
+ * @signature bool isRoot(t, v);
+ *
+ * @param[in] a The Tree to query.
+ * @param[in] t The descriptor of the vertex to query.
+ *
+ * @return bool true if v is the root and false otherwise.
+ */
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool
@@ -805,6 +874,16 @@ isRoot(Graph<Tree<TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#isLeaf
+ * @brief Tests whether a given vertex is a leaf or not.
+ *
+ * @signature bool isLeaf(g, v);
+ *
+ * @param[in] g The Tree to query.
+ * @param[in] v The descriptor of the vertex to query for.
+ */
 
 /**
 .Function.Graph#isLeaf
@@ -835,6 +914,17 @@ isLeaf(Graph<Tree<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Graph#numTreeEdges
+ * @brief Number of tree edges.
+ *
+ * @signature TSize numTreeEdges(g);
+ *
+ * @param[in] g The tree to query.
+ *
+ * @return TSize The number of tree edges.  Faster than @link Graph#numEdges @endlink for trees.
+ */
+
 /**
 .Function.numTreeEdges
 ..class:Spec.Tree
@@ -857,6 +947,18 @@ numTreeEdges(Graph<Tree<TCargo, TSpec> > const& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#numChildren
+ * @brief Number of children of a given tree vertex.
+ *
+ * @signature TSize numChildren(g, v);
+ *
+ * @param[in] g The Tree to query.
+ * @param[in] v The descriptor of the vertex to count the children of.
+ *
+ * @return TSize The number of children.
+ */
 
 /**
 .Function.numChildren:
@@ -883,6 +985,19 @@ numChildren(Graph<Tree<TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#addChild
+ * @brief Adds a new child vertex to a parent vertex, optionally with an edge cargo.
+ *
+ * @signature TVertexDescriptor(g, parent[, cargo]);
+ *
+ * @param[in,out] g      The Tree to append the vertex and edge to.
+ * @param[in]     parent Descriptor of the parent vertex.
+ * @param[in]     cargo  The cargo to attach to the edge.
+ *
+ * @return TVertexDescriptor Vertex descriptor of the added vertex.
+ */
 
 /**
 .Function.addChild
@@ -933,6 +1048,17 @@ addChild(Graph<Tree<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Tree#removeChild
+ * @brief Removes a child from the tree given a parent.
+ *
+ * @signature void removeChidl(g, parent, child);
+ *
+ * @param[in,out] g      The Tree to remove the vertex from.
+ * @param[in]     parent The descriptor of the parent vertex.
+ * @param[in]     child  The descriptor of the child vertex.
+ */
+
 /**
 .Function.removeChild
 ..class:Spec.Tree
@@ -964,6 +1090,16 @@ removeChild(Graph<Tree<TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#removeAllChildren
+ * @brief Removes all children from the tree given a parent.
+ *
+ * @signature void removeAllChildren(g, parent);
+ *
+ * @param[in,out] g      The Tree to modify.
+ * @param[in]     parent Descriptor of the vertex to remove children of.
+ */
 
 /**
 .Function.removeAllChildren
@@ -1001,6 +1137,18 @@ removeAllChildren(Graph<Tree<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Tree#childVertex
+ * @brief Returns the child vertex of an edge.
+ *
+ * @signature TVertexDescriptor childVertex(g, e);
+ *
+ * @param[in] g The Tree to query.
+ * @param[in] e The edge descriptor of the edge to query.
+ *
+ * @return TVertexDescriptor The descriptor of the child vertex.
+ */
+
 /**
 .Function.childVertex
 ..class:Spec.Tree
@@ -1026,6 +1174,20 @@ childVertex(Graph<Tree<TCargo, TSpec> > const&,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Tree#parentVertex
+ * @brief Returns the parent vertex of an edge.
+ *
+ * @signature TVertexDescriptor childVertex(g, e);
+ * @signature TVertexDescriptor childVertex(g, v);
+ *
+ * @param[in] g The Tree to query.
+ * @param[in] e The edge descriptor of the edge to query.
+ * @param[in] v The descriptor of the vertex to query.
+ *
+ * @return TVertexDescriptor The descriptor of the child vertex.
+ */
 
 /**
 .Function.parentVertex
@@ -1067,6 +1229,16 @@ parentVertex(Graph<Tree<TCargo, TSpec> > const& g,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Tree#collectLeaves
+ * @brief Returns all leaves underneath a given vertex.
+ *
+ * @signature void collectLeaves(g, v, group);
+ *
+ * @param[in]  g     The Tree to collect the leaves for.
+ * @param[in]  v     The root of the subtree to query the leaves of.
+ * @param[out] group A @link String @endlink of leaf vertex descriptors.
+ */
 
 /**
 .Function.collectLeaves

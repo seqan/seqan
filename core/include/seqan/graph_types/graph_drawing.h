@@ -468,6 +468,19 @@ _writeEdgeType(TFile & file,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Graph#write
+ * @brief The graph to write out.
+ *
+ * @signature void write(file, graph[, nodeMap[, edgeMap]], tag);
+ *
+ * @param[in,out] file    The @link StreamConcept @endlink to write to.
+ * @param[in]     graph   The @link Graph @endlink to write out.
+ * @param[in]     nodeMap Vertex labels for each vertex; optional.
+ * @param[in]     edgeMap Edge label for each edge; optional.
+ * @param[in]     tag     Format tag to use for writing.  Types: DotDrawing.
+ */
+
 /**
 .Function.write
 ..class:Class.Graph

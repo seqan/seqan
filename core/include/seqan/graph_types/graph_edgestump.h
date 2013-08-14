@@ -41,6 +41,32 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class EdgeStump
+ * @headerfile <seqan/graph_types.h>
+ * @brief Encapsulate information for a single edge.
+ *
+ * The EdgeStump either represents a list entry in the adjacency of a graph or an array field if edges are stored in an
+ * array.
+ *
+ * @signature template <typename TCargo, bool IS_LIST, bool STORE_SOURCE, bool STORE_ID, typename TSpec>
+ *            class EdgeStump;
+ *
+ * @tparam TCargo       The cargo type of an edge.  The cargo can be used to store arbitrary information with an
+ *                      edge or be <tt>void</tt.>.  Default: <tt>void</tt>.
+ * @tparam IS_LIST      A bool value that indicates whether it is a list or not.  Default: <tt>true</tt>.
+ * @tparam STORE_SOURCE A bool value that indicates whether the source is stored in the EdgeStump or not.
+ *                      Default: <tt>false</tt>.
+ * @tparam STORE_ID     A bool value that indictes whether the id is tored in the EdgeStump or not.  Note: Without edge
+ *                      ids, external property maps do not work for edges!  Default: <tt>true</tt>.
+ * @tparam TSpec        The specializing type.  Default: <tt>Default</tt>.
+ *
+ * @section Remarks
+ *
+ * The default EdgeStump in all graph types does not consider a cargo.  However, ni default usage every graph does store
+ * an edge id.  Edge ids are used to append additional properties to edges with the help of external property maps.
+ */
+
 /**
 .Class.EdgeStump:
 ..cat:Graph
@@ -331,6 +357,17 @@ struct Spec<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn EdgeStump#getCargo
+ * @brief Return cargo for an EdgeStump.
+ *
+ * @signature TCargo getCargo(stump);
+ *
+ * @param[in] stump Pointer to the EdgeStump to query for its cargo.
+ *
+ * @return TCargo Reference to the cargo of the EdgeStump.
+ */
+
 /**
 .Function.getCargo
 ..class:Class.EdgeStump
@@ -388,6 +425,17 @@ getCargo(EdgeStump<void, TList, TSource, TId, TSpec>*)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#cargo
+ * @brief Return cargo for an EdgeStump.
+ *
+ * @signature TCargo cargo(stump);
+ *
+ * @param[in] stump Pointer to the EdgeStump to query for its cargo.
+ *
+ * @return TCargo Reference to the cargo of the EdgeStump.
+ */
 
 /**
 .Function.cargo
@@ -448,6 +496,19 @@ cargo(EdgeStump<void, TList, TSource, TId, TSpec> const*)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn EdgeStump#assignCargo
+ * @brief Assigns a new cargo to the edge.
+ *
+ * @signature void assignCargo(stump, cargo);
+ *
+ * @param[in] stump Pointer to the EdgeStump to set the cargo of.
+ *
+ * @return TCargo Reference to the cargo of the EdgeStump.
+ *
+ * Calling assignCargo on EdgeStump objects without cargo does nothing.
+ */
+
 /**
 .Function.assignCargo
 ..class:Class.EdgeStump
@@ -487,6 +548,16 @@ assignCargo(EdgeStump<void, TList, TSource, TId, TSpec>*,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn EdgeStump#assignTarget
+ * @brief Assigns a target vertex to an edge.
+ *
+ * @signature void assignTarget(stump, t);
+ *
+ * @param[in,out] stump Pointer to the EdgeStump.
+ * @param[in]     t     Vertex descriptor to assign as the target.
+ */
+
 /**
 .Function.assignTarget
 ..class:Class.EdgeStump
@@ -513,6 +584,17 @@ assignTarget(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#target
+ * @brief Access to the target of an EdgeStump.
+ *
+ * @signature TVertexDescriptor target(stump);
+ *
+ * @param[in] stump Pointer to the EdgeStump to access the target of.
+ *
+ * @return TVertexDescriptor Reference to the target vertex descriptor of stump.
+ */
 
 /**
 .Function.target
@@ -548,6 +630,17 @@ target(EdgeStump<TCargo, TList, TSource, TId, TSpec> const* es)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn EdgeStump#getTarget
+ * @brief Get method for the target.
+ *
+ * @signature TVertexDescriptor getTarget(stump);
+ *
+ * @param[in] stump Pointer to the EdgeStump to get the target of.
+ *
+ * @return TVertexDescriptor The vetex descriptor stored in stump.
+ */
+
 /**
 .Function.getTarget
 ..class:Class.EdgeStump
@@ -582,6 +675,21 @@ getTarget(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es)
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#assignSource
+ * @brief Assigns a source vertex to an edge.
+ *
+ * @signature void assignSource(stump, t);
+ *
+ * @param[in,out] stump Pointer to the EdgeStump.
+ * @param[in]     t     Vertex descriptor to assign as the source.
+ *
+ * @section Remarks
+ *
+ * A source vertex is not required in an edge stump.  However, EdgeStump objects can be configured to contain a source
+ * vertex, as in undirected graphs.
+ */
 
 /**
 .Function.Graph#assignSource
@@ -621,6 +729,22 @@ assignSource(EdgeStump<TCargo, TList, false, TId, TSpec>*,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#source
+ * @brief Access to the source of an EdgeStump.
+ *
+ * @signature TVertexDescriptor source(stump);
+ *
+ * @param[in] stump Pointer to the EdgeStump to access the source of.
+ *
+ * @return TVertexDescriptor Reference to the source vertex descriptor of stump.
+ *
+ * @section Remarks
+ *
+ * A source vertex is not required in an edge stump.  However, EdgeStump objects can be configured to contain a source
+ * vertex, as in undirected graphs.
+ */
 
 template<typename TCargo, bool TList, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, true, TId, TSpec> >::Type&
@@ -665,6 +789,22 @@ source(EdgeStump<TCargo, TList, false, TId, TSpec> const*)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#getSource
+ * @brief Get method for the source.
+ *
+ * @signature TVertexDescriptor getSource(stump);
+ *
+ * @param[in] stump Pointer to the EdgeStump to get the source of.
+ *
+ * @return TVertexDescriptor The vetex descriptor stored in stump.
+ *
+ * @section Remarks
+ *
+ * A source vertex is not required in an edge stump.  However, EdgeStump objects can be configured to contain a source
+ * vertex, as in undirected graphs.
+ */
 
 /**
 .Function.getSource
@@ -727,6 +867,16 @@ getSource(EdgeStump<TCargo, TList, false, TId, TSpec>*)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn EdgeStump#assignNextT
+ * @brief Assigns another EdgeStump to the next target pointer.
+ *
+ * @signature void assignNextT(es, es2);
+ *
+ * @param[in,out] es  Pointer to the EdgeStump.
+ * @param[in]     es2 Pointer to the following EdgeStump.
+ */
+
 /**
 .Function.assignNextT
 ..class:Class.EdgeStump
@@ -753,6 +903,17 @@ assignNextT(EdgeStump<TCargo, true, TSource, TId, TSpec>* es,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#nextT
+ * @brief Accesses the next target pointer.
+ *
+ * @signature TEdgeStump nextT(es);
+ *
+ * @param[in] es Pointer to the EdgeStump.
+ *
+ * @return TEdgeStump Reference to the next target pointer.
+ */
 
 /**
 .Function.nextT
@@ -787,6 +948,16 @@ nextT(EdgeStump<TCargo, true, TSource, TId, TSpec> const* es)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn EdgeStump#getNextT
+ * @brief Get method for the next target pointer.
+ *
+ * @signature TEdgeStump getNextT(es);
+ *
+ * @param[in] es Pointer to the EdgeStump.
+ *
+ * @return TEdgeStump Reference to the next target pointer.
+ */
 
 /**
 .Function.getNextT
@@ -821,6 +992,18 @@ getNextT(EdgeStump<TCargo, true, TSource, TId, TSpec> const* es)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#assignNextS
+ * @brief Assigns another EdgeStump to the next source pointer.
+ *
+ * @signature void assignNextS(es, es2);
+ *
+ * @param[in,out] es  Pointer to the EdgeStump.
+ * @param[in]     es2 Pointer to the following EdgeStump.
+ *
+ * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
+ */
 
 /**
 .Function.assignNextS
@@ -861,6 +1044,19 @@ assignNextS(EdgeStump<TCargo, true, false, TId, TSpec>*,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#nextS
+ * @brief Accesses the next source pointer.
+ *
+ * @signature TEdgeStump nextS(es);
+ *
+ * @param[in,out] es  Pointer to the EdgeStump.
+ *
+ * @return Reference to the next source pointer.
+ *
+ * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
+ */
 
 /**
 .Function.nextS
@@ -916,6 +1112,19 @@ nextS(EdgeStump<TCargo, true, false, TId, TSpec> const*)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn EdgeStump#getNextS
+ * @brief Accesses the next source pointer.
+ *
+ * @signature TEdgeStump getNextS(es);
+ *
+ * @param[in,out] es  Pointer to the EdgeStump.
+ *
+ * @return Reference to the next source pointer.
+ *
+ * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
+ */
 
 /**
 .Function.getNextS

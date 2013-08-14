@@ -41,6 +41,33 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class EdgeIterator
+ * @headerfile <seqan/graph_types.h>
+ * @brief Edge iterator for @link Graph @endlink.
+ *
+ * @signature Iterator<TGraph, EdgeIterator>::Type;
+ * @signature template <typename TGraph, typename TSpec>
+ *            class Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> >;
+ *
+ * @tparam TGraph The graph to iterate the edges of.
+ *
+ * The first signature is the signature of the corresponding @link Graph#Iterator @endlink metafunction call.  The
+ * second call is the internal definition of the type.  You should always get this type using the metafunction call from
+ * the first signature.
+ *
+ *
+ * @fn EdgeIterator::EdgeIterator
+ * @brief Constructor.
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(iter);
+ * @signature Iter::Iter(graph);
+ *
+ * @param[in] iter  Other EdgeIterator to copy from.
+ * @param[in] graph The @link Graph @endlink to iterate edges of.
+ */
+
 /**
 .Spec.Edge Iterator:
 ..cat:Graph

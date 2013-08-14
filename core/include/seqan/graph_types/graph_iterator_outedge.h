@@ -41,6 +41,34 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class OutEdgeIterator
+ * @extends Iter
+ * @brief Out-edge iterator for @link Graph @endlink.
+ *
+ * @signature Iterator<TGraph, OutEdgeIterator>::Type;
+ * @signature template <typename TGraph, typename TSpec>
+ *            class Iter<TGraph, GraphIterator<InternalOutEdgeIterator<TSpec> >;
+ *
+ * @tparam TGraph The graph to iterate the edges of.
+ *
+ * The first signature is the signature of the corresponding @link Graph#Iterator @endlink metafunction call.  The
+ * second call is the internal definition of the type.  You should always get this type using the metafunction call from
+ * the first signature.
+ *
+ *
+ * @fn OutEdgeIterator::OutEdgeIterator
+ * @brief Constructor
+ *
+ * @signature Iter::Iter();
+ * @signature Iter::Iter(iter);
+ * @signature Iter::Iter(graph, v);
+ *
+ * @param[in] iter  Other OutEdgeIterator to copy from.
+ * @param[in] graph The @link Graph @endlink to iterate edges of.
+ * @param[in] v     The descriptor of the vertex to iterate out edges of.
+ */
+
 /**
 .Spec.Out-Edge Iterator:
 ..cat:Graph
@@ -1147,6 +1175,32 @@ sourceVertex(Iter<TGraph, GraphIterator<InternalOutEdgeIterator<TSpec> > >& it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn OutEdgeIterator#label
+ * @brief Returns the label of the out-edge this iterator points to (for automatons);
+ *
+ * Only works if the graph type is an @link Automaton @endlink.
+ *
+ * @signature TAlphabet label(it);
+ *
+ * @param[in] it The iterator to query.
+ *
+ * @return TAlphabet The current label (Alphabe is the alphabet of the automaton).
+ */
+
+/*!
+ * @fn EdgeIterator#label
+ * @brief Returns the label of the out-edge this iterator points to (for automatons);
+ *
+ * Only works if the graph type is an @link Automaton @endlink.
+ *
+ * @signature TAlphabet label(it);
+ *
+ * @param[in] it The iterator to query.
+ *
+ * @return TAlphabet The current label (Alphabe is the alphabet of the automaton).
+ */
 
 /**
 .Function.Automaton#label

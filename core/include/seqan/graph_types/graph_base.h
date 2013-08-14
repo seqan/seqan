@@ -42,6 +42,27 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn Graph#EdgeDescriptor
+ * @brief Type of an object that represents an edge descriptor.
+ *
+ * @signature EdgeDescriptor<T>::Type;
+ *
+ * @tparam The @link Graph @endlink type to query.
+ *
+ * @return Type The resulting edge descriptor type.
+ *
+ * The edge descriptor is a unique handle to a given edge in a graph.  It is used in various graph functions, e.g. to
+ * remove edges, to assign cargo to an edge or to get the end points of an edge.  It is also used to attache properties
+ * to edges via property maps.
+ *
+ * @examples
+ *
+ * @code{.cpp}
+ * EdgeDescriptor<Graph<> >::Type ed;  // eD is an edge descriptor
+ * @endcode
+ */
+
 /**
 .Metafunction.EdgeDescriptor
 ..class:Class.Graph
@@ -61,6 +82,17 @@ struct EdgeDescriptor;
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn Graph#Cargo
+ * @brief Type for the graph's cargo.
+ *
+ * @signature Cargo<T>::Type;
+ *
+ * @tparam T The @link Graph @endlink type to query.
+ *
+ * @return Type The resulting cargo type.
+ */
+
 /**
 .Metafunction.Cargo
 ..class:Class.Graph
@@ -73,6 +105,23 @@ struct Cargo;
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @mfn Graph#EdgeType
+ * @brief Edge type of a graph class.
+ *
+ * @signature EdgeType<T>::Type;
+ *
+ * @tparam T The @link Graph @endlink type to query.
+ *
+ * @return Type The resulting edge stump type that is used in the graph.
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * EdgeType<TGraph>::Type e;  // e is an edge in a TGraph
+ * @endcode
+ */
 
 /**
 .Metafunction.EdgeType:
@@ -90,6 +139,26 @@ template<typename T>
 struct EdgeType;
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @concept GraphOverAlphabetConcept
+ * @brief A graph construted over an alphabet.
+ *
+ * @mfn GraphOverAlphabetConcept#Alphabet
+ * @brief Return the Alphabe type of a graph over an alphabet.
+ *
+ * @signature Alphabet<T>::Type;
+ *
+ * @tparam T The @link GraphOverAlphabetConcept @endlink type to query.
+ *
+ * @return Type The alphabe type.
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * Alphabet<Graph<Automaton<Dna> > >::Type c;  // c is of type Dna
+ * @endcode
+ */
 
 /**
 .Metafunction.Alphabet:
@@ -110,6 +179,20 @@ struct Alphabet;
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @mfn Graph#EdgeIdHandler
+ * @brief Type of an object that represents an IdManager.
+ *
+ * @signature EdgeIdHandler<T>::Type;
+ *
+ * @tparam T The Graph to query.
+ *
+ * @return Type The IdManager type.
+ *
+ * The exact IdManager type depends on the edge stump type.  If the edge stump has no ids then the IdManager simply
+ * counts edge ids and otherwise it manages a list of free and used ids.
+ */
+
 /**
 .Metafunction.EdgeIdHandler:
 ..class:Class.Graph
@@ -129,6 +212,17 @@ struct EdgeIdHandler;
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @mfn Graph#VertexIdHandler
+ * @brief Type of an object that repreestns an IdManager.
+ *
+ * @signature VertexIdHandler<T>::Type;
+ *
+ * @tparam T The Graph to query.
+ *
+ * @return Type The IdManager type.
+ */
 
 /**
 .Metafunction.VertexIdHandler:
@@ -164,6 +258,41 @@ typedef Tag<TreeTag_> const TreeTag;
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @defgroup GraphIteratorTags Graph Iterator Tags
+ * @brief Tags that can be used to get iterators on graphs.
+ *
+ * @tag GraphIteratorTags#VertexIterator
+ * @brief Iterate over all vertices of a graph.
+ *
+ * @signature typedef Tag<VertexIterator_> const VertexIterator;
+ *
+ * @tag GraphIteratorTags#EdgeIterator
+ * @brief Iterate over all edges of a graph.
+ *
+ * @signature typedef Tag<EdgeIterator_> const EdgeIterator;
+ *
+ * @tag GraphIteratorTags#OutEdgeIterator
+ * @brief Iterate over all out edges of a vertex.
+ *
+ * @signature typedef Tag<OutEdgeIterator_> const OutEdgeIterator;
+ *
+ * @tag GraphIteratorTags#AdjacencyIterator
+ * @brief Iterate over all adjacent vertices of a given vertex.
+ *
+ * @signature typedef Tag<AdjacencyIterator_> const AdjacencyIterator;
+ *
+ * @tag GraphIteratorTags#BfsIterator
+ * @brief Iterate over all vertices of a graph in breadth-first fashion starting from a given vertex.
+ *
+ * @signature typedef Tag<BfsIterator_> const BfsIterator;
+ *
+ * @tag GraphIteratorTags#DfsPreorder
+ * @brief Iterate over all vertices of a graph in depth-first fashion.
+ *
+ * @signature typedef Tag<DfsPreorder_> const DfsPreorder;
+ */
 
 /**
 .Tag.Graph Iterator:

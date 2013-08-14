@@ -41,7 +41,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-
 template<typename TEdge, typename TAlphabet>
 class AutomatonEdgeArray {
 public:
@@ -56,6 +55,26 @@ public:
 			assignTarget(&data_edge[i], nilVal);
 	}
 };
+
+/*!
+ * @class Automaton
+ * @headerfile <seqan/graph_types.h>
+ * @extends Graph
+ * @brief Representation of a automaton graph.
+ *
+ * An Automaton has directed edges, labeled with input symbols, and a distinct start state, called root.  The input
+ * symbols require the use of a third parameter: The alphabet of the input symbols.
+ *
+ * <img src="automatonGraph.png" title="An automaton where 0 is the start state" />
+ *
+ * @signature template <[typename TAlphabet[, typename TCargo[, typename TSpec]]]>
+ *            class Graph<Automaton<TAlphabet, TCargo, TSpec> >;
+ *
+ * @tparam TAlphabet The alphabet type used for transition labels.  Default: <tt>char</tt>.
+ * @tparam TCargo    The cargo type that can be attached to the edges.  Default: <tt>void</tt>.
+ * @tparam TSpec     Specializing type.  Default: <tt>Default</tt>.  Use <tt>WithoutEdgeId</tt> here to omit edge ids.
+ *                   NB: if edges to not store ids then external property maps do not work.
+ */
 
 /**
 .Spec.Automaton:
@@ -676,6 +695,15 @@ write(TFile & target,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Automaton#createRoot
+ * @brief Creates the root for the automaton.
+ *
+ * @signature void createRoot(g);
+ *
+ * @param[in,out] g The Automaton to create the root for.
+ */
+
 /**
 .Function.createRoot
 ..class:Spec.Automaton
@@ -699,6 +727,16 @@ createRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#assignRoot
+ * @brief Assign a new root vertex to the automaton.
+ *
+ * @signature void assignRoot(a, v);
+ *
+ * @param[in,out] a The Automaton to assign the root for.
+ * @param[in]     v A vertex descriptor.
+ */
 
 /**
 .Function.assignRoot
@@ -730,6 +768,17 @@ assignRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Automaton#root
+ * @signature Gets reference to the root of the automaton.
+ *
+ * @signature TVertexDescriptor root(a);
+ *
+ * @param[in] a The Automaton to query for its root.
+ *
+ * @return TVertexDescriptor Reference to the root's vertex descriptor.
+ */
+
 /**
 .Function.root
 ..class:Spec.Automaton
@@ -758,6 +807,17 @@ root(Graph<Automaton<TAlphabet, TCargo, TSpec> > & g)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn Automaton#getRoot
+ * @signature Gets the root of the automaton.
+ *
+ * @signature TVertexDescriptor getRoot(a);
+ *
+ * @param[in] a The Automaton to query for its root.
+ *
+ * @return TVertexDescriptor The root's vertex descriptor.
+ */
+
 /**
 .Function.getRoot
 ..class:Spec.Automaton
@@ -785,6 +845,18 @@ getRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#isRoot
+ * @signature Tests whether a given vertex is the root or not.
+ *
+ * @signature bool isRoot(a, v);
+ *
+ * @param[in] a The Automaton to query.
+ * @param[in] v The descriptor of the vertex to query.
+ *
+ * @return bool true if v is the root and false otherwise.
+ */
 
 /**
 .Function.Graph#isRoot
@@ -816,6 +888,22 @@ isRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#getSuccessor
+ * @brief Gets the successor for a given vertex and an edge label.
+ *
+ * @signature TVertexDescriptor getSuccessor(a, v, c);
+ *
+ * @param[in] a The Automaton to query for its successor.
+ * @param[in] v The descriptor fo the vertex to get the successor for.
+ * @param[in] c The character label.
+ *
+ * @return TVertexDescriptor A vertex descriptor or nil if successor is not defined.
+ *
+ * @see Automaton#parseString
+ * @see getNil
+ */
 
 /**
 .Function.getSuccessor
@@ -854,6 +942,26 @@ getSuccessor(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#parseString
+ * @brief Parses a string one character at a time and moves accordingly in the automaton.
+ *
+ * @signature TVertexDescriptor parseString(a, v, beginIt, endIt);
+ * @signature TVertexDescriptor parseString(a, v, str);
+ *
+ * @param[in]     a       An Automaton.
+ * @param[in]     v       The descriptor of the vertex to start at.
+ * @param[in]     str     The @link SequenceConcept @endlink to parse.
+ * @param[in,out] beginIt Begin iterator to sequence to parse.  Set to the first character that could not be parsed
+ *                        or to the value of endIt if all of the string was parsed.
+ * @param[in]     endIt   End iterator to sequence to parse.
+ *
+ * @return TVertexDescriptor The vertex descriptor of the state that was reached after parsing.
+ *
+ * The parsing stops before @link Automaton#getSuccessor @endlink reaches the nil state or if the complete sequence is
+ * read.
+ */
 
 /**
 .Function.parseString
@@ -941,6 +1049,20 @@ parseString(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn Automaton#canParseString
+ * @brief Test whether an Automaton can parse a string completely.
+ *
+ * @signature bool canParseString(a[, v], str);
+ *
+ * @param[in] a   The Automaton to use for parsing.
+ * @param[in] v   Optionally, the descriptor of the vertex to start at.  Defaults to the root.
+ * @param[in] str The string to parse.
+ *
+ * @return bool <tt>true</tt> if the Automaton parses <tt>str</tt> , starting at <tt>v</tt>, completely and
+ *              <tt>false</tt> otherwise.
+ */
 
 /**
 .Function.canParseString

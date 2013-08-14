@@ -45,6 +45,19 @@ struct WordGraph;
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @class WordGraph
+ * @extends Automaton
+ * @headerfile <seqan/graph_type.h>
+ * @brief A special automaton that stores words instead of single characters along its edges.
+ *
+ * @signature template <[typename TAlphabet[, typename Spec]]>
+ *            class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> >;
+ *
+ * @tparam TAlphabet The alphabet type.
+ * @tparam TSpec     The specializing types.
+ */
+
 /**
 .Spec.Word Graph:
 ..cat:Graph
@@ -216,6 +229,22 @@ write(TFile & target,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn WordGraph#getSuccessor
+ * @brief Gets the successor for a given vertex and an edge label.
+ *
+ * @signature TVertexDescriptor getSuccessor(a, v, str);
+ *
+ * @param[in] a   The WordGraph to query for its successor.
+ * @param[in] v   The descriptor fo the vertex to get the successor for.
+ * @param[in] str The label.
+ *
+ * @return TVertexDescriptor A vertex descriptor or nil if successor is not defined.
+ *
+ * @see WordGraph#parseString
+ * @see getNil
+ */
+
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TCharacters>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
 getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > const& g,
@@ -246,6 +275,26 @@ getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn WordGraph#parseString
+ * @brief Parses a string one character at a time and moves accordingly in the WordGraph.
+ *
+ * @signature TVertexDescriptor parseString(a, v, beginIt, endIt);
+ * @signature TVertexDescriptor parseString(a, v, str);
+ *
+ * @param[in]     a       An WordGraph.
+ * @param[in]     v       The descriptor of the vertex to start at.
+ * @param[in]     str     The @link SequenceConcept @endlink to parse.
+ * @param[in,out] beginIt Begin iterator to sequence to parse.  Set to the first character that could not be parsed
+ *                        or to the value of endIt if all of the string was parsed.
+ * @param[in]     endIt   End iterator to sequence to parse.
+ *
+ * @return TVertexDescriptor The vertex descriptor of the state that was reached after parsing.
+ *
+ * The parsing stops before @link WordGraph#getSuccessor @endlink reaches the nil state or if the complete sequence is
+ * read.
+ */
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TIterator>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
@@ -278,6 +327,25 @@ parseString(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > c
 	return succ;
 }
 
+/*!
+ * @fn WordGraph#canParseString
+ * @brief Test whether an WordGraph can parse a string completely.
+ *
+ * @signature bool canParseString(a[, v], str);
+ *
+ * @param[in] a   The WordGraph to use for parsing.
+ * @param[in] v   Optionally, the descriptor of the vertex to start at.  Defaults to the root.
+ * @param[in] str The string to parse.
+ *
+ * @return bool <tt>true</tt> if the WordGraph parses <tt>str</tt> , starting at <tt>v</tt>, completely and
+ *              <tt>false</tt> otherwise.
+ *
+ * @section Remarks
+ *
+ * This has not implemented yet.
+ */
+
+// TODO(holtgrew): Not implemented yet!
 
 
 }// namespace SEQAN_NAMESPACE_MAIN
