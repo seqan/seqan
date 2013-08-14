@@ -27,7 +27,7 @@ def escapeForXml(s):
     return xml.sax.saxutils.escape(s)
 
 
-class DocumentationBuildException(Exception):
+class DocumentationBuildException(dox_parser.ParserError):
     """Thrown when there is a logical error on building the documentation."""
 
 
@@ -84,8 +84,6 @@ class ProcDoc(object):
     def addVariable(self, x):
         """Add a second-level entry."""
         self.registerEntry(x)
-        #print 'x ==', x
-        #print 'x.type ==', x.type
         if self.top_level_entries.get(x.type):
             self.second_level_entries[x.name] = x
             self.top_level_entries[x.type].registerSubentry(x)
@@ -102,22 +100,25 @@ class ProcDoc(object):
         
     def registerEntry(self, x):
         """Register an entry."""
-        if x.name in self.entries:
-            old = self.entries[x.name]
+        name = x.name
+        if name.endswith(';'):
+            name = name[:-1]
+        if name in self.entries:
+            old = self.entries[name]
             tpl = ('Trying to define %(new_kind)s %(new_name)s in %(new_file)s:'
                    '%(new_line)s but is previously defined as %(old_kind)s '
                    '%(old_name)s in %(old_file)s:%(old_line)d.')
             vals = {
                 'new_kind': x.kind,
-                'new_name': x.name,
+                'new_name': name,
                 'new_file': old.location[0],
                 'new_line': old.location[1],
                 'old_kind': old.kind,
                 'old_name': old.name,
                 'old_file' : x.location[0],
                 'old_line' : x.location[1]}
-            raise DocumentationBuildException(tpl % vals)
-        self.entries[x.name] = x
+            raise DocumentationBuildException(token=x.raw_entry.name.tokens[0], msg=tpl % vals)
+        self.entries[name] = x
         x.doc = self
 
     def runTextVisitor(self, v):
