@@ -53,6 +53,29 @@ namespace seqan {
 // Alignment Graph Output Tags
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @defgroup AlignmentGraphFormatTags Alignment Graph Formats
+ * @brief File formats to write an alignment graph.
+ *
+ * @tag AlignmentGraphFormatTags#MsfFormat
+ * @headerfile <seqan/graph_align.h>
+ * @brief MSF Format to write an alignment graph.
+ *
+ * @signature typedef Tag<MsfFormat_> const MsfFormat;
+ *
+ * @tag AlignmentGraphFormatTags#FastaFormat
+ * @headerfile <seqan/graph_align.h>
+ * @brief Fasta Format to write an alignment graph.
+ *
+ * @signature typedef Tag<FastaFormat_> const FastaFormat;
+ *
+ * @tag AlignmentGraphFormatTags#CgVizFormat
+ * @headerfile <seqan/graph_align.h>
+ * @brief CgViz Format to write an alignment graph.
+ *
+ * @signature typedef Tag<CgVizFormat_> const CgVizFormat;
+ */
+
 /**
 .Tag.Alignment Graph Format:
 ..cat:Input/Output
@@ -177,6 +200,23 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @class AlignmentGraph
+ * @headerfile <seqan/graph_align.h>
+ * @brief Alignment graph type.
+ *
+ * <img src="alignmentGraph.png" tite="An alignment graph with 3 sequences." />
+ *
+ * @signature template <typename TStringSet[, typename TCargo[, typename TSpec]]>
+ *            class Alignment;
+ *
+ * @tparam TStringSet The type of the @link StringSet @endlink containing the sequence information.  <b>Must be a
+ *                    @link DependentStringSet @endlink.</b>
+ * @tparam TCargo     The cargo type that can be attached to edges.  Default: <tt>unsigned</tt>.
+ * @tparam TSpc       The specializing type.  Default: <tt>Default</tt>.  Use <tt>WithoutEdgeId</tt> here to omit
+ *                    edge ids.  NB: if edges do not store ids then external property maps do not work.
+ */
 
 /**
 .Spec.Alignment Graph:
@@ -1073,6 +1113,19 @@ write(TFile & file,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#assignStringSet
+ * @brief Assigns a new StringSet to an AlignmentGraph.
+ *
+ * @signature void assignStringSet(g, stringSet);
+ *
+ * @param[in,out] g         An AlignmentGraph.
+ * @param[in]     stringSet The @link StringSet @endlink to assign to.
+ *
+ * @see AlignmentGraph#getStringSet
+ * @see AlignmentGraph#stringSet
+ */
+
 /**
 .Function.assignStringSet
 ..class:Spec.Alignment Graph
@@ -1120,6 +1173,20 @@ assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#getStringSet
+ * @brief Gets the StringSet of an AlignmentGraph.
+ *
+ * @signature THost getStringSet(g);
+ *
+ * @param[in,out] g An AlignmentGraph.
+ *
+ * @return THost A const reference to the StringSet's host.
+ *
+ * @see AlignmentGraph#assignStringSet
+ * @see AlignmentGraph#stringSet
+ */
+
 /**
 .Function.getStringSet
 ..class:Spec.Alignment Graph
@@ -1143,6 +1210,20 @@ getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AlignmentGraph#stringSet
+ * @brief Return reference to the StringSet of an AlignmentGraph.
+ *
+ * @signature THostRef stringSet(g);
+ *
+ * @param[in,out] g An AlignmentGraph.
+ *
+ * @return THost A reference to the StringSet's host.
+ *
+ * @see AlignmentGraph#assignStringSet
+ * @see AlignmentGraph#getStringSet
+ */
 
 /**
 .Function.stringSet
@@ -1178,11 +1259,23 @@ stringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#label
+ * @brief Get the label associated with this vertex descriptor or the sequence that is associated with a fragment.
+ *
+ * @signature TInfix label(ag, v);
+ *
+ * @param[in] ag The AlignmentGraph to query.
+ * @param[in] v  The vertex descriptor to query.
+ *
+ * @return TInfix An infix representing the sequence label.
+ */
+
 /**
 .Function.label
 ..class:Spec.Alignment Graph
 ..cat:Graph
-..summary:Gets the label that is associated with this vertex descriptor or the sequence that is associated with a fragment.
+..summary:Gets the label that is associated with this vertex descriptor.
 ..signature:label(g, v)
 ..param.g:An alignment graph.
 ...type:Spec.Alignment Graph
@@ -1210,6 +1303,18 @@ label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#sequenceId
+ * @brief Gets the sequence id that is associated with this vertex descriptor or with a sequence of a fragment.
+ *
+ * @signature TId sequenceId(ag, v);
+ *
+ * @param[in] ag The AlignmentGraph.
+ * @param[in] v  Vertex descriptor of the vertex to retrieve sequence id for.
+ *
+ * @return TId The sequence id.
+ */
+
 /**
 .Function.sequenceId
 ..class:Spec.Alignment Graph
@@ -1234,6 +1339,17 @@ sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#fragmentBegin
+ * @brief Gets the begin position for this vertex descriptor in the sequence.
+ *
+ * @signature TPos fragmentBegin(ag, v);
+ *
+ * @param[in] ag The AlignmentGraph to query.
+ * @param[in] v  The vertex descriptor of the vertex.
+ *
+ * @return TPos The begin position.
+ */
 
 /**
 .Function.fragmentBegin
@@ -1259,6 +1375,18 @@ fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#fragmentLength
+ * @brief Gets the length of the fragment for this vertex descriptor in the sequence.
+ *
+ * @signature TSize fragmentLength(ag, v);
+ *
+ * @param[in] ag The AlignmentGraph to query.
+ * @param[in] v  The vertex descriptor of the vertex.
+ *
+ * @return TPos The fragment size.
+ */
+
 /**
 .Function.fragmentLength
 ..class:Spec.Alignment Graph
@@ -1282,6 +1410,20 @@ fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AlignmentGraph#findVertex
+ * @brief Finds a vertx given a sequence id and a position.
+ *
+ * @signature TVertexDescriptor findVertex(ag, id, pos);
+ *
+ * @param[in] ag  The AlignmentGraph to search in.
+ * @param[in] id  The sequence id to search for.
+ * @param[in] pos The position to search for.
+ *
+ * @return TVertexDescriptor The vertex covering the given position on the specified sequence,
+ * <tt>getNil&lt;TVertexDescriptor&gt;()</tt> if none could be found.
+ */
 
 /**
 .Function.findVertex
@@ -1313,6 +1455,19 @@ findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AlignmentGraph#getProjectedPosition
+ * @brief Projects a position of one sequence taking part in a pairwise match onto the other sequence.
+ *
+ * @signature getProjectedPosition(ag, seqId, pos, seqId2, pos2);
+ *
+ * @param[in]  ag     The @link AlignmentGraph @endlink to query.
+ * @param[in]  seqId  The sequenceId.
+ * @param[in]  pos    The position to project from.
+ * @param[out] seqId2 The resulting id of the sequence that was projected onto.
+ * @param[out] pos2   The reuslting position of the sequence was was projected onto.
+ */
 
 /**
 .Function.getProjectedPosition
@@ -1414,6 +1569,20 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*!
+ * @fn AlignmentGraph#getFirstCoveredPosition
+ * @brief Finds the first position in a sequence that is not assigned to a nil vertex.
+ * 
+ * @signature TPos getFirstCoveredPosition(ag, id);
+ * 
+ * @param[in] ag An @link AlignmentGraph @endlink.
+ * @param[in] id A sequence id.
+ * 
+ * @return TPos A sequence position.
+ *
+ * @see AlignmentGraph#getLastCoveredPosition
+ */
+
 /**
 .Function.getFirstCoveredPosition
 ..class:Spec.Alignment Graph
@@ -1454,6 +1623,20 @@ getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn AlignmentGraph#getLastCoveredPosition
+ * @brief Finds the last position in a sequence that is not assigned to a nil vertex.
+ * 
+ * @signature TPos getLastCoveredPosition(ag, id);
+ * 
+ * @param[in] ag An @link AlignmentGraph @endlink.
+ * @param[in] id A sequence id.
+ * 
+ * @return TPos A sequence position.
+ *
+ * @see AlignmentGraph#getFirstCoveredPosition
+ */
 
 /**
 .Function.getLastCoveredPosition
@@ -1496,6 +1679,25 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+/*
+ * @fn AlignmentGraph#convertAlignment
+ * @brief Converts an alignment graph into an alignment matrix.
+ * 
+ * @signature bool convertAlignment(g, component, order, compLength);
+ * @signature bool convertAlignment(g, matrix);
+ * 
+ * @param[in]  g          AlignmentGraph to convert.  An alignment graph.
+ * @param[out] component  Vertex to component mapping.
+ * @param[out] order      The order of the component graph when sorting topologically.
+ * @param[out] compLength Component sizes.
+ * @param[out] matrix     A string that represents an alignment matrix.
+ * 
+ * @return bool true iff the alignment graph is a valid alignment and false otherwise.
+ * 
+ * @section Remarks
+ * 
+ * The variant with <tt>component</tt> and <tt>order</tt> computes a topological sorting of connected components.
+ */
 
 /**
 .Function.convertAlignment
@@ -1957,6 +2159,9 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
 
 
 //////////////////////////////////////////////////////////////////////////////
+
+// TODO(holtgrew): Where does this belong? This is also there in graph_algorithms.h...
+
 /**
 .Function.heaviestCommonSubsequence:
 ..summary:Computes the heaviest common subsequence between two strings using the match information given in an alignment graph.

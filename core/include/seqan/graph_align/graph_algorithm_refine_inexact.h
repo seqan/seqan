@@ -278,8 +278,23 @@ SEQAN_CHECKPOINT
 	}
 }
 
+// TODO(holtgrew): Documentation is incomplete.
 
-
+/*!
+ * @fn matchRefinement
+ * @headerfile seqan/graph_align.h
+ * @brief Refines (i.e. cuts into smaller parts) a set of pairwise segment matches in such a way that none of the
+ *        segments partly overlap. They are either identical (fully overlapping) or non-overlapping.
+ * 
+ * @signature void matchRefinement(matches, stringSet[, scoringScheme], refinedGraph);
+ * 
+ * @param[out] matches       The set of matches. Types: Fragment, Align, Alignment Graph
+ * @param[out] refinedGraph  The resulting refined set of matches stored in a graph.  Types: Alignment Graph
+ * @param[out] stringSet     The StringSet containing the sequences which the matches lie on. Types: StringSet
+ * @param[in]  scoringScheme The scoring scheme used to score the refined matches (scores are attached to edges
+ *                           in the refined AlignmentGraph).  If no scoring scheme is given, all edges get weight 1.
+ *                           Types: Score
+ */
 
 /**
 .Function.matchRefinement:
