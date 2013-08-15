@@ -61,7 +61,7 @@ class MessagePrinter(object):
         if not e.msg:
             msg = 'Parse error'
         if e.token:
-            printTokenError(e.token, e.msg)
+            self.printTokenError(e.token, e.msg)
         else:
             self.counts['error'] += 1
             print >>sys.stderr, 'ERROR: %s' % msg
