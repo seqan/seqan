@@ -187,7 +187,7 @@ public:
  * 
  * @return Reference to the name store of the context (TNameStore).
  *
- * @see GffIOContext#TNameStore
+ * @see GffIOContext::TNameStore
  * @see GffIOContext#nameStoreCache
  */
 
@@ -234,7 +234,7 @@ nameStore(GffIOContext<TNameStore, TNameStoreCache> const & context)
  *
  * @return TNameStoreCache A reference to the NameStoreCache of the context.
  * 
- * @see GffIOContext#TNameStoreCache
+ * @see GffIOContext::TNameStoreCache
  * @see GffIOContext#nameStore
  */
 

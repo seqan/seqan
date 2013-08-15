@@ -60,8 +60,8 @@ namespace seqan {
 
 /*!
  * @fn RecordReader#readRecord
- * @brief Reads one records (e.g. a single DNA sequence and its meta data) from a @link Concept.StreamConcept @endlink
- *        by the means of a @link RecordReader @endlink.
+ * @brief Reads one records (e.g. a single DNA sequence and its meta data) from a @link StreamConcept @endlink by the
+ *        means of a @link RecordReader @endlink.
  *
  * @signature int readRecord(OUTPUT, reader, tag);
  *

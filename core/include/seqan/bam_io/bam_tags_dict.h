@@ -754,7 +754,7 @@ extractTagValue(TDest & dest, BamTagsDict & tags, TIdx idx)
  * In your programs, this should not make any difference, only the written SAM/BAM will differ.
  *
  * @see BamTagsDict
- * @see BamTypeTypeSize
+ * @see getBamTypeSize
  */
 
 /**

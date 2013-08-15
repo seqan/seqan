@@ -613,7 +613,8 @@ inline bool isGood(SequenceStream const & seqIO)
  * @param[out]    id    The identifier of the sequence is written here.  Types: CharString
  * @param[out]    seq   The sequence of the record is written here. Types: String
  * @param[out]    quals The qualities of the sequence is written here.  Optional.  If the sequence has no qualities,
- *                      @link clear @endlink is called on <tt>quals</tt> to indicate this.  Type: CharString
+ *                      @link SequenceConcept#clear @endlink is called on <tt>quals</tt> to indicate this.  Type:
+ *                      CharString
  * @param[in,out] seqIO The @link SequenceStream @endlink object to read from. Type: SequenceStream
  * 
  * @return int 0 on success, non-0 on error.
@@ -860,7 +861,7 @@ int readBatch(StringSet<TId, TIdSpec> & ids,
  * @param[out] seqs      The sequence of the record is written here. Types: StringSet
  * @param[out] quals     The qualities of the sequence is written here.  Optional.  If the sequences have no
  *                       qualities, as in FASTA files, the @link StringSet @endlink will contain empty strings.
- *                       Type: @link StringSet of @link CharString @endlink
+ *                       Type: @link StringSet @endlink of @link CharString @endlink
  * @param[out] seqStream The @link SequenceStream @endlink object to read from.  Type: SequenceStream
  * 
  * @return int 0 on success, non-0 value on success.
@@ -977,8 +978,7 @@ int readAll(StringSet<TId, TIdSpec> & ids,
  * @signature int writeRecord(seqStream id, seq, quals[, options]);
  * 
  * @param[in,out] seqStream The @link SequenceStream @endlink object to write to.  Type: SequenceStream
- * @param[in] quals         The qualities to write out.If the sequence has no qualities, @link clear @endlink is
- *                          called on <tt>quals</tt> to indicate this. Types: CharString
+ * @param[in] quals         The qualities to write out.
  * @param[in] id            The identifier to write.  Type: CharString
  * @param[in] seq           The sequence to write.  Type: String
  * @param[in] options       The configuration for writing FASTA and FASTQ files.  Type: SequenceOutputOptions
@@ -1135,7 +1135,7 @@ int writeRecord(SequenceStream & seqIO,
  * @signature int writeAll(seqStream, ids, seqs, quals[, options]);
  * 
  * @param[in,out] seqStream The @link SequenceStream @endlink object to write to.  Types: SequenceStream
- * @param[in]     ids       Identifiers to write out. Type: StringSet@link of @endlinkShortcut.CharString@.
+ * @param[in]     ids       Identifiers to write out. Type: @link StringSet @endlink of @link CharString @endlink.
  * @param[in]     seqs      Sequences to write out.  Type: StringSet.
  * @param[in]     quals     Qualities to write out.  Optional.  Qualities are ignored if the file format
  *                          does not support them.  If none are given for FASTQ, score 40 is written out

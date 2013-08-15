@@ -69,6 +69,9 @@ struct ConcatDirect;                    // contains 1 string (the concatenation 
  * representation with a predictable memory layout.
  *
  * At the moment, ConcatDirect StringSet objects only support appending data.
+ *
+ * @var TConcatenator ConcatDirectStringSet::concat;
+ * @brief The concatenation string.  Concatenates all sequences of the StringSet without gaps.
  */
 
 /**

@@ -189,7 +189,7 @@ public:
  *
  * @return TNameStoreCache A reference to the name store.
  * 
- * @see BedIOContext#TNameStore
+ * @see BedIOContext::TNameStore
  * @see BedIOContext#nameStoreCache
  */
 
@@ -237,8 +237,8 @@ nameStore(BedIOContext<TNameStore, TNameStoreCache> const & context)
  *
  * @return TNameStoreCache A reference to the name store cache.
  * 
- * @see BedIOContext#TNameStoreCache
- * @see BedIOContext#nameStore
+ * @see BedIOContext::TNameStoreCache
+ * @see BedIOContext#nameStoreCache
  */
 
 /**

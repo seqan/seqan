@@ -63,11 +63,11 @@ inline bool parse(GenomicRegion & region, CharString const & regionString);
  * @signature class GenomicRegion;
  * 
  * A genomic region is a range on a chromosome.  The chromosome is identified by its name (as text in @link
- * GenomicRegion#seqName @endlink, optionally also as an <tt>integer</tt> in @link GenomicRegion#seqId @endlink).  The
- * range is stored as a half-open interval [@link GenomicRegion#beginPos @endlink, @link GenomicRegion#endPos @endlink).
- * If @link GenomicRegion#beginPos @endlink is set to <tt>-1</tt> then the range spans the whole chromosome.  If @link
- * GenomicRegion#beginPos @endlink is set to a value <tt>&gt;= 0</tt> and @link GenomicRegion#endPos @endlink is set ot
- * <tt>-1</tt>, then the chromosome is selected from @link GenomicRegion#beginPos @endlink to the end.
+ * GenomicRegion::seqName @endlink, optionally also as an <tt>integer</tt> in @link GenomicRegion::seqId @endlink).  The
+ * range is stored as a half-open interval [@link GenomicRegion::beginPos @endlink, @link GenomicRegion::endPos @endlink).
+ * If @link GenomicRegion::beginPos @endlink is set to <tt>-1</tt> then the range spans the whole chromosome.  If @link
+ * GenomicRegion::beginPos @endlink is set to a value <tt>&gt;= 0</tt> and @link GenomicRegion::endPos @endlink is set ot
+ * <tt>-1</tt>, then the chromosome is selected from @link GenomicRegion::beginPos @endlink to the end.
  * 
  * Examples for genomic regions are <tt>chr1</tt>, <tt>chr1:1,000</tt>, <tt>chr1:1,000-2,000</tt>.
  * 

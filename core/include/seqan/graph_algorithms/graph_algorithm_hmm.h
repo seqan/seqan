@@ -49,7 +49,7 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 /*!
- * @fn viterbiAlgorithm
+ * @fn HmmAlgorithms#viterbiAlgorithm
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements the Viterbi algorithm for Hidden Markov Models.
  * 

@@ -242,7 +242,7 @@ write(TFile & target,
  * @return TVertexDescriptor A vertex descriptor or nil if successor is not defined.
  *
  * @see WordGraph#parseString
- * @see getNil
+ * @see Graph#getNil
  */
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TCharacters>

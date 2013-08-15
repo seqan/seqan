@@ -816,7 +816,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs = 0)
 }
 
 /*!
- * @fn FileMapping#unmappedFileSegment
+ * @fn FileMapping#unmapFileSegment
  * @brief Unmap a memory-mapped file segment.
  *
  * @signature bool unmappedFileSegment(fileMapping, addr, size);
@@ -867,9 +867,9 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
  * @signature TPtr remapFileSegment(fileMapping, oldAddr, oldFileOfs, oldSize, newSize);
  *
  * @param[in,out] fileMapping The FileMapping object.
- * @param[in]     oldAddr     The address returned by @link FileMaping#mapFileSegment @endlink.
- * @param[in]     oldFileOfs  The <tt>fileOfs</tt> parameter used in @link FileMaping#mapFileSegment @endlink.
- * @param[in]     oldSize     The <tt>size</tt> parameter used in @link FileMaping#mapFileSegment @endlink.
+ * @param[in]     oldAddr     The address returned by @link FileMapping#mapFileSegment @endlink.
+ * @param[in]     oldFileOfs  The <tt>fileOfs</tt> parameter used in @link FileMapping#mapFileSegment @endlink.
+ * @param[in]     oldSize     The <tt>size</tt> parameter used in @link FileMapping#mapFileSegment @endlink.
  * @param[in]     newSize     the new segment length in bytes.
  *
  * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  Type:

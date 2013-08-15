@@ -154,7 +154,7 @@ struct AFScore<D2>
  * D2Star can be used for alignment-free sequence comparison, this version calculates the background model on the
  * concatenation of both sequences
  * 
- * Reinert, G.; Chew, D.; Sun, F. & Waterman, M. S. Alignment-Free Sequence Comparison (I): Statistics and Power. J
+ * Reinert, G.; Chew, D.; Sun, F.,  Waterman, M. S. Alignment-Free Sequence Comparison (I): Statistics and Power. J
  * Comput Biol, 2009.
  * 
  * @fn D2StarAFScore::AFScore
@@ -425,7 +425,7 @@ struct AFScore<N2>
  * D2z can be used for alignment-free sequence comparison. The algorithm differs from the original implementation by the
  * way masked sequences are handled
  * 
- * Kantorovitz, M. R.; Robinson, G. E. & Sinha, S. A statistical method for alignment-free comparison of regulatory
+ * Kantorovitz, M. R.; Robinson, G. E., Sinha, S. A statistical method for alignment-free comparison of regulatory
  * sequences. Bioinformatics, 2007.
  * 
  * @fn D2zAFScore::AFScore

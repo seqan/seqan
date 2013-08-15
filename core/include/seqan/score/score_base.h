@@ -94,6 +94,16 @@ Alignment:
 template <typename TValue = int, typename TSpec = Simple>
 class Score;
 
+/*!
+ * @mfn Score#Value
+ * @brief Return the value type of the scoring scheme.
+ *
+ * @signature Value<TScore>::Type;
+ *
+ * @tparam TScore The Score specialization.
+ *
+ * @return Type The score value type of the scoring scheme.
+ */
 
 ///.Metafunction.Value.param.T.type:Class.Score
 template <typename TValue, typename TSpec>

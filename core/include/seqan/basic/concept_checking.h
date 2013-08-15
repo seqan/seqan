@@ -243,7 +243,7 @@ struct concept_check_<void(*)(Model)>
 /*!
  * @macro SEQAN_CONCEPT_ASSERT
  * @brief Perform a concept check.
- * @headerfile seqan/basic.h
+ * @headerfile <seqan/basic.h>
  * 
  * @signature SEQAN_CONCEPT_ASSERT((concept))
  * 
@@ -306,6 +306,41 @@ struct usage_requirements
 {
     ~usage_requirements() { ((Model*)0)->~Model(); }
 };
+
+/*!
+ * @macro SEQAN_CONCEPT_USAGE
+ * @headerfile <seqan/basic.h>
+ * @brief Defines valid expressions.
+ *
+ * @signature SEQAN_CONCEPT_USAGE(name)
+ *
+ * @param[in] name Identifier of the concept defined with @link SEQAN_CONCEPT @endlink or @link SEQAN_CONCEPT_REFINE
+ *                 @endlink.
+ *
+ * This macro should be used to introduce a block (enclosed with curly braces) of valid expressions within a newly
+ * defined concept.  Valid expressions should test for available functions, operators and the correctness of return
+ * types.  Use helper functions, e.g. @link ignoreUnusedVariableWarning @endlink, @link requireBooleanExpr @endlink and
+ * @link sameType @endlink.
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * SEQAN_CONCEPT(EqualityComparable,(T))
+ * {
+ *     SEQAN_CONCEPT_USAGE(EqualityComparable) 
+ *     {
+ *         requireBooleanExpr(a == b);
+ *         requireBooleanExpr(a != b);
+ *     }
+ * private:
+ *     T a, b;
+ * };
+ * @endcode
+ *
+ * @see requireBooleanExpr
+ * @see SEQAN_CONCEPT
+ * @see SEQAN_CONCEPT_REFINE
+ */
 
 /**
 .Macro.SEQAN_CONCEPT_USAGE
@@ -482,6 +517,19 @@ inline void functionRequires(Model* = 0)
     SEQAN_CONCEPT_ASSERT((Model));
 }
 
+/*!
+ * @fn ignoreUnusedVariableWarning
+ * @headefile <seqan/basic.h>
+ * @brief Removes unused variable warning.
+ *
+ * @signature void ignoreUnusedVariableWarning(x);
+ *
+ * @param[in] x Variable that causes the unused variable warning.
+ *
+ * It sometimes is necessary to define variables which are not further used, e.g. to check available assignment
+ * operators.  Use this functions to remove a compile warning that otherwise would be raised in this case.
+ */
+
 /**
 .Function.ignoreUnusedVariableWarning
 ..summary:Removes unused variable warning.
@@ -515,9 +563,8 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  * @param params Template paramter list in parantheses, e.g. (T) or (T1)(T2).
  *               Typically, template parameters are models, i.e. one or multiple
  *               classes that should be checked for fulfilling a concept.This is
- *               a sequence of the Boost Preprocessor Library, read @link
- *               boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html more
- *               @endlink.
+ *               a sequence of the Boost Preprocessor Library, read <a
+ *               href="http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Concept identifier. Non-trivial concepts should have an
  *             identifier with a Concept-suffix.
  * 
@@ -528,9 +575,8 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  * definition. Associated types should be checked via @link SEQAN_CONCEPT_ASSERT
  * @endlink and valid expressions in a function @link SEQAN_CONCEPT_USAGE
  * @endlink, see below. Variables used in valid expressions should be (private)
- * struct members instead of local variables in member functions (read @link
- * boost.org/doc/libs/1_47_0/libs/concept_check/creating_concepts.htm more
- * @endlink).
+ * struct members instead of local variables in member functions (read <a
+ * href="http://www.boost.org/doc/libs/1_47_0/libs/concept_check/creating_concepts.htm">more</a>.
  * 
  * @section Examples
  * 
@@ -564,6 +610,7 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  *     T a, b;
  * };
  * @endcode
+ *
  * @see SEQAN_CONCEPT_USAGE
  */
 
@@ -626,9 +673,8 @@ private:
  * @param params Template paramter list in parantheses, e.g. (T) or (T1)(T2).
  *               Typically, template parameters are models, i.e. one or multiple
  *               classes that should be checked for fulfilling a concept.This is
- *               a sequence of the Boost Preprocessor Library, read @link
- *               boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html more
- *               @endlink.
+ *               a sequence of the Boost Preprocessor Library, read <a
+ *               href="http://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Concept identifier. Non-trivial concepts should have an
  *             identifier with a Concept-suffix.
  * @param refinedConcepts Identifiers of concepts that are refined by the new
@@ -714,10 +760,9 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @signature template<> SEQAN_CONCEPT_IMPL(name, implementedConcepts)
  *            template<typename T, int I> SEQAN_CONCEPT_IMPL(name<T,I>, implementedConcepts)
  * 
- * @param implementedConcepts Identifiers of concepts that are fulfilled by the
- *                            model.This is a sequence of the Boost Preprocessor
- *                            Library, read @link boost.org/doc/libs/1_47_0/libs
- *                            /preprocessor/doc/index.html more @endlink.
+ * @param implementedConcepts Identifiers of concepts that are fulfilled by the model.  This is a sequence of the
+ *                            Boost Preprocessor Library, read <a
+ *                            href="http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Model type, i.e. an identifier or an identifier with template
  *             arguments.
  * 
@@ -781,6 +826,21 @@ SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
 // Functions
 // ============================================================================
 
+/*!
+ * @fn sameType
+ * @brief Tests for equality of types.
+ *
+ * @signature void sameType(x, y);
+ *
+ * @param[in] x Object of a certain type.
+ * @param[in] y Object that must be of the same type.
+ *
+ * This function can be used to test for the correctness of function return types or the type of an expression in
+ * concept tests.
+ *
+ * @see SEQAN_CONCEPT_USAGE
+ */
+
 /**
 .Function.sameType
 ..summary:Tests for equality of types.
@@ -792,6 +852,7 @@ SEQAN_CONCEPT_IMPL(String<TValue, TSpec>, (StringConcept));
 ..see:Macro.SEQAN_CONCEPT_USAGE
 ..include:seqan/basic.h
  */
+
 template <typename T>
 void sameType(T, T) { }
 
@@ -817,12 +878,10 @@ void sameType(T, T) { }
  * 
  * @section Remarks
  * 
- * The @link Is @endlink-metafunction can be used to test types for fulfilling a
- * concept without causing compilation errors. If @link Logical Values.tag.True
- * @endlink/<tt>true</tt> is returned, <tt>TConcept</tt> must pass the concept
- * test via @link SEQAN_CONCEPT_ASSERT @endlink. It can be used to switch
- * between different implementations depending on the concept of a type, or in
- * combination with @link SEQAN_FUNC_ENABLE_IF @endlink to make a function only
+ * The @link Is @endlink-metafunction can be used to test types for fulfilling a concept without causing compilation
+ * errors.  If <tt>True</tt> or <tt>true</tt> is returned, <tt>TConcept</tt> must pass the concept test via @link
+ * SEQAN_CONCEPT_ASSERT @endlink.  It can be used to switch between different implementations depending on the concept
+ * of a type, or in combination with @link EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF @endlink to make a function only
  * visible to types of certain concepts.
  * 
  * @section Examples
@@ -861,7 +920,7 @@ void sameType(T, T) { }
  * std::cout << Is< ConceptD<Bob> >::VALUE << std::endl;   // 0
  * @endcode
  *
- * @see SEQAN_FUNC_ENABLE_IF
+ * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
  * @see SEQAN_CONCEPT_ASSERT
  */
 

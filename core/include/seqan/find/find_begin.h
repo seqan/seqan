@@ -341,7 +341,7 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
 //find begin main interface 
 
 /*!
- * @fn findBegin
+ * @fn Finder#findBegin
  * @headerfile <seqan/find.h>
  * @brief Search the begin of an approximate match.
  *
@@ -403,14 +403,14 @@ findBegin(TFinder & finder,
 /*!
  * @fn getBeginScore
  * @headerfile <seqan/find.h>
- * @brief Score of the last match found by @link findBegin @endlink during approximate searching.
+ * @brief Score of the last match found by @link Finder#findBegin @endlink during approximate searching.
  *
  * @signature TScoreValue getBeginScore(pattern);
  *
  * @param[in] pattern A Pattern that can be used for approximate searching.
  *
  * @return TScoreValue The score of the lst match found using <tt>pattern</tt>.  The value is set after successfully
- *                     call of @link findBegin @endlink.  If no match was found, the value is undefined.
+ *                     call of @link Finder#findBegin @endlink.  If no match was found, the value is undefined.
  */
 
 /**.Function.getBeginScore

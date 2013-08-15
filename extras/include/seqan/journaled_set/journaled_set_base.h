@@ -59,13 +59,13 @@ namespace seqan {
  *
  * @section Remarks
  * 
- * The strings are internally stored in a <tt>String<TString></tt> object and the character position type is a @link
+ * The strings are internally stored in a <tt>String&lt;TString&gt;</tt> object and the character position type is a @link
  * Pair @endlink <tt>(seqNo, seqOfs)</tt> where seqNo identifies the string within the stringset and seqOfs identifies
  * the position within this string.
  * 
- * The global reference is of type <tt>Host<TString></tt>. Only strings of type @link Journaled String @endlink or
- * <tt>Host&lt;</tt>@link Journaled String @endlink<tt>&gt;</tt> can be used for the advanced functionality supported by this string
- * set.
+ * The global reference is of type <tt>Host&lt;TString&gt;</tt>. Only strings of type @link Journaled String @endlink or
+ * <tt>Host&lt;</tt>@link Journaled String @endlink<tt>&gt;</tt> can be used for the advanced functionality supported by
+ * this string set.
  */
 
 /**
@@ -163,8 +163,8 @@ typedef Tag<JournaledCompact_> JournaledCompact;
  *
  * @section Remarks
  *
- * If @link JournaledManhatten @endlink is selected, then the resulting @link JournaledString @endlink consists of one
- * insertion node covering the complete joined sequence.
+ * If @link JoinStrategiesTags#JournaledManhattan @endlink is selected, then the resulting @link JournaledString
+ * @endlink consists of one insertion node covering the complete joined sequence.
  */
 
 /**

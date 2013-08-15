@@ -66,7 +66,7 @@ namespace seqan {
 
 /*!
  * @defgroup StreamFeatureTags Stream Feature Tags
- * @brief Tags to select a given feature for querying in @link Stream#HasStreamFeature @endlink.
+ * @brief Tags to select a given feature for querying in @link StreamConcept#HasStreamFeature @endlink.
  *
  *
  * @tag StreamFeatureTags#IsInput
@@ -222,7 +222,7 @@ struct HasStreamFeature;
  * 
  * @return int A status code, 0 on success, non-0 value on errors.
  *
- * @see streamTell
+ * @see StreamConcept#streamTell
  */
 
 /*!
@@ -244,8 +244,8 @@ struct HasStreamFeature;
  * should only effect numericals right now.  If you still encounter truncated strings with another type, convert to
  * <tt>const char*</tt> manually before writing.
  * 
- * @see streamWriteChar
- * @see streamWriteBlock
+ * @see StreamConcept#streamWriteChar
+ * @see StreamConcept#streamWriteBlock
  */
 
 /*!
@@ -288,8 +288,8 @@ struct HasStreamFeature;
  * }
  * @endcode
  *
- * @see streamWriteChar
- * @see streamPut
+ * @see StreamConcept#streamWriteChar
+ * @see StreamConcept#streamPut
  */
 
 /*!
@@ -309,8 +309,8 @@ struct HasStreamFeature;
  * Note that this might involve two calls into the stream library, e.g. for cstdio streams, it involves a call to both
  * <tt>getc()</tt> and <tt>ungetc()</tt>.
  * 
- * @see streamReadChar
- * @see streamReadBlock
+ * @see StreamConcept#streamReadChar
+ * @see StreamConcept#streamReadBlock
  */
 
 /*!
@@ -355,8 +355,8 @@ struct HasStreamFeature;
  * }
  * @endcode
  *
- * @see streamPeek
- * @see streamReadChar
+ * @see StreamConcept#streamPeek
+ * @see StreamConcept#streamReadChar
  */
 
 /*!
@@ -370,7 +370,7 @@ struct HasStreamFeature;
  * 
  * @return TPos The position within the stream.
  * 
- * @see streamSeek
+ * @see StreamConcept#streamSeek
  */
 
 /*!
@@ -397,8 +397,8 @@ struct HasStreamFeature;
  * 
  * @return int Error code, 0 on success.
  * 
- * @see streamWriteBlock
- * @see streamPut
+ * @see StreamConcept#streamWriteBlock
+ * @see StreamConcept#streamPut
  */
 
 /*!
@@ -413,8 +413,8 @@ struct HasStreamFeature;
  * 
  * @return TReturn <tt>int</tt>, 0 on success, otherwise the error value from the underlying string system.
  * 
- * @see streamPeek
- * @see streamReadBlock
+ * @see StreamConcept#streamPeek
+ * @see StreamConcept#streamReadBlock
  */
 
 /*!

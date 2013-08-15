@@ -106,8 +106,8 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
  *
  * The last position in <tt>pos</tt> indicates the first element in the longets increasing subsequence.
  *
- * @link heaviestIncreasingSubsequence
- * @link longestCommonSubsequence
+ * @see heaviestIncreasingSubsequence
+ * @see longestCommonSubsequence
  */
 
 /**
@@ -197,8 +197,8 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
  * @param[in]  nSize The neighbourhood size to use.
  * @param[out] pos   A String with pairs of positions that indicate the longest common subsequence.
  *
- * @link heaviestIncreasingSubsequence
- * @link longestIncreasingSubsequence
+ * @see heaviestIncreasingSubsequence
+ * @see longestIncreasingSubsequence
  */
 
 /**
@@ -352,8 +352,8 @@ globalAlignment(TAlign& align,
  * The last position in pos indicates the first member of the heviest increasing subsequence.  Note that only members
  * that contribute a weight are selected, that is, positions with associated 0 weights are ignored.
  *
- * @link longestCommonSubsequence
- * @link longestIncreasingSubsequence
+ * @see longestCommonSubsequence
+ * @see longestIncreasingSubsequence
  */
 
 /**

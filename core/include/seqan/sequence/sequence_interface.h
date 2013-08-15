@@ -104,8 +104,8 @@ namespace seqan {
  * The capacity is only changed if the current capacity is not large enough.  If the capacity can only be expanded up to
  * a certain ammount, it will be increased as far as possible  and the contents are limited to the new capacity.
  * 
- * Note that the capacity will never be shrinked.  Use @link shrinkToFit @endlink to resize the capacity down to the
- * current length.
+ * Note that the capacity will never be shrinked.  Use @link ContainerConcept#shrinkToFit @endlink to resize the
+ * capacity down to the current length.
  * 
  * @tag OverflowStrategyTags#Insist
  * @headerfile <seqan/sequence.h> 
@@ -1360,8 +1360,8 @@ length(T const & /*me*/)
  *
  * @section Remarks
  *
- * The size of a sequence can never exceed its capacity but some container support resizing of the capacity.
- * Some functions do that implicitely if they are called with a suitable @link OverflowStrategyTag tag @endlink.  The
+ * The size of a sequence can never exceed its capacity but some container support resizing of the capacity.  Some
+ * functions do that implicitely if they are called with a suitable @link OverflowStrategyTags tag @endlink.  The
  * function reserve can be used to change the capacity explicitely.
  */
 
@@ -2032,11 +2032,11 @@ _capacityReturned(T &,
  * 
  * @section Remarks
  * 
- * For @link std::basic_string STL Adaptions @endlink, <tt>reserve</tt> is only guaranteed to have the specified
- * behaviour with <tt>Insist</tt> and <tt>Generous</tt>.
+ * For std::basic_string STL Adaptions, <tt>reserve</tt> is only guaranteed to have the specified behaviour with
+ * <tt>Insist</tt> and <tt>Generous</tt>.
  * 
- * For @link std::vector STL Adaptions @endlink, <tt>reserve</tt> is only guaranteed to have the specified behaviour
- * with <tt>Insist</tt> and <tt>Generous</tt>.
+ * For std::vector STL Adaptions, <tt>reserve</tt> is only guaranteed to have the specified behaviour with
+ * <tt>Insist</tt> and <tt>Generous</tt>.
  * 
  * At the end of the operation, <tt>capacity(me)</tt> can be larger than <tt>new_capacity</tt>.  If
  * <tt>new_capacity</tt> is smaller than <tt>capacity(me)</tt> at the beginning of the operation, the operation need not
@@ -2342,13 +2342,13 @@ inline void eraseBack(T & me)
 // --------------------------------------------------------------------------
 
 /*!
- * @fn shrinkToFit
+ * @fn ContainerConcept#shrinkToFit
  * @headerfile <seqan/sequence.h>
  * @brief Resizes container to minimum capacity.
  *
- * @signature void shrinkToFit(object);
+ * @signature void shrinkToFit(cont);
  *
- * @param[in] object The container to shrink.
+ * @param[in] cont The container to shrink.
  */
 
 /**

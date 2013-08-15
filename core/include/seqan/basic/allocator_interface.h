@@ -189,7 +189,7 @@ struct Spec<Allocator<TSpec> >
  * 
  * Use e.g. one of the functions @link valueConstruct @endlink, @link arrayConstruct @endlink, @link arrayConstructCopy
  * @endlink or @link arrayFill @endlink to construct the objects. A <tt>new</tt> operator which is part of the C++
- * standard (defined in <tt><new></tt>)  can also be used to construct objects at a given memory address.
+ * standard (defined in <tt>&lt;new&gt;</tt>)  can also be used to construct objects at a given memory address.
  * 
  * @section Remarks
  * 
@@ -331,8 +331,8 @@ allocate(T &,
  * <tt>deallocate</tt> does not destruct objects.
  * 
  * Use e.g. one of the functions @link valueDestruct @endlink or @link arrayDestruct @endlink to destruct the objects.
- * <tt>delete</tt> and <tt>delete []</tt> operators which are part of the C++ standard (defined in <tt><new></tt>)  can
- * also be used to destruct objects at a given memory address.
+ * <tt>delete</tt> and <tt>delete []</tt> operators which are part of the C++ standard (defined in <tt>&lt;new&gt;</tt>)
+ * can also be used to destruct objects at a given memory address.
  */
 
 /**

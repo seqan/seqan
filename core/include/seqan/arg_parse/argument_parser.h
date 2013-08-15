@@ -130,6 +130,31 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  * @param appName The name of the application (<tt>std::string</tt>), defaults to <tt>argv[0]</tt>.
  */
 
+/*!
+ * @enum ArgumentParser::ParseResult
+ * @brief Argument parsing result.
+ *
+ * @signature enum ArgumentParser::ParseResult;
+ *
+ * @var ArgumentParser::ParseResult ArgumentParser::PARSE_OK;
+ * @brief Parsing the program's arguments was successful and no builtin command was triggered.
+ *
+ * @var ArgumentParser::ParseResult ArgumentParser::PARSE_ERROR;
+ * @brief There were errors parsing the arguments.
+ *
+ * @var ArgumentParser::ParseResult ArgumentParser::PARSE_HELP;
+ * @brief Parsing was successful, built-in <tt>--help</tt> option was used.
+ *
+ * @var ArgumentParser::ParseResult ArgumentParser::PARSE_VERSION;
+ * @brief Parsing was successful, built-in <tt>--version</tt> option was used.
+ *
+ * @var ArgumentParser::ParseResult ArgumentParser::PARSE_WRITE_CTD;
+ * @brief Parsing was successful, built-in <tt>--write-ctd</tt> option was used.
+ *
+ * @var ArgumentParser::ParseResult ArgumentParser::PARSE_EXPORT_HELP;
+ * @brief Parsing was successful, built-in <tt>--export-help</tt> option was used.
+ */
+
 /**
 .Class.ArgumentParser
 ..cat:Miscellaneous

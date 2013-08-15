@@ -379,7 +379,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @section Remarks
  *
- * The @link CocatDirectStringSet#concat @endlink member should contain the contents of the sequence file by a prior
+ * The @link ConcatDirectStringSet::concat @endlink member should contain the contents of the sequence file by a prior
  * call of <tt>open</tt>.
  *
  * This function expects a @link ConcatDirectStringSet @endlink and divides the underlying concatenation string into

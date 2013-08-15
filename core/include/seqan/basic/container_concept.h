@@ -183,6 +183,17 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @return Type       The type to use for storing container sizes.
  */
 
+// TODO(holtgrew): This should become RandomAccessContainer#Position.
+/*!
+ * @mfn ContainerConcept#Position
+ * @brief Returns the position type of a container.
+ *
+ * @signature Positin<TContainer>::Type
+ *
+ * @tparam TContainer The Container type to query.
+ * @return Type       The type to use for storing container positions.
+ */
+
 /*!
  * @mfn ContainerConcept#Difference
  * @brief Returns the type for distances between two iterators.
@@ -203,7 +214,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  *
  * @param c   The container to get the begin iterator for (type <tt>TContainer</tt>).
  * @param tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
- *            When left out, @link DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
+ *            When left out, @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
  *
  * @return TIterator Iterator to the beginning of the container, the type is selected by @link ContainerConcept#Iterator @endlink with
  *                   the given (or default) tag.
@@ -219,7 +230,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  *
  * @param c   The container to get the end iterator for (type <tt>TContainer</tt>).
  * @param tag An optional tag for selecting the type of the iterator.  One of <tt>Standard</tt> and <tt>Rooted</tt>.
- *            When left out, @link DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
+ *            When left out, @link ContainerConcept#DefaultGetIteratorSpec @endlink of <tt>TContainer</tt> is used.
  *
  * @return TIterator Iterator to the end of the container, the type is selected by @link ContainerConcept#Iterator @endlink with
  *                   the given (or default) tag.

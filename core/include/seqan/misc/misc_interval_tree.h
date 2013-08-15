@@ -453,7 +453,7 @@ SEQAN_CHECKPOINT
  * @signature IntervalTree::IntervalTree(intervalBegins, intervalEnds, [intervalCargos,] len);
  *
  * @param[in] intervals Container of intervals.  A strin gof <tt>IntervalAndCargo&lt;Value, TCargo&gt;</tt>
- *                      objects, see @link IntervalEndCargo @endlink.
+ *                      objects, see @link IntervalAndCargo @endlink.
  * @param[in] intervalBegins
  *                      Iterator pointing to begin position of first interval.
  * @param[in] intervalEnds

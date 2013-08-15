@@ -112,7 +112,7 @@ namespace seqan {
  * read upon opening the file.
  * 
  * Note that there is a special case when reading SAM records: If there is no header, or records refer to reference
- * sequences that are previously unknown when reading SAM then a new entry is added to @link BamHeader#sequenceInfos
+ * sequences that are previously unknown when reading SAM then a new entry is added to @link BamHeader::sequenceInfos
  * @endlink.
  */
 
@@ -340,8 +340,8 @@ inline BamStream::BamStream(char const * filename, OperationMode mode, Format fo
  * 
  * @param[in,out] bamIO    The @link BamStream @endlink object to open. Types: BamStream
  * @param[in]     fileName The path to the file to open, <tt>char const *</tt>.
- * @param[in]     mode     The mode to open the file in, optional, of type @link BamStream::Mode @endlink, defaults to
- *                         <tt>BamStream::READ</tt>.
+ * @param[in]     mode     The mode to open the file in, optional, of type @link BamStream::OperationMode @endlink,
+ *                         defaults to <tt>BamStream::READ</tt>.
  * @param[in]     format   The format to use, inferred from file contents (reading) or file name (writing) by default.
  *                         the path to the file to open, of type @link BamStream::Format @endlink, defaults to
  *                         <tt>AUTO</tt>.

@@ -353,7 +353,7 @@ struct Spec<Lexical<TSpec> const>
 // TODO(holtgrew): Does this belong to Lexical?
 
 /*!
- * @fn compare
+ * @fn Lexical#compare
  * @headerfile <seqan/sequence.h>
  * @brief Compares two objects.
  * 

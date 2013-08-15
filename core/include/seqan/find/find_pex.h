@@ -132,8 +132,8 @@ struct PexRange_{
  * @section Remarks
  *
  * There are two defaults available: <tt>PexHierarchical</tt> and <tt>PexNonHiearchical</tt> (e.g.
- * <tt>Pattern&lt;CharString&gt;, PexHierarchical&gt;</tt> that both use the @link AhoCorasick @endlink algorithm for
- * the multiple exact string matching.
+ * <tt>Pattern&lt;CharString&gt;, PexHierarchical&gt;</tt> that both use the @link AhoCorasickPattern Aho-Corasick
+ * @endlink algorithm for the multiple exact string matching.
  */
 
 /**

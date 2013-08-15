@@ -141,8 +141,8 @@ struct BitsPerValue< Dna >
  * 
  * @section Remarks
  * 
- * The @link ValueSize @endlink of <tt>Dna5</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1,
- * 'G' = 2, 'T' = 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
+ * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of <tt>Dna5</tt> is 5.  The nucleotides are enumerated this
+ * way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
  * 
  * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.  An object that has a value not
  * in <tt>{'A', 'C', 'G', 'T'}</tt> is converted to <tt>'N'</tt>.

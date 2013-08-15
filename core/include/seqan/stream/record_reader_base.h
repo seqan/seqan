@@ -57,7 +57,7 @@ struct DoublePass {};
 /*!
  * @class RecordReader
  * @headerfile <seqan/stream.h>
- * @brief Buffer management when reading from @link ConceptStream streams @endlink.
+ * @brief Buffer management when reading from @link StreamConcept streams @endlink.
  *
  * @signature template <typename TStream, typename TSpec>
  *            class RecordReader;

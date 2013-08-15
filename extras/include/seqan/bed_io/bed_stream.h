@@ -126,7 +126,7 @@ namespace seqan {
  * 
  * @see BedStream
  * @see BedStream#open
- * @see BedStream#BedStream
+ * @see BedStream::BedStream
  * 
  * @var BedStream::Mode BedStream::READ;
  * @brief Open in read mode.

@@ -86,7 +86,7 @@ typedef Tag<Bed12_> Bed12;
  * 
  * The <tt>ref</tt> field is the name of the reference as loaded from the BED file. The <tt>rID</tt> field can be used
  * to store a numeric reference id.  When loading without using a @link BedIOContext @endlink, the <tt>rID</tt> field
- * remains set to @link BedRecord#INVALID_REFID @endlink, otherwise the field is set to a different value.
+ * remains set to @link BedRecord::INVALID_REFID @endlink, otherwise the field is set to a different value.
  * 
  * Note that while the BED file format is 1-based, the coordinates in the BedRecord are 0-based.
  *

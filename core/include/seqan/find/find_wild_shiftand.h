@@ -65,8 +65,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * After the find-Method returned the Finder will point to the last position of the occurrence
  * 
- * We encourage the user to intialize the Pattern with a <tt>String&lt;char&gt;</tt> (@link setHost @endlink or the
- * C'tor). If you use for instance <tt>String&lt;Dna&gt;</tt> instead you won't be able to specify wildcards.
+ * We encourage the user to intialize the Pattern with a <tt>String&lt;char&gt;</tt> (@link HostedConcept#setHost
+ * @endlink or the C'tor). If you use for instance <tt>String&lt;Dna&gt;</tt> instead you won't be able to specify
+ * wildcards.
  */
 
 /**

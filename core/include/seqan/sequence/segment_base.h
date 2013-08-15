@@ -45,7 +45,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @concept SegmentableConcept
  * @headerfile <seqan/sequence.h>
- * @brief A concept for sequences that can be used as the host of a @link SegmentConcept segment @endlink.
+ * @brief A concept for sequences that can be used as the host of a @link Segment segment @endlink.
  *
  * @signature concept Segmentable;
  * @brief Returns prefix type in a infix fashion.
@@ -72,7 +72,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param s      Segmentable sequence to return the prefix for (type <tt>TSeq</tt>).
  * @param endPos End position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
  *
- * @return TPrefix The prefix of length <tt>endPos</tt>.  Type as returned by @link Segmentable#Prefix @endlink for TSeq.
+ * @return TPrefix The prefix of length <tt>endPos</tt>.  Type as returned by @link SegmentableConcept#Prefix @endlink
+ *                 for TSeq.
  */
 
 /*!
@@ -132,7 +133,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param s        The segmentable type to get the suffix of.
  * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
  *
- * @return TSuffix The suffix type as returned by @link Segmentable#Suffix @endlink.
+ * @return TSuffix The suffix type as returned by @link SegmentableConcept#Suffix @endlink.
  */
 
 //////////////////////////////////////////////////////////////////////////////

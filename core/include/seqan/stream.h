@@ -46,6 +46,22 @@
 #ifndef SEQAN_STREAM_H_
 #define SEQAN_STREAM_H_
 
+/*!
+ * @macro SEQAN_HAS_ZLIB
+ * @headerfile <seqan/stream.h>
+ * @brief Defined as 0 or 1, depending on zlib being available.
+ *
+ * @signature #define SEQAN_HAS_ZLIB 0  // or 1
+ */
+
+/*!
+ * @macro SEQAN_HAS_BZIP2
+ * @headerfile <seqan/stream.h>
+ * @brief Defined as 0 or 1, depending on bzlib being available.
+ *
+ * @signature #define SEQAN_HAS_BZIP 0  // or 1
+ */
+
 /**
 .Macro.SEQAN_HAS_ZLIB
 ..cat:Input/Output

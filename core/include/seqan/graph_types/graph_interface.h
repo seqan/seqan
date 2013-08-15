@@ -63,6 +63,7 @@ struct Hmm;
 
 /*!
  * @class Graph
+ * @extends ContainerConcept
  * @headerfile <seqan/graph_types.h>
  * @brief Graph class.
  *

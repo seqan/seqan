@@ -107,7 +107,7 @@ struct Value;
  *
  * @tparam T Type of the value-holding object.
  *
- * Depending on T, the GetValue-type can either be Value&lt;T&gt;::Type & or Value&lt;T&gt;::Type.
+ * Depending on T, the GetValue-type can either be Value&lt;T&gt;::Type &amp; or Value&lt;T&gt;::Type.
  *
  * @section Remarks
  *
@@ -146,7 +146,7 @@ struct GetValue;
  *
  * @tparam T A type.
  *
- * @return Type Either <tt>Value&lt;T&gt;Type &</tt> or a proxy object Proxy for <tt>T</tt>.
+ * @return Type Either <tt>Value&lt;T&gt;Type &amp;</tt> or a proxy object Proxy for <tt>T</tt>.
  */
 
 /**

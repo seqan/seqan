@@ -166,11 +166,11 @@ struct Alloc {};
  *
  * @snippet demos/sequence/string.cpp usual operations
  *
- * Strings have a size (the actual number of elements) and a capacity (the number of elements that memory has
- * been allocated for).  Note that clearing a string does not free the memory (as the STL, SeqAn assumes that
- * strings will later require a similar amount of memory as before).  Using @link String#shrinkToFit @endlink,
- * the user can force a re-allocation of the memory such that the string afterward uses the minimal amount
- * of memory to accomodate all of its objects.
+ * Strings have a size (the actual number of elements) and a capacity (the number of elements that memory has been
+ * allocated for).  Note that clearing a string does not free the memory (as the STL, SeqAn assumes that strings will
+ * later require a similar amount of memory as before).  Using @link ContainerConcept#shrinkToFit @endlink, the user can
+ * force a re-allocation of the memory such that the string afterward uses the minimal amount of memory to accomodate
+ * all of its objects.
  *
  * @snippet demos/sequence/string.cpp clear and resize
  *
@@ -237,19 +237,16 @@ struct Alloc {};
  * @brief Returns the sequence number of a position.
  * @headerfile <seqan/sequence.h>
  * 
- * @signature TSeqNo getSeqNo(pos[, limits])
+ * @signature TSeqNo getSeqNo(pos[, limits]);
  * 
  * @param pos A position. Types: Pair
  * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
- * @return TSeqNo A single integer value that identifies the string within the
- *                stringset <tt>pos</tt> points at.If <tt>limits</tt> is
- *                omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns
- *                0.If <tt>pos</tt> is a local position (of class @link Pair
- *                @endlink) then <tt>i1</tt> is returned.If <tt>pos</tt> is a
- *                global position (integer type and <tt>limits</tt> is a @link
- *                String @endlink) then <tt>pos</tt> is converted to a local
- *                position and <tt>i1</tt> is returned.
+ * @return TSeqNo A single integer value that identifies the string within the stringset <tt>pos</tt> points at. If
+ *                <tt>limits</tt> is omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns 0.If <tt>pos</tt> is a
+ *                local position (of class @link Pair @endlink) then <tt>i1</tt> is returned.If <tt>pos</tt> is a global
+ *                position (integer type and <tt>limits</tt> is a @link String @endlink) then <tt>pos</tt> is converted
+ *                to a local position and <tt>i1</tt> is returned.
  */
 
 /*!
@@ -257,19 +254,16 @@ struct Alloc {};
  * @brief Returns the local sequence offset of a position.
  * @headerfile <seqan/sequence.h>
  * 
- * @signature TOffset getSeqOffset(pos[, limits])
+ * @signature TOffset getSeqOffset(pos[, limits]);
  * 
  * @param pos A position. Types: Pair
- * @param limits The limits string returned by @link stringSetLimits @endlink.
+ * @param limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * 
- * @return TOffset A single integer value that identifies the position within
- *                 the string <tt>pos</tt> points at.If <tt>limits</tt> is
- *                 omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns
- *                 <tt>pos</tt>.If <tt>pos</tt> is a local position (of class
- *                 @link Pair @endlink) then <tt>i2</tt> is returned.If
- *                 <tt>pos</tt> is a global position (integer type and
- *                 <tt>limits</tt> is a @link String @endlink) then <tt>pos</tt>
- *                 is converted to a local position and <tt>i2</tt> is returned.
+ * @return TOffset A single integer value that identifies the position within the string <tt>pos</tt> points at.If
+ *                 <tt>limits</tt> is omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns <tt>pos</tt>.  If
+ *                 <tt>pos</tt> is a local position (of class @link Pair @endlink) then <tt>i2</tt> is returned.If
+ *                 <tt>pos</tt> is a global position (integer type and <tt>limits</tt> is a @link String @endlink) then
+ *                 <tt>pos</tt> is converted to a local position and <tt>i2</tt> is returned.
  */
 
 /**

@@ -107,7 +107,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Refers to the aligned read in @link FragmentStore::readStore @endlink.
  *
  * @var TId AlignedReadStoreElement::contigId;
- * @brief Refers to the contig in the @link FragmentSTore::contigStore @endlink that the read is aligned with.
+ * @brief Refers to the contig in the @link FragmentStore::contigStore @endlink that the read is aligned with.
  *
  * @var TId AlignedReadStoreElement::pairMatchId;
  * @brief Two read alignments having the same pairMatchId form a valid pair match.  If it equals <tt>INVALID_ID</tt>
@@ -581,7 +581,7 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @param[in]     value       The value to search for.
  * @param[in]     sortTag     Tag for selecting the member to compare by.  See @link SortAlignedReadTags @endlink.
  *
- * @return TIter1 Iterator to the lower bound item.  If <tt>TAlignStore</tt> is the type of <tt>align</store> then
+ * @return TIter1 Iterator to the lower bound item.  If <tt>TAlignStore</tt> is the type of <tt>alignStore</tt> then
  *                TIter1 is the result of <tt>Iterator&lt;TAlignStore, Standard&gt;::Type</tt>.
  * @return TIter2 Iterator to the lower bound item.  Has the same type as <tt>itBegin</tt> and <tt>itEnd</tt>.
  *
@@ -605,7 +605,7 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @param[in]     value       The value to search for.
  * @param[in]     sortTag     Tag for selecting the member to compare by.  See @link SortAlignedReadTags @endlink.
  *
- * @return TIter1 Iterator to the upper bound item.  If <tt>TAlignStore</tt> is the type of <tt>align</store> then
+ * @return TIter1 Iterator to the upper bound item.  If <tt>TAlignStore</tt> is the type of <tt>alignStore</tt> then
  *                TIter1 is the result of <tt>Iterator&lt;TAlignStore, Standard&gt;::Type</tt>.
  * @return TIter2 Iterator to the upper bound item.  Has the same type as <tt>itBegin</tt> and <tt>itEnd</tt>.
  *

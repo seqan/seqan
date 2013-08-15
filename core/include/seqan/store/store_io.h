@@ -84,7 +84,7 @@ typedef Tag<TagAmos_> const Amos;
  * @signature void getClrRange(store, alignEl, begClr, endClr);
  *
  * @param[in]  store    The FragmentStore to work on.
- * @param[in]  alignEl  The @link AlignedReadElement @endlink to work on.
+ * @param[in]  alignEl  The @link AlignedReadStoreElement @endlink to work on.
  * @param[out] begClr   Begin of the clear range.
  * @param[out] endClr   End of the clear range.
  */

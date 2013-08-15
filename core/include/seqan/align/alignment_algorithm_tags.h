@@ -59,6 +59,15 @@ namespace seqan {
 
 // TODO(holtgrew): Rename MyersBitVector to Myers? Clashes with find module at the moment.
 
+/*!
+ * @tag AlignmentAlgorithmTags#Gotoh
+ * @headerfile <seqan/align.h>
+ * @brief Tag for selecting Gotoh DP algorithm.
+ *
+ * @signature struct Gotoh_;
+ * @signature typedef Tag<Gotoh_> Gotoh;
+ */
+
 /**
 .Tag.Pairwise Global Alignment Algorithms
 ..cat:Alignments

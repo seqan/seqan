@@ -80,7 +80,6 @@ namespace seqan {
  * do so.
  * 
  * @see IsSimple
- * @see SimpleConceptType
  */
 
 /**

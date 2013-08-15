@@ -725,7 +725,7 @@ readUntilOneOf(TBuffer & buffer, RecordReader<TStream, TPass> & reader, char c1,
  * @section Remarks
  *
  * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.  Consider using @link
- * readUntilBlank @endlink for reading until space or tab.
+ * FileFormatTokenization#readUntilBlank @endlink for reading until space or tab.
  *
  * This function stops <b>on</b> the found character and the character itself is not written to the buffer.  Note that
  * even when an error occurs, <tt>buffer</tt> will contain the characters read until the error (or EOF) occured.
@@ -830,8 +830,8 @@ readUntilBlank(TBuffer & buffer,
  * @param[in,out] reader The @link RecordReader @endlink to read from.
  * @param[in]     c      The <tt>char</tt> to look for.
  *
- * @return int 0 if there was no error and non-0 if there were errors.  A special value is @link TokenizeResult
- *             EOF_BEFORE_SUCCESS @endlink.
+ * @return int 0 if there was no error and non-0 if there were errors.
+ *             A special value is @link TokenizeResult EOF_BEFORE_SUCCESS @endlink.
  *
  * @section Remarks
  *
@@ -1164,7 +1164,7 @@ skipNCharsIgnoringWhitespace(RecordReader<TStream, TPass> & reader,
  * @section Remarks
  *
  * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.  Consider using @link
- * skipUntilBlank @endlink for skipping until space or tab.
+ * FileFormatTokenization#skipUntilBlank @endlink for skipping until space or tab.
  *
  * The reader will stop <b>on</b> the first whitespace character.
  */
@@ -1611,7 +1611,7 @@ readGraphs(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
 }
 
 /*!
- * @fn FileFormatTokenization#readFlaot
+ * @fn FileFormatTokenization#readFloat
  * @headerfile <seqan/tokenize.h>
  * @brief Read characters from @link RecordReader @endlink as long as the string is a valid floating point numbers.
  *
@@ -1837,7 +1837,7 @@ readIdentifier(TBuffer & buffer, RecordReader<TStream, TPass> & reader)
  * @section Remarks
  *
  * Whitespace is more than <tt>' '</tt> and <tt>'\t'</tt>, see @link isspace @endlink.  Consider using @link
- * skipBlanks @endlink for skipping blanks.
+ * FileFormatTokenization#skipBlanks @endlink for skipping blanks.
  *
  * This function stops <b>after</b> the last skipped.
  */

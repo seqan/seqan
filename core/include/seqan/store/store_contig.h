@@ -234,7 +234,7 @@ ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<type
  *
  * @section Remarks
  *
- * Value type of @link FragmentStore#contigFileStore @endlink string.
+ * Value type of @link FragmentStore::contigFileStore @endlink string.
  */
 
 /*!

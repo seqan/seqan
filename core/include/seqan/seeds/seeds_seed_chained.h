@@ -355,7 +355,7 @@ endPositionV(Seed<ChainedSeed, TConfig> const & seed)
  *
  * @param[in] seed The ChainedSeed to query for its number of diagonals.
  *
- * @return TSize The number of diagonals in the ChainedSeed.  TSize is the @link ChainedSeed#Size @endlink type of
+ * @return TSize The number of diagonals in the ChainedSeed.  TSize is the @link ContainerConcept#Size @endlink type of
  *               <tt>seed</tt>
  */
 

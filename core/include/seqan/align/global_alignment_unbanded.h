@@ -106,20 +106,20 @@ class Fragment;
  * First, you can select whether begin and end gaps are free in either sequence using <tt>alignConfig</tt>.
  * 
  * Second, you can select the type of the target storing the alignment. This can be either an @link Align @endlink
- * object, two @link Gaps @endlink objects, a @link Alignment Graph @endlink, or a string of @link Fragment @endlink
+ * object, two @link Gaps @endlink objects, a @link AlignmentGraph @endlink, or a string of @link Fragment @endlink
  * objects. @link Align @endlink objects provide an interface to tabular alignments with the restriction of all rows
  * having the same type. Using two @link Gaps @endlink objects has the advantage that you an align sequences with
- * different types, for example @link DnaString @endlink and @link Dna5String @endlink. @link Alignment Graph Alignment
+ * different types, for example @link DnaString @endlink and @link Dna5String @endlink. @link AlignmentGraph Alignment
  * Graphs @endlink provide a graph-based representation of segment-based colinear alignments. Using @link Fragment
  * @endlink strings is useful for collecting many pairwise alignments, for example in the construction of @link
- * Alignment Graph Alignment Graphs @endlink for multiple-sequence alignments (MSA).
+ * AlignmentGraph Alignment Graphs @endlink for multiple-sequence alignments (MSA).
  * 
  * Third, you can optionally give a band for the alignment using <tt>lowerDiag</tt> and <tt>upperDiag</tt>. The center
  * diagonal has index <tt>0</tt>, the <tt>i</tt>th diagonal below has index <tt>-i</tt>, the <tt>i</tt>th above has
  * index <tt>i</tt>.
  * 
- * Fourth, you can select the algorithm to use with <tt>algorithmTag</tt>. This can be one of @link
- * AlignmentAlgorithmTags @endlink and @link Pairwise Global Alignment Algorithms.value.Gotoh @endlink.  The
+ * Fourth, you can select the algorithm to use with <tt>algorithmTag</tt>.  This can be one of @link
+ * AlignmentAlgorithmTags#NeedlemanWunsch @endlink and @link AlignmentAlgorithmTags#Gotoh @endlink.  The
  * Needleman-Wunsch algorithm supports scoring schemes with linear gap costs only while Gotoh's algorithm also allows
  * affine gap costs.
  * 
@@ -547,6 +547,42 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 // ----------------------------------------------------------------------------
 // Function globalAlignmentScore()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn globalAlignmentScore
+ * @brief Computes the best global pairwise alignment score.
+ * 
+ * @signature TScoreVal globalAlignmentScore(seqH, seqV, scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
+ * @signature TScoreVal globalAlignmentScore(strings,    scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
+ * @signature TScoreVal globalAlignmentScore(seqH, seqV, {MyersBitVector | MyersHirschberg});
+ * @signature TScoreVal globalAlignmentScore(strings,    {MyersBitVector | MyersHirschberg});
+ * 
+ * @param[in] seqH          Horizontal gapped sequence in alignment matrix.  Types: String
+ * @param[in] seqV          Vertical gapped sequence in alignment matrix.  Types: String
+ * @param[in] strings       A @link StringSet @endlink containing two sequences.  Type: StringSet.
+ * @param[in] alignConfig   The @link AlignConfig @endlink to use for the alignment.  Type: AlignConfig
+ * @param[in] scoringScheme The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
+ *                          that the scoring scheme is compatible with <tt>algorithmTag</tt>.  Type: @link Score @endlink.
+ * @param[in] lowerDiag     Optional lower diagonal.  Types: <tt>int</tt>
+ * @param[in] upperDiag     Optional upper diagonal.  Types: <tt>int</tt>
+ * @param[in] algorithmTag  The Tag for picking the alignment algorithm. Types: @link PairwiseLocalAlignmentAlgorithms
+ *                          @endlink.
+ * 
+ * @return TScoreValue The score value with the alignment score, as given by the @link Score#Value @endlink metafunction
+ *                     of the <tt>scoringScheme</tt> type.
+ * 
+ * @section Remarks
+ * 
+ * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
+ * step.  Note that Myers' bit-vector algorithm does not compute an alignment (only in the Myers-Hirschberg variant) but
+ * scores can be computed using <tt>globalAlignmentScore</tt>.
+ * 
+ * The same limitations to algorithms as in @link globalAlignment @endlink apply.  Furthermore, the
+ * <tt>MyersBitVector</tt> and <tt>MyersHirschberg</tt> variants can only be used without any other parameter.
+ * 
+ * @see http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
+ * @see globalAlignment
+ */
 
 /**
 .Function.globalAlignmentScore

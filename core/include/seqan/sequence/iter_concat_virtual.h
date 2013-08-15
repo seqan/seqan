@@ -57,7 +57,32 @@ struct Concatenator;
 template <typename TDelimiter = void >
 struct ConcatVirtual;
 
-// TODO(holtgrew): Ask David about objNo and offset.
+/*!
+ * @class ConcatVirtualIterator
+ * @extends Iter
+ * @headerfile <seqan/sequence.h>
+ * @brief Iterator that sequentially iterates through the elements of a @link StringSet @endlink as if they were
+ *        directly concatenated, also see @link ConcatDirectStringSet @endlink.
+ *
+ * @signature template <typename TStringSet[, typename TDelimiter]>
+ *            class Iter<TStringSet, ConcatVirtual<TDelimiter> >;
+ *
+ * @tparam TStringSet The @link StringSet @endlink to iterate.
+ * @tparam TDelimiter The delimiter character.  Default: <tt>void</tt>.
+ *
+ *
+ * @fn ConcatVirtualIterator::Iter
+ * @brief Constructor.
+ *
+ * @signature Iter::Iter(host[, objNo, offset]);
+ *
+ * @param[in] host   Container to iterate.
+ * @param[in] objNo  Sequence number to set the iterator to.  Default: 0.
+ * @param[in] offset Offset in the object (specified by objNo) to point to.  Defaults 0.
+ *
+ * If <tt>objNo</tt> and <tt>offset</tt> are not given then the iterator will point to the first element with offset 0.
+ */
+
 /**
 .Spec.ConcatVirtual Iterator
 ..cat:Sequences

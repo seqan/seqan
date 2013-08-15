@@ -298,7 +298,7 @@ struct FragmentStoreConfig
  *
  * @section Remarks
  *
- * You can sort <tt>alignedReadStore</tt> using @link sortAlignedRead @endlink.  After sorting, you can use the
+ * You can sort <tt>alignedReadStore</tt> using @link sortAlignedReads @endlink.  After sorting, you can use the
  * functions @link lowerBoundAlignedReads @endlink and @link upperBoundAlignedReads @endlink to perform a binary search,
  * e.g. for accessing only a subrange.
  *
@@ -307,6 +307,14 @@ struct FragmentStoreConfig
  * @see upperBoundAlignedReads
  * @see sortAlignedReads
  *
+ *
+ * @var FragmentStore::TAnnotationStore FragmentStore::annotationStore
+ * @brief String that maps from annoId to (contigId, typeId, beginPos, endPos, parentId, lastChildId, nextSiblingId, values).
+ *
+ * The value type is @link AnnotationStoreElement @endlink.
+ *
+ * Instead of accessing this store directly, consider to use the high-level interface provided by @link
+ * AnnotationTreeIterator @endlink.
  *
  * @var FragmentStore::TAlignQualityStore FragmentStore::alignQualityStore;
  * @brief @link String @endlink that maps from alignId to (pairScore, score, errors).
@@ -346,7 +354,8 @@ struct FragmentStoreConfig
  *
  * There are @link FragmentStore::PredefinedAnnotationTypes predefined type ids @endlink for commonly used types
  * e.g. <tt>ANNO_GENE</tt> or <tt>ANNO_EXON</tt> which can be used to set the @link AnnotationStoreElement::typeId
- * @endlink directly as a fast alternative to @link getType @endlink and @link setType @endlink.
+ * @endlink directly as a fast alternative to @link AnnotationTreeIterator#getType @endlink and @link
+ * AnnotationTreeIterator#setType @endlink.
  *
  *
  * @var FragmentStore::TAnnotationKeyStore FragmentStore::annotationKeyStore;
@@ -357,11 +366,12 @@ struct FragmentStoreConfig
 /*!
  * @enum FragmentStore::PredefinedAnnotationTypes
  * @brief The @link FragmentStore @endlink predefines some commonly used @link AnnotationStoreElement::typeId @endlink
- *        values.  They can be used to compare or set the @link AnnotationStoreElement::typeId @endlink directly as
- *        a fast alternative to @link getType @endlink and @link setType @endlink.
+ *        values.  They can be used to compare or set the @link AnnotationStoreElement::typeId @endlink directly as a
+ *        fast alternative to @link AnnotationTreeIterator#getType @endlink and @link AnnotationTreeIterator#setType
+ *        @endlink.
  *
  * @var FragmentStore::PredefinedAnnotationTypes ANNO_ROOT;
- * @brief The root node ("<node>").
+ * @brief The root node ("&lt;node&gt;").
  *
  * @var FragmentStore::PredefinedAnnotationTypes ANNO_GENE;
  * @brief A gene ("gene").
@@ -1261,6 +1271,7 @@ clearContigs(FragmentStore<TSpec, TConfig> &me)
  *
  * Clears the @link FragmentStore::readStore @endlink, @link FragmentStore::readSeqStore @endlink, and @link
  * FragmentStore::readNameStore @endlink.
+ */
 
 /**
 .Function.clearReads
@@ -1293,7 +1304,7 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
  *
  * @param[in,out] store      The FragmentStore to append the read to.
  * @param[in]     read       The read sequence.  Type: @link SequenceConcept @endlink.
- * @param[in]     name       The name of the read.  Type: @link CharString @endink.
+ * @param[in]     name       The name of the read.  Type: @link CharString @endlink.
  * @param[in]     matePairId ID of the mate-pair that this read is part of.  Default:
  *                           <tt>FragmentStore::INVALID_ID</tt> which corresponds to an unmated read.
  *
@@ -1975,7 +1986,7 @@ struct AlignedReadLayout
  *
  * For each contig, thisf unction layouts all reads in rows from up to down reusing empty row spaces.
  *
- * @see printAlignment
+ * @see AlignedReadLayout#printAlignment
  */
 
 /**
@@ -2078,7 +2089,8 @@ inline void _printContig(
  *
  * @param[in,out] stream    The std::ostream to print to.
  * @param[in]     format    The output format, e.g. <tt>Raw</tt>.
- * @param[in]     layout    The @link AligedReadLayout @endlink computed earlier in @link layoutAlignment @endlink.
+ * @param[in]     layout    The @link AlignedReadLayout @endlink computed earlier in @link
+ *                          AlignedReadLayout#layoutAlignment @endlink.
  * @param[in]     store     The FragmentStore that this layout belongs to.
  * @param[in]     contigID  The id of the contig for the alignments to print.
  * @param[in]     posBegin  The begin position of the window.

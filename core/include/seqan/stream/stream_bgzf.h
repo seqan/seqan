@@ -110,10 +110,12 @@ struct BgzfCacheEntry_
  *
  * @section Examples
  *
+ * @code{.cpp}
  * Stream<Bgzf> stream;
  * if (!open(stream, "myfile.bam", "r"))
  *     return 1;  // error
  * // ... work
+ * @endcode
  */
 
 /**

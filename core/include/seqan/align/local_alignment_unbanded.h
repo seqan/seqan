@@ -105,7 +105,7 @@ namespace seqan {
  * provide an interface to tabular alignments with the restriction of all rows having the same type. Using two @link
  * Gaps @endlink objects has the advantage that you an align sequences with different types, for example @link DnaString
  * @endlink and @link Dna5String @endlink. Using @link Fragment @endlink strings is useful for collecting many pairwise
- * alignments, for example in the construction of @link Alignment Graph Alignment Graphs @endlink for multiple- sequence
+ * alignments, for example in the construction of @link AlignmentGraph Alignment Graphs @endlink for multiple- sequence
  * alignments (MSA).
  * 
  * Second, you can optionally give a band for the alignment using <tt>lowerDiag</tt> and <tt>upperDiag</tt>. The center

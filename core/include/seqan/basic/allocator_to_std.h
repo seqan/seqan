@@ -65,9 +65,9 @@ namespace seqan {
  * @section Remarks
  * 
  * The member functions <tt>allocate</tt> and <tt>deallocate</tt> of <tt>ToStdAllocator</tt> call the (globale)
- * functions @link allocate @endlink and @link deallocate @endlink, respectively. The globale functions get an allocator
- * object as their first arguments. This allocator object is not the <tt>ToStdAllocator</tt> object itself, but the host
- * object that was given to the constructor.
+ * functions @link Allocator#allocate @endlink and @link Allocator#deallocate @endlink, respectively. The globale
+ * functions get an allocator object as their first arguments. This allocator object is not the <tt>ToStdAllocator</tt>
+ * object itself, but the host object that was given to the constructor.
  * 
  * @fn ToStdAllocator#ToStdAllocator
  * 
@@ -75,7 +75,8 @@ namespace seqan {
  * 
  * @signature ToStdAllocator::ToStdAllocator(host);
  * 
- * @param host The host object that is used as allocator for @link allocate @endlink and @link deallocate @endlink.
+ * @param host The host object that is used as allocator for @link Allocator#allocate @endlink and @link
+ * Allocator#deallocate @endlink.
  */
 
 /**

@@ -73,8 +73,8 @@ namespace seqan {
  * 
  * @section Remarks
  * 
- * The default constructor initialized both @link CigarElement#operation @endlink and @link CigarElement#count @endlink
- * with <tt>0</tt>.
+ * The default constructor initialized both @link CigarElement::operation @endlink and @link CigarElement::count
+ * @endlink with <tt>0</tt>.
  */
 
 /*!

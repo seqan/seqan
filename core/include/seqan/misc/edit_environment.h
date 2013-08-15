@@ -124,7 +124,8 @@ struct EditEnvironment;
  * 
  * See @link StringEnumerator @endlink for examples.
  * 
- * Note that the @link LevenshteinStringEnumerator#length @endlink function does not work for <tt>DISTANCE &gt; 2</tt>.
+ * Note that the @link StringEnumerator#length LevenshteinStringEnumerator#length @endlink function does not work for
+ * <tt>DISTANCE &gt; 2</tt>.
  */
 
 /**
@@ -673,7 +674,7 @@ end(StringEnumerator<TObject, TSpec> const & enumerator, Standard)
 // --------------------------------------------------------------------------
 
 /*!
- * @fn HammingStringEnumerator#length
+ * @fn StringEnumerator#length
  * @brief Return number of strings that will be enumerated.
  *
  * @signature TSize length(stringEnum);

@@ -82,7 +82,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef (...) TAnnotationStoreElement::TPos;
  *
  * @typedef AnnotationStoreElement::TValues
- * @brief @link StringSet @endlink type of the @link AnnotatioStoreElement::values @endlink member.
+ * @brief @link StringSet @endlink type of the @link AnnotationStoreElement::values @endlink member.
  *
  * @signature typedef (...) TAnnotationStoreElement::TValues;
  */
@@ -96,6 +96,12 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @var TId AnnotationStoreElement::contigId;
  * @brief Refers to the contig in @link FragmentStore::contigStore @endlink that the annotation is part of.
+ *
+ * @var TId AnnotationStoreElement::typeId;
+ * @brief Refers to an entry in the @link FragmentStore::annotationTypeStore @endlink.
+ *
+ * There are some type ids predefined for commonly used types, e.g. $ANNO_GENE$.  See @link
+ * FragmentStore::PredefinedAnnotationTypes @endlink.
  *
  * @var TPos AnnotationStoreElement::beginPos;
  * @brief Begin position of the annotation in gap space.
@@ -279,8 +285,8 @@ struct AnnotationTree {};
  *
  * This iterator can move @link AnnotationTreeIterator#goDown down @endlink, @link AnnotationTreeIterator#goRight right
  * @endlink, and @link AnnotationTreeIterator#goUp up @endlink in the tree and supports a preorder DFS traversal using
- * the functions @link AnnotationTreeIterator#goBegin @endlink, @link AnnotationTreeIterator#goNext @endlink, and @link
- * AnnotationTreeIterator#atEnd @endlink.
+ * the functions @link RootedRandomAccessIteratorConcept#goBegin @endlink, @link InputIteratorConcept#goNext @endlink,
+ * and @link RootedIteratorConcept#atEnd @endlink.
  *
  * Preorder means that the iterator visits the node befor it visits its children.
  *
@@ -296,7 +302,7 @@ struct AnnotationTree {};
  * @section Remarks
  *
  * To access the annotation, the iterator points to, use @link AnnotationTreeIterator#getAnnotation @endlink.  The
- * annotation id is returned by @link AnnotationTreeIterator#value @endlink.
+ * annotation id is returned by @link IteratorAssociatedTypesConcept#value @endlink.
  *
  * @section Example
  *
@@ -327,7 +333,8 @@ struct AnnotationTree {};
  * @param[in] store       The FragmentStore with the annotation tree to iterate.
  * @param[in] startInNode Annotation id of the ndoe the iterator should start at.  Default: 0, the root node id.
  *
- * The @link Container#begin @endlink function can also be used to create a tree iterator that starts in the root node:
+ * The @link ContainerConcept#begin @endlink function can also be used to create a tree iterator that starts in the root
+ * node:
  *
  * @code{.cpp}
  * FragmentStore<> store;
@@ -512,7 +519,7 @@ getAnnotation(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @param[in] it An AnnotationTreeIterator to query.
  *
  * @return TName The name of the current annotation.  This is a reference to the corresponding position in @link
- *               FragmentStore::annotatioNameStore @endlink.
+ *               FragmentStore::annotationNameStore @endlink.
  *
  * @see AnnotationTreeIterator#setName
  */

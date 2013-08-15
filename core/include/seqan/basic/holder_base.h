@@ -349,7 +349,7 @@ struct Reference<Holder<TValue *, TSpec> const>
  * in some cases.
  * 
  * @see length
- * @see emptyHost
+ * @see HostedConcept#emptyHost
  */
 
 // ----------------------------------------------------------------------------

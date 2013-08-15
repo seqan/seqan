@@ -150,7 +150,7 @@ struct DefaultPattern
 };
 
 /*!
- * @mfn Haystack
+ * @mfn Finder#Haystack
  * @headerfile <seqan/file.h>
  * @brief Returns the haystack type of a @link Finder @endlink type.
  *
@@ -335,16 +335,13 @@ Hit at position: 16
  * 
  * @section Remarks
  * 
- * <tt>position(finder)</tt> returns the position of the current hit in the
- * haystack. If <tt>THaystack</tt> is a set of strings or an index of a set of
- * strings, then <tt>position(finder)</tt> returns a @link Pair @endlink
- * <tt>(hayNo, pos)</tt>, in which <tt>hayNo</tt> is the haystack index and
- * <tt>pos</tt> the local position of the hit.
+ * <tt>position(finder)</tt> returns the position of the current hit in the haystack.  If <tt>THaystack</tt> is a set of
+ * strings or an index of a set of strings, then <tt>position(finder)</tt> returns a @link Pair @endlink <tt>(hayNo,
+ * pos)</tt>, in which <tt>hayNo</tt> is the haystack index and <tt>pos</tt> the local position of the hit.
  * 
- * To reset the finder object and use it on another text or different text
- * position, use <tt>clear(finder)</tt> Note that <tt>clear(finder)</tt> doesn't
- * move the text iterator. To start the search from the beginning or somewhere
- * else in the text, use @link goBegin @endlink or @link setPosition @endlink.
+ * To reset the finder object and use it on another text or different text position, use <tt>clear(finder)</tt> Note
+ * that <tt>clear(finder)</tt> doesn't move the text iterator. To start the search from the beginning or somewhere else
+ * in the text, use @link Finder#goBegin @endlink or @link Finder#setPosition @endlink.
  * 
  * @section Examples
  * 
@@ -717,7 +714,7 @@ SEQAN_CHECKPOINT
  *
  * @param[in] finder The Finder to query.
  *
- * @return TInfix The @link Infix @endlink of the match in the haystack.
+ * @return TInfix The @link SegmentableConcept#Infix @endlink of the match in the haystack.
  *
  * @section Remarks
  *

@@ -424,7 +424,7 @@ typedef String<TDnaAlphabet> TDnaSequence;
  * @param X       The StringSet of text strings.
  * @param M       The MarkovModel object.
  * @param algoTag The algorithm to exploit to compute the number of occurrences of patterns in the text strings
- *                (see @link AhoCorasick @endlink etc.).
+ *                (see @link AhoCorasickPattern @endlink etc.).
  *
  * @return TFloat The z-score for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */

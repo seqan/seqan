@@ -279,6 +279,20 @@ private:
 //    specify stuff about all the logical operators.
 // For now we just test for convertible to bool.
 
+/*!
+ * @fn requireBooleanExpr
+ * @headerfile <seqan/basic.h>
+ * @brief Tests for a boolean expression.
+ *
+ * @signature void requireBooleanExpr(x);
+ *
+ * @param[in] x Object that must be convertible to <tt>bool</tt>
+ *
+ * This function can be used to test for functions returning bools, e.g. less operators.
+ *
+ * @see SEQAN_CONCEPT_USAGE
+ */
+
 /**
 .Function.requireBooleanExpr
 ..summary:Tests for a boolean expression.
@@ -325,7 +339,7 @@ void requireBooleanExpr(const T& t)
  * <ul>
  *  <li><tt>(a == a)</tt> (reflexivity)</li>
  *  <li><tt>(a == b)</tt> => <tt> (b == a)</tt> (symmetry)</li>
- *  <li> <tt>(a == b) && (b == c)</tt> => <tt>(a == c)</tt> (transitivity)</li>
+ *  <li> <tt>(a == b) &amp;&amp;(b == c)</tt> => <tt>(a == c)</tt> (transitivity)</li>
  * </ul>
  * 
  * @see ComparableConcept
@@ -399,7 +413,7 @@ private:
  * 
  * Expects instances of type <tt>T</tt> to be comparable via <tt>operator<</tt>.
  * Comparison operator must return a boolean convertible value.
- * <tt>operator<</tt> must be a partial ordering.
+ * <tt>operator&lt;<tt> must be a partial ordering.
  * 
  * @section Valid Expressions
  * 
@@ -409,9 +423,9 @@ private:
  *
  * Invariants:
  * <ul>
- *   <li><tt>!(a < a)</tt> (irreflexivity)</li>
- *   <li><tt>!(b < a)</tt> => <tt>a < b</tt> (antisymmetry)</li>
- *   <li><tt>(a < b) && (b < c)</tt> => <tt>a < c</tt> (transitivity)</li>
+ *   <li><tt>!(a &lt; a)</tt> (irreflexivity)</li>
+ *   <li><tt>!(b &lt; a)</tt> => <tt>a < b</tt> (antisymmetry)</li>
+ *   <li><tt>(a &lt; b) &amp;&amp; (b < c)</tt> =&gt; <tt>a &lt; c</tt> (transitivity)</li>
  * </ul>
  * 
  * @see ComparableConcept
@@ -480,9 +494,9 @@ private:
  * Invariants:
  *
  * <ul>
- *   <li><tt>(a < b)</tt> <=> <tt>b > a</tt></li>
- *   <li><tt>(a <= b)</tt> <=> <tt>b >= a</tt></li>
- *   <li><tt>(a == b)</tt> <=> <tt>(a >= b) && (b >= a)</tt></li>
+ *   <li><tt>(a &lt; b)</tt> <=> <tt>b &gt; a</tt></li>
+ *   <li><tt>(a &lt;= b)</tt> <=> <tt>b &gt;= a</tt></li>
+ *   <li><tt>(a == b)</tt> <=> <tt>(a &gt;= b) &amp;&amp; (b &gt;= a)</tt></li>
  * </ul>
  * 
  * @see EqualityComparableConcept
@@ -661,10 +675,9 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<T> > {};
  * 
  * @return TReturn 
  * 
- * @deprecated Please use <tt>Is<IntegerConcept<T> >::Type</tt>.
+ * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  * 
  * @see IsIntegral
- * @see IsUnsignedInteger
  */
 
 /**
@@ -692,10 +705,7 @@ struct Is< IntegerConcept<T const> > : Is< IntegerConcept<T> > {};
  * 
  * @return TReturn 
  * 
- * @deprecated Please use <tt>Is<IntegerConcept<T> >::Type</tt>.
- * 
- * @see IsSignedInteger
- * @see IsUnsignedInteger
+ * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  */
 
 /**

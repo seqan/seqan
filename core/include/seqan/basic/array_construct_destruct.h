@@ -82,7 +82,6 @@ namespace seqan {
  * non-POD types could be simple too, e.g. some specializations of SimpleType.
  * 
  * @see SimpleType
- * @see SimpleConcept
  */
 
 /**

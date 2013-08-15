@@ -902,7 +902,7 @@ isRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  * @return TVertexDescriptor A vertex descriptor or nil if successor is not defined.
  *
  * @see Automaton#parseString
- * @see getNil
+ * @see Graph#getNil
  */
 
 /**

@@ -53,10 +53,10 @@
  * 
  * This is non-SeqAn, plain c and listed for completeness.
  * 
- * @see cplusplus.com/reference/clibrary/cctype/isalnum/
- * @see cppreference.com/wiki/string/character_classes
- * @see readAlphaNums
- * @see readIdentifier
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/isalnum/
+ * @see http://www.cppreference.com/wiki/string/character_classes
+ * @see FileFormatTokenization#readAlphaNums
+ * @see FileFormatTokenization#readIdentifier
  */
 
 /**
@@ -88,9 +88,9 @@
  * 
  * This is non-SeqAn, plain c and listed for completeness.
  * 
- * @see cplusplus.com/reference/clibrary/cctype/isalpha/
- * @see cppreference.com/wiki/string/character_classes
- * @see readLetters
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/isalpha/
+ * @see http://www.cppreference.com/wiki/string/character_classes
+ * @see FileFormatTokenization#readLetters
  */
 
 /**
@@ -122,10 +122,10 @@
  * 
  * This is non-SeqAn, plain c and listed for completeness.
  * 
- * @see cplusplus.com/reference/clibrary/cctype/isdigit/
- * @see cppreference.com/wiki/string/character_classes
- * @see readDigits
- * @see readFloat
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/isdigit/
+ * @see http://www.cppreference.com/wiki/string/character_classes
+ * @see FileFormatTokenization#readDigits
+ * @see FileFormatTokenization#readFloat
  */
 
 /**
@@ -157,8 +157,8 @@
  * 
  * This is non-SeqAn, plain c and listed for completeness.
  * 
- * @see cplusplus.com/reference/clibrary/cctype/iscntrl/
- * @see cppreference.com/wiki/string/character_classes
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/iscntrl/
+ * @see http://www.cppreference.com/wiki/string/character_classes
  */
 
 /**
@@ -190,8 +190,8 @@
  * 
  * This is non-SeqAn, plain c and listed for completeness.
  * 
- * @see cplusplus.com/reference/clibrary/cctype/isprint/
- * @see cppreference.com/wiki/string/character_classes
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/isprint/
+ * @see http://www.cppreference.com/wiki/string/character_classes
  * @see isgraph
  */
 
@@ -225,12 +225,12 @@
  * 
  * This is non-SeqAn, plain c and listed for completeness.
  * 
- * @see cplusplus.com/reference/clibrary/cctype/isgraph/
- * @see cppreference.com/wiki/string/character_classes
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/isgraph/
+ * @see http://www.cppreference.com/wiki/string/character_classes
  * @see isprint
  * @see isspace
- * @see readGraphs
- * @see skipUntilGraph
+ * @see FileFormatTokenization#readGraphs
+ * @see FileFormatTokenization#skipUntilGraph
  */
 
 /**
@@ -267,14 +267,14 @@
  * NOTE: White-Space contains more than space and tab characters, if you want to check for that, use Function.isblank
  * instead!
  * 
- * @see cplusplus.com/reference/clibrary/cctype/isspace/
- * @see cppreference.com/wiki/string/character_classes
+ * @see http://www.cplusplus.com/reference/clibrary/cctype/isspace/
+ * @see http://www.cppreference.com/wiki/string/character_classes
  * @see isblank
- * @see readUntilWhitespace
- * @see skipUntilWhitespace
+ * @see FileFormatTokenization#readUntilWhitespace
+ * @see FileFormatTokenization#skipUntilWhitespace
  * @see isgraph
- * @see readDna5IgnoringWhitespaces
- * @see skipWhitespaces
+ * @see FileFormatTokenization#readDna5IgnoringWhitespaces
+ * @see FileFormatTokenization#skipWhitespaces
  */
 
 /**
@@ -310,13 +310,13 @@
  * 
  * For visual studio, we define it ourselves.
  * 
- * @see opengroup.org/onlinepubs/009695399/functions/isblank.html
- * @see cppreference.com/wiki/string/character_classes
+ * @see http://www.opengroup.org/onlinepubs/009695399/functions/isblank.html
+ * @see http://www.cppreference.com/wiki/string/character_classes
  * @see isspace
- * @see readLineStripTrailingBlanks
- * @see skipUntilBlank
- * @see skipBlanks
- * @see readUntilBlank
+ * @see FileFormatTokenization#readLineStripTrailingBlanks
+ * @see FileFormatTokenization#skipUntilBlank
+ * @see FileFormatTokenization#skipBlanks
+ * @see FileFormatTokenization#readUntilBlank
  */
 
 /**

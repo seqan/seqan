@@ -114,8 +114,8 @@ struct HasQualities
  *               (inclusive), <tt>int</tt>.
  * @param[out] c Character to store the quality in, <tt>char</tt>.
  * 
- * @see getQualityValue
- * @see assignQualityValue
+ * @see AlphabetWithQualitiesConcept#getQualityValue
+ * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
 
 /**

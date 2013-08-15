@@ -53,9 +53,9 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam TGraph The graph to iterate the vertices of.
  *
- * The first signature is the signature of the corresponding @link Graph#Iterator @endlink metafunction call.  The
- * second call is the internal definition of the type.  You should always get this type using the metafunction call from
- * the first signature.
+ * The first signature is the signature of the corresponding @link ContainerConcept#Iterator graph's Iterator @endlink
+ * metafunction call.  The second call is the internal definition of the type.  You should always get this type using
+ * the metafunction call from the first signature.
  *
  *
  * @fn AdjacencyIterator::AdjacencyIterator

@@ -92,8 +92,9 @@ namespace seqan {
  *                       The @link AlignConfig @endlink to use for the alignment.
  * 
  * @return TValue An integer with the alignment score, as given by the @link Score#Value @endlink metafunction of the
- *                @link Score @endlink type.  If the seed chain is empty the metafunction @link Score#MinValue
- *                @endlink is used to return the minimal value of the selected score type and no alignment is computed.
+ *                @link Score @endlink type.  If the seed chain is empty then the @link OrderedAlphabetConcept#MinValue
+ *                smallest value of the score type @endlink is used to return the minimal value of the selected score
+ *                type and no alignment is computed.
  * 
  * @section Remarks
  * 

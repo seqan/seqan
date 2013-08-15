@@ -74,7 +74,7 @@ struct StringSetLimits;
  * ConcatVirtualIterator @endlink.
  * 
  * Note that accessing an element by index through <tt>operator[]</tt> conducts a binary search and should be avoided.
- * Use the @link ConcatDirect @endlink specialization of @link StringSet @endlink for random access or only use
+ * Use the @link ConcatDirectStringSet @endlink specialization of @link StringSet @endlink for random access or only use
  * sequential access through iterators.
  * 
  * @fn ConcatenatorManyToOne::ConcatenatorManyToOne

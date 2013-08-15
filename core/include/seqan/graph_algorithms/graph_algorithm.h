@@ -883,7 +883,7 @@ kruskalsAlgorithm(Graph<TSpec> const & g,
  *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id they
  *               are in the same component.
  * 
- * @return TSize The number of weakly connected components.  TSize is <tt>Size<TGraph>::Type</tt>.
+ * @return TSize The number of weakly connected components.  TSize is <tt>Size&lt;TGraph&gt;::Type</tt>.
  * 
  * @section Remarks
  * 

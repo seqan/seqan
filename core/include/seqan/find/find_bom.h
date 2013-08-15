@@ -95,7 +95,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * To be used in combination with the default specialization of @link Finder @endlink.
  * 
- * @see OracleBfam
+ * @see OracleBfamPattern
  */
 
 /**
