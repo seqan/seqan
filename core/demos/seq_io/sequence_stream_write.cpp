@@ -4,29 +4,24 @@
 
 using namespace seqan;
 
-// USAGE: sequence_read_stream_write FILE
-//
-// Print some sequences to the file FILE
-
 int main(int argc, char ** argv)
 {
-    if (argc != 2)
-    {
-        std::cerr << "USAGE: " << argv[0] << " SEQUENCE.{fa,fq}\n";
-        return 1;
-    }
+    CharString path = SEQAN_TEMP_FILENAME();
+    append(path, ".fa");
 
-    SequenceStream seqStream(argv[1], SequenceStream::WRITE);
+    // Open file and check for errors.
+    SequenceStream seqStream(toCString(path), SequenceStream::WRITE);
     if (!isGood(seqStream))
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for writing.\n";
+        std::cerr << "ERROR: Could not open " << path << " for writing.\n";
         return 1;
     }
 
+    // Write two sequences to the file.
     if (writeRecord(seqStream, "one", "CGAT") != 0 ||
         writeRecord(seqStream, "two", "ASDF") != 0)
     {
-        std::cerr << "ERROR: Problem writing to " << argv[1] << "\n";
+        std::cerr << "ERROR: Problem writing to " << path << "\n";
         return 1;
     }
 

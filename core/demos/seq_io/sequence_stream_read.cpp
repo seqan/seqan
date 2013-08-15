@@ -4,31 +4,26 @@
 
 using namespace seqan;
 
-// USAGE: sequence_read_stream_read FILE
-//
-// Print the contents of sequence FILE to stdout in tabular format.
-
 int main(int argc, char ** argv)
 {
-    if (argc != 2)
-    {
-        std::cerr << "USAGE: " << argv[0] << " SEQUENCE.{fa,fq}\n";
-        return 1;
-    }
+    CharString path = SEQAN_PATH_TO_ROOT();
+    append(path, "/core/demos/seq_io/example.fa");
 
-    SequenceStream seqStream(argv[1]);
+    // Open file and check for errors.
+    SequenceStream seqStream(toCString(path));
     if (!isGood(seqStream))
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
+        std::cerr << "ERROR: Could not open " << path << " for reading.\n";
         return 1;
     }
 
+    // Read from file and print the result to stdout.
     seqan::CharString id, seq;
     while (!atEnd(seqStream))
     {
         if (readRecord(id, seq, seqStream) != 0)
         {
-            std::cerr << "Problem reading from " << argv[1] << "\n";
+            std::cerr << "Problem reading from " << path << "\n";
             return 1;
         }
         std::cout << id << "\t" << seq << "\n";

@@ -93,31 +93,21 @@ namespace seqan {
  * Read a sequence file <tt>"example.fa"</tt> record by record.  See the documentation of @link
  * SequenceStream#readRecord @endlink, @link SequenceStream#readBatch @endlink, and @link SequenceStream#readAll
  * @endlink for more examples, including record-wise reading, reading in batches, and reading all records in a file.
- * 
- * @code{.cpp}
- * // Create SequenceStream object for reading, optimized for reading single records.
- * seqan::SequenceStream seqIO("example.fa");
- *  
- * // Buffers for the sequence ids and characters.
- * seqan::CharString id;
- * seqan::Dna5QString seq;
- *  
- * while (!atEnd(seqIO)))
- * {
- *     // Read next sequence from the file.  In case of sequences with qualities,
- *     // the qualities are directly stored in the Dna5Q qualities.
- *     int res = readRecord(id, seq, seqIO);
- *     if (res != 0)
- *         std::cerr << "Error reading file!\n";
- *  
- *     // Extract qualities for printing, then print id, sequence, and qualities.
- *     seqan::CharString quals;
- *     assignQualityValues(quals, seq);
- *     std::cout << id << '\t' << seq << '\t' << quals << '\n';
- * }
+ *
+ * @subsection Reading from SequenceStream
+ *
+ * @include demos/seq_io/sequence_stream_read.cpp
+ *
+ * @code{.console}
+ * seq0   CGGCTCGCGCG
+ * seq1   ACGACGACGAACT
+ * seq3   CCGCGCGC
  * @endcode
  *
- * 
+ * @subsection Writing to SequenceStream
+ *
+ * @include demos/seq_io/sequence_stream_write.cpp
+ *
  * @fn SequenceStream::SequenceStream
  * @brief Constructor
  * 
