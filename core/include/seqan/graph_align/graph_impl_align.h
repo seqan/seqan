@@ -214,8 +214,21 @@ public:
  * @tparam TStringSet The type of the @link StringSet @endlink containing the sequence information.  <b>Must be a
  *                    @link DependentStringSet @endlink.</b>
  * @tparam TCargo     The cargo type that can be attached to edges.  Default: <tt>unsigned</tt>.
- * @tparam TSpc       The specializing type.  Default: <tt>Default</tt>.  Use <tt>WithoutEdgeId</tt> here to omit
+ * @tparam TSpec      The specializing type.  Default: <tt>Default</tt>.  Use <tt>WithoutEdgeId</tt> here to omit
  *                    edge ids.  NB: if edges do not store ids then external property maps do not work.
+ *
+ * @section Example
+ *
+ * @include demos/graph_align/graph_align.cpp
+ *
+ * @code{.console}
+ * Score = -8
+ * Alignment matrix:
+ *       0     .    :   
+ *         ATCGAATGCGGA
+ *         |     |||  |
+ *         ACTCGTTGC--A
+ * @endcode
  */
 
 /**
