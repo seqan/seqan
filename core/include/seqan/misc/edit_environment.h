@@ -62,33 +62,65 @@ struct EditEnvironment;
  * @class StringEnumerator
  * @headerfile <seqan/misc/edit_environment.h>
  * @brief Class to enumerate all strings within a given edit/Hamming distance.
- * 
+ *
  * @signature template <typename TString, typename TSpec>
  *            class StringEnumerator<TString, TSpec>;
- * 
+ *
  * @tparam TString Type of the string to enumerate the environment of.
  * @tparam TSpec   Specialization tag.
  *
  *
  * @fn StringEnumerator::StringEnumerator
- * 
+ *
  * @brief Constructor
- * 
+ *
  * @signature StringEnumerator::StringEnumerator(string[, minDist]);
- * 
+ *
  * @param[in] string  The string to use as the center. Types: <tt>TString</tt>.
  * @param[in] minDist The smallest distance to generate strings with.  Type: <tt>unsigned</tt>.   Default: 0
  *
  *
  * @var bool StringEnumerator::trim
- * 
+ *
  * @brief Indicate whether to ignore substitutions in first or last character of string in Levenshtein mode
  *        (optimization for approximate search).
- * 
+ *
  * @section Remarks
- * 
+ *
  * This is useful when searching for such enumerated strings in large texts.  Patterns with substitutions in the first
- * base would also be found
+ * base would also be found.
+ *
+ * @section Example
+ *
+ * @include demos/misc/enumerate_strings.cpp
+ *
+ * @code{.console}
+ * Enumerating Hamming distance environment of CGAT of distance 2
+ * AGAT
+ * CGAT
+ * GGAT
+ * TGAT
+ * NGAT
+ * CAAT
+ * [...]
+ *
+ * Enumerating edit distance environment of CGAT of distance 1-2
+ * CGAT
+ * CAAT
+ * CCAT
+ * CTAT
+ * CNAT
+ * CGCT
+ * CGGT
+ * CGTT
+ * CGNT
+ * GAT
+ * CAT
+ * CGT
+ * CGA
+ * CAGAT
+ * [...]
+ * @endcode
  */
 
 /*!
@@ -96,15 +128,15 @@ struct EditEnvironment;
  * @extends StringEnumerator
  * @headerfile <seqan/misc/edit_environment.h>
  * @brief Enumerate all strings within a given edit distance of a "center string".
- * 
+ *
  * @signature template <typename TString, unsigned DISTANCE>
  *            class StringEnumerator<TString, EditEnvironment<HammingDistance, DISTANCE> >;
- * 
+ *
  * @tparam TString  Type of the string to enumerate the environment of.
  * @tparam DISTANCE The maximal distance to generate strings with.
- * 
+ *
  * @section Remarks
- * 
+ *
  * See @link StringEnumerator @endlink for examples.
  */
 
