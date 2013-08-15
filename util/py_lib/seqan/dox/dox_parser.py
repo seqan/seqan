@@ -7,8 +7,9 @@ overkill (it can generate parser for some context-free grammars) and not
 as straightforward to use as writing a simple parser by hand.
 """
 
-import operator
 import itertools
+import operator
+import os.path
 import re
 import sys
 
@@ -19,32 +20,54 @@ import lexer
 import dox_tokens
 
 
-def printTokenError(token, msg, level='error'):
-    """Print user-friendly error at location token."""
-    # Print location and error message.
-    location = (token.file_name, token.lineno + 1, token.column)
-    location_str = termcolor.colored('%s:%d:%d:' % location, 'white', attrs=['bold'])
-    error_str = termcolor.colored('%s:' % level, 'red', attrs=['bold'])
-    msg = termcolor.colored(msg, 'white', attrs=['bold'])
-    print >>sys.stderr, '%s %s %s' % (location_str, error_str, msg)
-    # Load line with error and print it with an indicator of the error.
-    fcontents = open(token.file_name).read()
-    lines = fcontents.splitlines()
-    if token.lineno >= len(lines):
-        return  # Invalid line number.
-    print >>sys.stderr, '%s' % lines[token.lineno].rstrip()
-    print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
+class MessagePrinter(object):
+    """Allows to pretty print warning and error messages.
 
+    @ivar ignore_dirs: The directories to ignore warnings for.
+    @ivar counts: Dict mapping 'error' and 'warning' to counts.
+    """
 
-def printParserError(e):
-    """Print user-friendly error message for ParserError e."""
-    msg = e.msg
-    if not e.msg:
-        msg = 'Parse error'
-    if e.token:
-        printTokenError(e.token, e.msg)
-    else:
-        print >>sys.stderr, 'ERROR: %s' % msg
+    def __init__(self, ignore_dirs=[]):
+        self.ignore_dirs = [os.path.realpath(x) for x in ignore_dirs]
+        self.counts = {'error': 0, 'warning': 0}
+
+    def isIgnored(self, path):
+        """Return whether path is below one of the ignored directories."""
+        real_path = os.path.realpath(path)
+        return any([os.path.commonprefix([real_path, x]) == x for x in self.ignore_dirs])
+
+    def printTokenError(self, token, msg, level='error'):
+        """Print user-friendly error at location token."""
+        if self.isIgnored(token.file_name):
+            return  # Is ignored.
+        # Print location and error message.
+        location = (token.file_name, token.lineno + 1, token.column)
+        location_str = termcolor.colored('%s:%d:%d:' % location, 'white', attrs=['bold'])
+        error_str = termcolor.colored('%s:' % level, 'red', attrs=['bold'])
+        msg = termcolor.colored(msg, 'white', attrs=['bold'])
+        print >>sys.stderr, '%s %s %s' % (location_str, error_str, msg)
+        # Load line with error and print it with an indicator of the error.
+        fcontents = open(token.file_name).read()
+        lines = fcontents.splitlines()
+        if token.lineno >= len(lines):
+            return  # Invalid line number.
+        print >>sys.stderr, '%s' % lines[token.lineno].rstrip()
+        print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
+        self.counts[level] += 1
+
+    def printParserError(self, e):
+        """Print user-friendly error message for ParserError e."""
+        msg = e.msg
+        if not e.msg:
+            msg = 'Parse error'
+        if e.token:
+            printTokenError(e.token, e.msg)
+        else:
+            self.counts['error'] += 1
+            print >>sys.stderr, 'ERROR: %s' % msg
+
+    def printStats(self):
+        print >>sys.stderr, 'Issued %d warnings and %d errors.' % (self.counts['error'], self.counts['warning'])
 
 
 class ParserError(Exception):

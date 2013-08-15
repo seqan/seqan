@@ -56,9 +56,13 @@ def splitSecondLevelEntry(name):
 
 
 class ProcDoc(object):
-    """Collection of the top-level documentation entries."""
+    """Collection of the top-level documentation entries.
 
-    def __init__(self):
+    @ivar doc_processor: The DocProcessor that created this ProcDoc.
+    """
+
+    def __init__(self, doc_processor):
+        self.doc_processor = doc_processor
         self.top_level_entries = {}
         self.second_level_entries = {}
         self.entries = {}
@@ -92,7 +96,8 @@ class ProcDoc(object):
             first, second = splitSecondLevelEntry(x.name)
             if not first in self.top_level_entries:
                 token = x.raw_entry.name.tokens[0]
-                dox_parser.printTokenError(token, 'Unknown top level entry %s' % first, 'error')
+                self.doc_processor.msg_printer.printTokenError(
+                    token, 'Unknown top level entry %s' % first, 'error')
             else:
                 self.top_level_entries[first].registerSubentry(x)
         else:
@@ -689,9 +694,12 @@ class HtmlTagParser(HTMLParser.HTMLParser):
 
 
 class RawTextToTextNodeConverter(object):
-    """Convert raw text including HTML tags to text node."""
+    """Convert raw text including HTML tags to text node.
 
-    def __init__(self, strip_lt_line_space=False, expected_tags=set()):
+    @ivar doc_proc: The parent DocProcessor.
+    """
+
+    def __init__(self, strip_lt_line_space=False, expected_tags=set(), doc_proc=None):
         self.tag_stack = []
         self.node_stack = []
         self.current = None
@@ -705,6 +713,7 @@ class RawTextToTextNodeConverter(object):
         self.commands = ['COMMAND_LINK', 'COMMAND_ENDLINK']
         self.command_pairs = {'COMMAND_LINK': 'COMMAND_ENDLINK'}
         self.html_parser = HtmlTagParser()
+        self.doc_proc = doc_proc
 
     def handleTag(self, token):
         """Handle a HTML tag.
@@ -715,8 +724,8 @@ class RawTextToTextNodeConverter(object):
         self.html_parser.parse(token.val)
         tag_name = self.html_parser.tag
         if tag_name not in self.expected_tags:
-            msg = 'Unknown tag "%s".' % tag_name
-            dox_parser.printTokenError(token, msg, 'warning')
+            msg = 'Unknown tag "%s".  Expected one of %s.' % (tag_name, self.expected_tags)
+            self.doc_proc.msg_printer.printTokenError(token, msg, 'warning')
 
         if self.html_parser.is_open:  # Opening tag.
             self.tag_stack.append(self.html_parser.tag)
@@ -732,17 +741,17 @@ class RawTextToTextNodeConverter(object):
             elif self.tag_stack and self.tag_stack[-1] != tag_name:
                 # incorrect closing, pop and return
                 args = (tag_name, self.tag_stack[-1])
-                dox_parser.printTokenError(token, 'Closing wrong tag %s instead of %s' % args, 'warning')
+                self.doc_proc.msg_printer.printTokenError(token, 'Closing wrong tag %s instead of %s' % args, 'warning')
                 self.tag_stack.pop()
                 return
             else:  # not self.tag_stack
-                dox_parser.printTokenError(token, 'Closing tag without opening %s!' % tag_name, 'warning')
+                self.doc_proc.msg_printer.printTokenError(token, 'Closing tag without opening %s!' % tag_name, 'warning')
             # Pop from node stack.
             if self.node_stack:
                 self.current = self.node_stack[-1]
                 self.node_stack.pop()
             else:
-                dox_parser.printTokenError(token, 'Having closed too many tags!', 'warning')
+                self.doc_proc.msg_printer.printTokenError(token, 'Having closed too many tags!', 'warning')
 
     def handleCommand(self, token):
         """Handle command for the given token."""
@@ -773,7 +782,7 @@ class RawTextToTextNodeConverter(object):
                 return
             # Get link target.
             target_tokens = []
-            while self.tokens_cmd and self.tokens_cmd[0].type != 'SPACE':
+            while self.tokens_cmd and self.tokens_cmd[0].type not in dox_tokens.WHITESPACE:
                 target_tokens.append(self.tokens_cmd.pop(0))
             # Trim leading whitespace again.
             while self.tokens_cmd and isWhitespace(self.tokens_cmd[0]):
@@ -781,7 +790,7 @@ class RawTextToTextNodeConverter(object):
             # Translate any remaining non-whitespace tokens.
             title_tokens = self.tokens_cmd
             link_text = raw_doc.RawText(title_tokens)
-            conv = RawTextToTextNodeConverter()
+            conv = RawTextToTextNodeConverter(expected_tags=self.expected_tags, doc_proc=self.doc_proc)
             link_text_node = conv.run(link_text)
             link_text_node.type = 'a'
             link_text_node.attrs = {'href': 'seqan:' + ''.join([t.val for t in target_tokens])}
@@ -797,7 +806,7 @@ class RawTextToTextNodeConverter(object):
         self.current = TextNode(type='div')
         root = self.current
         at_line_start = True
-        for i, t in enumerate(self.fixEntityTokens(raw_text.tokens)):
+        for i, t in enumerate(self.fixEntityTokens(raw_text.tokens, verbatim)):
             if self.current_cmd:  # collect token in self.tokens_cmd
                 self.handleCommand(t)
                 continue
@@ -824,15 +833,17 @@ class RawTextToTextNodeConverter(object):
                 self.current.addChild(TextNode(text=t.val))
             at_line_start = t.type in ['EMPTY_LINE', 'BREAK']
         if self.current_cmd:
-            dox_parser.printTokenError(t, 'Open command %s!' % self.current_cmd, 'warning')
+            self.doc_proc.msg_printer.printTokenError(t, 'Open command %s!' % self.current_cmd, 'warning')
         return root
 
-    def fixEntityTokens(self, tokens):
+    def fixEntityTokens(self, tokens, verbatim):
         """Fix entities on a list of tokens.
 
         Ampersands opening entities that are not closed (i.e. EOF or space are
         hit) are replaced by '&amp;'.
         """
+        if verbatim:
+            return tokens
         res = []
         buf = []  # Buffer when an ampersand was opened
         in_entity = False
@@ -843,7 +854,7 @@ class RawTextToTextNodeConverter(object):
             elif any(c.isspace() for c in token.val):
                 if in_entity:
                     buf[0].val = '&amp;'
-                    dox_parser.printTokenError(buf[0], 'Unclosed entity!', 'warning')
+                    self.doc_proc.msg_printer.printTokenError(buf[0], 'Unclosed entity!', 'warning')
                 res += buf
                 res.append(token)
                 in_entity = False
@@ -859,7 +870,7 @@ class RawTextToTextNodeConverter(object):
                 res.append(token)
         if in_entity:
             buf[0].val = '&amp;'
-            dox_parser.printTokenError(buf[0], 'Unclosed entity!', 'warning')
+            self.doc_proc.msg_printer.printTokenError(buf[0], 'Unclosed entity!', 'warning')
             res += buf
         return res
 
@@ -888,7 +899,8 @@ class EntryConverter(object):
         @param verbatim: Whether or not to convert HTML tags.
         """
         converter = RawTextToTextNodeConverter(
-            strip_lt_line_space, expected_tags=self.doc_proc.expected_tags)
+            strip_lt_line_space, expected_tags=self.doc_proc.expected_tags,
+            doc_proc=self.doc_proc)
         return converter.run(raw_text, verbatim)
 
     def bodyToTextNode(self, raw_body):
@@ -931,7 +943,7 @@ class EntryConverter(object):
                     res.addChild(x)
             except inc_mgr.IncludeException, e:
                 e2 = dox_parser.ParserError(msg=str(e), token=p.text.tokens[0])
-                dox_parser.printParserError(e2)
+                self.doc_proc.msg_printer.printParserError(e2)
                 n = TextNode(type='div', attrs={'class': 'note warning'})
                 n.children.append(TextNode(text=str(e)))
                 res.addChild(n)
@@ -952,8 +964,14 @@ class EntryConverter(object):
         # Convert the sees entries.
         for see in raw_entry.sees:
             link = self.rawTextToTextNode(see.text)
-            link.type = 'a'
-            link.attrs['href'] = 'seqan:%s' % see.text.text
+            if see.text.text.startswith('http'):
+                link.type = 'a'
+                link.attrs['href'] = see.text.text
+                link.attrs['target'] = '_top'
+            else:
+                link = self.rawTextToTextNode(see.text)
+                link.type = 'a'
+                link.attrs['href'] = 'seqan:%s' % see.text.text
             link.tokens = list(see.text.tokens)
             entry.sees.append(link)
         # Store the raw entry in the processed ones.
@@ -1220,7 +1238,8 @@ class LinkChecker(TextNodeVisitor):
         if target not in self.doc.entries:
             # TODO(holtgrew): Cannot resolve from TextNode to Token :(
             msg = 'Cannot find documentation entry "%s".' % target
-            dox_parser.printTokenError(a_node.tokens[0], msg, 'error')
+            self.doc.doc_processor.msg_printer.printTokenError(
+                a_node.tokens[0], msg, 'error')
 
 
 class DocProcessor(object):
@@ -1233,9 +1252,12 @@ class DocProcessor(object):
                        inclusion.
     @ivar expected_tags: Iterateable of expected tag names.  Will warn in
                          conversion about unexpected tags if hit.
+    @ivar msg_printer: The dox_parser.MessagePrinter instance to use for
+                       printing messages.
     """
     
-    def __init__(self, logger=None, include_dirs=['.'], expected_tags=[]):
+    def __init__(self, logger=None, include_dirs=['.'], expected_tags=[],
+                 msg_printer=None):
         self.logger = logger
         self.include_dirs = list(include_dirs)
         self.include_mgr = inc_mgr.IncludeManager(self.include_dirs)
@@ -1262,9 +1284,10 @@ class DocProcessor(object):
             'grouped_tag': TagConverter(self),
             'variable': VariableConverter(self),
             }
+        self.msg_printer = msg_printer or dox_parser.MessagePrinter()
 
     def run(self, doc):
-        res = ProcDoc()
+        res = ProcDoc(self)
         self.log('Processing Documentation...')
         self.convertTopLevelEntries(doc, res)
         self.convertSecondLevelEntries(doc, res)

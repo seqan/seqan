@@ -64,6 +64,7 @@ LEXER_TOKENS = (
     ('COMMAND_INCLUDE',      r'@include'),
     ('COMMAND_SNIPPET',      r'@snippet'),
     ('COMMAND_DEPRECATED',   r'@deprecated'),
+    # TODO(holtgrew): Add @note and @warning
     
     # Lexer tokens for commands for inline use.
     ('COMMAND_LINK',         r'@link'),
