@@ -73,7 +73,9 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  *
  * @section Examples
  *
- * @file demos/modifier/modified_stirng.cpp
+ * @subsection Using ModReverseString
+ *
+ * @include demos/modifier/modified_string.cpp
  *
  * The output is als follows:
  *
@@ -83,6 +85,29 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  * 
  * TATACGCGTTTT
  * TTTTGCGCATAT
+ * @endcode
+ *
+ * @subsection Using a custom functor for ModViewString
+ *
+ * @include demos/modifier/modified_string_mod_view.cpp
+ *
+ * @code{.console}
+ * A man, a plan, a canal-Panama
+ * A MAN, A PLAN, A CANAL-PANAMA
+ * A man, a master plan, a canal-Panama
+ * A MAN, A MASTER PLAN, A CANAL-PANAMA
+ * @endcode
+ *
+ * @subsection Using nested modified strings.
+ *
+ * @include demos/modifier/modified_string_nested.cpp
+ *
+ * @code{.console}
+ * ATTACGG
+ * CCGTAAT
+ * ACGTTTACGG
+ * CCGTAAACGT
+ * CCGTAAACGT
  * @endcode
  */
 
