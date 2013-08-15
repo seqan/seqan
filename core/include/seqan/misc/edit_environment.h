@@ -94,33 +94,7 @@ struct EditEnvironment;
  *
  * @include demos/misc/enumerate_strings.cpp
  *
- * @code{.console}
- * Enumerating Hamming distance environment of CGAT of distance 2
- * AGAT
- * CGAT
- * GGAT
- * TGAT
- * NGAT
- * CAAT
- * [...]
- *
- * Enumerating edit distance environment of CGAT of distance 1-2
- * CGAT
- * CAAT
- * CCAT
- * CTAT
- * CNAT
- * CGCT
- * CGGT
- * CGTT
- * CGNT
- * GAT
- * CAT
- * CGT
- * CGA
- * CAGAT
- * [...]
- * @endcode
+ * @include demos/misc/enumerate_strings.cpp.stdout
  */
 
 /*!

@@ -95,39 +95,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @include demos/graph_algorithms/breadth_first_search.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 4,1,
- * 1 -> 5,0,
- * 2 -> 3,6,5,
- * 3 -> 7,6,2,
- * 4 -> 0,
- * 5 -> 6,2,1,
- * 6 -> 7,5,3,2,
- * 7 -> 6,3,
- * Edge list:
- * Source: 0,Target: 4 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 5 (Id: 2)
- * Source: 2,Target: 3 (Id: 5)
- * Source: 2,Target: 6 (Id: 4)
- * Source: 2,Target: 5 (Id: 3)
- * Source: 3,Target: 7 (Id: 7)
- * Source: 3,Target: 6 (Id: 6)
- * Source: 5,Target: 6 (Id: 8)
- * Source: 6,Target: 7 (Id: 9)
- * 
- * Breadth-First search: 
- * Vertex r: Level = 1, Predecessor = s
- * Vertex s: Level = 0, Predecessor = nil
- * Vertex t: Level = 2, Predecessor = w
- * Vertex u: Level = 3, Predecessor = x
- * Vertex v: Level = 2, Predecessor = r
- * Vertex w: Level = 1, Predecessor = s
- * Vertex x: Level = 2, Predecessor = w
- * Vertex y: Level = 3, Predecessor = x
- * @endcode
- * 
+ * @include demos/graph_algorithms/breadth_first_search.cpp.stdout
+ *
  * @see depthFirstSearch
  */
 
@@ -263,32 +232,7 @@ _dfsVisit(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/depth_first_search.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 1,3,
- * 1 -> 4,
- * 2 -> 5,4,
- * 3 -> 1,
- * 4 -> 3,
- * 5 -> 5,
- * Edge list:
- * Source: 0,Target: 1 (Id: 1)
- * Source: 0,Target: 3 (Id: 0)
- * Source: 1,Target: 4 (Id: 2)
- * Source: 2,Target: 5 (Id: 4)
- * Source: 2,Target: 4 (Id: 3)
- * Source: 3,Target: 1 (Id: 5)
- * Source: 4,Target: 3 (Id: 6)
- * Source: 5,Target: 5 (Id: 7)
- *
- * Depth-First search: 
- * Vertex u: Discovery time = 1,Finishing time = 8,Predecessor = nil
- * Vertex v: Discovery time = 2,Finishing time = 7,Predecessor = u
- * Vertex w: Discovery time = 9,Finishing time = 12,Predecessor = nil
- * Vertex x: Discovery time = 4,Finishing time = 5,Predecessor = y
- * Vertex y: Discovery time = 3,Finishing time = 6,Predecessor = v
- * Vertex z: Discovery time = 10,Finishing time = 11,Predecessor = w
- * @endcode
+ * @include demos/graph_algorithms/depth_first_search.cpp.stdout
  * 
  * @see breadthFirstSearch
  */
@@ -378,32 +322,7 @@ depthFirstSearch(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/topological_sort.cpp
  *
- * @code{.console}
- * Built target demo_graph_algo_topsort
- * Adjacency list:
- * 0 -> 1,3,
- * 1 -> 2,
- * 2 -> 
- * 3 -> 2,
- * 4 -> 
- * 5 -> 6,7,
- * 6 -> 3,7,
- * 7 -> 
- * 8 -> 7,
- * Edge list:
- * Source: 0,Target: 1 (Id: 1)
- * Source: 0,Target: 3 (Id: 0)
- * Source: 1,Target: 2 (Id: 2)
- * Source: 3,Target: 2 (Id: 3)
- * Source: 5,Target: 6 (Id: 5)
- * Source: 5,Target: 7 (Id: 4)
- * Source: 6,Target: 3 (Id: 7)
- * Source: 6,Target: 7 (Id: 6)
- * Source: 8,Target: 7 (Id: 8)
- *
- * Topological sort: 
- * socks,undershorts,pants,shoes,watch,shirt,belt,tie,jacket,
- * @endcode
+ * @include demos/graph_algorithms/topological_sort.cpp.stdout
  */
 
 /**
@@ -480,50 +399,7 @@ topologicalSort(Graph<TSpec> const & g,
  *
  * @include demos/graph_algorithms/strongly_connected_components.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 4,
- * 1 -> 0,
- * 2 -> 3,1,
- * 3 -> 2,
- * 4 -> 1,
- * 5 -> 6,4,1,
- * 6 -> 5,2,
- * 7 -> 7,6,3,
- * Edge list:
- * Source: 0,Target: 4 (Id: 1)
- * Source: 1,Target: 0 (Id: 0)
- * Source: 2,Target: 3 (Id: 7)
- * Source: 2,Target: 1 (Id: 2)
- * Source: 3,Target: 2 (Id: 6)
- * Source: 4,Target: 1 (Id: 3)
- * Source: 5,Target: 6 (Id: 11)
- * Source: 5,Target: 4 (Id: 9)
- * Source: 5,Target: 1 (Id: 4)
- * Source: 6,Target: 5 (Id: 10)
- * Source: 6,Target: 2 (Id: 5)
- * Source: 7,Target: 7 (Id: 13)
- * Source: 7,Target: 6 (Id: 12)
- * Source: 7,Target: 3 (Id: 8)
- *
- * Strongly Connected Components:
- * Vertex a:
- * Component = 3
- * Vertex b:
- * Component = 3
- * Vertex c:
- * Component = 2
- * Vertex d:
- * Component = 2
- * Vertex e:
- * Component = 3
- * Vertex f:
- * Component = 1
- * Vertex g:
- * Component = 1
- * Vertex h:
- * Component = 0
- * @endcode
+ * @include demos/graph_algorithms/strongly_connected_components.cpp.stdout
  */
 
 /**
@@ -796,44 +672,7 @@ connectedComponents(Graph<TSpec> const& g_source,
  *
  * @include demos/graph_algorithms/prims_algorithm.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 6,1,
- * 1 -> 6,2,0,
- * 2 -> 8,4,3,1,
- * 3 -> 8,5,2,
- * 4 -> 7,6,2,
- * 5 -> 8,3,
- * 6 -> 7,4,1,0,
- * 7 -> 8,6,4,
- * 8 -> 7,5,3,2,
- * Edge list:
- * Source: 0,Target: 6 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 6 (Id: 3)
- * Source: 1,Target: 2 (Id: 2)
- * Source: 2,Target: 8 (Id: 6)
- * Source: 2,Target: 4 (Id: 5)
- * Source: 2,Target: 3 (Id: 4)
- * Source: 3,Target: 8 (Id: 8)
- * Source: 3,Target: 5 (Id: 7)
- * Source: 4,Target: 7 (Id: 10)
- * Source: 4,Target: 6 (Id: 9)
- * Source: 5,Target: 8 (Id: 11)
- * Source: 6,Target: 7 (Id: 12)
- * Source: 7,Target: 8 (Id: 13)
- *
- * Minimum Spanning Tree (Prim's algorithm):
- * Path from a to a: a
- * Path from a to b: a,b
- * Path from a to c: a,b,c
- * Path from a to d: a,b,c,d
- * Path from a to i: a,b,c,i
- * Path from a to e: a,b,c,d,e
- * Path from a to h: a,b,c,f,g,h
- * Path from a to g: a,b,c,f,g
- * Path from a to f: a,b,c,f
- * @endcode
+ * @include demos/graph_algorithms/prims_algorithm.cpp.stdout
  *
  * @see kruskalsAlgorithm
  */
@@ -999,36 +838,7 @@ struct LessPairI1_ :
  *
  * @include demos/graph_algorithms/kruskals_algorithm.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 6,1,
- * 1 -> 6,2,0,
- * 2 -> 8,4,3,1,
- * 3 -> 8,5,2,
- * 4 -> 7,6,2,
- * 5 -> 8,3,
- * 6 -> 7,4,1,0,
- * 7 -> 8,6,4,
- * 8 -> 7,5,3,2,
- * Edge list:
- * Source: 0,Target: 6 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 6 (Id: 3)
- * Source: 1,Target: 2 (Id: 2)
- * Source: 2,Target: 8 (Id: 6)
- * Source: 2,Target: 4 (Id: 5)
- * Source: 2,Target: 3 (Id: 4)
- * Source: 3,Target: 8 (Id: 8)
- * Source: 3,Target: 5 (Id: 7)
- * Source: 4,Target: 7 (Id: 10)
- * Source: 4,Target: 6 (Id: 9)
- * Source: 5,Target: 8 (Id: 11)
- * Source: 6,Target: 7 (Id: 12)
- * Source: 7,Target: 8 (Id: 13)
- *
- * Minimum Spanning Tree (Kruskal's algorithm):
- * Tree Edges: (h,g), (c,i), (g,f), (a,b), (c,f), (c,d), (a,h), (d,e),
- * @endcode
+ * @include demos/graph_algorithms/kruskals_algorithm.cpp
  *
  * @see primsAlgorithm
  */
@@ -1333,34 +1143,7 @@ _relax(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/dag_shortest_path.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 1,2,
- * 1 -> 2,3,
- * 2 -> 3,4,5,
- * 3 -> 4,5,
- * 4 -> 5,
- * 5 ->
- * Edge list:
- * Source: 0,Target: 1 (Id: 1)
- * Source: 0,Target: 2 (Id: 0)
- * Source: 1,Target: 2 (Id: 3)
- * Source: 1,Target: 3 (Id: 2)
- * Source: 2,Target: 3 (Id: 6)
- * Source: 2,Target: 4 (Id: 5)
- * Source: 2,Target: 5 (Id: 4)
- * Source: 3,Target: 4 (Id: 8)
- * Source: 3,Target: 5 (Id: 7)
- * Source: 4,Target: 5 (Id: 9)
- *
- * Single-Source Shortest Paths in DAG:
- * Path from 1 to 0: No path from 1 to 0 exists. (Distance: 1073741823)
- * Path from 1 to 1: 1 (Distance: 0)
- * Path from 1 to 2: 1,2 (Distance: 2)
- * Path from 1 to 3: 1,3 (Distance: 6)
- * Path from 1 to 4: 1,3,4 (Distance: 5)
- * Path from 1 to 5: 1,3,4,5 (Distance: 3)
- * @endcode
+ * @include demos/graph_algorithms/dag_shortest_path.cpp.stdout
  *
  * @see bellmanFordAlgorithm
  * @see dijkstra
@@ -1451,33 +1234,7 @@ dagShortestPath(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/bellman_ford_algorithm.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 3,1,
- * 1 -> 3,2,
- * 2 -> 4,
- * 3 -> 4,2,1,
- * 4 -> 2,0,
- * Edge list:
- * Source: 0,Target: 3 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 3 (Id: 3)
- * Source: 1,Target: 2 (Id: 2)
- * Source: 2,Target: 4 (Id: 4)
- * Source: 3,Target: 4 (Id: 7)
- * Source: 3,Target: 2 (Id: 6)
- * Source: 3,Target: 1 (Id: 5)
- * Source: 4,Target: 2 (Id: 9)
- * Source: 4,Target: 0 (Id: 8)
- *
- * Single-Source Shortest Paths:
- * Graph without negative cycles? 1
- * Path from 0 to 0: 0 (Distance: 0)
- * Path from 0 to 1: 0,3,1 (Distance: 8)
- * Path from 0 to 2: 0,3,1,2 (Distance: 9)
- * Path from 0 to 3: 0,3 (Distance: 5)
- * Path from 0 to 4: 0,3,4 (Distance: 7)
- * @endcode
+ * @include demos/graph_algorithms/bellman_ford_algorithm.cpp.stdout
  *
  * @see dagShortestPath
  * @see dijkstra
@@ -1577,21 +1334,7 @@ bellmanFordAlgorithm(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/dijkstra.cpp
  *
- * @code{.console}
- * Single-Source Shortest Paths:
- * Path from 0 to 0: 0 (Distance: 0)
- * Path from 0 to 1: 0,3,1 (Distance: 8)
- * Path from 0 to 2: 0,3,1,2 (Distance: 9)
- * Path from 0 to 3: 0,3 (Distance: 5)
- * Path from 0 to 4: 0,3,4 (Distance: 7)
- *
- * Single-Source Shortest Paths:
- * Path from 0 to 0: 0 (Distance: 0)
- * Path from 0 to 1: 0,1 (Distance: 0)
- * Path from 0 to 2: 0,1,2 (Distance: 0)
- * Path from 0 to 3: 0,3 (Distance: 0)
- * Path from 0 to 4: 0,1,2,4 (Distance: 0)
- * @endcode
+ * @include demos/graph_algorithms/dijkstra.cpp.stdout
  *
  * @see dagShortestPath
  * @see bellmanFordAlgorithm
@@ -1867,50 +1610,7 @@ _extendShortestPaths(TMatrix& local,
  *
  * @include demos/graph_algorithms/all_pairs_shortest_path.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 4,2,1,
- * 1 -> 4,3,
- * 2 -> 1,
- * 3 -> 2,0,
- * 4 -> 3,
- * Edge list:
- * Source: 0,Target: 4 (Id: 2)
- * Source: 0,Target: 2 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 4 (Id: 4)
- * Source: 1,Target: 3 (Id: 3)
- * Source: 2,Target: 1 (Id: 5)
- * Source: 3,Target: 2 (Id: 7)
- * Source: 3,Target: 0 (Id: 6)
- * Source: 4,Target: 3 (Id: 8)
- *
- * 0,0 (Distance=0): 0
- * 0,1 (Distance=1): 0,4,3,2,1
- * 0,2 (Distance=-3): 0,4,3,2
- * 0,3 (Distance=2): 0,4,3
- * 0,4 (Distance=-4): 0,4
- * 1,0 (Distance=3): 1,3,0
- * 1,1 (Distance=0): 1
- * 1,2 (Distance=-4): 1,3,2
- * 1,3 (Distance=1): 1,3
- * 1,4 (Distance=-1): 1,3,0,4
- * 2,0 (Distance=7): 2,1,3,0
- * 2,1 (Distance=4): 2,1
- * 2,2 (Distance=0): 2
- * 2,3 (Distance=5): 2,1,3
- * 2,4 (Distance=3): 2,1,3,0,4
- * 3,0 (Distance=2): 3,0
- * 3,1 (Distance=-1): 3,2,1
- * 3,2 (Distance=-5): 3,2
- * 3,3 (Distance=0): 3
- * 3,4 (Distance=-2): 3,0,4
- * 4,0 (Distance=8): 4,3,0
- * 4,1 (Distance=5): 4,3,2,1
- * 4,2 (Distance=1): 4,3,2
- * 4,3 (Distance=6): 4,3
- * 4,4 (Distance=0): 4
- * @endcode
+ * @include demos/graph_algorithms/all_pairs_shortest_path.cpp.stdout
  *
  * @see floydWarshallAlgorithm
  */
@@ -1988,50 +1688,7 @@ allPairsShortestPath(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/floyd_warshall_algorithm.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 4,2,1,
- * 1 -> 4,3,
- * 2 -> 1,
- * 3 -> 2,0,
- * 4 -> 3,
- * Edge list:
- * Source: 0,Target: 4 (Id: 2)
- * Source: 0,Target: 2 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 4 (Id: 4)
- * Source: 1,Target: 3 (Id: 3)
- * Source: 2,Target: 1 (Id: 5)
- * Source: 3,Target: 2 (Id: 7)
- * Source: 3,Target: 0 (Id: 6)
- * Source: 4,Target: 3 (Id: 8)
- *
- * 0,0 (Distance=0): 0
- * 0,1 (Distance=1): 0,4,3,2,1
- * 0,2 (Distance=-3): 0,4,3,2
- * 0,3 (Distance=2): 0,4,3
- * 0,4 (Distance=-4): 0,4
- * 1,0 (Distance=3): 1,3,0
- * 1,1 (Distance=0): 1
- * 1,2 (Distance=-4): 1,3,2
- * 1,3 (Distance=1): 1,3
- * 1,4 (Distance=-1): 1,3,0,4
- * 2,0 (Distance=7): 2,1,3,0
- * 2,1 (Distance=4): 2,1
- * 2,2 (Distance=0): 2
- * 2,3 (Distance=5): 2,1,3
- * 2,4 (Distance=3): 2,1,3,0,4
- * 3,0 (Distance=2): 3,0
- * 3,1 (Distance=-1): 3,2,1
- * 3,2 (Distance=-5): 3,2
- * 3,3 (Distance=0): 3
- * 3,4 (Distance=-2): 3,0,4
- * 4,0 (Distance=8): 4,3,0
- * 4,1 (Distance=5): 4,3,2,1
- * 4,2 (Distance=1): 4,3,2
- * 4,3 (Distance=6): 4,3
- * 4,4 (Distance=0): 4
- * @endcode
+ * @include demos/graph_algorithms/floyd_warshall_algorithm.cpp.stdout
  *
  * @see allPairsShortestPath
  */
@@ -2113,24 +1770,7 @@ floydWarshallAlgorithm(Graph<TSpec> const& g,
  *
  * @include demos/graph_algorithms/transitive_closure.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 ->
- * 1 -> 3,2,
- * 2 -> 1,
- * 3 -> 2,0,
- * Edge list:
- * Source: 1,Target: 3 (Id: 3)
- * Source: 1,Target: 2 (Id: 1)
- * Source: 2,Target: 1 (Id: 2)
- * Source: 3,Target: 2 (Id: 4)
- * Source: 3,Target: 0 (Id: 0)
- *
- * 1,0,0,0,
- * 1,1,1,1,
- * 1,1,1,1,
- * 1,1,1,1,
- * @endcode
+ * @include demos/graph_algorithms/transitive_closure.cpp.stdout
  */
 
 /**
@@ -2293,38 +1933,7 @@ _getMinimumAug(Graph<TSpec> const& rG,
  *
  * @include demos/graph_algorithms/ford_fulkerson_algorithm.cpp
  *
- * @code{.console}
- * Adjacency list:
- * 0 -> 4,1,
- * 1 -> 4,2,
- * 2 -> 4,3,
- * 3 ->
- * 4 -> 5,1,
- * 5 -> 3,2,
- * Edge list:
- * Source: 0,Target: 4 (Id: 1)
- * Source: 0,Target: 1 (Id: 0)
- * Source: 1,Target: 4 (Id: 3)
- * Source: 1,Target: 2 (Id: 2)
- * Source: 2,Target: 4 (Id: 5)
- * Source: 2,Target: 3 (Id: 4)
- * Source: 4,Target: 5 (Id: 7)
- * Source: 4,Target: 1 (Id: 6)
- * Source: 5,Target: 3 (Id: 9)
- * Source: 5,Target: 2 (Id: 8)
- *
- * Ford-Fulkerson (Value of the flow = 23)
- * (0,4): Flow: 11, Capacity: 13
- * (0,1): Flow: 12, Capacity: 16
- * (1,4): Flow: 0, Capacity: 10
- * (1,2): Flow: 12, Capacity: 12
- * (2,4): Flow: 0, Capacity: 9
- * (2,3): Flow: 19, Capacity: 20
- * (4,5): Flow: 11, Capacity: 14
- * (4,1): Flow: 0, Capacity: 4
- * (5,3): Flow: 4, Capacity: 4
- * (5,2): Flow: 7, Capacity: 7
- * @endcode
+ * @include demos/graph_algorithms/ford_fulkerson_algorithm.cpp.stdout
  */
 
 /**

@@ -93,7 +93,7 @@ class TextNodeToHtml(object):
         elif text_node.type == 'code':
             if text_node.attrs.get('type') == '.cpp':
                 self.res.append(self.convertCode(text_node.children[0].text))
-            elif text_node.attrs.get('type') == '.console':
+            elif text_node.attrs.get('type') in ['.console', '.stdout', '.stderr']:
                 self.res.append('<pre class="console">' + escapeForXml(text_node.children[0].text) + '</pre>')
             else:
                 self.res.append('<pre class="code">' + escapeForXml(text_node.children[0].text) + '</pre>')
