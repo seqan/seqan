@@ -327,10 +327,20 @@ pre.code .rubyid_nth_ref { color: #6D79DE; }
 pre.code .regexp, .dregexp { color: #036A07; }
 pre.code a { border-bottom: 1px dotted #bbf; }
 
-.highlight
+.highlight, .path_label
 {
     margin-left: 3%;
     margin-right: 3%;
+}
+
+.path_label
+{
+    font-size: .8em;
+}
+
+.path_label .label
+{
+    text-weight: bolder;
 }
 
 pre.console

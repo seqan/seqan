@@ -919,15 +919,17 @@ class EntryConverter(object):
                     h.type = 'h%d' % p.level
                     res.addChild(h)
                 elif p.getType() == 'include':
+                    # Including a whole file.
                     ftype = os.path.splitext(p.path.text)[1]
                     code_text = self.doc_proc.include_mgr.loadFile(p.path.text)
-                    proc_include = TextNode(type='code', attrs={'type': ftype})
+                    proc_include = TextNode(type='code', attrs={'type': ftype, 'source': 'include', 'path': p.path.text})
                     proc_include.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(proc_include)
                 elif p.getType() == 'snippet':
+                    # Including a snippet file.
                     ftype = os.path.splitext(p.path.text)[1]
                     code_text = self.doc_proc.include_mgr.loadSnippet(p.path.text, p.name.text)
-                    proc_snippet = TextNode(type='code', attrs={'type': ftype})
+                    proc_snippet = TextNode(type='code', attrs={'type': ftype, 'source': 'snippet', 'path': p.path.text})
                     proc_snippet.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(proc_snippet)
                 elif p.getType() == 'code':

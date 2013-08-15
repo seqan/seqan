@@ -53,14 +53,19 @@ class PathManager(object):
         """Returns target path for list."""
         return os.path.join(self.out_dir, 'lists', '%s.html' % kind)
 
+    def translateDemoPath(self, path):
+        """Translate demo path."""
+        return path
+
 
 class TextNodeToHtml(object):
-    def __init__(self, text_node, skip_top_tag=None, start_heading=2):
+    def __init__(self, text_node, skip_top_tag=None, start_heading=2, path_mgr=None):
         self.skip_top_tag = skip_top_tag
         self.text_node = text_node
         self.res = []
         self.start_heading = start_heading
         self.heading_table = {}
+        self.path_mgr = path_mgr
         for i in range(0, 10):
             self.heading_table['h%d' % i] = 'h%d' % (i + start_heading)
 
@@ -91,8 +96,23 @@ class TextNodeToHtml(object):
         if text_node.type == '<text>':
             self.res.append(text_node.text)
         elif text_node.type == 'code':
-            if text_node.attrs.get('type') == '.cpp':
+            if text_node.attrs.get('type') in ['.cpp', '.h']:
+                self.res.append('<div>')
                 self.res.append(self.convertCode(text_node.children[0].text))
+                target_path = text_node.attrs.get('path')
+                if self.path_mgr:
+                    target_path = self.path_mrg.translateDemoPath(self.path_mgr)
+                if text_node.attrs.get('source') == 'snippet':
+                    self.res.append(
+                        '<div class="path_label"><span class="label">Snippet from:'
+                        '</span> <a href="%s" target="_top">%s</a></div>' %
+                        (target_path, text_node.attrs.get('path')))
+                else:
+                    self.res.append(
+                        '<div class="path_label"><span class="label">Demo:'
+                        '</span> <a href="%s" target="_top">%s</a></div>' %
+                        (target_path, text_node.attrs.get('path')))
+                self.res.append('</div>')
             elif text_node.attrs.get('type') in ['.console', '.stdout', '.stderr']:
                 self.res.append('<pre class="console">' + escapeForXml(text_node.children[0].text) + '</pre>')
             else:
@@ -131,19 +151,19 @@ def toDox(proc_entry, line_length=110, in_comment=False):
     return '\n'.join(result)
 
 
-def transTextNode(text_node, top=True, start_heading=3, **kwargs):
+def transTextNode(text_node, top=True, start_heading=3, path_mgr=None, **kwargs):
     #return text_node.toHtmlLike(skip_top_tag=not top)
-    converter = TextNodeToHtml(text_node, skip_top_tag=not top, start_heading=start_heading)
+    converter = TextNodeToHtml(text_node, skip_top_tag=not top, start_heading=start_heading, path_mgr=path_mgr)
     return converter.convert() or ''
 
-def createTransLink(doc):
+def createTransLink(doc, path_mgr):
     link_converter = LinkConverter(doc)
     def transLink(entity_name):
         text_node = proc_doc.TextNode(type='a')
         text_node.attrs['href'] = 'seqan:%s' % entity_name
         text_node.children = [proc_doc.TextNode(text=entity_name)]
         link_converter.visit(text_node)
-        return transTextNode(text_node)
+        return transTextNode(text_node, path_mgr)
     return transLink
 
 def createNameToPath(doc):
@@ -162,7 +182,7 @@ class TemplateManager(object):
         self.env.filters['escape_name'] = escapeName
         self.env.filters['transtext'] = transTextNode
         self.env.filters['to_dox'] = toDox
-        self.env.filters['translink'] = createTransLink(doc)
+        self.env.filters['translink'] = createTransLink(doc, self)
         self.env.filters['name_to_path'] = createNameToPath(doc)
         self.tpls = {}
         for path in ['page.html', 'concept.html']:
@@ -316,6 +336,7 @@ class HtmlWriter(object):
         self.translateLinks(self.doc)
         self.updateImagePaths(self.doc)
         self.generatePages(self.doc)
+        self.generateDemoPages(self.doc)
 
     def makedirs(self):
         for path in self.out_dirs.values():
@@ -424,6 +445,23 @@ class HtmlWriter(object):
             assert False, entry.kind
         with open(self.path_manager.getEntryPath(entry), 'w') as f:
             f.write(html)
+
+    def generateDemoPages(self, doc):
+        """Copy over all demo pages."""
+        file_names = set(doc.doc_processor.include_mgr.file_cache.keys() +
+                         [x[0] for x in doc.doc_processor.include_mgr.snippet_cache.keys()])
+        for path in sorted(file_names):
+            self.generateDemoPage(path)
+
+    def generateDemoPage(self, path):
+        """Generate a demo page."""
+        dirname = os.path.join(self.out_dirs['root'], os.path.dirname(path))
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+        in_path = self.doc.doc_processor.include_mgr.resolvePath(path)
+        to_path = os.path.join(self.out_dirs['root'], path)
+        #print >>sys.stderr, in_path, '=>', to_path
+        shutil.copyfile(in_path, to_path)
 
     def log(self, s, *args):
         print >>sys.stderr, s % args
