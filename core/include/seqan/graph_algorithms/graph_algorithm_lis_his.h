@@ -106,6 +106,16 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
  *
  * The last position in <tt>pos</tt> indicates the first element in the longets increasing subsequence.
  *
+ * @section Example
+ *
+ * @include demos/graph_algorithms/longest_increasing_subsequence.cpp
+ *
+ * @code{.console}
+ * 5,3,4,9,6,2,1,8,7,10,
+ * Lis: 
+ * 3,4,6,7,10,
+ * @endcode
+ *
  * @see heaviestIncreasingSubsequence
  * @see longestCommonSubsequence
  */
@@ -196,6 +206,19 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
  * @param[in]  str2  A second arbitrary @link SequenceConcept @endlink object.
  * @param[in]  nSize The neighbourhood size to use.
  * @param[out] pos   A String with pairs of positions that indicate the longest common subsequence.
+ *
+ * @section Example
+ *
+ * @include demos/graph_algorithms/longest_common_subsequence.cpp
+ *
+ * @code{.console}
+ * Score = 3
+ * Alignment matrix:
+ *       0     .    
+ *         aba--cx-
+ *          ||  |  
+ *         -baabc-a
+ * @endcode
  *
  * @see heaviestIncreasingSubsequence
  * @see longestIncreasingSubsequence
@@ -351,6 +374,16 @@ globalAlignment(TAlign& align,
  *
  * The last position in pos indicates the first member of the heviest increasing subsequence.  Note that only members
  * that contribute a weight are selected, that is, positions with associated 0 weights are ignored.
+ *
+ * @section Example
+ *
+ * @include demos/graph_algorithms/heaviest_increasing_subsequence.cpp
+ *
+ * @code{.console}
+ * z(Weight=1),e(Weight=1),i(Weight=10),t(Weight=1),g(Weight=1),e(Weight=1),i(Weight=1),s(Weight=1),t(Weight=1),
+ * His: 
+ * e,i,s,t,(Weight=13)
+ * @endcode
  *
  * @see longestCommonSubsequence
  * @see longestIncreasingSubsequence
