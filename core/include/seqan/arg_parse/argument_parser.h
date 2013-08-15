@@ -91,29 +91,16 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  *
  * The following gives a simple example of how to use the ArgumentParser class.
  *
- * @code{.cpp}
- * ArgumentParser parser("alf");
- * setShortDescription(parser, "Alignment free sequence comparison");
- * setVersion(parser, "1.0");
- * setDate(parser, "Jan 2010");
- * 
- * addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-i\\fP \\fIIN\\fP \\fB-o\\fP \\fIOUT\\fP");
- * 
- * addDescription(parser,
- *                "ALF can be used to calculate the pairwise similarity of sequences "
- *                "using alignment-free methods. All methods which are implemented are "
- *                "based on k-mer counts.");
- * 
- * addOption(parser, ArgParseOption("i", "inputFile", "Name of the multi-FASTA input.",
- *                                  ArgParseArgument(ArgParseArgument::INPUTFILE, "IN")));
- * setRequired(parser, "i");
- * 
- * addOption(parser, ArgParseOption("o", "outputFile", "Name of the multi-FASTA input.",
- *                                  ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUT")));
- * setRequired(parser, "o");
- * 
- * addTextSection(parser, "See Also");
- * addText(parser, "http://www.seqan.de/projects/alf");
+ * @include demos/arg_parse/argument_parser.cpp
+ *
+ * @code{.console}
+ * $ demo_arg_parse_argument_parser in.fa out.txt --id 0
+ * Built target seqan_core
+ * Built target demo_arg_parse
+ * Verbose:     off
+ * Identity:    0
+ * Input-File:  in.fa
+ * Output-File: out.txt
  * @endcode
  *
  * @see ArgParseArgument
