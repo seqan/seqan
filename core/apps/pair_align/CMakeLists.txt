@@ -66,8 +66,11 @@ seqan_add_app_test (pair_align)
 # Setup Command Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
 
+# Currently, pair_align uses a lot of memory to compile so we do not add it
+# to the list of programs to build for workflow engines.
+
 #Include executable pair_align in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} pair_align CACHE INTERNAL "")
+#set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} pair_align CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
