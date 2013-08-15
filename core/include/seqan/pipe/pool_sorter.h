@@ -180,6 +180,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * If there exists an explicit function mapping input elements to their destined positions in the output
  * stream, @link MapperSpec @endlink should be preferred.
+ *
+ * @section Example
+ *
+ * @include demos/pipe/pool_sorter.cpp
+ *
+ * @code{.console}
+ * Sorted elements:
+ * -1
+ * 3
+ * 10
+ * @endcode
  */
 
 /**
