@@ -234,19 +234,29 @@ findRepeats(repeats, text, 3);
  * 
  * @section Examples
  * 
- * The following demonstrates finding repeats of period 1.
- * 
- * @code{.cpp}
- * String<Repeat<unsigned, unsigned> > repeats;
- * Dna5String text = "CGATAAAACTNN";
- * // repeat 0            AAAA
- * // repeat 1                  NN
- *  
- * findRepeats(repeats, text, 3);
- * // ==> length(repeats) == 2
- * // ==> repeats[0] == {beginPosition:  4, endPosition:  8, period: 1}
- * // ==> repeats[1] == {beginPosition: 11, endPosition: 13, period: 1}
+ * The following demonstrates finding repeats of period 3.
+ *
+ * @include demos/index/find_repeats.cpp
+ *
+ * @code{.console}
+ * # of repeats: 15
+ * i == 0, beginPosition = 3, endPosition = 7, period = 1
+ * i == 1, beginPosition = 46, endPosition = 53, period = 1
+ * i == 2, beginPosition = 101, endPosition = 105, period = 1
+ * i == 3, beginPosition = 105, endPosition = 109, period = 1
+ * i == 4, beginPosition = 164, endPosition = 169, period = 1
+ * i == 5, beginPosition = 291, endPosition = 297, period = 1
+ * i == 6, beginPosition = 319, endPosition = 327, period = 1
+ * i == 7, beginPosition = 400, endPosition = 404, period = 1
+ * i == 8, beginPosition = 442, endPosition = 446, period = 1
+ * i == 9, beginPosition = 468, endPosition = 473, period = 1
+ * i == 10, beginPosition = 476, endPosition = 480, period = 1
+ * i == 11, beginPosition = 507, endPosition = 513, period = 1
+ * i == 12, beginPosition = 561, endPosition = 566, period = 1
+ * i == 13, beginPosition = 623, endPosition = 627, period = 1
+ * i == 14, beginPosition = 655, endPosition = 659, period = 1
  * @endcode
+ *
  * @see unknownValue
  * @see Repeat
  */
