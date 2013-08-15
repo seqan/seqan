@@ -59,6 +59,30 @@ namespace seqan {
  * @tparam TFloat    The type for storing counts, default is <tt>double</tt>.
  * @tparam TSpec     Tag for specialization.
  *
+ * @section Examples
+ *
+ * @subsection Build a MarkovModel from Background
+ *
+ * @include demos/statistics/build_markov_model.cpp
+ *
+ * The following example shows how to build a MarkovModel over a Dna alphabet from a set of background sequence.  After
+ * build the model, we compute the zscore.
+ *
+ * @code{.console}
+ * zscore: 11.8323
+ * @endcode
+ *
+ * @subsection Load a MarkovModel from File
+ *
+ * We can also load the MarkovModel from a file (previously saved using @link MarkovModel::write @endlink).  Since we do
+ * not have the background word set here but only the model, we compute the variance of a word using the function
+ * calculateVariance from the alignment_free module.
+ *
+ * @include demos/statistics/load_markov_model.cpp
+ *
+ * @code{.console}
+ * variance: 0.267919
+ * @endcode
  *
  * @var unsigned MarkovModel::order
  * @brief The order of the MarkovModel.
