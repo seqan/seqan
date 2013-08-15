@@ -45,7 +45,6 @@
 # APP:${app_name}
 
 include (SeqAnUsabilityAnalyzer)
-include (SeqAnLegacyBuildSystem)
 
 # ---------------------------------------------------------------------------
 # Normalize CMAKE_CXX_FLAGS to be a string.
