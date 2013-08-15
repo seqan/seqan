@@ -81,6 +81,18 @@ enum GenBankErrorCodes_
 // Function splitGenBankHeader()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn splitGenBankHeader
+ * @headerfile <seqan/seq_io.h>
+ * @brief Split a GenBank header field/value.
+ *
+ * @void splitGenkBankHeader(key, value, lines);
+ *
+ * @param[out] key   The 2-character header type.
+ * @param[out] value The line's value.
+ * @param[out] lines The lines with the header field to split.
+ */
+
 /**
 .Function.splitGenBankHeader
 ..cat:Input/Output

@@ -83,6 +83,31 @@ public:
 // Class FaiIndex
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class FaiIndex
+ * @headerfile <seqan/seq_io.h>
+ * @brief Data structure for access to FAI indices.
+ *
+ * @signature class FaiIndex;
+ *
+ * FAI indices allow the rast random access to sequences or parts of sequences in a FASTA file.  Originally, they were
+ * introduced in the <a href="http://samtools.sourceforge.net/samtools.shtml">samtools</a> program.
+ *
+ * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/IndexedFastaIO">Indexed FASTA I/O Tutorial</a>.
+ *
+ * @section Example
+ *
+ * The following example demonstrates the usage of the FaiIndex class.
+ *
+ * @include demos/seq_io/fai_index_example.cpp
+ *
+ *
+ * @fn FaiIndex::FaiIndex
+ * @brief Constructor.
+ *
+ * @signature FaiIndex::FaiIndex();
+ */
+
 /**
 .Class.FaiIndex
 ..cat:Input/Output
@@ -137,6 +162,15 @@ public:
 // Function clear()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn FaiIndex#clear
+ * @brief Reset a FaiIndex object to the state after default construction.
+ *
+ * @signature void clear(faiIndex);
+ *
+ * @param[in,out] faiIndex The FaiIndex to clear.
+ */
+
 /**
 .Function.FaiIndex#clear
 ..cat:Input/Output
@@ -160,6 +194,19 @@ inline void clear(FaiIndex & index)
 // ----------------------------------------------------------------------------
 // Function getIdByName()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn FaiIndex#getIdByName
+ * @brief Return id (numeric index in the file) of a sequence in a FAI file.
+ *
+ * @signature bool getIdByName(faiIndex, name, id);
+ *
+ * @param[in]  faiIndex The FaiIndex to query.
+ * @param[in]  name     The name of the sequence to look the id up for.  Type: @link SequenceConcept @endlink.
+ * @param[out] id       The id of the sequence is written here.
+ *
+ * @return bool true if a reference with the given name is known in the index.
+ */
 
 /**
 .Function.FaiIndex#getIdByName
@@ -197,6 +244,18 @@ inline bool getIdByName(FaiIndex const & index, TName const & name, TId & id)
 // Function sequenceLength()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn FaiIndex#sequenceLength
+ * @brief Return length of the sequence with the given id in the FaiIndex.
+ *
+ * @signature __uint64 sequenceLength(faiIndex, refId);
+ *
+ * @param[in] faiIndex The FaiIndex to query.
+ * @param[in] refId    The id of the sequence to get the length of.
+ *
+ * @return __uint64 The length of the sequence with index refId in faiIndex.
+ */
+
 /**
 .Function.FaiIndex#sequenceLength
 ..cat:Input/Output
@@ -229,6 +288,18 @@ inline __uint64 sequenceLength(FaiIndex & index, TRefId refId)
 // Function sequenceName()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn FaiIndex#sequenceName
+ * @brief Return the name of the sequence with th egiven id in the FaiIndex.
+ *
+ * @signature CharString sequenceName(faiIndex, refId);
+ *
+ * @param[in] faiIndex The FaiIndex to query.
+ * @param[in] refId    The index of the sequence.
+ *
+ * @return CharString The name of the sequence with the given id.
+ */
+
 /**
 .Function.FaiIndex#sequenceName
 ..cat:Input/Output
@@ -252,6 +323,17 @@ inline CharString sequenceName(FaiIndex const & index, unsigned refId)
 // Function numSeqs()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn FaiIndex#numSeqs
+ * @brief Return the number of sequences known to a FaiIndex.
+ *
+ * @signature __uint64 numSeqs(faiIndex);
+ *
+ * @param[in] faiIndex The FaiIndex to query.
+ *
+ * @return __uint64 The number of sequences in the index.
+ */
+
 /**
 .Function.FaiIndex#numSeqs
 ..cat:Input/Output
@@ -272,6 +354,20 @@ inline __uint64 numSeqs(FaiIndex const & index)
 // ----------------------------------------------------------------------------
 // Function readRegion()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn FaiIndex#readRegion.
+ *
+ * @signature int readRegion(str, faiIndex, refId, beginPos, endPos);
+ * @signature int readRegion(str, faiIndex, region);
+ *
+ * @param[out] str      The @link String @endlink to read the sequence into.
+ * @param[in]  faiIndex The FaiIndex to read from.
+ * @param[in]  refId    The id of the reference to read.  Type: unsigned.
+ * @param[in]  beginPos The begin position of the region to read.  Type: unsigned.
+ * @param[in]  endPos   The end position of the region to read.  Type: unsigned.
+ * @param[in]  region   The @link GenomicRegion @endlink to read.
+ */
 
 /**
 .Function.FaiIndex#readRegion
@@ -368,6 +464,19 @@ inline int readRegion(String<TValue, TSpec> & str,
 // Function readSequence()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn FaiIndex#readSequence
+ * @brief Load a whole sequence from a FaiIndex.
+ *
+ * @signature int readSequence(str, faiIndex, refId);
+ *
+ * @param[out] str      The @link String @endlink to read into.
+ * @param[in]  faiIndex The FaiIndex to read from.
+ * @param[in]  refID    The index of the sequence in the file.
+ *
+ * @return int 0 on success, non-0 on errors.
+ */
+
 /**
 .Function.FaiIndex#readSequence
 ..cat:Input/Output
@@ -396,6 +505,20 @@ inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, uns
 // ----------------------------------------------------------------------------
 // Function read()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn FaiIndex#read
+ * @summary Read a FAI index from file.
+ *
+ * @signature int read(faiIndex, fastaFileName[, faiFileName]);
+ *
+ * @param[out] faiIndex      The FaiIndex to read into.
+ * @param[in]  fastaFileName Path to the FASTA file to read.  Type: <tt>char const *</tt>.
+ * @param[in]  faiFileName   Path to the FAI file to read.  Type: <tt>char const *</tt>.  Defaults to
+ *                           <tt>"${fastaFileName}.fai"</tt>.
+ *
+ * @return int 0 on success, non-0 on errors.
+ */
 
 /**
 .Function.FaiIndex#read
@@ -552,6 +675,21 @@ inline int read(FaiIndex & index)
 // Function write()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn FaiIndex#write
+ * @brief Write out an FaiIndex object.
+ *
+ * @signature int write(faiIndex[, faiFileName]);
+ *
+ * @param[in] faiIndex    The FaiIndex to write out.
+ * @param[in] faiFileName The name of the FAI file to write to.  This parameter is optional only if the FAI index knows
+ *                        the FAI file name from a previous @link FaiIndex#build @endlink call.  By default, the FAI
+ *                        file name from the previous call to @link FaiIndex#build @endlink is used.  Type: <tt>char
+ *                        const *</tt>.
+ *
+ * @return int 0 on success, 1 on errors.
+ */
+
 /**
 .Function.FaiIndex#write
 ..cat:Input/Output
@@ -615,6 +753,20 @@ inline int write(FaiIndex & index)
 // ---------------------------------------------------------------------------
 // Function build()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn FaiIndex#build
+ * @brief Create a FaiIndex from FASTA file.
+ *
+ * @signature int build(faiIndex, seqFileName[, faiFileName]);
+ *
+ * @param[out] faiIndex    The FaiIndex to build into.
+ * @param[in]  seqFileName Path to the FASTA file to build an index for.  Type: <tt>char const *</tt>.
+ * @param[in]  faiFileName Path to the FAI file to use as the index file.  Type: <tt>char const *</tt>.
+ *                         Default: <tt>"${seqFileName}.fai"</tt>.
+ *
+ * @return 0 on success, non-0 on errors.
+ */
 
 /**
 .Function.FaiIndex#build

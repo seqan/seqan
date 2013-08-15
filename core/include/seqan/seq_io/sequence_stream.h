@@ -53,6 +53,147 @@ namespace seqan {
 // ---------------------------------------------------------------------------
 // Class SequenceStream
 // ---------------------------------------------------------------------------
+/*!
+ * @class SequenceStream
+ * @headerfile <seqan/seq_io.h>
+ *
+ * @signature class SequenceStream;
+ * 
+ * @brief High-level reading and writing of sequences.
+ * 
+ * Building upon the more low-level sequence I/O functionality of SeqAn, this class provides easier to use I/O
+ * facilities.  Especially, the underlying @link Stream stream layer @endlink and using @link RecordReader @endlinks is
+ * hidden from the user. This is achieved by using dynamic polymorphism which comes at some performance cost.
+ * 
+ * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/SimpleSeqIO">Simple Sequence I/O Tutorial</a>.
+ *
+ * @section Remarks
+ * 
+ * @subsection Operation Mode
+ * 
+ * When reading, there are two operation modes: Normal reading and reading of "persistent" records.  When reading in
+ * "persistent" mode, @link SequenceStream @endlink will scan over each record twice: once for determining its size and
+ * once for actually reading the sequences.  After the first pass, we can allocate a buffer of the exact size we need.
+ * This can save memory up to a factor of two, at the cost of scanning each record twice.  Note that this is only
+ * possible for reading uncompressed files.
+ * 
+ * @subsection File Format and File Type
+ * 
+ * The file type determines whether a file is stored as raw text or whether it is compressed.  Examples for file types
+ * are text files or <tt>gzip</tt> compressed files (<tt>FILE.gz</tt>).  The file format considers the contents of the
+ * raw/decompressed file.  Examples for file formats are FASTA, FASTQ, or EMBL.
+ * 
+ * When reading, the file type and format are guessed from the file itself.  You do not have to specify any but you can
+ * force the @link SequenceStream @endlink to use the ones you provide.  When writing, you should specify a file type
+ * and format when constructing the @link SequenceStream @endlink object.  Otherwise, it will default to writing out
+ * raw-text FASTA files.
+ * 
+ * @section Examples
+ * 
+ * Read a sequence file <tt>"example.fa"</tt> record by record.  See the documentation of @link
+ * SequenceStream#readRecord @endlink, @link SequenceStream#readBatch @endlink, and @link SequenceStream#readAll
+ * @endlink for more examples, including record-wise reading, reading in batches, and reading all records in a file.
+ * 
+ * @code{.cpp}
+ * // Create SequenceStream object for reading, optimized for reading single records.
+ * seqan::SequenceStream seqIO("example.fa");
+ *  
+ * // Buffers for the sequence ids and characters.
+ * seqan::CharString id;
+ * seqan::Dna5QString seq;
+ *  
+ * while (!atEnd(seqIO)))
+ * {
+ *     // Read next sequence from the file.  In case of sequences with qualities,
+ *     // the qualities are directly stored in the Dna5Q qualities.
+ *     int res = readRecord(id, seq, seqIO);
+ *     if (res != 0)
+ *         std::cerr << "Error reading file!\n";
+ *  
+ *     // Extract qualities for printing, then print id, sequence, and qualities.
+ *     seqan::CharString quals;
+ *     assignQualityValues(quals, seq);
+ *     std::cout << id << '\t' << seq << '\t' << quals << '\n';
+ * }
+ * @endcode
+ *
+ * 
+ * @fn SequenceStream::SequenceStream
+ * @brief Constructor
+ * 
+ * @signature SequenceStream::SequenceStream();
+ * @signature SequenceStream::SequenceStream(fileName[, operationMode[, format[, fileType]]]);
+ * 
+ * @param[in] fileName      Path to the file to open.  Type: <tt>char const *</tt>
+ * @param[in] operationMode Mode to open the file in.  Optional.  Type: SequenceStream::OperationMode.
+ *                          Default: <tt>READ</tt>
+ * @param[in] format        Mode to open the file in.  Optional.  Type: SequenceStream::FileFormat.
+ *                          Default: <tt>AUTO_FORMAT</tt>.
+ * @param[in] fileType      Mode to open the file in.  Optional.  Type: SequenceStream::FileType.
+ *                          Default: <tt>AUTO_TYPE</tt>.
+ */
+
+/*!
+ * @enum SequenceStream::OperationMode
+ * @headerfile <seqan/seq_io.h>
+ * @brief Select the operation mode of a @link SequenceStream @endlink.
+ *
+ * @signature enum OperationMode;
+ * 
+ * @var SequenceStream::OperationMode SequenceStream::READ;
+ * @brief Open stream for reading.
+ * 
+ * @var SequenceStream::OperationMode SequenceStream::WRITE;
+ * @brief Open stream for writing.
+ * 
+ * @var SequenceStream::OperationMode SequenceStream::READ_PERSISTENT;
+ * @brief Open stream for reading, mark as "persisent reading".  See @link SequenceStream @endlink for more information
+ *        on the difference between normal and persistent reading.
+ */
+
+/*!
+ * @enum SequenceStream::FileType
+ * @headerfile <seqan/seq_io.h>
+ * @brief Select the file type to read/write.
+ * 
+ * @signature enum FileType;
+ * 
+ * The file type is the type of the file itself, i.e. plain text or compressed.
+ * 
+ * @var SequenceStream::FileType SequenceStream::AUTO_TYPE;
+ * 
+ * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
+ *        <tt>PLAIN_TEXT</tt> is used.
+ * 
+ * @var SequenceStream::FileType SequenceStream::PLAIN_TEXT;
+ * @brief Force reading/writing of plain text.
+ * 
+ * @var SequenceStream::FileType SequenceStream::BZ2;
+ * @brief Force reading/writing with bzip compression.
+ * 
+ * @var SequenceStream::FileType SequenceStream::GZ;
+ * @brief Force reading/writing with gzip compression.
+ */
+
+/*!
+ * @enum SequenceStream::FileFormat
+ * @headerfile <seqan/seq_io.h>
+ * @brief Select the file format to read/write.
+ *
+ * @signature enum FileFormat;
+ * 
+ * The file format is the format of the possibly compressed content.
+ * 
+ * @var SequenceStream::FileFormat SequenceStream::AUTO_FORMAT;
+ * @brief Auto-detect format from file content on reading and from the file name on writing.  If Auto-detection fails,
+ *        FASTA is used.
+ * 
+ * @var SequenceStream::FileFormat SequenceStream::FASTA;
+ * @brief Force reading/writing of FASTA.
+ * 
+ * @var SequenceStream::FileFormat SequenceStream::FASTQ;
+ * @brief Force reading/writing of FASTQ.
+ */
 
 /**
 .Class.SequenceStream
@@ -278,6 +419,22 @@ public:
 // Function open()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SequenceStream#open
+ * @brief Open or re-open a file using a SequenceStream.
+ * 
+ * @signature void open(seqStream, fileName[, operationMode[, format[, fileType]]]);
+ * 
+ * @param[in,out] seqStream     The SequenceStream object to open. Types: SequenceStream.
+ * @param[in]     fileType      Mode to open the file in. Optional. Types: SequenceStream::FileType  Default:
+ *                              AUTO_TYPE.
+ * @param[in]     format        Mode to open the file in. Optional.  Types: SequenceStream::FileFormat.
+ *                              Default: AUTO_FORMAT.
+ * @param[in]     operationMode Mode to open the file in.  Optional. Types: SequenceStream::OperationMode.
+ *                              Default: READ.
+ * @param[in]     fileName      Path to the file to open. Types: <tt>char const *</tt>
+ */
+
 /**
 .Function.SequenceStream#open
 ..summary:Open or re-open a file using a SequenceStream.
@@ -318,12 +475,21 @@ inline void open(SequenceStream & seqIO,
 // Function close()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SequenceStream#close
+ * @brief Close a SequenceStream.
+ *
+ * @signature close(seqStream);
+ *
+ * @param[in,out] seqStream The SequenceStream to close.
+ */
+
 /**
 .Function.SequenceStream#close
 ..class:Class.SequenceStream
 ..summary:Close the @Class.SequenceStream@.
 ..signature:void close(seqIO)
-..param.seqIO:The @Class.SequenceStream@ object to close from.
+..param.seqIO:The @Class.SequenceStream@ object to close.
 ...type:Class.SequenceStream
 ..include:seqan/seq_io.h
 */
@@ -336,6 +502,15 @@ inline void close(SequenceStream & seqIO)
 // ----------------------------------------------------------------------------
 // Function flush()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SequenceStream#flush
+ * @brief Write all remaining data from a SequenceStream to disk.
+ *
+ * @signature flush(seqStream);
+ *
+ * @param[in,out] seqStream The SequenceStream to flush.
+ */
 
 /**
 .Function.SequenceStream#flush
@@ -355,6 +530,19 @@ inline void flush(SequenceStream & seqIO)
 // ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SequenceStream#atEnd
+ * @brief Check whether a SequenceStream is at the end of the file.
+ * 
+ * @signature bool isGood(seqStream);
+ * 
+ * @param seqStream The SequenceStream object to read from. Type: SequenceStream
+ * 
+ * @return bool true if the SequenceStream is at the end of the file and false otherwise.
+ * 
+ * @see SequenceStream#isGood
+ */
 
 /**
 .Function.SequenceStream#atEnd
@@ -383,6 +571,17 @@ inline bool atEnd(SequenceStream & seqIO)
 // Function isGood()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SequenceStream#isGood
+ * @brief Check whether a SequenceStream is ready for reading or writing.
+ *
+ * @signature bool isGood(seqStream);
+ *
+ * @param[in] seqStream The SequenceStream to query.
+ *
+ * @return bool true if the stream is ready and false otherwise.
+ */
+
 /**
 .Function.SequenceStream#isGood
 ..class:Class.SequenceStream
@@ -403,6 +602,49 @@ inline bool isGood(SequenceStream const & seqIO)
 // ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SequenceStream#readRecord
+ * @brief Read the next sequence record from @link SequenceStream @endlink.
+ * 
+ * @signature int readRecord(id, seq, seqStream);
+ * @signature int readRecord(id, seq, quals, seqStream);
+ * 
+ * @param[out]    id    The identifier of the sequence is written here.  Types: CharString
+ * @param[out]    seq   The sequence of the record is written here. Types: String
+ * @param[out]    quals The qualities of the sequence is written here.  Optional.  If the sequence has no qualities,
+ *                      @link clear @endlink is called on <tt>quals</tt> to indicate this.  Type: CharString
+ * @param[in,out] seqIO The @link SequenceStream @endlink object to read from. Type: SequenceStream
+ * 
+ * @return int 0 on success, non-0 on error.
+ * 
+ * @section Examples
+ * 
+ * Read the first sequence of a FASTA file.
+ * 
+ * @code{.cpp}
+ * int main()
+ * {
+ *     seqan::SequenceStream seqIO("in.fasta", seqan::SequenceStream::READ_SINGLE);
+ *     seqan::CharString id;
+ *     seqan::Dna5String seq;
+ *  
+ *     if (atEnd(seqIO))
+ *     {
+ *         std::cerr << "ERROR: File does not contain any sequences!\n";
+ *         return 1;
+ *     }
+ *     int res = readRecord(id, seq, seqIO);
+ *     if (res != 0)
+ *     {
+ *         std::cerr << "ERROR: Could not read first record!\n";
+ *         return 1;
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ */
 
 /**
 .Function.SequenceStream#readRecord
@@ -483,6 +725,46 @@ int readRecord(TId & id, TSequence & seq, SequenceStream & seqIO)
 // ----------------------------------------------------------------------------
 // Function readBatch()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SequenceStream#readBatch
+ * @brief Read a given number of sequence records from SequenceStream.
+ * 
+ * @signature int readBatch(ids, seqs, seqStream, num);
+ * @signature int readBatch(ids, seqs, quals, seqStream, num);
+ * 
+ * @param[out]    ids   The identifiers of the sequence are written here.  Type: @link StringSet @endlink of @link
+ *                      CharString @endlink.
+ * @param[out]    seqs  The sequence of the record is written here.  Type: @link StringSet @endlink.
+ * @param[out]    quals The qualities of the sequence is written here.  Optional.  If the sequences have no qualities,
+ *                      as in FASTA files, the @link StringSet @endlink will contain empty strings.  Type: @link
+ *                      StringSet @endlink of @link CharString @endlink
+ * @param[in,out] seqIO The SequenceStream object to read from.
+ * 
+ * @return int 0 on success, non-0 value on errors.
+ * 
+ * @section Examples
+ * 
+ * Read the first sequences of a FASTA file, up to ten.
+ * 
+ * @code{.cpp}
+ * int main()
+ * {
+ *     seqan::SequenceStream seqIO("in.fasta", seqan::SequenceStream::READ_BATCH);
+ *     seqan::StringSet<seqan::CharString> ids;
+ *     seqan::StringSet<seqan::Dna5String> seqs;
+ *  
+ *     int res = readBatch(ids, seqs, seqIO, 10);
+ *     if (res != 0)
+ *     {
+ *         std::cerr << "ERROR: Could not read records!\n";
+ *         return 1;
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ */
 
 /**
 .Function.SequenceStream#readBatch
@@ -566,6 +848,46 @@ int readBatch(StringSet<TId, TIdSpec> & ids,
 // Function readAll()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SequenceStream#readAll
+ * @brief Read all sequence records from a @link SequenceStream @endlink object.
+ * 
+ * @signature int readAll(ids, seqs, seqStream);
+ * @signature int readAll(ids, seqs, quals, seqStream);
+ * 
+ * @param[out] ids       The identifiers of the sequence are written here. Types: @link StringSet @endlink of @link
+ *                       CharString @endlink.
+ * @param[out] seqs      The sequence of the record is written here. Types: StringSet
+ * @param[out] quals     The qualities of the sequence is written here.  Optional.  If the sequences have no
+ *                       qualities, as in FASTA files, the @link StringSet @endlink will contain empty strings.
+ *                       Type: @link StringSet of @link CharString @endlink
+ * @param[out] seqStream The @link SequenceStream @endlink object to read from.  Type: SequenceStream
+ * 
+ * @return int 0 on success, non-0 value on success.
+ * 
+ * @section Examples
+ * 
+ * Read the sequences of a FASTA file.
+ * 
+ * @code{.cpp}
+ * int main()
+ * {
+ *     seqan::SequenceStream seqIO("in.fasta", seqan::SequenceStream::READ_ALL);
+ *     seqan::StringSet<seqan::CharString> ids;
+ *     seqan::StringSet<seqan::Dna5String> seqs;
+ *  
+ *     int res = readAll(ids, seqs, seqIO);
+ *     if (res != 0)
+ *     {
+ *         std::cerr << "ERROR: Could not read records!\n";
+ *         return 1;
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ */
+
 /**
 .Function.SequenceStream#readAll
 ..class:Class.SequenceStream
@@ -646,6 +968,55 @@ int readAll(StringSet<TId, TIdSpec> & ids,
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SequenceStream#writeRecord
+ * @brief Write one sequence record from to a @link SequenceStream @endlink object.
+ * 
+ * @signature int writeRecord(seqStream, id, seq[, options]);
+ * @signature int writeRecord(seqStream id, seq, quals[, options]);
+ * 
+ * @param[in,out] seqStream The @link SequenceStream @endlink object to write to.  Type: SequenceStream
+ * @param[in] quals         The qualities to write out.If the sequence has no qualities, @link clear @endlink is
+ *                          called on <tt>quals</tt> to indicate this. Types: CharString
+ * @param[in] id            The identifier to write.  Type: CharString
+ * @param[in] seq           The sequence to write.  Type: String
+ * @param[in] options       The configuration for writing FASTA and FASTQ files.  Type: SequenceOutputOptions
+ * 
+ * @return int 0 on success, non-0 value on errors.
+ * 
+ * The record is appended to the file if you have written out any previously.  When writing out @link Dna5 @endlink,
+ * qualities are automatically taken from the sequence characters.
+ * 
+ * @section Examples
+ * 
+ * Write out two sequences to a FASTQ file.
+ * 
+ * @code{.cpp}
+ * int main()
+ * {
+ *     seqan::SequenceStream seqIO("in.fasta", seqan::SequenceStream::WRITE);
+ *     seqan::StringSet<seqan::CharString> ids;
+ *     appendValue(ids, "seq1");
+ *     appendValue(ids, "seq2");
+ *     seqan::StringSet<seqan::Dna5String> seqs;
+ *     appendValue(seqs, "CGAT");
+ *     appendValue(seqs, "TTTT");
+ *  
+ *     for (unsigned i = 0; i < length(ids); ++i)
+ *     {
+ *         int res = writeRecord(seqIO, ids[0], seqs[0]);
+ *         if (res != 0)
+ *         {
+ *             std::cerr << "ERROR: Could not write records!\n";
+ *             return 1;
+ *         }
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ */
 
 /**
 .Function.SequenceStream#writeRecord
@@ -755,6 +1126,53 @@ int writeRecord(SequenceStream & seqIO,
 // ----------------------------------------------------------------------------
 // Function writeAll()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SequenceStream#writeAll
+ * @brief Write sequence records from to a SequenceStream object.
+ * 
+ * @signature int writeAll(seqStream, ids, seqs[, options]);
+ * @signature int writeAll(seqStream, ids, seqs, quals[, options]);
+ * 
+ * @param[in,out] seqStream The @link SequenceStream @endlink object to write to.  Types: SequenceStream
+ * @param[in]     ids       Identifiers to write out. Type: StringSet@link of @endlinkShortcut.CharString@.
+ * @param[in]     seqs      Sequences to write out.  Type: StringSet.
+ * @param[in]     quals     Qualities to write out.  Optional.  Qualities are ignored if the file format
+ *                          does not support them.  If none are given for FASTQ, score 40 is written out
+ *                          for all.  Typex: @link StringSet @endlink of @link CharString @endlink.
+ * @param[in]     options   The configuration for writing FASTA and FASTQ files.  Type: SequenceOutputOptions
+ * 
+ * @return int 0 on success, non-0 value on errors.
+ * 
+ * The records are appended to the file if you have written out any previously.  When writing out @link Dna5Q @endlink,
+ * qualities are automatically taken from the sequence characters.
+ * 
+ * @section Examples
+ * 
+ * Write out all sequences.
+ * 
+ * @code{.cpp}
+ * int main()
+ * {
+ *     seqan::SequenceStream seqIO("in.fasta", seqan::SequenceStream::WRITE);
+ *     seqan::StringSet<seqan::CharString> ids;
+ *     appendValue(ids, "seq1");
+ *     appendValue(ids, "seq2");
+ *     seqan::StringSet<seqan::Dna5String> seqs;
+ *     appendValue(seqs, "CGAT");
+ *     appendValue(seqs, "TTTT");
+ *  
+ *     int res = writeAll(seqIO, ids, seqs);
+ *     if (res != 0)
+ *     {
+ *         std::cerr << "ERROR: Could not write records!\n";
+ *         return 1;
+ *     }
+ *  
+ *     return 0;
+ * }
+ * @endcode
+ */  
 
 /**
 .Function.SequenceStream#writeAll

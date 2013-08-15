@@ -75,6 +75,18 @@ enum EmblErrorCodes_
 // Function splitEmblHeader()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn splitEmblHeader
+ * @header <seqan/seq_io.h>
+ * @brief Split an EMBL header line.
+ *
+ * @signature void splitEmblHeader(key, value, line);
+ *
+ * @param[out] key   A @link SequenceConcept @endlink object to write the key to.
+ * @param[out] value A @link SequenceConcept @endlink object to write the value to.
+ * @param[in]  line  A @link SequenceConcept @endlink object with the line.
+ */
+
 /**
 .Function.splitEmblHeader
 ..cat:Input/Output

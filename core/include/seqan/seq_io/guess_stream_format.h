@@ -50,6 +50,16 @@ namespace seqan {
 
 // NOTE: Must be kept in sync with Function.getAutoSeqStreamFormatName().
 
+/*!
+ * @typedef SeqStreamFormats
+ * @headerfile <seqan/seq_io.h>
+ * @brief A Tag list of the currently implemented sequence formats (in RecordReader/Stream-IO)
+ * 
+ * @signature typedef TagList<...> SeqStreamFormats;
+ * 
+ * @see AutoSeqStreamFormat
+ */
+
 /**
 .Shortcut.SeqStreamFormats
 ..cat:Input/Output
@@ -64,6 +74,42 @@ namespace seqan {
 // Why adding SeqStreamFormats and AutoSeqStreamFormat instead of using
 // the existing AutoSeqFormat and SeqFormats?
 typedef TagList<Fastq, TagList<Fasta> > SeqStreamFormats;
+
+/*!
+ * @typedef AutoSeqStreamFormat
+ * @headerfile <seqan/seq_io.h>
+ * @brief A TagSelector for @link SeqStreamFormats @endlink, the list of the currently implemented Sequence-Formats (in
+ *        RecordReader/Stream-IO)
+ * 
+ * @signature typedef TagSelector<SeqStreamFormats> AutoSeqStreamFormat;
+ * 
+ * @section Remarks
+ * 
+ * Variables of this type an be passed to @link guessStreamFormat @endlink and will offer the index of the detected
+ * FileFormat in its member <tt>tagId</tt>.  The values of its member <tt>tagId</tt> can be as follows:
+ *
+ * <table>
+ *   <tr>
+ *     <th>value</th>
+ *     <th>meaning</th>
+ *   </tr>
+ *   <tr>
+ *     <td>0</td>
+ *     <td>unknown file format</td>
+ *   </tr>
+ *   <tr>
+ *     <td>1</td>
+ *     <td>FASTA</td>
+ *   </tr>
+ *   <tr>
+ *     <td>2</td>
+ *     <td>FASTQ</td>
+ *   </tr>
+ *
+ * @see SeqStreamFormats
+ * @see guessStreamFormat
+ * @see getAutoSeqStreamFormatName
+ */
 
 /**
 .Shortcut.AutoSeqStreamFormat
@@ -85,6 +131,33 @@ The values of its member $tagId$ can be as follows:
 */
 
 typedef TagSelector<SeqStreamFormats> AutoSeqStreamFormat;
+
+/*!
+ * @class LimitRecordReaderInScope
+ * @headerfile <seqan/seq_io.h>
+ * @brief Manipulates a @link RecordReader @endlink -Object so that it operates only on the first buffer
+ * 
+ * @signature template <typename TStream, typename TSpec>
+ *            class LimitRecordReaderInScope;
+ * 
+ * @tparam TSpec   The specialization of the @link RecordReader @endlink. Types: RecordReader
+ * @tparam TStream The @link StreamConcept @endlink of the @link RecordReader @endlink. Types: StreamConcept
+ * 
+ * @section Remarks
+ * 
+ * This class is intended for situations, where you do not wish the RecordReader to rebuffer and where you wish to
+ * return to the original reading position after reading, e.g. when detecting the file format of the stream.
+ * 
+ * It is used by passing the RecordReader-object on construction (this already does the necessary changes in the
+ * RecordReader).  Upon deconstruction of this object, the RecordReader is reset to its original state, including all
+ * iterators.
+ * 
+ * This works on all RecordReader-objects, independent of the underlying stream- object.  It also works if the
+ * underlying stream does not support seeking.
+ * 
+ * @see RecordReader
+ * @see guessStreamFormat
+ */
 
 /**
 .Class.LimitRecordReaderInScope
@@ -197,6 +270,31 @@ private:
 // Function autoSeqStreamFormatName()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn getAutoSeqStreamFormatName
+ * @headerfile <seqan/seq_io.h>
+ * @brief Returns the name of a stream file format.
+ * 
+ * @signature TCString getAutoSeqStreamFormatName(autoSeqStreamFormat);
+ * 
+ * @param[in] autoSeqStreamFormat The @link AutoSeqStreamFormat @endlink object to get the format name from. Types:
+ *                                AutoSeqStreamFormat
+ * 
+ * @return TCString <tt>char const *</tt> with the format name.
+ * 
+ * @section Examples
+ * 
+ * @code{.cpp}
+ * // (Create RecordReader object recordReader with sequence file here).
+ * AutoSeqStreamFormat formatTag;
+ * if (checkFormat(recordReader, formatTag))
+ *     std::cout << "File format is " << getAutoSeqStreamFormatName(formatTag) << '\n';
+ * @endcode
+ *
+ * @see guessStreamFormat
+ * @see AutoSeqStreamFormat
+ */
+
 /**
 .Function.getAutoSeqStreamFormatName
 ..summary:Returns
@@ -231,6 +329,71 @@ getAutoSeqStreamFormatName(AutoSeqStreamFormat const & format)
 // ----------------------------------------------------------------------------
 // Function guessStreamFormat()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn guessStreamFormat
+ * @headerfile <seqan/seq_io.h>
+ * @brief Check whether the data provided by reader is (one of) the specified format(s).
+ * 
+ * @signature bool guessStreamFormat(reader, tag);
+ * @signature bool guessStreamFormat(reader, tagSelector);
+ *
+ * @param[in,out] reader      The @link RecordReader @endlink to from.
+ * @param[in]     tag         A file format tag.
+ * @param[in]     tagSelector The TagSelector to use.
+ *
+ * @return true <tt>true</tt> if (one of) the specified Tag(s) tested positive and <tt>False</tt> otherwise
+ * 
+ * @section Remarks
+ * 
+ * With the help of @link LimitRecordReaderInScope @endlink these functions do not (permanently) alter the position in
+ * the stream.
+ * 
+ * The tagId-member of the TagSelector holds the index in inside-to-outside order and begins counting at one.  E.g. The
+ * Index of FASTQ in <tt>TagList&lt;Fastq, TagList&lt;Fasta&gt; &gt; is be 2.
+ * 
+ * @section Examples
+ * 
+ * The following example guesses the sequence file format of the already open fstream <tt>in</tt>.  After the call to
+ * <tt>guessStreamFormat()</tt>, the <tt>tagSelector.tagId</tt> contains the 1-based index of the matching tag.  Here,
+ * we use the @link AutoSeqStreamFormat @endlink tag selector.
+ * 
+ * @code{.cpp}
+ * RecordReader<std::fstream, SinglePass<> > reader(in);
+ * AutoSeqStreamFormat tagSelector;
+ * bool b = guessStreamFormat(reader, tagSelector);
+ * // b is true if any format was detected successfully.
+ * if (tagSelector.tagId == 1)
+ *     std::cerr << "Detected FASTA." << std::endl;
+ * else if (tagSelector.tagId == 2)
+ *     std::cerr << "Detected FASTQ." << std::endl;
+ * else
+ *     std::cerr << "Unknown file format!" << std::endl;
+ * @endcode
+ *
+ * Alternatively, we can define your own tag selector.  Note that we reverse the order of FASTA and FASTQ in respect to
+ * @link AutoSeqStreamFormat @endlink
+ * 
+ * @code{.cpp}
+ * typedef TagSelector<TagList<Fasta, TagList<Fastq> > > MyTagSelector;
+ *  
+ * RecordReader<std::fstream, SinglePass<> > reader(in);
+ * AutoSeqStreamFormat tagSelector;
+ * MyTagSelector tagSelector;
+ * bool b = guessStreamFormat(reader, tagSelector);
+ * // b is true if any format was detected successfully.
+ * if (tagSelector.tagId == 1)
+ *     std::cerr << "Detected FASTQ." << std::endl;
+ * else if (tagSelector.tagId == 2)
+ *     std::cerr << "Detected FASTA." << std::endl;
+ * else
+ *     std::cerr << "Unknown file format!" << std::endl;
+ * @endcode
+ *
+ * @see AutoSeqStreamFormat
+ * @see getAutoSeqStreamFormatName
+ * @see LimitRecordReaderInScope
+ */
 
 /**
 .Function.guessStreamFormat

@@ -59,6 +59,44 @@ namespace seqan {
 // Function readFasta()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn readFasta
+ * @headerfile <seqan/seq_io.h>
+ * @brief Read first sequence from a FASTA file.
+ * 
+ * @signature int readFasta(seq, filename);
+ * 
+ * @param[out] seq      @link String @endlink to store the result.  Type: String
+ * @param[in]  filename Path to the file to read from.  Type: <tt>char const *</tt>.
+ * 
+ * @return int 0 on success, non-0 value on error.
+ * 
+ * This function is meant for demo programs and allows to read the first sequence from a FASTA file very easily.
+ * 
+ * @section Examples
+ * 
+ * Read the file given by the first parameter to the program and print it to the screen.
+ * 
+ * @code{.cpp}
+ * #include <iostream>
+ * #include <seqan/sequence.h>
+ * #include <seqan/seq_io.h>
+ *  
+ * int main(int argc, char const ** argv)
+ * {
+ *     if (argc != 2)
+ *         return 1;
+ *  
+ *     seqan::Dna5String seq;
+ *     if (readFasta(seq, argv[1]) != 0)
+ *         return 1;
+ *  
+ *     std::cout << seq << '\n';
+ *     return 0;
+ * }
+ * @endcode
+ */
+
 /**
 .Function.readFasta
 ..cat:Input/Output

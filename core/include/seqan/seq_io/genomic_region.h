@@ -55,6 +55,75 @@ inline bool parse(GenomicRegion & region, CharString const & regionString);
 // Class GenomicRegion
 // ---------------------------------------------------------------------------
 
+/*!
+ * @class GenomicRegion
+ * @headerfile <seqan/seq_io.h>
+ * @brief Store information about a genomic region.
+ * 
+ * @signature class GenomicRegion;
+ * 
+ * A genomic region is a range on a chromosome.  The chromosome is identified by its name (as text in @link
+ * GenomicRegion#seqName @endlink, optionally also as an <tt>integer</tt> in @link GenomicRegion#seqId @endlink).  The
+ * range is stored as a half-open interval [@link GenomicRegion#beginPos @endlink, @link GenomicRegion#endPos @endlink).
+ * If @link GenomicRegion#beginPos @endlink is set to <tt>-1</tt> then the range spans the whole chromosome.  If @link
+ * GenomicRegion#beginPos @endlink is set to a value <tt>&gt;= 0</tt> and @link GenomicRegion#endPos @endlink is set ot
+ * <tt>-1</tt>, then the chromosome is selected from @link GenomicRegion#beginPos @endlink to the end.
+ * 
+ * Examples for genomic regions are <tt>chr1</tt>, <tt>chr1:1,000</tt>, <tt>chr1:1,000-2,000</tt>.
+ * 
+ * The textual description of a genomic region has one of the formats <tt>NAME</tt>, <tt>NAME:START</tt>,
+ * <tt>NAME:START-END</tt>.  The positions in the textual representation <tt>START</tt> and <tt>END</tt> are one-based.
+ * However, the representation in the members of @link GenomicRegion @endlink is zero-based.
+ * 
+ * @section Examples
+ * 
+ * Construct a @link GenomicRegion @endlink object and fill it from different region strings.
+ * 
+ * @code{.cpp}
+ * seqan::GenomicRegion genomicRegion;
+ *  
+ * parse(genomicRegion, "chr1");
+ * // genomicRegion.seqName == "chr1"
+ * // genomicRegion.seqId == -1, genomicRegion.beginPos == -1, genomicRegion.beginPos == -1
+ *  
+ * parse(genomicRegion, "chr1:1000");
+ * // genomicRegion.seqName == "chr1"
+ * // genomicRegion.beginPos == 999
+ * // genomicRegion.seqId == -1, genomicRegion.beginPos == -1
+ *  
+ * parse(genomicRegion, "chr1:1000-2000");
+ * // genomicRegion.seqName == "chr1"
+ * // genomicRegion.beginPos == 999
+ * // genomicRegion.beginPos == 2000
+ * // genomicRegion.seqId == -1
+ * @endcode
+ *
+ *
+ * @fn GenomicRegion::GenomicRegion
+ * @brief Constructor.
+ * 
+ * @signature GenomicRegion::GenomicRegion();
+ * @signature GenomicRegion::GenomicRegion(str);
+ * 
+ * @param[in] str The string to parse region from. Types: CharString
+ * 
+ * The default constructor sets all integer members to <tt>-1</tt>, the <tt>seqName</tt> member is left empty.
+ */
+
+/*!
+ * @var CharString GenomicRegion::seqName;
+ * @brief Name of the sequence the region lies on, default is the empty string.
+ * 
+ * @var __int32 GenomicRegion::seqId;
+ * @brief An optional field storing an integer.  Default is <tt>-1</tt>.
+ * 
+ * @var __int32 GenomicRegion::beginPos;
+ * @brief Begin position of the range on the chromosome.  Default is <tt>-1</tt>.
+ * 
+ * @var __int32 GenomicRegion::endPos;
+ * @brief End position of the range on the chromosome.  Default is <tt>-1</tt>.
+ */
+
 /**
 .Class.GenomicRegion
 ..cat:Input/Output
@@ -160,6 +229,15 @@ public:
 // Function clear()
 // ---------------------------------------------------------------------------
 
+/*!
+ * @fn GenomicRegion#clear
+ * @brief Reset a GenomicRegion object to the same state after default construction.
+ * 
+ * @signature void clear(genomicRegion);
+ * 
+ * @param[in,out] genomicRegion The @link GenomicRegion @endlink object to reset.  Types: GenomicRegion
+ */
+
 /**
 .Function.GenomicRegion#clear
 ..cat:Input/Output
@@ -183,6 +261,19 @@ inline void clear(GenomicRegion & region)
 // ---------------------------------------------------------------------------
 // Function parse()
 // ---------------------------------------------------------------------------
+
+/*!
+ * @fn GenomicRegion#parse
+ * @brief Parse genomic region string store results in @link GenomicRegion @endlink.
+ * 
+ * @signature bool parse(genomicRegion, regionString);
+ * 
+ * @param regionString The region string to prse. Types: CharString
+ * @param genomicRegion The @link GenomicRegion @endlink object to write the
+ *                      results to. Types: GenomicRegion
+ * 
+ * @return bool true indicates successful parsing.
+ */
 
 /**
 .Function.GenomicRegion#parse
