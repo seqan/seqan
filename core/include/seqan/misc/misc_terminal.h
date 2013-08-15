@@ -176,16 +176,7 @@ inline bool isAnsiColorTerminal()
  *
  * The following demonstrates the usage.
  *
- * @code{.cpp}
- * #include <seqan/misc/misc_terminal.h>
- *
- * // ...
- *
- * unsigned rows = 0, cols = 0;
- * bool success = getTerminalSize(cols, rows);
- * std::cout << "rows == " << rows << ", cols == " << cols
- *           << ", success == " << success << "\n";
- * @endcode
+ * @include demos/misc/get_terminal_size.cpp
  */
 
 /**
