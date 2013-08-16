@@ -60,7 +60,7 @@ seqan::ArgumentParser::ParseResult
 parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_frag_seqencing");
+    seqan::ArgumentParser parser("mason_frag_sequencing");
     // Set short description, version, and date.
     setShortDescription(parser, "Fragment Sequencing Simulation");
     setVersion(parser, "2.1");
