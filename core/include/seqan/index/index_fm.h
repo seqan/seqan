@@ -814,7 +814,7 @@ inline bool open(Index<TText, FMIndex<TOccSpec, TSpec> > & index, const char * f
 
     String<FmIndexInfo_> infoString;
 
-    if (IsSameType<TSpec, CompressText>::VALUE)
+    if (!(IsSameType<TSpec, CompressText>::VALUE))
     {
         name = fileName;    append(name, ".txt");
         if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
@@ -884,7 +884,7 @@ inline bool save(Index<TText, FMIndex<TOccSpec, TSpec> > const & index, const ch
     FmIndexInfo_ info = { index.compressionFactor, sizeof(TSAValue), index.n };
     appendValue(infoString, info);
     
-    if (IsSameType<TSpec, CompressText>::VALUE)
+    if (!(IsSameType<TSpec, CompressText>::VALUE))
     {
         name = fileName;    append(name, ".txt");
         if (!save(getFibre(index, FibreText()), toCString(name), openMode)) return false;
