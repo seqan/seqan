@@ -612,20 +612,18 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @signature orderOccurrences(occString)
  * 
- * @param occString String of occurrences. Contains suffix array values returned
- *                  by @link getOccurrences @endlink.
+ * @param occString String of occurrences.
  * 
  * @section Remarks
  * 
  * The occurrences are sorted by increasing positions.
  * 
- * Demo: Demo.Mummy
+ * @link DemoMummy @endlink
+ * @link DemoSuperMaximalRepeats @endlink
+ * @link DemoMaximalUniqueMatches @endlink
  * 
- * Demo: Demo.Maximal Repeats
- * 
- * Demo: Demo.Maximal Unique Matches
- * 
- * @see getOccurrences
+ * @see VSTreeIterator#getOccurrences
+ * @see IndexQGram#getOccurrences
  * @see SAValue
  */
 	template <typename TValue, typename TSpec>

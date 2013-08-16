@@ -122,6 +122,35 @@ namespace seqan
  In these functions the length of the index @Class.Shape@ is set automatically thus it must be modifiable at runtime, e.g. @Spec.OneGappedShape@.
 
 */
+
+/*!
+ * @class Pigeonhole
+ * 
+ * @extends Pattern
+ * @extends Finder
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Provides a fast filter alogrithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors
+ *        in the text, every partition into k+1 parts contains one part that matches without error.
+ * 
+ * @signature Finder<THaystack, Pigeonhole<TSpec> >
+ * @signature Pattern<TIndex, Pigeonhole<TSpec> >
+ * 
+ * @tparam TSpec Specifies the type of Swift filter.
+ * @tparam TIndex A q-gram index of needle(s) that should be searched for.
+ *                Types: @link IndexQGram @endlink
+ * @tparam THaystack The type of the sequence that should be searched. 
+ *                   Types: @link SequenceConcept @endlink
+ * 
+ * @section Remarks
+ * 
+ * The @link Pattern @endlink must be a q-gram index over multiple patterns. The tolerated error rate must be given when
+ * @link find @endlink or @link windowFindBegin @endlink is called.  In these functions the length of the index @link
+ * Shape @endlink is set automatically thus it must be modifiable at runtime, e.g. @link OneGappedShape @endlink.
+ */
+
+// docu is now in find_pattern_base.h
 ///.Class.Pattern.param.TSpec.type:Spec.Pigeonhole
 ///.Class.Finder.param.TSpec.type:Spec.Pigeonhole
 

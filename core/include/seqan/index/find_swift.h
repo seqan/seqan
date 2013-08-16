@@ -66,6 +66,32 @@ An \epsilon-match is a matching region of minimal length and an error rate of at
 ..remarks:
 The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed error rate must be given when @Function.find@ or @Function.windowFindBegin@ is called.
 */
+
+/*!
+ * @class Swift
+ * 
+ * @extends Pattern
+ * @extends Finder
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Provides a fast filter alogrithm that guarantees to find all regions overlapping with potential
+ *        \epsilon-matches. An \epsilon-match is a matching region of minimal length and an error rate of at most
+ *        \epsilon.
+ * 
+ * @signature Finder<THaystack, Swift<TSpec> >
+ * @signature Pattern<TIndex, Swift<TSpec> >
+ * 
+ * @tparam TSpec Specifies the type of Swift filter. Types: @link SwiftLocal @endlink, @link SwiftSemiGlobal @endlink
+ * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
+ * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
+ * 
+ * @section Remarks
+ * 
+ * The @link Pattern @endlink must be a @link IndexQGram @endlink over multiple patterns. The allowed error rate must
+ * be given when @link find @endlink or @link windowFindBegin @endlink is called.
+ */
+
 ///.Class.Pattern.param.TSpec.type:Spec.Swift
 ///.Class.Finder.param.TSpec.type:Spec.Swift
 
@@ -84,7 +110,25 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 ...type:Spec.IndexQGram
 ..include:seqan/index.h
 */
+
+/*!
+ * @class SwiftLocal
+ * 
+ * @extends Swift
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief The specialization for the general swift filter that finds epsilon matches between haystack and needle.
+ * 
+ * @signature Finder<THaystack, Swift<SwiftLocal> >
+ * @signature Pattern<TIndex, Swift<SwiftLocal> >
+ * 
+ * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
+ * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
+ */
+
 ///.Spec.Swift.param.TSpec.type:Spec.SwiftLocal
+
 /**
 .Spec.SwiftSemiGlobal:
 ..summary:The specialization for the semi-global swift filter that finds regions of the haystack where a needle matches with an error rate less than \epsilon.
@@ -100,6 +144,25 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 ...type:Spec.IndexQGram
 ..include:seqan/index.h
 */
+
+/*!
+ * @class SwiftSemiGlobal
+ * 
+ * @extends Swift
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief The specialization for the semi-global swift filter that finds regions
+ *        of the haystack where a needle matches with an error rate less than
+ *        \epsilon.
+ * 
+ * @signature Finder<THaystack, Swift<SwiftSemiGlobal> >
+ * @signature Pattern<TIndex, Swift<SwiftSemiGlobal> >
+ * 
+ * @tparam TIndex A q-gram index of needle(s). Types: @link IndexQGram @endlink
+ * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
+ */
+
 ///.Spec.Swift.param.TSpec.type:Spec.SwiftSemiGlobal
 
 template < typename TObject, typename TSpec > class Index;
@@ -1472,6 +1535,28 @@ be negative or beyond the end of $finder$ or $pattern$ when using filter algorit
 ..include:seqan/index.h
 */
 
+/*!
+ * @fn Finder#positionRangeNoClip
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a pair of the begin and end position in or beyond the haystack
+ *        or needle for the last hit found.
+ * 
+ * @signature positionRangeNoClip(finder)
+ * @signature positionRangeNoClip(pattern)
+ * 
+ * @param pattern A @link Pattern @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * @param finder A @link Finder @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * 
+ * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found. These
+ *                 positions could be negative or beyond the end of <tt>finder</tt> or <tt>pattern</tt> when using 
+ *                 filter algorithms. The return type is <tt>Pair<typename SAValue<THost>::Type></tt> if <tt>THost</tt>
+ *                 is the type of haystack or needle.
+ * 
+ * @see positionRange
+ */
+
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Swift<TSpec> > >::Type>
 positionRangeNoClip(Finder<THaystack, Swift<TSpec> > const & finder)
@@ -1507,6 +1592,28 @@ positionRangeNoClip(Finder<THaystack, Swift<TSpec> > & finder)
 ..see:Function.endPosition
 ..include:seqan/index.h
 */
+
+/*!
+ * @fn Finder#positionRange
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a pair of the begin and end position in the haystack or needle
+ *        for the last hit found.
+ * 
+ * @signature positionRange(finder)
+ * @signature positionRange(pattern)
+ * 
+ * @param pattern A @link Pattern @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * @param finder A @link Finder @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * 
+ * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found.The return type
+ *                 is <tt>Pair<typename SAValue<THost>::Type></tt> if <tt>THost</tt> is the type of haystack or needle.
+ * 
+ * @see beginPosition
+ * @see endPosition
+ * @see positionRangeNoClip
+ */
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Swift<TSpec> > >::Type>
@@ -1908,6 +2015,25 @@ find(
 ...type:nolink:double
 ..include:seqan/index.h
 */
+
+/*!
+ * @fn Swift#windowFindBegin
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Initializes the pattern. Sets the finder on the begin position.  Gets the first non-repeat range and sets it
+ * in the finder.  Used together with @link Swift#windowFindEnd @endlink.
+ * 
+ * @signature windowFindBegin(finder, pattern, errorRate)
+ * 
+ * @param pattern A pattern with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * @param errorRate Error rate that is allowed between reads and reference. Should be the same in as in @link
+ *                  Swift#windowFindNext @endlink.  Types: <tt>double</tt>
+ * @param finder A finder with window interface. Types: @link Pigeonhole @endlink, @link Swift @endlink
+ * 
+ * @see Swift#windowFindNext
+ * @see Swift#windowFindEnd
+ */
 template <typename THaystack, typename TIndex, typename TSpec>
 inline bool 
 windowFindBegin(
@@ -1950,6 +2076,31 @@ windowFindBegin(
 ..see:Function.getWindowFindHits
 ..include:seqan/index.h
 */
+
+/*!
+ * @fn Swift#windowFindNext
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Searches over the next window with the finder. The found hits can be retrieved with @link 
+ *        Swift#getWindowFindHits @endlink  Used together with @link Swift#windowFindBegin @endlink and @link
+ *        Swift#windowFindEnd @endlink.
+ * 
+ * @signature windowFindNext(finder, pattern, finderWindowLength)
+ * 
+ * @param pattern A pattern with window interface. Types: Pigeonhole, Swift
+ * @param finderWindowLength Number of bases that are scanned beginning from the position the finder is at.  Including
+ * bases that are marked as repeats and that are skipped. Types: nolink:unsigned int
+ * @param finder A finder with window interface. Types: Pigeonhole
+ * 
+ * @return TReturn true, if there are bases that can be scanned. false,
+ *                 otherwise
+ * 
+ * @see windowFindBegin
+ * @see windowFindEnd
+ * @see getWindowFindHits
+ */
+
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
 inline bool
 windowFindNext(

@@ -171,7 +171,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * 
  * In most applications a q-gram index consisting of both of these table is
  * required. To efficiently create them at once use this tag for @link
- * indexRequire @endlink or @link indexCreate @endlink.
+ * indexRequire @endlink or @link Index#indexCreate @endlink.
  * 
  * @tag QGramIndexFibres#QGram_RawText
  * 
@@ -1558,7 +1558,7 @@ The resulting tables must have appropriate size before calling this function.
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
+ * This function should not be called directly. Please use @link Index#indexCreate
  * @endlink or @link indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */
@@ -1690,7 +1690,7 @@ The resulting tables must have appropriate size before calling this function.
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
+ * This function should not be called directly. Please use @link Index#indexCreate
  * @endlink or @link indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */
@@ -1964,7 +1964,7 @@ The resulting tables must have appropriate size before calling this function.
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
+ * This function should not be called directly. Please use @link Index#indexCreate
  * @endlink or @link indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */

@@ -133,6 +133,48 @@ TATAA
 TA
 
 */
+/*!
+ * @defgroup TopDown
+ * 
+ * @brief Tag that specifies a @link VSTree Iterator @endlink to traverse the virtual string tree from the root towards
+ *        the leafs.
+ * 
+ * @section Examples
+ * 
+ * The following example shows how a the @link TopDown @endlink tag is used.
+ * 
+ * @include demos/index/index_begin_atEnd_representative.cpp
+ * 
+ * @code{.txt}
+ * A
+ * AA
+ * ATAA
+ * TA
+ * TAA
+ * TATAA
+ * --------------------------------
+ * AA
+ * ATAA
+ * A
+ * TAA
+ * TATAA
+ * TA
+ * 
+ * @endcode
+ *
+ * @tag TopDown#ParentLinks
+ * 
+ * @brief A top down iterator with the possibility to go back up again.
+ * 
+ * @tag TopDown#Preorder
+ * 
+ * @brief Pre-order traversal of the virtual string tree.
+ * 
+ * @tag TopDown#Postorder
+ * 
+ * @brief Post-order traversal of the virtual string tree.
+ */
+
 		// top down traversal iterators
 		template <typename TSpec = Preorder>
 		struct TopDown {};					// starts in the suffix tree root and can go down and go right
@@ -157,6 +199,29 @@ TAA
 TATAA
 TA
 */
+/*!
+ * @defgroup BottomUp Bottom Up
+ * 
+ * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the
+ *        virtual string tree from the root towards the leafs.
+ * 
+ * @section Examples
+ *
+ * The following example shows how the @link Bottom Up @endlink tag is used.
+ * @include demos/index/index_begin_atEnd_representative_bottomUp.cpp
+ * @code{.txt}
+ * AA
+ * ATAA
+ * A
+ * TAA
+ * TATAA
+ * TA
+ * @endcode
+ *
+ * @tag BottomUp#Postorder
+ * 
+ * @brief Post-order traversal of the virtual string tree.
+ */
 		// bottom up traversal iterators
 		template <typename TSpec = Postorder>
 		struct BottomUp {};					// starts in the first node of a depth-first-search and can go next
@@ -186,7 +251,7 @@ TA
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Default behaviour of @link goNext @endlink when no second parameter is
+ * @brief Default behaviour of @link VSTreeIterator#goNext @endlink when no second parameter is
  *        given.
  * 
  * @signature GetVSTreeIteratorTraits<TIterator>::Type
@@ -307,10 +372,10 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre.Fibres @endlink of an Enhanced
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of an Enhanced
  * Suffix Array based @link IndexEsa.Index @endlink.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * @see IndexEsa
  * 
@@ -325,7 +390,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The suffix array contains the indices of all suffices of <tt>EsaRawText</tt>
  * in lexicographical order.
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag IndexEsaFibres#EsaChildtab
@@ -339,7 +404,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The child table contains structural information of the suffix tree (see
  * Abhouelda et al.).
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag IndexEsaFibres#EsaRawText
@@ -372,7 +437,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * <tt>EsaRawText</tt>. The entries are the characters left of the corresponding
  * suffix in the suffix array <tt>EsaSA</tt>.
  * 
- * @link Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
+ * @link Index#Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
  * <tt>EsaBwt</tt>.
  * 
  * @tag IndexEsaFibres#EsaLcp
@@ -386,7 +451,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The lcp table contains the lcp-value of two adjacent suffices in the suffix
  * array <tt>EsaSA</tt>.
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  */
 
@@ -430,18 +495,18 @@ information of the suffix tree) are provided.
  * 
  * @brief An index based on an enhanced suffix array.
  * 
- * @signature Index<TText, IndexEsa<> >
+ * @signature template <typename TText, typename TSpec>
+ *            Index<TText, IndexEsa<TSpec> >
  * 
- * @tparam TText The text type. Types: String
+ * @tparam TText The text type. Types: @link SequenceConcept @endlink, @link StringSet @endlink
+ * @tparam TSpec The specialization which is <tt>void</tt> by default.
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
- * are a suffix array (see @link ESA Index Fibres.EsaSA @endlink), a lcp table
- * (see @link ESA Index Fibres.EsaLcp @endlink), etc.
+ * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index are a suffix array (see @link ESA
+ * Index Fibres.EsaSA @endlink), a lcp table (see @link ESA Index Fibres.EsaLcp @endlink), etc.
  * 
- * This index can be accessed as a Suffix Tree using the @link VSTree Iterator
- * @endlink classes.
+ * This index can be accessed as a Suffix Tree using the @link VSTree Iterator @endlink classes.
  * 
  * @see ESA Index Fibres
  */

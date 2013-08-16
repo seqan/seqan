@@ -64,9 +64,9 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag FMIndexFibres#FibreText
@@ -157,7 +157,7 @@
  * 
  * @brief Tag to select a specific fibre of a @link CompressedSA @endlink.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag CompressedSAFibres#FibreSparseString
@@ -242,11 +242,11 @@
  * 
  * @signature getFibre(compressedSA, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link CompressedSAFibres CompressedSA Fibres @endlink
  * @param compressedSA The container holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -368,9 +368,9 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre Fibres @endlink of a @link LfTable @endlink.
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link LfTable @endlink.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag LFTableFibres#FMTablePrefixSumTable
@@ -447,10 +447,10 @@
  * 
  * @signature getFibre(lfTable, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types: @link LFTableFibres @endlink
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types: @link LFTableFibres @endlink
  * @param container The container holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -524,7 +524,7 @@
  * 
  * @brief Tag to select a specific fibre of a @link PrefixSumTableFibres @endlink.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag PrefixSumTableFibres#FibreEntries
@@ -644,11 +644,11 @@
  * 
  * @signature getFibre(prefixSumTable, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link PrefixSumTableFibres PrefixSumTanble Fibres @endlink.
  * @param prefixSumTable The prefix sum table.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -810,10 +810,10 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre Fibres @endlink of a @link
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link
  * WaveletTree @endlink.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag WaveletTreeFibres#FibreTreeStructure
@@ -857,7 +857,7 @@
  *
  * @tag SequenceBitMaskFibres#FibreBitStrings The string set containing a bit string for each character.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  */
 
@@ -921,11 +921,11 @@
  * 
  * @signature getFibre(dictionary, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link SequenceBitMaskFibres SequenceBitMask Fibres @endlink, @link WaveletTreeFibres WaveletTree Fibres @endlink.
  * @param dictionary The dictionary holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -1013,11 +1013,11 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre.Fibres @endlink of a rank support
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a rank support
  * bit string.
  * 
- * @see Fibre
- * @see getFibre
+ * @see Index#Fibre
+ * @see Index#getFibre
  * 
  * @tag RankSupportBitStringFibres#FibreSuperBlocks
  * 
@@ -1152,7 +1152,7 @@
  * 
  * @param bitString The rank-support-bit string.
  * 
- * @return TReturn Types: @link Value @endlink of @link Fibre @endlink of the rank-support-bit string.
+ * @return TReturn Types: @link Value @endlink of @link Index#Fibre @endlink of the rank-support-bit string.
  */
 
 /*!
@@ -1266,9 +1266,9 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag RightArrayBinaryTreeFibres#FibreTreeStructureEncoding
@@ -1324,11 +1324,11 @@
  * 
  * @signature getFibre(rightArrayBinaryTree, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres @endlink.
  * @param container The container holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -1635,7 +1635,7 @@
  * @brief Tag to select a specific fibre of a @link
  *        SentinelRankDictionary @endlink.
  *  
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag SentinelRankDictionaryFibres#FibreSentinelPosition
@@ -1719,11 +1719,11 @@
  * 
  * @signature getFibre(dictionary, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link SentinelRankDictionaryFibres SentinelRankDictionary Fibres @endlink.
  * @param dictionary The dictionary holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -1859,9 +1859,9 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
  * 
- * @see Fibre
+ * @see Index#Fibre
  * @see getFibre
  * 
  * @tag SparseStringFibres#FibreValueString
@@ -1938,11 +1938,11 @@
  * 
  * @signature getFibre(sparseString, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link SparseStringFibres SparseString Fibres @endlink
  * @param sparseString The sparseString holding the fibre.
  * 
- * @return TReturn A reference to the @link Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
