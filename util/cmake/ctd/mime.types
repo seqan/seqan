@@ -32,3 +32,5 @@ application/x-dot dot
 application/x-newick newick
 application/x-alftsv alf.tsv
 application/x-txt txt
+applization/x-bam-coverage-tsv bam_coverage_tsv
+applization/x-fq-stats-tsv fq_stats_tsv

@@ -44,3 +44,28 @@ $ fx_bam_coverage
 Send an email to the SeqAn mailing list:
 
     https://lists.fu-berlin.de/listinfo/seqan-dev
+
+------------------------------------------------------------------------------
+4. R Snippets
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+4.1. Conversion for Plotting with R
+------------------------------------------------------------------------------
+
+Converting the data.frame generated from the fx_fastq_stats TSV output into
+a list that can be plotted using bxp(R).
+
+    colnames(R) <- c("Column", "Count", "Minimal.Quality", "Maximal.Quality",
+                     "Quality.Sum", "Quality.Mean", "1st.Quartile.Score",
+                     "Median.Score", "3rd.Quartile.Score",
+                     "Inter.Quality.Range", "Left.Whisker", "Right.Whisker",
+                     "A.Count", "C.Count", "G.Count", "T.Count", "N.Count")
+    stats <- t(data.matrix(R[c("Minimal.Quality", "1st.Quartile.Score",
+                               "3rd.Quartile.Score", "Maximal.Quality")]))
+    n <- R[, "Count"]
+    conf <- t(data.matrix(R[c("Minimal.Quality", "Maximal.Quality")]))
+    out <- c()
+    group <- c()
+    names <- c()
+    R <- list(stats=stats, n=n, conf=conf, out=out, group=group, names=names)

@@ -132,7 +132,7 @@ parseArgs(FxBamCoverageOptions & options,
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
     setRequired(parser, "out-path");
-    setValidValues(parser, "out-path", "bam.coverage.tsv");
+    setValidValues(parser, "out-path", "bam_coverage_tsv");
 
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 

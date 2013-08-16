@@ -130,7 +130,7 @@ struct FastqStats
         maxLength = n;
 
         resize(numBases, n, 0);
-        resize(minScores, n, 0);
+        resize(minScores, n, 80);
         resize(maxScores, n, 0);
         resize(sumScores, n, 0);
         resize(meanScores, n, 0);
@@ -254,7 +254,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setRequired(parser, "input");
     addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUTFILE, "OUTPUT"));
     setRequired(parser, "output");
-    setValidValues(parser, "output", ".fq.stats.tsv");
+    setValidValues(parser, "output", "fq_stats_tsv");
 
     // Parse command line.
     seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
