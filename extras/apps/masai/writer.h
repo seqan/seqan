@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/file/file_stream.h>
+#include <seqan/stream.h>
 
 #include "tags.h"
 #include "store.h"
