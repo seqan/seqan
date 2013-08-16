@@ -39,6 +39,7 @@
 #include <seqan/stream.h>
 
 #include "test_stream_char_array.h"
+#include "test_stream_file_stream.h"
 #if SEQAN_HAS_ZLIB
 #include "test_stream_gz_file.h"
 #include "test_stream_bgzf.h"
@@ -72,6 +73,45 @@ SEQAN_BEGIN_TESTSUITE(test_stream)
     SEQAN_CALL_TEST(test_stream_char_array_flush);
     SEQAN_CALL_TEST(test_stream_char_array_seek);
     SEQAN_CALL_TEST(test_stream_char_array_tell);
+
+    // Tests for FileStream.
+    SEQAN_CALL_TEST(test_stream_file_stream_metafunctions_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_metafunctions_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_simple_usage_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_simple_usage_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_complex_usage_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_complex_usage_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_simple_usage_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_simple_usage_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_complex_usage_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_complex_usage_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_eof_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_eof_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_peek_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_peek_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_char_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_char_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_block_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_block_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_block_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_block_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_streamPut_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_streamPut_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_char_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_char_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_flush_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_flush_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_seek_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_seek_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_tell_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_tell_mmap);
+
+    SEQAN_CALL_TEST(test_stream_file_stream_read_large_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_read_large_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_large_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_write_large_mmap);
+    SEQAN_CALL_TEST(test_stream_file_stream_seek_large_file);
+    SEQAN_CALL_TEST(test_stream_file_stream_seek_large_mmap);
 
 #if SEQAN_HAS_ZLIB  // Enable tests for Stream<GZFile>, Stream<Bgzf> if available.
     // Tests for BZ2 File Stream.

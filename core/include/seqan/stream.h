@@ -110,6 +110,8 @@
 #include <seqan/stream/stream_bz2_file.h>
 #endif  // #if SEQAN_HAS_BZIP2
 
+#include "../../../extras/include/seqan/file/file_stream.h"
+
 // ===========================================================================
 // Record Reader Class and Specializations.
 // ===========================================================================

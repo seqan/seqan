@@ -67,7 +67,7 @@ template <typename TGenome, typename TReads, typename TDistance, typename TSpec>
 struct Writer<TGenome, TReads, Raw, TDistance, TSpec>
 {
     typedef Match<>                                         TMatch;
-    typedef Stream<FileStream<WriteOnly, File<>, TMatch> >	TStream;
+    typedef Stream<FileStream<File<>, TMatch> >	TStream;
     
     TGenome                 & genome;
     TReads                  * reads;
@@ -88,7 +88,7 @@ struct Writer<TGenome, TReads, Sam, TDistance, TSpec>
 {
     typedef BamIOContext<TFragmentStore::TContigNameStore>  TBamIOContext;
     typedef unsigned long                                   TWord;
-    typedef Stream<FileStream<WriteOnly, File<> > >         TStream;
+    typedef Stream<FileStream<File<> > >         TStream;
 
     TGenome                 & genome;
     TReads                  * reads;
