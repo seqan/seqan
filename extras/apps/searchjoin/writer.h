@@ -41,7 +41,6 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 #include <seqan/stream.h>
-#include <seqan/file/file_stream.h>
 
 using namespace seqan;
 
