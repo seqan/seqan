@@ -452,7 +452,7 @@ void runTestStreamFileStreamWriteLarge()
     resize(buffer, FILE_SIZE, '\0');
     std::fstream f(toCString(tempFilename), std::ios::binary | std::ios::in);
     f.read(&buffer[0], FILE_SIZE);
-    SEQAN_ASSERT_EQ(f.gcount(), FILE_SIZE);
+    SEQAN_ASSERT_EQ((unsigned)f.gcount(), FILE_SIZE);
 
     for (unsigned i = 0; i < FILE_SIZE; ++i)
         SEQAN_ASSERT_EQ((unsigned)buffer[i], '!' + i % 53);
