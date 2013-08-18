@@ -69,7 +69,7 @@ typedef Tag<Join_>              Join;
 template <typename TDb, typename TDbQuery, typename TSpec = Search>
 struct Writer
 {
-    typedef Stream<FileStream<WriteOnly, File<> > > TStream;
+    typedef Stream<FileStream<File<> > > TStream;
 
     TDb const       & db;
     TDbQuery /* const */  & query;
