@@ -1045,7 +1045,10 @@ eraseTag(BamTagsDict & tags, CharString const & key)
     CharString tmp;
     tmp = getTagValue(tags, idx);
     erase(host(tags), tags._positions[idx], tags._positions[idx + 1]);
-    
+
+    // TODO(weese): is this really working and tested? Should _positions be updated as well?
+    // Why is tmp not used?
+
     return true;
 }
 
