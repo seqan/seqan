@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
 // ==========================================================================
-// Adaptions for the Memorymapped Strings
+// Adaptions for the SeqAn Strings
 // ==========================================================================
 
 // TODO(holtgrew): Should better be string adaption!
@@ -50,7 +50,7 @@ namespace seqan {
 // ============================================================================
 
 /*
-.Adaption.IO stream
+.Adaption.String
 ..cat:Input/Output
 ..summary:Adaption from $fstream$, $ifstream$ and $ofstream$ to the @Concept.StreamConcept@ concept.
 ..include:seqan/stream.h
@@ -157,12 +157,9 @@ template <typename TValue, typename TSpec, typename TSource>
 inline int
 streamPut(String<TValue, TSpec> & stream, TSource const & source)
 {
-    std::ostringstream str;
-    str << source << std::ends;
-    if (str.fail())
-        return str.fail();
-    return _appendWithoutTrailing0(stream, str.str());
+    return _streamPut(stream, source, typename IsSequence<TSource const>::Type());
 }
+
 
 }  // namespace seqan
 

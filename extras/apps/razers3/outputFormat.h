@@ -499,109 +499,6 @@ getCigarLine(TAlign & align, TString & cigar, TString & mutations)
 
 }
 
-template <typename TUnsigned, unsigned SIZE, typename T = void>
-struct AppendIntNumberFormatString;
-
-
-template <typename T>
-struct AppendIntNumberFormatString<False, 1, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<False, 1, T>::VALUE[] = "%hhi";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<True, 1, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<True, 1, T>::VALUE[] = "%hhu";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<False, 2, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<False, 2, T>::VALUE[] = "%hi";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<True, 2, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<True, 2, T>::VALUE[] = "%hu";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<False, 4, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<False, 4, T>::VALUE[] = "%i";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<True, 4, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<True, 4, T>::VALUE[] = "%u";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<False, 8, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<False, 8, T>::VALUE[] = "%lli";
-
-
-template <typename T>
-struct AppendIntNumberFormatString<True, 8, T>
-{
-    static const char VALUE[];
-};
-template <typename T>
-const char AppendIntNumberFormatString<True, 8, T>::VALUE[] = "%llu";
-
-
-template <typename TString, typename TInt>
-void appendIntNumber(TString & str, TInt i)
-{
-    // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
-    char buf[sizeof(TInt) * 3 + 1];
-    sprintf(buf, AppendIntNumberFormatString<typename Is<UnsignedIntegerConcept<TInt> >::Type, sizeof(TInt)>::VALUE, i);
-    append(str, buf);
-}
-
-template <typename TString>
-void appendIntNumber(TString & str, unsigned long i)
-{
-    // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
-    char buf[sizeof(unsigned long) * 3 + 1];
-    sprintf(buf, "%lu", i);
-    append(str, buf);
-}
-
-template <typename TString>
-void appendIntNumber(TString & str, long i)
-{
-    // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
-    char buf[sizeof(long) * 3 + 1];
-    sprintf(buf, "%li", i);
-    append(str, buf);
-}
-
 struct FunctorGlobalEditDistAlign
 {
     template <typename TAlign>
@@ -874,7 +771,7 @@ int dumpMatches(
                 appendValue(line, _sep_);
                 appendValue(line, '0' + options.positionFormat);
                 appendValue(line, _sep_);
-                appendIntNumber(line, readLen);
+                streamPut(line, readLen);
                 appendValue(line, _sep_);
                 appendValue(line, (ar.beginPos < ar.endPos) ? 'F' : 'R');
                 appendValue(line, _sep_);
@@ -901,14 +798,14 @@ int dumpMatches(
 
                 appendValue(line, _sep_);
                 if (ar.beginPos < ar.endPos)
-                    appendIntNumber(line, ar.beginPos + options.positionFormat);
+                    streamPut(line, ar.beginPos + options.positionFormat);
                 else
-                    appendIntNumber(line, ar.endPos + options.positionFormat);
+                    streamPut(line, ar.endPos + options.positionFormat);
                 appendValue(line, _sep_);
                 if (ar.beginPos < ar.endPos)
-                    appendIntNumber(line, ar.endPos);
+                    streamPut(line, ar.endPos);
                 else
-                    appendIntNumber(line, ar.beginPos);
+                    streamPut(line, ar.beginPos);
                 appendValue(line, _sep_);
                 sprintf(intBuf, "%.5g", percId);
                 append(line, intBuf);
@@ -920,14 +817,14 @@ int dumpMatches(
                 if (ar.pairMatchId != TAlignedRead::INVALID_ID)
                 {
                     appendValue(line, _sep_);
-                    appendIntNumber(line, ar.pairMatchId);
+                    streamPut(line, ar.pairMatchId);
                     appendValue(line, _sep_);
-                    appendIntNumber(line, (int)store.alignQualityStore[ar.id].pairScore);
+                    streamPut(line, (int)store.alignQualityStore[ar.id].pairScore);
                     appendValue(line, _sep_);
                     if (ar.beginPos < ar.endPos)
-                        appendIntNumber(line, libSize[ar.pairMatchId]);
+                        streamPut(line, libSize[ar.pairMatchId]);
                     else
-                        appendIntNumber(line, -libSize[ar.pairMatchId]);
+                        streamPut(line, -libSize[ar.pairMatchId]);
                     //file << _sep_ << ar.pairMatchId << _sep_ << (int)store.alignQualityStore[ar.id].pairScore << _sep_;
                     //if (ar.beginPos < ar.endPos)
                     //    file << libSize[ar.pairMatchId];

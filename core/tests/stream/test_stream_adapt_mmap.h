@@ -31,11 +31,11 @@
 // ==========================================================================
 // Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
 // ==========================================================================
-// Tests for mmap stream concept adaption.
+// Tests for string stream concept adaption.
 // ==========================================================================
 
-#ifndef TEST_STREAM_TEST_STREAM_ADAPT_MMAP_H_
-#define TEST_STREAM_TEST_STREAM_ADAPT_MMAP_H_
+#ifndef TEST_STREAM_TEST_STREAM_ADAPT_STRING_H_
+#define TEST_STREAM_TEST_STREAM_ADAPT_STRING_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -43,23 +43,16 @@
 #include "test_stream_generic.h"
 
 // Test of streamPut().
-SEQAN_DEFINE_TEST(test_stream_adapt_mmap_streamPut)
+SEQAN_DEFINE_TEST(test_stream_adapt_string_streamPut)
 {
     using namespace seqan;
 
-    CharString tempFilename = SEQAN_TEMP_FILENAME();
-    char filenameBuffer[1000];
-    strncpy(filenameBuffer, toCString(tempFilename), 999);
-
-    String<char, MMap<> > mmapString;
-    open(mmapString, filenameBuffer);
-
-    testStreamPut(mmapString);
+    CharString charString;
+    testStreamPut(charString);
 
     char cmp[] = "c\nseq\nsss\n12\n34\n56\n78\n5.4\n6.5\nA\nACGT\nACGTN\n";
 
-    SEQAN_ASSERT_EQ(CharString(mmapString), CharString(cmp));
-    close(mmapString);
+    SEQAN_ASSERT_EQ(charString, CharString(cmp));
 }
 
-#endif  // TEST_STREAM_TEST_STREAM_ADAPT_MMAP_H_
+#endif  // TEST_STREAM_TEST_STREAM_ADAPT_STRING_H_

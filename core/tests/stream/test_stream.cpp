@@ -262,7 +262,7 @@ SEQAN_BEGIN_TESTSUITE(test_stream)
     SEQAN_CALL_TEST(test_stream_adapt_ofstream_flush);
 
     // Tests for mmap-stream adaptation
-    SEQAN_CALL_TEST(test_stream_adapt_mmap_streamPut);
+    SEQAN_CALL_TEST(test_stream_adapt_string_streamPut);
 
     // Tests for tokenize.h
     SEQAN_CALL_TEST(test_stream_tokenizing_readUntil);

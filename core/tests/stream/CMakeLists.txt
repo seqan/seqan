@@ -34,6 +34,7 @@ add_executable (test_stream
                test_stream_adapt_cstdio.h
                test_stream_adapt_fstream.h
                test_stream_adapt_sstream.h
+               test_stream_adapt_mmap.h
                test_stream_bz2_file.h
                test_stream_char_array.h
                test_stream_gz_file.h
