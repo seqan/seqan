@@ -484,7 +484,7 @@ exon2
 coding2
 ..include:seqan/misc/misc_interval_tree.h
 */
-template<typename TValue=int, typename TCargo=unsigned int>
+template <typename TValue = int, typename TCargo = unsigned int>
 class IntervalTree
 {
 public:
