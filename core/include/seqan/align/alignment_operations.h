@@ -70,6 +70,14 @@ namespace seqan {
  * @param align1    Target Alignment object into which align2 is to be integrated.
  * @param align2    Alignment object that is to be integrated into align1.
  * @param positions The integration positions in align1 for all rows (view positions), String of positions.
+ *
+ * @section Examples
+ *
+ * @include demos/align/integrate_align.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/integrate_align.cpp.stdout
  */
 
 /**
