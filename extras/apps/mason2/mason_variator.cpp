@@ -1256,7 +1256,7 @@ public:
             ss << "SVTYPE=INS";
         else
             ss << "SVTYPE=DEL";
-        ss << ";SVLEN=" << abs(svRecord.size);
+        ss << ";SVLEN=" << svRecord.size;
         vcfRecord.info = ss.str();
 
         // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a

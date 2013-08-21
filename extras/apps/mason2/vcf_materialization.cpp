@@ -405,7 +405,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         else if (contains(vcfRecord.info, "SVTYPE=DEL"))  // Deletion
         {
             svRecord.kind = StructuralVariantRecord::INDEL;
-            svRecord.size = -getSVLen(vcfRecord.info);
+            svRecord.size = getSVLen(vcfRecord.info);
         }
         else if (contains(vcfRecord.info, "SVTYPE=INV"))  // Inversion
         {
