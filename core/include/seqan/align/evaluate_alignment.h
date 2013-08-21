@@ -149,6 +149,14 @@ void clear(AlignmentStats & stats)
  * @param[in]  score The @link Score @endlink object to use for the scoring scheme.
  *
  * @see AlignmentStats
+ *
+ * @section Examples
+ *
+ * @include demos/align/compute_alignment_stats.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/compute_alignment_stats.cpp.stdout
  */
 
 template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
