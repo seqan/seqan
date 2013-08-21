@@ -287,7 +287,7 @@ struct Value< StringSet< TString, TSpec > >
 template < typename TString, typename TSpec >
 struct Value< StringSet< TString, TSpec > const>
 {
-    typedef TString Type;
+    typedef TString const Type;
 };
 
 // --------------------------------------------------------------------------
