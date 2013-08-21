@@ -175,7 +175,7 @@ int main(int argc, char const ** argv)
     // Create sequencing simulator.
     SequencingSimulatorFactory simFactory(rng, options.seqOptions, options.illuminaOptions,
                                           options.rocheOptions, options.sangerOptions);
-    std::auto_ptr<SequencingSimulator> sim = simFactory.make();
+    std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> sim = simFactory.make();
 
     // Buffers for reading in fragments.
     seqan::CharString fragId;

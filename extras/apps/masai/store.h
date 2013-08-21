@@ -215,11 +215,11 @@ struct ReadsLoader
     typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
     typedef Reads<TSpec, TConfig>                   TReads;
 
-    TStream                         _file;
-    unsigned long                   _fileSize;
-    AutoSeqStreamFormat             _fileFormat;
-    std::auto_ptr<TRecordReader>    _reader;
-    Holder<TReads>                  reads;
+    TStream                                 _file;
+    unsigned long                           _fileSize;
+    AutoSeqStreamFormat                     _fileFormat;
+    std::SEQAN_AUTO_PTR_NAME<TRecordReader> _reader;
+    Holder<TReads>                          reads;
 
     ReadsLoader(TReads & reads) :
         _fileSize(0),

@@ -101,25 +101,26 @@ struct SeqIOFileFormat_
 class SequenceStreamImpl_
 {
 public:
+
 #if SEQAN_HAS_ZLIB
-    std::auto_ptr<Stream<GZFile> > _gzStream;
+    std::SEQAN_AUTO_PTR_NAME<Stream<GZFile> > _gzStream;
 #endif  // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
-    std::auto_ptr<Stream<BZ2File> > _bz2Stream;
+    std::SEQAN_AUTO_PTR_NAME<Stream<BZ2File> > _bz2Stream;
 #endif  // #if SEQAN_HAS_BZIP2
-    std::auto_ptr<String<char, MMap<> > > _mmapString;
+    std::SEQAN_AUTO_PTR_NAME<String<char, MMap<> > > _mmapString;
 
     // TODO(holtgrew): We could get rid of some of these with type erasure on streams and record readers. Would this be enough?
 
 #if SEQAN_HAS_ZLIB
-    std::auto_ptr<RecordReader<Stream<GZFile>, SinglePass<> > > _gzReader;
+    std::SEQAN_AUTO_PTR_NAME<RecordReader<Stream<GZFile>, SinglePass<> > > _gzReader;
 #endif  // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
-    std::auto_ptr<RecordReader<Stream<BZ2File>, SinglePass<> > > _bz2Reader;
+    std::SEQAN_AUTO_PTR_NAME<RecordReader<Stream<BZ2File>, SinglePass<> > > _bz2Reader;
 #endif  // #if SEQAN_HAS_BZIP2
-    std::auto_ptr<RecordReader<String<char, MMap<> >, SinglePass<StringReader> > > _mmapReaderSinglePass;
-    std::auto_ptr<RecordReader<String<char, MMap<> >, DoublePass<StringReader> > > _mmapReaderDoublePass;
-    std::auto_ptr<RecordReader<std::istream, SinglePass<> > > _istreamReader;
+    std::SEQAN_AUTO_PTR_NAME<RecordReader<String<char, MMap<> >, SinglePass<StringReader> > > _mmapReaderSinglePass;
+    std::SEQAN_AUTO_PTR_NAME<RecordReader<String<char, MMap<> >, DoublePass<StringReader> > > _mmapReaderDoublePass;
+    std::SEQAN_AUTO_PTR_NAME<RecordReader<std::istream, SinglePass<> > > _istreamReader;
 
     CharString _filename;
     SeqIOFileFormat_::Type _fileFormat;

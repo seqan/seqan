@@ -272,9 +272,9 @@ public:
     BamIOContext<StringSet<CharString> >   bamIOContext;
 
     // The actual implementation of writing SAM or BAM.
-    std::auto_ptr<XamWriter_> _writer;
+    std::SEQAN_AUTO_PTR_NAME<XamWriter_> _writer;
     // The actual implementation of reading SAM or BAM.
-    std::auto_ptr<XamReader_> _reader;
+    std::SEQAN_AUTO_PTR_NAME<XamReader_> _reader;
 
     // Constructors.
 

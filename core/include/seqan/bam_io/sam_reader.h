@@ -62,13 +62,7 @@ public:
     std::istream * _stream;
 
     // Record reader to use for parsing.
-#if __cplusplus <= 199711L
-    // C++98
-    std::auto_ptr<RecordReader<std::istream, SinglePass<> > > _reader;
-#else  // #if __cplusplus <= 199711L
-    // C++11
-    std::unique_ptr<RecordReader<std::istream, SinglePass<> > > _reader;
-#endif  // #if __cplusplus <= 199711L
+    std::SEQAN_AUTO_PTR_NAME<RecordReader<std::istream, SinglePass<> > > _reader;
 
     SamReader_() :
         XamReader_(), _fileSize(0), _stream(0),

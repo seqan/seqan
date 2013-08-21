@@ -153,11 +153,11 @@ public:
         WRITE
     };
 
-    std::auto_ptr<std::fstream> _stream;
+    std::SEQAN_AUTO_PTR_NAME<std::fstream> _stream;
     std::ostream * _outStream;
     std::istream * _inStream;
     CharString _filename;
-    std::auto_ptr<TReader_> _reader;
+    std::SEQAN_AUTO_PTR_NAME<TReader_> _reader;
     Mode _mode;
     int _error;
     bool _isGood;

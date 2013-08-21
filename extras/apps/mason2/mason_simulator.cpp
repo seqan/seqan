@@ -598,7 +598,7 @@ public:
         // Create sequencing simulator.
         SequencingSimulatorFactory simFactory(rng, options->seqOptions, options->illuminaOptions,
                                               options->rocheOptions, options->sangerOptions);
-        std::auto_ptr<SequencingSimulator> ptr = simFactory.make();
+        std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> ptr = simFactory.make();
         seqSimulator = ptr.release();
     }
 
@@ -748,11 +748,11 @@ public:
     // alignment information relative to the materialized sequence.
     IdSplitter fragmentSplitter;
     // Helper for joining the FASTQ files.
-    std::auto_ptr<FastxJoiner<seqan::Fastq> > fastxJoiner;
+    std::SEQAN_AUTO_PTR_NAME<FastxJoiner<seqan::Fastq> > fastxJoiner;
     // Helper for storing SAM records for each contig/haplotype pair.  In the end, we will join this again.
     IdSplitter alignmentSplitter;
     // Helper for joining the SAM files.
-    std::auto_ptr<SamJoiner> alignmentJoiner;
+    std::SEQAN_AUTO_PTR_NAME<SamJoiner> alignmentJoiner;
 
     // ----------------------------------------------------------------------
     // Header used for writing temporary SAM.
