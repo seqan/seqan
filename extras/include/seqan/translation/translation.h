@@ -60,7 +60,9 @@ namespace seqan {
 
 /*!
  * @enum TRANSLATION_OPTIONS
- * @brief Enum with options to @link translate() @endlink
+ * @brief Enum with options for @link translate @endlink()
+ *
+ * @signature enum TRANSLATION_OPTIONS { ... };
  *
  * @headerfile seqan/translation.h
  *
@@ -421,23 +423,31 @@ _translateInputWrap(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
 }
 
 
-// single string to single string conversion
+// bail out because multiple frames don't fit in one string
 template <typename TSpec1, typename TInString, typename TCodeSpec,
           unsigned char n>
+inline int
+_translateInputWrap(String<AminoAcid, TSpec1> & /**/,
+                    TInString const & /**/,
+                    GeneticCode<TCodeSpec> const & /**/,
+                    Frames_<n> const & /**/)
+{
+    return -1;
+}
+// single string to single string conversion
+template <typename TSpec1, typename TInString, typename TCodeSpec>
 inline int
 _translateInputWrap(String<AminoAcid, TSpec1> & target,
                     TInString const & source,
                     GeneticCode<TCodeSpec> const & /**/,
-                    Frames_<n> const & /**/)
+                    Frames_<1> const & /**/)
 {
-    if (n != 1)
-        return -1;
-
     resize(target, length(source)/3, Exact());
     _translateString(target, source, GeneticCode<TCodeSpec>());
 
     return 0;
 }
+
 // --------------------------------------------------------------------------
 // Function translate()
 // --------------------------------------------------------------------------
@@ -481,6 +491,9 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  *
  * // do something with the aaSeqs
  * @endcode
+ *
+ * @see TRANSLATION_OPTIONS
+ * @see GeneticCode
  */
 
 template <typename TTarget, typename TSource, typename TCodeSpec>

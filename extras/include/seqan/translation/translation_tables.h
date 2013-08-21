@@ -114,6 +114,9 @@ namespace seqan {
  *
  * @headerfile seqan/translation.h
  *
+ * @see translate
+ * @see GeneticCode
+ *
  * @section Remarks
  *
  * Some genetic codes have been deprecated, so not all transl_table-numbers
@@ -300,6 +303,10 @@ typedef Tag<Gracilibacteria_> Gracilibacteria;
  * @tag GeneticCode
  * @brief Dna to AminoAcid translation code, needs to be spec'ed by
  * one of @link GeneticCodeSpecs @endlink
+ * @signature GeneticCode<GeneticCodeSpec>
+ *
+ * @see translate
+ * @see GeneticCodeSpecs
  *
  * @headerfile seqan/translation.h
  */
