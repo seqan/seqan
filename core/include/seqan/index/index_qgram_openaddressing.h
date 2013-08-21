@@ -152,6 +152,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 			countsDir(other.countsDir),
 			shape(other.shape),
 			cargo(other.cargo),
+			bucketMap(other.bucketMap),
 			stepSize(1),
 			alpha(defaultAlpha) {}
 
@@ -163,6 +164,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 			countsDir(other.countsDir),
 			shape(other.shape),
 			cargo(other.cargo),
+			bucketMap(other.bucketMap),
 			stepSize(1),
 			alpha(defaultAlpha) {}
 
