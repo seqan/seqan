@@ -1052,7 +1052,6 @@ streamSeek(Stream<FileStream<TSpec, TValue> > & stream,
            __int64 delta,
            int origin)
 {
-    typedef Stream<FileStream<TSpec, TValue> > TStream;
     __int64 currPos = streamTell(stream);
 
     // Flush all pending read/write operations and reset to the same state as after open().
