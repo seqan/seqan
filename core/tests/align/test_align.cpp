@@ -59,7 +59,7 @@
 #include "test_align_global_alignment_specialized.h"
 
 #include "test_align_alignment_operations.h"
-
+#include "test_evaluate_alignment.h"
 
 SEQAN_DEFINE_TEST(test)
 {
@@ -600,5 +600,11 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_stream_gaps_stream);
     SEQAN_CALL_TEST(test_align_stream_align_write);
     SEQAN_CALL_TEST(test_align_stream_align_stream);
+
+    // -----------------------------------------------------------------------
+    // Test Alignment Evaluation
+    // -----------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_align_compute_alignment_stats);
 }
 SEQAN_END_TESTSUITE

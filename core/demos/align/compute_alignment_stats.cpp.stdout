@@ -1,0 +1,42 @@
+      0     .    :    .    :    .    :    .    :    .    : 
+        MGLSDGEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHL
+        | |   |       | |        | | | |||  || |   |  |   
+        MSLTKTERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHF---
+
+     50     .    :    .    :    .    :    .    :    .    : 
+        KSEDEMKASEDLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKI
+           |    |  |  ||  |  | |   |           |   ||     
+        ---DLHPGSAQLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRV
+
+    100     .    :    .    :    .    :    .    :    .    
+        PVKYLEFISECIIQVLQSKHPGDFGADAQGAMNKALELFRKDMASNYK
+                | |    |    | || | |  |  | |    |     | 
+        DPVNFKLLSHCLLVTLAARFPADFTAEAHAAWDKFLSVTEK-----YR
+
+
+gap opens:           2
+gap extensions:      9
+num matches:         41
+num mismatches:      96
+num positive scores: 91
+num negative scores: 46
+
+
+Clipping alignment to (5, 100)
+      0     .    :    .    :    .    :    .    :    .    : 
+        GEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHLKSEDE
+         |       | |        | | | |||  || |   |  |      | 
+        TERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHF------DL
+
+     50     .    :    .    :    .    :    .    :    . 
+        MKASEDLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKI
+           |  |  ||  |  | |   |           |   ||     
+        HPGSAQLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRV
+
+
+gap opens:           1
+gap extensions:      5
+num matches:         26
+num mismatches:      63
+num positive scores: 55
+num negative scores: 34

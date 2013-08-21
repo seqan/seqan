@@ -204,5 +204,6 @@
 // ============================================================================
 
 #include <seqan/align/alignment_operations.h>
+#include <seqan/align/evaluate_alignment.h>
 
 #endif  // SEQAN_CORE_INCLUDE_SEQAN_ALIGN_H_

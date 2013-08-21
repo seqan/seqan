@@ -48,7 +48,8 @@ add_executable (test_align
                test_alignment_algorithms_local.h
                test_alignment_algorithms_global_banded.h
                test_alignment_algorithms_local_banded.h
-               test_align_global_alignment_specialized.h)
+               test_align_global_alignment_specialized.h
+               test_evaluate_alignment.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align ${SEQAN_LIBRARIES})
