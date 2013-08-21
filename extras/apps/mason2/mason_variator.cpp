@@ -1334,17 +1334,22 @@ public:
         std::stringstream ssLeftOfCutL, ssRightOfCutL, ssLeftOfCutR, ssRightOfCutR,
                 ssLeftOfPaste, ssRightOfPaste;
         seqan::CharString refName = vcfStream.header.sequenceNames[svRecord.rId];
-        ssLeftOfCutL << leftOfCutL.ref << "]" << refName << ":" << (rightOfCutR.beginPos + 1) << "]";
+        ssLeftOfCutL << leftOfCutL.ref << "[" << refName << ":" << (rightOfCutR.beginPos + 1) << "[";
         leftOfCutL.alt = ssLeftOfCutL.str();
+
         ssRightOfCutL << "[" << refName << ":" << (leftOfPaste.beginPos + 1) << "[" << rightOfCutL.ref;
         rightOfCutL.alt = ssRightOfCutL.str();
-        ssLeftOfCutR << leftOfCutR.ref << "]" << refName << ":" << (rightOfPaste.beginPos + 1) << "]";
+
+        ssLeftOfCutR << leftOfCutR.ref << "[" << refName << ":" << (rightOfPaste.beginPos + 1) << "[";
         leftOfCutR.alt = ssLeftOfCutR.str();
+
         ssRightOfCutR << "[" << refName << ":" << (leftOfCutL.beginPos + 1) << "[" << rightOfCutR.ref;
         rightOfCutR.alt = ssRightOfCutR.str();
-        ssLeftOfPaste << leftOfPaste.ref << "]" << refName << ":" << (leftOfCutR.beginPos + 1) << "]";
+
+        ssLeftOfPaste << leftOfPaste.ref << "[" << refName << ":" << (rightOfCutL.beginPos + 1) << "[";
         leftOfPaste.alt = ssLeftOfPaste.str();
-        ssRightOfPaste << "[" << refName << ":" << (rightOfCutL.beginPos + 1) << "[" << rightOfPaste.ref;
+
+        ssRightOfPaste << "[" << refName << ":" << (leftOfCutR.beginPos + 1) << "[" << rightOfPaste.ref;
         rightOfPaste.alt = ssRightOfPaste.str();
         // FILTER
         leftOfCutL.filter = "PASS";
