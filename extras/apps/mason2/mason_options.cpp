@@ -184,18 +184,6 @@ void MethylationLevelSimulatorOptions::addOptions(seqan::ArgumentParser & parser
 
     addOption(parser, seqan::ArgParseOption("", "methylation-levels", "Enable methylation level simulation."));
 
-    addOption(parser, seqan::ArgParseOption("", "meth-c-mu", "Median of beta distribution for methylation "
-                                            "level of cytosine.", seqan::ArgParseOption::DOUBLE, "MU"));
-    setMinValue(parser, "meth-c-mu", "0");
-    setMaxValue(parser, "meth-c-mu", "1");
-    setDefaultValue(parser, "meth-c-mu", "0.0001");
-
-    addOption(parser, seqan::ArgParseOption("", "meth-c-sigma", "Standard deviation of beta distribution for "
-                                            "methylation level of cytosine.", seqan::ArgParseOption::DOUBLE, "SIGMA"));
-    setMinValue(parser, "meth-c-sigma", "0");
-    setMaxValue(parser, "meth-c-sigma", "1");
-    setDefaultValue(parser, "meth-c-sigma", "0.00001");
-
     addOption(parser, seqan::ArgParseOption("", "meth-cg-mu", "Median of beta distribution for methylation "
                                             "level of CpG loci.", seqan::ArgParseOption::DOUBLE, "MU"));
     setMinValue(parser, "meth-cg-mu", "0");
@@ -252,8 +240,6 @@ void MethylationLevelSimulatorOptions::addTextSections(seqan::ArgumentParser & p
 void MethylationLevelSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser)
 {
     getOptionValue(simulateMethylationLevels, parser, "methylation-levels");
-    getOptionValue(methMuC, parser, "meth-c-mu");
-    getOptionValue(methSigmaC, parser, "meth-c-sigma");
     getOptionValue(methMuCG, parser, "meth-cg-mu");
     getOptionValue(methSigmaCG, parser, "meth-cg-sigma");
     getOptionValue(methMuCHG, parser, "meth-chg-mu");
@@ -273,8 +259,6 @@ void MethylationLevelSimulatorOptions::print(std::ostream & out) const
         << "\n"
         << "  ENABLED\t" << getYesNoStr(simulateMethylationLevels) << "\n"
         << "\n"
-        << "  MEDIAN C\t" << methMuC << "\n"
-        << "  STDDEV C\t" << methSigmaC << "\n"
         << "  MEDIAN CG\t" << methMuCG << "\n"
         << "  STDDEV CG\t" << methSigmaCG << "\n"
         << "  MEDIAN CHG\t" << methMuCHG << "\n"
@@ -1101,6 +1085,10 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
                                             seqan::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "seed", "0");
 
+    addOption(parser, seqan::ArgParseOption("", "meth-seed", "Seed to use for methylation level random number "
+                                            "generator.", seqan::ArgParseOption::INTEGER, "NUM"));
+    setDefaultValue(parser, "meth-seed", "0");
+
     addOption(parser, seqan::ArgParseOption("", "seed-spacing", "Offset for seeds to use when multi-threading.",
                                             seqan::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "seed-spacing", "2048");
@@ -1205,6 +1193,7 @@ void MasonSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser
     if (isSet(parser, "very-verbose"))
         verbosity = 3;
     getOptionValue(seed, parser, "seed");
+    getOptionValue(methSeed, parser, "meth-seed");
     getOptionValue(seedSpacing, parser, "seed-spacing");
     getOptionValue(numThreads, parser, "num-threads");
     getOptionValue(chunkSize, parser, "chunk-size");
@@ -1251,6 +1240,7 @@ void MasonSimulatorOptions::print(std::ostream & out) const
         << "VERBOSITY\t" << getVerbosityStr(verbosity) << "\n"
         << "\n"
         << "SEED\t" << seed << "\n"
+        << "METHYLATION SEED\t" << methSeed << "\n"
         << "SEED SPACING\t" << seedSpacing << "\n"
         << "\n"
         << "FORCE SINGLE END\t" << getYesNoStr(forceSingleEnd) << "\n"
@@ -1294,6 +1284,10 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("", "seed", "Seed for random number generation.",
                                             seqan::ArgParseOption::INTEGER, "Int"));
     setDefaultValue(parser, "seed", "0");
+
+    addOption(parser, seqan::ArgParseOption("", "meth-seed", "Seed for methylation simulation random number generation.",
+                                            seqan::ArgParseOption::INTEGER, "Int"));
+    setDefaultValue(parser, "meth-seed", "0");
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of materialized contigs.",
                                             seqan::ArgParseOption::OUTPUTFILE, "OUT"));
@@ -1343,6 +1337,7 @@ void MasonMaterializerOptions::getOptionValues(seqan::ArgumentParser const & par
     if (isSet(parser, "very-verbose"))
         verbosity = 3;
     getOptionValue(seed, parser, "seed");
+    getOptionValue(methSeed, parser, "meth-seed");
     getOptionValue(outputFileName, parser, "out");
     getOptionValue(haplotypeNameSep, parser, "haplotype-name-sep");
     getOptionValue(methFastaInFile, parser, "meth-fasta-in");
@@ -1372,6 +1367,7 @@ void MasonMaterializerOptions::print(std::ostream & out) const
         << "VERBOSITY               \t" << getVerbosityStr(verbosity) << "\n"
         << "\n"
         << "SEED                    \t" << seed << "\n"
+        << "METHYLATION SEED        \t" << methSeed << "\n"
         << "\n"
         << "OUTPUT FILE             \t" << outputFileName << "\n"
         << "METHYLATION LEVEL INPUT \t" << methFastaInFile << "\n"

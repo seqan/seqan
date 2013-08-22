@@ -1,5 +1,5 @@
 // ==========================================================================
-//                            methylation_levels.h
+//                         Mason - A Read Simulator
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -151,11 +151,10 @@ public:
     TRng & rng;
 
     // Beta probability density functions for level generation.
-    seqan::Pdf<seqan::Beta> pdfC, pdfCG, pdfCHG, pdfCHH;
+    seqan::Pdf<seqan::Beta> pdfCG, pdfCHG, pdfCHH;
 
     MethylationLevelSimulator(TRng & rng, MethylationLevelSimulatorOptions const & options) :
             options(options), rng(rng),
-            pdfC(options.methMuC, options.methSigmaC, seqan::MeanStdDev()),
             pdfCG(options.methMuCG, options.methSigmaCG, seqan::MeanStdDev()),
             pdfCHG(options.methMuCHG, options.methSigmaCHG, seqan::MeanStdDev()),
             pdfCHH(options.methMuCHH, options.methSigmaCHH, seqan::MeanStdDev())
@@ -172,24 +171,23 @@ public:
 
         // We will go over the contig with hashes to search for patterns efficiently.
         seqan::Shape<seqan::Dna5> shape2, shape3;
-        handleOneMer(levels, 0, ordValue(contig[0]));
-        if (levels.forward[0] != '!') SEQAN_ASSERT_EQ(contig[0], 'C');
-        if (levels.reverse[0] != '!') SEQAN_ASSERT_EQ(contig[0], 'G');
+        if (levels.forward[0] != '!') SEQAN_ASSERT_EQ_MSG(contig[0], 'C', "pos = %d", 0);
+        if (levels.reverse[0] != '!') SEQAN_ASSERT_EQ_MSG(contig[0], 'G', "pos = %d", 0);
         if (length(contig) >= 2u)
         {
             resize(shape2, 2);
             hash(shape2, it);
             handleTwoMer(levels, 0, value(shape2));
-            if (levels.forward[1] != '!') SEQAN_ASSERT_EQ(contig[1], 'C');
-            if (levels.reverse[1] != '!') SEQAN_ASSERT_EQ(contig[1], 'G');
+            if (levels.forward[1] != '!') SEQAN_ASSERT_EQ_MSG(contig[1], 'C', "pos = %d", 1);
+            if (levels.reverse[1] != '!') SEQAN_ASSERT_EQ_MSG(contig[1], 'G', "pos = %d", 1);
         }
         if (length(contig) >= 3u)
         {
             resize(shape3, 3);
             hash(shape3, it);
             handleThreeMer(levels, 0, value(shape3));
-            if (levels.forward[2] != '!') SEQAN_ASSERT_EQ(contig[2], 'C');
-            if (levels.reverse[2] != '!') SEQAN_ASSERT_EQ(contig[2], 'G');
+            if (levels.forward[2] != '!') SEQAN_ASSERT_EQ_MSG(contig[2], 'C', "pos = %d", 2);
+            if (levels.reverse[2] != '!') SEQAN_ASSERT_EQ_MSG(contig[2], 'G', "pos = %d", 2);
         }
         ++it;
         unsigned pos = 1;
@@ -197,38 +195,35 @@ public:
         {
             hashNext(shape2, it);
             hashNext(shape3, it);
-            handleOneMer(levels, pos, *it);
             handleTwoMer(levels, pos, value(shape2));
             handleThreeMer(levels, pos, value(shape3));
-            if (levels.forward[pos] != '!') SEQAN_ASSERT_EQ(contig[pos], 'C');
-            if (levels.reverse[pos] != '!') SEQAN_ASSERT_EQ(contig[pos], 'G');
+            if (levels.forward[pos] != '!') SEQAN_ASSERT_EQ_MSG(contig[pos], 'C', "pos = %u", pos);
+            if (levels.reverse[pos] != '!') SEQAN_ASSERT_EQ_MSG(contig[pos], 'G', "pos = %u", pos);
         }
-        if (pos < length(contig))
-            handleOneMer(levels, pos, ordValue(*it));
         if (pos + 1 < length(contig))
         {
             hashNext(shape2, it++);
             handleTwoMer(levels, pos++, value(shape2));
         }
-        if (pos < length(contig))
-            handleOneMer(levels, pos, ordValue(*it));
     }
 
     // Handle 3mer, forward case.
     void handleThreeMer(MethylationLevels & levels, unsigned pos, unsigned hashValue)
     {
-        // seqan::Dna5String dbg;
+        // seqan::Dna5String dbg, dbg2;
         // unhash(dbg, hashValue, 3);
+        // dbg2 = dbg;
+        // reverse(dbg2);
         switch (hashValue)
         {
-            case 27:  // CHG, symmetric
+            case 27:  // CHG is symmetric
             case 32:
             case 42:
-                // std::cerr << "CHG       \t" << dbg << "\n";
+                // std::cerr << "CHG fw    \t" << dbg << "\t" << dbg2 << "\t" << pos << "\n";
                 levels.setLevelF(pos, pickRandomNumber(rng, pdfCHG));
-                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCHG));
                 break;
-            case 25:  // CHH
+
+            case 25:  // CHH is symmetric
             case 26:
             case 28:
             case 30:
@@ -237,21 +232,10 @@ public:
             case 40:
             case 41:
             case 43:
-                // std::cerr << "CHH       \t" << dbg << "\n";
+                // std::cerr << "CHH       \t" << dbg << "\t" << dbg2 << "\t" << pos << "\n";
                 levels.setLevelF(pos, pickRandomNumber(rng, pdfCHH));
                 break;
-            case 2:  // rc(CHH)
-            case 12:
-            case 17:
-            case 52:
-            case 62:
-            case 67:
-            case 77:
-            case 87:
-            case 92:
-                // std::cerr << "rc(CHH)   \t" << dbg << "\n";
-                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCHH));
-                break;
+
             default:
                 // nop
                 break;
@@ -269,18 +253,6 @@ public:
             levels.setLevelF(pos, pickRandomNumber(rng, pdfCG));
             levels.setLevelR(pos + 1, pickRandomNumber(rng, pdfCG));
         }
-    }
-
-    // Handle 1mer.
-    void handleOneMer(MethylationLevels & levels, unsigned pos, unsigned val)
-    {
-        // if (val == 1 || val == 2)
-        //     std::cerr << "C/G     \t" << seqan::Dna5(val) << "\n";
-
-        if (val == 1)   // C forward
-            levels.setLevelF(pos, pickRandomNumber(rng, pdfC));
-        else if (val == 2)  // C reverse (G)
-            levels.setLevelR(pos, pickRandomNumber(rng, pdfC));
     }
 };
 

@@ -776,7 +776,7 @@ public:
     seqan::BamStream outBamStream;
 
     MasonSimulatorApp(MasonSimulatorOptions const & options) :
-            options(options), rng(options.seed), methRng(options.seed),
+            options(options), rng(options.seed), methRng(options.methSeed),
             vcfMat(methRng,
                    toCString(options.matOptions.fastaFileName),
                    toCString(options.matOptions.vcfFileName),

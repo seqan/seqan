@@ -135,8 +135,6 @@ struct MethylationLevelSimulatorOptions
 
     // Whether or not to simulate methylation levels.
     bool simulateMethylationLevels;
-    // Median and standard deviation for picking methylation level for all Cs.
-    double methMuC, methSigmaC;
     // Median and standard deviation for picking methylation level for CpGs.
     double methMuCG, methSigmaCG;
     // Median and standard deviation for picking methylation level for CHGs.
@@ -145,7 +143,7 @@ struct MethylationLevelSimulatorOptions
     double methMuCHH, methSigmaCHH;
 
     MethylationLevelSimulatorOptions() :
-            verbosity(1), simulateMethylationLevels(false), methMuC(0), methSigmaC(0), methMuCG(0), methSigmaCG(0),
+            verbosity(1), simulateMethylationLevels(false), methMuCG(0), methSigmaCG(0),
             methMuCHG(0), methSigmaCHG(0), methMuCHH(0), methSigmaCHH(0)
     {}
 
@@ -644,6 +642,8 @@ struct MasonSimulatorOptions
     int verbosity;
     // The seed for the random number generator.
     int seed;
+    // The seed for the random number generator for methylation simulation.
+    int methSeed;
     // The spacing of the see when using multi-threading.  Thread i (beginning with 0) will get (seed + i) as its
     // initial seed.  While not crytographically safe, this should be OK for read simulation.
     int seedSpacing;
@@ -683,7 +683,7 @@ struct MasonSimulatorOptions
     Roche454SequencingOptions rocheOptions;
 
     MasonSimulatorOptions() :
-            verbosity(1), seed(0), seedSpacing(2048), numThreads(1), chunkSize(64*1024), numFragments(0),
+            verbosity(1), seed(0), methSeed(0), seedSpacing(2048), numThreads(1), chunkSize(64*1024), numFragments(0),
             forceSingleEnd(false)
     {}
 
@@ -713,6 +713,8 @@ struct MasonMaterializerOptions
 
     // Seed to use in RNG.
     int seed;
+    // Seed to use in RNG for methylation simulation.
+    int methSeed;
 
     // Options for the materializer.
     MaterializerOptions matOptions;
@@ -728,7 +730,7 @@ struct MasonMaterializerOptions
     // FASTA file to write the methylation levels to.
     seqan::CharString methFastaOutFile;
 
-    MasonMaterializerOptions() : verbosity(1), seed(0)
+    MasonMaterializerOptions() : verbosity(1), seed(0), methSeed(0)
     {}
 
     // Add options to the argument parser.

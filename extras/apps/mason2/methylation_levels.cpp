@@ -57,28 +57,23 @@ void fixVariationLevels(MethylationLevels & levels,
             if (pos > 2)
             {
                 levels.forward[pos - 2] = levels.reverse[pos - 2] = '!';
-                methSim.handleOneMer(levels, pos - 2, ordValue(contig[pos - 2]));
                 methSim.handleTwoMer(levels, pos - 2, hash(shape2, iter(contig, pos - 2, seqan::Standard())));
                 methSim.handleThreeMer(levels, pos - 2, hash(shape3, iter(contig, pos - 2, seqan::Standard())));
             }
             if (pos > 1)
             {
                 levels.forward[pos - 1] = levels.reverse[pos - 1] = '!';
-                methSim.handleOneMer(levels, pos - 1, ordValue(contig[pos - 1]));
                 methSim.handleTwoMer(levels, pos - 1, hash(shape2, iter(contig, pos - 1, seqan::Standard())));
             }
             levels.forward[pos] = levels.reverse[pos] = '!';
-            methSim.handleOneMer(levels, pos, ordValue(contig[pos]));
             if (pos + 1 < (int)length(contig))
             {
                 levels.forward[pos + 1] = levels.reverse[pos + 1] = '!';
-                methSim.handleOneMer(levels, pos + 1, ordValue(contig[pos + 1]));
                 methSim.handleTwoMer(levels, pos, hash(shape2, iter(contig, pos, seqan::Standard())));
             }
             if (pos + 2 < (int)length(contig))
             {
                 levels.forward[pos + 2] = levels.reverse[pos + 2] = '!';
-                methSim.handleOneMer(levels, pos + 2, ordValue(contig[pos + 2]));
                 methSim.handleTwoMer(levels, pos + 1, hash(shape2, iter(contig, pos + 1, seqan::Standard())));
                 methSim.handleThreeMer(levels, pos, hash(shape3, iter(contig, pos, seqan::Standard())));
             }
@@ -89,23 +84,19 @@ void fixVariationLevels(MethylationLevels & levels,
             if (pos > 2)
             {
                 levels.forward[pos - 2] = levels.reverse[pos - 2] = '!';
-                methSim.handleOneMer(levels, pos - 2, ordValue(contig[pos - 2]));
                 methSim.handleTwoMer(levels, pos - 2, hash(shape2, iter(contig, pos - 2, seqan::Standard())));
                 methSim.handleThreeMer(levels, pos - 2, hash(shape3, iter(contig, pos - 2, seqan::Standard())));
             }
             if (pos > 1)
             {
                 levels.forward[pos - 1] = levels.reverse[pos - 1] = '!';
-                methSim.handleOneMer(levels, pos - 1, ordValue(contig[pos - 1]));
                 methSim.handleTwoMer(levels, pos - 1, hash(shape2, iter(contig, pos - 1, seqan::Standard())));
             }
             levels.forward[pos] = levels.reverse[pos] = '!';
-            methSim.handleOneMer(levels, pos, ordValue(contig[pos]));
             if (pos + 1 < (int)length(contig))
             {
                 methSim.handleTwoMer(levels, pos, hash(shape2, iter(contig, pos, seqan::Standard())));
                 levels.forward[pos + 1] = levels.reverse[pos + 1] = '!';
-                methSim.handleOneMer(levels, pos + 1, ordValue(contig[pos + 2]));
             }
             if (pos + 2 < (int)length(contig))
             {

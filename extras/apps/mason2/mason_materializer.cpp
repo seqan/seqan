@@ -65,7 +65,7 @@ public:
     MasonMaterializerOptions const & options;
 
     // The random number generation.
-    TRng rng;
+    TRng rng, methRng;
 
     // Materialization of VCF.
     VcfMaterializer vcfMat;
@@ -77,7 +77,7 @@ public:
     seqan::SequenceStream outMethLevelStream;
 
     MasonMaterializerApp(MasonMaterializerOptions const & _options) :
-            options(_options), rng(options.seed),
+            options(_options), rng(options.seed), methRng(options.methSeed),
             vcfMat(rng,
                    toCString(options.matOptions.fastaFileName),
                    toCString(options.matOptions.vcfFileName),

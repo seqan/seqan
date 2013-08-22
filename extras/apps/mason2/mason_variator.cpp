@@ -178,8 +178,6 @@ void print(std::ostream & out, MasonVariatorOptions const & options)
         << "\n"
         << "SIM. METHYL. LEVELS  \t" << options.methSimOptions.simulateMethylationLevels << "\n"
         << "METHYLATION LEVELS\n"
-        << "  C   MU             \t" << options.methSimOptions.methMuC << "\n"
-        << "  C   SIGMA          \t" << options.methSimOptions.methSigmaC << "\n"
         << "  CG  MU             \t" << options.methSimOptions.methMuCG << "\n"
         << "  CG  SIGMA          \t" << options.methSimOptions.methSigmaCG << "\n"
         << "  CHG MU             \t" << options.methSimOptions.methMuCHG << "\n"
