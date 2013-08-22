@@ -38,6 +38,7 @@
 #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_
 
 #include <cstdio>
+#include <fstream>
 
 namespace seqan {
 
@@ -176,6 +177,52 @@ End:
 
     return ret;
 
+}
+
+
+// compare two files, translate linebreaks
+// more helpful output in case of a difference
+inline bool
+_compareTextFilesAlt(const char * file1, const char * file2)
+{
+    std::ifstream fl1(file1);
+    std::ifstream fl2(file2);
+
+    if (!fl1.good())
+    {
+        std::cerr << "Couldn't open file \"" << file1 << "\"" << std::endl;
+        return false;
+    }
+    if (!fl2.good())
+    {
+        std::cerr << "Couldn't open file \"" << file2 << "\"" << std::endl;
+        return false;
+    }
+
+    std::string line1;
+    std::string line2;
+
+    __uint64 lineNo = 0;
+    for (; !fl1.eof() && !fl2.eof(); ++lineNo)
+    {
+        getline(fl1, line1);
+        getline(fl2, line2);
+
+        if (line1 != line2)
+        {
+            std::cerr << "Line " << lineNo << " of the text files is different:" << std::endl;
+            std::cerr << line1 << std::endl;
+            std::cerr << line2 << std::endl;
+            return false;
+        }
+        ++lineNo;
+    }
+    if (fl1.eof() != fl2.eof())
+    {
+        std::cerr << "File sizes differ" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 }  // namespace seqan
