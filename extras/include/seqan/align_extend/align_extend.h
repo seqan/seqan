@@ -342,28 +342,43 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
 
 /*!
  * @fn extendAlignment
- * @brief extends an Align-Object
- * @signature TScoreValue extendAlignment(align, [origScore, ] hSeq, vSeq, positions, extensionDirection, [lowerDiag, upperDiag, ] [xDrop, ] scoreScheme);
+ * @headerfile <seqan/align_extend.h>
+ * @brief X-Drop extension for alignment objects.
+ * @signature TScoreValue extendAlignment(align, [origScore,] hSeq, vSeq, positions, extensionDirection,
+ *                                        [lowerDiag, upperDiag,] [xDrop,] scoreScheme);
  *
- * @param[in, out]   align               "Seed-Alignment", Align object on
- * infixes of hSeq and vSeq; will be returned as extended and clipped alignment
- * on full sequences
- * @param[in]       origScore           score of the seed alignment (computed if not given)
- * @param[in]       hSeq                full horizontal sequence
- * @param[in]       vSeq                full vertical sequence
- * @param[in]       positions           the begin and end positions of infixes
- * in alignment (hBegin, vBegin, hEnd, vEnd)
- * @param[in]       extensionDirection  ExtensionDirection
- * @param[in]       lowerDiag           lower diagonal for banded extension [int]
- * (optional)
- * @param[in]       upperDiag           upper diagonal for banded extension [int]
- * (optional)
- * @param[in]       xDrop               abort extension, if all values in the
- * DP-column fall xDrop under the maximum seen (optional)
- * @param[in]       scoreScheme     SeqAn Score object [Score]
+ * @param[in, out] align     The @link Align @endlink object to work on.  Must be an alignment over the
+ *                           @link InfixSegment infix @endlink of the <i>const</i> type of <tt>hSeq</tt>
+ *                           and <tt>vSeq</tt>.  Also see section "Returned Alignment".
+ * @param[in]      origScore Original score value of the alignment (optional; computed if not provided).
+ * @param[in]      hSeq      Full horizontal sequence.
+ * @param[in]      vSeq      Full vertical sequence.
+ * @param[in]      positions A @link Tuple @endlink of length 4 with the begin and end position of the
+ *                           infixes in align.
+ * @param[in]      extensionDirection
+ *                           The extension direction (@link ExtensionDirection @endlink).
+ * @param[in]      lowerDiag Lower alignmetn diagonal to use (<tt>int</tt>).
+ * @param[in]      upperDiag Upper alignmetn diagonal to use (<tt>int</tt>).
+ * @param[in]      xDrop     The X-drop value to use (integral value).
+ * @param[in]      scoringScheme
+ *                           The @link Score @endlink to use.
  *
- * @return          TScoreValue         the score of the new alignment
- * @headerfile seqan/align_extend.h
+ * @return          TScoreValue
+ *                           The score of the new alignment.  <tt>TScoreValue</tt> is the value type of
+ *                           <tt>scoringScheme</tt>.
+ *
+ * @section Returned Alignment
+ *
+ * The resulting alignment has the infixes extended to the whole underlying sequence.  The alignment
+ * is clipped to give the parts of the aligned sequences.
+ *
+ * @section Example
+ *
+ * @include demos/align_extend/extend_alignment.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align_extend/extend_alignment.cpp.stdout
  */
 
 
