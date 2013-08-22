@@ -1338,6 +1338,70 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
 */
 
 // ----------------------------------------------------------------------------
+// Function copyGaps()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#copyGaps
+ * @brief Copy gaps from one Gaps object to another (in the clipped view of both argumetns).
+ *
+ * The user is resposible for ensuring that the gaps are over sequences of same length and appropriate clipping.
+ *
+ * @signature void copyGaps(dest, source);
+ *
+ * @param[out] dest   The destination Gaps object (appropriate clipping, no gaps).
+ * @param[in]  source The source Gaps object.
+ */
+
+template <typename TDestSource, typename TDestSpec, typename TSourceSource, typename TSourceSpec>
+void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSpec> const & source)
+{
+    typedef Gaps<TDestSource, TDestSpec> TLhs;
+    typedef typename Iterator<TLhs, Standard>::Type TLhsIter;
+    typedef Gaps<TSourceSource, TSourceSpec> const TRhs;
+    typedef typename Iterator<TRhs, Standard>::Type TRhsIter;
+
+    TLhsIter lhsIt = begin(dest, Standard());
+    TLhsIter lhsItEnd = end(dest, Standard());
+    TRhsIter rhsIt = begin(source, Standard());
+    TRhsIter rhsItEnd = end(source, Standard());
+
+    for (unsigned num = 0; lhsIt != lhsItEnd && rhsIt != rhsItEnd; lhsIt += num, rhsIt += num)
+    {
+        if (isGap(rhsIt))
+        {
+            num = countGaps(rhsIt);
+            insertGaps(lhsIt, num);
+        }
+        else
+        {
+            num = countCharacters(rhsIt);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function copyClipping()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#copyClipping
+ * @brief Copy clipping information from one Gaps object to another.
+ *
+ * @signature void copyClipping(dest, source);
+ *
+ * @param[out] dest   The destination Gaps object.
+ * @param[in]  source The source Gaps object.
+ */
+
+template <typename TDestSource, typename TDestSpec, typename TSourceSource, typename TSourceSpec>
+void copyClipping(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSpec> const & source)
+{
+    setClippedBeginPosition(dest, clippedBeginPosition(source));
+    setClippedEndPosition(dest, clippedEndPosition(source));
+}
+
+// ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
 

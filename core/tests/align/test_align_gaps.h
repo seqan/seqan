@@ -1091,6 +1091,94 @@ void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
     }
 }
 
+// Test copying of gaps.
+
+template <typename TGapsSpec>
+void testAlignGapsCopyGaps(TGapsSpec const & /*spec*/)
+{
+    using namespace seqan;
+
+    typedef Dna5String                               TString;
+    typedef Gaps<TString, TGapsSpec>                 TGaps;
+
+    {
+        TString seq = "CGAT";
+        TGaps gaps(seq);
+        insertGaps(gaps, 4, 2);
+        insertGaps(gaps, 2, 2);
+        insertGaps(gaps, 0, 2);
+
+        // 0123456789
+        // --CG--AT--
+        //  XXXXXXXX
+
+        setClippedEndPosition(gaps, 9);
+        setClippedBeginPosition(gaps, 1);
+
+        {
+            std::stringstream ss;
+            ss << gaps;
+            SEQAN_ASSERT_EQ(ss.str(), "-CG--AT-");
+        }
+
+        TString seq2 = "TTTT";
+        TGaps gaps2(seq2);
+
+        copyGaps(gaps2, gaps);
+
+        {
+            std::stringstream ss;
+            ss << gaps2;
+            SEQAN_ASSERT_EQ(ss.str(), "-TT--TT-");
+        }
+    }
+}
+// Test copying of clipping information.
+
+template <typename TGapsSpec>
+void testAlignGapsCopyClipping(TGapsSpec const & /*spec*/)
+{
+    using namespace seqan;
+
+    typedef Dna5String                               TString;
+    typedef Gaps<TString, TGapsSpec>                 TGaps;
+
+    {
+        TString seq = "CGAT";
+        TGaps gaps(seq);
+        insertGaps(gaps, 4, 2);
+        insertGaps(gaps, 2, 2);
+        insertGaps(gaps, 0, 2);
+
+        // 0123456789
+        // --CG--AT--
+        //  XXXXXXXX
+
+        setClippedEndPosition(gaps, 9);
+        setClippedBeginPosition(gaps, 1);
+
+        {
+            std::stringstream ss;
+            ss << gaps;
+            SEQAN_ASSERT_EQ(ss.str(), "-CG--AT-");
+        }
+
+        TString seq2 = "TTTTTTTTTT";
+        TGaps gaps2(seq2);
+
+        copyClipping(gaps2, gaps);
+
+        {
+            std::stringstream ss;
+            ss << gaps2;
+            SEQAN_ASSERT_EQ(ss.str(), "TTTTTTTT");
+        }
+
+        SEQAN_ASSERT_EQ(clippedBeginPosition(gaps2), 1u);
+        SEQAN_ASSERT_EQ(clippedEndPosition(gaps2), 9u);
+    }
+}
+
 // ==========================================================================
 // Tests for Array Gaps
 // ==========================================================================
@@ -1256,6 +1344,20 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear_clipping)
     testAlignGapsClearClipping(TTag());
 }
 
+SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_copy_gaps)
+{
+    using namespace seqan;
+    typedef ArrayGaps TTag;
+    testAlignGapsCopyGaps(TTag());
+}
+
+SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_copy_clipping)
+{
+    using namespace seqan;
+    typedef ArrayGaps TTag;
+    testAlignGapsCopyClipping(TTag());
+}
+
 // ==========================================================================
 // Tests for Anchor Gaps
 // ==========================================================================
@@ -1419,6 +1521,20 @@ SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clear_clipping)
     using namespace seqan;
     typedef AnchorGaps<> TTag;
     testAlignGapsClearClipping(TTag());
+}
+
+SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_gaps)
+{
+    using namespace seqan;
+    typedef AnchorGaps<> TTag;
+    testAlignGapsCopyGaps(TTag());
+}
+
+SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_clipping)
+{
+    using namespace seqan;
+    typedef AnchorGaps<> TTag;
+    testAlignGapsCopyClipping(TTag());
 }
 
 #endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
