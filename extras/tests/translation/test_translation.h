@@ -243,14 +243,14 @@ test_translation_onestring_multiframe_impl()
     {
         translate(res, str, SINGLE_FRAME);
 
-        SEQAN_ASSERT_EQ(length(res), 1);
+        SEQAN_ASSERT_EQ(length(res), 1u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
     }
 
     {
         translate(res, str, WITH_REV_COMP);
 
-        SEQAN_ASSERT_EQ(length(res), 2);
+        SEQAN_ASSERT_EQ(length(res), 2u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
         SEQAN_ASSERT_EQ(res[1], trans[3]);
     }
@@ -258,7 +258,7 @@ test_translation_onestring_multiframe_impl()
     {
         translate(res, str, WITH_FRAME_SHIFT);
 
-        SEQAN_ASSERT_EQ(length(res), 3);
+        SEQAN_ASSERT_EQ(length(res), 3u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
         SEQAN_ASSERT_EQ(res[1], trans[1]);
         SEQAN_ASSERT_EQ(res[2], trans[2]);
@@ -267,7 +267,7 @@ test_translation_onestring_multiframe_impl()
     {
         translate(res, str, SIX_FRAME);
 
-        SEQAN_ASSERT_EQ(length(res), 6);
+        SEQAN_ASSERT_EQ(length(res), 6u);
         SEQAN_ASSERT_EQ(res[0], trans[0]);
         SEQAN_ASSERT_EQ(res[1], trans[1]);
         SEQAN_ASSERT_EQ(res[2], trans[2]);
@@ -302,7 +302,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
         translate(res, source, SINGLE_FRAME);
         unsigned r = length(res) / l;
 
-        SEQAN_ASSERT_EQ(r, 1);
+        SEQAN_ASSERT_EQ(r, 1u);
         for (unsigned i = 0; i < l; ++i)
         {
             SEQAN_ASSERT_EQ(res[0+i*r], comp[0+i*6]);
@@ -313,7 +313,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
         translate(res, source, WITH_REV_COMP);
         unsigned r = length(res) / l;
 
-        SEQAN_ASSERT_EQ(r, 2);
+        SEQAN_ASSERT_EQ(r, 2u);
         for (unsigned i = 0; i < l; ++i)
         {
             SEQAN_ASSERT_EQ(res[0+i*r], comp[0+i*6]);
@@ -325,7 +325,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
         translate(res, source, WITH_FRAME_SHIFT);
         unsigned r = length(res) / l;
 
-        SEQAN_ASSERT_EQ(r, 3);
+        SEQAN_ASSERT_EQ(r, 3u);
         for (unsigned i = 0; i < l; ++i)
         {
             SEQAN_ASSERT_EQ(length(res), 3*length(source));
@@ -339,7 +339,7 @@ test_translation_stringset_multiframe_impl(TResultSet const & comp,
         translate(res, source, SIX_FRAME);
         unsigned r = length(res) / l;
 
-        SEQAN_ASSERT_EQ(r, 6);
+        SEQAN_ASSERT_EQ(r, 6u);
         for (unsigned i = 0; i < l; ++i)
         {
 

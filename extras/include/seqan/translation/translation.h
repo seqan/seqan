@@ -55,34 +55,34 @@ namespace seqan {
 // ============================================================================
 
 // -----------------------------------------------------------------------
-// Enum TRANSLATION_OPTIONS
+// Enum TranslationOptions
 // -----------------------------------------------------------------------
 
 /*!
- * @enum TRANSLATION_OPTIONS
+ * @enum TranslationOptions
  * @brief Enum with options for @link translate @endlink()
  *
- * @signature enum TRANSLATION_OPTIONS { ... };
+ * @signature enum TranslationOptions { ... };
  *
  * @headerfile seqan/translation.h
  *
- * @var TRANSLATION_OPTIONS SINGLE_FRAME
+ * @var TranslationOptions SINGLE_FRAME
  * @brief translate the sequence(s) "as is", n input sequences result in n
  * output sequences
  *
- * @var TRANSLATION_OPTIONS WITH_REV_COMP
+ * @var TranslationOptions WITH_REV_COMP
  * @brief translate the sequence(s) as well as their reverse complements (n ->
  * 2n)
  *
- * @var TRANSLATION_OPTIONS WITH_FRAME_SHIFT
+ * @var TranslationOptions WITH_FRAME_SHIFT
  * @brief translate the sequence(s) as well as their shifted frames (n -> 3n)
  *
- * @var TRANSLATION_OPTIONS SIX_FRAME
+ * @var TranslationOptions SIX_FRAME
  * @brief equals (WITH_REV_COMP | WITH_FRAME_SHIFT); shifted frames of original
  * and reverse complement are translated (n -> 6n)
  */
 
-enum TRANSLATION_OPTIONS
+enum TranslationOptions
 {
     SINGLE_FRAME     = 0,
     WITH_REV_COMP    = 1,
@@ -136,25 +136,25 @@ _ord(T const & c)
     return ordValue(Dna5(c));
 }
 
-inline typename ValueSize<Dna>::Type
+inline ValueSize<Dna>::Type
 _ord(Dna const & c)
 {
     return ordValue(c);
 }
 
-inline typename ValueSize<Dna5>::Type
+inline ValueSize<Dna5>::Type
 _ord(Dna5 const & c)
 {
     return ordValue(c);
 }
 
-inline typename ValueSize<Rna>::Type
+inline ValueSize<Rna>::Type
 _ord(Rna const & c)
 {
     return ordValue(c);
 }
 
-inline typename ValueSize<Rna5>::Type
+inline ValueSize<Rna5>::Type
 _ord(Rna5 const & c)
 {
     return ordValue(c);
@@ -462,7 +462,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * string and options == SINGLE_FRAME]
  * @param[in]       source      source sequences [String<Dna|Dna5|Rna|Rna5> or
  * StringSet thereof, other input will be converted to Dna5]
- * @param[in]       options     the @link TRANSLATION_OPTIONS @endlink, defaults to SINGLE_FRAME
+ * @param[in]       options     the @link TranslationOptions @endlink, defaults to SINGLE_FRAME
  * @param[in]       codeSpec    the @link GeneticCode @endlink to use, defaults to canonical
  *
  * @return 0 on success, and -1 on incompatible parameters (e.g. multiple frames
@@ -492,7 +492,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * // do something with the aaSeqs
  * @endcode
  *
- * @see TRANSLATION_OPTIONS
+ * @see TranslationOptions
  * @see GeneticCode
  */
 
@@ -500,7 +500,7 @@ template <typename TTarget, typename TSource, typename TCodeSpec>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TRANSLATION_OPTIONS const options,
+          TranslationOptions const options,
           GeneticCode<TCodeSpec> const & /**/)
 {
     typedef GeneticCode<TCodeSpec> TCode;
@@ -525,7 +525,7 @@ template <typename TTarget, typename TSource>
 inline int
 translate(TTarget & target,
           TSource const & source,
-          TRANSLATION_OPTIONS const options)
+          TranslationOptions const options)
 {
     return translate(target, source, options, GeneticCode<>());
 }
