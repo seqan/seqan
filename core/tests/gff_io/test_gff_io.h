@@ -187,7 +187,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_gff)
 
     fout.close();
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(gffPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gffPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
@@ -226,7 +226,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
     String<char> goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/gff_io/example_gff_context.tsv");
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 
@@ -252,9 +252,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf)
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
     SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "1");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "gene1");
     SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "2");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "trans2");
+    SEQAN_ASSERT_EQ(record.tagName[2], "position");
+    SEQAN_ASSERT_EQ(record.tagValue[2], "43");
 
     seqan::readRecord(record, reader, seqan::Gtf());
     SEQAN_ASSERT_EQ(record.ref, "240");
@@ -380,9 +382,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
     SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "1");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "gene1");
     SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "2");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "trans2");
+    SEQAN_ASSERT_EQ(record.tagName[2], "position");
+    SEQAN_ASSERT_EQ(record.tagValue[2], "43");
     SEQAN_ASSERT_EQ(length(nameStore), 1u);
 
     seqan::readRecord(record, reader, gffIOContext, seqan::Gtf());
@@ -440,7 +444,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_gtf)
 
     fout.close();
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(gtfPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gtfPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
@@ -481,7 +485,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
 
     // std::cerr << toCString(outPath) << std::endl;
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
@@ -559,9 +563,9 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.phase, '.');
     SEQAN_ASSERT_EQ(record.tagName[0], "gene_id");
-    SEQAN_ASSERT_EQ(record.tagValue[0], "1");
+    SEQAN_ASSERT_EQ(record.tagValue[0], "gene1");
     SEQAN_ASSERT_EQ(record.tagName[1], "transcript_id");
-    SEQAN_ASSERT_EQ(record.tagValue[1], "2");
+    SEQAN_ASSERT_EQ(record.tagValue[1], "trans2");
 
     SEQAN_ASSERT_EQ(readRecord(record, gffStream), 0);
     SEQAN_ASSERT_EQ(record.ref, "240");
@@ -621,7 +625,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gff)
 
     flush(outStream);
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(gtfPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gtfPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
@@ -653,7 +657,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
 
     flush(outStream);
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(gtfPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(gtfPath)));
 }
 
 #endif  // CORE_TESTS_GFF_IO_TEST_GFF_IO_H_

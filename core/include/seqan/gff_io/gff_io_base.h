@@ -58,7 +58,7 @@ namespace seqan {
  * @tag GffIO#Gff
  * @brief Tag for selecting the GFF format.
  *
- * @signature typedef Tag<TagGff_> const Gff;
+ * @signature typedef Tag<TagGff_> Gff;
  */
 
 /**
@@ -69,7 +69,7 @@ namespace seqan {
 
 // TODO(singer): const should be non const, but is const elsewhere
 struct TagGff_;
-typedef Tag<TagGff_> const Gff;
+typedef Tag<TagGff_> Gff;
 
 // ----------------------------------------------------------------------------
 // Tag Gtf
@@ -79,7 +79,7 @@ typedef Tag<TagGff_> const Gff;
  * @tag GffIO#Gtf
  * @brief Tag for selecting the GTF format.
  *
- * @signature typedef Tag<TagGtf_> const Gtf;
+ * @signature typedef Tag<TagGtf_> Gtf;
  */
 
 /**
@@ -90,7 +90,7 @@ typedef Tag<TagGff_> const Gff;
 
 // TODO(singer): const should be non const, but is const elsewhere
 struct TagGtf_;
-typedef Tag<TagGtf_> const Gtf;
+typedef Tag<TagGtf_> Gtf;
 
 // ----------------------------------------------------------------------------
 // Class GffRecord
@@ -675,32 +675,34 @@ readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec
 
 template <typename TTargetStream, typename TString>
 inline bool
-_writeSemicolon(TTargetStream & target, TString & temp)
+_writeInQuotes(TTargetStream & target, TString & temp)
 {
     // TODO(jsinger): What about escaping quote chars '"'?
-    if (streamWriteChar(target, '"') || streamWriteBlock(target, &temp[0], length(temp)) < length(temp) ||
+    if (streamWriteChar(target, '"') || streamWriteBlock(target, begin(temp, Standard()), length(temp)) < length(temp) ||
         streamWriteChar(target, '"'))
         return true;
 
     return false;
 }
 
-template <typename TTargetStream, typename TString>
+template <typename TTargetStream, typename TString, typename TMustBeQuotedFunctor>
 inline bool
-_writeSemicolonSensitive(TTargetStream & target, TString & temp)
+_writePossiblyInQuotes(TTargetStream & target, TString & source, TMustBeQuotedFunctor const &func)
 {
     // TODO(jsinger): What about escaping quote chars '"'?
-    if (std::find(begin(temp), end(temp), ';') != end(temp))
-    {
-        return _writeSemicolon(target, temp);
-    }
-    else
-    {
-        if (streamWriteBlock(target, &temp[0], length(temp)) < length(temp))
-            return true;
-    }
+    typedef typename Iterator<TString, Standard>::Type TIter;
 
-    return false;
+    TIter itEnd = end(source, Standard());
+    for (TIter it = begin(source, Standard()); it != itEnd; ++it)
+    {
+        // we have a problem if the string contains a '"' or a line break
+        if (*it == '\n' || *it == '"')
+            return 1;
+
+        if (func(*it))
+            return _writeInQuotes(target, source);
+    }
+    return (streamWriteBlock(target, begin(source, Standard()), length(source)) < length(source));
 }
 
 // ----------------------------------------------------------------------------
@@ -732,103 +734,97 @@ _writeSemicolonSensitive(TTargetStream & target, TString & temp)
 ..include:seqan/gff_io.h
 */
 
-template <typename TStream>
-inline int
-_writeAttributes(TStream & stream, GffRecord const & record, Gff /*tag*/)
+template <typename TFormatTag>
+struct GffRecordKeyMustBeQuoted_;
+
+template <typename TFormatTag>
+struct GffRecordValueMustBeQuoted_;
+
+// GFF quotation rules
+
+template <>
+struct GffRecordKeyMustBeQuoted_<Gff>
 {
-    if (empty(record.tagName))
-        return 0;
-
-    unsigned i = 0;
-    for (; i + 1 < length(record.tagName); ++i)
+    bool operator() (char c) const
     {
-        if (_writeSemicolonSensitive(stream, record.tagName[i]))
-            return 1;
+        return c == ';' || c == '=';
+    }
+};
 
-        if (length(record.tagValue[i]) > 0u)
+template <>
+struct GffRecordValueMustBeQuoted_<Gff> :
+    GffRecordKeyMustBeQuoted_<Gff> {};
+
+// GTF quotation rules
+
+template <>
+struct GffRecordKeyMustBeQuoted_<Gtf>
+{
+    bool operator() (char c) const
+    {
+        return c == ';' || c == ' ';
+    }
+};
+
+template <>
+struct GffRecordValueMustBeQuoted_<Gtf>
+{
+    bool operator() (char c) const
+    {
+//        return c == ';' || c == ' ' || !isdigit(c);
+        return !isdigit(c);     // is equivalent to the above, quote everything except integral values
+    }
+};
+
+
+
+template <typename TStream, typename TTag>
+inline int
+_writeAttributes(TStream & stream, GffRecord const & record, TTag)
+{
+    const char separatorBetweenTagAndValue = (IsSameType<TTag, Gff>::VALUE)? '=' : ' ';
+    for (unsigned i = 0; i < length(record.tagName); ++i)
+    {
+        if (i != 0)
         {
-            if (streamWriteChar(stream, '='))
+            if (streamWriteChar(stream, ';'))
                 return 1;
 
-            if (_writeSemicolonSensitive(stream, record.tagValue[i]))
+            // In GTF files a space follows the semicolon
+            if (IsSameType<TTag, Gtf>::VALUE && streamWriteChar(stream, ' '))
                 return 1;
         }
-        if (streamWriteChar(stream, ';'))
+
+        if (_writePossiblyInQuotes(stream, record.tagName[i], GffRecordKeyMustBeQuoted_<TTag>()))
             return 1;
 
-    }
-    if (_writeSemicolonSensitive(stream, record.tagName[i]))
-        return 1;
-
-    if (length(record.tagValue[i]) > 0u)
-    {
-        if (streamWriteChar(stream, '='))
-            return 1;
-
-        if (_writeSemicolonSensitive(stream, record.tagValue[i]))
-            return 1;
-    }
-    if (streamWriteChar(stream, '\n'))
-        return 1;
-
-    return 0;
-}
-
-template <typename TStream>
-inline int
-_writeAttributes(TStream & stream, GffRecord const & record, Gtf /*tag*/)
-{
-    unsigned i = 0;
-    for (; i < length(record.tagName) - 1; ++i)
-    {
-        if (_writeSemicolonSensitive(stream, record.tagName[i]))
-            return 1;
-
-        if (streamWriteChar(stream, ' '))
-            return 1;
-
-        if (length(record.tagValue[i]) > 0u)
+        if (!empty(record.tagValue[i]))
         {
-            if (_writeSemicolon(stream, record.tagValue[i]))
+            if (streamWriteChar(stream, separatorBetweenTagAndValue))
                 return 1;
 
-            if (streamWriteBlock(stream, "; ", 2) != 2u)
+            if (_writePossiblyInQuotes(stream, record.tagValue[i], GffRecordValueMustBeQuoted_<TTag>()))
                 return 1;
         }
     }
-    if (_writeSemicolonSensitive(stream, record.tagName[i]))
+    
+    // In GTF files each (especially the last) attribute must end with a semi-colon
+    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagName) && streamWriteChar(stream, ';'))
         return 1;
-
-    if (streamWriteChar(stream, ' '))
-        return 1;
-
-    if (length(record.tagValue[i]) > 0u)
-    {
-        if (_writeSemicolon(stream, record.tagValue[i]))
-            return 1;
-
-        if (streamWriteBlock(stream, ";\n", 2) != 2u)
-            return 1;
-    }
-    else
-    {
-        if (streamWriteChar(stream, '\n'))
-            return 1;
-    }
 
     return 0;
 }
 
 template <typename TStream, typename TSeqId, typename TTag>
 inline int
-_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref, TTag const tag)
+_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref, TTag tag)
 {
     // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
     if (empty(ref))
         return 0;
 
     // write column 1: seqid
-    if (streamWriteBlock(stream, &ref[0], length(ref)) != length(ref))
+    if (streamWriteBlock(stream, begin(ref, Standard()), length(ref)) != length(ref))
         return 1;
 
     if (streamWriteChar(stream, '\t'))
@@ -842,7 +838,7 @@ _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref,
     }
     else
     {
-        if (streamWriteBlock(stream, &record.source[0], length(record.source)) != length(record.source))
+        if (streamWriteBlock(stream, begin(record.source, Standard()), length(record.source)) != length(record.source))
             return 1;
     }
 
@@ -850,7 +846,7 @@ _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref,
         return 1;
 
     // write column 3: type
-    if (streamWriteBlock(stream, &record.type[0], length(record.type)) != length(record.type))
+    if (streamWriteBlock(stream, begin(record.type, Standard()), length(record.type)) != length(record.type))
         return 1;
 
     if (streamWriteChar(stream, '\t'))
@@ -920,6 +916,9 @@ _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref,
     // only until length - 1, because there is no semicolon at the end of the line
 
     _writeAttributes(stream, record, tag);
+
+    if (streamWriteChar(stream, '\n'))
+        return 1;
 
     return 0;
 }
