@@ -630,13 +630,13 @@ struct Is< IntegerConcept<T> >
 };
 
 template <typename T>
-struct Is< SignedIntegerConcept<T const> > : Is< SignedIntegerConcept<T> > {};
+struct Is< SignedIntegerConcept<T const> > : Is< SignedIntegerConcept<typename RemoveConst<T>::Type> > {};
 
 template <typename T>
-struct Is< UnsignedIntegerConcept<T const> > : Is< UnsignedIntegerConcept<T> > {};
+struct Is< UnsignedIntegerConcept<T const> > : Is< UnsignedIntegerConcept<typename RemoveConst<T>::Type> > {};
 
 template <typename T>
-struct Is< IntegerConcept<T const> > : Is< IntegerConcept<T> > {};
+struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T>::Type> > {};
 
 
 /**
