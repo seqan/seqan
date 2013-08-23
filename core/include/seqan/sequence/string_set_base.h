@@ -888,6 +888,22 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
 // Function posPrev()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn posPrev
+ * @headerfile <seqan/sequence.h>
+ * @brief Returns a position where the local offset is decreased by one.
+ *
+ * @signature TPos posPrev(pos);
+ *
+ * @param[in] pos A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.
+ *
+ * @return TPos The predecessor.  TPos is the type of <tt>pos</tt>.
+ *
+ * @see posNext
+ * @see posInc
+ * @see posAdd
+ */
+
 /**
 .Function.posPrev
 ..cat:Sequences
@@ -914,6 +930,21 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 // Function posInc()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn posInc
+ * @headerfile <seqan/sequence.h>
+ * @brief Increments the local offset of a position type.
+ *
+ * @signature void posInc(pos);
+ *
+ * @param[in,out] pos A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.  In both
+ *                    cases, <tt>seqOfs</tt> will be incremented by one.
+ *
+ * @see posNext
+ * @see posPrev
+ * @see posAdd
+ */
 
 /**
 .Function.posInc
@@ -950,6 +981,22 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
 // Function posNext()
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn posNext
+ * @headerfile <seqan/sequence.h>
+ * @brief Returns a position where the local offset is increased by one.
+ *
+ * @signature TPos posNext(pos);
+ *
+ * @param[in] pos A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.
+ *
+ * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is increased by one.
+ *
+ * @see posInc
+ * @see posPrev
+ * @see posAdd
+ */
+
 /**
 .Function.posNext
 ..cat:Sequences
@@ -977,6 +1024,22 @@ posNext(Pair<T1, T2, TPack> const & pos) {
 // --------------------------------------------------------------------------
 // Function posAdd()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn posAdd
+ * @brief Returns a position where the local offset is increased by a value <tt>delta</tt>.
+ *
+ * @signature TPos posAdd(pos, delta);
+ *
+ * @param[in] pos   A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.
+ * @param[in] delta Increase the local offset of <tt>pos</tt> by this value.
+ *
+ * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is increased by <tt>delta</tt>.
+ *
+ * @see posInc
+ * @see posPrev
+ * @see posNext
+ */
 
 /**
 .Function.posAdd
@@ -1007,6 +1070,21 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
 // --------------------------------------------------------------------------
 // Function posAddAndCheck()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn posAddAndCheck
+ * @headerfile <seqan/sequence.h>
+ * @brief Increases the local offset of a position by a value <tt>delta</tt> and check for overflow.
+ *
+ * @signature bool posAddAndCheck(pos, delta, text);
+ *
+ * @param[in,out] pos   A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.
+ * @param[in]     delta Increase the local offset of <tt>pos</tt> by this value.
+ * @param[in]     text  The @link TextConcept text @endlink to use for checking.
+ *
+ * @see posAdd
+ * @see posInc
+ */
 
 /**
 .Function.posAddAndCheck
@@ -1055,6 +1133,23 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
 // --------------------------------------------------------------------------
 // Function posSub()
 // --------------------------------------------------------------------------
+
+/*!
+ * @fn posSub
+ * @headerfile <seqan/sequence.h>
+ * @brief Returns a position where the local offset is decreased by a value <tt>delta</tt>.
+ *
+ * @signature TPos posSub(pos, delta);
+ *
+ * @param[in] pos   A position type, an integer with <tt>seqOfs</tt> or a pair <tt>(seqNo, seqOfs)</tt>.
+ * @param[in] delta Decrease the local offset of <tt>pos</tt> by this value.
+ *
+ * @return TPos Returns a value of the same type as <tt>pos</tt> where <tt>seqOfs</tt> is decreased by <tt>delta</tt>.
+ *
+ * @see posAdd
+ * @see posInc
+ * @see posNext
+ */
 
 /**
 .Function.posSub
