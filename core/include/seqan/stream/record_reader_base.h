@@ -69,6 +69,12 @@ struct DoublePass {};
  *
  * @include demos/input_output/record_reader.cpp
  *
+ * The output is as follows:
+ *
+ * @include demos/input_output/record_reader.cpp.stdout
+ */
+
+/*!
  * @fn RecordReader::RecordReader
  * @brief Constructor.
  *

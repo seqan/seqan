@@ -98,6 +98,17 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * in the underlying sequence.  The unclipped view position is the position in the gapped sequence without gaps.  The
  * view position is the position in the gapped sequence but including the clipping: All (clipped) view positions have
  * the clipping begin position subtracted from them.
+ *
+ * @section Examples
+ *
+ * The following example shows the construction of the gaps object from the image above together with some calls to
+ * <tt>toViewPosition</tt> and <tt>toSourcePosition</tt>.
+ *
+ * @include demos/align/gaps_example.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/gaps_example.cpp.stdout
  */
 
 /**

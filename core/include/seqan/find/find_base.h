@@ -246,6 +246,26 @@ struct Needle<Segment<THost, TSpec> const>
  * @section Remarks
  *
  * Repeated calls of this function iterate through all occurences of <tt>pattern</tt>.
+ *
+ * @section Examples
+ *
+ * The following example shows how one can search online for a pattern in a haystack.  Note that it is neccessary to
+ * reset the finder befor searching for another pattern.
+ *
+ * @include demos/find/finder_online.cpp
+ *
+ * The output is as follows.
+ *
+ * @include demos/find/finder_online.cpp.stdout
+ *
+ * In contrast to the example above the code below shows how one can use a Finder with an index as base.  Again, note
+ * that it is neccessary to reset the finder befor searching for another pattern.
+ *
+ * @include demos/find/finder_index.cpp
+ *
+ * The output is as follows.
+ *
+ * @include demos/find/finder_index.cpp.stdout
  */
 
 /**

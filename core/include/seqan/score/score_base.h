@@ -61,14 +61,7 @@ namespace seqan {
  *
  * The output is as follows:
  *
- * @code{.console}
- * Score = 66
- * Alignment:
- * 0     .    :    .    :    .
- *   ACGTG--GATCGGTGACTTACGGACTG
- *   |||||  ||   |||| ||||||||||
- *   ACGTGTTGA---GTGA-TTACGGACTG
- * @endcode
+ * @include demos/score/score.cpp.stdout
  */
 
 /**

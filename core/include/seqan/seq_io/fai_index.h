@@ -101,6 +101,9 @@ public:
  *
  * @include demos/seq_io/fai_index_example.cpp
  *
+ * The output is as follows:
+ *
+ * @include demos/seq_io/fai_index_example.cpp.stdout
  *
  * @fn FaiIndex::FaiIndex
  * @brief Constructor.

@@ -3,22 +3,15 @@
 
 using namespace seqan;
 
-// USAGE: vcf_stream_read IN.vcf
-//
-// Read VCF file and print the positions (reference, position) to stdout.
-
-int main(int argc, char ** argv)
+int main()
 {
-    if (argc != 2)
-    {
-        std::cerr << "USAGE: " << argv[1] << " IN.vcf\n";
-        return 1;
-    }
+    CharString path = SEQAN_PATH_TO_ROOT();
+    append(path, "/extras/demos/vcf_io/example.vcf");
 
-    VcfStream vcfIn(argv[1]);
+    VcfStream vcfIn(toCString(path));
     if (!isGood(vcfIn))
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading!\n";
+        std::cerr << "ERROR: Could not open " << path << " for reading!\n";
         return 1;
     }
 
@@ -27,7 +20,7 @@ int main(int argc, char ** argv)
     {
         if (readRecord(record, vcfIn) != 0)
         {
-            std::cerr << "ERROR: Problem reading from " << argv[1] << "\n";
+            std::cerr << "ERROR: Problem reading from " << path << "\n";
             return 1;
         }
 

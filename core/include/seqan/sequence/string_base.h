@@ -174,6 +174,19 @@ struct Alloc {};
  *
  * @snippet demos/sequence/string.cpp clear and resize
  *
+ * @section Examples
+ *
+ * This example shows a brute force pattern matching scheme for two character Strings.  Creation of String "text" shows
+ * the usage of some available String operating functions.  See class @link StringSet @endlink for an example of a
+ * String container with other than simple type values.  See class @link Index @endlink example for efficiently finding
+ * the same pattern matches using an index.
+ *
+ * @include demos/sequence/string2.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/sequence/string2.cpp.stdout
+ *
  * @see StringSet
  */
 

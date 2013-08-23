@@ -71,6 +71,14 @@ struct Owner {};
  *
  * Second, the @link DependentStringSet @endlink specialization allows to create subsets of string sets without
  * storing copies of strings and identifying strings by a common id.
+ *
+ * @section Examples
+ *
+ * @include demos/sequence/stringset.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/sequence/stringset.cpp.stdout
  */
 
 /**

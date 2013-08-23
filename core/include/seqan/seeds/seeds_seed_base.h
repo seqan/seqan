@@ -101,13 +101,9 @@ struct DefaultSeedConfig
  *
  * @include demos/seeds/seeds_extension.cpp
  *
- * @code{.console}
- * endPositionV(seed1) = 6
- * endPositionH(seed2) = 9
- * endPositionV(seed2) = 9
- * endPositionH(seed3) = 14
- * endPositionV(seed3) = 13
- * @endcode
+ * The output is as follows:
+ *
+ * @include demos/seeds/seeds_extension.cpp.stdout
  *
  * Here is an example for global seed chaining:
  *

@@ -21,9 +21,9 @@ int main()
 
     int result = globalAlignment(align, scoringScheme, alignConfig);
 
-    std::cout << "Score: " << result << std::endl;
+    std::cout << "Score: " << result << "\n";
     std::cout << "The resulting alignment is\n"
-              << align << std::endl;
+              << align << "\n";
 
     return 0;
 }

@@ -79,36 +79,23 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  *
  * The output is als follows:
  *
- * @code{.console}
- * TATACGCGAAAA
- * AAAAGCGCATAT
- * 
- * TATACGCGTTTT
- * TTTTGCGCATAT
- * @endcode
+ * @include demos/modifier/modified_string.cpp.stdout
  *
  * @subsection Using a custom functor for ModViewString
  *
  * @include demos/modifier/modified_string_mod_view.cpp
  *
- * @code{.console}
- * A man, a plan, a canal-Panama
- * A MAN, A PLAN, A CANAL-PANAMA
- * A man, a master plan, a canal-Panama
- * A MAN, A MASTER PLAN, A CANAL-PANAMA
- * @endcode
+ * The output is as follows:
+ *
+ * @include demos/modifier/modified_string_mod_view.cpp.stdout
  *
  * @subsection Using nested modified strings.
  *
  * @include demos/modifier/modified_string_nested.cpp
  *
- * @code{.console}
- * ATTACGG
- * CCGTAAT
- * ACGTTTACGG
- * CCGTAAACGT
- * CCGTAAACGT
- * @endcode
+ * The output is as follows:
+ *
+ * @include demos/modifier/modified_string_nested.cpp.stdout
  */
 
 /**

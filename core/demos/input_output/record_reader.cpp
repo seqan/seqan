@@ -4,13 +4,13 @@
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 
-int main(int argc, char const ** argv)
+int main()
 {
-    if (argc != 2)
-        return 1;  // Invalid number of arguments.
+    seqan::CharString path = SEQAN_PATH_TO_ROOT();
+    append(path, "/core/demos/input_output/example.fa");
 
     // Open file and create RecordReader.
-    std::fstream in(argv[1], std::ios::binary | std::ios::in);
+    std::fstream in(toCString(path), std::ios::binary | std::ios::in);
     seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(in);
 
     // Read file record-wise.

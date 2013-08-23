@@ -48,6 +48,52 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class VcfStream
+ * @headerfile <seqan/vcf_io.h>
+ * @brief High-level VCF I/O class.
+ *
+ * @signature class VcfStream;
+ *
+ * @section Examples
+ *
+ * The following example demonstrates reading a VCF file and printing the variant locations.
+ *
+ * @include demos/vcf_io/vcf_stream_read.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/vcf_io/vcf_stream_read.cpp.stdout
+ */
+
+/*!
+ * @fn VcfStream::VcfStream
+ * @brief Constructor.
+ *
+ * @signature VcfStream::VcfStream();
+ * @signature VcfStream::VcfStream(fileName[, mode]);
+ *
+ * @param[in] fileName Path to the fiel to open.  Type: <tt>char const *</tt>.
+ * @param[in] mode     The mode to open the file in.  Type: @link VcfStream::Mode @endlink.  Default: <tt>READ</tt>.
+ */
+
+/*!
+ * @enum VcfStream::Mode
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Open mode for the class @link VcfStream @endlink.
+ *
+ * @signature enum Mode;
+ *
+ * @var VcfStream::Mode VcfStream::INVALID;
+ * @brief Invalid open mode.
+ *
+ * @var VcfStream::Mode VcfStream::READ;
+ * @brief Open file for reading.
+ *
+ * @var VcfStream::Mode VcfStream::WRITE;
+ * @brief Open file for writing.
+ */
+
 /**
 .Class.VcfStream
 ..cat:VCF I/O
@@ -188,6 +234,19 @@ public:
 // Function open()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VcfStream#open
+ * @brief Open a VcfStream.
+ *
+ * @param[in,out] vcfStream The VcfStream to open.
+ * @param[in]     fileName  Path to the file to open.  Type: <tt>char const *</tt>.
+ * @param[in]     mode      Mode to open the file in.  Type @link VcfStream::Mode @endlink.  Default: <tt>READ</tt>.
+ *
+ * @signature bool open(vcfStream, fileName[, mode]);
+ *
+ * @return bool <tt>true</tt> if the file could be opened and <tt>false</tt> otherwise.
+ */
+
 /**
 .Function.VcfStream#open
 ..class:Class.VcfStream
@@ -216,6 +275,18 @@ inline bool open(VcfStream & stream, char const * filename, VcfStream::Mode mode
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VcfStream#readRecord
+ * @brief Read a record from a VcfStream.
+ *
+ * @signature int readRecord(record, stream);
+ *
+ * @param[in,out] record The @link VcfRecord @endlink to read into.
+ * @param[in,out] stream The VcfStream to read from.
+ *
+ * @return int Status code, 0 on success, non-0 value on error.
+ */
+
 /**
 .Function.VcfStream#readRecord
 ..class:Class.VcfStream
@@ -242,6 +313,18 @@ inline int readRecord(VcfRecord & record,
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn VcfStream#writeRecord
+ * @brief Write a record to a VcfStream.
+ *
+ * @signature int writeRecord(stream, record);
+ *
+ * @param[in,out] stream The VcfStream to write to.
+ * @param[in]     record The @link VcfRecord @endlink to write.
+ *
+ * @return int Status code, 0 on success, non-0 value on error.
+ */
 
 /**
 .Function.VcfStream#writeRecord
@@ -278,6 +361,17 @@ inline int writeRecord(VcfStream & stream,
 // Function flush()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VcfStream#flush
+ * @brief Flush a VcfStream.
+ *
+ * @signature int flush(stream);
+ *
+ * @param[in,out] stream The VcfStream to flush.
+ *
+ * @return int Status code, 0 on success, non-0 on errors.
+ */
+
 /**
 .Function.VcfStream#flush
 ..class:Class.VcfStream
@@ -300,6 +394,17 @@ inline int flush(VcfStream & stream)
 // ----------------------------------------------------------------------------
 // Function close()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn VcfStream#close
+ * @brief Close a VcfStream.
+ *
+ * @signature int close(stream);
+ *
+ * @param[in,out] stream The VcfStream to close.
+ *
+ * @return int Status code, 0 on success, non-0 on errors.
+ */
 
 /**
 .Function.VcfStream#close
@@ -325,6 +430,17 @@ inline int close(VcfStream & stream)
 // Function isGood()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VcfStream#isGood
+ * @brief Query error state of VcfStream.
+ *
+ * @signature bool isGood(stream);
+ *
+ * @param[in] stream The VcfStream to query.
+ *
+ * @return bool true if the stream is ready for reading and writing.
+ */
+
 /**
 .Function.VcfStream#isGood
 ..class:Class.VcfStream
@@ -345,6 +461,17 @@ inline bool isGood(VcfStream const & stream)
 // ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn VcfStream#atEnd
+ * @brief Query a VcfStream for being at the end.
+ *
+ * @signature bool atEnd(stream);
+ *
+ * @param[in] stream The VcfStream to query.
+ *
+ * @return bool true if the stream is a the end and false otherwise.
+ */
 
 /**
 .Function.VcfStream#atEnd

@@ -81,13 +81,7 @@ struct Hmm;
  *
  * The output of the distances is as follows:
  *
- * @code{.console}
- * Distance from 0 to 0: 0
- * Distance from 0 to 1: 8
- * Distance from 0 to 2: 9
- * Distance from 0 to 3: 5
- * Distance from 0 to 4: 7
- * @endcode
+ * @include demos/graph/graph_algo_dijkstra.cpp.stdout
  */
 
 /**

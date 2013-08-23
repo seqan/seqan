@@ -79,14 +79,7 @@ typedef Tag<TagRaw_> Raw;
  *
  * The output is as follows:
  *
- * @code{.console}
- * score = -4
- * align
- *   0     .    :
- *     AGTTTAATCA
- *     ||| | |  |
- *     AGTAT-ACGA
- * @endcode
+ * @include demos/align/align.cpp.stdout
  *
  * @see globalAlignment
  * @see localAlignment

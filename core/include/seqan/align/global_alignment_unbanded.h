@@ -135,35 +135,20 @@ class Fragment;
  * 
  * Global alignment of two sequences using an @link Align @endlink object and
  * the Needleman-Wunsch algorithm.
- * 
- * @code{.cpp}
- * Dna5String seqH = "CGATT";
- * Dna5String seqV = "CGAAATT";
- *  
- * Align<Dna5String> align;
- * resize(rows(align), 2);
- * assignSource(row(align, 0), seqH);
- * assignSource(row(align, 0), seqV);
- * Score<int, Simple> scoringScheme(2, -1, -2);
- * AlignConfig<> alignConfig;
- *  
- * int result = globalAlignment(align, scoringScheme, alignConfig,
- *                              NeedlemanWunsch());
- * @endcode
+ *
+ * @include demos/align/global_alignment_unbanded.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/global_alignment_unbanded.cpp.stdout
  *
  * Global banded alignment of two sequences using two @link Gaps @endlink objects and the Gotoh algorithm.
- * 
- * @code{.cpp}
- * Dna5String seqH = "CGATT";
- * Gaps<Dna5String, ArrayGaps> gapsH(seqH);
- * DnaString seqV = "CGAAATT";
- * Gaps<Dna5String, AnchorGaps<> > gapsV(seqV);
- *  
- * Score<int, Simple> scoringScheme(5, -3, -1, -5);
- * AlignConfig<> alignConfig;
- *  
- * int result = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -2, 2);
- * @endcode
+ *
+ * @include demos/align/global_alignment_banded.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/global_alignment_banded.cpp.stdout
  * 
  * http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
  * 

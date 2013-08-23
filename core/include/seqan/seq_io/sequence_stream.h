@@ -98,11 +98,9 @@ namespace seqan {
  *
  * @include demos/seq_io/sequence_stream_read.cpp
  *
- * @code{.console}
- * seq0   CGGCTCGCGCG
- * seq1   ACGACGACGAACT
- * seq3   CCGCGCGC
- * @endcode
+ * The output is as follows:
+ *
+ * @include demos/seq_io/sequence_stream_read.cpp.stdout
  *
  * @subsection Writing to SequenceStream
  *
