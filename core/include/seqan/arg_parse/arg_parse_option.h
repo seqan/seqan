@@ -112,7 +112,7 @@ Although not suggested the short-name can contain more than 1 character.
 ..param.longName:A std::string containing the long-name option identifier (e.g. $"help"$ for the $-h/--help$ option).
 ...remarks:Note that the leading "--" is not passed.
 ..param.helpText:A std::string containing the help text associated with this option.
-..param.argument:A $ArgParseArgument::ArgumentType$ for the option (e.g., an integer argument).
+..param.argumentType:A $ArgParseArgument::ArgumentType$ for the option (e.g., an integer argument).
 ...type:Class.ArgParseArgument
 ..param.argumentLabel:The label to use for the argument in the help text, e.g. $"NUMBER"$ for an integer. Optional.
 ...default:$""$
