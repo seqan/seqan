@@ -1961,4 +1961,96 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_affine)
     }
 }
 
+SEQAN_DEFINE_TEST(test_alignment_algorithms_global_banded_different_container)
+{
+    using namespace seqan;
+
+    // Global alignment with Segment and DnaString
+    {
+        Dna5String strH = "ATGTAT";
+        Dna5String strV = "ATAGAT";
+
+        Segment<Dna5String, PrefixSegment> prefixSegment(strH, 4);
+        SEQAN_ASSERT_EQ(prefixSegment, "ATGT");
+
+        Gaps<Segment<Dna5String, PrefixSegment>, ArrayGaps> gapsH(prefixSegment);
+        Gaps<Dna5String> gapsV(strV);
+
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+
+        int score = globalAlignment(gapsH, gapsV, scoringScheme, AlignConfig<>(), -3, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(score, 6);
+
+        std::stringstream ssH, ssV;
+        ssH << gapsH;
+        ssV << gapsV;
+
+        SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+        SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+    }
+
+    // Global alignment with two Segments
+    {
+        Dna5String strH = "ATGTAT";
+        Dna5String strV = "ATATAGAT";
+
+        Segment<Dna5String, PrefixSegment> prefixSegment(strH, 4);
+        SEQAN_ASSERT_EQ(prefixSegment, "ATGT");
+
+        Segment<Dna5String, SuffixSegment> suffixSegment(strV, 2);
+        SEQAN_ASSERT_EQ(suffixSegment, "ATAGAT");
+
+        Gaps<Segment<Dna5String, PrefixSegment>, ArrayGaps> gapsH(prefixSegment);
+        Gaps<Segment<Dna5String, SuffixSegment>, ArrayGaps> gapsV(suffixSegment);
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+
+        int score = globalAlignment(gapsH, gapsV, scoringScheme, AlignConfig<>(), -3, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(score, 6);
+
+        std::stringstream ssH, ssV;
+        ssH << gapsH;
+        ssV << gapsV;
+
+        SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+        SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+    }
+
+    // Global alignment score with Segment and DnaString
+    {
+        Dna5String strH = "ATGTAT";
+        Dna5String strV = "ATAGAT";
+
+        Segment<Dna5String, PrefixSegment> prefixSegment(strH, 4);
+        SEQAN_ASSERT_EQ(prefixSegment, "ATGT");
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+
+        int score = globalAlignmentScore(prefixSegment, strV, scoringScheme, AlignConfig<>(), -3, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(score, 6);
+    }
+
+    // Global alignment with two Segments
+    {
+        Dna5String strH = "ATGTAT";
+        Dna5String strV = "ATATAGAT";
+
+        Segment<Dna5String, PrefixSegment> prefixSegment(strH, 4);
+        SEQAN_ASSERT_EQ(prefixSegment, "ATGT");
+
+        Segment<Dna5String, SuffixSegment> suffixSegment(strV, 2);
+        SEQAN_ASSERT_EQ(suffixSegment, "ATAGAT");
+
+        Score<int, Simple> scoringScheme(2, -1, -1);
+
+        int score = globalAlignmentScore(prefixSegment, suffixSegment, scoringScheme, AlignConfig<>(), -3, 2, NeedlemanWunsch());
+
+        SEQAN_ASSERT_EQ(score, 6);
+    }
+}
+
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_ALGORITHMS_GLOBAL_BANDED_H_

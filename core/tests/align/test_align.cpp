@@ -473,6 +473,9 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_semi_global_affine);
     SEQAN_CALL_TEST(test_alignment_algorithms_score_semi_global_affine);
 
+    // Global Alignment with Differnt Container Types
+    SEQAN_CALL_TEST(test_alignment_algorithms_global_different_container);
+
     // Local Alignment.
     SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear);
     SEQAN_CALL_TEST(test_alignment_algorithms_gaps_local_linear);
@@ -541,6 +544,9 @@ SEQAN_BEGIN_TESTSUITE(test_align)
 
     SEQAN_CALL_TEST(test_align_global_alignment_banded_shorter_interfaces_linear);
     SEQAN_CALL_TEST(test_align_global_alignment_banded_shorter_interfaces_affine);
+
+    // Global Alignment with Differnt Container Types
+    SEQAN_CALL_TEST(test_alignment_algorithms_global_banded_different_container);
 
     // Local Alignment.
     SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear_banded);
