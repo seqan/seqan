@@ -168,11 +168,12 @@ _computeCell(TDPScout & scout,
 // Function _scoutBestScore()                                        [DPScout_]
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TTraceMatrixNavigator>
+// NOTE: The original code here used Value<TDPCell>::Type instead of TDPCellValue but this caused ambiguous call
+// errors in MSVC.
+
+template <typename TDPCell, typename TTraceMatrixNavigator, typename TDPCellValue>
 inline void
-_scoutBestScore(DPScout_<TDPCell,
-                         Terminator_<XDrop_<typename Value<TDPCell>::Type> > >
-                & dpScout,
+_scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator,
                 bool const isLastColumn   = false,

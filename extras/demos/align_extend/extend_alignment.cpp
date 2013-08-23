@@ -29,8 +29,14 @@ int main()
     std::cout << "Initial alignment of infixes (score == " << score << ")\n\n"
               << align;
 
+	// The alignment starts at diagonal (23 - 19) = 4.  A band of 4 in each direction has
+	// the following diagonals.
+	int lDiag = 0, uDiag = 8;
+	// Set the x-Drop value to 5.
+	int xDrop = 5;
     Tuple<unsigned, 4> positions = { {19u, 8u, 23u, 12u} };
-    score = extendAlignment(align, score, subject, query, positions, EXTEND_BOTH, sc);
+    score = extendAlignment(align, score, subject, query, positions, EXTEND_BOTH,
+							lDiag, uDiag, xDrop, sc);
 
     std::cout << "Resulting alignment (score == " << score << ")\n\n"
               << align;
