@@ -37,36 +37,36 @@
 
 SEQAN_BEGIN_TESTSUITE(test_consensus)
 {
-    // SEQAN_CALL_TEST(test_consensus_realign_one_contig_small);
-    SEQAN_CALL_TEST(test_consensus_realign_one_contig_larger);
+    SEQAN_CALL_TEST(test_consensus_realign_one_contig_small);
+#if 0
+    SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_weightedconsensus_score);
 
-    // SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_consensus_score);
-    // SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_fractional_score);
-    // SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_weightedconsensus_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_weightedconsensus_score);
 
-    // SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_consensus_score);
-    // SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_fractional_score);
-    // SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_metafunction_weightedconsensus_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_weightedconsensus_score);
 
-    // SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_consensus_score);
-    // SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_fractional_score);
-    // SEQAN_CALL_TEST(test_consensus_sequence_entry_for_score_weightedconsensus_score);
+    SEQAN_CALL_TEST(test_consensus_host_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_host_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_host_weightedconsensus_score);
 
-    // SEQAN_CALL_TEST(test_consensus_host_consensus_score);
-    // SEQAN_CALL_TEST(test_consensus_host_fractional_score);
-    // SEQAN_CALL_TEST(test_consensus_host_weightedconsensus_score);
+    SEQAN_CALL_TEST(test_consensus_position_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_position_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_position_weightedconsensus_score);
 
-    // SEQAN_CALL_TEST(test_consensus_position_consensus_score);
-    // SEQAN_CALL_TEST(test_consensus_position_fractional_score);
-    // SEQAN_CALL_TEST(test_consensus_position_weightedconsensus_score);
+    SEQAN_CALL_TEST(test_consensus_value_consensus_score);
+    SEQAN_CALL_TEST(test_consensus_value_fractional_score);
+    SEQAN_CALL_TEST(test_consensus_value_weightedconsensus_score);
 
-    // SEQAN_CALL_TEST(test_consensus_value_consensus_score);
-    // SEQAN_CALL_TEST(test_consensus_value_fractional_score);
-    // SEQAN_CALL_TEST(test_consensus_value_weightedconsensus_score);
-
-    // SEQAN_CALL_TEST(test_consensus_write_celera_cgb);
-    // SEQAN_CALL_TEST(test_consensus_write_celera_frg);
-    // SEQAN_CALL_TEST(test_consensus_write_fasta_read_format);
-    // SEQAN_CALL_TEST(test_consensus_convert_simple_read_file);
+    SEQAN_CALL_TEST(test_consensus_write_celera_cgb);
+    SEQAN_CALL_TEST(test_consensus_write_celera_frg);
+    SEQAN_CALL_TEST(test_consensus_write_fasta_read_format);
+    SEQAN_CALL_TEST(test_consensus_convert_simple_read_file);
+#endif  // #if 0
 }
 SEQAN_END_TESTSUITE
