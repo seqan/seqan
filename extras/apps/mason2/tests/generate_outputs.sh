@@ -45,6 +45,11 @@ echo "${VARIATOR} -n 2 -ir random.fasta -ov random_var3.vcf -of random_var3.fast
 ${VARIATOR} -n 2 -ir random.fasta -ov random_var3.vcf -of random_var3.fasta --snp-rate 0.001 --small-indel-rate 0.001 --sv-indel-rate 0.001 --sv-inversion-rate 0.001 --sv-translocation-rate 0.001 --sv-duplication-rate 0.001 --min-sv-size 50 --max-sv-size 100 --out-breakpoints random_var3_bp.txt >random_var3.vcf.stdout 2>random_var3.vcf.stderr
 echo $?
 
+# Variation that crashed previously.
+echo "${VARIATOR} -ir adeno_virus.fa -ov random_var9.vcf -of random_var9.fasta --sv-indel-rate 0.01 --sv-inversion-rate 0.01 --sv-duplication-rate 0.01 --min-sv-size 20  --max-sv-size 300 >random_var9.vcf.stdout 2>random_var9.vcf.stderr"
+${VARIATOR} -ir adeno_virus.fa -ov random_var9.vcf -of random_var9.fasta --sv-indel-rate 0.01 --sv-inversion-rate 0.01 --sv-duplication-rate 0.01 --min-sv-size 20  --max-sv-size 300 >random_var9.vcf.stdout 2>random_var9.vcf.stderr
+echo $?
+
 # ============================================================
 # mason_materializer
 # ============================================================

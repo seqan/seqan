@@ -248,6 +248,32 @@ def main(source_base, binary_base):
                  ])
     conf_list.append(conf)
 
+    # Previously crashing test
+    conf = app_tests.TestConf(
+        program=path_to_variator,
+        args=['-ir', ph.inFile('adeno_virus.fa'),
+              '-ov', ph.outFile('random_var9.vcf'),
+              '-of', ph.outFile('random_var9.fasta'),
+              '--sv-indel-rate', '0.01',
+              '--sv-duplication-rate', '0.01',
+              '--sv-inversion-rate', '0.01',
+              '--min-sv-size', '20',
+              '--max-sv-size', '300',
+              ],
+        redir_stdout=ph.outFile('random_var9.vcf.stdout'),
+        redir_stderr=ph.outFile('random_var9.vcf.stderr'),
+        to_diff=[(ph.inFile('random_var9.vcf'),
+                  ph.outFile('random_var9.vcf'),
+                  transforms),
+                 (ph.inFile('random_var9.vcf.stderr'),
+                  ph.outFile('random_var9.vcf.stderr'),
+                  transforms),
+                 (ph.inFile('random_var9.vcf.stdout'),
+                  ph.outFile('random_var9.vcf.stdout'),
+                  transforms),
+                 ])
+    conf_list.append(conf)
+
     # ============================================================
     # Test mason_materializer
     # ============================================================
@@ -302,7 +328,7 @@ def main(source_base, binary_base):
     # ============================================================
 
     # Illumina Model
-    
+
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',

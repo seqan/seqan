@@ -311,6 +311,7 @@ int VariantMaterializer::_materializeSmallVariants(
                     }
 
                     lastPos = smallIndelRecord.pos - smallIndelRecord.size;
+                    SEQAN_ASSERT_LT(lastPos, (int)length(contig));
                     recordErase(journal,
                                 hostToVirtualPosition(journal, smallIndelRecord.pos),
                                 hostToVirtualPosition(journal, smallIndelRecord.pos - smallIndelRecord.size));

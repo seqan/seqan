@@ -400,7 +400,7 @@ public:
         seqan::CharString indelSeq;
         reserve(indelSeq, options.maxSVSize);
         bool deletion = (size < 0);
-        if (deletion && (pos + size) > sequenceLength(faiIndex, rId))
+        if (deletion && (pos - size) > sequenceLength(faiIndex, rId))
             return false;  // not enough space at the end
         seqan::Pdf<seqan::Uniform<int> > pdf(0, 3);
         for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
