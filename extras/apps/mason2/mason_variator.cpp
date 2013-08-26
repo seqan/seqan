@@ -900,6 +900,7 @@ public:
         std::sort(begin(variants.svRecords, seqan::Standard()),
                   end(variants.svRecords, seqan::Standard()));
         smallSim.simulateContig(variants, rId, options.numHaplotypes);
+        // TODO(holtgrew): This list is wrong.
         if (options.verbosity >= 1)
             std::cerr << "  snps:                " << length(variants.snps) << "\n"
                       << "  small indels:        " << length(variants.smallIndels) << "\n"
