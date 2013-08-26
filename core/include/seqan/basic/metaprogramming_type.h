@@ -319,11 +319,13 @@ struct RemoveConst<T &>
 	typedef typename RemoveConst<T>::Type & Type;
 };
 
+/*
 template <typename T>
 struct RemoveConst<T const *>
 {
 	typedef typename RemoveConst<T>::Type * Type;
 };
+*/
 
 template <typename T, size_t I>
 struct RemoveConst<T const [I]>
@@ -334,31 +336,6 @@ struct RemoveConst<T const [I]>
 // TODO(holtgrew): Internal metafunction superflous?
 template <typename T>
 struct RemoveConst_ : RemoveConst<T> {};
-
-// ----------------------------------------------------------------------------
-// Metafunction RemoveOuterConst
-// ----------------------------------------------------------------------------
-
-/*!
- * @mfn RemoveOuterConst
- * @headerfile <seqan/basic.h>
- * @brief Removes top-level const qualifier.
- *
- * @signature RemoveOuterConst<T>::Type;
- *
- * @tparam T Input type.
- *
- * @return Type A corresponding non-const type, e.g. <tt>int</tt> for <tt>T = const int</tt>.
- */
-
-template <typename T>
-struct RemoveOuterConst
-{
-	typedef T Type;
-};
-
-template <typename T>
-struct RemoveOuterConst<T const> : public RemoveOuterConst<T> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction CopyConst_
