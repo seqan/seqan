@@ -545,9 +545,10 @@ struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, Tell>
 // Functions
 // ============================================================================
 
-template <typename TConfig, typename TValue, typename TPageFrame>
+// Variant for File<TFileSpec> (fallback if MMap<> not available as on Windows).
+template <typename TSpec, typename TValue, typename TPageFrame>
 inline bool
-_readBuffer(Stream<FileStream<File<TConfig>, TValue> > &stream, TPageFrame &pf)
+_readBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf)
 {
     // allocate page memory if not done already
     if (pf.begin == NULL)
@@ -655,9 +656,9 @@ _postprocessBuffer(Stream<FileStream<TSpec, TValue> > &, TPageFrame &pf, bool)
 }
 
 
-template <typename TConfig, typename TValue, typename TPageFrame>
+template <typename TSpec, typename TValue, typename TPageFrame>
 inline bool
-_writeBuffer(Stream<FileStream<File<TConfig>, TValue> > &stream, TPageFrame &pf)
+_writeBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf)
 {
     // only write in write-mode
     if (!stream._isWriteable())
@@ -765,7 +766,7 @@ tryFetchBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool 
 // Function tryReleaseBuffer()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TPageFrame>
+template <typename TSpec, typename TValue, typename TPageFrame>
 inline bool
 tryReleaseBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool &inProgress, bool doWait = false)
 {
