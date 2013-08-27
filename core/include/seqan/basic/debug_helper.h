@@ -202,20 +202,18 @@ _compareTextFilesAlt(const char * file1, const char * file2)
     std::string line1;
     std::string line2;
 
-    __uint64 lineNo = 0;
-    for (; !fl1.eof() && !fl2.eof(); ++lineNo)
+    for (__uint64 lineNo = 1; !fl1.eof() && !fl2.eof(); ++lineNo)
     {
         getline(fl1, line1);
         getline(fl2, line2);
 
         if (line1 != line2)
         {
-            std::cerr << "Line " << lineNo << " of the text files is different:" << std::endl;
+            std::cerr << "Line " << lineNo << " of the text files differ:" << std::endl;
             std::cerr << line1 << std::endl;
             std::cerr << line2 << std::endl;
             return false;
         }
-        ++lineNo;
     }
     if (fl1.eof() != fl2.eof())
     {
