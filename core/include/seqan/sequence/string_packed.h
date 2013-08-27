@@ -1486,7 +1486,7 @@ operator+(Iter<TPackedString, Packed<THostspec> > const & iter,
     typedef PackedTraits_<TPackedString> TTraits;
 
     if (_isNegative(delta))
-        return iter - (typename MakeUnsigned<TIntegral>::Type)(-delta);
+        return iter - (-(typename MakeUnsigned<TIntegral>::Type)delta);
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
     return Iter<TPackedString, Packed<THostspec> >(
@@ -1502,7 +1502,7 @@ operator+(TIntegral const & delta,
     typedef PackedTraits_<TPackedString> TTraits;
 
     if (_isNegative(delta))
-        return iter - (typename MakeUnsigned<TIntegral>::Type)(-delta);
+        return iter - (-(typename MakeSigned<TIntegral>::Type)delta);
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
     return Iter<TPackedString, Packed<THostspec> >(
@@ -1522,7 +1522,7 @@ operator+=(Iter<TPackedString, Packed<THostspec> > & iter,
     typedef PackedTraits_<TPackedString> TTraits;
 
     if (_isNegative(delta))
-        return iter -= (typename MakeUnsigned<TIntegral>::Type)(-delta);
+        return iter -= -(typename MakeSigned<TIntegral>::Type)delta;
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
     hostIterator(iter) += ofs / TTraits::VALUES_PER_HOST_VALUE;
@@ -1542,7 +1542,7 @@ operator-(Iter<TPackedString, Packed<THostspec> > const & iter,
     typedef PackedTraits_<TPackedString> TTraits;
 
     if (_isNegative(delta))
-        return iter + (typename MakeUnsigned<TIntegral>::Type)(-delta);
+        return iter + (-(typename MakeSigned<TIntegral>::Type)delta);
 
     TIntegral ofs = delta + (TIntegral)(TTraits::VALUES_PER_HOST_VALUE - 1) - (TIntegral)iter.localPos;
     return Iter<TPackedString, Packed<THostspec> >(
@@ -1562,7 +1562,7 @@ operator-=(Iter<TPackedString, Packed<THostspec> > & iter,
     typedef PackedTraits_<TPackedString> TTraits;
 
     if (_isNegative(delta))
-        return iter += (typename MakeUnsigned<TIntegral>::Type)(-delta);
+        return iter += -(typename MakeUnsigned<TIntegral>::Type)delta;
 
     TIntegral ofs = delta + (TIntegral)(TTraits::VALUES_PER_HOST_VALUE - 1) - (TIntegral)iter.localPos;
     hostIterator(iter) -= ofs / TTraits::VALUES_PER_HOST_VALUE;
