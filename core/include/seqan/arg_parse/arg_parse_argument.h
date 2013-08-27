@@ -184,6 +184,14 @@ public:
     std::vector<std::string> validValues;
 
     // ----------------------------------------------------------------------------
+    // Tags
+    // ----------------------------------------------------------------------------
+    // Tags can be used to attach hints to the arguments (and options).  Currently,
+    // this is used for tagging the "-file-ext" arguments as "file-ext-override"
+    // and "gkn-ignore" for ignoring in GKN.
+    std::vector<std::string> tags;
+
+    // ----------------------------------------------------------------------------
     // Members to help text
     // ----------------------------------------------------------------------------
     std::string         _helpText;    // The help text shown on the command line

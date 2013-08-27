@@ -394,6 +394,8 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
         // Add option, copy list argument, number of allowed values.
         addOption(me, ArgParseOption("", longName, helpText, ArgParseOption::STRING, "EXT",
                                      isListArgument(opt), numberOfAllowedValues(opt)));
+        getOption(me, longName.c_str()).tags.push_back("file-ext-override");
+        getOption(me, longName.c_str()).tags.push_back("gkn-ignore");
         // Hide option.
         hideOption(me, longName);
         // Copy valid values, remove leading dots.
@@ -476,6 +478,7 @@ inline void addArgument(ArgumentParser & me, ArgParseArgument const & arg)
         // Add option, copy list argument, number of allowed values.
         addOption(me, ArgParseOption("", longName, helpText, ArgParseOption::STRING, "EXT",
                                      isListArgument(arg), numberOfAllowedValues(arg)));
+        getOption(me, longName.c_str()).tags.push_back("file-ext-override");
         // Hide option.
         hideOption(me, longName);
         // Copy valid values, remove leading dots.

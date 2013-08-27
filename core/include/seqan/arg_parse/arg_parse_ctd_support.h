@@ -365,7 +365,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
     }
 
     // add a warning to the CTD that arguments are hard to interpret by the users
-    if (me.argumentList.size() > 0)
+    if (me.argumentList.size() > 0u)
     {
         ctdfile << _indent(currentIndent)
                 << "<!-- Following clielements are arguments."
@@ -440,6 +440,19 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         ctdfile << "required=\"" << (isRequired(opt) ? "true" : "false") << "\" ";
         ctdfile << "advanced=\"" << (isHidden(opt) ? "true" : "false") << "\" ";
 
+        // Write out tags attribute.
+        if (!opt.tags.empty())
+        {
+            ctdfile << "tags=\"";
+            for (unsigned i = 0; i < length(opt.tags.size()); ++i)
+            {
+                if (i > 0)
+                    ctdfile << ",";
+                ctdfile << opt.tags[i];
+            }
+            ctdfile << "\" ";
+        }
+
         if (isListArgument(opt))
         {
             ctdfile << ">\n";
@@ -497,6 +510,19 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
 
         ctdfile << "required=\"true\" ";
         ctdfile << "advanced=\"false\" ";
+
+        // Write out tags attribute.
+        if (!arg.tags.empty())
+        {
+            ctdfile << "tags=\"";
+            for (unsigned i = 0; i < length(arg.tags.size()); ++i)
+            {
+                if (i > 0)
+                    ctdfile << ",";
+                ctdfile << arg.tags[i];
+            }
+            ctdfile << "\" ";
+        }
 
         ctdfile << "/>\n";
     }
