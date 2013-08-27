@@ -343,41 +343,40 @@ typedef ModView<FunctorComplement<Dna5> >	ModComplementDna5;
 typedef ModView<FunctorComplement<Rna> >	ModComplementRna;
 typedef ModView<FunctorComplement<Rna5> >	ModComplementRna5;
 
-typedef ModifiedString<DnaString, ModView<FunctorComplement<Dna> > >		DnaStringComplement;
-typedef ModifiedString<Dna5String, ModView<FunctorComplement<Dna5> > >		Dna5StringComplement;
-typedef ModifiedString<RnaString, ModView<FunctorComplement<Rna> > >		RnaStringComplement;
-typedef ModifiedString<Rna5String, ModView<FunctorComplement<Rna5> > >		Rna5StringComplement;
+template <typename THost>
+struct ReverseString
+{
+    typedef ModifiedString<THost, ModReverse> Type;
+};
 
-typedef ModifiedString<DnaString, ModReverse>		DnaStringReverse;
-typedef ModifiedString<Dna5String, ModReverse>		Dna5StringReverse;
-typedef ModifiedString<RnaString, ModReverse>		RnaStringReverse;
-typedef ModifiedString<Rna5String, ModReverse>		Rna5StringReverse;
+template <typename THost>
+struct ComplementString
+{
+    typedef ModifiedString<THost, ModView<FunctorComplement<typename Value<THost>::Type> > > Type;
+};
 
-//////////////////////////////////////////////////////////////////////////////
-/*
-typedef ModifiedString<DnaStringReverse, ModComplementDna>		DnaStringReverseComplement;
-typedef ModifiedString<Dna5StringReverse, ModComplementDna5>	Dna5StringReverseComplement;
-*/
+template <typename THost>
+struct ReverseComplementString
+{
+    typedef typename ReverseString<typename ComplementString<THost>::Type>::Type Type;
+};
 
-typedef ModifiedString<
-			ModifiedString<DnaString, ModView< FunctorComplement<Dna> > >, 
-			ModReverse
-		>	DnaStringReverseComplement;
 
-typedef ModifiedString<
-			ModifiedString<	Dna5String, ModView< FunctorComplement<Dna5> > >, 
-			ModReverse
-		>	Dna5StringReverseComplement;
+// outdated shortcuts (better use metafunctions above)
+typedef ComplementString<DnaString>::Type           DnaStringComplement;
+typedef ComplementString<Dna5String>::Type          Dna5StringComplement;
+typedef ComplementString<RnaString>::Type           RnaStringComplement;
+typedef ComplementString<Rna5String>::Type          Rna5StringComplement;
 
-typedef ModifiedString<
-			ModifiedString<RnaString, ModView< FunctorComplement<Rna> > >, 
-			ModReverse
-		>	RnaStringReverseComplement;
+typedef ReverseString<DnaString>::Type              DnaStringReverse;
+typedef ReverseString<Dna5String>::Type             Dna5StringReverse;
+typedef ReverseString<RnaString>::Type              RnaStringReverse;
+typedef ReverseString<Rna5String>::Type             Rna5StringReverse;
 
-typedef ModifiedString<
-			ModifiedString<	Rna5String, ModView< FunctorComplement<Rna5> > >, 
-			ModReverse
-		>	Rna5StringReverseComplement;
+typedef ReverseComplementString<DnaString>::Type	DnaStringReverseComplement;
+typedef ReverseComplementString<Dna5String>::Type	Dna5StringReverseComplement;
+typedef ReverseComplementString<RnaString>::Type	RnaStringReverseComplement;
+typedef ReverseComplementString<Rna5String>::Type	Rna5StringReverseComplement;
 
 // --------------------------------------------------------------------------
 // Function complement()
@@ -452,6 +451,24 @@ inline void complement(StringSet<TSequence, TSpec> const & stringSet)
 	unsigned seqCount = length(stringSet);
 	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
 		complement(stringSet[seqNo]);
+}
+
+// --------------------------------------------------------------------------
+// Function complementString()
+// --------------------------------------------------------------------------
+
+template <typename THost>
+inline ModifiedString<THost, ModView<FunctorComplement<typename Value<THost>::Type> > >
+complementString(THost & host)
+{
+	return ModifiedString<THost, ModView<FunctorComplement<typename Value<THost>::Type> > >(host);
+}
+
+template <typename THost>
+inline ModifiedString<THost const, ModView<FunctorComplement<typename Value<THost>::Type> > >
+complementString(THost const & host)
+{
+	return ModifiedString<THost const, ModView<FunctorComplement<typename Value<THost>::Type> > >(host);
 }
 
 // --------------------------------------------------------------------------
@@ -531,6 +548,26 @@ inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet)
 	unsigned seqCount = length(stringSet);
 	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
 		reverseComplement(stringSet[seqNo]);
+}
+
+// --------------------------------------------------------------------------
+// Function reverseComplementString()
+// --------------------------------------------------------------------------
+
+template <typename THost>
+inline typename ReverseComplementString<THost>::Type
+reverseComplementString(THost & host)
+{
+    typedef typename ReverseComplementString<THost>::Type TRevComp;
+	return TRevComp(host);
+}
+
+template <typename THost>
+inline typename ReverseComplementString<THost const>::Type
+reverseComplementString(THost const & host)
+{
+    typedef typename ReverseComplementString<THost const>::Type TRevComp;
+	return TRevComp(host);
 }
 
 // --------------------------------------------------------------------------
