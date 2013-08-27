@@ -206,7 +206,7 @@ int write2(TStream & stream,
 
     SEQAN_PUT_TAB;
 
-    if (length(record.cigar) == 0u)
+    if (empty(record.cigar))
     {
         res = streamPut(stream, '*');
         if (res != 0)
@@ -274,7 +274,7 @@ int write2(TStream & stream,
     if (res != 0)
         return res;
 
-    if (length(record.tags) > 0u)
+    if (!empty(record.tags))
     {
         SEQAN_PUT_TAB;
         CharString buffer;
