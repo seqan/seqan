@@ -1174,8 +1174,8 @@ void testAlignGapsCopyClipping(TGapsSpec const & /*spec*/)
             SEQAN_ASSERT_EQ(ss.str(), "TTTTTTTT");
         }
 
-        SEQAN_ASSERT_EQ(clippedBeginPosition(gaps2), 1u);
-        SEQAN_ASSERT_EQ(clippedEndPosition(gaps2), 9u);
+        SEQAN_ASSERT_EQ((unsigned)clippedBeginPosition(gaps2), 1u);
+        SEQAN_ASSERT_EQ((unsigned)clippedEndPosition(gaps2), 9u);
     }
 }
 
