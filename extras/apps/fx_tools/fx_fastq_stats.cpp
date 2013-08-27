@@ -209,8 +209,8 @@ struct FastqStats
         {
             if (qualHistos[i].size() == 0u)
                 continue;  // Skip if empty.
-            leftWhiskers[i] = firstQuartiles[i];
-            rightWhiskers[i] = thirdQuartiles[i];
+            leftWhiskers[i] = static_cast<int>(firstQuartiles[i]);
+            rightWhiskers[i] = static_cast<int>(thirdQuartiles[i]);
             double leftWhiskerBound = ((double)firstQuartiles[i]) - 1.5 * interQuartileRanges[i];
             double rightWhiskerBound = ((double)thirdQuartiles[i]) + 1.5 * interQuartileRanges[i];
             for (std::map<__int32, __int32>::const_iterator it = qualHistos[i].begin(); it != qualHistos[i].end(); ++it)
