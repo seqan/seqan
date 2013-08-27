@@ -104,8 +104,8 @@ struct Tuple<TValue, SIZE, BitPacked<> >
 {
     typedef typename BitVector_<SIZE * BitsPerValue<TValue>::VALUE>::Type TBitVector;
 
-    static const __uint64 BIT_MASK = (1ull << BitsPerValue<TValue>::VALUE) - 1ull;
-    static const __uint64 MASK = (1ull << (SIZE * BitsPerValue<TValue>::VALUE)) - 1ull;
+    static const __uint64 BIT_MASK = ((1ull << (BitsPerValue<TValue>::VALUE - 1ull)       ) - 1) << 1 | 1ull;
+    static const __uint64 MASK     = ((1ull << (SIZE * BitsPerValue<TValue>::VALUE - 1ull)) - 1) << 1 | 1ull;
 
     // -----------------------------------------------------------------------
     // Members
