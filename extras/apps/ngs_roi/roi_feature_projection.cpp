@@ -924,7 +924,7 @@ int RoiIntersectApp::doStreaming()
     if (empty(options.gffGroupBy))
     {
         // Grouping is not ative, project against BED (or GFF/GTF reduced to BED information).
-        if (options.inputIntervalsFileExt == "bed")
+        if (options.inputIntervalsFileExt == "bed" || options.inputIntervalsFileExt == ".bed")
         {
             IntersectDriver<IntersectWithBedConfig> driver(outRoi, inIntervals, inRoi, options);
             return driver.run();
