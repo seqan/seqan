@@ -67,7 +67,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
     (void)res;  // If run without assertions.
     SEQAN_ASSERT_EQ(res, 0);
     SEQAN_ASSERT_NOT(atEnd(reader));
-    
+
     clear(buffer);
     res = readNChars(buffer, reader, 3);  // Read ':<type>:'.
     SEQAN_ASSERT_EQ(res, 0);
@@ -77,7 +77,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
     appendValue(target, t);
 
     SEQAN_ASSERT_NOT(atEnd(reader));
-    
+
     switch (t)
     {
     case 'A':
@@ -125,14 +125,14 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
     case 'B':
         {
             CharString buffer2; // TODO(holtgrew): Also give from outside.
-            
+
             // Read type.
             clear(buffer);
             res = readNChars(buffer, reader, 1);
             SEQAN_ASSERT_EQ(res, 0);
             char t2 = back(buffer);
             appendValue(target, t2);
-            
+
             // Read array contents.
             clear(buffer);
             res = readUntilTabOrLineBreak(buffer, reader);
@@ -150,7 +150,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
             char const * ptr = reinterpret_cast<char const *>(&nEntries);
             for (int i = 0; i < 4; ++i, ++ptr)
                 appendValue(target, *ptr);
-                
+
             // Now, write out the arrays, depending on the entry type.
             // TODO(holtgrew): Whee, this could be a bit more compact...
             switch (t2)
@@ -337,13 +337,13 @@ void assignTagsSamToBam(TTarget & target, TSource & source)
     typedef typename Iterator<TSource, Standard>::Type TSourceIter;
     TSourceIter it = begin(source, Standard());
     TSourceIter itEnd = end(source, Standard());
-    
+
     typedef Stream<CharArray<char const *> > TStream;
     typedef RecordReader<TStream, SinglePass<> > TRecordReader;
-    
+
     TStream stream(it, itEnd);
     TRecordReader reader(stream);
-    
+
     CharString buffer;
 
     while (!atEnd(reader))
@@ -351,7 +351,7 @@ void assignTagsSamToBam(TTarget & target, TSource & source)
         if (value(reader) == '\t')
             goNext(reader);
         SEQAN_ASSERT_NOT(atEnd(reader));
-        
+
         _assignTagsSamToBamOneTag(target, reader, buffer);
     }
 }
@@ -361,7 +361,7 @@ void assignTagsSamToBam(TTarget & target, TSource & source)
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TSourceIter>
-void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringstream & ss)
+void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 {
     // Copy tag name.
     SEQAN_ASSERT_NOT(atEnd(it));
@@ -369,10 +369,10 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
     SEQAN_ASSERT_NOT(atEnd(it));
     appendValue(target, *it++);
     unsigned char t = *it;
-    
+
     // Add ':'.
     appendValue(target, ':');
-    
+
     // Add type.
     SEQAN_ASSERT_NOT(atEnd(it));
     if (*it == 'c' || *it == 'C' || *it == 's' || *it == 'S' || *it == 'i' || *it == 'I')
@@ -385,9 +385,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
     appendValue(target, ':');
 
     // Convert the payload, depending on the field's type.
-    
-    ss.str("");
-    
+
     switch (t)
     {
     case 'A':
@@ -397,16 +395,18 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
         {
             SEQAN_ASSERT_NOT(atEnd(it));
             __int8 x = *it++;
-            ss << static_cast<int>(x);  // Cast to prevent printing as textual char.
-            append(target, ss.str());
+            char buffer[4];
+            snprintf(buffer, 4, "%d", x);
+            append(target, buffer);
         }
         break;
     case 'C':
         {
             SEQAN_ASSERT_NOT(atEnd(it));
+            char buffer[4];
             __uint8 x = *it++;
-            ss << static_cast<unsigned>(x);  // Cast to prevent printing as textual char.
-            append(target, ss.str());
+            snprintf(buffer, 4, "%u", x);
+            append(target, buffer);
         }
         break;
     case 's':
@@ -418,8 +418,9 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                 SEQAN_ASSERT_NOT(atEnd(it));
                 *ptr++ = *it++;
             }
-            ss << x;
-            append(target, ss.str());
+            char buffer[32];
+            snprintf(buffer, 32, "%d", x);
+            append(target, buffer);
         }
         break;
     case 'S':
@@ -431,8 +432,9 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                 SEQAN_ASSERT_NOT(atEnd(it));
                 *ptr++ = *it++;
             }
-            ss << x;
-            append(target, ss.str());
+            char buffer[32];
+            snprintf(buffer, 32, "%u", x);
+            append(target, buffer);
         }
         break;
     case 'i':
@@ -444,8 +446,9 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                 SEQAN_ASSERT_NOT(atEnd(it));
                 *ptr++ = *it++;
             }
-            ss << x;
-            append(target, ss.str());
+            char buffer[32];
+            snprintf(buffer, 32, "%d", x);
+            append(target, buffer);
         }
         break;
     case 'I':
@@ -457,8 +460,9 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                 SEQAN_ASSERT_NOT(atEnd(it));
                 *ptr++ = *it++;
             }
-            ss << x;
-            append(target, ss.str());
+            char buffer[32];
+            snprintf(buffer, 32, "%u", x);
+            append(target, buffer);
         }
         break;
     case 'f':
@@ -470,8 +474,9 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                 SEQAN_ASSERT_NOT(atEnd(it));
                 *ptr++ = *it++;
             }
-            ss << x;
-            append(target, ss.str());
+            char buffer[32];
+            snprintf(buffer, 32, "%g", x);
+            append(target, buffer);
         }
         break;
     case 'Z':
@@ -517,27 +522,26 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     __int8 y = *it++;
-                    ss << static_cast<int>(y);  // Cast to prevent textual interpretation.
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%d", y);
+                    append(target, buffer);
                 }
                 break;
             case 'C':
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     __uint8 y = *it++;
-                    ss << static_cast<int>(y);  // Cast to prevent textual interpretation.
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%u", y);
+                    append(target, buffer);
                 }
                 break;
             case 's':
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     __int16 y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 2; ++i)
@@ -545,15 +549,15 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                         SEQAN_ASSERT_NOT(atEnd(it));
                         *ptr++ = *it++;
                     }
-                    ss << y;
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%d", y);
+                    append(target, buffer);
                 }
                 break;
             case 'S':
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     __uint16 y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 2; ++i)
@@ -561,15 +565,15 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                         SEQAN_ASSERT_NOT(atEnd(it));
                         *ptr++ = *it++;
                     }
-                    ss << y;
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%d", y);
+                    append(target, buffer);
                 }
                 break;
             case 'i':
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     __int32 y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 4; ++i)
@@ -577,15 +581,15 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                         SEQAN_ASSERT_NOT(atEnd(it));
                         *ptr++ = *it++;
                     }
-                    ss << y;
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%d", y);
+                    append(target, buffer);
                 }
                 break;
             case 'I':
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     __uint32 y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 4; ++i)
@@ -593,15 +597,15 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                         SEQAN_ASSERT_NOT(atEnd(it));
                         *ptr++ = *it++;
                     }
-                    ss << y;
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%u", y);
+                    append(target, buffer);
                 }
                 break;
             case 'f':
                 for (__int32 i = 0; i < x; ++i)
                 {
                     appendValue(target, ',');
-                    ss.str("");
                     float y = 0;
                     char * ptr = reinterpret_cast<char *>(&y);
                     for (int i = 0; i < 4; ++i)
@@ -609,8 +613,9 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it, std::stringst
                         SEQAN_ASSERT_NOT(atEnd(it));
                         *ptr++ = *it++;
                     }
-                    ss << y;
-                    append(target, ss.str());
+                    char buffer[32];
+                    snprintf(buffer, 32, "%g", y);
+                    append(target, buffer);
                 }
                 break;
             default:
@@ -657,19 +662,18 @@ void assignTagsBamToSam(TTarget & target, TSource const & source)
     if (empty(source))
         clear(target);
 
-    std::stringstream ss;
     clear(target);
-    
+
     typedef typename Iterator<TSource const, Rooted>::Type TSourceIter;
     TSourceIter it = begin(source, Rooted());
-    
+
     bool first = true;
     while (!atEnd(it))
     {
         if (!first)
             appendValue(target, '\t');
         first = false;
-        _assignTagsBamToSamOneTag(target, it, ss);
+        _assignTagsBamToSamOneTag(target, it);
     }
 }
 

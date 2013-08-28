@@ -46,6 +46,7 @@
 #include <set>
 
 #include <seqan/gff_io.h>
+#include <seqan/stream.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // FRAGMENT STORE SUB-CONTAINERS

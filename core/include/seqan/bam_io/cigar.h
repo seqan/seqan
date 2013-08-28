@@ -53,10 +53,10 @@ namespace seqan {
  * @class CigarElement
  * @headerfile <seqan/bam_io.h>
  * @brief One entry of a CIGAR string.
- * 
+ *
  * @signature template <typename TOperation = char, typename TCount = unsigned>
  *            class CigarElement;
- * 
+ *
  * @tparam TOperation Type to use for storing operations, defaults to <tt>char</tt>.
  * @tparam TCount Type to use for storing counts, defaults to <tt>unsigned</tt>.
  */
@@ -64,28 +64,28 @@ namespace seqan {
 /*!
  * @fn CigarElement::CigarElement
  * @brief Constructor
- * 
+ *
  * @signature CigarElement::CigarElement();
  * @signature CigarElement::CigarElement(operation, count);
- * 
+ *
  * @param[in] operation The operation to use, of type <tt>TOperation</tt>.
  * @param[in] count     The operation count, of type <tt>TCount</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The default constructor initialized both @link CigarElement::operation @endlink and @link CigarElement::count
  * @endlink with <tt>0</tt>.
  */
 
 /*!
  * @var TCount CigarElement::count
- * 
+ *
  * @brief The number of operations.
  */
 
 /*!
  * @var TOperation CigarElement::operation
- * 
+ *
  * @brief The described operation.
  */
 
@@ -132,7 +132,7 @@ struct CigarElement
     TCount              count;
 
     CigarElement() : operation(0), count(0) {}
-    
+
     CigarElement(TOperation o, TCount c):
         operation(o),
         count(c) {}
@@ -159,7 +159,7 @@ inline bool operator<(CigarElement<TOperation, TCount> const & lhs,
 {
     return lhs.operation < rhs.operation || (lhs.operation == rhs.operation && lhs.count < rhs.count);
 }
-    
+
 template <typename TOperation, typename TCount>
 inline bool operator==(CigarElement<TOperation, TCount> const & lhs,
                        CigarElement<TOperation, TCount> const & rhs)
@@ -216,10 +216,10 @@ getMDString(
         if (isGap(it2))
         {
             op = 'D';
-        } 
+        }
         else
             op = (*it1 == *it2)? 'M': 'R';
-        
+
         // append match run
         if (lastOp != op)
         {
@@ -290,12 +290,12 @@ getCigarString(
 				op = '?';
 			else
 				op = 'I';
-		} 
+		}
 		else if (isClipped(it1))
 		{
 			op = '?';
 		}
-		else 
+		else
 		{
 			if (isGap(it2))
 				op = 'D';
@@ -304,7 +304,7 @@ getCigarString(
 			else
 				op = 'M';
 		}
-        
+
         // append CIGAR operation
         if (lastOp != op)
         {
@@ -381,12 +381,12 @@ getCigarString(
                 op = '?';
             else
                 op = 'I';
-        } 
+        }
         else if (isClipped(it1))
         {
             op = '?';
         }
-        else 
+        else
         {
             if (isGap(it2))
                 op = 'D';
@@ -436,7 +436,7 @@ alignAndGetCigarString(
         assignSource(row(align, 0), infix(contig.seq, alignedRead.endPos, alignedRead.beginPos));
 
     assignSource(row(align, 1), readSeq);
-    
+
     if (!(errors == 0 || (errors == 1 && length(readSeq) == length(source(row(align, 0))))))
         errors = functor.align(align);
 
@@ -453,8 +453,8 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
 
     TContigGaps contigGaps(contig.seq, contig.gaps);
-    
-    if (alignedRead.beginPos <= alignedRead.endPos) 
+
+    if (alignedRead.beginPos <= alignedRead.endPos)
     {
         setClippedBeginPosition(contigGaps, alignedRead.beginPos);
         setClippedEndPosition(contigGaps, alignedRead.endPos);
@@ -470,7 +470,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     //     printf("It's it!\n");
     // std::cerr << "read gaps:  " << readGaps << std::endl;
     // std::cerr << "contig gaps:" << contigGaps << std::endl;
-    
+
     getCigarString(cigar, contigGaps, readGaps);
     getMDString(md, contigGaps, readGaps);
 }
@@ -483,10 +483,10 @@ template <typename TCigarString, typename TNum>
 inline void _getClippedLength(TCigarString const & cigar, TNum & sum)
 {
     typedef typename Iterator<TCigarString, Standard>::Type TCigarIter;
-    
+
     TCigarIter it = begin(cigar, Standard());
     TCigarIter itEnd = end(cigar, Standard());
-    
+
     sum = 0;
     for (; it != itEnd; ++it)
         if (getValue(it).operation != 'S' && getValue(it).operation != 'H')
@@ -501,10 +501,10 @@ template <typename TCigarString, typename TNum>
 inline void _getLengthInRef(TCigarString const & cigar, TNum & sum)
 {
     typedef typename Iterator<TCigarString const, Standard>::Type TCigarIter;
-    
+
     TCigarIter it = begin(cigar, Standard());
     TCigarIter itEnd = end(cigar, Standard());
-    
+
     sum = 0;
     for (; it != itEnd; ++it)
         if (getValue(it).operation != 'S' && getValue(it).operation != 'H' && getValue(it).operation != 'I')

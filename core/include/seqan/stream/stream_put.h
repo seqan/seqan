@@ -236,6 +236,12 @@ int _streamPut(TStream & stream, long i, False const & /*tag*/)
     return (streamWriteBlock(stream, buf, len) == len) ? 0 : 1;
 }
 
+template <typename TStream>
+int _streamPut(TStream & stream, char c, False const & /*tag*/)
+{
+    return streamWriteChar(stream, c);
+}
+
 // Generic fallback version, based on stringstream.
 //
 // Parameters:

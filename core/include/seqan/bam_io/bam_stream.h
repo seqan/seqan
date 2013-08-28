@@ -66,15 +66,15 @@ namespace seqan {
  * @class BamStream
  * @headerfile <seqan/bam_io.h>
  * @brief Class that provides an easy to use interface for reading and writing SAM and BAM files.
- * 
+ *
  * @signature class BamStream;
- * 
+ *
  * @section Example
- * 
+ *
  * Read and write SAM or BAM files.
- * 
+ *
  * @include demos/bam_io/bam_stream.cpp
- * 
+ *
  * The output is as follows:
  *
  * @include demos/bam_io/bam_stream.cpp.stdout
@@ -94,13 +94,13 @@ namespace seqan {
 /*!
  * @var THeader BamStream::header
  * @brief The @link BamHeader @endlink of the @link BamStream @endlink object.
- * 
+ *
  * SAM and BAM files have a header.  When writing SAM or BAM files, you have to fill this member before writing @link
  * BamAlignmentRecord @endlinks.  Upon writing the first record, the header will be written out.
- * 
+ *
  * When reading BAM files, the header will be read upon opening the file. When reading SAM files, any header will be
  * read upon opening the file.
- * 
+ *
  * Note that there is a special case when reading SAM records: If there is no header, or records refer to reference
  * sequences that are previously unknown when reading SAM then a new entry is added to @link BamHeader::sequenceInfos
  * @endlink.
@@ -108,9 +108,9 @@ namespace seqan {
 
 /*!
  * @var TBamIOContext BamStream::bamIOContext
- * 
+ *
  * @brief The @link BamIOContext @endlink object to use for reading and writing @link BamAlignmentRecord @endlinks.
- * 
+ *
  * When reading, the <tt>bamIOContext</tt> will be updated automatically.  When reading SAM, new reference sequences can
  * be introduced "on the fly" when a new sequence appears.  When writing, the <tt>bamIOContext</tt> is automatically
  * filled/reset when the first record is written.
@@ -325,9 +325,9 @@ inline BamStream::BamStream(char const * filename, OperationMode mode, Format fo
 /*!
  * @fn BamStream#open
  * @brief Open a @link BamStream @endlink object for reading/writing.
- * 
+ *
  * @signature int open(bamIO, fileName[, mode[, format]]);
- * 
+ *
  * @param[in,out] bamIO    The @link BamStream @endlink object to open. Types: BamStream
  * @param[in]     fileName The path to the file to open, <tt>char const *</tt>.
  * @param[in]     mode     The mode to open the file in, optional, of type @link BamStream::OperationMode @endlink,
@@ -335,7 +335,7 @@ inline BamStream::BamStream(char const * filename, OperationMode mode, Format fo
  * @param[in]     format   The format to use, inferred from file contents (reading) or file name (writing) by default.
  *                         the path to the file to open, of type @link BamStream::Format @endlink, defaults to
  *                         <tt>AUTO</tt>.
- * 
+ *
  * @return int A status code, 0 on success, a value <tt>!= 0</tt> on errors.
  */
 
@@ -460,9 +460,9 @@ inline int open(BamStream & bamIO,
 /*
  * @fn BamStream#reset
  * @brief Reset @link BamStream @endlink object to status after construction.
- * 
+ *
  * @signature void reset(stream);
- * 
+ *
  * @param stream The @link BamStream @endlink object to reset.
  *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
@@ -491,17 +491,17 @@ inline int reset(BamStream & bamIO)
 /*!
  * @fn BamStream#flush
  * @brief Flush output when writing.
- * 
+ *
  * @signature int flush(stream);
- * 
+ *
  * @param stream The @link BamStream @endlink object to flush.
- * 
+ *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on errors.
  *
  * @section Remarks
  *
  * This will write out the header if no record has been written out yet.
- */  
+ */
 
 /**
 .Function.BamStream#flush
@@ -532,11 +532,11 @@ inline int flush(BamStream & bamIO)
 /*!
  * @fn BamStream#close
  * @brief Close BamStream object's underlying file.
- * 
+ *
  * @signature int close(stream);
- * 
+ *
  * @param stream[in,out] The @link BamStream @endlink object to close.
- * 
+ *
  * @return int A status code, 0 on success, <tt>!= 0</tt> on error.
  */
 
@@ -571,11 +571,11 @@ inline int close(BamStream & bamIO)
 /*!
  * @fn BamStream#atEnd
  * @brief Check whether a @link BamStream @endlink object is at end when reading.
- * 
+ *
  * @signature bool atEnd(stream);
- * 
+ *
  * @param[in] stream The @link BamStream @endlink object to query.
- * 
+ *
  * @return bool true in case of the stream being at the end, false otherwise.
  *
  * @section Remarks
@@ -613,11 +613,11 @@ inline bool atEnd(BamStream & bamIO)
 /*!
  * @fn BamStream#isGood
  * @brief Check whether the @link BamStream @endlink object has is in the failure state.
- * 
+ *
  * @signature bool isGood(stream);
- * 
+ *
  * @param stream The @link BamStream @endlink object to query.
- * 
+ *
  * @return bool true if the stream is not in an error state and false otherwise.
  */
 
@@ -644,13 +644,13 @@ inline bool isGood(BamStream const & bamIO)
 /*!
  * @fn BamStream#readRecord
  * @brief Read one @link BamAlignmentRecord @endlink from a @link BamStream @endlink.
- * 
+ *
  * @signature int readRecord(record, stream);
- * 
+ *
  * @param[out]   record    The @link BamAlignmentRecord @endlink to read the next alignment record into.  Of type
  *                         @link BamAlignmentRecord @endlink.
  * @param[in,out] stream   The @link BamStream @endlink object to read from.
- * 
+ *
  * @return int A status code, 0 on success.
  */
 
@@ -681,9 +681,9 @@ inline int readRecord(BamAlignmentRecord & record, BamStream & bamIO)
 /*!
  * @fn BamStream#writeRecord
  * @brief Write one @link BamAlignmentRecord @endlink to a @link BamStream @endlink.
- * 
+ *
  * @signature int writeRecord(stream, record);
- * 
+ *
  * @param[in,out] bamIO  The @link BamStream @endlink object to write to.
  * @param[in]     record The @link BamAlignmentRecord @endlink to write out.
  *

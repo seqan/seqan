@@ -325,7 +325,7 @@ int readRecord(BamAlignmentRecord & record,
     SEQAN_ASSERT_GT(remainingBytes, (lSeq + 2) / 2);
     resize(record.seq, lSeq + 1, Exact());
     static char const * SEQ_MAPPING = "=ACMGRSVTWYHKDBN";
-    
+
     typedef typename Iterator<CharString, Rooted>::Type TSeqIter;
     {
         // Note: Yes, we need separate index i and iterator.  The iterator allows the fast iteration and i is for
@@ -374,7 +374,7 @@ int readRecord(BamAlignmentRecord & record,
     {
         clear(record.tags);
     }
-    
+
     return 0;
 }
 

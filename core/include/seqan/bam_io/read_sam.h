@@ -306,7 +306,7 @@ int readRecord(BamAlignmentRecord & record,
         if (res != 0)                               \
             return res;                             \
     }                                               \
-    while (false) 
+    while (false)
 
     int res = 0;
 
@@ -315,7 +315,7 @@ int readRecord(BamAlignmentRecord & record,
     if (res != 0)
         return res;
     SEQAN_SKIP_TAB;
-    
+
     // FLAG
     // TODO(holtgrew): Interpret hex and char as c-samtools -X does?
     clear(buffer);

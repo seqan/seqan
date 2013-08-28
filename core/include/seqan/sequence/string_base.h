@@ -380,6 +380,9 @@ struct IsSequence<String<TValue, TSpec> > {
     enum { VALUE = true };
 };
 
+template <typename TValue, typename TSpec>
+struct IsSequence<String<TValue, TSpec> const> : IsSequence<String<TValue, TSpec> > {};
+
 // ----------------------------------------------------------------------------
 // Internal Metafunction TempCopy_
 // ----------------------------------------------------------------------------

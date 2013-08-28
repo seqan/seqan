@@ -57,6 +57,10 @@ SEQAN_BEGIN_TESTSUITE(test_store)
     SEQAN_CALL_TEST(test_store_io_read_amos);
     SEQAN_CALL_TEST(test_store_io_write_amos);
 
+    // Tests for the SAM/BAM format.
     SEQAN_CALL_TEST(test_store_io_sam);
+#if SEQAN_HAS_ZLIB
+    SEQAN_CALL_TEST(test_store_io_read_bam);
+#endif  // #if SEQAN_HAS_ZLIB
 }
 SEQAN_END_TESTSUITE

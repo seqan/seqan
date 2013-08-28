@@ -139,10 +139,10 @@ public:
 
     // 1<<14 is the size of the minimum bin.
     static const __int32 BAM_LIDX_SHIFT = 14;
-    
+
     String<TBinIndex_> _binIndices;
     String<TLinearIndex_> _linearIndices;
-    
+
     BamIndex() : _unalignedCount(maxValue<__uint64>())
     {}
 };
@@ -462,7 +462,7 @@ read(BamIndex<Bai> & index, char const * filename)
 
     resize(index._linearIndices, nRef);
     resize(index._binIndices, nRef);
-    
+
     for (int i = 0; i < nRef; ++i)  // For each reference.
     {
         // Read bin index.
@@ -568,7 +568,7 @@ inline int _writeIndex(BamIndex<Bai> const & index, char const * filename)
     std::ofstream out(filename, std::ios::binary | std::ios::out);
 
     SEQAN_ASSERT_EQ(length(index._binIndices), length(index._linearIndices));
-    
+
     // Write header.
     out.write("BAI\1", 4);
     __int32 numRefSeqs = length(index._binIndices);
@@ -650,7 +650,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
     index._unalignedCount = 0;
     clear(index._binIndices);
     clear(index._linearIndices);
-    
+
     // Open BAM file for reading.
     Stream<Bgzf> bamStream;
     if (!open(bamStream, filename, "r"))
@@ -659,7 +659,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
     // Initialize BamIOContext.
     typedef StringSet<CharString>      TNameStore;
     typedef NameStoreCache<TNameStore> TNameStoreCache;
-    
+
     TNameStore refNameStore;
     TNameStoreCache refNameStoreCache(refNameStore);
     BamIOContext<TNameStore> bamIOContext(refNameStore, refNameStoreCache);
@@ -687,7 +687,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
         res = readRecord(record, bamIOContext, bamStream, Bam());
         if (res != 0)
             return false;
-        
+
         // Check ordering.
         if (prevRefId == record.rID && prevPos > record.beginPos)
             return false;

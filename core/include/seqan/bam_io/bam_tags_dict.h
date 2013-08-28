@@ -550,7 +550,7 @@ findTagKey(unsigned & idx, BamTagsDict const & tags, CharString const & name)
  *
  * See documentation of @link BamTagsDict @endlink for an example.
  */
- 
+
 
 /**
 .Function.BamTagsDict#getTagValue
@@ -575,11 +575,11 @@ getTagValue(BamTagsDict & tags, TIdx idx)
         buildIndex(tags);
 
     // TODO(holtgrew): Can't we use positions to speed this up?
-    
+
     typedef typename Position<CharString>::Type TPos;
     TPos beginPos = tags._positions[idx] + 2;
     TPos endPos = beginPos + 1;
-    
+
     char theType = getTagType(tags, idx);
     if (theType == 'Z' || theType == 'H')
     {
@@ -602,7 +602,7 @@ getTagValue(BamTagsDict & tags, TIdx idx)
     {
         endPos += getBamTypeSize(theType);
     }
-    
+
     return infix(host(tags), beginPos, endPos);
 }
 
@@ -620,21 +620,21 @@ getTagValue(BamTagsDict const & tags, TPos idx)
 /*!
  * @fn BamTagsDict#extractTagValuej
  * @brief Extract and cast "atomic" value from tags string with index <tt>idx</tt>.
- * 
+ *
  * @signature bool extractTagValue(dest, tags, idx)
- * 
+ *
  * @param[out] dest The variable to write the value to.The value is first copied in a variable of the type indicated in
  *                  the BAM file. Then it is cast into the type of <tt>dest</tt>.
  *
  * @param[in] tags The BamTagsDict object to query.
  * @param[in] idx  The integer index in the dict to use.
- * 
+ *
  * @return bool true if the value could be extracted.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The function only works for atomic types such as <tt>int</tt>, not for <tt>char*</tt> or arrays.
- * 
+ *
  * See @link BamTagsDict @endlink for an example.
  */
 
@@ -741,16 +741,16 @@ extractTagValue(TDest & dest, BamTagsDict & tags, TIdx idx)
  * @tparam T The type to query for its type char.
  *
  * @section Remarks
- * 
+ *
  * Note that this function is defined for the <tt>__int16</tt>, <tt>__uint16</tt> etc. but not for the types
  * <tt>short</tt>, <tt>int</tt> etc. An exception are 8-bit characters/char, where it is defined for <tt>__int8</tt>,
  * <tt>__uint8</tt>, and <tt>char</tt> unless <tt>char</tt> is equal to one of the other two types. This is important
  * when used in @link BamTagsDict#setTagValue @endlink etc. since BAM gives type chars for printable characters, signed
  * 8-bit numbers and unsigned 8-bit numbers.
- * 
+ *
  * If <tt>__int8</tt> and <tt>__uint8</tt> are not identical to <tt>char</tt>, we can make this decision from the type,
  * otherwise we cannot and we will give the integer types a higher precedence.
- * 
+ *
  * In your programs, this should not make any difference, only the written SAM/BAM will differ.
  *
  * @see BamTagsDict
@@ -804,13 +804,13 @@ inline char getBamTypeChar()
 
 /*!
  * @fn BamTagsDict#setTagValue
- * 
+ *
  * @headerfile seqan/bam_io.h
- * 
+ *
  * @brief Set the value of a tag through a @link BamTagsDict @endlink.
- * 
+ *
  * @signature bool setTagValue(tags, key, val[, typeC]);
- * 
+ *
  * @param[in,out] tags  The BamTagsDict to modify.
  * @param[in]     key   The key of the tag.Must be a string of length 2. Types: CharString
  * @param[in]     val   The value to set the the tag to.
@@ -819,20 +819,20 @@ inline char getBamTypeChar()
  *                      a signed/unsigned qualified type for <tt>val</tt> or give <tt>typeC</tt>. Also see the remarks
  *                      for @link getBamTypeChar @endlink. Types: getBamTypeChar@.
 
- * 
+ *
  * @return bool true on success, false on failure.  This function can fail if the key is not a valid tag id (e.g. does
  *              not have length 2) or if the type of <tt>val</tt> is not an atomic value or a string (anything but
  *              <tt>char *</tt>, <tt>char const *</tt>, a character, integer or float type is invalid).
- * 
+ *
  * @section Remarks
- * 
+ *
  * Note that <tt>setTagValue</tt> does not cast the type, so <tt>typeC</tt> only influences the type character written
  * out but <tt>val</tt> is written out in binary without modification.
- * 
+ *
  * @section Examples
- * 
+ *
  * An example setting some atomic tag values.
- * 
+ *
  * @code{.cpp}
  * CharString rawTagsText;
  * BamTagsDict tags(rawTagsText);
@@ -843,7 +843,7 @@ inline char getBamTypeChar()
  *
  * If <tt>char</tt> is equal to <tt>__int8</tt> or <tt>__uint8</tt> then the last line produces an entry with type 'c'
  * or 'C'. To make sure that the type char 'A' (for "printable character") is written to the file, give it explicitely:
- * 
+ *
  * @code{.cpp}
  * setTagValue(tags, "XC", 'X', 'A');  // Overrwrite XC, enforce type 'printable character'.
  * @endcode
@@ -851,7 +851,7 @@ inline char getBamTypeChar()
  * Note that on most systems <tt>int</tt>s have a width of 32 bytes, but the C++ standard leaves this open. For all
  * types but characters, you should not give an explicit type char but use one of the types with explicit width and
  * signed/unsigned qualifier such as <tt>__int32</tt>, <tt>__uint32</tt> etc.
- * 
+ *
  * @code{.cpp}
  * // The following is not recommended since the type of <tt>x</tt> is not "unsigned 32 bit int."
  * __int32 x = -1;
@@ -861,7 +861,7 @@ inline char getBamTypeChar()
  * // probably doing something unintended.
  * __uint32 y = -1;
  * setTagValue(tags, "XB", y);
- *  
+ *
  * // Do not do this!
  * setTagValue(tags, "XA", 9, 'f');    // BOGUS since 9 is not a floating point number.
  * @endcode
@@ -974,7 +974,7 @@ setTagValue(BamTagsDict & tags, CharString const & key, T const & val, char cons
     // append(bamTagVal, key);
     if (!_toBamTagValue(bamTagVal, val, typeC))
         return false;
-    
+
     unsigned idx = 0;
     if (findTagKey(idx, tags, key))
     {
@@ -1036,7 +1036,7 @@ eraseTag(BamTagsDict & tags, CharString const & key)
 {
     if (!hasIndex(tags))
         buildIndex(tags);
-    
+
     unsigned idx = 0;
     if (!findTagKey(idx, tags, key))
         return false;

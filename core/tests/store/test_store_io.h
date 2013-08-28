@@ -409,31 +409,26 @@ SEQAN_DEFINE_TEST(test_store_io_write_gtf)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
 }
 
-
-
+// Read in SAM file, write out SAM file.
 SEQAN_DEFINE_TEST(test_store_io_sam)
 {
     FragmentStore<> store;
-    char buffer[1023];
 
     // 1. LOAD CONTIGS
-    strcpy(buffer, SEQAN_PATH_TO_ROOT());
-    strcat(buffer, "/core/tests/store/ex1.fa");
+    CharString fastaFileName = SEQAN_PATH_TO_ROOT();
+    append(fastaFileName, "/core/tests/store/ex1.fa");
 
-    loadContigs(store, buffer);
+    loadContigs(store, toCString(fastaFileName));
 
     // 2. LOAD SAM ALIGNMENTS
-    strcpy(buffer, SEQAN_PATH_TO_ROOT());
-    strcat(buffer, "/core/tests/store/ex1.sam.copy");
-    MultiSeqFile sam1;
-    open(sam1.concat, buffer);
-    split(sam1, Raw());
+    CharString samFileName = SEQAN_PATH_TO_ROOT();
+    append(samFileName, "/core/tests/store/ex1.sam.copy");
 
+    // Read reference Sam from file.
     {
-        // read reference Sam from file
-        std::ifstream samFile(buffer);
-        SEQAN_ASSERT(samFile);
-        read(samFile, store, Sam());
+        std::fstream f(toCString(samFileName), std::ios::binary | std::ios::in);
+        SEQAN_ASSERT(f.good());
+        read(f, store, Sam());
     }
 
     //AlignedReadLayout layout;
@@ -441,17 +436,20 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     //printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
 
     // 3. WRITE SAM ALIGNMENTS
-    strcpy(buffer, SEQAN_TEMP_FILENAME());
+    CharString outFileName = SEQAN_TEMP_FILENAME();
+    // Write Sam to temp file.
     {
-        // write Sam to temp file
-        std::ofstream samFileOut(buffer);
+        std::ofstream samFileOut(toCString(outFileName));
         SEQAN_ASSERT(samFileOut);
         write(samFileOut, store, Sam());
     }
 
     // 4. COMPARE BOTH SAM FILES
+    MultiSeqFile sam1;
+    open(sam1.concat, toCString(samFileName));
+    split(sam1, Raw());
     MultiSeqFile sam2;
-    open(sam2.concat, buffer);
+    open(sam2.concat, toCString(outFileName));
     split(sam2, Raw());
 
     SEQAN_ASSERT(!empty(sam1));
@@ -466,6 +464,69 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
         }
     }
 }
+
+#if SEQAN_HAS_ZLIB
+
+// Read in BAM file, write out SAM file.
+SEQAN_DEFINE_TEST(test_store_io_read_bam)
+{
+    FragmentStore<> store;
+
+    // 1. LOAD CONTIGS
+    CharString fastaFileName = SEQAN_PATH_TO_ROOT();
+    append(fastaFileName, "/core/tests/store/ex1.fa");
+
+    loadContigs(store, toCString(fastaFileName));
+
+    // 2. LOAD BAM ALIGNMENTS
+    CharString bamFileName = SEQAN_PATH_TO_ROOT();
+    append(bamFileName, "/core/tests/store/ex1.bam");
+
+    // Read reference Sam from file.
+    {
+        Stream<Bgzf> stream;
+        SEQAN_ASSERT(open(stream, toCString(bamFileName), "r"));
+        read(stream, store, Bam());
+    }
+
+    // AlignedReadLayout layout;
+    // layoutAlignment(layout, store);
+    // printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
+
+    // 3. WRITE SAM ALIGNMENTS
+    CharString outFileName = SEQAN_TEMP_FILENAME();
+    // Write Sam to temp file.
+    {
+        std::ofstream samFileOut(toCString(outFileName));
+        SEQAN_ASSERT(samFileOut);
+        write(samFileOut, store, Sam());
+    }
+
+    // 4. COMPARE BOTH SAM FILES
+    CharString samFileName = SEQAN_PATH_TO_ROOT();
+    append(samFileName, "/core/tests/store/ex1.sam.copy");
+    MultiSeqFile sam1;
+    open(sam1.concat, toCString(samFileName));
+    split(sam1, Raw());
+    MultiSeqFile sam2;
+    open(sam2.concat, toCString(outFileName));
+    split(sam2, Raw());
+
+    SEQAN_ASSERT(!empty(sam1));
+    SEQAN_ASSERT(!empty(sam2));
+    for (unsigned i = 0; i < length(sam1); ++i)
+    {
+        if (sam1[i] != sam2[i])
+        {
+            std::cout << "    \t" << sam1[i] << std::endl;
+            std::cout << " != \t" << sam2[i] << std::endl;
+            SEQAN_ASSERT_FAIL("Files differ in line %d.", i);
+        }
+    }
+}
+
+#endif  // #if SEQAN_HAS_ZLIB
+
 
 // Read AMOS and check for some basic properties.  Then, write out as SAM and verify with the expected result.
 SEQAN_DEFINE_TEST(test_store_io_read_amos)

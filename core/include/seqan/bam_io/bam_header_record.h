@@ -287,7 +287,7 @@ class BamHeader
 {
 public:
     typedef Pair<CharString, __int32> TSequenceInfo;
-    
+
     String<Pair<CharString, __int32> > sequenceInfos;
     String<BamHeaderRecord> records;
 };
@@ -523,7 +523,7 @@ searchRecord(unsigned & recordIdx,
 inline BamSortOrder
 getSortOrder(BamHeader const & header)
 {
-    CharString soString;    
+    CharString soString;
     for (unsigned recIdx = 0; searchRecord(recIdx, header, BAM_HEADER_FIRST, recIdx); ++recIdx)
     {
         if (getTagValue(soString, "SO", header.records[recIdx]))
@@ -536,7 +536,7 @@ getSortOrder(BamHeader const & header)
                 return BAM_SORT_COORDINATE;
             else
                 return BAM_SORT_UNKNOWN;
-        }        
+        }
     }
     return BAM_SORT_UNKNOWN;
 }
@@ -563,7 +563,7 @@ setSortOrder(BamHeader & header, BamSortOrder sortOrder)
                 case BAM_SORT_COORDINATE:
                     soString = "coordinate";
                     break;
-                    
+
                 default:
                     soString = "unknown";
             }

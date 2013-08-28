@@ -410,15 +410,13 @@ namespace SEQAN_NAMESPACE_MAIN
         flags.importReadAlignmentTags = false;
     }
 
-    template<typename TFile, typename TSpec, typename TConfig>
+    template<typename TStreamOrReader, typename TSpec, typename TConfig, typename TTag>
     inline void 
-    read(
-        TFile & file,
-        FragmentStore<TSpec, TConfig> & fragStore,
-        Sam,
-        FragStoreImportFlags const & importFlags)
+    _readImpl(TStreamOrReader & streamOrReader,
+              FragmentStore<TSpec, TConfig> & fragStore,
+              TTag const & tag,
+              FragStoreImportFlags const & importFlags)
     {
-//IOREV not sure if recordreading or batchreading
         typedef FragmentStore<TSpec, TConfig> TFragmentStore;
         typedef typename TFragmentStore::TContigPos TContigPos;
         typedef typename Id<TFragmentStore>::Type TId;
@@ -431,17 +429,22 @@ namespace SEQAN_NAMESPACE_MAIN
         // data structure to temporarily store information about match mates
         TMatchMateInfos matchMateInfos;
         TContigAnchorGaps contigAnchorGaps;
-        
-        if (_streamEOF(file)) return;
 
-        // get first character from the stream
-        char c = _streamGet(file);
-        
-        // Read in header section
-        _readHeader(file, fragStore, c, Sam());
-        
+        // Setup a BamIOContext for I/O.
+        typedef BamIOContext<typename TFragmentStore::TContigNameStore> TBamIOContext;
+        TBamIOContext bamIOContext(fragStore.contigNameStore, fragStore.contigNameStoreCache);
+
+        // Read in the header.  We will subsequently ignore it and use the information indirectly just using the
+        // sequence names if any.
+        BamHeader bamHeader;
+        if (readRecord(bamHeader, bamIOContext, streamOrReader, tag) != 0)
+        {
+            std::cerr << "ERROR: Problem reading header from SAM file.\n";
+            return;
+        }
+
         // Read in alignments section
-        _readAlignments(file, fragStore, contigAnchorGaps, matchMateInfos, c, Sam(), importFlags);
+        _readAlignments(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, tag, importFlags);
         
         if (importFlags.importReadAlignment)
         {
@@ -452,7 +455,31 @@ namespace SEQAN_NAMESPACE_MAIN
         }
     }
 
-    template<typename TFile, typename TSpec, typename TConfig>
+    template <typename TFile, typename TSpec, typename TConfig>
+    inline void 
+    read(TFile & file,
+         FragmentStore<TSpec, TConfig> & fragStore,
+         Sam,
+         FragStoreImportFlags const & importFlags)
+    {
+        // Construct a RecordReader from the input file.
+        RecordReader<TFile, SinglePass<> > reader(file);
+        if (atEnd(reader))
+            return;  // Done, file is empty.
+        _readImpl(reader, fragStore, Sam(), importFlags);
+    }
+
+    template <typename TFile, typename TSpec, typename TConfig>
+    inline void 
+    read(TFile & file,
+         FragmentStore<TSpec, TConfig> & fragStore,
+         Bam,
+         FragStoreImportFlags const & importFlags)
+    {
+        _readImpl(file, fragStore, Bam(), importFlags);
+    }
+
+    template <typename TFile, typename TSpec, typename TConfig>
     inline void 
     read(
         TFile & file,
@@ -462,23 +489,15 @@ namespace SEQAN_NAMESPACE_MAIN
         read(file, fragStore, Sam(), FragStoreImportFlags());
     }
 
-//////////////////////////////////////////////////////////////////////////////
-// _readHeader
-
-    template<typename TFile, typename TSpec, typename TConfig, typename TChar>
+    template <typename TFile, typename TSpec, typename TConfig>
     inline void 
-    _readHeader (
+    read(
         TFile & file,
-        FragmentStore<TSpec, TConfig> &,
-        TChar & c,
-        Sam)
+        FragmentStore<TSpec, TConfig> & fragStore,
+        Bam)
     {
-//IOREV _stub_ this isn't implemented yet
-        // skip header for now
-        while (c == '@')
-            _parseSkipLine(file, c);
+        read(file, fragStore, Bam(), FragStoreImportFlags());
     }
-
     
 //////////////////////////////////////////////////////////////////////////////
 // _readAlignments
@@ -492,23 +511,32 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type    TAlignedElement;
         typedef typename TAlignedElement::TGapAnchors                               TReadGapAnchors;
         typedef String<typename TFragmentStore::TContigGapAnchor>                   TContigAnchorGaps;
+        typedef typename TFragmentStore::TReadSeq                                   TReadSeq;
 
         TId                 readId;
         TId                 contigId;
         TReadGapAnchors     readGapAnchors;
         TContigAnchorGaps   contigGapAnchors;
+
+        // Buffer for SAM tags.
+        CharString tags;
+        // Buffer for the read sequence.
+        TReadSeq readSeq;
+
+        // Buffer for the current BamAlignmentRecord.
+        BamAlignmentRecord bamRecord;
     };
 
 
-    template<typename TFile, typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos, typename TChar>
+    template <typename TStreamOrReader, typename TNameStore, typename TNameStoreCache, typename TSpec, typename TConfig, typename TContigAnchorGaps, typename TMatchMateInfos, typename TTag>
     inline void 
-    _readAlignments (
-        TFile & file,
+    _readAlignments(
+        TStreamOrReader & streamOrReader,
+        BamIOContext<TNameStore, TNameStoreCache> & bamIOContext,
         FragmentStore<TSpec, TConfig> & fragStore,
         TContigAnchorGaps & contigAnchorGaps,   
         TMatchMateInfos & matchMateInfos,
-        TChar & c,
-        Sam,
+        TTag const & tag,
         FragStoreImportFlags const & importFlags)
     {
 //IOREV _nodoc_ docusmentation in code, but unclear
@@ -536,8 +564,12 @@ namespace SEQAN_NAMESPACE_MAIN
         refresh(fragStore.contigNameStoreCache);
         refresh(fragStore.readNameStoreCache);
 
-        while (!_streamEOF(file))
-            _readOneAlignment(file, fragStore, contigAnchorGaps, matchMateInfos, c, contextSAM, importFlags);
+        unsigned oldContigNum = length(fragStore.contigNameStore);
+        while (!atEnd(streamOrReader))
+            _readOneAlignment(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, contextSAM,
+                              importFlags, tag);
+        if (oldContigNum != length(fragStore.contigNameStore))
+            refresh(fragStore.contigNameStoreCache);
 
         if (importFlags.importReadSeq)
         {
@@ -618,24 +650,26 @@ namespace SEQAN_NAMESPACE_MAIN
 // reads in one alignement section from a Sam file
     
     template <
-        typename TFile,
+        typename TStreamOrReader,
+        typename TNameStore,
+        typename TNameStoreCache,
         typename TSpec,
         typename TConfig,
         typename TContigAnchorGaps,
         typename TMatchMateInfos,
-        typename TChar,
-        typename TFragStore>
+        typename TFragStore,
+        typename TTag>
     inline void
-    _readOneAlignment (
-        TFile & file,
+    _readOneAlignment(
+        TStreamOrReader & streamOrReader,
+        BamIOContext<TNameStore, TNameStoreCache> & bamIOContext,
         FragmentStore<TSpec, TConfig> & fragStore,
         TContigAnchorGaps & contigAnchorGaps,
         TMatchMateInfos & matchMateInfos,
-        TChar & c,
         FragStoreSAMContext<TFragStore> & contextSAM,
-        FragStoreImportFlags const & importFlags)
+        FragStoreImportFlags const & importFlags,
+        TTag const & tag)
     {
-//IOREV _nodoc_
         // Basic types
         typedef FragmentStore<TSpec, TConfig>                                       TFragmentStore;
         typedef FragStoreSAMContext<TFragStore>                                     TSAMContext;
@@ -659,180 +693,126 @@ namespace SEQAN_NAMESPACE_MAIN
         // Type to temporarily store information about match mates
         typedef typename Value<TMatchMateInfos>::Type                               TMatchMateInfo;
 
-        // read fields of alignments line
-        _parseSkipWhitespace(file, c);
-
-        // Read the query name.  The letters until the first
-        // whitespace will be read into qname.  Then, we skip until we
-        // hit the first tab character.
-        String<char> qname;
-        _parseReadSamIdentifier(file, qname, c);
-        _parseSkipUntilChar(file, '\t', c);
-
-        // read the flag
-        int flag;
-        flag = _parseReadNumber(file, c);
-        _parseSkipWhitespace(file, c);
-        bool reverse = (flag & (1 << 4)) == (1 << 4);
-
-        // Read reference name.  Same behaviour as for query name:  Read up to
-        // the first whitespace character and skip to next tab char.
-        String<char> rname;
-        _parseReadSamIdentifier(file, rname, c);
-        _parseSkipUntilChar(file, '\t', c);
-
-        // read begin position
-        TContigPos beginPos;
-        beginPos = _parseReadNumber(file, c);
-        --beginPos; // Sam stores positions starting at 1 the fragment store starting at 0
-        _parseSkipWhitespace(file, c);
-
-        // read map quality
-        TAlignQualityElement mapQ;
-        mapQ.score = _parseReadNumber(file, c);
-        _parseSkipWhitespace(file, c);
-
-        // read CIGAR
-        String<CigarElement<> > cigar;
-        _parseReadCigar(file, cigar, c);
-        _parseSkipWhitespace(file, c);
-        
-        // calculate the end position
-        TContigPos endPos;
-        _getLengthInRef(cigar, endPos);
-        endPos = beginPos + endPos;
-
-        // if the read is on the antisense strand switch begin and end position
-        if (reverse)
+        // Read next BamAlignmentRecord and get shortcut.
+        clear(contextSAM.bamRecord);
+        if (readRecord(contextSAM.bamRecord, bamIOContext, streamOrReader, tag) != 0)
         {
-            TContigPos temp = beginPos;
-            beginPos = endPos;
-            endPos = temp;
+            std::cerr << "ERROR: Problem reading SAM/BAM record.\n";
+            return;
         }
+        BamAlignmentRecord & record = contextSAM.bamRecord;
 
-        // read mate reference name
-        String<char> mrnm;
-        _parseReadSamIdentifier(file, mrnm, c);
-        _parseSkipWhitespace(file, c);
+        // Get element of align quality store.
+        TAlignQualityElement mapQ;
+        mapQ.score = record.mapQ;
 
-        // read mate position
-        TContigPos mPos;
-        mPos = _parseReadNumber(file, c);
-        --mPos; // Sam stores positions starting at 1 the fragment store starting at 0
-        _parseSkipWhitespace(file, c);
+        // Get begin and end position.
+        TContigPos beginPos = record.beginPos;
+        TContigPos endPos = 0;
+        _getLengthInRef(record.cigar, endPos);
+        endPos = beginPos + endPos;
+        if (hasFlagRC(record))
+            std::swap(beginPos, endPos);
 
-        // read iSize
-        _parseReadNumber(file, c);
-        _parseSkipWhitespace(file, c);
-
-        // read in sequence
-        TReadSeq readSeq;
-        _parseReadDnaSeq(file, readSeq, c);
-        _parseSkipWhitespace(file, c);
-
-        // and associated qualities
-        _parseReadSeqQual(file, readSeq, c);
-        if (reverse)
+        // Put read sequence and qualities into readSeq and reverseComplement if necessary.
+        TReadSeq & readSeq = contextSAM.readSeq;
+        readSeq = record.seq;
+        assignQualities(readSeq, record.qual);
+        if (hasFlagRC(record))
             reverseComplement(readSeq);
 
-        // read in Sam tags
-        String<char> tags;
-        _parseSkipSpace(file, c);
-        _parseReadCharsUntilEndOfLine(file, tags, c);
-        
-        if (empty(qname) || empty(rname))
-            return;
-        
-        // check if read sequence is already in the store.
-        // if so get the ID, otherwise create new entries in the
-        // read, read name and mate pair store
-        
+        // Get tags in SAM format.
+        assignTagsBamToSam(contextSAM.tags, record.tags);
+
+        // Check if read sequence is already in the store.  If so get the ID, otherwise create new entries in the read
+        // then read name and mate pair store.
         contextSAM.readId = 0;
         if (importFlags.importRead)
         {
             if (!importFlags.importReadName)
-                clear(qname);
+                clear(record.qName);
 
-            bool newRead = _storeAppendRead(fragStore, contextSAM.readId, qname, readSeq, flag, contextSAM);
+            bool newRead = _storeAppendRead(fragStore, contextSAM.readId, record.qName, readSeq, record.flag,
+                                            contextSAM);
             (void)newRead;
-            
             SEQAN_ASSERT_NOT(newRead && empty(readSeq));
         }
         
-        if (rname == "*")
-            return; // stop here if read is not aligned
-        
-        // check if the contig is already in the store
-        // get its ID or create a new one otherwise
+        // Stop if read is not aligned.
+        if (record.rID == BamAlignmentRecord::INVALID_REFID || record.beginPos == BamAlignmentRecord::INVALID_POS)
+            return;
+
+        // Check if the contig is already in the store.  Get its ID or create a new one otherwise.
         contextSAM.contigId = 0;
-        _storeAppendContig(fragStore, contextSAM.contigId, rname);
+        _storeAppendContig(fragStore, contextSAM.contigId, nameStore(bamIOContext)[record.rID]);
 
-        if (empty(cigar)) return;
+        // Stop if no alignment in CIGAR string.
+        if (empty(record.cigar))
+            return;
 
+        // Handle read alignment import.
         TId pairMatchId = 0;
         if (importFlags.importReadAlignment)
         {
             // generate gap anchor string for the read
             if (importFlags.importReadSeq)
-                _samAppendAlignment(fragStore, fragStore.readSeqStore[contextSAM.readId], cigar, beginPos, endPos, pairMatchId, contextSAM);
+                _samAppendAlignment(fragStore, fragStore.readSeqStore[contextSAM.readId], record.cigar, beginPos, endPos,
+                                    pairMatchId, contextSAM);
             else
-                _samAppendAlignmentWithoutSeq(fragStore, cigar, beginPos, endPos, pairMatchId, contextSAM);
+                _samAppendAlignmentWithoutSeq(fragStore, record.cigar, beginPos, endPos, pairMatchId, contextSAM);
 
             clear(contextSAM.contigGapAnchors);
             TContigGapsPW contigGaps(contextSAM.contigGapAnchors);
-            cigarToGapAnchorContig(cigar, contigGaps);
+            cigarToGapAnchorContig(record.cigar, contigGaps);
             appendValue(contigAnchorGaps, contextSAM.contigGapAnchors);
         }
-        
+
+        // Import tags and remove some tags.
         if (importFlags.importReadAlignmentTags || importFlags.importReadAlignmentQuality)
         {
             // extract and delete some tags
-            if (!empty(tags))
-                for (unsigned pos = length(tags), right = length(tags); pos != 0; )
+            if (!empty(contextSAM.tags))
+                for (unsigned pos = length(contextSAM.tags), right = length(contextSAM.tags); pos != 0; )
                 {
                     --pos;
-                    if (pos == 0 || tags[pos] == '\t')
+                    if (pos == 0 || contextSAM.tags[pos] == '\t')
                     {
                         unsigned left = pos;
-                        if (tags[left] == '\t') ++left;                    
+                        if (contextSAM.tags[left] == '\t') ++left;                    
 
                         bool remove = false;
-                        if (infix(tags, left, left + 2) == "MD")
+                        if (infix(contextSAM.tags, left, left + 2) == "MD")
                             remove = true;
                         
-                        if (infix(tags, left, left + 2) == "NM")
+                        if (infix(contextSAM.tags, left, left + 2) == "NM")
                         {
-                            std::string val;
-                            int errors;
-                            assign(val, infix(tags, left + 5, right)); // NM:i:x
-                            std::istringstream stream(val);
-                            stream >> errors;
+                            int errors = lexicalCast<int>(infix(contextSAM.tags, left + 5, right));  // NM:i:x
                             mapQ.errors = errors;
                             remove = true;
                         }
                         
                         if (remove)
-                            erase(tags, left, _min(right + 1, length(tags)));
+                            erase(contextSAM.tags, left, _min(right + 1, length(contextSAM.tags)));
 
                         right = pos;
                     }
                 }
         }
 
-        // create entries in Sam specific stores
+        // Create entries in Sam specific stores.
         if (importFlags.importReadAlignmentQuality)
             appendValue(fragStore.alignQualityStore, mapQ, Generous());
         
         if (importFlags.importReadAlignmentTags)
-            appendValue(fragStore.alignedReadTagStore, tags, Generous());
+            appendValue(fragStore.alignedReadTagStore, contextSAM.tags, Generous());
 
-        // store additional data about match mate temporarily
-        // used in the end of the read function to generate match mate IDs
-        if (importFlags.importRead && importFlags.importReadAlignment && mrnm != "*")
+        // Store additional data about match mate temporarily.
+        // used in the end of the read function to generate match mate IDs.
+        if (importFlags.importRead && importFlags.importReadAlignment && record.rNextId != BamAlignmentRecord::INVALID_REFID)
         {
             TId mcontigId = contextSAM.contigId;
-            if (mrnm != "=")
-                _storeAppendContig(fragStore, mcontigId, mrnm);
+            if (record.rID != record.rNextId)
+                _storeAppendContig(fragStore, mcontigId, nameStore(bamIOContext)[record.rNextId]);
 
             if (getMateNo(fragStore, contextSAM.readId) == 0)  // store mate info only for one mate
             {
@@ -840,7 +820,8 @@ namespace SEQAN_NAMESPACE_MAIN
                 if (contextSAM.readId < length(fragStore.readStore))
                     matePairId = fragStore.readStore[contextSAM.readId].matePairId;
                 
-                TMatchMateInfo matchMateInfo = {contextSAM.readId, mcontigId, pairMatchId, matePairId, (flag & 0x20) != 0, mPos};
+                TMatchMateInfo matchMateInfo = {contextSAM.readId, mcontigId, pairMatchId, matePairId,
+                                                hasFlagNextRC(record), record.pNext};
                 appendValue(matchMateInfos, matchMateInfo);
                 back(fragStore.alignedReadStore).pairMatchId = pairMatchId;
             }
