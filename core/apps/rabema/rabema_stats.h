@@ -222,7 +222,6 @@ int write(TStream & stream, RabemaStats const & stats, int maxError, CharString 
                 percFoundNormalizedIntervals);
         stream << buffer;
     }
-    stream << '\n';
 
     return 0;
 }

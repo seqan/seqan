@@ -131,6 +131,9 @@ public:
     // Path to output TSV stats file.
     CharString outTsvPath;
 
+    // Whether to check sorting or not.
+    bool checkSorting;
+
     // ------------------------------------------------------------------------
     // Logging configuration.
     // ------------------------------------------------------------------------
@@ -161,6 +164,7 @@ public:
         trustNM(false),
         ignorePairedFlags(false),
         dontPanic(false),
+        checkSorting(true),
         // outPath("-"),
         showMissedIntervals(false),
         showSuperflousIntervals(false),
@@ -925,7 +929,7 @@ compareAlignedReadsToReference(RabemaStats & result,
             }
             if (options.ignorePairedFlags)
                 clearPairedFlags(samRecord);
-            if (lessThanSamtoolsQueryName(samRecord.qName, currentReadName))
+            if (options.checkSorting && lessThanSamtoolsQueryName(samRecord.qName, currentReadName))
             {
                 std::cerr << "ERROR: Wrong order in SAM/BAM file: " << samRecord.qName << " succeeds "
                           << currentReadName << " in file.\n"
@@ -955,7 +959,7 @@ compareAlignedReadsToReference(RabemaStats & result,
                 std::cerr << "ERROR: Could not read GSI record.\n";
                 return 1;
             }
-            if (lessThanSamtoolsQueryName(gsiRecord.readName, currentReadName))
+            if (options.checkSorting && lessThanSamtoolsQueryName(gsiRecord.readName, currentReadName))
             {
                 std::cerr << "ERROR: Wrong order in GSI file: " << gsiRecord.readName << " succeeds "
                           << currentReadName << " in file.\n"
@@ -1053,7 +1057,12 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     setValidValues(parser, "in-bam", "bam");
     addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
                                             seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
-    setValidValues(parser, "out-tsv", "tsv");
+    setValidValues(parser, "out-tsv", "rabema_report_tsv");
+
+    addOption(parser, seqan::ArgParseOption("", "dont-check-sorting",
+                                            "Do not check sortedness (by name) of input SAM/BAM files.  This is "
+                                            "required if the reads are not sorted by name in the original FASTQ "
+                                            "files.  Files from the SRA and ENA generally are sorted."));
 
     addSection(parser, "Benchmark Parameters");
     addOption(parser, seqan::ArgParseOption("", "oracle-mode",
@@ -1200,6 +1209,9 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     options.ignorePairedFlags = isSet(parser, "ignore-paired-flags");
     options.dontPanic = isSet(parser, "DONT-PANIC");
 
+    getOptionValue(options.checkSorting, parser, "dont-check-sorting");
+    options.checkSorting = !options.checkSorting;
+    
     options.showMissedIntervals = isSet(parser, "show-missed-intervals");
     options.showSuperflousIntervals = isSet(parser, "show-invalid-hits");
     options.showAdditionalIntervals = isSet(parser, "show-additional-hits");
@@ -1247,6 +1259,7 @@ int main(int argc, char const ** argv)
               << "BAM File              " << options.inBamPath << '\n'
               << "Reference File        " << options.referencePath << '\n'
               << "TSV Output File       " << options.outTsvPath << '\n'
+              << "Check Sorting         " << yesNo(options.checkSorting) << '\n'
               << "Show\n"
               << "    additional        " << yesNo(options.showAdditionalIntervals) << '\n'
               << "    hit               " << yesNo(options.showHitIntervals) << '\n'
