@@ -438,6 +438,7 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         if (PYTHONINTERP_FOUND)
           add_test (NAME test_${EXECUTABLE}
                     COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
+          #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
         endif (PYTHONINTERP_FOUND)
     endif ()
 endmacro (_seqan_setup_demo_test CPP_FILE)
