@@ -1701,6 +1701,18 @@ I	ISSISSIPPI
 	stringSetLimits(Index<StringSet<TString, TSSetSpec>, TSpec> const &index) {
 		return stringSetLimits(indexText(index)); 
 	}
+    
+    template <typename TString, typename TSSetSpec, typename TSpec>
+	inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type &
+	stringSetLimits(Index<StringSet<TString, TSSetSpec> const, TSpec> &index) {
+		return stringSetLimits(indexText(index));
+	}
+    
+	template <typename TString, typename TSSetSpec, typename TSpec>
+	inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type &
+	stringSetLimits(Index<StringSet<TString, TSSetSpec> const, TSpec> const &index) {
+		return stringSetLimits(indexText(index));
+	}
 
 //////////////////////////////////////////////////////////////////////////////
 /**
