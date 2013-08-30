@@ -123,7 +123,6 @@ public:
     String(String const & other)
     {
         SEQAN_CHECKPOINT;
-        assign(_holder, other._holder);
         set(*this, other);
     }
 
@@ -138,11 +137,8 @@ public:
     String &
     operator=(String const & other)
     {
-        SEQAN_CHECKPOINT;
-        //TODO (rmaerker): should copy the holder, too. What is intended with the assignment - copy or set?
-        //TODO (rmaerker): missing self-assignment test. What happens with ptr of Holder in self-assignment
-        // assign(_holder, other._holder);
-        assign(*this, other);
+        if (this != &other)
+            set(*this, other);
         return *this;
     }
 
@@ -420,9 +416,27 @@ operator<<(TStream & stream, String<TValue, Journaled<THostSpec, TJournalSpec, T
 // Function assign
 // ----------------------------------------------------------------------------
 
-// Assignment always resizes the insertion buffer and copies the contents of
-// source into the insertion buffer.  Even when assigning a journaled string
-// to a journaled string!
+// Assignment of two identical journaled strings.
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
+inline
+void
+assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
+       String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
+{
+    set(target, source);
+}
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
+inline
+void
+assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
+       String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & source)
+{
+    assign(target, static_cast<TSource const &>(source));
+}
+
+// Assignment of a journald string with anothe string type always resizes the
+// insertion buffer and copies the contents of source into the insertion buffer.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
 inline
 void
