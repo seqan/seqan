@@ -65,7 +65,6 @@ void testJournaledStringAssign(TStringJournalSpec const &)
     // Test assignment operator with other string type.
     {
         journaledString = charStr2;
-        journaledString = charStr2;
 
         std::stringstream tmp1;
         tmp1 << journaledString;
@@ -93,6 +92,7 @@ void testJournaledStringAssign(TStringJournalSpec const &)
 
     // Test assignment operator with same journaled string type.
     {
+        // We need to copy over all information from the source to the target.
         journaledString = journaledString2;
 
         std::stringstream tmp1;
@@ -101,7 +101,7 @@ void testJournaledStringAssign(TStringJournalSpec const &)
 
         std::stringstream tmp2;
         tmp2 << host(journaledString);
-        SEQAN_ASSERT_EQ("test", tmp2.str());
+        SEQAN_ASSERT_EQ("not a test!", tmp2.str());
     }
 
     // Test assign() with same journaled string type.
@@ -114,7 +114,7 @@ void testJournaledStringAssign(TStringJournalSpec const &)
 
         std::stringstream tmp2;
         tmp2 << host(journaledString);
-        SEQAN_ASSERT_EQ("test", tmp2.str());
+        SEQAN_ASSERT_EQ("not a test!", tmp2.str());
     }
 }
 
