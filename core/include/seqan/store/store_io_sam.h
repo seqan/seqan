@@ -456,7 +456,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void 
+    inline void
     read(TFile & file,
          FragmentStore<TSpec, TConfig> & fragStore,
          Sam,
@@ -469,8 +469,9 @@ namespace SEQAN_NAMESPACE_MAIN
         _readImpl(reader, fragStore, Sam(), importFlags);
     }
 
+#if SEQAN_HAS_ZLIB
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void 
+    inline void
     read(TFile & file,
          FragmentStore<TSpec, TConfig> & fragStore,
          Bam,
@@ -478,9 +479,10 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         _readImpl(file, fragStore, Bam(), importFlags);
     }
+#endif  // #if SEQAN_HAS_ZLIB
 
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void 
+    inline void
     read(
         TFile & file,
         FragmentStore<TSpec, TConfig> & fragStore,
@@ -489,8 +491,9 @@ namespace SEQAN_NAMESPACE_MAIN
         read(file, fragStore, Sam(), FragStoreImportFlags());
     }
 
+#if SEQAN_HAS_ZLIB
     template <typename TFile, typename TSpec, typename TConfig>
-    inline void 
+    inline void
     read(
         TFile & file,
         FragmentStore<TSpec, TConfig> & fragStore,
@@ -498,7 +501,8 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         read(file, fragStore, Bam(), FragStoreImportFlags());
     }
-    
+#endif  // #if SEQAN_HAS_ZLIB
+
 //////////////////////////////////////////////////////////////////////////////
 // _readAlignments
 //
