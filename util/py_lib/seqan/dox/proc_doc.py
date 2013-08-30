@@ -446,6 +446,13 @@ class ProcTag(ProcCodeEntry):
     """A processed tag documentation.
     """
 
+    def __init__(self, name, brief=None, body=None, sees=[]):
+        ProcCodeEntry.__init__(self, name, brief, body, sees)
+        self.tparams = []
+
+    def addTParam(self, t):
+        self.tparams.append(t)
+
     @property
     def kind(self):
         if '#' in self.name:
@@ -1080,6 +1087,15 @@ class TagConverter(CodeEntryConverter):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcTag
         self.parse_signature = False
+
+    def process(self, raw_entry):
+        tag = CodeEntryConverter.process(self, raw_entry)
+        for t in raw_entry.tparams:
+            proc_tparam = ProcTParam()
+            proc_tparam.type = t.name.text
+            proc_tparam.desc = self.rawTextToTextNode(t.text)
+            tag.addTParam(proc_tparam)
+        return tag
 
 
 class FunctionConverter(CodeEntryConverter):

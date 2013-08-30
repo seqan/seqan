@@ -662,17 +662,27 @@ Render the grouped macros details
       </div>
     </div>
 
-    {% if subentry.sees %}
-    <div class="tags">
-      <p class="tag_title">See Also:</p>
-      
-      <ul class="see">
+    <dl>
+      {% if subentry.tparams %}
+      <dt>Template Parameters</dt>
+
+      {% for param in subentry.tparams %}
+      <dd>
+        <code>{{ param.type|e }}</code> -
+        {{ param.desc|transtext(False) }}
+      </dd>
+      {% endfor %}
+      {% endif %}
+
+      {% if subentry.sees %}
+      <dt>See Also</dt>
+      <dd>
         {% for link in subentry.sees %}
-        <li>{{ link|transtext(False)|translink }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
+      <dd>{{ link|transtext(False)|translink }}</dd>
+      {% endfor %}
+      </dd>
+      {% endif %}
+    </dl>
   </div>
 </div>
 

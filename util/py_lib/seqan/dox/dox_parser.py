@@ -686,7 +686,7 @@ class TagState(GenericDocState):
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawTag, 'tag')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
-                                     'COMMAND_SEE', 'COMMAND_BRIEF',
+                                     'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
                                      'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
