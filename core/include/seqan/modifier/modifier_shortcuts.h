@@ -509,20 +509,20 @@ complementString(THost const & host)
 ..see:Function.toLower
 ..see:Function.toUpper
  */
-template < typename TSequence >
-inline void reverseComplement(TSequence & sequence) 
+template < typename TSequence, typename TParallelTag >
+inline void reverseComplement(TSequence & sequence, Tag<TParallelTag> parallelTag)
 {
-	convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
-	reverse(sequence);
+	complement(sequence);
+	reverse(sequence, parallelTag);
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
 // (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
-template < typename TSequence >
-inline void reverseComplement(TSequence const & sequence) 
+template < typename TSequence, typename TParallelTag >
+inline void reverseComplement(TSequence const & sequence, Tag<TParallelTag> parallelTag)
 {
-	convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
-	reverse(sequence);
+	complement(sequence);
+	reverse(sequence, parallelTag);
 } 
 
 /**
@@ -532,22 +532,36 @@ inline void reverseComplement(TSequence const & sequence)
 ...type:Class.StringSet
 ..include:seqan/modifier.h
  */
-template < typename TSequence, typename TSpec >
-inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet)
+template < typename TSequence, typename TSpec, typename TParallelTag >
+inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag> parallelTag)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		reverseComplement(stringSet[seqNo]);
+	int seqCount = length(stringSet);
+    SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
+	for(int seqNo = 0; seqNo < seqCount; ++seqNo)
+		reverseComplement(stringSet[seqNo], Serial());
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
 // (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
-template < typename TSequence, typename TSpec >
-inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet)
+template < typename TSequence, typename TSpec, typename TParallelTag >
+inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet, Tag<TParallelTag> parallelTag)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		reverseComplement(stringSet[seqNo]);
+	int seqCount = length(stringSet);
+    SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
+	for(int seqNo = 0; seqNo < seqCount; ++seqNo)
+		reverseComplement(stringSet[seqNo], Serial());
+}
+
+template <typename TText>
+inline void reverseComplement(TText & text)
+{
+    reverseComplement(text, Serial());
+}
+
+template <typename TText>
+inline void reverseComplement(TText const & text)
+{
+    reverseComplement(text, Serial());
 }
 
 // --------------------------------------------------------------------------
