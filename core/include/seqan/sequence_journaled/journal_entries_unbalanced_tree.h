@@ -760,6 +760,19 @@ void journalTreeToDot(TStream & stream, unsigned & nextId, JournalEntries<TNode,
     journalTreeToDotRec(stream, nextId, *journalTree._root);
 }
 
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
+template <typename TNode>
+inline void
+clear(JournalEntries<TNode, UnbalancedTree> & journalEntries)
+{
+    clear(journalEntries._nodeAllocator);
+    journalEntries._originalStringLength = 0u;
+    journalEntries._root = 0;
+}
+
 
 }  // namespace seqan
 

@@ -633,6 +633,18 @@ isGapInHost(JournalEntries<TNode, TJournalSpec> const & journalEntries,
     return value(it).segmentSource == SOURCE_PATCH;
 }
 
+// ----------------------------------------------------------------------------
+// Function clear
+// ----------------------------------------------------------------------------
+
+template <typename TNode>
+inline void
+clear(JournalEntries<TNode, SortedArray> & journalEntries)
+{
+    clear(journalEntries._journalNodes);
+    journalEntries._originalStringLength = 0u;
+}
+
 
 }  // namespace seqan
 

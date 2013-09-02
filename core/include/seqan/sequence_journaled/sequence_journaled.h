@@ -600,6 +600,20 @@ clear(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
 }
 
 // ----------------------------------------------------------------------------
+// Function reset
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline void
+reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString)
+{
+    clear(journaledString._holder);
+    clear(journaledString._insertionBuffer);
+    clear(journaledString._journalEntries);
+    _setLength(journaledString, 0u);
+}
+
+// ----------------------------------------------------------------------------
 // Function flatten
 // ----------------------------------------------------------------------------
 

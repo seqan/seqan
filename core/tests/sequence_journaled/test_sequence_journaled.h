@@ -157,6 +157,33 @@ void testJournaledStringSet(TStringJournalSpec const &)
     }
 }
 
+template <typename TJournalSpec>
+void testJournaledStringReset(TJournalSpec const & /*spec*/)
+{
+    CharString hostStr = "test";
+
+    String<char, Journaled<Alloc<>, TJournalSpec> > journaledString(hostStr);
+
+    insert(journaledString, 4, "XXL");
+    erase(journaledString, 1, 2);
+
+    std::stringstream test;
+    test << journaledString;
+
+    SEQAN_ASSERT_EQ(test.str(), "tstXXL");
+    reset(journaledString);
+
+    test.str("");
+    test.clear();
+    test << journaledString;
+
+    SEQAN_ASSERT_EQ(test.str(), "");
+    SEQAN_ASSERT_EQ(empty(journaledString._holder), true);
+    SEQAN_ASSERT_EQ(empty(journaledString._insertionBuffer), true);
+    SEQAN_ASSERT_EQ(length(journaledString), 0u);
+}
+
+
 // Test setHost(), host().
 template <typename TStringJournalSpec>
 void testJournaledStringHost(TStringJournalSpec const &)
@@ -1141,6 +1168,12 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_length) {
     testJournaledStringLength(UnbalancedTree());
 }
 
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_reset)
+{
+    testJournaledStringReset(seqan::UnbalancedTree());
+}
+
+
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_virtual_to_host_position) {
     testJournaledStringVirtualToHostPosition<UnbalancedTree>();
@@ -1254,6 +1287,11 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_virtual_to_host_position)
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_host_to_virtual_position)
 {
     testJournaledStringHostToVirtualPosition<SortedArray>();
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_reset)
+{
+    testJournaledStringReset(seqan::SortedArray());
 }
 
 
