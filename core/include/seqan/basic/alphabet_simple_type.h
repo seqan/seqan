@@ -734,7 +734,7 @@ operator!=(SimpleType<TValue, TSpec2> const & left_,
 {
     typedef SimpleType<TValue, TSpec> TLeft;
     typedef Proxy<TSpec> TRight;
-    typedef typename CompareType<TLeft, TRight>::Type TCompareType;
+    typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) != convert<TCompareType>(right_);
 }
 

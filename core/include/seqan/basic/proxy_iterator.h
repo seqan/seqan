@@ -137,6 +137,11 @@ public:
         SEQAN_CHECKPOINT;
         return getValue(data_iterator);
     }
+
+    operator unsigned int() const
+    {
+        return static_cast<unsigned int>(getValue(data_iterator));
+    }
 };
 
 // ============================================================================
