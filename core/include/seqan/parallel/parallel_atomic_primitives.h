@@ -453,6 +453,12 @@ inline T atomicCas(T volatile & x, T cmp, T y)
     return __sync_val_compare_and_swap(&x, cmp, y);
 }
 
+template <typename T>
+inline T atomicSwap(T volatile & x, T y)
+{
+    return __sync_lock_test_and_set(x, y);
+}
+
 #endif  // #if defined(PLATFORM_WINDOWS) && !defined(PLATFORM_WINDOWS_MINGW)
 
 
