@@ -557,7 +557,8 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
     if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && length(sequence) < 10000)
         resize(splitter, 1);
 
-    SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)) schedule(static))
+    // (weese:) We have to cast the result of length to int to circumvent an internal gcc compiler error
+    SEQAN_OMP_PRAGMA(parallel for num_threads((int)length(splitter)) schedule(static))
     for (int job = 0; job < (int)length(splitter); ++job)
     {
         TIter it1 = itBeg + splitter[job];

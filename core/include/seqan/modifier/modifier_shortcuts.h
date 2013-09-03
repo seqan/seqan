@@ -533,7 +533,7 @@ inline void reverseComplement(TSequence const & sequence, Tag<TParallelTag> para
 ..include:seqan/modifier.h
  */
 template < typename TSequence, typename TSpec, typename TParallelTag >
-inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag> parallelTag)
+inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
 {
 	int seqCount = length(stringSet);
     SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
@@ -544,7 +544,7 @@ inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TPara
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
 // (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence, typename TSpec, typename TParallelTag >
-inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet, Tag<TParallelTag> parallelTag)
+inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet, Tag<TParallelTag>)
 {
 	int seqCount = length(stringSet);
     SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
