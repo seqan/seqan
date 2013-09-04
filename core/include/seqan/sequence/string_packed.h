@@ -214,6 +214,10 @@ public:
     THostIterator data_iterator;
     unsigned char localPos;
 
+    Iter()
+    {
+    }
+
     Iter(THostIterator host_begin):
           data_iterator(host_begin),
           localPos(0)
