@@ -418,13 +418,7 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         set (CHECKER_PATH "${CMAKE_SOURCE_DIR}/util/bin/demo_checker.py")
 
         # Compose arguments to the demo_checker.py script.
-        foreach (INFIX "" "Release/" "Debug/" "RelWithDebInfo/")
-          foreach (EXTENSION "" ".exe")
-            if (EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${INFIX}${EXECUTABLE}${EXTENSION}")
-                set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${INFIX}${EXECUTABLE}${EXTENSION}")
-            endif (EXISTS "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${INFIX}${EXECUTABLE}${EXTENSION}")
-          endforeach (EXTENSION "" ".exe")
-        endforeach (INFIX "" "Release/" "Debug/" "RelWithDebInfo/")
+        set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE}")
 
         if (EXISTS "${STDOUT_PATH}")
             set (ARGS ${ARGS} "--stdout-path" "${STDOUT_PATH}")
