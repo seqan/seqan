@@ -428,14 +428,14 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         endif()
 
         # Add the test.
-        if (NOT MINGW AND NOT MSVC)  # disable on Windows for now
+        #if (NOT MINGW AND NOT MSVC)  # disable on Windows for now
         find_package (PythonInterp)
         if (PYTHONINTERP_FOUND)
           add_test (NAME test_${EXECUTABLE}
                     COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
           #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
         endif (PYTHONINTERP_FOUND)
-        endif (NOT MINGW AND NOT MSVC)
+        #endif (NOT MINGW AND NOT MSVC)
     endif ()
 endmacro (_seqan_setup_demo_test CPP_FILE)
 
