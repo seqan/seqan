@@ -418,7 +418,12 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         set (CHECKER_PATH "${CMAKE_SOURCE_DIR}/util/bin/demo_checker.py")
 
         # Compose arguments to the demo_checker.py script.
-        set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE}")
+        if (WIN32)
+            # Add buildtype path and ".exe" suffix under Windows.
+            set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${EXECUTABLE}.exe")
+        else (WIN32)
+            set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE}")
+        endif (WIN32)
 
         if (EXISTS "${STDOUT_PATH}")
             set (ARGS ${ARGS} "--stdout-path" "${STDOUT_PATH}")
@@ -428,14 +433,12 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         endif()
 
         # Add the test.
-        #if (NOT MINGW AND NOT MSVC)  # disable on Windows for now
         find_package (PythonInterp)
         if (PYTHONINTERP_FOUND)
           add_test (NAME test_${EXECUTABLE}
                     COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
           #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
         endif (PYTHONINTERP_FOUND)
-        #endif (NOT MINGW AND NOT MSVC)
     endif ()
 endmacro (_seqan_setup_demo_test CPP_FILE)
 
