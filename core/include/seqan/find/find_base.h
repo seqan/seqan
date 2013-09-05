@@ -1200,6 +1200,23 @@ struct Value< Finder<THaystack, TSpec> > {
 	typedef typename Value<THaystack>::Type Type;
 };
 
+///.Metafunction.Reference.param.T.type:Class.Finder
+///.Metafunction.Reference.class:Class.Finder
+template <typename THaystack, typename TSpec>
+struct Reference< Finder<THaystack, TSpec> >
+{
+    typedef typename Reference<THaystack>::Type Type;
+};
+
+template <typename THaystack, typename TSpec>
+struct Reference< Finder<THaystack, TSpec> const>
+{
+    typedef typename Reference<THaystack const>::Type Type;
+};
+
+
+///.Metafunction.Position.param.T.type:Class.Finder
+///.Metafunction.Position.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Position< Finder<THaystack, TSpec> >:
 	Position<THaystack> {};
