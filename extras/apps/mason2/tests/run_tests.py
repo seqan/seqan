@@ -36,15 +36,15 @@ def main(source_base, binary_base):
     # ============================================================
 
     path_to_genome = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/mason2', 'mason_genome')
+      binary_base, 'bin', 'mason_genome')
     path_to_methylation = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/mason2', 'mason_methylation')
+      binary_base, 'bin', 'mason_methylation')
     path_to_variator = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/mason2', 'mason_variator')
+      binary_base, 'bin', 'mason_variator')
     path_to_materializer = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/mason2', 'mason_materializer')
+      binary_base, 'bin', 'mason_materializer')
     path_to_simulator = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/mason2', 'mason_simulator')
+      binary_base, 'bin', 'mason_simulator')
 
     # ============================================================
     # Built TestConf list.

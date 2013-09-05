@@ -36,7 +36,7 @@ def main(source_base, binary_base):
     # ============================================================
 
     path_to_program = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/gustaf', 'gustaf')
+      binary_base, 'bin', 'gustaf')
 
     # ============================================================
     # Built TestConf list.
