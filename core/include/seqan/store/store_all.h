@@ -1053,9 +1053,8 @@ _storeAppendRead (
 //////////////////////////////////////////////////////////////////////////////
 // _storeAppendContig
 // 
-// adds a new entry to the read store if neccessary. Otherwise it writes the 
+// adds a new entry to the contig store if neccessary. Otherwise it writes the
 // correct Id in the variable using to qname to identify it
-// If needed a mate pair entry is created
     
 template <typename TSpec, typename TConfig, typename TId, typename TName>
 inline void 

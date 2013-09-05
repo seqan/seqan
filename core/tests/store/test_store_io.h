@@ -599,5 +599,5 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
     // Compare result.
     seqan::CharString goldPathAmos = SEQAN_PATH_TO_ROOT();
     append(goldPathAmos, "/core/tests/store/sam_to_amos_result.amos");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathAmos), toCString(goldPathAmos)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathAmos), toCString(goldPathAmos)));
 }

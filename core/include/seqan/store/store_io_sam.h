@@ -430,6 +430,8 @@ namespace SEQAN_NAMESPACE_MAIN
         TMatchMateInfos matchMateInfos;
         TContigAnchorGaps contigAnchorGaps;
 
+        refresh(fragStore.contigNameStoreCache);
+
         // Setup a BamIOContext for I/O.
         typedef BamIOContext<typename TFragmentStore::TContigNameStore> TBamIOContext;
         TBamIOContext bamIOContext(fragStore.contigNameStore, fragStore.contigNameStoreCache);
@@ -442,6 +444,9 @@ namespace SEQAN_NAMESPACE_MAIN
             std::cerr << "ERROR: Problem reading header from SAM file.\n";
             return;
         }
+
+        // fill up contig entries for each contig name that appears in the header
+        resize(fragStore.contigStore, length(fragStore.contigNameStore));
 
         // Read in alignments section
         _readAlignments(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, tag, importFlags);
@@ -565,15 +570,12 @@ namespace SEQAN_NAMESPACE_MAIN
         
         // read in alignments
         FragStoreSAMContext<TFragmentStore> contextSAM;
-        refresh(fragStore.contigNameStoreCache);
+//        refresh(fragStore.contigNameStoreCache);  // was done for the BamIOContext already
         refresh(fragStore.readNameStoreCache);
 
-        unsigned oldContigNum = length(fragStore.contigNameStore);
         while (!atEnd(streamOrReader))
             _readOneAlignment(streamOrReader, bamIOContext, fragStore, contigAnchorGaps, matchMateInfos, contextSAM,
                               importFlags, tag);
-        if (oldContigNum != length(fragStore.contigNameStore))
-            refresh(fragStore.contigNameStoreCache);
 
         if (importFlags.importReadSeq)
         {
@@ -698,7 +700,6 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<TMatchMateInfos>::Type                               TMatchMateInfo;
 
         // Read next BamAlignmentRecord and get shortcut.
-        clear(contextSAM.bamRecord);
         if (readRecord(contextSAM.bamRecord, bamIOContext, streamOrReader, tag) != 0)
         {
             std::cerr << "ERROR: Problem reading SAM/BAM record.\n";
@@ -749,6 +750,7 @@ namespace SEQAN_NAMESPACE_MAIN
         // Check if the contig is already in the store.  Get its ID or create a new one otherwise.
         contextSAM.contigId = 0;
         _storeAppendContig(fragStore, contextSAM.contigId, nameStore(bamIOContext)[record.rID]);
+        resize(fragStore.contigStore, length(fragStore.contigNameStore));
 
         // Stop if no alignment in CIGAR string.
         if (empty(record.cigar))
@@ -816,7 +818,10 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             TId mcontigId = contextSAM.contigId;
             if (record.rID != record.rNextId)
+            {
                 _storeAppendContig(fragStore, mcontigId, nameStore(bamIOContext)[record.rNextId]);
+                resize(fragStore.contigStore, length(fragStore.contigNameStore));
+            }
 
             if (getMateNo(fragStore, contextSAM.readId) == 0)  // store mate info only for one mate
             {

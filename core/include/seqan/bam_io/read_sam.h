@@ -270,10 +270,11 @@ int readRecord(BamHeader & header,
             }
             typedef typename BamHeader::TSequenceInfo TSequenceInfo;
             appendValue(header.sequenceInfos, TSequenceInfo(sn, ln));
+
             // Add name to name store cache if necessary.
-            unsigned unused = 0;
-            (void)unused;
-            if (!getIdByName(nameStore(context), sn, unused, nameStoreCache(context)))
+            unsigned unusedId = 0;
+            ignoreUnusedVariableWarning(unusedId);
+            if (!getIdByName(nameStore(context), sn, unusedId, nameStoreCache(context)))
                 appendName(nameStore(context), sn, nameStoreCache(context));
         }
     }
@@ -338,7 +339,7 @@ int readRecord(BamAlignmentRecord & record,
     {
         record.rID = BamAlignmentRecord::INVALID_REFID;
     }
-    else if (!getIdByName(nameStore(context), buffer, record.rID))
+    else if (!getIdByName(nameStore(context), buffer, record.rID, nameStoreCache(context)))
     {
         record.rID = length(nameStore(context));
         appendName(nameStore(context), buffer, nameStoreCache(context));
@@ -412,7 +413,7 @@ int readRecord(BamAlignmentRecord & record,
     {
         record.rNextId = record.rID;
     }
-    else if (!getIdByName(nameStore(context), buffer, record.rNextId))
+    else if (!getIdByName(nameStore(context), buffer, record.rNextId, nameStoreCache(context)))
     {
         record.rNextId = length(nameStore(context));
         appendName(nameStore(context), buffer, nameStoreCache(context));
