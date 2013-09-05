@@ -444,7 +444,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         if (!opt.tags.empty())
         {
             ctdfile << "tags=\"";
-            for (unsigned i = 0; i < length(opt.tags.size()); ++i)
+            for (unsigned i = 0; i < length(opt.tags); ++i)
             {
                 if (i > 0)
                     ctdfile << ",";
@@ -456,7 +456,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         if (isListArgument(opt))
         {
             ctdfile << ">\n";
-            for (size_t i = 0; i < opt.defaultValue.size(); ++i)
+            for (size_t i = 0; i < length(opt.defaultValue); ++i)
             {
                 ctdfile << _indent(currentIndent + 1) << "<LISTITEM value=\"" << xmlEscape(opt.defaultValue[i]) << "\"/>\n";
             }
