@@ -56,7 +56,7 @@ def main(source_base, binary_base, num_threads=1):
     # ============================================================
 
     path_to_program = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/razers3', 'razers3')
+      binary_base, 'bin', 'razers3')
 
     # ============================================================
     # Built TestConf list.
