@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
     append(goldPath, "/core/tests/arg_parse/test_app.ctd");
 
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 #endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
