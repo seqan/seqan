@@ -200,7 +200,7 @@ int readRecord(BamHeader & header,
         typename Size<TNameStore>::Type globalRId = 0;
         if (!getIdByName(nameStore(context), name, globalRId, nameStoreCache(context)))
             appendName(nameStore(context), name, nameStoreCache(context));
-        translateFile2GlobalRefId[i] = globalRId;
+        context.translateFile2GlobalRefId[i] = globalRId;
     }
 
     return 0;
