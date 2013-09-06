@@ -424,9 +424,9 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         elseif (WIN32)
           # Add ".exe" suffix for all other Windows compilers, e.g. MinGW.
             set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE}.exe")
-        else (WIN32)
+        else ()
             set (ARGS "--binary-path" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${EXECUTABLE}")
-        endif (WIN32)
+        endif ()
 
         if (EXISTS "${STDOUT_PATH}")
             set (ARGS ${ARGS} "--stdout-path" "${STDOUT_PATH}")
