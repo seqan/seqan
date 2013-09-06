@@ -170,6 +170,10 @@ int readRecord(BamHeader & header,
     if (res != 4)
         return 1;  // Error reading the number of sequences.
     CharString name;
+
+    clear(context.translateFile2GlobalRefId);
+    resize(context.translateFile2GlobalRefId, nRef, -1);
+
     for (__int32 i = 0; i < nRef; ++i)
     {
         // Read length of the reference name.
@@ -193,9 +197,10 @@ int readRecord(BamHeader & header,
         typedef typename BamHeader::TSequenceInfo TSequenceInfo;
         appendValue(header.sequenceInfos, TSequenceInfo(name, lRef));
         // Append contig name to name store, if not known already.
-		typename Size<TNameStore>::Type unused = 0;
-        if (!getIdByName(nameStore(context), name, unused, nameStoreCache(context)))
+        typename Size<TNameStore>::Type globalRId = 0;
+        if (!getIdByName(nameStore(context), name, globalRId, nameStoreCache(context)))
             appendName(nameStore(context), name, nameStoreCache(context));
+        translateFile2GlobalRefId[i] = globalRId;
     }
 
     return 0;
@@ -233,6 +238,11 @@ int readRecord(BamAlignmentRecord & record,
     if (res != 4)
         return res;
     SEQAN_ASSERT_GEQ(record.rID, -1);
+
+    // Translate file local rID into a global rID that is compatible with the context nameStore.
+    if (!empty(context.translateFile2GlobalRefId))
+        record.rID = context.translateFile2GlobalRefId[record.rID];
+
     if (record.rID >= 0)
         SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(nameStore(context)));
     remainingBytes -= 4;

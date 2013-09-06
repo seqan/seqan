@@ -159,6 +159,7 @@ public:
     TNameStore * _nameStore;
     TNameStoreCache * _nameStoreCache;
     CharString buffer;
+    String<unsigned> translateFile2GlobalRefId;
 
     BamIOContext() : _nameStore(0), _nameStoreCache(0)
     {}
