@@ -1,0 +1,47 @@
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 0 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 211 ) --> ( 281 ) 
+ ( 71 ) --> ( 71 ) 
+SVType: inversion insertionSeq: NNNN
+Support: 1 Ids: 210-350_inversion_210-280_bp_71 st1 l30 , 
+
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 422 ) --> ( 491 ) 
+ ( 71 ) --> ( 71 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: 420-560_deletion_420-490_bp_71 st1 l30 , 
+
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 910 ) --> ( 910 ) 
+ ( 70 ) --> ( 140 ) 
+SVType: insertion insertionSeq: CTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTT
+Support: 1 Ids: insertion_840-1050_bp_71 st1 l30 , 
+
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 1194 ) --> ( 1264 ) 
+ ( 71 ) --> ( 77 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: 1050-1190_deletion_1050-1120_1190-1260_bp_71 st1 l30 gth10, 
+
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 1469 ) --> ( 1889 ) 
+ ( 139 ) --> ( 139 ) 
+SVType: inter-transl insertionSeq: NNNN
+Support: 1 Ids: 1260-1470_translocation_1820-1890,1330-1400_bp_71_141 st1 l30, 
+
+write translocation record
+First translocation record
+2nd translocation record
+5th translocation record
+6th translocation record
+Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 )  --> gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome ( 1 ) 
+ ( 1474 ) --> ( 1821 ) 
+ ( 71 ) --> ( 71 ) 
+SVType: deletion insertionSeq: NNNN
+Support: 1 Ids: 1260-1470_translocation_1820-1890,1330-1400_bp_71_141 st1 l30, 
+

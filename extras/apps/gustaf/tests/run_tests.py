@@ -46,6 +46,19 @@ def main(source_base, binary_base):
     # was generated in generate_outputs.sh.
     conf_list = []
 
+    # We prepare a list of transforms to apply to the output files.  This is
+    # used to strip the input/output paths from the programs' output to
+    # make it more canonical and host independent.
+    ph.outFile('-')  # To ensure that the out path is set.
+    transforms = [
+        app_tests.ReplaceTransform(
+            os.path.join(ph.source_base_path,
+                         'extras/apps/gustaf/tests') + os.sep,
+            '', right=True),
+        app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
+        app_tests.NormalizeScientificExponentsTransform(),
+        ]
+
     # ============================================================
     # Adeno Tests
     # ============================================================
@@ -60,16 +73,18 @@ def main(source_base, binary_base):
         redir_stderr=ph.outFile('st2_l100.stderr'),
         args=[ph.inFile('adeno.fa'),
               ph.inFile('adeno_modified_reads.fa'),
-              '-bpo', ph.outFile('st2_l100.gff'),
+              '-gff', ph.outFile('st2_l100.gff'),
+              '-vcf', ph.outFile('st2_l100.vcf'),
               ],
-        to_diff=[#(ph.inFile('st2_l100.stdout'),
-                  #ph.outFile('st2_l100.stdout')),
+        to_diff=[(ph.inFile('st2_l100.vcf'),
+                  ph.outFile('st2_l100.vcf'),
+                  transforms),
                  (ph.inFile('st2_l100.gff'),
                   ph.outFile('st2_l100.gff'))])
     conf_list.append(conf)
 
     #out="st2_l100"
-    #${GUSTAF} adeno.fa adeno_modified_reads.fa -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
+    #${GUSTAF} adeno.fa adeno_modified_reads.fa -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -l 30
@@ -82,18 +97,20 @@ def main(source_base, binary_base):
         redir_stderr=ph.outFile('st1_l30.stderr'),
         args=[ph.inFile('adeno.fa'),
               ph.inFile('adeno_modified_reads.fa'),
-              '-bpo', ph.outFile('st1_l30.gff'),
+              '-gff', ph.outFile('st1_l30.gff'),
+              '-vcf', ph.outFile('st1_l30.vcf'),
               '-st', str(1),
               '-l', str(30),
               ],
-        to_diff=[#(ph.inFile('st1_l30.stdout'),
-                  #ph.outFile('st1_l30.stdout')),
+        to_diff=[(ph.inFile('st1_l30.vcf'),
+                  ph.outFile('st1_l30.vcf'),
+                  transforms),
                  (ph.inFile('st1_l30.gff'),
                   ph.outFile('st1_l30.gff'))])
     conf_list.append(conf)
 
     #out="st1_l30"
-    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
+    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -m stellar.gff
@@ -106,17 +123,19 @@ def main(source_base, binary_base):
         args=[ph.inFile('adeno.fa'),
               ph.inFile('adeno_modified_reads.fa'),
               '-m', ph.inFile('stellar.gff'),
-              '-bpo', ph.outFile('st1_l30_m.gff'),
+              '-gff', ph.outFile('st1_l30_m.gff'),
+              '-vcf', ph.outFile('st1_l30_m.vcf'),
               '-st', str(1),
               ],
-        to_diff=[#(ph.inFile('st1_l30_m.stdout'),
-                  #ph.outFile('st1_l30_m.stdout')),
+        to_diff=[(ph.inFile('st1_l30_m.vcf'),
+                  ph.outFile('st1_l30_m.vcf'),
+                  transforms),
                  (ph.inFile('st1_l30_m.gff'),
                   ph.outFile('st1_l30_m.gff'))])
     conf_list.append(conf)
 
     #out="st1_l30_m"
-    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -m stellar.gff -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
+    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -m stellar.gff -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -l 30 -ith 5
@@ -128,19 +147,21 @@ def main(source_base, binary_base):
         redir_stderr=ph.outFile('st1_l30_ith5.stderr'),
         args=[ph.inFile('adeno.fa'),
               ph.inFile('adeno_modified_reads.fa'),
-              '-bpo', ph.outFile('st1_l30_ith5.gff'),
+              '-gff', ph.outFile('st1_l30_ith5.gff'),
+              '-vcf', ph.outFile('st1_l30_ith5.vcf'),
               '-st', str(1),
               '-l', str(30),
               '-ith', str(5),
               ],
-        to_diff=[#(ph.inFile('st1_l30_m.stdout'),
-                  #ph.outFile('st1_l30_m.stdout')),
+        to_diff=[(ph.inFile('st1_l30_m.vcf'),
+                  ph.outFile('st1_l30_m.vcf'),
+                  transforms),
                  (ph.inFile('st1_l30_ith5.gff'),
                   ph.outFile('st1_l30_ith5.gff'))])
     conf_list.append(conf)
 
     #out="st1_l30_ith5"
-    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
+    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -ith 5 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # -st 1 -l 30 -gth 3
@@ -152,19 +173,21 @@ def main(source_base, binary_base):
         redir_stderr=ph.outFile('st1_l30_gth3.stderr'),
         args=[ph.inFile('adeno.fa'),
               ph.inFile('adeno_modified_reads.fa'),
-              '-bpo', ph.outFile('st1_l30_gth3.gff'),
+              '-gff', ph.outFile('st1_l30_gth3.gff'),
+              '-vcf', ph.outFile('st1_l30_gth3.vcf'),
               '-st', str(1),
               '-l', str(30),
               '-gth', str(3),
               ],
-        to_diff=[#(ph.inFile('st1_l30_m.stdout'),
-                  #ph.outFile('st1_l30_m.stdout')),
+        to_diff=[(ph.inFile('st1_l30_m.vcf'),
+                  ph.outFile('st1_l30_m.vcf'),
+                  transforms),
                  (ph.inFile('st1_l30_gth3.gff'),
                   ph.outFile('st1_l30_gth3.gff'))])
     conf_list.append(conf)
  
     #out="st1_l30_gth3"
-    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gth 3 -bpo ${out}.gff > ${out}.stdout 2> ${out}.stderr
+    #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gth 3 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
     # Execute the tests.

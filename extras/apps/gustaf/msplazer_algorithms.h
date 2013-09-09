@@ -355,8 +355,8 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     {
                         // Double overlap check (not handled jet)
                         // std::cerr << "double overlap in reference and read called from read overlap" << std::endl;
-                        clear(bp.svtype);
-                        bp.svtype = "none";
+                        // clear(bp.svtype);
+                        bp.svtype = TBreakpoint::INVALID;
                     }
                 }
 
@@ -554,7 +554,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         else
                             inSeq = infix(query, readEndPos, readStartPos);
                         if (length(inSeq) == 0)
-                            setSVType(bp, static_cast<TId>("none"));
+                            setSVType(bp, TBreakpoint::INVALID);
                         else
                             setInsertionSeq(bp, inSeq);
                     }
@@ -642,6 +642,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
                                    msplazerOptions);
 
         }
+        // Reevaluate chains with translocations/duplications
         appendValue(queryChains, chain);
     }
 }
@@ -834,7 +835,8 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
             resize(splitPos, 4);
 
             // Store breakpoint pos., mind matches of different order for translocations and reverse strand deletions
-            if ((getSVType(bp) == static_cast<TId>("translocation") && bp.startSeqId == bp.endSeqId) || bp.revStrandDel)
+            // if ((getSVType(bp) == 6 && bp.startSeqId == bp.endSeqId) || bp.revStrandDel) // 6=translocation
+            if ((bp.svtype == 6 && bp.startSeqId == bp.endSeqId) || bp.revStrandDel) // 6=translocation
             {
                 splitPos[0] = bp.endSeqPos;
                 splitPos[1] = bp.startSeqPos;

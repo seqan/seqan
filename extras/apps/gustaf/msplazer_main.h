@@ -249,7 +249,8 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     // std sort in ascending order
     std::sort(begin(globalBreakpoints), end(globalBreakpoints));
     // std::sort(begin(globalStellarIndels), end(globalStellarIndels));
-    _writeGlobalBreakpoints(globalBreakpoints, msplazerOptions);
+    _writeGlobalBreakpoints(globalBreakpoints, msplazerOptions, Gff());
+    _writeGlobalBreakpoints(globalBreakpoints, databases, databaseIDs, msplazerOptions, Vcf());
     // _writeGlobalBreakpoints(globalStellarIndels, msplazerOptions, msplazerOptions.support);
 
     // ///////////////////////////////////////////////////////////////////////

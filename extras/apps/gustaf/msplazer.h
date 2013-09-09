@@ -66,7 +66,8 @@ struct MSplazerOptions
     // CharString queryFile2;        // name of 2nd query file (mate pairs)
     CharString emptyReadsOutFile;   // file with reads that have broken or empty chains
     CharString disabledQueriesFile; // name of result file containing disabled queries
-    CharString breakpointOutFile;   // breakpoint output file name
+    CharString vcfOutFile;   // breakpoint output file name
+    CharString gffOutFile;   // breakpoint output file name
     CharString jobName;             // job name, used for dot output
     CharString stellarInputFile;    // optional input file with stellar matches
     bool dotOut;
@@ -87,7 +88,8 @@ struct MSplazerOptions
         queryFile("reads.fa"),
         emptyReadsOutFile("emptyReads.fa"),
         disabledQueriesFile("msplazer.disabled.fasta"),
-        breakpointOutFile("breakpoints.gff"),
+        vcfOutFile("breakpoints.vcf"),
+        gffOutFile("breakpoints.gff"),
         dotOut(false),
         diffDBPen(5),
         diffStrandPen(5),
@@ -108,6 +110,19 @@ struct MSplazerOptions
 template <typename TSequence_, typename TId_>
 struct Breakpoint
 {
+    enum SVType
+    {
+        INVALID,
+        INSERTION,
+        DELETION,
+        INVERSION,
+        TANDEM,
+        DISPDUPLICATION,
+        INTRATRANSLOCATION,
+        TRANSLOCATION,
+        BREAKEND
+    };
+
     typedef TSequence_                          TSequence;
     typedef TId_                                TId;
     typedef typename Position<TSequence>::Type  TPos;
@@ -115,12 +130,17 @@ struct Breakpoint
     // Ids of the two sequences
     TId startSeqId;
     TId endSeqId;
+    TId midPosId;
     // Sequence orientation
     bool startSeqStrand;
     bool endSeqStrand;
+    bool midPosStrand;
     // Last position in start sequence and first position in end sequence
+    // TODO (ktrappe) isn't it first position in start seq and last in end seq of SV now?
     TPos startSeqPos;
     TPos endSeqPos;
+    TPos dupTargetPos;
+    TPos dupMiddlePos;
     TPos readStartPos;
     TPos readEndPos;
     // Counter of occurrences (read support)
@@ -128,23 +148,34 @@ struct Breakpoint
     // Query Sequence Ids (queries/reads that support the breakpoint)
     StringSet<TId> supportIds;
     // SV type
-    TId svtype;
+    SVType svtype;
     TSequence insertionSeq;
     bool revStrandDel;
+    // bool pseudoIndel = false;
+    // bool translSuppDel = false;
+    // bool imprecise = false;
+    // Storing on which site the breakend is: 
+    // 0: left breakend, i.e. sequence continues right of position
+    // 1: right breakend, i.e. sequence continues left of position
+    bool breakend;
 
     Breakpoint() :
         startSeqId("####"),
         endSeqId("####"),
+        midPosId("####"),
         startSeqStrand(true),
         endSeqStrand(true),
         startSeqPos(0),
         endSeqPos(0),
+        dupTargetPos(maxValue<unsigned>()),
+        dupMiddlePos(maxValue<unsigned>()),
         readStartPos(0),
         readEndPos(0),
         support(1),
-        svtype("svtype"),
+        svtype(INVALID),
         insertionSeq("NNNN"),
-        revStrandDel(false)
+        revStrandDel(false),
+        breakend(false)
     {}
 
     Breakpoint(TId const & sId,
@@ -157,16 +188,20 @@ struct Breakpoint
                TPos const & rePos) :
         startSeqId(sId),
         endSeqId(eId),
+        midPosId("####"),
         startSeqStrand(sStrand),
         endSeqStrand(eStrand),
         startSeqPos(sPos),
         endSeqPos(ePos),
+        dupTargetPos(maxValue<unsigned>()),
+        dupMiddlePos(maxValue<unsigned>()),
         readStartPos(rsPos),
         readEndPos(rePos),
         support(1),
-        svtype("svtype"),
+        svtype(INVALID),
         insertionSeq("NNNN"),
-        revStrandDel(false)
+        revStrandDel(false),
+        breakend(false)
     {}
 
     Breakpoint(TId const & sId,
@@ -180,18 +215,21 @@ struct Breakpoint
                TId const & spId) :
         startSeqId(sId),
         endSeqId(eId),
+        midPosId("####"),
         startSeqStrand(sStrand),
         endSeqStrand(eStrand),
         startSeqPos(sPos),
         endSeqPos(ePos),
+        dupTargetPos(maxValue<unsigned>()),
+        dupMiddlePos(maxValue<unsigned>()),
         readStartPos(rsPos),
         readEndPos(rePos),
         support(1),
-        svtype("svtype"),
+        svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false)
     {appendValue(supportIds, spId); }
-
+    /*
     Breakpoint(TId const & sId,
                TId const & eId,
                bool const & sStrand,
@@ -211,7 +249,7 @@ struct Breakpoint
         readStartPos(rsPos),
         readEndPos(rePos),
         support(s),
-        svtype("svtype"),
+        svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false)
     {appendValue(supportIds, spId); }
@@ -236,10 +274,11 @@ struct Breakpoint
         readEndPos(rePos),
         support(s),
         supportIds(spId),
-        svtype("svtype"),
+        svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false)
     {}
+    */
 };
 
 // ----------------------------------------------------------------------------
@@ -278,6 +317,9 @@ struct SparsePropertyMap
     typedef String<TPos>         TSlotLookupTable;
 
     TValueTable valueTable;
+    // slotLookupTable: Stores at each position (descriptor value) the position of the
+    // corresponding object in valueTable, or -1 if there is no object
+    // for this descriptor
     TSlotLookupTable    slotLookupTable;
 
     SparsePropertyMap(){}
@@ -324,6 +366,7 @@ struct MSplazerChain
     String<TMatchAlloc> bestChains;
     bool isEmpty;
     bool isPartial;
+    // bool transl/dupl;
 
     MSplazerChain(TScoreAlloc & _scores) :
         matchDistanceScores(_scores), isEmpty(false), isPartial(false)
@@ -559,8 +602,8 @@ inline void setSupport(TBreakpoint & bp, unsigned const & value)
 ..include:msplazer.h
  */
 
-template <typename TSequence, typename TId>
-inline TId getSVType(Breakpoint<TSequence, TId> & bp)
+template <typename TSequence, typename TId, typename TSVType>
+inline TSVType getSVType(Breakpoint<TSequence, TId> & bp)
 {
     return bp.svtype;
 }
@@ -580,8 +623,8 @@ inline TId getSVType(Breakpoint<TSequence, TId> & bp)
 ..include:msplazer.h
  */
 
-template <typename TBreakpoint, typename TId>
-inline void setSVType(TBreakpoint & bp, TId const & type)
+template <typename TBreakpoint, typename TSVType>
+inline void setSVType(TBreakpoint & bp, TSVType type)
 {
     bp.svtype = type;
 }
@@ -602,19 +645,22 @@ inline bool setSVType(TBreakpoint & bp)
     // if insertion return 1; else return 0;
     if (bp.startSeqId != bp.endSeqId)
     {
-        bp.svtype = static_cast<TId>("translocation");
-        // setSVType(bp, static_cast<TId>("translocation"));
+        bp.svtype = TBreakpoint::INTRATRANSLOCATION;
+        // bp.svtype = static_cast<TId>("translocation");
+        // setSVType(bp, TBreakpoint::TRANSLOCATION);
         return false;
     }
     if (bp.startSeqStrand != bp.endSeqStrand)
     {
-        bp.svtype = static_cast<TId>("inversion");
+        // bp.svtype = static_cast<TId>("inversion");
+        setSVType(bp, TBreakpoint::INVERSION);
         // setSVType(bp, static_cast<TId>("inversion"));
         return false;
     }
     if (bp.startSeqPos < bp.endSeqPos)
     {
-        bp.svtype = static_cast<TId>("deletion");
+        setSVType(bp, TBreakpoint::DELETION);
+        // bp.svtype = static_cast<TId>("deletion");
         // setSVType(bp, static_cast<TId>("deletion"));
         return false;
     }
@@ -623,14 +669,17 @@ inline bool setSVType(TBreakpoint & bp)
         std::swap(bp.startSeqPos, bp.endSeqPos);
         if (bp.startSeqStrand)
         {
-            bp.svtype = static_cast<TId>("translocation");
+            setSVType(bp, TBreakpoint::TRANSLOCATION);
+            // bp.svtype = static_cast<TId>("translocation");
             return false;
         }
-        setSVType(bp, static_cast<TId>("deletion"));
+        setSVType(bp, TBreakpoint::DELETION);
+        // setSVType(bp, static_cast<TId>("deletion"));
         bp.revStrandDel = true;
         return false;
     }
-    bp.svtype = static_cast<TId>("insertion");
+    setSVType(bp, TBreakpoint::INSERTION);
+    // bp.svtype = static_cast<TId>("insertion");
     // setSVType(bp, static_cast<TId>("insertion"));
     return true;
 }
@@ -722,7 +771,7 @@ inline bool operator==(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> 
     if (bp1.svtype != bp2.svtype)
         return false;
 
-    if (bp1.svtype == "insertion" && bp2.svtype == "insertion")
+    if (bp1.svtype == 1 && bp2.svtype == 1)
         return length(bp1.insertionSeq) == length(bp2.insertionSeq);
 
     return true;
@@ -761,12 +810,42 @@ template <typename TSequence, typename TId, typename TStream>
 // std::ostream & operator<<(std::ostream & out, Breakpoint<TSequence, TId> const & value)
 TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
 {
+    typedef Breakpoint<TSequence, TId> TBreakpoint;
     out << "Breakpoint: seq1 --> seq2; posInSeq1 --> posInSeq2; readPos1 --> readPos2 :" << std::endl;
     out << value.startSeqId << " ( " << value.startSeqStrand << " ) " << " --> " << value.endSeqId << " ( " <<
     value.endSeqStrand << " ) " << std::endl;
     out << " ( " << value.startSeqPos + 1 << " ) --> ( " << value.endSeqPos + 1 << " ) " << std::endl;
     out << " ( " << value.readStartPos + 1 << " ) --> ( " << value.readEndPos + 1 << " ) " << std::endl;
-    out << "SVType: " << value.svtype << " insertionSeq: " << value.insertionSeq << std::endl;
+    switch (value.svtype)
+    {
+        case TBreakpoint::INVALID:
+        out << "SVType: invalid";
+        break;
+        case TBreakpoint::INSERTION:
+        out << "SVType: insertion";
+        break;
+        case TBreakpoint::DELETION:
+        out << "SVType: deletion";
+        break;
+        case TBreakpoint::INVERSION:
+        out << "SVType: inversion";
+        break;
+        case TBreakpoint::TANDEM:
+        out << "SVType: tandem";
+        break;
+        case TBreakpoint::DISPDUPLICATION:
+        out << "SVType: duplication";
+        break;
+        case TBreakpoint::INTRATRANSLOCATION:
+        out << "SVType: intra-transl";
+        break;
+        case TBreakpoint::TRANSLOCATION:
+        out << "SVType: inter-transl";
+        break;
+        case TBreakpoint::BREAKEND:
+        out << "SVType: breakend";
+    }
+    out << " insertionSeq: " << value.insertionSeq << std::endl;
     out << "Support: " << value.support << " Ids: ";
     for (unsigned i = 0; i < length(value.supportIds); ++i)
         out << value.supportIds[i] << ", ";

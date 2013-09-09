@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 #include <seqan/gff_io.h>
+#include <seqan/vcf_io.h>
 #include <seqan/file.h>
 
 #include "../../../core/apps/stellar/stellar.h"
@@ -125,13 +126,13 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
             out << "\\n db: ";
             out << queryMatches[i].begin1 + 1;
             out << "...";
-            out << queryMatches[i].end1 + 1;
+            out << queryMatches[i].end1;
             out << "  ";
             out << (queryMatches[i].orientation ? '+' : '-');
             out << "\\n read: ";
             out << queryMatches[i].begin2 + 1;
             out << "...";
-            out << queryMatches[i].end2 + 1;
+            out << queryMatches[i].end2;
             out << "\\n";
             out << i;
             out << "\"];\n";
@@ -148,7 +149,7 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
             out << *it;
             out << " [label = \"end";
             out << "\\n";
-            out << queryLength + 1;
+            out << queryLength;
             out << "\"];\n";
         }
         else
@@ -201,7 +202,42 @@ void _writeDotfiles(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & st
 }
 
 template <typename TBreakpoint>
-void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
+void _setGffRecordType(GffRecord & record, TBreakpoint & bp)
+{
+    switch(bp.svtype)
+    {
+        case TBreakpoint::INSERTION:
+        record.type = "insertion";
+        break;
+        case TBreakpoint::DELETION:
+        record.type = "deletion";
+        break;
+        case TBreakpoint::INVERSION:
+        record.type = "inversion";
+        break;
+        case TBreakpoint::TANDEM:
+        record.type = "tandem";
+        break;
+        case TBreakpoint::DISPDUPLICATION:
+        record.type = "duplication";
+        break;
+        case TBreakpoint::INTRATRANSLOCATION:
+        record.type = "intra-chr-translocation";
+        break;
+        case TBreakpoint::TRANSLOCATION:
+        record.type = "translocation";
+        break;
+        case TBreakpoint::BREAKEND:
+        record.type = "breakend";
+        break;
+        default:
+        record.type = "invalid";
+    }
+
+}
+
+template <typename TBreakpoint>
+inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
 {
     typedef typename TBreakpoint::TId TId;
     TId sId;
@@ -209,9 +245,10 @@ void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     _getShortId(sId, bp.startSeqId);
     record.ref = sId;
     record.source = "GUSTAF";
-    record.type = bp.svtype;
+    _setGffRecordType(record, bp);
+//    record.type = bp.svtype;
     record.beginPos = bp.startSeqPos;
-    if (bp.svtype == "deletion" || bp.svtype == "inversion")
+    if (bp.svtype == 2 || bp.svtype == 3) // 2=deletion;3=inversion
         record.endPos = bp.endSeqPos;
     else
         record.endPos = bp.startSeqPos + 1;
@@ -222,14 +259,14 @@ void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
 
     appendValue(record.tagName, "ID");
     appendValue(record.tagValue, toString(id));
-    if (bp.svtype == "insertion")
+    if (bp.svtype == 1) // 1=insertion
     {
         appendValue(record.tagName, "size");
         appendValue(record.tagValue, '-' + toString(length(bp.insertionSeq)));
         appendValue(record.tagName, "seq");
         appendValue(record.tagValue, bp.insertionSeq);
     }
-    else if (bp.svtype == "deletion")
+    else if (bp.svtype == 2) // 2=deletion
     {
         appendValue(record.tagName, "size");
         appendValue(record.tagValue, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
@@ -266,18 +303,24 @@ void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
 // Breakpoint writing call
 template <typename TBreakpoint>
 bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
-                             MSplazerOptions const & msplazerOptions)
+                             MSplazerOptions const & msplazerOptions, Gff /*tag*/)
 {
     // Creating GFF record and writing to gff file
-    std::string fn_gff = toString(msplazerOptions.breakpointOutFile);
+    std::string fn_gff = toString(msplazerOptions.gffOutFile);
     GffStream gffOut(fn_gff.c_str(), GffStream::WRITE);
+    if (length(globalBreakpoints) == 0)
+    {
+        std::cerr << "Empty output list, skipping writing gff" << std::endl;
+        return 1;
+    }
+
     if (!isGood(gffOut))
-        std::cerr << "Error while opening breakpoint file!" << std::endl;
+        std::cerr << "Error while opening gff breakpoint file!" << std::endl;
 
     GffRecord gff_record;
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
-        if (globalBreakpoints[i].svtype != "none" && globalBreakpoints[i].support >= msplazerOptions.support)
+        if (globalBreakpoints[i].svtype != 0 && globalBreakpoints[i].support >= msplazerOptions.support) // 0=invalid
         {
             // Fill record
             _fillGffRecord(gff_record, globalBreakpoints[i], i);
@@ -288,9 +331,593 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
         }
     }
 
-    std::cout << " completed writing " << msplazerOptions.breakpointOutFile << std::endl;
+    std::cout << " completed writing " << msplazerOptions.gffOutFile << std::endl;
     return 0;
 }
+
+template <typename TBreakpoint, typename TSequence>
+inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    record.rID = id;
+    record.beginPos = bp.startSeqPos;
+    record.filter = "PASS";
+    std::stringstream ss;
+    ss << "SVTYPE=INS";
+    ss << ";SVLEN=" << length(bp.insertionSeq);
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+
+    // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
+    // deletion of length k.
+    if (bp.startSeqPos != 0)
+        appendValue(record.ref, ref[bp.startSeqPos-1]); // position/base before SV except for position 1, then it is the base AFTER the event!
+    else
+        appendValue(record.ref, ref[bp.endSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
+
+    // Compute ALT columns and a map to the ALT.
+    appendValue(record.alt, record.ref[0]);
+    append(record.alt, bp.insertionSeq);
+
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    record.rID = id;
+    record.beginPos = bp.startSeqPos;
+    record.filter = "PASS";
+    std::stringstream ss;
+    ss << "SVTYPE=DEL";
+    ss << ";SVLEN=-" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+
+    // Compute ALT columns and a map to the ALT.
+    if (bp.startSeqPos != 0)
+        appendValue(record.alt, ref[bp.startSeqPos-1]);// position/base before SV except for position 1, then it is the base AFTER the event!
+    else
+        appendValue(record.alt, ref[bp.endSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
+
+
+    // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
+    // deletion of length k.
+    appendValue(record.ref, record.alt[0]); // std::max(0,
+    append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    record.rID = id;
+    record.beginPos = bp.startSeqPos;
+    record.filter = "PASS";
+    std::stringstream ss;
+    ss << "SVTYPE=INV";
+    ss << ";END=" << bp.endSeqPos;
+    ss << ";SVLEN=" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+
+    // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
+    // deletion of length k.
+    if (bp.startSeqPos != 0)
+        appendValue(record.ref, ref[bp.startSeqPos-1]); // std::max(0,
+    else
+        appendValue(record.ref, ref[bp.endSeqPos]); // std::max(0,
+
+    // Compute ALT columns and a map to the ALT.
+    append(record.alt, "<INV>");
+
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    record.rID = id;
+    record.beginPos = bp.startSeqPos;
+    record.filter = "PASS";
+    std::stringstream ss;
+    ss << "SVTYPE=DUP";
+    ss << ";END=" << bp.endSeqPos;
+    ss << ";SVLEN=" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+
+    // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
+    // deletion of length k.
+    if (bp.startSeqPos != 0)
+        appendValue(record.ref, ref[bp.startSeqPos-1]); // std::max(0,
+    else
+        appendValue(record.ref, ref[bp.endSeqPos]); // std::max(0,
+
+    // Compute ALT columns and a map to the ALT.
+    append(record.alt, "<DUP:TANDEM>");
+
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    record.rID = id;
+    record.beginPos = bp.startSeqPos;
+    record.filter = "PASS";
+    std::stringstream ss;
+    ss << "SVTYPE=DUP";
+    ss << ";END=" << bp.endSeqPos;
+    ss << ";SVLEN=" << abs(bp.endSeqPos-bp.startSeqPos);
+//    ss << ";TARGETPOS=" << bp.dupTargetPos;
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+
+    // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
+    // deletion of length k.
+    if (bp.startSeqPos != 0)
+        appendValue(record.ref, ref[bp.startSeqPos-1]); // std::max(0,
+    else
+        appendValue(record.ref, ref[bp.endSeqPos]); // std::max(0,
+
+    // Compute ALT columns and a map to the ALT.
+    append(record.alt, "<DUP>");
+
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    record.rID = id;
+    record.beginPos = bp.startSeqPos;
+    record.filter = "PASS";
+    std::stringstream ss;
+    // ss << "IMPRECISE;";
+    ss << "SVTYPE=BND";
+    // ss << ";CIPOS=-5,5";
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+
+    // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
+    // deletion of length k.
+    if (bp.startSeqPos != 0)
+        appendValue(record.ref, ref[bp.startSeqPos-1]); // std::max(0,
+    else
+        appendValue(record.ref, ref[bp.endSeqPos]); // std::max(0,
+
+    // Compute ALT columns and a map to the ALT.
+    // Storing if breakend is left of (0) or right of (1) breakpoint position
+    if (bp.breakend)
+    {
+        appendValue(record.alt, record.ref[0]);
+        appendValue(record.alt, '.');
+    } else
+    {
+        appendValue(record.alt, '.');
+        appendValue(record.alt, record.ref[0]);
+    }
+
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline bool _fillVcfRecord(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
+{
+    switch(bp.svtype)
+    {
+        case TBreakpoint::INSERTION:
+        _fillVcfRecordInsertion(record, bp, ref, id);
+        return 1;
+        case TBreakpoint::DELETION:
+        _fillVcfRecordDeletion(record, bp, ref, id);
+        return 1;
+        case TBreakpoint::INVERSION:
+        _fillVcfRecordInversion(record, bp, ref, id);
+        return 1;
+        case TBreakpoint::TANDEM:
+        _fillVcfRecordTandem(record, bp, ref, id);
+        return 1;
+        case TBreakpoint::DISPDUPLICATION:
+        _fillVcfRecordDuplication(record, bp, ref, id);
+        return 1;
+        // Translocation are handled seperately bc there is more than 1 record
+        case TBreakpoint::INTRATRANSLOCATION:
+        return 1;
+        case TBreakpoint::TRANSLOCATION:
+        return 1;
+        case TBreakpoint::BREAKEND:
+        _fillVcfRecordBreakend(record, bp, ref, id);
+        return 1;
+
+        default:
+        return 0;
+    }
+    return 0;
+}
+
+template <typename TBreakpoint, typename TSequence>
+inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequence & ref, TSequence & ref2, unsigned id, unsigned id2, unsigned bp_id)
+{
+    std::cerr << "write translocation record" << std::endl;
+    // Translocation is encoded with 6 breakend entries (or 4 in the case where the "middle" position
+    // of the translocation is not known)
+    typedef typename TBreakpoint::TId TId;
+    TId sId;
+    VcfRecord record;
+    // Record values shared by (almost) all entries
+    record.rID = id;
+    record.filter = "PASS";
+    std::stringstream ss;
+    ss << "SVTYPE=BND";
+    ss << ";EVENT=Trans" << bp_id;
+    ss << ";DP=" << bp.support;
+    record.info = ss.str();
+    // Create genotype infos.
+    appendValue(record.genotypeInfos, "1");
+
+    // 1st entry
+    record.id = "BND_" + toString(bp_id) + "_1";
+    record.beginPos = (bp.startSeqPos > 0) ? bp.startSeqPos - 1 : 0;
+
+    // Positions encoded in REF and ALT coloumn have to be already 1-based
+    // whereas record.beginPos remains 0-based and is adjusted within writeVcfRecord() function
+    // Compute base for REF and ALT columns
+    if (bp.startSeqPos != 0)
+    {
+        appendValue(record.ref, ref[bp.startSeqPos-1]);
+        appendValue(record.alt, ref[bp.startSeqPos-1]);
+    } else
+    {
+        appendValue(record.ref, 'N');
+        appendValue(record.alt, '.');
+    }
+
+    // Compute ALT columns
+    if (bp.dupMiddlePos != maxValue<unsigned>())
+    {
+        _getShortId(sId, bp.midPosId);
+        std::stringstream alt1;
+        alt1 << "[";
+        alt1 << sId; // alt1 << bp.midPosId;
+        alt1 << ':';
+        alt1 << bp.dupMiddlePos + 1; // 1-based adjustment
+        alt1 << "[";
+        append(record.alt, alt1.str());
+    } else
+        appendValue(record.alt, '.');
+
+    // Write record and clear REF and ALT values
+    if (writeRecord(vcfOut, record) != 0)
+    {
+        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        return 1;
+    }
+    std::cerr << "First translocation record" << std::endl;
+    clear(record.ref);
+    clear(record.alt);
+
+    // 2nd entry
+    record.id = "BND_" + toString(bp_id) + "_2";
+    record.beginPos = bp.startSeqPos;
+
+    // Compute base for REF and ALT columns
+    appendValue(record.ref, ref[bp.startSeqPos]);
+
+    // Compute ALT columns
+    if (bp.startSeqStrand != bp.endSeqStrand)
+    {
+        std::stringstream alt1;
+        alt1 << "[";
+        alt1 << bp.endSeqId;
+        alt1 << ':';
+        alt1 << bp.endSeqPos - 1 + 1; // 1-based adjustment
+        alt1 << "[";
+        append(record.alt, alt1.str());
+    } else
+    {
+        std::stringstream alt1;
+        alt1 << "]";
+        alt1 << bp.endSeqId;
+        alt1 << ':';
+        alt1 << bp.endSeqPos - 1 + 1; // 1-based adjustment
+        alt1 << "]";
+        append(record.alt, alt1.str());
+    }
+    appendValue(record.alt, ref[bp.startSeqPos]);
+
+    // Write record and clear REF and ALT values
+    if (writeRecord(vcfOut, record) != 0)
+    {
+        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        return 1;
+    }
+    std::cerr << "2nd translocation record" << std::endl;
+    clear(record.ref);
+    clear(record.alt);
+
+    // 3rd and 4th entry only exist if the middle (bp.dupMiddlePos) of translocation is known
+    if (bp.dupMiddlePos != maxValue<unsigned>())
+    {
+        // 3rd entry
+        record.id = "BND_" + toString(bp_id) + "_3";
+        record.beginPos = bp.dupMiddlePos;
+
+        // Compute base for REF and ALT columns
+        appendValue(record.ref, ref[bp.dupMiddlePos]);
+        appendValue(record.alt, ref[bp.dupMiddlePos]);
+
+        // Compute ALT columns
+        if (bp.startSeqStrand != bp.endSeqStrand)
+        {
+            std::stringstream alt1;
+            alt1 << "]";
+            alt1 << bp.endSeqId;
+            alt1 << ':';
+            alt1 << bp.endSeqPos + 1; // 1-based adjustment
+            alt1 << "]";
+            append(record.alt, alt1.str());
+        } else
+        {
+            std::stringstream alt1;
+            alt1 << "[";
+            alt1 << bp.endSeqId;
+            alt1 << ':';
+            alt1 << bp.endSeqPos + 1; // 1-based adjustment
+            alt1 << "[";
+            append(record.alt, alt1.str());
+        }
+
+        // Write record and clear REF and ALT values
+        if (writeRecord(vcfOut, record) != 0)
+        {
+            std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+            return 1;
+        }
+    std::cerr << "3rd translocation record" << std::endl;
+    //std::cerr << record << std::endl;
+        clear(record.ref);
+        clear(record.alt);
+
+        // 4th entry
+        record.id = "BND_" + toString(bp_id) + "_4";
+        record.beginPos = bp.dupMiddlePos + 1;
+
+        // Compute ALT columns
+        std::stringstream alt4;
+        alt4 << "]";
+        alt4 << sId; // alt1 << bp.midPosId;
+        alt4 << ':';
+        if (bp.startSeqPos > 0)
+            alt4 << bp.startSeqPos - 1 + 1; // 1-based adjustment
+        else 
+            alt4 << 0; // NO(!) 1-based adjustment
+        alt4 << "]";
+        append(record.alt, alt4.str());
+
+        // Compute base for REF and ALT columns
+        appendValue(record.ref, ref[bp.dupMiddlePos+1]);
+        appendValue(record.alt, ref[bp.dupMiddlePos+1]);
+
+        // Write record and clear REF and ALT values
+        if (writeRecord(vcfOut, record) != 0)
+        {
+            std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+            return 1;
+        }
+    std::cerr << "4th translocation record" << std::endl;
+    //std::cerr << record << std::endl;
+        clear(record.ref);
+        clear(record.alt);
+
+    }
+
+    record.rID = id2;
+    // 5th entry
+    record.id = "BND_" + toString(bp_id) + "_5";
+    record.beginPos = bp.endSeqPos - 1;
+
+    // Compute base for REF and ALT columns
+    appendValue(record.ref, ref2[bp.endSeqPos - 1]);
+    appendValue(record.alt, ref2[bp.endSeqPos - 1]);
+
+    // Compute ALT columns
+    if (bp.startSeqStrand != bp.endSeqStrand)
+    {
+        std::stringstream alt1;
+        alt1 << "]";
+        alt1 << bp.startSeqId;
+        alt1 << ':';
+        alt1 << bp.startSeqPos + 1; // 1-based adjustment
+        alt1 << "]";
+        append(record.alt, alt1.str());
+    } else
+    {
+        std::stringstream alt1;
+        alt1 << "[";
+        alt1 << bp.startSeqId;
+        alt1 << ':';
+        alt1 << bp.startSeqPos + 1; // 1-based adjustment
+        alt1 << "[";
+        append(record.alt, alt1.str());
+    }
+
+    // Write record and clear REF and ALT values
+    if (writeRecord(vcfOut, record) != 0)
+    {
+        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        return 1;
+    }
+    std::cerr << "5th translocation record" << std::endl;
+    //std::cerr << record << std::endl;
+    clear(record.ref);
+    clear(record.alt);
+
+    // 6th entry
+    record.id = "BND_" + toString(bp_id) + "_6";
+    record.beginPos = bp.endSeqPos;
+
+    // Compute ALT columns
+    if (bp.dupMiddlePos != maxValue<unsigned>())
+    {
+        std::stringstream alt1;
+        if (bp.endSeqStrand != bp.midPosStrand)
+            alt1 << "[";
+        else
+            alt1 << "]";
+        alt1 << sId; // alt1 << bp.midPosId;
+        alt1 << ':';
+        alt1 << bp.dupMiddlePos -1 + 1; // 1-based adjustment
+        if (bp.endSeqStrand != bp.midPosStrand)
+            alt1 << "[";
+        else
+            alt1 << "]";
+        append(record.alt, alt1.str());
+    } else
+        appendValue(record.alt, '.');
+
+    // Compute base for REF and ALT columns
+    if (bp.endSeqPos < length(ref2) - 1)
+    {
+        appendValue(record.ref, ref2[bp.endSeqPos]);
+        appendValue(record.alt, ref2[bp.endSeqPos]);
+    } else
+    {
+        appendValue(record.ref, 'N');
+        appendValue(record.alt, '.');
+    }
+
+    // Write record and clear REF and ALT values
+    if (writeRecord(vcfOut, record) != 0)
+    {
+        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        return 1;
+    }
+    std::cerr << "6th translocation record" << std::endl;
+    // std::cerr << record << std::endl;
+    clear(record.ref);
+    clear(record.alt);
+
+    return 0;
+}
+
+template <typename TSequence, typename TId>
+void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, StringSet<TId> & databaseIDs, MSplazerOptions const & msplOpt)
+{
+    // Header record entries
+    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("fileformat", "VCFv4.1"));
+    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("source", "GUSTAF"));
+    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reference", msplOpt.databaseFile));
+    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "INFO", "<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "INFO", "<ID=SVLEN,Number=.,Type=Integer,Description=\"Difference in length between REF and ALT alleles\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "INFO", "<ID=SVTYPE,Number=1,Type=String,Description=\"Type of structural variant\">"));
+    // appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    //            "INFO", "<ID=BND,Description=\"Breakend\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "INFO", "<ID=EVENT,Number=1,Type=String,Description=\"Event identifier for breakends.\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "INFO", "<ID=TARGETPOS,Number=1,Type=String,Description=\"Target position for duplications.\">"));
+    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord(
+            "INFO", "<ID=DP,Number=1,Type=Integer,Description=\"Number of Supporting Reads/Read Depth for Variant\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+            "ALT", "<ID=INV,Description=\"Inversion\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+                "ALT", "<ID=DUP,Description=\"Duplication\">"));
+    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+                "ALT", "<ID=DUP:TANDEM,Description=\"Tandem Duplication\">"));
+
+    // Fill sequence names
+    for (unsigned i = 0; i < length(databaseIDs); ++i)
+    {
+        appendValue(vcfStream.header.sequenceNames, databaseIDs[i]);
+        seqan::CharString contigStr = "<ID=";
+        append(contigStr, databaseIDs[i]);
+        append(contigStr, ",length=");
+        std::stringstream ss;
+        ss << length(databases[i]);
+        append(contigStr, ss.str());
+        append(contigStr, ">");
+        appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord("contig", contigStr));
+        appendName(*vcfStream._context.sequenceNames,
+                   databaseIDs[i],
+                   vcfStream._context.sequenceNamesCache);
+    }
+}
+
+template <typename TId>
+__int32 _getrID(StringSet<TId> & databaseIDs, TId dbID)
+{
+    for (unsigned i = 0; i < length(databaseIDs); ++i)
+    {
+        if (databaseIDs[i] == dbID)
+            return static_cast<__int32>(i);
+    }
+    return maxValue<int>();
+}
+
+// Breakpoint writing call
+template <typename TBreakpoint, typename TSequence, typename TId>
+bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
+                             StringSet<TSequence> & databases,
+                             StringSet<TId> & databaseIDs,
+                             MSplazerOptions const & msplazerOptions,
+                             Vcf /*tag*/)
+{
+    // Creating GFF record and writing to gff file
+    std::string fn_vcf = toString(msplazerOptions.vcfOutFile);
+    VcfStream vcfOut(fn_vcf.c_str(), VcfStream::WRITE);
+    if (length(globalBreakpoints) == 0)
+    {
+        std::cerr << "Empty output list, skipping writing vcf" << std::endl;
+        return 1;
+    }
+
+    if (!isGood(vcfOut))
+        std::cerr << "Error while opening vcf breakpoint file!" << std::endl;
+    _fillVcfHeader(vcfOut, databases, databaseIDs, msplazerOptions);
+
+    VcfRecord vcf_record;
+    __int32 id = maxValue<int>();
+    for (unsigned i = 0; i < length(globalBreakpoints); ++i)
+    {
+        TBreakpoint bp = globalBreakpoints[i];
+        std::cerr << bp << std::endl;
+        if (bp.svtype != 0 && bp.support >= msplazerOptions.support) // 0=invalid
+        {
+            if (bp.svtype != 6 && bp.svtype != 7) // 6=intra-chr-translocation; 7=translocation
+            {
+                id = _getrID(databaseIDs, bp.startSeqId);
+                // Fill and write record
+                if (_fillVcfRecord(vcf_record, bp, databases[id], id))
+                    if (writeRecord(vcfOut, vcf_record) != 0)
+                        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+                clear(vcf_record);
+            } else
+            {
+                // extra write function because we have to write 6 records here instead of 1
+                __int32 id2 = maxValue<int>();
+                id2 = _getrID(databaseIDs, bp.endSeqId);
+                if (_writeVcfTranslocation(vcfOut, bp, databases[id], databases[id2], id, id2, i))
+                        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+
+            }
+        }
+    }
+    std::cout << " completed vcf writing " << msplazerOptions.vcfOutFile << std::endl;
+    return 0;
+}
+
 
 // /////////////////////////////////////////////////////////////////////////////
 // Writes parameters from options object to std::cout

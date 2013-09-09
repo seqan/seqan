@@ -52,7 +52,8 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getArgumentValue(msplazerOptions.queryFile, parser, 1);
     // getOptionValue(msplazerOptions.queryFile2, parser, "q2");
     // getOptionValue(msplazerOptions.outDir, parser, "i");
-    getOptionValue(msplazerOptions.breakpointOutFile, parser, "bpo");
+    getOptionValue(msplazerOptions.vcfOutFile, parser, "vcf");
+    getOptionValue(msplazerOptions.gffOutFile, parser, "gff");
     getOptionValue(msplazerOptions.jobName, parser, "j");
     getOptionValue(msplazerOptions.stellarInputFile, parser, "m");
     getOptionValue(msplazerOptions.dotOut, parser, "do");
@@ -173,9 +174,13 @@ void _setupArgumentParser(ArgumentParser & parser)
 
     addSection(parser, "Output Options");
     addOption(parser,
-              ArgParseOption("bpo", "breakpointOut", "Name of breakpoint output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "bpo", "gff txt");
-    setDefaultValue(parser, "bpo", "breakpoints.gff");
+              ArgParseOption("gff", "gffOut", "Name of gff breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "gff", "gff txt");
+    setDefaultValue(parser, "gff", "breakpoints.gff");
+    addOption(parser,
+              ArgParseOption("vcf", "vcfOut", "Name of vcf breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+    setValidValues(parser, "vcf", "vcf txt");
+    setDefaultValue(parser, "vcf", "breakpoints.vcf");
 
     addOption(parser, ArgParseOption("j", "jobName", "Job/Queue name", ArgParseArgument::STRING, "STR"));
     setDefaultValue(parser, "j", "");
