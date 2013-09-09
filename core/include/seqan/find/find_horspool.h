@@ -153,7 +153,9 @@ _findHorspool(TFinder & finder,
 {
 SEQAN_CHECKPOINT
 	typedef typename Haystack<TFinder>::Type THaystack;
-	THaystack & hayst = haystack(finder);
+    typedef typename Parameter_<THaystack>::Type TParamHaystack;
+
+    TParamHaystack hayst = haystack(finder);
 
 	typedef Pattern<TNeedle2, Horspool> TPattern;
 	typedef typename Needle<TPattern>::Type TNeedle;

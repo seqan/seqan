@@ -251,8 +251,10 @@ _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
 SEQAN_CHECKPOINT
 	typedef typename Haystack<TFinder>::Type THaystack;
+    typedef typename Parameter_<THaystack>::Type TParamHaystack;
 	typedef typename Value<TNeedle>::Type TValue;
-	THaystack & hstk = haystack(finder);
+
+	TParamHaystack hstk = haystack(finder);
 
 	typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
 	THaystackIterator hayit = iter(hstk, position(finder));
