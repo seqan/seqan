@@ -4,7 +4,7 @@ gcov Output Fix Tool
 This tool can be used in nightly builds with CMake as follows.
 
 <code>
-export LD_LIBRARY_PATH=/group/agabi/software/x86_64/llvm-trunk/lib
+export LD_LIBRARY_PATH=/group/ag_abi/software/x86_64/llvm-trunk/lib
 shift
 echo "pwd = `pwd`"
 echo /usr/bin/gcov $*
