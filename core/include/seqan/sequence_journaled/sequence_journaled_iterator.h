@@ -54,7 +54,7 @@ public:
     typedef typename TJournaledString::TValue TValue;
     typedef typename JournalType<TJournaledString>::Type TJournalEntries;
     // We need a rooted iterator for iterating the journal tree since we need atEnd().
-    typedef typename Iterator<TJournalEntries, Rooted>::Type TJournalEntriesIterator;
+    typedef typename Iterator<TJournalEntries, Standard>::Type TJournalEntriesIterator;
     typedef typename Host<TJournaledString>::Type THost;
     typedef typename Iterator<THost, Standard>::Type THostIterator;
     typedef typename InsertionBuffer<TJournaledString>::Type TInsertionBuffer;
@@ -114,6 +114,38 @@ public:
     //     SEQAN_CHECKPOINT;
     //     _initJournaledStringIterator(*this, journalString);
     // }
+
+    Iter & operator=(TIterator const & other)
+    {
+        if (this != &other)
+        {
+            _journalStringPtr = other._journalStringPtr;
+            _journalEntriesIterator = other._journalEntriesIterator;
+            _hostSegmentBegin = other._hostSegmentBegin;
+            _hostSegmentEnd = other._hostSegmentEnd;
+            _currentHostIt = other._currentHostIt;
+            _insertionBufferSegmentBegin = other._insertionBufferSegmentBegin;
+            _insertionBufferSegmentEnd = other._insertionBufferSegmentEnd;
+            _currentInsertionBufferIt = other._currentInsertionBufferIt;
+        }
+        return *this;
+    }
+
+    Iter & operator=(typename IterComplementConst<TIterator>::Type const & other)
+    {
+        if (this != &other)
+        {
+            _journalStringPtr = other._journalStringPtr;
+            _journalEntriesIterator = other._journalEntriesIterator;
+            _hostSegmentBegin = other._hostSegmentBegin;
+            _hostSegmentEnd = other._hostSegmentEnd;
+            _currentHostIt = other._currentHostIt;
+            _insertionBufferSegmentBegin = other._insertionBufferSegmentBegin;
+            _insertionBufferSegmentEnd = other._insertionBufferSegmentEnd;
+            _currentInsertionBufferIt = other._currentInsertionBufferIt;
+        }
+        return *this;
+    }
 };
 
 // ============================================================================
@@ -121,6 +153,10 @@ public:
 // ============================================================================
 
 // For String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
+
+// ----------------------------------------------------------------------------
+// Metafunction Iterator                                             [Standard]
+// ----------------------------------------------------------------------------
 
 ///.Metafunction.Iterator.param.T:Spec.Journal String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
@@ -135,6 +171,40 @@ struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
     typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, JournaledStringIterSpec<TJournalSpec> > Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Iterator                                               [Rooted]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Rooted>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, JournaledStringIterSpec<TJournalSpec> > Type;
+};
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>
+{
+    typedef Iter<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, JournaledStringIterSpec<TJournalSpec> > Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournaledStringIterSpec>
+struct Value<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > >
+{
+    typedef typename GetValue<TJournaledString>::Type Type;
+};
+
+template <typename TJournaledString, typename TJournaledStringIterSpec>
+struct Value<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > const>
+        : Value<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > > {};
+
+// ----------------------------------------------------------------------------
+// Metafunction GetValue
+// ----------------------------------------------------------------------------
+
 // For Iter<TJournaledString, TJournaledStringIterSpec>
 template <typename TJournaledString, typename TJournaledStringIterSpec>
 struct GetValue<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > >
@@ -145,6 +215,10 @@ struct GetValue<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringI
 template <typename TJournaledString, typename TJournaledStringIterSpec>
 struct GetValue<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > const>
         : GetValue<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > > {};
+
+// ----------------------------------------------------------------------------
+// Metafunction Reference
+// ----------------------------------------------------------------------------
 
 template <typename TJournaledString, typename TJournaledStringIterSpec>
 struct Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > >
@@ -158,11 +232,30 @@ struct Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournaledString
     typedef typename Reference<TJournaledString>::Type Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Container
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournaledStringIterSpec>
+struct Container<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > >
+{
+    typedef TJournaledString Type;
+};
+
+template <typename TJournaledString, typename TJournaledStringIterSpec>
+struct Container<Iter<TJournaledString, JournaledStringIterSpec<TJournaledStringIterSpec> > const>
+{
+    typedef TJournaledString const Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
 
 // For String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
+// ----------------------------------------------------------------------------
+// Function begin                                                    [Standard]
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline
@@ -188,12 +281,43 @@ begin(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
     return result;
 }
 
+// ----------------------------------------------------------------------------
+// Function begin                                                      [Rooted]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline
+typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>::Type
+begin(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journalString, Rooted const &)
+{
+    SEQAN_CHECKPOINT;
+    typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>::Type TResult;
+    TResult result;
+    _initJournaledStringIterator(result, journalString);
+    return result;
+}
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline
+typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Rooted>::Type
+begin(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journalString, Rooted const &)
+{
+    SEQAN_CHECKPOINT;
+    typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Rooted>::Type TResult;
+    TResult result;
+    _initJournaledStringIterator(result, journalString);
+    return result;
+}
+
+// ----------------------------------------------------------------------------
+// Function end                                                      [Standard]
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline
 typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Standard>::Type
-end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journalString, Standard)
+end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journalString, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Standard>::Type TResult;
     TResult result;
     _initJournaledStringIteratorEnd(result, journalString);
@@ -205,12 +329,38 @@ inline
 typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Standard>::Type
 end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journalString, Standard const &)
 {
-    SEQAN_CHECKPOINT;
     typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Standard>::Type TResult;
     TResult result;
     _initJournaledStringIteratorEnd(result, journalString);
     return result;
 }
+
+// ----------------------------------------------------------------------------
+// Function end                                                        [Rooted]
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline
+typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>::Type
+end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journalString, Rooted const &)
+{
+    typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const, Rooted>::Type TResult;
+    TResult result;
+    _initJournaledStringIteratorEnd(result, journalString);
+    return result;
+}
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline
+typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Rooted>::Type
+end(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journalString, Rooted const &)
+{
+    typedef typename Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Rooted>::Type TResult;
+    TResult result;
+    _initJournaledStringIteratorEnd(result, journalString);
+    return result;
+}
+
 
 // For Iter<TJournaledString, JournaledStringIterSpec>
 
@@ -245,7 +395,7 @@ void
 _updateSegmentIterators(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
 {
     SEQAN_CHECKPOINT;
-    if (atEnd(iterator._journalEntriesIterator))
+    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
         return;
     switch (value(iterator._journalEntriesIterator).segmentSource) {
         case SOURCE_ORIGINAL:
@@ -307,6 +457,56 @@ value(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & me)
     typedef typename Reference<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type TReference;
     TReference res(me);
     return res;
+}
+
+// ----------------------------------------------------------------------------
+// Function atBegin
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline bool
+atBegin(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & me)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
+    TIterator tmpIt = begin(*me._journalStringPtr, Standard());
+    return me == tmpIt;
+}
+
+// ----------------------------------------------------------------------------
+// Function atEnd
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline bool
+atEnd(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & me)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
+    TIterator tmpIt = end(*me._journalStringPtr, Standard());
+    return me == tmpIt;
+}
+
+// ----------------------------------------------------------------------------
+// Function goBegin
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline void
+goBegin(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
+    me = begin(container(me), Standard());
+}
+
+// ----------------------------------------------------------------------------
+// Function goEnd
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline void
+goEnd(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me)
+{
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
+    me = end(container(me), Standard());
 }
 
 // assignValue
@@ -389,11 +589,14 @@ valueDestruct(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
     // TODO(holtgrew): Intentionally left blank? Copied from packed string, leads to problems with non-POD contents!
 }
 
-// position
-// TODO(rmaerker): Implements an unexpected behavior. Should return the virtual position of the current iterator not the relative position within the current node.
+// ----------------------------------------------------------------------------
+// Function entryPosition
+// ----------------------------------------------------------------------------
+
+// TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
-position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+entryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
     if (atEnd(iterator._journalEntriesIterator)) {
         return length(*iterator._journalStringPtr);
@@ -413,16 +616,14 @@ position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & 
 }
 
 // ----------------------------------------------------------------------------
-// Function _position()
+// Function position()
 // ----------------------------------------------------------------------------
 
-// Returns the virtual position of the current iterator. Note, that the
-// function position() should implement this behavior.
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
-_position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
+position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator))
+    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
         return length(*iterator._journalStringPtr);
 
     switch (value(iterator._journalEntriesIterator).segmentSource) {
@@ -438,15 +639,90 @@ _position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const &
     }
 }
 
-// setPosition
+// ----------------------------------------------------------------------------
+// Function setPosition
+// ----------------------------------------------------------------------------
+
+// TODO(rmaerker): Write test.
+// TODO(rmaerker): Write documentation.
+
 template <typename TJournaledString, typename TJournalSpec, typename TPosition>
 inline void
-setPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & /*me*/,
-            TPosition /*pos_*/)
+setPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me,
+            TPosition pos)
 {
-    SEQAN_CHECKPOINT;
-    // TODO(holtgrew): Implement me!
-    SEQAN_ASSERT_FAIL("Set position...");
+    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TJournalSequenceIter;
+    typedef typename TJournalSequenceIter::TJournalEntriesIterator TJournalEntriesIter;
+
+    SEQAN_ASSERT_GEQ(pos, static_cast<TPosition>(0));
+
+    // Handle case where pos points behind the container.
+    if (pos >= static_cast<TPosition>(length(container(me))))
+        goEnd(me);
+
+    // Look up the position in the journal entries.
+    me._journalEntriesIterator = findInJournalEntries(container(me)._journalEntries, pos);
+    // Two binary searches: First searches for insertion nodes.
+    // Second searches for Original nodes.
+
+    int offset = pos - value(me._journalEntriesIterator).virtualPosition;  // The offset from the found node.
+    switch (value(me._journalEntriesIterator).segmentSource)
+    {
+        case SOURCE_ORIGINAL:
+            me._currentHostIt = begin(host(container(me)), Standard()) + value(me._journalEntriesIterator).physicalPosition + offset;
+            me._hostSegmentBegin = me._currentHostIt - offset;
+            me._hostSegmentEnd = me._hostSegmentBegin + value(me._journalEntriesIterator).length;
+
+//            do {--it;} while(value(it).segmentSource != SOURCE_PATCH);  // Now we have to go back until we find the first insertion node to the left.
+//
+//            me._currentInsertionBufferIt = begin(container(me)._insertionBuffer, Standard()) + value(it).physicalPosition + value(it).length;
+//            me._insertionBufferSegmentBegin = me._currentInsertionBufferIt - value(it).physicalPosition;
+//            me._insertionBufferSegmentEnd = me._currentInsertionBufferIt;
+            break;
+        case SOURCE_PATCH:
+            me._currentInsertionBufferIt = begin(container(me)._insertionBuffer, Standard()) + value(me._journalEntriesIterator).physicalPosition + offset;
+            me._insertionBufferSegmentBegin = me._currentInsertionBufferIt - offset;
+            me._insertionBufferSegmentEnd = me._insertionBufferSegmentBegin + value(me._journalEntriesIterator).length;
+
+//            do {--it;} while(value(it).segmentSource != SOURCE_ORIGINAL);  // Now we have to go back until we find the first original node to the left.
+//
+//            me._currentHostIt = begin(host(container(me)), Standard()) + value(it).physicalPosition + value(it).length;
+//            me._hostSegmentBegin = me._currentHostIt - value(it).physicalPosition;
+//            me._hostSegmentEnd = me._currentHostIt;
+            break;
+        default:
+            SEQAN_ASSERT_FAIL("Unknown segment source!");
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function setContainer
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline void
+setContainer(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter,
+             typename Container<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > >::Type & container)
+{
+    iter._journalStringPtr = &container;
+}
+
+// ----------------------------------------------------------------------------
+// Function container
+// ----------------------------------------------------------------------------
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Container<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > >::Type &
+container(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter)
+{
+    return *iter._journalStringPtr;
+}
+
+template <typename TJournaledString, typename TJournalSpec>
+inline typename Container<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type &
+container(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iter)
+{
+    return *iter._journalStringPtr;
 }
 
 // getValue
@@ -525,7 +801,7 @@ inline
 Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > &
 operator--(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iterator)
 {
-    if (atEnd(iterator._journalEntriesIterator))
+    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
     {
         --iterator._journalEntriesIterator;
         _updateSegmentIteratorsLeft(iterator);
@@ -677,13 +953,13 @@ operator-=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & iter
     size_t len = len_;
 
     // Handle bad case of len_ pointing before begin.
-    if (_position(iterator) <= static_cast<TPosition>(len_)) {
+    if (position(iterator) <= static_cast<TPosition>(len_)) {
         iterator = TIterator(begin(*iterator._journalStringPtr));
         return iterator;
     }
 
     // Handle case when iterator is at positon at end
-    if (atEnd(iterator._journalEntriesIterator))
+    if (atEnd(iterator._journalEntriesIterator, _journalEntries(container(iterator))))
     {
         --iterator._journalEntriesIterator;
         _updateSegmentIteratorsLeft(iterator);
@@ -753,8 +1029,8 @@ operator-(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const &
     typedef typename Difference<TJournaledString>::Type TResult;
 
     // First, handle the cases where it1 or it2 are at the end.
-    bool it1AtEnd = atEnd(it1._journalEntriesIterator);
-    bool it2AtEnd = atEnd(it2._journalEntriesIterator);
+    bool it1AtEnd = atEnd(it1._journalEntriesIterator, _journalEntries(container(it1)));
+    bool it2AtEnd = atEnd(it2._journalEntriesIterator, _journalEntries(container(it2)));
     if (it1AtEnd && it2AtEnd) {
         return 0;
     } else if (it1AtEnd) {
@@ -822,7 +1098,7 @@ operator==(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const 
            Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & b)
 {
     SEQAN_CHECKPOINT;
-    if (atEnd(a._journalEntriesIterator) && atEnd(b._journalEntriesIterator))
+    if (atEnd(a._journalEntriesIterator, _journalEntries(container(a))) && atEnd(b._journalEntriesIterator, _journalEntries(container(b))))
         return true;
     if (a._journalEntriesIterator != b._journalEntriesIterator)
         return false;

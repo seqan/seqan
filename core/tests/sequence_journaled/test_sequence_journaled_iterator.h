@@ -308,6 +308,196 @@ void testJournaledStringIteratorDecrement(TJournalSpec const &)
     }
 }
 
+template <typename TJournalSpec>
+void testJournaledStringIteratorSetPosition(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Standard>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = begin(journal);
+        SEQAN_ASSERT_EQ(value(journalIt),'d');
+        setPosition(journalIt, 3);
+        SEQAN_ASSERT_EQ(value(journalIt),'b');
+        ++journalIt;
+        SEQAN_ASSERT_EQ(value(journalIt),'b');
+        ++journalIt;
+        SEQAN_ASSERT_EQ(value(journalIt),'c');
+        ++journalIt;
+        SEQAN_ASSERT_EQ(value(journalIt),'c');
+    }
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = begin(journal);
+        SEQAN_ASSERT_EQ(value(journalIt),'d');
+        setPosition(journalIt, 5);
+        SEQAN_ASSERT_EQ(value(journalIt),'c');
+        --journalIt;
+        SEQAN_ASSERT_EQ(value(journalIt),'b');
+        --journalIt;
+        SEQAN_ASSERT_EQ(value(journalIt),'b');
+        --journalIt;
+        SEQAN_ASSERT_EQ(value(journalIt),'a');
+    }
+}
+
+template <typename TJournalSpec>
+void testJournaledStringIteratorPosition(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Standard>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+    typedef typename Position<TIterator>::Type TPos;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = begin(journal);
+        SEQAN_ASSERT_EQ(position(journalIt), static_cast<TPos>(0));
+        setPosition(journalIt, 3);
+        SEQAN_ASSERT_EQ(position(journalIt), static_cast<TPos>(3));
+        ++journalIt;
+        SEQAN_ASSERT_EQ(position(journalIt), static_cast<TPos>(4));
+        journalIt += 2;
+        SEQAN_ASSERT_EQ(position(journalIt), static_cast<TPos>(6));
+        journalIt -= 5;
+        SEQAN_ASSERT_EQ(position(journalIt), static_cast<TPos>(1));
+    }
+}
+
+template <typename TJournalSpec>
+void testJournaledStringIteratorAtBegin(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+    typedef typename Position<TIterator>::Type TPos;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = begin(journal, Rooted());
+        SEQAN_ASSERT(atBegin(journalIt));
+        ++journalIt;
+        SEQAN_ASSERT_NOT(atBegin(journalIt));
+    }
+}
+
+template <typename TJournalSpec>
+void testJournaledStringIteratorAtEnd(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+    typedef typename Position<TIterator>::Type TPos;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = end(journal, Rooted());
+        SEQAN_ASSERT(atEnd(journalIt));
+        --journalIt;
+        SEQAN_ASSERT_NOT(atEnd(journalIt));
+    }
+}
+
+template <typename TJournalSpec>
+void testJournaledStringIteratorGoBegin(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+    typedef typename Position<TIterator>::Type TPos;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = end(journal, Rooted());
+        SEQAN_ASSERT_NOT(atBegin(journalIt));
+        goBegin(journalIt);
+        SEQAN_ASSERT(atBegin(journalIt));
+    }
+}
+
+template <typename TJournalSpec>
+void testJournaledStringIteratorGoEnd(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+    typedef typename Position<TIterator>::Type TPos;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = begin(journal, Rooted());
+        SEQAN_ASSERT_NOT(atEnd(journalIt));
+        goEnd(journalIt);
+        SEQAN_ASSERT(atEnd(journalIt));
+    }
+}
+
+template <typename TJournalSpec>
+void testJournaledStringIteratorContainer(TJournalSpec const &)
+{
+    typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
+    typedef typename Iterator<TJournalString, Standard>::Type TIterator;
+    typedef typename Host<TJournalString>::Type THost;
+    typedef typename Position<TIterator>::Type TPos;
+
+    {
+        CharString hostSeq = "aacac";
+        TJournalString journal(hostSeq);
+
+        insert(journal,2,"bb"); // aabbcac
+        erase(journal,5,6); // aaxxcc
+        insert(journal,0,"d"); //daabbcc
+
+        TIterator journalIt = begin(journal, Standard());
+        SEQAN_ASSERT_EQ(container(journalIt), journal);
+    }
+}
+
 // Tag: UnbalancedTree()
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_difference)
@@ -330,6 +520,41 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_decrement)
     testJournaledStringIteratorDecrement(UnbalancedTree());
 }
 
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_set_position)
+{
+    testJournaledStringIteratorSetPosition(UnbalancedTree());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_position)
+{
+    testJournaledStringIteratorPosition(UnbalancedTree());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_begin)
+{
+    testJournaledStringIteratorAtBegin(UnbalancedTree());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_end)
+{
+    testJournaledStringIteratorAtEnd(UnbalancedTree());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_begin)
+{
+    testJournaledStringIteratorGoBegin(UnbalancedTree());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_end)
+{
+    testJournaledStringIteratorGoEnd(UnbalancedTree());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_container)
+{
+    testJournaledStringIteratorContainer(UnbalancedTree());
+}
+
 // Tag: SortedArray()
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_difference)
@@ -350,6 +575,41 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_relations)
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_decrement)
 {
     testJournaledStringIteratorDecrement(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_set_position)
+{
+    testJournaledStringIteratorSetPosition(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_position)
+{
+    testJournaledStringIteratorPosition(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_at_begin)
+{
+    testJournaledStringIteratorAtBegin(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_at_end)
+{
+    testJournaledStringIteratorAtEnd(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_begin)
+{
+    testJournaledStringIteratorGoBegin(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_end)
+{
+    testJournaledStringIteratorGoEnd(SortedArray());
+}
+
+SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_iterator_rooted_container)
+{
+    testJournaledStringIteratorContainer(SortedArray());
 }
 
 #endif  // TEST_SEQUENCE_JOURNALED_TEST_SEQUENCE_JOURNALED_ITERATOR_H_

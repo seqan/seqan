@@ -1012,6 +1012,24 @@ _setLength(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & jo
     journaledString._length = newLength;
 }
 
+// ----------------------------------------------------------------------------
+// Function _journalEntries
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline typename JournalType<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >::Type &
+_journalEntries(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journaledString)
+{
+    return journaledString._journalEntries;
+}
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline typename JournalType<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const>::Type &
+_journalEntries(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journaledString)
+{
+    return journaledString._journalEntries;
+}
+
 // --------------------------------------------------------------------------
 // Function replace()
 // --------------------------------------------------------------------------

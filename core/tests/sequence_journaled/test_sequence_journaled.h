@@ -701,7 +701,7 @@ void testJournaledStringCopyConstructor(TStringJournalSpec const &)
 }
 
 template <typename TStringJournalSpec>
-void testJournaledStringBeginEndIterator(TStringJournalSpec const &)
+void testJournaledStringBeginEndIteratorStandard(TStringJournalSpec const &)
 {
     CharString charStr = "test";
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
@@ -712,13 +712,37 @@ void testJournaledStringBeginEndIterator(TStringJournalSpec const &)
 
     {  // Test pre-increment iteration.
         CharString buffer;
-        for (TIterator it = begin(journaledString), itend = end(journaledString); it != itend; ++it)
+        for (TIterator it = begin(journaledString, Standard()), itend = end(journaledString, Standard()); it != itend; ++it)
             appendValue(buffer, *it);
         SEQAN_ASSERT_EQ("teXst", buffer);
     }
     {  // Test post-increment iteration.
         CharString buffer;
-        for (TIterator it = begin(journaledString), itend = end(journaledString); it != itend; it++)
+        for (TIterator it = begin(journaledString, Standard()), itend = end(journaledString, Standard()); it != itend; it++)
+            appendValue(buffer, *it);
+        SEQAN_ASSERT_EQ("teXst", buffer);
+    }
+}
+
+template <typename TStringJournalSpec>
+void testJournaledStringBeginEndIteratorRooted(TStringJournalSpec const &)
+{
+    CharString charStr = "test";
+    typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
+    TJournaledString journaledString(charStr);
+    insert(journaledString, 2, 'X');
+
+    typedef typename Iterator<TJournaledString, Rooted>::Type TIterator;
+
+    {  // Test pre-increment iteration.
+        CharString buffer;
+        for (TIterator it = begin(journaledString, Rooted()), itend = end(journaledString, Rooted()); it != itend; ++it)
+            appendValue(buffer, *it);
+        SEQAN_ASSERT_EQ("teXst", buffer);
+    }
+    {  // Test post-increment iteration.
+        CharString buffer;
+        for (TIterator it = begin(journaledString, Rooted()), itend = end(journaledString, Rooted()); it != itend; it++)
             appendValue(buffer, *it);
         SEQAN_ASSERT_EQ("teXst", buffer);
     }
@@ -1190,7 +1214,8 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_copy_constructor) {
 
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_unbalanced_tree_begin_end_iterator) {
-    testJournaledStringBeginEndIterator(UnbalancedTree());
+    testJournaledStringBeginEndIteratorStandard(UnbalancedTree());
+    testJournaledStringBeginEndIteratorRooted(UnbalancedTree());
 }
 
 
@@ -1302,7 +1327,8 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_copy_constructor) {
 
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_begin_end_iterator) {
-    testJournaledStringBeginEndIterator(SortedArray());
+    testJournaledStringBeginEndIteratorStandard(SortedArray());
+    testJournaledStringBeginEndIteratorRooted(SortedArray());
 }
 
 

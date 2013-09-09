@@ -69,8 +69,17 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
     SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_sum);
     SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_difference);
     SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_relations);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_decrement);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_set_position);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_position);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_begin);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_at_end);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_begin);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_go_end);
+    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_rooted_container);
+
     // TODO(rmaerker): Problems with implementation of end in unbalanced trees, however, unbalanced trees ought be deprecated right now.
-//    SEQAN_CALL_TEST(test_sequence_journaled_unbalanced_tree_iterator_decrement);
+
 
     // Call tests of the sequence journal with sorted array journals.
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_assign);
@@ -101,5 +110,13 @@ SEQAN_BEGIN_TESTSUITE(test_sequence_journaled) {
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_difference);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_relations);
     SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_decrement);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_set_position);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_position);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_at_begin);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_at_end);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_begin);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_go_end);
+    SEQAN_CALL_TEST(test_sequence_journaled_sorted_array_iterator_rooted_container);
+
 }
 SEQAN_END_TESTSUITE

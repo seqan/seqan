@@ -432,35 +432,29 @@ operator--(Iter<TJournalEntries, JournalEntriesIterSpec<UnbalancedTree> > & iter
     
     // The following comments are from the point of perspective of having
     // performed an increment in the previous step.
-    TNode const * parent;
     switch (iterator._iterationDirection) {
         case DIRECTION_DOWN_RIGHT:
         case DIRECTION_DOWN_LEFT:
-            // Arrived here in a right-left traversal.  Reverse this by
-            // going up until we went up from a right child.
-            while (goUp(iterator) && iterator._iterationDirection != DIRECTION_UP_RIGHT)
-                continue;
-            // Next, update iteration direction such that going up and then
-            // down the same edge would lead to current node.
-            parent = iterator._currentNode->parent;
-            if (parent == 0) {
-                iterator._iterationDirection = DIRECTION_DOWN_LEFT;
-            } else {
-                if (parent->left == iterator._currentNode) {
+        case DIRECTION_UP_RIGHT:
+            // If we have a left child, we first go into the left child and then to the right
+            // until we are in the right most leaf of the left child.
+            if (goLeft(iterator))
+            {
+                while(goRight(iterator))
+                    continue;
+            }
+            else
+            {  // Otherwise we go up the tree until we used the direction up left.
+                while (goUp(iterator) && iterator._iterationDirection == DIRECTION_UP_LEFT)
+                    continue;
+                if (iterator._currentNode->parent == 0)
                     iterator._iterationDirection = DIRECTION_DOWN_LEFT;
-                } else {
-                    SEQAN_ASSERT_EQ(parent->right, iterator._currentNode);
-                    iterator._iterationDirection = DIRECTION_DOWN_RIGHT;
-                }
             }
             break;
         case DIRECTION_UP_LEFT:
             // We came up from our left child.  Next in going to predecessor
             // is going back to the left child.
             goLeft(iterator);
-            break;
-        case DIRECTION_UP_RIGHT:
-            SEQAN_ASSERT_FAIL("Should probably not happen.");
             break;
         default:
             SEQAN_ASSERT_FAIL("Invalid iteration direction.");

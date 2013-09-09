@@ -74,7 +74,6 @@ struct Iterator<JournalEntries<TCargo, SortedArray>, Standard>
     typedef typename Iterator<String<TCargo>, Standard>::Type Type;
 };
 
-
 template <typename TCargo>
 struct Iterator<JournalEntries<TCargo, SortedArray> const, Standard>
 {
@@ -103,6 +102,25 @@ template <typename TCargo>
 struct Reference<JournalEntries<TCargo, SortedArray> const>
 {
     typedef TCargo const & Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction
+// ----------------------------------------------------------------------------
+
+template <typename TJournalEntries>
+struct GetCargoString_{};
+
+template <typename TCargo>
+struct GetCargoString_<JournalEntries<TCargo, SortedArray> >
+{
+    typedef String<TCargo> Type;
+};
+
+template <typename TCargo>
+struct GetCargoString_<JournalEntries<TCargo, SortedArray> const>
+{
+    typedef String<TCargo> const Type;
 };
 
 // ============================================================================
@@ -254,7 +272,7 @@ findInJournalEntries(JournalEntries<TCargo, SortedArray> & journalEntries,
     typedef typename Iterator<String<TCargo>, Standard>::Type TIterator;
     typedef JournalEntryLtByVirtualPos<TPos_, TSize> TCmp;
 
-    if (pos >= back(journalEntries._journalNodes).virtualPosition)
+    if (pos >= static_cast<TPos>(back(journalEntries._journalNodes).virtualPosition))
         return end(journalEntries._journalNodes, Standard()) - 1;
 
     TCargo refCargo;
