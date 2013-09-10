@@ -493,7 +493,6 @@ template <typename TJournaledString, typename TJournalSpec>
 inline void
 goBegin(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me)
 {
-    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
     me = begin(container(me), Standard());
 }
 
@@ -505,7 +504,6 @@ template <typename TJournaledString, typename TJournalSpec>
 inline void
 goEnd(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me)
 {
-    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TIterator;
     me = end(container(me), Standard());
 }
 
@@ -619,6 +617,7 @@ entryPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > con
 // Function position()
 // ----------------------------------------------------------------------------
 
+// TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec>
 inline typename Position<Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const>::Type
 position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & iterator)
@@ -643,52 +642,35 @@ position(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const & 
 // Function setPosition
 // ----------------------------------------------------------------------------
 
-// TODO(rmaerker): Write test.
-// TODO(rmaerker): Write documentation.
-
+// TODO(rmaerker): Write documentation!
 template <typename TJournaledString, typename TJournalSpec, typename TPosition>
 inline void
 setPosition(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > & me,
             TPosition pos)
 {
-    typedef Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > TJournalSequenceIter;
-    typedef typename TJournalSequenceIter::TJournalEntriesIterator TJournalEntriesIter;
-
     SEQAN_ASSERT_GEQ(pos, static_cast<TPosition>(0));
 
     // Handle case where pos points behind the container.
     if (pos >= static_cast<TPosition>(length(container(me))))
         goEnd(me);
 
-    // Look up the position in the journal entries.
+    // Use binary search to find corresponding node.
     me._journalEntriesIterator = findInJournalEntries(container(me)._journalEntries, pos);
-    // Two binary searches: First searches for insertion nodes.
-    // Second searches for Original nodes.
 
-    int offset = pos - value(me._journalEntriesIterator).virtualPosition;  // The offset from the found node.
+    int offset = pos - value(me._journalEntriesIterator).virtualPosition;  // The offset within the current node.
     switch (value(me._journalEntriesIterator).segmentSource)
     {
         case SOURCE_ORIGINAL:
-            me._currentHostIt = begin(host(container(me)), Standard()) + value(me._journalEntriesIterator).physicalPosition + offset;
+            me._currentHostIt = begin(host(container(me)), Standard()) +
+                                value(me._journalEntriesIterator).physicalPosition + offset;
             me._hostSegmentBegin = me._currentHostIt - offset;
             me._hostSegmentEnd = me._hostSegmentBegin + value(me._journalEntriesIterator).length;
-
-//            do {--it;} while(value(it).segmentSource != SOURCE_PATCH);  // Now we have to go back until we find the first insertion node to the left.
-//
-//            me._currentInsertionBufferIt = begin(container(me)._insertionBuffer, Standard()) + value(it).physicalPosition + value(it).length;
-//            me._insertionBufferSegmentBegin = me._currentInsertionBufferIt - value(it).physicalPosition;
-//            me._insertionBufferSegmentEnd = me._currentInsertionBufferIt;
             break;
         case SOURCE_PATCH:
-            me._currentInsertionBufferIt = begin(container(me)._insertionBuffer, Standard()) + value(me._journalEntriesIterator).physicalPosition + offset;
+            me._currentInsertionBufferIt = begin(container(me)._insertionBuffer, Standard()) +
+                                           value(me._journalEntriesIterator).physicalPosition + offset;
             me._insertionBufferSegmentBegin = me._currentInsertionBufferIt - offset;
             me._insertionBufferSegmentEnd = me._insertionBufferSegmentBegin + value(me._journalEntriesIterator).length;
-
-//            do {--it;} while(value(it).segmentSource != SOURCE_ORIGINAL);  // Now we have to go back until we find the first original node to the left.
-//
-//            me._currentHostIt = begin(host(container(me)), Standard()) + value(it).physicalPosition + value(it).length;
-//            me._hostSegmentBegin = me._currentHostIt - value(it).physicalPosition;
-//            me._hostSegmentEnd = me._currentHostIt;
             break;
         default:
             SEQAN_ASSERT_FAIL("Unknown segment source!");

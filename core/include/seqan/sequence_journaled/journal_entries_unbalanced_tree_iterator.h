@@ -420,7 +420,6 @@ Iter<TJournalEntries, JournalEntriesIterSpec<UnbalancedTree> > &
 operator--(Iter<TJournalEntries, JournalEntriesIterSpec<UnbalancedTree> > & iterator)
 {
     SEQAN_CHECKPOINT;
-    typedef typename TJournalEntries::TNode TNode;
     
     // If we are at the end, go to the last vertex.
     if (atEnd(iterator)) {
