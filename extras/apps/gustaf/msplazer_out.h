@@ -370,7 +370,7 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=DEL";
-    ss << ";SVLEN=-" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";SVLEN=-" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
@@ -399,7 +399,7 @@ inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSeque
     std::stringstream ss;
     ss << "SVTYPE=INV";
     ss << ";END=" << bp.endSeqPos;
-    ss << ";SVLEN=" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
@@ -426,7 +426,7 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
     std::stringstream ss;
     ss << "SVTYPE=DUP";
     ss << ";END=" << bp.endSeqPos;
-    ss << ";SVLEN=" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
@@ -447,13 +447,15 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
+    typedef typename TBreakpoint::TPos TPos;
     record.rID = id;
     record.beginPos = bp.startSeqPos;
     record.filter = "PASS";
     std::stringstream ss;
+    TPos svlen = abs(bp.endSeqPos-bp.startSeqPos);
     ss << "SVTYPE=DUP";
     ss << ";END=" << bp.endSeqPos;
-    ss << ";SVLEN=" << abs(bp.endSeqPos-bp.startSeqPos);
+    ss << ";SVLEN=" << svlen;
 //    ss << ";TARGETPOS=" << bp.dupTargetPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
