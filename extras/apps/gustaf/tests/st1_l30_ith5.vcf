@@ -1,0 +1,24 @@
+##fileformat=VCFv4.1
+##source=GUSTAF
+##reference=adeno.fa
+##reads=adeno_modified_reads.fa
+##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
+##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=EVENT,Number=1,Type=String,Description="Event identifier for breakends.">
+##INFO=<ID=TARGETPOS,Number=1,Type=String,Description="Target position for duplications.">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Number of Supporting Reads/Read Depth for Variant">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=DUP:TANDEM,Description="Tandem Duplication">
+##contig=<ID=gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome,length=4718>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	211	.	G	<INV>	.	PASS	SVTYPE=INV;END=280;SVLEN=70;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	422	.	GGTGGCCGAGAAGGAATGGGAGCTGCCCCCGGATTCTGACATGGATCTGAATCTGATTGAGCAGGCACCC	G	.	PASS	SVTYPE=DEL;SVLEN=-69;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	910	.	A	ACTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTTCCCTTT	.	PASS	SVTYPE=INS;SVLEN=70;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1194	.	CCCGCTCCGCCCGCGGACATTAAAACCAACCGCATCTACCGCATCCTGGAGCTGAACGGCTACGAACCTGC	C	.	PASS	SVTYPE=DEL;SVLEN=-70;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1468	BND_4_1	G	G.	.	PASS	SVTYPE=BND;EVENT=Trans4;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1469	BND_4_2	G	]gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome:1888]G	.	PASS	SVTYPE=BND;EVENT=Trans4;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1888	BND_4_5	A	A[gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome:1469[	.	PASS	SVTYPE=BND;EVENT=Trans4;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1889	BND_4_6	G	.G	.	PASS	SVTYPE=BND;EVENT=Trans4;DP=1	.	1
+gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome	1474	.	GCAAGATGACGGCCAAGGTCGTGGAGTCCGCCAAGGCCATTCTCGGCGGCAGCAAGGTGCGCGTGGACCAAAAGTGCAAGTCGTCCGCCCAGATCGACCCCACCCCCGTGATCGTCACCTCCAACACCAACATGTGCGCCGTGATTGACGGGAACAGCACCACCTTCGAGCACCAGCAGCCGTTGCAGGACCGGATGTTCAAATTTGAACTCACCCGCCGTCTGGAGCATGACTTTGGCAAGGTGACAAAGCAGGAAGTCAAAGAGTTCTTCCGCTGGGCGCAGGATCACGTGACCGAGGTGGCGCATGAGTTCTACGTCAGAAAGGGTGGAGCCAACAAAAGACCCG	G	.	PASS	SVTYPE=DEL;SVLEN=-347;DP=1	.	1
