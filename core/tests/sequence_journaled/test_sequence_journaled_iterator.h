@@ -316,7 +316,7 @@ void testJournaledStringIteratorSetPosition(TJournalSpec const &)
     typedef typename Host<TJournalString>::Type THost;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -336,7 +336,7 @@ void testJournaledStringIteratorSetPosition(TJournalSpec const &)
     }
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -365,7 +365,7 @@ void testJournaledStringIteratorPosition(TJournalSpec const &)
     typedef typename Position<TIterator>::Type TPos;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -391,10 +391,9 @@ void testJournaledStringIteratorAtBegin(TJournalSpec const &)
     typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
-    typedef typename Position<TIterator>::Type TPos;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -414,10 +413,9 @@ void testJournaledStringIteratorAtEnd(TJournalSpec const &)
     typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
-    typedef typename Position<TIterator>::Type TPos;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -437,10 +435,9 @@ void testJournaledStringIteratorGoBegin(TJournalSpec const &)
     typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
-    typedef typename Position<TIterator>::Type TPos;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -460,10 +457,9 @@ void testJournaledStringIteratorGoEnd(TJournalSpec const &)
     typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Rooted>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
-    typedef typename Position<TIterator>::Type TPos;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
@@ -486,7 +482,7 @@ void testJournaledStringIteratorContainer(TJournalSpec const &)
     typedef typename Position<TIterator>::Type TPos;
 
     {
-        CharString hostSeq = "aacac";
+        THost hostSeq = "aacac";
         TJournalString journal(hostSeq);
 
         insert(journal,2,"bb"); // aabbcac
