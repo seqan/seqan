@@ -92,10 +92,9 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   with an error rate of 0.05 (i.e. 5% errors, an identity of 95%) and a
   minimal length of 100, and dump all local alignments in an output file named
   "stellar.gff" (see Stellar Readme).
-  
+
   Two output files will be generated: breakpoint.gff includes all structural
-  variant breakpoints in GFF format, indel.gff includes small indel (usually
-  <10bp) in GFF format.
+  variant breakpoints in GFF format, breakpoint.vcf in VCF format.
 
   The default behaviour can be modified by adding the following options to
   the command line.
@@ -192,6 +191,14 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
 3.3 Output Options
 ---------------------------------------------------------------------------
 
+  [ -gff ],  [ --gffOut ]
+
+  Option to set name of GFF output file.
+
+  [ -vcf ],  [ --vcfOut ]
+
+  Option to set name of VCF output file.
+
   [ -j ],  [ --jobName ]
 
   Optional jobname that will be added to all dot output files in the format
@@ -207,7 +214,8 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
 4. Output Formats
 ---------------------------------------------------------------------------
 
-Gustaf currently supports the GFF output format for reporting breakpoints.
+Gustaf currently supports the GFF and the VCF output format for reporting
+breakpoints.
 
 ---------------------------------------------------------------------------
 4.1. General Feature Format (GFF)
@@ -257,6 +265,13 @@ For matches on the reverse strand, GBEGIN and GEND are positions on the
 related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
 
 ---------------------------------------------------------------------------
+4.2. Variant Call Format (VCF)
+---------------------------------------------------------------------------
+
+See http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-
+variant-call-format-version-41
+for information about the VCF file format specifications.
+---------------------------------------------------------------------------
 5. Example
 ---------------------------------------------------------------------------
 
@@ -269,10 +284,11 @@ Stellar output file 'stellar.gff' computed by calling
 
 The default calls for Gustaf would then be
 
-    ./gustaf adeno.fa adeno_modified_reads.fa -st 1 -l 30 -bpo st1_l30.gff
+    ./gustaf adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gff st1_l30.gff \
+      -vcf st1_l30.vcf
 or
     ./gustaf adeno.fa adeno_modified_reads.fa -st 1 -m stellar.gff \
-      -bpo st1_l30_m.gff
+      -gff st1_l30_m.gff -vcf st1_l30.vcf
 
 Both calls produce an output file containing the same breakpoints.
 In the first run, Gustaf internally calls Stellar with parameter -l 30.
