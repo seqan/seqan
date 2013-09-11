@@ -417,29 +417,50 @@ operator<<(TStream & stream, String<TValue, Journaled<THostSpec, TJournalSpec, T
 // ----------------------------------------------------------------------------
 
 // Assignment of two identical journaled strings.
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
-inline
-void
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec,
+          typename TExpand>
+inline void
 assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
-       String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
+       String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source,
+       Tag<TExpand> /*tag*/)
 {
     set(target, source);
 }
 
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
-inline
-void
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline void
+assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
+       String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
+{
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TTarget;
+    assign(target, source, DefaultOverflowImplicit<TTarget>::Type());
+}
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec,
+          typename TExpand>
+inline void
+assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
+       String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & source,
+       Tag<TExpand>)
+{
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TSource;
+    assign(target, static_cast<TSource const &>(source), Tag<TExpand>());
+}
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+inline void
 assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
        String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & source)
 {
-    assign(target, static_cast<TSource const &>(source));
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TTarget;
+    assign(target, source, typename DefaultOverflowImplicit<TTarget>::Type());
 }
 
-// Assignment of a journald string with anothe string type always resizes the
+// Assignment of a journaled string with another string type always resizes the
 // insertion buffer and copies the contents of source into the insertion buffer.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
-inline
-void
+inline void
 assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
        TSource const & source)
 {
@@ -449,8 +470,7 @@ assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSource>
-inline
-void
+inline void
 assign(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
        TSource & source)
 {
@@ -471,10 +491,10 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
     String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & source)
 {
     SEQAN_CHECKPOINT;
-    target._holder = source._holder;
-    target._insertionBuffer = source._insertionBuffer;
-    target._journalEntries = source._journalEntries;
-    target._length = source._length;
+    assign(target._holder, source._holder);
+    assign(target._insertionBuffer, source._insertionBuffer);
+    assign(target._journalEntries, source._journalEntries);
+    assign(target._length, source._length);
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
