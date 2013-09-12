@@ -479,7 +479,6 @@ void testJournaledStringIteratorContainer(TJournalSpec const &)
     typedef String<char, Journaled<Alloc<>,TJournalSpec> > TJournalString;
     typedef typename Iterator<TJournalString, Standard>::Type TIterator;
     typedef typename Host<TJournalString>::Type THost;
-    typedef typename Position<TIterator>::Type TPos;
 
     {
         THost hostSeq = "aacac";
