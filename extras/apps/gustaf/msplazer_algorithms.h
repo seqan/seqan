@@ -169,7 +169,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
 
     int cargo = 0;
     resize(queryBreakpoints.slotLookupTable, 2 * length(queryMatches.matches));
-    // Adding edges to start vertex
+    // Adding edges to start and end vertices
     for (unsigned i = 0; i < length(queryMatches.matches); ++i)
     {
         cargo = static_cast<int>(queryMatches.matches[i].begin2);

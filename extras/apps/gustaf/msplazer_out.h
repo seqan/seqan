@@ -331,7 +331,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
         }
     }
 
-    std::cout << " completed writing " << msplazerOptions.gffOutFile << std::endl;
+    std::cout << " completed gff writing " << msplazerOptions.gffOutFile << std::endl;
     return 0;
 }
 
@@ -343,6 +343,7 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=INS";
+    SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Insertion end position smaller than begin position!");
     ss << ";SVLEN=" << length(bp.insertionSeq);
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -370,6 +371,7 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     record.filter = "PASS";
     std::stringstream ss;
     ss << "SVTYPE=DEL";
+    SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Deletion end position smaller than begin position!");
     ss << ";SVLEN=-" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -399,6 +401,7 @@ inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSeque
     std::stringstream ss;
     ss << "SVTYPE=INV";
     ss << ";END=" << bp.endSeqPos;
+    SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Inversion end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -426,6 +429,7 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
     std::stringstream ss;
     ss << "SVTYPE=DUP";
     ss << ";END=" << bp.endSeqPos;
+    SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Tandem duplication end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -447,15 +451,14 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
 template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
-    typedef typename TBreakpoint::TPos TPos;
     record.rID = id;
     record.beginPos = bp.startSeqPos;
     record.filter = "PASS";
     std::stringstream ss;
-    TPos svlen = abs(bp.endSeqPos-bp.startSeqPos);
     ss << "SVTYPE=DUP";
     ss << ";END=" << bp.endSeqPos;
-    ss << ";SVLEN=" << svlen;
+    SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Duplication end position smaller than begin position!");
+    ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
 //    ss << ";TARGETPOS=" << bp.dupTargetPos;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -548,7 +551,6 @@ inline bool _fillVcfRecord(VcfRecord & record, TBreakpoint & bp, TSequence & ref
 template <typename TBreakpoint, typename TSequence>
 inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequence & ref, TSequence & ref2, unsigned id, unsigned id2, unsigned bp_id)
 {
-    std::cerr << "write translocation record" << std::endl;
     // Translocation is encoded with 6 breakend entries (or 4 in the case where the "middle" position
     // of the translocation is not known)
     typedef typename TBreakpoint::TId TId;
@@ -602,7 +604,6 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
         return 1;
     }
-    std::cerr << "First translocation record" << std::endl;
     clear(record.ref);
     clear(record.alt);
 
@@ -641,7 +642,6 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
         return 1;
     }
-    std::cerr << "2nd translocation record" << std::endl;
     clear(record.ref);
     clear(record.alt);
 
@@ -683,8 +683,6 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
             std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
             return 1;
         }
-    std::cerr << "3rd translocation record" << std::endl;
-    //std::cerr << record << std::endl;
         clear(record.ref);
         clear(record.alt);
 
@@ -714,8 +712,6 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
             std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
             return 1;
         }
-    std::cerr << "4th translocation record" << std::endl;
-    //std::cerr << record << std::endl;
         clear(record.ref);
         clear(record.alt);
 
@@ -757,8 +753,6 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
         return 1;
     }
-    std::cerr << "5th translocation record" << std::endl;
-    //std::cerr << record << std::endl;
     clear(record.ref);
     clear(record.alt);
 
@@ -802,8 +796,6 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
         return 1;
     }
-    std::cerr << "6th translocation record" << std::endl;
-    // std::cerr << record << std::endl;
     clear(record.ref);
     clear(record.alt);
 
@@ -894,7 +886,6 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint bp = globalBreakpoints[i];
-        std::cerr << bp << std::endl;
         if (bp.svtype != 0 && bp.support >= msplazerOptions.support) // 0=invalid
         {
             if (bp.svtype != 6 && bp.svtype != 7) // 6=intra-chr-translocation; 7=translocation

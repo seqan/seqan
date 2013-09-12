@@ -285,7 +285,7 @@ struct Breakpoint
 // Class SparsePropertyMap
 // ----------------------------------------------------------------------------
 
-// Sparse property map class: A property map that has only a few object or where most of the object would be empty
+// Sparse property map class: A property map that has only a few objects or where most of the object would be empty
 /**
 .Class.SparsePropertyMap
 ..summary:Stores only a partial property map, instead of one with many empty entries, and a lookup table for the
@@ -345,6 +345,8 @@ struct Value<SparsePropertyMap<TValue, TPos> const>
 // ----------------------------------------------------------------------------
 
 // Container for storing chaining graph, matchDistanceScores, start and end vertex for one read
+// Vertex descriptor value of each vertex in the graph corresponds to the position of the stellar match within
+// container for Stellar matches (Query Matches)
 template <typename TGraph_, typename TVertexDescriptor_, typename TScoreAlloc_, typename TSparsePropertyMap_,
           typename TMatchAlloc_>
 struct MSplazerChain
