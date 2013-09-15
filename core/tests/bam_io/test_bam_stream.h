@@ -89,7 +89,7 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::BamStream bamIO(toCString(filePath), seqan::BamStream::READ);
+    seqan::BamStream bamIO(toCString(filePath));
     SEQAN_ASSERT(isGood(bamIO));
 
     seqan::BamAlignmentRecord record;
@@ -122,7 +122,45 @@ void testBamIOBamStreamReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(alignments[0].qual, "!!!!!!!!!!");
     SEQAN_ASSERT_EQ(length(alignments[0].tags), 0u);
 
-    // TODO(holtgrew): Check more alignments?
+    SEQAN_ASSERT_EQ(alignments[1].qName, "READ0");
+    SEQAN_ASSERT_EQ(alignments[1].flag, 1);
+    SEQAN_ASSERT_EQ(alignments[1].rID, 0);
+    SEQAN_ASSERT_EQ(alignments[1].beginPos, 1);
+    SEQAN_ASSERT_EQ(alignments[1].mapQ, 8);
+    SEQAN_ASSERT_EQ(length(alignments[1].cigar), 3u);
+    SEQAN_ASSERT_EQ(alignments[1].cigar[0].count, 5u);
+    SEQAN_ASSERT_EQ(alignments[1].cigar[0].operation, 'M');
+    SEQAN_ASSERT_EQ(alignments[1].cigar[1].count, 1u);
+    SEQAN_ASSERT_EQ(alignments[1].cigar[1].operation, 'I');
+    SEQAN_ASSERT_EQ(alignments[1].cigar[2].count, 4u);
+    SEQAN_ASSERT_EQ(alignments[1].cigar[2].operation, 'M');
+    SEQAN_ASSERT_EQ(alignments[1].rNextId, 0);
+    SEQAN_ASSERT_EQ(alignments[1].pNext, 30);
+    SEQAN_ASSERT_EQ(alignments[1].tLen, 40);
+    SEQAN_ASSERT_EQ(alignments[1].seq, "AAAAAAAAAA");
+    SEQAN_ASSERT_EQ(alignments[1].qual, "!!!!!!!!!!");
+    SEQAN_ASSERT_EQ(length(alignments[1].tags), 0u);
+
+    SEQAN_ASSERT_EQ(alignments[2].qName, "READ0");
+    SEQAN_ASSERT_EQ(alignments[2].flag, 3);
+    SEQAN_ASSERT_EQ(alignments[2].rID, 0);
+    SEQAN_ASSERT_EQ(alignments[2].beginPos, 2);
+    SEQAN_ASSERT_EQ(alignments[2].mapQ, 8);
+    SEQAN_ASSERT_EQ(length(alignments[2].cigar), 3u);
+    SEQAN_ASSERT_EQ(alignments[2].cigar[0].count, 5u);
+    SEQAN_ASSERT_EQ(alignments[2].cigar[0].operation, 'M');
+    SEQAN_ASSERT_EQ(alignments[2].cigar[1].count, 1u);
+    SEQAN_ASSERT_EQ(alignments[2].cigar[1].operation, 'I');
+    SEQAN_ASSERT_EQ(alignments[2].cigar[2].count, 4u);
+    SEQAN_ASSERT_EQ(alignments[2].cigar[2].operation, 'M');
+    SEQAN_ASSERT_EQ(alignments[2].rNextId, -1);
+    SEQAN_ASSERT_EQ(alignments[2].pNext, 2147483647);
+    SEQAN_ASSERT_EQ(alignments[2].tLen, 0);
+    SEQAN_ASSERT_EQ(alignments[2].seq, "AAAAAAAAAA");
+    SEQAN_ASSERT_EQ(alignments[2].qual, "!!!!!!!!!!");
+    SEQAN_ASSERT_EQ(length(alignments[2].tags), 0u);
+
+    SEQAN_ASSERT_EQ(bamIO._nameStore[0], "REFERENCE");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_read_records)
@@ -133,6 +171,33 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_stream_sam_read_records)
 SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_records)
 {
     testBamIOBamStreamReadRecords("/core/tests/bam_io/small.bam");
+}
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_stream_bam_read_ex1)
+{
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/core/tests/bam_io/ex1.bam");
+
+    seqan::BamStream bamIO(toCString(filePath));
+    SEQAN_ASSERT(isGood(bamIO));
+
+    SEQAN_ASSERT_EQ(nameStore(bamIO.bamIOContext)[0], "seq1");
+    SEQAN_ASSERT_EQ(nameStore(bamIO.bamIOContext)[1], "seq2");
+    SEQAN_ASSERT_EQ(bamIO.bamIOContext.translateFile2GlobalRefId[0], 0u);
+    SEQAN_ASSERT_EQ(bamIO.bamIOContext.translateFile2GlobalRefId[1], 1u);
+
+    seqan::BamAlignmentRecord record;
+    seqan::String<int> counts;
+    resize(counts, 2, 0);
+    while (!atEnd(bamIO))
+    {
+        SEQAN_ASSERT_EQ(readRecord(record, bamIO), 0);
+        ++counts[record.rID];
+//        seqan::CharString name = nameStore(bamIO.bamIOContext)[record.rID];
+//        std::cout << "Chrom: " << name << " (" << record.rID << ")" << std::endl;
+    }
+    SEQAN_ASSERT_EQ(counts[0], 1501);
+    SEQAN_ASSERT_EQ(counts[1], 1806);
 }
 
 // ---------------------------------------------------------------------------

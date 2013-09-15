@@ -199,7 +199,10 @@ int readRecord(BamHeader & header,
         // Append contig name to name store, if not known already.
         typename Size<TNameStore>::Type globalRId = 0;
         if (!getIdByName(nameStore(context), name, globalRId, nameStoreCache(context)))
+        {
+            globalRId = length(nameStore(context));
             appendName(nameStore(context), name, nameStoreCache(context));
+        }
         context.translateFile2GlobalRefId[i] = globalRId;
     }
 

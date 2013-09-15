@@ -41,6 +41,8 @@
 #include <seqan/store.h>
 #include <seqan/bam_io.h>
 
+// TODO(weese:) the following 2 tests are insufficient
+
 SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
 {
     using namespace seqan;

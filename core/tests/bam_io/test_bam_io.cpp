@@ -166,6 +166,7 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_file_size);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_header);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_records);
+    SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_read_ex1);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_stream_bam_write_records);
 }
