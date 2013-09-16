@@ -5,7 +5,7 @@
 int main()
 {
     std::fstream in("in.txt", std::ios::binary | std::ios::in);
-    std::fstream out("out.txt", std::ios::binary | std::ios::in);
+    std::fstream out("out.txt", std::ios::binary | std::ios::out);
 
     seqan::CharString buffer;
     resize(buffer, 1000);
