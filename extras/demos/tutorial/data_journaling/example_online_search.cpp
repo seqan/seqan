@@ -15,10 +15,14 @@ void _searchAtBorder(String<int> & hitTarget,
     typedef typename Iterator<TJournal const, Standard>::Type TJournalIterator;
 
     // Define region before the border to the next node to search for the pattern.
-    TJournalIterator nodeIter = iter(journal, entriesIt->virtualPosition + _max(0,(int)entriesIt->length - (int)length(pattern) + 1));
+    TJournalIterator nodeIter = iter(journal, entriesIt->virtualPosition +
+                                     _max(0, (int) entriesIt->length - (int) length(pattern) + 1));
     // Define end of search region.
-    TJournalIterator nodeEnd = iter(journal, _min(entriesIt->virtualPosition + entriesIt->length, length(journal) - length(pattern) + 1));
+    TJournalIterator nodeEnd = iter(journal, _min(entriesIt->virtualPosition + entriesIt->length, length(journal) -
+                                                  length(pattern) + 1));
     // Move step by step over search region.
+    if (nodeEnd == end(journal))
+        return;
     for (; nodeIter != nodeEnd; ++nodeIter)
     {
         // Define compare iterator.
@@ -193,7 +197,10 @@ void searchPattern(StringSet<String<int> > & hitSet,
     // FRAGMENT(searchPatternPart3)
     // Search for pattern in the journaled sequences.
     for (unsigned i = 0; i < length(journalSet); ++i)
+    {
+        std::cout << "Journal: " << journalSet[i] << std::endl;
         findPatternInJournalString(hitSet[i+1], journalSet[i], pattern, hitSet[0]);
+    }
 }
 
 // FRAGMENT(laodAndJoin)
@@ -251,7 +258,7 @@ int main()
     typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    String<char> seqDatabasePath = "/Users/rmaerker/Development/workspace_seqan_trunk/build/debug/sandbox/rmaerker/apps/seqGen/sequences.fasta";
+    String<char> seqDatabasePath = "/Users/rahn_r/Downloads/sequences.fasta";
     std::ifstream databaseFile(toCString(seqDatabasePath), std::ios_base::in);
     if(!databaseFile.good())
     {
