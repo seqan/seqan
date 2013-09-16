@@ -118,6 +118,7 @@ _adaptTraceSegmentsTo(String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec
             break;  // Otherwise we are in a deletion and do nothing.
         }
     }
+    _setLength(targetJournal, virtualPos);
 }
 
 }  // namespace seqan

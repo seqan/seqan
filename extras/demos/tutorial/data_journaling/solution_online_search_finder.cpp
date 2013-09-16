@@ -149,10 +149,7 @@ void searchPattern(StringSet<String<int> > & hitSet,
 
     // Search for pattern in the journaled sequences.
     for (unsigned i = 0; i < length(journalSet); ++i)
-    {
-        std::cout << "Journal: " << journalSet[i] << std::endl;
         findPatternInJournalString(hitSet[i+1], journalSet[i], pattern, hitSet[0]);
-    }
 }
 
 // FRAGMENT(laodAndJoin)
