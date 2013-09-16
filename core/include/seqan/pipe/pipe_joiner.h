@@ -130,7 +130,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const & operator*() {
             tmp.i1 = *in.in1;
             tmp.i2 = *in.in2;
-            tmp.i3 = *in.in2;
+            tmp.i3 = *in.in3;
             return tmp;
         }
         

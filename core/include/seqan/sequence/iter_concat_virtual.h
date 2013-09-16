@@ -294,7 +294,7 @@ operator++(Iter<TStringSet, ConcatVirtual<TSpec> > & me)
 }
 
 template <typename TStringSet, typename TSpec>
-inline Iter<TStringSet, ConcatVirtual<TSpec> > const &
+inline Iter<TStringSet, ConcatVirtual<TSpec> >
 operator++(Iter<TStringSet, ConcatVirtual<TSpec> > & me, int)
 {
     Iter<TStringSet, ConcatVirtual<TSpec> > before = me;
@@ -327,7 +327,7 @@ operator--(Iter<TStringSet, ConcatVirtual<TSpec> > & me)
 }
 
 template <typename TStringSet, typename TSpec>
-inline Iter<TStringSet, ConcatVirtual<TSpec> > const &
+inline Iter<TStringSet, ConcatVirtual<TSpec> >
 operator--(Iter<TStringSet, ConcatVirtual<TSpec> > & me, int)
 {
     Iter<TStringSet, ConcatVirtual<TSpec> > before = me;
