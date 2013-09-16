@@ -118,7 +118,7 @@ int main()
     typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    String<char> seqDatabasePath =  "/path/to/your/fasta/file/sequences.fasta";
+    String<char> seqDatabasePath =  "/Users/rahn_r/Downloads/sequences.fasta";
     std::ifstream databaseFile(toCString(seqDatabasePath), std::ios_base::in);
     if(!databaseFile.good())
     {

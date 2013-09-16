@@ -18,6 +18,8 @@ void _searchAtBorder(String<int> & hitTarget,
     TJournalIterator nodeIter = iter(journal, entriesIt->virtualPosition + _max(0,(int)entriesIt->length - (int)length(pattern) + 1));
     // [B] Determine last position before pattern exits the current node or reaches the end of the sequence.
     TJournalIterator nodeEnd = iter(journal, _min(entriesIt->virtualPosition + entriesIt->length, length(journal) - length(pattern) + 1));
+    if (nodeEnd == end(journal))
+        return;
     // [C] Move step by step over search region.
     for (; nodeIter != nodeEnd; ++nodeIter)
     {
@@ -36,7 +38,7 @@ void _searchAtBorder(String<int> & hitTarget,
         }
         // Report hit if found.
         if (isHit)
-            appendValue(hitTarget, position(nodeIter) + entriesIt->virtualPosition);
+            appendValue(hitTarget, position(nodeIter));
     }
 }
 
@@ -68,7 +70,7 @@ void _findInPatchNode(String<int> & hitTarget,
             }
         }
         if (isHit)
-            appendValue(hitTarget, position(patchIter) + entriesIt->virtualPosition);
+            appendValue(hitTarget, position(patchIter));
     }
 }
 
@@ -243,7 +245,7 @@ int main()
     typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    String<char> seqDatabasePath =  "/path/to/your/fasta/file/sequences.fasta";
+    String<char> seqDatabasePath =  "/Users/rahn_r/Downloads/sequences.fasta";
     std::ifstream databaseFile(toCString(seqDatabasePath), std::ios_base::in);
     if(!databaseFile.good())
     {

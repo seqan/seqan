@@ -149,7 +149,10 @@ void searchPattern(StringSet<String<int> > & hitSet,
 
     // Search for pattern in the journaled sequences.
     for (unsigned i = 0; i < length(journalSet); ++i)
+    {
+        std::cout << "Journal: " << journalSet[i] << std::endl;
         findPatternInJournalString(hitSet[i+1], journalSet[i], pattern, hitSet[0]);
+    }
 }
 
 // FRAGMENT(laodAndJoin)
@@ -206,7 +209,7 @@ int main()
     typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    String<char> seqDatabasePath = "/Users/rmaerker/Development/workspace_seqan_trunk/build/debug/sandbox/rmaerker/apps/seqGen/sequences.fasta";
+    String<char> seqDatabasePath = "/Users/rahn_r/Downloads/sequences.fasta";
 //    String<char> seqDatabasePath =  "/path/to/your/fasta/file/sequences.fasta";
     std::ifstream databaseFile(toCString(seqDatabasePath), std::ios_base::in);
     if(!databaseFile.good())
@@ -224,7 +227,7 @@ int main()
     // Define a pattern and start search.
     StringSet<String<int> > hitSet;
     TSequence pattern = "GTGGT";
-    std::cout << "Search for: " << pattern << ":\n";
+    std::cout << "Search for: " << pattern << "\n";
     searchPattern(hitSet, journalSet, pattern);
 
 
