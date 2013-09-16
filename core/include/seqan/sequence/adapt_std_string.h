@@ -743,6 +743,13 @@ resize(
     return me.length();
 }
 
+inline char const *
+toCString(std::string const & me)
+{
+    SEQAN_CHECKPOINT;
+    return me.c_str();
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_ADAPT_STD_STRING_H_

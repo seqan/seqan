@@ -45,16 +45,6 @@
 namespace seqan {
 
 // ----------------------------------------------------------------------------
-// Function toCString()
-// ----------------------------------------------------------------------------
-
-// TODO(aiche): move to stl_adapter
-inline char const * toCString(std::string const & me)
-{
-    return me.c_str();
-}
-
-// ----------------------------------------------------------------------------
 // Function _tryCast()
 // ----------------------------------------------------------------------------
 template <typename TTarget, typename TString>
