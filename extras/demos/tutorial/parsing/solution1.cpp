@@ -25,7 +25,7 @@ int main()
         if (res != 0)
             return 1;
 
-        goNext(reader);  // Skip TAB.
+        goNext(reader);  // Skip comma.
 
         // Read second column: The value.
         seqan::CharString value;
