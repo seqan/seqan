@@ -40,7 +40,7 @@ void _searchAtBorder(String<int> & hitTarget,
         }
         // Report hit if found.
         if (isHit)
-            appendValue(hitTarget, position(nodeIter) + entriesIt->virtualPosition);
+            appendValue(hitTarget, position(nodeIter));
     }
 }
 
@@ -74,7 +74,7 @@ void _findInPatchNode(String<int> & hitTarget,
             }
         }
         if (isHit)
-            appendValue(hitTarget, position(patchIter) + entriesIt->virtualPosition);
+            appendValue(hitTarget, position(patchIter));
     }
 }
 
@@ -197,10 +197,7 @@ void searchPattern(StringSet<String<int> > & hitSet,
     // FRAGMENT(searchPatternPart3)
     // Search for pattern in the journaled sequences.
     for (unsigned i = 0; i < length(journalSet); ++i)
-    {
-        std::cout << "Journal: " << journalSet[i] << std::endl;
         findPatternInJournalString(hitSet[i+1], journalSet[i], pattern, hitSet[0]);
-    }
 }
 
 // FRAGMENT(laodAndJoin)
