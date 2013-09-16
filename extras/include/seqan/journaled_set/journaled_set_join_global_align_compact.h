@@ -58,11 +58,10 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 // TODO(rmaerker): Change the orientation of reference and journal.
-// The journal needs to be adapted. The simple thing would be to just
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TJournalString2>
 inline void
-_joinInternal(String <TValue, THostSpec> const & reference,
-              String <TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journal,
+_joinInternal(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journal,
+              StringSet<TJournalString2, Owner<JournaledSet> > const & journalSet,
               JoinConfig<GlobalAlign<JournaledCompact> > const & joinConfig)
 {
 
@@ -71,16 +70,16 @@ _joinInternal(String <TValue, THostSpec> const & reference,
 
     // TODO(rmaerker): Check the correct behavior here.
     TJournalString tmpJournal;
-    setHost(tmpJournal, host(journal));
+    setHost(tmpJournal, globalReference(journalSet));
 
     if (isBandSet(joinConfig))
-        globalAlignment(tmpJournal, reference, journal, scoringScheme(joinConfig), joinConfig._alignConfig,
+        globalAlignment(tmpJournal, globalReference(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig,
                         lowerDiagonal(joinConfig), upperDiagonal(joinConfig));
     else
-        globalAlignment(tmpJournal, reference, journal, scoringScheme(joinConfig), joinConfig._alignConfig);
+        globalAlignment(tmpJournal, globalReference(journalSet), journal, scoringScheme(joinConfig), joinConfig._alignConfig);
 
     // Apply the alignment to the journal.
-    journal = tmpJournal;
+    set(journal, tmpJournal);
 }
 
 }  // namespace seqan

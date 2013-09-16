@@ -96,7 +96,7 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
    {
        ::std::cerr << "No reference set! Join aborted!" << ::std::endl;
    }
-   _joinInternal(globalReference(journalSet), value(journalSet, journalIdx), joinConfig);
+   _joinInternal(value(journalSet, journalIdx), journalSet, joinConfig);
 }
 
 // ----------------------------------------------------------------------------
@@ -115,7 +115,7 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
    {
        ::std::cerr << "No reference set! Join aborted!" << ::std::endl;
    }
-   _joinInternal(globalReference(journalSet), value(journalSet, journalIdx), joinConfig);
+   _joinInternal(value(journalSet, journalIdx), journalSet, joinConfig);
 }
 
 

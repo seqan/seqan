@@ -57,10 +57,10 @@ namespace seqan {
 // Function _joinInternal()                   [GlobalAlign<JournaledManhatten>]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec, typename TJournalString2>
 inline void
-_joinInternal(String <TValue, THostSpec> const & reference,
-              String <TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journal,
+_joinInternal(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journal,
+              StringSet<TJournalString2, Owner<JournaledSet> > const & journalSet,
               JoinConfig<GlobalAlign<JournaledManhatten> > const &)
 {
 
@@ -73,7 +73,7 @@ _joinInternal(String <TValue, THostSpec> const & reference,
     stream << journal;
     appendValue(getTrace(traceDescriptor), TJounralEntry(SOURCE_PATCH, 0, 0, 0,length(journal)));
     append(getInsertionBuffer(traceDescriptor), stream.str());
-    _applyTraceOperations(journal, reference, traceDescriptor);
+    _applyTraceOperations(journal, globalReference(journalSet), traceDescriptor);
 }
 
 }  // namespace seqan
