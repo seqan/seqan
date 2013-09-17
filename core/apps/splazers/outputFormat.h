@@ -1581,7 +1581,7 @@ void dumpMatches(
 						//libraryError = (int) mL.gBegin - readRegions[currReadNo].i2.i2 + options.libraryLength - readLen ;
 					file << templateLen << '\t';
 				}
-				else file << ".\t.\t.\t";
+				else file << "*\t*\t*\t";
 
                 if (mL.orientation == 'F')
 				    file << reads[currReadNo] << "\t*\t";
