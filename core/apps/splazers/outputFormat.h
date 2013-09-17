@@ -1385,7 +1385,7 @@ void dumpMatches(
 					readInfL = infix(reads[currReadNo],length(reads[currReadNo])-readLenL,length(reads[currReadNo]));
 					readInfR = infix(reads[currReadNo],0,readLenR);
 				}
-				
+
 				// get alignment to dump and get cigar string
 				if (!options.hammingOnly)
 				{
@@ -1395,7 +1395,7 @@ void dumpMatches(
 						reverseComplement(source(row(alignL, 1)));
 
 					globalAlignment(alignL, scoreType, AlignConfig<false,false,false,false>(), Gotoh());
-						
+
 					assignSource(row(alignR, 0), readInfR);
 					assignSource(row(alignR, 1), infix(currGenome, mR.gBegin, mR.gEnd));
 					if (mR.orientation == 'R')
@@ -1403,7 +1403,7 @@ void dumpMatches(
 
 					globalAlignment(alignR, scoreType, AlignConfig<false,false,false,false>(), Gotoh());
 				}
-						
+
 				switch (options.readNaming)
 				{
 					// 0..filename is the read's Fasta id
@@ -1418,7 +1418,7 @@ void dumpMatches(
 				}
 				int samFlag = 0;
 				if(ambiStates[jj] == 2) samFlag |= 0x100; //suboptimal
-				if (mR.orientation == 'R') samFlag |= 0x10; 
+				if (mR.orientation == 'R') samFlag |= 0x10;
 				if(!empty(readRegions) && options.anchored)
 				{
 					samFlag |= 1;
@@ -1577,7 +1577,7 @@ void dumpMatches(
 				else file << ".\t.\t.\t";
 
 				
-				file << '\t' << reads[currReadNo] << '\t';
+				file << reads[currReadNo] << "\t*\t";
 				// quality
 				if(options.fastaIdQual)
 				{
