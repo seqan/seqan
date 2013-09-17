@@ -1522,7 +1522,7 @@ void dumpMatches(
 					getCigarLine(alignR,cigarR,mutStrR,offsetR,aliR_it0,aliR_it0stop,aliR_it1,aliR_it1stop);
 				}			
 				//now plug together the parts: cigar
-				if(mL.orientation=='F')
+				if (mL.orientation == 'F')
 				{
 					append(cigarStr,cigarL);
 					append(cigarStr,cigarMid);
@@ -1530,6 +1530,10 @@ void dumpMatches(
 					append(mutationsStr,mutStrL);
 					append(mutationsStr,mutStrMid);
 					append(mutationsStr,mutStrR);
+					
+					// print cigar string
+					for (unsigned i = 0; i < length(cigarStr); ++i)
+						file << cigarStr[i].i2 << cigarStr[i].i1;
 				}
 				else
 				{
@@ -1539,11 +1543,14 @@ void dumpMatches(
 					append(mutationsStr,mutStrR);
 					append(mutationsStr,mutStrMid);
 					append(mutationsStr,mutStrL);
+					
+					// print cigar string
+					for (unsigned i = length(cigarStr); i != 0; )
+					{
+						--i;
+						file << cigarStr[i].i2 << cigarStr[i].i1;
+					}
 				}
-
-				// print cigar string
-				for (unsigned i = 0; i < length(cigarStr); ++i)
-					file << cigarStr[i].i2 << cigarStr[i].i1;
 
 				file << '\t';
 
