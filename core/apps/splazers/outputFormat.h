@@ -1576,8 +1576,10 @@ void dumpMatches(
 				}
 				else file << ".\t.\t.\t";
 
-				
-				file << reads[currReadNo] << "\t*\t";
+                if (mL.orientation == 'F')
+				    file << reads[currReadNo] << "\t*\t";
+                else
+				    file << reverseComplementString(reads[currReadNo]) << "\t*\t";
 				// quality
 				if(options.fastaIdQual)
 				{
