@@ -54,18 +54,19 @@ void search(TIter & it, TStringSet const & pattern, TStore & fragStore, Directio
     {
         // exact search on pattern half
         unsigned startApproxSearch = length(value(patternIt)) / 2;
-        if (goDown(it, infix(value(patternIt), startApproxSearch + 1, length(value(patternIt)))))
+        if (goDown(it, infix(value(patternIt), 0, startApproxSearch - 1)))
         {
-            for (unsigned i = startApproxSearch; ; --i)
+            for (unsigned i = startApproxSearch; ; ++i)
             {
                 Dna character = getValue(patternIt)[i];
-                for (Dna5 c = MinValue<Dna>::VALUE; c < +ValueSize<Dna>::VALUE; ++c)
+                for (Dna5 c = MinValue<Dna>::VALUE; c < valueSize<Dna>(); ++c)
                 {
                     if (c != character)
                     {
                         TIter localIt = it;
-                        if (goDown(localIt, c)){
-                            if (goDown(localIt, infix(value(patternIt), 0, i)))
+                        if (goDown(localIt, c))
+                        {
+                            if (goDown(localIt, infix(value(patternIt), i + 1, length(value(patternIt)))))
                             {
                                 addMatchToStore(fragStore, patternIt, localIt, DirectionTag());
                             }
@@ -74,7 +75,7 @@ void search(TIter & it, TStringSet const & pattern, TStore & fragStore, Directio
                 }
                 if (!goDown(it, character))
                     break;
-                else if (i == 0)
+                else if (i == length(value(patternIt)) - 1)
                 {
                     if(IsSameType<DirectionTag, ForwardTag>::VALUE)
                         addMatchToStore(fragStore, patternIt, it, DirectionTag());
@@ -103,16 +104,12 @@ int main(int argc, char *argv[])
     FragmentStore<> fragStore;
     if (!loadContigs(fragStore, argv[1])) return 1;
     if (!loadReads(fragStore, argv[2])) return 1;
-    
 
     StringSet<TString> text;
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
-    {
-        if(length(fragStore.contigStore[i].seq) != 0)
-            appendValue(text, fragStore.contigStore[i].seq);
-    }
-       
-
+        appendValue(text, fragStore.contigStore[i].seq);
+        
+    reverse(text);
     TIndex fmIndex(text);
     TIter it(fmIndex);
     search(it, fragStore.readSeqStore, fragStore, ForwardTag());

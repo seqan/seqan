@@ -41,7 +41,7 @@ void search(TIter & it, TStringSet const & pattern)
                 }
                 if (!goDown(it, character))
                     break;
-                else if (i == length(value(patternIt) - 1))
+                else if (i == length(value(patternIt)) - 1)
                 {
                     // HIT 
                     break;

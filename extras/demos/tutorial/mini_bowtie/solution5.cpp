@@ -75,7 +75,7 @@ void search(TIter & it, TStringSet const & pattern, TStore & fragStore, Directio
                 }
                 if (!goDown(it, character))
                     break;
-                else if (i == length(value(patternIt) - 1))
+                else if (i == length(value(patternIt)) - 1)
                 {
                     if(IsSameType<DirectionTag, ForwardTag>::VALUE)
                         addMatchToStore(fragStore, patternIt, it, DirectionTag());
