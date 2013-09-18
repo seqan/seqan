@@ -25,7 +25,7 @@ void search(TIter & it, TStringSet const & pattern)
             for (unsigned i = startApproxSearch; ; ++i)
             {
                 Dna character = getValue(patternIt)[i];
-                for (Dna5 c = MinValue<Dna>::VALUE; c < +ValueSize<Dna>::VALUE; ++c)
+                for (Dna5 c = MinValue<Dna>::VALUE; c < valueSize<Dna>(); ++c)
                 {
                     if (c != character)
                     {

@@ -23,7 +23,7 @@ void search(TIter & it, TStringSet const & pattern)
         {
             for (unsigned i = startApproxSearch; ; ++i)
             {
-                for (Dna5 c = MinValue<Dna>::VALUE; c < +ValueSize<Dna>::VALUE; ++c)
+                for (Dna5 c = MinValue<Dna>::VALUE; c < valueSize<Dna>(); ++c)
                 {
                     TIter localIt = it;
                     if (goDown(localIt, c))
@@ -34,7 +34,7 @@ void search(TIter & it, TStringSet const & pattern)
                         }
                     }
                 }
-                if (i == 0 || !goDown(it, getValue(patternIt)[i]))
+                if (i == length(value(patternIt)) - 1 || !goDown(it, getValue(patternIt)[i]))
                 {
                     break;
                 }
