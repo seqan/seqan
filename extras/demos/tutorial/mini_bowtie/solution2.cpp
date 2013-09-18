@@ -19,7 +19,8 @@ void search(TIter & it, TStringSet const & pattern)
     for (TPatternIter patternIt = begin(pattern, Standard()); patternIt != end(pattern, Standard()); ++patternIt)
     {
         unsigned startApproxSearch = length(value(patternIt)) / 2;
-        goDown(it, infix(value(patternIt), startApproxSearch + 1, length(value(patternIt))));
+        //goDown(it, reverseString(infix(value(patternIt), startApproxSearch + 1, length(value(patternIt)))));
+        goDown(it, infix(value(patternIt), 0, startApproxSearch - 1));
         goRoot(it);
     }
 }
@@ -31,6 +32,14 @@ int main(int argc, char *argv[])
     typedef Index<StringSet<TString>, FMIndex<> > TIndex;
     typedef Iterator<TIndex, TopDown<ParentLinks<> > >::Type TIter;
 
+    /*String<Dna> text = "ACGTACGT";
+    Index<String<Dna>, FMIndex<> > index(text);
+
+    Finder<Index<String<Dna> > > finder(index);
+
+    find(finder, "AC");
+    std::cerr << position("AC") << std::endl;
+*/
     // reading the command line arguments   
     if (argc < 3) {
         std::cerr << "Invalid number of arguments." << std::endl
@@ -48,6 +57,7 @@ int main(int argc, char *argv[])
         appendValue(text, fragStore.contigStore[i].seq);
         
     // forward search
+    reverse(text);
     TIndex fmIndex(text);
     TIter it(fmIndex);
     search(it, fragStore.readSeqStore);
