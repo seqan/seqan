@@ -28,7 +28,7 @@ void search(TIter & it, TStringSet const & pattern)
                     TIter localIt = it;
                     if (goDown(localIt, c))
                     {
-                        if (goDown(localIt, infix(value(patternIt), i, length(value(patternIt)))))
+                        if (goDown(localIt, infix(value(patternIt), i + 1, length(value(patternIt)))))
                         {
                             // HIT
                         }
