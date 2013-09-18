@@ -116,7 +116,8 @@ void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const &
 //
 // 4. Construct interval trees
 //
-void constructIntervalTrees(String<TIntervalTree> & intervalTrees, String<String<TInterval> > const & intervals)
+void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
+                            String<String<TInterval> > & intervals)
 {
     // INSERT YOUR CODE HERE ...
     //
