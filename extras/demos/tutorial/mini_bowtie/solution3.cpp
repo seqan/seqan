@@ -19,16 +19,16 @@ void search(TIter & it, TStringSet const & pattern)
     for (TPatternIter patternIt = begin(pattern, Standard()); patternIt != end(pattern, Standard()); ++patternIt)
     {
         unsigned startApproxSearch = length(value(patternIt)) / 2;
-        if (goDown(it, infix(value(patternIt), startApproxSearch + 1, length(value(patternIt)))))
+        if (goDown(it, infix(value(patternIt), 0, startApproxSearch - 1)))
         {
-            for (unsigned i = startApproxSearch; ; --i)
+            for (unsigned i = startApproxSearch; ; ++i)
             {
                 for (Dna5 c = MinValue<Dna>::VALUE; c < +ValueSize<Dna>::VALUE; ++c)
                 {
                     TIter localIt = it;
                     if (goDown(localIt, c))
                     {
-                        if (goDown(localIt, infix(value(patternIt), 0, i)))
+                        if (goDown(localIt, infix(value(patternIt), i, length(value(patternIt)))))
                         {
                             // HIT
                         }
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     StringSet<TString> text;
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
         appendValue(text, fragStore.contigStore[i].seq);
-        
+    reverse(text);
     TIndex fmIndex(text);
     TIter it(fmIndex);
     search(it, fragStore.readSeqStore);
