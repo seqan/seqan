@@ -19,7 +19,6 @@ void search(TIter & it, TStringSet const & pattern)
     for (TPatternIter patternIt = begin(pattern, Standard()); patternIt != end(pattern, Standard()); ++patternIt)
     {
         unsigned startApproxSearch = length(value(patternIt)) / 2;
-        //goDown(it, reverseString(infix(value(patternIt), startApproxSearch + 1, length(value(patternIt)))));
         goDown(it, infix(value(patternIt), 0, startApproxSearch - 1));
         goRoot(it);
     }
