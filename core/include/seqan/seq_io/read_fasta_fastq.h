@@ -124,51 +124,52 @@ _countSequenceFastAQ(unsigned int & count,
                      TFormatTag const & /* formatTag */,
                      TAlph const & /* Alphabet type */)
 {
-    return _countHelper(count, reader, Tag<TAlph>(), Whitespace_(), false);
+//     return _countHelper(count, reader, Tag<TAlph>(), Whitespace_(), false);
+    return _countHelper(count, reader, AlphaNum_(), Whitespace_(), false);
 }
 
 // When reading char values, we have to use a more complicated algorithm:  Read until the separator char '>'/'+' begins
 // a line.  Note that when reading text including these characters then there is ambiguity.  When we find such a
 // character then we greedily decide that this does not belong to the sequence.
 
-template <typename TFormatTag, typename TRecordReader>
-inline int
-_countSequenceFastAQ(unsigned int & count,
-                     TRecordReader & reader,
-                     TFormatTag const & /* formatTag */,
-                     char const & /* Alphabet type */)
-{
-    // The variable afterEol is true if we are after an EOL char and we are not at the beginning of the sequence
-    // record.  Empty sequence lines are fine, non-existent ones are not.
-    bool afterEol = false;
-
-    while (!atEnd(reader))
-    {
-        char c = value(reader);
-        if (c == '\r' || c == '\n')
-        {
-            afterEol = true;
-            goNext(reader);
-            if (resultCode(reader) != 0)
-                return resultCode(reader);
-            continue;
-        }
-
-        if (afterEol && c == AfterSeqFirstChar_<TFormatTag>::VALUE)
-        {
-            return 0;  // Done, at stop char.
-        }
-
-        if (!isspace(c))
-            count += 1;
-        afterEol = false;
-        goNext(reader);
-        if (resultCode(reader) != 0)
-            return resultCode(reader);
-    }
-
-    return EOF_BEFORE_SUCCESS;
-}
+// template <typename TFormatTag, typename TRecordReader>
+// inline int
+// _countSequenceFastAQ(unsigned int & count,
+//                      TRecordReader & reader,
+//                      TFormatTag const & /* formatTag */,
+//                      char const & /* Alphabet type */)
+// {
+//     // The variable afterEol is true if we are after an EOL char and we are not at the beginning of the sequence
+//     // record.  Empty sequence lines are fine, non-existent ones are not.
+//     bool afterEol = false;
+// 
+//     while (!atEnd(reader))
+//     {
+//         char c = value(reader);
+//         if (c == '\r' || c == '\n')
+//         {
+//             afterEol = true;
+//             goNext(reader);
+//             if (resultCode(reader) != 0)
+//                 return resultCode(reader);
+//             continue;
+//         }
+// 
+//         if (afterEol && c == AfterSeqFirstChar_<TFormatTag>::VALUE)
+//         {
+//             return 0;  // Done, at stop char.
+//         }
+// 
+//         if (!isspace(c))
+//             count += 1;
+//         afterEol = false;
+//         goNext(reader);
+//         if (resultCode(reader) != 0)
+//             return resultCode(reader);
+//     }
+// 
+//     return EOF_BEFORE_SUCCESS;
+// }
 
 template <typename TSeqAlph,
           typename TFile,
@@ -295,7 +296,8 @@ _readSequenceFastAQ(String<TAlph, TSpec> & string,
                     TRecordReader & reader,
                     TFormatTag const & /*formatTag*/)
 {
-    return _readHelper(string, reader, Tag<TAlph>(), Whitespace_(), false);
+//     return _readHelper(string, reader, Tag<TAlph>(), Whitespace_(), false);
+    return _readHelper(string, reader, AlphaNum_(), Whitespace_(), false);
 }
 
 // If we want to read char values from a FASTA or FASTQ file then we have to fall back to a more complicated
