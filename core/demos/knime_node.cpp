@@ -181,7 +181,7 @@ int main(int argc, char const ** argv)
     }
     if(seqan::readAll(ids, seqs, quals, seqIn) != 0)
     {
-        std::cout << "ERROR: Could not read first record!\n";
+        std::cout << "ERROR: Could not read records!\n";
         return 1;
     }
     
