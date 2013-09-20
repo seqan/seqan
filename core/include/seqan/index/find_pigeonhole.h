@@ -131,7 +131,7 @@ namespace seqan
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Provides a fast filter alogrithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors
+ * @brief Provides a fast filter algorithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors
  *        in the text, every partition into k+1 parts contains one part that matches without error.
  * 
  * @signature Finder<THaystack, Pigeonhole<TSpec> >
