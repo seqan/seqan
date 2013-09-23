@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 // Utility macros for parallelism.
 // ==========================================================================
@@ -113,5 +114,20 @@ i += 1;
   inline int  omp_get_thread_num()     { return 0; }
 
 #endif  // #ifdef _OPENMP
+
+// ----------------------------------------------------------------------------
+// Function getThreadId()
+// ----------------------------------------------------------------------------
+
+SEQAN_HOST_DEVICE inline unsigned getThreadId()
+{
+#ifdef _OPENMP
+    return omp_get_thread_num();
+#elif __CUDA_ARCH__
+    return blockIdx.x * blockDim.x + threadIdx.x;
+#else
+    return 0;
+#endif
+}
 
 #endif  // SEQAN_PARALLEL_PARALLEL_MACROS_H_

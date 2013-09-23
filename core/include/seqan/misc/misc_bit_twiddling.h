@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -211,8 +212,7 @@ clearBit(TWord & word, TPos index)
  */
 
 template <typename TWord>
-inline
-void
+inline void
 clearBits(TWord & word)
 {
     word = 0;
@@ -251,12 +251,22 @@ clearBits(TWord & word)
  */
 
 template <typename TWord, typename TIndex>
-inline
-bool
-isBitSet(TWord const & word, TIndex index)
+inline bool
+isBitSet(TWord word, TIndex index)
 {
     typedef typename MakeUnsigned<TWord>::Type TUnsignedWord;
     return (word & (TUnsignedWord(1) << index)) != static_cast<TWord>(0);
+}
+
+// ----------------------------------------------------------------------------
+// Function hiBits()
+// ----------------------------------------------------------------------------
+
+template <typename TWord, typename TPos>
+SEQAN_HOST_DEVICE inline TWord
+hiBits(TWord word, TPos index)
+{
+    return word & ~((TWord(1) << (BitsPerValue<TWord>::VALUE - index)) - TWord(1));
 }
 
 // ----------------------------------------------------------------------------
@@ -312,7 +322,7 @@ isBitSet(TWord const & word, TIndex index)
 
 template <typename TWord>
 inline unsigned
-_popCountImplGeneric(TWord const & word)  // Note that word is copied!
+_popCountImplGeneric(TWord word)  // Note that word is copied!
 {
     typename MakeUnsigned<TWord>::Type x = word;
 	unsigned int c = 0;  // c accumulates the total bits set in v
@@ -328,11 +338,36 @@ struct WordSize_ {};
 
 // The compiler-dependent implementations of _popCountImpl() follow.
 
+#if defined(__CUDA_ARCH__)
+
+template <typename TWord>
+inline SEQAN_DEVICE
+unsigned _popCountImpl(TWord const & word, WordSize_<32> const & /*tag*/)
+{
+    return __popc(static_cast<__uint32>(word));
+}
+
+template <typename TWord>
+inline SEQAN_DEVICE
+unsigned _popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
+{
+    return __popc(static_cast<__uint32>(word));
+}
+
+template <typename TWord>
+inline SEQAN_DEVICE
+unsigned _popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
+{
+    return __popc(static_cast<__uint32>(word));
+}
+
+#else   // #if defined(__CUDA_ARCH__)
+
 #if defined(_MSC_VER) && (_MSC_VER <= 1400)  // MSVC <= 2005, no intrinsic.
 
 template <typename TWord, unsigned NUM_BITS>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<NUM_BITS> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<NUM_BITS> const & /*tag*/)
 {
     return _popCountImplGeneric(word);
 }
@@ -347,7 +382,7 @@ _popCountImpl(TWord const & word, WordSize_<NUM_BITS> const & /*tag*/)
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<64> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
     return __popcnt64(static_cast<__uint64>(word));
 }
@@ -358,7 +393,7 @@ _popCountImpl(TWord const & word, WordSize_<64> const & /*tag*/)
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<64> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
 	return __popcnt(static_cast<__uint32>(word)) + __popcnt(static_cast<__uint32>(word >> 32));
 }
@@ -367,21 +402,21 @@ _popCountImpl(TWord const & word, WordSize_<64> const & /*tag*/)
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<32> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
     return __popcnt(static_cast<__uint32>(word));
 }
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<16> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
 {
     return __popcnt16(static_cast<__uint16>(word));
 }
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<8> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 {
     return _popCountImpl(static_cast<const __uint16>(word), WordSize_<16>());
 }
@@ -392,39 +427,70 @@ _popCountImpl(TWord const & word, WordSize_<8> const & /*tag*/)
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<64> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 {
     return __builtin_popcountll(static_cast<unsigned long long>(word));
 }
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<32> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<32> const & /*tag*/)
 {
     return __builtin_popcount(static_cast<unsigned int>(word));
 }
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<16> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<16> const & /*tag*/)
 {
     return _popCountImpl(static_cast<__uint32>(word), WordSize_<32>());
 }
 
 template <typename TWord>
 inline unsigned
-_popCountImpl(TWord const & word, WordSize_<8> const & /*tag*/)
+_popCountImpl(TWord word, WordSize_<8> const & /*tag*/)
 {
     return _popCountImpl(static_cast<__uint32>(word), WordSize_<32>());
 }
 
 #endif    // GCC or CLANG
 
+#endif    // #if !defined(__CUDA_ARCH__)
+
 template <typename TWord>
-inline unsigned
+SEQAN_HOST_DEVICE inline unsigned
 popCount(TWord word)
 {
     return _popCountImpl(word, WordSize_<BitsPerValue<TWord>::VALUE>());
+}
+
+// ----------------------------------------------------------------------------
+// Function printBits()
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+inline void printBits(TValue word)
+{
+    unsigned bitsPerValue = BitsPerValue<TValue>::VALUE;
+    TValue one = 1;
+    for (TValue i = 0; i < bitsPerValue; ++i)
+        std::cout << ((word >> i) & one);
+    std::cout << std::endl;
+}
+
+template <typename TValue, typename TSize>
+inline std::ostream & printBits(std::ostream & stream, TValue word, TSize blockSize)
+{
+    unsigned bitsPerValue = BitsPerValue<TValue>::VALUE;
+    bool temp;
+    for (int i = bitsPerValue - 1; i >= 0; --i)
+    {
+        temp = (word >> i) & 1;
+        stream << temp;
+        if ((bitsPerValue - i) % blockSize == 0)
+            stream << " ";
+    }
+    return stream;
 }
 
 }  // namespace seqan
