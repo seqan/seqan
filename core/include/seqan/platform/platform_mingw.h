@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -78,10 +79,3 @@ typedef unsigned __int8 __uint8;
 #if defined(__GXX_EXPERIMENTAL_CXX0X__)
 #  define SEQAN_CXX11_STANDARD
 #endif
-
-#ifdef __CUDACC__
-#define SEQAN_FUNC inline __device__ __host__
-#else
-#define SEQAN_FUNC inline
-#endif
-

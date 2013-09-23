@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -176,32 +177,3 @@ typedef uint8_t __uint8;   // nolint
 #    define SEQAN_CXX11_STANDARD
 #  endif
 #endif
-
-/*!
- * @macro SEQAN_FUNC
- * @headerfile <seqan/platform.h>
- * @brief Prefix for functions
- *
- * @signature #define SEQAN_FUNC
- *
- * This macro can be placed in front of functions that should be used for code that is CUDA-compatible.  The macro
- * expands to <tt>inline</tt> for normal compilers and to <tt>inline __device__ __host__</tt> for CUDA compilers.  These
- * two keywords mark a function to be executed on the GPU as well as on the CPU.
- *
- * @section Example
- *
- * @code{.cpp}
- * SEQAN_FUNC void foo(int & x)
- * {
- *     // I can run on the CPU and on the GPU, yay!
- *     x = 10;
- * }
- * @endcode
- */
-
-#ifdef __CUDACC__
-#define SEQAN_FUNC inline __device__ __host__
-#else
-#define SEQAN_FUNC inline
-#endif
-

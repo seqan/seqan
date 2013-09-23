@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -46,6 +47,9 @@
 #else
 	#include "platform/platform_gcc.h"
 #endif
+
+// NOTE(esiragusa): nvcc header must be included even if __CUDACC__ is not defined.
+#include "platform/platform_nvcc.h"
 
 // This macro defines an alias for the auto_ptr class template deprecated in C++11.
 #ifdef SEQAN_CXX11_STANDARD
