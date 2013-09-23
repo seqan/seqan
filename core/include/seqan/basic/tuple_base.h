@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -104,7 +105,8 @@ struct Tuple
     // TODO(holtgrew): Return Value<>::Type?
 
     template <typename TPos>
-    inline typename StoredTupleValue_<TValue>::Type &
+    SEQAN_HOST_DEVICE inline
+    typename StoredTupleValue_<TValue>::Type &
     operator[](TPos k)
     {
         SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
@@ -113,7 +115,8 @@ struct Tuple
     }
 
     template <typename TPos>
-    inline typename StoredTupleValue_<TValue>::Type const &
+    SEQAN_HOST_DEVICE inline
+    typename StoredTupleValue_<TValue>::Type const &
     operator[](TPos k) const
     {
         SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
@@ -584,6 +587,23 @@ operator>=(Tuple<TValue, SIZE, TSpec> const & left,
            Tuple<TValue, SIZE, TSpec> const & right)
 {
     return !operator<(left, right);
+}
+
+// -----------------------------------------------------------------------
+// Function operator+()
+// -----------------------------------------------------------------------
+
+template <typename TValue, unsigned SIZE, typename TSpec>
+inline Tuple<TValue, SIZE, TSpec>
+operator+(Tuple<TValue, SIZE, TSpec> const & left,
+          Tuple<TValue, SIZE, TSpec> const & right)
+{
+    Tuple<TValue, SIZE, TSpec>  tuple;
+
+    for (unsigned j = 0; j < SIZE; ++j)
+        tuple[j] = left[j] + right[j];
+
+    return tuple;
 }
 
 }  // namespace seqan

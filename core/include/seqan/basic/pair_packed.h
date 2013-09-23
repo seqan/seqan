@@ -105,15 +105,15 @@ struct Pair<T1, T2, Pack>
     // Constructors
     // ------------------------------------------------------------------------
 
-    inline Pair() : i1(T1()), i2(T2()) {}
+    SEQAN_HOST_DEVICE Pair() : i1(T1()), i2(T2()) {}
 
-    inline Pair(Pair const &_p) : i1(_p.i1), i2(_p.i2) {}
+    SEQAN_HOST_DEVICE Pair(Pair const &_p) : i1(_p.i1), i2(_p.i2) {}
 
-    inline Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
+    SEQAN_HOST_DEVICE Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 
     template <typename T1_, typename T2_, typename TSpec__>
     // TODO(holtgrew): explicit?
-    inline Pair(Pair<T1_, T2_, TSpec__> const &_p)
+    SEQAN_HOST_DEVICE Pair(Pair<T1_, T2_, TSpec__> const &_p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)) {}
 }
 #ifndef PLATFORM_WINDOWS

@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -422,21 +423,21 @@ struct Parameter_<T [I]>
 
 template <typename T>
 typename Parameter_<T>::Type
-inline _toParameter(T * _object)
+SEQAN_HOST_DEVICE inline _toParameter(T * _object)
 {
     return * _object;
 }
 
 template <typename T>
 typename Parameter_<T>::Type
-inline _toParameter(T & _object)
+SEQAN_HOST_DEVICE inline _toParameter(T & _object)
 {
     return _object;
 }
 
 template <typename T>
 typename Parameter_<T const>::Type
-inline _toParameter(T const & _object)
+SEQAN_HOST_DEVICE inline _toParameter(T const & _object)
 {
     return _object;
 }
@@ -490,6 +491,33 @@ struct ConstParameter_<T const [I]>
 {
     typedef T const * Type;
 };
+
+//____________________________________________________________________________
+
+/*!
+ * @mfn Member
+ * @headerfile <seqan/basic.h>
+ * @brief Type of a member of an object.
+ *
+ * @signature Member<TObject, TSpec>::Type;
+ * @tparam TObject The object holding the member.
+ * @tparam TSpec A tag to identify the object's member.
+ * @return Type The resulting object's member type.
+ *
+ * @section Remarks
+ *
+ * This metafunction is used to control the type of a member of a given object. It works analogously to @link Index#Fibre @endlink.
+ * For instance, it is used to change the relationship between two objects from aggregation to composition and vice versa.
+ *
+ * @see Index#Fibre
+ */
+ 
+template <typename TObject, typename TSpec>
+struct Member;
+
+template <typename TObject, typename TSpec>
+struct Member<TObject const, TSpec> :
+    Member<TObject, TSpec> {};
 
 //____________________________________________________________________________
 
@@ -558,14 +586,14 @@ struct NonConstPointer_<T * const>
 // TODO(holtgrew): Really required?
 
 template <typename T>
-typename NonConstPointer_<T>::Type
+SEQAN_HOST_DEVICE inline typename NonConstPointer_<T>::Type
 _toPointer(T & _object)
 {
 SEQAN_CHECKPOINT
     return & _object;
 }
 template <typename T>
-typename NonConstPointer_<T const>::Type
+SEQAN_HOST_DEVICE inline typename NonConstPointer_<T const>::Type
 _toPointer(T const & _object)
 {
 SEQAN_CHECKPOINT
@@ -573,7 +601,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename T>
-typename NonConstPointer_<T *>::Type
+SEQAN_HOST_DEVICE inline typename NonConstPointer_<T *>::Type
 _toPointer(T * _object)
 {
 SEQAN_CHECKPOINT

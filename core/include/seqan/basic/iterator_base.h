@@ -420,7 +420,7 @@ SEQAN_CHECKPOINT
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TContainer2>
-inline typename Position<Iter<TContainer, TSpec> const>::Type
+inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, TSpec> const>::Type
 position(Iter<TContainer, TSpec> const & me,
          TContainer2 const &)
 {

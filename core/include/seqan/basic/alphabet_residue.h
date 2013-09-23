@@ -842,7 +842,11 @@ struct CompareType<Dna, char>
 
 inline void assign(Dna & target, char c_source)
 {
-    target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char)c_source];
+#ifdef __CUDA_ARCH__
+    target.value = _translateAsciiToDna<void>((unsigned char)c_source);
+#else
+    target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char) c_source];
+#endif
 }
 
 template <>
@@ -853,7 +857,11 @@ struct CompareType<Dna, Unicode>
 
 inline void assign(Dna & target, Unicode c_source)
 {
+#ifdef __CUDA_ARCH__
+    target.value = _translateAsciiToDna<void>((unsigned char)c_source);
+#else
     target.value = TranslateTableAsciiToDna_<>::VALUE[(unsigned char) c_source];
+#endif
 }
 
 template <>

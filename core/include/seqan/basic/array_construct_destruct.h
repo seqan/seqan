@@ -213,7 +213,7 @@ struct Reference<TValue * const>
 // TODO(holtgrew): This has to go to iterator module, adaption of pointers to iterators.
 
 template <typename T>
-inline T &
+SEQAN_HOST_DEVICE inline T &
 value(T * me)
 {
     SEQAN_CHECKPOINT;
@@ -227,7 +227,7 @@ value(T * me)
 // TODO(holtgrew): This has to go to iterator module, adaption of pointers to iterators.
 
 template <typename T>
-inline T &
+SEQAN_HOST_DEVICE inline T &
 getValue(T * me)
 {
     SEQAN_CHECKPOINT;

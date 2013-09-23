@@ -86,6 +86,9 @@
 // Conversion tables for the biological SimpleType specializations.
 #include <seqan/basic/alphabet_residue_tabs.h>
 
+// Conversion functions for the biological SimpleType specializations.
+#include <seqan/basic/alphabet_residue_funcs.h>
+
 // The actual biological SimpleType specializations.
 #include <seqan/basic/alphabet_residue.h>
 

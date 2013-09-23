@@ -304,7 +304,7 @@ struct IntegralForValue : IntegralForValueImpl_<BytesPerValue<TValue>::VALUE>
 // TODO(holtgrew): Enable only for integers, move to adapt builtins?
 
 template <typename TValue>
-inline typename ValueSize<TValue>::Type
+SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::Type
 ordValue(TValue const & c)
 {
 	return convert<unsigned>(static_cast<typename MakeUnsigned_<TValue>::Type const &>(c));
@@ -313,7 +313,7 @@ ordValue(TValue const & c)
 // The internal ord value is used for alphabets with piggyback qualities.
 
 template <typename TValue>
-inline typename ValueSize<TValue>::Type
+SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::Type
 _internalOrdValue(TValue const & c)
 {
 	return ordValue(c);
@@ -324,7 +324,7 @@ _internalOrdValue(TValue const & c)
 // ----------------------------------------------------------------------------
 
 template <typename T>
-inline typename ValueSize<T>::Type
+SEQAN_HOST_DEVICE inline typename ValueSize<T>::Type
 valueSize()
 {
     return +ValueSize<T>::VALUE;

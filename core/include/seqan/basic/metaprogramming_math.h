@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -179,6 +180,26 @@ struct Power {
 // Base cases.
 template <__int64 base> struct Power<base, 1> { static const __uint64 VALUE = base; };
 template <__int64 base> struct Power<base, 0> { static const __uint64 VALUE = 1; };
+
+// ----------------------------------------------------------------------------
+// Metafunction Min
+// ----------------------------------------------------------------------------
+
+template <unsigned A, unsigned B>
+struct Min
+{
+    static const unsigned VALUE = (A <= B) ? A : B;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Max
+// ----------------------------------------------------------------------------
+
+template <unsigned A, unsigned B>
+struct Max
+{
+    static const unsigned VALUE = (A >= B) ? A : B;
+};
 
 // ============================================================================
 // Functions

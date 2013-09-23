@@ -537,7 +537,7 @@ SEQAN_ASSERT_EQ(valueSize<bool>(), 2u);         // OK
 template <typename T> struct ValueSize;
 template <typename T> typename ValueSize<T>::Type valueSize();
 // Forwards for Metafunctions and Functions.
-template <typename TValue> typename ValueSize<TValue>::Type ordValue(TValue const & c);
+template <typename TValue> SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::Type ordValue(TValue const & c);
 
 SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetConcept))
 {

@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -2011,7 +2012,7 @@ SEQAN_DEFINE_TEST(test_skipped)
 // variadic macros are not supported by VS 2003 and before
 #if !defined(_MSC_VER) || (_MSC_VER >= 1400)
 
-#if SEQAN_ENABLE_DEBUG
+#if SEQAN_ENABLE_DEBUG && !defined(__CUDA_ARCH__)
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT
@@ -2697,7 +2698,27 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
     } while (false)
 
 
-#else  // #if SEQAN_ENABLE_DEBUG
+#elif SEQAN_ENABLE_DEBUG && defined(__CUDA_ARCH__)
+
+#define SEQAN_ASSERT_EQ(_arg1, _arg2) do { assert(_arg1 == _arg2); } while (false)
+#define SEQAN_ASSERT_EQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 == _arg2); } while (false)
+#define SEQAN_ASSERT_NEQ(_arg1, _arg2) do { assert(_arg1 != _arg2); } while (false)
+#define SEQAN_ASSERT_NEQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 != _arg2); } while (false)
+#define SEQAN_ASSERT_LEQ(_arg1, _arg2) do { assert(_arg1 <= _arg2); } while (false)
+#define SEQAN_ASSERT_LEQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 <= _arg2); } while (false)
+#define SEQAN_ASSERT_LT(_arg1, _arg2) do { assert(_arg1 < _arg2); } while (false)
+#define SEQAN_ASSERT_LT_MSG(_arg1, _arg2, ...) do { assert(_arg1 < _arg2); } while (false)
+#define SEQAN_ASSERT_GEQ(_arg1, _arg2) do { assert(_arg1 >= _arg2); } while (false)
+#define SEQAN_ASSERT_GEQ_MSG(_arg1, _arg2, ...) do { assert(_arg1 >= _arg2); } while (false)
+#define SEQAN_ASSERT_GT(_arg1, _arg2) do { assert(_arg1 > _arg2); } while (false)
+#define SEQAN_ASSERT_GT_MSG(_arg1, _arg2, ...) do { assert(_arg1 > _arg2); } while (false)
+#define SEQAN_ASSERT(_arg1) do { assert(_arg1); } while (false)
+#define SEQAN_ASSERT_MSG(_arg1, ...) do { assert(_arg1); } while (false)
+#define SEQAN_ASSERT_NOT(_arg1) do { assert(!_arg1); } while (false)
+#define SEQAN_ASSERT_NOT_MSG(_arg1, ...) do { assert(!_arg1); } while (false)
+#define SEQAN_ASSERT_FAIL(...) do { assert(false); } while (false)
+
+#else
 
 #define SEQAN_ASSERT_EQ(_arg1, _arg2) do {} while (false)
 #define SEQAN_ASSERT_EQ_MSG(_arg1, _arg2, ...) do {} while (false)
@@ -2717,7 +2738,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...) do {} while (false)
 #define SEQAN_ASSERT_FAIL(...) do {} while (false)
 
-#endif  // #if SEQAN_ENABLE_DEBUG
+#endif  // #if defined(SEQAN_ENABLE_DEBUG) && !defined(__CUDA_ARCH__)
 
 #else // no variadic macros
 
