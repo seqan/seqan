@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -102,7 +103,7 @@ public:
 
     StringSet()
     {
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
     }
 
     // ----------------------------------------------------------------------
@@ -110,7 +111,7 @@ public:
     // ----------------------------------------------------------------------
 
     template <typename TPos>
-    inline typename Reference<StringSet>::Type
+    SEQAN_HOST_DEVICE inline typename Reference<StringSet>::Type
     operator[](TPos pos)
     {
         SEQAN_CHECKPOINT;
@@ -118,7 +119,7 @@ public:
     }
 
     template <typename TPos>
-    inline typename Reference<StringSet const>::Type
+    SEQAN_HOST_DEVICE inline typename Reference<StringSet const>::Type
     operator[](TPos pos) const
     {
         SEQAN_CHECKPOINT;
@@ -230,6 +231,25 @@ struct Infix< StringSet< TString, Owner<ConcatDirect<TSpec> > > const >
 // Functions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Function assign()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec, typename TString2, typename TSpec2>
+void assign(StringSet<TString, Owner<ConcatDirect<TSpec> > > & stringSet,
+            StringSet<TString2, Owner<ConcatDirect<TSpec2> > > const & other)
+{
+    assign(concat(stringSet), concat(other));
+    assign(stringSetLimits(stringSet), stringSetLimits(other));
+}
+
+template <typename TString, typename TSpec, typename TString2, typename TSpec2>
+void assign(StringSet<TString, Owner<ConcatDirect<TSpec> > > & stringSet,
+            StringSet<TString2, Owner<ConcatDirect<TSpec2> > > & other)
+{
+    assign(stringSet, reinterpret_cast<StringSet<TString2, Owner<ConcatDirect<TSpec2> > > const &> (other));
+}
+
 // --------------------------------------------------------------------------
 // Function assignValue()
 // --------------------------------------------------------------------------
@@ -255,6 +275,16 @@ inline void assignValue(
         while (pos < size)
             me.limits[++pos] += delta;
     }
+}
+
+// --------------------------------------------------------------------------
+// Function _initStringSetLimits
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+inline void _initStringSetLimits(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me)
+{
+    appendValue(me.limits, 0);
 }
 
 // --------------------------------------------------------------------------
@@ -369,7 +399,7 @@ inline void clear(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TDelimiter>
-inline typename Size<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
+SEQAN_HOST_DEVICE inline typename Size<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
 length(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me)
 {
     return length(me.limits) - 1;
@@ -482,14 +512,14 @@ infixWithLength(StringSet< TString, Owner<ConcatDirect<TDelimiter> > > const & m
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPos >
-inline typename Infix<TString>::Type
+SEQAN_HOST_DEVICE inline typename Infix<TString>::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);
 }
 
 template <typename TString, typename TSpec, typename TPos >
-inline typename Infix<TString const>::Type
+SEQAN_HOST_DEVICE inline typename Infix<TString const>::Type
 value(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPos pos)
 {
     return infix(me.concat, me.limits[pos], me.limits[pos + 1]);

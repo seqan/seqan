@@ -194,14 +194,14 @@ public:
     // ----------------------------------------------------------------------
 
     template <typename TPos>
-    inline typename Reference<String>::Type
+    SEQAN_HOST_DEVICE inline typename Reference<String>::Type
     operator[] (TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    inline typename Reference<String const>::Type
+    SEQAN_HOST_DEVICE inline typename Reference<String const>::Type
     operator[] (TPos pos) const
     {
         return value(*this, pos);
@@ -259,14 +259,14 @@ swap(String<TValue, Alloc<TSpec> > & a,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
+SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
 begin(String<TValue, Alloc<TSpec> > & me,
       Standard)
 {
     return me.data_begin;
 }
 template <typename TValue, typename TSpec>
-inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
+SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
 begin(String<TValue, Alloc<TSpec> > const & me,
       Standard)
 {
@@ -278,14 +278,14 @@ begin(String<TValue, Alloc<TSpec> > const & me,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
+SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
 end(String<TValue, Alloc<TSpec> > & me,
     Standard const &)
 {
     return me.data_end;
 }
 template <typename TValue, typename TSpec>
-inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
+SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
 end(String<TValue, Alloc<TSpec> > const & me,
     Standard const & )
 {

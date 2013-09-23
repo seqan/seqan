@@ -458,14 +458,14 @@ SEQAN_CHECKPOINT
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline typename Pointer_<Segment<THost, TSpec> >::Type
+SEQAN_HOST_DEVICE inline typename Pointer_<Segment<THost, TSpec> >::Type
 _toPointer(Segment<THost, TSpec> & me)
 {
     return me;
 }
 
 template <typename THost, typename TSpec>
-inline typename Pointer_<Segment<THost, TSpec> const >::Type
+SEQAN_HOST_DEVICE inline typename Pointer_<Segment<THost, TSpec> const >::Type
 _toPointer(Segment<THost, TSpec> const & me)
 {
     return me;
@@ -493,7 +493,7 @@ Segment<THost, TSpec> _fromPointer(Segment<THost, TSpec> const & me)
 ///.Function.empty.param.object.type:Class.Segment
 
 template <typename THost, typename TSpec>
-inline bool
+SEQAN_HOST_DEVICE inline bool
 empty(Segment<THost, TSpec> const & me)
 {
     SEQAN_CHECKPOINT;
@@ -506,7 +506,7 @@ empty(Segment<THost, TSpec> const & me)
 ///.Function.length.class:Class.Segment
 
 template <typename THost, typename TSpec>
-inline typename Size<Segment<THost, TSpec> const>::Type
+SEQAN_HOST_DEVICE inline typename Size<Segment<THost, TSpec> const>::Type
 length(Segment<THost, TSpec> const & me)
 {
 SEQAN_CHECKPOINT

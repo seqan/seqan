@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,32 +44,49 @@
 #ifndef SEQAN_HEADER_SEQUENCE_H
 #define SEQAN_HEADER_SEQUENCE_H
 
-//____________________________________________________________________________
-// prerequisites
+// ===========================================================================
+// Prerequisites.
+// ===========================================================================
 
 #include <seqan/basic.h>
+
+// ----------------------------------------------------------------------------
+// STL prerequisites.
+// ----------------------------------------------------------------------------
+// The classes std::string, std::list and std::vector are adapted in this module.
 
 #include <cassert>
 
 #include <map>  // used in string set
-// The classes std::string, std::list and std::vector are adapted in this
-// module.
 #include <string>
 #include <list>
 #include <vector>
 #include <algorithm>
 
-//____________________________________________________________________________
+// ----------------------------------------------------------------------------
+// Thrust prerequisites.
+// ----------------------------------------------------------------------------
+
+#ifdef PLATFORM_CUDA
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#endif
+
+// ===========================================================================
+// Forwards.
+// ===========================================================================
 
 #include <seqan/sequence/sequence_forwards.h>
 
-//____________________________________________________________________________
+// ===========================================================================
 // Miscellaneous sequence-related code.
+// ===========================================================================
 
 #include <seqan/sequence/sequence_lexical.h>
 
-//____________________________________________________________________________
+// ===========================================================================
 // Segments: Suffixes, Infixes, Prefixes.
+// ===========================================================================
 
 #include <seqan/sequence/sequence_interface.h>
 #include <seqan/sequence/segment_base.h>
@@ -76,8 +94,9 @@
 #include <seqan/sequence/segment_suffix.h>
 #include <seqan/sequence/segment_prefix.h>
 
-//____________________________________________________________________________
-// Strings
+// ===========================================================================
+// Strings.
+// ===========================================================================
 
 #include <seqan/sequence/string_base.h>
 #include <seqan/sequence/string_array.h>
@@ -88,8 +107,10 @@
 
 #include <seqan/sequence/sequence_shortcuts.h>
 
-//____________________________________________________________________________
-// StringSets
+// ===========================================================================
+// StringSets.
+// ===========================================================================
+
 #include <seqan/sequence/iter_concat_virtual.h>
 #include <seqan/sequence/sequence_concatenator.h>
 #include <seqan/sequence/string_set_base.h>
@@ -98,17 +119,19 @@
 #include <seqan/sequence/string_set_dependent_generous.h>
 #include <seqan/sequence/string_set_owner.h>
 
-//____________________________________________________________________________
-// Adaptions
+// ===========================================================================
+// Adaptions.
+// ===========================================================================
 
 #include <seqan/sequence/adapt_std_list.h>
 #include <seqan/sequence/adapt_std_string.h>
 #include <seqan/sequence/adapt_std_vector.h>
 #include <seqan/sequence/adapt_array_pointer.h>
 
+// ===========================================================================
+// Utilities.
+// ===========================================================================
 
-//____________________________________________________________________________
-// Utilities
 #include <seqan/sequence/segment_utils.h>
 
 #endif //#ifndef SEQAN_HEADER_...

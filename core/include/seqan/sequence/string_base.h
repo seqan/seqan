@@ -489,7 +489,7 @@ shareResources(TValue const & obj1,
 ///.Function.value.param.container.type:Class.String
 
 template <typename TValue, typename TSpec, typename TPos>
-inline typename Reference< String<TValue, TSpec> >::Type
+SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
 value(String<TValue, TSpec> & me,
       TPos const & pos)
 {
@@ -500,7 +500,7 @@ value(String<TValue, TSpec> & me,
 }
 
 template <typename TValue, typename TSpec, typename TPos>
-inline typename Reference< String<TValue, TSpec> const >::Type
+SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> const >::Type
 value(String<TValue, TSpec> const & me,
       TPos const & pos)
 {
@@ -518,7 +518,7 @@ value(String<TValue, TSpec> const & me,
 ///.Function.length.class:Class.String
 
 template <typename TValue, typename TSpec>
-inline typename Size< String<TValue, TSpec> const>::Type
+SEQAN_HOST_DEVICE inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
 {
     SEQAN_CHECKPOINT;
@@ -533,7 +533,7 @@ length(String<TValue, TSpec> const & me)
 ///.Function.empty.class:Class.String
 
 template <typename TValue, typename TSpec>
-inline bool
+SEQAN_HOST_DEVICE inline bool
 empty(String<TValue, TSpec> const & me)
 {
     SEQAN_CHECKPOINT;
