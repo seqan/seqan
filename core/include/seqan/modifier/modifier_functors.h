@@ -81,7 +81,7 @@ struct FunctorUpcase : public std::unary_function<InType, Result>
 {
     inline Result operator()(InType x) const
     {
-        return toupper(x);
+        return toUpperValue(x);
     }
 };
 
