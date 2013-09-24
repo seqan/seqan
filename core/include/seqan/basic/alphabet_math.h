@@ -195,21 +195,21 @@ TValue toUpperValue(TValue c)
 }
 
 inline SEQAN_HOST_DEVICE
-unsigned char toUpperValue(unsigned char c)
+char toUpperValue(char c)
 {
-    return c >= 'A' ? c : c + 'A' - 'a';
+    return c >= 'a' && c <= 'z' ? c + 'A' - 'a' : c;
 }
 
 inline SEQAN_HOST_DEVICE
 signed char toUpperValue(signed char c)
 {
-    return toUpperValue(static_cast<unsigned char>(c));
+    return toUpperValue(static_cast<char>(c));
 }
 
 inline SEQAN_HOST_DEVICE
-char toUpperValue(char c)
+unsigned char toUpperValue(unsigned char c)
 {
-    return toUpperValue(static_cast<unsigned char>(c));
+    return toUpperValue(static_cast<char>(c));
 }
 
 // ----------------------------------------------------------------------------
