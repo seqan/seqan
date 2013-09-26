@@ -65,5 +65,6 @@ SEQAN_BEGIN_TESTSUITE(test_index)
 	SEQAN_CALL_TEST(testMaxRepeats);
 	SEQAN_CALL_TEST(testSuperMaxRepeats);
 	SEQAN_CALL_TEST(testSuperMaxRepeatsFast);
+    SEQAN_CALL_TEST(testMultipleStrings_Ticket1109);
 }
 SEQAN_END_TESTSUITE

@@ -618,6 +618,19 @@ SEQAN_DEFINE_TEST(testFind_Esa_Mlr)
 	testFind<EsaFindMlr>();
 }
 
+SEQAN_DEFINE_TEST(testMultipleStrings_Ticket1109)
+{
+    StringSet<String<char> > text;
+    appendValue(text, "How many");
+    appendValue(text, " wood would");
+    appendValue(text, " a woodchuck chuck?");
+    
+    typedef Index<StringSet<CharString> > TIndex;
+    TIndex index(text);
+    
+    Iterator< TIndex, TopDown<> >::Type it(index);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 
