@@ -675,6 +675,46 @@ streamTell(::std::ofstream & stream)
     return x;
 }
 
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+inline std::ios_base::openmode
+_getSTLStyleOpenMode(int openMode)
+{
+    std::ios_base::openmode flags = std::ios_base::binary;
+
+    if ((openMode & OPEN_MASK) == OPEN_RDONLY)
+        flags |= std::ios_base::in;
+    if ((openMode & OPEN_MASK) == OPEN_WRONLY)
+    {
+        flags |= std::ios_base::out;
+        if (openMode & OPEN_APPEND)
+            flags |= std::ios_base::app;
+        else
+            flags |= std::ios_base::trunc;
+    }
+    return flags;
+}
+
+inline bool
+open(std::fstream & stream, const char *fileName, int openMode)
+{
+    stream.open(fileName, _getSTLStyleOpenMode(openMode));
+    return stream.is_open();
+}
+
+// ----------------------------------------------------------------------------
+// Function close()
+// ----------------------------------------------------------------------------
+
+inline bool
+close(std::fstream & stream)
+{
+    stream.close();
+    return !stream.is_open();
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_STREAM_ADAPT_FSTREAM_H_
