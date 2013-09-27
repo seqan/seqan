@@ -172,7 +172,7 @@ result &= flush(file);
 };
 */
 
-template <typename TSpec = MMap<>, typename TValue = char>
+template <typename TSpec = File<>, typename TValue = char>
 struct FileStream;
 
 // FileStream with memory mapping
@@ -229,13 +229,13 @@ public:
     // Returns whether or not the stream was opened with reading enabled.
     bool _isReadable() const
     {
-        return modeFlags & (OPEN_RDONLY | OPEN_RDWR);
+        return modeFlags & OPEN_RDONLY;
     }
 
     // Returns whether or not the stream was opened with writing enabled.
     bool _isWriteable() const
     {
-        return modeFlags & (OPEN_WRONLY | OPEN_RDWR);
+        return modeFlags & OPEN_WRONLY;
     }
 
     inline void _initialize()
@@ -1150,6 +1150,17 @@ streamPeek(TValue & c, Stream<FileStream<TSpec, TValue> > & stream)
 
     c = *stream.it;
     return 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function streamError()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TValue>
+inline int
+streamError(Stream<FileStream<TSpec, TValue> > const & stream)
+{
+    return stream.errorFlag;
 }
 
 } // namespace seqan
