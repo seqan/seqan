@@ -68,7 +68,7 @@ namespace seqan {
  * recycled in subsequential allocations.  This way, the number of calls to the heap manager is reduced, and that
  * might speed up memory management.
  *
- * The single pool allocator only pools memory blocks of size $SIZE$.  Blocks of other sizes are allocated and
+ * The single pool allocator only pools memory blocks of size at most $SIZE$.  Blocks of other sizes are allocated and
  * deallocated using an allocator of type $ParentAllocator$. Using the single pool allocator for blocksizes larger
  * than a few KB is not advised.
  */
@@ -80,14 +80,13 @@ namespace seqan {
 ..summary:Allocator that pools memory blocks of specific size.
 ..signature:Allocator< SinglePool<SIZE, ParentAllocator> >
 ..param.SIZE:Size of memory blocks that are pooled.
-...value:An unsigned integer with $SIZE >= sizeof(void *)$.
 ..param.ParentAllocator:An allocator that is by the pool allocator used to allocate memory.
 ...default:@Spec.Simple Allocator@
 ...note:The single pool allocator only supports @Function.clear@ if this function is also implemented for $ParentAllocator$.
 ..remarks:A pool allocator allocates several memory blocks at once. 
 Freed blocks are not immediately deallocated but recycled in subsequential allocations.
 This way, the number of calls to the heap manager is reduced, and that speeds up memory management.
-...text:The single pool allocator only pools memory blocks of size $SIZE$.
+...text:The single pool allocator only pools memory blocks of size at most $SIZE$.
 Blocks of other sizes are allocated and deallocated using an allocator of type $ParentAllocator$.
 ...text:Using the single pool allocator for blocksizes larger than some KB is not advised.
 ..include:seqan/basic.h
@@ -101,11 +100,11 @@ struct Allocator<SinglePool<SIZE, TParentAllocator> >
 {
     enum
     {
-        SIZE_PER_ITEM = SIZE,
+        // item must be large enough to keep a pointer to the next free item
+        SIZE_PER_ITEM = SIZE < sizeof(void*)? sizeof(void*) : SIZE,
         ITEMS_PER_BLOCK = (SIZE_PER_ITEM < 0x0100) ? 0x01000 / SIZE_PER_ITEM : 16,
-        STORAGE_SIZE = SIZE * ITEMS_PER_BLOCK,
-
-        STORAGE_SIZE_MIN = SIZE
+        STORAGE_SIZE = SIZE_PER_ITEM * ITEMS_PER_BLOCK,
+        STORAGE_SIZE_MIN = SIZE_PER_ITEM
     };
 
     char * data_recycled_blocks;
@@ -116,25 +115,22 @@ struct Allocator<SinglePool<SIZE, TParentAllocator> >
 
     Allocator()
     {
-        SEQAN_CHECKPOINT;
         data_recycled_blocks = data_current_end = data_current_free = 0;
         //dont need to initialize data_current_begin
     }
 
     Allocator(size_t reserve_item_count)
     {
-        SEQAN_CHECKPOINT;
         data_recycled_blocks = 0;
 
-        size_t storage_size = (reserve_item_count * SIZE > STORAGE_SIZE_MIN) ? reserve_item_count * SIZE : STORAGE_SIZE_MIN;
-        allocate( parentAllocator( *this ), data_current_begin, storage_size );
+        size_t storage_size = std::max(reserve_item_count * SIZE_PER_ITEM, STORAGE_SIZE_MIN);
+        allocate(parentAllocator(*this), data_current_begin, storage_size);
         data_current_end = data_current_begin + storage_size;
         data_current_free = data_current_begin;
     }
 
     Allocator(TParentAllocator & parent_alloc)
     {
-        SEQAN_CHECKPOINT;
         setValue(data_parent_allocator, parent_alloc);
 
         data_recycled_blocks = data_current_end = data_current_free = 0;
@@ -143,13 +139,12 @@ struct Allocator<SinglePool<SIZE, TParentAllocator> >
 
     Allocator(size_t reserve_item_count, TParentAllocator & parent_alloc)
     {
-        SEQAN_CHECKPOINT;
         data_recycled_blocks = 0;
 
         setValue(data_parent_allocator, parent_alloc);
 
-        size_t storage_size = (reserve_item_count * SIZE > STORAGE_SIZE_MIN) ? reserve_item_count * SIZE : STORAGE_SIZE_MIN;
-        allocate( parentAllocator( *this ), data_current_begin, storage_size );
+        size_t storage_size = std::max(reserve_item_count * SIZE_PER_ITEM, STORAGE_SIZE_MIN);
+        allocate(parentAllocator(*this), data_current_begin, storage_size);
         data_current_end = data_current_begin + storage_size;
         data_current_free = data_current_begin;
     }
@@ -170,7 +165,6 @@ struct Allocator<SinglePool<SIZE, TParentAllocator> >
 
     ~Allocator()
     {
-        SEQAN_CHECKPOINT;
         clear(*this);
     }
 };
@@ -191,7 +185,6 @@ template <size_t SIZE, typename TParentAllocator>
 inline TParentAllocator &
 parentAllocator(Allocator<SinglePool<SIZE, TParentAllocator> > & me)
 {
-    SEQAN_CHECKPOINT;
     return value(me.data_parent_allocator);
 }
 
@@ -203,10 +196,7 @@ template <size_t SIZE, typename TParentAllocator>
 void
 clear(Allocator<SinglePool<SIZE, TParentAllocator> > & me)
 {
-    SEQAN_CHECKPOINT;
-
     me.data_recycled_blocks = me.data_current_end = me.data_current_free = 0;
-
     clear(parentAllocator(me));
 }
 
@@ -221,15 +211,17 @@ allocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
          TSize count,
          Tag<TUsage> const tag_)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<SinglePool<SIZE, TParentAllocator> > TAllocator;
     size_t bytes_needed = count * sizeof(TValue);
 
-    if (bytes_needed != TAllocator::SIZE_PER_ITEM)
+    if (bytes_needed > TAllocator::SIZE_PER_ITEM)
     {//no blocking
         allocate(parentAllocator(me), data, count, tag_);
         return;
     }
+
+    if (bytes_needed < TAllocator::SIZE_PER_ITEM)
+        bytes_needed = TAllocator::SIZE_PER_ITEM;
 
     char * ptr;
     if (me.data_recycled_blocks)
@@ -263,12 +255,11 @@ deallocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
            TSize count,
            Tag<TUsage> const tag_)
 {
-    SEQAN_CHECKPOINT;
     typedef Allocator<SinglePool<SIZE, TParentAllocator> > TAllocator;
 
     size_t bytes_needed = count * sizeof(TValue);
 
-    if (bytes_needed != TAllocator::SIZE_PER_ITEM)
+    if (bytes_needed > TAllocator::SIZE_PER_ITEM)
     {//no blocking
         deallocate(parentAllocator(me), data, count, tag_);
         return;

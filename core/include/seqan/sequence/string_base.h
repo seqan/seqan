@@ -991,11 +991,11 @@ _clearSpace(String<TValue, TSpec> & me,
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size);
 }
 
-template<typename TValue, typename TSpec, typename TSize, typename TExpand>
+template<typename TValue, typename TSpec, typename TSize, typename TCapacity, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 _clearSpace(String<TValue, TSpec> & me,
         TSize size,
-        TSize limit,
+        TCapacity limit,
         Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
@@ -1014,13 +1014,13 @@ _clearSpace(String<TValue, TSpec> & me,
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end);
 }
 
-template<typename TValue, typename TSpec, typename TSize, typename TPosition, typename TExpand>
+template<typename TValue, typename TSpec, typename TSize, typename TPosition, typename TCapacity, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 _clearSpace(String<TValue, TSpec> & me,
             TSize size,
             TPosition pos_begin,
             TPosition pos_end,
-            TSize limit,
+            TCapacity limit,
             Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
@@ -1055,13 +1055,13 @@ resizeSpace(String<TValue, TSpec> & me,
     return ret_;
 }
 
-template<typename TValue, typename TSpec, typename TSize, typename TBeginPosition, typename TEndPosition, typename TLimit, typename TExpand>
+template<typename TValue, typename TSpec, typename TSize, typename TBeginPosition, typename TEndPosition, typename TCapacity, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 resizeSpace(String<TValue, TSpec> & me,
             TSize size,
             TBeginPosition pos_begin,
             TEndPosition pos_end,
-            TLimit limit,
+            TCapacity limit,
             Tag<TExpand> tag)
 {
     SEQAN_CHECKPOINT;
