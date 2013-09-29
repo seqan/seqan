@@ -2924,7 +2924,7 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
 		Shape< TValue, TShapeSpec2 > const &shape)
 	{
 		indexRequire(index, QGramDir());
-		return getOccurrences(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
+		return range(const_cast<Index< TText, IndexQGram<TShapeSpec, TSpec> > const &>(index), shape);
 	}
 
 //////////////////////////////////////////////////////////////////////////////
