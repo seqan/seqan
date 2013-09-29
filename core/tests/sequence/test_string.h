@@ -1276,7 +1276,7 @@ SEQAN_DEFINE_TEST(Combinatoric)
 	Test_Assignments_Combinatoric(str9, str1, Limit(), 10);
 }
 
-SEQAN_DEFINE_TEST(ticket_901)
+SEQAN_DEFINE_TEST(ticket901)
 {
     using namespace seqan;
     
@@ -1287,4 +1287,43 @@ SEQAN_DEFINE_TEST(ticket_901)
     
     SEQAN_ASSERT_EQ(length(source), 0u);
     SEQAN_ASSERT_EQ(target, DnaString("acgtgcat"));
+}
+
+SEQAN_DEFINE_TEST(ticket1108)
+{
+    static const unsigned int ARRAY_SIZE = 3u;
+    typedef String<unsigned int, Array<ARRAY_SIZE> > TArray;
+
+    {
+        typedef String<TArray, MMap<> > TString;
+
+        TString str;
+        for (unsigned int i = 0u; i < 64u; ++i)
+        {
+//            std::cerr << i << ", " << std::endl;
+            TArray elem;
+            resize(elem, ARRAY_SIZE);
+            appendValue(str, elem);
+            SEQAN_ASSERT_LEQ(length(elem), ARRAY_SIZE);
+            SEQAN_ASSERT_LEQ(length(str[0u]), ARRAY_SIZE); // Is violated as soon as i reaches 48.
+            if (length(str) > 32u) SEQAN_ASSERT_LEQ(length(str[32u]), ARRAY_SIZE);
+        }
+    }
+
+    {
+        typedef ExternalConfig<ExternalConfig<>::TFile, 16u, ExternalConfig<>::FRAMES> TExternalConfig;
+        typedef String<TArray, External<TExternalConfig> > TString;
+
+        TString str;
+        for (unsigned int i = 0u; i < 64u; ++i)
+        {
+//            std::cerr << i << ", " << std::endl;
+            TArray elem;
+            resize(elem, ARRAY_SIZE);
+            appendValue(str, elem);
+            SEQAN_ASSERT_LEQ(length(elem), ARRAY_SIZE);
+            SEQAN_ASSERT_LEQ(length(str[0u]), ARRAY_SIZE); // Is violated as soon as i reaches 48.
+            if (length(str) > 32u) SEQAN_ASSERT_LEQ(length(str[32u]), ARRAY_SIZE);
+        }
+    }
 }

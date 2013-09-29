@@ -230,7 +230,7 @@ SEQAN_DEFINE_TEST(Suffix)
 
 }
 
-SEQAN_DEFINE_TEST(Ticket317)
+SEQAN_DEFINE_TEST(ticket317)
 {
     SEQAN_CHECKPOINT;
     // http://trac.mi.fu-berlin.de/seqan/ticket/317

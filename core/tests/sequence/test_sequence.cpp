@@ -98,10 +98,11 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
 
     SEQAN_CALL_TEST(Infix);
     SEQAN_CALL_TEST(Suffix);
-    SEQAN_CALL_TEST(Ticket317);
+    SEQAN_CALL_TEST(ticket317);
     SEQAN_CALL_TEST(ticket848);
     SEQAN_CALL_TEST(test_find_motif_memory_leak_ticket_364);
-    SEQAN_CALL_TEST(ticket_901);
+    SEQAN_CALL_TEST(ticket901);
+    SEQAN_CALL_TEST(ticket1108);
 
     // -----------------------------------------------------------------------
     // Checkpoint Verification
