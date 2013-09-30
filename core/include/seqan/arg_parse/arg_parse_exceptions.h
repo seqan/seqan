@@ -35,10 +35,6 @@
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
 
-#include <string>
-#include <sstream>
-#include <exception>
-
 namespace seqan {
 
 // ============================================================================
@@ -46,88 +42,58 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class ParseException
+// Class ParseError
 // ----------------------------------------------------------------------------
 
 /*
-.Internal.Class.ParseException
+.Internal.Class.ParseError
 ..cat:Miscellaneous
-..summary:General ParseException.
+..summary:General ParseError.
 */
 
-class ParseException :
-    public std::exception
+class ParseError : public RuntimeError
 {
-protected:
-    std::string _what;
-
 public:
-    ParseException(std::string const & what) :
-        _what(what)
+    ParseError(std::string const & option) :
+        RuntimeError(option)
     {}
-
-    // we need to define this one to avoid looser throw specifier error
-    virtual ~ParseException() throw()
-    {}
-
-    virtual const char * what() const throw()
-    {
-        return _what.c_str();
-    }
-
 };
 
 // ----------------------------------------------------------------------------
-// Class InvalidOptionException
+// Class InvalidOption
 // ----------------------------------------------------------------------------
 
 /*
-.Internal.Class.InvalidOptionException
+.Internal.Class.InvalidOption
 ..cat:Miscellaneous
 ..summary:Thrown if an unknown option was set on the command line.
 */
 
-class InvalidOptionException :
-    public ParseException
+class InvalidOption : public ParseError
 {
-
 public:
-    InvalidOptionException(std::string const & option) :
-        ParseException("")
-    {
-        std::stringstream what;
-        what << "illegal option -- " << option;
-        _what = what.str();
-    }
-
-    // we need to define this one to avoid looser throw specifier error
-    virtual ~InvalidOptionException() throw()
+    InvalidOption(std::string const & option) :
+        ParseError("illegal option -- " + option)
     {}
 };
 
 // ----------------------------------------------------------------------------
-// Class MissingArgumentException
+// Class MissingArgument
 // ----------------------------------------------------------------------------
 
 /*
-.Internal.Class.MissingArgumentException
+.Internal.Class.MissingArgument
 ..cat:Miscellaneous
 ..summary:Thrown if an option was set on the command line but without giving the
 required arguments for this option.
 */
 
-class MissingArgumentException :
-    public ParseException
+class MissingArgument : public ParseError
 {
 public:
-    MissingArgumentException(std::string const & option) :
-        ParseException("")
-    {
-        std::stringstream what;
-        what << "option requires an argument -- " << option;
-        _what = what.str();
-    }
-
+    MissingArgument(std::string const & option) :
+        ParseError("option requires an argument -- " + option)
+    {}
 };
 
 // ----------------------------------------------------------------------------
@@ -135,33 +101,19 @@ public:
 // ----------------------------------------------------------------------------
 
 /*
-.Internal.Class.NotEnoughArgumentsException
+.Internal.Class.NotEnoughArguments
 ..cat:Miscellaneous
 ..summary:Thrown if an option was set on the command line but not enough arguments for
 this option were provided.
 */
 
-class NotEnoughArgumentsException :
-    public ParseException
+class NotEnoughArguments : public ParseError
 {
 public:
-    NotEnoughArgumentsException(std::string const & option) :
-        ParseException("")
-    {
-        std::stringstream what;
-        what << "option requires more arguments -- " << option;
-        _what = what.str();
-    }
-
+    NotEnoughArguments(std::string const & option) :
+        ParseError("option requires more arguments -- " + option)
+    {}
 };
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
-// Functions
-// ============================================================================
 
 }  // namespace seqan
 

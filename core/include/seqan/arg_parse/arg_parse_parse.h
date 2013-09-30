@@ -139,12 +139,12 @@ private:
 
     // Handle the given string as an argument.
     //
-    // Throw ParseException in case of too many arguments.
+    // Throw ParseError in case of too many arguments.
     void handleArgument(char const * argStr)
     {
         // Check whether we have the largest number of allowed arguments already.
         if (parser.argumentList.size() <= currentArgument)
-            throw ParseException("Too many arguments!");
+            SEQAN_THROW(ParseError("Too many arguments!"));
 
         ArgParseArgument & argument = getArgument(parser, currentArgument);
         _assignArgumentValue(argument, argStr);
@@ -155,13 +155,13 @@ private:
 
     // Handle the given string as an option.
     //
-    // Throw InvalidOptionException if there is a formal error (== "-") or invalid option naparser.
+    // Throw InvalidOption if there is a formal error (== "-") or invalid option naparser.
     //
-    // Throw MissingArgumentException in case of --key=value option but the option requires multiple values.
+    // Throw MissingArgument in case of --key=value option but the option requires multiple values.
     void handleOption(int & argi, std::string arg)
     {
         if (arg == "-")
-            throw InvalidOptionException("-");
+            SEQAN_THROW(InvalidOption("-"));
 
         if (arg[1] == '-')
             handleLongOption(argi, arg);
@@ -187,7 +187,7 @@ private:
 
         // Guard against invalid option names.
         if (!hasOption(parser, longOpt))
-            throw InvalidOptionException(longOpt);
+            SEQAN_THROW(InvalidOption(longOpt));
 
         // Parse out the values for the option from the command line arguments.
         ArgParseOption & opt = getOption(parser, longOpt);
@@ -196,7 +196,7 @@ private:
             // We can only assign one value in this case.  If the option expected more than one value then this is an
             // error.
             if (numberOfAllowedValues(opt) != 1)
-                throw MissingArgumentException(longOpt);
+                SEQAN_THROW(MissingArgument(longOpt));
             // If everything is fine then we can assign the value to the option.
             _assignArgumentValue(opt, val);
         }
@@ -211,7 +211,7 @@ private:
 
             // Guard against missing values.
             if (argi + (int)numberOfAllowedValues(opt) >= argc)
-                throw MissingArgumentException(longOpt);
+                SEQAN_THROW(MissingArgument(longOpt));
             // We have sufficient values, get them from argv and assign them to the option.
             for (int t = 0; t < (int)numberOfAllowedValues(opt); ++t)
                 _assignArgumentValue(opt, argv[++argi]);
@@ -250,12 +250,12 @@ private:
                     {
                         std::stringstream what;
                         what << "invalid combination of arguments -- " << arg << std::endl;
-                        throw ParseException(what.str());
+                        SEQAN_THROW(ParseError(what.str()));
                     }
 
                     // Handle the case of too few options.
                     if (argi + (int)numberOfAllowedValues(opt) >= argc)
-                        throw MissingArgumentException(opt.shortName);
+                        SEQAN_THROW(MissingArgument(opt.shortName));
 
                     // Assign the required option value.s
                     for (int t = 0; t < (int)numberOfAllowedValues(opt); ++t)
@@ -265,7 +265,7 @@ private:
 
             // No option was found.
             if (s == e)
-                throw InvalidOptionException(arg.substr(s));
+                SEQAN_THROW(InvalidOption(arg.substr(s)));
         }
     }
 };
@@ -277,7 +277,7 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
                                          std::ostream & outputStream,
                                          std::ostream & errorStream)
 {
-    try
+    SEQAN_TRY
     {
         // Perform the parsing without any valid value checking on the argument values.
         ArgumentParserHelper_ parserHelper(me, argc, argv);
@@ -310,7 +310,7 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
         for (unsigned i = 0; i < me.argumentList.size(); ++i)
             _checkValue(me.argumentList[i]);
     }
-    catch (ParseException & ex)
+    SEQAN_CATCH(ParseError & ex)
     {
         errorStream << getAppName(me) << ": " << ex.what() << std::endl;
         return ArgumentParser::PARSE_ERROR;

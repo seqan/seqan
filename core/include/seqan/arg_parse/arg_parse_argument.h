@@ -853,7 +853,7 @@ inline void _checkNumericArgument(ArgParseArgument const & me, std::string const
     {
         std::stringstream what;
         what << "the given value '" << value << "' cannot be casted to " << _typeToString(me);
-        throw ParseException(what.str());
+        SEQAN_THROW(ParseError(what.str()));
     }
 
     if (!_isInInterval<TNumerical>(value, me.minValue, me.maxValue))
@@ -863,7 +863,7 @@ inline void _checkNumericArgument(ArgParseArgument const & me, std::string const
              << (me.minValue != "" ? me.minValue : "-inf") << ":"
              << (me.maxValue != "" ? me.maxValue : "+inf") << "]";
 
-        throw ParseException(what.str());
+        SEQAN_THROW(ParseError(what.str()));
     }
 }
 
@@ -933,7 +933,7 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string va
             what << "]";
             if (i < me._fileExtensions.size())
                 what << "; the file extension was overridden to be '" << getFileExtension(me, i) << "'";
-            throw ParseException(what.str());
+            SEQAN_THROW(ParseError(what.str()));
         }
     }
 }

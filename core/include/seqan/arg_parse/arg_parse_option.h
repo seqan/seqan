@@ -358,7 +358,7 @@ inline bool isRequired(ArgParseOption const & me)
 template <typename TValue>
 inline void setDefaultValue(ArgParseOption & me, const TValue & value)
 {
-    try
+    SEQAN_TRY
     {
         std::stringstream strm;
         strm << value;
@@ -372,7 +372,7 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
         // check if all constraints are satisfied
         _checkValue(me, strm.str());
     }
-    catch (ParseException & ex)
+    SEQAN_CATCH(ParseError & ex)
     {
         SEQAN_FAIL("Default value does not satisfy the restrictions:\n %s", ex.what());
     }
@@ -413,7 +413,7 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
 template <typename TValue>
 inline void addDefaultValue(ArgParseOption & me, const TValue & value)
 {
-    try
+    SEQAN_TRY
     {
         std::stringstream strm;
         strm << value;
@@ -424,7 +424,7 @@ inline void addDefaultValue(ArgParseOption & me, const TValue & value)
         // check if all constraints are satisfied
         _checkValue(me, strm.str(), me.defaultValue.size() - 1);
     }
-    catch (ParseException & ex)
+    SEQAN_CATCH(ParseError & ex)
     {
         SEQAN_FAIL("Default value does not satisfy the restrictions:\n %s", ex.what());
     }
