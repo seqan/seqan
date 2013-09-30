@@ -31,17 +31,15 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// Approximate string matching via backtracking on a substring index.
+// Approximate string matching via backtracking on two substring indices.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_EXP_H_
-#define SEQAN_EXTRAS_FIND_BACKTRACKING_EXP_H_
+#ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_MULTIPLE_H_
+#define SEQAN_EXTRAS_FIND_BACKTRACKING_MULTIPLE_H_
 
 //#define SEQAN_DEBUG
 
 namespace seqan {
-
-namespace ext {
 
 // ============================================================================
 // Forwards
@@ -65,30 +63,20 @@ struct StageExact_;
 // Metafunction TextIterator_
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TBacktracking>
-struct TextIterator_
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+struct TextIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >
 {
-    typedef typename Iterator<TText, TopDown<> >::Type  Type;
+    typedef typename Iterator<Index<TText, TTextIndexSpec>, TopDown<> >::Type   Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction PatternIterator_
 // ----------------------------------------------------------------------------
 
-template <typename TPattern, typename TBacktracking>
-struct PatternIterator_
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
+struct PatternIterator_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >
 {
-    typedef typename Iterator<TPattern, TopDown<> >::Type  Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction Score_
-// ----------------------------------------------------------------------------
-
-template <typename TBacktracking>
-struct Score_
-{
-    typedef unsigned char           Type;
+    typedef typename Iterator<Index<TPattern, TPatternIndexSpec>, TopDown<> >::Type    Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -186,24 +174,6 @@ struct NextStage_<Backtracking<EditDistance, TSpec>, StageLower_>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class Finder
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): Move Finder somewhere else.
-
-template <typename TText, typename TPattern, typename TDelegate, typename TSpec = void>
-struct Finder {};
-
-// ----------------------------------------------------------------------------
-// Tag for backtracking specializations
-// ----------------------------------------------------------------------------
-
-struct BacktrackingSemiGlobal_;
-typedef Tag<BacktrackingSemiGlobal_>    BacktrackingSemiGlobal;
-
-struct BacktrackingGlobal_;
-typedef Tag<BacktrackingGlobal_>        BacktrackingGlobal;
-
-// ----------------------------------------------------------------------------
 // Tags for backtracking stages
 // ----------------------------------------------------------------------------
 
@@ -215,44 +185,33 @@ struct StageFinal_ {};
 struct StageExact_ {};
 
 // ----------------------------------------------------------------------------
-// Class Backtracking
+// Class Finder2
 // ----------------------------------------------------------------------------
 
-template <typename TDistance = HammingDistance, typename TSpec = BacktrackingSemiGlobal>
-struct Backtracking {};
-
-// ----------------------------------------------------------------------------
-// Class Finder
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec,
           typename TDistance, typename TSpec>
-struct Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-              Backtracking<TDistance, TSpec> >
+struct Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> >
 {
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
-    typedef Backtracking<TDistance, TSpec>                                  TBacktracking;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename PatternIterator_<TPatternIndex, TBacktracking>::Type   TPatternIterator;
-    typedef String<TTextIterator>                                           TTextStack;
-    typedef String<TPatternIterator>                                        TPatternStack;
-    typedef typename VertexScoreStack_<TBacktracking>::Type                 TVertexScoreStack;
-    typedef typename Score_<TBacktracking>::Type                            TScore;
+    typedef Index<TText, TTextIndexSpec>                                                TTextIndex;
+    typedef Index<TPattern, TPatternIndexSpec>                                          TPatternIndex;
+    typedef Backtracking<TDistance, TSpec>                                              TBacktracking;
+    typedef typename TextIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type      TTextIterator;
+    typedef typename PatternIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type   TPatternIterator;
+    typedef String<TTextIterator>                                                       TTextStack;
+    typedef String<TPatternIterator>                                                    TPatternStack;
+    typedef typename VertexScoreStack_<TBacktracking>::Type                             TVertexScoreStack;
+    typedef typename Score_<TBacktracking>::Type                                        TScore;
 
     TTextStack              textStack;
     TPatternStack           patternStack;
     TVertexScoreStack       scoreStack;
-//    TPatternIterator        patternLeftmost;
     TScore                  maxScore;
-    TDelegate               & delegate;
 
-    Finder(TDelegate & delegate) :
+    Finder2() :
         textStack(),
         patternStack(),
         scoreStack(),
-        maxScore(0),
-        delegate(delegate)
+        maxScore(0)
     {}
 };
 
@@ -402,11 +361,9 @@ copyBackAndResize(StringSet<TString, TSSetSpec> & stringSet, TDelta delta)
 // Function clear()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
 inline void
-clear(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-             Backtracking<TDistance, TSpec> > & finder)
+clear(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
 {
     clear(finder.textStack);
     clear(finder.patternStack);
@@ -417,11 +374,9 @@ clear(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, T
 // Function _initState()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TTextIterator, typename TPatternIterator>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TTextIterator, typename TPatternIterator>
 inline void
-_initState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > & finder,
+_initState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
            TTextIterator const & textIt, TPatternIterator const & patternIt)
 {
     // Init iterators.
@@ -439,11 +394,9 @@ _initState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
 // Function _initScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec>
 inline void
-_initScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > & finder)
+_initScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder)
 {
     typedef Backtracking<TDistance, TSpec>              TBacktracking;
     typedef typename Score_<TBacktracking>::Type        TScore;
@@ -452,11 +405,9 @@ _initScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
     appendValue(finder.scoreStack, TScore());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_initScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<EditDistance, TSpec> > & finder)
+_initScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder)
 {
     typedef Backtracking<EditDistance, TSpec>           TBacktracking;
     typedef typename Score_<TBacktracking>::Type        TScore;
@@ -470,11 +421,9 @@ _initScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
 // Function _pushState()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_pushState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > & finder,
+_pushState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
            TStage const & /* tag */)
 {
     _pushIterators(finder, TStage());
@@ -501,11 +450,9 @@ _pushState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): Specialize _pushIterators() for StageInitial_ and StageFinal_ of EditDistance
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_pushIterators(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                      Backtracking<TDistance, TSpec> > & finder,
+_pushIterators(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
                TStage const & /* tag */)
 {
     appendValue(finder.patternStack, back(finder.patternStack));
@@ -516,64 +463,52 @@ _pushIterators(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternInde
 // Function _pushScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > & finder,
+_pushScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
            TStage const & /* tag */)
 {
     // Copy the last score on top of the stack.
     appendValue(finder.scoreStack, back(finder.scoreStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-            typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<HammingDistance, TSpec> > & /* finder */,
+_pushScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > & /* finder */,
            StageExact_ const & /* tag */)
 {
     // Do nothing.
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<EditDistance, TSpec> > & finder,
+_pushScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
            StageInitial_ const & /* tag */)
 {
     // Copy the last column on top of the stack and add one cell.
     copyBackAndResize(finder.scoreStack, 1);
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<EditDistance, TSpec> > & finder,
+_pushScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
            StageUpper_ const & /* tag */)
 {
     _pushScore(finder, StageInitial_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<EditDistance, TSpec> > & finder,
+_pushScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
            StageLower_ const & /* tag */)
 {
     // Copy the last column on top of the stack and remove one cell.
     copyBackAndResize(finder.scoreStack, -1);
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<EditDistance, TSpec> > & finder,
+_pushScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
            StageFinal_ const & /* tag */)
 {
     _pushScore(finder, StageLower_());
@@ -583,29 +518,25 @@ _pushScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
 // Function _moveIteratorsDown()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                          Backtracking<TDistance, TSpec> > & finder,
+_moveIteratorsDown(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
                    TStage const & /* tag */)
 {
     // Go down in text and pattern.
     return goDown(back(finder.textStack)) && goDown(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                          Backtracking<HammingDistance, TSpec> > & finder,
+_moveIteratorsDown(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > & finder,
                    StageExact_ const & /* tag */)
 {
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
-    typedef Backtracking<HammingDistance, TSpec>                            TBacktracking;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename PatternIterator_<TPatternIndex, TBacktracking>::Type   TPatternIterator;
+    typedef Index<TText, TTextIndexSpec>                                                TTextIndex;
+    typedef Index<TPattern, TPatternIndexSpec>                                          TPatternIndex;
+    typedef Backtracking<HammingDistance, TSpec>                                        TBacktracking;
+    typedef typename TextIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type      TTextIterator;
+    typedef typename PatternIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type   TPatternIterator;
 
     TTextIterator & textIt = back(finder.textStack);
     TPatternIterator & patternIt = back(finder.patternStack);
@@ -618,33 +549,27 @@ _moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPattern
     return _moveIteratorsRight(finder, StageExact_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                          Backtracking<EditDistance, TSpec> > & finder,
+_moveIteratorsDown(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
                    StageInitial_ const & /* tag */)
 {
     // Go down in pattern.
     return goDown(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                          Backtracking<EditDistance, TSpec> > & finder,
+_moveIteratorsDown(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
                    StageLower_ const & /* tag */)
 {
     // Go down in text.
     return goDown(back(finder.textStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                          Backtracking<EditDistance, TSpec> > & finder,
+_moveIteratorsDown(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
                    StageFinal_ const & /* tag */)
 {
     return _moveIteratorsDown(finder, StageLower_());
@@ -654,11 +579,9 @@ _moveIteratorsDown(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPattern
 // Function _nextState()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_nextState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > & finder,
+_nextState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
            TStage const & /* tag */)
 {
     if (_moveIteratorsRight(finder, TStage()))
@@ -678,11 +601,9 @@ _nextState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
 // Function _moveIteratorsRight()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<TDistance, TSpec> > & finder,
+_moveIteratorsRight(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
                     TStage const & /* tag */)
 {
     // Try to go right in the pattern.
@@ -705,18 +626,16 @@ _moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatter
     return false;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<HammingDistance, TSpec> > & finder,
+_moveIteratorsRight(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > & finder,
                     StageExact_ const & /* tag */)
 {
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
-    typedef Backtracking<HammingDistance, TSpec>                            TBacktracking;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename PatternIterator_<TPatternIndex, TBacktracking>::Type   TPatternIterator;
+    typedef Index<TText, TTextIndexSpec>                                                TTextIndex;
+    typedef Index<TPattern, TPatternIndexSpec>                                          TPatternIndex;
+    typedef Backtracking<HammingDistance, TSpec>                                        TBacktracking;
+    typedef typename TextIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type      TTextIterator;
+    typedef typename PatternIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type   TPatternIterator;
 
     // TODO(esiragusa): Implement goRight(it, pattern).
 //    TTextIterator & textIt = back(finder.textStack);
@@ -740,22 +659,18 @@ _moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatter
     return false;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > & finder,
+_moveIteratorsRight(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
                     StageInitial_ const & /* tag */)
 {
     // Try to go right in the pattern.
     return goRight(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > & finder,
+_moveIteratorsRight(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
                     StageLower_ const & /* tag */)
 {
     // Try to go right in the text.
@@ -766,11 +681,9 @@ _moveIteratorsRight(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatter
 // Function _popState()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_popState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                 Backtracking<TDistance, TSpec> > & finder,
+_popState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
           TStage const & /* tag */)
 {
     _popIterators(finder, TStage());
@@ -786,11 +699,9 @@ _popState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): Specialize _popIterators() for StageInitial_ and StageFinal_ of EditDistance
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_popIterators(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                     Backtracking<TDistance, TSpec> > & finder,
+_popIterators(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
               TStage const & /* tag */)
 {
     eraseBack(finder.textStack);
@@ -801,21 +712,17 @@ _popIterators(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndex
 // Function _popScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_popScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                 Backtracking<TDistance, TSpec> > & finder,
+_popScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
           TStage const & /* tag */)
 {
     eraseBack(finder.scoreStack);
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_popScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                 Backtracking<HammingDistance, TSpec> > & /* finder */,
+_popScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > & /* finder */,
           StageExact_ const & /* tag */)
 {
     // Do nothing.
@@ -825,19 +732,15 @@ _popScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec
 // Function _updateScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<TDistance, TSpec> > & /* finder */,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & /* finder */,
              TStage const & /* tag */)
 {}
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec, typename TStage>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<HammingDistance, TSpec> > & finder,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > & finder,
              TStage const & /* tag */)
 {
     typedef Backtracking<HammingDistance, TSpec>    TBacktracking;
@@ -847,34 +750,28 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
     TScore score = ordEqual(parentEdgeLabel(back(finder.textStack)), parentEdgeLabel(back(finder.patternStack))) ? 0 : 1;
 
     // Add score to previous score.
-    back(finder.scoreStack) += score;
+    back(finder.scoreStack) = value(finder.scoreStack, length(finder.scoreStack) - 2) + score;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<HammingDistance, TSpec> > & /* finder */,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > & /* finder */,
              StageExact_ const & /* tag */)
 {
     // Do nothing.
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<EditDistance, TSpec> > & finder,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
              StageInitial_ const & /* tag */)
 {
     _updateVertexScore(back(finder.scoreStack), value(finder.scoreStack, length(finder.scoreStack) - 2), StageInitial_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<EditDistance, TSpec> > & finder,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
              StageUpper_ const & /* tag */)
 {
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
@@ -893,11 +790,9 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                        StageUpper_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<EditDistance, TSpec> > & finder,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
              StageDiagonal_ const & /* tag */)
 {
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
@@ -916,11 +811,9 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                        StageDiagonal_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<EditDistance, TSpec> > & finder,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
              StageLower_ const & /* tag */)
 {
     typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
@@ -939,11 +832,9 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
                        StageLower_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<EditDistance, TSpec> > & finder,
+_updateScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > & finder,
              StageFinal_ const & /* tag */)
 {
     _updateVertexScore(back(finder.scoreStack),
@@ -957,11 +848,9 @@ _updateScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
 // Function setMaxScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TMaxScore>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TMaxScore>
 inline void
-setMaxScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                   Backtracking<TDistance, TSpec> > & finder,
+setMaxScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
             TMaxScore maxScore)
 {
     finder.maxScore = maxScore;
@@ -971,20 +860,16 @@ setMaxScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSp
 // Function _getMinScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline typename Score_<Backtracking<HammingDistance, TSpec> >::Type
-_getMinScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<HammingDistance, TSpec> > const & finder)
+_getMinScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder)
 {
     return getScore(finder);
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline typename Score_<Backtracking<EditDistance, TSpec> >::Type
-_getMinScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<EditDistance, TSpec> > const & finder)
+_getMinScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder)
 {
     typedef Backtracking<EditDistance, TSpec>                       TBacktracking;
     typedef typename VertexScore_<TBacktracking>::ConstType         TVertexScore;
@@ -999,21 +884,17 @@ _getMinScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexS
 // Function getScore()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline typename Score_<Backtracking<HammingDistance, TSpec> >::Type
-getScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                Backtracking<HammingDistance, TSpec> > const & finder)
+getScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder)
 {
     // Return the last value.
     return back(finder.scoreStack);
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline typename Score_<Backtracking<EditDistance, TSpec> >::Type
-getScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                Backtracking<EditDistance, TSpec> > const & finder)
+getScore(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder)
 {
     // Return the value of last cell in column.
     return back(back(finder.scoreStack));
@@ -1023,44 +904,36 @@ getScore(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>
 // Function _inTerminalState()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<TDistance, TSpec> > const & /* finder */,
+_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & /* finder */,
                  TStage const & /* tag */)
 {
     // The current state is not terminal by default.
     return false;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<HammingDistance, TSpec> > const & finder,
+_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder,
                  StageFinal_ const & /* tag */)
 {
     // Is the score within the max score?
     return getScore(finder) <= finder.maxScore;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<EditDistance, TSpec> > const & finder,
+_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                  StageLower_ const & /* tag */)
 {
     // Is the score within the max score?
     return getScore(finder) <= finder.maxScore;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<EditDistance, TSpec> > const & finder,
+_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                  StageFinal_ const & /* tag */)
 {
     // Is the score within the max score?
@@ -1071,22 +944,18 @@ _inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIn
 // Function _inActiveState()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_inActiveState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                      Backtracking<TDistance, TSpec> > const & finder,
+_inActiveState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder,
                TStage const & /* tag */)
 {
     // Is the minimum score within the max score?
     return _getMinScore(finder) <= finder.maxScore;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_inActiveState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                      Backtracking<HammingDistance, TSpec> > const /* finder */,
+_inActiveState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & /* finder */,
                StageExact_ const & /* tag */)
 {
     // Exact search only walks through active states.
@@ -1097,33 +966,27 @@ _inActiveState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternInde
 // Function _moveToExactStage()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_moveToStageExact(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                         Backtracking<TDistance, TSpec> > const & /* finder */,
+_moveToStageExact(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & /* finder */,
                   TStage const & /* tag */)
 {
     // By default there is no exact stage.
     return false;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToStageExact(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                         Backtracking<HammingDistance, TSpec> > const & finder,
+_moveToStageExact(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder,
                   StageInitial_ const & /* tag */)
 {
     // Was the maximum score attained?
     return _getMinScore(finder) == finder.maxScore;
 }
 
-//template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-//          typename TSpec, typename TStage>
+//template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec, typename TStage>
 //inline bool
-//_moveToStageExact(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-//                         Backtracking<EditDistance, TSpec> > const & finder,
+//_moveToStageExact(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
 //                  TStage const & /* tag */)
 //{
 //    // TODO(esiragusa): Implement exact search speedup for EditDistance.
@@ -1134,75 +997,61 @@ _moveToStageExact(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternI
 // Function _moveToNextStage()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<TDistance, TSpec> > const & /* finder */,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & /* finder */,
                  TStage const & /* tag */)
 {
     // By default there is no next stage.
     return false;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<HammingDistance, TSpec> > const & finder,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder,
                  StageInitial_ const & /* tag */)
 {
     return isRightTerminal(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<HammingDistance, TSpec> > const & finder,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder,
                  StageExact_ const & /* tag */)
 {
     return isRightTerminal(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<EditDistance, TSpec> > const & finder,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                  StageInitial_ const & /* tag */)
 {
     // Move to upper stage when k pattern symbols have been consumed.
     return (repLength(back(finder.patternStack)) >= finder.maxScore) || isRightTerminal(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<EditDistance, TSpec> > const & finder,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                  StageUpper_ const & /* tag */)
 {
     // Move to diagonal stage when the diagonal has size 2k + 1.
     return (length(back(finder.scoreStack)) >= 2u * finder.maxScore + 1u) || isRightTerminal(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<EditDistance, TSpec> > const & finder,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                  StageDiagonal_ const & /* tag */)
 {
     // Move to lower stage when all pattern symbols have been consumed.
     return isRightTerminal(back(finder.patternStack));
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                        Backtracking<EditDistance, TSpec> > const & finder,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                  StageLower_ const & /* tag */)
 {
     // Move to final stage when there is only one cell left to compute.
@@ -1213,59 +1062,37 @@ _moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIn
 // Function _stayInCurrentStage()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<TDistance, TSpec> > const & /* finder */,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & /* finder */,
                     TStage const & /* tag */)
 {
     // Stay in the current stage by default.
     return true;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                     StageInitial_ const & /* tag */)
 {
     return repLength(back(finder.patternStack)) < finder.maxScore;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                     StageUpper_ const & /* tag */)
 {
     return length(back(finder.scoreStack)) < 2u * finder.maxScore + 1u;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
                     StageLower_ const & /* tag */)
 {
     return length(back(finder.scoreStack)) > 2;
-}
-
-// ----------------------------------------------------------------------------
-// Function _report()
-// ----------------------------------------------------------------------------
-
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec>
-inline void
-_report(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-               Backtracking<TDistance, TSpec> > const & finder)
-{
-    // Inversion of control.
-    onMatch(finder.delegate, finder);
 }
 
 // ----------------------------------------------------------------------------
@@ -1273,11 +1100,9 @@ _report(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>,
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Debug functions.
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_printCall(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > const & finder,
+_printCall(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder,
            TStage const & /* tag */)
 {
     std::cout << "call:           "; _printFindSignature(finder, TStage());
@@ -1285,123 +1110,107 @@ _printCall(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpe
     std::cout << "past pattern:   " << representative(back(finder.patternStack)) << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_printReturn(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                    Backtracking<TDistance, TSpec> > const & finder,
+_printReturn(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder,
              TStage const & /* tag */)
 {
     std::cout << "return:         "; _printFindSignature(finder, TStage());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_printPush(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                  Backtracking<TDistance, TSpec> > const & finder,
+_printPush(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder,
            TStage const & /* tag */)
 {
     std::cout << "push:           "; _printFindSignature(finder, TStage());
     _printState(finder, TStage());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_printPop(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                 Backtracking<TDistance, TSpec> > const & finder,
+_printPop(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & finder,
           TStage const & /* tag */)
 {
     std::cout << "pop:            "; _printFindSignature(finder, TStage());
     _printState(finder, TStage());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<TDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > const & /* finder */,
                     TStage const & /* tag */)
 {
     std::cout << "<TDistance, TStage>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<HammingDistance, TSpec> > const & /* finder */,
-                    TStage const & /* tag */)
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & /* finder */,
+                    StageInitial_ const & /* tag */)
 {
-    std::cout << "<HammingDistance, TStage>" << std::endl;
+    std::cout << "<HammingDistance, StageInitial>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<HammingDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & /* finder */,
+                    StageFinal_ const & /* tag */)
+{
+    std::cout << "<HammingDistance, StageFinal>" << std::endl;
+}
+
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
+inline void
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & /* finder */,
                     StageExact_ const & /* tag */)
 {
     std::cout << "<HammingDistance, StageExact>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & /* finder */,
                     StageInitial_ const & /* tag */)
 {
     std::cout << "<EditDistance, StageInitial>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & /* finder */,
                     StageUpper_ const & /* tag */)
 {
     std::cout << "<EditDistance, StageUpper>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & /* finder */,
                     StageDiagonal_ const & /* tag */)
 {
     std::cout << "<EditDistance, StageDiagonal>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & /* finder */,
                     StageLower_ const & /* tag */)
 {
     std::cout << "<EditDistance, StageLower>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec>
 inline void
-_printFindSignature(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                           Backtracking<EditDistance, TSpec> > const & /* finder */,
+_printFindSignature(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & /* finder */,
                     StageFinal_ const & /* tag */)
 {
     std::cout << "<EditDistance, StageFinal>" << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec, typename TStage>
 inline void
-_printState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                   Backtracking<HammingDistance, TSpec> > const & finder,
+_printState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, TSpec> > const & finder,
             TStage const & /* tag */)
 {
     std::cout << "text:           " << parentEdgeLabel(back(finder.textStack)) << std::endl;
@@ -1409,11 +1218,9 @@ _printState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSp
     std::cout << "errors:         " << static_cast<unsigned>(getScore(finder)) << std::endl;
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TSpec, typename TStage>
 inline void
-_printState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                   Backtracking<EditDistance, TSpec> > const & finder,
+_printState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, TSpec> > const & finder,
             TStage const & /* tag */)
 {
     std::cout << "text:           " << parentEdgeLabel(back(finder.textStack)) << std::endl;
@@ -1429,11 +1236,10 @@ _printState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSp
 // Function _find()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TStage>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TStage, typename TDelegate>
 inline void
-_find(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-             Backtracking<TDistance, TSpec> > & finder,
+_find(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
+      TDelegate & delegate,
       TStage const & /* tag */)
 {
     typedef Backtracking<TDistance, TSpec>                      TBacktracking;
@@ -1445,19 +1251,20 @@ _find(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, T
 
     if (_moveToStageExact(finder, TStage()))
     {
-        _find(finder, StageExact_());
+        _find(finder, delegate, StageExact_());
     }
     else
     {
         if (_moveToNextStage(finder, TStage()))
         {
-            _find(finder, TNextStage());
+            _find(finder, delegate, TNextStage());
         }
         if (_stayInCurrentStage(finder, TStage()))
         {
             if (_inTerminalState(finder, TStage()))
             {
-                _report(finder);
+                // Inversion of control.
+                onFind(delegate, finder);
             }
             else if (_inActiveState(finder, TStage()))
             {
@@ -1465,7 +1272,7 @@ _find(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, T
                 {
                     do
                     {
-                        _find(finder, TStage());
+                        _find(finder, delegate, TStage());
                     }
                     while (_nextState(finder, TStage()));
 
@@ -1484,32 +1291,29 @@ _find(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, T
 // Function find()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate,
-          typename TDistance, typename TSpec, typename TValue>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDistance, typename TSpec, typename TValue, typename TDelegate>
 inline void
-find(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-            Backtracking<TDistance, TSpec> > & finder,
+find(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<TDistance, TSpec> > & finder,
      Index<TText, TTextIndexSpec> & text,
      Index<TPattern, TPatternIndexSpec> & pattern,
-     TValue maxScore)
+     TValue maxScore,
+     TDelegate & delegate)
 {
-    typedef Index<TText, TTextIndexSpec>                                    TTextIndex;
-    typedef Index<TPattern, TPatternIndexSpec>                              TPatternIndex;
-    typedef Backtracking<TDistance, TSpec>                                  TBacktracking;
-    typedef typename TextIterator_<TTextIndex, TBacktracking>::Type         TTextIterator;
-    typedef typename PatternIterator_<TPatternIndex, TBacktracking>::Type   TPatternIterator;
+    typedef Index<TText, TTextIndexSpec>                                                TTextIndex;
+    typedef Index<TPattern, TPatternIndexSpec>                                          TPatternIndex;
+    typedef Backtracking<TDistance, TSpec>                                              TBacktracking;
+    typedef typename TextIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type      TTextIterator;
+    typedef typename PatternIterator_<TTextIndex, TPatternIndex, TBacktracking>::Type   TPatternIterator;
 
     TTextIterator textIt(text);
     TPatternIterator patternIt(pattern);
 
     setMaxScore(finder, maxScore);
     _initState(finder, textIt, patternIt);
-    _find(finder, StageInitial_());
-    clear(finder);
+    _find(finder, delegate, StageInitial_());
+    _popState(finder, StageInitial_());
 }
 
 }
 
-}
-
-#endif  // #ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_EXP_H_
+#endif  // #ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_MULTIPLE_H_

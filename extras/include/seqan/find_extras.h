@@ -13,14 +13,14 @@
 //     * Redistributions in binary form must reproduce the above copyright
 //       notice, this list of conditions and the following disclaimer in the
 //       documentation and/or other materials provided with the distribution.
-//     * Neither the name of Knut Reinert or the FU Berlin nor the names of
+//     * Neither the name of NVIDIA Corporation nor the names of
 //       its contributors may be used to endorse or promote products derived
 //       from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 // AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 // IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL KNUT REINERT OR THE FU BERLIN BE LIABLE
+// ARE DISCLAIMED. IN NO EVENT SHALL NVIDIA CORPORATION BE LIABLE
 // FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
 // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
@@ -30,42 +30,26 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// Facade header for module sequence.
+// Facade header for extras find module.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_INDEX_H_
-#define EXTRAS_INCLUDE_SEQAN_INDEX_H_
+#ifndef EXTRAS_INCLUDE_SEQAN_FIND_H_
+#define EXTRAS_INCLUDE_SEQAN_FIND_H_
 
 // ===========================================================================
 // Prerequisites.
 // ===========================================================================
 
-#include <seqan/basic.h>
-#include <seqan/file.h>
-#include <seqan/index.h>
-#include <seqan/find_extras.h>
+#include <seqan/basic_extras.h>
+#include <seqan/sequence_extras.h>
 
 // ===========================================================================
-// Extra VSTree Iterators.
+// Base finder.
 // ===========================================================================
 
-#include <seqan/index/index_sa_stree.h>
-#include <seqan/index/index_sa_truncated.h>
-
-#include <seqan/index/index_qgram_stree.h>
-#include <seqan/index/index_qgram_bucketrefinement.h>
-
-// ===========================================================================
-// Backtracking Finders.
-// ===========================================================================
-
-#include <seqan/index/find2_index.h>
-#include <seqan/index/find_backtracking_exp.h>
-//#include <seqan/index/find_suffixfilter.h>
+#include <seqan/find/find2_base.h>
 
 
-#include <seqan/index/find_backtracking.h>
-
-#endif  // EXTRAS_INCLUDE_SEQAN_INDEX_H_
+#endif  // EXTRAS_INCLUDE_SEQAN_FIND_H_

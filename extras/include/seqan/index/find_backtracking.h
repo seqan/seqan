@@ -49,11 +49,6 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TDistance = HammingDistance, typename TSpec = void>
-struct Backtracking {};
-
-// ============================================================================
-
 template <typename TPrefix, typename TDistance>
 struct State {};
 
