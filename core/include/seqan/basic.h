@@ -35,9 +35,6 @@
 #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_
 #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_
 
-// TODO(holtgrew): Remove the SEQAN_CHECKPOINT macro later.
-#define SEQAN_CHECKPOINT
-
 // --------------------------------------------------------------------------
 // Prerequisites
 // --------------------------------------------------------------------------
@@ -50,6 +47,9 @@
 
 // Code for debugging and testing (assertions, test system) and profiling.
 #include <seqan/basic/basic_debug.h>
+
+// Basic exceptions.
+#include <seqan/basic/basic_exception.h>
 
 // C++ Metaprogramming Support Code, generally independent of SeqAn.
 #include <seqan/basic/basic_metaprogramming.h>
