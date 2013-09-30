@@ -30,6 +30,12 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
 add_executable (
+  test_basic_exception
+  test_basic_exception.cpp
+  test_basic_exception.h)
+target_link_libraries (test_basic_exception ${SEQAN_LIBRARIES})
+
+add_executable (
   test_basic_metaprogramming
   test_basic_metaprogramming.cpp
   test_basic_metaprogramming_logic.h
@@ -123,6 +129,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # Register with CTest
 # ----------------------------------------------------------------------------
 
+add_test (NAME test_test_basic_exception COMMAND $<TARGET_FILE:test_basic_exception>)
 add_test (NAME test_test_basic_metaprogramming COMMAND $<TARGET_FILE:test_basic_metaprogramming>)
 add_test (NAME test_test_basic_fundamental COMMAND $<TARGET_FILE:test_basic_fundamental>)
 add_test (NAME test_test_basic_concept COMMAND $<TARGET_FILE:test_basic_concept>)
