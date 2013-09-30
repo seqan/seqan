@@ -105,22 +105,20 @@ struct DbFinder
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>  TDbFinder;
+    typedef Db<TText>                                           TDb;
+    typedef Db<TText, TDbQuerySpec>                             TDbQuery;
+    typedef DbIndex<TIndex>                                     TDbIndex;
+    typedef DbIndex<TIndex, Query>                              TDbQueryIndex;
+    typedef Verifier<TText, TDbQuerySpec>                       TVerifier;
+    typedef typename Size<TText>::Type                          TTextSize;
+    typedef typename Size<TIndex>::Type                         TDepth;
 
-    typedef Db<TText>                                               TDb;
-    typedef Db<TText, TDbQuerySpec>                                 TDbQuery;
-    typedef DbIndex<TIndex>                                         TDbIndex;
-    typedef DbIndex<TIndex, Query>                                  TDbQueryIndex;
-    typedef Verifier<TText, TDbQuerySpec>                           TVerifier;
-    typedef typename Size<TText>::Type                              TTextSize;
-    typedef typename Size<TIndex>::Type                             TDepth;
-
-    typedef seqan::ext::Backtracking<HammingDistance, Bottom>               TBacktrackingExt;
-    typedef seqan::ext::Backtracking<EditDistance, Bottom>                  TBacktrackingApx;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingExt> TFinderExt;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingApx> TFinderApx;
-    typedef String<TFinderApx>                                              TFindersApx;
-    typedef String<TFinderExt>                                              TFindersExt;
+    typedef Backtracking<HammingDistance, Bottom>               TBacktrackingExt;
+    typedef Backtracking<EditDistance, Bottom>                  TBacktrackingApx;
+    typedef Finder2<TIndex, TIndex, TBacktrackingExt>           TFinderExt;
+    typedef Finder2<TIndex, TIndex, TBacktrackingApx>           TFinderApx;
+    typedef String<TFinderApx>                                  TFindersApx;
+    typedef String<TFinderExt>                                  TFindersExt;
 
     TDb /* const */     & db;
     TDbIndex            dbIndex;
@@ -190,134 +188,124 @@ struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact>
 // ----------------------------------------------------------------------------
 
 namespace seqan {
-namespace ext {
-template <typename TBacktracking>
-struct PatternIterator_<TDbDnaSaSmall, TBacktracking>
+
+template <typename TDistance, typename TSpec>
+struct PatternIterator_<TDbDnaSaSmall, TDbDnaSaSmall, Backtracking<TDistance, TSpec> >
 {
     typedef typename Iterator<TDbDnaSaSmall, TopDown<Truncated<Preorder> > >::Type  Type;
 };
 
-template <typename TBacktracking>
-struct PatternIterator_<TDbGeoSaSmall, TBacktracking>
+template <typename TDistance, typename TSpec>
+struct PatternIterator_<TDbGeoSaSmall, TDbGeoSaSmall, Backtracking<TDistance, TSpec> >
 {
     typedef typename Iterator<TDbGeoSaSmall, TopDown<Truncated<Preorder> > >::Type  Type;
 };
 
-template <typename TBacktracking>
-struct PatternIterator_<TDbDnaSaHuge, TBacktracking>
+template <typename TDistance, typename TSpec>
+struct PatternIterator_<TDbDnaSaHuge, TDbDnaSaHuge, Backtracking<TDistance, TSpec> >
 {
     typedef typename Iterator<TDbDnaSaHuge, TopDown<Truncated<Preorder> > >::Type  Type;
 };
 
-template <typename TBacktracking>
-struct PatternIterator_<TDbGeoSaHuge, TBacktracking>
+template <typename TDistance, typename TSpec>
+struct PatternIterator_<TDbGeoSaHuge, TDbGeoSaHuge, Backtracking<TDistance, TSpec> >
 {
     typedef typename Iterator<TDbGeoSaHuge, TopDown<Truncated<Preorder> > >::Type  Type;
 };
-}
-}
+
+} // namespace seqan
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 namespace seqan {
-namespace ext {
+
 // ----------------------------------------------------------------------------
-// Function _inTerminalState()                          [Finder<Backtracking>]
+// Function _inTerminalState()                          [Finder2<Backtracking>]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                         Backtracking<HammingDistance, Top> > const & finder,
+_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
                  StageFinal_ const & /* tag */)
 {
     return _inActiveState(finder, StageFinal_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_inTerminalState(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                         Backtracking<EditDistance, Top> > const & finder,
+_inTerminalState(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                  StageLower_ const & /* tag */)
 {
     return _inActiveState(finder, StageLower_());
 }
 
 // ----------------------------------------------------------------------------
-// Function _moveToNextStage()                          [Finder<Backtracking>]
+// Function _moveToNextStage()                          [Finder2<Backtracking>]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_moveToNextStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                         Backtracking<EditDistance, Top> > const & /* finder */,
+_moveToNextStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & /* finder */,
                  StageLower_ const & /* tag */)
 {
     return false;
 }
 
 // ----------------------------------------------------------------------------
-// Function _stayInCurrentStage()                       [Finder<Backtracking>]
+// Function _stayInCurrentStage()                       [Finder2<Backtracking>]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                            Backtracking<HammingDistance, Top> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
                     StageInitial_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageInitial_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                            Backtracking<HammingDistance, Top> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<HammingDistance, Top> > const & finder,
                     StageExact_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageExact_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                            Backtracking<EditDistance, Top> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                     StageInitial_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageInitial_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                            Backtracking<EditDistance, Top> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                     StageUpper_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageUpper_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                            Backtracking<EditDistance, Top> > const & finder,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & finder,
                     StageDiagonal_ const & /* tag */)
 {
     return !_moveToNextStage(finder, StageDiagonal_());
 }
 
-template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec, typename TDelegate>
+template <typename TText, typename TTextIndexSpec, typename TPattern, typename TPatternIndexSpec>
 inline bool
-_stayInCurrentStage(Finder<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, TDelegate,
-                            Backtracking<EditDistance, Top> > const & /* finder */,
+_stayInCurrentStage(Finder2<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, Backtracking<EditDistance, Top> > const & /* finder */,
                     StageLower_ const & /* tag */)
 {
     return true;
 }
 
-}
-}
+} // namespace seqan
 
 // ----------------------------------------------------------------------------
 // Function setMinSeedLength()                                       [DbFinder]
@@ -391,20 +379,20 @@ void prepare(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> &, Db<TText
 {}
 
 // ----------------------------------------------------------------------------
-// Function onMatch()                                                [DbFinder]
+// Function onFind()                                                 [DbFinder]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate, typename TSpec, typename TBacktracking>
 inline void
-onMatch(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder,
-        seqan::ext::Finder<TIndex, TIndex, DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec>, TBacktracking> const & finder)
+onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder,
+       Finder2<TIndex, TIndex, TBacktracking> const & finder)
 {
-    typedef typename seqan::ext::TextIterator_<TIndex, TBacktracking>::Type     TTextIterator;
-    typedef typename seqan::ext::PatternIterator_<TIndex, TBacktracking>::Type  TPatternIterator;
-    typedef typename Size<TIndex>::Type                                         TSize;
-    //typedef typename Size<TText>::Type                                          TErrors;
-    typedef typename Fibre<TIndex, FibreSA>::Type const                         TSAFibre;
-    typedef typename Infix<TSAFibre>::Type                                      TOccurrences;
+    typedef typename TextIterator_<TIndex, TIndex, TBacktracking>::Type     TTextIterator;
+    typedef typename PatternIterator_<TIndex, TIndex, TBacktracking>::Type  TPatternIterator;
+    typedef typename Size<TIndex>::Type                                     TSize;
+    //typedef typename Size<TText>::Type                                    TErrors;
+    typedef typename Fibre<TIndex, FibreSA>::Type const                     TSAFibre;
+    typedef typename Infix<TSAFibre>::Type                                  TOccurrences;
 
     TTextIterator const & textIt = back(finder.textStack);
     TPatternIterator const & patternIt = back(finder.patternStack);
@@ -487,20 +475,19 @@ _validHit(DbFinder<TText, TIndex, Query, TDelegate, TSpec> const & dbFinder,
 }
 
 // ----------------------------------------------------------------------------
-// Function onMatch()                                      [DbFinder<Parallel>]
+// Function onFind()                                       [DbFinder<Parallel>]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 inline void
-onMatch(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
-        seqan::ext::Finder<TIndex, TIndex, DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>,
-                seqan::ext::Backtracking<EditDistance, Top> > const & finder)
+onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
+       Finder2<TIndex, TIndex, Backtracking<EditDistance, Top> > const & finder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>      TDbFinder;
-    typedef seqan::ext::Backtracking<EditDistance, Bottom>                  TBacktracking;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktracking>    TFinder;
+    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>  TDbFinder;
+    typedef Backtracking<EditDistance, Bottom>                          TBacktracking;
+    typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
 
-    TFinder finderBottom(dbFinder);
+    TFinder finderBottom;
     setMaxScore(finderBottom, finder.maxScore);
     appendValue(finderBottom.textStack, back(finder.textStack));
     appendValue(finderBottom.patternStack, back(finder.patternStack));
@@ -512,15 +499,14 @@ onMatch(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 inline void
-onMatch(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
-        seqan::ext::Finder<TIndex, TIndex, DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>,
-                seqan::ext::Backtracking<HammingDistance, Top> > const & finder)
+onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
+       Finder2<TIndex, TIndex, Backtracking<HammingDistance, Top> > const & finder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>      TDbFinder;
-    typedef seqan::ext::Backtracking<HammingDistance, Bottom>               TBacktracking;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktracking>    TFinder;
+    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>  TDbFinder;
+    typedef Backtracking<HammingDistance, Bottom>                       TBacktracking;
+    typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
 
-    TFinder finderBottom(dbFinder);
+    TFinder finderBottom;
     setMaxScore(finderBottom, finder.maxScore);
     appendValue(finderBottom.textStack, back(finder.textStack));
     appendValue(finderBottom.patternStack, back(finder.patternStack));
@@ -537,17 +523,17 @@ onMatch(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate, typename TSpec>
 void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec>                 TDbFinder;
-    typedef seqan::ext::Backtracking<EditDistance>                                  TBacktrackingApx;
-    typedef seqan::ext::Backtracking<HammingDistance>                               TBacktrackingExt;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingApx>         TFinderApx;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingExt>         TFinderExt;
-    typedef typename seqan::ext::TextIterator_<TIndex, TBacktrackingApx>::Type      TTextIterator;
-    typedef typename seqan::ext::PatternIterator_<TIndex, TBacktrackingApx>::Type   TPatternIterator;
+    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec>             TDbFinder;
+    typedef Backtracking<EditDistance>                                          TBacktrackingApx;
+    typedef Backtracking<HammingDistance>                                       TBacktrackingExt;
+    typedef Finder2<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
+    typedef Finder2<TIndex, TIndex, TBacktrackingExt>                           TFinderExt;
+    typedef typename TextIterator_<TIndex, TIndex, TBacktrackingApx>::Type      TTextIterator;
+    typedef typename PatternIterator_<TIndex, TIndex, TBacktrackingApx>::Type   TPatternIterator;
 
     // Instantiate a finder.
-    TFinderApx finderApx(dbFinder);
-    TFinderExt finderExt(dbFinder);
+    TFinderApx finderApx;
+    TFinderExt finderExt;
 
     unsigned seedSetsCount = length(dbFinder.queryIndex.errors);
     unsigned seedSet = 0;
@@ -561,7 +547,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 
         setMaxScore(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
-        _find(finderExt, seqan::ext::StageInitial_());
+        _find(finderExt, dbFinder, StageInitial_());
         clear(finderExt);
 
         seedSet++;
@@ -578,7 +564,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 
         setMaxScore(finderApx, seedErrors);
         _initState(finderApx, textIt, patternIt);
-        _find(finderApx, seqan::ext::StageInitial_());
+        _find(finderApx, dbFinder, StageInitial_());
         clear(finderApx);
     }
 }
@@ -590,21 +576,21 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>              TDbFinder;
-    typedef seqan::ext::Backtracking<EditDistance, Top>                             TBacktrackingApx;
-    typedef seqan::ext::Backtracking<HammingDistance, Top>                          TBacktrackingExt;
-    typedef seqan::ext::Backtracking<EditDistance, Bottom>                          TBacktrackingApxBottom;
-    typedef seqan::ext::Backtracking<HammingDistance, Bottom>                       TBacktrackingExtBottom;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingApx>         TFinderApx;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingExt>         TFinderExt;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingApxBottom>   TFinderApxBottom;
-    typedef seqan::ext::Finder<TIndex, TIndex, TDbFinder, TBacktrackingExtBottom>   TFinderExtBottom;
-    typedef typename seqan::ext::TextIterator_<TIndex, TBacktrackingApx>::Type      TTextIterator;
-    typedef typename seqan::ext::PatternIterator_<TIndex, TBacktrackingApx>::Type   TPatternIterator;
+    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>          TDbFinder;
+    typedef Backtracking<EditDistance, Top>                                     TBacktrackingApx;
+    typedef Backtracking<HammingDistance, Top>                                  TBacktrackingExt;
+    typedef Backtracking<EditDistance, Bottom>                                  TBacktrackingApxBottom;
+    typedef Backtracking<HammingDistance, Bottom>                               TBacktrackingExtBottom;
+    typedef Finder2<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
+    typedef Finder2<TIndex, TIndex, TBacktrackingExt>                           TFinderExt;
+    typedef Finder2<TIndex, TIndex, TBacktrackingApxBottom>                     TFinderApxBottom;
+    typedef Finder2<TIndex, TIndex, TBacktrackingExtBottom>                     TFinderExtBottom;
+    typedef typename TextIterator_<TIndex, TIndex, TBacktrackingApx>::Type      TTextIterator;
+    typedef typename PatternIterator_<TIndex, TIndex, TBacktrackingApx>::Type   TPatternIterator;
 
     // Instantiate a finder.
-    TFinderApx finderApx(dbFinder);
-    TFinderExt finderExt(dbFinder);
+    TFinderApx finderApx;
+    TFinderExt finderExt;
 
     unsigned seedSetsCount = length(dbFinder.queryIndex.errors);
     unsigned seedSet = 0;
@@ -618,7 +604,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         
         setMaxScore(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
-        _find(finderExt, seqan::ext::StageInitial_());
+        _find(finderExt, dbFinder, StageInitial_());
         clear(finderExt);
 
         seedSet++;
@@ -635,7 +621,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
 
         setMaxScore(finderApx, seedErrors);
         _initState(finderApx, textIt, patternIt);
-        _find(finderApx, seqan::ext::StageInitial_());
+        _find(finderApx, dbFinder, StageInitial_());
         clear(finderApx);
     }
 
@@ -649,7 +635,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
     for (int finderExt = 0; finderExt < (int)findersExtCount; ++finderExt)
     {
         TFinderExtBottom & finderBottom = dbFinder.findersExt[finderExt];
-        _find(finderBottom, seqan::ext::StageInitial_());
+        _find(finderBottom, dbFinder, StageInitial_());
         clear(finderBottom);
     }
 
@@ -657,13 +643,13 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
     for (int finderApx = 0; finderApx < (int)findersApxCount; ++finderApx)
     {
         TFinderApxBottom & finderBottom = dbFinder.findersApx[finderApx];
-        _find(finderBottom, seqan::ext::StageInitial_());
+        _find(finderBottom, dbFinder, StageInitial_());
         clear(finderBottom);
     }
 }
 
 // ----------------------------------------------------------------------------
-// Function execute()                                      [DbFinder<Exact>]
+// Function execute()                                         [DbFinder<Exact>]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
