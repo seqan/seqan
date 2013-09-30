@@ -191,7 +191,7 @@ streamReadChar(char & c, FILE * stream)
 inline bool
 streamEof(FILE * stream)
 {
-    return ::std::feof(stream) != 0;
+    return std::feof(stream) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ streamEof(FILE * stream)
 inline int
 streamError(FILE * stream)
 {
-    return ::std::ferror(stream);
+    return std::ferror(stream);
 }
 
 // ----------------------------------------------------------------------------
@@ -211,7 +211,7 @@ streamError(FILE * stream)
 inline size_t
 streamReadBlock(char * target, FILE * stream, size_t maxLen)
 {
-    return ::std::fread(target, sizeof(char), maxLen, stream);
+    return std::fread(target, sizeof(char), maxLen, stream);
 }
 
 // ----------------------------------------------------------------------------
@@ -221,7 +221,7 @@ streamReadBlock(char * target, FILE * stream, size_t maxLen)
 inline int
 streamWriteChar(FILE * stream, char const c)
 {
-    int x = ::std::fputc(c, stream);
+    int x = std::fputc(c, stream);
     if (x == EOF)
         return EOF;
     return c != x;
@@ -234,7 +234,7 @@ streamWriteChar(FILE * stream, char const c)
 inline size_t
 streamWriteBlock(FILE * stream, char const * source, size_t count)
 {
-    return ::std::fwrite(source, sizeof(char), count, stream);
+    return std::fwrite(source, sizeof(char), count, stream);
 }
 
 // ----------------------------------------------------------------------------
@@ -354,7 +354,7 @@ streamPut(FILE * stream, TSource const & source)
 inline int
 streamFlush(FILE * stream)
 {
-    return ::std::fflush(stream);
+    return std::fflush(stream);
 }
 
 // ----------------------------------------------------------------------------
@@ -364,7 +364,7 @@ streamFlush(FILE * stream)
 inline int
 streamSeek(FILE * stream, long int delta, int origin)
 {
-    return ::std::fseek(stream, delta, origin);
+    return std::fseek(stream, delta, origin);
 }
 
 // ----------------------------------------------------------------------------
@@ -374,7 +374,7 @@ streamSeek(FILE * stream, long int delta, int origin)
 inline Position<FILE *>::Type
 streamTell(FILE * stream)
 {
-    return ::std::ftell(stream);
+    return std::ftell(stream);
 }
 
 }  // namespace seqean

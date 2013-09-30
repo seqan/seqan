@@ -30,18 +30,10 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 // Facade header for the stream module.
 // ==========================================================================
-
-// TODO(holtgrew): Adaption for istream (and tests).
-// TODO(holtgrew): Adaption for ostream (and tests).
-// TODO(holtgrew): Adaption for stringstream (and tests).
-// TODO(holtgrew): Adaption for istringstream (and tests).
-// TODO(holtgrew): Adaption for ostringstream (and tests).
-
-// TODO(holtgrew): Adaption for external string?
-// TODO(holtgrew): Andreas' adapted the basic_* variants, why? Also, he included <iosfwd> and not <iostream> etc.
 
 #ifndef SEQAN_STREAM_H_
 #define SEQAN_STREAM_H_
@@ -82,56 +74,51 @@
 // Prerequisites.
 // ===========================================================================
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 
 // ===========================================================================
-// Stream Concept, Adaptions, Stream Class and Specializations.
+// Stream Concept, Adaptions.
 // ===========================================================================
 
 #include <seqan/stream/concept_stream.h>
-
-#include <seqan/stream/adapt_cstdio.h>
-#include <seqan/stream/adapt_fstream.h>
-#include <seqan/stream/adapt_iostream.h>
-#include <seqan/stream/adapt_sstream.h>
-
 #include <seqan/stream/stream_base.h>
-#include <seqan/stream/stream_put.h>
-#include <seqan/stream/stream_char_array.h>
 
-#include <seqan/stream/adapt_mmap.h> // TODO(h4nn3s): only streamPut() right now
+#include <seqan/stream/adapt_ios.h>
 
-#if SEQAN_HAS_ZLIB
-// Enable Stream<GZFile> and Stream<Bgzf> if available.
-#include <seqan/stream/stream_gz_file.h>
-#include <seqan/stream/stream_bgzf.h>
-#endif  // #if SEQAN_HAS_ZLIB
-#if SEQAN_HAS_BZIP2  // Enable Stream<BZ2File> if available.
-#include <seqan/stream/stream_bz2_file.h>
-#endif  // #if SEQAN_HAS_BZIP2
+// TODO(somebody): refactor cstdio adaption.
 
-#include <seqan/stream/file_stream.h>
+//#include <seqan/stream/adapt_cstdio.h>
+//
+//#include <seqan/stream/file_stream.h>
+//
+//#if SEQAN_HAS_ZLIB
+//// Enable Stream<GZFile> and Stream<Bgzf> if available.
+//#include <seqan/stream/stream_gz_file.h>
+//#include <seqan/stream/stream_bgzf.h>
+//#endif  // #if SEQAN_HAS_ZLIB
+//
+//#if SEQAN_HAS_BZIP2  // Enable Stream<BZ2File> if available.
+//#include <seqan/stream/stream_bz2_file.h>
+//#endif  // #if SEQAN_HAS_BZIP2
 
 // ===========================================================================
-// Record Reader Class and Specializations.
+// Stream Iterators.
 // ===========================================================================
 
-#include <seqan/stream/record_reader_base.h>
-#include <seqan/stream/record_reader_single.h>
-#include <seqan/stream/record_reader_single_mmap.h>
-#include <seqan/stream/record_reader_double.h>
-#include <seqan/stream/record_reader_double_mmap.h>
-
-#include <seqan/stream/read_auto_format.h>
+#include <seqan/stream/iter_stream.h>
 
 // ===========================================================================
 // Tokenizing and *is
 // ===========================================================================
 
-#include <seqan/stream/is.h> // currently empty
-#include <seqan/stream/tokenize.h>
+#include <seqan/stream/is.h>
+//#include <seqan/stream/tokenize.h>
 #include <seqan/stream/lexical_cast.h>
 
 #endif  // SEQAN_STREAM_H_
