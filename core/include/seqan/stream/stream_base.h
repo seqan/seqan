@@ -32,18 +32,12 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // Base class for streams.
-//
-// See header stream_put.h for the generic implementation of streamPut().
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_STREAM_BASE_H_
 #define SEQAN_STREAM_STREAM_BASE_H_
 
 namespace seqan {
-
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -71,9 +65,6 @@ namespace seqan {
 ..include:seqan/stream.h
  */
 
-template <typename TPointer = char *>
-struct CharArray;
-
 #if SEQAN_HAS_ZLIB  // Enable Stream<GZFile> if available.
 struct GZFile_;
 typedef Tag<GZFile_> GZFile;
@@ -86,10 +77,6 @@ typedef Tag<BZ2File_> BZ2File;
 
 template <typename TSpec>
 class Stream;
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
@@ -114,27 +101,6 @@ class Stream;
  *
  * @param[in,out] stream The Stream to close.
  */
-
-// ----------------------------------------------------------------------------
-// Function atEnd()
-// ----------------------------------------------------------------------------
-
-///.Function.atEnd.param.iterator.type:Class.Stream
-///.Function.atEnd.class:Class.Stream
-
-template <typename TSpec>
-inline bool
-atEnd(Stream<TSpec> & stream)
-{
-    return streamEof(stream);
-}
-
-template <typename TSpec>
-inline bool
-atEnd(Stream<TSpec> const & stream)
-{
-    return streamEof(stream);
-}
 
 }  // namespace seqean
 
