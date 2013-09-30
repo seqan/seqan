@@ -117,7 +117,7 @@ public:
           data_end(0),
           data_capacity(0)
     {
-        reserve(*this, capacity(source), Exact());
+        reserve(*this, std::min(capacity(source), computeGenerousCapacity(source, length(source))), Exact());
         if (length(source) > 0u)
             assign(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
@@ -128,7 +128,7 @@ public:
           data_end(0),
           data_capacity(0)
     {
-        reserve(*this, capacity(source), Exact());
+        reserve(*this, std::min(capacity(source), computeGenerousCapacity(source, length(source))), Exact());
         if (length(source) > 0u)
             assign(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
