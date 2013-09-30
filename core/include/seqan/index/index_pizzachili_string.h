@@ -398,7 +398,7 @@ SEQAN_CHECKPOINT
         if (e != 0) {
             SEQAN_REPORT(TCodeProvider::error_index(e));
             struct { } ex;
-            throw ex;
+            SEQAN_THROW(ex);
         }
 
         return len;
@@ -451,7 +451,7 @@ SEQAN_CHECKPOINT
             if (e != 0) {
                 SEQAN_REPORT(TCodeProvider::error_index(e));
                 struct { } ex;
-                throw ex;
+                SEQAN_THROW(ex);
             }
 
             me.data_begin = reinterpret_cast<TValue*>(snippet);
@@ -556,7 +556,7 @@ SEQAN_CHECKPOINT
                 if (e != 0) {
                     SEQAN_REPORT(TCodeProvider::error_index(e));
                     struct { } ex;
-                    throw ex;
+                    SEQAN_THROW(ex);
                 }
 
                 ret.data_begin = reinterpret_cast<TValue*>(snippet);
