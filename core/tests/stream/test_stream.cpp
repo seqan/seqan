@@ -53,7 +53,6 @@
 #include "test_stream_adapt_mmap.h"
 #include "test_stream_tokenize.h"
 #include "test_stream_lexical_cast.h"
-#include "test_stream_record_reader.h"
 
 SEQAN_BEGIN_TESTSUITE(test_stream)
 {
@@ -278,7 +277,6 @@ SEQAN_BEGIN_TESTSUITE(test_stream)
     SEQAN_CALL_TEST(test_stream_tokenizing_skipUntilLineBeginsWithOneCharOfStr);
     SEQAN_CALL_TEST(test_stream_tokenizing_read_until_tab_or_line_break);
     SEQAN_CALL_TEST(test_stream_tokenizing_read_until_one_of);
-
     SEQAN_CALL_TEST(test_stream_tokenizing_read_digits);
     SEQAN_CALL_TEST(test_stream_tokenizing_read_alpha_nums);
     SEQAN_CALL_TEST(test_stream_tokenizing_read_float);
@@ -290,16 +288,6 @@ SEQAN_BEGIN_TESTSUITE(test_stream)
     SEQAN_CALL_TEST(test_stream_lexical_cast_2_stdstring);
     SEQAN_CALL_TEST(test_stream_lexical_cast_2_chararray);
     SEQAN_CALL_TEST(test_stream_lexical_cast_2_seqanstring);
-
-    // Tests for RecordReader.
-    SEQAN_CALL_TEST(test_stream_record_reader_single_pass_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_single_pass_set_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_double_pass_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_double_pass_set_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_single_pass_mmap_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_single_pass_mmap_set_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_double_pass_mmap_position);
-    SEQAN_CALL_TEST(test_stream_record_reader_double_pass_mmap_set_position);
 }
 SEQAN_END_TESTSUITE
 
