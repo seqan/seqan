@@ -35,10 +35,7 @@
 
 // These includes will go away when remainders of file module and the new stream module are merged
 #include <seqan/stream/concept_stream.h>
-#include <seqan/stream/adapt_fstream.h>
-#include <seqan/stream/adapt_iostream.h>
-#include <seqan/stream/adapt_cstdio.h>
-#include <seqan/stream/adapt_sstream.h>
+#include <seqan/stream/adapt_ios.h>
 
 /* IOREV
  * _tested_

@@ -288,6 +288,8 @@ SEQAN_BEGIN_TESTSUITE(test_stream)
     SEQAN_CALL_TEST(test_stream_lexical_cast_2_stdstring);
     SEQAN_CALL_TEST(test_stream_lexical_cast_2_chararray);
     SEQAN_CALL_TEST(test_stream_lexical_cast_2_seqanstring);
+
+    SEQAN_CALL_TEST(testVirtualStream);
 }
 SEQAN_END_TESTSUITE
 
