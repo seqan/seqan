@@ -327,4 +327,19 @@ void testStreamSeek(TStream & stream)
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 2);
 }
 
+// Test of streamSeek().
+SEQAN_DEFINE_TEST(testVirtualStream)
+{
+    CharString fileName = SEQAN_PATH_TO_ROOT;
+    append(fileName, "core/tests/seq_io/test_dna.fa");
+
+    Stream<VirtualStream<> > *stream = streamFactory(fileName, OPEN_RDONLY);
+
+    CharString tmp;
+    while (!atEnd(stream))
+        appendValue(tmp, streamGet(stream));
+
+    delete stream;
+}
+
 #endif  // TEST_STREAM_TEST_STREAM_GENERIC_H_
