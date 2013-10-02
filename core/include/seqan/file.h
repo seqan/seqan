@@ -43,6 +43,7 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <sstream>
 
 #include <seqan/sequence.h>
 #include <seqan/modifier.h>
