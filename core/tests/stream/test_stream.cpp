@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 // Tests for the stream module.
 // ==========================================================================
@@ -38,258 +38,317 @@
 #include <seqan/file.h>
 #include <seqan/stream.h>
 
-#include "test_stream_char_array.h"
-#include "test_stream_file_stream.h"
-#if SEQAN_HAS_ZLIB
-#include "test_stream_gz_file.h"
-#include "test_stream_bgzf.h"
-#endif  // #if SEQAN_HAS_ZLIB
-#if SEQAN_HAS_BZIP2
-#include "test_stream_bz2_file.h"
-#endif  // #if SEQAN_HAS_BZIP2
-#include "test_stream_adapt_cstdio.h"
-#include "test_stream_adapt_fstream.h"
-#include "test_stream_adapt_sstream.h"
-#include "test_stream_adapt_mmap.h"
-#include "test_stream_tokenize.h"
-#include "test_stream_lexical_cast.h"
+using namespace seqan;
 
-SEQAN_BEGIN_TESTSUITE(test_stream)
+// ==========================================================================
+// Types
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Input Stream Types
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<std::fstream,
+    TagList<std::ifstream
+    > >
+    InputStreamTypes;
+
+SEQAN_TYPED_TEST_CASE(InputStreamTest, InputStreamTypes);
+
+// --------------------------------------------------------------------------
+// Output Stream Types
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<std::fstream,
+    TagList<std::ofstream
+    > >
+    OutputStreamTypes;
+
+SEQAN_TYPED_TEST_CASE(OutputStreamTest, OutputStreamTypes);
+
+// --------------------------------------------------------------------------
+// All Stream Types
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<std::fstream,
+    TagList<std::ifstream,
+    TagList<std::ofstream
+    > > >
+    AllStreamTypes;
+
+SEQAN_TYPED_TEST_CASE(StreamTest, AllStreamTypes);
+
+// ========================================================================== 
+// Test Classes
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Class StreamTest
+// --------------------------------------------------------------------------
+
+template <typename TStream>
+class StreamTest : public Test
 {
-    // Tests for Char Array Stream.
-    SEQAN_CALL_TEST(test_stream_char_array_metafunctions);
-    SEQAN_CALL_TEST(test_stream_char_array_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_char_array_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_char_array_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_char_array_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_char_array_eof);
-    SEQAN_CALL_TEST(test_stream_char_array_peek);
-    SEQAN_CALL_TEST(test_stream_char_array_read_char);
-    SEQAN_CALL_TEST(test_stream_char_array_read_block);
-    SEQAN_CALL_TEST(test_stream_char_array_write_block);
-    SEQAN_CALL_TEST(test_stream_char_array_streamPut);
-    SEQAN_CALL_TEST(test_stream_char_array_write_char);
-    SEQAN_CALL_TEST(test_stream_char_array_flush);
-    SEQAN_CALL_TEST(test_stream_char_array_seek);
-    SEQAN_CALL_TEST(test_stream_char_array_tell);
+public:
+    typedef TStream Type;
+    
+    TStream stream;
+};
 
-    // Tests for FileStream.
-    SEQAN_CALL_TEST(test_stream_file_stream_metafunctions_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_metafunctions_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_simple_usage_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_simple_usage_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_complex_usage_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_complex_usage_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_simple_usage_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_simple_usage_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_complex_usage_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_complex_usage_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_eof_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_eof_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_peek_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_peek_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_char_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_char_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_block_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_block_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_block_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_block_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_streamPut_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_streamPut_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_char_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_char_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_flush_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_flush_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_seek_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_seek_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_tell_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_tell_mmap);
+// --------------------------------------------------------------------------
+// Class InputStreamTest
+// --------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_stream_file_stream_read_large_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_read_large_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_large_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_write_large_mmap);
-    SEQAN_CALL_TEST(test_stream_file_stream_seek_large_file);
-    SEQAN_CALL_TEST(test_stream_file_stream_seek_large_mmap);
+template <typename TStream>
+class InputStreamTest : public StreamTest<TStream> {};
 
-#if SEQAN_HAS_ZLIB  // Enable tests for Stream<GZFile>, Stream<Bgzf> if available.
-    // Tests for BZ2 File Stream.
-    SEQAN_CALL_TEST(test_stream_gz_file_metafunctions);
-    SEQAN_CALL_TEST(test_stream_gz_file_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_gz_file_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_gz_file_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_gz_file_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_gz_file_eof);
-    SEQAN_CALL_TEST(test_stream_gz_file_peek);
-    SEQAN_CALL_TEST(test_stream_gz_file_read_char);
-    SEQAN_CALL_TEST(test_stream_gz_file_read_block);
-    SEQAN_CALL_TEST(test_stream_gz_file_write_block);
-    SEQAN_CALL_TEST(test_stream_gz_file_streamPut);
-    SEQAN_CALL_TEST(test_stream_gz_file_write_char);
-    SEQAN_CALL_TEST(test_stream_gz_file_flush);
-    SEQAN_CALL_TEST(test_stream_gz_file_seek);
-    SEQAN_CALL_TEST(test_stream_gz_file_tell);
+// --------------------------------------------------------------------------
+// Class OutputStreamTest
+// --------------------------------------------------------------------------
 
-    // Test Stream<Bgzf>.
-    SEQAN_CALL_TEST(test_stream_bgzf_metafunctions);
-    SEQAN_CALL_TEST(test_stream_bgzf_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_bgzf_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_bgzf_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_bgzf_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_bgzf_eof);
-    SEQAN_CALL_TEST(test_stream_bgzf_peek);
-    SEQAN_CALL_TEST(test_stream_bgzf_read_char);
-    SEQAN_CALL_TEST(test_stream_bgzf_read_block);
-    SEQAN_CALL_TEST(test_stream_bgzf_write_block);
-    SEQAN_CALL_TEST(test_stream_bgzf_streamPut);
-    SEQAN_CALL_TEST(test_stream_bgzf_write_char);
-    SEQAN_CALL_TEST(test_stream_bgzf_flush);
-    SEQAN_CALL_TEST(test_stream_bgzf_seek);
-    SEQAN_CALL_TEST(test_stream_bgzf_tell);
+template <typename TStream>
+class OutputStreamTest : public StreamTest<TStream> {};
 
-    SEQAN_CALL_TEST(test_stream_bgzf_write_large_and_compare_with_file);
-    SEQAN_CALL_TEST(test_stream_bgzf_from_file_and_compare);
-#endif  // #if SEQAN_HAS_ZLIB
+// ========================================================================== 
+// Test Context
+// ========================================================================== 
 
-#if SEQAN_HAS_BZIP2  // Enable tests for Stream<BZ2File> if available.
-    // Tests for BZ2 File Stream.
-    SEQAN_CALL_TEST(test_stream_bz2_file_metafunctions);
-    SEQAN_CALL_TEST(test_stream_bz2_file_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_bz2_file_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_bz2_file_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_bz2_file_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_bz2_file_eof);
-    SEQAN_CALL_TEST(test_stream_bz2_file_read_char);
-    SEQAN_CALL_TEST(test_stream_bz2_file_read_block);
-    SEQAN_CALL_TEST(test_stream_bz2_file_write_block);
-    SEQAN_CALL_TEST(test_stream_bz2_file_write_char);
-    SEQAN_CALL_TEST(test_stream_bz2_file_streamPut);
-    SEQAN_CALL_TEST(test_stream_bz2_file_flush);
-#endif  // #if SEQAN_HAS_BZIP2
+// --------------------------------------------------------------------------
+// Class StreamTestContext
+// --------------------------------------------------------------------------
+// NOTE(esiragusa): The test context is shared by all tests of a given stream type.
 
-    // Tests for cstdio.
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_eof);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_peek);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_read_char);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_read_block);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_write_block);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_write_char);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_streamPut);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_flush);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_seek);
-    SEQAN_CALL_TEST(test_stream_adapt_cstdio_tell);
+template <typename TStream = void>
+class StreamTestContext
+{
+public:
+    const char *    outputFilename;
+    const char *    inputFilename;
+    CharString      content;
+    unsigned        filesize;
 
-    // Tests for std::stringstream adaptions.
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_eof);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_peek);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_read_char);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_read_block);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_write_char);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_write_block);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_streamPut);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_flush);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_seek);
-    SEQAN_CALL_TEST(test_stream_adapt_sstream_tell);
+    // Get the singleton.
+    static StreamTestContext const & get()
+    {
+        static StreamTestContext ctx;
+        init(ctx);
+        return ctx;
+    }
 
-    // Tests for std::istringstream adaptions.
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_eof);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_peek);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_read_char);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_read_block);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_seek);
-    SEQAN_CALL_TEST(test_stream_adapt_istringstream_tell);
+protected:
+    // The constructor is called on first call to the get().
+    StreamTestContext() :
+        outputFilename(SEQAN_TEMP_FILENAME()),
+        inputFilename(SEQAN_TEMP_FILENAME()),
+        content("This \t is a \r test \n")
+    {
+        // Testing for null chars is always good practice!
+        appendValue(content, '\0');
 
-    // Tests for std::ostringstream adaptions.
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_write_char);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_write_block);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_streamPut);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_flush);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_seek);
-    SEQAN_CALL_TEST(test_stream_adapt_ostringstream_tell);
+        // Total file size is ~ 2.1 MB.
+        filesize = (2 * Power<2, 20>::VALUE) - ((2 * Power<2, 20>::VALUE) % length(content));
+    };
 
-    // Tests for std::fstream adaptions.
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_eof);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_peek);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_read_char);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_read_block);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_write_block);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_write_char);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_streamPut);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_flush);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_seek);
-    SEQAN_CALL_TEST(test_stream_adapt_fstream_tell);
+private:
+    // Prevent copying the singleton.
+    StreamTestContext(StreamTestContext const &);
+    void operator=(StreamTestContext const &);
+};
 
-    // Tests for std::ifstream adaptions.
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_read_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_read_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_eof);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_peek);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_read_char);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_read_block);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_seek);
-    SEQAN_CALL_TEST(test_stream_adapt_ifstream_tell);
+// --------------------------------------------------------------------------
+// Function init(); Default
+// --------------------------------------------------------------------------
 
-    // Tests for std::ofstream adaptions.
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_metafunctions);
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_write_simple_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_write_complex_usage);
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_write_block);
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_write_char);
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_streamPut);
-    SEQAN_CALL_TEST(test_stream_adapt_ofstream_flush);
+template <typename TStream>
+void init(StreamTestContext<TStream> & ctx)
+{
+    std::ofstream file;
 
-    // Tests for mmap-stream adaptation
-    SEQAN_CALL_TEST(test_stream_adapt_string_streamPut);
+    // Truncate file.
+    file.open(ctx.inputFilename, std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+    file.exceptions(std::ios_base::failbit | std::ios_base::badbit);
 
-    // Tests for tokenize.h
-    SEQAN_CALL_TEST(test_stream_tokenizing_readUntil);
-    SEQAN_CALL_TEST(test_stream_tokenizing_readNChars);
-    SEQAN_CALL_TEST(test_stream_tokenizing_readIgnoring);
-    SEQAN_CALL_TEST(test_stream_tokenizing_readLine);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipUntil);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipWhile);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipLine);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipUntilString);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipUntilLineBeginsWithChar);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipUntilLineBeginsWithStr);
-    SEQAN_CALL_TEST(test_stream_tokenizing_skipUntilLineBeginsWithOneCharOfStr);
-    SEQAN_CALL_TEST(test_stream_tokenizing_read_until_tab_or_line_break);
-    SEQAN_CALL_TEST(test_stream_tokenizing_read_until_one_of);
-    SEQAN_CALL_TEST(test_stream_tokenizing_read_digits);
-    SEQAN_CALL_TEST(test_stream_tokenizing_read_alpha_nums);
-    SEQAN_CALL_TEST(test_stream_tokenizing_read_float);
+    // Write content to file.
+    for (unsigned i = 0; i < ctx.filesize / length(ctx.content); ++i)
+        file.write(begin(ctx.content, Standard()), length(ctx.content));
 
-    // Tests for lexical_cast
-    SEQAN_CALL_TEST(test_stream_lexical_cast_1_stdstring);
-    SEQAN_CALL_TEST(test_stream_lexical_cast_1_chararray);
-    SEQAN_CALL_TEST(test_stream_lexical_cast_1_seqanstring);
-    SEQAN_CALL_TEST(test_stream_lexical_cast_2_stdstring);
-    SEQAN_CALL_TEST(test_stream_lexical_cast_2_chararray);
-    SEQAN_CALL_TEST(test_stream_lexical_cast_2_seqanstring);
-
-    SEQAN_CALL_TEST(testVirtualStream);
+    file.close();
 }
-SEQAN_END_TESTSUITE
 
+// --------------------------------------------------------------------------
+// Function init(); Stream<GZFile>
+// --------------------------------------------------------------------------
+
+//#ifdef SEQAN_HAS_ZLIB
+//template <typename TStream>
+//void init(StreamTestContext<Stream<GZFile> > & ctx)
+//{
+//    gzFile file = gzopen(ctx.inputFilename, "wb");
+//    SEQAN_ASSERT(file != NULL);
+//
+//    for (unsigned i = 0; i < ctx.filesize / length(ctx.content); ++i)
+//        gzwrite(file, begin(ctx.content, Standard()), length(ctx.content));
+//
+//    gzclose(file);
+//}
+//#endif
+
+// ========================================================================== 
+// Input Tests
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Test open()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(InputStreamTest, Open)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    {
+        bool feature = HasStreamFeature<TStream, HasFilename>::VALUE;
+        SEQAN_ASSERT(feature);
+    }
+    {
+        bool feature = HasStreamFeature<TStream, IsInput>::VALUE;
+        SEQAN_ASSERT(feature);
+    }
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+
+    SEQAN_ASSERT(open(this->stream, ctx.inputFilename, OPEN_RDONLY));
+    streamGet(this->stream);
+}
+
+// --------------------------------------------------------------------------
+// Test streamGet()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(InputStreamTest, Get)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+    open(this->stream, ctx.inputFilename);
+
+    for (unsigned i = 0; i < ctx.filesize; i += length(ctx.content))
+    {
+        streamSeek(this->stream, i, SEEK_SET);
+        SEQAN_ASSERT_EQ(streamGet(this->stream), front(ctx.content));
+    }
+}
+
+// ========================================================================== 
+// Output Tests
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Test open()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(OutputStreamTest, Open)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    {
+        bool feature = HasStreamFeature<TStream, HasFilename>::VALUE;
+        SEQAN_ASSERT(feature);
+    }
+    {
+        bool feature = HasStreamFeature<TStream, IsOutput>::VALUE;
+        SEQAN_ASSERT(feature);
+    }
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+
+    SEQAN_ASSERT(open(this->stream, ctx.outputFilename, OPEN_WRONLY));
+    streamPut(this->stream, front(ctx.content));
+    close(this->stream);
+
+    SEQAN_ASSERT(open(this->stream, ctx.inputFilename, OPEN_WRONLY|OPEN_APPEND));
+    SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
+}
+
+// --------------------------------------------------------------------------
+// Test streamPut()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(OutputStreamTest, Put)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+    open(this->stream, ctx.outputFilename, OPEN_WRONLY);
+
+//    for (unsigned i = 0; i < ctx.filesize; i += length(ctx.content))
+//    {
+//        streamPut(this->stream, front(ctx.content));
+//    }
+//    SEQAN_ASSERT_EQ(streamTell(this->stream), 1u);
+//    close(this->stream);
+}
+
+// ========================================================================== 
+// Other Tests
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Test streamTell()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(StreamTest, Tell)
+{
+    typedef typename TestFixture::Type  TStream;
+
+//    {
+//        bool feature = HasStreamFeature<TStream, Seek<void> >::VALUE;
+//        SEQAN_ASSERT(feature);
+//    }
+//    {
+//        bool feature = HasStreamFeature<TStream, Tell>::VALUE;
+//        SEQAN_ASSERT(feature);
+//    }
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+    open(this->stream, ctx.inputFilename);
+
+    streamSeek(this->stream, 0u, SEEK_END);
+    SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
+
+    streamSeek(this->stream, 11u, SEEK_END);
+    SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize + 11u);
+
+    streamSeek(this->stream, 23u, SEEK_SET);
+    SEQAN_ASSERT_EQ(streamTell(this->stream), 23u);
+
+    streamSeek(this->stream, 23u, SEEK_CUR);
+    SEQAN_ASSERT_EQ(streamTell(this->stream), 46u);
+}
+
+// --------------------------------------------------------------------------
+// Test streamEof()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(StreamTest, Eof)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+    open(this->stream, ctx.inputFilename);
+
+//    streamSeek(this->stream, 0u, SEEK_END);
+//    SEQAN_ASSERT(streamEof(this->stream));
+}
+
+// ========================================================================== 
+// Functions
+// ========================================================================== 
+
+int main(int argc, char const ** argv)
+{
+    TestSystem::init(argc, argv);
+    return TestSystem::runAll();
+}

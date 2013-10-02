@@ -42,49 +42,55 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#include "test_stream_generic.h"
+//#include "test_stream_generic.h"
 
 // ==========================================================================
 // For std::fstream
 // ==========================================================================
 
-SEQAN_DEFINE_TEST(test_stream_adapt_fstream_metafunctions)
-{
-    using namespace seqan;
+//SEQAN_DEFINE_TEST(test_stream_adapt_fstream_metafunctions)
+//{
+//    using namespace seqan;
+//
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, IsInput>::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, IsOutput>::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, HasPeek>::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, HasFilename>::Type::VALUE;
+//        SEQAN_ASSERT_NOT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, Seek<OriginBegin> >::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, Seek<OriginEnd> >::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, Seek<OriginCurrent> >::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//    {
+//        bool b = HasStreamFeature< ::std::fstream, Tell>::Type::VALUE;
+//        SEQAN_ASSERT(b);
+//    }
+//}
 
-    {
-        bool b = HasStreamFeature< ::std::fstream, IsInput>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, IsOutput>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, HasPeek>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, HasFilename>::Type::VALUE;
-        SEQAN_ASSERT_NOT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, Seek<OriginBegin> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, Seek<OriginEnd> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, Seek<OriginCurrent> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature< ::std::fstream, Tell>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
+// Simple example reading with fstream.
+SEQAN_DEFINE_TEST(test_stream_open)
+{
 }
+
 
 // Simple example reading with fstream.
 SEQAN_DEFINE_TEST(test_stream_adapt_fstream_read_simple_usage)
