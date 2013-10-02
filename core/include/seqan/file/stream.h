@@ -55,12 +55,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 	
-template <typename TValue, typename TTraits>
-struct Position< ::std::basic_ios<TValue, TTraits> >
-{
-//IOREV
-	typedef typename ::std::basic_ios<TValue, TTraits>::pos_type Type;
-};
+//template <typename TValue, typename TTraits>
+//struct Position< ::std::basic_ios<TValue, TTraits> >
+//{
+////IOREV
+//	typedef typename ::std::basic_ios<TValue, TTraits>::pos_type Type;
+//};
 template <typename TValue, typename TTraits>
 struct Position< ::std::basic_streambuf<TValue, TTraits> >
 {
@@ -136,12 +136,12 @@ struct Position< ::std::basic_fstream<TValue, TTraits> >
 
 //////////////////////////////////////////////////////////////////////////////
 	
-template <typename TValue, typename TTraits>
-struct Value< ::std::basic_ios<TValue, TTraits> >
-{
-//IOREV
-	typedef typename ::std::basic_ios<TValue, TTraits>::char_type Type;
-};
+//template <typename TValue, typename TTraits>
+//struct Value< ::std::basic_ios<TValue, TTraits> >
+//{
+////IOREV
+//	typedef typename ::std::basic_ios<TValue, TTraits>::char_type Type;
+//};
 template <typename TValue, typename TTraits>
 struct Value< ::std::basic_streambuf<TValue, TTraits> >
 {
