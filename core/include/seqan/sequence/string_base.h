@@ -1953,11 +1953,12 @@ resize(
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TValue2, typename TExpand>
-inline TSize
-resize(String<TValue, TSpec> & me,
-     TSize new_length,
-     TValue2 const & val,
-     Tag<TExpand>)
+inline typename Size< String<TValue, TSpec> >::Type
+resize(
+    String<TValue, TSpec> & me,
+    TSize new_length,
+    TValue2 const & val,
+    Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     return _Resize_String<Tag<TExpand> >::resize_(me, new_length, val);
