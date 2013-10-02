@@ -210,6 +210,7 @@ class Iter<TPackedString, Packed<THostspec> >
 public:
     typedef typename Host<Iter>::Type THostIterator;
     typedef typename Position<TPackedString>::Type TPosition;
+    typedef PackedTraits_<TPackedString> TTraits;
 
     THostIterator data_iterator;
     unsigned char localPos;
@@ -218,32 +219,28 @@ public:
     {
     }
 
-    Iter(THostIterator host_begin):
-          data_iterator(host_begin),
+    Iter(THostIterator data_iterator_):
+          data_iterator(data_iterator_),
           localPos(0)
     {
     }
 
-    Iter(THostIterator host_begin, TPosition pos_):
-          data_iterator(host_begin),
-          localPos(0)
+    Iter(THostIterator data_iterator_, TPosition localPos_):
+          data_iterator(data_iterator_),
+          localPos(localPos_)
     {
-        *this += pos_;
     }
 
     Iter(TPackedString &container):
-          data_iterator(begin(host(container), Standard())),
+          data_iterator(begin(host(container), Standard()) + 1),
           localPos(0)
     {
-        ++data_iterator;
     }
 
-    Iter(TPackedString &container, TPosition pos_):
-          data_iterator(begin(host(container), Standard())),
-          localPos(0)
+    Iter(TPackedString &container, TPosition pos):
+          data_iterator(begin(host(container), Standard()) + 1 + pos / TTraits::VALUES_PER_HOST_VALUE),
+          localPos(pos % TTraits::VALUES_PER_HOST_VALUE)
     {
-        ++data_iterator;
-        *this += pos_;
     }
 
 //    inline
@@ -490,9 +487,9 @@ length(String<TValue, Packed<THostspec> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename THostspec, typename TSize>
-inline void 
+inline void
 _setLength(
-    String<TValue, Packed<THostspec> > & me, 
+    String<TValue, Packed<THostspec> > & me,
     TSize new_length)
 {
     typedef String<TValue, Packed<THostspec> > TString;
@@ -503,6 +500,24 @@ _setLength(
     }
     _setLength(host(me), 1 + PackedTraits_<TString>::toHostLength(new_length));
     front(host(me)).i = new_length;
+}
+
+template <typename TValue, typename THostspec, typename TSize, typename TExpand>
+inline typename Size< String<TValue, Packed<THostspec> > >::Type
+resize(
+    String<TValue, Packed<THostspec> > & me,
+    TSize new_length,
+    Tag<TExpand> tag)
+{
+    typedef String<TValue, Packed<THostspec> > TString;
+    typedef PackedTraits_<TString> TTraits;
+
+    if (new_length == 0)
+    {
+        clear(host(me));
+        return 0;
+    }
+    return (resize(host(me), TTraits::toHostLength(new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
 }
 
 // --------------------------------------------------------------------------
@@ -598,21 +613,21 @@ getObjectId(String<TValue, Packed<THostspec> > const & me)
 template <typename TValue, typename THostspec, typename TPos, typename TTag>
 inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type 
 iter(String<TValue, Packed<THostspec> > & me,
-     TPos pos_,
+     TPos pos,
      Tag<TTag> const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type TIterator;
-    return TIterator(me, pos_);
+    return TIterator(me, pos);
 }
 
 template <typename TValue, typename THostspec, typename TPos, typename TTag>
 inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type 
 iter(String<TValue, Packed<THostspec> > const & me,
-     TPos pos_,
+     TPos pos,
      Tag<TTag> const &)
 {
     typedef typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type TIterator;
-    return TIterator(me, pos_);
+    return TIterator(me, pos);
 }
 
 // --------------------------------------------------------------------------
@@ -935,8 +950,12 @@ arrayFill(Iter<TPackedString, Packed<TSpec> > begin_,
     }
     else
     {
-        hostIterator(begin_)->i = (hostIterator(begin_)->i & ~maskB) | (fillValue.i & maskB);   // blend with begin mask
-        arrayFill(hostIterator(begin_) + 1, hostIterator(end_), fillValue);             // fill whole words
+        if (begin_.localPos != 0)
+        {
+            hostIterator(begin_)->i = (hostIterator(begin_)->i & ~maskB) | (fillValue.i & maskB);   // blend with begin mask
+            ++hostIterator(begin_);
+        }
+        arrayFill(hostIterator(begin_), hostIterator(end_), fillValue);                 // fill whole words
         if (end_.localPos == 0)                                                         // don't touch last word (if we don't need to)
             return;
 
