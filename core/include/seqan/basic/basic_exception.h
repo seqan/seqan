@@ -228,6 +228,7 @@ typedef std::runtime_error      RuntimeError;
 // Function globalExceptionHandler()
 // ----------------------------------------------------------------------------
 
+#ifdef SEQAN_EXCEPTIONS
 static void globalExceptionHandler()
 {
     SEQAN_TRY
@@ -241,7 +242,6 @@ static void globalExceptionHandler()
 }
 
 // Install global exception handler.
-#ifdef SEQAN_EXCEPTIONS
 static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
 #endif
 
