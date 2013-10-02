@@ -176,24 +176,44 @@ struct Iterator<ConcatenatorManyToOne<TStringSet> const, Rooted>
 // --------------------------------------------------------------------------
 
 template <typename TStringSet>
-struct Value<ConcatenatorManyToOne<TStringSet> >
-{
-    typedef typename Value<typename Value<TStringSet>::Type >::Type Type;
-};
+struct Value<ConcatenatorManyToOne<TStringSet> >:
+    Value<typename Value<TStringSet>::Type> {};
 
 template <typename TStringSet>
-struct Value<ConcatenatorManyToOne<TStringSet> const >
-    : Value<ConcatenatorManyToOne<TStringSet> > {};
+struct Value<ConcatenatorManyToOne<TStringSet> const >:
+    Value<ConcatenatorManyToOne<TStringSet> > {};
+
+// --------------------------------------------------------------------------
+// Metafunction GetValue
+// --------------------------------------------------------------------------
+
+template <typename TStringSet>
+struct GetValue<ConcatenatorManyToOne<TStringSet> >:
+    GetValue<typename Value<TStringSet>::Type> {};
+
+template <typename TStringSet>
+struct GetValue<ConcatenatorManyToOne<TStringSet> const>:
+    GetValue<typename Value<TStringSet const>::Type > {};
+
+// --------------------------------------------------------------------------
+// Metafunction Reference
+// --------------------------------------------------------------------------
+
+template <typename TStringSet>
+struct Reference<ConcatenatorManyToOne<TStringSet> >:
+    Reference<typename Value<TStringSet>::Type> {};
+
+template <typename TStringSet>
+struct Reference<ConcatenatorManyToOne<TStringSet> const>:
+    Reference<typename Value<TStringSet const>::Type> {};
 
 // --------------------------------------------------------------------------
 // Metafunction Size
 // --------------------------------------------------------------------------
 
 template <typename TStringSet>
-struct Size<ConcatenatorManyToOne<TStringSet> >
-{
-    typedef typename Value<typename StringSetLimits<TStringSet>::Type >::Type Type;
-};
+struct Size<ConcatenatorManyToOne<TStringSet> >:
+    Value<typename StringSetLimits<TStringSet>::Type > {};
 
 // --------------------------------------------------------------------------
 // Metafunction AllowsFastRandomAccess
