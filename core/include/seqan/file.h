@@ -62,7 +62,6 @@
 #endif
 
 #include <seqan/file/chunk_collector.h>
-// #include <seqan/file/meta.h>
 
 //____________________________________________________________________________
 // files
