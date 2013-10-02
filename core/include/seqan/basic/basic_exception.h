@@ -41,6 +41,7 @@
 // Prerequisites
 // ============================================================================
 
+#include <typeinfo>
 #include <exception>
 #include <stdexcept>
 
