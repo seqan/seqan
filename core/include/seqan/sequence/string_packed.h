@@ -1515,7 +1515,7 @@ operator+(Iter<TPackedString, Packed<THostspec> > const & iter,
     typedef PackedTraits_<TPackedString> TTraits;
 
     if (_isNegative(delta))
-        return iter - (-(typename MakeUnsigned<TIntegral>::Type)delta);
+        return iter - (-(typename MakeSigned<TIntegral>::Type)delta);
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
     return Iter<TPackedString, Packed<THostspec> >(
