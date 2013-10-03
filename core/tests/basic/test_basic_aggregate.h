@@ -1846,6 +1846,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_comparison_same_spec)
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_stream_output)
 {
     Tuple<char, 2, BitPacked<> > t1;
+	clear(t1);
     assignValue(t1, 0, 'a');
     assignValue(t1, 1, 'b');
 
