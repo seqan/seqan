@@ -67,9 +67,10 @@ public:
 // ---------------------------------------------------------------------------
 
 IlluminaSequencingSimulator::IlluminaSequencingSimulator(TRng & rng,
+                                                         TRng & methRng,
                                                          SequencingOptions const & seqOptions,
                                                          IlluminaSequencingOptions const & illuminaOptions) :
-        SequencingSimulator(rng, seqOptions), illuminaOptions(illuminaOptions),
+        SequencingSimulator(rng, methRng, seqOptions), illuminaOptions(illuminaOptions),
         model(new IlluminaModel())
 {
     this->_initModel();
@@ -380,13 +381,13 @@ std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> SequencingSimulatorFactory::make()
     switch (seqOptions.sequencingTechnology)
     {
         case SequencingOptions::ILLUMINA:
-            res.reset(new IlluminaSequencingSimulator(rng, seqOptions, illuminaOptions));
+            res.reset(new IlluminaSequencingSimulator(rng, methRng, seqOptions, illuminaOptions));
             break;
         case SequencingOptions::SANGER:
-            res.reset(new SangerSequencingSimulator(rng, seqOptions, sangerOptions));
+            res.reset(new SangerSequencingSimulator(rng, methRng, seqOptions, sangerOptions));
             break;
         case SequencingOptions::ROCHE_454:
-            res.reset(new Roche454SequencingSimulator(rng, seqOptions, roche454Options));
+            res.reset(new Roche454SequencingSimulator(rng, methRng, seqOptions, roche454Options));
             break;
     }
 

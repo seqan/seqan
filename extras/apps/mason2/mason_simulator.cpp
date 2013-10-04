@@ -552,8 +552,8 @@ public:
     // Options for the read simulation.
     MasonSimulatorOptions const * options;
 
-    // The random number generator to use for this thread.
-    TRng rng;
+    // The random number generator to use for this thread; we keep a separate one around for methylation simulation.
+    TRng rng, methRng;
 
     // The ids of the fragments.
     std::vector<int> fragmentIds;
@@ -586,9 +586,10 @@ public:
         delete seqSimulator;
     }
 
-    void init(int seed, MasonSimulatorOptions const & newOptions)
+    void init(int seed, int methSeed, MasonSimulatorOptions const & newOptions)
     {
         reSeed(rng, seed);
+        reSeed(methRng, methSeed);
         options = &newOptions;
         buildAlignments = !empty(options->outFileNameSam);
 
@@ -596,7 +597,7 @@ public:
         fragSampler = new FragmentSampler(rng, options->fragSamplerOptions);
 
         // Create sequencing simulator.
-        SequencingSimulatorFactory simFactory(rng, options->seqOptions, options->illuminaOptions,
+        SequencingSimulatorFactory simFactory(rng, methRng, options->seqOptions, options->illuminaOptions,
                                               options->rocheOptions, options->sangerOptions);
         std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> ptr = simFactory.make();
         seqSimulator = ptr.release();
@@ -1048,7 +1049,9 @@ public:
         std::cerr << "Initializing simulation threads ...";
         threads.resize(options.numThreads);
         for (int i = 0; i < options.numThreads; ++i)
-            threads[i].init(options.seed + i * options.seedSpacing, options);
+            threads[i].init(options.seed + i * options.seedSpacing,
+                            options.methSeed + i * options.seedSpacing,
+                            options);
         std::cerr << " OK\n";
 
         // Open output files.

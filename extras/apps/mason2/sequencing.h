@@ -141,15 +141,17 @@ public:
         return (s == FORWARD) ? REVERSE : FORWARD;
     }
 
-    // The random number generator.
+    // The random number generators for sequences and methylation/BS-treatment simulation.
     TRng & rng;
+    TRng & methRng;
     // Overall sequencing options.
     SequencingOptions const * seqOptions;
 
     // Buffer for the materialization of BS-seq treated fragments.
     seqan::Dna5String methFrag;
 
-    SequencingSimulator(TRng & rng, SequencingOptions const & _options) : rng(rng), seqOptions(&_options)
+    SequencingSimulator(TRng & rng, TRng & methRng, SequencingOptions const & _options) :
+            rng(rng), methRng(methRng), seqOptions(&_options)
     {}
 
     virtual ~SequencingSimulator() = 0;
@@ -220,7 +222,7 @@ public:
     // Storage for the Illumina simulation.
     std::SEQAN_AUTO_PTR_NAME<IlluminaModel> model;
 
-    IlluminaSequencingSimulator(TRng & rng, SequencingOptions const & seqOptions,
+    IlluminaSequencingSimulator(TRng & rng, TRng & methRng, SequencingOptions const & seqOptions,
                                 IlluminaSequencingOptions const & illuminaOptions);
 
     // Pick read length for the fragment to be simulated.
@@ -260,7 +262,7 @@ public:
     // Precomputed model data for 454 Sequencing.
     std::SEQAN_AUTO_PTR_NAME<Roche454Model> model;
 
-    Roche454SequencingSimulator(TRng & rng,
+    Roche454SequencingSimulator(TRng & rng, TRng & methRng,
                                 SequencingOptions const & seqOptions,
                                 Roche454SequencingOptions const & roche454Options);
 
@@ -287,10 +289,10 @@ public:
     // Configuration for Sanger sequencing.
     SangerSequencingOptions sangerOptions;
 
-    SangerSequencingSimulator(TRng & rng,
+    SangerSequencingSimulator(TRng & rng, TRng & methRng,
                               SequencingOptions const & seqOptions,
                               SangerSequencingOptions const & sangerOptions) :
-            SequencingSimulator(rng, seqOptions), sangerOptions(sangerOptions)
+            SequencingSimulator(rng, methRng, seqOptions), sangerOptions(sangerOptions)
     {}
 
     // Pick read length for the sequence to be sampled from fragments.
@@ -317,19 +319,20 @@ class SequencingSimulatorFactory
 {
 public:
     TRng & rng;
+    TRng & methRng;
 
     SequencingOptions const & seqOptions;
     IlluminaSequencingOptions const & illuminaOptions;
     Roche454SequencingOptions const & roche454Options;
     SangerSequencingOptions const & sangerOptions;
 
-    SequencingSimulatorFactory(TRng & rng,
+    SequencingSimulatorFactory(TRng & rng, TRng & methRng,
                                SequencingOptions const & seqOptions,
                                IlluminaSequencingOptions const & illuminaOptions,
                                Roche454SequencingOptions const & roche454Options,
                                SangerSequencingOptions const & sangerOptions) :
-            rng(rng), seqOptions(seqOptions), illuminaOptions(illuminaOptions), roche454Options(roche454Options),
-            sangerOptions(sangerOptions)
+            rng(rng), methRng(methRng), seqOptions(seqOptions), illuminaOptions(illuminaOptions),
+            roche454Options(roche454Options), sangerOptions(sangerOptions)
     {}
 
     std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> make();

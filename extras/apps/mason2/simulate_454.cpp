@@ -233,9 +233,10 @@ public:
 
 Roche454SequencingSimulator::Roche454SequencingSimulator(
         TRng & rng,
+        TRng & methRng,
         SequencingOptions const & seqOptions,
         Roche454SequencingOptions const & roche454Options) :
-        SequencingSimulator(rng, seqOptions), roche454Options(roche454Options), model(new Roche454Model())
+        SequencingSimulator(rng, methRng, seqOptions), roche454Options(roche454Options), model(new Roche454Model())
 {
     _initModel();
 }

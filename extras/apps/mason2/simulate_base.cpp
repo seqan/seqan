@@ -67,7 +67,7 @@ void SequencingSimulator::simulatePairedEnd(TRead & seqL, TQualities & qualsL, S
         bool bsForward = isForward;
         // Re-pick strandedness of the BS-treated fragment.
         if (seqOptions->bsSeqOptions.bsProtocol != BSSeqOptions::DIRECTIONAL)
-            bsForward = (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
+            bsForward = (pickRandomNumber(methRng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
         _simulateBSTreatment(methFrag, frag, *levels, !bsForward);
         _simulatePairedEnd(seqL, qualsL, infoL, seqR, qualsR, infoR,
                            infix(methFrag, 0, length(methFrag)), isForward);
@@ -94,7 +94,7 @@ void SequencingSimulator::simulateSingleEnd(TRead & seq, TQualities & quals, Seq
         bool bsForward = isForward;
         // Re-pick strandedness of the BS-treated fragment.
         if (seqOptions->bsSeqOptions.bsProtocol != BSSeqOptions::DIRECTIONAL)
-            bsForward = (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
+            bsForward = (pickRandomNumber(methRng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
         _simulateBSTreatment(methFrag, frag, *levels, !bsForward);
         _simulateSingleEnd(seq, quals, info, infix(methFrag, 0, length(methFrag)), isForward);
     }
@@ -124,11 +124,11 @@ void SequencingSimulator::_simulateBSTreatment(seqan::Dna5String & methFragment,
 
         // Decide whether methFragment[pos] is methylated.  If this is the case then we leave it untouched.
         seqan::Pdf<seqan::Uniform<double> > pdf(0, 1);
-        if (pickRandomNumber(rng, pdf) < level)
+        if (pickRandomNumber(methRng, pdf) < level)
             continue;
 
         // Otherwise, pick whether we will convert.
-        if (pickRandomNumber(rng, pdf) < seqOptions->bsSeqOptions.bsConversionRate)
+        if (pickRandomNumber(methRng, pdf) < seqOptions->bsSeqOptions.bsConversionRate)
             methFragment[pos] = reverse ? 'A' : 'T';
     }
 }

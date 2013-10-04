@@ -171,9 +171,10 @@ int main(int argc, char const ** argv)
               << "Simulating reads ...";
 
     TRng rng(options.seed);
+    TRng ignoredMethRng(0);
 
     // Create sequencing simulator.
-    SequencingSimulatorFactory simFactory(rng, options.seqOptions, options.illuminaOptions,
+    SequencingSimulatorFactory simFactory(rng, ignoredMethRng, options.seqOptions, options.illuminaOptions,
                                           options.rocheOptions, options.sangerOptions);
     std::SEQAN_AUTO_PTR_NAME<SequencingSimulator> sim = simFactory.make();
 
