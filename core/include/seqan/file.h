@@ -59,7 +59,7 @@
 
 #ifndef SEQAN_NEW_IO
 #include <seqan/file/cstream.h>
-#include <seqan/file/stream.h>
+//#include <seqan/file/stream.h>
 #endif
 
 #include <seqan/file/chunk_collector.h>

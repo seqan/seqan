@@ -202,7 +202,7 @@ typedef Tag<Tell_> Tell;
  */
 
 template <typename TStream, typename TTag>
-struct HasStreamFeature;
+struct HasStreamFeature : True {};
 
 // ============================================================================
 // Functions

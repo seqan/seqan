@@ -125,16 +125,22 @@ template <typename TStream = void>
 class StreamTestContext
 {
 public:
-    const char *    outputFilename;
-    const char *    inputFilename;
+    CharString      outputFilename;
+    CharString      inputFilename;
     CharString      content;
     unsigned        filesize;
+
+    static bool     needToInitialize;
 
     // Get the singleton.
     static StreamTestContext const & get()
     {
         static StreamTestContext ctx;
-        init(ctx);
+        if (needToInitialize)
+        {
+            init(ctx);
+            needToInitialize = false;
+        }
         return ctx;
     }
 
@@ -158,6 +164,9 @@ private:
     void operator=(StreamTestContext const &);
 };
 
+template <typename TStream>
+bool StreamTestContext<TStream>::needToInitialize = true;
+
 // --------------------------------------------------------------------------
 // Function init(); Default
 // --------------------------------------------------------------------------
@@ -168,7 +177,7 @@ void init(StreamTestContext<TStream> & ctx)
     std::ofstream file;
 
     // Truncate file.
-    file.open(ctx.inputFilename, std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+    file.open(toCString(ctx.inputFilename), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
     file.exceptions(std::ios_base::failbit | std::ios_base::badbit);
 
     // Write content to file.
@@ -186,7 +195,7 @@ void init(StreamTestContext<TStream> & ctx)
 //template <typename TStream>
 //void init(StreamTestContext<Stream<GZFile> > & ctx)
 //{
-//    gzFile file = gzopen(ctx.inputFilename, "wb");
+//    gzFile file = gzopen(toCString(ctx.inputFilename), "wb");
 //    SEQAN_ASSERT(file != NULL);
 //
 //    for (unsigned i = 0; i < ctx.filesize / length(ctx.content); ++i)
@@ -219,8 +228,10 @@ SEQAN_TYPED_TEST(InputStreamTest, Open)
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
 
-    SEQAN_ASSERT(open(this->stream, ctx.inputFilename, OPEN_RDONLY));
+    SEQAN_ASSERT(open(this->stream, toCString(ctx.inputFilename), OPEN_RDONLY));
     streamGet(this->stream);
+
+//    SEQAN_ASSERT_NOT(open(this->stream, toCString(ctx.inputFilename), OPEN_RDONLY));
 }
 
 // --------------------------------------------------------------------------
@@ -232,13 +243,29 @@ SEQAN_TYPED_TEST(InputStreamTest, Get)
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, ctx.inputFilename);
+    open(this->stream, toCString(ctx.inputFilename));
 
     for (unsigned i = 0; i < ctx.filesize; i += length(ctx.content))
     {
         streamSeek(this->stream, i, SEEK_SET);
         SEQAN_ASSERT_EQ(streamGet(this->stream), front(ctx.content));
     }
+}
+
+// --------------------------------------------------------------------------
+// Test streamEof()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(InputStreamTest, Eof)
+{
+    typedef typename TestFixture::Type  TStream;
+
+    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
+
+    open(this->stream, toCString(ctx.inputFilename), OPEN_RDONLY);
+    SEQAN_ASSERT_NOT(streamEof(this->stream));
+    streamSeek(this->stream, 0u, SEEK_END);
+    SEQAN_ASSERT(streamEof(this->stream));
 }
 
 // ========================================================================== 
@@ -264,11 +291,10 @@ SEQAN_TYPED_TEST(OutputStreamTest, Open)
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
 
-    SEQAN_ASSERT(open(this->stream, ctx.outputFilename, OPEN_WRONLY));
+    SEQAN_ASSERT(open(this->stream, toCString(ctx.outputFilename), OPEN_WRONLY));
     streamPut(this->stream, front(ctx.content));
     close(this->stream);
-
-    SEQAN_ASSERT(open(this->stream, ctx.inputFilename, OPEN_WRONLY|OPEN_APPEND));
+    SEQAN_ASSERT(open(this->stream, toCString(ctx.inputFilename), OPEN_WRONLY|OPEN_APPEND));
     SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
 }
 
@@ -281,7 +307,7 @@ SEQAN_TYPED_TEST(OutputStreamTest, Put)
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, ctx.outputFilename, OPEN_WRONLY);
+    open(this->stream, toCString(ctx.outputFilename), OPEN_WRONLY);
 
 //    for (unsigned i = 0; i < ctx.filesize; i += length(ctx.content))
 //    {
@@ -313,7 +339,7 @@ SEQAN_TYPED_TEST(StreamTest, Tell)
 //    }
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, ctx.inputFilename);
+    open(this->stream, toCString(ctx.inputFilename));
 
     streamSeek(this->stream, 0u, SEEK_END);
     SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
@@ -326,21 +352,6 @@ SEQAN_TYPED_TEST(StreamTest, Tell)
 
     streamSeek(this->stream, 23u, SEEK_CUR);
     SEQAN_ASSERT_EQ(streamTell(this->stream), 46u);
-}
-
-// --------------------------------------------------------------------------
-// Test streamEof()
-// --------------------------------------------------------------------------
-
-SEQAN_TYPED_TEST(StreamTest, Eof)
-{
-    typedef typename TestFixture::Type  TStream;
-
-    StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, ctx.inputFilename);
-
-//    streamSeek(this->stream, 0u, SEEK_END);
-//    SEQAN_ASSERT(streamEof(this->stream));
 }
 
 // ========================================================================== 
