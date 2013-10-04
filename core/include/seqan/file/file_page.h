@@ -89,22 +89,27 @@ struct MMap;
 
 		TIterator	begin;      // the beginning of the buffer
         TIterator	end;        // end of valid data
-        TSize		pageSize;   // size of allocated memory
+        TIterator	resEnd;     // end of reserved memory
 
         Buffer():
             begin(NULL),
             end(NULL),
-            pageSize(0) {}
+            resEnd(NULL) {}
 
         Buffer(TIterator _begin, TIterator _end):
             begin(_begin),
             end(_end),
-            pageSize(0) {}
+            resEnd(_begin) {}
+
+        Buffer(TIterator begin, TIterator end, TIterator resEnd):
+            begin(begin),
+            end(end),
+            resEnd(resEnd) {}
 
         Buffer(TIterator _begin, TSize _size):
             begin(_begin),
             end(_begin + _size),
-            pageSize(0) {}
+            resEnd(_begin) {}
 
 //        template <typename T>
 //        Buffer(T &x):
@@ -115,7 +120,7 @@ struct MMap;
 //        Buffer(TSize _pageSize):
 //            begin(NULL),
 //            end(NULL),
-//            pageSize(_pageSize) {}
+//            resEnd(NULL + _pageSize) {}
 
         inline TValue       & operator[](TSize i)       { return begin[i]; }
         inline TValue const & operator[](TSize i) const { return begin[i]; }
@@ -157,7 +162,7 @@ struct MMap;
     inline typename Size<Buffer<TValue, TSpec> >::Type
     capacity(Buffer<TValue, TSpec> const &me)
     {
-        return me.pageSize;
+        return me.resEnd - me.begin;
     }
 
 	template <typename TValue, typename TFile, size_t PAGESIZE>
@@ -171,7 +176,7 @@ struct MMap;
     inline void
     _setCapacity(Buffer<TValue, TSpec> &me, TSize size)
     {
-        me.pageSize = size;
+        me.resEnd = me.begin + size;
     }
 
 	template <typename TValue, typename TSpec>

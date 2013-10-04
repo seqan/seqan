@@ -121,13 +121,35 @@ std::cout << IsSameType<False,False::Type>::VALUE << std::endl; // 1
 struct True
 {
     typedef True Type;
-	static const bool VALUE = true;
+    static const bool VALUE = true;
+
+    bool operator() () const
+    {
+        return true;
+    }
+
+    template <typename TValue>
+    bool operator() (TValue) const
+    {
+        return true;
+    }
 };
 
 struct False
 {
     typedef False Type;
-	static const bool VALUE = false;
+    static const bool VALUE = false;
+
+    bool operator() () const
+    {
+        return false;
+    }
+
+    template <typename TValue>
+    bool operator() (TValue) const
+    {
+        return false;
+    }
 };
 
 // ============================================================================

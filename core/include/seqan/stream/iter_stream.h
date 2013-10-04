@@ -69,15 +69,9 @@ public:
         stream(&stream)
     {}
 
-    Iter & operator=(Iter const &other)
-    {
-        stream = other.iter;
-        return *this;
-    }
-
     operator typename Value<TStream>::Type () const
     {
-        return streamGet(*stream);
+        return streamPeek(*stream);
     }
 
     template <typename TValue2>
@@ -92,11 +86,6 @@ public:
     {
         streamPut(*stream, val);
         return val;
-    }
-
-    Iter& operator*() const
-    {
-        return *this;
     }
 };
 
@@ -154,8 +143,49 @@ template <typename TStream, typename TSpec>
 inline bool
 atEnd(Iter<TStream, StreamIterator<TSpec> > const & iter)
 {
-    SEQAN_ASSERT_NEQ(iter.stream, NULL);
+    SEQAN_ASSERT(iter.stream != NULL);
     return streamEof(*(iter.stream));
+}
+
+// ----------------------------------------------------------------------------
+// Function value()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TSpec>
+inline Iter<TStream, StreamIterator<TSpec> > &
+value(Iter<TStream, StreamIterator<TSpec> > & iter)
+{
+    return iter;
+}
+template <typename TStream, typename TSpec>
+inline Iter<TStream, StreamIterator<TSpec> > const &
+value(Iter<TStream, StreamIterator<TSpec> > const & iter)
+{
+    return iter;
+}
+
+// ----------------------------------------------------------------------------
+// Function goNext()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TSpec>
+inline void
+goNext(Iter<TStream, StreamIterator<TSpec> > &iter)
+{
+    SEQAN_ASSERT(iter.stream != NULL);
+    streamSeek(*(iter.stream), 1, SEEK_CUR);
+}
+
+// ----------------------------------------------------------------------------
+// Function goFurther()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TSpec, typename TSize>
+inline void
+goFurther(Iter<TStream, StreamIterator<TSpec> > &iter, TSize steps)
+{
+    SEQAN_ASSERT(iter.stream != NULL);
+    streamSeek(*(iter.stream), steps, SEEK_CUR);
 }
 
 // ----------------------------------------------------------------------------
@@ -166,7 +196,7 @@ template <typename TStream, typename TSpec>
 inline typename Position<Iter<TStream, StreamIterator<TSpec> > const>::Type
 position(Iter<TStream, StreamIterator<TSpec> > const & iter)
 {
-    SEQAN_ASSERT_NEQ(iter.stream, NULL);
+    SEQAN_ASSERT(iter.stream != NULL);
     return streamTell(*(iter.stream));
 }
 
@@ -178,7 +208,7 @@ template <typename TStream, typename TSpec>
 inline void
 setPosition(Iter<TStream, StreamIterator<TSpec> > const & iter)
 {
-    SEQAN_ASSERT_NEQ(iter.stream, NULL);
+    SEQAN_ASSERT(iter.stream != NULL);
     streamSeek(*(iter.stream));
 }
 
