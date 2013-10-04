@@ -96,7 +96,7 @@ struct MethylationLevels
     // Returns methylation level for forward strand at position i.
     inline float levelF(unsigned i) const
     {
-        return (charToLevel(forward[i]) / 80.0) / 0.0125;
+        return (charToLevel(forward[i]) * 0.0125);
     }
 
     // Sets methylation level for forward strand at position i.
@@ -107,13 +107,13 @@ struct MethylationLevels
         // std::cerr << "forward[i] = " << levelToChar(round(level / 0.0125)) << " ~ " << (level / 0.0125) << " ~ " << level << "\n";
         char c = levelToChar(static_cast<char>(round(level / 0.0125)));
         SEQAN_ASSERT_NEQ((int)c, (int)'>');
-        forward[i] = std::max(reverse[i], c);
+        forward[i] = std::max(forward[i], c);
     }
 
     // Returns methylation level for reverse strand at position i.
     inline float levelR(unsigned i) const
     {
-        return (charToLevel(reverse[i]) / 80.0) / 0.0125;
+        return (charToLevel(reverse[i]) * 0.0125);
     }
 
     // Sets methylation level for reverse strand at position i if level is larger than current.
@@ -216,24 +216,38 @@ public:
         // reverse(dbg2);
         switch (hashValue)
         {
-            case 27:  // CHG is symmetric
-            case 32:
-            case 42:
+            case 27:    // CAG
+            case 42:    // CTG
                 // std::cerr << "CHG fw    \t" << dbg << "\t" << dbg2 << "\t" << pos << "\n";
                 levels.setLevelF(pos, pickRandomNumber(rng, pdfCHG));
+                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCHG));
                 break;
-
-            case 25:  // CHH is symmetric
-            case 26:
-            case 28:
-            case 30:
-            case 31:
-            case 33:
-            case 40:
-            case 41:
-            case 43:
+            case 32:  // CCG
+                levels.setLevelF(pos, pickRandomNumber(rng, pdfCHG));
+                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCG)); 
+                break;
+            case 25:    // CAA
+            case 26:    // CAC
+            case 28:    // CAT
+            case 30:    // CCA
+            case 31:    // CCC
+            case 33:    // CCT
+            case 40:    // CTA
+            case 41:    // CTC
+            case 43:    // CTT
                 // std::cerr << "CHH       \t" << dbg << "\t" << dbg2 << "\t" << pos << "\n";
                 levels.setLevelF(pos, pickRandomNumber(rng, pdfCHH));
+                break;
+            case 2:     // AAG
+            case 12:    // AGG
+            case 17:    // ATG
+            case 52:    // GAG
+            case 62:    // GGG
+            case 67:    // GTG
+            case 77:    // TAG
+            case 87:    // TGG
+            case 92:    // TTG
+                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCHH));
                 break;
 
             default:

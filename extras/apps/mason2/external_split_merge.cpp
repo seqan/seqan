@@ -157,14 +157,12 @@ void SamJoiner::init()
         {
             header = tmpHeader;
             nameStore = seqan::nameStore(tmpContext);
+            refresh(nameStoreCache);
         }
 
         active[i] = _loadNext(records[i], i);
         numActive += (active[i] != false);
     }
-
-    // Refresh name store cache.
-    refresh(nameStoreCache);
 }
 
 // ---------------------------------------------------------------------------
