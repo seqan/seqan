@@ -156,7 +156,7 @@ void SamJoiner::init()
         if (i == 0u)
         {
             header = tmpHeader;
-            nameStore = tmpNameStore;
+            nameStore = seqan::nameStore(tmpContext);
         }
 
         active[i] = _loadNext(records[i], i);
