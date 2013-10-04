@@ -38,6 +38,8 @@
 #include <seqan/file.h>
 #include <seqan/stream.h>
 
+#include "test_stream_tokenization.h"
+
 using namespace seqan;
 
 // ==========================================================================

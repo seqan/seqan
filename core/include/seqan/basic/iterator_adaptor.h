@@ -667,14 +667,14 @@ operator-=(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & left,
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
-template <typename TContainer, typename TIterator, typename TSpec>
-inline SEQAN_HOST_DEVICE bool
-atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
-{
-    SEQAN_CHECKPOINT;
-    return atEnd(me, container(me));
-}
-
+//template <typename TContainer, typename TIterator, typename TSpec>
+//inline SEQAN_HOST_DEVICE bool
+//atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
+//{
+//    SEQAN_CHECKPOINT;
+//    return atEnd(me, container(me));
+//}
+//
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE bool
 atEnd(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)

@@ -609,14 +609,14 @@ atEnd(T const & it,
     return it == end(cont, Standard());
 }
 
-template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
-atEnd(T & it,
-      TContainer & cont)
-{
-    SEQAN_CHECKPOINT;
-    return it == end(cont, Standard());
-}
+//template <typename T, typename TContainer>
+//inline SEQAN_HOST_DEVICE bool
+//atEnd(T & it,
+//      TContainer & cont)
+//{
+//    SEQAN_CHECKPOINT;
+//    return it == end(cont, Standard());
+//}
 
 template <typename T, typename TContainer>
 inline SEQAN_HOST_DEVICE bool
@@ -627,13 +627,13 @@ atEnd(T const & it,
     return it == end(cont, Standard());
 }
 
-template <typename T>
-inline SEQAN_HOST_DEVICE bool
-atEnd(T & it)
-{
-    SEQAN_CHECKPOINT;
-    return atEnd(it, container(it));
-}
+//template <typename T>
+//inline SEQAN_HOST_DEVICE bool
+//atEnd(T & it)
+//{
+//    SEQAN_CHECKPOINT;
+//    return atEnd(it, container(it));
+//}
 
 template <typename T>
 inline SEQAN_HOST_DEVICE bool
