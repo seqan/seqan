@@ -47,106 +47,144 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction Difference
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TTraits>
-struct Difference<std::basic_ios<TValue, TTraits> >
-{
-    typedef typename std::basic_ios<TValue, TTraits>::off_type Type;
-};
-
-// ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-struct Position<std::basic_ios<TValue, TTraits> >
+struct Position<std::basic_istream<TValue, TTraits> >
 {
-    typedef typename std::basic_ios<TValue, TTraits>::pos_type Type;
+    typedef typename std::basic_istream<TValue, TTraits>::pos_type Type;
 };
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_ostream<TValue, TTraits> >
+{
+    typedef typename std::basic_ostream<TValue, TTraits>::pos_type Type;
+};
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_iostream<TValue, TTraits> >
+{
+    typedef typename std::basic_iostream<TValue, TTraits>::pos_type Type;
+};
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_fstream<TValue, TTraits> > :
+    Position<std::basic_iostream<TValue, TTraits>  > {};
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_stringstream<TValue, TTraits> > :
+    Position<std::basic_iostream<TValue, TTraits>  > {};
+
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_ifstream<TValue, TTraits> > :
+    Position<std::basic_istream<TValue, TTraits>  > {};
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_istringstream<TValue, TTraits> > :
+    Position<std::basic_istream<TValue, TTraits>  > {};
+
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_ofstream<TValue, TTraits> > :
+    Position<std::basic_ostream<TValue, TTraits>  > {};
+
+template <typename TValue, typename TTraits>
+struct Position<std::basic_ostringstream<TValue, TTraits> > :
+    Position<std::basic_ostream<TValue, TTraits>  > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-struct Value<std::basic_ios<TValue, TTraits> >
+struct Value<std::basic_istream<TValue, TTraits> >
 {
-    typedef typename std::basic_ios<TValue, TTraits>::char_type Type;
+    typedef typename std::basic_istream<TValue, TTraits>::char_type Type;
 };
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_ostream<TValue, TTraits> >
+{
+    typedef typename std::basic_ostream<TValue, TTraits>::char_type Type;
+};
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_iostream<TValue, TTraits> >
+{
+    typedef typename std::basic_iostream<TValue, TTraits>::char_type Type;
+};
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_fstream<TValue, TTraits> > :
+    Value<std::basic_iostream<TValue, TTraits>  > {};
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_stringstream<TValue, TTraits> > :
+    Value<std::basic_iostream<TValue, TTraits>  > {};
+
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_ifstream<TValue, TTraits> > :
+    Value<std::basic_istream<TValue, TTraits>  > {};
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_istringstream<TValue, TTraits> > :
+    Value<std::basic_istream<TValue, TTraits>  > {};
+
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_ofstream<TValue, TTraits> > :
+    Value<std::basic_ostream<TValue, TTraits>  > {};
+
+template <typename TValue, typename TTraits>
+struct Value<std::basic_ostringstream<TValue, TTraits> > :
+    Value<std::basic_ostream<TValue, TTraits>  > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction HasStreamFeature<, IsInput>
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ios<TValue, TTraits>, IsInput> : False {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_istream<TValue, TTraits>, IsInput> : True {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ifstream<TValue, TTraits>, IsInput> : True {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_fstream<TValue, TTraits>, IsInput> : True {};
+struct HasStreamFeature<std::basic_ostream<TValue, TTraits>, IsInput> : False {};
 
 // ----------------------------------------------------------------------------
 // Metafunction HasStreamFeature<std::, IsOutput>
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ios<TValue, TTraits>, IsOutput> : False {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ostream<TValue, TTraits>, IsOutput> : True {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ofstream<TValue, TTraits>, IsOutput> : True {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_fstream<TValue, TTraits>, IsOutput> : True {};
+struct HasStreamFeature<std::basic_istream<TValue, TTraits>, IsOutput> : False {};
 
 // ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<std::, HasPeek>
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ios<TValue, TTraits>, HasPeek> : False {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_istream<TValue, TTraits>, HasPeek> : True {};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<std::, HasFilename>
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ios<TValue, TTraits>, HasFilename> : False {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_fstream<TValue, TTraits>, HasFilename> : True {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ifstream<TValue, TTraits>, HasFilename> : True {};
-
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ofstream<TValue, TTraits>, HasFilename> : True {};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<std::, Seek<TSpec> >
+// Feature inheritance
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_ios<TValue, TTraits>, Seek<TSpec> > : True {};
+struct HasStreamFeature<std::basic_fstream<TValue, TTraits>, TSpec> :
+    HasStreamFeature<std::basic_iostream<TValue, TTraits>, TSpec > {};
 
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<std::, Tell>
-// ----------------------------------------------------------------------------
+template <typename TValue, typename TTraits, typename TSpec>
+struct HasStreamFeature<std::basic_stringstream<TValue, TTraits>, TSpec> :
+    HasStreamFeature<std::basic_iostream<TValue, TTraits>, TSpec > {};
 
-template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ios<TValue, TTraits>, Tell> : True {};
+
+template <typename TValue, typename TTraits, typename TSpec>
+struct HasStreamFeature<std::basic_ifstream<TValue, TTraits>, TSpec> :
+    HasStreamFeature<std::basic_istream<TValue, TTraits>, TSpec > {};
+
+template <typename TValue, typename TTraits, typename TSpec>
+struct HasStreamFeature<std::basic_istringstream<TValue, TTraits>, TSpec> :
+    HasStreamFeature<std::basic_istream<TValue, TTraits>, TSpec > {};
+
+
+template <typename TValue, typename TTraits, typename TSpec>
+struct HasStreamFeature<std::basic_ofstream<TValue, TTraits>, TSpec> :
+    HasStreamFeature<std::basic_ostream<TValue, TTraits>, TSpec > {};
+
+template <typename TValue, typename TTraits, typename TSpec>
+struct HasStreamFeature<std::basic_ostringstream<TValue, TTraits>, TSpec> :
+    HasStreamFeature<std::basic_ostream<TValue, TTraits>, TSpec > {};
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultOpenMode<std::>
@@ -227,6 +265,23 @@ streamEof(std::basic_istream<TValue, TTraits> & stream)
 }
 
 // ----------------------------------------------------------------------------
+// Function streamPeek()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+inline typename Value<std::basic_istream<TValue, TTraits> >::Type
+streamPeek(std::basic_istream<TValue, TTraits> & stream)
+{
+    typedef typename Value<std::basic_istream<TValue, TTraits> >::Type TValue_;
+
+    // Peak sets eofbit if the next char is EOF.
+    SEQAN_ASSERT_BADBIT(stream);
+    TValue_ val = stream.peek();
+    SEQAN_ASSERT_NOT(stream.fail());
+    return val;
+}
+
+// ----------------------------------------------------------------------------
 // Function streamGet()
 // ----------------------------------------------------------------------------
 
@@ -296,7 +351,6 @@ inline void
 streamSeek(std::basic_iostream<TValue, TTraits> & stream, TDelta delta, TPos origin)
 {
     SEQAN_ASSERT_BADBIT(stream);
-    stream.seekg(delta, _getSTLStyleOrigin(origin));
     stream.seekp(delta, _getSTLStyleOrigin(origin));
     SEQAN_ASSERT_NOT(stream.fail());
 }
