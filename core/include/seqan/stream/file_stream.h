@@ -564,11 +564,11 @@ _readBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf)
     }
 
     // shrink buffer size at the end of file
-    stream.itReadEnd = pf.end;
     if ((int)pf.pageNo < stream.lastPageNo)
         resize(pf, stream.pageSize);
     else
         resize(pf, stream.fileSize - stream.lastPageNo * stream.pageSize);
+    stream.itReadEnd = pf.end;
 
     // read next page into memory
     return readPage(pf, stream.file);

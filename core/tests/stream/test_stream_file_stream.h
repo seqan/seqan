@@ -501,7 +501,7 @@ void runTestStreamFileStreamSeekLarge()
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_metafunctions_file)
 {
-    runTestStreamFileStreamMetafunctions<seqan::FileStream<> >();
+    runTestStreamFileStreamMetafunctions<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_metafunctions_mmap)
@@ -511,7 +511,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_metafunctions_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_simple_usage_file)
 {
-    runTestStreamFileStreamReadSimpleUsage<seqan::FileStream<> >();
+    runTestStreamFileStreamReadSimpleUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_simple_usage_mmap)
@@ -521,7 +521,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_read_simple_usage_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_complex_usage_file)
 {
-    runTestStreamFileStreamReadComplexUsage<seqan::FileStream<> >();
+    runTestStreamFileStreamReadComplexUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_complex_usage_mmap)
@@ -531,7 +531,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_read_complex_usage_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_simple_usage_file)
 {
-    runTestStreamFileStreamWriteSimpleUsage<seqan::FileStream<> >();
+    runTestStreamFileStreamWriteSimpleUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_simple_usage_mmap)
@@ -541,7 +541,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_write_simple_usage_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_complex_usage_file)
 {
-    runTestStreamFileStreamWriteComplexUsage<seqan::FileStream<> >();
+    runTestStreamFileStreamWriteComplexUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_complex_usage_mmap)
@@ -551,7 +551,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_write_complex_usage_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_eof_file)
 {
-    runTestStreamFileStreamEof<seqan::FileStream<> >();
+    runTestStreamFileStreamEof<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_eof_mmap)
@@ -571,7 +571,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_peek_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_char_file)
 {
-    runTestStreamFileStreamReadChar<seqan::FileStream<> >();
+    runTestStreamFileStreamReadChar<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_char_mmap)
@@ -581,7 +581,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_read_char_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_block_file)
 {
-    runTestStreamFileStreamReadBlock<seqan::FileStream<> >();
+    runTestStreamFileStreamReadBlock<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_block_mmap)
@@ -591,7 +591,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_read_block_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_char_file)
 {
-    runTestStreamFileStreamWriteChar<seqan::FileStream<> >();
+    runTestStreamFileStreamWriteChar<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_char_mmap)
@@ -601,7 +601,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_write_char_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_block_file)
 {
-    runTestStreamFileStreamWriteBlock<seqan::FileStream<> >();
+    runTestStreamFileStreamWriteBlock<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_block_mmap)
@@ -611,7 +611,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_write_block_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_streamPut_file)
 {
-    runTestStreamFileStreamStreamPut<seqan::FileStream<> >();
+    runTestStreamFileStreamStreamPut<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_streamPut_mmap)
@@ -621,7 +621,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_streamPut_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_flush_file)
 {
-    runTestStreamFileStreamFlush<seqan::FileStream<> >();
+    runTestStreamFileStreamFlush<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_flush_mmap)
@@ -631,7 +631,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_flush_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_seek_file)
 {
-    runTestStreamFileStreamSeek<seqan::FileStream<> >();
+    runTestStreamFileStreamSeek<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_seek_mmap)
@@ -641,7 +641,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_seek_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_tell_file)
 {
-    runTestStreamFileStreamTell<seqan::FileStream<> >();
+    runTestStreamFileStreamTell<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_tell_mmap)
@@ -651,7 +651,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_tell_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_large_file)
 {
-    runTestStreamFileStreamReadLarge<seqan::FileStream<> >();
+    runTestStreamFileStreamReadLarge<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_read_large_mmap)
@@ -661,7 +661,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_read_large_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_large_file)
 {
-    runTestStreamFileStreamWriteLarge<seqan::FileStream<> >();
+    runTestStreamFileStreamWriteLarge<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_write_large_mmap)
@@ -671,7 +671,7 @@ SEQAN_DEFINE_TEST(test_stream_file_stream_write_large_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_seek_large_file)
 {
-    runTestStreamFileStreamSeekLarge<seqan::FileStream<> >();
+    runTestStreamFileStreamSeekLarge<seqan::FileStream<seqan::File<seqan::Async<> > > >();
 }
 
 SEQAN_DEFINE_TEST(test_stream_file_stream_seek_large_mmap)
