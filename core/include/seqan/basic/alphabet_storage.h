@@ -91,7 +91,7 @@ template <typename T>
 struct ValueSize
 {
     typedef __uint64  Type;
-    static const Type VALUE = ((__uint64(1) << (BitsPerValue<T>::VALUE - 1)) << 1);
+    static const Type VALUE = 1ull << (BitsPerValue<T>::VALUE & 63);
 };
 
 template <typename T>
