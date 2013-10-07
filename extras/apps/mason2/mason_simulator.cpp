@@ -154,12 +154,12 @@ public:
         seqan::BamTagsDict tagsDict(record.tags);
         // Set tag with the eason for begin unmapped: Inserted or over breakpoint.  We only reach here if the alignment
         // does not overlap with a breakpoint in the case that the alignment is in an inserted region.
-        setTagValue(tagsDict, "uR", overlapsWithBreakpoint ? 'B' : 'I');
+        setTagValue(tagsDict, "uR", overlapsWithBreakpoint ? 'B' : 'I', 'A');
         // Set position on original haplotype.
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oP", info.beginPos);       // original position
         setTagValue(tagsDict, "oH", hID + 1);             // original haplotype
-        setTagValue(tagsDict, "oS", info.isForward ? 'F' : 'R');  // original strand
+        setTagValue(tagsDict, "oS", info.isForward ? 'F' : 'R', 'A');  // original strand
     }
 
     // Fill the record's members for an aligned record.
@@ -244,7 +244,7 @@ public:
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oH", hID + 1);             // original haplotype
         setTagValue(tagsDict, "oP", info.beginPos);       // original position
-        setTagValue(tagsDict, "oS", info.isForward ? 'F' : 'R');  // original strand
+        setTagValue(tagsDict, "oS", info.isForward ? 'F' : 'R', 'A');  // original strand
     }
 };
 
@@ -438,12 +438,12 @@ public:
         seqan::BamTagsDict tagsDict(record.tags);
         // Set tag with the eason for begin unmapped: Inserted or over breakpoint.  We only reach here if the alignment
         // does not overlap with a breakpoint in the case that the alignment is in an inserted region.
-        setTagValue(tagsDict, "uR", overlapsWithBreakpoint ? 'B' : 'I');
+        setTagValue(tagsDict, "uR", overlapsWithBreakpoint ? 'B' : 'I', 'A');
         // Set position on original haplotype.
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oP", infoRecord.beginPos);       // original position
         setTagValue(tagsDict, "oH", hID + 1);             // original haplotype
-        setTagValue(tagsDict, "oS", infoRecord.isForward ? 'F' : 'R');  // original strand
+        setTagValue(tagsDict, "oS", infoRecord.isForward ? 'F' : 'R', 'A');  // original strand
     }
 
     // Flip the sequence and quality in case that the record is reverse complemented.
@@ -536,7 +536,7 @@ public:
         setTagValue(tagsDict, "oR", toCString(refName));  // original reference name
         setTagValue(tagsDict, "oH", hID + 1);             // original haplotype
         setTagValue(tagsDict, "oP", infoRecord.beginPos);       // original position
-        setTagValue(tagsDict, "oS", infoRecord.isForward ? 'F' : 'R');  // original strand
+        setTagValue(tagsDict, "oS", infoRecord.isForward ? 'F' : 'R', 'A');  // original strand
     }
 };
 
