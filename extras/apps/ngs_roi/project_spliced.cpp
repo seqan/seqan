@@ -87,6 +87,9 @@ void ProjectSplicedRoi::beginContig()
         purgeGffAndRoiRecords();
         currentGroup += 1;
     }
+    
+    // Remove pending ROI records.
+    roiRecords.clear();
 
     // Clear open GFF records and names for the records.
     // TODO(holtgrew): Can we add some checks here that confirm that all has be handled?

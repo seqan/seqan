@@ -46,6 +46,7 @@
 #include <seqan/roi_io.h>
 
 #include "png_canvas.h"
+#include "version.h"
 
 // ==========================================================================
 // Classes
@@ -284,8 +285,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     // Set short description, version, and date.
     setShortDescription(parser, "Create plot grids for ROI file.");
-    setVersion(parser, "0.1");
-    setDate(parser, "April 2013");
+    setVersion(parser, VERSION);
+    setDate(parser, DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-if\\fP \\fIIN.roi\\fP \\fB-o\\fP \\fIOUT\\fP");

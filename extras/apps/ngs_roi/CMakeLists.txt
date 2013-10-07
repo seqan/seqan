@@ -33,11 +33,11 @@ add_definitions (${SEQAN_DEFINITIONS})
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
-add_executable (roi_plot_thumbnails roi_plot_thumbnails.cpp png_canvas.h)
+add_executable (roi_plot_thumbnails roi_plot_thumbnails.cpp png_canvas.h version.h)
 target_link_libraries (roi_plot_thumbnails ${SEQAN_LIBRARIES})
 
 # bam2roi converts BAM file into ROI files.
-add_executable (bam2roi bam2roi.cpp roi_builder.h roi_builder.cpp)
+add_executable (bam2roi bam2roi.cpp roi_builder.h roi_builder.cpp version.h)
 target_link_libraries (bam2roi ${SEQAN_LIBRARIES})
 
 # roi_feature_projection allows the projection of ROIs to features (BED/GFF
@@ -47,7 +47,8 @@ add_executable (roi_feature_projection
                 project_spliced.cpp
                 project_spliced.h
                 project_interval.cpp
-                project_interval.h)
+                project_interval.h
+                version.h)
 target_link_libraries (roi_feature_projection ${SEQAN_LIBRARIES})
 
 # ----------------------------------------------------------------------------
