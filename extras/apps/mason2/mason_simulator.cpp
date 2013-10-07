@@ -1132,7 +1132,6 @@ getMDString2(
     typename seqan::Iterator<TGaps1>::Type it1 = begin(gaps1);
     typename seqan::Iterator<TGaps2>::Type it2 = begin(gaps2);
     typedef typename seqan::Value<typename seqan::Source<TGaps1>::Type>::Type TValue1;
-    typedef typename seqan::Value<typename seqan::Source<TGaps2>::Type>::Type TValue2;
     char op, lastOp = ' ';
     unsigned numOps = 0;
 

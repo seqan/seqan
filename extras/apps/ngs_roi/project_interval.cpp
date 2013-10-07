@@ -298,8 +298,6 @@ void IntersectBed::writeRois(seqan::String<bool> const & bitmap,
                              int beginPos,  // position of bitmap[0] and counts[0]
                              seqan::BedRecord<seqan::Bed6> const & bedRecord)
 {
-    typedef std::list<TRoiRecord>::const_iterator TRoiIter;
-
     // We will build a string of ranges in bitmap/counts for writing out.  The bitmap is used depending on the
     // combination mode.
     typedef seqan::Pair<int, int> TIntPair;
