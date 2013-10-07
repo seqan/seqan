@@ -357,9 +357,9 @@ class NormalizeScientificExponentsTransform(object):
 	def apply(self, text, is_left):
 		"""Apply the transform."""
 		if self.normalize_to_unix:
-			return re.sub(r'([-+]?[0-9]*\.[0-9]+[eE][-+]?)0([0-9]{2})', r'\1\2', text)
+			return re.sub(r'([-+]?(?:[0-9]*\.)?[0-9]+[eE][\-+]?)0([0-9]{2})', r'\1\2', text)
 		else:
-			return re.sub(r'([-+]?[0-9]*\.[0-9]+[eE][-+]?)([0-9]{2})', r'\10\2', text)
+			return re.sub(r'([-+]?(?:[0-9]*\.)?[0-9]+[eE][\-+]?)([0-9]{2})', r'\10\2', text)
 
 
 class RegexpReplaceTransform(object):
