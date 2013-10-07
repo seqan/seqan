@@ -483,7 +483,6 @@ inline void
 onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
        Finder2<TIndex, TIndex, Backtracking<EditDistance, Top> > const & finder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>  TDbFinder;
     typedef Backtracking<EditDistance, Bottom>                          TBacktracking;
     typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
 
@@ -502,7 +501,6 @@ inline void
 onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
        Finder2<TIndex, TIndex, Backtracking<HammingDistance, Top> > const & finder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>  TDbFinder;
     typedef Backtracking<HammingDistance, Bottom>                       TBacktracking;
     typedef Finder2<TIndex, TIndex, TBacktracking>                      TFinder;
 
@@ -523,7 +521,6 @@ onFind(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder,
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate, typename TSpec>
 void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec>             TDbFinder;
     typedef Backtracking<EditDistance>                                          TBacktrackingApx;
     typedef Backtracking<HammingDistance>                                       TBacktrackingExt;
     typedef Finder2<TIndex, TIndex, TBacktrackingApx>                           TFinderApx;
@@ -576,7 +573,6 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, TSpec> & dbFinder)
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
 void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFinder)
 {
-    typedef DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel>          TDbFinder;
     typedef Backtracking<EditDistance, Top>                                     TBacktrackingApx;
     typedef Backtracking<HammingDistance, Top>                                  TBacktrackingExt;
     typedef Backtracking<EditDistance, Bottom>                                  TBacktrackingApxBottom;
