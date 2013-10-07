@@ -134,7 +134,7 @@ void SequencingSimulator::_simulateBSTreatment(seqan::Dna5String & methFragment,
 }
 
 // ---------------------------------------------------------------------------
-// Function SequencingSimulator::simulatePairedEnds()
+// Function SequencingSimulator::simulatePairedEnd()
 // ---------------------------------------------------------------------------
 
 // Simulate paired-end sequencing from a fragment.
