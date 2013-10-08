@@ -290,14 +290,14 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     integrateAlign(align, centerAlign);
     if (!extendLeft)
     {
-        // These copmutations look obscure but are due to the obscure
-        // nature of the Gaps module...
-        setClippedBeginPosition(row(align, 0), hBeginPos
-                                - beginPosition(row(centerAlign, 0))
-                                + clippedBeginPosition(row(centerAlign, 0)));
-        setClippedBeginPosition(row(align, 1), vBeginPos
-                                - beginPosition(row(centerAlign, 1))
-                                + clippedBeginPosition(row(centerAlign, 1)));
+        TPos leadGaps0 = countGaps(begin(row(centerAlign, 0)));
+        TPos leadGaps1 = countGaps(begin(row(centerAlign, 1)));
+
+        TPos sourceBeginPos0 = toSourcePosition(row(centerAlign,0), leadGaps0) + beginPosition(source(row(centerAlign, 0)));
+        TPos sourceBeginPos1 = toSourcePosition(row(centerAlign,1), leadGaps1) + beginPosition(source(row(centerAlign, 1)));
+
+        setClippedBeginPosition(row(align,0), toViewPosition(row(align, 0), sourceBeginPos0) - leadGaps0);
+        setClippedBeginPosition(row(align,1), toViewPosition(row(align, 1), sourceBeginPos1) - leadGaps1);
     }
 
     // right
