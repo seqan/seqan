@@ -44,6 +44,9 @@ namespace seqan {
 template <typename TInput, typename TPipeSpec>
 struct Pipe;
 
+template <typename TObject>
+struct IsView;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================

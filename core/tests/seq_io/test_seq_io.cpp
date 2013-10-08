@@ -35,21 +35,27 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
-#include "test_seq_io_generic.h"
+//#include <../../extras/include/seqan/sequence_extras.h>
 
-#include "test_sequence_stream.h"
-#include "test_genomic_region.h"
-#include "test_fai_index.h"
-#include "test_stream_record_reader_fasta.h"
-#include "test_stream_record_reader_fastq.h"
-#include "test_stream_guess_stream_format.h"
+#include <seqan/stream.h>
+#include <seqan/seq_io/write_fasta_fastq.h>
+
+//#include "test_seq_io_generic.h"
+//
+//#include "test_sequence_stream.h"
+//#include "test_genomic_region.h"
+//#include "test_fai_index.h"
+//#include "test_stream_record_reader_fasta.h"
+//#include "test_stream_record_reader_fastq.h"
+//#include "test_stream_guess_stream_format.h"
 #include "test_stream_write_fasta.h"
-#include "test_stream_read_embl.h"
-#include "test_stream_read_genbank.h"
-#include "test_stream_read_auto_format.h"
+//#include "test_stream_read_embl.h"
+//#include "test_stream_read_genbank.h"
+//#include "test_stream_read_auto_format.h"
 
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
+#if 0
     // Test simple readFasta() function.
     SEQAN_CALL_TEST(test_seq_io_read_fasta);
 
@@ -160,7 +166,7 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     // Tests for FASTA with Amino Acid alphabet.
     SEQAN_CALL_TEST(test_stream_record_reader_fasta_protein_single_fstream);
     SEQAN_CALL_TEST(test_stream_record_reader_fasta_annotated_protein_single_fstream);
-
+#endif
     /* Tests for writing file formats.
      * Only fstream used as a representative */
 
@@ -170,8 +176,8 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_stream_write_record_fastq_default_separate_qual);
     SEQAN_CALL_TEST(test_stream_write_record_fastq_default_qual_in_seq);
     SEQAN_CALL_TEST(test_stream_write_record_fastq_linebreaks_qualmeta);
-    SEQAN_CALL_TEST(test_stream_write2_fasta_default);
-    SEQAN_CALL_TEST(test_stream_write2_fastq_default_separate_qual);
-    SEQAN_CALL_TEST(test_stream_write2_fastq_default_qual_in_seq);
+//    SEQAN_CALL_TEST(test_stream_write2_fasta_default);
+//    SEQAN_CALL_TEST(test_stream_write2_fastq_default_separate_qual);
+//    SEQAN_CALL_TEST(test_stream_write2_fastq_default_qual_in_seq);
 }
 SEQAN_END_TESTSUITE

@@ -78,6 +78,7 @@
 #include <fstream>
 #include <sstream>
 
+#include <../../extras/include/seqan/sequence/iterator_range.h>
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/sequence.h>

@@ -284,7 +284,7 @@ template <typename TContainer, typename TValue>
 inline void
 writeValue(TContainer &cont, TValue val)
 {
-    appendValue(cont, val)
+    appendValue(cont, val);
 }
 
 template <typename TValue, typename TTraits, typename TValue2>
@@ -313,7 +313,7 @@ writeValue(Iter<TContainer, TSpec> &iter, TValue val)
     else
     {
         if (pos > len)
-            resize(cont, pos - 1)
+            resize(cont, pos - 1);
         appendValue(cont, val);
         setPosition(iter, pos + 1);
     }
@@ -378,6 +378,9 @@ _readUntil(
         // TODO(weese):Document worst-case behavior
         reserveChunk(target, ichunk.end - ichunk.begin);
         ochunk = getChunk(end(target, Rooted()));
+
+        SEQAN_ASSERT(ichunk.begin < ichunk.end);
+        SEQAN_ASSERT(ochunk.begin < ochunk.resEnd);
 
         TIValue* istart = ichunk.begin;
         TOValue* ostart = ochunk.begin;
@@ -554,9 +557,9 @@ readN(TTarget &target, TFwdIterator &iter, TSize n)
 
 
 
-template <typename TTarget, typename TFwdIterator, typename TSize>
-inline TSize
-_writeN(TTarget &target, TFwdIterator &iter, TSize n)
+template <typename TTarget, typename TFwdIterator, typename TSize, typename TIChunk, typename TOChunk>
+inline void
+_writeN(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
 {
     for (; n > (TSize)0; --n)
         writeValue(target, value(iter));
@@ -574,22 +577,25 @@ _writeN(
     Buffer<TIValue, Simple> ichunk;
     Buffer<TOValue, Simple> ochunk;
 
-    TSize minChunkSize;
+    typename Size<TTarget>::Type minChunkSize;
     for (; n > (TSize)0; n -= minChunkSize)
     {
         ichunk = getChunk(iter);
         minChunkSize = ichunk.end - ichunk.begin;
+        SEQAN_ASSERT_GT(minChunkSize, 0u);
 
         reserveChunk(target, minChunkSize);
         ochunk = getChunk(end(target, Rooted()));
 
-        typename Difference<TTarget>::Type olen = ochunk.endCap - ochunk.begin;
+        typename Size<TTarget>::Type olen = ochunk.resEnd - ochunk.begin;
 
         if (minChunkSize > olen)
-        {
             minChunkSize = olen;
-            ichunk.end = ichunk.begin + olen;
-        }
+
+        if (minChunkSize > n)
+            minChunkSize = n;
+
+        ichunk.end = ichunk.begin + minChunkSize;
 
         for (; ichunk.begin != ichunk.end; ++ichunk.begin, ++ochunk.begin)
             assignValue(ochunk.begin, getValue(ichunk.begin));
@@ -606,7 +612,7 @@ _writeN(
 
 
 template <typename TTarget, typename TFwdIterator, typename TSize>
-inline TSize
+inline void
 writeN(TTarget &target, TFwdIterator &iter, TSize n)
 {
     typedef typename Chunk<TFwdIterator>::Type* TIChunk;
@@ -616,7 +622,7 @@ writeN(TTarget &target, TFwdIterator &iter, TSize n)
 }
 
 template <typename TTarget, typename TValue, typename TSize>
-inline TSize
+inline void
 writeN(TTarget &target, TValue *ptr, TSize n)
 {
     typedef Range<TValue*>                          TRange;
@@ -630,10 +636,11 @@ writeN(TTarget &target, TValue *ptr, TSize n)
 }
 
 template <typename TTarget, typename TContainer>
-inline TSize
+inline void
 write3(TTarget &target, TContainer &cont)
 {
-    writeN(target, cont, length(cont));
+    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
+    writeN(target, iter, length(cont));
 }
 
 
