@@ -59,7 +59,6 @@ namespace seqan {
 // Function integrateAlign()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Add demo! In this state, it's useless.
 /*!
  * @fn integrateAlign
  * @headerfile <seqan/align.h>
@@ -97,74 +96,62 @@ namespace seqan {
  */
 
 template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2, typename TPos> 
-void
-integrateAlign(Align<TSource1, TSpec1> & align,
-			   Align<TSource2, TSpec2> const & infixAlign,
-			   String<TPos> const & viewPos)
+void integrateAlign(Align<TSource1, TSpec1> & align,
+                    Align<TSource2, TSpec2> const & infixAlign,
+                    String<TPos> const & viewPos)
 {
-	typedef Align<TSource1, TSpec1> TAlign;
-	typedef Align<TSource2, TSpec2> TInfixAlign;
-	typedef typename Size<TAlign>::Type TSize;
+    typedef Align<TSource1, TSpec1> TAlign;
+    typedef Align<TSource2, TSpec2> TInfixAlign;
+    typedef typename Size<TAlign>::Type TSize;
 
-	typedef typename Row<TAlign>::Type TRow;
-	typedef typename Row<TInfixAlign const>::Type TInfixRow;
+    typedef typename Row<TAlign>::Type TRow;
+    typedef typename Row<TInfixAlign const>::Type TInfixRow;
 
-	// Iterators on align and infixAlign.
-	typename Iterator<TRow>::Type it;
+    // Iterators on align and infixAlign.
+    typename Iterator<TRow>::Type it;
     typedef typename Iterator<TInfixRow, Standard>::Type TInfixRowIt;
 
-    // std::cerr << "HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
 
-	for (TSize i = 0; i < length(rows(align)); ++i)
+    for (TSize i = 0; i < length(rows(align)); ++i)
     {
-        // std::cerr << __LINE__ << " >> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
         TInfixRow const & infixRow = row(infixAlign, i);
         // This assertion ensures that the number of sequence characters after viewPos[i] is greater than or equal to
         // the number of source characters in the clipped infix row.
-        // std::cerr << __LINE__ << " >> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
         SEQAN_ASSERT_GEQ(endPosition(row(align, i)) - toSourcePosition(row(align, i), viewPos[i]),
-                         endPosition(infixRow) - beginPosition(infixRow));
+                endPosition(infixRow) - beginPosition(infixRow));
 
-		// init iterators
-        // std::cerr << __LINE__ << " >> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-		it = iter(row(align, i), value(viewPos, i));
-        // std::cerr << __LINE__ << " >> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-		// infixIt = begin(infixRow, Standard());
-        // // // std::cerr << __LINE__ << " >> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-		// infixEnd = end(infixRow, Standard());
+        // init iterators
+        it = iter(row(align, i), value(viewPos, i));
 
-		// walk through Gaps containers and copy gaps
-        // std::cerr << ">> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-		for (TInfixRowIt infixIt = begin(infixRow, Standard()); !atEnd(infixIt);)
+        // walk through Gaps containers and copy gaps
+        for (TInfixRowIt infixIt = begin(infixRow, Standard()); !atEnd(infixIt);)
         {
-            // std::cerr << ">>>> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-			TSize gapSize = countGaps(infixIt);
+            TSize gapSize = countGaps(infixIt);
             insertGaps(it, gapSize);
             goFurther(it, gapSize+1);
             goFurther(infixIt, gapSize+1);
-		}
-        // std::cerr << "atINNERend HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-	}
-    // std::cerr << "atend HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
+        }
+    }
 }
 
 template <typename TSource, typename TSpec1, typename TSpec2>
-void
-integrateAlign(Align<TSource, TSpec1> & align,
-			   Align<typename Infix<TSource>::Type, TSpec2> const & infixAlign) {
-	typedef typename Size<TSource>::Type TSize;
-	typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
+void integrateAlign(Align<TSource, TSpec1> & align,
+                    Align<typename Infix<TSource>::Type, TSpec2> const & infixAlign) 
+{
+    typedef typename Size<TSource>::Type TSize;
+    typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
 
-	String<TPos> viewPos;
-	TPos pos;
-	for (TSize i = 0; i < length(rows(infixAlign)); ++i) {
+    String<TPos> viewPos;
+    TPos pos;
+    for (TSize i = 0; i < length(rows(infixAlign)); ++i) 
+    {
         pos = beginPosition(source(row(infixAlign, i)))
-                - beginPosition(source(row(align, i)))
-                + beginPosition(row(infixAlign, i));
-		appendValue(viewPos, toViewPosition(row(align, i), pos));
-	}
+            - beginPosition(source(row(align, i)))
+            + beginPosition(row(infixAlign, i));
+        appendValue(viewPos, toViewPosition(row(align, i), pos));
+    }
 
-	integrateAlign(align, infixAlign, viewPos);
+    integrateAlign(align, infixAlign, viewPos);
 }
 
 }  // namespace seqan
