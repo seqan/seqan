@@ -160,7 +160,7 @@ integrateAlign(Align<TSource, TSpec1> & align,
 	for (TSize i = 0; i < length(rows(infixAlign)); ++i) {
         pos = beginPosition(source(row(infixAlign, i)))
                 - beginPosition(source(row(align, i)))
-                + clippedBeginPosition(row(infixAlign, i));
+                + beginPosition(row(infixAlign, i));
 		appendValue(viewPos, toViewPosition(row(align, i), pos));
 	}
 
