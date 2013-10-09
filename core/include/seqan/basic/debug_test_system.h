@@ -759,9 +759,8 @@ int openTempFile() {
 inline
 const char * tempFileName()
 {
-//IOREV _duplicate_ overlaps with some stuff in system/file_sync.h, should be moved to io-module
     static char fileNameBuffer[1000];
-#ifdef PLATFORM_WINDOWS_VS
+#ifdef PLATFORM_WINDOWS
     static char filePathBuffer[1000];
     //  Gets the temp path env string (no guarantee it's a valid path).
     DWORD dwRetVal = 0;
@@ -793,10 +792,6 @@ const char * tempFileName()
 
 #else  // ifdef PLATFORM_WINDOWS_VS
     strcpy(fileNameBuffer, "/tmp/SEQAN.XXXXXXXXXXXXXXXXXXXX");
-#ifdef PLATFORM_WINDOWS_MINGW
-    // There is no mkstemp in MinGW but it does not complain about tmpnam.
-    tmpnam(fileNameBuffer);
-#else  // ifdef PLATFORM_WINDOWS_MINGW
     int _tmp = mkstemp(fileNameBuffer);
     (void) _tmp;
     unlink(fileNameBuffer);
@@ -805,10 +800,9 @@ const char * tempFileName()
     StaticData::tempFileNames().push_back(fileNameBuffer);
 
     strcat(fileNameBuffer, "/test_file");
-#endif  // #ifdef PLATFORM_WINDOWS_MINGW
     return fileNameBuffer;
 
-#endif  // ifdef PLATFORM_WINDOWS_VS
+#endif  // ifdef PLATFORM_WINDOWS
 }
 
 // Initialize the testing infrastructure.
@@ -896,13 +890,17 @@ int endTestSuite()
             do
             {
                 std::string tempp = StaticData::tempFileNames()[i].c_str() + std::string("\\") + data.cFileName;
-                DeleteFile(tempp.c_str());
+                if (strcmp(data.cFileName, ".") == 0 || strcmp(data.cFileName, "..") == 0)
+                    continue;  // Skip these.
+                if (!DeleteFile(tempp.c_str()))
+                    std::cerr << "WARNING: Could not delete file " << tempp << "\n";
             }
             while (FindNextFile(hFind, &data));
             FindClose(hFind);
         }
 
-        RemoveDirectory(StaticData::tempFileNames()[i].c_str());
+        if (!RemoveDirectory(StaticData::tempFileNames()[i].c_str()))
+            std::cerr << "WARNING: Could not delete directory " << StaticData::tempFileNames()[i] << "\n";
 #else  // #ifdef PLATFORM_WINDOWS
         DIR * dpdf;
         struct dirent * epdf;
