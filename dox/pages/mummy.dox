@@ -1,0 +1,53 @@
+/*!
+@page DemoMummy Mummy
+@brief Simple MUMmer clone.
+
+MUMmer is a tool to search for multiple exact matches (MUMs) between 2 given sequences.  MUMs can be used as a
+starting point for a multiple genome alignment algorithm.  This example shows how to implement a simple version of
+MUMer to find multiple exact matches of n sequences (n>=2) in SeqAn.
+
+@include demos/index/index_mummy.cpp
+
+If you run the tool on 2 sequences it outputs exactly the same matches as MUMmer (called with -mum option), it only
+differs in the * order of outputted matches.  To get matches with increasing positions at the first sequence we
+piped
+the output to sort.
+
+As an example data set we used 3 strains of chlamydia bacterium
+(NC_002620.fna, NC_000117.fna, NC_007429.fna) and saved the Fasta files
+to the demos directory.
+
+@code{.console}
+weese@tanne:~/seqan$ cd demos
+weese@tanne:~/seqan/demos$ make index_mummy
+weese@tanne:~/seqan/demos$ ./index_mummy -h
+***************************************
+***        Simple MUM finder        ***
+*** written by David Weese (c) 2007 ***
+***************************************
+
+Usage: mummy [OPTION]... <SEQUENCE FILE> ... <SEQUENCE FILE>
+
+Options:
+  -e, --extern                  use external memory (for large datasets)
+  -l, --minlen                  set minimum MUM length
+                                if not set, default value is 20
+  -h, --help                    print this help
+weese@tanne:~/seqan/demos$ ./index_mummy NC*.fna |sort > mums.txt
+3159928 bps sequence imported.
+weese@tanne:~/seqan/demos$ head mums.txt
+    1565    323805      2159        48
+    1646    323886      2240        27
+    1722    323962      2316        37
+    1774    324014      2368        26
+    1941    324181      2535        23
+    2061    324301      2655        35
+    2102    324342      2696        29
+    2132    324372      2726        20
+    2183    324423      2777        24
+weese@tanne:~/seqan/demos$
+@endcode
+@see Index
+@see Mums Iterator
+*/
+

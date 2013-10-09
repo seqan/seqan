@@ -1,0 +1,39 @@
+/*!
+ * @page DemoMaximalRepeats Maximal Repeats
+ * @brief Example for using the @link MaxRepeats Iterator @endlink.
+ *
+ * Given a sequences, a repeat is a substring that occurs at at least 2 different positions.
+ * A maximal repeat is a repeat that cannot be extended to the left or to right to a longer repeat. The following
+ * example demonstrates how to iterate over all maximal repeats and output them.
+ *
+ * 
+ *
+ * @snippet demos/index/index_supermaxrepeats.cpp includes
+ *
+ * We begin with a @Class.String@ to store our sequence. Then we create an @Class.Index@ of this @link StringSet @endlink.
+ *
+ * Afterwards we initialize a string with the sequence and build an index over it
+ *
+ * @snippet demos/index/index_supermaxrepeats.cpp init
+ *
+ * To find maximal repeats, we use SeqAn's @link MaxRepeats Iterator @endlink and set the minimum repeat length to 3.
+ *
+ * @snippet demos/index/index_supermaxrepeats.cpp iteration
+ *
+ * A repeat can be represented by its length and positions it occurs at.
+ * $myRepeatIterator$ iterates over all repeat strings.
+ * Please note that in contrast to supermaximal repeats, given a maximal repeat string,
+ * not all pairs of its occurrences are maximal repeats.
+ * So we need an iterator to iterate over all maximal pairs of this repeat string.
+ * The @Spec.MaxRepeats Iterator@ can be seen as a container and be iterated for itself.
+ *
+ * @code{.console}
+ * weese@tanne:~/seqan$ cd demos
+ * weese@tanne:~/seqan/demos$ make index_maxrepeats
+ * weese@tanne:~/seqan/demos$ ./index_maxrepeats
+ * < 8 , 21 >, 5           " wood"
+ * < 21 , 13 >, < 8 , 13 >, 3      " wo"
+ * < 26 , 32 >, 5          "chuck"
+ * weese@tanne:~/seqan/demos$
+ * @endcode
+ */

@@ -1,0 +1,23 @@
+/*!
+ * @page DemoMaximalUniqueMatches Maximal Unique Matches
+ * @briefExample for using the Mums Iterator.
+ *
+ * Given a set of sequences, a unique match is a match that occurs exactly once in each sequence. A maximal unique match
+ * (MUM) is a unique match that is not part of any longer unique match. The following example demonstrates how to iterate
+ * over all MUMs and output them.
+ *
+ * @include demos/index/index_mums.cpp
+ *
+ * The only maximal matches that occur in all 3 sequences are "SeqAn" and "sequence". They occur exactly once and thus
+ * are maximal unique matches.
+
+ *
+ * @code{.console}
+ * weese@tanne:~/seqan$ cd demos
+ * weese@tanne:~/seqan/demos$ make index_mums
+ * weese@tanne:~/seqan/demos$ ./index_mums
+ * 0, 53, 33, 5    "SeqAn"
+ * 23, 36, 3, 8    "sequence"
+ * weese@tanne:~/seqan/demos$ * @endcode
+ */
+

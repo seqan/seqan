@@ -1,0 +1,34 @@
+/*!
+ * @page DemoSupermaximalRepeats Supermaximal Repeats
+ * @brief Example for using the @link SuperMaxRepeats Iterator @endlink.
+ *
+ * Given a sequences, a repeat is a substring that occurs at at least 2
+ * different positions. A supermaximal repeat is a repeat that is not part
+ * of any longer repeat. The following example demonstrates how to iterate
+ * over all supermaximal repeats and output them.
+ *
+ * We start by including the required headers and using the namespace seqan.
+ *
+ * @snippet demos/index/index_supermaxrepeats.cpp includes
+ *
+ * Afterwards we initialize a stirng with the sequence and build an index over it
+ *
+ * @snippet demos/index/index_supermaxrepeats.cpp init
+ *
+ * To find supermaximal repeats, we use SeqAn's @link SuperMaxRepeatsIterator SuperMaxRepeats Iterator @endlink and set the minimum repeat length to 3.
+ *
+ * @snippet demos/index/index_supermaxrepeats.cpp iteration
+ *
+ * The only supermaximal repeats of "How many wood would a woodchuck chuck." of length at least 3 are " wood" and
+ * "chuck". There are repeats of " wo" which are maximal (see Maximal Repeats), ut not supermaximal, as " wo" is part of
+ * the longer repeat " wood".
+ *
+ * @code{.console}
+ * weese@tanne:~/seqan$ cd demos
+ * weese@tanne:~/seqan/demos$ make index_supermaxrepeats
+ * weese@tanne:~/seqan/demos$ ./index_supermaxrepeats
+ * 8, 21, 5        " wood"
+ * 26, 32, 5       "chuck"
+ * weese@tanne:~/seqan/demos$*
+ * @endcode
+ */
