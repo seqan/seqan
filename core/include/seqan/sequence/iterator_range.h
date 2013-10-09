@@ -60,8 +60,8 @@ class Range
 {
 public:
 
-    TIterator _begin;
-    TIterator _end;
+    TIterator begin;
+    TIterator end;
 
     // ------------------------------------------------------------------------
     // Range Constructors
@@ -69,28 +69,28 @@ public:
 
     SEQAN_HOST_DEVICE inline
     Range():
-        _begin(),
-        _end()
+        begin(),
+        end()
     {}
 
     template <typename TOtherContainer>
     SEQAN_HOST_DEVICE inline
     Range(TOtherContainer & cont):
-        _begin(begin(cont, Standard())),
-        _end(end(cont, Standard()))
+        begin(begin(cont, Standard())),
+        end(end(cont, Standard()))
     {}
 
     template <typename TOtherContainer>
     SEQAN_HOST_DEVICE inline
     Range(TOtherContainer const & cont):
-        _begin(begin(cont, Standard())),
-        _end(end(cont, Standard()))
+        begin(begin(cont, Standard())),
+        end(end(cont, Standard()))
     {}
 
     SEQAN_HOST_DEVICE inline
     Range(TIterator const & begin, TIterator const & end):
-        _begin(begin),
-        _end(end)
+        begin(begin),
+        end(end)
     {}
 
     // ------------------------------------------------------------------------
@@ -222,14 +222,14 @@ template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
 begin(Range<TIterator> & view, Standard)
 {
-    return view._begin;
+    return view.begin;
 }
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
 begin(Range<TIterator> const & view, Standard)
 {
-    return view._begin;
+    return view.begin;
 }
 
 // ----------------------------------------------------------------------------
@@ -240,14 +240,14 @@ template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
 end(Range<TIterator> & view, Standard)
 {
-    return view._end;
+    return view.end;
 }
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
 end(Range<TIterator> const & view, Standard)
 {
-    return view._end;
+    return view.end;
 }
 
 // ----------------------------------------------------------------------------
@@ -258,14 +258,14 @@ template <typename TIterator, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference<Range<TIterator> >::Type
 value(Range<TIterator> & view, TPos pos)
 {
-    return *(view._begin + pos);
+    return *(view.begin + pos);
 }
 
 template <typename TIterator, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference<Range<TIterator> const>::Type
 value(Range<TIterator> const & view, TPos pos)
 {
-    return *(view._begin + pos);
+    return *(view.begin + pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -276,7 +276,7 @@ template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Difference<Range<TIterator> >::Type
 length(Range<TIterator> const & view)
 {
-    return view._end - view._begin;
+    return view.end - view.begin;
 }
 
 // ----------------------------------------------------------------------------
@@ -308,8 +308,8 @@ template <typename TIterator, typename TContainer>
 SEQAN_HOST_DEVICE inline void
 assign(Range<TIterator> &view, TContainer &cont)
 {
-    view._begin = begin(cont, Standard());
-    view._end = end(cont, Standard());
+    view.begin = begin(cont, Standard());
+    view.end = end(cont, Standard());
 }
 
 // ----------------------------------------------------------------------------
@@ -349,7 +349,7 @@ inline void assign(Range<TIterator> &dest, Pipe<TInput, TPipeSpec> &src)
     typedef typename Iterator<Range<TIterator>, Standard>::Type TDestIter;
     resize(dest, length(src));
     beginRead(src);
-    for (TDestIter _cur = begin(dest, Standard()), _end = end(dest, Standard()); _cur != _end; ++_cur, ++src)
+    for (TDestIter _cur = begin(dest, Standard()), end = end(dest, Standard()); _cur != end; ++_cur, ++src)
         *_cur = *src;
     endRead(src);
 }
