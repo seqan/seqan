@@ -1,0 +1,44 @@
+                                    Mason
+                   Tools for Biological Sequence Simulation
+
+                      http://www.seqan.de/projects/mason
+                             Version 2.0.0alpha2
+                                October, 2013
+
+                               Manuel Holtgrewe
+
+------------------------------------------------------------------------------
+Table of Contents
+------------------------------------------------------------------------------
+
+  1. Overview
+
+------------------------------------------------------------------------------
+1. Overview
+------------------------------------------------------------------------------
+
+Mason is a collection of tools for the simulation of biological sequences.
+The collection consists of the following tools.  For each tool, there is file
+README.${tool_name} that contains detailed documentation of the tool itself.
+Also you can get detailed documentation of a tool's parameters by calling it
+with the "--help" argument.
+
+ * mason_genome
+       Simulation of random genomic sequences.
+ * mason_variator
+       Simulate SNPs, small indels, and structural variants for genomic data.
+       The result is written out as a VCF file.  Optionally, the resulting
+       modified sequence can also be written out.
+ * mason_materializer
+       Apply the variation from a VCF file to a genome in a FASTA file.
+ * mason_methylation
+       Simulate methylation levels for a genome dependent on the context for
+       each possible site.
+ * mason_simulator
+       Simulate NGS reads given a genome and optionally also a VCF file with
+       variants for a given donor to use as the source.
+ * mason_splicing
+       Compute the transcriptome from a genome FASTA file and a GFF file with
+       the genes.
+ * mason_frag_sequencing
+       Simulation of fragment sampling from a genome.
