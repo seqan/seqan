@@ -48,7 +48,7 @@ namespace seqan {
 /*!
  * @class Pattern
  * @headerfile <seqan/find.h>
- * @brief Holds the needle and precprocessing data (depends on algorithm).
+ * @brief Holds the needle and preprocessing data (depends on algorithm).
  *
  * @signature template <typename TNeedle[, typename TSpec]>
  *            class Pattern;

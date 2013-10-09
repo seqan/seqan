@@ -738,8 +738,9 @@ SEQAN_CHECKPOINT
  *
  * @section Remarks
  *
- * This function works only correct if the begin position of the mtach was already found, see @link Finder#findBegin
- * @endlink.
+ * This function works only correct if the begin position of the match was already found, see @link Finder#findBegin @endlink
+ *
+ * For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
  */
 
 /**
@@ -1100,7 +1101,7 @@ SEQAN_CHECKPOINT
 
 /*!
  * @fn Finder#setHaystack
- * @brief Sets the hasytack of a @link Finder @endlink object.
+ * @brief Sets the haystack of a @link Finder @endlink object.
  *
  * @signature void setHaystack(finder, haystack);
  *
