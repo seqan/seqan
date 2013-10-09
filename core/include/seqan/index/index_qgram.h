@@ -105,8 +105,8 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        IndexQGram @endlink.
  * 
- * @see Fibre
- * @see getFibre
+ * @see Index#Fibre
+ * @see Index#getFibre
  * @see IndexQGram
  * 
  * @tag QGramIndexFibres#QGramDir
@@ -120,7 +120,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * array (<tt>QGramSA</tt>, see above). Each suffix in this interval begins with
  * the same q-gram. The end index is the start index of the next bucket.
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag QGramIndexFibres#QGramBucketMap
@@ -143,7 +143,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * interval in the counts array (<tt>QGramCounts</tt>, see above). The end index
  * is the start index of the next bucket.
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag QGramIndexFibres#QGramText
@@ -171,7 +171,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * 
  * In most applications a q-gram index consisting of both of these table is
  * required. To efficiently create them at once use this tag for @link
- * indexRequire @endlink or @link Index#indexCreate @endlink.
+ * Index#indexRequire @endlink or @link Index#indexCreate @endlink.
  * 
  * @tag QGramIndexFibres#QGram_RawText
  * 
@@ -196,7 +196,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * beginning of each count bucket can be determined by the q-gram counts
  * directory (<tt>QGramCountsDir</tt>, see below).
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag QGramIndexFibres#QGramSA
@@ -212,7 +212,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * 
  * It corresponds to a suffix array which is sorted by the first q-gram.
  * 
- * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  */
 
@@ -287,14 +287,14 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
+ * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
  * are a suffix array sorted by the first q characters (see @link QGramIndexFibres#QGramSA @endlink) and a q-gram directory (see @link QGramIndexFibres#QGramDir @endlink). The size of the q-gram directory is |\Sigma|^q. On
  * a 32bit system the q-gram length is limited to 3 for <tt>char</tt> alphabets
  * or 13-14 for @link Dna @endlink alphabets. Consider to use the @link
  * OpenAddressing @endlink q-gram index for longer q-grams if you don't need
  * q-grams to be sorted.
  * 
- * @see QGram Index Fibres
+ * @see QGramIndexFibres
  */
 
 	template < typename TShapeSpec, typename TSpec = Default >
@@ -676,7 +676,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * @param index The @link Index @endlink object holding the fibre. Types: @link
  *              IndexQGram @endlink
  * 
- * @return TReturn A reference to the @link QGramIndexFibres.QGramBucketMap
+ * @return TReturn A reference to the @link QGramIndexFibres#QGramBucketMap
  *                 @endlink fibre (maps q-gram hashes to buckets).
  */
 
@@ -758,7 +758,7 @@ Formally, this is a reference to the @Tag.QGram Index Fibres.QGramShape@ fibre.
  * @return TReturn The step size. If <tt>x</tt> is returned every <tt>x</tt>'th
  *                 q-gram is stored in the index.
  * 
- * @see setStepSize
+ * @see IndexQGram#setStepSize
  */
 	template <typename TText, typename TShapeSpec, typename TSpec>
 	inline typename Size<TText>::Type 
@@ -805,7 +805,7 @@ To take effect of changing the $stepSize$ the q-gram index should be empty or re
  * <tt>stepSize=length(indexShape(index))</tt>, i.e. all non-overlapping
  * q-grams.
  * 
- * @see getStepSize
+ * @see IndexQGram#getStepSize
  */
 
 	template <typename TText, typename TShapeSpec, typename TSpec, typename TSize>
@@ -1544,7 +1544,7 @@ The resulting tables must have appropriate size before calling this function.
  * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
  * @param text The sequence.
  * @param bucketMap Stores the q-gram hashes for the openaddressing hash maps,
- *                  see @link indexBucketMap @endlink. If bucketMap is of the
+ *                  see @link IndexQGram#indexBucketMap @endlink. If bucketMap is of the
  *                  type @link Nothing @endlink the q-gram hash determines the
  *                  bucket address in the index.
  * @param shape The shape to be used. Types: @link Shape @endlink
@@ -1559,7 +1559,7 @@ The resulting tables must have appropriate size before calling this function.
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
- * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * @endlink or @link Index#indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */
 	template < typename TIndex >
@@ -1691,7 +1691,7 @@ The resulting tables must have appropriate size before calling this function.
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
- * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * @endlink or @link Index#indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */
 	template < 
@@ -1953,7 +1953,7 @@ The resulting tables must have appropriate size before calling this function.
  * 
  * @param stepSize Store every <tt>stepSize</tt>'th q-gram in the index.
  * @param bucketMap Stores the q-gram hashes for the openaddressing hash maps,
- *                  see @link indexBucketMap @endlink. If bucketMap is of the
+ *                  see @link IndexQGram#indexBucketMap @endlink. If bucketMap is of the
  *                  type @link Nothing @endlink the q-gram hash determines the
  *                  bucket address in the index.
  * @param shape The shape to be used. Types: @link Shape @endlink
@@ -1965,7 +1965,7 @@ The resulting tables must have appropriate size before calling this function.
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
- * @endlink or @link indexRequire @endlink. The resulting tables must have
+ * @endlink or @link Index#indexRequire @endlink. The resulting tables must have
  * appropriate size before calling this function.
  */
 	template < 
@@ -2892,7 +2892,7 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
  * @param shape A shape object. Types: @link Shape @endlink
  * 
  * @return TReturn All positions where the q-gram
- *                 stored in <tt>shape</tt> occurs in the text (see @link QGramIndexFibres.QGramText @endlink) are 
+ *                 stored in <tt>shape</tt> occurs in the text (see @link QGramIndexFibres#QGramText @endlink) are 
  *                 stored in a contiguous
  *                 range of the suffix array. <tt>range</tt> returns begin and
  *                 end position of this range. If the type of <tt>index</tt> is
@@ -2900,8 +2900,7 @@ If the type of $index$ is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
  * 
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire
- * @endlink if index is not <tt>const</tt>.
+ * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  */
 
 
@@ -3008,24 +3007,21 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
  * @return TReturn All
  *                 positions where the q-gram stored in <tt>shape</tt> occurs in
  *                 the text (see @link QGramIndexFibres#QGramText @endlink).
- *                 Tupes: @link Infix @endlink<@link Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
+ *                 Tupes: @link SequenceConcept#Infix @endlink<@link Index#Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
  * 
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire
+ * The necessary index tables are built on-demand via @link Index#indexRequire
  * @endlink if index is not <tt>const</tt>.
  * 
- * Demo: Demo.Mummy
+ * @see DemoMummy
+ * @see DemoSupermaximalRepeats
+ * @see DemoMaximalUniqueMatches
  * 
- * Demo: Demo.Supermaximal Repeats
- * 
- * Demo: Demo.Maximal Unique Matches
- * 
- * @see isUnique
- * @see getFrequency
- * @see isPartiallyLeftExtensible
- * @see isLeftMaximal
- * @see orderOccurrences
+ * @see VSTreeIterator#isUnique
+ * @see VSTreeIterator#getFrequency
+ * @see VSTreeIterator#isPartiallyLeftExtensible
+ * @see VSTreeIterator#isLeftMaximal
  */
 
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >
@@ -3145,7 +3141,7 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
  * @param index A q-gram index of a @link StringSet @endlink. Types: @link IndexQGram @endlink
  * @param shape A shape object. Types: Shape
  * 
- * @return TReturn A sequence of @link Pair.pairs @endlink (seqNo,count),
+ * @return TReturn A sequence of @link Pair pairs @endlink (seqNo,count),
  *                 count>0. For every @link StringSet @endlink sequence the
  *                 q-gram occurs in, seqNo is the sequence number and count the
  *                 number of occurrences. If the type of <tt>index</tt> is
@@ -3154,10 +3150,9 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
  * 
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire
- * @endlink if index is not <tt>const</tt>.
+ * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  * 
- * @see countOccurrences
+ * @see VSTreeIterator#countOccurrences
  */
 
 	template < typename TText, typename TShapeSpec, typename TSpec, typename TShapeSpec2, typename TValue >

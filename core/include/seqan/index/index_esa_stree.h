@@ -358,7 +358,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * 
  * If not copy-constructed the @link TopDownHistoryIterator @endlink starts in the root node of the string tree.
  * Depending on the depth-first search mode the root is not the first DFS node. To go to the first DFS node use @link
- * goBegin @endlink.
+ * VSTreeIterator#goBegin @endlink.
  * @section Example
  *
  * @link DemoConstraintIterator @endlink
@@ -742,7 +742,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @param iterator An iterator of a string tree. Types: @link VSTreeIterator @endlink
  * 
- * @return TSize The length of the sequence returned by @link representative
+ * @return TSize The length of the sequence returned by @link VSTreeIterator#representative
  *               @endlink The return type is the result of the metafunction @link Size @endlink of the underlying 
  *               index.
  * 
@@ -846,7 +846,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @param iterator An iterator of a string tree.
  * 
- * @return TReturn The length of the sequence returned by @link representative @endlink of the parent node. The result
+ * @return TReturn The length of the sequence returned by @link VSTreeIterator#representative @endlink of the parent node. The result
  *                 type is the resultof the metafunction @link Size @endlink of the underlying index.
  */
 
@@ -883,7 +883,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
  * 
- * @return TReturn <tt>true</tt> if @link parentEdgeLength @endlink<tt> returns 0, otherwise </tt>false$. 
+ * @return TReturn <tt>true</tt> if @link VSTreeIterator#parentEdgeLength @endlink<tt> returns 0, otherwise </tt>false$. 
  */
 
 	template < typename TIndex, typename TSpec >
@@ -1088,6 +1088,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 ...type:Spec.IndexEsa
 ..include:seqan/index.h
 */
+//TODO (singer): Ask Manuel what to do with resizeEdgeMap and ExternalPropertyMap
 /*!
  * @fn Index#resizeVertexMap
  * 
@@ -1100,7 +1101,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @param index An index with a suffix tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
  * @param pm An External Property Map. Types: @link ExternalPropertyMap @endlink
  * 
- * @see resizeEdgeMap
+ * @see ExternalPropertyMap#resizeEdgeMap
  */
 	template < typename TText, typename TSpec, typename TPropertyMap >
 	inline void
@@ -1161,13 +1162,13 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns an occurrence of the @link representative @endlink substring in the index text.
+ * @brief Returns an occurrence of the @link VSTreeIterator#representative @endlink substring in the index text.
  *
  * @signature TSAValue getOccurrence(iterator)
  * 
  * @param iterator An iterator of a string tree.
  * 
- * @return TSAValue A position where the @link representative @endlink of <tt>iterator</tt> occurs in the text. The
+ * @return TSAValue A position where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text. The
  * return type is the result of the metafunction @link SAValue @endlink of the index type of the iterator.
  */
 
@@ -1197,25 +1198,28 @@ If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Typ
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns the number of occurrences of @link representative @endlink
+ * @brief Returns the number of occurrences of @link VSTreeIterator#representative @endlink
  *        substring in the index text.
  *
  * @signature TSize countOccurrences(iterator)
  * 
  * @param iterator An iterator of a string tree.
  * 
- * @return TSize The number of positions where the @link representative @endlink of <tt>iterator</tt> occurs in the
+ * @return TSize The number of positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the
  *               text. The return type is the result of the metafunction @link Size @endlink of the index type of the
  *               iterator.
 
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire @endlink if index is not <tt>const</tt>.
+ * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  * 
  * @section Examples
  *
- * @link DemoSupermaximalRepeats @endlink
- * @link DemoIndexCountChildren @endlink
+ * @include demos/index/index_counting.cpp
+ *
+ * The result is as follows:
+ *
+ * @include demos/index/index_counting.cpp.stdout
  */
 
 	template < typename TIndex, class TSpec >
@@ -1254,7 +1258,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns the suffix array interval borders of occurrences of @link representative @endlink substring in the
+ * @brief Returns the suffix array interval borders of occurrences of @link VSTreeIterator#representative @endlink substring in the
  *        index text.
  * 
  * @signature Pair<TSize> range(iterator)
@@ -1263,12 +1267,12 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @return TReturn All positions where a substring occurs in the text are stored in a contiguous range of the suffix
  *                 array. <tt>range</tt> returns begin and end position of this range for occurrences of @link 
- *                 representative @endlink. The type is @link Pair @endlink<@link Size @endlink< <tt>TIndex<tt> > >
+ *                 VSTreeIterator#representative @endlink. The type is @link Pair @endlink<@link Size @endlink< <tt>TIndex<tt> > >
  *                 with TIndex being the index type of the iterator.
  *
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire @endlink if index is not <tt>const</tt>.
+ * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  */
 	template < typename TText, typename TSpec, typename TDesc >
 	inline Pair<typename Size<Index<TText, TSpec> >::Type>
@@ -1308,29 +1312,29 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns all occurrences of the @link representative @endlink substring in the index text.
+ * @brief Returns all occurrences of the @link VSTreeIterator#representative @endlink substring in the index text.
  * 
  * @signature Infix<TSA> getOccurrences(iterator)
  * 
  * @param iterator An iterator of a string tree.
  * 
- * @return Infix<TSA> All positions where the @link representative @endlink of <tt>iterator</tt> occurs in the text.
- *                    Type @link Infix @endlink<@link Fibre @endlink <TIndex, FibreSA>::Type>. 
+ * @return Infix<TSA> All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
+ *                    Type @link SequenceConcept#Infix @endlink < @link Index#Fibre @endlink <TIndex, FibreSA>::Type>. 
  * 
  * @section Remarks
  * 
- * The necessary index tables are built on-demand via @link indexRequire @endlink if index is not <tt>const</tt>.
+ * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.
  * 
  * @section Example
  *
  * @link DemoMummy @endlink
- * @link DemoSupermaximalRepeats
- * @link DemoMaximalUniqueMatches
+ * @link DemoSupermaximalRepeats @endlink
+ * @link DemoMaximalUniqueMatches @endlink
  *
- * @see isUnique
- * @see getFrequency
- * @see isPartiallyLeftExtensible
- * @see isLeftMaximal
+ * @see VSTreeIterator#isUnique
+ * @see VSTreeIterator#getFrequency
+ * @see VSTreeIterator#isPartiallyLeftExtensible
+ * @see VSTreeIterator#isLeftMaximal
  * @see orderOccurrences
  */
 
@@ -1360,7 +1364,7 @@ otherwise the seed returned is one many.
 /*!
  * @fn VSTreeIterator#alignment
  *
- * @brief Returns an alignment of the occurrences of the @link representative @endlink substring in the index text.
+ * @brief Returns an alignment of the occurrences of the @link VSTreeIterator#representative @endlink substring in the index text.
  *
  * @deprecated Internal
  *
@@ -1372,7 +1376,7 @@ otherwise the seed returned is one many.
  *
  * @section Remark 
  *
- * The function @link representative @endlink must uniquely occur in every sequence (e.g. in Mums), 
+ * The function @link VSTreeIterator#representative @endlink must uniquely occur in every sequence (e.g. in Mums), 
  * otherwise the seed returned is one many. The return type is a @link Align @endlink object.
  */
 
@@ -1470,7 +1474,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @param iterator An iterator of a suffix tree.
  * 
- * @return TReturn All positions where the @link VStreeIterator#representative @endlink of
+ * @return TReturn All positions where the @link VSTreeIterator#representative @endlink of
  *                 <tt>iterator</tt> occurs in the text.
  *
  *                 If <tt>iterator</tt>'s container
@@ -1878,7 +1882,7 @@ TA
 /*!
  * @fn Index#begin
  * 
- * @brief Returns an iterator pointing to the root not of the virtual suffix tree of the index.
+ * @brief Returns an iterator pointing to the root not of the virtual string tree of the index.
  * 
  * @signature TIterator begin(index, tag)
  * 
@@ -1891,26 +1895,11 @@ TA
  * the result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type
  * @section Example
  * 
- * The following example shows the usage of the @Function.begin@ function. Note that in the first case @Function.begin@
- * returns an iterator pointing to the root node, while in the second case @Function.begin@ returns a pointer to the
+ * The following example shows the usage of the @Function.begin@ function. Note that in the first case @link INdex#begin @endlink
+ * returns an iterator pointing to the root node, while in the second case @link begin @endlink returns a pointer to the
  * left most node.
  * @include demos/index/index_begin_atEnd_representative.cpp
- * @code{.txt}
- * A
- * AA
- * ATAA
- * TA
- * TAA
- * TATAA
- * --------------------------------
- * AA
- * ATAA
- * A
- * TAA
- * TATAA
- * TA
- * 
- * @endcode
+ * @include demos/index/index_begin_atEnd_representative.cpp.stdout
  */
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline typename Iterator<Index<TText, TIndexSpec>, TSpec >::Type
@@ -1934,7 +1923,45 @@ TA
     {
         return typename Iterator<Index<TText, TIndexSpec>, BottomUp<TSpec> >::Type(index);
     }
+/*!
+ * @fn VSTreeIterator#goBegin
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates to the first position of a container.
+ * 
+ * @signature goBegin(iterator)
+ * 
+ * @param iterator Object that iterates through
+ * 
+ * @section Remarks
+ * 
+ * This function is equivalent to <tt>iterator = begin(container)</tt>.
+ * 
+ * @see DemoIteratorBasics
+ * 
+ * @see Index#begin
+ */
 
+/*!
+ * @fn BottomUpIterator#goBegin
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Iterates to the first position of a container.
+ * 
+ * @signature goBegin(iterator)
+ * 
+ * @param iterator Object that iterates through
+ * 
+ * @section Remarks
+ * 
+ * This function is equivalent to <tt>iterator = begin(container)</tt>.
+ * 
+ * @see DemoIteratorBasics
+ * 
+ * @see Index#begin
+ */
 ///.Function.goBegin.param.iterator.type:Spec.BottomUp Iterator
 ///.Function.goBegin.class:Spec.BottomUp Iterator
 ///.Function.goBegin.param.iterator.type:Spec.TopDownHistory Iterator
@@ -1977,6 +2004,7 @@ TA
 
 //____________________________________________________________________________
 
+// TODO(singer) ask Dave
 ///.Function.end.param.object.type:Class.Index
 ///.Function.end.class:Class.Index
 	template < typename TText, typename TIndexSpec, class TSpec >
@@ -1989,6 +2017,7 @@ TA
 		>::Type (index, MinimalCtor());
 	}
 
+// TODO(singer) ask Dave
 ///.Function.goEnd.param.iterator.type:Spec.BottomUp Iterator
 ///.Function.goEnd.class:Spec.BottomUp Iterator
 ///.Function.goEnd.param.iterator.type:Spec.TopDownHistory Iterator
@@ -2009,6 +2038,7 @@ TA
 
 //____________________________________________________________________________
 
+// TODO(singer) ask Dave
 ///.Function.goNext.param.iterator.type:Spec.BottomUp Iterator
 ///.Function.goNext.class:Spec.BottomUp Iterator
 ///.Function.goNext.param.iterator.type:Spec.TopDownHistory Iterator
@@ -2070,7 +2100,7 @@ TA
 ...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 */
-//TODO(singer): The lcp stuff need to be adapted
+//TODO(singer): The lcp stuff needs to be adapted
 /*!
  * @fn TopDownIterator#goDown
  * 
@@ -2086,10 +2116,8 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @param text <tt>iterator</tt> goes down the path representing <tt>text</tt>.  If <tt>text</tt> ends within an edge,
  *             <tt>iterator</tt> will point to the child-end of this edge.
  * @param lcp A reference of a size type. When <tt>goDown</tt> returns, <tt>lcp</tt> contains the length of the
- *            longest-common-prefix of <tt>text</tt> and a path beginning at the <tt>iterator</tt> node.  Types: String, Segment
- * @param iterator An iterator of a tree. Types: @link TopDownIterator @endlink, @link RightArrayBinaryTreeIterator
- *        @endlink
- * 
+ *            longest-common-prefix of <tt>text</tt> and a path beginning at the <tt>iterator</tt> node.  Types: @link String @endlink, @link Segment @endlink
+ * @param iterator An iterator of a tree.
  * @return TReturn <tt>true</tt> if the edge or path to go down exists, otherwise <tt>false</tt>.
  * 
  * @section Remarks
@@ -2099,7 +2127,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @section Example
  *
- * The following code shows a simple example how the function @link goDown @endlink is used.
+ * The following code shows a simple example how the function @link TopDownIterator#goDown @endlink is used.
  * @include demos/index/index_begin_range_goDown_representative_repLength.cpp
  * @code{.txt}
  * The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
@@ -2431,7 +2459,7 @@ ttobe
  *
  * @section Example
  *
- * The following code shows how the function @link goUp @endlink is used.
+ * The following code shows how the function @link TopDownHistoryIterator#goUp @endlink is used.
  * @include demos/index/index_iterator.cpp
  * @code{.txt}
  * be
@@ -2663,7 +2691,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @param iterator An iterator of a string tree/trie.
  * 
  * @return TEdgeLabel Returns a substring representing the edge from an <tt>iterator</tt> node to its parent.
- *                    and its type is the result of the metafunction @link EdgeLabel @endlink of the iterator.
+ *                    and its type is the result of the metafunction @link TopDownIterator#EdgeLabel @endlink of the iterator.
  */
 
 	template < typename TIndex, class TSpec >
@@ -2879,7 +2907,42 @@ TA
  * 
  * @section Examples
  * 
- * The following example shows the usage of the @link atEnd @endlink function.
+ * The following example shows the usage of the @link VSTreeIterator#atEnd @endlink function.
+ * @include demos/index/index_begin_atEnd_representative.cpp
+ * @code{.txt}
+ * A 
+ * AA
+ * ATAA
+ * TA
+ * TAA
+ * TATAA
+ * --------------------------------
+ * AA
+ * ATAA
+ * A
+ * TAA
+ * TATAA
+ * TA
+ *
+ */
+
+/*!
+ * @fn BottomUp#atEnd
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Determines whether an virtual string tree iterator is at the end position.
+ * 
+ * @signature bool atEnd(iterator)
+ * 
+ * @param iterator An iterator.
+ * 
+ * @return TReturn <tt>true</tt> if <tt>iterator</tt> points behind the last item of the container, otherwise
+ *                 <tt>false</tt>.
+ * 
+ * @section Examples
+ * 
+ * The following example shows the usage of the @link BottomUp#atEnd @endlink function.
  * @include demos/index/index_begin_atEnd_representative.cpp
  * @code{.txt}
  * A 
@@ -3010,7 +3073,7 @@ TA
  * 
  * @section Remarks
  * 
- * Every leaf is also a right terminal (see @link isLeaf @endlink), but not vice versa.
+ * Every leaf is also a right terminal (see @link VSTreeIterator#isLeaf @endlink), but not vice versa.
  */
 
 	template < typename TIndex, class TSpec >
@@ -3043,7 +3106,7 @@ TA
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Test whether the occurrences of an iterator's @link representative @endlink mutually differ in the character
+ * @brief Test whether the occurrences of an iterator's @link VSTreeIterator#representative @endlink mutually differ in the character
  *        left of the hits.
  * 
  * @signature bool isLeftMaximal(iterator)
@@ -3053,7 +3116,7 @@ TA
  * @return TReturn <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
  *                 <tt>false</tt>. Types: <tt>bool<tt>
  * 
- * @see getOccurrences
+ * @see VSTreeIterator#getOccurrences
  */
 
 	template < typename TIndex, class TSpec >
@@ -3106,11 +3169,11 @@ TA
 ..include:seqan/index.h
 */
 /*!
- * @fn VSTree Iterator#isPartiallyLeftExtensible
+ * @fn VSTreeIterator#isPartiallyLeftExtensible
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Test whether the characters left of the two occurrences of @link representative @endlink are equal.
+ * @brief Test whether the characters left of the two occurrences of @link VSTreeIterator#representative @endlink are equal.
  * 
  * @signature bool isPartiallyLeftExtensible(iterator)
  * 
@@ -3119,7 +3182,7 @@ TA
  * @return TReturn <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
  *                 <tt>false</tt>.
  * 
- * @see getOccurrences
+ * @see VSTreeIterator#getOccurrences
  */
 	template < typename TIndex, class TSpec, typename TSet >
 	inline bool isPartiallyLeftExtensible(Iter<TIndex, VSTree<TSpec> > const &it, TSet &charSet)
@@ -3180,7 +3243,7 @@ TA
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Test whether the @link representative @endlink occurs only once in every sequence.
+ * @brief Test whether the @link VSTreeIterator#representative @endlink occurs only once in every sequence.
  * 
  * @signature bool isUnique(iterator)
  * 
@@ -3189,7 +3252,7 @@ TA
  * @return TReturn <tt>true</tt> if there are at least two different characters left of the occurrences, otherwise
  *                 <tt>false</tt>. Types: <tt> bool <tt>
  * 
- * @see getOccurrences
+ * @see VSTreeIterator#getOccurrences
  */
 
 	template < typename TIndex, class TSpec, typename TSet >
@@ -3254,17 +3317,17 @@ Hit in sequence 0 at position 2
  * @headerfile seqan/index.h
  * 
  * @brief Returns the number of sequences, which contain the @link
- *        representative @endlink as a substring.
+ *        VSTreeIterator#representative @endlink as a substring.
  * 
  * @signature int getFrequency(iterator)
  * 
  * @param iterator An iterator of a suffix tree. Types: @link VSTreeIterator @endlink
  * 
  * @return TReturn The number of different sequences containing the @link
- *                 representative @endlink.
+ *                 VSTreeIterator#representative @endlink.
  * @section Example
  *
- * The following code how @link getFrequency @endlink is used. Note that the result of alternative 1 and 2 is the same,
+ * The following code how @link VSTreeIterator#getFrequency @endlink is used. Note that the result of alternative 1 and 2 is the same,
  * however alternative one copies a string which requires more memory.
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
  * @code{.txt}
@@ -3277,7 +3340,7 @@ Hit in sequence 0 at position 2
  * Hit in sequence 1 at position 4
  * Hit in sequence 0 at position 2
  * @endcode
- * @see getOccurrences
+ * @see VSTreeIterator#getOccurrences
  */
 
 	template < typename TIndex, class TSpec, typename TSet >

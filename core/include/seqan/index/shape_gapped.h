@@ -303,7 +303,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *                   <tt>ShapePatternHunter</tt>).
  * @param q Creates an ungapped q-gram.
  * @param shape Any other gapped/ungapped shape.
- * @param bitmap Bitmap string. Sequence of '0's and '1's. See @link stringToShape @endlink
+ * @param bitmap Bitmap string. Sequence of '0's and '1's. See @link Shape#stringToShape @endlink
  * 
  * @see HardwiredShape
  */

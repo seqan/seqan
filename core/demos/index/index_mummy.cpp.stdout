@@ -1,0 +1,7 @@
+***************************************
+***        Simple MUM finder        ***
+*** written by David Weese (c) 2007 ***
+***************************************
+
+Usage: mummy [OPTION]... <SEQUENCE FILE> ... <SEQUENCE FILE>
+Try 'mummy --help' for more information.

@@ -373,10 +373,10 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * @section Remarks
  * 
  * These tags can be used to get @link Index#Fibre Fibres @endlink of an Enhanced
- * Suffix Array based @link IndexEsa.Index @endlink.
+ * Suffix Array based @link IndexEsa @endlink.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * @see IndexEsa
  * 
  * @tag IndexEsaFibres#EsaSA
@@ -503,12 +503,12 @@ information of the suffix tree) are provided.
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index are a suffix array (see @link ESA
- * Index Fibres.EsaSA @endlink), a lcp table (see @link ESA Index Fibres.EsaLcp @endlink), etc.
+ * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index are a suffix array (see @link
+ * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
  * 
  * This index can be accessed as a Suffix Tree using the @link VSTree Iterator @endlink classes.
  * 
- * @see ESA Index Fibres
+ * @see IndexEsaFibres
  */
 
 /*

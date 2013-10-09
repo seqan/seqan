@@ -142,11 +142,11 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
- * @endlink or @link indexRequire @endlink. The size of <tt>suffixArray</tt>
+ * This function should not be called directly. Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink. The size of <tt>suffixArray</tt>
  * must be at least <tt>length(text)</tt> before calling this function.
  * 
- * Demo: Demo.Suffix Array
+ * @link DemoSuffixArray @endlink
  */
     template < typename TSA,
                typename TText,
@@ -327,8 +327,8 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
- * @endlink or @link indexRequire @endlink. The size of <tt>lcp</tt> must be at
+ * This function should not be called directly. Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink. The size of <tt>lcp</tt> must be at
  * least <tt>length(text)</tt> before calling this function.
  */
 
@@ -546,8 +546,8 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @section Remarks
  * 
- * This function should not be called directly. Please use @link indexCreate
- * @endlink or @link indexRequire @endlink. The size of <tt>bwt</tt> must be at
+ * This function should not be called directly. Please use @link Index#indexCreate
+ * @endlink or @link Index#indexRequire @endlink. The size of <tt>bwt</tt> must be at
  * least <tt>length(text)</tt> before calling this function.
  */
 	// default
@@ -661,16 +661,15 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Creates a specific @link Fibre @endlink.
+ * @brief Creates a specific @link Index#Fibre @endlink.
  * 
  * @signature indexCreate(index, fibreTag[, algoTag])
  * 
- * @param fibreTag A tag that identifies the @link Fibre @endlink
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink
  * @param algoTag A tag that identifies the algorithm which is used to create
- *                 the fibre. Default: The result of @link DefaultIndexCreator
+ *                 the fibre. Default: The result of @link Index#DefaultIndexCreator
  *                 @endlink.
- * @param index The @link Index @endlink object holding the fibre. Types: @link Index @endlink
- * 
+ * @param index The @link Index @endlink object holding the fibre.
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
  *                 creation.
  * 
@@ -749,12 +748,12 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns whether a specific @link Fibre @endlink is present.
+ * @brief Returns whether a specific @link Index#Fibre @endlink is present.
  * 
  * @signature indexSupplied(index, fibreTag)
  * 
- * @param index The @link Index @endlink object holding the fibre. Types: @link Index @endlink
- * @param fibreTag A tag that identifies the @link Fibre @endlink. 
+ * @param index The @link Index @endlink object holding the fibre.
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. 
  *                 Index Fibres
  * 
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt>, iff the fibre is
@@ -810,17 +809,22 @@ I	ISSISSIPPI
  * 
  * @signature indexRequire(index, fibre_tag)
  * 
- * @param index The @link Index @endlink object holding the fibre. Types: @link Index @endlink
- * @param fibre_tag A tag that identifies the @link Fibre @endlink
+ * @param index The @link Index @endlink object holding the fibre.
+ * @param fibre_tag A tag that identifies the @link Index#Fibre @endlink
  * 
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
  *                 creation.
  * 
  * @section Remarks
  * 
- * If the fibre already exists (@link indexSupplied @endlink is true) then
- * <tt>indexRequire</tt> does nothing. If the fibre doesn't exist then @link
- * indexCreate @endlink is called to create it.
+ * If the fibre already exists (@link Index#indexSupplied @endlink is true) then <tt>indexRequire</tt> does nothing. If
+ * the fibre doesn't exist then @link Index#indexCreate @endlink is called to create it.
+ *
+ * @section Example
+ *
+ * The following code shows how the BWT of an text can be computed.
+ * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
+ * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
 	template <typename TText, typename TSpec, typename TFibre>

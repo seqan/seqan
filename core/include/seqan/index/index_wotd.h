@@ -77,12 +77,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
+ * These tags can be used to get @link Index#Fibre @endlink of an @link IndexWotd @endlink.
  * 
  * TODO(holtgrew): Ask David.
  * 
- * @see Fibre
- * @see getFibre
+ * @see Index#Fibre
+ * @see Index#getFibre
  * @see IndexWotd
  * 
  * @tag WOTDIndexFibres#WotdDir
@@ -172,7 +172,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * 
  * Demo: Demo.Constraint Iterator
  * 
- * @see WOTD Index Fibres
+ * @see WOTDIndexFibres
  */ 
 
 	struct WotdOriginal_;
@@ -1169,7 +1169,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * 
  * @signature createWotdIndex(sa, dir, text)
  * 
- * @param text The sequence. Types: @link SequnceConcept @endlink
+ * @param text The sequence. Types: @link SequenceConcept @endlink
  * @param sa The resulting list in which all q-grams are sorted alphabetically. 
  * @param dir The resulting array that indicates at which position in index the
  *            corresponding q-grams can be found.

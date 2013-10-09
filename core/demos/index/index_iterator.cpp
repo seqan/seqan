@@ -10,7 +10,7 @@ int main ()
     Iterator<TIndex, TopDown<ParentLinks<> > >::Type it(index);
 
     do {
-        // Print theletters from the root to the current node
+        // Print the letters from the root to the current node
         std::cout << representative(it) << std::endl;
 
         if (!goDown(it) && !goRight(it))

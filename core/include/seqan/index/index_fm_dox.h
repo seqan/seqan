@@ -814,7 +814,7 @@
  * WaveletTree @endlink.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag WaveletTreeFibres#FibreTreeStructure
  * 

@@ -67,7 +67,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...type:Spec.SuperMaxRepeats Iterator
 */
 
-/*H
+/*!
  * @class SuperMaxRepeatsIterator Super Max Repeats Iterator
  * 
  * @extends BottomUpIterator
@@ -89,7 +89,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * Demo: Demo.Supermaximal Repeats
  */
 
-/*H
+/*!
  * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
  *
  * brief The constructor

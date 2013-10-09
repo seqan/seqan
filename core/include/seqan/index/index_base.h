@@ -94,7 +94,7 @@ for @Class.Index@ based substring searches.
  * @tag IndexFindAlgorithm#PizzaChiliFinder
  * @brief Finds an occurrence in a @link Pizza & Chili Index @endlink index.
  * @section Remarks
- * The actual algorithm used for searching depends on the @link Pizza & Chili
+ * The actual algorithm used for searching depends on the @link Pizza and Chili
  * Index Tags @endlink used.
  * @tag IndexFindAlgorithm#QGramFindLookup
  * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index
@@ -300,9 +300,9 @@ class Index;
  *
  * An index contains various arrays or objects, also called fibres (see @link Index#Fibre @endlink).
  * These fibres are created on demand depending on the requirements of an algorithm. To force the fibre creation you can
- * use the function @link indexCreate @endlink.
- * The list of fibres is available in @link IndexFibres @endlink
- * @see IndexFibres
+ * use the function @link Index#indexCreate @endlink.
+ * The list of fibres is available in @link Index#Fibre @endlink
+ * @see Index#Fibre
  * @section Example
  *
  * The following code shows how to search for exact matches between the reference "tobeornottobe" and the
@@ -315,24 +315,11 @@ class Index;
  * This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
  * in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
  * @include demos/index/index_iterator.cpp
- * @code{.txt}
  *
- * be
- * beornottobe
- * e
- * eornottobe
- * nottobe
- * o
- * obe
- * obeornottobe
- * ornottobe
- * ottobe
- * rnottobe
- * t
- * tobe
- * tobeornottobe
- * ttobe
- * @endcode
+ * The result is as follows
+ *
+ * @include demos/index/index_iterator.cpp.stdout
+ *
  * Note that you can also use specialized iterators such as:
  * @code{.cpp}
  * Iterator<TIndex, TopDown<ParentLinks<PreOrder> > >::Type
@@ -341,25 +328,12 @@ class Index;
  * @code{.cpp}
  * Iterator<TIndex, TopDown<ParentLinks<PostOrder> > >::Type
  * @endcode
+ *
  * You can achieve a post-order traversal like this:
+ *
  * @snippet demos/index/index_iterator_short.cpp iteration
- * @code{.txt}
- * beornottobe
- * be
- * eornottobe
- * e
- * nottobe
- * obeornottobe
- * obe
- * ornottobe
- * ottobe
- * o
- * rnottobe
- * tobeornottobe
- * tobe
- * ttobe
- * t
- * @endcode
+ *
+ * @include demos/index/index_iterator_short.cpp.stdout
  */
 
 template <typename TObject, typename TSpec>
@@ -405,8 +379,8 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * Some containers, such as @link Index @endlink, can be seen as a bundle consisting of various fibres.  Because not
  * every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables.  The
  * fibre interface was designed to unify the access to the members of the different fibres.  To get a reference or the
- * type of a specific fibre use @link getFibre @endlink or @link Index#Fibre @endlink.  A @link Index#Fibre @endlink does not need
- * to be a real container. It can also be a view (see @link ESAIndexFibres#EsaRawText @endlink).
+ * type of a specific fibre use @link Index#getFibre @endlink or @link Index#Fibre @endlink.  A @link Index#Fibre @endlink does not need
+ * to be a real container. It can also be a view (see @link IndexEsaFibres#EsaRawText @endlink).
  * @see Index#getFibre
  */
 
@@ -458,7 +432,7 @@ struct FibreLess :
  * @mfn Index#DefaultIndexCreator
  * @headerfile seqan/index.h
  * @deprecated advanced
- * @brief Default algorithm to create a demanded and not yet existing @link Fibre @endlink.
+ * @brief Default algorithm to create a demanded and not yet existing @link Index#Fibre @endlink.
  * @signature template < typename TIndex >
  *            DefaultIndexCreator<TIndex, TFibre>::Type
  * @tparam TIndex An @link Index @endlink Type.
@@ -626,11 +600,11 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
  *
  * @section Remark
  *
- * SAValue is the return type of various function, e.g. @link position @endlink for the Index @link Finder @endlink
- * class, @link getOccurrence @endlink, @link VStreeIterator#getOccurrences @endlink, @link IndexQGram#getOccurrences
+ * SAValue is the return type of various functions, e.g. @link Finder#position @endlink for the Index @link Finder @endlink
+ * class, @link VSTreeIterator#getOccurrence @endlink, @link VSTreeIterator#getOccurrences @endlink, @link IndexQGram#getOccurrences
  * @endlink etc. You should always use the type of this meta-function to store the return values. If you want to write
- * algorithms for both variants (local and global positions) you should use the functions @link posLocalize @endlink,
- * @link posGlobalize @endlink, @link getSeqNo @endlink and @link getSeqOffset @endlink.
+ * algorithms for both variants (local and global positions) you should use the functions @link TextConcept#posLocalize @endlink,
+ * @link TextConcept#posGlobalize @endlink, @link TextConcept#getSeqNo @endlink and @link TextConcept#getSeqOffset @endlink.
  *
  * @section Note
  *
@@ -915,9 +889,8 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @brief Returns a specific fibre of a container.
  * @signature TFibre getFibre(index, fibreTag)
  * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types: @link IndexEsaFibres Index Esa Fibres
- *        @endlink, @link FMIndexFibres FM Index Fibres @endlink, @link IndexSaFibres Index SA Fibres @endlink, @link
- *        IndexWotdFibres Index Wotd Fibres @endlink, @link IndexDfiFibres Index Dfi Fibres @endlink and @link
- *        IndexQGramFibres Index QGram Fibres @endlink.
+ *        @endlink, @link FMIndexFibres FM Index Fibres @endlink, @link WOTDIndexFibres Index Wotd Fibres @endlink,
+ *        and @link QGramIndexFibres Index QGram Fibres @endlink.
  *
  * @param index The container holding the fibre.
  *
@@ -1278,7 +1251,7 @@ I	ISSISSIPPI*/
  * @param index The @link Index @endlink object. Types: @link Index @endlink
  * @param position A position in the array on which the value should be accessed.
  * @return TValue A reference or proxy to the value. The type is the result if the meta-function @link Reference
- *                endlink.
+ *                @endlink.
  *
  * @section Note
  *
@@ -1387,7 +1360,7 @@ infix(Index<TText, TSpec> const & index, TPosBegin pos_begin, TPosEnd pos_end)
  * @param position A position in the array on which the value should be
  *                 accessed.
  * @return TValue A reference or proxy to the value. The type is the result if the meta-function @link Reference
- *                endlink.
+ *                @endlink.
  *
  * @section Note
  *
@@ -1872,7 +1845,7 @@ I	ISSISSIPPI*/
  * @brief Shortcut for <tt>getFibre(.., EsaSA)</tt>.
  * @signature TSa indexSA(index)
  * @param index The @link Index @endlink object holding the fibre.
- * @return TReturn A reference to the @link ESA Index Fibres.EsaSA @endlink
+ * @return TReturn A reference to the @link IndexEsaFibres#EsaSA @endlink
  *                 fibre (suffix array).
  * @return TSa A reference to the suffix array fibre.
  * @section Example
@@ -1924,7 +1897,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreSA>::Type & indexSA(Index<
  * @brief Shortcut for <tt>getFibre(.., EsaRawSA)</tt>.
  * @signature TSa & indexRawSA(index)
  * @param index The @link Index @endlink object holding the fibre.
- * @return TSa & A reference to the @link ESA Index Fibres.EsaRawSA @endlink fibre (suffix array).
+ * @return TSa A reference to the @link IndexEsaFibres#EsaRawSA @endlink fibre (suffix array).
  */
 
 /*
@@ -1963,7 +1936,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreRawSA>::Type indexRawSA(In
  * @brief Shortcut for <tt>getFibre(.., EsaLcp)</tt>.
  * @signature TLcp indexLcp(index)
  * @param index The @link Index @endlink object holding the fibre.
- * @return TLcp A reference to the @link ESA Index Fibres.EsaLcp @endlink
+ * @return TLcp A reference to the @link IndexEsaFibres#EsaLcp @endlink
  *                 fibre (lcp table).
  */
 
@@ -1987,7 +1960,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreLcp>::Type & indexLcp(Inde
 ..class:Spec.IndexEsa
 ..param.index:The @Spec.IndexEsa@ object holding the fibre.
 ...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaLcpe@ fibre (enhanced lcp table).
+..returns:A reference to the @Tag.IndexEsaFibres.EsaLcpe@ fibre (enhanced lcp table).
 ..include:seqan/index.h
 */
 /*!
@@ -1996,7 +1969,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreLcp>::Type & indexLcp(Inde
  * @brief Shortcut for <tt>getFibre(.., EsaLcpe)</tt>.
  * @signature TLcpe indexLcpe(index)
  * @param index The @link Index @endlink object holding the fibre.
- * @return TLcpe A reference to the @link ESA Index Fibres.EsaLcpe @endlink fibre (enhanced lcp table).
+ * @return TLcpe A reference to the @link IndexEsaFibres#EsaLcpe @endlink fibre (enhanced lcp table).
  */
 
 template <typename TText, typename TSpec>
@@ -2028,7 +2001,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreLcpe>::Type & indexLcpe(In
  * @brief Shortcut for <tt>getFibre(.., EsaBwt)</tt>.
  * @signature TBwt indexBwt(index)
  * @param index The @link IndexEsa @endlink object holding the fibre.
- * @return TBwt A reference to the @link ESA Index Fibres.EsaBwt @endlink fibre (Burrows-Wheeler table).
+ * @return TBwt A reference to the @link IndexEsaFibres.EsaBwt @endlink fibre (Burrows-Wheeler table).
  */
 
 template <typename TText, typename TSpec>
@@ -2060,7 +2033,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreBwt>::Type & indexBwt(Inde
  * @brief Shortcut for <tt>getFibre(.., EsaChildtab)</tt>.
  * @signature TchildTab indexChildtab(index)
  * @param index The @link Index @endlink object holding the fibre.
- * @return TChildTab A reference to the @link ESA Index Fibres.EsaChildtab @endlink fibre (child table).
+ * @return TChildTab A reference to the @link IndexEsaFibres#EsaChildtab @endlink fibre (child table).
  */
 
 template <typename TText, typename TSpec>

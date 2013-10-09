@@ -90,11 +90,11 @@ Hit at position: 17
  * 
  * @section Remarks
  * 
- * The @link ValueSize @endlink of Shape is the ValueSize of TValue which is the
+ * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of Shape is the ValueSize of TValue which is the
  * alphabet size.
  * 
  * To get the span or the weight of a shape call @link length @endlink or @link
- * weight @endlink.
+ * Shape#weight @endlink.
  */
 	template <typename TValue = Dna, typename TSpec = SimpleShape>
 	class Shape;
@@ -345,7 +345,18 @@ Hit at position: 17
 
 
 //____________________________________________________________________________
-
+/*!
+ * @fn Shape#length
+ * 
+ * @brief Returns the number of elements of the shape (span).
+ * 
+ * @signature length(shape)
+ * 
+ * @param shape Shape object for which the number of relevant positions is determined.
+ * 
+ * @return TReturn The number of elements of the shape (span). The return type is 
+ *         <tt>Size< Shape<TValue, TSpec> >::Type </tt>
+ */
 ///.Function.length.param.object.type:Class.Shape
 ///.Function.length.class:Class.Shape
 	template <typename TValue, typename TSpec>
@@ -376,8 +387,7 @@ For gapped shapes this is the number of '1's.
  * 
  * @signature weight(shape)
  * 
- * @param shape Shape object for which the number of relevant positions is
- *              determined. Types: @link Shape @endlink
+ * @param shape Shape object for which the number of relevant positions is determined.
  * 
  * @return TReturn Number of relevant positions.
  * 
@@ -398,6 +408,18 @@ For gapped shapes this is the number of '1's.
 
 ///.Function.resize.param.object.type:Spec.SimpleShape
 ///.Function.resize.class:Spec.SimpleShape
+/*!
+ * @fn SimpleShape#resize
+ * 
+ * @brief Resize a shape to a specified span.
+ * 
+ * @signature resize(shape, length)
+ * 
+ * @param shape Shape object for which the number of relevant positions is determined
+ * @param length The new length (span) of the shape. 
+ * 
+ * @return TReturn The new span of type <tt> Size< Shape<TValue, SimpleShape> >::Type </tt>
+ */
 	template <typename TValue, typename TSize>
 	inline typename Size< Shape<TValue, SimpleShape> >::Type
 	resize(Shape<TValue, SimpleShape> & me, TSize new_length)
@@ -461,7 +483,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
  * @see Shape#hashNext
  * @see Shape#hashUpper
  * @see Shape#hash2
- * @see unhash
+ * @see Shape#unhash
  */
 	template <typename TValue, typename TIter>
 	inline typename Value< Shape<TValue, SimpleShape> >::Type
@@ -1069,7 +1091,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  *               @link OneGappedShape @endlink at most two contiguous sequences
  *               of '1's are allowed. Types: @link String @endlink
  * 
- * @see shapeToString
+ * @see Shape#shapeToString
  * @see reverse
  */
 	template <typename TValue, typename TShapeString>
@@ -1121,7 +1143,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
  * @param shape Shape object. Types: @link Shape @endlink
  * @param bitmap The resulting sequence object. Types: @link String @endlink
  * 
- * @see stringToShape
+ * @see Shape#stringToShape
  */
 
 	template <typename TShapeString, typename TValue, unsigned q>

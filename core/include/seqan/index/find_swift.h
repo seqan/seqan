@@ -1673,6 +1673,7 @@ swiftInfix(TSwiftHit const & hit, TText & text)
 
 //____________________________________________________________________________
 
+// now in find_base.h
 ///.Function.Finder#infix.remarks:For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
 ///.Function.Finder#infix.param.finder.type:Spec.Swift
 
@@ -2151,6 +2152,23 @@ windowFindNext(
     return true;
 }
 
+/*!
+ * @fn Swift#windowFindEnd
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Flushes the pattern. Used together with @link windowFindBegin @endlink
+ *        and @link windowFindNext @endlink.
+ * 
+ * @signature windowFindEnd(finder, pattern)
+ * 
+ * @param pattern A pattern with window interface. Types: @link Swift @endlink
+ * @param finder A finder with window interface. Types: @link Pigeonhole @endlink
+ * 
+ * @see windowFindBegin
+ * @see windowFindNext
+ */
+
 /**
 .Function.windowFindEnd:
 ..cat:Searching
@@ -2174,6 +2192,21 @@ windowFindEnd(
     _swiftMultiFlushBuckets(finder, pattern);
 }
 
+/*!
+ * @fn Swift#getWindowFindHits
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the string of hits from the finder.
+ * 
+ * @signature getWindowFindHits(finder)
+ * 
+ * @param finder A finder with window interface. Types: @link Swift @endlink
+ * 
+ * @return TReturn @link String @endlink of Hits (use Finder<...>::THitString as Type).
+ * 
+ * @see windowFindNext
+ */
 
 /**
 .Function.getWindowFindHits:
@@ -2194,6 +2227,21 @@ getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
     
     return finder.hits;
 }
+
+/*!
+ * @fn Pattern#getMaxDeviationOfOrder
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the maximal out-of-order distance of adjacent hits.
+ * 
+ * @signature getMaxDeviationOfOrder(pattern)
+ * 
+ * @param pattern A pattern with window interface. Types: @link Swift @endlink, @link Pigeonhole @endlink
+
+ * 
+ * @return TReturn Returns the maximal distance two adjacent hits can have which are not in increasing order.
+ */
 
 /**
 .Function.getMaxDeviationOfOrder:
