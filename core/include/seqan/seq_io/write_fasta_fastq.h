@@ -29,13 +29,13 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Code for writing FASTA and FASTQ files
 // ==========================================================================
 
-#ifndef SEQAN_SEQ_IO_WRITE_H_
-#define SEQAN_SEQ_IO_WRITE_H_
+#ifndef SEQAN_SEQ_IO_WRITE_FASTA_FASTQ_H_
+#define SEQAN_SEQ_IO_WRITE_FASTA_FASTQ_H_
 
 namespace seqan {
 
@@ -401,4 +401,4 @@ writeRecord(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_SEQ_IO_WRITE_H_
+#endif  // #ifndef SEQAN_SEQ_IO_WRITE_FASTA_FASTQ_H_
