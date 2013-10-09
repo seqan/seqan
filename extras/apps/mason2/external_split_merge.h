@@ -123,6 +123,8 @@ public:
 
     // The file pointers for each contig.
     std::vector<FILE *> files;
+    // The names of the temporary files (required on Windows).
+    std::vector<std::string> fileNames;
 
     IdSplitter() : numContigs(0)
     {}
