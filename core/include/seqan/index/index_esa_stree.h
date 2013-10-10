@@ -883,7 +883,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @param iterator An iterator of a string tree. Types: @link TopDownIterator @endlink
  * 
- * @return TReturn <tt>true</tt> if @link VSTreeIterator#parentEdgeLength @endlink<tt> returns 0, otherwise </tt>false$. 
+ * @return TReturn <tt>true</tt> if @link TopDownIterator#parentEdgeLength @endlink<tt> returns 0, otherwise </tt>false$. 
  */
 
 	template < typename TIndex, typename TSpec >
@@ -1318,8 +1318,8 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * 
  * @param iterator An iterator of a string tree.
  * 
- * @return Infix<TSA> All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
- *                    Type @link SequenceConcept#Infix @endlink < @link Index#Fibre @endlink <TIndex, FibreSA>::Type>. 
+ * @return Infix&lt;TSA&gt; All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
+ *                    Type @link SequenceConcept#Infix @endlink&lt;@link Index#Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
  * 
  * @section Remarks
  * 
@@ -1520,7 +1520,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @param iterator An iterator of a string tree.
  * 
- * @return Infix<TSting> An @link InfixSegment @endlink of the text of an index. The type is Infix<Fibre<TIndex, FibreText>::Type>::Type.
+ * @return Infix&lt;TSting&gt; An @link InfixSegment @endlink of the text of an index. The type is <tt>Infix&lt;Fibre&lt;TIndex, FibreText&gt;::Type&gt;::Type</tt>.
  * 
  * @section Examples
  *
@@ -1895,8 +1895,8 @@ TA
  * the result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type
  * @section Example
  * 
- * The following example shows the usage of the @Function.begin@ function. Note that in the first case @link INdex#begin @endlink
- * returns an iterator pointing to the root node, while in the second case @link begin @endlink returns a pointer to the
+ * The following example shows the usage of the @Function.begin@ function. Note that in the first case @link Index#begin @endlink
+ * returns an iterator pointing to the root node, while in the second case @link Index#begin @endlink returns a pointer to the
  * left most node.
  * @include demos/index/index_begin_atEnd_representative.cpp
  * @include demos/index/index_begin_atEnd_representative.cpp.stdout
@@ -1937,8 +1937,6 @@ TA
  * @section Remarks
  * 
  * This function is equivalent to <tt>iterator = begin(container)</tt>.
- * 
- * @see DemoIteratorBasics
  * 
  * @see Index#begin
  */

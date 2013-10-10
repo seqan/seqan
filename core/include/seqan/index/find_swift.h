@@ -89,7 +89,7 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
  * @section Remarks
  * 
  * The @link Pattern @endlink must be a @link IndexQGram @endlink over multiple patterns. The allowed error rate must
- * be given when @link find @endlink or @link windowFindBegin @endlink is called.
+ * be given when @link Finder#find @endlink or @link Swift#windowFindBegin @endlink is called.
  */
 
 ///.Class.Pattern.param.TSpec.type:Spec.Swift
@@ -1551,10 +1551,10 @@ be negative or beyond the end of $finder$ or $pattern$ when using filter algorit
  * 
  * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found. These
  *                 positions could be negative or beyond the end of <tt>finder</tt> or <tt>pattern</tt> when using 
- *                 filter algorithms. The return type is <tt>Pair<typename SAValue<THost>::Type></tt> if <tt>THost</tt>
+ *                 filter algorithms. The return type is <tt>Pair&lt;typename SAValue&lt;THost&gt;::Type&gt;</tt> if <tt>THost</tt>
  *                 is the type of haystack or needle.
  * 
- * @see positionRange
+ * @see Finder#positionRange
  */
 
 template <typename THaystack, typename TSpec>
@@ -1608,11 +1608,11 @@ positionRangeNoClip(Finder<THaystack, Swift<TSpec> > & finder)
  * @param finder A @link Finder @endlink object. Types: @link Pigeonhole @endlink, @link Swift @endlink
  * 
  * @return TReturn A pair of the begin and end position in the haystack or needle for the last hit found.The return type
- *                 is <tt>Pair<typename SAValue<THost>::Type></tt> if <tt>THost</tt> is the type of haystack or needle.
+ *                 is <tt>Pair&lt;typename SAValue&ltTHost&g;::Type&gt;</tt> if <tt>THost</tt> is the type of haystack or needle.
  * 
  * @see beginPosition
  * @see endPosition
- * @see positionRangeNoClip
+ * @see Finder#positionRangeNoClip
  */
 
 template <typename THaystack, typename TSpec>
@@ -2097,9 +2097,9 @@ windowFindBegin(
  * @return TReturn true, if there are bases that can be scanned. false,
  *                 otherwise
  * 
- * @see windowFindBegin
- * @see windowFindEnd
- * @see getWindowFindHits
+ * @see Swift#windowFindBegin
+ * @see Swift#windowFindEnd
+ * @see Swift#getWindowFindHits
  */
 
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
@@ -2157,16 +2157,16 @@ windowFindNext(
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Flushes the pattern. Used together with @link windowFindBegin @endlink
- *        and @link windowFindNext @endlink.
+ * @brief Flushes the pattern. Used together with @link Swift#windowFindBegin @endlink
+ *        and @link Swift#windowFindNext @endlink.
  * 
  * @signature windowFindEnd(finder, pattern)
  * 
  * @param pattern A pattern with window interface. Types: @link Swift @endlink
  * @param finder A finder with window interface. Types: @link Pigeonhole @endlink
  * 
- * @see windowFindBegin
- * @see windowFindNext
+ * @see Swift#windowFindBegin
+ * @see Swift#windowFindNext
  */
 
 /**
@@ -2205,7 +2205,7 @@ windowFindEnd(
  * 
  * @return TReturn @link String @endlink of Hits (use Finder<...>::THitString as Type).
  * 
- * @see windowFindNext
+ * @see Swift#windowFindNext
  */
 
 /**

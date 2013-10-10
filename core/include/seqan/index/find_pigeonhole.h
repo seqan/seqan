@@ -146,7 +146,7 @@ namespace seqan
  * @section Remarks
  * 
  * The @link Pattern @endlink must be a q-gram index over multiple patterns. The tolerated error rate must be given when
- * @link find @endlink or @link windowFindBegin @endlink is called.  In these functions the length of the index @link
+ * @link Finder#find @endlink or @link windowFindBegin @endlink is called.  In these functions the length of the index @link
  * Shape @endlink is set automatically thus it must be modifiable at runtime, e.g. @link OneGappedShape @endlink.
  */
 

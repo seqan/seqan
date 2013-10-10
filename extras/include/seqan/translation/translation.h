@@ -458,7 +458,7 @@ _translateInputWrap(String<AminoAcid, TSpec1> & target,
  * @signature int translate(target, source[, options][, codeSpec])
  *
  * @param[out]      target      the amino acid sequence(s)
- * [StringSet<String<AminoAcid>, *> or String<AminoAcid> iff source is a single
+ * [StringSet&lt;String&lt;AminoAcid&gt;, *&gt; or String&lt;AminoAcid*gt; iff source is a single
  * string and options == SINGLE_FRAME]
  * @param[in]       source      source sequences [String<Dna|Dna5|Rna|Rna5> or
  * StringSet thereof, other input will be converted to Dna5]

@@ -136,7 +136,7 @@ TA
 /*!
  * @defgroup TopDown
  * 
- * @brief Tag that specifies a @link VSTree Iterator @endlink to traverse the virtual string tree from the root towards
+ * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the virtual string tree from the root towards
  *        the leafs.
  * 
  * @section Examples
@@ -453,6 +453,12 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * 
  * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
+ *
+ * @tag IndexEsaFibres#EsaLcpe
+ * 
+ * @headerfile seqan/index.h
+ *
+ * @brief The lcpe table.
  */
 
 ///.Metafunction.Fibre.param.TSpec.type:Tag.ESA Index Fibres
@@ -506,7 +512,7 @@ information of the suffix tree) are provided.
  * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
  * 
- * This index can be accessed as a Suffix Tree using the @link VSTree Iterator @endlink classes.
+ * This index can be accessed as a Suffix Tree using the @link VSTreeIterator @endlink classes.
  * 
  * @see IndexEsaFibres
  */

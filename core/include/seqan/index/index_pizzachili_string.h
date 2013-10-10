@@ -57,6 +57,33 @@ needed, this string tries to query only a substring.
 ...type:Tag.Pizza & Chili Index Tags
 ..include:seqan/index.h
 */
+/*!
+ * @class PizzaChiliString Pizza &amp; Chili String
+ * 
+ * @extends String
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief String used by the Pizza &amp; Chili indices.
+ * 
+ * @signature String<TValue, PizzaChili<TSpec> >
+ * 
+ * @tparam TSpec Tag specifying the Pizza &amp; Chili index library to use. Types:
+ *               PizzaChiliIndexTags
+ * @tparam TValue The value type, that is the type of them items/characters
+ *                stored in the string.This type must be a simple type and it
+ *                must hold that <tt>sizeof(TValue) == 1</tt>.
+ * 
+ * @section Remarks
+ * 
+ * The string is lazy in the sense that it holds a reference to the compressed
+ * index structure it is associated with. Only when the text is actually read,
+ * the index is queried for the text. If only a substring is needed, this string
+ * tries to query only a substring.
+ * 
+ * @see PizzaChiliIndex
+ * @see PizzaChiliIndexTags
+ */
 
 template <typename TSpec>
 struct PizzaChili;

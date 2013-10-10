@@ -60,12 +60,12 @@ namespace seqan {
  *
  * This metafunction is used to convert device containers into views of device containers.
  * Subsequently, the view of a device container can be safely passed to and used in device space.
- * On the host, a view of a @link String @endlink is equivalent to an @link Infix @endlink of the complete string.
+ * On the host, a view of a @link String @endlink is equivalent to an @link SequenceConcept#Infix @endlink of the complete string.
  * @link RemoveView @endlink is the inverse of this metafunction.
  *
  * @see RemoveView
  * @see Device
- * @see Infix
+ * @see SequenceConcept#Infix
  */
 
 template <typename TObject>

@@ -81,7 +81,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @include include/seqan/index/shape_predefined.h
  * 
  * @see GappedShape
- * @see GenericShape#Shape
+ * @see GenericShape
  */
 
 	// Pxx = spaces between '1's

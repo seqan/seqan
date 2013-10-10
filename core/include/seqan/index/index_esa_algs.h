@@ -84,7 +84,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, SuperMaxRepeats>::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >).
+ *               Iterator&lt;TContainer, SuperMaxRepeats&gt;::Type (which is Iter&lt;TContainer, VSTree&lt;BottomUp&lt;SuperMaxRepeats&gt; &g;t &gt;).
  * 
  * Demo: Demo.Supermaximal Repeats
  */

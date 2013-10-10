@@ -48,6 +48,6 @@ weese@tanne:~/seqan/demos$ head mums.txt
 weese@tanne:~/seqan/demos$
 @endcode
 @see Index
-@see Mums Iterator
+@see MumsIterator
 */
 

@@ -257,7 +257,7 @@ findRepeats(repeats, text, 3);
  * i == 14, beginPosition = 655, endPosition = 659, period = 1
  * @endcode
  *
- * @see unknownValue
+ * @see AlphabetWithUnknownValueConcept#unknownValue
  * @see Repeat
  */
 // TODO(holtgrew): minRepeatLength is 1-off.

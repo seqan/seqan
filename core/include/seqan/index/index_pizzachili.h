@@ -52,6 +52,29 @@ namespace SEQAN_NAMESPACE_MAIN {
 ..see:Spec.Pizza & Chili Index
 ..include:seqan/index.h
 */
+/*!
+ * @defgroup PizzaChiliIndexFibres Pizza &amp; Chili Index Fibres
+ * 
+ * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
+ *        PizzaChiliIndex @endlink index.
+ * 
+ * @see Index#Fibre
+ * @see Index#getFibre
+ * @see PizzaChiliIndex
+ * 
+ * @tag PizzaChiliIndexFibres#PizzaChiliText
+ * 
+ * @brief The original text the index is based on.
+ * 
+ * @tag PizzaChiliIndexFibres#PizzaChiliCompressed
+ * 
+ * @brief The compressed suffix array.
+ * 
+ * @section Remarks
+ * 
+ * Pizza &amp; Chili indices are compressed indices. Hence, this fibre is used for
+ * searching in the index.
+ */
 
 struct FibrePizzaChiliCompressed_;
 
@@ -77,6 +100,28 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
 ..see:Tag.Index Find Algorithm
 ..include:seqan/index.h
 */
+/*!
+ * @class PizzaChiliIndex Pizza &amp; Chili Index
+ * 
+ * @extends Index
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief An adapter for the Pizza &amp; Chili index API.
+ * 
+ * @signature Index<TText, PizzaChili<TSpec> >
+ * 
+ * @tparam TSpec Tag specifying the Pizza &amp; Chili index library to use. Types:
+ *               @link PizzaChiliIndexTags @endlink
+ * @tparam TText The text type. Types: @link String @endlink
+ * 
+ * @section Remarks
+ * 
+ * @see PizzaChiliString
+ * @see PizzaChiliIndexFibres
+ * @see IndexFindAlgorithm
+ * @see PizzaChiliIndexTags
+ */
 
 template <typename TText, typename TSpec>
 class Index<TText, PizzaChili<TSpec> > {

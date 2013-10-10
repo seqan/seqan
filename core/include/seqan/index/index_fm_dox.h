@@ -67,7 +67,7 @@
  * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag FMIndexFibres#FibreText
  * 
@@ -79,8 +79,8 @@
  * 
  * @section Remarks
  * 
- * This tag can only be used with the functions @link indexRequire @endlink or
- * @link indexSupplied @endlink.
+ * This tag can only be used with the functions @link Index#indexRequire @endlink or
+ * @link Index#indexSupplied @endlink.
  * 
  * @tagFMIndexFibres#FibreSA
  * 
@@ -158,7 +158,7 @@
  * @brief Tag to select a specific fibre of a @link CompressedSA @endlink.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag CompressedSAFibres#FibreSparseString
  * 
@@ -371,7 +371,7 @@
  * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link LfTable @endlink.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag LFTableFibres#FMTablePrefixSumTable
  * 
@@ -525,7 +525,7 @@
  * @brief Tag to select a specific fibre of a @link PrefixSumTableFibres @endlink.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag PrefixSumTableFibres#FibreEntries
  * 
@@ -695,7 +695,7 @@
  * 
  * @param resizeTag Specifies the strategy that is applied if the capacity of
  *                  <tt>object</tt> is less than <tt>newLength</tt>. (optional)
- *                  Types: @link OverflowStrategy @endlink Default: Specified by @link
+ *                  Types: @link OverflowStrategyTags @endlink Default: Specified by @link
  *                  DefaultOverflowExplicit @endlink.
  * @param prefixSumTable A prefix sum table. Types: PrefixSumTable
  * @param value The value to be used to initialize the new storage.
@@ -858,7 +858,7 @@
  * @tag SequenceBitMaskFibres#FibreBitStrings The string set containing a bit string for each character.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  */
 
 /*!
@@ -1093,7 +1093,7 @@
  * @param bitString The bit string. Types: @link RankSupportBitString @endlink
  * @param pos Position of a bit.
  * 
- * @return TReturn @link RankSupportBitString#Value @endlink of @link RankSupportBitString#Fibre @endlink of the rank-support-bit string.
+ * @return TReturn @link Value @endlink of @link Index#Fibre @endlink of the rank-support-bit string.
  */
 
 /*!
@@ -1134,11 +1134,11 @@
  * 
  * @signature getFibre(bitString, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link RankSupportBitString#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
  *                 @link RankSupportBitStringFibres RankSupportBitString Fibres @endlink.
  * @param bitString The rank-support-bit string holding the fibre.
  * 
- * @return TReturn A reference to the @link RankSupportBitString#Fibre @endlink object.
+ * @return TReturn A reference to the @link Index#Fibre @endlink object.
  */
 
 /*!
@@ -1269,7 +1269,7 @@
  * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag RightArrayBinaryTreeFibres#FibreTreeStructureEncoding
  * 
@@ -1636,7 +1636,7 @@
  *        SentinelRankDictionary @endlink.
  *  
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag SentinelRankDictionaryFibres#FibreSentinelPosition
  * 
@@ -1862,7 +1862,7 @@
  * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
  * 
  * @see Index#Fibre
- * @see getFibre
+ * @see Index#getFibre
  * 
  * @tag SparseStringFibres#FibreValueString
  * 
@@ -1908,7 +1908,7 @@
  * 
  * @param sparseString The @link SparseString @endlink. 
  * @param pos The position at which a value should be assign to the sparse string. 
- *        Types: @link UnsignedIntergerConcept @endlink
+ *        Types: @link UnsignedIntegerConcept @endlink
  *
  * @return TValue The type @link GetValue @endlink of @link SparseString @endlink is returned.
  */
@@ -1924,7 +1924,7 @@
  * 
  * @param sparseString The @link SparseString @endlink. 
  * @param pos The position at which a value should be assign to the sparse string. 
- *        Types: @link UnsignedIntergerConcept @endlink
+ *        Types: @link UnsignedIntegerConcept @endlink
  *
  * @return TValue The type @link Reference @endlink of @link SparseString @endlink is returned.
  */

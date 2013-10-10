@@ -84,7 +84,7 @@ for @Class.Index@ based substring searches.
  * @defgroup IndexFindAlgorithm Index Find Algorithm
  * @brief Tag to specify the index search algorithm.
  * @section Remarks
- * These tags can be used to specify the @link find @endlink algorithm for @link
+ * These tags can be used to specify the @link Finder#find @endlink algorithm for @link
  * Index @endlink based substring searches.
  * @see Finder
  * @tag IndexFindAlgorithm#FinderSTree
@@ -94,8 +94,7 @@ for @Class.Index@ based substring searches.
  * @tag IndexFindAlgorithm#PizzaChiliFinder
  * @brief Finds an occurrence in a @link Pizza & Chili Index @endlink index.
  * @section Remarks
- * The actual algorithm used for searching depends on the @link Pizza and Chili
- * Index Tags @endlink used.
+ * The actual algorithm used for searching depends on the @link PizzaChiliIndexTags @endlink used.
  * @tag IndexFindAlgorithm#QGramFindLookup
  * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index
  *        using the hash table.
@@ -291,7 +290,7 @@ class Index;
  * @class Index
  * @headerfile seqan/index.h
  * @brief Indices are data structures which contain preprocessing data of a fixed text (or set of texts). In combination
- *        with a @link Finder @endlink or an @link VSTree Iterator @endlink it allows fast dictionary look-up and advanced computations.
+ *        with a @link Finder @endlink or an @link VSTreeIterator @endlink it allows fast dictionary look-up and advanced computations.
  * @signature template <typename TText, typename TSpec>
  *            Index<TText[, TSpec]>
  * @tparam TSpec The index type.
@@ -380,7 +379,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables.  The
  * fibre interface was designed to unify the access to the members of the different fibres.  To get a reference or the
  * type of a specific fibre use @link Index#getFibre @endlink or @link Index#Fibre @endlink.  A @link Index#Fibre @endlink does not need
- * to be a real container. It can also be a view (see @link IndexEsaFibres#EsaRawText @endlink).
+ * to be a real container.
  * @see Index#getFibre
  */
 
@@ -1891,7 +1890,9 @@ inline typename Fibre<Index<TText, TSpec> const, FibreSA>::Type & indexSA(Index<
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaRawSA@ fibre (suffix array).
 ..include:seqan/index.h
 */
-/*!
+
+// TODO(singer): should this be documented? 
+/*
  * @fn Index#indexRawSA
  * @headerfile seqan/index.h
  * @brief Shortcut for <tt>getFibre(.., EsaRawSA)</tt>.

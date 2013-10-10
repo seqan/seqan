@@ -228,14 +228,13 @@ struct Needle<Segment<THost, TSpec> const>
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn find
+ * @fn Finder#find
  * @headerfile <seqan/find.h>
  * @brief Search for a @link Pattern @endlink in a @link Finder @endlink object.
  *
  * @signature bool find(finder, pattern[, k]);
  *
- * @param[in,out] finder  The @link Finder @endlink object to search through.  Types: @link Finder @endlink, @link
- *                        RootedIteratorConcept @endlink.
+ * @param[in,out] finder  The @link Finder @endlink object to search through. 
  * @param[in]     pattern The @link Pattern @endlink to search for.  For index finders, pattern can also be a text.
  *                        Types: @link Pattern @endlink, @link TextConcept @endlink.
  * @param[in]     k       Desired minimal score (for approximate matching).  <tt>k</tt> is a number <tt>&lt;= 0</tt>.
