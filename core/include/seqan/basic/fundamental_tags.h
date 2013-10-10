@@ -174,7 +174,8 @@ typedef Tag<Default_> Default;
 ..include:seqan/basic.h
 */
 
-struct Nothing {};
+struct Nothing_;
+typedef Tag<Nothing_> Nothing;
 
 // ----------------------------------------------------------------------------
 // Tag Move

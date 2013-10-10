@@ -122,5 +122,6 @@
 //#include <seqan/stream/tokenize.h>
 #include <seqan/stream/tokenization.h>
 #include <seqan/stream/lexical_cast.h>
+#include <seqan/stream/virtual_stream.h>
 
 #endif  // SEQAN_STREAM_H_

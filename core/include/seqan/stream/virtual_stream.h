@@ -31,14 +31,21 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Virtual stream class to subsume different implementations, e.g. for raw
-// and compressed streams.
+// Virtual stream class to automatically compress/decompress files/streams.
+// It adapts the zipstream and bzip2stream classes (Jonathan de Halleux, 2003)
+// http://www.codeproject.com/Articles/4457/zipstream-bzip2stream-iostream-wrappers-for-the-zl
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_VIRTUAL_STREAM_
 #define SEQAN_STREAM_VIRTUAL_STREAM_
 
-#include <functional>
+#if SEQAN_HAS_ZLIB
+#include "zipstream/zipstream.hpp"
+#endif
+
+#if SEQAN_HAS_BZIP2
+#include "zipstream/bzip2stream.hpp"
+#endif
 
 namespace seqan {
 
@@ -46,90 +53,280 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
+// --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
 
-// ============================================================================
-// Classes
-// ============================================================================
+template <typename TTag, typename T = void>
+struct MagicHeader;
+
+
+template <typename T>
+struct MagicHeader<GZFile, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<GZFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
+
+
+template <typename T>
+struct MagicHeader<BZ2File, T>
+{
+    static unsigned char const VALUE[3];
+};
+
+template <typename T>
+unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  // bzip2's magic number
+
+
+template <typename T>
+struct MagicHeader<Nothing, T>
+{
+    static unsigned char const VALUE[0];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Nothing, T>::VALUE[0] = {};
+
+
+// TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
+template <typename T>
+struct MagicHeader<Fasta, T>
+{
+    static unsigned char const VALUE[1];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Fasta, T>::VALUE[1] = { '>' }; // Fasta's first character
+
+
+template <typename T>
+struct MagicHeader<Fastq, T>
+{
+    static unsigned char const VALUE[1];
+};
+
+template <typename T>
+unsigned char const MagicHeader<Fastq, T>::VALUE[1] = { '@' };  // Fastq's first character
+
+
+// --------------------------------------------------------------------------
+// Metafunction FileFormatExtensions
+// --------------------------------------------------------------------------
+
+// TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
+
+template <typename T>
+struct FileFormatExtensions<GZFile, T>
+{
+    static char const * VALUE[3];
+};
+
+template <typename T>
+char const * FileFormatExtensions<GZFile, T>::VALUE[3] = {
+    ".gz",      // default output extension
+    ".Z",
+    ".zip" };
 
 
 template <typename TTag, typename T>
-struct FileExtensions<TTag, T>;
+struct FileFormatExtensions;
 
 template <typename T>
-struct FileExtensions<BZ2File, T>
+struct FileFormatExtensions<BZ2File, T>
 {
     static char const * VALUE[2];
 };
 
 template <typename T>
-char const * FileExtensions<BZ2File, T>::VALUE[2] = {
+char const * FileFormatExtensions<BZ2File, T>::VALUE[2] = {
     ".bz2",      // default output extension
-    ".bzip2" };
+    ".bz" };
 
 
 template <typename T>
-struct FileExtensions<GZFile, T>
+struct FileFormatExtensions<Nothing, T>
 {
-    static char const * VALUE[2];
+    static char const * VALUE[1];
 };
 
 template <typename T>
-char const * FileExtensions<GZFile, T>::VALUE[2] = {
-    ".gz",      // default output extension
-    ".gzip" };
+char const * FileFormatExtensions<Nothing, T>::VALUE[1] = {
+    "" };       // default output extension
 
-
-
-typedef
-    TagList<GZFile,
-    TagList<BZ2File,
-    TagList<Raw> > > SeqFormats;  // if TagSelector is set to -1, the file format is auto-detected
-
-typedef TagSelector<SeqFormats> CompressedFileTypes;
-
-
-
-template <typename TStream, typename TStreamBuffer>
-struct StreamFactoryContext
-{
-    typedef TStreamBuffer TResultType;
-
-    TStream &stream;
-    TStream(TStream &stream):
-        stream(stream) {}
-};
-
+// --------------------------------------------------------------------------
+// Metafunction BasicStream
+// --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection>
-class VirtualStream
+struct BasicStream:
+    If<
+        IsSameType<TDirection, Input>,
+        std::basic_istream<TValue>,
+        std::basic_ostream<TValue> >
+{};
+
+// --------------------------------------------------------------------------
+// Metafunction VirtualStreamSwitch_
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TFormatTag>
+struct VirtualStreamSwitch_
+{
+    typedef Nothing Type;
+};
+
+template <typename TValue>
+struct VirtualStreamSwitch_<TValue, Input, GZFile>
+{
+    typedef zlib_stream::basic_zip_istream<TValue> Type;
+};
+
+template <typename TValue>
+struct VirtualStreamSwitch_<TValue, Output, GZFile>
+{
+    typedef zlib_stream::basic_zip_ostream<TValue> Type;
+};
+
+template <typename TValue>
+struct VirtualStreamSwitch_<TValue, Input, BZ2File>
+{
+    typedef bzip2_stream::basic_bzip2_istream<TValue> Type;
+};
+
+template <typename TValue>
+struct VirtualStreamSwitch_<TValue, Output, BZ2File>
+{
+    typedef bzip2_stream::basic_bzip2_ostream<TValue> Type;
+};
+
+// ==========================================================================
+// Tags, Classes, Enums
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// TagList CompressedFileTypes
+// --------------------------------------------------------------------------
+
+#if SEQAN_HAS_ZLIB
+struct GZFile_;
+typedef Tag<GZFile_> GZFile;
+#endif
+
+#if SEQAN_HAS_BZIP2
+struct BZ2File_;
+typedef Tag<BZ2File_> BZ2File;
+#endif
+
+typedef
+#if SEQAN_HAS_ZLIB
+    TagList<GZFile,
+#endif
+#if SEQAN_HAS_BZIP2
+    TagList<BZ2File,
+#endif
+    TagList<Nothing>
+#if SEQAN_HAS_BZIP2
+    >
+#endif
+#if SEQAN_HAS_ZLIB
+    >
+#endif
+    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
+
+// --------------------------------------------------------------------------
+// Class VirtualStreamFactoryContext_
+// --------------------------------------------------------------------------
+
+template <typename TVirtualStream>
+struct VirtualStreamFactoryContext_;
+
+// --------------------------------------------------------------------------
+// Class VirtualStreamContext_
+// --------------------------------------------------------------------------
+
+// a compressed stream lives in the VirtualStreamContext_ and provides a basic_streambuf
+
+// generic subclass with virtual destructor
+template <typename TValue, typename TDirection, typename TFormatTag = void>
+struct VirtualStreamContext_:
+    VirtualStreamContext_<TValue, TDirection>
+{
+    typename VirtualStreamSwitch_<TValue, TDirection, TFormatTag>::Type stream;
+
+    template <typename TObject>
+    VirtualStreamContext_(TObject &object):
+        stream(object)
+    {
+        this->streamBuf = stream.rdbuf();
+    }
+
+    ~VirtualStreamContext_();
+};
+
+// special case: no compression, we simply forward the file stream
+template <typename TValue, typename TDirection>
+struct VirtualStreamContext_<TValue, TDirection, Nothing>:
+    VirtualStreamContext_<TValue, TDirection>
+{
+    template <typename TObject>
+    VirtualStreamContext_(TObject &object)
+    {
+        this->streamBuf = object.rdbuf();
+    }
+};
+
+// base class
+template <typename TValue, typename TDirection>
+struct VirtualStreamContext_<TValue, TDirection>
+{
+    std::basic_streambuf<TValue> *streamBuf;
+    VirtualStreamContext_(): streamBuf() {}
+    virtual ~VirtualStreamContext_() {}
+};
+
+// --------------------------------------------------------------------------
+// Class VirtualStream
+// --------------------------------------------------------------------------
+
+// The VirtualStream class handles a file or input stream and auto-detects data
+// compression from file name or stream.
+// We inherit from std::basic_Xstream to provide the convenient stream interface.
+template <typename TValue, typename TDirection>
+class VirtualStream: public BasicStream<TValue, TDirection>::Type
 {
 public:
+    typedef std::fstream TFile;
     typedef std::basic_streambuf<TValue> TStreamBuffer;
-    typedef If<IsSameType<TDirection, Input>, std::basic_istream<TValue>, std::basic_ostream<TValue> > TStream;
-    typedef TStreamFactoryFunctor<TStreamBuffer>
+    typedef typename BasicStream<TValue, TDirection>::Type TStream;
+    typedef VirtualStreamContext_<TValue, TDirection> TVirtualStreamContext;
 
-    std::fstream    file;
-    TStreamBuffer   *streamBuf;
-    bool            ownerOfStreamBuf;
+    TFile                   file;
+    TStreamBuffer           *streamBuf;
+    TVirtualStreamContext   *context;
 
     VirtualStream():
-        streamBuf()
+        streamBuf(),
+        context()
     {}
 
     VirtualStream(TStreamBuffer &streamBuf):
         streamBuf(streamBuf),
-        ownerOfStreamBuf(false)
+        context()
     {}
 
     VirtualStream(TStream &stream):
-        streamBuf()
+        streamBuf(),
+        context()
     {
         open(*this, stream);
     }
 
     VirtualStream(const char *fileName, int openMode):
         streamBuf(),
-        ownerOfStreamBuf(false)
+        context()
     {
         open(*this, fileName, openMode);
     }
@@ -149,16 +346,188 @@ public:
     {
         return streamBuf != NULL;
     }
+
+    void _init()
+    {
+        this->init(streamBuf);
+    }
 };
 
 template <typename TValue, typename TDirection>
-inline bool
-close(VirtualStream<TValue, TDirection> &stream)
+struct Value<VirtualStream<TValue, TDirection> >
 {
-    if (ownerOfStreamBuf)
-        delete streamBuf;
+    typedef TValue Type;
+};
 
-    stream.streamBuf = NULL;
+template <typename TValue, typename TDirection>
+struct Position<VirtualStream<TValue, TDirection> >:
+    Position<typename VirtualStream<TValue, TDirection>::TFile> {};
+
+
+// --------------------------------------------------------------------------
+// Class VirtualStreamFactoryContext_
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection>
+struct VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection> >
+{
+    typedef VirtualStream<TValue, TDirection>       TVirtualStream;
+    typedef typename TVirtualStream::TStream        TStream;
+
+    TStream &stream;
+    VirtualStreamFactoryContext_(TStream &stream):
+        stream(stream) {}
+};
+
+template <typename TVirtualStream>
+struct Value<VirtualStreamFactoryContext_<TVirtualStream> >
+{
+    typedef typename TVirtualStream::TVirtualStreamContext *Type;
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Function tagApply()
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TFormat>
+inline VirtualStreamContext_<TValue, TDirection>*
+tagApply(VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection> > &ctx, Tag<TFormat>)
+{
+    return new VirtualStreamContext_<TValue, TDirection, Tag<TFormat> >(ctx.stream);
+}
+
+
+template <typename TContext>
+inline typename Value<TContext>::Type
+tagApply(TContext &, TagSelector<>)
+{
+    return typename Value<TContext>::Type();
+}
+
+template <typename TContext, typename TTagList>
+inline typename Value<TContext>::Type
+tagApply(TContext &ctx, TagSelector<TTagList> &format)
+{
+    typedef typename TTagList::Type TFormatTag;
+
+    if (value(format) == LENGTH<TTagList>::VALUE - 1)
+        return tagApply(ctx, TFormatTag());
+
+    return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));
+}
+
+// --------------------------------------------------------------------------
+// Function flush()
+// --------------------------------------------------------------------------
+
+template<
+	typename Elem, 
+	typename Tr,
+    typename ElemA,
+    typename ByteT,
+    typename ByteAT >
+inline void
+flush(zlib_stream::basic_zip_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
+{}
+
+template<
+	typename Elem, 
+	typename Tr,
+    typename ElemA,
+    typename ByteT,
+    typename ByteAT >
+inline void
+flush(zlib_stream::basic_zip_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
+{
+    stream.zflush();
+}
+
+template<
+	typename Elem, 
+	typename Tr,
+    typename ElemA,
+    typename ByteT,
+    typename ByteAT >
+inline void
+flush(bzip2_stream::basic_bzip2_istream<Elem,Tr,ElemA,ByteT,ByteAT> &)
+{}
+
+template<
+	typename Elem, 
+	typename Tr,
+    typename ElemA,
+    typename ByteT,
+    typename ByteAT >
+inline void
+flush(bzip2_stream::basic_bzip2_ostream<Elem,Tr,ElemA,ByteT,ByteAT> &stream)
+{
+    stream.zflush();
+}
+
+// --------------------------------------------------------------------------
+// Function guessFormat()
+// --------------------------------------------------------------------------
+
+// read first bytes of a file/stream and compare with file format's magic header
+template <typename TStream, typename TFormat_>
+inline bool
+guessFormat(TStream &istream, Tag<TFormat_>)
+{
+    typedef Tag<TFormat_> TFormat;
+
+    bool match = true;
+
+    // check magic header
+    unsigned i;
+    for (i = 0; i != sizeof(MagicHeader<TFormat>::VALUE) / sizeof(char); ++i)
+    {
+        int c = (int)istream.get();
+        if (c != MagicHeader<TFormat>::VALUE[i])
+        {
+            match = false;
+            if (c != EOF)
+                ++i;
+            break;
+        }
+    }
+
+    // unget all read characters
+    for (; i > 0; --i)
+        istream.unget();
+
+    return match;
+}
+
+// --------------------------------------------------------------------------
+// Function open()
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TStream>
+inline bool
+open(VirtualStream<TValue, TDirection> &stream, TStream &fileStream)
+{
+    typedef VirtualStream<TValue, TDirection> TVirtualStream;
+    typedef typename TVirtualStream::TFile TFile;
+    typedef typename TVirtualStream::TStreamBuffer TStreamBuffer;
+
+    // detect compression type from file extension
+    TagSelector<CompressedFileTypes> fileType;
+    guessFormat(fileStream, fileType);
+
+    VirtualStreamFactoryContext_<TVirtualStream> ctx(fileStream);
+
+    // create a new (un)zipper buffer
+    stream.context = tagApply(ctx, fileType);
+    if (stream.context == NULL)
+        return false;
+    stream.streamBuf = stream.context->streamBuf;
+
+    // reset our outer stream interface
+    stream._init();
     return true;
 }
 
@@ -166,71 +535,52 @@ template <typename TValue, typename TDirection>
 inline bool
 open(VirtualStream<TValue, TDirection> &stream, const char *fileName, int openMode)
 {
+    typedef VirtualStream<TValue, TDirection> TVirtualStream;
+    typedef typename TVirtualStream::TFile TFile;
+    typedef typename TVirtualStream::TStreamBuffer TStreamBuffer;
+    
     if (!open(stream.file, fileName, openMode))
         return false;
 
+    // detect compression type from file extension
     TagSelector<CompressedFileTypes> fileType;
     guessFormatFromFilename(fileName, fileType);
 
-    if (value(fileType) == Find<CompressedFileTypes, Raw>::VALUE)
+    VirtualStreamFactoryContext_<TVirtualStream> ctx(stream.file);
+
+    // create a new (un)zipper buffer
+    stream.context = tagApply(ctx, fileType);
+    if (stream.context == NULL)
     {
-        streamBuf = file.rdbuf();
-        ownerOfStreamBuf = false;
+        close(stream.file);
+        return false;
     }
-    else
-    {
-        StreamFactoryContext<std::fstream, TStreamBuffer> ctx(file);
-        streamBuf = tagApply(ctx, fileType);    // create a new unzipper buffer
-        if (streamBuf == NULL)
-        {
-            close(stream.file);
-            return false;
-        }
-        ownerOfStreamBuf = true;
-    }
+    stream.streamBuf = stream.context->streamBuf;
+
+    // reset our outer stream interface
+    stream._init();
+    return true;
 }
 
-
-template <typename TStream, typename TStreamBuffer>
-inline TStreamBuffer*
-tagApply(StreamFactoryContext<TStream, TStreamBuffer> &ctx, GZFile)
+template <typename TValue, typename TDirection, typename TFormatTag>
+VirtualStreamContext_<TValue, TDirection, TFormatTag>::~VirtualStreamContext_()
 {
-    return new basic_unzip_streambuf<TValue>(ctx.stream, 15, 4096, 4096);
+    flush(this->stream);
 }
 
-template <typename TStream, typename TStreamBuffer>
-inline TStreamBuffer*
-tagApply(StreamFactoryContext<TStream, TStreamBuffer> &ctx, BZ2File)
+// --------------------------------------------------------------------------
+// Function close()
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection>
+inline bool
+close(VirtualStream<TValue, TDirection> &stream)
 {
-    return new basic_unbzip2_streambuf<TValue>(ctx.stream, 0, false, 4096, 4096);
+    delete stream.context;
+    stream.context = NULL;
+    stream.streamBuf = NULL;
+    return close(stream.file);
 }
-
-
-
-
-
-
-template <typename TContext>
-inline typename TContext::TResultType
-tagApply(TContext const &, TagSelector<>)
-{
-    return TContext::TResultType();
-}
-
-template <typename TContext, typename TTagList>
-inline typename TContext::TResultType
-tagApply(TContext &ctx, TagSelector<TTagList> &format)
-{
-    typedef typename TTagList::Type TFormatTag;
-
-    if (value(format) == LENGTH<TTagList>::VALUE - 1)
-    {
-        return tagApply(ctx, TFormatTag()))
-    }
-    return tagApply(ctx, static_cast<typename TagSelector<TTagList>::Base &>(format));
-}
-
-
 
 }  // namespace seqan
 
