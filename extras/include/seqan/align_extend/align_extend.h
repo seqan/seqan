@@ -293,8 +293,10 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         TPos leadGaps0 = countGaps(begin(row(centerAlign, 0)));
         TPos leadGaps1 = countGaps(begin(row(centerAlign, 1)));
 
-        TPos sourceBeginPos0 = toSourcePosition(row(centerAlign,0), leadGaps0) + beginPosition(source(row(centerAlign, 0)));
-        TPos sourceBeginPos1 = toSourcePosition(row(centerAlign,1), leadGaps1) + beginPosition(source(row(centerAlign, 1)));
+        TPos sourceBeginPos0 = toSourcePosition(row(centerAlign,0), leadGaps0)
+                               + hBeginPos;
+        TPos sourceBeginPos1 = toSourcePosition(row(centerAlign,1), leadGaps1)
+                               + vBeginPos;
 
         setClippedBeginPosition(row(align,0), toViewPosition(row(align, 0), sourceBeginPos0) - leadGaps0);
         setClippedBeginPosition(row(align,1), toViewPosition(row(align, 1), sourceBeginPos1) - leadGaps1);
@@ -347,7 +349,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
  * @signature TScoreValue extendAlignment(align, [origScore,] hSeq, vSeq, positions, extensionDirection,
  *                                        [lowerDiag, upperDiag,] [xDrop,] scoreScheme);
  *
- * @param[in, out] align     The @link Align @endlink object to work on.  Must be an alignment over the
+ * @param[in,out]  align     The @link Align @endlink object to work on.  Must be an alignment over the
  *                           @link InfixSegment infix @endlink of the <i>const</i> type of <tt>hSeq</tt>
  *                           and <tt>vSeq</tt>.  Also see section "Returned Alignment".
  * @param[in]      origScore Original score value of the alignment (optional; computed if not provided).
