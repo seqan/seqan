@@ -220,16 +220,16 @@ struct Size<Range<TIterator> >
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
-begin(Range<TIterator> & view, Standard)
+begin(Range<TIterator> & range, Standard)
 {
-    return view.begin;
+    return range.begin;
 }
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
-begin(Range<TIterator> const & view, Standard)
+begin(Range<TIterator> const & range, Standard)
 {
-    return view.begin;
+    return range.begin;
 }
 
 // ----------------------------------------------------------------------------
@@ -238,16 +238,16 @@ begin(Range<TIterator> const & view, Standard)
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
-end(Range<TIterator> & view, Standard)
+end(Range<TIterator> & range, Standard)
 {
-    return view.end;
+    return range.end;
 }
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
-end(Range<TIterator> const & view, Standard)
+end(Range<TIterator> const & range, Standard)
 {
-    return view.end;
+    return range.end;
 }
 
 // ----------------------------------------------------------------------------
@@ -256,16 +256,16 @@ end(Range<TIterator> const & view, Standard)
 
 template <typename TIterator, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference<Range<TIterator> >::Type
-value(Range<TIterator> & view, TPos pos)
+value(Range<TIterator> & range, TPos pos)
 {
-    return *(view.begin + pos);
+    return *(range.begin + pos);
 }
 
 template <typename TIterator, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference<Range<TIterator> const>::Type
-value(Range<TIterator> const & view, TPos pos)
+value(Range<TIterator> const & range, TPos pos)
 {
-    return *(view.begin + pos);
+    return *(range.begin + pos);
 }
 
 // ----------------------------------------------------------------------------
@@ -274,9 +274,9 @@ value(Range<TIterator> const & view, TPos pos)
 
 template <typename TIterator>
 SEQAN_HOST_DEVICE inline typename Difference<Range<TIterator> >::Type
-length(Range<TIterator> const & view)
+length(Range<TIterator> const & range)
 {
-    return view.end - view.begin;
+    return range.end - range.begin;
 }
 
 // ----------------------------------------------------------------------------
@@ -306,10 +306,10 @@ resize(
 
 template <typename TIterator, typename TContainer>
 SEQAN_HOST_DEVICE inline void
-assign(Range<TIterator> &view, TContainer &cont)
+assign(Range<TIterator> &range, TContainer &cont)
 {
-    view.begin = begin(cont, Standard());
-    view.end = end(cont, Standard());
+    range.begin = begin(cont, Standard());
+    range.end = end(cont, Standard());
 }
 
 // ----------------------------------------------------------------------------

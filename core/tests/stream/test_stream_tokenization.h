@@ -35,8 +35,8 @@
 // Tests for seqan/stream/tokenize.h
 // ==========================================================================
 
-#ifndef TEST_STREAM_TEST_STREAM_TOKENIZING_H_
-#define TEST_STREAM_TEST_STREAM_TOKENIZING_H_
+#ifndef TEST_STREAM_TEST_STREAM_TOKENIZATION_H_
+#define TEST_STREAM_TEST_STREAM_TOKENIZATION_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -321,4 +321,4 @@ SEQAN_TYPED_TEST(TokenizationTest, SkipLine)
     SEQAN_ASSERT(atEnd(ctx.iter));
 }
 
-#endif // ndef TEST_STREAM_TEST_STREAM_TOKENIZING_H_
+#endif // ifndef TEST_STREAM_TEST_STREAM_TOKENIZATION_H_

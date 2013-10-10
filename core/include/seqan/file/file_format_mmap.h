@@ -281,7 +281,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	template < typename TSeq >
 	inline bool
 	guessFormat(
-		TSeq const & seq,
+		TSeq & seq,
 		Fasta)
 	{
 //IOREV _doc_ in competition with file_format_guess.h:guessFileFormat()
@@ -724,7 +724,7 @@ this function can be used to extract the quality value id of every fragment in t
 	template < typename TSeq >
 	inline bool
 	guessFormat(
-		TSeq const & seq,
+		TSeq & seq,
 		Fastq)
 	{
 //IOREV _doc_
@@ -1002,7 +1002,7 @@ this function can be used to extract the quality value id of every fragment in t
 	template < typename TSeq >
 	inline bool
 	guessFormat(
-		TSeq const & seq,
+		TSeq & seq,
 		QSeq)
 	{
 //IOREV _nodoc_ code comments suggest that it is guessing
@@ -1169,7 +1169,7 @@ typedef Tag<TagRaw_> Raw; //IOREV
 	template < typename TSeq >
 	inline bool
 	guessFormat(
-		TSeq const &,
+		TSeq &,
 		Raw)
 	{
 //IOREV _doc_
@@ -1315,7 +1315,7 @@ typedef Tag<TagRaw_> Raw; //IOREV
 
 	template <typename TFileSeq>
 	inline bool
-	guessFormat(TFileSeq const &, TagSelector<> &)
+	guessFormat(TFileSeq &, TagSelector<> &)
 	{
         // we get here if the file format could not be determined
 		return false;
@@ -1323,7 +1323,7 @@ typedef Tag<TagRaw_> Raw; //IOREV
 	
 	template <typename TFileSeq, typename TTagList>
 	inline bool
-	guessFormat(TFileSeq const &seq, TagSelector<TTagList> &format)
+	guessFormat(TFileSeq &seq, TagSelector<TTagList> &format)
 	{
 //IOREV _doc_ as mentionened this recursive method is not intuitive, also inlining doesn't really make sense for recursive functions, does it?
 //(weese:) ANSWER: This is not a recursive function as TTagList is different for each called instance.
