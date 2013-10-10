@@ -532,5 +532,114 @@ SEQAN_DEFINE_TEST(test_align_extend_xdrop_banded)
 
 }
 
+SEQAN_DEFINE_TEST(test_align_extend_semiglobal)
+{
+    using namespace seqan;
+    typedef Align<typename Infix<CharString const>::Type, ArrayGaps> TAlign;
+    Score<int> sc(1, -1, -1);
+
+    //                                                                                |---------- INFIX ---------|
+    //                0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+    CharString s1 = "TGACGATCCAGCGCGCACAGCAGGAGGACTCGGCCGTGTATCTCTGTGCCAGCAGCTTAGGGGACACGTACGAGCAGTACTTCGGGCCAGGCACGCTTCT";
+    //                                                                                 | |||||||||||||||||||| |||||    ||
+    CharString s2 =                                                                 "CTCCTACGAGCAGTACTTCGGGCCGGGCACCAGGCTCACGGTCACAG";
+    //                                                                                01234567890123456789012345678901234567890123456
+    //                                                                                                |-- INFIX -|
+
+    TAlign alignOrig;
+    resize(rows(alignOrig), 2);
+    Segment<CharString> seg1(s1, 64, 92), seg2(s2, 16, 28);
+    assignSource(row(alignOrig, 0), seg1);
+    assignSource(row(alignOrig, 1), seg2);
+    globalAlignment(alignOrig, sc, AlignConfig<true,false,false,true>());
+
+    // Only right extension, left gaps not clipped
+    {
+        TAlign align(alignOrig);
+
+        Tuple<unsigned, 4> positions = { { beginPosition(seg1)+beginPosition(row(align, 0)), beginPosition(seg2)+beginPosition(row(align, 1)), 92, 28 } };
+
+        extendAlignment(align,
+                s1,
+                s2,
+                positions, 
+                EXTEND_RIGHT, 
+                -2,
+                2, 
+                sc);
+
+        SEQAN_ASSERT_EQ(CharString("CACGTACGAGCAGTACTTCGGGCCAGGCAC"),
+                        row(align, 0));
+        SEQAN_ASSERT_EQ(CharString("----------------TTCGGGCCGGGCAC"),
+                        row(align, 1));
+
+        SEQAN_ASSERT_EQ(clippedBeginPosition(row(align, 0)), 64);
+        SEQAN_ASSERT_EQ(clippedBeginPosition(row(align, 1)), 16);
+        SEQAN_ASSERT_EQ(clippedEndPosition(row(align, 0)), 94);
+        SEQAN_ASSERT_EQ(clippedEndPosition(row(align, 1)), 46);
+    }
+
+    // Only right extension, left gaps partially clipped
+    {
+        TAlign align(alignOrig);
+
+        setClippedBeginPosition(row(align, 0), 14);
+        setClippedBeginPosition(row(align, 1), 14);
+
+        Tuple<unsigned, 4> positions = { { beginPosition(seg1)+beginPosition(row(align, 0)), beginPosition(seg2)+beginPosition(row(align, 1)), 92, 28 } };
+
+        extendAlignment(align,
+                s1,
+                s2,
+                positions, 
+                EXTEND_RIGHT, 
+                -2,
+                2, 
+                sc);
+
+        SEQAN_ASSERT_EQ(CharString("ACTTCGGGCCAGGCAC"),
+                        row(align, 0));
+        SEQAN_ASSERT_EQ(CharString("--TTCGGGCCGGGCAC"),
+                        row(align, 1));
+
+
+        SEQAN_ASSERT_EQ(clippedBeginPosition(row(align, 0)), 78);
+        SEQAN_ASSERT_EQ(clippedBeginPosition(row(align, 1)), 16);
+        SEQAN_ASSERT_EQ(clippedEndPosition(row(align, 0)), 94);
+        SEQAN_ASSERT_EQ(clippedEndPosition(row(align, 1)), 32);
+    }
+
+    // Extension in both directions, left gaps partially clipped,
+    // generates "poor" alignment at the joint between the center
+    // and the left alignment
+    {
+        TAlign align(alignOrig);
+
+        setClippedBeginPosition(row(align, 0), 14);
+        setClippedBeginPosition(row(align, 1), 14);
+
+        Tuple<unsigned, 4> positions = { { beginPosition(seg1)+beginPosition(row(align, 0)), beginPosition(seg2)+beginPosition(row(align, 1)), 92, 28 } };
+
+        extendAlignment(align,
+                s1,
+                s2,
+                positions, 
+                EXTEND_BOTH, 
+                -2,
+                2, 
+                sc);
+
+        SEQAN_ASSERT_EQ(CharString("TACGAGCAGT--ACTTCGGGCCAGGCAC"),
+                        row(align, 0));
+        SEQAN_ASSERT_EQ(CharString("TACGAGCAGTAC--TTCGGGCCGGGCAC"),
+                        row(align, 1));
+
+        SEQAN_ASSERT_EQ(clippedBeginPosition(row(align, 0)), 68);
+        SEQAN_ASSERT_EQ(clippedBeginPosition(row(align, 1)), 4);
+        SEQAN_ASSERT_EQ(clippedEndPosition(row(align, 0)), 96);
+        SEQAN_ASSERT_EQ(clippedEndPosition(row(align, 1)), 32);
+    }
+
+}
 
 #endif  // SEQAN_EXTRAS_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_

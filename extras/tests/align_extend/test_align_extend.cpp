@@ -46,5 +46,6 @@ SEQAN_BEGIN_TESTSUITE(test_align_extend)
     SEQAN_CALL_TEST(test_align_extend_banded);
     SEQAN_CALL_TEST(test_align_extend_xdrop);
     SEQAN_CALL_TEST(test_align_extend_xdrop_banded);
+    SEQAN_CALL_TEST(test_align_extend_semiglobal);
 }
 SEQAN_END_TESTSUITE
