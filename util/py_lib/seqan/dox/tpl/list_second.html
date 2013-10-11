@@ -2,28 +2,6 @@
 
 {% block content %}
 
-<h1 id="full_list_header">Member / Interface Entries</h1>
-
-<div id="nav">
-  <span><a target="_self" href="first.html">
-      Types / Functions
-  </a></span>
-  
-  <span><a target="_self" href="second.html">
-      Member / Interface Entries
-  </a></span>
-  
-  <span><a target="_self" href="page.html">
-      Pages
-  </a></span>
-</div>
-
-<div id="search">Search: <input type="text" /></div>
-
-<ul id="full_list" class="class">
-  {% for name, entry in doc.second_level_entries|dictsort %}
-  <li><!--<a class="toggle"></a>--> <span class="label_{{ entry.kind }} object_link"><a href="../{{entry|name_to_path}}" title="{{name}} ({{entry.kind}})">{{name}}</a></li>
-  {% endfor %}
-</ul>
+<div class="alert alert-danger">This page is deprecated and replaced by <a href="first.html">first.html</a>.</div>
 
 {% endblock %}

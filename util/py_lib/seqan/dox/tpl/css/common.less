@@ -1,0 +1,391 @@
+/* Override this file with custom rules */
+
+@primary: #3276b1;
+
+@red: #de5b5b;
+@orange: #debd5b;
+@lgreen: #9dde5b;
+@rgreen: #5bde7c;
+@lblue: #5bdede;
+@rblue: #5b7cde;
+@purple: #9d5bde;
+@pink: #de5bbd;
+
+
+
+/*
+ * General
+ */
+body {
+	padding: 0 20px 20px 20px;
+	font-family: "Open Sans", "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+	font-size: 13px;
+}
+
+h2 {
+	border-bottom: 1px solid #999;
+	
+	body.list & {
+		border-bottom: none;
+	}
+}
+
+h3 {
+	font-size: 1.5em;
+}
+
+a:not([href]) {
+	color: inherit;
+	text-decoration: none;
+	
+	&:hover, &:active {
+		background-color: transparent !important;
+	}
+}
+
+dl {
+	margin: 0;
+	padding: 0;
+
+	dt {
+		font-size: 1.1em;
+		font-weight: bold;
+		margin: .5em 0 0 0;
+		padding: 0;
+	}
+
+	dd {
+		margin: 0 0 0 1em;
+		padding: .5em;
+		position: relative;
+		
+		&:before {
+			position: absolute;
+			top: 0.3em;
+			left: -1em;
+			font-family: 'Glyphicons Halflings';
+			-webkit-font-smoothing: antialiased;
+			font-style: normal;
+			font-weight: normal;
+			line-height: 1;
+			display: block;
+			margin: 5px auto 10px;
+			font-size: .8em;
+			content: "\e080";
+		}
+	}
+}
+
+
+/*
+ * Popover
+ */
+.popover {
+	.popover-title {
+		padding: 4px 5px;
+		
+		background: -moz-linear-gradient(-45deg,  rgba(166,166,166,0.4) 0%, rgba(166,166,166,0) 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(166,166,166,0.4)), color-stop(100%,rgba(166,166,166,0))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(-45deg,  rgba(166,166,166,0.4) 0%,rgba(166,166,166,0) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(-45deg,  rgba(166,166,166,0.4) 0%,rgba(166,166,166,0) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(-45deg,  rgba(166,166,166,0.4) 0%,rgba(166,166,166,0) 100%); /* IE10+ */
+		background: linear-gradient(135deg,  rgba(166,166,166,0.4) 0%,rgba(166,166,166,0) 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66a6a6a6', endColorstr='#00a6a6a6',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+	}
+	
+	.popover-content {
+		padding: 4px 5px;
+		
+		p:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+/*
+ * Search
+ */
+#search {
+	margin: 10px;
+	
+	*[type=search] {
+		width: 100%;
+	}
+	
+	.btn {
+		font-weight: 700;
+		color: #fff;
+	}
+	
+	.btn:hover {
+		-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
+		box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
+		color: #fff;
+	}
+	
+	.btn:active,
+	.btn.active {
+		-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.45);
+		box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.45);
+		color: #eee;
+	}
+	
+	/* nur notwendig, wenn nicht dropdown-filter sondern toggle-buttons
+	.btn-group {
+		&:first-child {
+			
+			label:first-child {
+				border-bottom-left-radius: 0 !important;
+			}
+			
+			label:last-child {
+				border-bottom-right-radius: 0 !important;
+			}
+		}
+
+		&:not(:first-child):not(:last-child) {
+			label:first-child {
+				border-top-left-radius: 0 !important;
+				border-bottom-left-radius: 0 !important;
+			}
+			
+			label:last-child {
+				border-top-right-radius: 0 !important;
+				border-bottom-right-radius: 0 !important;
+			}
+		}
+		
+		&:last-child {
+			label:first-child {
+				border-top-left-radius: 0 !important;
+			}
+			
+			label:last-child {
+				border-top-right-radius: 0 !important;
+			}
+		}
+	}
+	*/
+}
+
+#results {
+	> ol {
+		padding: 0;
+		list-style: none;
+		margin-left: 0;
+
+		li.result {
+			&:nth-child(odd) { background: #eee; }
+			&:nth-child(even) { background: #fff; }
+			
+			padding: 5px 5px 5px 12px;
+			margin: 0;
+			list-style: none;
+			
+			h2 {
+				font-size: 1.1em;
+				margin: 0;
+				padding: 0;
+				
+				a {
+					
+					&:hover, &:active { background-color: @primary; }
+				}
+			}
+			
+			div {
+				display: none;
+			}
+		}
+	}
+}
+
+/*
+ * Language Entities
+ */
+form .multiselect-container {
+	li[class=all] {
+	  label {
+	    color: #000;
+	  }
+	  
+	  a {
+	    @deg: -55deg;
+	    @lighter: 30%;
+	    @gradient: lighten(@red, @lighter), lighten(@orange, @lighter), lighten(@lgreen, @lighter), lighten(@rgreen, @lighter), lighten(@lblue, @lighter), lighten(@rblue, @lighter), lighten(@purple, @lighter), lighten(@pink, @lighter);
+	    background: -webkit-linear-gradient(@deg, @gradient);
+        background: -moz-linear-gradient(@deg, @gradient);
+        background: linear-gradient(@deg, @gradient);
+      
+        &:hover {
+          @lighter: 10%;
+	      @gradient: lighten(@red, @lighter), lighten(@orange, @lighter), lighten(@lgreen, @lighter), lighten(@rgreen, @lighter), lighten(@lblue, @lighter), lighten(@rblue, @lighter), lighten(@purple, @lighter), lighten(@pink, @lighter);
+  	      background: -webkit-linear-gradient(@deg, @gradient);
+          background: -moz-linear-gradient(@deg, @gradient);
+          background: linear-gradient(@deg, @gradient);
+        }
+	  }
+	}
+	
+	li:not([class]) {
+	  margin: 0;
+	  background-color: #000;
+	  color: #fff;
+	  font-size: 0.8em;
+	  text-transform: uppercase;
+		
+	  label {
+		font-weight: 700;
+	  }
+		
+	  &:hover {
+	    background-color: #000;
+		color: #fff;
+	  }
+	}
+	
+	li.active a {
+		background-color: #fff;
+	}
+	
+	label {
+		color: #fff;
+		padding: 0.1em 0.5em 0.1em 0.45em;
+		margin: .2em .2em .2em 1em !important;
+		border-radius: .25em !important;
+		display: inline-block;
+		
+		input {
+			margin-left: -30px !important;
+		}
+		
+		& .multiselect-group {
+			padding-left: 0.5em;
+		}
+	}
+}
+
+*[data-lang-entity] {
+	position: relative;
+	
+	> *:first-child {
+		position: relative;
+		bottom: 0.15em;
+		
+        display: inline-block;
+    	padding: .2em .6em .3em;
+    	margin: 0 0.3em 0 0.2em;
+    	font-size: 75%;
+    	font-weight: bold;
+    	line-height: 1;
+    	color: #ffffff;
+    	text-align: center;
+    	white-space: nowrap;
+    	vertical-align: baseline;
+    	border-radius: .25em;
+    	border: 1px solid #f00;
+    	
+    	background-color: #f00000;
+    	cursor: help;
+    }
+}
+
+// TODO auf language_entities.html beschränkung prüfen ob schon implementiert
+body.language_entities {
+	div[data-lang-entity-container] + div[data-lang-entity-container] {
+		margin-top: 2em;
+	}
+}
+
+.langEntityRules(@langEntity, @color) {
+	@border-darken: 5%;
+	
+	body.language_entities *[data-lang-entity-container=@{langEntity}] {
+		> h2:first-child {
+			margin: 0;
+			padding: 3px 20px 10px 20px;
+			background-color: @color;
+			box-shadow: inset 0px 5px 5px -5px rgba(0,0,0,.4),
+						inset 5px 0px 5px -5px rgba(0,0,0,.4),
+						inset -5px 0px 5px -5px rgba(0,0,0,.4),
+						inset 0px -5px 5px -5px rgba(0,0,0,.4);
+			border-bottom: none;
+		}
+		
+		> * {
+			margin: 20px;
+		}
+		
+		border-radius: .25em;
+		border: @color 5px solid;
+	}
+	
+	*[data-lang-entity=@{langEntity}] {
+  	  > *:first-child {
+ 		   	background-color: @color;
+ 		   	border-color: darken(@color, @border-darken);
+ 	   }  
+	}
+	
+	*[data-lang-entity-container=@{langEntity}] label {
+	    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	    box-sizing: border-box;         /* Opera/IE 8+ */
+		background-color: @color;
+		border: 1px solid darken(@color, @border-darken);
+	}
+}
+
+.langEntityRules(typedef, @rgreen);
+.langEntityRules(grouped_typedef, @rgreen);
+.langEntityRules(global_typedef, @rgreen);
+.langEntityRules(member_typedef, @rgreen);
+
+.langEntityRules(concept, lighten(@red, -20%));
+.langEntityRules(class, @red);
+.langEntityRules(enum, lighten(@red, 20%));
+
+.langEntityRules(meta_function, @rblue);
+.langEntityRules(metafunction, @rblue); // deprecated
+.langEntityRules(interface_meta_function, @rblue);
+
+.langEntityRules(function, @lblue);
+.langEntityRules(global_function, @lblue);
+.langEntityRules(interface_function, @lblue);
+.langEntityRules(member_function, @lblue);
+
+.langEntityRules(tag, @purple);
+
+.langEntityRules(variable, @lgreen);
+.langEntityRules(global_variable, @lgreen);
+.langEntityRules(local_variable, @lgreen);
+.langEntityRules(member_variable, @lgreen);
+
+.langEntityRules(adaption, lighten(@orange, -10%));
+.langEntityRules(macro, lighten(@orange, 10%));
+
+.langEntityRules(page, lighten(@pink, -10%));
+.langEntityRules(group, lighten(@pink, 10%));
+
+
+
+
+
+
+
+
+/*
+ * Fixes
+ */
+.tooltip {
+    p:first-child {
+        margin-top: 0.7em;
+    }
+}
+
+.input-group-btn {
+  &.btn-group > .btn-group:nth-child(2) > .multiselect.btn {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+}

@@ -2,30 +2,50 @@
 
 {% block content %}
 
-<h1 id="full_list_header">Types / Functions</h1>
+<form role="form" id="search">
+  <div class="input-group">
+    <!--span class="input-group-addon"><b class="glyphicon glyphicon-search"></b></span-->
+    <span class="input-group-btn btn-group">
+      <select multiple="multiple">
+        <optgroup label="Concept related">
+		  <option value="typedef" selected>typedef</option>
+		  <option value="concept" selected>concept</option>
+		  <option value="class" selected>class</option>
+		  <option value="enum" selected>enum</option>
+		</optgroup>
+		<optgroup label="Function related">
+		  <option value="meta_function" selected><b>meta</b>_function</option>
+		  <option value="function" selected>function</option>
+		  <option value="tag" selected>tag</option>
+		  <option value="variable" selected>variable</option>
+		</optgroup>
+		<optgroup label="Miscellaneous">
+		  <option value="adaption" selected>adaption</option>
+		  <option value="macro" selected>macro</option>
+		  <option value="group" selected>group</option>
+		  <option value="page" selected>page</option>
+		</optgroup>
+      </select>
+	  <!--button class="btn btn-primary">Select All</button-->
+    </span>
+    <input type="search" class="form-control">
+  </div>
+</form>
 
-<div id="nav">
-  <span><a target="_self" href="first.html">
-      Types / Functions
-  </a></span>
-  
-  <span><a target="_self" href="second.html">
-      Member / Interface Entries
-  </a></span>
-  
-  <span><a target="_self" href="page.html">
-      Pages
-  </a></span>
-</div>
-
-<div id="search">Search: <input type="text" /></div>
-
-<ul id="full_list" class="class">
-  {% for name, entry in doc.top_level_entries|dictsort %}
-  {% if entry.kind != 'page' %}
-  <li><!--<a class="toggle"></a>--> <span class="label_{{ entry.kind }} object_link"><a href="../{{name|name_to_path}}" title="{{name}} ({{entry.kind}})">{{name}}</a></li>
-  {% endif %}
-  {% endfor %}
-</ul>
+<div id="results">
+  <ol>
+    {% for name, entry in doc.top_level_entries|dictsort %}
+    {% if entry.kind != 'page' %}
+    <li class="result" data-lang-entity-container="{{ entry.kind }}">
+      <h2><a href="../{{entry|name_to_path}}" target="main" data-lang-entity="{{ entry.kind }}">{{name}}</a></h2>
+      <div>
+        <div class="text"></div>
+        <div class="location"><a href="../{{entry|name_to_path}}" target="main">../{{entry|name_to_path}}</a></div>
+      </div>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ol>
+</div>   
 
 {% endblock %}
