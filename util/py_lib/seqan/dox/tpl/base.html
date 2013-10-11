@@ -53,7 +53,7 @@
     
     <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
   </head>
-  <body>
+  <body class="{{ entry_kind }}_{{ entry_name|lower }}">
     <div id="header">
       <form class="search" method="get" action="/search/docs/yard">
         Search: <input name="q" type="search" placeholder="Search" id="search_box" size="30" value="" />
@@ -147,8 +147,8 @@
         <li data-lang-entity="class">Class</li>
         <li data-lang-entity="enum">Enum</li>
         
-        <li data-lang-entity="meta_function">Metafunction</li>
-        <li data-lang-entity="interface_meta_function">Interface Metafunction</li>
+        <li data-lang-entity="metafunction">Metafunction</li>
+        <li data-lang-entity="interface_metafunction">Interface Metafunction</li>
         
         <li data-lang-entity="global_function">Global Function</li>
         <li data-lang-entity="interface_function">Interface Function</li>
@@ -175,7 +175,7 @@
         <li data-lang-entity="class">Class</li>
         <li data-lang-entity="enum">Enum</li>
         
-        <li data-lang-entity="meta_function">Metafunction</li>
+        <li data-lang-entity="metafunction">Metafunction</li>
         
         <li data-lang-entity="function">Function</li>
         

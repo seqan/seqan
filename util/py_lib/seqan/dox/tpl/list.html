@@ -23,12 +23,55 @@
   <body>
     <script type="text/javascript" charset="utf-8">
       if (window.top.frames.main) {
-        document.getElementById('base_target').target = 'main';
-        document.body.className = 'frames';
+      document.getElementById('base_target').target = 'main';
+      document.body.className = 'frames';
       }
     </script>
-    <div id="content">
-      {% block content %}{% endblock %}
+    <div id="content"><form role="form" id="search">
+        <div class="input-group">
+          <!--span class="input-group-addon"><b class="glyphicon glyphicon-search"></b></span-->
+          <span class="input-group-btn btn-group">
+            <select multiple="multiple">
+              <optgroup label="Concept related">
+		        <option value="typedef" selected>typedef</option>
+		        <option value="concept" selected>concept</option>
+		        <option value="class" selected>class</option>
+		        <option value="enum" selected>enum</option>
+		      </optgroup>
+		      <optgroup label="Function related">
+		        <option value="metafunction" selected><b>meta</b>_function</option>
+		        <option value="function" selected>function</option>
+		        <option value="tag" selected>tag</option>
+		        <option value="variable" selected>variable</option>
+		      </optgroup>
+		      <optgroup label="Miscellaneous">
+		        <option value="adaption" selected>adaption</option>
+		        <option value="macro" selected>macro</option>
+		        <option value="group" selected>group</option>
+		        <option value="page" selected>page</option>
+		      </optgroup>
+            </select>
+	        <!--button class="btn btn-primary">Select All</button-->
+          </span>
+          <input type="search" class="form-control">
+          </div>
+        </form>
+
+        <div id="results">
+          <ol>
+            {% for name, entry in doc.top_level_entries|dictsort %}
+            {% if entry.kind != 'page' %}
+            <li class="result" data-lang-entity-container="{{ entry.kind }}">
+              <h2><a href="{{entry.name|name_to_path}}" target="main" data-lang-entity="{{ entry.kind }}">{{name}}</a></h2>
+              <div>
+                <div class="text"></div>
+                <div class="location"><a href="../{{entry.name|name_to_path}}" target="main">../{{entry.name|name_to_path}}</a></div>
+              </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ol>
+        </div>
     </div>
   </body>
 </html>

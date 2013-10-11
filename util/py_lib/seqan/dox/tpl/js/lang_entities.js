@@ -36,15 +36,15 @@ window.langEntities = {
 		belongsTo: null
 		},
 		
-	meta_function: {
+	metafunction: {
 		ideogram: 'Fn<>',
 		description: 'todo',
 		belongsTo: null
 		},
-	interface_meta_function: {
+	interface_metafunction: {
 		ideogram: '#Fn<>',
 		description: 'todo',
-		belongsTo: 'meta_function'
+		belongsTo: 'metafunction'
 		},
 		
 	'function': {

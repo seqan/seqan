@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Writing for HTML pages."""
 
+import distutils.dir_util
 import os
 import os.path
 import shutil
@@ -49,9 +50,9 @@ class PathManager(object):
         """Returns target path for top frameset."""
         return os.path.join(self.out_dir, 'index.html')
 
-    def getListPath(self, kind):
+    def getListPath(self):
         """Returns target path for list."""
-        return os.path.join(self.out_dir, 'lists', '%s.html' % kind)
+        return os.path.join(self.out_dir, 'list.html')
 
     def translateDemoPath(self, path):
         """Translate demo path."""
@@ -319,11 +320,13 @@ class HtmlWriter(object):
         self.out_dirs['css'] = os.path.join(out_dir, 'css')
         self.out_dirs['img'] = os.path.join(out_dir, 'img')
         self.out_dirs['js'] = os.path.join(out_dir, 'js')
+        self.out_dirs['lib'] = os.path.join(out_dir, 'lib')
         self.out_dirs['lists'] = os.path.join(out_dir, 'lists')
         self.out_dirs['docs'] = os.path.join(out_dir, 'docs', 'seqan')
         # Create managers.
         self.path_manager = PathManager(out_dir)
         self.tpl_manager = TemplateManager(self.path_manager, doc)
+        self.path_converter = PathConverter(doc)
 
     def generateFor(self):
         self.log('Generating HTML documentation')
@@ -337,6 +340,7 @@ class HtmlWriter(object):
         self.updateImagePaths(self.doc)
         self.generatePages(self.doc)
         self.generateDemoPages(self.doc)
+        self.generateSearchIndex(self.doc)
 
     def makedirs(self):
         for path in self.out_dirs.values():
@@ -346,15 +350,11 @@ class HtmlWriter(object):
 
     def copyStaticFiles(self):
         """Copy static files."""
-        for kind in ['css', 'js', 'img']:
+        for kind in ['css', 'js', 'img', 'lib']:
             in_dir = os.path.join(self.path_manager.this_dir, 'tpl/%s' % kind)
-            join = os.path.join  # shortcut
-            files = [f for f in os.listdir(in_dir) if os.path.isfile(join(in_dir, f))]
-            for f in files:
-                in_path = os.path.join(in_dir, f)
-                out_path = os.path.join(self.out_dirs[kind], f)
-                #self.log('  Copying %s => %s', in_path, out_path)
-                shutil.copyfile(in_path, out_path)
+            out_path = self.out_dirs[kind]
+            self.log('  Copying %s => %s', in_dir, out_path)
+            distutils.dir_util.copy_tree(in_dir, out_path, verbose=True)
 
     def copyDocImages(self):
         """Copy images from paths given in --image-dir parameter."""
@@ -376,12 +376,8 @@ class HtmlWriter(object):
 
     def generateLists(self, doc):
         """Generate top level/second level/page index."""
-        with open(self.path_manager.getListPath('first'), 'w') as f:
-            f.write(self.tpl_manager.render('list_first.html', doc=doc))
-        with open(self.path_manager.getListPath('second'), 'w') as f:
-            f.write(self.tpl_manager.render('list_second.html', doc=doc))
-        with open(self.path_manager.getListPath('page'), 'w') as f:
-            f.write(self.tpl_manager.render('list_page.html', doc=doc))
+        with open(self.path_manager.getListPath(), 'w') as f:
+            f.write(self.tpl_manager.render('list.html', doc=doc))
 
     def translateLinks(self, doc):
         link_converter = LinkConverter(doc)
@@ -412,35 +408,39 @@ class HtmlWriter(object):
     def generatePage(self, entry, path, doc, pygments_style):
         """Generate page for entry to file at path."""
 
+        common_kwargs = {'doc': doc,
+                         'pygments_style': pygments_style,
+                         'entry_kind': entry.kind,
+                         'entry_name': entry.name}
         if entry.kind == 'page':
-            html = self.tpl_manager.render('page.html', page=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('page.html', page=entry,  **common_kwargs)
         elif entry.kind == 'concept':
-            html = self.tpl_manager.render('concept.html', concept=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('concept.html', concept=entry,  **common_kwargs)
         elif entry.kind == 'class':
-            html = self.tpl_manager.render('class.html', klass=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('class.html', klass=entry,  **common_kwargs)
         elif entry.kind == 'enum':
-            html = self.tpl_manager.render('enum.html', enum=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('enum.html', enum=entry,  **common_kwargs)
         elif entry.kind == 'adaption':
-            html = self.tpl_manager.render('adaption.html', adaption=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('adaption.html', adaption=entry,  **common_kwargs)
         elif entry.kind == 'shortcut':
-            html = self.tpl_manager.render('shortcut.html', shortcut=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('shortcut.html', shortcut=entry,  **common_kwargs)
         elif entry.kind in ['global_function', 'member_function',
                             'interface_function']:
-            html = self.tpl_manager.render('function.html', function=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('function.html', function=entry,  **common_kwargs)
         elif entry.kind in ['global_metafunction', 'interface_metafunction']:
-            html = self.tpl_manager.render('metafunction.html', metafunction=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('metafunction.html', metafunction=entry,  **common_kwargs)
         elif entry.kind == 'group':
-            html = self.tpl_manager.render('group.html', group=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('group.html', group=entry,  **common_kwargs)
         elif entry.kind == 'tag':
-            html = self.tpl_manager.render('tag.html', tag=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('tag.html', tag=entry,  **common_kwargs)
         elif entry.kind == 'macro':
-            html = self.tpl_manager.render('macro.html', macro=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('macro.html', macro=entry,  **common_kwargs)
         elif entry.kind == 'global_typedef':
-            html = self.tpl_manager.render('typedef.html', typedef=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('typedef.html', typedef=entry,  **common_kwargs)
         elif entry.kind == 'global_variable':
-            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('variable.html', variable=entry,  **common_kwargs)
         elif entry.kind == 'variable':
-            html = self.tpl_manager.render('variable.html', variable=entry, doc=doc, pygments_style=pygments_style)
+            html = self.tpl_manager.render('variable.html', variable=entry,  **common_kwargs)
         else:
             assert False, entry.kind
         with open(self.path_manager.getEntryPath(entry), 'w') as f:
@@ -462,6 +462,15 @@ class HtmlWriter(object):
         to_path = os.path.join(self.out_dirs['root'], path)
         #print >>sys.stderr, in_path, '=>', to_path
         shutil.copyfile(in_path, to_path)
+
+    def generateSearchIndex(self, doc):
+        """Generate the search index."""
+        js = ['window.searchData = [']
+        for entry in doc.top_level_entries.itervalues():
+            js.append('  {title:%s,text:%s,tags:%s,loc:%s,langEntity:%s},' % (repr(entry.name), repr(""), repr(""), repr(self.path_converter.convert(entry.name)[0]), repr(entry.kind)))
+        js.append('];')
+        with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
+            f.write('\n'.join(js))
 
     def log(self, s, *args):
         print >>sys.stderr, s % args

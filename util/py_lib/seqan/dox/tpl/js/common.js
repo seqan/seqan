@@ -13,8 +13,8 @@
         'class': ['Class', '<p>A class in OOP typically wraps member functions and member variables. In SeqAn classes are mainly used to ...</p>'],
         'enum': ['enum', '<p>An enum is an enumerated type that consists of finite number of values of the same type.</p>'],
 
-        meta_function: ['Fn<>', '<p>A metafunction is a function that is run at compile-time (in contrast to an ordinary function that is run at run-time).</p><p>SeqAn heavily relies on them for performance reasons.</p><p>E.g. ...'],
-        interface_meta_function: ['#Fn<>', 'todo'],
+        metafunction: ['Fn<>', '<p>A metafunction is a function that is run at compile-time (in contrast to an ordinary function that is run at run-time).</p><p>SeqAn heavily relies on them for performance reasons.</p><p>E.g. ...'],
+        interface_metafunction: ['#Fn<>', 'todo'],
 
         'function': ['fn()', '<p>Because SeqAn relies on template programming there are functions that used to be member functions but technically are global functions.</p><p>Such functions are called interface functions.</p>E.g. ...'],
         global_function: ['fn()', 'todo'],
@@ -36,7 +36,7 @@
         page: ['Page', 'todo']
     }
 
-    languageEntityLabels['metafunction'] = languageEntityLabels['meta_function'];
+    languageEntityLabels['metafunction'] = languageEntityLabels['metafunction'];
     
 	$.fn.extend({
 		pimpLanguageEntityLabels: function() {
@@ -146,7 +146,7 @@
                 ["grouped_typedef", "typedef"],
                 ["global_typedef", "typedef"],
                 ["member_typedef", "typedef"],
-                ["interface_meta_function", "meta_function"],
+                ["interface_metafunction", "metafunction"],
                 ["global_function", "function"],
                 ["interface_function", "function"],
                 ["member_function", "function"],
