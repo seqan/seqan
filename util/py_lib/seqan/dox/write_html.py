@@ -467,7 +467,13 @@ class HtmlWriter(object):
         """Generate the search index."""
         js = ['window.searchData = [']
         for entry in doc.top_level_entries.itervalues():
-            js.append('  {title:%s,text:%s,tags:%s,loc:%s,langEntity:%s},' % (repr(entry.name), repr(""), repr(""), repr(self.path_converter.convert(entry.name)[0]), repr(entry.kind)))
+            tags = ''
+            if hasattr(entry, 'akas'):
+                tags = ','.join(entry.akas)
+            js.append('  {title:%s,text:%s,tags:%s,loc:%s,langEntity:%s},' %
+                      (repr(entry.name), repr(""), repr(tags),
+                       repr(self.path_converter.convert(entry.name)[0]),
+                       repr(entry.kind)))
         js.append('];')
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
             f.write('\n'.join(js))

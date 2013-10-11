@@ -1,124 +1,125 @@
 window.langEntities = {
 	typedef: {
 		ideogram: 'typedef',
-		description: '<p>A typedef allows to assign a simple name to a complex type, e.g. <code>DnaString</code> is nothing but <code>String&lt;Dna&gt;</code>.</p>',
+		description: 'C++ typedefs creates type aliases, e.g. alias complex template instantiations to a simple name.',
 		belongsTo: null
 		},
 	grouped_typedef: {
-		ideogram: 'typedef',
+		ideogram: 'Typedef in a semantic group.',
 		description: 'todo',
 		belongsTo: 'typedef'
 		},
 	global_typedef: {
-		ideogram: 'typedef',
+		ideogram: 'Global typedef.',
 		description: 'todo',
 		belongsTo: 'typedef'
 		},
 	member_typedef: {
 		ideogram: 'class { typedef }',
-		description: 'todo',
+		description: 'Typedef withing a class/struct.',
 		belongsTo: 'typedef'
 		},
 		
 	concept: {
 		ideogram: 'Concept',
-		description: '<p>Since SeqAn relies on template programming the majority of the classes\' member functions are technically global. A concept can be seen as an interface which allows ...</p><p>E.g. the so called interface function <code>size(c)</code> returns the size of every object that implements the <code>ContainerConcept</code>.</p>',
+		description: 'Informal <b>interface</b> for types.',
 		belongsTo: null
 		},
 	'class': {
 		ideogram: 'Class',
-		description: '<p>A class in OOP typically wraps member functions and member variables. In SeqAn classes are mainly used to ...</p>',
+		description: 'C++ Data structure with both data and functions.',
 		belongsTo: null
 		},
 	'enum': {
-		ideogram: 'typedef',
-		description: '<p>An enum is an enumerated type that consists of finite number of values of the same type.</p>',
+		ideogram: 'enum',
+		description: 'Custom C++ type for a predetermined number of values, each has a name.',
 		belongsTo: null
 		},
 		
 	metafunction: {
 		ideogram: 'Fn<>',
-		description: 'todo',
+		description: 'Compile-time evaluated function that returns a type as a function of types or compile-time constants.  In C++, implemented as class templates.',
 		belongsTo: null
 		},
 	interface_metafunction: {
 		ideogram: '#Fn<>',
-		description: 'todo',
+		description: 'A metafunction that is part of a type\'s global interface.',
 		belongsTo: 'metafunction'
 		},
 		
 	'function': {
 		ideogram: 'fn()',
-		description: 'todo',
+		description: 'C++ function.',
 		belongsTo: null
 		},
 	global_function: {
 		ideogram: 'fn()',
-		description: 'todo',
+		description: 'Global C++ function',
 		belongsTo: 'function'
 		},
 	interface_function: {
 		ideogram: '#fn()',
-		description: 'todo',
+		description: 'Global C++ function that is part of the interface of a class.',
 		belongsTo: 'function'
 		},
 	member_function: {
 		ideogram: '.fn()',
-		description: 'todo',
+		description: 'A class\' or struct\'s member function.',
 		belongsTo: 'function'
 		},
 		
 	tag: {
 		ideogram: 'Tag',
-		description: 'todo',
+		description: 'Class that is only used for its type (e.g. in <em>tag dispatching<em>).',
 		belongsTo: null
 		},
 	grouped_tag: {
 		ideogram: 'Tag',
-		description: 'todo',
+		description: 'Tag that belongs to a semantic group.',
 		belongsTo: 'tag'
 		},
 
 	variable: {
 		ideogram: 'int x',
-		description: 'todo',
+		description: 'Variable.',
 		belongsTo: null
 		},
 	global_variable: {
 		ideogram: 'int x',
-		description: 'todo',
+		description: 'Global variable.',
 		belongsTo: 'variable'
 		},
+    // TODO(holtgrew): remove!
 	local_variable: {
 		ideogram: 'int x',
-		description: 'todo',
+		description: 'Local variable',
 		belongsTo: 'variable'
 		},
 	member_variable: {
 		ideogram: '.x',
-		description: 'todo',
+		description: 'Member variable of a class or struct.',
 		belongsTo: 'variable'
 		},       
 
 	adaption: {
 		ideogram: 'foreign::',
-		description: 'todo',
+		description: 'Allows to use non-SeqAn types with SeqAn concept interfaces.',
 		belongsTo: null
 		},
 	macro: {
 		ideogram: '#define',
-		description: 'todo',
+		description: 'C preprocessor macro',
 		belongsTo: null
 		},
 		
 	group: {
 		ideogram: 'Group',
-		description: 'todo',
+		description: 'Set of functions and/or tags that belong together.',
 		belongsTo: null
 		},
 	page: {
 		ideogram: 'Page',
-		description: 'todo',
+		description: 'Static explanatory page.',
 		belongsTo: null
    	}
 };
