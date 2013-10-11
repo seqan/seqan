@@ -24,7 +24,8 @@ CLAUSE_STARTING = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_SEE', 'COMM
                        'COMMAND_RETURN', 'COMMAND_PARAM', 'COMMAND_TPARAM',
                        'COMMAND_SECTION', 'COMMAND_SUBSECTION', 'COMMAND_INCLUDE',
                        'COMMAND_EXTENDS', 'COMMAND_IMPLEMENTS', 'COMMAND_SNIPPET',
-                       'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                       'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                       'COMMAND_INTERNAL', 'COMMAND_AKA'])
 NON_PARAGRAPH = set(['COMMAND_ENDCODE'])
 LINE_BREAKS = set(['BREAK', 'EMPTYLINE'])
 
@@ -64,7 +65,10 @@ LEXER_TOKENS = (
     ('COMMAND_INCLUDE',      r'@include'),
     ('COMMAND_SNIPPET',      r'@snippet'),
     ('COMMAND_DEPRECATED',   r'@deprecated'),
-    # TODO(holtgrew): Add @note and @warning
+    ('COMMAND_NOTE',         r'@note'),
+    ('COMMAND_WARNING',      r'@warning'),
+    ('COMMAND_INTERNAL',     r'@internal'),
+    ('COMMAND_AKA',          r'@aka'),
     
     # Lexer tokens for commands for inline use.
     ('COMMAND_LINK',         r'@link'),

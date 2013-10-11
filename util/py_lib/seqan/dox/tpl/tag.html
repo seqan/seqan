@@ -7,24 +7,65 @@
 
 {{ sections.top_box(tag) }}
 
+<!-- @brief -->
+{{ sections.brief(tag) }}
+ 
 <!-- @signature -->
 {{ sections.signatures(tag) }}
 
-<h2>Overview</h2>
+<!-- Template Parameters -->
+{{ sections.tparams_ov(tag) }}
+
+<!--
+ =============================================================================
+  Detailed Description
+ =============================================================================
+-->
+
+<h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
-    <!-- @deprecated -->
-    {% if tag.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in tag.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
+    <!-- @internal -->
+    {% if tag.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
     </div></div>
     {% endif %}
 
-    <!-- @brief -->
-    {{ sections.brief(tag) }}
-    
+    <!-- @deprecated -->
+    {% if tag.deprecation_msgs %}
+        {% for msg in tag.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if tag.warnings %}
+        {% for msg in tag.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if tag.notes %}
+        {% for msg in tag.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if tag.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ tag.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
     <!-- paragraphs -->
     {{ sections.body(tag) }}
   </div>
@@ -32,9 +73,6 @@
 
 <!-- @see -->
 {{ sections.see_also(tag) }}
-
-<!-- Template Parameters -->
-{{ sections.tparams_ov(tag) }}
 
 <!--
  =============================================================================

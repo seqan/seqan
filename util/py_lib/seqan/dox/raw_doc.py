@@ -180,6 +180,10 @@ class RawCodeEntry(RawEntry):
         self.signatures = []
         self.headerfiles = []
         self.deprecation_msgs = []
+        self.notes = []
+        self.warnings = []
+        self.akas = []
+        self.internals = []
 
     def addSignature(self, s):
         self.signatures.append(s)
@@ -187,8 +191,20 @@ class RawCodeEntry(RawEntry):
     def addHeaderfile(self, h):
         self.headerfiles.append(h)
 
-    def addDeprecationMsg(self, h):
-        self.deprecation_msgs.append(h)
+    def addDeprecationMsg(self, d):
+        self.deprecation_msgs.append(d)
+
+    def addNote(self, n):
+        self.notes.append(n)
+
+    def addWarning(self, w):
+        self.warnings.append(w)
+
+    def addAka(self, a):
+        self.akas.append(a)
+
+    def addInternal(self, i):
+        self.internals.append(i)
 
     def getType(self):
         return 'code'
@@ -1066,6 +1082,94 @@ class RawDeprecated(object):
 
     def __str__(self):
         return 'RawDeprecated(%s)' % repr(self.text)
+
+    def __eq__(self, other):
+        return self.text == other.text
+
+
+class RawNote(object):
+    """A representation of a @note entry.
+    
+    @ivar text The @note clauses's text.
+    """
+    
+    def __init__(self, text):
+        self.text = text
+
+    def getType(self):
+        return 'note'
+
+    def getFormatted(self, formatter):
+        return formatter.formatCommand('note', self.text.text.strip())
+
+    def __str__(self):
+        return 'RawNote(%s)' % repr(self.text)
+
+    def __eq__(self, other):
+        return self.text == other.text
+
+
+class RawWarning(object):
+    """A representation of a @warning entry.
+    
+    @ivar text The @warning clauses's text.
+    """
+    
+    def __init__(self, text):
+        self.text = text
+
+    def getType(self):
+        return 'warning'
+
+    def getFormatted(self, formatter):
+        return formatter.formatCommand('warning', self.text.text.strip())
+
+    def __str__(self):
+        return 'RawWarning(%s)' % repr(self.text)
+
+    def __eq__(self, other):
+        return self.text == other.text
+
+
+class RawAka(object):
+    """A representation of an @aka entry.
+    
+    @ivar text The @aka clauses's text.
+    """
+    
+    def __init__(self, text):
+        self.text = text
+
+    def getType(self):
+        return 'aka'
+
+    def getFormatted(self, formatter):
+        return formatter.formatCommand('aka', self.text.text.strip())
+
+    def __str__(self):
+        return 'RawAka(%s)' % repr(self.text)
+
+    def __eq__(self, other):
+        return self.text == other.text
+
+
+class RawInternal(object):
+    """A representation of a @internal entry.
+    
+    @ivar text The @internal clauses's text.
+    """
+    
+    def __init__(self, text):
+        self.text = text
+
+    def getType(self):
+        return 'internal'
+
+    def getFormatted(self, formatter):
+        return formatter.formatCommand('internal', self.text.text.strip())
+
+    def __str__(self):
+        return 'RawInternal(%s)' % repr(self.text)
 
     def __eq__(self, other):
         return self.text == other.text

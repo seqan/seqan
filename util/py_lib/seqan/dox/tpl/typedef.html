@@ -7,24 +7,56 @@
 
 {{ sections.top_box(typedef) }}
 
+<!-- @brief -->
+{{ sections.brief(typedef) }}
+
 <!-- signatures -->
 {{ sections.signatures(typedef) }}
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <!-- @deprecated -->
-    {% if typedef.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in typedef.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
+    <!-- @internal -->
+    {% if typedef.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
     </div></div>
     {% endif %}
 
-    <!-- @brief -->
-    {{ sections.brief(typedef) }}
-    
+    <!-- @deprecated -->
+    {% if typedef.deprecation_msgs %}
+        {% for msg in typedef.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if typedef.warnings %}
+        {% for msg in typedef.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if typedef.notes %}
+        {% for msg in typedef.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if typedef.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ typedef.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
     <!-- paragraphs -->
     {{ sections.body(typedef) }}
   </div>

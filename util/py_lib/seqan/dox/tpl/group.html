@@ -11,20 +11,6 @@
  =============================================================================
 -->
 
-<h2>Overview</h2>
-<div class="docstring">
-  <div class="discussion">
-    <!-- @brief -->
-    {{ sections.brief(group) }}
-    
-    <!-- paragraphs -->
-    {{ sections.body(group) }}
-  </div>
-</div>
-
-<!-- @see -->
-{{ sections.see_also(group) }}
-
 <!-- Grouped Tags Overview -->
 {{ sections.grouped_tags_ov(group, doc, 'Grouped') }}
 
@@ -36,6 +22,67 @@
 
 <!-- Grouped Metafunctions Overview -->
 {{ sections.interface_metafunctions_ov(group, doc, 'Grouped') }}
+
+<!--
+ =============================================================================
+  Detailed Description
+ =============================================================================
+-->
+
+<h2>Detailed Description</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @brief -->
+    {{ sections.brief(group) }}
+
+    <!-- @internal -->
+    {% if group.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
+    </div></div>
+    {% endif %}
+
+    <!-- @deprecated -->
+    {% if group.deprecation_msgs %}
+        {% for msg in group.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if group.warnings %}
+        {% for msg in group.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if group.notes %}
+        {% for msg in group.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if group.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ group.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
+    <!-- paragraphs -->
+    {{ sections.body(group) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(group) }}
 
 <!--
  =============================================================================

@@ -304,6 +304,11 @@ class ProcCodeEntry(ProcEntry):
     @ivar signature_entries: A list of sig_parser.SigEntry objects.
     @ivar headerfiles: A list of str objects with the arguments to #include.
     @ivar deprecation_msgs: List of TextNode objects with deprecation messages.
+    @ivar notes: List of TextNode objects with notes.
+    @ivar warnings: List of TextNode objects with warnings.
+    @ivar akas: List of strings.
+    @ivar internals: List of TextNode objects (possibly empty) with marks as
+                     internal.
     """
 
     def __init__(self, name, brief=None, body=None, sees=[]):
@@ -312,6 +317,10 @@ class ProcCodeEntry(ProcEntry):
         self.signature_entries = []
         self.headerfiles = []
         self.deprecation_msgs = []
+        self.notes = []
+        self.warnings = []
+        self.akas = []
+        self.internals = []
 
     def addSignature(self, s):
         self.signatures.append(s)
@@ -324,6 +333,18 @@ class ProcCodeEntry(ProcEntry):
         
     def addDeprecationMsg(self, m):
         self.deprecation_msgs.append(m)
+
+    def addNote(self, n):
+        self.notes.append(n)
+        
+    def addWarning(self, w):
+        self.warnings.append(w)
+        
+    def addAkas(self, a):
+        self.akas.append(a)
+        
+    def addInternal(self, i):
+        self.internals.append(i)
         
     def subEntries(self, kind):
         return []
@@ -1000,9 +1021,18 @@ class CodeEntryConverter(EntryConverter):
         # Add headerfile paths as list of strings.
         for s in raw_entry.headerfiles:
             entry.addHeaderfile(s.text.text.strip())
-        # Add deprecation messages as list of TextNodes.
+        # Add deprecation messages, notes, warnings, and internal markers as list of TextNodes.
         for s in raw_entry.deprecation_msgs:
             entry.addDeprecationMsg(self.rawTextToTextNode(s.text, strip_lt_line_space=True))
+        for s in raw_entry.notes:
+            entry.addNote(self.rawTextToTextNode(s.text, strip_lt_line_space=True))
+        for s in raw_entry.warnings:
+            entry.addWarning(self.rawTextToTextNode(s.text, strip_lt_line_space=True))
+        for s in raw_entry.internals:
+            entry.addInternal(self.rawTextToTextNode(s.text, strip_lt_line_space=True))
+        # Add aka messages as strings.
+        for s in raw_entry.akas:
+            entry.addAkas(s.text.text.strip())
         # Add signatures as a text node with code.
         for s in raw_entry.signatures:
             entry.addSignature(self.rawTextToTextNode(s.text, strip_lt_line_space=True,

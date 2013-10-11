@@ -7,40 +7,20 @@
 
 {{ sections.top_box(adaption) }}
 
+<!-- @brief -->
+{{ sections.brief(adaption) }}  
+
 <!-- @signature -->
 {{ sections.signatures(adaption) }}
 
-<h2>Overview</h2>
-<div class="docstring">
-  <div class="discussion">
-    <!-- @deprecated -->
-    {% if adaption.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in adaption.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
-    </div></div>
-    {% endif %}
-
-    <!-- @brief -->
-    {{ sections.brief(adaption) }}
-    
-    <!-- paragraphs -->
-    {{ sections.body(adaption) }}
-  </div>
-</div>
-
-<!-- @see -->
-{{ sections.see_also(adaption) }}
+<!-- Template Parameters -->
+{{ sections.tparams(adaption) }}
 
 <!--
  =============================================================================
   Member and Interface Overview
  =============================================================================
 -->
-
-<!-- Template Parameters -->
-{{ sections.tparams(adaption) }}
 
 <!-- Member Functions Overview -->
 {{ sections.member_functions_ov(adaption, doc) }}
@@ -53,6 +33,64 @@
 
 <!-- Member Variable Overview -->
 {{ sections.member_variables_ov(adaption, doc) }}
+
+<!--
+ =============================================================================
+  Detailed Description
+ =============================================================================
+-->
+
+<h2>Detailed Description</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @internal -->
+    {% if adaption.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
+    </div></div>
+    {% endif %}
+
+    <!-- @deprecated -->
+    {% if adaption.deprecation_msgs %}
+        {% for msg in adaption.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if adaption.warnings %}
+        {% for msg in adaption.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if adaption.notes %}
+        {% for msg in adaption.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if adaption.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ adaption.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
+    <!-- paragraphs -->
+    {{ sections.body(adaption) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(adaption) }}
 
 <!--
  =============================================================================

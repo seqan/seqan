@@ -5,23 +5,63 @@
 {% block content %}
 <h1 class="macro title">Macro: {{ macro.title|e }}</h1>
 
+<!-- @brief -->
+{{ sections.brief(macro) }}
+
 {{ sections.top_box(macro) }}
 
-<h2>Overview</h2>
+<!-- @param -->
+{{ sections.params(macro) }}
+
+<!--
+ =============================================================================
+  Detailed Description
+ =============================================================================
+-->
+
+<h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
-    <!-- @deprecated -->
-    {% if macro.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in macro.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
+    {% if macro.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
     </div></div>
     {% endif %}
 
-    <!-- @brief -->
-    {{ sections.brief(macro) }}
-    
+    <!-- @deprecated -->
+    {% if macro.deprecation_msgs %}
+        {% for msg in macro.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if macro.warnings %}
+        {% for msg in macro.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if macro.notes %}
+        {% for msg in macro.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if macro.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ macro.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
     <!-- paragraphs -->
     {{ sections.body(macro) }}
   </div>
@@ -29,9 +69,6 @@
 
 <!-- @see -->
 {{ sections.see_also(macro) }}
-
-<!-- @param -->
-{{ sections.params(macro) }}
 
 <!--
  =============================================================================

@@ -185,6 +185,38 @@ class DeprecatedState(GenericSimpleClauseState):
         self.entry_class = raw_doc.RawDeprecated
 
 
+class NoteState(GenericSimpleClauseState):
+    """Handler for the @note clause."""
+
+    def __init__(self, parser, parent):
+        GenericSimpleClauseState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawNote
+
+
+class WarningState(GenericSimpleClauseState):
+    """Handler for the @warning clause."""
+
+    def __init__(self, parser, parent):
+        GenericSimpleClauseState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawWarning
+
+
+class AkaState(GenericSimpleClauseState):
+    """Handler for the @aka clause."""
+
+    def __init__(self, parser, parent):
+        GenericSimpleClauseState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawAka
+
+
+class InternalState(GenericSimpleClauseState):
+    """Handler for the @internal clause."""
+
+    def __init__(self, parser, parent):
+        GenericSimpleClauseState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawInternal
+
+
 class HeaderfileState(GenericSimpleClauseState):
     """Handler for the @headerfile clause."""
 
@@ -475,6 +507,10 @@ class GenericDocState(object):
                              'COMMAND_EXTENDS' : ExtendsState(self.parser, self),
                              'COMMAND_HEADERFILE' : HeaderfileState(self.parser, self),
                              'COMMAND_DEPRECATED' : DeprecatedState(self.parser, self),
+                             'COMMAND_NOTE' : NoteState(self.parser, self),
+                             'COMMAND_WARNING' : WarningState(self.parser, self),
+                             'COMMAND_AKA' : AkaState(self.parser, self),
+                             'COMMAND_INTERNAL' : InternalState(self.parser, self),
                              'COMMAND_IMPLEMENTS' : ImplementsState(self.parser, self),
                              'COMMAND_SEE' : SeeState(self.parser, self),
                              'COMMAND_RETURN' : ReturnState(self.parser, self),
@@ -529,6 +565,14 @@ class GenericDocState(object):
                 self.entry.addHeaderfile(entry)
             elif entry.getType() == 'deprecated':
                 self.entry.addDeprecationMsg(entry)
+            elif entry.getType() == 'note':
+                self.entry.addNote(entry)
+            elif entry.getType() == 'warning':
+                self.entry.addWarning(entry)
+            elif entry.getType() == 'aka':
+                self.entry.addAka(entry)
+            elif entry.getType() == 'internal':
+                self.entry.addInternal(entry)
             else:
                 assert False, '%s' % entry
         self.clause_state = None
@@ -546,7 +590,8 @@ class ClassDocState(GenericDocState):
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_EXTENDS',
                                      'COMMAND_IMPLEMENTS', 'COMMAND_HEADERFILE',
-                                     'COMMAND_DEPRECATED'])
+                                     'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 class FunctionDocState(GenericDocState):
     """State for documentation of a function."""
@@ -558,7 +603,8 @@ class FunctionDocState(GenericDocState):
                                      'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class MacroDocState(GenericDocState):
@@ -570,7 +616,8 @@ class MacroDocState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class MetafunctionDocState(GenericDocState):
@@ -582,7 +629,8 @@ class MetafunctionDocState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class ConceptDocState(GenericDocState):
@@ -594,7 +642,8 @@ class ConceptDocState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_EXTENDS',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class PageState(GenericDocState):
@@ -630,7 +679,7 @@ class GroupState(GenericDocState):
         self.allowed_commands = set(['COMMAND_CODE',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
-                                     'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
+                                     'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_AKA'])
 
 
 class VariableState(GenericDocState):
@@ -642,7 +691,8 @@ class VariableState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
     def entered(self):
         GenericDocState.entered(self)
@@ -689,7 +739,8 @@ class TagState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class EnumState(GenericDocState):
@@ -701,7 +752,8 @@ class EnumState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class AdaptionState(GenericDocState):
@@ -713,7 +765,8 @@ class AdaptionState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class TypedefState(GenericDocState):
@@ -725,7 +778,8 @@ class TypedefState(GenericDocState):
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
-                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED'])
+                                     'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
+                                     'COMMAND_AKA', 'COMMAND_INTERNAL'])
 
 
 class Parser(object):

@@ -7,24 +7,70 @@
 
 {{ sections.top_box(enum) }}
 
+<!-- @brief -->
+{{ sections.brief(enum) }}
+
 <!-- signatures -->
 {{ sections.signatures(enum) }}
 
-<h2>Overview</h2>
+<!--
+ =============================================================================
+  Member and Interface Overview
+ =============================================================================
+-->
+
+{{ sections.enum_values_ov(enum, doc) }}
+
+<!--
+ =============================================================================
+  Detailed Description
+ =============================================================================
+-->
+
+<h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
-    <!-- @deprecated -->
-    {% if enum.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in enum.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
+    <!-- @internal -->
+    {% if enum.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
     </div></div>
     {% endif %}
 
-    <!-- @brief -->
-    {{ sections.brief(enum) }}
-    
+    <!-- @deprecated -->
+    {% if enum.deprecation_msgs %}
+        {% for msg in enum.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if enum.warnings %}
+        {% for msg in enum.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if enum.notes %}
+        {% for msg in enum.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if enum.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ enum.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
     <!-- paragraphs -->
     {{ sections.body(enum) }}
   </div>
@@ -33,7 +79,12 @@
 <!-- @see -->
 {{ sections.see_also(enum) }}
 
-{{ sections.enum_values_ov(enum, doc) }}
+<!--
+ =============================================================================
+  Member and Interface Details
+ =============================================================================
+-->
+
 {{ sections.enum_values(enum, doc) }}
 
 <!--

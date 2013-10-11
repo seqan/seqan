@@ -7,12 +7,22 @@
 
 {{ sections.top_box(concept) }}
 
+<!-- @brief -->
+{{ sections.brief(concept) }}
+
 <!-- signatures -->
 {{ sections.signatures(concept) }}
 
-<h2>Overview</h2>
+<h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
+    <!-- @internal -->
+    {% if concept.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
+    </div></div>
+    {% endif %}
+
     <!-- @deprecated -->
     {% if concept.deprecation_msgs %}
     <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
@@ -22,9 +32,31 @@
     </div></div>
     {% endif %}
 
-    <!-- @brief -->
-    {{ sections.brief(concept) }}
-    
+    <!-- @warning -->
+    {% if concept.warnings %}
+        {% for msg in concept.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if concept.notes %}
+        {% for msg in concept.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if concept.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ concept.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
     <!-- paragraphs -->
     {{ sections.body(concept) }}
   </div>

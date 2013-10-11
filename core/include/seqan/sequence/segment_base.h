@@ -99,6 +99,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param len      Length of the prefix, must be convertible to <tt>Size&lt;TSeq&gt;::Type</tt>.
  *
  * Equivalent to <tt>infix(s, beginPos, beginPos + len)</tt>.
+ *
+ * @aka substr
  */
 
 /*!
@@ -110,6 +112,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param s        Segmentable sequence to return the infix for (type <tt>TSeq</tt>).
  * @param beginPos Begin position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
  * @param endPos   End position must be convertible to <tt>Position&lt;TSeq&gt;::Type</tt>.
+ *
+ * @aka substr
  */
 
 /*!
@@ -177,6 +181,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * template class.
  *
  * @snippet demos/sequence/segment.cpp explicit segment
+ *
+ * @aka substring
  */
 
 /**

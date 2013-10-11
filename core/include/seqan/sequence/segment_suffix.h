@@ -55,6 +55,10 @@ namespace SEQAN_NAMESPACE_MAIN
  *            class Segment<THost, SuffixSegment>;
  *
  * @tparam THost The underlying @link SequenceConcept sequence @endlink type.
+ *
+ * @see InfixSegment
+ * @see PrefixSegment
+ * @aka substring
  */
 
 /**

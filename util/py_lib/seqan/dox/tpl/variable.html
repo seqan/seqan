@@ -7,24 +7,56 @@
 
 {{ sections.top_box(variable) }}
 
+<!-- @brief -->
+{{ sections.brief(variable) }}
+
 <!-- signatures -->
 {{ sections.signatures(variable) }}
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
-    <!-- @deprecated -->
-    {% if variable.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in variable.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
+    <!-- @internal -->
+    {% if variable.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
     </div></div>
     {% endif %}
 
-    <!-- @brief -->
-    {{ sections.brief(variable) }}
-    
+    <!-- @deprecated -->
+    {% if variable.deprecation_msgs %}
+        {% for msg in variable.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if variable.warnings %}
+        {% for msg in variable.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if variable.notes %}
+        {% for msg in variable.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if variable.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ variable.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
     <!-- paragraphs -->
     {{ sections.body(variable) }}
   </div>

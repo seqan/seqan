@@ -7,31 +7,11 @@
 
 {{ sections.top_box(function) }}
 
+<!-- @brief -->
+{{ sections.brief(function) }}
+
 <!-- @signature -->
 {{ sections.signatures(function) }}
-
-<h2>Overview</h2>
-<div class="docstring">
-  <div class="discussion">
-    <!-- @deprecated -->
-    {% if function.deprecation_msgs %}
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-        {% for msg in function.deprecation_msgs %}
-        <p>{{ msg|transtext(False) }}</p>
-        {% endfor %}
-    </div></div>
-    {% endif %}
-
-    <!-- @brief -->
-    {{ sections.brief(function) }}
-    
-    <!-- paragraphs -->
-    {{ sections.body(function) }}
-  </div>
-</div>
-
-<!-- @see -->
-{{ sections.see_also(function) }}
 
 <!-- @param -->
 {{ sections.params(function) }}
@@ -41,6 +21,64 @@
 
 <!-- @returns -->
 {{ sections.return_values(function) }}
+
+<!--
+ =============================================================================
+  Detailed Description
+ =============================================================================
+-->
+
+<h2>Detailed Description</h2>
+<div class="docstring">
+  <div class="discussion">
+    <!-- @internal -->
+    {% if function.internals %}
+    <div class="note internal"><strong>Internal:</strong> <div class='inline'>
+        <p>For internal use only.</p>
+    </div></div>
+    {% endif %}
+
+    <!-- @deprecated -->
+    {% if function.deprecation_msgs %}
+        {% for msg in function.deprecation_msgs %}
+        <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @warning -->
+    {% if function.warnings %}
+        {% for msg in function.warnings %}
+        <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+        </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @note -->
+    {% if function.notes %}
+        {% for msg in function.notes %}
+        <div class="note info"><strong>Note:</strong> <div class='inline'>
+            <p>{{ msg|transtext(False) }}</p>
+         </div></div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- @aka -->
+    {% if function.akas %}
+    <div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+        <p>{{ function.akas|join(', ') }}</p>
+    </div></div>
+    {% endif %}
+
+    <!-- paragraphs -->
+    {{ sections.body(function) }}
+  </div>
+</div>
+
+<!-- @see -->
+{{ sections.see_also(function) }}
 
 <!--
  =============================================================================

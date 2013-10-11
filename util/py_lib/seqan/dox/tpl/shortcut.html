@@ -14,6 +14,47 @@
 <!-- @signature -->
 {{ sections.signatures(shortcut) }}
 
+<!-- @internal -->
+{% if shortcut.internals %}
+<div class="note internal"><strong>Internal:</strong> <div class='inline'>
+    <p>For internal use only.</p>
+</div></div>
+{% endif %}
+
+<!-- @deprecated -->
+{% if shortcut.deprecation_msgs %}
+    {% for msg in shortcut.deprecation_msgs %}
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+        <p>{{ msg|transtext(False) }}</p>
+    </div></div>
+    {% endfor %}
+{% endif %}
+
+<!-- @warning -->
+{% if shortcut.warnings %}
+    {% for msg in shortcut.warnings %}
+    <div class="note warning"><strong>Warning:</strong> <div class='inline'>
+        <p>{{ msg|transtext(False) }}</p>
+    </div></div>
+    {% endfor %}
+{% endif %}
+
+<!-- @note -->
+{% if shortcut.notes %}
+    {% for msg in shortcut.notes %}
+    <div class="note info"><strong>Note:</strong> <div class='inline'>
+        <p>{{ msg|transtext(False) }}</p>
+    </div></div>
+    {% endfor %}
+{% endif %}
+
+<!-- @aka -->
+{% if shortcut.akas %}
+<div class="note aka"><strong>Also known as:</strong> <div class='inline'>
+    <p>{{ shortcut.akas|join(', ') }}</p>
+</div></div>
+{% endif %}
+
 <!-- paragraphs -->
 {{ sections.body(shortcut) }}
 
