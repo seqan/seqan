@@ -294,9 +294,11 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
         TPos leadGaps1 = countGaps(begin(row(centerAlign, 1)));
 
         TPos sourceBeginPos0 = toSourcePosition(row(centerAlign,0), leadGaps0)
-                               + hBeginPos;
+                               + hBeginPos
+                               - beginPosition(row(centerAlign, 0));
         TPos sourceBeginPos1 = toSourcePosition(row(centerAlign,1), leadGaps1)
-                               + vBeginPos;
+                               + vBeginPos
+                               - beginPosition(row(centerAlign, 1));
 
         setClippedBeginPosition(row(align,0), toViewPosition(row(align, 0), sourceBeginPos0) - leadGaps0);
         setClippedBeginPosition(row(align,1), toViewPosition(row(align, 1), sourceBeginPos1) - leadGaps1);
