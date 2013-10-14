@@ -112,6 +112,10 @@
 // Stream Iterators.
 // ===========================================================================
 
+// TODO(weese:) move tags from tokenization.h to a new header
+
+#include <seqan/stream/virtual_stream.h>
+#include <seqan/stream/tokenization.h>
 #include <seqan/stream/iter_stream.h>
 
 // ===========================================================================
@@ -120,8 +124,7 @@
 
 #include <seqan/stream/is.h>
 //#include <seqan/stream/tokenize.h>
-#include <seqan/stream/tokenization.h>
+#include <seqan/stream/iter_stream.h>
 #include <seqan/stream/lexical_cast.h>
-#include <seqan/stream/virtual_stream.h>
 
 #endif  // SEQAN_STREAM_H_

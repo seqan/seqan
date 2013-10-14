@@ -350,12 +350,6 @@ writeValue(Iter<TContainer, TSpec> &iter, TValue val)
 // Function getChunk()
 // ----------------------------------------------------------------------------
 
-struct Input_;
-typedef Tag<Input_> Input;
-
-struct Output_;
-typedef Tag<Output_> Output;
-
 // std::basic_streambuf
 template <typename TValue, typename TTraits>
 inline typename Chunk<std::basic_streambuf<TValue, TTraits> >::Type

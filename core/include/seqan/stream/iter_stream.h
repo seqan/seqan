@@ -32,7 +32,9 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// Implementation of iterators working on streams.
+// Our own implementation of a streambuf_iterator. We could not use the STL's
+// iterator as we need to have access to the underlying streambuf which is a
+// private member of the STL iterator.
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_ITER_H_
@@ -44,7 +46,7 @@ namespace seqan {
 // Tags
 // ============================================================================
 
-template <typename TSpec = void>
+template <typename TDirection>
 struct StreamIterator {};
 
 // ============================================================================
@@ -52,42 +54,89 @@ struct StreamIterator {};
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class StreamIterator Iter
+// Class StreamIterator
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-class Iter<TStream, StreamIterator<TSpec> >
+// Unfortunately some of the most useful members of basic_streambuf are
+// protected, so we define a subclass to cast and access them
+template <typename TValue, typename TTraits_ = std::char_traits<TValue> >
+class StreamBuffer: public std::basic_streambuf<TValue, TTraits_>
 {
 public:
-    TStream *stream;
+    typedef TTraits_ TTraits;
+    typedef std::basic_streambuf<TValue, TTraits_> TBase;
+
+    TValue* eback() const   { return TBase::eback(); }
+    TValue* gptr()  const   { return TBase::gptr();  }
+    TValue* egptr() const   { return TBase::egptr(); }
+
+    TValue* pbase() const   { return TBase::pbase(); }
+    TValue* pptr()  const   { return TBase::pptr();  }
+    TValue* epptr() const   { return TBase::epptr(); }
+};
+
+template <typename TStream>
+class Iter<TStream, StreamIterator<Input> >
+{
+public:
+    typedef typename Value<TStream>::Type   TValue;
+    typedef std::basic_istream<TValue>      TIStream;
+    typedef std::basic_streambuf<TValue>    TBasicBuffer;
+    typedef StreamBuffer<TValue>            TStreamBuffer;
+
+    TStreamBuffer *streamBuf;
 
     Iter():
-        stream()
+        streamBuf()
     {}
 
-    Iter(TStream &stream):
-        stream(&stream)
+    Iter(TIStream& stream):
+        streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
     {}
 
-    operator typename Value<TStream>::Type () const
-    {
-        return streamPeek(*stream);
-    }
+    Iter(TStreamBuffer *buf):
+        streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
+    {}
+};
+
+template <typename TStream>
+class Iter<TStream, StreamIterator<Output> >
+{
+public:
+    typedef typename Value<TStream>::Type   TValue;
+    typedef std::basic_ostream<TValue>      TOStream;
+    typedef std::basic_streambuf<TValue>    TBasicBuffer;
+    typedef StreamBuffer<TValue>            TStreamBuffer;
+
+    TStreamBuffer *streamBuf;
+
+    Iter():
+        streamBuf()
+    {}
+
+    Iter(TOStream& stream):
+        streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
+    {}
+
+    Iter(TBasicBuffer *buf):
+        streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
+    {}
 
     template <typename TValue2>
     TValue2 & operator=(TValue2 &val)
     {
-        streamPut(*stream, val);
+        setValue(*this, val);
         return val;
     }
 
     template <typename TValue2>
     TValue2 const & operator=(TValue2 const &val)
     {
-        streamPut(*stream, val);
+        setValue(*this, val);
         return val;
     }
 };
+
 
 // ============================================================================
 // Metafunctions
@@ -97,92 +146,148 @@ public:
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-struct Reference<Iter<TStream, StreamIterator<TSpec> > >
+template <typename TStream>
+struct Reference<Iter<TStream, StreamIterator<Input> > >:
+    Value<Iter<TStream, StreamIterator<Input> > > {};
+
+template <typename TStream>
+struct Reference<Iter<TStream, StreamIterator<Input> > const>:
+    Value<Iter<TStream, StreamIterator<Input> > > {};
+
+template <typename TStream>
+struct Reference<Iter<TStream, StreamIterator<Output> > >
 {
-    typedef Iter<TStream, StreamIterator<TSpec> >  Type;
+    typedef Iter<TStream, StreamIterator<Output> > Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-struct Value<Iter<TStream, StreamIterator<TSpec> > > : Value<TStream> {};
+template <typename TStream, typename TDirection>
+struct Value<Iter<TStream, StreamIterator<TDirection> > > : Value<TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-struct Position<Iter<TStream, StreamIterator<TSpec> > > : Position<TStream> {};
+template <typename TStream, typename TDirection>
+struct Position<Iter<TStream, StreamIterator<TDirection> > > : Position<TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-struct Difference<Iter<TStream, StreamIterator<TSpec> > > : Difference<TStream> {};
+template <typename TStream, typename TDirection>
+struct Difference<Iter<TStream, StreamIterator<TDirection> > > : Difference<TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-struct Size<Iter<TStream, StreamIterator<TSpec> > > : Size<TStream> {};
-
-// ============================================================================
-// Functions
-// ============================================================================
+template <typename TStream, typename TDirection>
+struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
 
 // ----------------------------------------------------------------------------
-// Function atEnd()
+// Function value() - Input
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-inline bool
-atEnd(Iter<TStream, StreamIterator<TSpec> > const & iter)
+template <typename TStream>
+inline typename Reference<Iter<TStream, StreamIterator<Input> > >::Type
+value(Iter<TStream, StreamIterator<Input> > &iter)
 {
-    SEQAN_ASSERT(iter.stream != NULL);
-    return streamEof(*(iter.stream));
+    return value(const_cast<Iter<TStream, StreamIterator<Input> > const &>(iter));
+}
+template <typename TStream>
+inline typename Reference<Iter<TStream, StreamIterator<Input> > const>::Type
+value(Iter<TStream, StreamIterator<Input> > const &iter)
+{
+    typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    SEQAN_ASSERT_LT(iter.streamBuf->gptr(), iter.streamBuf->egptr());
+    return *(iter.streamBuf->gptr());
 }
 
 // ----------------------------------------------------------------------------
-// Function value()
+// Function value() - Ouput
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-inline Iter<TStream, StreamIterator<TSpec> > &
-value(Iter<TStream, StreamIterator<TSpec> > & iter)
+template <typename TStream>
+inline Iter<TStream, StreamIterator<Output> > &
+value(Iter<TStream, StreamIterator<Output> > & iter)
 {
     return iter;
 }
-template <typename TStream, typename TSpec>
-inline Iter<TStream, StreamIterator<TSpec> > const &
-value(Iter<TStream, StreamIterator<TSpec> > const & iter)
+template <typename TStream>
+inline Iter<TStream, StreamIterator<Output> > const &
+value(Iter<TStream, StreamIterator<Output> > const & iter)
 {
     return iter;
+}
+
+template <typename TStream, typename TValue>
+inline void
+setValue(Iter<TStream, StreamIterator<Output> > & iter, TValue const &val)
+{
+    return setValue(const_cast<Iter<TStream, StreamIterator<Output> > const &>(iter), val);
+}
+template <typename TStream, typename TValue>
+inline void
+setValue(Iter<TStream, StreamIterator<Output> > const & iter, TValue const &val)
+{
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    iter.streamBuf->sputc(val);
 }
 
 // ----------------------------------------------------------------------------
 // Function goNext()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
+template <typename TStream>
 inline void
-goNext(Iter<TStream, StreamIterator<TSpec> > &iter)
+goNext(Iter<TStream, StreamIterator<Input> > & iter)
 {
-    SEQAN_ASSERT(iter.stream != NULL);
-    streamSeek(*(iter.stream), 1, SEEK_CUR);
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    iter.streamBuf->sbumpc();
 }
+
+template <typename TStream>
+inline void
+goNext(Iter<TStream, StreamIterator<Output> > &)
+{
+    // We do nothing here, as the stream is advanced by sputc whenever you assign
+    // a value to the iterator with *iter= or setValue
+}
+
+// ----------------------------------------------------------------------------
+// Function atEnd()
+// ----------------------------------------------------------------------------
+
+template <typename TStream>
+inline bool
+atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
+{
+    typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
+    typedef StreamBuffer<TValue> TStreamBuffer;
+
+    TStreamBuffer *buf = static_cast<TStreamBuffer*>(iter.streamBuf);
+    SEQAN_ASSERT(buf != NULL);
+    if (buf->gptr() < buf->egptr())
+        return false;
+    else
+        return buf->sgetc() == TStreamBuffer::TTraits::eof();
+}
+
+// w.i.p. down here
+#if 0
 
 // ----------------------------------------------------------------------------
 // Function goFurther()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec, typename TSize>
+template <typename TStream, typename TDirection, typename TSize>
 inline void
-goFurther(Iter<TStream, StreamIterator<TSpec> > &iter, TSize steps)
+goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TSize steps)
 {
     SEQAN_ASSERT(iter.stream != NULL);
     streamSeek(*(iter.stream), steps, SEEK_CUR);
@@ -192,9 +297,9 @@ goFurther(Iter<TStream, StreamIterator<TSpec> > &iter, TSize steps)
 // Function position()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
-inline typename Position<Iter<TStream, StreamIterator<TSpec> > const>::Type
-position(Iter<TStream, StreamIterator<TSpec> > const & iter)
+template <typename TStream, typename TDirection>
+inline typename Position<Iter<TStream, StreamIterator<TDirection> > const>::Type
+position(Iter<TStream, StreamIterator<TDirection> > const & iter)
 {
     SEQAN_ASSERT(iter.stream != NULL);
     return streamTell(*(iter.stream));
@@ -204,13 +309,15 @@ position(Iter<TStream, StreamIterator<TSpec> > const & iter)
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-template <typename TStream, typename TSpec>
+template <typename TStream, typename TDirection>
 inline void
-setPosition(Iter<TStream, StreamIterator<TSpec> > const & iter)
+setPosition(Iter<TStream, StreamIterator<TDirection> > const & iter)
 {
     SEQAN_ASSERT(iter.stream != NULL);
     streamSeek(*(iter.stream));
 }
+
+#endif
 
 }  // namespace seqan
 
