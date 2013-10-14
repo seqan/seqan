@@ -2,7 +2,7 @@
 {% import 'sub_entries.html' as sub_entries -%}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" class="{{ entry_kind }}_{{ entry_name|lower }}">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />    
     <title>{% block title %}{% endblock %} - SeqAn API Documentation</title>
@@ -14,12 +14,12 @@
     
     <link rel="stylesheet/less" href="lib/bootstrap-multiselect/less/bootstrap-multiselect.less" type="text/css" media="screen" charset="utf-8" />
     <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
-    
-    <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
       
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
-
     <link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />
+    <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
+    
+    <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
 
     <script type="text/javascript" charset="utf-8">
       hasFrames = window.top.frames.main ? true : false;
@@ -29,13 +29,9 @@
       searchPrefix = 'search/docs/yard';
       framesUrl = '/docs/yard/frames/file/README.md';
     </script>
-    
-
 
     <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
-
     <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
-
     <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
 
     <style type="text/css">
@@ -51,9 +47,9 @@
     
     <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
     
-    <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
+
   </head>
-  <body class="{{ entry_kind }}_{{ entry_name|lower }}">
+  <body>
     <div id="header">
       <form class="search" method="get" action="/search/docs/yard">
         Search: <input name="q" type="search" placeholder="Search" id="search_box" size="30" value="" />
@@ -188,6 +184,28 @@
         
         <li data-lang-entity="group">Group</li>
         <li data-lang-entity="page">Page</li>
+    </ul>
+    
+    <ul>
+        <li><a href="#" data-lang-entity="typedef">DnaString</a></li>
+        
+        <li><a href="#" data-lang-entity="concept">Container</a></li>
+        <li><a href="#" data-lang-entity="class">String</a></li>
+        <li><a href="#" data-lang-entity="enum">my_enum</a></li>
+        
+        <li><a href="#" data-lang-entity="metafunction">VALUE</a></li>
+        
+        <li><a href="#" data-lang-entity="function">globalAlignment</a></li>
+        
+        <li><a href="#" data-lang-entity="tag">ALLOC_STRING</a></li>
+        
+        <li><a href="#" data-lang-entity="variable">my_var</a></li>
+        
+        <li><a href="#" data-lang-entity="adaption">std::string</a></li>
+        <li><a href="#" data-lang-entity="macro">SEQAN_ASSERT</a></li>
+        
+        <li><a href="#" data-lang-entity="group">whatever grouped functions</a></li>
+        <li><a href="#" data-lang-entity="page">Language Entities</a></li>
     </ul>
     
     

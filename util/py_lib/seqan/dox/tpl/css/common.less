@@ -76,6 +76,10 @@ dl {
 	}
 }
 
+body.list {
+.diagonal-gradient (#ff0, #fff, #f00);
+}
+
 
 /*
  * Popover
@@ -265,6 +269,8 @@ form .multiselect-container {
 	}
 }
 
+@import '../lib/3L/3L';
+
 *[data-lang-entity] {
 	position: relative;
 	
@@ -287,8 +293,14 @@ form .multiselect-container {
     	
     	background-color: #f00000;
     	cursor: help;
+    	
+    	&:hover {
+    		.animation(animation1 1.5s linear 0s infinite alternate);
+    	}
     }
 }
+
+
 
 // TODO auf language_entities.html beschränkung prüfen ob schon implementiert
 body.language_entities {
@@ -300,7 +312,8 @@ body.language_entities {
 .langEntityRules(@langEntity, @color) {
 	@border-darken: 5%;
 	
-	body.language_entities *[data-lang-entity-container=@{langEntity}] {
+	body.language_entities *[data-lang-entity-container=@{langEntity}],
+	body:not([class]) *[data-lang-entity-container=@{langEntity}] {
 		> h2:first-child {
 			margin: 0;
 			padding: 3px 20px 10px 20px;
@@ -389,3 +402,18 @@ body.language_entities {
     border-top-right-radius: 0;
   }
 }
+
+
+
+
+
+.animation1() {
+	0% {
+    	opacity:1;
+    }
+	100% {
+		opacity:0.65;
+	}
+}
+
+@import '../lib/3L/assets/animations/animation1';

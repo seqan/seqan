@@ -237,9 +237,18 @@ and based on the Tipue Search, http://www.tipue.com
                         out += '<ol class="results">';
                         for (var i = 0; i < found.length; i++) {
                             if (settings.numElementsPerPage < 0 || (l_o >= start && l_o < settings.numElementsPerPage + start)) {
-                            	out += '<li class="result" data-lang-entity-container="' + found[i].langEntity + '">';
-                                out += '<h2><a href="' + found[i].location + '"' + ankerTarget + ' data-lang-entity="' + found[i].langEntity + '">' + found[i].title + '</a></h2>';
-                                out += '<div>';
+                            	var langEntity = found[i].langEntity;
+                            	var langEntityEntry = window.langEntities[langEntity];
+                            	if(!langEntityEntry) langEntityEntry = { name: 'UNKNOWN', ideogram: 'UNKNOWN', color: '#FF0000', description: 'Unknown language entity' };
+                            	
+                            	out += '<li class="result" data-lang-entity-container="' + langEntity + '">' +
+                                       '<h2>' +
+                                         '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
+                                            '<a href="language_entities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
+                                            '<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
+                                         '</span>' +
+                                       '</h2>' +
+                                       '<div>';
 
                                 var t = found[i].text;
                                 var t_d = '';

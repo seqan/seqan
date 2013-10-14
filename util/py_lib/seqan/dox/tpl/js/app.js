@@ -76,7 +76,7 @@ function linkSummaries() {
 
 function framesInit() {
   if (hasFrames) {
-    document.body.className = 'frames';
+    document.body.className += ' frames';
     $('#menu .noframes a').attr('href', document.location);
     window.top.document.title = $('html head title').text();
   }

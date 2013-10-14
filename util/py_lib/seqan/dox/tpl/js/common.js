@@ -3,82 +3,54 @@
  */
 (function ($) {
 
-    var languageEntityLabels = {
-        typedef: ['typedef', '<p>A typedef allows to assign a simple name to a complex type, e.g. <code>DnaString</code> is nothing but <code>String&lt;Dna&gt;</code>.</p>'],
-        grouped_typedef: ['typedef', 'todo'],
-        global_typedef: ['typedef', 'todo'],
-        member_typedef: ['class { typedef }', 'todo'],
-
-        concept: ['concept', '<p>Since SeqAn relies on template programming the majority of the classes\' member functions are technically global. A concept can be seen as an interface which allows ...</p><p>E.g. the so called interface function <code>size(c)</code> returns the size of every object that implements the <code>ContainerConcept</code>.'],
-        'class': ['Class', '<p>A class in OOP typically wraps member functions and member variables. In SeqAn classes are mainly used to ...</p>'],
-        'enum': ['enum', '<p>An enum is an enumerated type that consists of finite number of values of the same type.</p>'],
-
-        metafunction: ['Fn<>', '<p>A metafunction is a function that is run at compile-time (in contrast to an ordinary function that is run at run-time).</p><p>SeqAn heavily relies on them for performance reasons.</p><p>E.g. ...'],
-        interface_metafunction: ['#Fn<>', 'todo'],
-
-        'function': ['fn()', '<p>Because SeqAn relies on template programming there are functions that used to be member functions but technically are global functions.</p><p>Such functions are called interface functions.</p>E.g. ...'],
-        global_function: ['fn()', 'todo'],
-        interface_function: ['#fn()', 'todo'],
-        member_function: ['.fn()', 'todo'],
-
-        grouped_tag: ['Tag', 'todo'],
-        tag: ['Tag', 'todo'],
-
-        variable: ['int x', 'todo'],
-        global_variable: ['int x', 'todo'],
-        local_variable: ['int x', 'todo'],
-        member_variable: ['.x', 'todo'],
-
-        adaption: ['foreign::', 'todo'],
-        macro: ['#define', 'todo'],
-
-        group: ['Group', 'todo'],
-        page: ['Page', 'todo']
-    }
-
-    languageEntityLabels['metafunction'] = languageEntityLabels['metafunction'];
-    
 	$.fn.extend({
-		pimpLanguageEntityLabels: function() {
+		createLangEntityLabel: function(langEntity) {
+			var entry = window.langEntities[langEntity];
+			if (!entry) entry = window.langEntities['unknown'];
+					
+			return $('<a href="language_entities.html#' + langEntity + '">' + entry.ideogram + '</a>')
+					.attr('title', entry.name)
+					.popover({
+						html: true,
+					    placement: 'right',
+					    trigger: 'hover',
+					    content: '<div class="description">' + entry.description + '<div>' + '<p class="more">Click now for more information</p>',
+					    container: 'body'
+					});
+		},
+		
+		pimpLangEntityLabels: function() {
 			return this.each(function() {
 				$(this).find('*[data-lang-entity]').each(function () {
 					var $this = $(this);
-					if($this.prop('pimped')) return true;
-					$this.prop('pimped', true);
+					if($this.attr('data-pimped')) return true;
             
-					var languageEntity = $this.attr('data-lang-entity');
-					var oneLanguageEntity = 'a' + ($.inArray(languageEntity.substr(0, 1).toLowerCase(), ['a', 'e', 'i', 'o', 'u']) >= 0 ? 'n ' : ' ') + '<strong>' + languageEntity.replace('_', ' ') + '</strong>';
-
-					var entry = languageEntityLabels[languageEntity];
-					if (!entry) entry = ["undefined", "undefined"];
-
-					$('<a href="language_entities.html#' + languageEntity + '">' + entry[0] + '</a>')
-					    .prependTo(this)
-					    .attr('title', 'What is ' + oneLanguageEntity + '?')
-					    .popover({
-					        html: true,
-					        placement: 'right',
-					        trigger: 'hover',
-					        content: entry[1] + '<p>Click now for more information</p>',
-					        container: 'body'
-					    });
+					var langEntity = $this.attr('data-lang-entity');
+					
+					// if dealing with list items
+					// wrap the inner nodes to not destroy the li
+					if($this.prop('tagName') == 'LI') {
+						$this.wrapInner('<span data-lang-entity="' + langEntity + '"/>')
+							.removeAttr('data-lang-entity');
+						$this = $this.children();
+					}
+					    
+					$this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
+						.removeAttr('data-lang-entity')
+						.before($().createLangEntityLabel(langEntity));
 				});
 			});
 		}
 	});
 
     $(document).ready(function () {
-    	$('body').pimpLanguageEntityLabels();
+    	if(!$('body').hasClass('list')) {
+    		$('body').pimpLangEntityLabels();
+    	}
     });
 
 })(jQuery);
 
-
-
-
-/**
- * Search Engine
- */
 
 
 
@@ -146,7 +118,7 @@
                 ["grouped_typedef", "typedef"],
                 ["global_typedef", "typedef"],
                 ["member_typedef", "typedef"],
-                ["interface_metafunction", "metafunction"],
+                ["interface_meta_function", "meta_function"],
                 ["global_function", "function"],
                 ["interface_function", "function"],
                 ["member_function", "function"],
@@ -156,7 +128,7 @@
                 ["member_variable", "variable"]
             ],
             callback: function($form, $results) {
-            	$results.pimpLanguageEntityLabels();
+            	
             }
         });
     }

@@ -1,22 +1,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html class="list">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+      <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+      
       <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
+      
       <link rel="stylesheet/less" href="lib/bootstrap-multiselect/less/bootstrap-multiselect.less" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      
       <link rel="stylesheet" href="css/full_list.css" type="text/css" media="screen" charset="utf-8" />
       <link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />
-
-      <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
-      <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
+      
       <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/search.data.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/search.engine.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
-      <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
 
       <base id="base_target" target="_parent" />
   </head>
@@ -24,7 +27,7 @@
     <script type="text/javascript" charset="utf-8">
       if (window.top.frames.main) {
       document.getElementById('base_target').target = 'main';
-      document.body.className = 'frames';
+      document.body.className += ' frames';
       }
     </script>
     <div id="content"><form role="form" id="search">
