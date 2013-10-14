@@ -9,14 +9,14 @@
       <link rel="stylesheet" href="../css/full_list.css" type="text/css" media="screen" charset="utf-8" />
       <link rel="stylesheet/less" href="../css/common.less" type="text/css" media="screen" charset="utf-8" />
 
-      <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../lib/bootstrap/js/bootstrap.min.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../js/lang_entities.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../js/search.data.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../js/search.engine.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../js/common.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../js/less.min.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/search.data.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/search.engine.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
 
       <base id="base_target" target="_parent" />
   </head>
@@ -65,7 +65,7 @@
               <h2><a href="{{entry.name|name_to_path}}" target="main" data-lang-entity="{{ entry.kind }}">{{name}}</a></h2>
               <div>
                 <div class="text"></div>
-                <div class="location"><a href="../{{entry.name|name_to_path}}" target="main">../{{entry.name|name_to_path}}</a></div>
+                <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>
               </div>
             </li>
             {% endif %}
