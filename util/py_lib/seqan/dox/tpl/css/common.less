@@ -25,7 +25,7 @@ body {
 h2 {
 	border-bottom: 1px solid #999;
 	
-	body.list & {
+	html.list & {
 		border-bottom: none;
 	}
 }
@@ -76,8 +76,21 @@ dl {
 	}
 }
 
-body.list {
-.diagonal-gradient (#ff0, #fff, #f00);
+html.list {
+	body {
+		padding: 15px;
+		background-color: transparent;
+	}
+	background-attachment: fixed;
+	.diagonal-gradient (lighten(@primary, 45%), lighten(@primary, 38%), lighten(@primary, 42%));
+}
+
+html:not(.list) {
+	body {
+		padding: 5px 25px 25px 25px;
+		background-color: transparent;
+	}
+	.diagonal-gradient (lighten(@primary, 53%), lighten(@primary, 51%), lighten(@primary, 52%));
 }
 
 
@@ -110,7 +123,7 @@ body.list {
  * Search
  */
 #search {
-	margin: 10px;
+	margin: 10px 10px 20px 10px;
 	
 	*[type=search] {
 		width: 100%;
@@ -176,25 +189,41 @@ body.list {
 	> ol {
 		padding: 0;
 		list-style: none;
-		margin-left: 0;
+		margin-left: 10px;
+		margin-right: 10px;
 
 		li.result {
-			&:nth-child(odd) { background: #eee; }
-			&:nth-child(even) { background: #fff; }
-			
-			padding: 5px 5px 5px 12px;
+			background: transparent;
 			margin: 0;
 			list-style: none;
+			
+			span[data-lang-entity] {
+				display: table;
+				padding: 5px 5px 4px 5px;
+				
+				> * {
+					display: table-cell;
+				}
+				
+				> *:last-child {
+					width: 100%;
+					padding-left: 0.3em;
+				}
+				
+				&:hover {
+					background-color: @primary;
+					border-radius: 4px;
+				
+					a {
+						color: #fff;
+					}
+				}
+			}
 			
 			h2 {
 				font-size: 1.1em;
 				margin: 0;
 				padding: 0;
-				
-				a {
-					
-					&:hover, &:active { background-color: @primary; }
-				}
 			}
 			
 			div {
@@ -312,8 +341,8 @@ body.language_entities {
 .langEntityRules(@langEntity, @color) {
 	@border-darken: 5%;
 	
-	body.language_entities *[data-lang-entity-container=@{langEntity}],
-	body:not([class]) *[data-lang-entity-container=@{langEntity}] {
+	html.language_entities *[data-lang-entity-container=@{langEntity}],
+	html:not([class]) *[data-lang-entity-container=@{langEntity}] {
 		> h2:first-child {
 			margin: 0;
 			padding: 3px 20px 10px 20px;
