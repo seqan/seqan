@@ -66,9 +66,9 @@ void createFile(CharString &fileName, char const *text)
 typedef
     TagList<CharString,
     TagList<std::ifstream,
-    TagList<std::fstream//,
-//    TagList<Iter<std::ifstream, StreamIterator<> >
-    > > > //>
+    TagList<std::fstream,
+    TagList<Iter<std::ifstream, StreamIterator<Input> >
+    > > > >
     TokenizationInputStreamTypes;
 
 // --------------------------------------------------------------------------
@@ -132,10 +132,10 @@ struct TokenizationContext<std::ifstream>
 };
 
 template <typename TStream>
-struct TokenizationContext<Iter<TStream, StreamIterator<> > >
+struct TokenizationContext<Iter<TStream, StreamIterator<Input> > >
 {
     TStream file;
-    Iter<TStream, StreamIterator<> > iter;
+    Iter<TStream, StreamIterator<Input> > iter;
 
     TokenizationContext(const char *text)
     {
@@ -143,7 +143,7 @@ struct TokenizationContext<Iter<TStream, StreamIterator<> > >
         createFile(fileName, text);
         file.open(toCString(fileName));
         SEQAN_ASSERT(file.is_open());
-        iter = Iter<TStream, StreamIterator<> >(file);
+        iter = Iter<TStream, StreamIterator<Input> >(file);
     }
 };
 

@@ -50,6 +50,54 @@
 namespace seqan {
 
 // ============================================================================
+// Tags, Enums
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Direction Tags
+// --------------------------------------------------------------------------
+
+struct Input_;
+typedef Tag<Input_> Input;
+
+struct Output_;
+typedef Tag<Output_> Output;
+
+// --------------------------------------------------------------------------
+// Compression Type Tags
+// --------------------------------------------------------------------------
+
+#if SEQAN_HAS_ZLIB
+struct GZFile_;
+typedef Tag<GZFile_> GZFile;
+#endif
+
+#if SEQAN_HAS_BZIP2
+struct BZ2File_;
+typedef Tag<BZ2File_> BZ2File;
+#endif
+
+// --------------------------------------------------------------------------
+// TagList CompressedFileTypes
+// --------------------------------------------------------------------------
+
+typedef
+#if SEQAN_HAS_ZLIB
+    TagList<GZFile,
+#endif
+#if SEQAN_HAS_BZIP2
+    TagList<BZ2File,
+#endif
+    TagList<Nothing>
+#if SEQAN_HAS_BZIP2
+    >
+#endif
+#if SEQAN_HAS_ZLIB
+    >
+#endif
+    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
+
+// ============================================================================
 // Metafunctions
 // ============================================================================
 
@@ -203,38 +251,8 @@ struct VirtualStreamSwitch_<TValue, Output, BZ2File>
 };
 
 // ==========================================================================
-// Tags, Classes, Enums
+// Classes
 // ==========================================================================
-
-// --------------------------------------------------------------------------
-// TagList CompressedFileTypes
-// --------------------------------------------------------------------------
-
-#if SEQAN_HAS_ZLIB
-struct GZFile_;
-typedef Tag<GZFile_> GZFile;
-#endif
-
-#if SEQAN_HAS_BZIP2
-struct BZ2File_;
-typedef Tag<BZ2File_> BZ2File;
-#endif
-
-typedef
-#if SEQAN_HAS_ZLIB
-    TagList<GZFile,
-#endif
-#if SEQAN_HAS_BZIP2
-    TagList<BZ2File,
-#endif
-    TagList<Nothing>
-#if SEQAN_HAS_BZIP2
-    >
-#endif
-#if SEQAN_HAS_ZLIB
-    >
-#endif
-    CompressedFileTypes;  // if TagSelector is set to -1, the file format is auto-detected
 
 // --------------------------------------------------------------------------
 // Class VirtualStreamFactoryContext_
