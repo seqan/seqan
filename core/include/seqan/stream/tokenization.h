@@ -156,6 +156,7 @@ struct IgnoreOrAssertFunctor
             return true;
         if (!assertFunc(val))
             throw TException(message);
+        return false;
     }
 };
 
@@ -420,13 +421,13 @@ _readUntil(
     for (; !atEnd(iter); )
     {
         ichunk = getChunk(iter, Input());
+        SEQAN_ASSERT(ichunk.begin < ichunk.end);
 
         // reserve memory for the worst-case
         // TODO(weese):Document worst-case behavior
         reserveChunk(target, ichunk.end - ichunk.begin);
-        ochunk = getChunk(end(target, Rooted()), Output());
 
-        SEQAN_ASSERT(ichunk.begin < ichunk.end);
+        ochunk = getChunk(end(target, Rooted()), Output());
         SEQAN_ASSERT(ochunk.begin < ochunk.end);
 
         TIValue* istart = ichunk.begin;
@@ -702,8 +703,8 @@ readRecord(TIdString &meta,
            Fasta)
 {
     EqualsChar<'>'> fastaBegin;
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::exception>
-        ignoreWhiteSpaceAndAssertAlphabet;//("Invalid character in Fasta sequence!");
+    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
+        ignoreWhiteSpaceAndAssertAlphabet("Invalid character in Fasta sequence!");
 
     clear(meta);
     clear(seq);
@@ -717,8 +718,7 @@ readRecord(TIdString &meta,
 template <typename TIdString,
           typename TSeqString,
           typename TQualString,
-          typename TFwdIterator,
-          typename TTag>
+          typename TFwdIterator>
 inline void
 readRecord(TIdString &meta,
            TSeqString &seq,
@@ -728,10 +728,12 @@ readRecord(TIdString &meta,
 {
     EqualsChar<'@'>     fastqBegin;
     EqualsChar<'+'>     qualsBegin;
-    EqualsChar<'\n'>    qualsEnd;
 
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::exception>
-        ignoreWhiteSpaceAndAssertDna5;//("Invalid character in Fastq sequence!");
+    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
+        ignoreWhiteSpaceAndAssertAlphabet("Invalid sequence character in Fastq sequence!");
+
+    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TQualString>::Type>, std::runtime_error>
+        ignoreWhiteSpaceAndAssertQuality("Invalid quality character in Fastq sequence!");
 
     clear(meta);
     clear(seq);
@@ -741,15 +743,18 @@ readRecord(TIdString &meta,
     ++iter;                         // skip '@'
     readLine(meta, iter);           // read Fastq id
 
-    // TODO(weese): Actually, we have to search for the sequence "\n+" and then for "\n@".
-
     readUntil(seq, iter, qualsBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fastq sequence
+//    readUntil(seq, iter, EqualsChar<'\n'>());
+//    skipUntil(iter, qualsBegin);
+
     ++iter;                         // skip '+'
     skipLine(iter);                 // skip 2nd Fastq id
-    readUntil(qual, iter, fastqBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fastq qualities
+
+    readUntil(qual, iter, IsWhitespace(), ignoreWhiteSpaceAndAssertQuality);     // read Fastq qualities
+//    readUntil(qual, iter, EqualsChar<'\n'>());
+
+    skipUntil(iter, fastqBegin);    // forward to the next '@'
 }
-
-
 
 }  // namespace seqan
 
