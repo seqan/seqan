@@ -3,6 +3,7 @@
 """
 
 import argparse
+import ConfigParser
 import logging
 import os
 import re
@@ -22,6 +23,62 @@ import migration
 EXPECTED_TAGS = ['a', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'em', 'i', 'b',
                  'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'tt',
                  'table', 'tbody', 'tr', 'th', 'td', 'caption', 'sup', 'img']
+
+# Default colors to use.
+DEFAULT_COLORS = {
+	'red':    '#de5b5b',
+	'orange': '#debd5b',
+	'lgreen': '#9dde5b',
+	'rgreen': '#5bde7c',
+	'lblue':  '#5bdede',
+	'rblue':  '#5b7cde',
+	'purple': '#9d5bde',
+	'pink':   '#de5bbd'}
+
+# The known language entities.
+KNOWN_LANGUAGE_ENTITIES = [
+    'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
+    'concept', 'class', 'enum', 'metafunction', 'interface_metafunction',
+    'function', 'global_function', 'interface_function', 'member_function',
+    'tag', 'grouped_tag', 'variable', 'global_variable', 'member_variable',
+    'adaption', 'macro', 'group', 'page', 'unknown']
+
+# Properties of language entities.
+LANGUAGE_ENTITIES_PROPERTIES = ['name', 'ideogram', 'color', 'description', 'belongsTo']
+
+
+class Config(object):
+    """Stores configuration that can be loaded from an INI file.
+
+    At the moment, the language entity related configuration such as
+    colors and description of language entites can be read from the
+    INI file.  The HTML writer will then write the result to the
+    lang_entities.js file and also use it in the generated HTML.
+    """
+
+    def __init__(self):
+        self.colors = dict(DEFAULT_COLORS)  # copy
+        default = dict([(key, None) for key in LANGUAGE_ENTITIES_PROPERTIES])
+        self.lang_entities = dict([(key, dict(default)) for key in KNOWN_LANGUAGE_ENTITIES])
+
+    def load(self, file_name):
+        """Load configuration from INI file."""
+        config = ConfigParser.SafeConfigParser()
+        config.read(file_name)
+        # Get colors.
+        for key in DEFAULT_COLORS.keys():
+            try:
+                self.colors[key] = config.get('colors', key)
+            except ConfigParser.Error:
+                pass  # swallow
+        # Load information about language entities.
+        for name in KNOWN_LANGUAGE_ENTITIES:
+            path = 'entity/%s' % name
+            try:
+                for prop in LANGUAGE_ENTITIES_PROPERTIES:
+                    self.lang_entities[name][prop] = config.get(path, prop)
+            except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+                pass  # swallow
 
 
 class FileNameSource(object):
@@ -47,6 +104,10 @@ class FileNameSource(object):
 
 def doMain(args):
     msg_printer = dox_parser.MessagePrinter(args.ignore_warnings_dirs)
+
+    # Load configuration.
+    config = Config()
+    config.load('config.ini')
 
     # Parse all legacy files.
     import seqan.dddoc.core as core
@@ -90,7 +151,7 @@ def doMain(args):
     except dox_parser.ParserError, e:
         msg_printer.printParserError(e)
         return 1
-    html_writer = write_html.HtmlWriter(doc_proc, args)
+    html_writer = write_html.HtmlWriter(doc_proc, args, config)
     html_writer.generateFor()
 
 

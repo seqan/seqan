@@ -2,6 +2,7 @@
 """Writing for HTML pages."""
 
 import distutils.dir_util
+import json
 import os
 import os.path
 import shutil
@@ -185,6 +186,7 @@ class TemplateManager(object):
         self.env.filters['to_dox'] = toDox
         self.env.filters['translink'] = createTransLink(doc, self)
         self.env.filters['name_to_path'] = createNameToPath(doc)
+        self.env.filters['tojson'] = json.dumps
         self.tpls = {}
         for path in ['page.html', 'concept.html']:
             self.loadTemplate(path)
@@ -309,10 +311,11 @@ class ImagePathUpdater(proc_doc.TextNodeVisitor):
 
 
 class HtmlWriter(object):
-    def __init__(self, doc, args, out_dir='html'):
+    def __init__(self, doc, args, config, out_dir='html'):
         self.doc = doc
         self.out_dirs = {}
         self.args = args
+        self.config = config
         # Normalize path.
         out_dir = os.path.abspath(out_dir)
         # Generate path names.
@@ -341,6 +344,7 @@ class HtmlWriter(object):
         self.generatePages(self.doc)
         self.generateDemoPages(self.doc)
         self.generateSearchIndex(self.doc)
+        self.generateLanguageEntities()
 
     def makedirs(self):
         for path in self.out_dirs.values():
@@ -477,6 +481,12 @@ class HtmlWriter(object):
         js.append('];')
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
             f.write('\n'.join(js))
+
+    def generateLanguageEntities(self):
+        """Genererate language entities JavaScript file."""
+        js = self.tpl_manager.render('js/lang_entities.js', config=self.config)
+        with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
+            f.write(js)
 
     def log(self, s, *args):
         print >>sys.stderr, s % args
