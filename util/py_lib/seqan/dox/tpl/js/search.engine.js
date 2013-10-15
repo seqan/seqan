@@ -244,7 +244,7 @@ and based on the Tipue Search, http://www.tipue.com
                             	out += '<li class="result" data-lang-entity-container="' + langEntity + '">' +
                                        '<h2>' +
                                          '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
-                                            '<a href="language_entities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
+                                            '<a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
                                             '<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
                                          '</span>' +
                                        '</h2>' +

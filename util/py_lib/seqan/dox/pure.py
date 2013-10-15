@@ -22,7 +22,8 @@ import migration
 # The expected HTML tags, useful for differentiating between F<T>::Type and real tags.
 EXPECTED_TAGS = ['a', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'em', 'i', 'b',
                  'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'tt',
-                 'table', 'tbody', 'tr', 'th', 'td', 'caption', 'sup', 'img']
+                 'table', 'tbody', 'tr', 'th', 'td', 'caption', 'sup', 'img',
+                 'p']
 
 # Default colors to use.
 DEFAULT_COLORS = {

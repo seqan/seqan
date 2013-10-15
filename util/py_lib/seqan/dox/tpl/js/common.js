@@ -19,7 +19,7 @@
 			var entry = window.langEntities[langEntity];
 			if (!entry) entry = window.langEntities['unknown'];
 					
-			return $('<a href="language_entities.html#' + langEntity + '">' + entry.ideogram + '</a>')
+			return $('<a href="page_LanguageEntities.html#' + langEntity + '">' + entry.ideogram + '</a>')
 					.attr('title', entry.name)
 					.popover({
 						html: true,
