@@ -1,0 +1,162 @@
+/*!
+@page LanguageEntities Language Entities
+
+@section Typedef
+
+Typedefs are a C++ language feature that allows to give custom names to arbitrary types.
+
+When programming SeqAn, they are often used for giving short names to complicated, nested template instantiations.
+
+@subsection Example
+
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+
+@subsection Variants
+
+<dl>
+  <dt>global typedef</dt>
+  <dd><p>Used in the library to create shortcuts such as @link CharString @endlink.</p>
+      <p>In user programs, this is often used to define types used throughout the
+         program.</p></dd>
+  <dt>grouped typedef</dt>
+  <dd><p>Global typedef that is in a semantic group with other ones.</p></dd>
+</dl>
+
+@section Class
+
+C++ allows the definition of custom types using classes.
+
+In SeqAn, many classes are template classes.
+
+@subsection Example
+
+@code{.cpp}
+class MyClass
+{
+public:
+    int x;
+
+    MyClass() : x(0)
+    {}
+};
+@endcode
+
+
+@section Concept
+
+Concepts are <b>informal interfaces</b> that define a set of requirements for a type.  In contrast to Java interfaces,
+C++ concepts can be added to custom types and built-in types without having access to the source of the type.
+
+@subsection External Resources
+
+See the <a href="http://en.cppreference.com/w/cpp/concept">concepts chapter at cppreference.com</a>.
+
+
+@section Enum
+
+Enums are a C/C++ feature that allow the definition of enumeration types.
+Such types have a fixed number of values and each number has a name.
+
+@subsection Example
+
+@code{.cpp}
+enum MyEnum {
+     ENUM_VALUE1,
+     ENUM_VALUE2
+};
+@endcode
+
+
+@section Metafunction
+
+Metafunctions are compile-time evaluated functions.  They can be used to compute integral values at compile time or to
+select certain types as functions of other types.
+
+@subsection External Resources
+
+See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms
+Wikibook</a>.
+
+
+@section Tag
+
+Tags are classes that are only used for their type.  They are often used for tag-based dispatching.
+
+@subsection Example
+
+In SeqAn, tags are defined as follows.  This way, there can be multiple headers that all define the tag <tt>TagName</tt>
+and you can still instantiate <tt>TagName()</tt> since the template <tt>Tag&lt;&gt;</tt> has a definition and a default
+constructor.
+
+@code{.cpp}
+namespace seqan {
+
+struct TagName_;
+typedef Tag<TagName_> TagName;
+
+}  // namespace seqan
+@endcode
+
+In contrast, the following tag definitions can only occur once.  Note that there is no way to circumvent the limitation
+of only one occurence if your tag should have template parameters (shown below) or member variables (not shown).
+
+@code{.cpp}
+struct TagName {};
+
+template <typename T>
+struct AnotherTagName
+{};
+@endcode
+
+
+@section Variable
+
+C++ variables.
+
+
+@section Adaption
+
+Adaptions are collections of functions and metafunctions that make a type <b>T</b> follow an interface <b>C</t>.  This
+can be used to make a class from an external library follow a SeqAn concept.
+
+
+@section Macro
+
+Macros are pieces of code evaluated by the C preprocessor.
+
+All SeqAn macros are prefixed with <tt>SEQAN_</tt>.
+
+@subsection Example
+
+@code{.cpp}
+// If SeqAn would provide a macro to compute the square of a number, it would
+// look as follows.
+#define SEQAN_SQUARE(x) (x * x)
+
+// In applications and user code, it could be used as follows:
+#define SQUARE(x) (x * x)
+
+// The SeqAn library defines the SEQAN_ASSERT* macros, for example:
+SEQAN_ASSERT_EQ(SQUARE(10), 100);
+@endcode
+
+
+@section Group
+
+Groups allow to semantically group functions, metafunctions, and tags and give them a short description.  There is no
+equivalent in C++ programs to groups.
+
+
+@section Page
+
+In the SeqAn documentation, pages are documents that are not directly connected to a certain code entry.
+
+*/
