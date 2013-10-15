@@ -694,8 +694,7 @@ write3(TTarget &target, TContainer &cont)
 // This reads Meta and Sequence
 template <typename TIdString,
           typename TSeqString,
-          typename TFwdIterator,
-          typename TTag>
+          typename TFwdIterator>
 inline void
 readRecord(TIdString &meta,
            TSeqString &seq,
@@ -703,11 +702,10 @@ readRecord(TIdString &meta,
            Fasta)
 {
     EqualsChar<'>'> fastaBegin;
-    IgnoreOrAssertFunctor<
-        IsWhitespace,
-        IsInAlphabet<typename Value<TSeqString>::Type>(),
-        std::exception > ignoreWhiteSpaceAndAssertAlphabet("Invalid character in Fasta sequence!");
+    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::exception>
+        ignoreWhiteSpaceAndAssertAlphabet;//("Invalid character in Fasta sequence!");
 
+    clear(meta);
     clear(seq);
 
     skipUntil(iter, fastaBegin);    // forward to the next '>'
@@ -728,13 +726,14 @@ readRecord(TIdString &meta,
            TFwdIterator &iter,
            Fastq)
 {
-    EqualsChar<'@'> fastqBegin;
-    EqualsChar<'+'> qualsBegin;
-    IgnoreOrAssertFunctor<
-        IsWhitespace,
-        IsInAlphabet<typename Value<TSeqString>::Type>(),
-        std::exception > ignoreWhiteSpaceAndAssertAlphabet("Invalid character in Fastq sequence!");
+    EqualsChar<'@'>     fastqBegin;
+    EqualsChar<'+'>     qualsBegin;
+    EqualsChar<'\n'>    qualsEnd;
 
+    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::exception>
+        ignoreWhiteSpaceAndAssertDna5;//("Invalid character in Fastq sequence!");
+
+    clear(meta);
     clear(seq);
     clear(qual);
 
