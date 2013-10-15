@@ -13,15 +13,6 @@ h1.alphaindex { margin-top: 0; font-size: 22px; }
 .rdoc-term { padding-right: 25px; font-weight: bold; }
 .rdoc-list p { margin: 0; padding: 0; margin-bottom: 4px; }
 
-/* style for <ul> */
-#filecontents li > p, .docstring li > p { margin: 0px; }
-#filecontents ul, .docstring ul { padding-left: 20px; }
-/* style for <dl> */
-#filecontents dl, .docstring dl { border: 1px solid #ccc; }
-#filecontents dt, .docstring dt { background: #ddd; font-weight: bold; padding: 3px 5px; }
-#filecontents dd, .docstring dd { padding: 5px 0px; margin-left: 18px; }
-#filecontents dd > p, .docstring dd > p { margin: 0px; }
-
 .note {
   color: #222;
   -moz-border-radius: 3px; -webkit-border-radius: 3px;
@@ -58,39 +49,6 @@ p.inherited {
   margin: 0;
   margin-left: 25px;
 }
-
-#filecontents dl.box, dl.box {
-  border: 0;
-  width: 570px;
-  font-size: 1em;
-}
-#filecontents dl.box dt, dl.box dt {
-  float: left;
-  display: block;
-  width: 150px;
-  margin: 0;
-  text-align: right;
-  font-weight: bold;
-  background: transparent;
-  border: 1px solid #aaa;
-  border-width: 1px 0px 0px 1px;
-  padding: 6px 0;
-  padding-right: 10px;
-}
-#filecontents dl.box dd, dl.box dd {
-  float: left;
-  display: block;
-  width: 380px;
-  margin: 0;
-  padding: 6px 0;
-  padding-right: 20px;
-  border: 1px solid #aaa;
-  border-width: 1px 1px 0 0;
-}
-#filecontents dl.box .last, dl.box .last {
-  border-bottom: 1px solid #aaa;
-}
-#filecontents dl.box .r1, dl.box .r1 { background: #eee; }
 
 ul.toplevel { list-style: none; padding-left: 0; font-size: 1.1em; }
 .index_inline_list { padding-left: 0; font-size: 1.1em; }
@@ -153,8 +111,6 @@ h3.signature .aliases .names { font-family: Monaco, Consolas, Courier, monospace
 .showSource { font-size: 0.9em; }
 .showSource a:link, .showSource a:visited { text-decoration: none; color: #666; }
 
-#content a:link, #content a:visited { text-decoration: none; color: #05a; }
-#content a:hover { background: #ffffa5; }
 div.docstring, p.docstring { margin-right: 6em; }
 
 ul.summary {
@@ -260,32 +216,12 @@ li.r2 { background: #fafafa; }
 #content ul.summary li.deprecated .summary_signature a:link,
 #content ul.summary li.deprecated .summary_signature a:visited { text-decoration: line-through; font-style: italic; }
 
-#toc {
-  padding: 20px; padding-right: 30px; border: 1px solid #ddd; float: right; background: #fff; margin-left: 20px; margin-bottom: 20px;
-  max-width: 300px;
-  -webkit-box-shadow: -2px 2px 6px #bbb;
-  -moz-box-shadow: -2px 2px 6px #bbb;
-  z-index: 5000;
-  position: relative;
-}
-#toc.nofloat { float: none; max-width: none; border: none; padding: 0; margin: 20px 0; -webkit-box-shadow: none; -moz-box-shadow: none; }
-#toc.nofloat.hidden { padding: 0; background: 0; margin-bottom: 5px; }
-#toc .title { margin: 0; }
-#toc ol { padding-left: 1.8em; }
-#toc li { font-size: 1.1em; line-height: 1.7em; }
-#toc > ol > li { font-size: 1.1em; font-weight: bold; }
-#toc ol > ol { font-size: 0.9em; }
-#toc ol ol > ol { padding-left: 2.3em; }
-#toc ol + li { margin-top: 0.3em; }
-#toc.hidden { padding: 10px; background: #f6f6f6; -webkit-box-shadow: none; -moz-box-shadow: none; }
-#filecontents h1 + #toc.nofloat { margin-top: 0; }
-
 /* syntax highlighting */
 .source_code { display: none; padding: 3px 8px; border-left: 8px solid #ddd; margin-top: 5px; }
-#filecontents pre.code, .docstring pre.code, .source_code pre { font-family: monospace; }
-#filecontents pre.code, .docstring pre.code { display: block; }
+pre.code, .docstring pre.code, .source_code pre { font-family: monospace; }
+pre.code, .docstring pre.code { display: block; }
 .source_code .lines { padding-right: 12px; color: #555; text-align: right; }
-#filecontents pre.code, .docstring pre.code,
+pre.code, .docstring pre.code,
 .tags pre.example { padding: 5px 12px; margin-top: 4px; border: 1px solid #eef; background: #f5f5ff; }
 pre.code { color: #000; }
 pre.code .info.file { color: #555; }

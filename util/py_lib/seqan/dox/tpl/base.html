@@ -52,7 +52,9 @@
 
   </head>
   <body>
+  	{#
     <div id="header">
+
       <form class="search" method="get" action="/search/docs/yard">
         Search: <input name="q" type="search" placeholder="Search" id="search_box" size="30" value="" />
       </form>
@@ -79,7 +81,6 @@
         .frames #content h1 { margin-top: 15px; }
       </style>
 
-      {#
       <div id="menu">       
         <a href="/docs" target="_top">Libraries</a> &raquo;
         <span class="title">yard <small>(0.8.4)</small></span>
@@ -90,7 +91,7 @@
         
         <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
       </div>
-      #}
+
 
       <div id="search">
         
@@ -117,6 +118,7 @@
       </div>
       <div class="clear"></div>
     </div>
+    #}
     
     <iframe id="search_frame"></iframe>
 

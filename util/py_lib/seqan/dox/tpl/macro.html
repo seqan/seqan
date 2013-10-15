@@ -3,7 +3,7 @@
 {% block title %}{{ macro.title|e }}{% endblock %}
 
 {% block content %}
-<h1 class="macro title">Macro: {{ macro.title|e }}</h1>
+<h1 data-lang-entity="macro" data-pimped="true"><a href="language_entities.html#macro">#define</a> {{ macro.title|e }}</h1>
 
 <!-- @brief -->
 {{ sections.brief(macro) }}

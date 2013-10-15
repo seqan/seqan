@@ -65,11 +65,10 @@ Render the inheritance information of the given entr.
 
 {% macro top_box(entry) %}
 <dl class="box">
-  {% set row_class = cycler('r1', 'r2') %}
 
   {% if entry.extends %}
-  <dt class="{{ row_class.current }}">Extends:</dt>
-  <dd class="{{ row_class.next() }}">
+  <dt>Extends</dt>
+  <dd>
   {% for e in entry.extends|sort -%}
     {{ e|translink }}{% if not loop.last %}, {% endif %}
   {% endfor %}
@@ -77,8 +76,8 @@ Render the inheritance information of the given entr.
   {% endif %}
 
   {% if entry.implements %}
-  <dt class="{{ row_class.current }}">Implements:</dt>
-  <dd class="{{ row_class.next() }}">
+  <dt>Implements</dt>
+  <dd>
   {% for e in entry.implements|sort -%}
     {{ e|translink }}{% if not loop.last %}, {% endif %}
   {% endfor %}
@@ -86,8 +85,8 @@ Render the inheritance information of the given entr.
   {% endif %}
 
   {% if entry.all_extended %}
-  <dt class="{{ row_class.current }}">All Extended:</dt>
-  <dd class="{{ row_class.next() }}">
+  <dt>All Extended</dt>
+  <dd>
   {% for e in entry.all_extended|sort -%}
     {{ e|translink }}{% if not loop.last %}, {% endif %}
   {% endfor %}
@@ -95,8 +94,8 @@ Render the inheritance information of the given entr.
   {% endif %}
 
   {% if entry.all_extending %}
-  <dt class="{{ row_class.current }}">All Subcl's:</dt>
-  <dd class="{{ row_class.next() }}">
+  <dt>All Subcl's</dt>
+  <dd>
   {% for e in entry.all_extending|sort -%}
     {{ e|translink }}{% if not loop.last %}, {% endif %}
   {% endfor %}
@@ -104,16 +103,16 @@ Render the inheritance information of the given entr.
   {% endif %}
 
   {% if entry.all_implemented %}
-  <dt class="{{ row_class.current }}">All Impl'd:</dt>
-  <dd class="{{ row_class.next() }}">
+  <dt>All Impl'd</dt>
+  <dd>
   {% for e in entry.all_implemented|sort -%}
     {{ e|translink }}{% if not loop.last %}, {% endif %}
   {% endfor %}
   </dd>
   {% endif %}
 
-  <dt class="{{ row_class.current }} last">Defined in:</dt>
-  <dd class="{{ row_class.next() }} last">
+  <dt class="last">Defined in</dt>
+  <dd class="last">
     {% if entry.headerfiles %}
     {% for h in entry.headerfiles|sort -%}
     {{ h|e }}{% if not loop.last %}, {% endif %}
@@ -123,7 +122,6 @@ Render the inheritance information of the given entr.
     {% endif %}
   </dd>
 </dl>
-<div class="clear"></div>
 {% endmacro %}
 
 <!--
@@ -244,7 +242,7 @@ Render the member functions overview
 {% macro member_functions_ov(entry, doc, qualifier='Member') %}
 {% if entry.hasSubEntry('member_function', doc) %}
 
-<h2>{{ qualifier }} Function Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Function Overview</h2>
 
 {% if entry.subentries['member_function'] -%}
 <ul class="summary">
@@ -306,7 +304,7 @@ Render the member typedefs overview
 {% macro member_typedefs_ov(entry, doc, qualifier='Member') %}
 {% if entry.hasSubEntry('member_typedef', doc) %}
 
-<h2>{{ qualifier }} Typedef Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Typedef Overview</h2>
 
 {% if entry.subentries['member_typedef'] -%}
 <ul class="summary">

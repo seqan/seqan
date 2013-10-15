@@ -101,40 +101,6 @@ function keyboardShortcuts() {
   });
 }
 
-function summaryToggle() {
-  $('.summary_toggle').click(function() {
-    if (localStorage) {
-      localStorage.summaryCollapsed = $(this).text();
-    }
-    $('.summary_toggle').each(function() {
-      $(this).text($(this).text() == "collapse" ? "expand" : "collapse");
-      var next = $(this).parent().parent().nextAll('ul.summary').first();
-      if (next.hasClass('compact')) {
-        next.toggle();
-        next.nextAll('ul.summary').first().toggle();
-      }
-      else if (next.hasClass('summary')) {
-        var list = $('<ul class="summary compact" />');
-        list.html(next.html());
-        list.find('.summary_desc, .note').remove();
-        list.find('a').each(function() {
-          $(this).html($(this).find('strong').html());
-          $(this).parent().html($(this)[0].outerHTML);
-        });
-        next.before(list);
-        next.toggle();
-      }
-    });
-    return false;
-  });
-  if (localStorage) {
-    if (localStorage.summaryCollapsed == "collapse") {
-      $('.summary_toggle').first().click();
-    }
-    else localStorage.summaryCollapsed = "expand";
-  }
-}
-
 function fixOutsideWorldLinks() {
   $('a').each(function() {
     if (window.location.host != this.host) this.target = '_parent';
@@ -142,15 +108,14 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  if ($('#filecontents').length === 0) return;
-  var _toc = $('<ol class="top"></ol>');
+  var _toc = $('<ol class="top nav"></ol>');
   var show = false;
   var toc = _toc;
   var counter = 0;
   var tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
   var i;
-  if ($('#filecontents h1').length > 1) tags.unshift('h1');
-  for (i = 0; i < tags.length; i++) { tags[i] = '#filecontents ' + tags[i]; }
+  if ($('h1').length > 1) tags.unshift('h1');
+  for (i = 0; i < tags.length; i++) { tags[i] = tags[i]; }
   var lastTag = parseInt(tags[0][1], 10);
   $(tags.join(', ')).each(function() {
     if ($(this).parents('.method_details .docstring').length != 0) return;
@@ -180,25 +145,9 @@ function generateTOC() {
     lastTag = thisTag;
   });
   if (!show) return;
-  html = '<div id="toc"><p class="title"><a class="hide_toc" href="#"><strong>Table of Contents</strong></a> <small>(<a href="#" class="float_toc">left</a>)</small></p></div>';
+  html = '<div id="toc"><p class="title"><strong>Table of Contents</strong></p></div>';
   $('#content').prepend(html);
   $('#toc').append(_toc);
-  $('#toc .hide_toc').toggle(function() {
-    $('#toc .top').slideUp('fast');
-    $('#toc').toggleClass('hidden');
-    $('#toc .title small').toggle();
-  }, function() {
-    $('#toc .top').slideDown('fast');
-    $('#toc').toggleClass('hidden');
-    $('#toc .title small').toggle();
-  });
-  $('#toc .float_toc').toggle(function() {
-    $(this).text('float');
-    $('#toc').toggleClass('nofloat');
-  }, function() {
-    $(this).text('left');
-    $('#toc').toggleClass('nofloat');
-  });
 }
 
 $(framesInit);
@@ -209,6 +158,5 @@ $(fixBoxInfoHeights);
 $(searchFrameLinks);
 $(linkSummaries);
 $(keyboardShortcuts);
-$(summaryToggle);
 $(fixOutsideWorldLinks);
 $(generateTOC);
