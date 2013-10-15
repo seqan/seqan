@@ -10,6 +10,7 @@ import sys
 import xml.sax.saxutils
 
 import jinja2
+import lesscss
 import proc_doc
 import raw_doc
 
@@ -413,6 +414,7 @@ class HtmlWriter(object):
         """Generate page for entry to file at path."""
 
         common_kwargs = {'doc': doc,
+                         'development': self.args.development,
                          'pygments_style': pygments_style,
                          'entry_kind': entry.kind,
                          'entry_name': entry.name}
@@ -483,7 +485,7 @@ class HtmlWriter(object):
             f.write('\n'.join(js))
 
     def generateLanguageEntities(self):
-        """Genererate language entities JavaScript file."""
+        """Generate language entities JavaScript file."""
         js = self.tpl_manager.render('js/lang_entities.js', config=self.config)
         with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
             f.write(js)

@@ -179,6 +179,9 @@ def main():
                         action='append', default=EXPECTED_TAGS)
     parser.add_argument('--ignore-warnings', help='Ignore warnings from directory.',
                         default=[], dest='ignore_warnings_dirs', action='append')
+    parser.add_argument('--development', help='Use if you are changing/extending the '
+                        'dox system itself or its templates.', default=False,
+                        action='store_true', dest='development')
     args = parser.parse_args()
     #if not args.inputs:
     #    parser.error('Missing input.')
