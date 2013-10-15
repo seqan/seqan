@@ -124,7 +124,7 @@ C++ variables.
 
 @section Adaption
 
-Adaptions are collections of functions and metafunctions that make a type <b>T</b> follow an interface <b>C</t>.  This
+Adaptions are collections of functions and metafunctions that make a type <b>T</b> follow an interface <b>C</b>.  This
 can be used to make a class from an external library follow a SeqAn concept.
 
 
