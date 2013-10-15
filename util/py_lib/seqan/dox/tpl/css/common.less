@@ -125,16 +125,30 @@ html:not(.list) {
 		background-color: transparent;
 	}
 	.diagonal-gradient (lighten(@primary, 53%), lighten(@primary, 51%), lighten(@primary, 52%));
+	
+	@toc-width: 300px;
+
+	#toc {
+		position: fixed;
+		top: 15px;
+		right: @toc-width+35px;
+		max-height: 95%;
+		.diagonal-gradient (lighten(@primary, 45%), lighten(@primary, 38%), lighten(@primary, 42%));
+		border-radius: 4px;
+		padding: 1em;
+				-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
+			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
+		width: @toc-width;
+		margin-right: -(@toc-width+20px);
+		overflow-y: scroll;
+	}
+
+	#content {
+		margin-right: @toc-width+20px;
+	}
 }
 
-#toc {
-	.diagonal-gradient (lighten(@primary, 45%), lighten(@primary, 38%), lighten(@primary, 42%));
-	border-radius: 4px;
-	padding: 1em;
-	float: right;
-			-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
-		box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
-}
+
 
 
 /*
@@ -167,6 +181,27 @@ html:not(.list) {
  */
 #search {
 	margin: 10px 10px 20px 10px;
+	
+	.pre-action {
+		.replace {
+			display: none;
+		}
+		
+		margin-top: -10px;
+		margin-bottom: 5px;
+		
+		padding: 30px 0px 30px 130px;
+		background-image: url(../img/seqan_logo.png);
+		background-size: 114px 76px;
+		background-repeat: no-repeat;
+		background-position: 0 3px;
+		
+		h1 {
+			padding: 0;
+			margin: 0;
+			font-size: 28px;
+		}
+	}
 	
 	*[type=search] {
 		width: 100%;
@@ -381,6 +416,16 @@ body.language_entities {
 	}
 }
 
+.langEntityRules(@langEntity, @color, hide) {
+	.langEntityRules(@langEntity, @color);
+	
+	*[data-lang-entity=@{langEntity}] {
+  	  > *:first-child {
+ 		   display: none;
+ 	   }  
+	}
+}
+
 .langEntityRules(@langEntity, @color) {
 	@border-darken: 5%;
 	
@@ -449,8 +494,8 @@ body.language_entities {
 .langEntityRules(adaption, lighten(@orange, -10%));
 .langEntityRules(macro, lighten(@orange, 10%));
 
-.langEntityRules(page, lighten(@pink, -10%));
-.langEntityRules(group, lighten(@pink, 10%));
+.langEntityRules(page, lighten(@pink, -10%), hide);
+.langEntityRules(group, lighten(@pink, 10%), hide);
 
 
 

@@ -1,4 +1,15 @@
 /**
+ * Various
+ */
+(function ($) {
+
+	$(document).ready(function () {
+
+    });
+
+})(jQuery);
+
+/**
  * Language Entity Labels
  */
 (function ($) {
@@ -44,10 +55,13 @@
 	});
 
     $(document).ready(function () {
-    	if(!$('body').hasClass('list')) {
-    		$('body').pimpLangEntityLabels();
+    	if(!$('html').hasClass('list')) {
+    		$('html').pimpLangEntityLabels();
     	}
     });
+    
+    // todo: remove when initial search results are already pimped
+    $('html').pimpLangEntityLabels();
 
 })(jQuery);
 
@@ -128,7 +142,7 @@
                 ["member_variable", "variable"]
             ],
             callback: function($form, $results) {
-            	
+            	$el.find('.pre-action').slideUp();
             }
         });
     }
