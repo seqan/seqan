@@ -1,33 +1,67 @@
 #include <seqan/basic.h>
-#include <seqan/seq_io.h>
 #include <seqan/sequence.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 
 int main(int argc, char ** argv)
 {
-    CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/core/demos/seq_io/example.fa");
+    CharString path;
 
-    // Open file and check for errors.
-    SequenceStream seqStream(toCString(path));
-    if (!isGood(seqStream))
+    if (argc > 1)
     {
-        std::cerr << "ERROR: Could not open " << path << " for reading.\n";
-        return 1;
+        path = argv[1];
+    }
+    else
+    {
+        path = SEQAN_PATH_TO_ROOT();
+        append(path, "/core/demos/seq_io/example.fa");
     }
 
-    // Read from file and print the result to stdout.
-    seqan::CharString id, seq;
-    while (!atEnd(seqStream))
+//    typedef String<char, MMap<> >                   TString;
+//    typedef Iterator<TString, Rooted>::Type         TIter;
+//    TString string(toCString(path), OPEN_RDWR | OPEN_APPEND);
+//    std::cout << length(string) << std::endl;
+//    TIter it = begin(string, Rooted());
+
+    typedef VirtualStream<char, Input>              TStream;
+    typedef Iter<TStream, StreamIterator<Input> >   TIter;
+    TStream stream(toCString(path), OPEN_RDONLY);
+    TIter it(stream);
+
+    CharString id;
+    CharString seq;
+//    Dna5String seq;
+    CharString qual;
+
+    double start, finish;
+
+    start = sysTime();
+
+    typename Size<CharString>::Type records = 0;
+    typename Size<CharString>::Type bases = 0;
+
+    while (!atEnd(it))
     {
-        if (readRecord(id, seq, seqStream) != 0)
+        try
         {
-            std::cerr << "Problem reading from " << path << "\n";
-            return 1;
+            readRecord(id, seq, qual, it, Fastq());
         }
-        std::cout << id << "\t" << seq << "\n";
+        catch (std::runtime_error & e)
+        {
+            std::cerr << "Record #" << records + 1 << ": " << e.what() << std::endl;
+            continue;
+        }
+
+        records += 1;
+        bases += length(seq);
     }
+
+    finish = sysTime();
+
+    std::cout << finish - start << " sec" << std::endl;
+    std::cout << records << " records" << std::endl;
+    std::cout << bases << " bases" << std::endl;
 
     return 0;
 }
