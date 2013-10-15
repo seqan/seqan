@@ -450,6 +450,14 @@ class ProcClass(ProcCodeEntry):
         self.tparams = []
         self.typedefs = []
 
+    def visitTextNodes(self, visitor):
+        """Visit all text nodes using the given visitor."""
+        ProcCodeEntry.visitTextNodes(self, visitor)
+        for p in self.tparams:
+            p.visitTextNodes(visitor)
+        for p in self.typedefs:
+            p.visitTextNodes(visitor)
+
     def addExtends(self, s):
         self.extends.append(s)
 
@@ -816,7 +824,7 @@ class RawTextToTextNodeConverter(object):
             while self.tokens_cmd and isWhitespace(self.tokens_cmd[0]):
                 self.tokens_cmd.pop(0)
             # Translate any remaining non-whitespace tokens.
-            title_tokens = self.tokens_cmd
+            title_tokens = self.tokens_cmd or list(target_tokens)
             link_text = raw_doc.RawText(title_tokens)
             conv = RawTextToTextNodeConverter(expected_tags=self.expected_tags, doc_proc=self.doc_proc)
             link_text_node = conv.run(link_text)
