@@ -375,14 +375,16 @@ class HtmlWriter(object):
 
     def generateTopFrameSet(self):
         """Generate frameset."""
-        html = self.tpl_manager.render('index.html')  # TODO(holtgrew): Add title.
+        html = self.tpl_manager.render('index.html',
+                                       development=self.args.development)  # TODO(holtgrew): Add title.
         with open(self.path_manager.getTopFramesetPath(), 'w') as f:
             f.write(html)
 
     def generateLists(self, doc):
         """Generate top level/second level/page index."""
         with open(self.path_manager.getListPath(), 'w') as f:
-            f.write(self.tpl_manager.render('list.html', doc=doc))
+            f.write(self.tpl_manager.render('list.html', doc=doc,
+                                            development=self.args.development))
 
     def translateLinks(self, doc):
         link_converter = LinkConverter(doc)
@@ -486,7 +488,8 @@ class HtmlWriter(object):
 
     def generateLanguageEntities(self):
         """Generate language entities JavaScript file."""
-        js = self.tpl_manager.render('js/lang_entities.js', config=self.config)
+        js = self.tpl_manager.render('js/lang_entities.js', config=self.config,
+                                     development=self.args.development)
         with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
             f.write(js)
 
