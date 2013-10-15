@@ -178,7 +178,7 @@ struct DefaultIndexSpec
  * @headerfile seqan/index.h
  * @brief Default @link String @endlink specialization type of the @link Index#Fibre
  *        @endlink of an @link Index @endlink.
- * @signature template < typename TIndex >
+ * @signature template <typename TIndex>
  *            DefaultIndexStringSpec<TIndex>::Type
  * @tparam TIndex An @link Index @endlink Type.
  * @return TReturn If the underlying text is a @link String @endlink or a set of
@@ -301,16 +301,13 @@ class Index;
  * These fibres are created on demand depending on the requirements of an algorithm. To force the fibre creation you can
  * use the function @link Index#indexCreate @endlink.
  * The list of fibres is available in @link Index#Fibre @endlink
- * @see Index#Fibre
  * @section Example
  *
  * The following code shows how to search for exact matches between the reference "tobeornottobe" and the
  * pattern "to" with the means of a Finder.
  * @include demos/index/index_finder.cpp
- * @code{.tzt}
- * Hit at position: 9
- * Hit at position: 0
- * @endcode
+ * @include demos/index/index_finder.cpp.stdout
+ 
  * This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
  * in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
  * @include demos/index/index_iterator.cpp
@@ -331,7 +328,6 @@ class Index;
  * You can achieve a post-order traversal like this:
  *
  * @snippet demos/index/index_iterator_short.cpp iteration
- *
  * @include demos/index/index_iterator_short.cpp.stdout
  */
 
@@ -432,7 +428,7 @@ struct FibreLess :
  * @headerfile seqan/index.h
  * @deprecated advanced
  * @brief Default algorithm to create a demanded and not yet existing @link Index#Fibre @endlink.
- * @signature template < typename TIndex >
+ * @signature template <typename TIndex>
  *            DefaultIndexCreator<TIndex, TFibre>::Type
  * @tparam TIndex An @link Index @endlink Type.
  * @tparam TFibre A tag specifying the fibre (e.g. @link ESAIndexFibres.EsaSA
@@ -899,16 +895,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  *
  * The following example shows how to search for a pattern in a string.
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
- * @code{.txt}
- * SSI occurs in 2 sequences.
- * Hit in sequence 0 at position 5
- * Hit in sequence 1 at position 4
- * Hit in sequence 0 at position 2
- * ----------------------------
- * Hit in sequence 0 at position 5
- * Hit in sequence 1 at position 4
- * Hit in sequence 0 at position 2
- * @endcode
+ * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp.stdout
  * @see Index#Fibre
  */
 
@@ -1097,11 +1084,7 @@ Hit at position: < 0 , 0 >
  * The following example shows how to count characters of an index, determine the number of sequences involved and how
  * to search for a pattern.
  * @include demos/index/index_length_countSequences.cpp
- * @code{.txt}
- * The text has 25 characters and consists of 2 sequences.
- * Hit at position: < 1 , 2 >
- * Hit at position: < 0 , 0 >
- * @endcode
+ * @include demos/index/index_length_countSequences.cpp.stdout
  */
 
 template <typename TText, typename TSpec>
@@ -1260,20 +1243,7 @@ I	ISSISSIPPI*/
  *
  * The following code shows how the BWT of a text can be computed.
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- * @code{.txt}
- * BWT	Suffices
- * P	PI
- * S	SIPPI
- * S	SISSIPPI
- * M	MISSISSIPPI
- * I	I
- * P	PPI
- * I	IPPI
- * S	SSIPPI
- * S	SSISSIPPI
- * I	ISSIPPI
- * I	ISSISSIPPI
- * @endcode
+ * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
 template <typename TPos, typename TIndex>
@@ -1706,20 +1676,7 @@ I	ISSISSIPPI
  *
  * The following code shows how the BWT of a text can be computed.
  * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- * @code{.txt}
- * BWT	Suffices
- * P	PI
- * S	SIPPI
- * S	SISSIPPI
- * M	MISSISSIPPI
- * I	I
- * P	PPI
- * I	IPPI
- * S	SSIPPI
- * S	SSISSIPPI
- * I	ISSIPPI
- * I	ISSISSIPPI
- * @endcode
+ * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
  */
 
 template <typename TText, typename TSpec>
@@ -2093,10 +2050,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreChildtab>::Type & indexChi
  *
  * The following code shows how the function @Function.open@ is used with indices.
  * @include demos/index/index_open_save.cpp
- * @code{.txt}
- * 1
- * 1
- * @endcode
+ * @include demos/index/index_open_save.cpp.stdout
  */
 
 // ----------------------------------------------------------------------------
@@ -2122,10 +2076,7 @@ inline typename Fibre<Index<TText, TSpec> const, FibreChildtab>::Type & indexChi
  *
  * The following code shows how the function @Function.save@ is used with indices.
  * @include demos/index/index_open_save.cpp
- * @code{.txt}
- * 1
- * 1
- * @endcode
+ * @include demos/index/index_open_save.cpp.stdout
  */
 /**
 .Function.Index#save

@@ -251,8 +251,7 @@ TA
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Default behaviour of @link VSTreeIterator#goNext @endlink when no second parameter is
- *        given.
+ * @brief Default behaviour of @link VSTreeIterator#goNext @endlink when no second parameter is given.
  * 
  * @signature GetVSTreeIteratorTraits<TIterator>::Type
  * 
