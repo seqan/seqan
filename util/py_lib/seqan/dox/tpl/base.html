@@ -47,7 +47,8 @@
       }
     </style>
     
-    <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
+    {% if development %}<script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/common.js"></script>{% endif %}
+      {% if not development %}<script type="text/javascript" charset="utf-8" src="js/common.js"></script>{% endif %}
     
 
   </head>

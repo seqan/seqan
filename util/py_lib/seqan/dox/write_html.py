@@ -241,6 +241,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             return
         if text_node.type == 'a':
             self._translateLink(text_node)
+            self._typeLink(text_node)
         else:
             for i, c in enumerate(text_node.children):
                 text_node.children[i] = self._replaceNode(c)
@@ -268,6 +269,13 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             if a_node.attrs.get('href'):
                 del a_node.attrs['href']
             #a_node.addChild(target_title)
+    
+    # TODO(bkahlert): place somewhere else? we should also annotate non-links
+    def _typeLink(self, a_node):
+        if not 'href' in a_node.attrs:
+            return
+        import string
+        a_node.attrs['data-lang-entity'] = string.split(a_node.attrs['href'], '_')[0]
             
     def _replaceNode(self, text_node):
         if text_node.type == '<text>':
