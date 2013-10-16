@@ -30,8 +30,9 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+//         David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Base class for streams.
+// Basic definitions for the stream module.
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_STREAM_BASE_H_
@@ -43,64 +44,40 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/*!
- * @class Stream
- * @implements StreamConcept
- * @headerfile <seqan/stream.h>
- * @brief Abstract base class to fulfill the @link StreamConcept stream concept @endlink.
- *
- * @signature template <typename TSpec>
- *            class Stream;
- *
- * @tparam TSpec The specializing type.
- */
+// --------------------------------------------------------------------------
+// Direction Tags
+// --------------------------------------------------------------------------
 
-/**
-.Class.Stream
-..cat:Input/Output
-..implements:Concept.StreamConcept
-..signature:Stream<TSpec>
-..summary:Abstract base class to fulfill the @Concept.StreamConcept@ concept.
-..concept:Concept.StreamConcept
-..include:seqan/stream.h
- */
+struct Input_;
+typedef Tag<Input_> Input;
 
-#if SEQAN_HAS_ZLIB  // Enable Stream<GZFile> if available.
+struct Output_;
+typedef Tag<Output_> Output;
+
+// --------------------------------------------------------------------------
+// Compression Type Tags
+// --------------------------------------------------------------------------
+
+#if SEQAN_HAS_ZLIB
 struct GZFile_;
 typedef Tag<GZFile_> GZFile;
-#endif  // #if SEQAN_HAS_ZLIB
+#endif
 
-#if SEQAN_HAS_BZIP2  // Enable Stream<BZ2File> if available.
+#if SEQAN_HAS_BZIP2
 struct BZ2File_;
 typedef Tag<BZ2File_> BZ2File;
-#endif  // #if SEQAN_HAS_ZLIB
+#endif
 
-template <typename TSpec>
-class Stream;
+// --------------------------------------------------------------------------
+// Metafunction Chunk
+// --------------------------------------------------------------------------
 
-// ============================================================================
-// Functions
-// ============================================================================
-
-/*!
- * @fn Stream#open
- * @brief Open a stream.
- *
- * @signature bool open(stream, fileName, mode);
- *
- * @param[in,out] stream   The stream to open.
- * @param[in]     fileName The path to the file to open.  Type: <tt>char const *</tt>.
- * @param[in]     mode     The mode for opening.
- */
-
-/*!
- * @fn Stream#close
- * @brief Close a stream.
- *
- * @signature void close(stream);
- *
- * @param[in,out] stream The Stream to close.
- */
+// Chunking is not support for any object (default fallback).
+template <typename TObject>
+struct Chunk
+{
+    typedef Nothing Type;
+};
 
 }  // namespace seqean
 

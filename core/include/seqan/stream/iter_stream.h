@@ -260,6 +260,18 @@ goNext(Iter<TStream, StreamIterator<Output> > &)
 }
 
 // ----------------------------------------------------------------------------
+// Function goFurther()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TSize, typename TDirection>
+inline void
+goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TSize steps)
+{
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    iter.streamBuf->pubseekoff(steps, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+}
+
+// ----------------------------------------------------------------------------
 // Function atEnd()
 // ----------------------------------------------------------------------------
 
@@ -280,18 +292,6 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
 
 // w.i.p. down here
 #if 0
-
-// ----------------------------------------------------------------------------
-// Function goFurther()
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TDirection, typename TSize>
-inline void
-goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TSize steps)
-{
-    SEQAN_ASSERT(iter.stream != NULL);
-    streamSeek(*(iter.stream), steps, SEEK_CUR);
-}
 
 // ----------------------------------------------------------------------------
 // Function position()
@@ -315,6 +315,7 @@ setPosition(Iter<TStream, StreamIterator<TDirection> > const & iter)
 {
     SEQAN_ASSERT(iter.stream != NULL);
     streamSeek(*(iter.stream));
+    iter.stream->pubseekoff(2,2);
 }
 
 #endif

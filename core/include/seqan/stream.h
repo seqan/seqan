@@ -114,9 +114,9 @@
 
 // TODO(weese:) move tags from tokenization.h to a new header
 
+#include <seqan/stream/iter_stream.h>
 #include <seqan/stream/virtual_stream.h>
 #include <seqan/stream/tokenization.h>
-#include <seqan/stream/iter_stream.h>
 
 // ===========================================================================
 // Tokenizing and *is
