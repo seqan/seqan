@@ -215,14 +215,14 @@ class PathConverter(object):
             title = None
             if entry.kind == 'page':
                 title = entry.title
-            return path, title
+            return path, title, entry
         elif self.doc.entries.get(name):
             first, second = proc_doc.splitSecondLevelEntry(name)
             entry = self.doc.top_level_entries.get(first)
             path = '%s_%s.html#%s' % (entry.kind, escapeName(entry.name), escapeName(name))
-            return path, name
+            return path, name, entry
         else:
-            return None, None
+            return None, None, None
 
 
 # TODO(holtgrew): Should be doable in a simpler way than recursing ourselves here.  Visitor pattern for TextNode?
@@ -250,13 +250,15 @@ class LinkConverter(proc_doc.TextNodeVisitor):
         if not a_node.attrs.get('href', '').startswith('seqan:'):
             return
         target = a_node.attrs['href'][6:]
-        target_path, target_title = self.path_converter.convert(target)
+        target_path, target_title, target_obj = self.path_converter.convert(target)
         if target_title:
             target_title = proc_doc.TextNode(text=target_title)
         else:
             target_title = proc_doc.TextNode(text=target)
         # TODO(holtgrew): Catch target_title being None, target_path not found!
         if target_path is not None:
+            if target_obj:
+                a_node.attrs['data-lang-entity'] = target_obj.kind
             a_node.attrs['href'] = target_path
             if not a_node.children:
                 a_node.addChild(target_title)
