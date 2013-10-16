@@ -111,8 +111,8 @@ Render the inheritance information of the given entr.
   </dd>
   {% endif %}
 
-  <dt class="last">Defined in</dt>
-  <dd class="last">
+  <dt>Defined in</dt>
+  <dd>
     {% if entry.headerfiles %}
     {% for h in entry.headerfiles|sort -%}
     {{ h|e }}{% if not loop.last %}, {% endif %}
@@ -193,7 +193,7 @@ Render the @signature entries for the given entry.
 -->
 
 {% macro signatures(entry) -%}
-<h3 class="signature"><pre style="margin:0;"><code>
+<h3 class="signature"><pre><code>
 {%- for s in entry.signatures -%}
 {{ s|transtext(False) }}
 {% endfor -%}

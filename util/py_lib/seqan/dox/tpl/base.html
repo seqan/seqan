@@ -7,21 +7,35 @@
     <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />    
     <title>{% block title %}{% endblock %} - SeqAn API Documentation</title>
     
-    <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
-    
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
-    <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
-    
-    <link rel="stylesheet" href="lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
-    <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      {% if development %}
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.js"></script>
       
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
-    {% if development %}<link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />{% endif %}
-    {% if not development %}<link rel="stylesheet" href="css/common.less.css" type="text/css" media="screen" charset="utf-8" />{% endif %}
-    
-    <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
-    
-    <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/js/bootstrap.min.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/css/style.css" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet/less" href="../../util/py_lib/seqan/dox/tpl/css/common.less" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/less.min.js"></script>
+      {% endif %}
+      
+      {% if not development %}
+      <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+      
+      <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
+      
+      <link rel="stylesheet" href="lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      
+      <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet" href="css/common.less.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
+      {% endif %}
+      
+      <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
 
     <script type="text/javascript" charset="utf-8">
       hasFrames = window.top.frames.main ? true : false;
@@ -31,10 +45,6 @@
       searchPrefix = 'search/docs/yard';
       framesUrl = '/docs/yard/frames/file/README.md';
     </script>
-
-    <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
 
     <style type="text/css">
     {{ pygments_style }}
@@ -47,9 +57,18 @@
       }
     </style>
     
-    {% if development %}<script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/common.js"></script>{% endif %}
-      {% if not development %}<script type="text/javascript" charset="utf-8" src="js/common.js"></script>{% endif %}
-    
+      {% if development %}
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/app.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/autocomplete.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/rubydoc_custom.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/common.js"></script>
+      {% endif %}
+      {% if not development %}
+      <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
+      {% endif %}    
 
   </head>
   <body>
