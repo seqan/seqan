@@ -1,4 +1,4 @@
-/* Override this file with custom rules */
+@import '../lib/3L/3L';
 
 @primary: #3276b1;
 
@@ -370,15 +370,15 @@ html:not(.list) {
 
 		li.result {
 			background: transparent;
-			margin: 0;
+			margin: 10px 0;
 			list-style: none;
 			
 			span[data-lang-entity] {
-				display: table;
-				padding: 5px 5px 4px 5px;
+				//display: table;
+				padding: 5px;
 				
 				> * {
-					display: table-cell;
+					// display: table-cell;
 				}
 				
 				> *:last-child {
@@ -473,8 +473,6 @@ form .multiselect-container {
 		}
 	}
 }
-
-@import '../lib/3L/3L';
 
 *[data-lang-entity] {
 	position: relative;

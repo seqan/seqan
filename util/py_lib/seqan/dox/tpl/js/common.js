@@ -34,7 +34,8 @@
 
 	$.fn.extend({
 		createLangEntityLabel: function(langEntity) {
-			var entry = window.langEntities[langEntity];
+            if(!window.langEntities) return;
+            var entry = window.langEntities[langEntity];
 			if (!entry) entry = window.langEntities['unknown'];
 					
 			return $('<a href="language_entities.html#' + langEntity + '">' + entry.ideogram + '</a>')
