@@ -10,7 +10,6 @@ import sys
 import xml.sax.saxutils
 
 import jinja2
-import lesscss
 import proc_doc
 import raw_doc
 
@@ -495,4 +494,5 @@ class HtmlWriter(object):
 
     def log(self, s, *args):
         print >>sys.stderr, s % args
+
 
