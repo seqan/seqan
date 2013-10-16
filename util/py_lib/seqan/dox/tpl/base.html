@@ -12,14 +12,14 @@
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
     <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
     
-    <link rel="stylesheet/less" href="lib/bootstrap-multiselect/less/bootstrap-multiselect.less" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
     <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
       
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
-    <link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />
+    {% if development %}<link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />{% endif %}
+    {% if not development %}<link rel="stylesheet" href="css/common.less.css" type="text/css" media="screen" charset="utf-8" />{% endif %}
+    
     <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
-
-    {% if development %}<!-- development mode active -->{% endif %}
     
     <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
 
