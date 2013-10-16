@@ -366,7 +366,7 @@ Render the interface functions overview
 {% macro interface_functions_ov(entry, doc, qualifier='Interface') %}
 {% if entry.hasSubEntry('interface_function', doc) %}
 
-<h2>{{ qualifier }} Function Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Function Overview</h2>
 
 {% if entry.subentries['interface_function'] -%}
 <ul class="summary">
@@ -427,7 +427,7 @@ Render the grouped macros overview
 {% macro grouped_macros_ov(entry, doc, qualifier='Grouped') %}
 {% if entry.subentries['grouped_macro'] -%}
 <div class="overview grouped_macros">
-<h2>{{ qualifier }} Macros Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Macros Overview</h2>
 
 <table width="100%">
   {% for entry in entry.subentries['grouped_macro'] %}
@@ -453,7 +453,7 @@ Render the interface functions overview
 
 {% macro grouped_tags_ov(entry, doc, qualifier='Interface') %}
 {% if entry.subentries['grouped_tag'] -%}
-<h2>{{ qualifier }} Tags Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Tags Overview</h2>
 
 <ul class="summary">
   {% for entry in entry.subentries['grouped_tag'] %}
@@ -487,7 +487,7 @@ Render the interface metafunctions overview
 {% macro interface_metafunctions_ov(entry, doc, qualifier='Interface') %}
 {% if entry.hasSubEntry('interface_metafunction', doc) %}
 
-<h2>{{ qualifier }}  Metafunction Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }}  Metafunction Overview</h2>
 
 {% if entry.subentries['interface_metafunction'] -%}
 <ul class="summary">
@@ -547,7 +547,7 @@ Render the member variables overview
 {% macro member_variables_ov(entry, doc, qualifier='Member') %}
 {% if entry.hasSubEntry('member_variables', doc) %}
 
-<h2>{{ qualifier }} Variable Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Variable Overview</h2>
 
 {% if entry.subentries['member_variable'] -%}
 <ul class="summary">
@@ -599,7 +599,7 @@ Render the member variables overview
 {% macro enum_values_ov(entry, doc) %}
 {% if entry.hasSubEntry('variables', doc) %}
 
-<h2>Enum Values Overview <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>Enum Values Overview</h2>
 
 {% if entry.subentries['variable'] -%}
 <ul class="summary">
@@ -928,7 +928,7 @@ Render the interface metafunctions details
 {% macro interface_metafunctions(entry, qualifier='Interface') %}
 {% if entry.subentries['interface_metafunction'] -%}
 <div class="interface_metafunction_details">
-<h2>{{ qualifier }} Metafunctions Detail <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+<h2>{{ qualifier }} Metafunctions Detail</h2>
 
 {% for subentry in entry.subentries['interface_metafunction'] %}
 <div class="method_details{% if loop.first %} first{% endif %}">
@@ -1116,7 +1116,7 @@ Render the template parameter overview.
 {% if entry.tparams %}
 
 {% if entry.tparams %}
-  <h2>Template Parameters <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Template Parameters</h2>
 
   <ul class="summary">
     {% for param in entry.tparams %}

@@ -11,6 +11,24 @@
 @purple: #9d5bde;
 @pink: #de5bbd;
 
+.bg-gradient(@color-start, @color-end, @color-default) {
+    .diagonal-gradient (@color-start, @color-end, @color-default);
+}
+
+.bg-gradient(@color, @lightenBy) {
+    .diagonal-gradient (lighten(@color, @lightenBy + 3%), lighten(@color, @lightenBy - 3%), lighten(@color, @lightenBy));
+}
+
+.bg-gradient() {
+    .bg-gradient(@primary, 49%);
+}
+
+.inset-box() {
+    .bg-gradient();
+	.border-radius(4px);
+	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1))
+}
+
 
 
 /*
@@ -53,7 +71,7 @@ dl {
 			font-weight: bold;
 			margin: .5em 0 0 0;
 			padding: 0;
-			.diagonal-gradient (lighten(@primary, 45%), lighten(@primary, 38%), lighten(@primary, 42%));
+			.bg-gradient(lighten(@primary, 45%), lighten(@primary, 43%), 47%);
 			padding: 3px 5px;
 			border-radius: 4px;
 		}
@@ -80,7 +98,7 @@ dl {
 		}
 	}
 	
-	&.box {
+	&.box { // subclass of, ... box
 		.clearfix();
 		display: inline-block;
 		max-width: 40em;
@@ -110,13 +128,19 @@ dl {
 	}
 }
 
+pre {
+    .bg-gradient(#f5f5f5, 0%);
+    .border-radius(4px);
+    .box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
+}
+
 html.list {
 	body {
 		padding: 15px;
 		background-color: transparent;
 	}
 	background-attachment: fixed;
-	.diagonal-gradient (lighten(@primary, 45%), lighten(@primary, 38%), lighten(@primary, 42%));
+	.bg-gradient();
 }
 
 html:not(.list) {
@@ -126,26 +150,100 @@ html:not(.list) {
 	}
 	.diagonal-gradient (lighten(@primary, 53%), lighten(@primary, 51%), lighten(@primary, 52%));
 	
-	@toc-width: 300px;
+	@toc-width: 250px;
 
 	#toc {
 		position: fixed;
 		top: 15px;
 		right: @toc-width+35px;
-		max-height: 95%;
-		.diagonal-gradient (lighten(@primary, 45%), lighten(@primary, 38%), lighten(@primary, 42%));
-		border-radius: 4px;
-		padding: 1em;
-				-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
-			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.225);
+		max-height: 93%;
 		width: @toc-width;
 		margin-right: -(@toc-width+20px);
 		overflow-y: scroll;
+		
+        .bg-gradient();
+        .border-radius(4px);
+    	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1));
+		
+        .title {
+            display: none;
+            text-transform: uppercase;
+            color: lighten(@primary, 42%);
+            text-shadow: 0 -1px 1px rgba(102, 102, 102, 0.5), 0 1px 1px rgba(255,255,255,0.5);
+            font-size: 2.1em;
+            text-align: center;
+            margin: -.39em 0 0 -.9em;
+                        
+             -webkit-mask-image: -webkit-linear-gradient(-45deg, rgba(0,0,0,0.5), black); 
+             mask-image: linear-gradient(-45deg, rgba(0,0,0,0.5), black);
+	    }
+		
+		ol {
+		    li {
+		        a {
+		            margin: 0;
+    		        padding: 1em 1em 1em 2.5em;
+    		        
+    		        &:hover,
+    		        &:active {
+    		            color: #000;
+        		        background-color: rgba(255,255,255,0.5);
+    		        }
+    		        
+    		        text-transform: uppercase;
+                    color: lighten(@primary, 22%);
+                    text-shadow: 0 -1px 1px rgba(102, 102, 102, 0.5), 0 1px 1px rgba(255,255,255,0.5);
+		        }
+		        
+    		    a:before {
+    				position: absolute;
+    				top: 1.1em;
+    				left: 1.5em;
+    				font-family: 'Glyphicons Halflings';
+    				-webkit-font-smoothing: antialiased;
+    				font-style: normal;
+    				font-weight: normal;
+    				line-height: 1;
+    				display: block;
+    				margin: 5px auto 10px;
+    				font-size: .8em;
+    				content: "\e080";
+                }
+		    }
+		    
+		    li.active a {
+    		    color: #000;
+		    }
+		}
+		
+		ol ol {
+    		//display: none;
+		}
 	}
 
 	#content {
 		margin-right: @toc-width+20px;
 	}
+}
+
+.docstring {
+    margin: 1em 0;
+    font-size: 1.2em;
+}
+
+.signature {
+    font-size: 1.2em;
+    font-weight: normal;
+    font-family: Monaco, Consolas, Courier, monospace;
+  
+    padding: 0;
+    margin: 1em 0;
+  
+    tt { font-family: Monaco, Consolas, Courier, monospace; }
+    .overload { display: block; }
+    .extras { font-weight: normal; font-family: sans-serif; color: #444; font-size: 1em; }
+    .aliases { display: block; font-weight: normal; font-size: 0.9em; font-family: sans-serif; margin-top: 0px; color: #555; }
+    .aliases .names { font-family: Monaco, Consolas, Courier, monospace; font-weight: bold; color: #000; font-size: 1.2em; }
 }
 
 
@@ -430,30 +528,29 @@ body.language_entities {
 	@border-darken: 5%;
 	
 	html.language_entities *[data-lang-entity-container=@{langEntity}],
-	html:not([class]) *[data-lang-entity-container=@{langEntity}] {
+	html:not([class]) *[data-lang-entity-container=@{langEntity}] { // TODO remove line
 		> h2:first-child {
 			margin: 0;
-			padding: 3px 20px 10px 20px;
-			background-color: @color;
-			box-shadow: inset 0px 5px 5px -5px rgba(0,0,0,.4),
-						inset 5px 0px 5px -5px rgba(0,0,0,.4),
-						inset -5px 0px 5px -5px rgba(0,0,0,.4),
-						inset 0px -5px 5px -5px rgba(0,0,0,.4);
-			border-bottom: none;
+			padding: 8px 20px 10px 20px;
+			.bg-gradient(@color, 0%);
+            border-bottom: none;
+            .border-radius(4px);
 		}
 		
 		> * {
 			margin: 20px;
 		}
 		
-		border-radius: .25em;
-		border: @color 5px solid;
+		dt {
+		    .bg-gradient(@color, 0%);
+        }
 	}
 	
 	*[data-lang-entity=@{langEntity}] {
   	  > *:first-child {
  		   	background-color: @color;
  		   	border-color: darken(@color, @border-darken);
+ 		   	//text-shadow: #000 0px 1px 0px;
  	   }  
 	}
 	

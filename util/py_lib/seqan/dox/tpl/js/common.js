@@ -4,6 +4,24 @@
 (function ($) {
 
 	$(document).ready(function () {
+	
+	    // only keep top-level nav items
+	    $('#toc ol ol').remove();
+	    
+	    // hightlight nav items based on scroll area
+	    $('body').scrollspy({ target: '#toc' });
+
+        // smooth scrolling
+        $('a[href*=#]:not([href=#])').click(function() {
+            if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') || location.hostname == this.hostname) {
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+                if (target.length) {
+                    $('html,body').animate({ scrollTop: target.offset().top-20 }, 350);
+                    return false;
+                }
+            }
+        });
 
     });
 
@@ -19,15 +37,8 @@
 			var entry = window.langEntities[langEntity];
 			if (!entry) entry = window.langEntities['unknown'];
 					
-			return $('<a href="page_LanguageEntities.html#' + langEntity + '">' + entry.ideogram + '</a>')
-					.attr('title', entry.name)
-					.popover({
-						html: true,
-					    placement: 'right',
-					    trigger: 'hover',
-					    content: '<div class="description">' + entry.description + '<div>' + '<p class="more">Click now for more information</p>',
-					    container: 'body'
-					});
+			return $('<a href="language_entities.html#' + langEntity + '">' + entry.ideogram + '</a>')
+					.attr('title', entry.name);
 		},
 		
 		pimpLangEntityLabels: function() {
@@ -55,6 +66,27 @@
 	});
 
     $(document).ready(function () {
+        $('body').on('mouseover', '*[data-lang-entity] > a:first-child', function() {
+    		var $this = $(this);
+    		if($this.attr('data-original-title')) return; // already set up
+    		
+    		var langEntity = $this.attr('data-lang-entity') || $this.parent().attr('data-lang-entity');
+    		var langEntityData = window.langEntities[langEntity];
+    		
+    		$this.popover({
+				html: true,
+				placement: 'right',
+				trigger: 'hover',
+				title: function() {
+					return langEntityData.name;
+				},
+				content: function() {
+					return '<div class="description">' + langEntityData.description + '<div>' + '<p class="more">Click now for more information</p>';
+				},
+				container: 'body'
+			}).popover('show');
+    	});
+    	
     	if(!$('html').hasClass('list')) {
     		$('html').pimpLangEntityLabels();
     	}
