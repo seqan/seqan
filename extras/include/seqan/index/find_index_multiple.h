@@ -323,7 +323,7 @@ struct Member<Pattern<ContainerView<TNeedles, TViewSpec>, Multiple<TSpec> >, Per
 template <typename TText, typename TPattern, typename TSpec>
 struct Member<Finder2<TText, TPattern, Multiple<TSpec> >, Factory_>
 {
-    typedef Factory<typename TextIterator_<TText, TSpec>::Type>  Type;
+    typedef Factory<typename TextIterator_<TText, TPattern, TSpec>::Type>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -600,14 +600,14 @@ view(Finder2<TText, TPattern, Multiple<TSpec> > & finder)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TPattern, typename TSpec, typename TDelegate>
-inline SEQAN_HOST_DEVICE typename TextIterator_<TText, Multiple<TSpec> >::Type &
+inline SEQAN_HOST_DEVICE typename TextIterator_<TText, TPattern, Multiple<TSpec> >::Type &
 textIterator(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> & ctx)
 {
     return textIterator(ctx.baseFinder);
 }
 
 template <typename TText, typename TPattern, typename TSpec, typename TDelegate>
-inline SEQAN_HOST_DEVICE typename TextIterator_<TText, Multiple<TSpec> >::Type const &
+inline SEQAN_HOST_DEVICE typename TextIterator_<TText, TPattern, Multiple<TSpec> >::Type const &
 textIterator(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const & ctx)
 {
     return textIterator(ctx.baseFinder);

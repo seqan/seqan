@@ -44,7 +44,7 @@ using namespace seqan;
 // ========================================================================== 
 
 // --------------------------------------------------------------------------
-// FMIndex Types
+// Trie Index Types
 // --------------------------------------------------------------------------
 
 typedef
@@ -53,114 +53,120 @@ typedef
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
     TagList<Index<StringSet<CharString>, FMIndex<> >
     > > > >
-    FMIndexTypes;
+    TrieIndexTypes;
 
 // ========================================================================== 
 // Test Classes
 // ========================================================================== 
 
 // --------------------------------------------------------------------------
-// Class LFTest
+// Class IndexIteratorTest
 // --------------------------------------------------------------------------
 
-template <typename TFMIndex>
-class LFTest : public FibreTest<TFMIndex, FibreLF> {};
-
-SEQAN_TYPED_TEST_CASE(LFTest, FMIndexTypes);
-
-// --------------------------------------------------------------------------
-// Class CSATest
-// --------------------------------------------------------------------------
-
-template <typename TFMIndex>
-class CSATest : public FibreTest<TFMIndex, FibreSA> {};
-
-SEQAN_TYPED_TEST_CASE(CSATest, FMIndexTypes);
-
-// ==========================================================================
-// LFTable Tests
-// ========================================================================== 
-
-// --------------------------------------------------------------------------
-// Test LF(pos)
-// --------------------------------------------------------------------------
-
-//SEQAN_TYPED_TEST(LFTest, LFPos)
-//{
-//    typedef typename Iterator<typename TestFixture::TText>::Type    TIter;
-//
-//    unsigned pos = 0;
-//    TIter textBegin = begin(this->text, Standard());
-//    for (TIter textIt = end(this->text, Standard()) - 1; textIt >= textBegin; goPrevious(textIt))
-//    {
-//        pos = this->fibre(pos);
-//    }
-//}
-
-// --------------------------------------------------------------------------
-// Test LF(pos, val)
-// --------------------------------------------------------------------------
-
-//SEQAN_TYPED_TEST(LFTest, LFPosVal)
-//}
-
-// --------------------------------------------------------------------------
-// Test isSentinel()
-// --------------------------------------------------------------------------
-
-SEQAN_TYPED_TEST(LFTest, IsSentinel)
+template <typename TIndex, typename TSpec>
+class IndexIteratorTest : public IndexTest<TIndex>
 {
-    typedef typename Size<typename TestFixture::TFibre>::Type   TSize;
+public:
+    typedef IndexTest<TIndex>                       TBase;
+    typedef typename Iterator<TIndex, TSpec>::Type  TIter;
 
-    TSize sentinels = 0;
-    for (TSize pos = 0; pos < bwtLength(this->text); ++pos)
-        sentinels += isSentinel(this->fibre, pos);
+    // Disable base class index creation since iterators uses lazy construction.
+    void setUp()
+    {
+        createText(this->text, typename TBase::TValue());
+    }
+};
 
-    // Assert that there is exactly one sentinel per text in the collection.
-    SEQAN_ASSERT_EQ(sentinels, countSequences(this->text));
-}
+// --------------------------------------------------------------------------
+// Class TopDownIndexIteratorTest
+// --------------------------------------------------------------------------
+
+template <typename TIndex>
+class TopDownIndexIteratorTest : public IndexIteratorTest<TIndex, TopDown<> > {};
+
+SEQAN_TYPED_TEST_CASE(TopDownIndexIteratorTest, TrieIndexTypes);
 
 // ==========================================================================
-// CompressedSA Tests
+// TopDown Iterator Tests
 // ==========================================================================
 
 // --------------------------------------------------------------------------
-// Test indexSA()
+// Test Constructor
 // --------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST(CSATest, IndexSA)
+SEQAN_TYPED_TEST(TopDownIndexIteratorTest, Constructor)
 {
-// NOTE(esiragusa): Actual behavior is:
-    SEQAN_ASSERT_EQ(length(this->fibre), bwtLength(this->text));
-// NOTE(esiragusa): Correct behavior should be:
-//    SEQAN_ASSERT_EQ(length(this->fibre), lengthSum(this->text));
+    typename TestFixture::TIter it(this->index);
 
-// NOTE(esiragusa): this must work.
-//    SEQAN_ASSERT(isSuffixArray(this->fibre, this->text));
+    SEQAN_ASSERT(isRoot(it));
+    // NOTE(esiragusa): An empty index must yield isLeaf(it) == true
+    SEQAN_ASSERT_NOT(isLeaf(it));
+
+    // NOTE(esiragusa): Actual behavior is:
+    SEQAN_ASSERT_EQ(countOccurrences(it), lengthSum(this->text) + countSequences(this->index));
+    // NOTE(esiragusa): Correct behavior should be:
+//    SEQAN_ASSERT_EQ(countOccurrences(it), lengthSum(this->text));
 }
 
 // --------------------------------------------------------------------------
-// Test getValue()
+// Test goDown()
 // --------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------
-// Test begin() and end()
-// --------------------------------------------------------------------------
-
-SEQAN_TYPED_TEST(CSATest, BeginEnd)
+SEQAN_TYPED_TEST(TopDownIndexIteratorTest, GoDown)
 {
-    typedef typename TestFixture::TFibre            TSA;
-    typedef typename Iterator<TSA, Standard>::Type  TIter;
-    typedef typename Position<TIter>::Type          TPos;
-    typedef typename Difference<TIter>::Type        TDiff;
+    typename TestFixture::TIter it(this->index);
 
-    TIter itBeg = begin(this->fibre, Standard());
-    TIter itEnd = end(this->fibre, Standard());
+    SEQAN_ASSERT(goDown(it));
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
 
-    SEQAN_ASSERT_EQ(itEnd - itBeg, static_cast<TDiff>(length(this->fibre)));
-    SEQAN_ASSERT_EQ(position(itBeg), static_cast<TPos>(0));
-    SEQAN_ASSERT_EQ(position(itEnd), static_cast<TPos>(length(this->fibre)));
+    goRoot(it);
+
+    SEQAN_ASSERT(goDown(it, front(concat(this->text))));
+    SEQAN_ASSERT_EQ(parentEdgeLabel(it), front(concat(this->text)));
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
+
+    goRoot(it);
+
+    // NOTE(esiragusa): Actual behavior is:
+//    SEQAN_ASSERT(goDown(it, prefix(concat(this->text), 5u)));
+//    SEQAN_ASSERT_EQ(repLength(it), 5u);
 }
+
+// --------------------------------------------------------------------------
+// Test goRight()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test isRoot()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test isLeaf()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test range()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test countOccurrences()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test getOccurrences()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test representative()
+// --------------------------------------------------------------------------
+
+// ==========================================================================
+// ParentLinks TopDown Iterator Tests
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Test goUp()
+// --------------------------------------------------------------------------
 
 // ========================================================================== 
 // Functions

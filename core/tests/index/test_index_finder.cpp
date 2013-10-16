@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                    rsbs
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,39 +29,55 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Your Name <your.email@example.net>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_INDEX_FM_RANK_SUPPORT_BIT_STRING_ITERATOR_H_
-#define TEST_INDEX_FM_RANK_SUPPORT_BIT_STRING_ITERATOR_H_
+#include <seqan/basic.h>
+#include <seqan/index.h>
+
+#include "test_index_helpers.h"
 
 using namespace seqan;
 
-SEQAN_DEFINE_TEST(test_rsbs_iterator_get_value)
+// ========================================================================== 
+// Test Classes
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Class IndexFinderTest
+// --------------------------------------------------------------------------
+
+template <typename TIndex>
+class IndexFinderTest : public IndexTest<TIndex>
 {
-    unsigned length_ = 1000;
-    String<unsigned> controlString;
-    resize(controlString, length_);
+public:
+    typedef IndexTest<TIndex>   TBase;
+    typedef Finder<TIndex>      TFinder;
 
-    Rng<MersenneTwister> rng(SEED);
-    controlString[0] = pickRandomNumber(rng) % 2;
+    TFinder finder;
 
-    for (unsigned i = 1; i < length_; ++i)
-    {
-        controlString[i] = pickRandomNumber(rng) % 2;
-    }
+    IndexFinderTest() :
+        finder(this->index)
+    {}
+};
 
-    typedef RankSupportBitString<void> TRankSupportBitString;
-    TRankSupportBitString bitString(controlString);
-    Iterator<RankSupportBitString<void> >::Type defaultIt = begin(bitString);
+SEQAN_TYPED_TEST_CASE(IndexFinderTest, IndexTypes);
 
-    for (unsigned i = 0; i < length(bitString); ++i)
-    {
-        SEQAN_ASSERT(isBitSet(bitString, i) == getValue(defaultIt));
-        SEQAN_ASSERT(isBitSet(bitString, i) == getValue(defaultIt, Bit()));
-        SEQAN_ASSERT(getRank(bitString, i) == getValue(defaultIt, Rank()));
-        ++defaultIt;
-    }
+// --------------------------------------------------------------------------
+// Test Finder
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
+{
+    SEQAN_ASSERT(find(this->finder, prefix(concat(this->text), 1u)));
 }
 
-#endif  // TEST_INDEX_FM_RANK_SUPPORT_BIT_STRING_H_
+// ==========================================================================
+// Functions
+// ========================================================================== 
+
+int main(int argc, char const ** argv)
+{
+    TestSystem::init(argc, argv);
+    return TestSystem::runAll();
+}

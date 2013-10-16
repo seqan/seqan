@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -273,33 +274,38 @@ TA
 		Pair<TSize> range;			// current SA interval of hits (unique node identifier)
 		TSize		parentRight;	// right boundary of parent node's range (allows to go right)
 
+        SEQAN_HOST_DEVICE
 		VertexEsa() : range(0, 0), parentRight(0) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(MinimalCtor):
 			range(0,0),
 			parentRight(0) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(TSize otherRangeLeft, TSize otherRangeRight, TSize otherParentRight):
 			range(Pair<TSize>(otherRangeLeft, otherRangeRight)),
 			parentRight(otherParentRight) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(Pair<TSize> const &otherRange, TSize otherParentRight):
 			range(otherRange),
 			parentRight(otherParentRight) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(VertexEsa const &other):
 			range(other.range),
 			parentRight(other.parentRight) {}
 	};
 	
 	template <typename TSize>
-	inline bool operator==(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
+    SEQAN_HOST_DEVICE inline bool operator==(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
 	{
 		return a.range == b.range;
 	}
 
 	template <typename TSize>
-	inline bool operator!=(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
+	SEQAN_HOST_DEVICE inline bool operator!=(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
 	{
 		return a.range != b.range;
 	}
@@ -526,13 +532,13 @@ information of the suffix tree) are provided.
 	template < typename TText, typename TSpec >
 	class Index<TText, IndexEsa<TSpec> > {
 	public:
-		Holder<typename Fibre<Index, EsaText>::Type>	text;
-		typename Fibre<Index, EsaSA>::Type				sa;			// suffix array 
-		typename Fibre<Index, EsaLcp>::Type			lcp;		// longest-common-prefix table
-		typename Fibre<Index, EsaLcpe>::Type			lcpe;		// extended lcp table
-		typename Fibre<Index, EsaChildtab>::Type		childtab;	// child table (tree topology)
-		typename Fibre<Index, EsaBwt>::Type			bwt;		// burrows-wheeler table
-		typename Cargo<Index>::Type						cargo;		// user-defined cargo
+        typename Member<Index, EsaText>::Type       text;
+		typename Fibre<Index, EsaSA>::Type          sa;			// suffix array
+		typename Fibre<Index, EsaLcp>::Type         lcp;		// longest-common-prefix table
+		typename Fibre<Index, EsaLcpe>::Type        lcpe;		// extended lcp table
+		typename Fibre<Index, EsaChildtab>::Type    childtab;	// child table (tree topology)
+		typename Fibre<Index, EsaBwt>::Type         bwt;		// burrows-wheeler table
+		typename Cargo<Index>::Type                 cargo;		// user-defined cargo
 
 		Index() {}
 
@@ -566,7 +572,7 @@ information of the suffix tree) are provided.
 //////////////////////////////////////////////////////////////////////////////
 
 	template < typename TText, typename TSpec >
-	void _indexRequireTopDownIteration(Index<TText, IndexEsa<TSpec> > &index) 
+	SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, IndexEsa<TSpec> > &index) 
 	{
 		indexRequire(index, EsaSA());
 		indexRequire(index, EsaLcp());

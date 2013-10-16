@@ -31,8 +31,9 @@
 //
 // ==========================================================================
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// Facade header for module sequence.
+// Facade header for module index.
 // ==========================================================================
 
 #ifndef EXTRAS_INCLUDE_SEQAN_INDEX_H_
@@ -48,6 +49,14 @@
 #include <seqan/find_extras.h>
 
 // ===========================================================================
+// Prerequisites from extras.
+// ===========================================================================
+
+#include <seqan/basic_extras.h>
+#include <seqan/sequence_extras.h>
+#include <seqan/misc_extras.h>
+
+// ===========================================================================
 // Extra VSTree Iterators.
 // ===========================================================================
 
@@ -56,6 +65,22 @@
 
 #include <seqan/index/index_qgram_stree.h>
 #include <seqan/index/index_qgram_bucketrefinement.h>
+
+// ===========================================================================
+// Index Views.
+// ===========================================================================
+
+#include <seqan/index/index_view.h>
+
+#include <seqan/index/iter_vstree_factory.h>
+
+// ===========================================================================
+// Device Indices.
+// ===========================================================================
+
+#ifdef PLATFORM_CUDA
+#include <seqan/index/index_device.h>
+#endif
 
 // ===========================================================================
 // Backtracking Finders.
@@ -67,5 +92,13 @@
 
 
 #include <seqan/index/find_backtracking.h>
+
+// ===========================================================================
+// Index Finders.
+// ===========================================================================
+
+#include <seqan/parallel.h>
+#include <seqan/index/find2_index.h>
+#include <seqan/index/find_index_multiple.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_INDEX_H_

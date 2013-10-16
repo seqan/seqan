@@ -173,18 +173,18 @@
  * @brief A suffix array storing only a few suffix array entries and computing
  *        the remaining on demand.
  * 
- * @signature CompressedSA<TSparseString, TLfTable, TSpec>
+ * @signature CompressedSA<TSparseString, TLF, TSpec>
  * 
  * @tparam TSpec Possibility to specialise a compressed suffix array. Default:
  *               void.
- * @tparam TLfTable The lfTable containg an occurrence table and a prefix sum
- *                  table. Types: @link LfTable @endlink
+ * @tparam TLF The lfTable containg an occurrence table and a prefix sum
+ *                  table. Types: @link LF @endlink
  * @tparam TSparseString The string containing specific suffix array entries.
  *                       Types: @link SparseString @endlink
  * 
  * @section Remarks
  * 
- * The compressed suffix array can only be used together with the @link LfTable @endlink.
+ * The compressed suffix array can only be used together with the @link LF @endlink.
  */
 
 /*!
@@ -335,11 +335,11 @@
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Set the LfTable of the compressed suffix array.
+ * @brief Set the LF of the compressed suffix array.
  * 
  * @signature setLfTable(compressedSa, lfTable)
  * 
- * @param lfTable The LfTable Types: LfTable
+ * @param lfTable The LF Types: LF
  * @param compressedSA The compressed suffix array.
  */
 
@@ -364,11 +364,11 @@
 /*!
  * @defgroup LFTableFibres LF Table Fibres
  * 
- * @brief Tag to select a specific fibre of a @link LfTable @endlink.
+ * @brief Tag to select a specific fibre of a @link LF @endlink.
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link LfTable @endlink.
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link LF @endlink.
  * 
  * @see Index#Fibre
  * @see Index#getFibre
@@ -383,21 +383,21 @@
  */
 
 /*!
- * @class LfTable
+ * @class LF
  * 
  * @headerfile seqan/Index.h
  * 
- * @brief LfTable is an object storing all necessary information for the LF-
+ * @brief LF is an object storing all necessary information for the LF-
  *        mapping.
  * 
- * @signature LfTable<TOccTable, TPrefixSumTable>
+ * @signature LF<TOccTable, TPrefixSumTable>
  * 
  * @tparam TPrefixSumTable The specialisation tag. Default: @link String @endlink
  * @tparam TOccTable The occurrence table data structure. Types: @link RankDictionary @endlink, @link SentinelRankDictionary @endlink.
  */
 
 /*!
- * @fn LfTable#clear
+ * @fn LF#clear
  * 
  * @headerfile seqan/index.h
  * 
@@ -409,7 +409,7 @@
  */
 
 /*!
-  * @fn LfTable#empty
+  * @fn LF#empty
  * 
  * @headerfile seqan/index.h
  * 
@@ -439,7 +439,7 @@
  */
 
 /*!
- * @fn LfTable#getFibre
+ * @fn LF#getFibre
  * 
  * @headerfile seqan/index.h
  * 
@@ -454,7 +454,7 @@
  */
 
 /*!
- * @fn LfTable#lfMapping
+ * @fn LF#lfMapping
  * 
  * @headerfile seqan/index.h
  * 
@@ -464,7 +464,7 @@
  * 
  * @signature lfMapping(lfTable, pos)
  * 
- * @param lfTable The @link LfTable @endlink holding the occurrence and prefix
+ * @param lfTable The @link LF @endlink holding the occurrence and prefix
  *                sum table.
  *
  * @param pos The position in L. Types: @link UnsignedIntegerConcept @endlink
@@ -474,7 +474,7 @@
  */
 
 /*!
- * @fn LfTable#open
+ * @fn LF#open
  * 
  * @headerfile seqan/index.h
  * 
@@ -490,14 +490,14 @@
  *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
  *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
  *                 OPEN_APPEND</tt>
- * @param lfTable The lfTable. Types: LfTable
+ * @param lfTable The lfTable. Types: LF
  * @param fileName C-style character string containing the file name.
  * 
  * @return TReturn A nolink:<tt>bool</tt> which is <tt>true</tt> on success.
  */
 
 /*!
- * @fn LfTable#save
+ * @fn LF#save
  * 
  * @headerfile seqan/index.h
  * 
@@ -513,7 +513,7 @@
  *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
  *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
  *                 OPEN_APPEND</tt>
- * @param lfTable The dictionary. Types: LfTable
+ * @param lfTable The dictionary. Types: LF
  * @param fileName C-style character string containing the file name.
  * 
  * @return TReturn A nolink:<tt>bool</tt> which is <tt>true</tt> on success.

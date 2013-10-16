@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -760,7 +761,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  *                 present.
  */
 	template <typename TText, typename TSpec, typename TFibre>
-	inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
+	SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
 	SEQAN_CHECKPOINT
 		return !empty(getFibre(index, fibre));
 	}
@@ -892,6 +893,23 @@ I	ISSISSIPPI
 //////////////////////////////////////////////////////////////////////////////
 // open
 
+    // TODO(esiragusa): Move open() / save() to respective String/StringSet classes.
+
+	template <typename TValue>
+	inline bool open(TValue & value, const char *fileName, int openMode)
+    {
+		String<TValue, External< ExternalConfigLarge<> > > extString;
+		if (!open(extString, fileName, openMode & ~OPEN_CREATE)) return false;
+		assign(value, back(extString));
+		return true;
+	}
+    
+	template <typename TValue>
+	inline bool open(TValue & value, const char *fileName)
+    {
+		return open(value, fileName, OPEN_RDONLY);
+	}
+
 	template < typename TValue, typename TSpec >
 	inline bool open(String<TValue, TSpec> &string, const char *fileName, int openMode) {
 	SEQAN_CHECKPOINT
@@ -984,6 +1002,21 @@ I	ISSISSIPPI
 
 //////////////////////////////////////////////////////////////////////////////
 // save
+
+	template <typename TValue>
+	inline bool save(TValue val, const char *fileName, int openMode)
+    {
+        String<TValue, External< ExternalConfigLarge<> > > extString;
+        if (!open(extString, fileName, openMode)) return false;
+        appendValue(extString, val);
+        return true;
+    }
+
+	template <typename TValue>
+	inline bool save(TValue val, const char *fileName)
+    {
+        return save(val, fileName, OPEN_WRONLY | OPEN_CREATE);
+    }
 
 	template < typename TValue, typename TSpec >
 	inline bool save(String<TValue, TSpec> const &string, const char *fileName, int openMode) {

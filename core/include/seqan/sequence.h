@@ -62,6 +62,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 
 // ----------------------------------------------------------------------------
 // Thrust prerequisites.

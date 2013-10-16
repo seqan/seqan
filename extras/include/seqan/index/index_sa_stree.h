@@ -2,6 +2,8 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,9 +74,9 @@ template <typename TText, typename TSpec>
 class Index<TText, IndexSa<TSpec> >
 {
 public:
-    Holder<typename Fibre<Index, EsaText>::Type>    text;
+    typename Member<Index, FibreText>::Type         text;
     typename Fibre<Index, EsaSA>::Type              sa;
-    typename Cargo<Index>::Type                     cargo;  // user-defined cargo
+    typename Cargo<Index>::Type                     cargo;
 
     Index() {}
 
@@ -107,18 +109,21 @@ struct VertexSA : public VertexEsa<TSize>
     TSize       repLen;
     TAlphabet   lastChar;
 
+    SEQAN_HOST_DEVICE
     VertexSA() :
         TBase(),
         repLen(0),
         lastChar(0)
     {}
 
+    SEQAN_HOST_DEVICE
     VertexSA(MinimalCtor) :
         TBase(MinimalCtor()),
         repLen(0),
         lastChar(0)
     {}
 
+    SEQAN_HOST_DEVICE
     VertexSA(VertexSA const & other) :
         TBase(other),
         repLen(other.repLen),
@@ -172,7 +177,7 @@ struct EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > >
 // ============================================================================
 
 template <typename TText, typename TIndexSpec>
-void _indexRequireTopDownIteration(Index<TText, IndexSa<TIndexSpec> > & index)
+SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, IndexSa<TIndexSpec> > & index)
 {
     indexRequire(index, EsaSA());
 }
@@ -184,7 +189,7 @@ void _indexRequireTopDownIteration(Index<TText, IndexSa<InfixSegment> > &)
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline typename SAValue<Index<TText, IndexSa<TIndexSpec> > >::Type
+SEQAN_HOST_DEVICE inline typename SAValue<Index<TText, IndexSa<TIndexSpec> > >::Type
 _lastOccurrence(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const &it)
 {
     if (_isSizeInval(value(it).range.i2))
@@ -247,8 +252,9 @@ goDownSkipSingletons(Iter<TIndex, VSTree< TopDown<TSpec> > > &it)
 
 // is this a leaf? (hide empty $-edges)
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDfsOrder>
-inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
-                    VSTreeIteratorTraits<TDfsOrder, True> const)
+SEQAN_HOST_DEVICE inline bool
+_isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > const & it,
+        VSTreeIteratorTraits<TDfsOrder, True> const)
 {
     typedef Index<TText, IndexSa<TIndexSpec> >                      TIndex;
     typedef typename SAValue<TIndex>::Type                          TOcc;
@@ -266,7 +272,7 @@ inline bool _isLeaf(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > con
 }
 
 template <typename TIndex, typename TSize, typename TAlphabet>
-inline typename Size<TIndex>::Type
+SEQAN_HOST_DEVICE inline typename Size<TIndex>::Type
 repLength(TIndex const &, VertexSA<TSize, TAlphabet> const & vDesc)
 {
     return vDesc.repLen;
@@ -287,7 +293,7 @@ parentEdgeFirstChar(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline void goRoot(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > & it)
+SEQAN_HOST_DEVICE inline void goRoot(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > & it)
 {
     _historyClear(it);
     clear(it);

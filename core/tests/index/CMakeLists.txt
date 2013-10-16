@@ -30,7 +30,9 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
 add_executable (test_index_creation
-                test_index_creation.cpp)
+                test_index_creation.cpp
+                test_index_creation.h
+                test_index_helpers.h)
 target_link_libraries (test_index_creation ${SEQAN_LIBRARIES})
 
 add_executable (test_index_crosscompare_char
@@ -74,26 +76,37 @@ add_executable (test_index_drawing
                 test_index_drawing.cpp)
 target_link_libraries (test_index_drawing ${SEQAN_LIBRARIES})
 
-add_executable (test_index_fm
-                test_index_fm.cpp
-			    test_index_fm.h
-			    test_index_fm_compressed_sa_iterator.h
-			    test_index_fm_compressed_sa.h
-			    test_index_fm_prefix_sum_table.h
-			    test_index_fm_rank_support_bit_string_iterator.h
-			    test_index_fm_rank_support_bit_string.h
-			    test_index_fm_right_array_binary_tree_iterator.h
-			    test_index_fm_right_array_binary_tree.h
-			    test_index_fm_sparse_string.h
-			    test_index_fm_stree.h)
-target_link_libraries (test_index_fm ${SEQAN_LIBRARIES})
+#add_executable (test_index_fm_right_array_binary_tree
+#                test_index_fm_right_array_binary_tree.cpp
+#                test_index_fm_right_array_binary_tree.h
+#                test_index_fm_right_array_binary_tree_iterator.h
+#                test_index_helpers.h)
+#target_link_libraries (test_index_fm_right_array_binary_tree ${SEQAN_LIBRARIES})
 
 add_executable (test_index_fm_rank_dictionary
                 test_index_fm_rank_dictionary.cpp
-			    test_index_fm_rank_dictionary.h
-			    test_index_fm_sentinel_rank_dictionary.h)
+                test_index_helpers.h)
 target_link_libraries (test_index_fm_rank_dictionary ${SEQAN_LIBRARIES})
 
+add_executable (test_index_fm_sparse_string
+                test_index_fm_sparse_string.cpp)
+target_link_libraries (test_index_fm_sparse_string ${SEQAN_LIBRARIES})
+
+add_executable (test_index_base
+                test_index_base.cpp
+                test_index_helpers.h)
+target_link_libraries (test_index_base ${SEQAN_LIBRARIES})
+
+add_executable (test_index_fm
+                test_index_fm.cpp
+                test_index_helpers.h)
+target_link_libraries (test_index_fm ${SEQAN_LIBRARIES})
+
+add_executable (test_index_vstree
+                test_index_vstree.cpp
+                test_index_fm_stree.h
+                test_index_helpers.h)
+target_link_libraries (test_index_vstree ${SEQAN_LIBRARIES})
 
 # GCC < 4.5 segfaults when compiling the test_index_stree_iterators test.
 # Enable if the compiler is not GCC or the version is >= 4.5.
@@ -104,6 +117,11 @@ if (NOT CMAKE_COMPILER_IS_GNUCXX OR (450 LESS _GCC_VERSION))
         test_stree_iterators.h)
     target_link_libraries (test_index_stree_iterators ${SEQAN_LIBRARIES})
 endif ()
+
+add_executable (test_index_finder
+                test_index_finder.cpp
+                test_index_helpers.h)
+target_link_libraries (test_index_finder ${SEQAN_LIBRARIES})
 
 add_executable (test_index_repeats
                test_index_repeats.cpp
@@ -127,9 +145,15 @@ add_test (NAME test_test_index_qgram COMMAND $<TARGET_FILE:test_index_qgram>)
 add_test (NAME test_test_index_sa_bwtwalk COMMAND $<TARGET_FILE:test_index_sa_bwtwalk>)
 add_test (NAME test_test_index_shapes COMMAND $<TARGET_FILE:test_index_shapes>)
 add_test (NAME test_test_index_drawing COMMAND $<TARGET_FILE:test_index_drawing>)
+add_test (NAME test_test_index_fm_right_array_binary_tree COMMAND $<TARGET_FILE:test_index_fm_right_array_binary_tree>)
+add_test (NAME test_test_index_fm_rank_dictionary COMMAND $<TARGET_FILE:test_index_fm_rank_dictionary>)
+add_test (NAME test_test_index_fm_sparse_string COMMAND $<TARGET_FILE:test_index_fm_sparse_string>)
+add_test (NAME test_test_index_base COMMAND $<TARGET_FILE:test_index_base>)
 add_test (NAME test_test_index_fm COMMAND $<TARGET_FILE:test_index_fm>)
+add_test (NAME test_test_index_vstree COMMAND $<TARGET_FILE:test_index_vstree>)
 if (NOT CMAKE_COMPILER_IS_GNUCXX OR (450 LESS _GCC_VERSION))
     add_test (NAME test_test_index_stree_iterators COMMAND $<TARGET_FILE:test_index_stree_iterators>)
 endif ()
+add_test (NAME test_test_index_finder COMMAND $<TARGET_FILE:test_index_finder>)
 add_test (NAME test_test_index_repeats COMMAND $<TARGET_FILE:test_index_repeats>)
 

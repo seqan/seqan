@@ -1,7 +1,8 @@
 // ==========================================================================
-//                               fm_index_beta
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,17 +30,21 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Your Name <your.email@example.net>
+// Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_SPARSE_STRING_BETA_H_
-#define TEST_SPARSE_STRING_BETA_H_
+#ifndef TESTS_INDEX_TEST_INDEX_FM_SPARSE_STRING_H_
+#define TESTS_INDEX_TEST_INDEX_FM_SPARSE_STRING_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
 
 using namespace seqan;
+
+// ==========================================================================
+// Tests
+// ========================================================================== 
 
 // template <typename TSparseString>
 // void sparseStringCompressionFactor(TSparseString & /*tag*/)
@@ -71,17 +76,17 @@ template <typename TSparseString>
 void sparseStringGetValue(TSparseString & /*tag*/)
 { 
     TSparseString sparseString;
-    resize(getFibre(sparseString, FibreValueString()), 3);
+    resize(getFibre(sparseString, FibreValues()), 3);
 
-    assignValue(getFibre(sparseString, FibreValueString()), 0, 0);
-    assignValue(getFibre(sparseString, FibreValueString()), 1, 2);
-    assignValue(getFibre(sparseString, FibreValueString()), 2, 3);
+    assignValue(getFibre(sparseString, FibreValues()), 0, 0);
+    assignValue(getFibre(sparseString, FibreValues()), 1, 2);
+    assignValue(getFibre(sparseString, FibreValues()), 2, 3);
 
-    resize(getFibre(sparseString, FibreIndicatorString()), 30);
-    setBitTo(getFibre(sparseString, FibreIndicatorString()), 0, 1);
-    setBitTo(getFibre(sparseString, FibreIndicatorString()), 10, 1);
-    setBitTo(getFibre(sparseString, FibreIndicatorString()), 20, 1);
-    _updateRanks(getFibre(sparseString, FibreIndicatorString()));
+    resize(getFibre(sparseString, FibreIndicators()), 30);
+    setValue(getFibre(sparseString, FibreIndicators()), 0, true);
+    setValue(getFibre(sparseString, FibreIndicators()), 10, true);
+    setValue(getFibre(sparseString, FibreIndicators()), 20, true);
+    updateRanks(getFibre(sparseString, FibreIndicators()));
 
     SEQAN_ASSERT_EQ(getValue(sparseString, 0), 0u);
     SEQAN_ASSERT_EQ(getValue(sparseString, 10), 2u);
@@ -118,20 +123,10 @@ void sparseStringEmpty(TSparseString & /*tag*/)
     SEQAN_ASSERT_EQ(empty(sparseString), true);
 }
 
-template <typename TSparseString>
-void sparseStringGetFibre(TSparseString & /*tag*/)
-{ 
-    TSparseString sparseString;
-
-    resize(sparseString, 3);
-    SEQAN_ASSERT(getFibre(sparseString, FibreValueString()) == sparseString.valueString);
-    SEQAN_ASSERT(getFibre(sparseString, FibreIndicatorString()) == sparseString.indicatorString);
-}
-
 // template <typename TSparseString>
 // void sparseStringValue(TSparseString & /*tag*/)
 // { 
-//     typedef typename Fibre<TSparseString, FibreValueString>::Type TValueString;
+//     typedef typename Fibre<TSparseString, FibreValues>::Type TValueString;
 //     typedef typename Value<TValueString>::Type TValue;
 // 
 //     TSparseString sparseString;
@@ -209,9 +204,17 @@ SEQAN_DEFINE_TEST(sparse_string_get_fibre)
 //     sparseStringValue(tag);
 // }
 
+// ==========================================================================
+// Functions
+// ========================================================================== 
 
+SEQAN_BEGIN_TESTSUITE(test_fm_index_sparse_string)
+{
+    SEQAN_CALL_TEST(sparse_string_get_value);
+    SEQAN_CALL_TEST(sparse_string_clear_length_resize);
+    SEQAN_CALL_TEST(sparse_string_empty);
+    SEQAN_CALL_TEST(sparse_string_get_fibre);
+}
+SEQAN_END_TESTSUITE
 
-
-#endif // TEST_SPARSE_STRING_BETA_H_
-
-
+#endif // TESTS_INDEX_TEST_INDEX_FM_SPARSE_STRING_H_
