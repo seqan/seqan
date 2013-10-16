@@ -168,13 +168,6 @@ typedef OrFunctor<IsInRange<'a', 'z'>, IsInRange<'A', 'Z'> >    IsAlpha;
 typedef IsInRange<'0', '9'>                                     IsDigit;
 typedef OrFunctor<IsAlpha, IsDigit>                             IsAlphaNum;
 
-// By default, iterators don't support chunking.
-template <typename TIterator>
-struct Chunk
-{
-    typedef Nothing Type;
-};
-
 // Chunk interface for rooted iterators
 template <typename TContainer, typename TValue, typename TSpec>
 struct Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >
@@ -191,6 +184,16 @@ struct Chunk<std::basic_streambuf<TValue, TTraits> >
 {
     typedef Range<TValue*> Type;
 };
+
+template <typename TValue, typename TTraits>
+struct Chunk<StreamBuffer<TValue, TTraits> >
+{
+    typedef Range<TValue*> Type;
+};
+
+template <typename TStream, typename TDirection>
+struct Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >:
+    Chunk<typename Iter<TStream, StreamIterator<Tag<TDirection> > >::TStreamBuffer> {};
 
 //template <typename TValue, typename TTraits>
 //struct Chunk<std::istreambuf_iterator<TValue, TTraits> >:
@@ -351,18 +354,35 @@ writeValue(Iter<TContainer, TSpec> &iter, TValue val)
 // Function getChunk()
 // ----------------------------------------------------------------------------
 
-// std::basic_streambuf
+// StreamBuffer
 template <typename TValue, typename TTraits>
-inline typename Chunk<std::basic_streambuf<TValue, TTraits> >::Type
-getChunk(std::basic_streambuf<TValue, TTraits> const &buf, Input)
+inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
+getChunk(StreamBuffer<TValue, TTraits> const &buf, Input)
 {
     return toRange(buf.gptr(), buf.egptr());
 }
 template <typename TValue, typename TTraits>
-inline typename Chunk<std::basic_streambuf<TValue, TTraits> >::Type
-getChunk(std::basic_streambuf<TValue, TTraits> const &buf, Output)
+inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
+getChunk(StreamBuffer<TValue, TTraits> const &buf, Output)
 {
     return toRange(buf.pptr(), buf.epptr());
+}
+
+//template <typename TValue, typename TTraits, typename TDirection>
+//inline typename Chunk<std::basic_streambuf<TValue, TTraits> >::Type
+//getChunk(std::basic_streambuf<TValue, TTraits> const &buf, Tag<TDirection>)
+//{
+//    return getChunk(static_cast<StreamBuffer<TValue, TTraits> &>(buf), Tag<TDirection>());
+//}
+
+// std::basic_streambuf
+template <typename TStream, typename TDirection>
+inline typename Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >::Type
+getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > > const &iter, Tag<TDirection>)
+{
+    typedef typename Iter<TStream, StreamIterator<Input> >::TStreamBuffer TStreamBuffer;
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    return getChunk(*iter.streamBuf, Tag<TDirection>());
 }
 
 // SeqAn's iterators
@@ -726,14 +746,14 @@ readRecord(TIdString &meta,
            TFwdIterator &iter,
            Fastq)
 {
-    EqualsChar<'@'>     fastqBegin;
-    EqualsChar<'+'>     qualsBegin;
+    EqualsChar<'@'> fastqBegin;
+    EqualsChar<'+'> qualsBegin;
 
     IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
         ignoreWhiteSpaceAndAssertAlphabet("Invalid sequence character in Fastq sequence!");
 
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TQualString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertQuality("Invalid quality character in Fastq sequence!");
+    IgnoreOrAssertFunctor<IsBlank, IsInAlphabet<typename Value<TQualString>::Type>, std::runtime_error>
+        ignoreBlankAssertQuality("Invalid quality character in Fastq sequence!");
 
     clear(meta);
     clear(seq);
@@ -741,18 +761,13 @@ readRecord(TIdString &meta,
 
     skipUntil(iter, fastqBegin);    // forward to the next '@'
     ++iter;                         // skip '@'
+
     readLine(meta, iter);           // read Fastq id
 
     readUntil(seq, iter, qualsBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fastq sequence
-//    readUntil(seq, iter, EqualsChar<'\n'>());
-//    skipUntil(iter, qualsBegin);
+    skipLine(iter);                 // skip '+' and 2nd Fastq id
 
-    ++iter;                         // skip '+'
-    skipLine(iter);                 // skip 2nd Fastq id
-
-    readUntil(qual, iter, IsWhitespace(), ignoreWhiteSpaceAndAssertQuality);     // read Fastq qualities
-//    readUntil(qual, iter, EqualsChar<'\n'>());
-
+    readUntil(qual, iter, IsNewline(), ignoreBlankAssertQuality);           // read Fastq qualities
     skipUntil(iter, fastqBegin);    // forward to the next '@'
 }
 
