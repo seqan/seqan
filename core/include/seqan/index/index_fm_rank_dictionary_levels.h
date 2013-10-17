@@ -688,7 +688,7 @@ getRank(RankDictionary<TValue, TwoLevels<TSpec> > const & dict, TPos pos, TChar 
     typedef RankDictionary<TValue, TwoLevels<TSpec> > const                 TRankDictionary;
     typedef typename Fibre<TRankDictionary, FibreRanks>::Type               TFibreRanks;
     typedef typename Value<TFibreRanks>::Type                               TRankEntry;
-    typedef typename RankDictionaryBlock_<TValue, TwoLevels<TSpec> >::Type  TRankBlock;
+//    typedef typename RankDictionaryBlock_<TValue, TwoLevels<TSpec> >::Type  TRankBlock;
     typedef typename RankDictionaryValues_<TValue, TwoLevels<TSpec> >::Type TRankValues;
     typedef typename Size<TRankDictionary>::Type                            TSize;
 

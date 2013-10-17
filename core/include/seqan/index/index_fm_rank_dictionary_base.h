@@ -161,8 +161,6 @@ template <typename TValue, typename TSpec, typename TText>
 inline void
 createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
 {
-    typedef RankDictionary<TValue, TSpec>                       TRankDictionary;
-    typedef typename Size<TRankDictionary>::Type                TSize;
     typedef typename Iterator<TText const, Standard>::Type      TTextIterator;
 
     // Resize the RankDictionary.

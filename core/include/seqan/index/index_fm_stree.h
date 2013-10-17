@@ -311,7 +311,7 @@ _goDown(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec>
 {
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >    TIndex;
     typedef typename Value<TIndex>::Type                    TAlphabet;
-    typedef typename ValueSize<TAlphabet>::Type             TAlphabetSize;
+//    typedef typename ValueSize<TAlphabet>::Type             TAlphabetSize;
 
     // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
     // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
@@ -388,7 +388,6 @@ _goRight(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec
 {
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
     typedef typename Value<TIndex>::Type                        TAlphabet;
-    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
     typedef Pair<typename Size<TIndex>::Type>                   TRange;
 
     typedef typename VertexDescriptor<TIndex>::Type             TVertexDescriptor;

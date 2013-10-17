@@ -174,11 +174,11 @@ struct Fibre<LF<StringSet<thrust::device_vector<TValue, TAlloc>, TSSetSpec>, TSp
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction FibreValues                                         [Device LF]
+// Metafunction FibreBwt                                            [Device LF]
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TAlloc, typename TSpec, typename TConfig>
-struct Fibre<LF<thrust::device_vector<TValue, TAlloc>, TSpec, TConfig>, FibreValues>
+struct Fibre<LF<thrust::device_vector<TValue, TAlloc>, TSpec, TConfig>, FibreBwt>
 {
     typedef thrust::device_vector<TValue, TAlloc>               TText_;
     typedef typename Value<LF<TText_, TSpec, TConfig> >::Type   TValue_;
@@ -187,7 +187,7 @@ struct Fibre<LF<thrust::device_vector<TValue, TAlloc>, TSpec, TConfig>, FibreVal
 };
 
 template <typename TValue, typename TAlloc, typename TSSetSpec, typename TSpec, typename TConfig>
-struct Fibre<LF<StringSet<thrust::device_vector<TValue, TAlloc>, TSSetSpec>, TSpec, TConfig>, FibreValues>
+struct Fibre<LF<StringSet<thrust::device_vector<TValue, TAlloc>, TSSetSpec>, TSpec, TConfig>, FibreBwt>
 {
     typedef StringSet<thrust::device_vector<TValue, TAlloc>, TSSetSpec> TText_;
     typedef typename Value<LF<TText_, TSpec, TConfig> >::Type           TValue_;
@@ -335,7 +335,7 @@ inline void
 assign(LF<TText, TSpec, TConfig> & lf, LF<TText2, TSpec2, TConfig> const & source)
 {
     assign(getFibre(lf, FibrePrefixSums()), getFibre(source, FibrePrefixSums()));
-    assign(getFibre(lf, FibreValues()), getFibre(source, FibreValues()));
+    assign(getFibre(lf, FibreBwt()), getFibre(source, FibreBwt()));
     assign(getFibre(lf, FibreSentinels()), getFibre(source, FibreSentinels()));
     assign(lf.sentinelSubstitute, source.sentinelSubstitute);
 }

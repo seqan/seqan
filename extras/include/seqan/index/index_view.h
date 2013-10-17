@@ -340,31 +340,31 @@ struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TC
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction FibreValues                                           [LF View]
+// Metafunction FibreBwt                                              [LF View]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
-struct Fibre<LF<ContainerView<TText, TViewSpec>, TSpec, TConfig>, FibreValues>
+struct Fibre<LF<ContainerView<TText, TViewSpec>, TSpec, TConfig>, FibreBwt>
 {
-    typedef typename View<typename Fibre<LF<TText, TSpec, TConfig>, FibreValues>::Type>::Type   Type;
+    typedef typename View<typename Fibre<LF<TText, TSpec, TConfig>, FibreBwt>::Type>::Type   Type;
 };
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
-struct Fibre<LF<ContainerView<TText, TViewSpec>, TSpec, TConfig> const, FibreValues>
+struct Fibre<LF<ContainerView<TText, TViewSpec>, TSpec, TConfig> const, FibreBwt>
 {
-    typedef typename View<typename Fibre<LF<TText, TSpec, TConfig> const, FibreValues>::Type>::Type     Type;
+    typedef typename View<typename Fibre<LF<TText, TSpec, TConfig> const, FibreBwt>::Type>::Type     Type;
 };
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig>
-struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig>, FibreValues>
+struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig>, FibreBwt>
 {
-    typedef typename View<typename Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig>, FibreValues>::Type>::Type  Type;
+    typedef typename View<typename Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig>, FibreBwt>::Type>::Type  Type;
 };
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig>
-struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> const, FibreValues>
+struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> const, FibreBwt>
 {
-    typedef typename View<typename Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> const, FibreValues>::Type>::Type  Type;
+    typedef typename View<typename Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> const, FibreBwt>::Type>::Type  Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -792,7 +792,7 @@ view(LF<TText, TSpec, TConfig> & lf)
     typename View<LF<TText, TSpec, TConfig> >::Type lfView;
 
     getFibre(lfView, FibrePrefixSums()) = view(getFibre(lf, FibrePrefixSums()));
-    getFibre(lfView, FibreValues()) = view(getFibre(lf, FibreValues()));
+    getFibre(lfView, FibreBwt()) = view(getFibre(lf, FibreBwt()));
     getFibre(lfView, FibreSentinels()) = getFibre(lf, FibreSentinels());
     lfView.sentinelSubstitute = lf.sentinelSubstitute;
 
@@ -806,7 +806,7 @@ view(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf)
     typename View<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> >::Type lfView;
 
     getFibre(lfView, FibrePrefixSums()) = view(getFibre(lf, FibrePrefixSums()));
-    getFibre(lfView, FibreValues()) = view(getFibre(lf, FibreValues()));
+    getFibre(lfView, FibreBwt()) = view(getFibre(lf, FibreBwt()));
     getFibre(lfView, FibreSentinels()) = view(getFibre(lf, FibreSentinels()));
     lfView.sentinelSubstitute = lf.sentinelSubstitute;
 
