@@ -952,7 +952,7 @@ class EntryConverter(object):
                     res.addChild(p)
                 elif p.getType() == 'section':
                     h = self.rawTextToTextNode(p.heading)
-                    h.type = 'h%d' % p.level
+                    h.type = 'h%d' % (p.level + 1)
                     res.addChild(h)
                 elif p.getType() == 'include':
                     # Including a whole file.
