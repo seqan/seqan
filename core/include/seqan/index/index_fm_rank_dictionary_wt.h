@@ -67,6 +67,27 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 ..see:Function.getFibre
 ..include:seqan/index.h
 */
+/*!
+ * @defgroup WaveletTreeFibres WaveletTree Fibres
+ * 
+ * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link WaveletTree @endlink.
+ * 
+ * @section Remarks
+ * 
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link WaveletTree @endlink.
+ * 
+ * @tag WaveletTreeFibres#FibreTreeStructure
+ * 
+ * @brief The wavelet tree structure of the wavelet tree.
+ * 
+ * @tag WaveletTreeFibres#FibreRanks
+ * 
+ * @brief A string set containing a rank support bit string for each node in the tree.
+ *
+ * @see Index#Fibre
+ * @see Index#getFibre
+ * 
+ */
 
 // ----------------------------------------------------------------------------
 // Metafunction Fibre
@@ -90,6 +111,33 @@ fibre interface was designed to unify the access to the members of the different
 To get a reference or the type of a specific fibre use @Function.getFibre@ or @Metafunction.Fibre@.		
 ..include:seqan/index.h
 */
+/*!
+ * @class WaveletTree
+ *
+ * @extends RankDictionary
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief A wavelet tree is a tree like binary encoding of a text.
+ * 
+ * @signature template <typename TValue, typename TSpec>
+ *            RankDictionary<TValue, WaveletTree<TSpec> >
+ * 
+ * @tparam TValue The alphabet type of the wavelet tree.
+ * @tparam TSpec A tag for specialization purposes. Default: <tt>void</tt>
+ * 
+ * @section Remarks
+ * 
+ * The nodes of a wavelet tree consist of a bit string as well as a character c.
+ * In each level of the tree, characters smaller than c are represented as a 0
+ * while character greater or equal to c are represented with a 1. The
+ * characters represented by a 0 form the string to be represented by the left
+ * subtree while characters represented by a 1 form the string of the right
+ * subtree. Therefore, only the bit string of the root node represents all
+ * characters while all other nodes represent subsets.
+ */
+
+
 
 template <typename TValue, typename TSpec>
 struct Fibre<RankDictionary<TValue, WaveletTree<TSpec> >, FibreRanks>

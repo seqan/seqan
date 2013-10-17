@@ -68,6 +68,32 @@ struct LF;
 ..include:seqan/index_fm.h
 */
 
+/*!
+ * @defgroup LFTableFibres LF Table Fibres
+ * 
+ * @brief Tag to select a specific fibre of a @link LF @endlink.
+ * 
+ * @section Remarks
+ * 
+ * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link LF @endlink.
+ * 
+ * @see Index#Fibre
+ * @see Index#getFibre
+ * 
+ * @tag LFTableFibres#FibrePrefixSums
+ * 
+ * @brief The prefix sum table of the lf table.
+ * 
+ * @tag LFTableFibres#FibreBwt
+ * 
+ * @brief The occurrence table of the lf table.
+ *
+ * @tag LFTableFibres#FibreSentinels
+ * 
+ * @brief The type of the senitnels.
+
+ */
+
 struct FibrePrefixSums_;
 struct FibreSentinels_;
 struct FibreTempBwt_;
@@ -175,6 +201,21 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibreTempBwt>
 ...default:String
 ..include:seqan/Index.h
 */
+/*!
+ * @class LF
+ * 
+ * @headerfile seqan/Index.h
+ *
+ * @signature template <typename TText, typename TSpec, typename TConfig>
+ *            LF<TText, TSpec, TConfig>
+ * 
+ * @brief LF is an object storing all necessary information for the LF-mapping.
+ * 
+ * @tparam TText The type of the text the LF table is constructed from.
+ * @tparam TSpec A possibility to specialize the LF table. Default: <tt>void</tt>
+ * @tparam TConfig A configuration object for easily defining the LF table fibres.
+ */
+
 template <typename TText, typename TSpec, typename TConfig>
 struct LF
 {
@@ -243,7 +284,20 @@ bwtLength(TText const & text)
 ..returns:A reference to the @Metafunction.Fibre@ object.
 ..include:seqan/index.h
 */
-
+/*!
+ * @fn LF#getFibre
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a specific fibre of a LF table.
+ * 
+ * @signature getFibre(lfTable, fibreTag)
+ * 
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types: @link LFTableFibres @endlink
+ * @param lfTable The LF table.
+ * 
+ * @return TReturn A reference to the @link Index#Fibre @endlink object of type @link Index#Fibre @endlink&lt;@link LF @endlink&lt;TText, TSpec, TConfig&gt;, FibrePrefixSums&gt;::Type
+ */
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>::Type &
 getFibre(LF<TText, TSpec, TConfig> & lf, FibrePrefixSums)
@@ -301,6 +355,20 @@ getFibre(LF<TText, TSpec, TConfig> const & lf, FibreSentinels)
 ...type:nolink:$bool$
 ..include:seqan/index.h
 */
+/*!
+ * @fn LF#empty
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Clears the LF table.
+ * 
+ * @signature empty(lfTable)
+ * 
+ * @param lfTable The LF table to be checked.
+ * 
+ * @return TReturn <tt>true</tt> if the LF table is empty, <tt>false</tt> otherwise. Types: <tt>bool</tt>
+ */
+
 
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline bool empty(LF<TText, TSpec, TConfig> const & lf)
@@ -330,6 +398,19 @@ SEQAN_HOST_DEVICE inline bool empty(LF<StringSet<TText, TSSetSpec>, TSpec, TConf
 ...type:Class.LF
 ..include:seqan/index.h
 */
+/*!
+ * @fn LF#clear
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Resets the LF table.
+ * 
+ * @signature clear(lfTable)
+ * 
+ * @param lfTable The LF table to be cleared.
+ *
+ * @return void
+ */
 
 template <typename TText, typename TSpec, typename TConfig>
 inline void clear(LF<TText, TSpec, TConfig> & lf)
@@ -561,7 +642,21 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
 // ----------------------------------------------------------------------------
 // Function createLF()
 // ----------------------------------------------------------------------------
-
+/*!
+ * @fn createLF
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Creates the LF table
+ * 
+ * @signature createLF(lfTable, text, sa)
+ * 
+ * @param lfTable The LF table to be constructed.
+ * @param text The underlying text Types: @link String @endlink.
+ * @param sa The suffix array of the LF table underlying text. Types: @link String @endlink, @link StringSet @endlink.
+ * 
+ * @return TReturn Returns a <tt>bool</tt> which is <tt>true</tt> on successes and <tt>false</tt> otherwise.
+ */
 // This function creates all table of the lf table given a text and a suffix array.
 template <typename TText, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
 inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
@@ -612,6 +707,29 @@ inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TS
 ..returns:A nolink:$bool$ which is $true$ on success.
 ..include:seqan/index.h
 */
+/*!
+ * @fn LF#open
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions loads a LF table from disk.
+ * 
+ * @signature open(lfTable, fileName [, openMode])
+ * 
+ * @param openMode The combination of flags defining how the file should be
+ *                 opened.To open a file read-only, write-only or to read and
+ *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                 OPEN_APPEND</tt>
+ * @param lfTable The lfTable. Types: LF
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A nolink:<tt>bool</tt> which is <tt>true</tt> on success.
+ */
+
 
 template <typename TText, typename TSpec, typename TConfig>
 inline bool open(LF<TText, TSpec, TConfig> & lf, const char * fileName, int openMode)
@@ -664,6 +782,30 @@ inline bool open(LF<TText, TSpec, TConfig> & lf, const char * fileName)
 ..returns:A nolink:$bool$ which is $true$ on success.
 ..include:seqan/index.h
 */
+/*!
+ * @fn LF#save
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions saves a LF table to disk.
+ * 
+ * @signature save(lfTable, fileName [, openMode])
+ * 
+ * @param openMode The combination of flags defining how the file should be
+ *                 opened.To open a file read-only, write-only or to read and
+ *                 write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *                 <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *                 <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *                 <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *                 opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *                 OPEN_APPEND</tt>
+ * @param lfTable The dictionary. Types: LF
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A nolink:<tt>bool</tt> which is <tt>true</tt> on success.
+ */
+
+
 
 template <typename TText, typename TSpec, typename TConfig>
 inline bool save(LF<TText, TSpec, TConfig> const & lf, const char * fileName, int openMode)
