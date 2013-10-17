@@ -57,63 +57,6 @@
  * @brief The text is kept and not cleared. This FM Index version is faster but more memory is required.
  */
 
-/*!
- * @defgroup FMIndexFibres FM Index Fibres
- * 
- * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
- * 
- * @section Remarks
- * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
- * 
- * @see Index#Fibre
- * @see Index#getFibre
- * 
- * @tag FMIndexFibres#FibreText
- * 
- * @brief The original text of the index.
- * 
- * @tag FMIndexFibres#FibreSaLfTable
- * 
- * @brief The lf table as well as the compressed suffix array.
- * 
- * @section Remarks
- * 
- * This tag can only be used with the functions @link Index#indexRequire @endlink or
- * @link Index#indexSupplied @endlink.
- * 
- * @tagFMIndexFibres#FibreSA
- * 
- * @brief The compressed suffix array of the text.
- * 
- * @tag FMIndexFibres#FibrePrefixSumTable
- * 
- * @brief The prefix sum table of the index.
- * 
- * @tag FMIndexFibres#FibreLfTable
- * 
- * @brief The lf table.
- */
-
-/*!
- * @class FMIndex
- * 
- * @extends Index
- * 
- * @headerfile seqan/index.h
- * 
- * @brief An index based on the Burrows-Wheeler transform.
- * 
- * @signature Index<TText, FMIndex<TOccSpec, TSpec> >
- * 
- * @tparam TOccSpec Occurrence table specialisation.The tags are really
- *                  shortcuts for the different @link SentinelRankDictionary
- *                  @endlinks Types: @link FMIndexRankDictionarySpec#WT @endlink, @link FMIndexRankDictionarySpec#SBM @endlink, Default: @link FMIndexRankDictionarySpec#WT @endlink
- *
- * @tparam TSpec FM index specialisation. Types: @link FMIndexCompressionSpec#CompressText @endlink, @link FMIndexCompressionSpec#void @endlink, Default: @link FMIndexCompressionSpec#void @endlink
- *
- * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
- */
 
 /*!
  * @fn FMIndex#begin
@@ -133,24 +76,7 @@
  *                 TSpec >::Type</tt>
  */
 
-/*!
- * @fn FMIndex#toSuffixPosition
- * 
- * @headerfile seqan/index.h
- * 
- * @brief This function computes the position of a specified position in the
- *        suffix array (additionally containing entries for the sentinels. The
- *        returned position correspond to the suffix array of the original text
- *        without sentinels.
- * 
- * @signature toSuffixPosition(fmIndex, pos, offset)
- * 
- * @param pos The position in the suffix array of the fm index (with sentinels).
- *            Types: @link UnsignedIntegerConcept @endlink
- * @param fmIndex The FM index.
- * @param offset The number of sequences in the original text. Types:
- *               @link UnsignedIntegerConcept @endlink
- */
+
 
 /*!
  * @defgroup CompressedSAFibres  CompressedSA Fibres
