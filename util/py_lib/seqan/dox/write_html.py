@@ -168,6 +168,7 @@ def createTransLink(doc, path_mgr):
         return transTextNode(text_node, path_mgr)
     return transLink
 
+
 def createNameToPath(doc):
     path_converter = PathConverter(doc)
     def convertPath(entry_name):
@@ -218,8 +219,9 @@ class PathConverter(object):
             return path, title, entry
         elif self.doc.entries.get(name):
             first, second = proc_doc.splitSecondLevelEntry(name)
-            entry = self.doc.top_level_entries.get(first)
-            path = '%s_%s.html#%s' % (entry.kind, escapeName(entry.name), escapeName(name))
+            father = self.doc.top_level_entries.get(first)
+            entry = self.doc.second_level_entries.get(name)
+            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeName(name))
             return path, name, entry
         else:
             return None, None, None

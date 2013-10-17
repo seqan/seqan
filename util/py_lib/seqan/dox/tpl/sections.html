@@ -253,7 +253,7 @@ Render the member functions overview
     <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
     <span class="summary_desc">{{ entry.brief|transtext }}</td>
     {% else %}
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -315,7 +315,7 @@ Render the member typedefs overview
     <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
     <span class="summary_desc">{{ entry.brief|transtext }}</td>
     {% else %}
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (member typedef)">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (member typedef)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -377,7 +377,7 @@ Render the interface functions overview
     <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
     {% else %}
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)"><strong>
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}"><strong>
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -461,7 +461,7 @@ Render the interface functions overview
     {% if entry.sig_entries %}
     <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
     {% elif entry.signatures %}
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -498,7 +498,7 @@ Render the interface metafunctions overview
     <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
     <span class="summary_desc">{{ entry.brief|transtext }}</td>
     {% else %}
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
@@ -553,7 +553,7 @@ Render the member variables overview
 <ul class="summary">
   {% for entry in entry.subentries['member_variable'] %}
   <li class="public">
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
     </a></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
@@ -605,7 +605,7 @@ Render the member variables overview
 <ul class="summary">
   {% for entry in entry.subentries['variable'] %}
   <li class="public">
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)">
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {{ entry.type|e }} {{ entry.name|e }}
     </a></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
