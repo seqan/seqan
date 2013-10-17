@@ -57,7 +57,20 @@ typedef Tag<FibreLF_> const     FibreLF;
 // ============================================================================
 // Tags
 // ============================================================================
-
+/*!
+ * @defgroup CompressedSAFibres  CompressedSA Fibres
+ * 
+ * @brief Tag to select a specific fibre of a @link CompressedSA @endlink.
+ * 
+ * @tag CompressedSAFibres#FibreSparseString
+ * @brief The sparse string.
+ *
+ * @tag CompressedSAFibres#FibreLF
+ * @brief A @link LFTable @endlink to recompute the missing values of the compressed suffix array.
+ *
+ * @see Index#Fibre
+ * @see Index#getFibre
+ */
 /**
 .Tag.CompressedSA Fibres
 ..summary:Tag to select a specific fibre of a @Class.CompressedSA@.
@@ -156,7 +169,26 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
 ..remarks:The compressed suffix array can only be used with the FM index.
 ..include:seqan/index.h
 */
-
+/*!
+ * @class CompressedSA
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief A suffix array storing only a few suffix array entries and computing the remaining on demand.
+ * 
+ * @signature template <typename TText, typename TSpec, typename TConfig>
+ *            CompressedSA<CompressedSA<TText, TSpec, TConfig>
+ * 
+ * @tparam TSpec Possibility to specialise a compressed suffix array. Default: void.
+ * @tparam TText The type of the text the compressed suffix array is created from. Types: @link String @endlink, @link
+ *               StringSet @endlink
+ * @tparam TConfig A configuration object that can be used to change the types of the fibres easily. This possibility is
+ *                 provided for convenience.
+ * 
+ * @section Remarks
+ * 
+ * The compressed suffix array can only be used together with a @link LFTable @endlink.
+ */
 template <typename TText, typename TSpec, typename TConfig>
 struct CompressedSA
 {
@@ -196,6 +228,20 @@ struct CompressedSA
 /**
 .Function.clear.param.object.type:Class.CompressedSA
 */
+/*!
+ * @fn CompressedSA#clear
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Resets the compressed suffix array.
+ * 
+ * @signature clear(compressedSA)
+ * 
+ * @param compressesSA The compressed suffix array to be cleared.
+ *
+ * @return void
+ */
+
 template <typename TText, typename TSpec, typename TConfig>
 inline void clear(CompressedSA<TText, TSpec, TConfig> & compressedSA)
 {
@@ -210,6 +256,19 @@ inline void clear(CompressedSA<TText, TSpec, TConfig> & compressedSA)
 /**
 .Function.empty.param.object.type:Class.CompressedSA
 */
+/*!
+ * @fn CompressedSA#empty
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Checks whether or not a compressed suffix array contains any elements.
+ * 
+ * @signature bool empty (compressedSA)
+ * 
+ * @param compressesSA The compressed suffix array to be cleared.
+ *
+ * @return bool Returns true if the compressed suffix array is empty and false otherwise.
+ */
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compressedSA)
 {
@@ -235,6 +294,29 @@ SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compre
 ..param:offset:Number of elements at the beginning which should contain the default value.
 ..include:seqan/index.h
 */
+/*!
+ * @fn CompressedSA#createCompressedSa
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions creates a compressed suffix array with a specified compression factor.
+ * 
+ * @signature createCompressedSa(compressedSA, completeSA, compressionFactor [,offset])
+ * 
+ * @param compressedSA The compressed suffix array.
+ *
+ * @param compressionFactor The compression factor. A compression factor of x means that the compressed suffix array
+ *                          specifically stores a value for every x values in the complete suffix array. Types: @link
+ *                          UnsignedIntegerConcept @endlink
+ *
+ * @param completeSA A complete suffix array containing all values. Types: @link String @endlink
+ *
+ * @param offset The offset determines how many empty values should be inserted into the compressed suffix array at the
+ *               beginning. This possibility accounts for the sentinel positions of the @link FMIndex @endlink.
+ *
+ * @return void
+ */
+
 template <typename TText, typename TSpec, typename TConfig, typename TSA, typename TSize>
 void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA const & sa, TSize offset)
 {
@@ -304,6 +386,21 @@ Index< String<char> > index_esa("tobeornottobe");
 
 String<char> & text = getFibre(indexEsa, EsaText());
 */
+/*!
+ * @fn CompressedSA#getFibre
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns a specific fibre of a compressed suffix array.
+ * 
+ * @signature getFibre(compressedSA, fibreTag)
+ * 
+ * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ *                 @link CompressedSAFibres CompressedSA Fibres @endlink
+ * @param compressedSA The container holding the fibre.
+ * 
+ * @return TReturn A reference to the specified fibre of type @link Index#Fibre @endlink&lt;CompressedSA&lt;TText, TSpec, TConfig&gt;, FibreSparseString&gt;::Type.
+ */
 
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type const &
@@ -361,6 +458,21 @@ void setLfTable(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF const & 
 /**
 .Function.length.param.object.type:Class.CompressedSA
 */
+/*!
+ * @fn CompressedSA#length
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Returns the number of elements in the compressed suffix array.
+ * 
+ * @signature length(compressedSA)
+ * 
+ * @param compressesSA The compressed suffix array.
+ *
+ * @return TSize The number of elements in the compressed suffix array. Types: The result of @link Size @endlink of the
+ * compressed suffix array.
+ */
+
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Size<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type>::Type
 length(CompressedSA<TText, TSpec, TConfig> const & compressedSA)
@@ -375,6 +487,26 @@ length(CompressedSA<TText, TSpec, TConfig> const & compressedSA)
 /**
 .Function.resize.param.object.type:Class.CompressedSA
 */
+/*!
+ * @fn CompressedSA#resize
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief Resets the number of elements in the compressed suffix array.
+ * 
+ * @signature TSize resize(compressedSA, newLenght)
+ * 
+ * @param compressesSA The compressed suffix array.
+ * @param newLength The number of elements which should be stored in the compressed suffix array. Types: @link
+ *                  UnsignedIntegerConcept @endlink.
+ *
+ * @return TSize The number of elements in the compressed suffix array. Types: The result of @link Size @endlink of the
+ * compressed suffix array.
+ *
+ * @section Note If the new length is smaller than the actual one then the last <tt>x<tt> items of the compressed suffix array
+ *          are deleted with x = oldLength - newLength.
+ */
+
 template <typename TText, typename TSpec, typename TConfig, typename TSize, typename TExpand>
 inline typename Size<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>::Type>::Type
 resize(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSize size, Tag<TExpand> tag)
@@ -397,6 +529,21 @@ resize(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSize size, Tag<TExpa
 ..remarks:Note that the compressed suffix array is read only. Therefore a const reference is return by
 this function.
 */
+/*!
+ * @fn CompressedSA#value
+ * 
+ * @brief Returns the value stored at a specified position in the compressed suffix-array.
+ * 
+ * @signature Value value(compressedSA, pos)
+ * 
+ * @param pos Position at which to access the suffix array. Types: @link UnsignedIntegerConcept @endlink
+ * @param compressedSA The compressed suffix array to access.
+ * 
+ * @section Remarks
+ * 
+ * Note that the compressed suffix array is read only. Therefore a const reference is return by this function.
+ */
+
 template <typename TText, typename TSpec, typename TConfig, typename TPos>
 SEQAN_HOST_DEVICE inline typename Value<CompressedSA<TText, TSpec, TConfig> >::Type
 value(CompressedSA<TText, TSpec, TConfig> & compressedSA, TPos pos)
@@ -442,6 +589,29 @@ value(CompressedSA<TText, TSpec, TConfig> const & compressedSA, TPos pos)
 ..param.object:
 ...type:Class.CompressedSA
 */
+/*!
+ * @fn CompressedSA#open
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions opens a compressed suffix array from disk.
+ * 
+ * @signature open(compressedSA, fileName [, mode])
+ * 
+ * @param mode The combination of flags defining how the file should be
+ *             opened.To open a file read-only, write-only or to read and write
+ *             use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *             <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *             <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *             <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *             opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *             OPEN_APPEND</tt>
+ * @param compressedSA The compressed suffix array to be opened.
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ */
+
 template <typename TText, typename TSpec, typename TConfig>
 inline bool open(CompressedSA<TText, TSpec, TConfig> & compressedSA, const char * fileName, int openMode)
 {
@@ -475,6 +645,29 @@ inline bool open(CompressedSA<TText, TSpec, TConfig> & compressedSA, const char 
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/index.h
 */
+/*!
+ * @fn CompressedSA#save
+ * 
+ * @headerfile seqan/index.h
+ * 
+ * @brief This functions saves a compressed suffix array to disk.
+ * 
+ * @signature save(compressedSA, fileName [, mode])
+ * 
+ * @param mode The combination of flags defining how the file should be
+ *             opened.To open a file read-only, write-only or to read and write
+ *             use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or
+ *             <tt>OPEN_RDWR</tt>.To create or overwrite a file add
+ *             <tt>OPEN_CREATE</tt>.To append a file if existing add
+ *             <tt>OPEN_APPEND</tt>.To circumvent problems, files are always
+ *             opened in binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE |
+ *             OPEN_APPEND</tt>
+ * @param compressedSA The compressed suffix array to be opened.
+ * @param fileName C-style character string containing the file name.
+ * 
+ * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ */
+
 template <typename TText, typename TSpec, typename TConfig>
 inline bool save(CompressedSA<TText, TSpec, TConfig> const & compressedSA, const char * fileName, int openMode)
 {
