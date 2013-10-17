@@ -2750,28 +2750,28 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
 					for (TAlignedReadIter j = firstOverlap; j != it; ++j)
 					{
                         
-						TContigPos rBegin = _min((*j).beginPos, (*j).endPos);
-						TContigPos rEnd = _max((*j).beginPos, (*j).endPos);
+						TContigPos rBegin = _min(j->beginPos, j->endPos);
+						TContigPos rEnd = _max(j->beginPos, j->endPos);
 						if (rBegin < insPos && insPos < rEnd)
 						{
 							if (rBegin < insPos)
 							{
-								TReadGaps gaps(store.readSeqStore[(*j).readId], (*j).gaps);
+								TReadGaps gaps(store.readSeqStore[j->readId], j->gaps);
 								insertGaps(gaps, insPos - rBegin, blkLen);
 							}
                             else
 							{
 								// shift beginPos if insertion was at the front of the read
-								if ((*j).beginPos < (*j).endPos)
-									++(*j).beginPos;
+								if (j->beginPos < j->endPos)
+									j->beginPos += blkLen;
 								else
-									++(*j).endPos;
+									j->endPos += blkLen;
 							}
 							// shift endPos as the alignment was elongated or shifted
-							if ((*j).beginPos < (*j).endPos)
-								++(*j).endPos;
+							if (j->beginPos < j->endPos)
+								j->endPos += blkLen;
 							else
-								++(*j).beginPos;
+								j->beginPos += blkLen;
 						}
 					}
 				}
