@@ -643,27 +643,20 @@ inline void setSVType(TBreakpoint & bp, TSVType type)
 template <typename TBreakpoint>
 inline bool setSVType(TBreakpoint & bp)
 {
-    typedef typename TBreakpoint::TId TId;
     // if insertion return 1; else return 0;
     if (bp.startSeqId != bp.endSeqId)
     {
         bp.svtype = TBreakpoint::INTRATRANSLOCATION;
-        // bp.svtype = static_cast<TId>("translocation");
-        // setSVType(bp, TBreakpoint::TRANSLOCATION);
         return false;
     }
     if (bp.startSeqStrand != bp.endSeqStrand)
     {
-        // bp.svtype = static_cast<TId>("inversion");
         setSVType(bp, TBreakpoint::INVERSION);
-        // setSVType(bp, static_cast<TId>("inversion"));
         return false;
     }
     if (bp.startSeqPos < bp.endSeqPos)
     {
         setSVType(bp, TBreakpoint::DELETION);
-        // bp.svtype = static_cast<TId>("deletion");
-        // setSVType(bp, static_cast<TId>("deletion"));
         return false;
     }
     if (bp.startSeqPos > bp.endSeqPos)
@@ -672,17 +665,13 @@ inline bool setSVType(TBreakpoint & bp)
         if (bp.startSeqStrand)
         {
             setSVType(bp, TBreakpoint::TRANSLOCATION);
-            // bp.svtype = static_cast<TId>("translocation");
             return false;
         }
         setSVType(bp, TBreakpoint::DELETION);
-        // setSVType(bp, static_cast<TId>("deletion"));
         bp.revStrandDel = true;
         return false;
     }
     setSVType(bp, TBreakpoint::INSERTION);
-    // bp.svtype = static_cast<TId>("insertion");
-    // setSVType(bp, static_cast<TId>("insertion"));
     return true;
 }
 

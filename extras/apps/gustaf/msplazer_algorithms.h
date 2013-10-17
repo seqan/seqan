@@ -783,7 +783,6 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
     typedef typename TMSplazerChain::TGraph TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename TBreakpoint::TPos TPos;
-    typedef typename TBreakpoint::TId TId;
     bool foundBP = false;
     TVertexDescriptor spVertex1, spVertex2;
     TEdgeDescriptor edge;
