@@ -1879,8 +1879,7 @@ div.language_entities *[data-lang-entity-container=generic] dt {
 }
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
-div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before,
-html:not(.list) #toc ol li:nth-child(13) a::before {
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
   background: -moz-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* FF3.6+ */
 
