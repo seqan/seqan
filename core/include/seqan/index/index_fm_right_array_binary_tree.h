@@ -69,9 +69,9 @@ class RightArrayBinaryTree;
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
+ * These tags can be used to get @link Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  * @tag RightArrayBinaryTreeFibres#FibreTreeStructureEncoding
@@ -328,11 +328,11 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
  * 
  * @signature getFibre(rightArrayBinaryTree, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres @endlink.
  * @param container The container holding the fibre.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object.
+ * @return TReturn A reference to the @link Fibre @endlink object.
  */
 /**
 .Function.RightArrayBinaryTree#getFibre:

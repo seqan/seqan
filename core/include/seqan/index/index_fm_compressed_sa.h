@@ -66,10 +66,10 @@ typedef Tag<FibreLF_> const     FibreLF;
  * @brief The sparse string.
  *
  * @tag CompressedSAFibres#FibreLF
- * @brief A @link LFTable @endlink to recompute the missing values of the compressed suffix array.
+ * @brief A @link LF @endlink to recompute the missing values of the compressed suffix array.
  *
- * @see Index#Fibre
- * @see Index#getFibre
+ * @see Fibre
+ * @see CompressedSA#getFibre
  */
 /**
 .Tag.CompressedSA Fibres
@@ -187,7 +187,7 @@ struct Value<CompressedSA<TText, TSpec, TConfig> >
  * 
  * @section Remarks
  * 
- * The compressed suffix array can only be used together with a @link LFTable @endlink.
+ * The compressed suffix array can only be used together with a @link LF @endlink.
  */
 template <typename TText, typename TSpec, typename TConfig>
 struct CompressedSA
@@ -395,11 +395,11 @@ String<char> & text = getFibre(indexEsa, EsaText());
  * 
  * @signature getFibre(compressedSA, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link CompressedSAFibres CompressedSA Fibres @endlink
  * @param compressedSA The container holding the fibre.
  * 
- * @return TReturn A reference to the specified fibre of type @link Index#Fibre @endlink&lt;CompressedSA&lt;TText, TSpec, TConfig&gt;, FibreSparseString&gt;::Type.
+ * @return TReturn A reference to the specified fibre of type @link Fibre @endlink&lt;CompressedSA&lt;TText, TSpec, TConfig&gt;, FibreSparseString&gt;::Type.
  */
 
 template <typename TText, typename TSpec, typename TConfig>

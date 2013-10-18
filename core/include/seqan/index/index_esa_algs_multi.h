@@ -64,10 +64,10 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another Mums iterator. (copy constructor)
 ...type:Spec.Mums Iterator
 */
-/*H
+/*!
  * @class MumsIterator Mums Iterator
  * 
- * @extends vIterator
+ * @extends BottomUpIterator
  * 
  * @headerfile seqan/index.h
  * 
@@ -85,10 +85,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * Demo: Demo.Maximal Unique Matches
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, Mums>::Type (which is Iter<TContainer, VSTree< BottomUp<Mums> > >).
+ *               Iterator&lt;TContainer, Mums>::Type (which is Iter&lt;TContainer, VSTree&lt; BottomUp&lt;Mums> > >).
  */
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<Mums> > >::Iter<TContainer, VSTree< BottomUp<Mums> > >
+/*!
+ * @fn MumsIterator::Iter<TContainer, VSTree< BottomUp<Mums> > >
  *
  * brief The constructor
  *
@@ -198,7 +198,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another MultiMems iterator. (copy constructor)
 ...type:Spec.MultiMems Iterator
 */
-/*H
+/*!
  * @class MultiMemsIterator Multi Mems Iterator
  * 
  * @extends BottomUpIterator
@@ -215,10 +215,10 @@ namespace SEQAN_NAMESPACE_MAIN
  *                    iterator. Types: IndexEsa
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, MultiMems>::Type (which is Iter<TContainer, VSTree< BottomUp<MultiMems> > >).
+ *               Iterator&lt;TContainer, MultiMems&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MultiMems&gt; &gt; &gt;).
  */
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<MultiMems> > >::Iter<TContainer, VSTree< BottomUp<MultiMems> > >
+/*!
+ * @fn MultiMemsIterator::Iter<TContainer, VSTree< BottomUp<MultiMems> > >
  *
  * brief The constructor
  *

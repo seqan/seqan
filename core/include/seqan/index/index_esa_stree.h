@@ -88,7 +88,7 @@ ttobe
  * 
  * @tparam TSpec The specialization type.
  * @tparam TContainer Type of the container that can be iterated. Types:
- *                    @link IndexDfi @endlink, @link IndexEsa @endlink, @link IndexWotd @endlink, @link FMindex @endlink
+ *                    @link IndexDfi @endlink, @link IndexEsa @endlink, @link IndexWotd @endlink, @link FMIndex @endlink
  * 
  * @section Remarks
  * 
@@ -159,6 +159,17 @@ ttobe
 		typedef typename Position<TIndex>::Type Type;
 	};
 
+/*!
+ * @mfn VSTreeIterator#EdgeLabel
+ * @headerfile seqan/index.h
+ *
+ * @brief Type of a string representing the characters of edges.
+ * @signature template <typename TSpec>
+ *            EdgeLabel<TSpec>::Type
+ * @tparam TSpec Tag to specify the object of which the type of the edge labels is requested.
+ *
+ * @return Type of a string representing the characters of edges.
+ */
     template < typename TSpec >
     struct EdgeLabel {};
 
@@ -352,7 +363,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @signature template <typename TIndex, typename TSpec> 
  *            Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
  * 
- * @tparam TSpec Specifies the depth-first search mode.  Types: @link DFS Order @endlink
+ * @tparam TSpec Specifies the depth-first search mode.  Types: @link DFSOrder @endlink
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
  *                @link IndexWotd @endlink, @link FMIndex @endlink, @link IndexSa @endlink
  *
@@ -1113,7 +1124,6 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 ...type:Spec.IndexEsa
 ..include:seqan/index.h
 */
-//TODO (singer): Ask Manuel what to do with resizeEdgeMap and ExternalPropertyMap
 /*!
  * @fn Index#resizeVertexMap
  * 
@@ -1124,9 +1134,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @signature void resizeVertexMap(index, pm)
  * 
  * @param index An index with a suffix tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
- * @param pm An External Property Map. Types: @link ExternalPropertyMap @endlink
- * 
- * @see ExternalPropertyMap#resizeEdgeMap
+ * @param pm An External Property Map.  * 
  */
 	template < typename TText, typename TSpec, typename TPropertyMap >
 	inline void
@@ -1344,7 +1352,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @param iterator An iterator of a string tree.
  * 
  * @return Infix&lt;TSA&gt; All positions where the @link VSTreeIterator#representative @endlink of <tt>iterator</tt> occurs in the text.
- *                    Type @link SequenceConcept#Infix @endlink&lt;@link Index#Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
+ *                    Type @link SequenceConcept#Infix @endlink&lt;@link Fibre @endlink&lt;TIndex, FibreSA&gt;::Type&gt;. 
  * 
  * @section Remarks
  * 
@@ -1980,8 +1988,6 @@ TA
  * @section Remarks
  * 
  * This function is equivalent to <tt>iterator = begin(container)</tt>.
- * 
- * @see DemoIteratorBasics
  * 
  * @see Index#begin
  */
@@ -2714,7 +2720,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
  * @param iterator An iterator of a string tree/trie.
  * 
  * @return TEdgeLabel Returns a substring representing the edge from an <tt>iterator</tt> node to its parent.
- *                    and its type is the result of the metafunction @link TopDownIterator#EdgeLabel @endlink of the iterator.
+ *                    and its type is the result of the metafunction @link VSTreeIterator#EdgeLabel @endlink of the iterator.
  */
 
 	template < typename TIndex, class TSpec >

@@ -96,7 +96,7 @@ sequence.
  * @ signature template <typename TValue, typename TSpec>
  *             RankDictionary<TValue, TSpec>
  * 
- * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevels @endlnik
+ * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevels @endlink
  */
 template <typename TValue, typename TSpec>
 struct RankDictionary;
@@ -166,11 +166,11 @@ struct RankDictionaryFibreSpec
  * 
  * @signature getFibre(dictionary, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link RankDictionaryFibres @endlink
  * @param dictionary The dictionary holding the fibre.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object.
+ * @return TReturn A reference to the @link Fibre @endlink object.
  */
 
 

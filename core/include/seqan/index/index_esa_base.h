@@ -43,9 +43,9 @@ namespace SEQAN_NAMESPACE_MAIN
 	struct Preorder_;
 	struct Postorder_;
 
-	template <typename TDfsOrder = Postorder_, typename THideEmptyEdges = True>
+	template <typename TDFSOrder = Postorder_, typename THideEmptyEdges = True>
 	struct VSTreeIteratorTraits {
-		typedef TDfsOrder DfsOrder;
+		typedef TDFSOrder DFSOrder;
 		typedef THideEmptyEdges HideEmptyEdges;
 	};
 
@@ -63,7 +63,7 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
 ..include:seqan/index.h
 */
 /*!
- * @defgroup DfsOrder DFS Order
+ * @defgroup DFSOrder DFS Order
  * 
  * @brief Pre/postorder selection for depth-first search.
  * 
@@ -71,19 +71,19 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
  * order traversal of a suffix tree. In case of <tt>PreorderEmptyEdges</tt> and
  * <tt>PostorderEmptyEdges</tt>, the empty edges are also traversed.
  * 
- * @tag DfsOrder#Preorder
+ * @tag DFSOrder#Preorder
  * 
  * @brief Visit the node before its children.
  * 
- * @tag DfsOrder#PostorderEmptyEdges
+ * @tag DFSOrder#PostorderEmptyEdges
  * 
  * @brief Visit the node after its children, visit empty edges.
  * 
- * @tag DfsOrder#PreorderEmptyEdges
+ * @tag DFSOrder#PreorderEmptyEdges
  * 
  * @brief Visit the node before its children, visit empty edges.
  * 
- * @tag DfsOrder#Postorder
+ * @tag DFSOrder#Postorder
  * 
  * @brief Visit the node after its children.
  */
@@ -258,7 +258,7 @@ TA
  * 
  * @tparam TIterator A @link VSTreeIterator @endlink.
  * 
- * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
+ * @return TReturn @link DFSOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
  *                 if <tt>TIterator</tt> is <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;&gt; &gt; &gt;</tt>
  *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
  */
@@ -377,10 +377,10 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of an Enhanced
+ * These tags can be used to get @link Fibre Fibres @endlink of an Enhanced
  * Suffix Array based @link IndexEsa @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see IndexEsa
  * 
@@ -395,7 +395,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The suffix array contains the indices of all suffices of <tt>EsaRawText</tt>
  * in lexicographical order.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag IndexEsaFibres#EsaChildtab
@@ -409,7 +409,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The child table contains structural information of the suffix tree (see
  * Abhouelda et al.).
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag IndexEsaFibres#EsaRawText
@@ -442,7 +442,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * <tt>EsaRawText</tt>. The entries are the characters left of the corresponding
  * suffix in the suffix array <tt>EsaSA</tt>.
  * 
- * @link Index#Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
+ * @link Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
  * <tt>EsaBwt</tt>.
  * 
  * @tag IndexEsaFibres#EsaLcp
@@ -456,7 +456,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The lcp table contains the lcp-value of two adjacent suffices in the suffix
  * array <tt>EsaSA</tt>.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  *
  * @tag IndexEsaFibres#EsaLcpe
@@ -514,7 +514,7 @@ information of the suffix tree) are provided.
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index are a suffix array (see @link
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
  * 
  * This index can be accessed as a Suffix Tree using the @link VSTreeIterator @endlink classes.

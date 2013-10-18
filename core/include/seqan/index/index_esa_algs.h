@@ -90,7 +90,7 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 /*!
- * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
+ * @fn SuperMaxRepeatsIterator::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
  *
  * brief The constructor
  *
@@ -191,7 +191,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another SuperMaxRepeatsFast iterator. (copy constructor)
 ...type:Spec.SuperMaxRepeatsFast Iterator
 */
-/*H
+/*!
  * @class SuperMaxRepeatsFastIterator Super Max Repeats Fast Iterator
  *
  * @extends BottomUpIterator
@@ -208,11 +208,11 @@ namespace SEQAN_NAMESPACE_MAIN
  *                    @link IndexEsa @endlink
  * 
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, SuperMaxRepeatsFast>::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >).
+ *               Iterator&lt;TContainer, SuperMaxRepeatsFast&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast&gt; &gt; &gt;).
  */
 
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
+/*!
+ * @fn SuperMaxRepeatsFastIterator::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
  *
  * brief The constructor
  *
@@ -358,7 +358,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another MaxRepeats iterator. (copy constructor)
 ...type:Spec.MaxRepeats Iterator
 */
-/*H
+/*!
  * @class MaxRepeatsIterator Max Repeats Iterator
  * 
  * @extends BottomUpIterator
@@ -374,13 +374,13 @@ namespace SEQAN_NAMESPACE_MAIN
  *                    iterator. Types: IndexEsa
  * 
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, MaxRepeats>::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >).
+ *               Iterator&lt;TContainer, MaxRepeats&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MaxRepeats&gt; &gt; &gt;).
  * 
  * Demo: Demo.Maximal Repeats
  */
 
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >::Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
+/*!
+ * @fn MaxRepeatsIterator::Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
  *
  * brief The constructor
  *

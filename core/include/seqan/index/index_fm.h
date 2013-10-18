@@ -59,7 +59,7 @@ namespace seqan {
  * @signature template <typename TSpec = void>
  *            FMIndexConfig
  *
- * @var static const unsigned FMIndexConfig::SAMPLING
+ * @var unsigned FMIndexConfig::SAMPLING
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the @link
  * CompressedSA @endlink.
  *
@@ -165,9 +165,9 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
+ * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  * @tag FMIndexFibres#FibreText

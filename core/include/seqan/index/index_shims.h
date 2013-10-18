@@ -620,7 +620,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * The occurrences are sorted by increasing positions.
  * 
  * @link DemoMummy @endlink
- * @link DemoSuperMaximalRepeats @endlink
+ * @link DemoSupermaximalRepeats @endlink
  * @link DemoMaximalUniqueMatches @endlink
  * 
  * @see VSTreeIterator#getOccurrences
@@ -662,11 +662,11 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Creates a specific @link Index#Fibre @endlink.
+ * @brief Creates a specific @link Fibre @endlink.
  * 
  * @signature indexCreate(index, fibreTag[, algoTag])
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink
+ * @param fibreTag A tag that identifies the @link Fibre @endlink
  * @param algoTag A tag that identifies the algorithm which is used to create
  *                 the fibre. Default: The result of @link Index#DefaultIndexCreator
  *                 @endlink.
@@ -749,12 +749,12 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns whether a specific @link Index#Fibre @endlink is present.
+ * @brief Returns whether a specific @link Fibre @endlink is present.
  * 
  * @signature indexSupplied(index, fibreTag)
  * 
  * @param index The @link Index @endlink object holding the fibre.
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. 
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. 
  *                 Index Fibres
  * 
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt>, iff the fibre is
@@ -806,12 +806,12 @@ I	ISSISSIPPI
  * 
  * @headerfile seqan/index.h
  * 
- * @brief On-demand creation of a specific @link Index#Fibre @endlink.
+ * @brief On-demand creation of a specific @link Fibre @endlink.
  * 
  * @signature indexRequire(index, fibre_tag)
  * 
  * @param index The @link Index @endlink object holding the fibre.
- * @param fibre_tag A tag that identifies the @link Index#Fibre @endlink
+ * @param fibre_tag A tag that identifies the @link Fibre @endlink
  * 
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
  *                 creation.

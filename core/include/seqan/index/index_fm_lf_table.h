@@ -75,9 +75,9 @@ struct LF;
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link LF @endlink.
+ * These tags can be used to get @link Fibre Fibres @endlink of a @link LF @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  * @tag LFTableFibres#FibrePrefixSums
@@ -293,10 +293,10 @@ bwtLength(TText const & text)
  * 
  * @signature getFibre(lfTable, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types: @link LFTableFibres @endlink
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types: @link LFTableFibres @endlink
  * @param lfTable The LF table.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object of type @link Index#Fibre @endlink&lt;@link LF @endlink&lt;TText, TSpec, TConfig&gt;, FibrePrefixSums&gt;::Type
+ * @return TReturn A reference to the @link Fibre @endlink object of type @link Fibre @endlink&lt;@link LF @endlink&lt;TText, TSpec, TConfig&gt;, FibrePrefixSums&gt;::Type
  */
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>::Type &

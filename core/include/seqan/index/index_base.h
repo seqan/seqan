@@ -177,7 +177,7 @@ for @Class.Index@ based substring searches.
 /*!
  * @mfn Index#DefaultIndexStringSpec
  * @headerfile seqan/index.h
- * @brief Default @link String @endlink specialization type of the @link Index#Fibre
+ * @brief Default @link String @endlink specialization type of the @link Fibre
  *        @endlink of an @link Index @endlink.
  * @signature template <typename TIndex>
  *            DefaultIndexStringSpec<TIndex>::Type
@@ -296,10 +296,10 @@ template <
  * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
  * @section Remarks
  *
- * An index contains various arrays or objects, also called fibres (see @link Index#Fibre @endlink).
+ * An index contains various arrays or objects, also called fibres (see @link Fibre @endlink).
  * These fibres are created on demand depending on the requirements of an algorithm. To force the fibre creation you can
  * use the function @link Index#indexCreate @endlink.
- * The list of fibres is available in @link Index#Fibre @endlink
+ * The list of fibres is available in @link Fibre @endlink
  * @section Example
  *
  * The following code shows how to search for exact matches between the reference "tobeornottobe" and the
@@ -356,24 +356,25 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 */
 
 /*!
- * @mfn Index#Fibre
+ * @mfn Fibre
  * @headerfile seqan/index.h
+ *
  * @brief Type of a specific container member (fibre).
- * @signature template <typename TIndex, TSpec>
- *            Fibre<TIndex, TSpec>::Type
+ * @signature template <typename TObject, TSpec>
+ *            Fibre<TObject, TSpec>::Type
  * @tparam TSpec Tag to specify the fibre. Types: @link IndexEsaFibres @endlink, @link WaveletTreeFibres @endlink, 
  *               @link RightArrayBinaryTreeFibres @endlink, @link SentinelRankDictionaryFibres @endlink
- * @tparam TContainer The container type. Types: Index, RankDictionary,
- *                    RightArrayBinaryTree
+ * @tparam TObject The container type. Types: @link Index @endlink, @link RankDictionary @endlink, @link SparseString
+ *                 @endlink, @link CompressedSA @endlink
  * @return Type Fibre type.
- * @section Remarks
  *
- * Some containers, such as @link Index @endlink, can be seen as a bundle consisting of various fibres.  Because not
- * every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables.  The
- * fibre interface was designed to unify the access to the members of the different fibres.  To get a reference or the
- * type of a specific fibre use @link Index#getFibre @endlink or @link Index#Fibre @endlink.  A @link Index#Fibre @endlink does not need
- * to be a real container.
- * @see Index#getFibre
+ * @section Naming
+ *
+ * Some containers, such as the @link Index @endlink or the @link RankDictionary @endlink, can be seen as a collection
+ * of tables. However, each table alone is just a collection of information. They only become powerful if used together.
+ * Therefore, a more appropriate label for the tables is fibre, like the fibres of a rope.
+ *
+ * In addition, sometimes a fibre can be a single value and calling it a table would be misleading.
  */
 
 	// meta function to get the type of a bundle fibre
@@ -419,7 +420,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
  * @mfn Index#DefaultIndexCreator
  * @headerfile seqan/index.h
  * @deprecated advanced
- * @brief Default algorithm to create a demanded and not yet existing @link Index#Fibre @endlink.
+ * @brief Default algorithm to create a demanded and not yet existing @link Fibre @endlink.
  * @signature template <typename TIndex>
  *            DefaultIndexCreator<TIndex, TFibre>::Type
  * @tparam TIndex An @link Index @endlink Type.
@@ -863,20 +864,20 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @headerfile seqan/index.h
  * @brief Returns a specific fibre of a container.
  * @signature TFibre getFibre(index, fibreTag)
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types: @link IndexEsaFibres Index Esa Fibres
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types: @link IndexEsaFibres Index Esa Fibres
  *        @endlink, @link FMIndexFibres FM Index Fibres @endlink, @link WOTDIndexFibres Index Wotd Fibres @endlink,
  *        and @link QGramIndexFibres Index QGram Fibres @endlink.
  *
  * @param index The container holding the fibre.
  *
- * @return TFibre A reference to the @link Index#Fibre @endlink object.
+ * @return TFibre A reference to the @link Fibre @endlink object.
  *
  * @section Example 
  *
  * The following example shows how to search for a pattern in a string.
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
  * @include demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp.stdout
- * @see Index#Fibre
+ * @see Fibre
  */
 
 	template <typename TText, typename TSpec>

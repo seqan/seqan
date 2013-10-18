@@ -74,7 +74,7 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a @link WaveletTree @endlink.
+ * These tags can be used to get @link Fibre Fibres @endlink of a @link WaveletTree @endlink.
  * 
  * @tag WaveletTreeFibres#FibreTreeStructure
  * 
@@ -84,7 +84,7 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
  * 
  * @brief A string set containing a rank support bit string for each node in the tree.
  *
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  */

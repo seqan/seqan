@@ -58,7 +58,7 @@ struct SparseString;
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a FM index.
+ * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
  * 
  * 
  * @tag SparseStringFibres#FibreValueString
@@ -69,7 +69,7 @@ struct SparseString;
  * 
  * @brief The string storing for each position if a value different from a default value is stored.
  *
- * @see SparseString#Fibre
+ * @see Fibre
  * @see SparseString#getFibre
  */
 // ----------------------------------------------------------------------------
@@ -407,11 +407,11 @@ value(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  * 
  * @signature getFibre(sparseString, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link SparseStringFibres SparseString Fibres @endlink
  * @param sparseString The sparseString holding the fibre.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object.
+ * @return TReturn A reference to the @link Fibre @endlink object.
  */
 
 ///.Function.getFibre.param.container.type:Class.CompressedSA

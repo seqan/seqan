@@ -105,7 +105,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        IndexQGram @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see IndexQGram
  * 
@@ -120,7 +120,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * array (<tt>QGramSA</tt>, see above). Each suffix in this interval begins with
  * the same q-gram. The end index is the start index of the next bucket.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag QGramIndexFibres#QGramBucketMap
@@ -143,7 +143,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * interval in the counts array (<tt>QGramCounts</tt>, see above). The end index
  * is the start index of the next bucket.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag QGramIndexFibres#QGramText
@@ -196,7 +196,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * beginning of each count bucket can be determined by the q-gram counts
  * directory (<tt>QGramCountsDir</tt>, see below).
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag QGramIndexFibres#QGramSA
@@ -212,7 +212,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * 
  * It corresponds to a suffix array which is sorted by the first q-gram.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  */
 
@@ -287,7 +287,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
  * are a suffix array sorted by the first q characters (see @link QGramIndexFibres#QGramSA @endlink) and a q-gram directory (see @link QGramIndexFibres#QGramDir @endlink). The size of the q-gram directory is |\Sigma|^q. On
  * a 32bit system the q-gram length is limited to 3 for <tt>char</tt> alphabets
  * or 13-14 for @link Dna @endlink alphabets. Consider to use the @link
@@ -3007,7 +3007,7 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
  * @return TReturn All
  *                 positions where the q-gram stored in <tt>shape</tt> occurs in
  *                 the text (see @link QGramIndexFibres#QGramText @endlink).
- *                 Tupes: @link SequenceConcept#Infix @endlink<@link Index#Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
+ *                 Tupes: @link SequenceConcept#Infix @endlink<@link Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
  * 
  * @section Remarks
  * 

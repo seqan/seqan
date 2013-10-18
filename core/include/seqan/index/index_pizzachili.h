@@ -58,7 +58,7 @@ namespace SEQAN_NAMESPACE_MAIN {
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        PizzaChiliIndex @endlink index.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see PizzaChiliIndex
  * 

@@ -61,7 +61,7 @@
 /*!
  * @fn FMIndex#begin
  * 
- * @brief Returns an iterator pointing to the root not of the virtual prefix
+ * @brief Returns an iterator pointing to the root node of the virtual prefix
  *        trie of the reversed text of the index.
  * 
  * @signature Iterator begin(index, tag)
@@ -70,7 +70,7 @@
  * @param tag The specialisation of the iterator to be returned by the function.
  *            Types: VSTree Iterator
  * 
- * @return TReturn Returns an iterator pointing to the root not of the virtual
+ * @return TReturn Returns an iterator pointing to the root node of the virtual
  *                 prefix trie of the reversed text of the the index. Types:
  *                 nolink:<tt>The result of Iterator<Index<TText, TIndexSpec>,
  *                 TSpec >::Type</tt>
@@ -102,7 +102,7 @@
  * 
  * @brief Tag to select a specific fibre of a @link PrefixSumTableFibres @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  * @tag PrefixSumTableFibres#FibreEntries
@@ -222,11 +222,11 @@
  * 
  * @signature getFibre(prefixSumTable, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link PrefixSumTableFibres PrefixSumTanble Fibres @endlink.
  * @param prefixSumTable The prefix sum table.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object.
+ * @return TReturn A reference to the @link Fibre @endlink object.
  */
 
 /*!
@@ -381,7 +381,7 @@
  *
  * @tag SequenceBitMaskFibres#FibreBitStrings The string set containing a bit string for each character.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  */
 
@@ -452,10 +452,10 @@
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of a rank support
+ * These tags can be used to get @link Fibre Fibres @endlink of a rank support
  * bit string.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  * @tag RankSupportBitStringFibres#FibreSuperBlocks
@@ -532,7 +532,7 @@
  * @param bitString The bit string. Types: @link RankSupportBitString @endlink
  * @param pos Position of a bit.
  * 
- * @return TReturn @link Value @endlink of @link Index#Fibre @endlink of the rank-support-bit string.
+ * @return TReturn @link Value @endlink of @link Fibre @endlink of the rank-support-bit string.
  */
 
 /*!
@@ -573,11 +573,11 @@
  * 
  * @signature getFibre(bitString, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link RankSupportBitStringFibres RankSupportBitString Fibres @endlink.
  * @param bitString The rank-support-bit string holding the fibre.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object.
+ * @return TReturn A reference to the @link Fibre @endlink object.
  */
 
 /*!
@@ -591,7 +591,7 @@
  * 
  * @param bitString The rank-support-bit string.
  * 
- * @return TReturn Types: @link Value @endlink of @link Index#Fibre @endlink of the rank-support-bit string.
+ * @return TReturn Types: @link Value @endlink of @link Fibre @endlink of the rank-support-bit string.
  */
 
 /*!
@@ -733,7 +733,7 @@
  * @brief Tag to select a specific fibre of a @link
  *        SentinelRankDictionary @endlink.
  *  
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * 
  * @tag SentinelRankDictionaryFibres#FibreSentinelPosition
@@ -817,11 +817,11 @@
  * 
  * @signature getFibre(dictionary, fibreTag)
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. Types:
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. Types:
  *                 @link SentinelRankDictionaryFibres SentinelRankDictionary Fibres @endlink.
  * @param dictionary The dictionary holding the fibre.
  * 
- * @return TReturn A reference to the @link Index#Fibre @endlink object.
+ * @return TReturn A reference to the @link Fibre @endlink object.
  */
 
 /*!
