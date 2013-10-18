@@ -777,7 +777,7 @@ Render the interface functions details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_function">
       <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}

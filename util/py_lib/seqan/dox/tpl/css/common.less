@@ -75,6 +75,18 @@ h3 {
     &.signature {
         text-decoration: none;
     }
+    
+    pre {
+        position: relative;
+        
+        &:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            content: "fn()";
+        }
+    }
 }
 
 a:not([href]) {
