@@ -16,6 +16,10 @@
             clearTimeout(id);
             id = setTimeout(function() { $('body').scrollspy('refresh'); }, 500);
         });
+        
+        // tooltips
+        $('[title]:not([href])').tooltip({ container: 'body' });
+        console.log($('[title]:not([href])'));
 
         // smooth scrolling
         $('a[href*=#]:not([href=#])').click(function() {

@@ -96,6 +96,11 @@ a:not([href]) {
 	&:hover, &:active {
 		background-color: transparent !important;
 	}
+	
+	&[title] {
+    	display: inline-block;
+    	border-bottom: 1px dotted #555;
+	}
 }
 
 a:link,
@@ -469,6 +474,15 @@ html:not(.list) #content {
 
 
 
+/*
+ * Tooltip
+ */
+.tooltip {
+    .tooltip-inner {
+        font-weight: 500;
+        padding-bottom: 6px;
+    }
+}
 
 
 /*
@@ -710,7 +724,8 @@ form .multiselect-container {
 	}
 }
 
-[data-lang-entity] {
+[data-lang-entity],
+.data-lang-entity-example {
 	position: relative;
 	white-space: nowrap;
 	
@@ -772,6 +787,8 @@ form .multiselect-container {
     	}
 	}
 }
+
+.data-lang-entity-example > :first-child { background: @rblue; border-color: darken(@rblue, 20%); }
 
 
 
