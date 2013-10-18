@@ -80,9 +80,7 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  var _toc = $('<ol class="nav"></ol>');
-  
-  _toc.append('<li class="active top"><a href="#top">Top</a><li>');
+  var _toc = $('<ol class="nav"><li class="active top"><a href="#top">Top</a><li></ol>');
   
   var show = false;
   var toc = _toc;

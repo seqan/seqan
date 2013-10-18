@@ -65,6 +65,10 @@ a:not([href]):hover,
 a:not([href]):active {
   background-color: transparent !important;
 }
+a:not([href])[title] {
+  display: inline-block;
+  border-bottom: 1px dotted #555;
+}
 [data-lang-entity] > a:link:first-child,
 [data-lang-entity] > a:visited:first-child,
 #results a:link,
@@ -473,6 +477,13 @@ html:not(.list) #content div[data-lang-entity-container] > h2 {
   padding-left: 0;
 }
 /*
+ * Tooltip
+ */
+.tooltip .tooltip-inner {
+  font-weight: 500;
+  padding-bottom: 6px;
+}
+/*
  * Popover
  */
 .popover {
@@ -554,7 +565,7 @@ html:not(.list) #content div[data-lang-entity-container] > h2 {
   margin-top: -10px;
   margin-bottom: 5px;
   padding: 30px 0px 30px 130px;
-  background-image: url(file:///Users/bkahlert/Dropbox/Development/seqan-workspace/seqan-trunk/util/py_lib/seqan/dox/tpl/css/../img/seqan_logo.png);
+  background-image: url(file:///Users/bkahlert/Dropbox/development/seqan-workspace/seqan-trunk/util/py_lib/seqan/dox/tpl/css/../img/seqan_logo.png);
   background-size: 114px 76px;
   background-repeat: no-repeat;
   background-position: 0 3px;
@@ -666,11 +677,13 @@ form .multiselect-container label input {
 form .multiselect-container label .multiselect-group {
   padding-left: 0.5em;
 }
-[data-lang-entity] {
+[data-lang-entity],
+.data-lang-entity-example {
   position: relative;
   white-space: nowrap;
 }
-[data-lang-entity] > :first-child {
+[data-lang-entity] > :first-child,
+.data-lang-entity-example > :first-child {
   display: inline-block;
   position: relative;
   bottom: 0.15em;
@@ -688,33 +701,44 @@ form .multiselect-container label .multiselect-group {
   background-color: #f00000;
   cursor: help;
 }
-[data-lang-entity] > :first-child:hover {
+[data-lang-entity] > :first-child:hover,
+.data-lang-entity-example > :first-child:hover {
   -webkit-animation: animation1 1.5s linear 0s infinite alternate;
   animation: animation1 1.5s linear 0s infinite alternate;
 }
-h1[data-lang-entity] {
+h1[data-lang-entity],
+h1.data-lang-entity-example {
   display: table;
 }
-h1[data-lang-entity] > * {
+h1[data-lang-entity] > *,
+h1.data-lang-entity-example > * {
   display: table-cell;
 }
-h1[data-lang-entity] :nth-child(2) {
+h1[data-lang-entity] :nth-child(2),
+h1.data-lang-entity-example :nth-child(2) {
   white-space: normal;
   -ms-word-break: break-all;
   word-break: break-all;
   word-break: break-word;
 }
-h1[data-lang-entity] :nth-child(2) > div {
+h1[data-lang-entity] :nth-child(2) > div,
+h1.data-lang-entity-example :nth-child(2) > div {
   margin-top: .3em;
   font-size: .5em;
   white-space: normal;
 }
-h1[data-lang-entity] :nth-child(2) > div [data-lang-entity] > :first-child {
+h1[data-lang-entity] :nth-child(2) > div [data-lang-entity] > :first-child,
+h1.data-lang-entity-example :nth-child(2) > div [data-lang-entity] > :first-child {
   font-size: .55em;
   top: -0.4em;
 }
-h1[data-lang-entity] :nth-child(2) > div > [data-lang-entity]:first-child > :first-child {
+h1[data-lang-entity] :nth-child(2) > div > [data-lang-entity]:first-child > :first-child,
+h1.data-lang-entity-example :nth-child(2) > div > [data-lang-entity]:first-child > :first-child {
   margin-left: 0;
+}
+.data-lang-entity-example > :first-child {
+  background: #5b7cde;
+  border-color: #2347b0;
 }
 div.language_entities div[data-lang-entity-container] + div[data-lang-entity-container] {
   margin-top: 2em;
@@ -1756,9 +1780,6 @@ div.language_entities *[data-lang-entity-container=page] dt {
 html:not(.list) [data-lang-entity=page] > *:first-child {
   display: none;
 }
-html:not(.list) h1[data-lang-entity=page] > *:first-child {
-  display: inline-block;
-}
 div.language_entities *[data-lang-entity-container=group] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
@@ -1809,9 +1830,6 @@ div.language_entities *[data-lang-entity-container=group] dt {
 html:not(.list) [data-lang-entity=group] > *:first-child {
   display: none;
 }
-html:not(.list) h1[data-lang-entity=group] > *:first-child {
-  display: inline-block;
-}
 div.language_entities *[data-lang-entity-container=generic] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
@@ -1861,23 +1879,24 @@ div.language_entities *[data-lang-entity-container=generic] dt {
 }
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
-div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
-  background: -moz-linear-gradient(-45deg, #9b1f1f 0%, #9b7c1f 14%, #5d9b1f 29%, #1f9b3e 43%, #1f9b9b 57%, #1f3e9b 71%, #5d1f9b 86%, #9b1f7c 100%);
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before,
+html:not(.list) #toc ol li:nth-child(13) a::before {
+  background: -moz-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* FF3.6+ */
 
-  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #9b1f1f), color-stop(14%, #9b7c1f), color-stop(29%, #5d9b1f), color-stop(43%, #1f9b3e), color-stop(57%, #1f9b9b), color-stop(71%, #1f3e9b), color-stop(86%, #5d1f9b), color-stop(100%, #9b1f7c));
+  background: -webkit-linear-gradient(transparent, transparent), -webkit-gradient(linear, left top, right bottom, color-stop(0%, #d93f3f), color-stop(14%, #d9b23f), color-stop(29%, #8cd93f), color-stop(43%, #3fd966), color-stop(57%, #3fd9d9), color-stop(71%, #3f66d9), color-stop(86%, #8c3fd9), color-stop(100%, #d93fb2));
   /* Chrome,Safari4+ */
 
-  background: -webkit-linear-gradient(-45deg, #9b1f1f 0%, #9b7c1f 14%, #5d9b1f 29%, #1f9b3e 43%, #1f9b9b 57%, #1f3e9b 71%, #5d1f9b 86%, #9b1f7c 100%);
+  background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* Chrome10+,Safari5.1+ */
 
-  background: -o-linear-gradient(-45deg, #9b1f1f 0%, #9b7c1f 14%, #5d9b1f 29%, #1f9b3e 43%, #1f9b9b 57%, #1f3e9b 71%, #5d1f9b 86%, #9b1f7c 100%);
+  background: -o-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* Opera 11.10+ */
 
-  background: -ms-linear-gradient(-45deg, #9b1f1f 0%, #9b7c1f 14%, #5d9b1f 29%, #1f9b3e 43%, #1f9b9b 57%, #1f3e9b 71%, #5d1f9b 86%, #9b1f7c 100%);
+  background: -ms-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* IE10+ */
 
-  background: linear-gradient(135deg, #9b1f1f 0%, #9b7c1f 14%, #5d9b1f 29%, #1f9b3e 43%, #1f9b9b 57%, #1f3e9b 71%, #5d1f9b 86%, #9b1f7c 100%);
+  background: linear-gradient(135deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* W3C */
 
 }
