@@ -1,6 +1,6 @@
 /*!
  * @page DemoMaximalRepeats Maximal Repeats
- * @brief Example for using the @link MaxRepeats Iterator @endlink.
+ * @brief Example for using the @link MaxRepeatsIterator @endlink.
  *
  * Given a sequences, a repeat is a substring that occurs at at least 2 different positions.
  * A maximal repeat is a repeat that cannot be extended to the left or to right to a longer repeat. The following
@@ -16,7 +16,7 @@
  *
  * @snippet demos/index/index_supermaxrepeats.cpp init
  *
- * To find maximal repeats, we use SeqAn's @link MaxRepeats Iterator @endlink and set the minimum repeat length to 3.
+ * To find maximal repeats, we use SeqAn's @link MaxRepeatsIterator @endlink and set the minimum repeat length to 3.
  *
  * @snippet demos/index/index_supermaxrepeats.cpp iteration
  *

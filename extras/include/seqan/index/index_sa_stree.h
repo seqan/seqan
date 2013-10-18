@@ -70,6 +70,17 @@ struct IndexSa {};
 ..include:seqan/index_extras.h
 */
 
+/*!
+ * @class IndexSa
+ * @extends Index
+ * @headerfile seqan/index.h
+ * @brief An index based on a suffix array.
+ * @signature template <typename TText, typename TSpec>
+              Index<TText, IndexSa<TSpec> >
+ * @tparam TText The type of the underlying text: Types @link String @endlink, @link StringSet @endlink
+ * @tparam TSpec A tag for specialization purposes.
+ */
+
 template <typename TText, typename TSpec>
 class Index<TText, IndexSa<TSpec> >
 {
