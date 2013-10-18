@@ -462,12 +462,14 @@ ul.params {
 html:not(.list) #content > *,
 html:not(.list) #content div.docstring,
 html:not(.list) #content div.method_details,
-html:not(.list) #content div.tags {
+html:not(.list) #content div.tags,
+html:not(.list) #content div[data-lang-entity-container] > * {
   padding-left: 40px;
 }
 html:not(.list) #content > h1,
 html:not(.list) #content > h2,
-html:not(.list) #content div {
+html:not(.list) #content div,
+html:not(.list) #content div[data-lang-entity-container] > h2 {
   padding-left: 0;
 }
 /*
@@ -714,34 +716,35 @@ h1[data-lang-entity] :nth-child(2) > div [data-lang-entity] > :first-child {
 h1[data-lang-entity] :nth-child(2) > div > [data-lang-entity]:first-child > :first-child {
   margin-left: 0;
 }
-body.language_entities div[data-lang-entity-container] + div[data-lang-entity-container] {
+div.language_entities div[data-lang-entity-container] + div[data-lang-entity-container] {
   margin-top: 2em;
 }
-html.language_entities *[data-lang-entity-container=typedef] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=typedef] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=typedef] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=typedef] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5bde7c;
   background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=typedef] > *,
-html:not([class]) *[data-lang-entity-container=typedef] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=typedef] dt,
-html:not([class]) *[data-lang-entity-container=typedef] dt {
-  background-color: #5bde7c;
-  background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
+div.language_entities *[data-lang-entity-container=typedef] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=typedef] > *:first-child {
   background-color: #5bde7c;
@@ -763,31 +766,32 @@ html:not([class]) *[data-lang-entity-container=typedef] dt {
 .popover[data-lang-entity-container=typedef] .popover-title {
   background-color: #5bde7c;
 }
-html.language_entities *[data-lang-entity-container=grouped_typedef] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=grouped_typedef] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5bde7c;
   background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=grouped_typedef] > *,
-html:not([class]) *[data-lang-entity-container=grouped_typedef] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=grouped_typedef] dt,
-html:not([class]) *[data-lang-entity-container=grouped_typedef] dt {
-  background-color: #5bde7c;
-  background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
+div.language_entities *[data-lang-entity-container=grouped_typedef] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=grouped_typedef] > *:first-child {
   background-color: #5bde7c;
@@ -809,31 +813,32 @@ html:not([class]) *[data-lang-entity-container=grouped_typedef] dt {
 .popover[data-lang-entity-container=grouped_typedef] .popover-title {
   background-color: #5bde7c;
 }
-html.language_entities *[data-lang-entity-container=global_typedef] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=global_typedef] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=global_typedef] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=global_typedef] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5bde7c;
   background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=global_typedef] > *,
-html:not([class]) *[data-lang-entity-container=global_typedef] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=global_typedef] dt,
-html:not([class]) *[data-lang-entity-container=global_typedef] dt {
-  background-color: #5bde7c;
-  background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
+div.language_entities *[data-lang-entity-container=global_typedef] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=global_typedef] > *:first-child {
   background-color: #5bde7c;
@@ -855,31 +860,32 @@ html:not([class]) *[data-lang-entity-container=global_typedef] dt {
 .popover[data-lang-entity-container=global_typedef] .popover-title {
   background-color: #5bde7c;
 }
-html.language_entities *[data-lang-entity-container=member_typedef] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=member_typedef] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=member_typedef] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=member_typedef] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5bde7c;
   background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
   background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=member_typedef] > *,
-html:not([class]) *[data-lang-entity-container=member_typedef] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=member_typedef] dt,
-html:not([class]) *[data-lang-entity-container=member_typedef] dt {
-  background-color: #5bde7c;
-  background-image: -moz-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: -webkit-linear-gradient(-45deg, #68e186 0%, #4edb72 100%);
-  background-image: linear-gradient(135deg, #68e186 0%, #4edb72 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e186', endColorstr='#4edb72', GradientType=1);
+div.language_entities *[data-lang-entity-container=member_typedef] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=member_typedef] > *:first-child {
   background-color: #5bde7c;
@@ -901,31 +907,32 @@ html:not([class]) *[data-lang-entity-container=member_typedef] dt {
 .popover[data-lang-entity-container=member_typedef] .popover-title {
   background-color: #5bde7c;
 }
-html.language_entities *[data-lang-entity-container=concept] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=concept] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=concept] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=concept] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #b02323;
   background-image: -moz-linear-gradient(-45deg, #bc2626 0%, #a32121 100%);
   background-image: -webkit-linear-gradient(-45deg, #bc2626 0%, #a32121 100%);
   background-image: linear-gradient(135deg, #bc2626 0%, #a32121 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc2626', endColorstr='#a32121', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=concept] > *,
-html:not([class]) *[data-lang-entity-container=concept] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=concept] dt,
-html:not([class]) *[data-lang-entity-container=concept] dt {
-  background-color: #b02323;
-  background-image: -moz-linear-gradient(-45deg, #bc2626 0%, #a32121 100%);
-  background-image: -webkit-linear-gradient(-45deg, #bc2626 0%, #a32121 100%);
-  background-image: linear-gradient(135deg, #bc2626 0%, #a32121 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bc2626', endColorstr='#a32121', GradientType=1);
+div.language_entities *[data-lang-entity-container=concept] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=concept] > *:first-child {
   background-color: #b02323;
@@ -947,31 +954,32 @@ html:not([class]) *[data-lang-entity-container=concept] dt {
 .popover[data-lang-entity-container=concept] .popover-title {
   background-color: #b02323;
 }
-html.language_entities *[data-lang-entity-container=class] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=class] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=class] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=class] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #de5b5b;
   background-image: -moz-linear-gradient(-45deg, #e16868 0%, #db4e4e 100%);
   background-image: -webkit-linear-gradient(-45deg, #e16868 0%, #db4e4e 100%);
   background-image: linear-gradient(135deg, #e16868 0%, #db4e4e 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e16868', endColorstr='#db4e4e', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=class] > *,
-html:not([class]) *[data-lang-entity-container=class] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=class] dt,
-html:not([class]) *[data-lang-entity-container=class] dt {
-  background-color: #de5b5b;
-  background-image: -moz-linear-gradient(-45deg, #e16868 0%, #db4e4e 100%);
-  background-image: -webkit-linear-gradient(-45deg, #e16868 0%, #db4e4e 100%);
-  background-image: linear-gradient(135deg, #e16868 0%, #db4e4e 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e16868', endColorstr='#db4e4e', GradientType=1);
+div.language_entities *[data-lang-entity-container=class] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=class] > *:first-child {
   background-color: #de5b5b;
@@ -993,31 +1001,32 @@ html:not([class]) *[data-lang-entity-container=class] dt {
 .popover[data-lang-entity-container=class] .popover-title {
   background-color: #de5b5b;
 }
-html.language_entities *[data-lang-entity-container=enum] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=enum] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=enum] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=enum] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #efb0b0;
   background-image: -moz-linear-gradient(-45deg, #f2bdbd 0%, #eda3a3 100%);
   background-image: -webkit-linear-gradient(-45deg, #f2bdbd 0%, #eda3a3 100%);
   background-image: linear-gradient(135deg, #f2bdbd 0%, #eda3a3 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2bdbd', endColorstr='#eda3a3', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=enum] > *,
-html:not([class]) *[data-lang-entity-container=enum] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=enum] dt,
-html:not([class]) *[data-lang-entity-container=enum] dt {
-  background-color: #efb0b0;
-  background-image: -moz-linear-gradient(-45deg, #f2bdbd 0%, #eda3a3 100%);
-  background-image: -webkit-linear-gradient(-45deg, #f2bdbd 0%, #eda3a3 100%);
-  background-image: linear-gradient(135deg, #f2bdbd 0%, #eda3a3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2bdbd', endColorstr='#eda3a3', GradientType=1);
+div.language_entities *[data-lang-entity-container=enum] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=enum] > *:first-child {
   background-color: #efb0b0;
@@ -1039,31 +1048,32 @@ html:not([class]) *[data-lang-entity-container=enum] dt {
 .popover[data-lang-entity-container=enum] .popover-title {
   background-color: #efb0b0;
 }
-html.language_entities *[data-lang-entity-container=metafunction] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=metafunction] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=metafunction] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=metafunction] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5b7cde;
   background-image: -moz-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
   background-image: -webkit-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
   background-image: linear-gradient(135deg, #6886e1 0%, #4e72db 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6886e1', endColorstr='#4e72db', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=metafunction] > *,
-html:not([class]) *[data-lang-entity-container=metafunction] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=metafunction] dt,
-html:not([class]) *[data-lang-entity-container=metafunction] dt {
-  background-color: #5b7cde;
-  background-image: -moz-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
-  background-image: -webkit-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
-  background-image: linear-gradient(135deg, #6886e1 0%, #4e72db 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6886e1', endColorstr='#4e72db', GradientType=1);
+div.language_entities *[data-lang-entity-container=metafunction] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=metafunction] > *:first-child {
   background-color: #5b7cde;
@@ -1085,31 +1095,32 @@ html:not([class]) *[data-lang-entity-container=metafunction] dt {
 .popover[data-lang-entity-container=metafunction] .popover-title {
   background-color: #5b7cde;
 }
-html.language_entities *[data-lang-entity-container=global_metafunction] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=global_metafunction] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5b7cde;
   background-image: -moz-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
   background-image: -webkit-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
   background-image: linear-gradient(135deg, #6886e1 0%, #4e72db 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6886e1', endColorstr='#4e72db', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=global_metafunction] > *,
-html:not([class]) *[data-lang-entity-container=global_metafunction] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=global_metafunction] dt,
-html:not([class]) *[data-lang-entity-container=global_metafunction] dt {
-  background-color: #5b7cde;
-  background-image: -moz-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
-  background-image: -webkit-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
-  background-image: linear-gradient(135deg, #6886e1 0%, #4e72db 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6886e1', endColorstr='#4e72db', GradientType=1);
+div.language_entities *[data-lang-entity-container=global_metafunction] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=global_metafunction] > *:first-child {
   background-color: #5b7cde;
@@ -1131,31 +1142,32 @@ html:not([class]) *[data-lang-entity-container=global_metafunction] dt {
 .popover[data-lang-entity-container=global_metafunction] .popover-title {
   background-color: #5b7cde;
 }
-html.language_entities *[data-lang-entity-container=interface_metafunction] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=interface_metafunction] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5b7cde;
   background-image: -moz-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
   background-image: -webkit-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
   background-image: linear-gradient(135deg, #6886e1 0%, #4e72db 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6886e1', endColorstr='#4e72db', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=interface_metafunction] > *,
-html:not([class]) *[data-lang-entity-container=interface_metafunction] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=interface_metafunction] dt,
-html:not([class]) *[data-lang-entity-container=interface_metafunction] dt {
-  background-color: #5b7cde;
-  background-image: -moz-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
-  background-image: -webkit-linear-gradient(-45deg, #6886e1 0%, #4e72db 100%);
-  background-image: linear-gradient(135deg, #6886e1 0%, #4e72db 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6886e1', endColorstr='#4e72db', GradientType=1);
+div.language_entities *[data-lang-entity-container=interface_metafunction] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=interface_metafunction] > *:first-child {
   background-color: #5b7cde;
@@ -1177,31 +1189,32 @@ html:not([class]) *[data-lang-entity-container=interface_metafunction] dt {
 .popover[data-lang-entity-container=interface_metafunction] .popover-title {
   background-color: #5b7cde;
 }
-html.language_entities *[data-lang-entity-container=function] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=function] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=function] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=function] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5bdede;
   background-image: -moz-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
   background-image: -webkit-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
   background-image: linear-gradient(135deg, #68e1e1 0%, #4edbdb 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e1e1', endColorstr='#4edbdb', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=function] > *,
-html:not([class]) *[data-lang-entity-container=function] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=function] dt,
-html:not([class]) *[data-lang-entity-container=function] dt {
-  background-color: #5bdede;
-  background-image: -moz-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
-  background-image: -webkit-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
-  background-image: linear-gradient(135deg, #68e1e1 0%, #4edbdb 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e1e1', endColorstr='#4edbdb', GradientType=1);
+div.language_entities *[data-lang-entity-container=function] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=function] > *:first-child {
   background-color: #5bdede;
@@ -1223,31 +1236,32 @@ html:not([class]) *[data-lang-entity-container=function] dt {
 .popover[data-lang-entity-container=function] .popover-title {
   background-color: #5bdede;
 }
-html.language_entities *[data-lang-entity-container=global_function] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=global_function] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=global_function] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=global_function] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #85e7e7;
   background-image: -moz-linear-gradient(-45deg, #92e9e9 0%, #79e4e4 100%);
   background-image: -webkit-linear-gradient(-45deg, #92e9e9 0%, #79e4e4 100%);
   background-image: linear-gradient(135deg, #92e9e9 0%, #79e4e4 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#92e9e9', endColorstr='#79e4e4', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=global_function] > *,
-html:not([class]) *[data-lang-entity-container=global_function] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=global_function] dt,
-html:not([class]) *[data-lang-entity-container=global_function] dt {
-  background-color: #85e7e7;
-  background-image: -moz-linear-gradient(-45deg, #92e9e9 0%, #79e4e4 100%);
-  background-image: -webkit-linear-gradient(-45deg, #92e9e9 0%, #79e4e4 100%);
-  background-image: linear-gradient(135deg, #92e9e9 0%, #79e4e4 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#92e9e9', endColorstr='#79e4e4', GradientType=1);
+div.language_entities *[data-lang-entity-container=global_function] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=global_function] > *:first-child {
   background-color: #85e7e7;
@@ -1269,31 +1283,32 @@ html:not([class]) *[data-lang-entity-container=global_function] dt {
 .popover[data-lang-entity-container=global_function] .popover-title {
   background-color: #85e7e7;
 }
-html.language_entities *[data-lang-entity-container=interface_function] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=interface_function] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=interface_function] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=interface_function] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #23b0b0;
   background-image: -moz-linear-gradient(-45deg, #26bcbc 0%, #21a3a3 100%);
   background-image: -webkit-linear-gradient(-45deg, #26bcbc 0%, #21a3a3 100%);
   background-image: linear-gradient(135deg, #26bcbc 0%, #21a3a3 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26bcbc', endColorstr='#21a3a3', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=interface_function] > *,
-html:not([class]) *[data-lang-entity-container=interface_function] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=interface_function] dt,
-html:not([class]) *[data-lang-entity-container=interface_function] dt {
-  background-color: #23b0b0;
-  background-image: -moz-linear-gradient(-45deg, #26bcbc 0%, #21a3a3 100%);
-  background-image: -webkit-linear-gradient(-45deg, #26bcbc 0%, #21a3a3 100%);
-  background-image: linear-gradient(135deg, #26bcbc 0%, #21a3a3 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26bcbc', endColorstr='#21a3a3', GradientType=1);
+div.language_entities *[data-lang-entity-container=interface_function] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=interface_function] > *:first-child {
   background-color: #23b0b0;
@@ -1315,31 +1330,32 @@ html:not([class]) *[data-lang-entity-container=interface_function] dt {
 .popover[data-lang-entity-container=interface_function] .popover-title {
   background-color: #23b0b0;
 }
-html.language_entities *[data-lang-entity-container=member_function] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=member_function] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=member_function] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=member_function] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #5bdede;
   background-image: -moz-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
   background-image: -webkit-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
   background-image: linear-gradient(135deg, #68e1e1 0%, #4edbdb 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e1e1', endColorstr='#4edbdb', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=member_function] > *,
-html:not([class]) *[data-lang-entity-container=member_function] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=member_function] dt,
-html:not([class]) *[data-lang-entity-container=member_function] dt {
-  background-color: #5bdede;
-  background-image: -moz-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
-  background-image: -webkit-linear-gradient(-45deg, #68e1e1 0%, #4edbdb 100%);
-  background-image: linear-gradient(135deg, #68e1e1 0%, #4edbdb 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#68e1e1', endColorstr='#4edbdb', GradientType=1);
+div.language_entities *[data-lang-entity-container=member_function] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=member_function] > *:first-child {
   background-color: #5bdede;
@@ -1361,31 +1377,32 @@ html:not([class]) *[data-lang-entity-container=member_function] dt {
 .popover[data-lang-entity-container=member_function] .popover-title {
   background-color: #5bdede;
 }
-html.language_entities *[data-lang-entity-container=tag] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=tag] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=tag] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=tag] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #9d5bde;
   background-image: -moz-linear-gradient(-45deg, #a568e1 0%, #954edb 100%);
   background-image: -webkit-linear-gradient(-45deg, #a568e1 0%, #954edb 100%);
   background-image: linear-gradient(135deg, #a568e1 0%, #954edb 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a568e1', endColorstr='#954edb', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=tag] > *,
-html:not([class]) *[data-lang-entity-container=tag] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=tag] dt,
-html:not([class]) *[data-lang-entity-container=tag] dt {
-  background-color: #9d5bde;
-  background-image: -moz-linear-gradient(-45deg, #a568e1 0%, #954edb 100%);
-  background-image: -webkit-linear-gradient(-45deg, #a568e1 0%, #954edb 100%);
-  background-image: linear-gradient(135deg, #a568e1 0%, #954edb 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a568e1', endColorstr='#954edb', GradientType=1);
+div.language_entities *[data-lang-entity-container=tag] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=tag] > *:first-child {
   background-color: #9d5bde;
@@ -1407,31 +1424,32 @@ html:not([class]) *[data-lang-entity-container=tag] dt {
 .popover[data-lang-entity-container=tag] .popover-title {
   background-color: #9d5bde;
 }
-html.language_entities *[data-lang-entity-container=variable] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=variable] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=variable] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=variable] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #9dde5b;
   background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=variable] > *,
-html:not([class]) *[data-lang-entity-container=variable] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=variable] dt,
-html:not([class]) *[data-lang-entity-container=variable] dt {
-  background-color: #9dde5b;
-  background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
+div.language_entities *[data-lang-entity-container=variable] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=variable] > *:first-child {
   background-color: #9dde5b;
@@ -1453,31 +1471,32 @@ html:not([class]) *[data-lang-entity-container=variable] dt {
 .popover[data-lang-entity-container=variable] .popover-title {
   background-color: #9dde5b;
 }
-html.language_entities *[data-lang-entity-container=global_variable] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=global_variable] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=global_variable] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=global_variable] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #9dde5b;
   background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=global_variable] > *,
-html:not([class]) *[data-lang-entity-container=global_variable] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=global_variable] dt,
-html:not([class]) *[data-lang-entity-container=global_variable] dt {
-  background-color: #9dde5b;
-  background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
+div.language_entities *[data-lang-entity-container=global_variable] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=global_variable] > *:first-child {
   background-color: #9dde5b;
@@ -1499,31 +1518,32 @@ html:not([class]) *[data-lang-entity-container=global_variable] dt {
 .popover[data-lang-entity-container=global_variable] .popover-title {
   background-color: #9dde5b;
 }
-html.language_entities *[data-lang-entity-container=local_variable] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=local_variable] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=local_variable] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=local_variable] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #9dde5b;
   background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=local_variable] > *,
-html:not([class]) *[data-lang-entity-container=local_variable] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=local_variable] dt,
-html:not([class]) *[data-lang-entity-container=local_variable] dt {
-  background-color: #9dde5b;
-  background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
+div.language_entities *[data-lang-entity-container=local_variable] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=local_variable] > *:first-child {
   background-color: #9dde5b;
@@ -1545,31 +1565,32 @@ html:not([class]) *[data-lang-entity-container=local_variable] dt {
 .popover[data-lang-entity-container=local_variable] .popover-title {
   background-color: #9dde5b;
 }
-html.language_entities *[data-lang-entity-container=member_variable] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=member_variable] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=member_variable] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=member_variable] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #9dde5b;
   background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
   background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=member_variable] > *,
-html:not([class]) *[data-lang-entity-container=member_variable] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=member_variable] dt,
-html:not([class]) *[data-lang-entity-container=member_variable] dt {
-  background-color: #9dde5b;
-  background-image: -moz-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: -webkit-linear-gradient(-45deg, #a5e168 0%, #95db4e 100%);
-  background-image: linear-gradient(135deg, #a5e168 0%, #95db4e 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a5e168', endColorstr='#95db4e', GradientType=1);
+div.language_entities *[data-lang-entity-container=member_variable] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=member_variable] > *:first-child {
   background-color: #9dde5b;
@@ -1591,31 +1612,32 @@ html:not([class]) *[data-lang-entity-container=member_variable] dt {
 .popover[data-lang-entity-container=member_variable] .popover-title {
   background-color: #9dde5b;
 }
-html.language_entities *[data-lang-entity-container=adaption] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=adaption] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=adaption] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=adaption] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #d5ac31;
   background-image: -moz-linear-gradient(-45deg, #d8b13d 0%, #cda429 100%);
   background-image: -webkit-linear-gradient(-45deg, #d8b13d 0%, #cda429 100%);
   background-image: linear-gradient(135deg, #d8b13d 0%, #cda429 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d8b13d', endColorstr='#cda429', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=adaption] > *,
-html:not([class]) *[data-lang-entity-container=adaption] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=adaption] dt,
-html:not([class]) *[data-lang-entity-container=adaption] dt {
-  background-color: #d5ac31;
-  background-image: -moz-linear-gradient(-45deg, #d8b13d 0%, #cda429 100%);
-  background-image: -webkit-linear-gradient(-45deg, #d8b13d 0%, #cda429 100%);
-  background-image: linear-gradient(135deg, #d8b13d 0%, #cda429 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d8b13d', endColorstr='#cda429', GradientType=1);
+div.language_entities *[data-lang-entity-container=adaption] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=adaption] > *:first-child {
   background-color: #d5ac31;
@@ -1637,31 +1659,32 @@ html:not([class]) *[data-lang-entity-container=adaption] dt {
 .popover[data-lang-entity-container=adaption] .popover-title {
   background-color: #d5ac31;
 }
-html.language_entities *[data-lang-entity-container=macro] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=macro] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=macro] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=macro] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #e7ce85;
   background-image: -moz-linear-gradient(-45deg, #e9d392 0%, #e4c979 100%);
   background-image: -webkit-linear-gradient(-45deg, #e9d392 0%, #e4c979 100%);
   background-image: linear-gradient(135deg, #e9d392 0%, #e4c979 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9d392', endColorstr='#e4c979', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=macro] > *,
-html:not([class]) *[data-lang-entity-container=macro] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=macro] dt,
-html:not([class]) *[data-lang-entity-container=macro] dt {
-  background-color: #e7ce85;
-  background-image: -moz-linear-gradient(-45deg, #e9d392 0%, #e4c979 100%);
-  background-image: -webkit-linear-gradient(-45deg, #e9d392 0%, #e4c979 100%);
-  background-image: linear-gradient(135deg, #e9d392 0%, #e4c979 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e9d392', endColorstr='#e4c979', GradientType=1);
+div.language_entities *[data-lang-entity-container=macro] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=macro] > *:first-child {
   background-color: #e7ce85;
@@ -1683,31 +1706,32 @@ html:not([class]) *[data-lang-entity-container=macro] dt {
 .popover[data-lang-entity-container=macro] .popover-title {
   background-color: #e7ce85;
 }
-html.language_entities *[data-lang-entity-container=page] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=page] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=page] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=page] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #d531ac;
   background-image: -moz-linear-gradient(-45deg, #d83db1 0%, #cd29a4 100%);
   background-image: -webkit-linear-gradient(-45deg, #d83db1 0%, #cd29a4 100%);
   background-image: linear-gradient(135deg, #d83db1 0%, #cd29a4 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d83db1', endColorstr='#cd29a4', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=page] > *,
-html:not([class]) *[data-lang-entity-container=page] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=page] dt,
-html:not([class]) *[data-lang-entity-container=page] dt {
-  background-color: #d531ac;
-  background-image: -moz-linear-gradient(-45deg, #d83db1 0%, #cd29a4 100%);
-  background-image: -webkit-linear-gradient(-45deg, #d83db1 0%, #cd29a4 100%);
-  background-image: linear-gradient(135deg, #d83db1 0%, #cd29a4 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d83db1', endColorstr='#cd29a4', GradientType=1);
+div.language_entities *[data-lang-entity-container=page] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=page] > *:first-child {
   background-color: #d531ac;
@@ -1735,31 +1759,32 @@ html:not(.list) [data-lang-entity=page] > *:first-child {
 html:not(.list) h1[data-lang-entity=page] > *:first-child {
   display: inline-block;
 }
-html.language_entities *[data-lang-entity-container=group] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=group] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=group] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=group] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #e785ce;
   background-image: -moz-linear-gradient(-45deg, #e992d3 0%, #e479c9 100%);
   background-image: -webkit-linear-gradient(-45deg, #e992d3 0%, #e479c9 100%);
   background-image: linear-gradient(135deg, #e992d3 0%, #e479c9 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e992d3', endColorstr='#e479c9', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=group] > *,
-html:not([class]) *[data-lang-entity-container=group] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=group] dt,
-html:not([class]) *[data-lang-entity-container=group] dt {
-  background-color: #e785ce;
-  background-image: -moz-linear-gradient(-45deg, #e992d3 0%, #e479c9 100%);
-  background-image: -webkit-linear-gradient(-45deg, #e992d3 0%, #e479c9 100%);
-  background-image: linear-gradient(135deg, #e992d3 0%, #e479c9 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e992d3', endColorstr='#e479c9', GradientType=1);
+div.language_entities *[data-lang-entity-container=group] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=group] > *:first-child {
   background-color: #e785ce;
@@ -1787,31 +1812,32 @@ html:not(.list) [data-lang-entity=group] > *:first-child {
 html:not(.list) h1[data-lang-entity=group] > *:first-child {
   display: inline-block;
 }
-html.language_entities *[data-lang-entity-container=generic] > h2:first-child,
-html:not([class]) *[data-lang-entity-container=generic] > h2:first-child {
-  margin: 0;
-  padding: 8px 20px 10px 20px;
+div.language_entities *[data-lang-entity-container=generic] [data-lang-entity-ideogram] {
+  white-space: nowrap;
+}
+div.language_entities *[data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
+  text-transform: none;
+  display: block;
+  float: left;
+  padding: .0em .5em .2em .5em;
+  font-size: .87em;
+  content: attr(data-lang-entity-ideogram);
   background-color: #999999;
   background-image: -moz-linear-gradient(-45deg, #a1a1a1 0%, #919191 100%);
   background-image: -webkit-linear-gradient(-45deg, #a1a1a1 0%, #919191 100%);
   background-image: linear-gradient(135deg, #a1a1a1 0%, #919191 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1a1a1', endColorstr='#919191', GradientType=1);
-  border-bottom: none;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #fff;
+  margin-right: .3em;
 }
-html.language_entities *[data-lang-entity-container=generic] > *,
-html:not([class]) *[data-lang-entity-container=generic] > * {
-  margin: 20px;
-}
-html.language_entities *[data-lang-entity-container=generic] dt,
-html:not([class]) *[data-lang-entity-container=generic] dt {
-  background-color: #999999;
-  background-image: -moz-linear-gradient(-45deg, #a1a1a1 0%, #919191 100%);
-  background-image: -webkit-linear-gradient(-45deg, #a1a1a1 0%, #919191 100%);
-  background-image: linear-gradient(135deg, #a1a1a1 0%, #919191 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1a1a1', endColorstr='#919191', GradientType=1);
+div.language_entities *[data-lang-entity-container=generic] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
 }
 [data-lang-entity=generic] > *:first-child {
   background-color: #999999;
@@ -1834,7 +1860,8 @@ html:not([class]) *[data-lang-entity-container=generic] dt {
   background-color: #999999;
 }
 html [data-lang-entity=generic] > *:first-child,
-html .popover[data-lang-entity-container=generic] .popover-title {
+html .popover[data-lang-entity-container=generic] .popover-title,
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
   background: -moz-linear-gradient(-45deg, #9b1f1f 0%, #9b7c1f 14%, #5d9b1f 29%, #1f9b3e 43%, #1f9b9b 57%, #1f3e9b 71%, #5d1f9b 86%, #9b1f7c 100%);
   /* FF3.6+ */
 

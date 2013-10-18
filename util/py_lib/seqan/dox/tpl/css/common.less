@@ -456,11 +456,13 @@ html:not(.list) #content {
     > *,
     div.docstring,
     div.method_details,
-    div.tags {
+    div.tags,
+    div[data-lang-entity-container] > * {
         padding-left: 40px;
     }
     
-    > h1, > h2, div {
+    > h1, > h2, div,
+    div[data-lang-entity-container] > h2 {
         padding-left: 0;
     }     
 }
@@ -773,8 +775,7 @@ form .multiselect-container {
 
 
 
-// TODO auf language_entities.html beschränkung prüfen ob schon implementiert
-body.language_entities {
+div.language_entities {
 	div[data-lang-entity-container] + div[data-lang-entity-container] {
 		margin-top: 2em;
 	}
@@ -799,22 +800,30 @@ body.language_entities {
 .langEntityRules(@langEntity, @color) {
 	@border-darken: 5%;
 	
-	html.language_entities *[data-lang-entity-container=@{langEntity}],
-	html:not([class]) *[data-lang-entity-container=@{langEntity}] { // TODO remove line
-		> h2:first-child {
-			margin: 0;
-			padding: 8px 20px 10px 20px;
-			.bg-gradient(@color, 0%);
-            border-bottom: none;
-            .border-radius(4px);
-		}
-		
-		> * {
-			margin: 20px;
+	// Language Entities page
+	div.language_entities *[data-lang-entity-container=@{langEntity}] {
+		[data-lang-entity-ideogram] {
+		    white-space: nowrap;
+		    
+		    &:before {
+                text-transform: none;
+                display: block;
+                float: left;
+                padding: .0em .5em .2em .5em;
+                font-size: .87em;
+                content: attr(data-lang-entity-ideogram);
+                .bg-gradient(@color, 0%);
+                .border-radius(4px);
+                color: #fff;
+                margin-right: .3em;
+            }
 		}
 		
 		dt {
-		    .bg-gradient(@color, 0%);
+		    padding: 0;
+		    background-color: transparent;
+		    background-image: none;
+		    font-size: 1.0em;
         }
 	}
 	
@@ -871,7 +880,8 @@ body.language_entities {
 
 .langEntityRules(generic, #999);
 html [data-lang-entity=generic] > *:first-child,
-html .popover[data-lang-entity-container=generic] .popover-title {
+html .popover[data-lang-entity-container=generic] .popover-title,
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
 	background: -moz-linear-gradient(-45deg, rgba(155,31,31,1) 0%, rgba(155,124,31,1) 14%, rgba(93,155,31,1) 29%, rgba(31,155,62,1) 43%, rgba(31,155,155,1) 57%, rgba(31,62,155,1) 71%, rgba(93,31,155,1) 86%, rgba(155,31,124,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(155,31,31,1)), color-stop(14%,rgba(155,124,31,1)), color-stop(29%,rgba(93,155,31,1)), color-stop(43%,rgba(31,155,62,1)), color-stop(57%,rgba(31,155,155,1)), color-stop(71%,rgba(31,62,155,1)), color-stop(86%,rgba(93,31,155,1)), color-stop(100%,rgba(155,31,124,1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(-45deg, rgba(155,31,31,1) 0%,rgba(155,124,31,1) 14%,rgba(93,155,31,1) 29%,rgba(31,155,62,1) 43%,rgba(31,155,155,1) 57%,rgba(31,62,155,1) 71%,rgba(93,31,155,1) 86%,rgba(155,31,124,1) 100%); /* Chrome10+,Safari5.1+ */

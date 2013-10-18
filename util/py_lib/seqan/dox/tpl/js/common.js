@@ -6,10 +6,16 @@
 	$(document).ready(function () {
 	
 	    // only keep top-level nav items
-	    $('#toc ol ol').filter(function() { console.log(this, $(this).find('a[href=#Examples]')); return $(this).find('a[href=#Examples]').length == 0; }).remove();
+	    $('#toc ol ol').filter(function() { return $(this).find('a[href=#Examples]').length == 0; }).remove();
 
 	    // hightlight nav items based on scroll area
-	    $('body').scrollspy({ target: '#toc', offset: 0 });
+	    $('body').scrollspy({ target: '#toc', offset: 50 });
+	    
+	    var id;
+	    $(window).resize(function() {
+            clearTimeout(id);
+            id = setTimeout(function() { $('body').scrollspy('refresh'); }, 500);
+        });
 
         // smooth scrolling
         $('a[href*=#]:not([href=#])').click(function() {
