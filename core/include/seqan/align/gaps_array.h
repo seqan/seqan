@@ -207,6 +207,31 @@ void detach(Gaps<TSequence, ArrayGaps> & gaps)
 }
 
 // ----------------------------------------------------------------------------
+// Function _setLength()
+// ----------------------------------------------------------------------------
+
+// Set the length, only use if TSequence is Nothing.
+
+template <typename TSequence, typename TSize>
+inline void _setLength(Gaps<TSequence, ArrayGaps> & gaps, TSize newLen)
+{
+    // Reset array.
+    resize(gaps._array, 3);
+    gaps._array[0] = 0;
+    gaps._array[1] = newLen;
+    gaps._array[2] = 0;
+    // Reset clipping information.
+    gaps._clippingBeginPos = 0;
+    gaps._clippingEndPos = newLen;
+    gaps._sourceBeginPos = 0;
+    gaps._sourceEndPos = gaps._clippingEndPos;
+    // gaps._clippingBeginIdx = 1;
+    // gaps._clippingBeginOffset = 0;
+    // gaps._clippingEndIdx = 1;
+    // gaps._clippingEndOffset = value(gaps._source)[1];
+}
+
+// ----------------------------------------------------------------------------
 // Helper Function _reinitArrayGaps()
 // ----------------------------------------------------------------------------
 
@@ -215,20 +240,7 @@ void detach(Gaps<TSequence, ArrayGaps> & gaps)
 template <typename TSequence>
 inline void _reinitArrayGaps(Gaps<TSequence, ArrayGaps> & gaps)
 {
-    // Reset array.
-    resize(gaps._array, 3);
-    gaps._array[0] = 0;
-    gaps._array[1] = length(value(gaps._source));
-    gaps._array[2] = 0;
-    // Reset clipping information.
-    gaps._clippingBeginPos = 0;
-    gaps._clippingEndPos = length(value(gaps._source));
-    gaps._sourceBeginPos = 0;
-    gaps._sourceEndPos = gaps._clippingEndPos;
-    // gaps._clippingBeginIdx = 1;
-    // gaps._clippingBeginOffset = 0;
-    // gaps._clippingEndIdx = 1;
-    // gaps._clippingEndOffset = value(gaps._source)[1];
+    _setLength(gaps, length(value(gaps._source)));
 }
 
 // ----------------------------------------------------------------------------
