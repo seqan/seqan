@@ -73,7 +73,6 @@
         
         $('#search').on('mouseover', '[data-lang-entity-container] label', function() {
             var langEntity = $(this).parents('[data-lang-entity-container]').attr('data-lang-entity-container');
-            console.log(langEntity);
             showPopOver(this, langEntity, false);
         });
         
@@ -102,8 +101,6 @@
                         width: element.offsetWidth,
                         height: element.offsetHeight
                     });
-                    pos.top +=50;
-                    console.log(pos);
                     actualWidth = 283;
                     actualHeight = 117;
                     boundTop = $(document).scrollTop() + 40; // DIRTY: takes the small data-lang-entity window "hat" into account
