@@ -242,7 +242,7 @@ and based on the Tipue Search, http://www.tipue.com
                             	var langEntity = found[i].langEntity;
                             	var langEntityEntry = window.langEntities[langEntity];
                             	if(!langEntityEntry) langEntityEntry = { name: 'UNKNOWN', ideogram: 'UNKNOWN', color: '#FF0000', description: 'Unknown language entity' };
-                            	
+                            	console.log(found[i].location);
                             	out += '<li class="result" data-lang-entity-container="' + langEntity + '">' +
                                        '<h2>' +
                                          '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +

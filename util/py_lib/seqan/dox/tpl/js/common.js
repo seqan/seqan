@@ -66,11 +66,21 @@
 	});
 
     $(document).ready(function () {
-        $('body').on('mouseover', '*[data-lang-entity] > a:first-child', function() {
-    		var $this = $(this);
+        $('body').on('mouseover', '[data-lang-entity] > a:first-child', function() {
+            var langEntity = $(this).attr('data-lang-entity') || $(this).parent().attr('data-lang-entity');
+            showPopOver(this, langEntity, true);
+        });
+        
+        $('#search').on('mouseover', '[data-lang-entity-container] label', function() {
+            var langEntity = $(this).parents('[data-lang-entity-container]').attr('data-lang-entity-container');
+            console.log(langEntity);
+            showPopOver(this, langEntity, false);
+        });
+        
+        function showPopOver(el, langEntity, showMore) {
+    		var $this = $(el);
     		if($this.attr('data-original-title')) return; // already set up
-    		
-    		var langEntity = $this.attr('data-lang-entity') || $this.parent().attr('data-lang-entity');
+
     		var langEntityData = window.langEntities[langEntity];
     		
     		$this.popover({
@@ -79,7 +89,7 @@
 				template: '<div class="popover" data-lang-entity-container="' + langEntity + '"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
 				title: langEntityData.name,
 				content: function() {
-					return '<div class="description">' + langEntityData.description + '</div>' + '<p class="more">Click now for more information</p>';
+					return '<div class="description">' + langEntityData.description + '</div>' + (showMore ? '<p class="more">Click now for more information</p>' : '');
 				},
 				container: 'body',
 				placement: function(tip, element) {
@@ -140,7 +150,7 @@
                     }
                 }
 			}).popover('show');
-    	});
+    	}
     	
     	if(!$('html').hasClass('list')) {
     		$('html').pimpLangEntityLabels();
