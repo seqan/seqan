@@ -6,7 +6,7 @@
 	$(document).ready(function () {
 	
 	    // only keep top-level nav items
-	    $('#toc ol ol').remove();
+	    $('#toc ol ol').filter(function() { console.log(this, $(this).find('a[href=#Examples]')); return $(this).find('a[href=#Examples]').length == 0; }).remove();
 
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 0 });
@@ -43,7 +43,7 @@
 		
 		pimpLangEntityLabels: function() {
 			return this.each(function() {
-				$(this).find('*[data-lang-entity]').each(function () {
+				$(this).find('[data-lang-entity]').each(function () {
 					var $this = $(this);
 					if($this.attr('data-pimped')) return true;
             
@@ -56,10 +56,14 @@
 							.removeAttr('data-lang-entity');
 						$this = $this.children();
 					}
-					    
-					$this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
-						.removeAttr('data-lang-entity')
-						.before($().createLangEntityLabel(langEntity));
+					
+					if($this.hasClass("signature")) {
+    					$this.prepend($().createLangEntityLabel(langEntity));
+					} else {					    
+    					$this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
+    						.removeAttr('data-lang-entity')
+    						.before($().createLangEntityLabel(langEntity));
+                    }
 				});
 			});
 		}

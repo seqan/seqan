@@ -44,7 +44,8 @@ h1 {
 	margin-bottom: .8em;
 }
 
-h2 {
+h2,
+h3#Examples {  // DIRTY! Just make it h2!
 	//border-bottom: 1px solid #999;
 	
 	/*
@@ -74,18 +75,17 @@ h3 {
     
     &.signature {
         text-decoration: none;
+        
+        &[data-lang-entity] {
+            > a:first-child { font-weight: 500; margin: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+            > pre { border-top-left-radius: 0; margin-top: -1px; }
+        }
     }
     
-    pre {
-        position: relative;
-        
-        &:before {
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: block;
-            content: "fn()";
-        }
+    &#Examples { // DIRTY! Just make it h2!
+        font-weight: 500;
+        text-decoration: none;
+        margin-left: -40px;
     }
 }
 
@@ -252,13 +252,20 @@ html:not(.list) {
 	    }
 		
 		ol {
+		    list-style: none;
+    	    padding: 0;
+    	    
 		    li {
+		        position: relative;
+		        
 		        a {
 		            margin: 0;
     		        padding: 1em 2.5em 1em 2.5em;
+    		        display: block;
     		        
     		        &:hover,
     		        &:active {
+    		            text-decoration: none;
     		            color: #000;
         		        background-color: rgba(255,255,255,0.5);
     		        }
@@ -319,6 +326,16 @@ html:not(.list) {
 
 .description {
 	margin: 1em 0;
+}
+
+:not(h2) + .method_details {
+    margin-top: 3em;
+}
+
+.method_details + * {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 1.1em;
 }
 
 .signature {
@@ -447,6 +464,7 @@ html:not(.list) #content {
         padding-left: 0;
     }     
 }
+
 
 
 

@@ -221,7 +221,7 @@ rendered with level h_level.
 {% macro see_also(entry, h_level=2) -%}
 {% if entry.sees %}
   <h{{ h_level }} class="clause_header">See Also</h{{ h_level }}>
-  <ul>
+  <ul class="summary compact">
   {% for link in entry.sees %}
   <li>{{ link|transtext(True) }}</li>
   {% endfor %}
@@ -636,7 +636,7 @@ Render the grouped macros details
 
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
       <pre class="highlight"><code>
           {%- if subentry.signatures -%}
           {%- for s in subentry.signatures: -%}
@@ -777,7 +777,7 @@ Render the interface functions details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_function">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -879,7 +879,7 @@ Render the member typedef details
 
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="{{key}}">
       <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -924,7 +924,7 @@ Render the interface metafunctions details
 
 {% for subentry in entry.subentries['interface_metafunction'] %}
 <div class="method_details{% if loop.first %} first{% endif %}">
-  <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+  <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="interface_metafunction">
     <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -997,7 +997,7 @@ Render the member variables details
 
   {% for subentry in entry.subentries['member_variable'] %}
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="member_variable">
       <pre><code>{{ subentry.type|e }} {{ subentry.name|e }}</code></pre>
     </h3>
     <div class="docstring">
@@ -1015,7 +1015,7 @@ Render the member variables details
 <!--
 Macro enum_values(entry)
 
-Render the member variables details
+Render the member enum details
 -->
 
 {% macro enum_values(entry, qualifier='Member') %}
@@ -1025,7 +1025,7 @@ Render the member variables details
 
   {% for subentry in entry.subentries['variable'] %}
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
-    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
+    <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="enum">
       <pre><code>{{ subentry.type|e }} {{ subentry.name|e }}</code></pre>
     </h3>
     <div class="docstring">
