@@ -210,7 +210,7 @@ html:not(.list) #toc {
   max-height: 93%;
   width: 250px;
   margin-right: -270px;
-  overflow-y: scroll;
+  overflow-y: auto;
   background-color: #e5eff8;
   background-image: -moz-linear-gradient(-45deg, #f1f6fb 0%, #d9e8f4 100%);
   background-image: -webkit-linear-gradient(-45deg, #f1f6fb 0%, #d9e8f4 100%);
