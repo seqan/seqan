@@ -7,7 +7,7 @@
       {% if development %}
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.js"></script>
       
-      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/js/bootstrap.min.js"></script>
       
       <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
@@ -83,7 +83,7 @@
             </select>
 	        <!--button class="btn btn-primary">Select All</button-->
           </span>
-          <input type="search" class="form-control">
+          <input type="search" class="form-control" placeholder="Type to search the API ...">
           </div>
         </form>
 
@@ -92,7 +92,7 @@
             {% for name, entry in doc.top_level_entries|dictsort %}
             {% if entry.kind != 'page' %}
             <li class="result" data-lang-entity-container="{{ entry.kind }}">
-              <h2><a href="{{entry.name|name_to_path}}" target="main" data-lang-entity="{{ entry.kind }}">{{name}}</a></h2>
+              <h2 data-lang-entity="{{ entry.kind }}" data-pimped="true"><a href="language_entities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a> <a href="{{entry.name|name_to_path}}" target="main">{{name}}</a></h2>
               <div>
                 <div class="text"></div>
                 <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>

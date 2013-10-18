@@ -3,16 +3,14 @@
 {% block title %}{{ shortcut.title|e }}{% endblock %}
 
 {% block banner %}
-<h1 data-lang-entity="shortcut" data-pimped="true"><a href="language_entities.html#shortcut">Ctrl+C</a> {{ shortcut.title|e }} Shortcut Reference</h1>
+<h1 data-lang-entity="shortcut" data-pimped="true"><a href="language_entities.html#shortcut">Ctrl+C</a> <span>{{ shortcut.title|e }} Shortcut Reference<div>{{ sections.brief(shortcut) }}</div></span></h1>
 {% endblock %}
 
 {% block content %}
 
-<!-- @brief -->
-{{ sections.brief(shortcut) }}
-
-<!-- @signature -->
-{{ sections.signatures(shortcut) }}
+<div class="overview">
+	{{ sections.signatures(shortcut) }}
+</div>
 
 <!-- @internal -->
 {% if shortcut.internals %}

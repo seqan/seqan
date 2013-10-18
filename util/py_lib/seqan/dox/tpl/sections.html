@@ -64,7 +64,7 @@ Render the inheritance information of the given entr.
 -->
 
 {% macro top_box(entry) %}
-<dl class="box">
+<dl>
 
   {% if entry.extends %}
   <dt>Extends</dt>
@@ -120,6 +120,15 @@ Render the inheritance information of the given entr.
     {% else %}
     &nbsp;
     {% endif %}
+  </dd>
+  
+  <dt>Signature</dt>
+  <dd>
+  	<div class="highlight"><pre><code>
+{%- for s in entry.signatures -%}
+{{ s|transtext(False) }}
+{% endfor -%}
+	</code></pre></div>
   </dd>
 </dl>
 {% endmacro %}
@@ -179,11 +188,7 @@ Render the @brief text for the given entry.
 -->
 
 {% macro brief(entry) -%}
-<div class="docstring">
-  <div class="discussion">
-    {{ entry.brief|transtext }}
-  </div>
-</div>
+{{ entry.brief|transtext }}
 {%- endmacro %}
 
 <!--
@@ -192,14 +197,7 @@ Macro signatures(entry)
 Render the @signature entries for the given entry.
 -->
 
-{% macro signatures(entry) -%}
-<h3 class="signature"><pre><code>
-{%- for s in entry.signatures -%}
-{{ s|transtext(False) }}
-{% endfor -%}
-</code></pre></h3>
-
-{%- endmacro %}
+{% macro signatures(entry) -%}{# moved to top_box #}{%- endmacro %}
 
 <!--
 Macro body(entry, start_heading=2)
@@ -222,14 +220,12 @@ rendered with level h_level.
 
 {% macro see_also(entry, h_level=2) -%}
 {% if entry.sees %}
-<div class="clause see">
   <h{{ h_level }} class="clause_header">See Also</h{{ h_level }}>
   <ul>
   {% for link in entry.sees %}
   <li>{{ link|transtext(True) }}</li>
   {% endfor %}
   </ul>
-</div>
 {% endif %}
 {%- endmacro %}
 
@@ -377,11 +373,11 @@ Render the interface functions overview
     <span class="summary_signature">{{ sig_entries[0].toString() }}</span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
     {% else %}
-    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}"><strong>
+    <span class="summary_signature"><a href="#{{ entry.name|escape_name }}" title="#{{entry.name}} (interface function)" data-lang-entity="{{entry.kind}}">
         {%- for s in entry.signatures -%}
         {{ s|transtext(False) }}{% if not loop.last %}, {% endif -%}
         {%- endfor -%}
-    </strong></a></span>
+    </a></span>
     <span class="summary_desc">{{ entry.brief|transtext }}</span>
     {% endif %}
   </li>
@@ -641,8 +637,7 @@ Render the grouped macros details
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
-      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
-      <pre style="margin:0;"><code>
+      <pre class="highlight"><code>
           {%- if subentry.signatures -%}
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
@@ -705,7 +700,7 @@ Render the grouped macros details
 <h3 id="{{ subentry.name|escape_name }}">{{ subentry.name|e }}</h3>
 
 {% if subentry.signatures -%}
-<pre class="signature"><code>
+<pre class="signature highlight"><code>
 {%- for s in subentry.signatures: -%}
 {{ s|transtext(False) }}
 {% endfor -%}
@@ -783,8 +778,7 @@ Render the interface functions details
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
-      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
-      <pre style="margin:0;"><code>
+      <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
@@ -793,7 +787,7 @@ Render the interface functions details
   </div>
 
   {% if subentry.deprecation_msgs %}
-  <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+  <div class="note deprecated">Deprecated. <div class='inline'>
       {% for msg in subentry.deprecation_msgs %}
       <p>{{ msg|transtext(False) }}</p>
       {% endfor %}
@@ -825,7 +819,6 @@ Render the interface functions details
   {% if subentry.params %}
   <div class="tags">
     <p class="tag_title">Parameters</p>
-
     <ul class="param">
       {% for param in subentry.params %}
       <li>
@@ -864,9 +857,9 @@ Render the interface functions details
       {% for link in subentry.sees %}
       <li>{{ link|transtext(False)|translink }}</li>
       {% endfor %}
-      {% endif %}
     </ul>
   </div>
+  {% endif %}
   {% endfor %}
 
 </div>
@@ -887,8 +880,7 @@ Render the member typedef details
   {% for subentry in entry.subentries[key] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
-      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
-      <pre style="margin:0;"><code>
+      <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
@@ -933,8 +925,7 @@ Render the interface metafunctions details
 {% for subentry in entry.subentries['interface_metafunction'] %}
 <div class="method_details{% if loop.first %} first{% endif %}">
   <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
-    <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
-    <pre style="margin:0;"><code>
+    <pre class="highlight"><code>
           {%- for s in subentry.signatures: -%}
           {{ s|transtext(False) }}{% if not loop.last %}
 {% endif -%}{%- endfor -%}
@@ -942,7 +933,7 @@ Render the interface metafunctions details
   </h3>
 
   {% if subentry.deprecation_msgs %}
-  <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+  <div class="note deprecated">Deprecated. <div class='inline'>
       {% for msg in subentry.deprecation_msgs %}
       <p>{{ msg|transtext(False) }}</p>
       {% endfor %}
@@ -1007,8 +998,7 @@ Render the member variables details
   {% for subentry in entry.subentries['member_variable'] %}
   <div class="member_variable_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
-      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
-      <tt>{{ subentry.type|e }} {{ subentry.name|e }}</tt>
+      <pre><code>{{ subentry.type|e }} {{ subentry.name|e }}</code></pre>
     </h3>
     <div class="docstring">
       <div class="discussion">
@@ -1036,8 +1026,7 @@ Render the member variables details
   {% for subentry in entry.subentries['variable'] %}
   <div class="enum_value_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}">
-      <a class="permalink" href="#{{ subentry.name|escape_name }}">permalink</a>
-      <tt>{{ subentry.type|e }} {{ subentry.name|e }}</tt>
+      <pre><code>{{ subentry.type|e }} {{ subentry.name|e }}</code></pre>
     </h3>
     <div class="docstring">
       <div class="discussion">
@@ -1121,7 +1110,7 @@ Render the template parameter overview.
   <ul class="summary">
     {% for param in entry.tparams %}
     <li class="public">
-      <span class="summary_signature"><a href="#"><strong>{{ param.type|e }}</strong></a></span>
+      <span class="summary_signature"><a href="#" data-lang-entity="generic">{{ param.type|e }}</a></span>
       <span class="summary_desc">{{ param.desc|transtext(False) }}</span>
     </li>
     {% endfor %}

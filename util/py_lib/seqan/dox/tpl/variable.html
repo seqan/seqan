@@ -3,15 +3,13 @@
 {% block title %}{{ variable.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="variable" data-pimped="true"><a href="language_entities.html#variable">Variable</a> {{ variable.title|e }}</h1>
+<h1 data-lang-entity="variable" data-pimped="true"><a href="language_entities.html#variable">Variable</a> <span>{{ variable.title|e }}<div>{{ sections.brief(variable) }}</div></span></h1>
 
-{{ sections.top_box(variable) }}
-
-<!-- @brief -->
-{{ sections.brief(variable) }}
-
-<!-- signatures -->
-{{ sections.signatures(variable) }}
+<div class="overview">
+	{{ sections.top_box(variable) }}
+	
+	{{ sections.signatures(variable) }}
+</div>
 
 <h2>Overview</h2>
 <div class="docstring">

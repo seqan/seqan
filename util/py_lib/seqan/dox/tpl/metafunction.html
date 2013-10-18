@@ -3,15 +3,13 @@
 {% block title %}{{ metafunction.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="metafunction" data-pimped="true"><a href="language_entities.html#metafunction">Fn<></a> {{ metafunction.title|e }}</h1>
+<h1 data-lang-entity="metafunction" data-pimped="true"><a href="language_entities.html#metafunction">Fn<></a> <span>{{ metafunction.title|e }}<div>{{ sections.brief(metafunction) }}</div></span></h1>
 
-{{ sections.top_box(metafunction) }}
+<div class="overview">
+	{{ sections.top_box(metafunction) }}
 
-<!-- @brief -->
-{{ sections.brief(metafunction) }}
-
-<!-- @signature -->
-{{ sections.signatures(metafunction) }}
+	{{ sections.signatures(metafunction) }}
+</div>
 
 <!-- @param -->
 {{ sections.params(metafunction) }}

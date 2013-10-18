@@ -99,7 +99,6 @@ class TextNodeToHtml(object):
             self.res.append(text_node.text)
         elif text_node.type == 'code':
             if text_node.attrs.get('type') in ['.cpp', '.h']:
-                self.res.append('<div>')
                 self.res.append(self.convertCode(text_node.children[0].text))
                 target_path = text_node.attrs.get('path')
                 if self.path_mgr:
@@ -114,7 +113,6 @@ class TextNodeToHtml(object):
                         '<div class="path_label"><span class="label">Demo:'
                         '</span> <a href="%s" target="_top">%s</a></div>' %
                         (target_path, text_node.attrs.get('path')))
-                self.res.append('</div>')
             elif text_node.attrs.get('type') in ['.console', '.stdout', '.stderr']:
                 self.res.append('<pre class="console">' + escapeForXml(text_node.children[0].text) + '</pre>')
             else:
@@ -386,7 +384,7 @@ class HtmlWriter(object):
     def generateLists(self, doc):
         """Generate top level/second level/page index."""
         with open(self.path_manager.getListPath(), 'w') as f:
-            f.write(self.tpl_manager.render('list.html', doc=doc,
+            f.write(self.tpl_manager.render('list.html', doc=doc, config=self.config,
                                             development=self.args.development))
 
     def translateLinks(self, doc):

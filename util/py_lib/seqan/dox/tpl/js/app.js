@@ -42,12 +42,6 @@ function createFullTreeLinks() {
     });
 }
 
-function fixBoxInfoHeights() {
-    $('dl.box dd.r1, dl.box dd.r2').each(function() {
-       $(this).prev().height($(this).height());
-    });
-}
-
 function searchFrameLinks() {
   $('.full_list_link').click(function() {
     toggleSearchFrame(this, $(this).attr('href'));
@@ -68,12 +62,6 @@ function toggleSearchFrame(id, link) {
   }
 }
 
-function linkSummaries() {
-  $('.summary_signature').click(function() {
-    document.location = $(this).find('a').attr('href');
-  });
-}
-
 function framesInit() {
   if (hasFrames) {
     document.body.className += ' frames';
@@ -85,22 +73,6 @@ function framesInit() {
   }
 }
 
-function keyboardShortcuts() {
-  if (window.top.frames.main) return;
-  $(document).keypress(function(evt) {
-    if (evt.altKey || evt.ctrlKey || evt.metaKey || evt.shiftKey) return;
-    if (typeof evt.target !== "undefined" &&
-        (evt.target.nodeName == "INPUT" ||
-        evt.target.nodeName == "TEXTAREA")) return;
-    switch (evt.charCode) {
-      case 67: case 99:  $('#class_list_link').click(); break;  // 'c'
-      case 77: case 109: $('#method_list_link').click(); break; // 'm'
-      case 70: case 102: $('#file_list_link').click(); break;   // 'f'
-      default: break;
-    }
-  });
-}
-
 function fixOutsideWorldLinks() {
   $('a').each(function() {
     if (window.location.host != this.host) this.target = '_parent';
@@ -108,7 +80,10 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  var _toc = $('<ol class="top nav"></ol>');
+  var _toc = $('<ol class="nav"></ol>');
+  
+  _toc.append('<li class="active top"><a href="#top">Top</a><li>');
+  
   var show = false;
   var toc = _toc;
   var counter = 0;
@@ -154,9 +129,6 @@ $(framesInit);
 $(createSourceLinks);
 $(createDefineLinks);
 $(createFullTreeLinks);
-$(fixBoxInfoHeights);
 $(searchFrameLinks);
-$(linkSummaries);
-$(keyboardShortcuts);
 $(fixOutsideWorldLinks);
 $(generateTOC);

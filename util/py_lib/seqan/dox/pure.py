@@ -39,10 +39,10 @@ DEFAULT_COLORS = {
 # The known language entities.
 KNOWN_LANGUAGE_ENTITIES = [
     'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
-    'concept', 'class', 'enum', 'metafunction', 'interface_metafunction',
+    'concept', 'class', 'enum', 'metafunction', 'global_metafunction', 'interface_metafunction',
     'function', 'global_function', 'interface_function', 'member_function',
     'tag', 'grouped_tag', 'variable', 'global_variable', 'member_variable',
-    'adaption', 'macro', 'group', 'page', 'unknown']
+    'adaption', 'macro', 'group', 'page', 'generic', 'unknown']
 
 # Properties of language entities.
 LANGUAGE_ENTITIES_PROPERTIES = ['name', 'ideogram', 'color', 'description', 'belongsTo']
@@ -52,7 +52,7 @@ class Config(object):
     """Stores configuration that can be loaded from an INI file.
 
     At the moment, the language entity related configuration such as
-    colors and description of language entites can be read from the
+    colors and description of language entities can be read from the
     INI file.  The HTML writer will then write the result to the
     lang_entities.js file and also use it in the generated HTML.
     """

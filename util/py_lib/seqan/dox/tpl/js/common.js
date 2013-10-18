@@ -7,9 +7,9 @@
 	
 	    // only keep top-level nav items
 	    $('#toc ol ol').remove();
-	    
+
 	    // hightlight nav items based on scroll area
-	    $('body').scrollspy({ target: '#toc' });
+	    $('body').scrollspy({ target: '#toc', offset: 0 });
 
         // smooth scrolling
         $('a[href*=#]:not([href=#])').click(function() {
@@ -38,8 +38,7 @@
             var entry = window.langEntities[langEntity];
 			if (!entry) entry = window.langEntities['unknown'];
 					
-			return $('<a href="language_entities.html#' + langEntity + '">' + entry.ideogram + '</a>')
-					.attr('title', entry.name);
+			return $('<a href="language_entities.html#' + langEntity + '">' + entry.ideogram + '</a>');
 		},
 		
 		pimpLangEntityLabels: function() {
@@ -76,15 +75,70 @@
     		
     		$this.popover({
 				html: true,
-				placement: 'right',
 				trigger: 'hover',
-				title: function() {
-					return langEntityData.name;
-				},
+				template: '<div class="popover" data-lang-entity-container="' + langEntity + '"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+				title: langEntityData.name,
 				content: function() {
-					return '<div class="description">' + langEntityData.description + '<div>' + '<p class="more">Click now for more information</p>';
+					return '<div class="description">' + langEntityData.description + '</div>' + '<p class="more">Click now for more information</p>';
 				},
-				container: 'body'
+				container: 'body',
+				placement: function(tip, element) {
+                    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
+                    isWithinBounds = function(elementPosition) {
+                    return boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight);
+                    };
+                    $element = $(element);
+                    pos = $.extend({}, $element.offset(), {
+                        width: element.offsetWidth,
+                        height: element.offsetHeight
+                    });
+                    pos.top +=50;
+                    console.log(pos);
+                    actualWidth = 283;
+                    actualHeight = 117;
+                    boundTop = $(document).scrollTop() + 40; // DIRTY: takes the small data-lang-entity window "hat" into account
+                    boundLeft = $(document).scrollLeft();
+                    boundRight = boundLeft + $(window).width();
+                    boundBottom = boundTop + $(window).height();
+                    
+                    elementAbove = {
+                        top: pos.top - actualHeight,
+                        left: pos.left + pos.width / 2 - actualWidth / 2
+                    };
+                    elementBelow = {
+                        top: pos.top + pos.height,
+                        left: pos.left + pos.width / 2 - actualWidth / 2
+                    };
+                    elementLeft = {
+                        top: pos.top + pos.height / 2 - actualHeight / 2,
+                        left: pos.left - actualWidth
+                    };
+                    elementRight = {
+                        top: pos.top + pos.height / 2 - actualHeight / 2,
+                        left: pos.left + pos.width
+                    };
+                    above = isWithinBounds(elementAbove);
+                    below = isWithinBounds(elementBelow);
+                    left = isWithinBounds(elementLeft);
+                    right = isWithinBounds(elementRight);
+                    if (above) {
+                        return "top";
+                    } else {
+                        if (below) {
+                            return "bottom";
+                        } else {
+                            if (left) {
+                                return "left";
+                            } else {
+                                if (right) {
+                                    return "right";
+                                } else {
+                                    return "bottom";
+                                }
+                            }
+                        }
+                    }
+                }
 			}).popover('show');
     	});
     	
@@ -92,9 +146,6 @@
     		$('html').pimpLangEntityLabels();
     	}
     });
-    
-    // todo: remove when initial search results are already pimped
-    $('html').pimpLangEntityLabels();
 
 })(jQuery);
 
@@ -147,11 +198,11 @@
             target: 'main',
             raw: true,
             showUrl: false,
-            minimumLength: 0,
+            minimumLength: 1,
             descriptiveWords: 25,
             highlightTerms: true,
             highlightEveryTerm: true,
-            output: $("#results"),
+            output: $("#results").css('display', 'none'),
             searchOnKeyPress: true,
             data: window.searchData,
             stopWords: ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"], // filtered out of query
@@ -175,7 +226,13 @@
                 ["member_variable", "variable"]
             ],
             callback: function($form, $results) {
-            	$el.find('.pre-action').slideUp();
+            	if($form.find('input[type=search]').val().length == 0) {
+            	    $("#results").slideUp();
+            	    $el.find('.pre-action').slideDown();
+                } else {
+                    $("#results").show();
+                    $el.find('.pre-action').slideUp();
+                }
             }
         });
     }

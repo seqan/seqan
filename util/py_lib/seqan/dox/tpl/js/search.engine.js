@@ -145,14 +145,16 @@ and based on the Tipue Search, http://www.tipue.com
                 var stemmedWords;
 
                 if (nonStopWords.join(" ").length < settings.minimumLength) {
-                	if (words.length != nonStopWords.length) {
-                        out += '<div class="warning_head">Nothing found</div><div class="warning">Common words are largely ignored</div>';
-                    } else {
-                        out += '<div class="warning_head">Search too short</div>';
-                        if (settings.minimumLength == 1) {
-                            out += '<div class="warning">Should be one character or more</div>';
+                    if(!settings.raw) {
+                    	if (words.length != nonStopWords.length) {
+                            out += '<div class="warning_head">Nothing found</div><div class="warning">Common words are largely ignored</div>';
                         } else {
-                            out += '<div class="warning">Should be ' + settings.minimumLength + ' characters or more</div>';
+                            out += '<div class="warning_head">Search too short</div>';
+                            if (settings.minimumLength == 1) {
+                                out += '<div class="warning">Should be one character or more</div>';
+                            } else {
+                                out += '<div class="warning">Should be ' + settings.minimumLength + ' characters or more</div>';
+                            }
                         }
                     }
                 } else {
@@ -325,7 +327,7 @@ and based on the Tipue Search, http://www.tipue.com
                 }
 
                 settings.output.html(out);
-                settings.output.slideDown(200);
+                //settings.output.slideDown(200);
 
                 $form.find('replaced').click(function () {
                     search(0, false);

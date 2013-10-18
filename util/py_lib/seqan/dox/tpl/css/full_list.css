@@ -22,7 +22,6 @@ li:hover { background: #ddd; }
 li small:before { content: "("; }
 li small:after { content: ")"; }
 li small.search_info { display: none; }
-a:link, a:visited { text-decoration: none; color: #05a; }
 li.clicked { background: #05a; color: #ccc; }
 li.clicked a:link, li.clicked a:visited { color: #eee; }
 li.clicked a.toggle { opacity: 0.5; background-position: bottom right; }
