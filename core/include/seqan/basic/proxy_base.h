@@ -128,7 +128,7 @@ struct CompareType<Proxy<TSpec>, T>
 {
     typedef typename Value<Proxy<TSpec> >::Type TValue;
     typedef typename RemoveConst_<TValue>::Type TValue_NoConst;
-    typedef typename CompareType<T, TValue_NoConst>::Type Type;
+    typedef typename CompareType<TValue_NoConst, T>::Type Type;
 };
 
 // ============================================================================
