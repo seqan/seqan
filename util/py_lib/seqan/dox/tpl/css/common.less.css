@@ -565,7 +565,7 @@ html:not(.list) #content div[data-lang-entity-container] > h2 {
   margin-top: -10px;
   margin-bottom: 5px;
   padding: 30px 0px 30px 130px;
-  background-image: url(file:///Users/bkahlert/Dropbox/development/seqan-workspace/seqan-trunk/util/py_lib/seqan/dox/tpl/css/../img/seqan_logo.png);
+  background-image: url(../img/seqan_logo.png);
   background-size: 114px 76px;
   background-repeat: no-repeat;
   background-position: 0 3px;
