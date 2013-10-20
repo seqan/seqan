@@ -494,9 +494,6 @@ class HtmlWriter(object):
         with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
             f.write(js)
             
-        """Generate language entities HTML file."""
-        open(os.path.join(self.out_dirs['root'], 'language_entities.html'), 'wb').write(self.tpl_manager.render('language_entities.html', config=self.config, development=self.args.development))
-
     def log(self, s, *args):
         print >>sys.stderr, s % args
 

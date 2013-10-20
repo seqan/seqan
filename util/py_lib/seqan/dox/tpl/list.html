@@ -92,7 +92,7 @@
             {% for name, entry in doc.top_level_entries|dictsort %}
             {% if entry.kind != 'page' %}
             <li class="result" data-lang-entity-container="{{ entry.kind }}">
-              <h2 data-lang-entity="{{ entry.kind }}" data-pimped="true"><a href="language_entities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a> <a href="{{entry.name|name_to_path}}" target="main">{{name}}</a></h2>
+              <h2 data-lang-entity="{{ entry.kind }}" data-pimped="true"><a href="page_LanguageEntities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a> <a href="{{entry.name|name_to_path}}" target="main">{{name}}</a></h2>
               <div>
                 <div class="text"></div>
                 <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>
