@@ -79,7 +79,7 @@ A bucket still stores occurrences (or counts) of the same q-gram, but in contras
 ..class:Spec.OpenAddressing
 */	
 /*!
- * @class OpenAddressing
+ * @class OpenAddressingQGramIndex
  * 
  * @extends IndexQGram
  * 

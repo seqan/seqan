@@ -589,6 +589,14 @@ information of the suffix tree) are provided.
 //////////////////////////////////////////////////////////////////////////////
 ///.Function.clear.param.object.type:Class.Index
 
+/*!
+ * @fn Index#clear
+ * @brief Resets all fibres of an index.
+ * @signature clear(index)
+ * @param index The index to be cleared.
+ * @return void
+*/
+
 	template <typename TText, typename TSpec>
 	inline void clear(Index<TText, IndexEsa<TSpec> > &index) {
 		clear(getFibre(index, EsaSA()));

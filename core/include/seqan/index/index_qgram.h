@@ -126,9 +126,9 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * @tag QGramIndexFibres#QGramBucketMap
  * 
  * @brief Maps q-gram hashes to buckets. This fibre is used by the @link
- *        OpenAddressing @endlink index and stores all parameters of the open
+ *        OpenAddressingQGramIndex @endlink index and stores all parameters of the open
  *        addressing hash function and hash value occupancy in the QGramDir
- *        fibre. In contrast to @link OpenAddressing @endlink, @link IndexQGram
+ *        fibre. In contrast to @link OpenAddressingQGramIndex @endlink, @link IndexQGram
  *        @endlink uses a trivial 1-to-1 mapping from q-gram hash values to
  *        buckets. For that index the fibre is of type @link Nothing @endlink.
  * 
@@ -270,6 +270,13 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ...output:1
 4
 */
+
+/*!
+ * @defgroup OpenAdressingTags Open Adressing Tags
+ *
+ * @tag OpenAdressingTags#OpenAdressing
+ */
+
 /*!
  * @class IndexQGram
  * 
@@ -281,7 +288,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * 
  * @signature Index<TText, IndexQGram<TShapeSpec[, TSpec]> >
  * 
- * @tparam TSpec The specializing type. Types: @link OpenAddressing @endlink, Default: Default
+ * @tparam TSpec The specializing type. Types: @link OpenAdressingTags#OpenAdressing @endlink, Default: void
  * @tparam TText The text type. Types: @link String @endlink
  * @tparam TShapeSpec The @link Shape @endlink specialization type.
  * 
@@ -291,7 +298,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * are a suffix array sorted by the first q characters (see @link QGramIndexFibres#QGramSA @endlink) and a q-gram directory (see @link QGramIndexFibres#QGramDir @endlink). The size of the q-gram directory is |\Sigma|^q. On
  * a 32bit system the q-gram length is limited to 3 for <tt>char</tt> alphabets
  * or 13-14 for @link Dna @endlink alphabets. Consider to use the @link
- * OpenAddressing @endlink q-gram index for longer q-grams if you don't need
+ * OpenAddressingQGramIndex @endlink for longer q-grams if you don't need
  * q-grams to be sorted.
  * 
  * @see QGramIndexFibres
