@@ -72,7 +72,10 @@ class TextNodeToHtml(object):
             self.heading_table['h%d' % i] = 'h%d' % (i + start_heading)
 
     def openTag(self, text_node, **kwargs):
-        res = ['<', self.heading_table.get(text_node.type, text_node.type)]
+        if text_node.raw_html:
+            res = ['<', text_node.type]
+        else:
+            res = ['<', self.heading_table.get(text_node.type, text_node.type)]
         for key, value in text_node.attrs.iteritems():
             res += [' ', key, '=', '"', repr(value)[1:-1], '"']
         for key, value in kwargs.iteritems():
@@ -81,7 +84,10 @@ class TextNodeToHtml(object):
         return res
 
     def closeTag(self, text_node):
-        return ['</', self.heading_table.get(text_node.type, text_node.type), '>']
+        if text_node.raw_html:
+            return ['</', text_node.type, '>']
+        else:
+            return ['</', self.heading_table.get(text_node.type, text_node.type), '>']
 
     def convertCode(self, source_code):
         # TODO(holtgrew): Interpret source type.

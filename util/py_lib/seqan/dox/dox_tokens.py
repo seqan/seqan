@@ -5,7 +5,7 @@
 import re
 
 # Regular expressions used in LEXER_TOKENS.
-IDENTIFIER = r'[_a-zA-Z][_a-zA-Z0-9]*'
+IDENTIFIER = r'[\-_a-zA-Z][\-_a-zA-Z0-9]*'
 HTML_ATTRIBUTE = IDENTIFIER + r'="[^"]*"'
 HTML_TAG = r'<(?:/)?\s*' + IDENTIFIER + '(?:\s+' + HTML_ATTRIBUTE + ')*\s*(?:/)?>'
 

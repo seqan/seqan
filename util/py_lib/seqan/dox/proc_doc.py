@@ -159,12 +159,15 @@ class TextNode(object):
     @ivar children: A list of TextNode objects.
     @ivar text: The text value of a node, a string.
     @ivar tokens: For links, this is the list of tokens in the @link command.
+    @ivar raw_html: Comes from HTML in dox, disables h2 to h4 translation, for
+                    example.
     """
 
-    def __init__(self, type='<text>', verbatim=False, text='', attrs={}):
+    def __init__(self, type='<text>', raw_html=False, verbatim=False, text='', attrs={}):
         self.type = type
         self.attrs = dict(attrs)
         self.children = []
+        self.raw_html = raw_html
         if verbatim:
             self.text = text
         else:
@@ -766,7 +769,7 @@ class RawTextToTextNodeConverter(object):
         if self.html_parser.is_open:  # Opening tag.
             self.tag_stack.append(self.html_parser.tag)
             self.node_stack.append(self.current)
-            tag = TextNode(type=self.html_parser.tag)
+            tag = TextNode(type=self.html_parser.tag, raw_html=True)
             for key, value in self.html_parser.attrs.items():
                 tag.setAttr(key, value)
             self.current = self.current.addChild(tag)
