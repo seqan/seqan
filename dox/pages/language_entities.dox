@@ -1,13 +1,20 @@
 /*!
-@page LanguageEntities Language Entities
+@page LanguageEntities Language Entity Types
 
-@section Typedef
+SeqAn is a C++ based library. In order to provide you with an outstanding performance, SeqAn heavily relies on template programming.
+
+Our way of using template programming leads to approaches possibly unfamiliar to you. For example functions that used to be member functions are technically implemented as global functions. For this reason we semantically annotated all <a title="We call all of these things language entity types (LET).">variables, functions, metafunctions, classes, etc.</a> throughout the whole online documentation with a <span class="data-lang-entity-example"><span>small label</span></span> to tell you with what you're semantically dealing.
+
+This page serves as a reference for the language entity types (LET) used in SeqAn.<br>It tells you:
+
+<ul><li>what the LET is originally meant to do</li><li>how the LET is used in SeqAn</li><li>what variants of the LET exist.<br>Variants are the most interesting LETs because they have no technical counterpart and are very likely to be unknown to you.</li></ul>
+
+<div data-lang-entity-container="typedef">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['typedef'].ideogram }}"><a name="typedef">{{ config.lang_entities['typedef'].name }}</a></h2>
 
 Typedefs are a C++ language feature that allows to give custom names to arbitrary types.
 
 When programming SeqAn, they are often used for giving short names to complicated, nested template instantiations.
-
-@subsection Example
 
 @code{.cpp}
 using namespace seqan;
@@ -30,7 +37,12 @@ std::cout << "\n";
   <dd><p>Global typedef that is in a semantic group with other ones.</p></dd>
 </dl>
 
-@section Class
+
+
+
+
+<div data-lang-entity-container="concept">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['concept'].ideogram }}"><a name="concept">{{ config.lang_entities['concept'].name }}</a></h2>
 
 C++ allows the definition of custom types using classes.
 
@@ -50,7 +62,11 @@ public:
 @endcode
 
 
-@section Concept
+
+
+
+<div data-lang-entity-container="class">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['class'].ideogram }}"><a name="class">{{ config.lang_entities['class'].name }}</a></h2>
 
 Concepts are <b>informal interfaces</b> that define a set of requirements for a type.  In contrast to Java interfaces,
 C++ concepts can be added to custom types and built-in types without having access to the source of the type.
@@ -60,7 +76,11 @@ C++ concepts can be added to custom types and built-in types without having acce
 See the <a href="http://en.cppreference.com/w/cpp/concept">concepts chapter at cppreference.com</a>.
 
 
-@section Enum
+
+
+
+<div data-lang-entity-container="enum">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['enum'].ideogram }}"><a name="enum">{{ config.lang_entities['enum'].name }}</a></h2>
 
 Enums are a C/C++ feature that allow the definition of enumeration types.
 Such types have a fixed number of values and each number has a name.
@@ -75,20 +95,139 @@ enum MyEnum {
 @endcode
 
 
-@section Metafunction
-
-Metafunctions are compile-time evaluated functions.  They can be used to compute integral values at compile time or to
-select certain types as functions of other types.
-
-@subsection External Resources
-
-See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms
-Wikibook</a>.
 
 
-@section Tag
 
-Tags are classes that are only used for their type.  They are often used for tag-based dispatching.
+<div data-lang-entity-container="metafunction">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['metafunction'].ideogram }}"><a name="typedef">{{ config.lang_entities['metafunction'].name }}</a></h2>
+
+Metafunctions are compile-time evaluated functions. They can be used to compute integral values at compile time or to
+select certain types as functions of other types. See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms Wikibook</a> for more information.
+
+<h3>Example</h3>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+
+<h3>Variants</h3>
+<dl>
+    <dt data-lang-entity-ideogram="{{ config.lang_entities['global_metafunction'].ideogram }}">{{ config.lang_entities['global_metafunction'].name }}</dt>
+	<dd><p>Global typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+	<dt data-lang-entity-ideogram="{{ config.lang_entities['interface_metafunction'].ideogram }}">{{ config.lang_entities['interface_metafunction'].name }}</dt>
+	<dd><p>Grouped typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+</dl>
+</div>
+
+
+
+
+
+<div data-lang-entity-container="function">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['function'].ideogram }}"><a name="function">{{ config.lang_entities['function'].name }}</a></h2>
+<p>Typedef allow for ...</p>
+<p>In SeqAn they are mainly used for ...</p>
+
+<h3>Example</h3>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+
+<h3>Variants</h3>
+<dl>
+    <dt data-lang-entity-ideogram="{{ config.lang_entities['global_function'].ideogram }}">{{ config.lang_entities['global_function'].name }}</dt>
+	<dd><p>Global typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+	<dt data-lang-entity-ideogram="{{ config.lang_entities['interface_function'].ideogram }}">{{ config.lang_entities['interface_function'].name }}</dt>
+	<dd><p>Grouped typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+	<dt data-lang-entity-ideogram="{{ config.lang_entities['member_function'].ideogram }}">{{ config.lang_entities['member_function'].name }}</dt>
+	<dd><p>Grouped typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+</dl>
+</div>
+
+
+
+
+
+<div data-lang-entity-container="tag">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['tag'].ideogram }}"><a name="tag">{{ config.lang_entities['tag'].name }}</a></h2>
+
+Tags are classes that are only used for their type. They are often used for tag-based dispatching.
 
 @subsection Example
 
@@ -117,18 +256,88 @@ struct AnotherTagName
 @endcode
 
 
-@section Variable
+
+
+
+<div data-lang-entity-container="variable">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['variable'].ideogram }}"><a name="variable">{{ config.lang_entities['variable'].name }}</a></h2>
 
 C++ variables.
 
+<h3>Example</h3>
+@code{.cpp}
+using namespace seqan;
 
-@section Adaption
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+
+<h3>Variants</h3>
+<dl>
+    <dt data-lang-entity-ideogram="{{ config.lang_entities['global_variable'].ideogram }}">{{ config.lang_entities['global_variable'].name }}</dt>
+	<dd><p>Global typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+	<dt data-lang-entity-ideogram="{{ config.lang_entities['member_variable'].ideogram }}">{{ config.lang_entities['member_variable'].name }}</dt>
+	<dd><p>Grouped typedefs ...</p>
+		<p>Lorem ipsum ...</p>
+	</dd>
+	<dd><p>In SeqAn ...</p></dd>
+	<dd><p>The following code examples shows how to ...</p>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode</dd>
+</dl>
+</div>
+
+
+
+
+
+<div data-lang-entity-container="adaption">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['adaption'].ideogram }}"><a name="adaption">{{ config.lang_entities['adaption'].name }}</a></h2>
 
 Adaptions are collections of functions and metafunctions that make a type <b>T</b> follow an interface <b>C</b>.  This
 can be used to make a class from an external library follow a SeqAn concept.
 
+<h3>Example</h3>
+@code{.cpp}
+using namespace seqan;
 
-@section Macro
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+</div>
+
+
+
+
+
+<div data-lang-entity-container="macro">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['macro'].ideogram }}"><a name="macro">{{ config.lang_entities['macro'].name }}</a></h2>
 
 Macros are pieces of code evaluated by the C preprocessor.
 
@@ -149,14 +358,26 @@ SEQAN_ASSERT_EQ(SQUARE(10), 100);
 @endcode
 
 
-@section Group
-
-Groups allow to semantically group functions, metafunctions, and tags and give them a short description.  There is no
-equivalent in C++ programs to groups.
 
 
-@section Page
 
-In the SeqAn documentation, pages are documents that are not directly connected to a certain code entry.
+<div data-lang-entity-container="generic">
+<h2 data-lang-entity-ideogram="{{ config.lang_entities['generic'].ideogram }}"><a name="generic">{{ config.lang_entities['generic'].name }}</a></h2>
+<p>Typedef allow for ...</p>
+<p>In SeqAn they are mainly used for ...</p>
+
+<h3>Example</h3>
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+</div>
+
+</div>
 
 */

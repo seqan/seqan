@@ -740,13 +740,16 @@ h1.data-lang-entity-example :nth-child(2) > div > [data-lang-entity]:first-child
   background: #5b7cde;
   border-color: #2347b0;
 }
-div.language_entities div[data-lang-entity-container] + div[data-lang-entity-container] {
+div.language_entities div[data-lang-entity-container] + div[data-lang-entity-container],
+html.page_languageentities div[data-lang-entity-container] + div[data-lang-entity-container] {
   margin-top: 2em;
 }
-div.language_entities *[data-lang-entity-container=typedef] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=typedef] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=typedef] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=typedef] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=typedef] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=typedef] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -764,7 +767,8 @@ div.language_entities *[data-lang-entity-container=typedef] [data-lang-entity-id
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=typedef] dt {
+div.language_entities [data-lang-entity-container=typedef] dt,
+html.page_languageentities [data-lang-entity-container=typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -790,10 +794,12 @@ div.language_entities *[data-lang-entity-container=typedef] dt {
 .popover[data-lang-entity-container=typedef] .popover-title {
   background-color: #5bde7c;
 }
-div.language_entities *[data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -811,7 +817,8 @@ div.language_entities *[data-lang-entity-container=grouped_typedef] [data-lang-e
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=grouped_typedef] dt {
+div.language_entities [data-lang-entity-container=grouped_typedef] dt,
+html.page_languageentities [data-lang-entity-container=grouped_typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -837,10 +844,12 @@ div.language_entities *[data-lang-entity-container=grouped_typedef] dt {
 .popover[data-lang-entity-container=grouped_typedef] .popover-title {
   background-color: #5bde7c;
 }
-div.language_entities *[data-lang-entity-container=global_typedef] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=global_typedef] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=global_typedef] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=global_typedef] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=global_typedef] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=global_typedef] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -858,7 +867,8 @@ div.language_entities *[data-lang-entity-container=global_typedef] [data-lang-en
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=global_typedef] dt {
+div.language_entities [data-lang-entity-container=global_typedef] dt,
+html.page_languageentities [data-lang-entity-container=global_typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -884,10 +894,12 @@ div.language_entities *[data-lang-entity-container=global_typedef] dt {
 .popover[data-lang-entity-container=global_typedef] .popover-title {
   background-color: #5bde7c;
 }
-div.language_entities *[data-lang-entity-container=member_typedef] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=member_typedef] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=member_typedef] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=member_typedef] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=member_typedef] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=member_typedef] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -905,7 +917,8 @@ div.language_entities *[data-lang-entity-container=member_typedef] [data-lang-en
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=member_typedef] dt {
+div.language_entities [data-lang-entity-container=member_typedef] dt,
+html.page_languageentities [data-lang-entity-container=member_typedef] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -931,10 +944,12 @@ div.language_entities *[data-lang-entity-container=member_typedef] dt {
 .popover[data-lang-entity-container=member_typedef] .popover-title {
   background-color: #5bde7c;
 }
-div.language_entities *[data-lang-entity-container=concept] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=concept] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=concept] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=concept] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=concept] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=concept] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -952,7 +967,8 @@ div.language_entities *[data-lang-entity-container=concept] [data-lang-entity-id
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=concept] dt {
+div.language_entities [data-lang-entity-container=concept] dt,
+html.page_languageentities [data-lang-entity-container=concept] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -978,10 +994,12 @@ div.language_entities *[data-lang-entity-container=concept] dt {
 .popover[data-lang-entity-container=concept] .popover-title {
   background-color: #b02323;
 }
-div.language_entities *[data-lang-entity-container=class] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=class] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=class] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=class] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=class] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=class] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -999,7 +1017,8 @@ div.language_entities *[data-lang-entity-container=class] [data-lang-entity-ideo
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=class] dt {
+div.language_entities [data-lang-entity-container=class] dt,
+html.page_languageentities [data-lang-entity-container=class] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1025,10 +1044,12 @@ div.language_entities *[data-lang-entity-container=class] dt {
 .popover[data-lang-entity-container=class] .popover-title {
   background-color: #de5b5b;
 }
-div.language_entities *[data-lang-entity-container=enum] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=enum] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=enum] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=enum] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=enum] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=enum] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1046,7 +1067,8 @@ div.language_entities *[data-lang-entity-container=enum] [data-lang-entity-ideog
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=enum] dt {
+div.language_entities [data-lang-entity-container=enum] dt,
+html.page_languageentities [data-lang-entity-container=enum] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1072,10 +1094,12 @@ div.language_entities *[data-lang-entity-container=enum] dt {
 .popover[data-lang-entity-container=enum] .popover-title {
   background-color: #efb0b0;
 }
-div.language_entities *[data-lang-entity-container=metafunction] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=metafunction] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=metafunction] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=metafunction] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=metafunction] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=metafunction] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1093,7 +1117,8 @@ div.language_entities *[data-lang-entity-container=metafunction] [data-lang-enti
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=metafunction] dt {
+div.language_entities [data-lang-entity-container=metafunction] dt,
+html.page_languageentities [data-lang-entity-container=metafunction] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1119,10 +1144,12 @@ div.language_entities *[data-lang-entity-container=metafunction] dt {
 .popover[data-lang-entity-container=metafunction] .popover-title {
   background-color: #5b7cde;
 }
-div.language_entities *[data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1140,7 +1167,8 @@ div.language_entities *[data-lang-entity-container=global_metafunction] [data-la
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=global_metafunction] dt {
+div.language_entities [data-lang-entity-container=global_metafunction] dt,
+html.page_languageentities [data-lang-entity-container=global_metafunction] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1166,10 +1194,12 @@ div.language_entities *[data-lang-entity-container=global_metafunction] dt {
 .popover[data-lang-entity-container=global_metafunction] .popover-title {
   background-color: #5b7cde;
 }
-div.language_entities *[data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1187,7 +1217,8 @@ div.language_entities *[data-lang-entity-container=interface_metafunction] [data
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=interface_metafunction] dt {
+div.language_entities [data-lang-entity-container=interface_metafunction] dt,
+html.page_languageentities [data-lang-entity-container=interface_metafunction] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1213,10 +1244,12 @@ div.language_entities *[data-lang-entity-container=interface_metafunction] dt {
 .popover[data-lang-entity-container=interface_metafunction] .popover-title {
   background-color: #5b7cde;
 }
-div.language_entities *[data-lang-entity-container=function] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=function] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=function] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=function] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=function] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=function] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1234,7 +1267,8 @@ div.language_entities *[data-lang-entity-container=function] [data-lang-entity-i
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=function] dt {
+div.language_entities [data-lang-entity-container=function] dt,
+html.page_languageentities [data-lang-entity-container=function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1260,10 +1294,12 @@ div.language_entities *[data-lang-entity-container=function] dt {
 .popover[data-lang-entity-container=function] .popover-title {
   background-color: #5bdede;
 }
-div.language_entities *[data-lang-entity-container=global_function] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=global_function] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=global_function] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=global_function] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=global_function] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=global_function] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1281,7 +1317,8 @@ div.language_entities *[data-lang-entity-container=global_function] [data-lang-e
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=global_function] dt {
+div.language_entities [data-lang-entity-container=global_function] dt,
+html.page_languageentities [data-lang-entity-container=global_function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1307,10 +1344,12 @@ div.language_entities *[data-lang-entity-container=global_function] dt {
 .popover[data-lang-entity-container=global_function] .popover-title {
   background-color: #85e7e7;
 }
-div.language_entities *[data-lang-entity-container=interface_function] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=interface_function] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=interface_function] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=interface_function] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=interface_function] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=interface_function] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1328,7 +1367,8 @@ div.language_entities *[data-lang-entity-container=interface_function] [data-lan
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=interface_function] dt {
+div.language_entities [data-lang-entity-container=interface_function] dt,
+html.page_languageentities [data-lang-entity-container=interface_function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1354,10 +1394,12 @@ div.language_entities *[data-lang-entity-container=interface_function] dt {
 .popover[data-lang-entity-container=interface_function] .popover-title {
   background-color: #23b0b0;
 }
-div.language_entities *[data-lang-entity-container=member_function] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=member_function] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=member_function] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=member_function] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=member_function] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=member_function] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1375,7 +1417,8 @@ div.language_entities *[data-lang-entity-container=member_function] [data-lang-e
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=member_function] dt {
+div.language_entities [data-lang-entity-container=member_function] dt,
+html.page_languageentities [data-lang-entity-container=member_function] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1401,10 +1444,12 @@ div.language_entities *[data-lang-entity-container=member_function] dt {
 .popover[data-lang-entity-container=member_function] .popover-title {
   background-color: #5bdede;
 }
-div.language_entities *[data-lang-entity-container=tag] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=tag] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=tag] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=tag] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=tag] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=tag] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1422,7 +1467,8 @@ div.language_entities *[data-lang-entity-container=tag] [data-lang-entity-ideogr
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=tag] dt {
+div.language_entities [data-lang-entity-container=tag] dt,
+html.page_languageentities [data-lang-entity-container=tag] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1448,10 +1494,12 @@ div.language_entities *[data-lang-entity-container=tag] dt {
 .popover[data-lang-entity-container=tag] .popover-title {
   background-color: #9d5bde;
 }
-div.language_entities *[data-lang-entity-container=variable] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=variable] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=variable] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=variable] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=variable] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=variable] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1469,7 +1517,8 @@ div.language_entities *[data-lang-entity-container=variable] [data-lang-entity-i
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=variable] dt {
+div.language_entities [data-lang-entity-container=variable] dt,
+html.page_languageentities [data-lang-entity-container=variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1495,10 +1544,12 @@ div.language_entities *[data-lang-entity-container=variable] dt {
 .popover[data-lang-entity-container=variable] .popover-title {
   background-color: #9dde5b;
 }
-div.language_entities *[data-lang-entity-container=global_variable] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=global_variable] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=global_variable] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=global_variable] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=global_variable] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=global_variable] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1516,7 +1567,8 @@ div.language_entities *[data-lang-entity-container=global_variable] [data-lang-e
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=global_variable] dt {
+div.language_entities [data-lang-entity-container=global_variable] dt,
+html.page_languageentities [data-lang-entity-container=global_variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1542,10 +1594,12 @@ div.language_entities *[data-lang-entity-container=global_variable] dt {
 .popover[data-lang-entity-container=global_variable] .popover-title {
   background-color: #9dde5b;
 }
-div.language_entities *[data-lang-entity-container=local_variable] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=local_variable] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=local_variable] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=local_variable] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=local_variable] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=local_variable] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1563,7 +1617,8 @@ div.language_entities *[data-lang-entity-container=local_variable] [data-lang-en
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=local_variable] dt {
+div.language_entities [data-lang-entity-container=local_variable] dt,
+html.page_languageentities [data-lang-entity-container=local_variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1589,10 +1644,12 @@ div.language_entities *[data-lang-entity-container=local_variable] dt {
 .popover[data-lang-entity-container=local_variable] .popover-title {
   background-color: #9dde5b;
 }
-div.language_entities *[data-lang-entity-container=member_variable] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=member_variable] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=member_variable] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=member_variable] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=member_variable] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=member_variable] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1610,7 +1667,8 @@ div.language_entities *[data-lang-entity-container=member_variable] [data-lang-e
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=member_variable] dt {
+div.language_entities [data-lang-entity-container=member_variable] dt,
+html.page_languageentities [data-lang-entity-container=member_variable] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1636,10 +1694,12 @@ div.language_entities *[data-lang-entity-container=member_variable] dt {
 .popover[data-lang-entity-container=member_variable] .popover-title {
   background-color: #9dde5b;
 }
-div.language_entities *[data-lang-entity-container=adaption] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=adaption] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=adaption] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=adaption] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=adaption] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=adaption] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1657,7 +1717,8 @@ div.language_entities *[data-lang-entity-container=adaption] [data-lang-entity-i
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=adaption] dt {
+div.language_entities [data-lang-entity-container=adaption] dt,
+html.page_languageentities [data-lang-entity-container=adaption] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1683,10 +1744,12 @@ div.language_entities *[data-lang-entity-container=adaption] dt {
 .popover[data-lang-entity-container=adaption] .popover-title {
   background-color: #d5ac31;
 }
-div.language_entities *[data-lang-entity-container=macro] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=macro] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=macro] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=macro] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=macro] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=macro] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1704,7 +1767,8 @@ div.language_entities *[data-lang-entity-container=macro] [data-lang-entity-ideo
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=macro] dt {
+div.language_entities [data-lang-entity-container=macro] dt,
+html.page_languageentities [data-lang-entity-container=macro] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1730,10 +1794,12 @@ div.language_entities *[data-lang-entity-container=macro] dt {
 .popover[data-lang-entity-container=macro] .popover-title {
   background-color: #e7ce85;
 }
-div.language_entities *[data-lang-entity-container=page] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=page] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=page] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=page] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=page] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=page] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1751,7 +1817,8 @@ div.language_entities *[data-lang-entity-container=page] [data-lang-entity-ideog
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=page] dt {
+div.language_entities [data-lang-entity-container=page] dt,
+html.page_languageentities [data-lang-entity-container=page] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1780,10 +1847,12 @@ div.language_entities *[data-lang-entity-container=page] dt {
 html:not(.list) [data-lang-entity=page] > *:first-child {
   display: none;
 }
-div.language_entities *[data-lang-entity-container=group] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=group] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=group] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=group] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=group] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=group] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1801,7 +1870,8 @@ div.language_entities *[data-lang-entity-container=group] [data-lang-entity-ideo
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=group] dt {
+div.language_entities [data-lang-entity-container=group] dt,
+html.page_languageentities [data-lang-entity-container=group] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1830,10 +1900,12 @@ div.language_entities *[data-lang-entity-container=group] dt {
 html:not(.list) [data-lang-entity=group] > *:first-child {
   display: none;
 }
-div.language_entities *[data-lang-entity-container=generic] [data-lang-entity-ideogram] {
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram],
+html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram] {
   white-space: nowrap;
 }
-div.language_entities *[data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
   text-transform: none;
   display: block;
   float: left;
@@ -1851,7 +1923,8 @@ div.language_entities *[data-lang-entity-container=generic] [data-lang-entity-id
   color: #fff;
   margin-right: .3em;
 }
-div.language_entities *[data-lang-entity-container=generic] dt {
+div.language_entities [data-lang-entity-container=generic] dt,
+html.page_languageentities [data-lang-entity-container=generic] dt {
   padding: 0;
   background-color: transparent;
   background-image: none;
@@ -1879,7 +1952,8 @@ div.language_entities *[data-lang-entity-container=generic] dt {
 }
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
-div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
+div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before,
+html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
   background: -moz-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
   /* FF3.6+ */
 
@@ -1899,6 +1973,21 @@ div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ide
   /* W3C */
 
 }
+/*
+:not(.list) #toc ol {
+	 li:nth-child(3) a::before { color: @lgreen; }
+	 li:nth-child(4) a::before { color: lighten(@red, -20%); }
+	 li:nth-child(5) a::before { color: lighten(@red, 0%); }
+	 li:nth-child(6) a::before { color: lighten(@red, +20%); }
+	 li:nth-child(7) a::before { color: @rblue; }
+	 li:nth-child(8) a::before { color: @lblue; }
+	 li:nth-child(9) a::before { color: @purple; }
+	 li:nth-child(10) a::before { color: @lgreen }
+	 li:nth-child(11) a::before { color: lighten(@orange, -10%); }
+	 li:nth-child(12) a::before { color: lighten(@orange, 10%); }
+	 li:nth-child(13) a::before { color: #
+}
+/**/
 /*
  * Fixes
  */

@@ -343,7 +343,7 @@ class HtmlWriter(object):
         self.generateLists(self.doc)
         self.translateLinks(self.doc)
         self.updateImagePaths(self.doc)
-        self.generatePages(self.doc)
+        self.generatePages(self.doc, self.config)
         self.generateDemoPages(self.doc)
         self.generateSearchIndex(self.doc)
         self.generateLanguageEntities()
@@ -400,7 +400,7 @@ class HtmlWriter(object):
             #self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(updater)
 
-    def generatePages(self, doc):
+    def generatePages(self, doc, config):
         """Generate pages for proc_doc.Documentation entries."""
         try:
             import pygments, pygments.lexers, pygments.formatters
@@ -411,12 +411,13 @@ class HtmlWriter(object):
         for entry in doc.top_level_entries.values():
             path = self.path_manager.getEntryPath(entry)
             #self.log('Creating %s', path)
-            self.generatePage(entry, path, doc, pygments_style)
+            self.generatePage(entry, path, doc, config, pygments_style)
 
-    def generatePage(self, entry, path, doc, pygments_style):
+    def generatePage(self, entry, path, doc, config, pygments_style):
         """Generate page for entry to file at path."""
 
         common_kwargs = {'doc': doc,
+                         'config': config,
                          'development': self.args.development,
                          'pygments_style': pygments_style,
                          'entry_kind': entry.kind,
