@@ -130,6 +130,16 @@ struct ExecSpace
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction ExecSpec
+// ----------------------------------------------------------------------------
+
+template <typename TObject, typename TSpec = void>
+struct ExecSpec
+{
+    typedef typename IfDevice<TObject, Device<TSpec>, TSpec>::Type   Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction CtaSize
 // ----------------------------------------------------------------------------
 
