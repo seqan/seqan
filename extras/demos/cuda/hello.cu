@@ -32,28 +32,19 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/basic_extras.h>
-#include <seqan/sequence_extras.h>
+#include <seqan/basic.h>
 
 using namespace seqan;
 
-template <typename TString>
 SEQAN_GLOBAL
-void helloCUDA(TString str)
+void helloCUDA()
 {
-    printf("%u\n", length(str));
+    printf("Hello CUDA!\n");
 }
 
 int main()
 {
-    typedef typename Device<DnaString>::Type TDeviceDnaString;
-
-    DnaString str = "ACGT";
-
-    TDeviceDnaString deviceStr;
-    assign(deviceStr, str);
-
-    helloCUDA<<<1,1>>>(view(deviceStr));
-
+    helloCUDA<<<1,1>>>();
+    cudaDeviceSynchronize();
     return 0;
 }
