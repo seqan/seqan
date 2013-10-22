@@ -500,7 +500,7 @@ macro (seqan_build_demos_develop PREFIX)
 
     # Supress unused parameter warnings for demos.
     if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter" PARENT_SCOPE)
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
     # Add flags for SeqAn.
@@ -533,10 +533,10 @@ macro (seqan_build_demos_develop PREFIX)
 
         get_filename_component (FILE_NAME "${ENTRY}" NAME)
         if (CUDA_FOUND AND "${FILE_NAME}" MATCHES "\\.cu$")
-            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_SEQAN_CUDA}")
+            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_SEQAN_CUDA}" PARENT_SCOPE)
             cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
         else (CUDA_FOUND AND "${FILE_NAME}" MATCHES "\\.cu$")
-            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_SEQAN}")
+            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_SEQAN}" PARENT_SCOPE)
             add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
         endif ()
         target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
@@ -545,7 +545,7 @@ macro (seqan_build_demos_develop PREFIX)
     endforeach (ENTRY ${ENTRIES})
 
     # Reset original flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_ORIG}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_ORIG}" PARENT_SCOPE)
 endmacro (seqan_build_demos_develop)
 
 function (seqan_register_demos)
