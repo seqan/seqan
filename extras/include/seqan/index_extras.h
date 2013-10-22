@@ -46,6 +46,7 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 #include <seqan/index.h>
+#include <seqan/parallel.h>
 #include <seqan/find_extras.h>
 
 // ===========================================================================
@@ -90,15 +91,15 @@
 #include <seqan/index/find_backtracking_exp.h>
 //#include <seqan/index/find_suffixfilter.h>
 
-
 #include <seqan/index/find_backtracking.h>
 
 // ===========================================================================
 // Index Finders.
 // ===========================================================================
 
-#include <seqan/parallel.h>
 #include <seqan/index/find2_index.h>
 #include <seqan/index/find_index_multiple.h>
+
+#include <seqan/index/find2_functors.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_INDEX_H_
