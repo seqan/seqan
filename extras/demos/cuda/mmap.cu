@@ -45,9 +45,9 @@ int main(int argc, char const ** argv)
     typedef String<char, MMap<> >               TMMapString;
     typedef typename Device<TMMapString>::Type  TDeviceString;
 
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cerr << "USAGE: " << argv[0] << " <FILENAME>" << std::endl;
+        std::cerr << "USAGE: " << argv[0] << " <FILENAME> <CHAR>" << std::endl;
         return 1;
     }
 
@@ -61,7 +61,7 @@ int main(int argc, char const ** argv)
 
     close(str);
 
-    std::cout << thrust::count(begin(deviceStr, Standard()), end(deviceStr, Standard()), 'A') << std::endl;
+    std::cout << thrust::count(begin(deviceStr, Standard()), end(deviceStr, Standard()), argv[2][0]) << std::endl;
 
     return 0;
 }
