@@ -58,4 +58,13 @@
     #define SEQAN_AUTO_PTR_NAME auto_ptr
 #endif  // #ifdef SEQAN_CXX11_STANDARD
 
+// branch prediction macros, see platform_gcc.h
+#ifndef SEQAN_LIKELY
+#define SEQAN_LIKELY(expr) (expr)
+#endif
+
+#ifndef SEQAN_UNLIKELY
+#define SEQAN_UNLIKELY(expr) (expr)
+#endif
+
 #endif
