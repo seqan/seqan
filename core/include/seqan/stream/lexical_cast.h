@@ -109,14 +109,24 @@ success = lexicalCast2(i, "-3");     // => success is true, i is -3.
 success = lexicalCast2(d, "-3.99");  // => success is true, d is -3.99.
  */
 
-template < typename TTarget, typename TSource >
-inline bool
-lexicalCast2(TTarget & target, TSource const & source)
+template <typename TInteger, typename TSource>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, bool)
+lexicalCast(TInteger & target, TSource const & source)
 {
-    std::stringstream str;
-    str << source;
-    str.seekg(0);
-    return bool(str >> target);
+    return scanf(toCString(source), IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
+                          sizeof(TInteger)>::VALUE, target) == 1;
+}
+
+template <typename TSource>
+inline bool lexicalCast(float target, TSource const & source)
+{
+    return scanf(toCString(source), "%g", target) == 1;
+}
+
+template <typename TSource>
+inline bool lexicalCast(double target, TSource const & source)
+{
+    return scanf(toCString(source), "%g", target) == 1;
 }
 
 /*!
@@ -197,26 +207,14 @@ d = lexicalCast<double>("-3.99");  // => d is -3.99.
  */
 
 template <typename TTarget, typename TSource>
-inline TTarget
-lexicalCast(TSource const & source)
+inline TTarget lexicalCast(TSource const & source)
 {
     TTarget dest;
-    bool b = lexicalCast2(dest, source);
-    SEQAN_ASSERT(b);
-    (void)b;
+    if (!lexicalCast(dest, source))
+        throw std::bad_cast();
     return dest;
 }
 
-template < typename TTarget, typename TValue, typename TSpec>
-inline TTarget
-lexicalCast(String<TValue, TSpec> const & source)
-{
-    TTarget dest;
-    bool b = lexicalCast2(dest, source);
-    SEQAN_ASSERT(b);
-    (void)b;
-    return dest;
-}
 
 }
 
