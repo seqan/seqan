@@ -40,6 +40,7 @@
 
 #include "test_stream_tokenization.h"
 #include "test_stream_virtual_stream.h"
+//#include "test_stream_lexical_cast.h"
 
 using namespace seqan;
 
