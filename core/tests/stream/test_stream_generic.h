@@ -301,7 +301,7 @@ void testStreamSeek(TStream & stream)
     using namespace seqan;
 
     // TODO(holtgrew): Do real tests for all variants.
-    // TODO(holtgrew): Use constant for origin in the future.
+    // TODO(holtgrew): Use constant for origin in the future.
     char c;
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
     int res = streamPeek(c, stream);
