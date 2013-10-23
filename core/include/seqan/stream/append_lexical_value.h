@@ -144,14 +144,14 @@ const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu";
 // Generic version for integers.
 
 template <typename TTarget, typename TInteger>
-SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget>::Type)
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget>::Type)
 appendLexicalValue(TTarget & target, TInteger i)
 {
     // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
-    char buf[sizeof(TInteger) * 3 + 2];
-    size_t len = snprintf(buf, sizeof(buf), IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
+    char buffer[sizeof(TInteger) * 3 + 2];
+    size_t len = snprintf(buffer, sizeof(buffer), IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
                           sizeof(TInteger)>::VALUE, i);
-    write3(target, toRange(buffer, buffer + len));
+    write3(target, toRange(buffer + 0, buffer + len));
     return len;
 }
 
@@ -163,7 +163,7 @@ appendLexicalValue(TTarget & target, float source)
 {
     char buffer[32];
     size_t len = snprintf(buffer, 32, "%g", source);
-    write3(target, toRange(buffer, buffer + len));
+    write3(target, toRange(buffer + 0, buffer + len));
     return len;
 }
 
@@ -173,10 +173,11 @@ appendLexicalValue(TTarget & target, double source)
 {
     char buffer[32];
     size_t len = snprintf(buffer, 32, "%g", source);
-    write3(target, toRange(buffer, buffer + len));
+    write3(target, toRange(buffer + 0, buffer + len));
     return len;
 }
 
+// NOTE(esiragusa): should be removed.
 template <typename TTarget>
 inline typename Size<TTarget>::Type
 appendLexicalValue(TTarget & target, char c)
