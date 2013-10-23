@@ -55,6 +55,18 @@ struct Output_;
 typedef Tag<Output_> Output;
 
 // --------------------------------------------------------------------------
+// Metafunction BasicStream
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection>
+struct BasicStream:
+    If<
+        IsSameType<TDirection, Input>,
+        std::basic_istream<TValue>,
+        std::basic_ostream<TValue> >
+{};
+
+// --------------------------------------------------------------------------
 // Compression Type Tags
 // --------------------------------------------------------------------------
 

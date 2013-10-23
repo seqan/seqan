@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// fast block-based file reader/writer with stream interfacce
+// fast block-based file reader/writer with buffer interfacce
 // supports async I/O / memory-mapping
 // ==========================================================================
 
@@ -51,136 +51,15 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class FileStream
+// Class FileStreamBuffer
 // ----------------------------------------------------------------------------
 
-//    template <typename TValue>
-//    struct Size<Stream<FileStream<TSpec, TValue> > >:
-//        public Size<typename Stream<FileStream<TSpec, TValue> >::TFile> {};
-//
-//    template <typename TValue>
-//    struct Position<Stream<FileStream<TSpec, TValue> > >:
-//        public Position<typename Stream<FileStream<TSpec, TValue> >::TFile> {};
-
-
-
-    // FileStream with async. file I/O
-/*
-template <typename TValue>
-class Stream<FileStream<FileWriter, TValue> >
+template <typename TValue, typename TDirection, typename TSpec = Async<> >
+struct FileStreamBuffer : public std::basic_streambuf<TValue>
 {
-public:
-    typedef File< Async<> >                             TFile;
-    typedef SimpleBuffer<TValue>                        TBuffer;
-    typedef PageFrame<TValue, TFile, Dynamic<> >        TPageFrame;
-    typedef PageChain<TPageFrame>                       TPageChain;
-    typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
+    typedef std::basic_streambuf<TValue>                TBase;
+    typedef std::char_traits<TValue>                    TTraits;
 
-    static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
-    static const unsigned numPages = 2;                // double-buffering
-
-    TFile       file;
-    TPageChain  chain;
-    unsigned    nextPageNo;
-    TIterator   it, itEnd;
-
-    Stream():
-        chain(numPages)
-    {
-        _initialize();
-    }
-
-    ~Stream()
-    {
-        close(*this);
-    }
-
-    inline void _initialize()
-    {
-        it = NULL;
-        itEnd = NULL;
-        nextPageNo = 0;
-    }
-
-    inline bool _advanceBuffer()
-    {
-        bool result = true;
-
-        // write previously provided buffer to disk
-        if (nextPageNo != 0)
-            result &= _writeBuffer();
-
-        // step one buffer ahead
-        TPageFrame &pf = *chain.getReadyPage();
-
-        // allocate page memory if not done already
-        if (pf.begin == NULL)
-            allocPage(pf, pageSize, file);
-
-        // assign correct page number
-        pf.pageNo = nextPageNo++;
-
-        it = pf.begin;
-        itEnd = pf.end;
-
-        return result;
-    }
-
-    inline bool _stopWriting()
-    {
-        // has anything been written?
-        if (nextPageNo == 0)
-            return true;
-
-        // write previously provided buffer to disk
-        bool result = _writeBuffer();
-
-        // wait for all outstanding operations to finish
-        result &= _flush();
-
-        _initialize();
-
-        return result;
-    }
-
-private:
-
-    inline bool _writeBuffer()
-    {
-        // shrink buffer size if it was not fully written (like the last buffer)
-        if (it != itEnd)
-            resize(*chain.last, it - chain.last->begin);
-//            std::cout << chain.last->pageNo << '\t';
-//            std::cout << *chain.last << std::endl;
-        return writePage(*chain.last, file);
-    }
-
-    inline bool _flush()
-    {
-        bool result = true;
-        TPageFrame *p = chain.first;
-        while (p != NULL)
-        {
-            result &= waitFor(*p);
-            freePage(*p, file);
-            p = p->next;
-        }
-result &= flush(file);
-
-        return result;
-    }
-};
-*/
-
-template <typename TSpec = File<>, typename TValue = char>
-struct FileStream;
-
-// FileStream with memory mapping
-
-template <typename TSpec, typename TValue>
-class Stream<FileStream<TSpec, TValue> >
-{
-public:
     typedef File<Async<> >                              TFile;
     typedef typename Size<TFile>::Type                  TSize;
     typedef Buffer<TValue>                              TBuffer;
@@ -188,6 +67,7 @@ public:
     typedef PageChain<TPageFrame>                       TPageChain;
 //        typedef String<TPageFrame*>                         TPageChain;
     typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
+
 
     static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
 //    static const unsigned pageSize = 4*1024;      // 1M entries per page
@@ -210,41 +90,28 @@ public:
     // itReadEnd is relevant if the file is opened in read+write mode on the last page.  itEnd can point behind the end
     // of the file on the disk whereas itReadEnd points to the end of the file on the disk.  itReadEnd will be
     // incremented if something is written on the last page.
-    TIterator   it, itEnd, itReadEnd;
 
     unsigned modeFlags;  // bitmask with open flags
     bool eofFlag;  // whether we are at the end of the file
     int errorFlag;  // error flag, 0 on no error
 
-    Stream()
+    FileStreamBuffer()
     {
         _initialize();
     }
 
-    ~Stream()
+    ~FileStreamBuffer()
     {
         close(*this);
     }
-
-    // Returns whether or not the stream was opened with reading enabled.
-    bool _isReadable() const
-    {
-        return modeFlags & OPEN_RDONLY;
-    }
-
-    // Returns whether or not the stream was opened with writing enabled.
-    bool _isWriteable() const
-    {
-        return modeFlags & OPEN_WRONLY;
-    }
-
+    
     inline void _initialize()
     {
+        this->setp(NULL, NULL);
+        this->setg(NULL, NULL, NULL);
+
         fileSize = 0;
         framePtr = NULL;
-        it = NULL;
-        itEnd = NULL;
-        itReadEnd = NULL;
         nextReadyPageNo = 0;
         nextFetchPageNo = 0;
         lastPageNo = -1;
@@ -337,8 +204,8 @@ public:
         {
             // shrink current buffer size if it was not fully written (like the last buffer)
             TPageFrame &oldFrame = *framePtr;
-            if (it != itEnd)
-                resize(oldFrame, it - oldFrame.begin);
+            if (this->pptr != this->epptr)
+                resize(oldFrame, this->pptr - this->pbase);
 
             // start to release the current buffer
             result &= tryReleaseBuffer(*this, oldFrame, inProgress);
@@ -391,12 +258,10 @@ public:
 
         // now fetch-and-wait for new buffer
         result &= tryFetchBuffer(*this, *framePtr, inProgress, true);
-        it = framePtr->begin;
-        itEnd = framePtr->end;
 
-        // itEnd always points to the end of the page, whereas itReadEnd can point in the middle.
-        if (_isWriteable() && (unsigned)(itEnd - it) < pageSize)
-            itEnd = it + pageSize;
+        // framePtr->begin+pageSize always points to the end of the page, whereas framePtr->end can point in the middle.
+        setg(framePtr->begin, framePtr->begin, framePtr->end);
+        setp(framePtr->begin, framePtr->begin + pageSize);
 
         return result;
     }
@@ -410,7 +275,7 @@ public:
 
         // shrink current buffer size if it was not fully written (like the last buffer)
         TPageFrame &oldFrame = *framePtr;
-        resize(oldFrame, std::max(it, itReadEnd) - oldFrame.begin);
+        resize(oldFrame, std::max(this->pptr, this->egptr()) - oldFrame.begin);
 
         // start to release the current buffer
         bool dummy;
@@ -439,7 +304,72 @@ public:
 
         return result;
     }
+
+
+    typename TTraits::int_type
+    virtual overflow(typename TTraits::int_type val)
+    {
+        if (val != TTraits::eof())
+        {
+            *this->pptr = TTraits::to_char_type(val);
+            ++this->pptr;
+        }
+        if (this->pptr == this->epptr && !_advanceBuffer())
+            return TTraits::eof();
+        else
+            return val;
+    }
+
+    typename TTraits::int_type
+    virtual underflow()
+    {
+        if (_advanceBuffer())
+            return TTraits::to_int_type(*this->gptr);
+        else
+            return TTraits::eof();
+    }
+
+    TValue* eback() const   { return TBase::eback(); }
+    TValue* gptr()  const   { return TBase::gptr();  }
+    TValue* egptr() const   { return TBase::egptr(); }
+
+    TValue* pbase() const   { return TBase::pbase(); }
+    TValue* pptr()  const   { return TBase::pptr();  }
+    TValue* epptr() const   { return TBase::epptr(); }
 };
+
+template <typename TValue, typename TDirection, typename TSpec>
+class FileStream : public BasicStream<TValue, TDirection>::Type
+{
+    typedef FileStreamBuffer<TValue, TDirection, TSpec> TStreamBuffer;
+
+    TStreamBuffer buffer;
+
+    FileStream(const char *fileName, int openMode)
+    {
+        open(*this, fileName, openMode);
+        this->init(buffer);
+    }
+
+    ~FileStream()
+    {
+        close(*this);
+    }
+};
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline bool
+open(FileStream<TValue, TDirection, TSpec> &stream, const char *fileName, int openMode)
+{
+    return open(stream.buffer, fileName, openMode);
+}
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline bool
+close(FileStream<TValue, TDirection, TSpec> &stream)
+{
+    return close(stream.buffer);
+}
 
 // ============================================================================
 // Metafunctions
@@ -449,8 +379,8 @@ public:
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TValue>
-struct Value<Stream<FileStream<TSpec, TValue> > >
+template <typename TValue, typename TDirection, typename TSpec>
+struct Value<FileStreamBuffer<TValue, TDirection, TSpec> >
 {
     typedef TValue Type;
 };
@@ -459,10 +389,10 @@ struct Value<Stream<FileStream<TSpec, TValue> > >
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TValue>
-struct Position<Stream<FileStream<TSpec, TValue> > >
+template <typename TValue, typename TDirection, typename TSpec>
+struct Position<FileStreamBuffer<TValue, TDirection, TSpec> >
 {
-    typedef Stream<FileStream<TSpec, TValue> > TStream_;
+    typedef FileStreamBuffer<TValue, TDirection, TSpec> TStream_;
     typedef typename TStream_::TFile TFile_;
 
     typedef typename Position<TFile_>::Type Type;
@@ -472,91 +402,32 @@ struct Position<Stream<FileStream<TSpec, TValue> > >
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TValue>
-struct Size<Stream<FileStream<TSpec, TValue> > >
+template <typename TValue, typename TDirection, typename TSpec>
+struct Size<FileStreamBuffer<TValue, TDirection, TSpec> >
 {
-    typedef Stream<FileStream<TSpec, TValue> > TStream_;
+    typedef FileStreamBuffer<TValue, TDirection, TSpec> TStream_;
     typedef typename TStream_::TFile TFile_;
 
     typedef typename Size<TFile_>::Type Type;
 };
 
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, IsInput>
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, IsInput>
-{
-    typedef True Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, IsOutput>
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, IsOutput>
-{
-    typedef True Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, HasPeek>
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, HasPeek>
-{
-    typedef True Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, HasFilename>
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, HasFilename>
-{
-    typedef False Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, Seek<TSpec> >
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue, typename TSpec2>
-struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, Seek<TSpec2> >
-{
-    typedef True Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, Tell>
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-struct HasStreamFeature<Stream<FileStream<TSpec, TValue> >, Tell>
-{
-    typedef True Type;
-};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // Variant for File<TFileSpec> (fallback if MMap<> not available as on Windows).
-template <typename TSpec, typename TValue, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
-_readBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf)
+_readBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf)
 {
     // allocate page memory if not done already
     if (pf.begin == NULL)
-        if (!allocPage(pf, stream.pageSize, stream.file))
-            SEQAN_FAIL("ERROR: Could not allocate page of size %u.", (unsigned)stream.pageSize);
+        if (!allocPage(pf, buffer.pageSize, buffer.file))
+            SEQAN_FAIL("ERROR: Could not allocate page of size %u.", (unsigned)buffer.pageSize);
 
     // only read in read-mode
-    if (!stream._isReadable() || (int)pf.pageNo > stream.lastPageNo)
+    if (IsSameType<TDirection, Output>::VALUE || (int)pf.pageNo > buffer.lastPageNo)
     {
         resize(pf, 0);
         pf.status = READY;
@@ -564,56 +435,56 @@ _readBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf)
     }
 
     // shrink buffer size at the end of file
-    if ((int)pf.pageNo < stream.lastPageNo)
-        resize(pf, stream.pageSize);
+    buffer.egptr() = pf.end;
+    if ((int)pf.pageNo < buffer.lastPageNo)
+        resize(pf, buffer.pageSize);
     else
-        resize(pf, stream.fileSize - stream.lastPageNo * stream.pageSize);
-    stream.itReadEnd = pf.end;
+        resize(pf, buffer.fileSize - buffer.lastPageNo * buffer.pageSize);
 
     // read next page into memory
-    return readPage(pf, stream.file);
+    return readPage(pf, buffer.file);
 }
 
 #ifndef PLATFORM_WINDOWS
-template <typename TConfig, typename TValue, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
 inline bool
-_readBuffer(Stream<FileStream<MMap<TConfig>, TValue> > &stream, TPageFrame &pf)
+_readBuffer(FileStreamBuffer<TValue, TDirection, MMap<TConfig> > &buffer, TPageFrame &pf)
 {
-    typedef Stream<FileStream<MMap<TConfig>, TValue> >   TFileStream;
+    typedef FileStreamBuffer<TValue, TDirection, MMap<TConfig> >   TFileStream;
     typedef typename TFileStream::TFile                         TFile;
     typedef typename Size<TFile>::Type                          TSize;
 
-    _setCapacity(pf, stream.pageSize);
-    TSize size = stream.pageSize;
+    _setCapacity(pf, buffer.pageSize);
+    TSize size = buffer.pageSize;
 
     // Get the page size on the disk, adjusted for last page; required for setting itReadEnd.
     unsigned pageSizeOnDisk = size;
 
     // how to handle pages crossing/beyond the end of file
-    if ((int)pf.pageNo >= stream.lastPageNo)
+    if ((int)pf.pageNo >= buffer.lastPageNo)
     {
-        if (stream._isWriteable())
+        if (!IsSameType<TDirection, Input>::VALUE)
         {
-            pageSizeOnDisk = stream.fileSize - pf.pageNo * stream.pageSize;
+            pageSizeOnDisk = buffer.fileSize - pf.pageNo * buffer.pageSize;
 
-            // 1. stream is writable:
+            // 1. buffer is writable:
             //
             // increase file size to next page boundary
             // and map the whole page
-            stream.lastPageNo = pf.pageNo;
-            stream.fileSize = (TSize)(stream.lastPageNo + 1) * (TSize)stream.pageSize;
-            resize(stream.file, stream.fileSize);
+            buffer.lastPageNo = pf.pageNo;
+            buffer.fileSize = (TSize)(buffer.lastPageNo + 1) * (TSize)buffer.pageSize;
+            resize(buffer.file, buffer.fileSize);
         }
         else
         {
-            // 2. stream is read-only:
+            // 2. buffer is read-only:
             //
             // adapt buffer to file size
             // map only the contents of the file
-            if ((int)pf.pageNo == stream.lastPageNo)
+            if ((int)pf.pageNo == buffer.lastPageNo)
             {
                 pageSizeOnDisk = size;
-                size = stream.fileSize - (TSize)stream.lastPageNo * (TSize)stream.pageSize;
+                size = buffer.fileSize - (TSize)buffer.lastPageNo * (TSize)buffer.pageSize;
             }
             else
             {
@@ -627,28 +498,28 @@ _readBuffer(Stream<FileStream<MMap<TConfig>, TValue> > &stream, TPageFrame &pf)
     }
 
     bool res = false;
-    if (stream._isWriteable())
-        res = mapWritePage(pf, stream.file, size);
+    if (!IsSameType<TDirection, Input>::VALUE)
+        res = mapWritePage(pf, buffer.file, size);
     else
-        res = mapReadPage(pf, stream.file, size);
-    stream.itReadEnd = pf.begin + pageSizeOnDisk;
+        res = mapReadPage(pf, buffer.file, size);
+    buffer.egptr() = pf.begin + pageSizeOnDisk;
     return res;
 }
 #endif
 
 
-template <typename TValue, typename TSpec, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
-_preprocessBuffer(Stream<FileStream<TSpec, TValue> > &, TPageFrame &pf, bool)
+_preprocessBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &, TPageFrame &pf, bool)
 {
     // not used yet, could be usefull for external sorters/mappers
     pf.status = READY;
     return true;
 }
 
-template <typename TValue, typename TSpec, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
-_postprocessBuffer(Stream<FileStream<TSpec, TValue> > &, TPageFrame &pf, bool)
+_postprocessBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &, TPageFrame &pf, bool)
 {
     // not used yet, could be usefull for external sorters/mappers
     pf.status = POSTPROCESSED;
@@ -656,43 +527,43 @@ _postprocessBuffer(Stream<FileStream<TSpec, TValue> > &, TPageFrame &pf, bool)
 }
 
 
-template <typename TSpec, typename TValue, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
-_writeBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf)
+_writeBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf)
 {
     // only write in write-mode
-    if (!stream._isWriteable())
+    if (IsSameType<TDirection, Input>::VALUE)
     {
         pf.status = UNUSED;
         return true;
     }
 
     // shrink buffer size if it was not fully written (like the last buffer)
-    if (stream.it != stream.itEnd)
-        resize(pf, stream.it - pf.begin);
+    if (buffer.pptr() != buffer.epptr())
+        resize(pf, buffer.pptr() - pf.begin);
 
-    return writePage(pf, stream.file);
+    return writePage(pf, buffer.file);
 }
 
 #ifndef PLATFORM_WINDOWS
-template <typename TConfig, typename TValue, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
 inline bool
-_writeBuffer(Stream<FileStream<MMap<TConfig>, TValue> > &stream, TPageFrame &pf)
+_writeBuffer(FileStreamBuffer<TValue, TDirection, MMap<TConfig> > &buffer, TPageFrame &pf)
 {
-    typedef Stream<FileStream<MMap<TConfig>, TValue> >   TFileStream;
+    typedef FileStreamBuffer<TValue, TDirection, MMap<TConfig> >   TFileStream;
     typedef typename TFileStream::TFile                         TFile;
     typedef typename Size<TFile>::Type                          TSize;
 
     TSize pageLen = length(pf);
     pf.status = UNUSED;
-    unmapPage(pf, stream.file);
+    unmapPage(pf, buffer.file);
 
-    if (stream._isWriteable() && (pageLen < stream.pageSize))
+    if (!IsSameType<TDirection, Input>::VALUE && (pageLen < buffer.pageSize))
     {
         // shrink the file again, it was enlarged earlier (in _readBuffer)
-        stream.lastPageNo = pf.pageNo;
-        stream.fileSize = (TSize)pf.pageNo * (TSize)stream.pageSize + pageLen;
-        resize(stream.file, stream.fileSize);
+        buffer.lastPageNo = pf.pageNo;
+        buffer.fileSize = (TSize)pf.pageNo * (TSize)buffer.pageSize + pageLen;
+        resize(buffer.file, buffer.fileSize);
     }
     return true;
 }
@@ -702,16 +573,16 @@ _writeBuffer(Stream<FileStream<MMap<TConfig>, TValue> > &stream, TPageFrame &pf)
 // Function tryFetchBuffer()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
-tryFetchBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool &inProgress, bool doWait = false)
+tryFetchBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf, bool &inProgress, bool doWait = false)
 {
     inProgress = true;
     if (pf.status == UNUSED)
     {
         // buffer is idle, now read asynchronously
-        pf.pageNo = stream._getNextFetchPageNo();
-        if (!_readBuffer(stream, pf))
+        pf.pageNo = buffer._getNextFetchPageNo();
+        if (!_readBuffer(buffer, pf))
             return false;
     }
 
@@ -735,7 +606,7 @@ tryFetchBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool 
 
         // was reading, now preprocessing
         pf.status = PREPROCESSING;
-        if (!_preprocessBuffer(stream, pf, doWait))
+        if (!_preprocessBuffer(buffer, pf, doWait))
             return false;
     }
 
@@ -750,7 +621,7 @@ tryFetchBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool 
     if (pf.status == READY)
     {
         // if in write mode, extend half-read buffer to page size
-        if (stream._isWriteable())
+        if (!IsSameType<TDirection, Input>::VALUE)
             resize(pf, capacity(pf));
 
         // all done
@@ -766,9 +637,9 @@ tryFetchBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool 
 // Function tryReleaseBuffer()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TValue, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
-tryReleaseBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, bool &inProgress, bool doWait = false)
+tryReleaseBuffer(FileStreamBuffer<TValue, TDirection, TSpec> &buffer, TPageFrame &pf, bool &inProgress, bool doWait = false)
 {
     inProgress = true;
     #ifdef SEQAN_DEBUG_FILESTREAM
@@ -777,7 +648,7 @@ tryReleaseBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, boo
     if (pf.status == READY)
     {
         pf.status = POSTPROCESSING;
-        _postprocessBuffer(stream, pf, doWait);
+        _postprocessBuffer(buffer, pf, doWait);
     }
 
     if (pf.status == POSTPROCESSING)
@@ -797,7 +668,7 @@ tryReleaseBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, boo
         std::cout<<pf<<std::endl;
         #endif
         // buffer was postprocessed, now write asynchronously
-        if (!_writeBuffer(stream, pf))
+        if (!_writeBuffer(buffer, pf))
             return false;
     }
 
@@ -845,322 +716,19 @@ tryReleaseBuffer(Stream<FileStream<TSpec, TValue> > &stream, TPageFrame &pf, boo
 // Function open()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TValue, typename TFilename, typename TFlags>
-inline int
-open(Stream<FileStream<TSpec, TValue> > & stream, TFilename const &filename, TFlags const &flags)
-{
-    stream._initialize();
-    stream.modeFlags = flags;  // must be after _initialize()!
-    bool result = open(stream.file, filename, flags);
-    stream.fileSize = (result)? size(stream.file) / sizeof(TValue) : 0ul;
-    if (stream.fileSize != 0)
-        stream.lastPageNo = (stream.fileSize - 1) / stream.pageSize;
-    else
-        stream.lastPageNo = -1;
-    return result;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamWriteChar()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline int
-streamWriteChar(Stream<FileStream<TSpec, TValue> > & stream, TValue const &value)
-{
-    if (stream.it == stream.itEnd)
-    {
-        if (!stream._advanceBuffer())
-        {
-            stream.errorFlag = 1;
-            return 1;
-        }
-
-        SEQAN_ASSERT_LT(stream.it, stream.itEnd);
-    }
-    *(stream.it++) = value;
-    ++stream.itReadEnd;
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamWriteBlock()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue, typename TSourceIter, typename TCount>
-inline TCount
-streamWriteBlock(Stream<FileStream<TSpec, TValue> > & stream, TSourceIter srcIter, TCount count)
-{
-    typedef typename Size<Stream<FileStream<TSpec, TValue> > >::Type TSSize;
-
-    TSSize remaining = count;
-    while (remaining != 0)
-    {
-        // do we need a new buffer?
-        if (stream.it == stream.itEnd)
-        {
-            if (!stream._advanceBuffer())
-                return count - remaining;
-
-            SEQAN_ASSERT_LT((void*)stream.it, (void*)stream.itEnd);
-        }
-
-        // how many values can we write into the buffer?
-        TSSize cnt = _min(remaining, (TSSize)(stream.itEnd - stream.it));
-        // write them
-        arrayCopyForward(srcIter, srcIter + cnt, stream.it);
-
-        stream.it += cnt;
-        stream.itReadEnd = std::max(stream.it, stream.itReadEnd);
-        srcIter += cnt;
-        remaining -= cnt;
-    }
-    return count;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamReadChar()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline int
-streamReadChar(TValue &value, Stream<FileStream<TSpec, TValue> > & stream)
-{
-    if (stream.it == stream.itReadEnd && stream.it != stream.itEnd)
-    {
-        // On the end of the written part of the current page.  itEnd and itReadEnd can only deviate if open in
-        // read+write mode.
-        stream.eofFlag = true;
-        return EOF;
-    }
-    else if (stream.it == stream.itReadEnd)
-    {
-        // TODO(weese):
-        // Stop this horrible return value inconsistency,
-        // some stream functions return 1 on error and 0 on success
-        // or the number of transferred values :-/
-        //
-        // until this is fixed we return EOF in case of an error
-
-        // TODO(holtgrew): Still relevant?
-
-        // At the end of the file, we cannot read thus this is an error.
-
-        if (!stream._advanceBuffer())
-        {
-            stream.eofFlag = true;
-            stream.errorFlag = 1;
-            return EOF;
-        }
-
-        if (stream.it == stream.itReadEnd)
-        {
-            stream.eofFlag = true;
-            stream.errorFlag = 1;
-            return EOF;
-        }
-    }
-    value = *(stream.it++);
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamReadBlock()
-// ----------------------------------------------------------------------------
-
-template <typename TDestIter, typename TSpec, typename TValue, typename TCount>
-inline TCount
-streamReadBlock(TDestIter dstIter, Stream<FileStream<TSpec, TValue> > & stream, TCount count)
-{
-    typedef typename Size<Stream<FileStream<TSpec, TValue> > >::Type TSSize;
-
-    TSSize remaining = count;
-    while (remaining != 0)
-    {
-        if (stream.it == stream.itReadEnd && stream.it != stream.itEnd)
-        {
-            // On the end of the written part of the current page.  itEnd and itReadEnd can only deviate if open in
-            // read+write mode.
-            stream.eofFlag = true;
-            return count - remaining;
-        }
-        else if (stream.it == stream.itEnd)
-        {
-            // We need a new buffer.
-
-            // Reading a block of characters over the end is not a failure, we simply return the number of elements
-            // read.
-
-            if (!stream._advanceBuffer())
-                return count - remaining;
-
-            if (stream.it == stream.itReadEnd)
-            {
-                stream.eofFlag = true;
-                return 0;
-            }
-        }
-
-        // how many values can we write into the buffer?
-        TSSize cnt = _min(remaining, (TSSize)(stream.itReadEnd - stream.it));
-        // write them
-        arrayCopyForward(stream.it, stream.it + cnt, dstIter);
-
-        stream.it += cnt;
-        dstIter += cnt;
-        remaining -= cnt;
-    }
-    return count;
-}
-
-// ----------------------------------------------------------------------------
-// Function close()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline int
-close(Stream<FileStream<TSpec, TValue> > & stream)
-{
-    if (stream.file)
-    {
-        stream._stop();
-        return close(stream.file);
-    }
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamTell()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline ptrdiff_t
-streamTell(Stream<FileStream<TSpec, TValue> > & stream)
-{
-    if (!stream.framePtr)
-        return 0;
-    else
-        return stream.framePtr->pageNo * stream.pageSize + (stream.it - stream.framePtr->begin);
-}
-
-// ----------------------------------------------------------------------------
-// Function streamSeek()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline int
-streamSeek(Stream<FileStream<TSpec, TValue> > & stream,
-           __int64 delta,
-           int origin)
-{
-    __int64 currPos = streamTell(stream);
-
-    // Flush all pending read/write operations and reset to the same state as after open().
-    // TODO(holtgrew): Maybe add "bool isSeek" paramater to _stop()?
-    int lastPageNo = stream.lastPageNo;
-    unsigned modeFlags = stream.modeFlags;
-    stream._stop(true);
-    stream.lastPageNo = (stream.fileSize == 0) ? -1 : lastPageNo;
-    stream.modeFlags = modeFlags;
-
-    // Compute target position.
-    __int64 targetPos = delta;
-    if (origin == SEEK_END)
-        targetPos = stream.fileSize + delta;
-    else if (origin == SEEK_CUR)
-        targetPos = currPos + delta;
-
-    // Page id and offset on page that the target position lies on.
-    int pageID = targetPos / stream.pageSize;
-    int offset = targetPos % stream.pageSize;
-
-    // Fetch the given buffer and wait for this.
-    stream.nextFetchPageNo = pageID;
-    stream.nextReadyPageNo = pageID;
-    if (!stream._advanceBuffer())
-    {
-        stream.errorFlag = 1;
-        return 1;
-    }
-
-    // Seek to correct position in page.
-    stream.it += offset;
-
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamTell()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline void
-streamFlush(Stream<FileStream<TSpec, TValue> > & /*stream*/)
-{
-    // TODO(holtgrew): Implement.
-}
-
-// ----------------------------------------------------------------------------
-// Function streamEof()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
+template <typename TSpec, typename TDirection, typename TValue, typename TFilename, typename TFlags>
 inline bool
-streamEof(Stream<FileStream<TSpec, TValue> > const & stream)
+open(FileStreamBuffer<TValue, TDirection, TSpec> & buffer, TFilename const &filename, TFlags const &flags)
 {
-    return stream.eofFlag;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamPeek()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline int
-streamPeek(TValue & c, Stream<FileStream<TSpec, TValue> > & stream)
-{
-    if (stream.it == stream.itReadEnd && stream.it != stream.itEnd)
-    {
-        // On the end of the written part of the current page.  itEnd and itReadEnd can only deviate if open in
-        // read+write mode.
-        stream.eofFlag = true;
-        return EOF;
-    }
-    else if (stream.it == stream.itReadEnd)
-    {
-        // TODO(weese):
-        // Stop this horrible return value inconsistency,
-        // some stream functions return 1 on error and 0 on success
-        // or the number of transferred values :-/
-        //
-        // until this is fixed we return EOF in case of an error
-
-        if (!stream._advanceBuffer())
-        {
-            stream.errorFlag = 1;  // read behind end
-            return EOF;
-        }
-
-        if (stream.it == stream.itReadEnd)
-        {
-            stream.errorFlag = 1;  // read behind end
-            return EOF;
-        }
-    }
-
-    c = *stream.it;
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
-// Function streamError()
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TValue>
-inline int
-streamError(Stream<FileStream<TSpec, TValue> > const & stream)
-{
-    return stream.errorFlag;
+    buffer._initialize();
+    buffer.modeFlags = flags;  // must be after _initialize()!
+    bool result = open(buffer.file, filename, flags);
+    buffer.fileSize = (result)? size(buffer.file) / sizeof(TValue) : 0ul;
+    if (buffer.fileSize != 0)
+        buffer.lastPageNo = (buffer.fileSize - 1) / buffer.pageSize;
+    else
+        buffer.lastPageNo = -1;
+    return result;
 }
 
 } // namespace seqan

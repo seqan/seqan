@@ -108,11 +108,11 @@ unsigned char const MagicHeader<BZ2File, T>::VALUE[3] = { 0x42, 0x5a, 0x68 };  /
 template <typename T>
 struct MagicHeader<Nothing, T>
 {
-    static unsigned char const VALUE[0];
+    static unsigned char const *VALUE;
 };
 
 template <typename T>
-unsigned char const MagicHeader<Nothing, T>::VALUE[0] = {};
+unsigned char const *MagicHeader<Nothing, T>::VALUE = NULL;
 
 
 // TODO(weese:) The following defines makes the old guessFormat functions in file_format_mmap.h obsolete. Disable them!
@@ -179,18 +179,6 @@ struct FileFormatExtensions<Nothing, T>
 template <typename T>
 char const * FileFormatExtensions<Nothing, T>::VALUE[1] = {
     "" };       // default output extension
-
-// --------------------------------------------------------------------------
-// Metafunction BasicStream
-// --------------------------------------------------------------------------
-
-template <typename TValue, typename TDirection>
-struct BasicStream:
-    If<
-        IsSameType<TDirection, Input>,
-        std::basic_istream<TValue>,
-        std::basic_ostream<TValue> >
-{};
 
 // --------------------------------------------------------------------------
 // Metafunction VirtualStreamSwitch_
@@ -477,6 +465,9 @@ inline bool
 guessFormat(TStream &istream, Tag<TFormat_>)
 {
     typedef Tag<TFormat_> TFormat;
+
+    if (MagicHeader<TFormat>::VALUE == NULL)
+        return true;
 
     bool match = true;
 
