@@ -196,16 +196,15 @@ template <typename TStream>
 inline typename Reference<Iter<TStream, StreamIterator<Input> > >::Type
 value(Iter<TStream, StreamIterator<Input> > &iter)
 {
-    return value(const_cast<Iter<TStream, StreamIterator<Input> > const &>(iter));
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    return iter.streamBuf->sgetc();
 }
 template <typename TStream>
 inline typename Reference<Iter<TStream, StreamIterator<Input> > const>::Type
 value(Iter<TStream, StreamIterator<Input> > const &iter)
 {
-    typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
     SEQAN_ASSERT(iter.streamBuf != NULL);
-    SEQAN_ASSERT_LT(iter.streamBuf->gptr(), iter.streamBuf->egptr());
-    return *(iter.streamBuf->gptr());
+    return iter.streamBuf->sgetc();
 }
 
 // ----------------------------------------------------------------------------
@@ -268,7 +267,36 @@ inline void
 goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TSize steps)
 {
     SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->pubseekoff(steps, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+//    std::ios_base::openmode dir = (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out;
+//    if (SEQAN_UNLIKELY(iter.streamBuf->pubseekoff(steps, std::ios_base::cur, dir) == -1))
+    {
+        for(; steps > (TSize)0; --steps)
+            goNext(iter);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function position()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TDirection>
+inline typename Position<Iter<TStream, StreamIterator<TDirection> > const>::Type
+position(Iter<TStream, StreamIterator<TDirection> > const & iter)
+{
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    iter.stream->seekpos(0, std::ios_base::cur, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+}
+
+// ----------------------------------------------------------------------------
+// Function setPosition()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TDirection, typename TPosition>
+inline void
+setPosition(Iter<TStream, StreamIterator<TDirection> > const & iter, TPosition pos)
+{
+    SEQAN_ASSERT(iter.streamBuf != NULL);
+    iter.stream->seekpos(pos, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 }
 
 // ----------------------------------------------------------------------------
@@ -282,43 +310,19 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
     typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
     typedef StreamBuffer<TValue> TStreamBuffer;
 
-    TStreamBuffer *buf = static_cast<TStreamBuffer*>(iter.streamBuf);
-    SEQAN_ASSERT(buf != NULL);
-    if (buf->gptr() < buf->egptr())
-        return false;
+    if (SEQAN_UNLIKELY(iter.streamBuf == NULL))
+    {
+        return true;
+    }
     else
-        return buf->sgetc() == TStreamBuffer::TTraits::eof();
+    {
+        TStreamBuffer *buf = static_cast<TStreamBuffer*>(iter.streamBuf);
+        if (SEQAN_LIKELY(buf->gptr() < buf->egptr()))
+            return false;
+        else
+            return buf->sgetc() == TStreamBuffer::TTraits::eof();
+    }
 }
-
-// w.i.p. down here
-#if 0
-
-// ----------------------------------------------------------------------------
-// Function position()
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TDirection>
-inline typename Position<Iter<TStream, StreamIterator<TDirection> > const>::Type
-position(Iter<TStream, StreamIterator<TDirection> > const & iter)
-{
-    SEQAN_ASSERT(iter.stream != NULL);
-    return streamTell(*(iter.stream));
-}
-
-// ----------------------------------------------------------------------------
-// Function setPosition()
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TDirection>
-inline void
-setPosition(Iter<TStream, StreamIterator<TDirection> > const & iter)
-{
-    SEQAN_ASSERT(iter.stream != NULL);
-    streamSeek(*(iter.stream));
-    iter.stream->pubseekoff(2,2);
-}
-
-#endif
 
 }  // namespace seqan
 
