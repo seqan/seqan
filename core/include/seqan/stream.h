@@ -96,7 +96,7 @@
 
 //#include <seqan/stream/adapt_cstdio.h>
 //
-//#include <seqan/stream/file_stream.h>
+#include <seqan/stream/file_stream.h>
 //
 //#if SEQAN_HAS_ZLIB
 //// Enable Stream<GZFile> and Stream<Bgzf> if available.
