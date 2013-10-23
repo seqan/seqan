@@ -47,13 +47,13 @@ template <typename TValue>
 struct IsInAlphabet
 {
     template <typename TInValue>
-    bool operator() (TInValue inVal) const
+    bool operator() (TInValue const & inVal) const
     {
         TValue val = inVal;
         return convert<TInValue>(val) == toUpperValue(inVal);
     }
 
-    bool operator() (TValue) const
+    bool operator() (TValue const &) const
     {
         return true;
     }
@@ -63,7 +63,7 @@ template <char FIRST_CHAR, char LAST_CHAR>
 struct IsInRange
 {
     template <typename TValue>
-    bool operator() (TValue val) const
+    bool operator() (TValue const & val) const
     {
         return FIRST_CHAR <= val && val <= LAST_CHAR;
     }
@@ -73,7 +73,7 @@ template <char VALUE>
 struct EqualsChar
 {
     template <typename TValue>
-    bool operator() (TValue val) const
+    bool operator() (TValue const & val) const
     {
         return val == VALUE;
     }
@@ -93,7 +93,7 @@ struct OrFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue val) const
+    bool operator() (TValue const & val) const
     {
         return func1(val) || func2(val);
     }
@@ -113,7 +113,7 @@ struct AndFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue val) const
+    bool operator() (TValue const & val) const
     {
         return func1(val) && func2(val);
     }
@@ -132,7 +132,7 @@ struct NotFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue val) const
+    bool operator() (TValue const & val) const
     {
         return !func(val);
     }
@@ -150,15 +150,34 @@ struct IgnoreOrAssertFunctor
     {}
 
     template <typename TValue>
-    bool operator() (TValue val) const
+    bool operator() (TValue const & val) const
     {
-        if (ignoreFunc(val))
+        if (SEQAN_UNLIKELY(ignoreFunc(val)))
             return true;
-        if (!assertFunc(val))
+        if (SEQAN_UNLIKELY(!assertFunc(val)))
             throw TException(message);
         return false;
     }
 };
+
+// Don't use isblank() or isspace as it they seem to be slower than our functors (due to inlining)
+//
+//struct IsBlank
+//{
+//    template <typename TValue>
+//    bool operator() (TValue const & val) const
+//    {
+//        return isblank(val);
+//    }
+//};
+//struct IsWhitespace
+//{
+//    template <typename TValue>
+//    bool operator() (TValue const & val) const
+//    {
+//        return isspace(val);
+//    }
+//};
 
 typedef OrFunctor<EqualsChar<' '>, EqualsChar<'\t'> >           IsBlank;
 typedef OrFunctor<EqualsChar<'\n'>, EqualsChar<'\r'> >          IsNewline;
@@ -435,43 +454,40 @@ _readUntil(
     Range<TIValue*> *,
     Range<TOValue*> *)
 {
-    Range<TIValue*> ichunk;
-    Range<TOValue*> ochunk;
-
     for (; !atEnd(iter); )
     {
-        ichunk = getChunk(iter, Input());
+        Range<TIValue*> const ichunk = getChunk(iter, Input());
         SEQAN_ASSERT(ichunk.begin < ichunk.end);
 
         // reserve memory for the worst-case
         // TODO(weese):Document worst-case behavior
         reserveChunk(target, ichunk.end - ichunk.begin);
 
-        ochunk = getChunk(end(target, Rooted()), Output());
+        Range<TOValue*> const ochunk = getChunk(end(target, Rooted()), Output());
         SEQAN_ASSERT(ochunk.begin < ochunk.end);
 
-        TIValue* istart = ichunk.begin;
-        TOValue* ostart = ochunk.begin;
+        register const TIValue* __restrict__ iptr = ichunk.begin;
+        register       TIValue* __restrict__ optr = ochunk.begin;
 
-        for (; ichunk.begin != ichunk.end; ++ichunk.begin)
+        for (; iptr != ichunk.end; ++iptr)
         {
-            if (stopFunctor(*ichunk.begin))
+            if (SEQAN_UNLIKELY(stopFunctor(*iptr)))
             {
-                iter += ichunk.begin - istart;              // advance input iterator
-                advanceChunk(target, ochunk.begin - ostart);     // extend target string size
+                iter += iptr - ichunk.begin;                // advance input iterator
+                advanceChunk(target, optr - ochunk.begin);  // extend target string size
                 return;
             }
-            if (!ignoreFunctor(*ichunk.begin))
+            if (SEQAN_LIKELY(!ignoreFunctor(*iptr)))
             {
                 // construct values in reserved memory
-                valueConstruct(ochunk.begin, getValue(ichunk.begin));
-                if (++ochunk.begin == ochunk.end)
+                *optr = *iptr;
+                if (++optr == ochunk.end)
                     break;
             }
         }
 
-        iter += ichunk.begin - istart;                      // advance input iterator
-        advanceChunk(target, ochunk.begin - ostart);
+        iter += iptr - ichunk.begin;                      // advance input iterator
+        advanceChunk(target, optr - ochunk.begin);
     }
 }
 
@@ -511,23 +527,24 @@ inline void
 _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TValue*> *)
 {
     typedef typename Value<TFwdIterator>::Type TIValue;
-    Range<TIValue*> ichunk;
 
     for (; !atEnd(iter); )
     {
-        ichunk = getChunk(iter, Input());
-        TIValue* istart = ichunk.begin;
+        Range<TIValue*> const ichunk = getChunk(iter, Input());
+        SEQAN_ASSERT(ichunk.begin < ichunk.end);
 
-        for (; ichunk.begin != ichunk.end; ++ichunk.begin)
+        register const TIValue* __restrict__ ptr = ichunk.begin;
+
+        for (; ptr != ichunk.end; ++ptr)
         {
-            if (stopFunctor(*ichunk.begin))
+            if (SEQAN_UNLIKELY(stopFunctor(*ptr)))
             {
-                iter += ichunk.begin - istart;      // advance input iterator
+                iter += ptr - ichunk.begin;      // advance input iterator
                 return;
             }
         }
 
-        iter += ichunk.begin - istart;    // advance input iterator
+        iter += ptr - ichunk.begin;    // advance input iterator
     }
 }
 
@@ -536,15 +553,17 @@ template <typename TFwdIterator, typename TStopFunctor>
 inline void
 skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor)
 {
-    _skipUntil(iter, stopFunctor, typename Chunk<TFwdIterator>::Type());
+    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
+    _skipUntil(iter, stopFunctor, TIChunk());
 }
 
 template <typename TFwdIterator, typename TStopFunctor>
 inline void
 skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
 {
+    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
     TStopFunctor stopFunctor_ = stopFunctor;
-    _skipUntil(iter, stopFunctor_, typename Chunk<TFwdIterator>::Type());
+    _skipUntil(iter, stopFunctor_, TIChunk());
 }
 
 // Shortcuts
@@ -567,7 +586,7 @@ template <typename TTarget, typename TFwdIterator>
 inline void
 readLine(TTarget &target, TFwdIterator &iter)
 {
-    readUntil(target, iter, OrFunctor<EqualsChar<'\n'>, EqualsChar<'\r'> >());
+    readUntil(target, iter, IsNewline());
 
     // consume "\r\n.", "\r[!\n]" or "\n."
 
@@ -591,7 +610,7 @@ template <typename TFwdIterator>
 inline void
 skipLine(TFwdIterator &iter)
 {
-    skipUntil(iter, EqualsChar<'\n'>());
+    skipUntil(iter, IsNewline());
 
     // consume "\r\n.", "\r[!\n]" or "\n."
 
