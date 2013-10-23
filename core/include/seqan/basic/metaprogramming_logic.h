@@ -129,7 +129,7 @@ struct True
     }
 
     template <typename TValue>
-    bool operator() (TValue) const
+    bool operator() (TValue const &) const
     {
         return true;
     }
@@ -146,7 +146,7 @@ struct False
     }
 
     template <typename TValue>
-    bool operator() (TValue) const
+    bool operator() (TValue const &) const
     {
         return false;
     }
