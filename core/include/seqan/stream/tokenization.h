@@ -467,7 +467,7 @@ _readUntil(
         SEQAN_ASSERT(ochunk.begin < ochunk.end);
 
         register const TIValue* __restrict__ iptr = ichunk.begin;
-        register       TIValue* __restrict__ optr = ochunk.begin;
+        register       TOValue* __restrict__ optr = ochunk.begin;
 
         for (; iptr != ichunk.end; ++iptr)
         {

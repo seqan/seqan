@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// fast block-based file reader/writer with buffer interfacce
+// fast block-based file reader/writer with buffer interface
 // supports async I/O / memory-mapping
 // ==========================================================================
 
