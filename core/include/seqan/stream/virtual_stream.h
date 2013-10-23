@@ -345,6 +345,11 @@ public:
     {
         this->init(streamBuf);
     }
+
+    TStreamBuffer* rdbuf() const
+    {
+        return streamBuf;
+    }
 };
 
 template <typename TValue, typename TDirection>
