@@ -61,7 +61,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
  
 	template <typename TSpec /* = void */>
-	struct Async;
+	struct Async {};
 
 
 #ifdef PLATFORM_WINDOWS

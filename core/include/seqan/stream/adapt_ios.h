@@ -199,7 +199,7 @@ struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits> >
 template <typename TValue, typename TTraits>
 struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits> >
 {
-    enum { VALUE = OPEN_WRONLY | OPEN_APPEND };
+    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
 };
 
 // ============================================================================
@@ -253,9 +253,9 @@ _getSTLStyleOpenMode(int openMode)
 // Function streamEof()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
+template <typename TStream>
 inline bool
-streamEof(std::basic_istream<TValue, TTraits> & stream)
+streamEof(TStream & stream)
 {
     // Peak sets eofbit if the next char is EOF.
     SEQAN_ASSERT_BADBIT(stream);
