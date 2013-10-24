@@ -280,26 +280,30 @@ template <typename TValue, typename TDirection>
 class VirtualStream: public BasicStream<TValue, TDirection>::Type
 {
 public:
-    typedef std::fstream TFile;
-    typedef std::basic_streambuf<TValue> TStreamBuffer;
-    typedef typename BasicStream<TValue, TDirection>::Type TStream;
-    typedef VirtualStreamContext_<TValue, TDirection> TVirtualStreamContext;
+    typedef std::fstream                                    TFile;
+    typedef typename BasicStream<TValue, TDirection>::Type  TBasicStream;
+    typedef std::basic_streambuf<TValue>                    TStreamBuffer;
+    typedef typename BasicStream<TValue, TDirection>::Type  TStream;
+    typedef VirtualStreamContext_<TValue, TDirection>       TVirtualStreamContext;
 
     TFile                   file;
     TStreamBuffer           *streamBuf;
     TVirtualStreamContext   *context;
 
     VirtualStream():
+        TBasicStream(NULL),
         streamBuf(),
         context()
     {}
 
     VirtualStream(TStreamBuffer &streamBuf):
+        TBasicStream(NULL),
         streamBuf(streamBuf),
         context()
     {}
 
     VirtualStream(TStream &stream):
+        TBasicStream(NULL),
         streamBuf(),
         context()
     {
@@ -307,6 +311,7 @@ public:
     }
 
     VirtualStream(const char *fileName, int openMode):
+        TBasicStream(NULL),
         streamBuf(),
         context()
     {
