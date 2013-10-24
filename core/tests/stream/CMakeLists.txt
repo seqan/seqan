@@ -33,6 +33,7 @@ add_executable (test_stream
                test_stream.cpp
                test_stream_tokenization.h
                test_stream_generic.h
+               test_stream_file_stream.h
                test_stream_lexical_cast.h
                test_stream_bgzf.h
                test_stream_virtual_stream.h)

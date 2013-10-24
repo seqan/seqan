@@ -66,6 +66,21 @@ struct BasicStream:
         std::basic_ostream<TValue> >
 {};
 
+template <typename TDirection>
+struct IosOpenMode;
+
+template <>
+struct IosOpenMode<Input>
+{
+    enum { VALUE = std::ios_base::in };
+};
+
+template <>
+struct IosOpenMode<Output>
+{
+    enum { VALUE = std::ios_base::out };
+};
+
 // --------------------------------------------------------------------------
 // Compression Type Tags
 // --------------------------------------------------------------------------

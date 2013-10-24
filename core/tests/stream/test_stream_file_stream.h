@@ -30,8 +30,9 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+//         David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Tests for the GZ File Stream.
+// Tests for the File Stream.
 // ==========================================================================
 
 #ifndef TEST_STREAM_TEST_STREAM_FILE_STREAM_H_
@@ -42,153 +43,135 @@
 
 #include "test_stream_generic.h"
 
-template <typename TSpec>
-void runTestStreamFileStreamMetafunctions()
-{
-    using namespace seqan;
+using namespace seqan;
 
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, IsInput>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, IsOutput>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, HasPeek>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, HasFilename>::Type::VALUE;
-        SEQAN_ASSERT_NOT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, Seek<OriginBegin> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, Seek<OriginEnd> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, Seek<OriginCurrent> >::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-    {
-        bool b = HasStreamFeature<Stream<TSpec>, Tell>::Type::VALUE;
-        SEQAN_ASSERT(b);
-    }
-}
+// ==========================================================================
+// Types
+// ========================================================================== 
+
+template <typename TSpec_>
+class FileStreamTest : public Test
+{
+public:
+    typedef TSpec_ TSpec;
+};
+
+// --------------------------------------------------------------------------
+// FileStream Specs
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<Async<>,
+    TagList<MMap<>
+    > >
+    FileStreamSpecs;
+
+SEQAN_TYPED_TEST_CASE(FileStreamTest, FileStreamSpecs);
+
+// --------------------------------------------------------------------------
+// FileStream Tests
+// --------------------------------------------------------------------------
 
 // Simple example of writing to FILE *.
-template <typename TSpec>
-void runTestStreamFileStreamReadSimpleUsage()
+SEQAN_TYPED_TEST(FileStreamTest, ReadSimpleUsage)
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
     char const * STR = "This is a string!\nWith two lines.";
-    Stream<TSpec> stream;
-    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    int len = strlen(STR);
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, len), len);
-    close(stream);
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
+    SEQAN_ASSERT(open(stream, toCString(tempFilename)));
+    stream.write(STR, strlen(STR));
+    SEQAN_ASSERT(stream.good());
+    SEQAN_ASSERT(close(stream));
 
-    Stream<TSpec> stream2;
-    SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
+    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
     testStreamReadSimpleUsage(stream2);
 }
 
 // More complex example of writing to FILE *.
-template <typename TSpec>
-void runTestStreamFileStreamReadComplexUsage()
+SEQAN_TYPED_TEST(FileStreamTest, ReadComplexUsage)
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
     char const * STR = "This is a string!\nWith two lines.";
-    Stream<TSpec> stream;
-    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    int len = strlen(STR);
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, len), len);
-    close(stream);
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
+    SEQAN_ASSERT(open(stream, toCString(tempFilename)));
+    stream.write(STR, strlen(STR));
+    SEQAN_ASSERT(stream.good());
+    SEQAN_ASSERT(close(stream));
 
-    Stream<TSpec> stream2;
-    SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
+    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
     testStreamReadComplexUsage(stream2);
 }
 
 // Simple example of reading from FILE *.
-template <typename TSpec>
-void runTestStreamFileStreamWriteSimpleUsage()
+SEQAN_TYPED_TEST(FileStreamTest, WriteSimpleUsage)
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
-    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    SEQAN_ASSERT_EQ(streamWriteChar(stream, '1'), 0);
-    SEQAN_ASSERT_EQ(streamWriteChar(stream, '2'), 0);
-    close(stream);
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
+    SEQAN_ASSERT(open(stream, toCString(tempFilename)));
+    stream.put('1');
+    SEQAN_ASSERT(stream.good());
+    stream.put('2');
+    SEQAN_ASSERT(stream.good());
+    SEQAN_ASSERT(close(stream));
 
-    Stream<TSpec> stream2;
-    SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    char buffer[100];
-    int bytesRead = streamReadBlock(buffer, stream2, 10);
-    SEQAN_ASSERT_EQ(bytesRead, 2);
-    buffer[bytesRead] = '\0';
-    SEQAN_ASSERT_EQ(strcmp(buffer, "12"), 0);
-    close(stream2);
+    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
+    char buffer[100] = "__________";
+    stream2.read(buffer, 10);
+    SEQAN_ASSERT(stream2.eof());
+    SEQAN_ASSERT_EQ(buffer[0], '1');
+    SEQAN_ASSERT_EQ(buffer[1], '2');
+    SEQAN_ASSERT(close(stream2));
 }
 
 // A bit more complex usage of writing to FILE *.
-template <typename TSpec>
-void runTestStreamFileStreamWriteComplexUsage()
+SEQAN_TYPED_TEST(FileStreamTest, WriteComplexUsage)
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
-    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    for (int i = 0; i < 10; ++i)
-        SEQAN_ASSERT_EQ(streamWriteChar(stream, (char)('0' + i)), 0);
-    close(stream);
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
+    SEQAN_ASSERT(open(stream, toCString(tempFilename)));
+    for (char c = '0'; c <= '9'; ++c)
+        stream.put(c);
+    SEQAN_ASSERT(stream.good());
+    SEQAN_ASSERT(close(stream));
 
-    Stream<TSpec> stream2;
-    SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    char buffer[100];
-    int bytesRead = streamReadBlock(buffer, stream2, 10);
-    SEQAN_ASSERT_EQ(bytesRead, 10);
-    buffer[bytesRead] = '\0';
+    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
+    char buffer[100] = "__________";
+    stream2.read(buffer, 10);
+    SEQAN_ASSERT_NOT(stream2.eof());
+    SEQAN_ASSERT(stream.good());
+    buffer[10] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "0123456789"), 0);
-    close(stream2);
+    SEQAN_ASSERT(close(stream2));
 }
 
+/*
 // Test of streamEof().
 template <typename TSpec>
 void runTestStreamFileStreamEof()
+SEQAN_TYPED_TEST(FileStreamTest, WriteComplexUsage)
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "This is a test.";
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, strlen(STR)), strlen(STR));
+    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
     close(stream);
 
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamEof(stream2);
 }
@@ -197,18 +180,16 @@ void runTestStreamFileStreamEof()
 template <typename TSpec>
 void runTestStreamFileStreamPeek()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "This is a test.";
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, strlen(STR)), strlen(STR));
+    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
     close(stream);
 
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamPeek(stream2);
 }
@@ -217,18 +198,16 @@ void runTestStreamFileStreamPeek()
 template <typename TSpec>
 void runTestStreamFileStreamReadChar()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "123";
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, strlen(STR)), strlen(STR));
+    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
     close(stream);
 
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamReadChar(stream2);
 }
@@ -237,24 +216,22 @@ void runTestStreamFileStreamReadChar()
 template <typename TSpec>
 void runTestStreamFileStreamReadBlock()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "XXXXXXXXXX";
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, strlen(STR)), strlen(STR));
+    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
     close(stream);
 
     {
-        Stream<TSpec> stream2;
+        FileStream<char, Output, typename TestFixture::TSpec> stream2;
         SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
         testStreamReadBlockHitLimit(stream2);
     }
     {
-        Stream<TSpec> stream2;
+        FileStream<char, Output, typename TestFixture::TSpec> stream2;
         SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
         testStreamReadBlockHitNoLimit(stream2);
     }
@@ -264,21 +241,19 @@ void runTestStreamFileStreamReadBlock()
 template <typename TSpec>
 void runTestStreamFileStreamWriteChar()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamWriteChar(stream);
     close(stream);
 
     // Read in data and compare.
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char buffer[100];
-    int bytesRead = streamReadBlock(buffer, stream2, 99);
+    int bytesRead = stream2.read(buffer, 99);
     SEQAN_ASSERT_EQ(bytesRead, 3);
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "345"), 0);
@@ -288,21 +263,19 @@ void runTestStreamFileStreamWriteChar()
 template <typename TSpec>
 void runTestStreamFileStreamWriteBlock()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamWriteBlock(stream);
     close(stream);
 
     // Read in data and compare.
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char buffer[100];
-    int bytesRead = streamReadBlock(buffer, stream2, 99);
+    int bytesRead = stream2.read(buffer, 99);
     SEQAN_ASSERT_EQ(bytesRead, 8);
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(strcmp(buffer, "ABCDEFGH"), 0);
@@ -312,21 +285,19 @@ void runTestStreamFileStreamWriteBlock()
 template <typename TSpec>
 void runTestStreamFileStreamStreamPut()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamPut(stream);
     close(stream);
 
     // Read in data and compare.
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char buffer[100];
-    int bytesRead = streamReadBlock(buffer, stream2, 99);
+    int bytesRead = stream2.read(buffer, 99);
     char cmp[] = "c\nseq\nsss\n12\n34\n56\n78\n5.4\n6.5\nA\nACGT\nACGTN\n";
     buffer[bytesRead] = '\0';
     SEQAN_ASSERT_EQ(bytesRead, int(sizeof(cmp) - sizeof(char)));
@@ -338,12 +309,10 @@ void runTestStreamFileStreamStreamPut()
 template <typename TSpec>
 void runTestStreamFileStreamFlush()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     streamFlush(stream);
 }
@@ -352,19 +321,17 @@ void runTestStreamFileStreamFlush()
 template <typename TSpec>
 void runTestStreamFileStreamSeek()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "0123456789";
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, strlen(STR)), strlen(STR));
+    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
     close(stream);
 
     // Read in data and compare.
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     testStreamSeek(stream2);
 }
@@ -373,19 +340,17 @@ void runTestStreamFileStreamSeek()
 template <typename TSpec>
 void runTestStreamFileStreamTell()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "0123456789";
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, STR, strlen(STR)), strlen(STR));
+    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
     close(stream);
 
     // Test tell.
-    Stream<TSpec> stream2;
+    FileStream<char, Output, typename TestFixture::TSpec> stream2;
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
 
     char c = '\0';
@@ -403,8 +368,6 @@ void runTestStreamFileStreamTell()
 template <typename TSpec>
 void runTestStreamFileStreamReadLarge()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
     unsigned FILE_SIZE = 5 * 1000 * 1000;
 
@@ -416,7 +379,7 @@ void runTestStreamFileStreamReadLarge()
     f.close();
 
     // Test reading of 5MB file.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     CharString buffer;
     resize(buffer, FILE_SIZE, '\0');
@@ -430,8 +393,6 @@ void runTestStreamFileStreamReadLarge()
 template <typename TSpec>
 void runTestStreamFileStreamWriteLarge()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
     unsigned FILE_SIZE = 5 * 1000 * 1000;
 
@@ -442,9 +403,9 @@ void runTestStreamFileStreamWriteLarge()
         buffer[i] = ('!' + i % 53);  // 53 is prime
 
     // Write out.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    SEQAN_ASSERT_EQ(streamWriteBlock(stream, &buffer[0], (int)FILE_SIZE), (int)FILE_SIZE);
+    SEQAN_ASSERT_EQ(stream.write(&buffer[0], (int)FILE_SIZE), (int)FILE_SIZE);
     close(stream);
 
     // Read into buffer again and compare.
@@ -462,8 +423,6 @@ void runTestStreamFileStreamWriteLarge()
 template <typename TSpec>
 void runTestStreamFileStreamSeekLarge()
 {
-    using namespace seqan;
-
     CharString tempFilename = SEQAN_TEMP_FILENAME();
     unsigned FILE_SIZE = 5 * 1000 * 1000;
 
@@ -475,7 +434,7 @@ void runTestStreamFileStreamSeekLarge()
     f.close();
 
     // Test seeking in 5MB file.
-    Stream<TSpec> stream;
+    FileStream<char, Output, typename TestFixture::TSpec> stream;
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     CharString buffer;
     resize(buffer, 13, '\0');
@@ -494,189 +453,5 @@ void runTestStreamFileStreamSeekLarge()
         SEQAN_ASSERT_EQ((unsigned)buffer[i], '!' + (FILE_SIZE - 5 + i) % 53);
 
 }
-
-// ===========================================================================
-// Calls to the generic test functions
-// ===========================================================================
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_metafunctions_file)
-{
-    runTestStreamFileStreamMetafunctions<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_metafunctions_mmap)
-{
-    runTestStreamFileStreamMetafunctions<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_simple_usage_file)
-{
-    runTestStreamFileStreamReadSimpleUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_simple_usage_mmap)
-{
-    runTestStreamFileStreamReadSimpleUsage<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_complex_usage_file)
-{
-    runTestStreamFileStreamReadComplexUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_complex_usage_mmap)
-{
-    runTestStreamFileStreamReadComplexUsage<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_simple_usage_file)
-{
-    runTestStreamFileStreamWriteSimpleUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_simple_usage_mmap)
-{
-    runTestStreamFileStreamWriteSimpleUsage<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_complex_usage_file)
-{
-    runTestStreamFileStreamWriteComplexUsage<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_complex_usage_mmap)
-{
-    runTestStreamFileStreamWriteComplexUsage<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_eof_file)
-{
-    runTestStreamFileStreamEof<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_eof_mmap)
-{
-    runTestStreamFileStreamEof<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_peek_file)
-{
-    runTestStreamFileStreamPeek<seqan::FileStream<> >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_peek_mmap)
-{
-    runTestStreamFileStreamPeek<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_char_file)
-{
-    runTestStreamFileStreamReadChar<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_char_mmap)
-{
-    runTestStreamFileStreamReadChar<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_block_file)
-{
-    runTestStreamFileStreamReadBlock<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_block_mmap)
-{
-    runTestStreamFileStreamReadBlock<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_char_file)
-{
-    runTestStreamFileStreamWriteChar<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_char_mmap)
-{
-    runTestStreamFileStreamWriteChar<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_block_file)
-{
-    runTestStreamFileStreamWriteBlock<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_block_mmap)
-{
-    runTestStreamFileStreamWriteBlock<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_streamPut_file)
-{
-    runTestStreamFileStreamStreamPut<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_streamPut_mmap)
-{
-    runTestStreamFileStreamStreamPut<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_flush_file)
-{
-    runTestStreamFileStreamFlush<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_flush_mmap)
-{
-    runTestStreamFileStreamFlush<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_seek_file)
-{
-    runTestStreamFileStreamSeek<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_seek_mmap)
-{
-    runTestStreamFileStreamSeek<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_tell_file)
-{
-    runTestStreamFileStreamTell<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_tell_mmap)
-{
-    runTestStreamFileStreamTell<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_large_file)
-{
-    runTestStreamFileStreamReadLarge<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_read_large_mmap)
-{
-    runTestStreamFileStreamReadLarge<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_large_file)
-{
-    runTestStreamFileStreamWriteLarge<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_write_large_mmap)
-{
-    runTestStreamFileStreamWriteLarge<seqan::FileStream<seqan::MMap<> > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_seek_large_file)
-{
-    runTestStreamFileStreamSeekLarge<seqan::FileStream<seqan::File<seqan::Async<> > > >();
-}
-
-SEQAN_DEFINE_TEST(test_stream_file_stream_seek_large_mmap)
-{
-    runTestStreamFileStreamSeekLarge<seqan::FileStream<seqan::MMap<> > >();
-}
-
+*/
 #endif  // TEST_STREAM_TEST_STREAM_FILE_STREAM_H_
