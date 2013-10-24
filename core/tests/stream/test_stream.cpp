@@ -39,6 +39,7 @@
 #include <seqan/stream.h>
 
 #include "test_stream_tokenization.h"
+#include "test_stream_file_stream.h"
 #include "test_stream_virtual_stream.h"
 //#include "test_stream_lexical_cast.h"
 
@@ -332,15 +333,6 @@ SEQAN_TYPED_TEST(OutputStreamTest, Put)
 SEQAN_TYPED_TEST(StreamTest, Tell)
 {
     typedef typename TestFixture::Type  TStream;
-
-//    {
-//        bool feature = HasStreamFeature<TStream, Seek<void> >::VALUE;
-//        SEQAN_ASSERT(feature);
-//    }
-//    {
-//        bool feature = HasStreamFeature<TStream, Tell>::VALUE;
-//        SEQAN_ASSERT(feature);
-//    }
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
     open(this->stream, toCString(ctx.inputFilename));

@@ -47,14 +47,13 @@ void testStreamReadSimpleUsage(TStream & stream)
     char buffer[100];
     char *ptr = buffer;
     while (!streamEof(stream)) {
-        int res = streamReadChar(*ptr, stream);
-        SEQAN_ASSERT_EQ(res, 0);
+        *ptr = stream.get();
+        SEQAN_ASSERT(stream.good());
         SEQAN_ASSERT_LT(ptr, buffer + 100);
         if (*(ptr++) == '\n')
             break;
     }
-    char c;
-    streamReadChar(c, stream);
+    char c = stream.get();
     SEQAN_ASSERT_EQ(c, 'W');
 }
 
@@ -65,11 +64,12 @@ void testStreamReadComplexUsage(TStream & stream)
     using namespace seqan;
 
     // Read lines and check whether the last one is terminated with a '\n'.
-    char c = '\0';
+    int c = '\0';
     bool wasEol = false;
-    while (!streamEof(stream)) {
-        int res = streamReadChar(c, stream);
-        if (res == EOF)
+    while (streamEof(stream))
+    {
+        c = stream.get();
+        if (c == EOF)
             break;
         wasEol = (c == '\n');
     }
@@ -325,21 +325,6 @@ void testStreamSeek(TStream & stream)
     res = streamPeek(c, stream);
     SEQAN_ASSERT_EQ(c, '2');
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 2);
-}
-
-// Test of streamSeek().
-SEQAN_DEFINE_TEST(testVirtualStream)
-{
-    CharString fileName = SEQAN_PATH_TO_ROOT;
-    append(fileName, "core/tests/seq_io/test_dna.fa");
-
-    Stream<VirtualStream<> > *stream = streamFactory(fileName, OPEN_RDONLY);
-
-    CharString tmp;
-    while (!atEnd(stream))
-        appendValue(tmp, streamGet(stream));
-
-    delete stream;
 }
 
 #endif  // TEST_STREAM_TEST_STREAM_GENERIC_H_
