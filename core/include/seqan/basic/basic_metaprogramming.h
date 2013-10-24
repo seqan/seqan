@@ -53,6 +53,9 @@
 // Metaprogramming for querying and modifying types.
 #include <seqan/basic/metaprogramming_type.h>
 
+// Metaprogramming for type algebra.
+#include <seqan/basic/metaprogramming_type_algebra.h>
+
 // Metaprogramming for conditional enabling/disabling of code.
 #include <seqan/basic/metaprogramming_enable_if.h>
 
