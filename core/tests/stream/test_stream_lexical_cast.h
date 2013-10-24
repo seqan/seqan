@@ -29,296 +29,247 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// casts for reading different types from strings
+// String <=> Numerical conversion tests
 // ==========================================================================
 
+#include <cmath>
 
+#ifndef TEST_STREAM_TEST_LEXICAL_CAST_H_
+
+using namespace seqan;
 
 // ==========================================================================
 // Types
 // ========================================================================== 
 
 // --------------------------------------------------------------------------
-// Input Stream Types
+// String Types
 // --------------------------------------------------------------------------
 
 typedef
-    TagList<std::fstream,
-    TagList<std::ifstream
+    TagList<CharString,
+    TagList<std::string
     > >
-    InputStreamTypes;
+    StringTypes;
 
-SEQAN_TYPED_TEST_CASE(LexicalCastTest, StringTypes);
+// --------------------------------------------------------------------------
+// Signed Integer Types
+// --------------------------------------------------------------------------
 
+typedef
+    TagList<short,
+    TagList<int,
+    TagList<long,
+    TagList<long long
+    > > > >
+    SignedIntegerTypes;
 
-// ------------- TEST 1
+// --------------------------------------------------------------------------
+// Unsigned Integer Types
+// --------------------------------------------------------------------------
 
-template <typename TTest>
-void _test1a(TTest const & s)
+typedef
+    TagList<unsigned short,
+    TagList<unsigned int,
+    TagList<unsigned long,
+    TagList<unsigned long long
+    > > > >
+    UnsignedIntegerTypes;
+
+// --------------------------------------------------------------------------
+// Floating Point Types
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<float,
+    TagList<double
+    > >
+    FloatingPointTypes;
+
+// --------------------------------------------------------------------------
+// Aggregated Numerical Types
+// --------------------------------------------------------------------------
+
+typedef typename Sum<SignedIntegerTypes, UnsignedIntegerTypes>::Type    IntegerTypes;
+typedef typename Sum<SignedIntegerTypes, FloatingPointTypes>::Type      SignedTypes;
+typedef typename Sum<IntegerTypes, FloatingPointTypes>::Type            NumericalTypes;
+
+// ==========================================================================
+// Classes
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Class LexicalTest
+// --------------------------------------------------------------------------
+
+template <typename TTargetSourcePair>
+class LexicalTest : public Test
 {
-    using namespace seqan;
-//     TTest s = "12345";
+public:
+    typedef typename Value<TTargetSourcePair, 1>::Type  TTarget;
+    typedef typename Value<TTargetSourcePair, 2>::Type  TSource;
 
-    int i       = lexicalCast<int>(s);
-    short sh    = lexicalCast<short>(s);
-    long l      = lexicalCast<long>(s);
-    unsigned int ui = lexicalCast<unsigned int>(s);
+    TTarget target;
+    TSource source;
+};
 
-    float f     = lexicalCast<float>(s);
-    double d    = lexicalCast<double>(s);
+// --------------------------------------------------------------------------
+// Class LexicalCastTest
+// --------------------------------------------------------------------------
 
-    SEQAN_ASSERT_EQ(i,  12345);
-    SEQAN_ASSERT_EQ(sh, 12345);
-    SEQAN_ASSERT_EQ(l,  12345l);
-    SEQAN_ASSERT_EQ(ui, 12345u);
+template <typename TTargetSourcePair>
+class LexicalCastTest : public LexicalTest<TTargetSourcePair> {};
 
-    SEQAN_ASSERT_EQ(f,  12345.00f);
-    SEQAN_ASSERT_EQ(d,  12345.00);
+typedef typename Product<NumericalTypes, StringTypes>::Type LexicalCastTypes;
+
+SEQAN_TYPED_TEST_CASE(LexicalCastTest, LexicalCastTypes);
+
+// --------------------------------------------------------------------------
+// Class AppendUnsignedTest
+// --------------------------------------------------------------------------
+
+template <typename TTargetSourcePair>
+class AppendUnsignedTest : public LexicalTest<TTargetSourcePair> {};
+
+typedef typename Product<CharString, NumericalTypes>::Type AppendNumericalTypes;
+
+SEQAN_TYPED_TEST_CASE(AppendUnsignedTest, AppendNumericalTypes);
+
+// --------------------------------------------------------------------------
+// Class AppendSignedTest
+// --------------------------------------------------------------------------
+
+template <typename TTargetSourcePair>
+class AppendSignedTest : public LexicalTest<TTargetSourcePair> {};
+
+typedef typename Product<CharString, SignedTypes>::Type AppendSignedTypes;
+
+SEQAN_TYPED_TEST_CASE(AppendSignedTest, AppendSignedTypes);
+
+// --------------------------------------------------------------------------
+// Class AppendFloatingPointTest
+// --------------------------------------------------------------------------
+
+template <typename TTargetSourcePair>
+class AppendFloatingPointTest : public LexicalTest<TTargetSourcePair> {};
+
+typedef typename Product<CharString, FloatingPointTypes>::Type AppendFloatingPointTypes;
+
+SEQAN_TYPED_TEST_CASE(AppendFloatingPointTest, AppendFloatingPointTypes);
+
+// ==========================================================================
+// Tests
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Test lexicalCast(TTarget, UnsignedSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(LexicalCastTest, UnsignedSource)
+{
+    assign(this->source, "12345");
+    SEQAN_ASSERT(lexicalCast(this->target, this->source));
+    SEQAN_ASSERT_EQ(this->target, static_cast<typename TestFixture::TTarget>(12345));
 }
 
-template <typename TTest>
-void _test1b(TTest const & s)
+// --------------------------------------------------------------------------
+// Test lexicalCast(TTarget, SignedSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(LexicalCastTest, SignedSource)
 {
-    using namespace seqan;
-//     TTest s = "12345";
-
-    int i       = lexicalCast<int>(s);
-    short sh    = lexicalCast<short>(s);
-    long l      = lexicalCast<long>(s);
-    // Casting string representing negative number to unsigned has ambiguous behaviour.  Thus, it is disabled right now.
-    // unsigned int ui = lexicalCast<unsigned int>(s);
-
-    float f     = lexicalCast<float>(s);
-    double d    = lexicalCast<double>(s);
-
-    SEQAN_ASSERT_EQ(i,  -12345);
-    SEQAN_ASSERT_EQ(sh, -12345);
-    SEQAN_ASSERT_EQ(l,  -12345l);
-    // SEQAN_ASSERT_EQ(ui, 0u);  // cannot be casted, returns 0 by default
-    SEQAN_ASSERT_EQ(f,  -12345.00f);
-    SEQAN_ASSERT_EQ(d,  -12345.00);
+    assign(this->source, "-12345");
+    bool success = lexicalCast(this->target, this->source);
+    SEQAN_ASSERT(success ^ IsUnsignedInteger<typename TestFixture::TTarget>::VALUE);
+    if (success) SEQAN_ASSERT_EQ(this->target, static_cast<typename TestFixture::TTarget>(-12345));
 }
 
-template <typename TTest>
-void _test1c(TTest const & s)
+// --------------------------------------------------------------------------
+// Test lexicalCast(TTarget, FloatingPointSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(LexicalCastTest, FloatingPointSource)
 {
-    using namespace seqan;
-//     TTest s = "-5.4";
+    typename TestFixture::TTarget reciprocal = 123.45;
+    typename TestFixture::TTarget epsilon = std::numeric_limits<typename TestFixture::TTarget>::epsilon();
 
-    int i       = lexicalCast<int>(s);
-    short sh    = lexicalCast<short>(s);
-    long l      = lexicalCast<long>(s);
-    // Casting string representing negative number to unsigned has ambiguous behaviour.  Thus, it is disabled right now.
-    // unsigned int ui = lexicalCast<unsigned int>(s);
-
-    float f     = lexicalCast<float>(s);
-    double d    = lexicalCast<double>(s);
-
-    SEQAN_ASSERT_EQ(i,  -5);
-    SEQAN_ASSERT_EQ(sh, -5);
-    SEQAN_ASSERT_EQ(l,  -5l);
-    // SEQAN_ASSERT_EQ(ui, 0u);  // cannot be casted, returns 0 by default
-
-    SEQAN_ASSERT_EQ(f,  -5.4f);
-    SEQAN_ASSERT_EQ(d,  -5.4);
+    assign(this->source, "-123.45");
+    bool success = lexicalCast(this->target, this->source);
+    SEQAN_ASSERT(success ^ IsIntegral<typename TestFixture::TTarget>::VALUE);
+    if (success) SEQAN_ASSERT_LT(this->target + reciprocal, epsilon);
 }
 
+// --------------------------------------------------------------------------
+// Test lexicalCast(TTarget, WrongPrefixSource)
+// --------------------------------------------------------------------------
 
-
-SEQAN_DEFINE_TEST(test_stream_lexical_cast_1_stdstring)
+SEQAN_TYPED_TEST(LexicalCastTest, WrongPrefixSource)
 {
-    using namespace seqan;
-
-    std::string s = "12345";
-    _test1a(s);
-
-    s = "-12345";
-    _test1b(s);
-    
-    s = "-5.4";
-    _test1c(s);
+    assign(this->source, "foo123");
+    SEQAN_ASSERT_NOT(lexicalCast(this->target, this->source));
 }
 
-SEQAN_DEFINE_TEST(test_stream_lexical_cast_1_chararray)
+// --------------------------------------------------------------------------
+// Test lexicalCast(TTarget, WrongSuffixSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(LexicalCastTest, WrongSuffixSource)
 {
-    using namespace seqan;
-
-    char s[100];
-    strcpy(s, "12345");
-    _test1a(s);
-
-    strcpy(s, "-12345");
-    _test1b(s);
-
-    strcpy(s, "-5.4");
-    _test1c(s);
+    assign(this->source, "123foo");
+    SEQAN_ASSERT_NOT(lexicalCast(this->target, this->source));
 }
 
-SEQAN_DEFINE_TEST(test_stream_lexical_cast_1_seqanstring)
+// --------------------------------------------------------------------------
+// Test lexicalCast<TTarget>(WrongSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(LexicalCastTest, Exception)
 {
-    using namespace seqan;
-
-    CharString s = "12345";
-    _test1a(s);
-
-    s = "-12345";
-    _test1b(s);
-
-    s = "-5.4";
-    _test1c(s);
+    assign(this->source, "foo");
+    try
+    {
+        this->target = lexicalCast<typename TestFixture::TTarget>(this->source);
+    }
+    catch (std::bad_cast)
+    {
+        return;
+    }
+    SEQAN_FAIL("The expected exception was not catched.");
 }
 
-// ------------- TEST 2
+// --------------------------------------------------------------------------
+// Test appendNumber(TTarget, UnsignedSource)
+// --------------------------------------------------------------------------
 
-
-template <typename TTest>
-void _test2a(TTest const & s)
+SEQAN_TYPED_TEST(AppendUnsignedTest, AppendNumber)
 {
-    using namespace seqan;
-
-    int i       = 0;
-    short sh    = 0;
-    long l      = 0;
-    unsigned int ui = 0;
-
-    float f     = 0.0;
-    double d    = 0.0;
-
-    SEQAN_ASSERT_EQ(lexicalCast2(i, s), true);
-    SEQAN_ASSERT_EQ(i,  12345);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(sh, s), true);
-    SEQAN_ASSERT_EQ(sh, 12345);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(l, s), true);
-    SEQAN_ASSERT_EQ(l,  12345l);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(ui, s), true);
-    SEQAN_ASSERT_EQ(ui, 12345u);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(f, s), true);
-    SEQAN_ASSERT_EQ(f,  12345.00f);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(d, s), true);
-    SEQAN_ASSERT_EQ(d,  12345.00);
+    assign(this->target, "foo");
+    appendNumber(this->target, static_cast<typename TestFixture::TSource>(12345));
+    SEQAN_ASSERT_EQ(this->target, "foo12345");
 }
 
-template <typename TTest>
-void _test2b(TTest const & s)
+// --------------------------------------------------------------------------
+// Test appendNumber(TTarget, SignedSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(AppendSignedTest, AppendNumber)
 {
-    using namespace seqan;
-
-    int i       = 0;
-    short sh    = 0;
-    long l      = 0;
-    // unsigned int ui = 0;
-
-    float f     = 0;
-    double d    = 0;
-
-    SEQAN_ASSERT_EQ(lexicalCast2(i, s), true);
-    SEQAN_ASSERT_EQ(i,  -5);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(sh, s), true);
-    SEQAN_ASSERT_EQ(sh, -5);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(l, s), true);
-    SEQAN_ASSERT_EQ(l,  -5l);
-
-    // Casting string representing negative number to unsigned has ambiguous behaviour.  Thus, it is disabled right now.
-    // SEQAN_ASSERT_EQ(lexicalCast2(ui, s), 0);
-    // SEQAN_ASSERT_EQ(ui, 0u);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(f, s), true);
-    SEQAN_ASSERT_EQ(f,  -5.4f);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(d, s), true);
-    SEQAN_ASSERT_EQ(d,  -5.4);
+    assign(this->target, "foo");
+    appendNumber(this->target, static_cast<typename TestFixture::TSource>(-12345));
+    SEQAN_ASSERT_EQ(this->target, "foo-12345");
 }
 
-template <typename TTest>
-void _test2c(TTest const & s)
+// --------------------------------------------------------------------------
+// Test appendNumber(TTarget, FloatingPointSource)
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(AppendFloatingPointTest, AppendNumber)
 {
-    using namespace seqan;
-
-    int i       = 0;
-    short sh    = 0;
-    long l      = 0;
-    unsigned int ui = 0;
-
-    float f     = 0;
-    double d    = 0;
-
-    SEQAN_ASSERT_EQ(lexicalCast2(i, s), false);
-    SEQAN_ASSERT_EQ(i,  0);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(sh, s), false);
-    SEQAN_ASSERT_EQ(sh, 0);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(l, s), false);
-    SEQAN_ASSERT_EQ(l,  0l);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(ui, s), false);
-    SEQAN_ASSERT_EQ(ui, 0u);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(f, s), false);
-    SEQAN_ASSERT_EQ(f,  0.0f);
-
-    SEQAN_ASSERT_EQ(lexicalCast2(d, s), false);
-    SEQAN_ASSERT_EQ(d,  0.0);
+    assign(this->target, "foo");
+    appendNumber(this->target, static_cast<typename TestFixture::TSource>(-123.45));
+    SEQAN_ASSERT_EQ(this->target, "foo-123.45");
 }
 
-SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_stdstring)
-{
-    using namespace seqan;
-
-    std::string s = "12345";
-    _test2a(s);
-
-    s = "-5.4";
-    _test2b(s);
-
-    s = "foobar";
-    _test2c(s);
-
-    s = "-5.4foobar";
-    _test2b(s); //TODO(h4nn3s): this should run through on _test2c, not _test2b
-}
-
-SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_chararray)
-{
-    using namespace seqan;
-
-    char s[30];
-    strcpy(s,"12345");
-
-    _test2a(s);
-
-    strcpy(s, "-5.4");
-    _test2b(s);
-
-    strcpy(s,  "foobar");
-    _test2c(s);
-
-    strcpy(s, "-5.4foobar");
-    _test2b(s); //TODO(h4nn3s): this should run through on _test2c, not _test2b
-}
-
-SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_seqanstring)
-{
-    using namespace seqan;
-
-    CharString s = "12345";
-    _test2a(s);
-
-    s = "-5.4";
-    _test2b(s);
-
-    s = "foobar";
-    _test2c(s);
-
-    s = "-5.4foobar"; 
-    _test2b(s); //TODO(h4nn3s): this should run through on _test2c, not _test2b
-}
+#endif // ifndef TEST_STREAM_TEST_LEXICAL_CAST_H_
