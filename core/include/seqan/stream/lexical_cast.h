@@ -29,16 +29,106 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// casts for reading different types from strings
-// ==========================================================================+
+// String <=> Numerical conversions
+// ==========================================================================
 
 #ifndef SEQAN_STREAM_LEXICAL_CAST_H
 #define SEQAN_STREAM_LEXICAL_CAST_H
 
 namespace seqan {
 
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction IntegerFormatString_
+// ----------------------------------------------------------------------------
+// Return the format string for numbers.
+
+template <typename TUnsigned, unsigned SIZE, typename T = void>
+struct IntegerFormatString_;
+
+
+template <typename T>
+struct IntegerFormatString_<False, 1, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<False, 1, T>::VALUE[] = "%hhi%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 1, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<True, 1, T>::VALUE[] = "%hhu%n";
+
+
+template <typename T>
+struct IntegerFormatString_<False, 2, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 2, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu%n";
+
+
+template <typename T>
+struct IntegerFormatString_<False, 4, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 4, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u%n";
+
+
+template <typename T>
+struct IntegerFormatString_<False, 8, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<False, 8, T>::VALUE[] = "%lli%n";
+
+
+template <typename T>
+struct IntegerFormatString_<True, 8, T>
+{
+    static const char VALUE[];
+};
+template <typename T>
+const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// TODO(dox): lexicalCast2
 /*!
  * @fn lexicalCast2
  * @headerfile seqan/stream.h
@@ -109,26 +199,56 @@ success = lexicalCast2(i, "-3");     // => success is true, i is -3.
 success = lexicalCast2(d, "-3.99");  // => success is true, d is -3.99.
  */
 
+// ----------------------------------------------------------------------------
+// Function lexicalCast()
+// ----------------------------------------------------------------------------
+// Generic version for integers.
+
 template <typename TInteger, typename TSource>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, bool)
+inline SEQAN_FUNC_ENABLE_IF(Is<SignedIntegerConcept<TInteger> >, bool)
 lexicalCast(TInteger & target, TSource const & source)
 {
-    return scanf(toCString(source), IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
-                          sizeof(TInteger)>::VALUE, target) == 1;
+    int offset;
+    return (sscanf(toCString(source), IntegerFormatString_<False, sizeof(TInteger)>::VALUE, &target, &offset) == 1) &&
+           (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
+
+template <typename TInteger, typename TSource>
+inline SEQAN_FUNC_ENABLE_IF(Is<UnsignedIntegerConcept<TInteger> >, bool)
+lexicalCast(TInteger & target, TSource const & source)
+{
+    if (!empty(source) && front(source) == '-') return false;
+
+    int offset;
+    return (sscanf(toCString(source), IntegerFormatString_<True, sizeof(TInteger)>::VALUE, &target, &offset) == 1) &&
+           (static_cast<typename Size<TSource>::Type>(offset) == length(source));
+}
+
+// ----------------------------------------------------------------------------
+// Function lexicalCast(float)
+// ----------------------------------------------------------------------------
 
 template <typename TSource>
-inline bool lexicalCast(float target, TSource const & source)
+inline bool lexicalCast(float & target, TSource const & source)
 {
-    return scanf(toCString(source), "%g", target) == 1;
+    int offset;
+    return (sscanf(toCString(source), "%g%n", &target, &offset) == 1) &&
+           (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
+
+// ----------------------------------------------------------------------------
+// Function lexicalCast(double)
+// ----------------------------------------------------------------------------
 
 template <typename TSource>
-inline bool lexicalCast(double target, TSource const & source)
+inline bool lexicalCast(double & target, TSource const & source)
 {
-    return scanf(toCString(source), "%g", target) == 1;
+    int offset;
+    return (sscanf(toCString(source), "%lg%n", &target, &offset) == 1) &&
+           (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
 
+// TODO(dox): lexicalCast
 /*!
  * @fn lexicalCast
  * @headerfile <seqan/stream.h>
@@ -215,6 +335,58 @@ inline TTarget lexicalCast(TSource const & source)
     return dest;
 }
 
+// ----------------------------------------------------------------------------
+// Function appendNumber()
+// ----------------------------------------------------------------------------
+// Generic version for integers.
+
+template <typename TTarget, typename TInteger>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TInteger> >, typename Size<TTarget>::Type)
+appendNumber(TTarget & target, TInteger i)
+{
+    // 1 byte has at most 3 decimal digits (plus 1 for the NULL character)
+    char buffer[sizeof(TInteger) * 3 + 2];
+    int offset;
+    size_t len = snprintf(buffer, sizeof(buffer),
+                          IntegerFormatString_<typename Is<UnsignedIntegerConcept<TInteger> >::Type,
+                          sizeof(TInteger)>::VALUE, i, &offset);
+
+    Range<char *> range = toRange(buffer + 0, buffer + len);
+    write3(target, range);
+    return len;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendNumber(float)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, float source)
+{
+    char buffer[32];
+    int offset;
+    size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
+    Range<char *> range = toRange(buffer + 0, buffer + len);
+    write3(target, range);
+    return len;
+}
+
+// ----------------------------------------------------------------------------
+// Function appendNumber(double)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget>
+inline typename Size<TTarget>::Type
+appendNumber(TTarget & target, double source)
+{
+    char buffer[32];
+    int offset;
+    size_t len = snprintf(buffer, 32, "%lg%n", source, &offset);
+    Range<char *> range = toRange(buffer + 0, buffer + len);
+    write3(target, range);
+    return len;
+}
 
 }
 
