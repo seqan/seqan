@@ -200,8 +200,7 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         {
             // shrink current buffer size if it was not fully written (like the last buffer)
             TPageFrame &oldFrame = *framePtr;
-            if (this->pptr() != this->epptr())
-                resize(oldFrame, this->pptr() - this->pbase());
+            resize(oldFrame, this->pptr() - this->pbase());
 
             // start to release the current buffer
             result &= tryReleaseBuffer(*this, oldFrame, inProgress);
@@ -271,7 +270,7 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
 
         // shrink current buffer size if it was not fully written (like the last buffer)
         TPageFrame &oldFrame = *framePtr;
-        resize(oldFrame, std::max(this->pptr(), this->egptr()) - oldFrame.begin);
+        resize(oldFrame, this->pptr() - this->pbase());
 
         // start to release the current buffer
         bool dummy;
@@ -389,6 +388,7 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
                 this->setg(NULL, NULL, NULL);
                 this->setp(NULL, NULL);
             }
+            return -1;
         }
 
         // Seek to correct position in page.
@@ -402,7 +402,7 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
     virtual TPosition
     seekpos(
         TPosition pos,
-        std::ios_base::openmode which)
+        std::ios::openmode which)
     {
         SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0u);
 
@@ -415,8 +415,8 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
     virtual TPosition
     seekoff(
         TDifference off,
-        std::ios_base::seekdir dir,
-        std::ios_base::openmode which)
+        std::ios::seekdir dir,
+        std::ios::openmode which)
     {
         SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0u);
 
@@ -425,9 +425,9 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
 
         TPosition pos;
 
-        if (dir == std::ios_base::beg)
+        if (dir == std::ios::beg)
             pos = off;
-        else if (dir == std::ios_base::cur)
+        else if (dir == std::ios::cur)
             pos = _tell() + off;
         else
             pos = fileSize + off;

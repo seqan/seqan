@@ -33,6 +33,7 @@
 // ==========================================================================
 // Tests for the stream module.
 // ==========================================================================
+//#define SEQAN_DEBUG_FILESTREAM
 
 #include <seqan/basic.h>
 #include <seqan/file.h>
@@ -335,7 +336,7 @@ SEQAN_TYPED_TEST(StreamTest, Tell)
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, toCString(ctx.inputFilename));
+    open(this->stream, toCString(ctx.inputFilename), DefaultOpenMode<TStream>::VALUE | OPEN_APPEND);
 
     streamSeek(this->stream, 0u, SEEK_END);
     SEQAN_ASSERT_EQ(streamTell(this->stream), ctx.filesize);
