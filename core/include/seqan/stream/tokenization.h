@@ -457,37 +457,37 @@ _readUntil(
     for (; !atEnd(iter); )
     {
         Range<TIValue*> const ichunk = getChunk(iter, Input());
-        SEQAN_ASSERT(ichunk.begin < ichunk.end);
+        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
 
         // reserve memory for the worst-case
         // TODO(weese):Document worst-case behavior
-        reserveChunk(target, ichunk.end - ichunk.begin);
+        reserveChunk(target, length(ichunk));
 
         Range<TOValue*> const ochunk = getChunk(end(target, Rooted()), Output());
-        SEQAN_ASSERT(ochunk.begin < ochunk.end);
+        SEQAN_ASSERT(begin(ochunk, Standard()) < end(ochunk, Standard()));
 
-        register const TIValue* __restrict__ iptr = ichunk.begin;
-        register       TOValue* __restrict__ optr = ochunk.begin;
+        register const TIValue* __restrict__ iptr = begin(ichunk, Standard());
+        register       TOValue* __restrict__ optr = begin(ochunk, Standard());
 
-        for (; iptr != ichunk.end; ++iptr)
+        for (; iptr != end(ichunk, Standard()); ++iptr)
         {
             if (SEQAN_UNLIKELY(stopFunctor(*iptr)))
             {
-                iter += iptr - ichunk.begin;                // advance input iterator
-                advanceChunk(target, optr - ochunk.begin);  // extend target string size
+                iter += iptr - begin(ichunk, Standard());               // advance input iterator
+                advanceChunk(target, optr - begin(ochunk, Standard())); // extend target string size
                 return;
             }
             if (SEQAN_LIKELY(!ignoreFunctor(*iptr)))
             {
                 // construct values in reserved memory
                 *optr = *iptr;
-                if (++optr == ochunk.end)
+                if (++optr == end(ochunk, Standard()))
                     break;
             }
         }
 
-        iter += iptr - ichunk.begin;                      // advance input iterator
-        advanceChunk(target, optr - ochunk.begin);
+        iter += iptr - begin(ichunk, Standard());                       // advance input iterator
+        advanceChunk(target, optr - begin(ochunk, Standard()));
     }
 }
 
@@ -531,20 +531,20 @@ _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TValue*> *)
     for (; !atEnd(iter); )
     {
         Range<TIValue*> const ichunk = getChunk(iter, Input());
-        SEQAN_ASSERT(ichunk.begin < ichunk.end);
+        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
 
-        register const TIValue* __restrict__ ptr = ichunk.begin;
+        register const TIValue* __restrict__ ptr = begin(ichunk, Standard());
 
-        for (; ptr != ichunk.end; ++ptr)
+        for (; ptr != end(ichunk, Standard()); ++ptr)
         {
             if (SEQAN_UNLIKELY(stopFunctor(*ptr)))
             {
-                iter += ptr - ichunk.begin;      // advance input iterator
+                iter += ptr - begin(ichunk, Standard());    // advance input iterator
                 return;
             }
         }
 
-        iter += ptr - ichunk.begin;    // advance input iterator
+        iter += ptr - begin(ichunk, Standard());            // advance input iterator
     }
 }
 

@@ -473,7 +473,7 @@ typedef basic_zip_istream<char> zip_istream;
 /// A typedef for basic_zip_istream<wchart>
 typedef basic_zip_istream<wchar_t> zip_wistream;
 
-}; // zlib_sream
+} // zlib_sream
 
 #include "zipstream.ipp"
 

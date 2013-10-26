@@ -280,7 +280,7 @@ typedef basic_bzip2_ostream<wchar_t> bzip2_wostream;
 typedef basic_bzip2_istream<char> bzip2_istream;
 typedef basic_bzip2_istream<wchar_t> bzip2_wistream;
 
-}; // bzip2_stream
+} // bzip2_stream
 
 #include "bzip2stream.ipp"
 
