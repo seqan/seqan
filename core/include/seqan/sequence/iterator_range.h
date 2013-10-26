@@ -75,17 +75,19 @@ public:
 
     template <typename TOtherContainer>
     SEQAN_HOST_DEVICE inline
-    Range(TOtherContainer & cont):
-        begin(begin(cont, Standard())),
-        end(end(cont, Standard()))
-    {}
+    Range(TOtherContainer & cont)
+    {
+        this->begin = seqan::begin(cont, Standard());
+        this->end = seqan::end(cont, Standard());
+    }
 
-    template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE inline
-    Range(TOtherContainer const & cont):
-        begin(begin(cont, Standard())),
-        end(end(cont, Standard()))
-    {}
+//    template <typename TOtherContainer>
+//    SEQAN_HOST_DEVICE inline
+//    Range(TOtherContainer const & cont)
+//    {
+//        this->begin = seqan::begin(cont, Standard());
+//        this->end = seqan::end(cont, Standard());
+//    }
 
     SEQAN_HOST_DEVICE inline
     Range(TIterator const & begin, TIterator const & end):

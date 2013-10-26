@@ -60,7 +60,7 @@ namespace bzip2_stream{
 			);
 
 		this->setp( &(m_buffer[0]), &(m_buffer[m_buffer.size()-1]));
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -76,7 +76,7 @@ namespace bzip2_stream{
 		flush();
 		m_ostream.flush();
 		m_err=BZ2_bzCompressEnd(&m_bzip2_stream);
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -186,7 +186,7 @@ namespace bzip2_stream{
 		while (m_bzip2_stream.avail_in != 0 && m_err == BZ_RUN_OK);
 	
 		return m_err == BZ_RUN_OK || m_err == BZ_FLUSH_OK;
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -238,7 +238,7 @@ namespace bzip2_stream{
 		m_ostream.flush();
 
 		return total_written_byte_size;
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -281,7 +281,7 @@ namespace bzip2_stream{
             &(m_buffer[0])+4,     // beginning of putback area
 		    &(m_buffer[0])+4,     // read position
 	        &(m_buffer[0])+4);    // end position    
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -323,7 +323,7 @@ namespace bzip2_stream{
 			);
 
 		m_bzip2_stream.avail_in=0;
-	};
+	}
 
 
 	template<
@@ -338,7 +338,7 @@ namespace bzip2_stream{
 		>::~basic_unbzip2_streambuf()
 	{
 		BZ2_bzDecompressEnd(&m_bzip2_stream);
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -420,6 +420,6 @@ namespace bzip2_stream{
 	}
 
 
-}; // zlib_sream
+} // zlib_sream
 
 #endif

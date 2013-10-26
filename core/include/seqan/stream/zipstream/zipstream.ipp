@@ -77,7 +77,7 @@ namespace detail{
 			);
 			
 		this->setp( &(m_buffer[0]), &(m_buffer[m_buffer.size()-1]));
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -93,7 +93,7 @@ namespace detail{
 		flush();
 		m_ostream.flush();
 		m_err=deflateEnd(&m_zip_stream);
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -215,7 +215,7 @@ namespace detail{
 		while (m_zip_stream.avail_in != 0 && m_err == Z_OK);
 	
 		return m_err == Z_OK;
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -275,8 +275,7 @@ namespace detail{
 		m_ostream.flush();
 
 		return total_written_byte_size;
-	};
-
+	}
 
 	template<
 		typename Elem, 
@@ -316,7 +315,7 @@ namespace detail{
 		this->setg( &(m_buffer[0])+4,     // beginning of putback area
 		    &(m_buffer[0])+4,     // read position
 	        &(m_buffer[0])+4);    // end position    
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -350,7 +349,7 @@ namespace detail{
 		>::~basic_unzip_streambuf()
 	{
 		inflateEnd(&m_zip_stream);
-	};
+	}
 
 	template<
 		typename Elem, 
@@ -460,7 +459,7 @@ namespace detail{
 			);
 
 		m_zip_stream.avail_in=0;
-	};
+	}
 
     template<
         typename Elem, 
@@ -652,7 +651,7 @@ namespace detail{
 	{
 		_putBinaryLong( buf->get_ostream(), buf->get_crc() );
 		_putBinaryLong( buf->get_ostream(), buf->get_in_size() );
-	};
+	}
     
     template<
 		typename Elem, 
@@ -666,8 +665,8 @@ namespace detail{
 		>::add_footer()
 	{
         _addGZFooter(this->rdbuf());
-	};
+	}
 
-}; // zlib_sream
+} // zlib_sream
 
 #endif
