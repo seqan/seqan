@@ -51,6 +51,23 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class FilePager
+// ----------------------------------------------------------------------------
+
+//template <typename TValue, typename TDirection, typename TSpec = Async<> >
+//struct FilePageTable
+//{
+//    typedef Buffer<TValue>                              TBuffer;
+//    typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
+//    typedef PageChain<TPageFrame>                       TPageChain;
+//    typedef short int                                   TPageId;
+//
+//    typedef String<TPageId>                             TPageDir;
+//
+//    
+//};
+
+// ----------------------------------------------------------------------------
 // Class FileStreamBuffer
 // ----------------------------------------------------------------------------
 
@@ -308,7 +325,11 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
             return TTraits::eof();
 
         if (SEQAN_UNLIKELY(this->pptr() >= this->epptr() && !_advanceBuffer()))
+        {
+            this->setp(NULL, NULL);
+            this->setg(NULL, NULL, NULL);
             return TTraits::eof();
+        }
 
         if (!TTraits::eq_int_type(val, TTraits::eof()))
         {
@@ -327,7 +348,11 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         if (SEQAN_UNLIKELY(this->gptr() >= this->egptr()))
         {
             if (SEQAN_UNLIKELY(nextFetchPageNo > lastPageNo || !_advanceBuffer()))
+            {
+                this->setp(NULL, NULL);
+                this->setg(NULL, NULL, NULL);
                 return TTraits::eof();
+            }
         }
 
         return TTraits::to_int_type(*this->gptr());
@@ -375,8 +400,11 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         unsigned pageNo = pos / pageSize;
         unsigned offset = pos % pageSize;
 
-        if (framePtr->pageNo != pageNo)
+        if (framePtr == NULL || framePtr->pageNo != pageNo)
         {
+            if (framePtr == NULL && pos == 0)
+                return 0;
+
             _stop(true);
 
             // Fetch the given buffer and wait for this.
@@ -387,8 +415,8 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
             {
                 this->setg(NULL, NULL, NULL);
                 this->setp(NULL, NULL);
+                return -1;
             }
-            return -1;
         }
 
         // Seek to correct position in page.

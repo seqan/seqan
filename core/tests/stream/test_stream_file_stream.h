@@ -164,12 +164,15 @@ SEQAN_TYPED_TEST(FileStreamTest, Eof)
 
     // Write out test data.
     FileStream<char, Output, typename TestFixture::TSpec> stream;
+    stream.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream, toCString(tempFilename)));
     stream.write(STR, strlen(STR));
     SEQAN_ASSERT(close(stream));
 
     char buffer[100];
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    stream2.exceptions(std::ios::failbit);
+//    stream2.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
     stream2.read(buffer, strlen(STR));
     SEQAN_ASSERT_NOT(stream2.eof());
@@ -178,67 +181,64 @@ SEQAN_TYPED_TEST(FileStreamTest, Eof)
     SEQAN_ASSERT(stream2.eof());
 }
 
-/*
+//// Test of streamFlush().
+//template <typename TSpec>
+//void runTestStreamFileStreamFlush()
+//{
+//    CharString tempFilename = SEQAN_TEMP_FILENAME();
+//
+//    // Write out test data.
+//    FileStream<char, Output, typename TestFixture::TSpec> stream;
+//    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
+//    streamFlush(stream);
+//}
 
-// Test of streamFlush().
-template <typename TSpec>
-void runTestStreamFileStreamFlush()
+// Test of seek()
+SEQAN_TYPED_TEST(FileStreamTest, Seek)
 {
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
     FileStream<char, Output, typename TestFixture::TSpec> stream;
-    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
-    streamFlush(stream);
-}
-
-// Test of streamSeek().
-template <typename TSpec>
-void runTestStreamFileStreamSeek()
-{
-    CharString tempFilename = SEQAN_TEMP_FILENAME();
-
-    // Write out test data.
-    FileStream<char, Output, typename TestFixture::TSpec> stream;
-    SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
+    stream.exceptions(std::ios::failbit | std::ios::badbit);
+    SEQAN_ASSERT(open(stream, toCString(tempFilename)));
     char const * STR = "0123456789";
-    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
+    stream.write(STR, strlen(STR));
     close(stream);
 
     // Read in data and compare.
-    FileStream<char, Output, typename TestFixture::TSpec> stream2;
-    SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
+    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    stream2.exceptions(std::ios::failbit | std::ios::badbit);
+    SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
     testStreamSeek(stream2);
 }
 
 // Test of streamTell().
-template <typename TSpec>
-void runTestStreamFileStreamTell()
+SEQAN_TYPED_TEST(FileStreamTest, Tell)
 {
     CharString tempFilename = SEQAN_TEMP_FILENAME();
 
     // Write out test data.
     FileStream<char, Output, typename TestFixture::TSpec> stream;
+    stream.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
     char const * STR = "0123456789";
-    SEQAN_ASSERT_EQ(stream.write(STR, strlen(STR)), strlen(STR));
+    stream.write(STR, strlen(STR));;
     close(stream);
 
     // Test tell.
-    FileStream<char, Output, typename TestFixture::TSpec> stream2;
+    FileStream<char, Input, typename TestFixture::TSpec> stream2;
+    stream2.exceptions(std::ios::failbit | std::ios::badbit);
     SEQAN_ASSERT(open(stream2, toCString(tempFilename), OPEN_RDWR | OPEN_CREATE | OPEN_APPEND));
 
     char c = '\0';
     size_t pos = streamTell(stream2);
     SEQAN_ASSERT_EQ(pos, 0u);
-    int res = streamReadChar(c, stream2);
-    SEQAN_ASSERT_EQ(res, 0);
-    res = streamReadChar(c, stream2);
-    SEQAN_ASSERT_EQ(res, 0);
+    c = stream2.get();
+    c = stream2.get();
     pos = streamTell(stream2);
     SEQAN_ASSERT_EQ(pos, 2u);
 }
-*/
 
 // Test for reading a file of size 5MB, thus more than one page.
 SEQAN_TYPED_TEST(FileStreamTest, ReadLarge)
@@ -300,7 +300,7 @@ SEQAN_TYPED_TEST(FileStreamTest, WriteLarge)
     for (unsigned i = 0; i < FILE_SIZE; ++i)
         SEQAN_ASSERT_EQ((unsigned)buffer[i], '!' + i % 53);
 }
-/*
+
 // Test for seeking in a file of size 5MB, thus more than one page.
 SEQAN_TYPED_TEST(FileStreamTest, SeekLarge)
 {
@@ -325,6 +325,8 @@ SEQAN_TYPED_TEST(FileStreamTest, SeekLarge)
     for (unsigned pos = 0; pos + 13 < FILE_SIZE; pos += 1235)
     {
         stream.seekg(pos);
+        if (pos+13>(1<<22))
+            std::cout<<"OK";
         stream.read(buffer, 13);
         SEQAN_ASSERT_NOT(stream.eof());
         for (unsigned i = 0; i < 13; ++i)
@@ -337,5 +339,5 @@ SEQAN_TYPED_TEST(FileStreamTest, SeekLarge)
         SEQAN_ASSERT_EQ((unsigned)buffer[i], '!' + (FILE_SIZE - 5 + i) % 53);
 
 }
-*/
+
 #endif  // TEST_STREAM_TEST_STREAM_FILE_STREAM_H_
