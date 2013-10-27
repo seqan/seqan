@@ -54,6 +54,9 @@ typedef Tag<Input_> Input;
 struct Output_;
 typedef Tag<Output_> Output;
 
+struct Bidirectional_;
+typedef Tag<Bidirectional_> Bidirectional;
+
 // --------------------------------------------------------------------------
 // Metafunction BasicStream
 // --------------------------------------------------------------------------
@@ -63,7 +66,12 @@ struct BasicStream:
     If<
         IsSameType<TDirection, Input>,
         std::basic_istream<TValue>,
-        std::basic_ostream<TValue> >
+        typename If<
+            IsSameType<TDirection, Output>,
+            std::basic_ostream<TValue>,
+            std::basic_iostream<TValue>
+        >::Type
+    >
 {};
 
 template <typename TDirection>
@@ -79,6 +87,12 @@ template <>
 struct IosOpenMode<Output>
 {
     enum { VALUE = std::ios_base::out };
+};
+
+template <>
+struct IosOpenMode<Bidirectional>
+{
+    enum { VALUE = std::ios_base::in | std::ios_base::out };
 };
 
 // --------------------------------------------------------------------------
@@ -104,6 +118,48 @@ template <typename TObject>
 struct Chunk
 {
     typedef Nothing Type;
+};
+
+// --------------------------------------------------------------------------
+// Concept InputStreamConcept
+// --------------------------------------------------------------------------
+
+SEQAN_CONCEPT(InputStreamConcept, (TStream))
+{
+    typedef typename Value<TStream>::Type       TValue;
+    typedef typename Size<TStream>::Type        TSize;
+    typedef typename Position<TStream>::Type    TPosition;
+
+    SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TPosition>));
+
+    SEQAN_CONCEPT_USAGE(InputStreamConcept)
+    {
+    }
+};
+
+// --------------------------------------------------------------------------
+// Concept OutputStreamConcept
+// --------------------------------------------------------------------------
+
+SEQAN_CONCEPT(OutputStreamConcept, (TStream))
+{
+    typedef typename Value<TStream>::Type       TValue;
+    typedef typename Size<TStream>::Type        TSize;
+    typedef typename Position<TStream>::Type    TPosition;
+
+    SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<TPosition>));
+
+    SEQAN_CONCEPT_USAGE(OutputStreamConcept)
+    {
+    }
+};
+
+// --------------------------------------------------------------------------
+// Concept BidirectionalStreamConcept
+// --------------------------------------------------------------------------
+
+SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)(OutputStreamConcept))
+{
 };
 
 }  // namespace seqean

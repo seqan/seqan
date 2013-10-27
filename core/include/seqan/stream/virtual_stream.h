@@ -345,16 +345,36 @@ public:
     }
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TDirection>
 struct Value<VirtualStream<TValue, TDirection> >
 {
     typedef TValue Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Position
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TDirection>
 struct Position<VirtualStream<TValue, TDirection> >:
     Position<typename VirtualStream<TValue, TDirection>::TFile> {};
 
+// ----------------------------------------------------------------------------
+// Concepts
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+SEQAN_CONCEPT_IMPL((VirtualStream<TValue, Input>), (InputStreamConcept));
+
+template <typename TValue>
+SEQAN_CONCEPT_IMPL((VirtualStream<TValue, Output>), (OutputStreamConcept));
+
+template <typename TValue>
+SEQAN_CONCEPT_IMPL((VirtualStream<TValue, Bidirectional>), (BidirectionalStreamConcept));
 
 // --------------------------------------------------------------------------
 // Class VirtualStreamFactoryContext_
