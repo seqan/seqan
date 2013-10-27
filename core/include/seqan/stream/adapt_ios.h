@@ -38,7 +38,7 @@
 #define SEQAN_STREAM_ADAPT_IOS_H_
 
 #define SEQAN_ASSERT_BADBIT(s) SEQAN_ASSERT_MSG(s.exceptions() | std::ios_base::badbit, \
-        "The badbit exception is not set in the stream. Call either std::exceptions() or init() on the stream.")
+        "The badbit exception is not set in the stream. Call either std::exceptions() or streamInit() on the stream.")
 
 namespace seqan {
 
@@ -143,48 +143,29 @@ struct Value<std::basic_ostringstream<TValue, TTraits> > :
     Value<std::basic_ostream<TValue, TTraits>  > {};
 
 // ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<, IsInput>
+// Concepts
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_ostream<TValue, TTraits>, IsInput> : False {};
-
-// ----------------------------------------------------------------------------
-// Metafunction HasStreamFeature<std::, IsOutput>
-// ----------------------------------------------------------------------------
+SEQAN_CONCEPT_IMPL((std::basic_istream<TValue, TTraits>), (InputStreamConcept));
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_ifstream<TValue, TTraits>), (InputStreamConcept));
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_istringstream<TValue, TTraits>), (InputStreamConcept));
 
 template <typename TValue, typename TTraits>
-struct HasStreamFeature<std::basic_istream<TValue, TTraits>, IsOutput> : False {};
+SEQAN_CONCEPT_IMPL((std::basic_ostream<TValue, TTraits>), (OutputStreamConcept));
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_ofstream<TValue, TTraits>), (OutputStreamConcept));
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_ostringstream<TValue, TTraits>), (OutputStreamConcept));
 
-// ----------------------------------------------------------------------------
-// Feature inheritance
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_fstream<TValue, TTraits>, TSpec> :
-    HasStreamFeature<std::basic_iostream<TValue, TTraits>, TSpec > {};
-
-template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_stringstream<TValue, TTraits>, TSpec> :
-    HasStreamFeature<std::basic_iostream<TValue, TTraits>, TSpec > {};
-
-
-template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_ifstream<TValue, TTraits>, TSpec> :
-    HasStreamFeature<std::basic_istream<TValue, TTraits>, TSpec > {};
-
-template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_istringstream<TValue, TTraits>, TSpec> :
-    HasStreamFeature<std::basic_istream<TValue, TTraits>, TSpec > {};
-
-
-template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_ofstream<TValue, TTraits>, TSpec> :
-    HasStreamFeature<std::basic_ostream<TValue, TTraits>, TSpec > {};
-
-template <typename TValue, typename TTraits, typename TSpec>
-struct HasStreamFeature<std::basic_ostringstream<TValue, TTraits>, TSpec> :
-    HasStreamFeature<std::basic_ostream<TValue, TTraits>, TSpec > {};
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_iostream<TValue, TTraits>), (BidirectionalStreamConcept));
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_fstream<TValue, TTraits>), (BidirectionalStreamConcept));
+template <typename TValue, typename TTraits>
+SEQAN_CONCEPT_IMPL((std::basic_stringstream<TValue, TTraits>), (BidirectionalStreamConcept));
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultOpenMode<std::>
@@ -268,15 +249,15 @@ streamEof(TStream & stream)
 // Function streamPeek()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
-inline typename Value<std::basic_istream<TValue, TTraits> >::Type
-streamPeek(std::basic_istream<TValue, TTraits> & stream)
+template <typename TStream>
+inline typename Value<TStream>::Type
+streamPeek(TStream & stream)
 {
-    typedef typename Value<std::basic_istream<TValue, TTraits> >::Type TValue_;
+    typedef typename Value<TStream>::Type TValue;
 
     // Peak sets eofbit if the next char is EOF.
     SEQAN_ASSERT_BADBIT(stream);
-    TValue_ val = stream.peek();
+    TValue val = (TValue)stream.peek();
     SEQAN_ASSERT_NOT(stream.fail());
     return val;
 }
@@ -285,15 +266,15 @@ streamPeek(std::basic_istream<TValue, TTraits> & stream)
 // Function streamGet()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
-inline typename Value<std::basic_istream<TValue, TTraits> >::Type
-streamGet(std::basic_istream<TValue, TTraits> & stream)
+template <typename TStream>
+inline typename Value<TStream>::Type
+streamGet(TStream & stream)
 {
-    typedef typename Value<std::basic_istream<TValue, TTraits> >::Type TValue_;
+    typedef typename Value<TStream>::Type TValue;
 
     SEQAN_ASSERT_BADBIT(stream);
     SEQAN_ASSERT_NOT(streamEof(stream));
-    TValue_ val = TTraits::to_char_type(stream.get());
+    TValue val = (TValue)stream.get();
     SEQAN_ASSERT_NOT(stream.fail());
     return val;
 }
@@ -302,9 +283,9 @@ streamGet(std::basic_istream<TValue, TTraits> & stream)
 // Function streamPut()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits, typename TValue2>
+template <typename TStream, typename TValue>
 inline void
-streamPut(std::basic_ostream<TValue, TTraits> & stream, TValue2 val)
+streamPut(TStream & stream, TValue const & val)
 {
     SEQAN_ASSERT_BADBIT(stream);
     stream.put(val);
@@ -315,9 +296,9 @@ streamPut(std::basic_ostream<TValue, TTraits> & stream, TValue2 val)
 // Function streamFlush()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
+template <typename TStream, typename TValue>
 inline void
-streamFlush(std::basic_ios<TValue, TTraits> & stream)
+streamFlush(TStream & stream)
 {
     SEQAN_ASSERT_BADBIT(stream);
     stream << std::flush;
@@ -328,27 +309,34 @@ streamFlush(std::basic_ios<TValue, TTraits> & stream)
 // Function streamSeek()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits, typename TDelta, typename TPos>
-inline void
-streamSeek(std::basic_istream<TValue, TTraits> & stream, TDelta delta, TPos origin)
+// Input
+template <typename TStream, typename TDelta, typename TPos>
+inline SEQAN_FUNC_ENABLE_IF(
+    And<    Is<InputStreamConcept<TStream> >,
+        Not<Is<BidirectionalStreamConcept<TStream> > > >, void)
+streamSeek(TStream & stream, TDelta delta, TPos origin)
 {
     SEQAN_ASSERT_BADBIT(stream);
     stream.seekg(delta, _getSTLStyleOrigin(origin));
     SEQAN_ASSERT_NOT(stream.fail());
 }
 
-template <typename TValue, typename TTraits, typename TDelta, typename TPos>
-inline void
-streamSeek(std::basic_ostream<TValue, TTraits> & stream, TDelta delta, TPos origin)
+// Output
+template <typename TStream, typename TDelta, typename TPos>
+inline SEQAN_FUNC_ENABLE_IF(
+    And<    Is<OutputStreamConcept<TStream> >,
+        Not<Is<BidirectionalStreamConcept<TStream> > > >, void)
+streamSeek(TStream & stream, TDelta delta, TPos origin)
 {
     SEQAN_ASSERT_BADBIT(stream);
     stream.seekp(delta, _getSTLStyleOrigin(origin));
     SEQAN_ASSERT_NOT(stream.fail());
 }
 
-template <typename TValue, typename TTraits, typename TDelta, typename TPos>
-inline void
-streamSeek(std::basic_iostream<TValue, TTraits> & stream, TDelta delta, TPos origin)
+// Bidirectional
+template <typename TStream, typename TDelta, typename TPos>
+inline SEQAN_FUNC_ENABLE_IF(Is<BidirectionalStreamConcept<TStream> >, void)
+streamSeek(TStream & stream, TDelta delta, TPos origin)
 {
     SEQAN_ASSERT_BADBIT(stream);
     stream.seekp(delta, _getSTLStyleOrigin(origin));
@@ -359,11 +347,14 @@ streamSeek(std::basic_iostream<TValue, TTraits> & stream, TDelta delta, TPos ori
 // Function streamTell()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
-inline typename Position<std::basic_istream<TValue, TTraits> >::Type
-streamTell(std::basic_istream<TValue, TTraits> & stream)
+// Input
+template <typename TStream>
+inline SEQAN_FUNC_ENABLE_IF(
+    And<    Is<InputStreamConcept<TStream> >,
+        Not<Is<BidirectionalStreamConcept<TStream> > > >, typename Position<TStream>::Type)
+streamTell(TStream & stream)
 {
-    typedef typename Position<std::basic_istream<TValue, TTraits> >::Type   TPos;
+    typedef typename Position<TStream>::Type TPos;
 
     SEQAN_ASSERT_BADBIT(stream);
     TPos pos = stream.tellg();
@@ -371,11 +362,14 @@ streamTell(std::basic_istream<TValue, TTraits> & stream)
     return pos;
 }
 
-template <typename TValue, typename TTraits>
-inline typename Position<std::basic_ostream<TValue, TTraits> >::Type
-streamTell(std::basic_ostream<TValue, TTraits> & stream)
+// Output
+template <typename TStream>
+inline SEQAN_FUNC_ENABLE_IF(
+    And<    Is<OutputStreamConcept<TStream> >,
+        Not<Is<BidirectionalStreamConcept<TStream> > > >, typename Position<TStream>::Type)
+streamTell(TStream & stream)
 {
-    typedef typename Position<std::basic_ostream<TValue, TTraits> >::Type   TPos;
+    typedef typename Position<TStream>::Type TPos;
 
     SEQAN_ASSERT_BADBIT(stream);
     TPos pos = stream.tellp();
@@ -383,11 +377,12 @@ streamTell(std::basic_ostream<TValue, TTraits> & stream)
     return pos;
 }
 
-template <typename TValue, typename TTraits>
-inline typename Position<std::basic_iostream<TValue, TTraits> >::Type
-streamTell(std::basic_iostream<TValue, TTraits> & stream)
+// Bidirectional
+template <typename TStream>
+inline SEQAN_FUNC_ENABLE_IF(Is<BidirectionalStreamConcept<TStream> >, typename Position<TStream>::Type)
+streamTell(TStream & stream)
 {
-    typedef typename Position<std::basic_iostream<TValue, TTraits> >::Type  TPos;
+    typedef typename Position<TStream>::Type  TPos;
 
     SEQAN_ASSERT_BADBIT(stream);
     SEQAN_ASSERT_EQ(stream.tellg(), stream.tellp());
@@ -397,12 +392,12 @@ streamTell(std::basic_iostream<TValue, TTraits> & stream)
 }
 
 // ----------------------------------------------------------------------------
-// Function init()
+// Function streamInit()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
 inline void
-init(std::basic_ios<TValue, TTraits> & stream)
+streamInit(std::basic_ios<TValue, TTraits> & stream)
 {
     stream.exceptions(std::ios_base::badbit);
 }
@@ -415,7 +410,7 @@ template <typename TValue, typename TTraits>
 inline bool
 open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
-    init(stream);
+    streamInit(stream);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
 //    SEQAN_ASSERT_NOT(stream.fail());
     return stream.is_open();
@@ -425,7 +420,7 @@ template <typename TValue, typename TTraits>
 inline bool
 open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
-    init(stream);
+    streamInit(stream);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
 //    SEQAN_ASSERT_NOT(stream.fail());
     return stream.is_open();
@@ -435,7 +430,7 @@ template <typename TValue, typename TTraits>
 inline bool
 open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
-    init(stream);
+    streamInit(stream);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
 //    SEQAN_ASSERT_NOT(stream.fail());
     return stream.is_open();

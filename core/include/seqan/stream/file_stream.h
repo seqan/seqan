@@ -522,6 +522,10 @@ struct Value<FileStreamBuffer<TValue, TDirection, TSpec> >
     typedef TValue Type;
 };
 
+template <typename TValue, typename TDirection, typename TSpec>
+struct Value<FileStream<TValue, TDirection, TSpec> >:
+    Value<FileStreamBuffer<TValue, TDirection, TSpec> > {};
+
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
@@ -535,6 +539,10 @@ struct Position<FileStreamBuffer<TValue, TDirection, TSpec> >
     typedef typename Position<TFile_>::Type Type;
 };
 
+template <typename TValue, typename TDirection, typename TSpec>
+struct Position<FileStream<TValue, TDirection, TSpec> >:
+    Position<FileStreamBuffer<TValue, TDirection, TSpec> > {};
+
 // ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
@@ -547,6 +555,23 @@ struct Size<FileStreamBuffer<TValue, TDirection, TSpec> >
 
     typedef typename Size<TFile_>::Type Type;
 };
+
+template <typename TValue, typename TDirection, typename TSpec>
+struct Size<FileStream<TValue, TDirection, TSpec> >:
+    Size<FileStreamBuffer<TValue, TDirection, TSpec> > {};
+
+// ----------------------------------------------------------------------------
+// Concepts
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((FileStream<TValue, Input, TSpec>), (InputStreamConcept));
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((FileStream<TValue, Output, TSpec>), (OutputStreamConcept));
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((FileStream<TValue, Bidirectional, TSpec>), (BidirectionalStreamConcept));
 
 
 // ============================================================================
