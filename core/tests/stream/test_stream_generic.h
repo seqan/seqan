@@ -302,28 +302,20 @@ void testStreamSeek(TStream & stream)
 
     // TODO(holtgrew): Do real tests for all variants.
     // TODO(holtgrew): Use constant for origin in the future.
-    char c;
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
-    int res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, '0');
+    SEQAN_ASSERT_EQ(streamPeek(stream), '0');
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 0);
 
-    res = streamSeek(stream, 4, SEEK_CUR);
-    SEQAN_ASSERT_EQ(res, 0);
+    streamSeek(stream, 4, SEEK_CUR);
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 4);
 
-    res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_EQ(c, '4');
+    SEQAN_ASSERT_EQ(streamPeek(stream), '4');
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 4);
 
-    res = streamSeek(stream, -2, SEEK_CUR);
-    SEQAN_ASSERT_EQ(res, 0);
+    streamSeek(stream, -2, SEEK_CUR);
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 2);
 
-    res = streamPeek(c, stream);
-    SEQAN_ASSERT_EQ(c, '2');
+    SEQAN_ASSERT_EQ(streamPeek(stream), '2');
     SEQAN_ASSERT_EQ(static_cast<int>(streamTell(stream)), 2);
 }
 
