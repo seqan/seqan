@@ -134,12 +134,14 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
  * 
  * @brief Creates a suffix array from a given text.
  * 
- * @signature createSuffixArray(suffixArray, text[, algo_tag])
+ * @signature void createSuffixArray(suffixArray, text[, algo_tag])
  * 
  * @param text A given text. Types: @link SequenceConcept @endlink
  * @param algo_tag A tag that identifies the algorithm which is used for
  *                 creation.
  * @param suffixArray The resulting suffix array.
+ *
+ * @return void
  * 
  * @section Remarks
  * 
@@ -318,7 +320,7 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a lcp table from a given text and suffix array.
  * 
- * @signature createLcpTable(lcp, text, suffixArray[, algo_tag])
+ * @signature void createLcpTable(lcp, text, suffixArray[, algo_tag])
  * 
  * @param text A given text. Types: @link SequenceConcept @endlink
  * @param algo_tag A tag that identifies the algorithm which is used for
@@ -326,6 +328,8 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * @param suffixArray The suffix array of <tt>text</tt>.
  * @param lcp The resulting lcp table.
  * 
+ * @return void
+ *
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
@@ -537,13 +541,15 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a Burrows-Wheeler table from a given text and suffix array.
  * 
- * @signature createBWTable(bwt, text, suffixArray[, algo_tag])
+ * @signature void createBWTable(bwt, text, suffixArray[, algo_tag])
  * 
  * @param bwt The resulting Burrows-Wheeler table.
  * @param algo_tag A tag that identifies the algorithm which is used for
  *                 creation.
  * @param suffixArray The suffix array of <tt>text</tt>.
  * @param text A given text. Types: @link SequenceConcept @endlink
+ *
+ * @return void
  * 
  * @section Remarks
  * 
@@ -611,10 +617,12 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Sorts a string of occurrences.
  * 
- * @signature orderOccurrences(occString)
+ * @signature void orderOccurrences(occString)
  * 
  * @param occString String of occurrences.
  * 
+ * @return void
+ *
  * @section Remarks
  * 
  * The occurrences are sorted by increasing positions.
@@ -664,15 +672,14 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a specific @link Fibre @endlink.
  * 
- * @signature indexCreate(index, fibreTag[, algoTag])
+ * @signature bool indexCreate(index, fibreTag[, algoTag])
  * 
  * @param fibreTag A tag that identifies the @link Fibre @endlink
  * @param algoTag A tag that identifies the algorithm which is used to create
  *                 the fibre. Default: The result of @link Index#DefaultIndexCreator
  *                 @endlink.
  * @param index The @link Index @endlink object holding the fibre.
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
- *                 creation.
+ * @return bool <tt>true</tt> on a success and false <tt>otherwise</tt>
  * 
  * @section Remarks
  * 
@@ -751,14 +758,13 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Returns whether a specific @link Fibre @endlink is present.
  * 
- * @signature indexSupplied(index, fibreTag)
+ * @signature bool indexSupplied(index, fibreTag)
  * 
  * @param index The @link Index @endlink object holding the fibre.
  * @param fibreTag A tag that identifies the @link Fibre @endlink. 
  *                 Index Fibres
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt>, iff the fibre is
- *                 present.
+ * @return bool <tt>true</tt>, iff the fibre is present.
  */
 	template <typename TText, typename TSpec, typename TFibre>
 	SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
@@ -808,13 +814,12 @@ I	ISSISSIPPI
  * 
  * @brief On-demand creation of a specific @link Fibre @endlink.
  * 
- * @signature indexRequire(index, fibre_tag)
+ * @signature bool indexRequire(index, fibre_tag)
  * 
  * @param index The @link Index @endlink object holding the fibre.
  * @param fibre_tag A tag that identifies the @link Fibre @endlink
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
- *                 creation.
+ * @return bool <tt>true</tt> on a successful creation.
  * 
  * @section Remarks
  * 
