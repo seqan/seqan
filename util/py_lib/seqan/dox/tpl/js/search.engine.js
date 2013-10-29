@@ -31,6 +31,17 @@ and based on the Tipue Search, http://www.tipue.com
             searchOnKeyPress: false,
             queryInput: $form.find('input[type=text],input[type=search]'),
             queryLangEntityInput: $form.find('select'),
+            langEntityDefaultOrder: [
+            	'concept', 'class', 'enum',
+				'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
+				'metafunction', 'global_metafunction', 'interface_metafunction',
+				'tag', 'grouped_tag', 'generic',
+				'function', 'global_function', 'interface_function', 'member_function',
+				'variable', 'global_variable', 'member_variable',
+				'adaption', 'macro',
+				'group', 'page',
+				'unknown'],
+			maxResultsPerGroup: 5,
             button: $form.find('input[type=submit],input[type=button]'),
             output: $form.find('.results'),
             callback: function($form, $results) {}
@@ -114,13 +125,25 @@ and based on the Tipue Search, http://www.tipue.com
             $form.submit(function () {
 				return false;
             });
-            settings.queryInput.keyup(function (event) {
+            settings.queryInput.change(function() {
+                search(0, true);
+            });
+            settings.queryInput.keyup(function(event) {
                 if (event.keyCode == '13' || settings.searchOnKeyPress) {
                     search(0, true);
                 }
             });
             settings.queryLangEntityInput.change(function (event) {
                 search(0, true);
+            });
+            $('#results').on('click', 'a', function() {
+            console.log($(this).parents('[data-lang-entity-container]'));
+            	$(this).parents('[data-lang-entity-container]').find('.more').each(function() {
+            		$this = $(this);
+            		if($this.hasClass('result')) $this.fadeIn();
+            		else $this.css('display', 'none');
+            	});
+            	return false;
             });
 
 			/**
@@ -233,9 +256,21 @@ and based on the Tipue Search, http://www.tipue.com
                           		out += '<div class="results_count">' + c_c + ' results</div>';
                         	}
                         }
-
-                        found.sort(function(r1, r2) { return r1.score - r2.score; });
+                        
+                        found.sort(function(r1, r2) {
+                        	var o1 = $.inArray(r1.langEntity, settings.langEntityDefaultOrder);
+                        	var o2 = $.inArray(r2.langEntity, settings.langEntityDefaultOrder);
+                        	
+                        	if(o1 < 0) o1 = 9999;
+                        	if(o2 < 0) o2 = 9999;
+                        	
+                        	if(o1 == o2) return r1.score - r2.score;
+                        	return o1-o2;
+                        });
+                        
                         var l_o = 0;
+                        var entriesInGroup;
+                        var lastLangEntity = false;
                         out += '<ol class="results">';
                         for (var i = 0; i < found.length; i++) {
                             if (settings.numElementsPerPage < 0 || (l_o >= start && l_o < settings.numElementsPerPage + start)) {
@@ -243,43 +278,58 @@ and based on the Tipue Search, http://www.tipue.com
                             	var langEntityEntry = window.langEntities[langEntity];
                             	if(!langEntityEntry) langEntityEntry = { name: 'UNKNOWN', ideogram: 'UNKNOWN', color: '#FF0000', description: 'Unknown language entity' };
                             	
-                            	out += '<li class="result" data-lang-entity-container="' + langEntity + '">' +
-                                       '<h2>' +
-                                         '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
-                                            '<a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
-                                            '<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
-                                         '</span>' +
-                                       '</h2>' +
-                                       '<div>';
+                            	if(lastLangEntity != langEntity) {
+                            		if(lastLangEntity) out += '</ol></li>';
+                            		entriesInGroup = 0;
+                            		out += '<li data-lang-entity-container="' + langEntity + '" data-pimped="true"><span data-lang-entity="' + langEntity + '"><a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a><span>' + langEntityEntry.name + '</span></span><ol class="nav">';
+                            		lastLangEntity = langEntity;
+                            	} else {
+                            		entriesInGroup++;
+                            	}
+                            	
+                            	if(entriesInGroup != settings.maxResultsPerGroup) {
+									out += '<li class="result' + (entriesInGroup >= settings.maxResultsPerGroup ? ' more' : '') + '">' +
+										   '<h2>' +
+											 '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
+												'<a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
+												'<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
+											 '</span>' +
+										   '</h2>' +
+										   '<div>';
+										   
+									var t = found[i].text;
+									var t_d = '';
+									var t_w = t.split(' ');
+									if (t_w.length < settings.descriptiveWords) {
+										t_d = t;
+									} else {
+										for (var f = 0; f < settings.descriptiveWords; f++) {
+											t_d += t_w[f] + ' ';
+										}
+									}
+									t_d = $.trim(t_d);
+									if (t_d.charAt(t_d.length - 1) != '.') {
+										t_d += ' ...';
+									}
+									out += '<div class="text">' + t_d + '</div>';
 
-                                var t = found[i].text;
-                                var t_d = '';
-                                var t_w = t.split(' ');
-                                if (t_w.length < settings.descriptiveWords) {
-                                    t_d = t;
+									if (settings.showURL) {
+										t_url = found[i].location;
+										if (t_url.length > 45) {
+											t_url = found[i].location.substr(0, 45) + ' ...';
+										}
+										out += '<div class="location"><a href="' + found[i].location + '"' + ankerTarget + '>' + t_url + '</a></div>';
+									}
+									out += '</div>';
+									out += '</li>';
                                 } else {
-                                    for (var f = 0; f < settings.descriptiveWords; f++) {
-                                        t_d += t_w[f] + ' ';
-                                    }
+									out += '<li class="more"><a href="#">...</a></li>';
                                 }
-                                t_d = $.trim(t_d);
-                                if (t_d.charAt(t_d.length - 1) != '.') {
-                                    t_d += ' ...';
-                                }
-                                out += '<div class="text">' + t_d + '</div>';
-
-                                if (settings.showURL) {
-                                    t_url = found[i].location;
-                                    if (t_url.length > 45) {
-                                        t_url = found[i].location.substr(0, 45) + ' ...';
-                                    }
-                                    out += '<div class="location"><a href="' + found[i].location + '"' + ankerTarget + '>' + t_url + '</a></div>';
-                                }
-                                out += '</div>';
-                                out += '</li>';
                             }
                             l_o++;
                         }
+                        
+                        if(lastLangEntity) out += '</ol></li>';
                         out += '</ol>';
 
                         if (settings.numElementsPerPage > 0 && found.length > settings.numElementsPerPage) {
@@ -327,7 +377,6 @@ and based on the Tipue Search, http://www.tipue.com
                 }
 
                 settings.output.html(out);
-                //settings.output.slideDown(200);
 
                 $form.find('replaced').click(function () {
                     search(0, false);

@@ -272,6 +272,12 @@
     $(document).ready(function () {
         createFilterableSearch($('#search'));
         $('#search').fadeIn();
+        
+        // search immediately if query was passed within the url
+		var q = decodeURI((RegExp('q=' + '(.+?)(&|$)').exec(parent.location.search)||[,null])[1]);
+		if(q) {
+			$('#search [type=search]').val(q).change().focus();
+		}
     });
     
     // hide form and results until they are pimped
