@@ -1,6 +1,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
+#include <seqan/seq_io.h>
 
 using namespace seqan;
 
@@ -18,16 +18,8 @@ int main(int argc, char ** argv)
         append(path, "/core/tests/seq_io/test_dna.fq");
     }
 
-//    typedef String<char, MMap<> >                   TString;
-//    typedef Iterator<TString, Rooted>::Type         TIter;
-//    TString string(toCString(path), OPEN_RDWR | OPEN_APPEND);
-//    std::cout << length(string) << std::endl;
-//    TIter it = begin(string, Rooted());
-
-    typedef VirtualStream<char, Input>              TStream;
-    typedef Iter<TStream, StreamIterator<Input> >   TIter;
-    TStream stream(toCString(path), OPEN_RDONLY);
-    TIter it(stream);
+    // TODO(esiragusa): define DefaultOpenMode<> on VirtualStream
+    SequenceFile<Input> file(toCString(path), OPEN_RDONLY);
 
     CharString id;
     CharString seq;
@@ -41,11 +33,11 @@ int main(int argc, char ** argv)
     typename Size<CharString>::Type records = 0;
     typename Size<CharString>::Type bases = 0;
 
-    while (!atEnd(it))
+    while (!atEnd(file))
     {
         try
         {
-            readRecord(id, seq, qual, it, Fastq());
+            read(file, id, seq, qual);
         }
         catch (std::runtime_error & e)
         {
