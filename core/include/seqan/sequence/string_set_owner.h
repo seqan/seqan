@@ -317,6 +317,22 @@ idToPosition(StringSet<TString, Owner<TSpec> > const&,
     return id;
 }
 
+// --------------------------------------------------------------------------
+// Function swap()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+void swap(StringSet<TString, Owner<TSpec> > & lhs,
+          StringSet<TString, Owner<TSpec> > & rhs)
+{
+    using std::swap;
+
+    swap(lhs.strings, rhs.strings);
+    swap(lhs.limits, rhs.limits);
+    swap(lhs.limitsValid, rhs.limitsValid);
+    swap(lhs.concat, rhs.concat);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_OWNER_H_
