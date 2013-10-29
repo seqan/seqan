@@ -373,6 +373,22 @@ struct Iterator<VirtualStream<TValue, TDirection>, Standard>
     typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> >    Type;
 };
 
+// --------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// --------------------------------------------------------------------------
+
+template <typename TValue>
+struct DefaultOpenMode<VirtualStream<TValue, Input> >
+{
+    enum { VALUE = OPEN_RDONLY };
+};
+
+template <typename TValue>
+struct DefaultOpenMode<VirtualStream<TValue, Output> >
+{
+    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
+};
+
 // ----------------------------------------------------------------------------
 // Concepts
 // ----------------------------------------------------------------------------
