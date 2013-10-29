@@ -60,8 +60,8 @@
 					var langEntity = $this.attr('data-lang-entity');
 					
 					// if dealing with list items
-					// wrap the inner nodes to not destroy the li
-					if($this.prop('tagName') == 'LI') {
+					// wrap the inner nodes to not destroy some tags
+					if(jQuery.inArray($this.prop('tagName'), ['LI', 'DT'])) {
 						$this.wrapInner('<span data-lang-entity="' + langEntity + '"/>')
 							.removeAttr('data-lang-entity');
 						$this = $this.children();
@@ -192,15 +192,26 @@
                     return $(this).val();
                 });
 
-                //return (options.length - checkedOptions.length) + "/" + options.length + " excluded";
+                //return '<span class="glyphicon glyphicon-filter"></span><small>' + options.length + '</small><small>' + checkedOptions.length + '</small>';
 
-                if (options.length == checkedOptions.length) return "all visible";
-                else if (options.length - checkedOptions.length == 1) return "1 excluded";
-                else if (checkedOptions.length == 0) return "all excluded!";
-                else return (options.length - checkedOptions.length) + " excluded";
+				var $btn = $el.find('button.multiselect');
+				if(checkedOptions.length == options.length) {
+					$btn.removeClass('btn-warning');
+					$btn.addClass('btn-primary');
+				} else {
+					$btn.addClass('btn-warning');
+					$btn.addClass('btn-primary');
+				}
+
+                if (options.length == checkedOptions.length) return '<span class="glyphicon glyphicon-filter"></span><small>all visible</small>';
+                else if (options.length - checkedOptions.length == 1) return '<span class="glyphicon glyphicon-filter"></span><small>1 excluded</small>';
+                else if (checkedOptions.length == 0) return '<span class="glyphicon glyphicon-filter"></span><small>all excluded</small>';
+                else return '<span class="glyphicon glyphicon-filter"></span><small>' + (options.length - checkedOptions.length) + ' excluded</small>';
             },
             onChange: function (element, checked) {}
         });
+        
+        $el.find('button.multiselect').attr('title', '');
 
         // copies the options value to <li>'s data-lang-entity-container attribute classes of the parent li element (for easier styling)
         $el.find('.multiselect-container input[value]').each(function () {
@@ -260,6 +271,10 @@
 
     $(document).ready(function () {
         createFilterableSearch($('#search'));
+        $('#search').fadeIn();
     });
+    
+    // hide form and results until they are pimped
+	$('head').append('<style>#search, #results { display: none; }</style>');
 
 })(jQuery);
