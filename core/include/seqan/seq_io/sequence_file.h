@@ -49,7 +49,8 @@ namespace seqan {
 template <typename TDirection, typename TSpec = void>
 struct SequenceFile
 {
-    typedef VirtualStream<char, TDirection>             TStream;
+    typedef std::ifstream                                TStream;
+//    typedef VirtualStream<char, TDirection>             TStream;
     typedef typename Iterator<TStream, Standard>::Type  TIter;
 
     AutoSeqFormat   format;
@@ -176,16 +177,16 @@ read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq,
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
-write(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
+write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq)
 {
     switch (value(file.format))
     {
         case Find<AutoSeqFormat, Fasta>::VALUE:
-            writeRecord(meta, seq, file.iter, Fasta());
+            writeRecord(file.iter, meta, seq, Fasta());
             break;
 
         case Find<AutoSeqFormat, Fastq>::VALUE:
-            writeRecord(meta, seq, file.iter, Fastq());
+            writeRecord(file.iter, meta, seq, Fastq());
             break;
     }
 }
@@ -196,7 +197,7 @@ write(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq
 
 template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
-write(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq, TQualString & qual)
+write(SequenceFile<TDirection, TSpec> & file, TIdString const & meta, TSeqString const & seq, TQualString const & qual)
 {
     writeRecord(meta, seq, qual, file.iter, Fastq());
 }
