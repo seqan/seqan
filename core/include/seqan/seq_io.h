@@ -45,36 +45,19 @@
 #include <seqan/stream.h>
 
 // ===========================================================================
-// Lower-Level I/O Interface for Sequences
+// Sequence File Formats
 // ===========================================================================
 
-// File Format Guessing
-//#include <seqan/seq_io/guess_stream_format.h>
+#include <seqan/seq_io/fasta_fastq.h>
 
-#include <seqan/seq_io/read_fasta_fastq.h>
 //#include <seqan/seq_io/read_embl.h>
 //#include <seqan/seq_io/read_genbank.h>
-//
-//#include <seqan/seq_io/write_fasta_fastq.h>
 
 // ===========================================================================
-// SequenceFile
+// Sequence File
 // ===========================================================================
 
 #include <seqan/seq_io/sequence_file.h>
-
-// ===========================================================================
-// SequenceStream
-// ===========================================================================
-
-//#include <seqan/seq_io/sequence_stream_impl.h>
-//#include <seqan/seq_io/sequence_stream.h>
-
-// ===========================================================================
-// Reading FASTA for Demos
-// ===========================================================================
-
-//#include <seqan/seq_io/simple_read_fasta.h>
 
 // ===========================================================================
 // Genomic Region
