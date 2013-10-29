@@ -364,6 +364,16 @@ struct Position<VirtualStream<TValue, TDirection> >:
     Position<typename VirtualStream<TValue, TDirection>::TFile> {};
 
 // ----------------------------------------------------------------------------
+// Metafunction Iterator
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection>
+struct Iterator<VirtualStream<TValue, TDirection>, Standard>
+{
+    typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> >    Type;
+};
+
+// ----------------------------------------------------------------------------
 // Concepts
 // ----------------------------------------------------------------------------
 
