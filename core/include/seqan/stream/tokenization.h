@@ -731,65 +731,6 @@ write3(TTarget &target, TContainer &cont)
 }
 
 
-// This reads Meta and Sequence
-template <typename TIdString,
-          typename TSeqString,
-          typename TFwdIterator>
-inline void
-readRecord(TIdString &meta,
-           TSeqString &seq,
-           TFwdIterator &iter,
-           Fasta)
-{
-    EqualsChar<'>'> fastaBegin;
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertAlphabet("Invalid character in Fasta sequence!");
-
-    clear(meta);
-    clear(seq);
-
-    skipUntil(iter, fastaBegin);    // forward to the next '>'
-    ++iter;                         // skip '>'
-    readLine(meta, iter);           // read Fasta id
-    readUntil(seq, iter, fastaBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fasta sequence
-}
-
-template <typename TIdString,
-          typename TSeqString,
-          typename TQualString,
-          typename TFwdIterator>
-inline void
-readRecord(TIdString &meta,
-           TSeqString &seq,
-           TQualString &qual,
-           TFwdIterator &iter,
-           Fastq)
-{
-    EqualsChar<'@'> fastqBegin;
-    EqualsChar<'+'> qualsBegin;
-
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertAlphabet("Invalid sequence character in Fastq sequence!");
-
-    IgnoreOrAssertFunctor<IsBlank, IsInAlphabet<typename Value<TQualString>::Type>, std::runtime_error>
-        ignoreBlankAssertQuality("Invalid quality character in Fastq sequence!");
-
-    clear(meta);
-    clear(seq);
-    clear(qual);
-
-    skipUntil(iter, fastqBegin);    // forward to the next '@'
-    ++iter;                         // skip '@'
-
-    readLine(meta, iter);           // read Fastq id
-
-    readUntil(seq, iter, qualsBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fastq sequence
-    skipLine(iter);                 // skip '+' and 2nd Fastq id
-
-    readUntil(qual, iter, IsNewline(), ignoreBlankAssertQuality);           // read Fastq qualities
-    skipUntil(iter, fastqBegin);    // forward to the next '@'
-}
-
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_STREAM_TOKENIZATION_H_
