@@ -84,46 +84,31 @@
 #include <seqan/sequence.h>
 
 // ===========================================================================
-// Stream Concept, Adaptions.
+// Stream Concept.
 // ===========================================================================
 
-#include <seqan/stream/concept_stream.h>
+//#include <seqan/stream/concept_stream.h>
 #include <seqan/stream/stream_base.h>
-
-#include <seqan/stream/adapt_ios.h>
-
-// TODO(somebody): refactor cstdio adaption.
-
-//#include <seqan/stream/adapt_cstdio.h>
-//
-#include <seqan/stream/file_stream.h>
-//
-//#if SEQAN_HAS_ZLIB
-//// Enable Stream<GZFile> and Stream<Bgzf> if available.
-//#include <seqan/stream/stream_gz_file.h>
-//#include <seqan/stream/stream_bgzf.h>
-//#endif  // #if SEQAN_HAS_ZLIB
-//
-//#if SEQAN_HAS_BZIP2  // Enable Stream<BZ2File> if available.
-//#include <seqan/stream/stream_bz2_file.h>
-//#endif  // #if SEQAN_HAS_BZIP2
 
 // ===========================================================================
 // Stream Iterators.
 // ===========================================================================
 
-// TODO(weese:) move tags from tokenization.h to a new header
-
 #include <seqan/stream/iter_stream.h>
+
+// ===========================================================================
+// Stream Implemetations and Adaptions.
+// ===========================================================================
+
+#include <seqan/stream/adapt_ios.h>
+#include <seqan/stream/file_stream.h>
 #include <seqan/stream/virtual_stream.h>
+
+// ===========================================================================
+// Tokenization and Lexical Cast.
+// ===========================================================================
+
 #include <seqan/stream/tokenization.h>
-
-// ===========================================================================
-// Tokenizing and *is
-// ===========================================================================
-
-//#include <seqan/stream/tokenize.h>
-#include <seqan/stream/iter_stream.h>
 #include <seqan/stream/lexical_cast.h>
 
 #endif  // SEQAN_STREAM_H_
