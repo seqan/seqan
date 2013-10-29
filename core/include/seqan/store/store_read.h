@@ -54,8 +54,9 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  *
  * @fn ReadStoreElement::ReadStoreElement();
+ * @brief Constructor.
  *
- * Sets matePairId to INVALID_id.
+ * Sets ReadStoreElement::matePairId to ReadStoreElement::INVALID_ID.
  */
 
 /*!
