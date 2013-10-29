@@ -90,12 +90,13 @@ This $struct$ is used for the configuration of writing out FASTA and FASTQ files
 
 struct SequenceOutputOptions
 {
-public:
     int lineLength;
     bool qualMeta;
 
     explicit
-    SequenceOutputOptions(int lineLength = -1, bool qualMeta = false) : lineLength(lineLength), qualMeta(qualMeta)
+    SequenceOutputOptions(int lineLength = -1, bool qualMeta = false) :
+        lineLength(lineLength),
+        qualMeta(qualMeta)
     {}    
 };
 
