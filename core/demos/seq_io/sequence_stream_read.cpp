@@ -18,20 +18,18 @@ int main(int argc, char ** argv)
         append(path, "/core/tests/seq_io/test_dna.fq");
     }
 
-    // TODO(esiragusa): define DefaultOpenMode<> on VirtualStream
-    SequenceFile<Input> file(toCString(path), OPEN_RDONLY);
+    SequenceFile<Input> file(toCString(path));
 
     CharString id;
     CharString seq;
-//    Dna5String seq;
     CharString qual;
+
+    typename Size<CharString>::Type records = 0;
+    typename Size<CharString>::Type bases = 0;
 
     double start, finish;
 
     start = sysTime();
-
-    typename Size<CharString>::Type records = 0;
-    typename Size<CharString>::Type bases = 0;
 
     while (!atEnd(file))
     {
@@ -50,6 +48,8 @@ int main(int argc, char ** argv)
     }
 
     finish = sysTime();
+
+    close(file);
 
     std::cout << finish - start << " sec" << std::endl;
     std::cout << records << " records" << std::endl;
