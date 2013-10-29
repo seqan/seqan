@@ -148,7 +148,16 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
 {
-    readRecord(meta, seq, file.iter, Fastq());
+    switch (value(file.format))
+    {
+        case Find<AutoSeqFormat, Fasta>::VALUE:
+            readRecord(meta, seq, file.iter, Fasta());
+            break;
+
+        case Find<AutoSeqFormat, Fastq>::VALUE:
+            readRecord(meta, seq, file.iter, Fastq());
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------------
