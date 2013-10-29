@@ -826,7 +826,52 @@ public:
 		appendName(annotationTypeStore, "three_prime_UTR", annotationTypeStoreCache);
 		_storeClearAnnotations(*this);
 	}
+
+    void swap(FragmentStore & other)
+    {
+        seqan::swap(readStore, other.readStore);
+        seqan::swap(matePairStore, other.matePairStore);
+        seqan::swap(libraryStore, other.libraryStore);
+        seqan::swap(contigStore, other.contigStore);
+        seqan::swap(contigFileStore, other.contigFileStore);
+        seqan::swap(alignedReadStore, other.alignedReadStore);
+        seqan::swap(annotationStore, other.annotationStore);
+        seqan::swap(intervalTreeStore_F, other.intervalTreeStore_F);
+        seqan::swap(intervalTreeStore_R, other.intervalTreeStore_R);
+        seqan::swap(readSeqStore, other.readSeqStore);
+        seqan::swap(alignQualityStore, other.alignQualityStore);
+        seqan::swap(alignedReadTagStore, other.alignedReadTagStore);
+        seqan::swap(readNameStore, other.readNameStore);
+        seqan::swap(libraryNameStore, other.libraryNameStore);
+        seqan::swap(contigNameStore, other.contigNameStore);
+        seqan::swap(readNameStore, other.readNameStore);
+        seqan::swap(matePairNameStore, other.matePairNameStore);
+        seqan::swap(libraryNameStore, other.libraryNameStore);
+        seqan::swap(matePairNameStore, other.matePairNameStore);
+        seqan::swap(contigNameStore, other.contigNameStore);
+        seqan::swap(annotationNameStore, other.annotationNameStore);
+        seqan::swap(annotationTypeStore, other.annotationTypeStore);
+        seqan::swap(annotationKeyStore, other.annotationKeyStore);
+
+        refresh(readNameStoreCache);
+        refresh(contigNameStoreCache);
+        refresh(annotationNameStoreCache);
+        refresh(annotationTypeStoreCache);
+        refresh(annotationKeyStoreCache);
+
+        refresh(other.readNameStoreCache);
+        refresh(other.contigNameStoreCache);
+        refresh(other.annotationNameStoreCache);
+        refresh(other.annotationTypeStoreCache);
+        refresh(other.annotationKeyStoreCache);
+    }
 };
+
+template <typename TSpec, typename TConfig>
+inline void swap(FragmentStore<TSpec, TConfig> & lhs, FragmentStore<TSpec, TConfig> & rhs)
+{
+    lhs.swap(rhs);
+}
 
 //////////////////////////////////////////////////////////////////////////////
     
