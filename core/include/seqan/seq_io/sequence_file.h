@@ -31,13 +31,12 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
+// TODO(esiragusa): move the content of file/file_format_mmap.h (e.g. AutoSeqFormat) inside this file
 
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 #define SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 
 namespace seqan {
-
-// TODO(esiragusa): merge this file with file/file_format_mmap.h
 
 // ============================================================================
 // Classes
@@ -175,6 +174,22 @@ read(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq,
 // Function write(); Without qualities
 // ----------------------------------------------------------------------------
 
+template <typename TDirection, typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
+write(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq)
+{
+    switch (value(file.format))
+    {
+        case Find<AutoSeqFormat, Fasta>::VALUE:
+            writeRecord(meta, seq, file.iter, Fasta());
+            break;
+
+        case Find<AutoSeqFormat, Fastq>::VALUE:
+            writeRecord(meta, seq, file.iter, Fastq());
+            break;
+    }
+}
+
 // ----------------------------------------------------------------------------
 // Function write(); With qualities
 // ----------------------------------------------------------------------------
@@ -183,6 +198,7 @@ template <typename TDirection, typename TSpec, typename TIdString, typename TSeq
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SequenceFile<TDirection, TSpec>::TStream> >, void)
 write(SequenceFile<TDirection, TSpec> & file, TIdString & meta, TSeqString & seq, TQualString & qual)
 {
+    writeRecord(meta, seq, qual, file.iter, Fastq());
 }
 
 }  // namespace seqan
