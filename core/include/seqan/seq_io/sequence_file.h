@@ -49,9 +49,11 @@ namespace seqan {
 template <typename TDirection, typename TSpec = void>
 struct SequenceFile
 {
-    typedef std::ifstream                                TStream;
 //    typedef VirtualStream<char, TDirection>             TStream;
-    typedef typename Iterator<TStream, Standard>::Type  TIter;
+//    typedef typename Iterator<TStream, Standard>::Type  TIter;
+
+    typedef std::ofstream                               TStream;
+    typedef Iter<TStream, StreamIterator<Output> >      TIter;
 
     AutoSeqFormat   format;
     TStream         stream;
