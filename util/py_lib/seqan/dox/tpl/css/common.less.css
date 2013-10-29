@@ -8,6 +8,7 @@ body {
 }
 h1 {
   margin-bottom: .8em;
+  font-size: 2.3em;
 }
 h2,
 h3#Examples {
@@ -20,7 +21,7 @@ h3#Examples {
     /**/
 
   margin-top: 1.8em;
-  font-size: 1.6em;
+  font-size: 1.2em;
 }
 html:not(.list) h2,
 html:not(.list) h3#Examples {
@@ -137,7 +138,7 @@ dl {
 .overview > dl dt {
   float: left;
   clear: left;
-  width: 8em;
+  width: 11em;
   text-align: right;
   font-weight: bold;
 }
@@ -145,7 +146,22 @@ dl {
   content: ":";
 }
 .overview > dl dd {
-  margin: 0 0 0 9em;
+  margin: 0 0 0 12em;
+}
+.overview > dl dd [data-lang-entity] > :first-child {
+  display: none;
+}
+.overview > dl pre {
+  padding: 0;
+  margin: 0;
+  font-size: 1em;
+  line-height: 1.5em;
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 pre {
   background-color: #f5f5f5;
@@ -210,10 +226,10 @@ html:not(.list) body {
 html:not(.list) #toc {
   position: fixed;
   top: 15px;
-  right: 285px;
+  right: 235px;
   max-height: 93%;
-  width: 250px;
-  margin-right: -270px;
+  width: 200px;
+  margin-right: -220px;
   overflow-y: auto;
   background-color: #e5eff8;
   background-image: -moz-linear-gradient(-45deg, #f1f6fb 0%, #d9e8f4 100%);
@@ -247,10 +263,11 @@ html:not(.list) #toc ol li {
 }
 html:not(.list) #toc ol li a {
   margin: 0;
-  padding: 1em 2.5em 1em 2.5em;
+  padding: .7em 2.2em;
   display: block;
+  font-size: 0.9em;
   text-transform: uppercase;
-  color: #7aadd9;
+  color: #3883c5;
   text-shadow: 0 -1px 1px rgba(102, 102, 102, 0.5), 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 html:not(.list) #toc ol li a:hover,
@@ -262,14 +279,14 @@ html:not(.list) #toc ol li a:active {
 html:not(.list) #toc ol li a:before,
 html:not(.list) #toc ol li a:after {
   position: absolute;
-  top: 1.1em;
+  top: .65em;
   font-family: 'Glyphicons Halflings';
   -webkit-font-smoothing: antialiased;
   font-style: normal;
   font-weight: normal;
   line-height: 1;
   display: block;
-  margin: 5px auto 10px;
+  margin: 5px auto 5px -5px;
   font-size: .8em;
 }
 html:not(.list) #toc ol li a:before {
@@ -278,6 +295,8 @@ html:not(.list) #toc ol li a:before {
 }
 html:not(.list) #toc ol li.active a {
   color: #000;
+  font-weight: 700 !important;
+  text-shadow: none;
 }
 html:not(.list) #toc ol li.top a {
   text-align: center;
@@ -304,7 +323,7 @@ html:not(.list) #toc ol li.top.active a:after {
   content: "\e079";
 }
 html:not(.list) #content {
-  margin-right: 330px;
+  margin-right: 220px;
 }
 .description {
   margin: 1em 0;
@@ -523,50 +542,13 @@ html:not(.list) #content div[data-lang-entity-container] > h2 {
  */
 #search {
   margin: 10px 10px 20px 10px;
-  /* nur notwendig, wenn nicht dropdown-filter sondern toggle-buttons
-	.btn-group {
-		&:first-child {
-			
-			label:first-child {
-				border-bottom-left-radius: 0 !important;
-			}
-			
-			label:last-child {
-				border-bottom-right-radius: 0 !important;
-			}
-		}
-
-		&:not(:first-child):not(:last-child) {
-			label:first-child {
-				border-top-left-radius: 0 !important;
-				border-bottom-left-radius: 0 !important;
-			}
-			
-			label:last-child {
-				border-top-right-radius: 0 !important;
-				border-bottom-right-radius: 0 !important;
-			}
-		}
-		
-		&:last-child {
-			label:first-child {
-				border-top-left-radius: 0 !important;
-			}
-			
-			label:last-child {
-				border-top-right-radius: 0 !important;
-			}
-		}
-	}
-	*/
-
 }
 #search .pre-action {
   margin-top: -10px;
   margin-bottom: 5px;
-  padding: 30px 0px 30px 130px;
+  padding: 23px 0px 30px 100px;
   background-image: url(../img/seqan_logo.png);
-  background-size: 114px 76px;
+  background-size: 90px 60px;
   background-repeat: no-repeat;
   background-position: 0 3px;
 }
@@ -576,12 +558,19 @@ html:not(.list) #content div[data-lang-entity-container] > h2 {
 #search .pre-action h1 {
   padding: 0;
   margin: 0;
-  font-size: 28px;
+  font-size: 23px;
 }
 #search [type=search] {
   width: 100%;
   background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpldj0iaHR0cDovL3d3dy53My5vcmcvMjAwMS94bWwtZXZlbnRzIj4KPGc%2BCgk8cG9seWdvbiBmaWxsPSIjNjY2IiBwb2ludHM9IjkuMjA3LDYuMTI2IDcuNzkzLDcuNTQxIDExLjc5MywxMS41NDEgMTMuMjA3LDEwLjEyNiIgLz4KCTxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik01LjkxNywyYzEuNjA4LDAsMi45MTcsMS4zMDgsMi45MTcsMi45MTdTNy41MjUsNy44MzMsNS45MTcsNy44MzNTMyw2LjUyNSwzLDQuOTE3UzQuMzA4LDIsNS45MTcsMgoJCSBNNS45MTcsMEMzLjIwMSwwLDEsMi4yMDEsMSw0LjkxN3MyLjIwMSw0LjkxNyw0LjkxNyw0LjkxN3M0LjkxNy0yLjIwMSw0LjkxNy00LjkxN0MxMC44MzMsMi4yMDEsOC42MzIsMCw1LjkxNywwTDUuOTE3LDB6IiAvPgo8L2c%2BCjwvc3ZnPgo%3D');
   background-position: -24px 10px;
+}
+#search [type=search]:before {
+  display: block;
+  content: "dddd";
+  position: absolute;
+  top: 1px;
+  left: 1px;
 }
 #search .btn {
   font-weight: 700;
@@ -597,6 +586,33 @@ html:not(.list) #content div[data-lang-entity-container] > h2 {
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.45);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.45);
   color: #eee;
+}
+#search button.multiselect {
+  position: relative;
+  text-align: left;
+  transition: all 0.3s ease-out;
+  min-width: 40px;
+}
+#search button.multiselect .glyphicon {
+  top: 0;
+  line-height: inherit;
+}
+#search button.multiselect small {
+  font-size: 70%;
+  position: absolute;
+  top: 11px;
+  transition: all 0.3s ease-out;
+  opacity: 0;
+  right: 6.8em;
+}
+#search button.multiselect:hover,
+#search .open > button.multiselect {
+  min-width: 6.5em;
+}
+#search button.multiselect:hover small,
+#search .open > button.multiselect small {
+  right: 8px;
+  opacity: 1;
 }
 #results > ol {
   padding: 0;
@@ -687,7 +703,7 @@ form .multiselect-container label .multiselect-group {
   display: inline-block;
   position: relative;
   bottom: 0.15em;
-  padding: .2em .6em .3em;
+  padding: .1em .5em .2em;
   margin: 0 0.3em 0 0.2em;
   font-size: .75em;
   font-weight: bold;
@@ -1954,23 +1970,38 @@ html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
 div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before,
 html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
-  background: -moz-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
+  /*
+	background: -moz-linear-gradient(-45deg, rgba(217,63,63,1) 0%, rgba(217,178,63,1) 14%, rgba(140,217,63,1) 29%, rgba(63,217,102,1) 43%, rgba(63,217,217,1) 57%, rgba(63,102,217,1) 71%, rgba(140,63,217,1) 86%, rgba(217,63,178,1) 100%);
+	background: -webkit-linear-gradient(transparent, transparent),-webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(217,63,63,1)), color-stop(14%,rgba(217,178,63,1)), color-stop(29%,rgba(140,217,63,1)), color-stop(43%,rgba(63,217,102,1)), color-stop(57%,rgba(63,217,217,1)), color-stop(71%,rgba(63,102,217,1)), color-stop(86%,rgba(140,63,217,1)), color-stop(100%,rgba(217,63,178,1)));
+	background: -webkit-linear-gradient(transparent, transparent),-webkit-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+	background: -o-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+	background: -ms-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+	background: linear-gradient(135deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
+*/
+
+  background: #803f3f;
+  /* Old browsers */
+
+  background: -moz-linear-gradient(-45deg, #de5b5b 0%, #de5b5b 50%, #222222 51%, #222222 100%);
   /* FF3.6+ */
 
-  background: -webkit-linear-gradient(transparent, transparent), -webkit-gradient(linear, left top, right bottom, color-stop(0%, #d93f3f), color-stop(14%, #d9b23f), color-stop(29%, #8cd93f), color-stop(43%, #3fd966), color-stop(57%, #3fd9d9), color-stop(71%, #3f66d9), color-stop(86%, #8c3fd9), color-stop(100%, #d93fb2));
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #de5b5b), color-stop(50%, #de5b5b), color-stop(51%, #222222), color-stop(100%, #222222));
   /* Chrome,Safari4+ */
 
-  background: -webkit-linear-gradient(transparent, transparent), -webkit-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
+  background: -webkit-linear-gradient(-45deg, #de5b5b 0%, #de5b5b 50%, #222222 51%, #222222 100%);
   /* Chrome10+,Safari5.1+ */
 
-  background: -o-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
+  background: -o-linear-gradient(-45deg, #de5b5b 0%, #de5b5b 50%, #222222 51%, #222222 100%);
   /* Opera 11.10+ */
 
-  background: -ms-linear-gradient(-45deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
+  background: -ms-linear-gradient(-45deg, #de5b5b 0%, #de5b5b 50%, #222222 51%, #222222 100%);
   /* IE10+ */
 
-  background: linear-gradient(135deg, #d93f3f 0%, #d9b23f 14%, #8cd93f 29%, #3fd966 43%, #3fd9d9 57%, #3f66d9 71%, #8c3fd9 86%, #d93fb2 100%);
+  background: linear-gradient(135deg, #de5b5b 0%, #de5b5b 50%, #222222 51%, #222222 100%);
   /* W3C */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@red', endColorstr='@anthrazit', GradientType=1);
+  /* IE6-9 fallback on horizontal gradient */
 
 }
 /*
