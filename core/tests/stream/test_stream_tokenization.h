@@ -44,9 +44,7 @@
 
 using namespace seqan;
 
-//#include "test_stream_generic.h"
-
-    char const * EXAMPLE_STR1 = "This is a string ....foobar AAAACCCGGGTTT\n\
+char const * EXAMPLE_STR1 = "This is a string ....foobar AAAACCCGGGTTT\n\
  TCG > foo.. SJAUDOF78456kapLP345LPL AAAAAAAAAAAAA\n\
 \a 123gogogo \r\n\
 Tetstetetstststetststetststetsstetetstetststetstdtetstestst    \r\n\
@@ -62,6 +60,13 @@ void createFile(CharString &fileName, char const *text)
     file.write(text, strlen(text));
 }
 
+// ==========================================================================
+// Types
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Input Stream Types
+// --------------------------------------------------------------------------
 
 typedef
     TagList<CharString,
@@ -71,8 +76,12 @@ typedef
     > > > >
     TokenizationInputStreamTypes;
 
+// ==========================================================================
+// Classes
+// ==========================================================================
+
 // --------------------------------------------------------------------------
-// Class InputStreamTest
+// Class TokenizationTest
 // --------------------------------------------------------------------------
 
 template <typename TStream_>
@@ -82,22 +91,29 @@ public:
     typedef TStream_ TStream;
 };
 
+SEQAN_TYPED_TEST_CASE(TokenizationTest, TokenizationInputStreamTypes);
+
+// --------------------------------------------------------------------------
+// Class TokenizationContext
+// --------------------------------------------------------------------------
 
 template <typename TStream>
-struct TokenizationContext;
-
-template <typename TValue, typename TSpec>
-struct TokenizationContext<String<TValue, TSpec> >
-{
-    String<TValue, TSpec> str;
-    Iterator<CharString, Rooted>::Type iter;
-
-    TokenizationContext(const char *text)
-    {
-        assign(str, text);
-        iter = begin(str);
-    }
-};
+struct TokenizationContext
+{};
+//{
+//    typedef typename Iterator<TStream, Standard>::Type  TIter;
+//
+//    TStream file;
+//    TIter   iter;
+//
+//    TokenizationContext(const char *text)
+//    {
+//        CharString fileName;
+//        createFile(fileName, text);
+//        SEQAN_ASSERT(open(file, toCString(fileName)));
+//        iter = TIter(file);
+//    }
+//};
 
 template <>
 struct TokenizationContext<std::fstream>
@@ -147,8 +163,26 @@ struct TokenizationContext<Iter<TStream, StreamIterator<Input> > >
     }
 };
 
+// --------------------------------------------------------------------------
+// Class TokenizationContext<String>
+// --------------------------------------------------------------------------
 
-SEQAN_TYPED_TEST_CASE(TokenizationTest, TokenizationInputStreamTypes);
+template <typename TValue, typename TSpec>
+struct TokenizationContext<String<TValue, TSpec> >
+{
+    String<TValue, TSpec> str;
+    Iterator<CharString, Rooted>::Type iter;
+
+    TokenizationContext(const char *text)
+    {
+        assign(str, text);
+        iter = begin(str);
+    }
+};
+
+// ==========================================================================
+// Tests
+// ==========================================================================
 
 // readNChars
 SEQAN_TYPED_TEST(TokenizationTest, ReadN)
