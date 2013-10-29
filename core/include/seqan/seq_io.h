@@ -49,37 +49,43 @@
 // ===========================================================================
 
 // File Format Guessing
-#include <seqan/seq_io/guess_stream_format.h>
+//#include <seqan/seq_io/guess_stream_format.h>
 
 #include <seqan/seq_io/read_fasta_fastq.h>
-#include <seqan/seq_io/read_embl.h>
-#include <seqan/seq_io/read_genbank.h>
+//#include <seqan/seq_io/read_embl.h>
+//#include <seqan/seq_io/read_genbank.h>
+//
+//#include <seqan/seq_io/write_fasta_fastq.h>
 
-#include <seqan/seq_io/write_fasta_fastq.h>
+// ===========================================================================
+// SequenceFile
+// ===========================================================================
+
+#include <seqan/seq_io/sequence_file.h>
 
 // ===========================================================================
 // SequenceStream
 // ===========================================================================
 
-#include <seqan/seq_io/sequence_stream_impl.h>
-#include <seqan/seq_io/sequence_stream.h>
+//#include <seqan/seq_io/sequence_stream_impl.h>
+//#include <seqan/seq_io/sequence_stream.h>
 
 // ===========================================================================
 // Reading FASTA for Demos
 // ===========================================================================
 
-#include <seqan/seq_io/simple_read_fasta.h>
+//#include <seqan/seq_io/simple_read_fasta.h>
 
 // ===========================================================================
 // Genomic Region
 // ===========================================================================
 
-#include <seqan/seq_io/genomic_region.h>
+//#include <seqan/seq_io/genomic_region.h>
 
 // ===========================================================================
 // FAI Index
 // ===========================================================================
 
-#include <seqan/seq_io/fai_index.h>
+//#include <seqan/seq_io/fai_index.h>
 
 #endif  // CORE_INCLUDE_SEQAN_SEQ_IO_H_
