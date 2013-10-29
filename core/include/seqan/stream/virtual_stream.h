@@ -364,7 +364,7 @@ struct Position<VirtualStream<TValue, TDirection> >:
     Position<typename VirtualStream<TValue, TDirection>::TFile> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction Iterator
+// Metafunction Iterator<Standard>
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection>
@@ -373,8 +373,16 @@ struct Iterator<VirtualStream<TValue, TDirection>, Standard>
     typedef Iter<VirtualStream<TValue, TDirection>, StreamIterator<TDirection> >    Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Iterator<Rooted>
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection>
+struct Iterator<VirtualStream<TValue, TDirection>, Rooted> :
+    Iterator<VirtualStream<TValue, TDirection>, Standard> {};
+
 // --------------------------------------------------------------------------
-// Metafunction DefaultOpenMode
+// Metafunction DefaultOpenMode<Input>
 // --------------------------------------------------------------------------
 
 template <typename TValue>
@@ -382,6 +390,10 @@ struct DefaultOpenMode<VirtualStream<TValue, Input> >
 {
     enum { VALUE = OPEN_RDONLY };
 };
+
+// --------------------------------------------------------------------------
+// Metafunction DefaultOpenMode<Output>
+// --------------------------------------------------------------------------
 
 template <typename TValue>
 struct DefaultOpenMode<VirtualStream<TValue, Output> >
