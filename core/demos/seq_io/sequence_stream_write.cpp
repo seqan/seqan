@@ -10,12 +10,7 @@ int main(int argc, char ** argv)
     append(path, ".fa");
 
     SequenceFile<Output> file(toCString(path));
-
-    CharString meta = "chr1";
-    CharString seq = "ACGT";
-
-    write(file, meta, seq);
-
+    write(file, "chr1", "ACGT");
     close(file);
 
     return 0;
