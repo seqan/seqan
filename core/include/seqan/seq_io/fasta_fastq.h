@@ -135,7 +135,7 @@ inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize li
     for (; charsLeft != 0; charsLeft -= charsPerLine)
     {
         charsPerLine = std::min(charsLeft, lineLength_);
-        writeN(target, iter, charsPerLine);
+        write(target, iter, charsPerLine);
         writeValue(target, '\n');
     }
 }
@@ -243,7 +243,7 @@ inline void writeRecord(TTarget & target,
                         SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     writeValue(target, '>');
-    write3(target, meta);
+    write(target, meta);
     writeValue(target, '\n');
 
     writeWrappedString(target, seq, (options.lineLength < 0)? 70 : options.lineLength); // 70bp wrapping, by default
@@ -262,7 +262,7 @@ inline void writeRecord(TTarget & target,
                         SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     writeValue(target, '@');
-    write3(target, meta);
+    write(target, meta);
     writeValue(target, '\n');
 
     int lineLength = (options.lineLength < 0)? 0 : options.lineLength;  // no wrapping, by default
@@ -270,7 +270,7 @@ inline void writeRecord(TTarget & target,
 
     writeValue(target, '+');
     if (options.qualMeta)
-        write3(target, meta);
+        write(target, meta);
     writeValue(target, '\n');
 
     writeWrappedString(target, qual, lineLength);

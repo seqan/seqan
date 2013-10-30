@@ -38,38 +38,6 @@
 #ifndef SEQAN_STREAM_H_
 #define SEQAN_STREAM_H_
 
-/*!
- * @macro SEQAN_HAS_ZLIB
- * @headerfile <seqan/stream.h>
- * @brief Defined as 0 or 1, depending on zlib being available.
- *
- * @signature #define SEQAN_HAS_ZLIB 0  // or 1
- */
-
-/*!
- * @macro SEQAN_HAS_BZIP2
- * @headerfile <seqan/stream.h>
- * @brief Defined as 0 or 1, depending on bzlib being available.
- *
- * @signature #define SEQAN_HAS_BZIP 0  // or 1
- */
-
-/**
-.Macro.SEQAN_HAS_ZLIB
-..cat:Input/Output
-..cat:From Outside
-..signature:SEQAN_HAS_ZLIB
-..summary:If set to 1 then zlib is available, i.e. including $<zlib.h>$ and linking against libz works.
-..remarks:This flag is normally set from the outside by your build system using compiler flags.
-
-.Macro.SEQAN_HAS_BZIP2
-..cat:Input/Output
-..cat:From Outside
-..signature:SEQAN_HAS_BZLIB
-..summary:If set to 1 then bzlib2 is available, i.e. including $<bzlib.h>$ and linking against libbzip2 works.
-..remarks:This flag is normally set from the outside by your build system using compiler flags.
- */
-
 // ===========================================================================
 // Prerequisites.
 // ===========================================================================
@@ -84,10 +52,16 @@
 #include <seqan/sequence.h>
 
 // ===========================================================================
+// File Format and Type Guessing.
+// ===========================================================================
+
+#include <seqan/stream/guess_format.h>
+
+// ===========================================================================
 // Stream Concept.
 // ===========================================================================
 
-//#include <seqan/stream/concept_stream.h>
+#include <seqan/stream/concept_stream.h>
 #include <seqan/stream/stream_base.h>
 
 // ===========================================================================
@@ -104,10 +78,15 @@
 #include <seqan/stream/file_stream.h>
 #include <seqan/stream/virtual_stream.h>
 
+// TODO(esiragusa): This file is deprecated - remove it.
+#include <seqan/stream/mmap_stream_deprecated.h>
+
 // ===========================================================================
 // Tokenization and Lexical Cast.
 // ===========================================================================
+// TODO(esiragusa): move these files into basic - they are not unique to streams.
 
+#include <seqan/stream/chunking.h>
 #include <seqan/stream/tokenization.h>
 #include <seqan/stream/lexical_cast.h>
 

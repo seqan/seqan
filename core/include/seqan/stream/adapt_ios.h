@@ -43,12 +43,25 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+// TODO(esiragusa): remove this when chunking goes into basic.
+
+template <typename TObject> struct Chunk;
+
+// ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+struct Position<std::istreambuf_iterator<TValue, TTraits> >
+{
+    typedef typename std::istreambuf_iterator<TValue, TTraits>::difference_type Type;
+};
 
 template <typename TValue, typename TTraits>
 struct Position<std::basic_istream<TValue, TTraits> >
@@ -99,6 +112,12 @@ struct Position<std::basic_ostringstream<TValue, TTraits> > :
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
+struct Value<std::istreambuf_iterator<TValue, TTraits> >
+{
+    typedef typename std::istreambuf_iterator<TValue, TTraits>::char_type Type;
+};
+
+template <typename TValue, typename TTraits>
 struct Value<std::basic_istream<TValue, TTraits> >
 {
     typedef typename std::basic_istream<TValue, TTraits>::char_type Type;
@@ -143,8 +162,53 @@ struct Value<std::basic_ostringstream<TValue, TTraits> > :
     Value<std::basic_ostream<TValue, TTraits>  > {};
 
 // ----------------------------------------------------------------------------
-// Concepts
+// Metafunction Reference
 // ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+struct Reference<std::istreambuf_iterator<TValue, TTraits> >
+{
+    typedef typename std::istreambuf_iterator<TValue, TTraits>::char_type Type;
+//    typedef typename std::istreambuf_iterator<TValue, TTraits>::reference Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction Chunk
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+struct Chunk<std::basic_streambuf<TValue, TTraits> >
+{
+    typedef Range<TValue*> Type;
+};
+
+//template <typename TValue, typename TTraits>
+//struct Chunk<std::istreambuf_iterator<TValue, TTraits> >:
+//    Chunk<std::basic_streambuf<TValue, TTraits> > {};
+//
+//template <typename TValue, typename TTraits>
+//struct Chunk<std::ostreambuf_iterator<TValue, TTraits> >:
+//    Chunk<std::basic_streambuf<TValue, TTraits> > {};
+
+// ----------------------------------------------------------------------------
+// Metafunction DefaultOpenMode<std::>
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits> >
+{
+    enum { VALUE = OPEN_RDONLY };
+};
+
+template <typename TValue, typename TTraits>
+struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits> >
+{
+    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
+};
+
+// ============================================================================
+// Concepts
+// ============================================================================
 
 template <typename TValue, typename TTraits>
 SEQAN_CONCEPT_IMPL((std::basic_istream<TValue, TTraits>), (InputStreamConcept));
@@ -166,22 +230,6 @@ template <typename TValue, typename TTraits>
 SEQAN_CONCEPT_IMPL((std::basic_fstream<TValue, TTraits>), (BidirectionalStreamConcept));
 template <typename TValue, typename TTraits>
 SEQAN_CONCEPT_IMPL((std::basic_stringstream<TValue, TTraits>), (BidirectionalStreamConcept));
-
-// ----------------------------------------------------------------------------
-// Metafunction DefaultOpenMode<std::>
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TTraits>
-struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits> >
-{
-    enum { VALUE = OPEN_RDONLY };
-};
-
-template <typename TValue, typename TTraits>
-struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits> >
-{
-    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
-};
 
 // ============================================================================
 // Functions
@@ -231,8 +279,41 @@ _getSTLStyleOpenMode(int openMode)
 }
 
 // ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+//template <typename TValue, typename TTraits, typename TDirection>
+//inline typename Chunk<std::basic_streambuf<TValue, TTraits> >::Type
+//getChunk(std::basic_streambuf<TValue, TTraits> const &buf, Tag<TDirection>)
+//{
+//    return getChunk(static_cast<StreamBuffer<TValue, TTraits> &>(buf), Tag<TDirection>());
+//}
+
+// ----------------------------------------------------------------------------
+// Function writeValue()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits, typename TValue2>
+inline void writeValue(std::ostreambuf_iterator<TValue, TTraits> &iter, TValue2 val)
+{
+    *iter = val;
+    ++iter;
+}
+
+// ----------------------------------------------------------------------------
+// Function atEnd()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TTraits>
+inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it)
+{
+    return *it == TTraits::eof();
+}
+
+// ----------------------------------------------------------------------------
 // Function streamEof()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 template <typename TStream>
 inline bool
@@ -248,6 +329,7 @@ streamEof(TStream & stream)
 // ----------------------------------------------------------------------------
 // Function streamPeek()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 template <typename TStream>
 inline typename Value<TStream>::Type
@@ -265,6 +347,7 @@ streamPeek(TStream & stream)
 // ----------------------------------------------------------------------------
 // Function streamGet()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 template <typename TStream>
 inline typename Value<TStream>::Type
@@ -282,6 +365,7 @@ streamGet(TStream & stream)
 // ----------------------------------------------------------------------------
 // Function streamPut()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 template <typename TStream, typename TValue>
 inline void
@@ -295,6 +379,7 @@ streamPut(TStream & stream, TValue const & val)
 // ----------------------------------------------------------------------------
 // Function streamFlush()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 template <typename TStream, typename TValue>
 inline void
@@ -308,6 +393,7 @@ streamFlush(TStream & stream)
 // ----------------------------------------------------------------------------
 // Function streamSeek()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 // Input
 template <typename TStream, typename TDelta, typename TPos>
@@ -346,6 +432,7 @@ streamSeek(TStream & stream, TDelta delta, TPos origin)
 // ----------------------------------------------------------------------------
 // Function streamTell()
 // ----------------------------------------------------------------------------
+// Deprecated?
 
 // Input
 template <typename TStream>
@@ -396,8 +483,7 @@ streamTell(TStream & stream)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-inline void
-streamInit(std::basic_ios<TValue, TTraits> & stream)
+inline void streamInit(std::basic_ios<TValue, TTraits> & stream)
 {
     stream.exceptions(std::ios_base::badbit);
 }
@@ -407,8 +493,7 @@ streamInit(std::basic_ios<TValue, TTraits> & stream)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-inline bool
-open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName, int openMode)
+inline bool open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
     streamInit(stream);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
@@ -417,8 +502,7 @@ open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName, int ope
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName, int openMode)
+inline bool open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
     streamInit(stream);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
@@ -427,8 +511,7 @@ open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName, int op
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName, int openMode)
+inline bool open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName, int openMode)
 {
     streamInit(stream);
     stream.open(fileName, _getSTLStyleOpenMode(openMode));
@@ -437,22 +520,19 @@ open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName, int op
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName)
+inline bool open(std::basic_fstream<TValue, TTraits> & stream, const char *fileName)
 {
     return open(stream, fileName, DefaultOpenMode<std::basic_fstream<TValue, TTraits> >::VALUE);
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName)
+inline bool open(std::basic_ifstream<TValue, TTraits> & stream, const char *fileName)
 {
     return open(stream, fileName, DefaultOpenMode<std::basic_ifstream<TValue, TTraits> >::VALUE);
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName)
+inline bool open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName)
 {
     return open(stream, fileName, DefaultOpenMode<std::basic_ofstream<TValue, TTraits> >::VALUE);
 }
@@ -462,24 +542,21 @@ open(std::basic_ofstream<TValue, TTraits> & stream, const char *fileName)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits>
-inline bool
-close(std::basic_fstream<TValue, TTraits> & stream)
+inline bool close(std::basic_fstream<TValue, TTraits> & stream)
 {
     stream.close();
     return !stream.is_open();
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-close(std::basic_ifstream<TValue, TTraits> & stream)
+inline bool close(std::basic_ifstream<TValue, TTraits> & stream)
 {
     stream.close();
     return !stream.is_open();
 }
 
 template <typename TValue, typename TTraits>
-inline bool
-close(std::basic_ofstream<TValue, TTraits> & stream)
+inline bool close(std::basic_ofstream<TValue, TTraits> & stream)
 {
     stream.close();
     return !stream.is_open();

@@ -352,7 +352,7 @@ appendNumber(TTarget & target, TInteger i)
                           sizeof(TInteger)>::VALUE, i, &offset);
 
     Range<char *> range = toRange(buffer + 0, buffer + len);
-    write3(target, range);
+    write(target, range);
     return len;
 }
 
@@ -368,7 +368,7 @@ appendNumber(TTarget & target, float source)
     int offset;
     size_t len = snprintf(buffer, 32, "%g%n", source, &offset);
     Range<char *> range = toRange(buffer + 0, buffer + len);
-    write3(target, range);
+    write(target, range);
     return len;
 }
 
@@ -384,7 +384,7 @@ appendNumber(TTarget & target, double source)
     int offset;
     size_t len = snprintf(buffer, 32, "%lg%n", source, &offset);
     Range<char *> range = toRange(buffer + 0, buffer + len);
-    write3(target, range);
+    write(target, range);
     return len;
 }
 

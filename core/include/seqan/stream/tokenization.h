@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Adaptions for std::ios streams.
+// Tokenization.
 // ==========================================================================
 
 #ifndef SEQAN_STREAM_TOKENIZATION_H_
@@ -40,44 +40,13 @@
 namespace seqan {
 
 // ============================================================================
-// Metafunctions
+// Functors
 // ============================================================================
+// TODO(esiragusa): move these functors into basic
 
-template <typename TValue>
-struct IsInAlphabet
-{
-    template <typename TInValue>
-    bool operator() (TInValue const & inVal) const
-    {
-        TValue val = inVal;
-        return convert<TInValue>(val) == toUpperValue(inVal);
-    }
-
-    bool operator() (TValue const &) const
-    {
-        return true;
-    }
-};
-
-template <char FIRST_CHAR, char LAST_CHAR>
-struct IsInRange
-{
-    template <typename TValue>
-    bool operator() (TValue const & val) const
-    {
-        return FIRST_CHAR <= val && val <= LAST_CHAR;
-    }
-};
-
-template <char VALUE>
-struct EqualsChar
-{
-    template <typename TValue>
-    bool operator() (TValue const & val) const
-    {
-        return val == VALUE;
-    }
-};
+// ----------------------------------------------------------------------------
+// Functor OrFunctor
+// ----------------------------------------------------------------------------
 
 template <typename TFunctor1, typename TFunctor2>
 struct OrFunctor
@@ -99,6 +68,10 @@ struct OrFunctor
     }
 };
 
+// ----------------------------------------------------------------------------
+// Functor AndFunctor
+// ----------------------------------------------------------------------------
+
 template <typename TFunctor1, typename TFunctor2>
 struct AndFunctor
 {
@@ -119,6 +92,10 @@ struct AndFunctor
     }
 };
 
+// ----------------------------------------------------------------------------
+// Functor NotFunctor
+// ----------------------------------------------------------------------------
+
 template <typename TFunctor>
 struct NotFunctor
 {
@@ -137,6 +114,58 @@ struct NotFunctor
         return !func(val);
     }
 };
+
+// ----------------------------------------------------------------------------
+// Functor IsInAlphabet
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct IsInAlphabet
+{
+    template <typename TInValue>
+    bool operator() (TInValue const & inVal) const
+    {
+        TValue val = inVal;
+        return convert<TInValue>(val) == toUpperValue(inVal);
+    }
+
+    bool operator() (TValue const &) const
+    {
+        return true;
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Functor IsInRange
+// ----------------------------------------------------------------------------
+
+template <char FIRST_CHAR, char LAST_CHAR>
+struct IsInRange
+{
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        return FIRST_CHAR <= val && val <= LAST_CHAR;
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Functor EqualsChar
+// ----------------------------------------------------------------------------
+
+template <char VALUE>
+struct EqualsChar
+{
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        return val == VALUE;
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Functor IgnoreOrAssertFunctor
+// ----------------------------------------------------------------------------
 
 template <typename TIgnoreFunctor, typename TAssertFunctor, typename TException>
 struct IgnoreOrAssertFunctor
@@ -160,24 +189,10 @@ struct IgnoreOrAssertFunctor
     }
 };
 
-// Don't use isblank() or isspace as it they seem to be slower than our functors (due to inlining)
-//
-//struct IsBlank
-//{
-//    template <typename TValue>
-//    bool operator() (TValue const & val) const
-//    {
-//        return isblank(val);
-//    }
-//};
-//struct IsWhitespace
-//{
-//    template <typename TValue>
-//    bool operator() (TValue const & val) const
-//    {
-//        return isspace(val);
-//    }
-//};
+// ============================================================================
+// Functors
+// ============================================================================
+// Don't use isblank() or isspace() as it they seem to be slower than our functors (due to inlining)
 
 typedef OrFunctor<EqualsChar<' '>, EqualsChar<'\t'> >           IsBlank;
 typedef OrFunctor<EqualsChar<'\n'>, EqualsChar<'\r'> >          IsNewline;
@@ -187,248 +202,74 @@ typedef OrFunctor<IsInRange<'a', 'z'>, IsInRange<'A', 'Z'> >    IsAlpha;
 typedef IsInRange<'0', '9'>                                     IsDigit;
 typedef OrFunctor<IsAlpha, IsDigit>                             IsAlphaNum;
 
-// Chunk interface for rooted iterators
-template <typename TContainer, typename TValue, typename TSpec>
-struct Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >
-{
-    typedef Range<TValue*> Type;
-};
-
-template <typename TValue, typename TSpec>
-struct Chunk<String<TValue, TSpec> >:
-    Chunk<typename Iterator<String<TValue, TSpec>, Rooted>::Type> {};
-
-template <typename TValue, typename TTraits>
-struct Chunk<std::basic_streambuf<TValue, TTraits> >
-{
-    typedef Range<TValue*> Type;
-};
-
-template <typename TValue, typename TTraits>
-struct Chunk<StreamBuffer<TValue, TTraits> >
-{
-    typedef Range<TValue*> Type;
-};
-
-template <typename TStream, typename TDirection>
-struct Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >:
-    Chunk<typename Iter<TStream, StreamIterator<Tag<TDirection> > >::TStreamBuffer> {};
-
-//template <typename TValue, typename TTraits>
-//struct Chunk<std::istreambuf_iterator<TValue, TTraits> >:
-//    Chunk<std::basic_streambuf<TValue, TTraits> > {};
-//
-//template <typename TValue, typename TTraits>
-//struct Chunk<std::ostreambuf_iterator<TValue, TTraits> >:
-//    Chunk<std::basic_streambuf<TValue, TTraits> > {};
-
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <class charT, class traits>
-struct Value<std::istreambuf_iterator<charT, traits> >
-{
-    typedef typename std::istreambuf_iterator<charT, traits>::char_type Type;
-};
-
-template <class charT, class traits>
-struct Position<std::istreambuf_iterator<charT, traits> >
-{
-    typedef typename std::istreambuf_iterator<charT, traits>::difference_type Type;
-};
-
-template <class charT, class traits>
-struct Reference<std::istreambuf_iterator<charT, traits> >
-{
-    typedef typename std::istreambuf_iterator<charT, traits>::char_type Type;
-//    typedef typename std::istreambuf_iterator<charT, traits>::reference Type;
-};
-
-template <class charT, class traits>
-inline bool
-atEnd(std::istreambuf_iterator<charT, traits> const &it)
-{
-    return *it == traits::eof();
-}
-
-
 // ----------------------------------------------------------------------------
-// Function reserveChunk()
+// Function _skipUntil(); Element-wise
 // ----------------------------------------------------------------------------
 
-template <typename TIterator, typename TSize>
-inline void
-reserveChunk(TIterator &, TSize)
+template <typename TFwdIterator, typename TStopFunctor, typename TChunk>
+inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, TChunk)
 {
+    for (; !atEnd(iter) && !stopFunctor(*iter); ++iter) ;
 }
-
-template <typename TValue, typename TSpec, typename TSize>
-inline void
-reserveChunk(String<TValue, TSpec> &str, TSize size)
-{
-    reserve(str, length(str) + size);
-}
-
-template <typename TContainer, typename TSpec, typename TSize>
-inline void
-reserveChunk(Iter<TContainer, TSpec> &iter, TSize size)
-{
-    typedef Iter<TContainer, TSpec> TIter;
-
-    TContainer &cont = container(iter);
-    typename Size<TIter>::Type newCap = length(cont) + size;
-
-    if (newCap <= capacity(cont))
-        return;
-
-    typename Position<TIter>::Type pos = position(iter);
-    reserve(cont, newCap);
-    setPosition(iter, pos);
-}
-
 
 // ----------------------------------------------------------------------------
-// Function advanceChunk()
+// Function _skipUntil(); Chunked
 // ----------------------------------------------------------------------------
 
-template <typename TIterator, typename TSize>
-inline void
-advanceChunk(TIterator &iter, TSize size)
+template <typename TFwdIterator, typename TStopFunctor, typename TValue>
+inline void _skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TValue*> *)
 {
-    iter += size;
-}
+    typedef typename Value<TFwdIterator>::Type TIValue;
 
-template <typename TContainer, typename TSpec, typename TSize>
-inline void
-advanceChunk(Iter<TContainer, TSpec> &iter, TSize size)
-{
-    typedef Iter<TContainer, TSpec> TIter;
-
-    TContainer &cont = container(iter);
-    typename Position<TIter>::Type pos = position(iter);
-
-    iter += size;
-    if (pos > length(cont))
-        _setLength(cont, pos);
-}
-
-// extend target string size
-template <typename TValue, typename TSpec, typename TSize>
-inline void
-advanceChunk(String<TValue, TSpec> &str, TSize size)
-{
-    _setLength(str, length(str) + size);
-}
-
-
-
-
-
-// ----------------------------------------------------------------------------
-// Function writeValue()
-// ----------------------------------------------------------------------------
-
-template <typename TContainer, typename TValue>
-inline void
-writeValue(TContainer &cont, TValue val)
-{
-    appendValue(cont, val);
-}
-
-template <typename TValue, typename TTraits, typename TValue2>
-inline void
-writeValue(std::ostreambuf_iterator<TValue, TTraits> &iter, TValue2 val)
-{
-    *iter = val;
-    ++iter;
-}
-
-template <typename TContainer, typename TSpec, typename TValue>
-inline void
-writeValue(Iter<TContainer, TSpec> &iter, TValue val)
-{
-    typedef Iter<TContainer, TSpec> TIter;
-
-    TContainer &cont = container(iter);
-    typename Position<TIter>::Type pos = position(iter);
-    typename Size<TIter>::Type len = length(cont);
-
-    if (pos < len)
+    for (; !atEnd(iter); )
     {
-        assignValue(iter, val);
-        ++iter;
-    }
-    else
-    {
-        if (pos > len)
-            resize(cont, pos - 1);
-        appendValue(cont, val);
-        setPosition(iter, pos + 1);
+        Range<TIValue*> const ichunk = getChunk(iter, Input());
+        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
+
+        register const TIValue* __restrict__ ptr = begin(ichunk, Standard());
+
+        for (; ptr != end(ichunk, Standard()); ++ptr)
+        {
+            if (SEQAN_UNLIKELY(stopFunctor(*ptr)))
+            {
+                iter += ptr - begin(ichunk, Standard());    // advance input iterator
+                return;
+            }
+        }
+
+        iter += ptr - begin(ichunk, Standard());            // advance input iterator
     }
 }
 
+// ----------------------------------------------------------------------------
+// Function skipUntil()
+// ----------------------------------------------------------------------------
+
+template <typename TFwdIterator, typename TStopFunctor>
+inline void skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor)
+{
+    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
+
+    _skipUntil(iter, stopFunctor, TIChunk());
+}
+
+template <typename TFwdIterator, typename TStopFunctor>
+inline void skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
+{
+    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
+
+    TStopFunctor stopFunctor_ = stopFunctor;
+    _skipUntil(iter, stopFunctor_, TIChunk());
+}
 
 // ----------------------------------------------------------------------------
-// Function getChunk()
+// Function _readUntil(); Element-wise
 // ----------------------------------------------------------------------------
 
-// StreamBuffer
-template <typename TValue, typename TTraits>
-inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits> const &buf, Input)
-{
-    return toRange(buf.gptr(), buf.egptr());
-}
-template <typename TValue, typename TTraits>
-inline typename Chunk<StreamBuffer<TValue, TTraits> >::Type
-getChunk(StreamBuffer<TValue, TTraits> const &buf, Output)
-{
-    return toRange(buf.pptr(), buf.epptr());
-}
-
-//template <typename TValue, typename TTraits, typename TDirection>
-//inline typename Chunk<std::basic_streambuf<TValue, TTraits> >::Type
-//getChunk(std::basic_streambuf<TValue, TTraits> const &buf, Tag<TDirection>)
-//{
-//    return getChunk(static_cast<StreamBuffer<TValue, TTraits> &>(buf), Tag<TDirection>());
-//}
-
-// std::basic_streambuf
-template <typename TStream, typename TDirection>
-inline typename Chunk<Iter<TStream, StreamIterator<Tag<TDirection> > > >::Type
-getChunk(Iter<TStream, StreamIterator<Tag<TDirection> > > const &iter, Tag<TDirection>)
-{
-    typedef typename Iter<TStream, StreamIterator<Input> >::TStreamBuffer TStreamBuffer;
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    return getChunk(*iter.streamBuf, Tag<TDirection>());
-}
-
-// SeqAn's iterators
-template <typename TContainer, typename TValue, typename TSpec>
-inline typename Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >::Type
-getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > const &rootedIter, Input)
-{
-    return toRange(hostIterator(rootedIter), end(container(rootedIter), Standard()));
-}
-template <typename TContainer, typename TValue, typename TSpec>
-inline typename Chunk<Iter<TContainer, AdaptorIterator<TValue*, TSpec> > >::Type
-getChunk(Iter<TContainer, AdaptorIterator<TValue*, TSpec> > const &rootedIter, Output)
-{
-    TContainer &cont = container(rootedIter);
-    return toRange(hostIterator(rootedIter), begin(cont, Standard()) + capacity(cont));
-}
-
-// SeqAn's strings
-template <typename TValue, typename TSpec>
-inline typename Chunk<String<TValue, TSpec> >::Type
-getChunk(String<TValue, TSpec> const &cont, Output)
-{
-    return toRange(end(cont, Standard()), begin(cont, Standard()) + capacity(cont));
-}
-
-
-// _readUntil() - non-chunked version
 template <typename TTarget, typename TFwdIterator, typename TStopFunctor, typename TIgnoreFunctor, typename TIChunk, typename TOChunk>
 inline void
 _readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgnoreFunctor &ignoreFunctor, TIChunk, TOChunk)
@@ -443,16 +284,17 @@ _readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgno
     }
 }
 
-// _readUntil() - chunked version
+// ----------------------------------------------------------------------------
+// Function _readUntil(); Chunked
+// ----------------------------------------------------------------------------
+
 template <typename TTarget, typename TFwdIterator, typename TStopFunctor, typename TIgnoreFunctor, typename TIValue, typename TOValue>
-inline void
-_readUntil(
-    TTarget &target,
-    TFwdIterator &iter,
-    TStopFunctor &stopFunctor,
-    TIgnoreFunctor &ignoreFunctor,
-    Range<TIValue*> *,
-    Range<TOValue*> *)
+inline void _readUntil(TTarget &target,
+                       TFwdIterator &iter,
+                       TStopFunctor &stopFunctor,
+                       TIgnoreFunctor &ignoreFunctor,
+                       Range<TIValue*> *,
+                       Range<TOValue*> *)
 {
     for (; !atEnd(iter); )
     {
@@ -491,10 +333,12 @@ _readUntil(
     }
 }
 
-// readUntil()
+// ----------------------------------------------------------------------------
+// Function readUntil()
+// ----------------------------------------------------------------------------
+
 template <typename TTarget, typename TFwdIterator, typename TStopFunctor, typename TIgnoreFunctor>
-inline void
-readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgnoreFunctor &ignoreFunctor)
+inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgnoreFunctor &ignoreFunctor)
 {
     typedef typename Chunk<TFwdIterator>::Type*         TIChunk;
     typedef typename Iterator<TTarget, Rooted>::Type    TTargetIter;
@@ -512,79 +356,28 @@ readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor const &stopFunctor, 
     readUntil(target, iter, stopFunctor_, ignoreFunctor_);
 }
 
-
-// _skipUntil() - non-chunked version
-template <typename TFwdIterator, typename TStopFunctor, typename TChunk>
-inline void
-_skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, TChunk)
-{
-    for (; !atEnd(iter) && !stopFunctor(*iter); ++iter) ;
-}
-
-// _skipUntil() - chunked version
-template <typename TFwdIterator, typename TStopFunctor, typename TValue>
-inline void
-_skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor, Range<TValue*> *)
-{
-    typedef typename Value<TFwdIterator>::Type TIValue;
-
-    for (; !atEnd(iter); )
-    {
-        Range<TIValue*> const ichunk = getChunk(iter, Input());
-        SEQAN_ASSERT(begin(ichunk, Standard()) < end(ichunk, Standard()));
-
-        register const TIValue* __restrict__ ptr = begin(ichunk, Standard());
-
-        for (; ptr != end(ichunk, Standard()); ++ptr)
-        {
-            if (SEQAN_UNLIKELY(stopFunctor(*ptr)))
-            {
-                iter += ptr - begin(ichunk, Standard());    // advance input iterator
-                return;
-            }
-        }
-
-        iter += ptr - begin(ichunk, Standard());            // advance input iterator
-    }
-}
-
-// skipUntil()
-template <typename TFwdIterator, typename TStopFunctor>
-inline void
-skipUntil(TFwdIterator &iter, TStopFunctor &stopFunctor)
-{
-    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
-    _skipUntil(iter, stopFunctor, TIChunk());
-}
-
-template <typename TFwdIterator, typename TStopFunctor>
-inline void
-skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
-{
-    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
-    TStopFunctor stopFunctor_ = stopFunctor;
-    _skipUntil(iter, stopFunctor_, TIChunk());
-}
-
-// Shortcuts
+// ----------------------------------------------------------------------------
+// Function readUntil(); Not ignoring
+// ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TFwdIterator, typename TStopFunctor>
-inline void
-readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor const &stopFunctor)
+inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor const &stopFunctor)
 {
     readUntil(target, iter, stopFunctor, False());
 }
 
 template <typename TTarget, typename TFwdIterator, typename TStopFunctor>
-inline void
-readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor)
+inline void readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor)
 {
     readUntil(target, iter, stopFunctor, False());
 }
+
+// ----------------------------------------------------------------------------
+// Function readLine()
+// ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TFwdIterator>
-inline void
-readLine(TTarget &target, TFwdIterator &iter)
+inline void readLine(TTarget &target, TFwdIterator &iter)
 {
     readUntil(target, iter, IsNewline());
 
@@ -606,9 +399,12 @@ readLine(TTarget &target, TFwdIterator &iter)
         ++iter;     // consume the found newline
 }
 
+// ----------------------------------------------------------------------------
+// Function skipLine()
+// ----------------------------------------------------------------------------
+
 template <typename TFwdIterator>
-inline void
-skipLine(TFwdIterator &iter)
+inline void skipLine(TFwdIterator &iter)
 {
     skipUntil(iter, IsNewline());
 
@@ -629,107 +425,6 @@ skipLine(TFwdIterator &iter)
     if (*iter == '\n')
         ++iter;     // consume the found newline
 }
-
-template <typename TTarget, typename TFwdIterator, typename TSize>
-inline TSize
-readN(TTarget &target, TFwdIterator &iter, TSize n)
-{
-    TSize i;
-    for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
-        writeValue(target, value(iter));
-    return i;
-}
-
-
-
-
-
-template <typename TTarget, typename TFwdIterator, typename TSize, typename TIChunk, typename TOChunk>
-inline void
-_writeN(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
-{
-    for (; n > (TSize)0; --n, ++iter)
-        writeValue(target, value(iter));
-}
-
-template <typename TTarget, typename TFwdIterator, typename TSize, typename TIValue, typename TOValue>
-inline void
-_writeN(
-    TTarget &target,
-    TFwdIterator &iter,
-    TSize n,
-    Range<TIValue*> *,
-    Range<TOValue*> *)
-{
-    Range<TIValue*> ichunk;
-    Range<TOValue*> ochunk;
-
-    typename Size<TTarget>::Type minChunkSize;
-    for (; n > (TSize)0; n -= minChunkSize)
-    {
-        ichunk = getChunk(iter, Input());
-        minChunkSize = ichunk.end - ichunk.begin;
-        SEQAN_ASSERT_GT(minChunkSize, 0u);
-
-        reserveChunk(target, minChunkSize);
-        ochunk = getChunk(end(target, Rooted()), Output());
-
-        typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
-
-        if (minChunkSize > olen)
-            minChunkSize = olen;
-
-        if (minChunkSize > n)
-            minChunkSize = n;
-
-        ichunk.end = ichunk.begin + minChunkSize;
-
-        for (; ichunk.begin != ichunk.end; ++ichunk.begin, ++ochunk.begin)
-            assignValue(ochunk.begin, getValue(ichunk.begin));
-
-        iter += minChunkSize;                      // advance input iterator
-        advanceChunk(target, minChunkSize);
-    }
-}
-
-
-
-
-
-
-
-template <typename TTarget, typename TFwdIterator, typename TSize>
-inline void
-writeN(TTarget &target, TFwdIterator &iter, TSize n)
-{
-    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
-    typedef typename Chunk<TTarget>::Type*      TOChunk;
-
-    _writeN(target, iter, n, TIChunk(), TOChunk());
-}
-
-template <typename TTarget, typename TValue, typename TSize>
-inline void
-writeN(TTarget &target, TValue *ptr, TSize n)
-{
-    typedef Range<TValue*>                          TRange;
-    typedef typename Iterator<TRange, Rooted>::Type TIterator;
-    typedef typename Chunk<TIterator>::Type*        TIChunk;
-    typedef typename Chunk<TTarget>::Type*          TOChunk;
-
-    TRange range(ptr, ptr + n);
-    TIterator iter = begin(range, Rooted());
-    _writeN(target, iter, n, TIChunk(), TOChunk());
-}
-
-template <typename TTarget, typename TContainer>
-inline void
-write3(TTarget &target, TContainer &cont)
-{
-    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
-    writeN(target, iter, length(cont));
-}
-
 
 }  // namespace seqan
 

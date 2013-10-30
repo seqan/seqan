@@ -2127,7 +2127,7 @@ operator<<(TStream & target,
            String<TValue, TSpec> const & source)
 {
 SEQAN_CHECKPOINT
-    write(target, source);
+//    write(target, source);
     return target;
 }
 
@@ -2141,7 +2141,7 @@ operator>>(TStream & source,
            String<TValue, TSpec> & target)
 {
     SEQAN_CHECKPOINT;
-    read(source, target);
+//    read(source, target);
     return source;
 }
 
