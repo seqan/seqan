@@ -47,6 +47,101 @@ namespace seqan {
 // ============================================================================
 
 // ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void
+clear(Buffer<TValue, TSpec> &me)
+{
+    free(me.begin);
+    me.begin = me.end = NULL;
+    _setCapacity(me, 0);
+}
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void
+reserve(Buffer<TValue, TSpec> &me, TSize newCapacity)
+{
+    if (newCapacity < capacity(me))
+        return;
+
+    free(me.begin);
+    me.begin = me.end = (TValue*) valloc(newCapacity * sizeof(TValue));
+
+    if (me.begin == NULL)
+    {
+        _setCapacity(me, 0);
+        throw std::bad_alloc();
+    }
+
+    _setCapacity(me, newCapacity);
+}
+
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
+
+struct IOException:
+    public std::runtime_error
+{
+    IOException(const std::string& message):
+        std::runtime_error(message)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Class FilePage
+// ----------------------------------------------------------------------------
+
+enum PageCompletionStatus
+{
+    IS_READ = 1,
+    IS_PREPROCESSED = 2,
+    IS_POSTPROCESSED = 4,
+    IS_WRITTEN = 8
+};
+
+template <typename TValue, typename TSpec>
+struct FilePage
+{
+    typedef File<TSpec>                         TFile;
+    typedef typename AsyncRequest<TFile>::Type  TAsyncFileRequest;
+    typedef typename Position<TFile>::Type      TFilePos;
+    typedef typename Size<TFile>::Type          TFileSize;
+
+    Buffer<TValue>          rawBuffer;
+    Buffer<TValue>          dataBuffer;
+    TAsyncFileRequest       request;
+
+    TFilePos                filePos;
+    TFileSize               size;
+    PageFrameStatus         status;
+    PageCompletionStatus    completionStatus;
+};
+
+template <typename TValue, typename TConfig>
+struct FilePage<TValue, MMap<TConfig> >
+{
+    typedef File<Async<> >                      TFile;
+    typedef typename Position<TFile>::Type      TFilePos;
+    typedef typename Size<TFile>::Type          TFileSize;
+
+    Buffer<TValue>          rawBuffer;
+    Buffer<TValue>          dataBuffer;
+
+    TFilePos                filePos;
+    TFileSize               size;
+    PageFrameStatus         status;
+    PageCompletionStatus    completionStatus;
+};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+
+// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -54,15 +149,22 @@ namespace seqan {
 // Class FilePager
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TSpec = Async<> >
+template <unsigned PAGE_SIZE = 4 * 1024 * 1024>
+struct FixedPagingScheme
+{
+    enum { pageSize = PAGE_SIZE };
+};
+
+
+template <typename TValue, typename TDirection, typename TSpec = Async<>, typename TPagingScheme = FixedPagingScheme<> >
 struct FilePageTable
 {
     typedef File<Async<> >                              TFile;
     typedef typename Size<TFile>::Type                  TSize;
-    typedef Buffer<TValue>                              TBuffer;
-    typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
+
+    typedef FilePage<TValue, TSpec>                     TPageFrame;
     typedef PageChain<TPageFrame>                       TPageChain;
-//        typedef String<TPageFrame*>                         TPageChain;
+    typedef Buffer<TValue>                              TBuffer;
     typedef	typename Iterator<TBuffer, Standard>::Type	TIterator;
 
     typedef short int                                   TPageId;
@@ -72,15 +174,17 @@ struct FilePageTable
     static const unsigned numPages = 2;                // double-buffering
     static const unsigned pageSize = 4*1024*1024;      // 1M entries per page
 
-    TFile       file;
-    TSize       fileSize;
-    int         lastPageNo;
+    TFile           file;
+    TSize           fileSize;
+    unsigned        filePages;
 
-    TPageChain  inChain;
-    TPageChain  outChain;
+    TPageChain      inChain;
+    TPageChain      outChain;
 
-    bool        inChainNeedsHousekeeping;
-    bool        outChainNeedsHousekeeping;
+    bool            inChainNeedsHousekeeping;
+    bool            outChainNeedsHousekeeping;
+
+    TPagingScheme   scheme;
 
     inline void _printStats()
     {
@@ -89,55 +193,66 @@ struct FilePageTable
 };
 
 
-template <typename TValue, typename TDirection, typename TSpec = Async<> >
+// ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TValue, typename TDirection, typename TSpec>
 inline void
 clear(FilePageTable<TValue, TDirection, TSpec> &pager)
 {
-    pager.lastPageNo = -1;
+    pager.filePages = 0;
     pager.fileSize = 0;
     pager.inChainNeedsHousekeeping = false;
     pager.outChainNeedsHousekeeping = false;
 }
 
-// ============================================================================
-// Functions
-// ============================================================================
+template <typename TValue, typename TDirection, typename TSpec, typename TPageNo, unsigned PAGE_SIZE>
+inline Pair<__int64, unsigned>
+_getPageOffsetAndLength(FilePageTable<TValue, TDirection, TSpec, FixedPagingScheme<PAGE_SIZE> > &pager, TPageNo pageNo)
+{
+    return Pair<__int64, unsigned>((__int64)pager.scheme.pageSize * (__int64)pageNo, pager.scheme.pageSize);
+}
+
+
 
 // Variant for File<TFileSpec> (fallback if MMap<> not available as on Windows).
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
-_readBuffer(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf)
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TPageNo>
+inline void
+_readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, TPageNo pageNo)
 {
-    // allocate page memory if not done already
-    if (pf.begin == NULL)
-        if (!allocPage(pf, pager.pageSize, pager.file))
-            SEQAN_FAIL("ERROR: Could not allocate page of size %u.", (unsigned)pager.pageSize);
+    typedef typename FilePageTable<TValue, TDirection, TSpec>::TSize TSize;
+    Pair<__int64, unsigned> ofsLen = _getPageOffsetAndLength(pager, pageNo);
+
+    // allocate required memory
+    reserve(pf, ofsLen.i2);
 
     // only read in read-mode
-    if (IsSameType<TDirection, Output>::VALUE || (int)pf.pageNo > pager.lastPageNo)
+    if (IsSameType<TDirection, Output>::VALUE || pageNo >= pager.filePages)
     {
+        // no valid data read and we return immediately
         resize(pf, 0);
         pf.status = READY;
-        return true;
     }
 
-    // shrink buffer size at the end of file
-    if ((int)pf.pageNo < pager.lastPageNo)
-        resize(pf, pager.pageSize);
+    // shrink read buffer size at the end of file
+    if ((TSize)ofsLen.i1 + (TSize)ofsLen.i2 < pager.fileSize)
+        resize(pf, ofsLen.i2);
     else
-        resize(pf, pager.fileSize - pager.lastPageNo * pager.pageSize);
+        resize(pf, pager.fileSize - (TSize)ofsLen.i1);
 
-// TODO: move out
-//    pager.setg(pf.begin, pf.begin, pf.end);
+    pf.status = READING;
+    bool success = asyncReadAt(pager.file, (TValue*)pf.begin, length(pf), (TSize)ofsLen.i1, pf.request);
 
-    // read next page into memory
-    return readPage(pf, pager.file);
+    // if an error occurred, throw an I/O exception
+    if (!success)
+        throw IOException((std::string)_pageFrameStatusString(pf) + " operation could not be initiated: \"" + strerror(errno) + '"');
 }
 
 #ifndef PLATFORM_WINDOWS
-template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame, typename TPageNo>
 inline bool
-_readBuffer(FilePageTable<TValue, TDirection, MMap<TConfig> > &pager, TPageFrame &pf)
+_readFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > &pager, TPageFrame &pf, TPageNo pageNo)
 {
     typedef FilePageTable<TValue, TDirection, MMap<TConfig> >   TFilePageTable;
     typedef typename TFilePageTable::TFile                      TFile;
