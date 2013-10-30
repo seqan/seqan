@@ -749,7 +749,7 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         TPosition pos,
         std::ios::openmode which)
     {
-        SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0u);
+        SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0);
 
         if (SEQAN_UNLIKELY(!pager.file))
             return -1;
@@ -763,7 +763,7 @@ struct FileStreamBuffer : public std::basic_streambuf<TValue>
         std::ios::seekdir dir,
         std::ios::openmode which)
     {
-        SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0u);
+        SEQAN_ASSERT_NEQ(which & IosOpenMode<TDirection>::VALUE, 0);
 
         if (SEQAN_UNLIKELY(!pager.file))
             return -1;
