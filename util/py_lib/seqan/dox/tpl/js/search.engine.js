@@ -136,12 +136,16 @@ and based on the Tipue Search, http://www.tipue.com
             settings.queryLangEntityInput.change(function (event) {
                 search(0, true);
             });
-            $('#results').on('click', 'a', function() {
-            console.log($(this).parents('[data-lang-entity-container]'));
-            	$(this).parents('[data-lang-entity-container]').find('.more').each(function() {
+            $('#results').on('click', 'li.more:not(.result) a', function() {
+                var i=0;
+                var $more = $(this).parents('[data-lang-entity-container]').find('.more');
+                var step = 2000/$more.length;
+                if(step < 50) step = 30;
+            	$more.each(function() {
             		$this = $(this);
-            		if($this.hasClass('result')) $this.fadeIn();
-            		else $this.css('display', 'none');
+            		if($this.hasClass('result')) $this.slideDown(200+i);
+            		else $this.slideUp();
+            		i+=step;
             	});
             	return false;
             });
@@ -286,8 +290,9 @@ and based on the Tipue Search, http://www.tipue.com
                             	} else {
                             		entriesInGroup++;
                             	}
-                            	
-                            	if(entriesInGroup != settings.maxResultsPerGroup) {
+
+                            	if(entriesInGroup != settings.maxResultsPerGroup
+                            	   || (entriesInGroup == settings.maxResultsPerGroup && found[i+1].langEntity != langEntity)) {
 									out += '<li class="result' + (entriesInGroup >= settings.maxResultsPerGroup ? ' more' : '') + '">' +
 										   '<h2>' +
 											 '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
