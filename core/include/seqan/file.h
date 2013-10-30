@@ -33,8 +33,13 @@
 #ifndef SEQAN_HEADER_FILE_H
 #define SEQAN_HEADER_FILE_H
 
-//____________________________________________________________________________
-// prerequisites
+// ===========================================================================
+// Prerequisites.
+// ===========================================================================
+
+// ----------------------------------------------------------------------------
+// STL prerequisites
+// ----------------------------------------------------------------------------
 
 #include <iostream>
 #include <climits>
@@ -44,80 +49,47 @@
 #include <map>
 #include <cmath>
 #include <sstream>
+#include <cctype>
+
+// ----------------------------------------------------------------------------
+// SeqAn prerequisites
+// ----------------------------------------------------------------------------
 
 #include <seqan/sequence.h>
 #include <seqan/modifier.h>
+#include <seqan/system.h>	// async file (default file type of File<>)
 
-#ifdef SEQAN_NEW_IO
-#include <cctype>
-#endif
-
-
-//____________________________________________________________________________
+// ===========================================================================
+// Forwards.
+// ===========================================================================
 
 #include <seqan/file/file_forwards.h>
 
-#ifndef SEQAN_NEW_IO
-#include <seqan/file/cstream.h>
-//#include <seqan/file/stream.h>
-#endif
-
-#include <seqan/file/chunk_collector.h>
-
-//____________________________________________________________________________
-// files
+// ===========================================================================
+// File.
+// ===========================================================================
 
 #include <seqan/file/file_interface.h>
-#ifndef SEQAN_NEW_IO
-#include <seqan/file/file_cstyle.h>
-#endif
 #include <seqan/file/file_base.h>
+//#include <seqan/file/file_cstyle.h>
 
-#include <seqan/system.h>	// async file (default file type of File<>)
+// ===========================================================================
+// External Strings.
+// ===========================================================================
 
-/*#include <seqan/system/file_sync.h>
-#include <seqan/system/system_event.h>
-#include <seqan/system/file_async.h>
-*/
-
-//____________________________________________________________________________
-// file formats
-#ifndef SEQAN_NEW_IO
-#include <seqan/file/file_filereaderiterator.h>
-#include <seqan/file/file_filereader.h>
-
-#include <seqan/file/file_format.h>
-
-#include <seqan/file/stream_algorithms.h>
-
-//file formats for sequences
-#include <seqan/file/file_format_raw.h>
-#include <seqan/file/file_format_fasta.h>
-#include <seqan/file/file_format_embl.h>
-#include <seqan/file/file_format_genbank.h>
-
-//file formats for alignments
-#include <seqan/file/file_format_fasta_align.h>
-
-//others
-#include <seqan/file/file_format_cgviz.h>
-#endif
-
-//____________________________________________________________________________
-
-//#include <seqan/file/file_format_guess.h>
-
-//____________________________________________________________________________
-// external strings
+// ----------------------------------------------------------------------------
+// Paging and mapping
+// ----------------------------------------------------------------------------
 
 #include <seqan/file/file_page.h>
 #include <seqan/file/file_mapping.h>
-#include <seqan/file/string_mmap.h>
 //#include <seqan/file/file_pager.h>
-#include <seqan/file/string_external.h>
 
-#ifndef SEQAN_NEW_IO
-#include <seqan/file/file_format_mmap.h>
-#endif
+// ----------------------------------------------------------------------------
+// String specializations
+// ----------------------------------------------------------------------------
+
+#include <seqan/file/string_mmap.h>
+#include <seqan/file/string_external.h>
 
 #endif //#ifndef SEQAN_HEADER_...
