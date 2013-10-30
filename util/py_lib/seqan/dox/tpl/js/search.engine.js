@@ -139,8 +139,8 @@ and based on the Tipue Search, http://www.tipue.com
             $('#results').on('click', 'li.more:not(.result) a', function() {
                 var i=0;
                 var $more = $(this).parents('[data-lang-entity-container]').find('.more');
-                var step = 2000/$more.length;
-                if(step < 50) step = 30;
+                var step = 1500/$more.length;
+                if(step < 10) step = 10;
             	$more.each(function() {
             		$this = $(this);
             		if($this.hasClass('result')) $this.slideDown(200+i);
@@ -292,7 +292,7 @@ and based on the Tipue Search, http://www.tipue.com
                             	}
 
                             	if(entriesInGroup != settings.maxResultsPerGroup
-                            	   || (entriesInGroup == settings.maxResultsPerGroup && found[i+1].langEntity != langEntity)) {
+                            	   || (entriesInGroup == settings.maxResultsPerGroup && found.length > i+1 && found[i+1].langEntity != langEntity)) {
 									out += '<li class="result' + (entriesInGroup >= settings.maxResultsPerGroup ? ' more' : '') + '">' +
 										   '<h2>' +
 											 '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +

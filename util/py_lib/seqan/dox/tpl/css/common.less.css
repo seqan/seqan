@@ -130,7 +130,7 @@ dl {
 .overview > dl dt {
   float: left;
   clear: left;
-  width: 11em;
+  width: 7em;
   text-align: right;
   font-weight: bold;
 }
@@ -138,7 +138,7 @@ dl {
   content: ":";
 }
 .overview > dl dd {
-  margin: 0 0 0 12em;
+  margin: 0 0 0 8em;
 }
 .overview > dl dd [data-lang-entity] > :first-child {
   display: none;
@@ -844,12 +844,16 @@ html.page_languageentities [data-lang-entity-container=typedef] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5bde7c;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=typedef] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=typedef] > ol li.more:not(.result) {
+  border-top: 1px dotted #5bde7c;
 }
 div.language_entities [data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=grouped_typedef] [data-lang-entity-ideogram] {
@@ -911,12 +915,16 @@ html.page_languageentities [data-lang-entity-container=grouped_typedef] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5bde7c;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=grouped_typedef] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=grouped_typedef] > ol li.more:not(.result) {
+  border-top: 1px dotted #5bde7c;
 }
 div.language_entities [data-lang-entity-container=global_typedef] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=global_typedef] [data-lang-entity-ideogram] {
@@ -978,12 +986,16 @@ html.page_languageentities [data-lang-entity-container=global_typedef] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5bde7c;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=global_typedef] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=global_typedef] > ol li.more:not(.result) {
+  border-top: 1px dotted #5bde7c;
 }
 div.language_entities [data-lang-entity-container=member_typedef] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=member_typedef] [data-lang-entity-ideogram] {
@@ -1045,12 +1057,16 @@ html.page_languageentities [data-lang-entity-container=member_typedef] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5bde7c;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 124, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=member_typedef] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=member_typedef] > ol li.more:not(.result) {
+  border-top: 1px dotted #5bde7c;
 }
 div.language_entities [data-lang-entity-container=concept] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=concept] [data-lang-entity-ideogram] {
@@ -1112,12 +1128,16 @@ html.page_languageentities [data-lang-entity-container=concept] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #b02323;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(176, 35, 35, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(176, 35, 35, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(176, 35, 35, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=concept] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=concept] > ol li.more:not(.result) {
+  border-top: 1px dotted #b02323;
 }
 div.language_entities [data-lang-entity-container=class] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=class] [data-lang-entity-ideogram] {
@@ -1179,12 +1199,16 @@ html.page_languageentities [data-lang-entity-container=class] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #de5b5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(222, 91, 91, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(222, 91, 91, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(222, 91, 91, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=class] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=class] > ol li.more:not(.result) {
+  border-top: 1px dotted #de5b5b;
 }
 div.language_entities [data-lang-entity-container=enum] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=enum] [data-lang-entity-ideogram] {
@@ -1246,12 +1270,16 @@ html.page_languageentities [data-lang-entity-container=enum] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #efb0b0;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(239, 176, 176, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(239, 176, 176, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(239, 176, 176, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=enum] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=enum] > ol li.more:not(.result) {
+  border-top: 1px dotted #efb0b0;
 }
 div.language_entities [data-lang-entity-container=metafunction] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=metafunction] [data-lang-entity-ideogram] {
@@ -1313,12 +1341,16 @@ html.page_languageentities [data-lang-entity-container=metafunction] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5b7cde;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=metafunction] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=metafunction] > ol li.more:not(.result) {
+  border-top: 1px dotted #5b7cde;
 }
 div.language_entities [data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=global_metafunction] [data-lang-entity-ideogram] {
@@ -1380,12 +1412,16 @@ html.page_languageentities [data-lang-entity-container=global_metafunction] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5b7cde;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=global_metafunction] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=global_metafunction] > ol li.more:not(.result) {
+  border-top: 1px dotted #5b7cde;
 }
 div.language_entities [data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=interface_metafunction] [data-lang-entity-ideogram] {
@@ -1447,12 +1483,16 @@ html.page_languageentities [data-lang-entity-container=interface_metafunction] d
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5b7cde;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 124, 222, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=interface_metafunction] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=interface_metafunction] > ol li.more:not(.result) {
+  border-top: 1px dotted #5b7cde;
 }
 div.language_entities [data-lang-entity-container=function] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=function] [data-lang-entity-ideogram] {
@@ -1514,12 +1554,16 @@ html.page_languageentities [data-lang-entity-container=function] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5bdede;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 222, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 222, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 222, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=function] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=function] > ol li.more:not(.result) {
+  border-top: 1px dotted #5bdede;
 }
 div.language_entities [data-lang-entity-container=global_function] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=global_function] [data-lang-entity-ideogram] {
@@ -1581,12 +1625,16 @@ html.page_languageentities [data-lang-entity-container=global_function] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #85e7e7;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(133, 231, 231, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(133, 231, 231, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(133, 231, 231, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=global_function] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=global_function] > ol li.more:not(.result) {
+  border-top: 1px dotted #85e7e7;
 }
 div.language_entities [data-lang-entity-container=interface_function] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=interface_function] [data-lang-entity-ideogram] {
@@ -1648,12 +1696,16 @@ html.page_languageentities [data-lang-entity-container=interface_function] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #23b0b0;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(35, 176, 176, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(35, 176, 176, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(35, 176, 176, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=interface_function] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=interface_function] > ol li.more:not(.result) {
+  border-top: 1px dotted #23b0b0;
 }
 div.language_entities [data-lang-entity-container=member_function] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=member_function] [data-lang-entity-ideogram] {
@@ -1715,12 +1767,16 @@ html.page_languageentities [data-lang-entity-container=member_function] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #5bdede;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 222, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 222, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(91, 222, 222, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=member_function] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=member_function] > ol li.more:not(.result) {
+  border-top: 1px dotted #5bdede;
 }
 div.language_entities [data-lang-entity-container=tag] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=tag] [data-lang-entity-ideogram] {
@@ -1782,12 +1838,16 @@ html.page_languageentities [data-lang-entity-container=tag] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #9d5bde;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 91, 222, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 91, 222, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 91, 222, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=tag] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=tag] > ol li.more:not(.result) {
+  border-top: 1px dotted #9d5bde;
 }
 div.language_entities [data-lang-entity-container=variable] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=variable] [data-lang-entity-ideogram] {
@@ -1849,12 +1909,16 @@ html.page_languageentities [data-lang-entity-container=variable] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #9dde5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=variable] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=variable] > ol li.more:not(.result) {
+  border-top: 1px dotted #9dde5b;
 }
 div.language_entities [data-lang-entity-container=global_variable] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=global_variable] [data-lang-entity-ideogram] {
@@ -1916,12 +1980,16 @@ html.page_languageentities [data-lang-entity-container=global_variable] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #9dde5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=global_variable] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=global_variable] > ol li.more:not(.result) {
+  border-top: 1px dotted #9dde5b;
 }
 div.language_entities [data-lang-entity-container=local_variable] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=local_variable] [data-lang-entity-ideogram] {
@@ -1983,12 +2051,16 @@ html.page_languageentities [data-lang-entity-container=local_variable] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #9dde5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=local_variable] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=local_variable] > ol li.more:not(.result) {
+  border-top: 1px dotted #9dde5b;
 }
 div.language_entities [data-lang-entity-container=member_variable] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=member_variable] [data-lang-entity-ideogram] {
@@ -2050,12 +2122,16 @@ html.page_languageentities [data-lang-entity-container=member_variable] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #9dde5b;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(157, 222, 91, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=member_variable] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=member_variable] > ol li.more:not(.result) {
+  border-top: 1px dotted #9dde5b;
 }
 div.language_entities [data-lang-entity-container=adaption] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=adaption] [data-lang-entity-ideogram] {
@@ -2117,12 +2193,16 @@ html.page_languageentities [data-lang-entity-container=adaption] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d5ac31;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(213, 172, 49, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(213, 172, 49, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(213, 172, 49, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=adaption] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=adaption] > ol li.more:not(.result) {
+  border-top: 1px dotted #d5ac31;
 }
 div.language_entities [data-lang-entity-container=macro] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=macro] [data-lang-entity-ideogram] {
@@ -2184,12 +2264,16 @@ html.page_languageentities [data-lang-entity-container=macro] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e7ce85;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(231, 206, 133, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(231, 206, 133, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(231, 206, 133, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=macro] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=macro] > ol li.more:not(.result) {
+  border-top: 1px dotted #e7ce85;
 }
 div.language_entities [data-lang-entity-container=page] [data-lang-entity-ideogram],
 html.page_languageentities [data-lang-entity-container=page] [data-lang-entity-ideogram] {
@@ -2251,12 +2335,16 @@ html.page_languageentities [data-lang-entity-container=page] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d531ac;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(213, 49, 172, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(213, 49, 172, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(213, 49, 172, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=page] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=page] > ol li.more:not(.result) {
+  border-top: 1px dotted #d531ac;
 }
 html:not(.list) [data-lang-entity=page] > *:first-child {
   display: none;
@@ -2321,12 +2409,16 @@ html.page_languageentities [data-lang-entity-container=group] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e785ce;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(231, 133, 206, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(231, 133, 206, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(231, 133, 206, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=group] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=group] > ol li.more:not(.result) {
+  border-top: 1px dotted #e785ce;
 }
 html:not(.list) [data-lang-entity=group] > *:first-child {
   display: none;
@@ -2391,12 +2483,16 @@ html.page_languageentities [data-lang-entity-container=generic] dt {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #999999;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(153, 153, 153, 0.15000000000000002);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(153, 153, 153, 0.15000000000000002);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 100px rgba(153, 153, 153, 0.15000000000000002);
 }
 #results li[data-lang-entity-container=generic] > ol [data-lang-entity] > :first-child {
   display: none;
+}
+#results li[data-lang-entity-container=generic] > ol li.more:not(.result) {
+  border-top: 1px dotted #999999;
 }
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,

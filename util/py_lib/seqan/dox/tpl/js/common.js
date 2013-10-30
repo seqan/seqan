@@ -19,7 +19,6 @@
         
         // tooltips
         $('[title]:not([href])').tooltip({ container: 'body' });
-        console.log($('[title]:not([href])'));
 
         // smooth scrolling
         $('a[href*=#]:not([href=#])').click(function() {
