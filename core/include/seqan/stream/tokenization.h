@@ -648,7 +648,7 @@ template <typename TTarget, typename TFwdIterator, typename TSize, typename TICh
 inline void
 _writeN(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
 {
-    for (; n > (TSize)0; --n)
+    for (; n > (TSize)0; --n, ++iter)
         writeValue(target, value(iter));
 }
 
