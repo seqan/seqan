@@ -128,26 +128,37 @@ struct BasicStream:
 // Metafunction IosOpenMode
 // --------------------------------------------------------------------------
 
-template <typename TDirection>
+template <typename TDirection, typename TDummy = void>
 struct IosOpenMode;
 
-template <>
-struct IosOpenMode<Input>
+
+template <typename TDummy>
+struct IosOpenMode<Input, TDummy>
 {
-    enum { VALUE = std::ios_base::in };
+    static const int VALUE;
 };
 
-template <>
-struct IosOpenMode<Output>
+template <typename TDummy>
+struct IosOpenMode<Output, TDummy>
 {
-    enum { VALUE = std::ios_base::out };
+    static const int VALUE;
 };
 
-template <>
-struct IosOpenMode<Bidirectional>
+template <typename TDummy>
+struct IosOpenMode<Bidirectional, TDummy>
 {
-    enum { VALUE = std::ios_base::in | std::ios_base::out };
+    static const int VALUE;
 };
+
+
+template <typename TDummy>
+const int IosOpenMode<Input, TDummy>::VALUE = std::ios::in;
+
+template <typename TDummy>
+const int IosOpenMode<Output, TDummy>::VALUE = std::ios::out;
+
+template <typename TDummy>
+const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out;
 
 // ============================================================================
 // Concepts
