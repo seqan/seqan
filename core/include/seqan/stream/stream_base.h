@@ -301,19 +301,6 @@ inline void _write(TTarget &target, TFwdIterator &iter, TSize n, Range<TIValue*>
 }
 
 // ----------------------------------------------------------------------------
-// Function write(Iterator<Input>)
-// ----------------------------------------------------------------------------
-
-template <typename TTarget, typename TFwdIterator, typename TSize>
-inline void write(TTarget &target, TFwdIterator &iter, TSize n)
-{
-    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
-    typedef typename Chunk<TTarget>::Type*      TOChunk;
-
-    _write(target, iter, n, TIChunk(), TOChunk());
-}
-
-// ----------------------------------------------------------------------------
 // Function write(TValue *)
 // ----------------------------------------------------------------------------
 
@@ -331,14 +318,16 @@ inline void write(TTarget &target, TValue *ptr, TSize n)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(TContainer)
+// Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
-template <typename TTarget, typename TContainer>
-inline void write(TTarget &target, TContainer &cont)
+template <typename TTarget, typename TFwdIterator, typename TSize>
+inline void write(TTarget &target, TFwdIterator &iter, TSize n)
 {
-    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
-    write(target, iter, length(cont));
+    typedef typename Chunk<TFwdIterator>::Type* TIChunk;
+    typedef typename Chunk<TTarget>::Type*      TOChunk;
+
+    _write(target, iter, n, TIChunk(), TOChunk());
 }
 
 // ----------------------------------------------------------------------------
@@ -352,6 +341,28 @@ inline TSize read(TTarget &target, TFwdIterator &iter, TSize n)
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
         writeValue(target, value(iter));
     return i;
+}
+
+// ----------------------------------------------------------------------------
+// Function write(TContainer)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TContainer>
+inline void write(TTarget &target, TContainer &cont)
+{
+    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
+    write(target, iter, length(cont));
+}
+
+// ----------------------------------------------------------------------------
+// Function read(TContainer)
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TContainer>
+inline void read(TTarget &target, TContainer &cont)
+{
+    typename Iterator<TContainer, Rooted>::Type iter = begin(cont, Rooted());
+    read(target, iter, length(cont));
 }
 
 }  // namespace seqean
