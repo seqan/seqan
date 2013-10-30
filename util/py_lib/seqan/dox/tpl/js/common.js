@@ -275,7 +275,7 @@
         
         // search immediately if query was passed within the url
 		var q = decodeURI((RegExp('q=' + '(.+?)(&|$)').exec(parent.location.search)||[,null])[1]);
-		if(q) {
+		if(q && q != 'null') {
 			$('#search [type=search]').val(q).change().focus();
 		}
     });
