@@ -33,6 +33,7 @@
 // ==========================================================================
 // Memory map a whole file and use it as a string.
 // ==========================================================================
+// NOTE(esiragusa): this file is deprecated.
 
 #ifndef SEQAN_HEADER_STRING_MMAP_H
 #define SEQAN_HEADER_STRING_MMAP_H
