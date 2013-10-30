@@ -382,14 +382,26 @@ struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 ///.Metafunction.Host.param.T.type:Class.ModifiedString
 ///.Metafunction.Host.class:Class.ModifiedString
 
+template <typename T>
+struct ConvertArrayToPointer
+{
+    typedef T Type;
+};
+
+template <typename T, int SIZE>
+struct ConvertArrayToPointer<T[SIZE]>
+{
+    typedef T* Type;
+};
+
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> > {
-    typedef THost Type;
+    typedef typename ConvertArrayToPointer<THost>::Type Type;
 };
 
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> const > {
-    typedef THost const Type;
+    typedef typename ConvertArrayToPointer<THost const>::Type Type;
 };
 
 // --------------------------------------------------------------------------
@@ -508,17 +520,17 @@ _toParameter(ModifiedString<THost, TSpec> const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-inline THost &
+inline typename Host<ModifiedString<THost, TSpec> >::Type &
 host(ModifiedString<THost, TSpec> & me)
 {
-    return _dereference<THost &>(me._host);
+    return _dereference<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
 }
 
 template <typename THost, typename TSpec>
-inline THost &
+inline typename Host<ModifiedString<THost, TSpec> >::Type &
 host(ModifiedString<THost, TSpec> const & me)
 {
-    return _dereference<THost &>(me._host);
+    return _dereference<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
 }
 
 // --------------------------------------------------------------------------
