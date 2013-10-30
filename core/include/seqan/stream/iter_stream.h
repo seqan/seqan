@@ -36,6 +36,7 @@
 // iterator as we need to have access to the underlying streambuf which is a
 // private member of the STL iterator.
 // ==========================================================================
+// TODO(esiragusa): tests
 
 #ifndef SEQAN_STREAM_ITER_H_
 #define SEQAN_STREAM_ITER_H_
