@@ -148,7 +148,7 @@ template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
     typedef EqualsChar<'>'> TFastaBegin;
-    typedef OrFunctor<IsWhitespace, AssertFunctor<IsInAlphabet<typename Value<TSeqString>::Type>, ParseError> > TIgnoreOrAssert;
+    typedef OrFunctor<IsWhitespace, Asserter<IsInAlphabet<typename Value<TSeqString>::Type>, ParseError, Fasta> > TIgnoreOrAssert;
 
     clear(meta);
     clear(seq);
@@ -170,8 +170,8 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
     typedef EqualsChar<'@'> TFastqBegin;
     typedef EqualsChar<'+'> TQualsBegin;
 
-    typedef OrFunctor<IsWhitespace, AssertFunctor<IsInAlphabet<typename Value<TSeqString>::Type>, ParseError> > TIgnoreOrAssertSeq;
-    typedef OrFunctor<IsBlank, AssertFunctor<IsInAlphabet<typename Value<TQualString>::Type>, ParseError> > TIgnoreOrAssertQual;
+    typedef OrFunctor<IsWhitespace, Asserter<IsInAlphabet<typename Value<TSeqString>::Type>, ParseError, Fastq> > TIgnoreOrAssertSeq;
+    typedef OrFunctor<IsBlank, Asserter<IsInAlphabet<typename Value<TQualString>::Type>, ParseError, Fastq> > TIgnoreOrAssertQual;
 
     clear(meta);
     clear(seq);
