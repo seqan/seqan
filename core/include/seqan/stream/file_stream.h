@@ -155,11 +155,22 @@ struct FixedPagingScheme
     enum { pageSize = PAGE_SIZE };
 };
 
+template <typename TValue, typename TDirection, typename TSpec, typename TPagingScheme>
+struct Host<FilePageTable<TValue, TDirection, TSpec, TPagingScheme> >
+{
+    typedef File<TSpec> Type;
+};
+
+template <typename TValue, typename TDirection, typename TSpec, typename TPagingScheme>
+struct Host<FilePageTable<TValue, TDirection, MMap<TSpec>, TPagingScheme> >
+{
+    typedef FileMapping<TSpec> Type;
+};
 
 template <typename TValue, typename TDirection, typename TSpec = Async<>, typename TPagingScheme = FixedPagingScheme<> >
 struct FilePageTable
 {
-    typedef File<Async<> >                              TFile;
+    typedef typename Host<FilePageTable>::Type          TFile;
     typedef typename Size<TFile>::Type                  TSize;
 
     typedef FilePage<TValue, TSpec>                     TPageFrame;
@@ -216,19 +227,18 @@ _getPageOffsetAndLength(FilePageTable<TValue, TDirection, TSpec, FixedPagingSche
 
 
 
-// Variant for File<TFileSpec> (fallback if MMap<> not available as on Windows).
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TPageNo>
+// Variant for POSIX file access
+template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TOffset, typename TPageSize>
 inline void
-_readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, TPageNo pageNo)
+_readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, TOffset offset, TPageSize pageSize)
 {
     typedef typename FilePageTable<TValue, TDirection, TSpec>::TSize TSize;
-    Pair<__int64, unsigned> ofsLen = _getPageOffsetAndLength(pager, pageNo);
 
     // allocate required memory
-    reserve(pf, ofsLen.i2);
+    reserve(pf, pageSize);
 
-    // only read in read-mode
-    if (IsSameType<TDirection, Output>::VALUE || pageNo >= pager.filePages)
+    // do nothing in output-only mode or when there is nothing to read
+    if (IsSameType<TDirection, Output>::VALUE || (TSize)offset >= pager.fileSize)
     {
         // no valid data read and we return immediately
         resize(pf, 0);
@@ -236,13 +246,12 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, T
     }
 
     // shrink read buffer size at the end of file
-    if ((TSize)ofsLen.i1 + (TSize)ofsLen.i2 < pager.fileSize)
-        resize(pf, ofsLen.i2);
-    else
-        resize(pf, pager.fileSize - (TSize)ofsLen.i1);
+    resize(pf, std::min((TSize)pageSize, pager.fileSize - (TSize)offset));
 
+    // start asynchronous reading
+	pf.filePos = offset;
     pf.status = READING;
-    bool success = asyncReadAt(pager.file, (TValue*)pf.begin, length(pf), (TSize)ofsLen.i1, pf.request);
+    bool success = asyncReadAt(pager.file, pf.begin, length(pf), (TSize)offset, pf.request);
 
     // if an error occurred, throw an I/O exception
     if (!success)
@@ -250,107 +259,81 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, T
 }
 
 #ifndef PLATFORM_WINDOWS
-template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame, typename TPageNo>
-inline bool
-_readFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > &pager, TPageFrame &pf, TPageNo pageNo)
+template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame, typename TOffset, typename TPageSize>
+inline void
+_readFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > &pager, TPageFrame &pf, TOffset offset, TPageSize pageSize)
 {
     typedef FilePageTable<TValue, TDirection, MMap<TConfig> >   TFilePageTable;
     typedef typename TFilePageTable::TFile                      TFile;
     typedef typename Size<TFile>::Type                          TSize;
 
-    _setCapacity(pf, pager.pageSize);
-    TSize size = pager.pageSize;
+	TSize endOfs = (TSize)offset + (TSize)pageSize;
+	TSize dataSize;
 
-    // Get the page size on the disk, adjusted for last page; required for setting itReadEnd.
-    unsigned pageSizeOnDisk = size;
-
+    // compute valid readable data
+	if ((TSize)offset >= length(pager.file))
+		dataSize = 0;	// no valid data to read from behind the end of file
+	else
+		dataSize = std::min((TSize)pageSize, length(pager.file) - (TSize)offset);
+	
     // how to handle pages crossing/beyond the end of file
-    if ((int)pf.pageNo >= pager.lastPageNo)
+    if (endOfs > length(pager.file))
     {
         if (!IsSameType<TDirection, Input>::VALUE)
         {
-            pageSizeOnDisk = pager.fileSize - pf.pageNo * pager.pageSize;
-
-            // 1. buffer is writable:
-            //
-            // increase file size to next page boundary
-            // and map the whole page
-            pager.lastPageNo = pf.pageNo;
-            pager.fileSize = (TSize)(pager.lastPageNo + 1) * (TSize)pager.pageSize;
-            resize(pager.file, pager.fileSize);
+            // increase file size to next page boundary and map the whole page
+			resize(pager.file, endOfs);
         }
         else
         {
-            // 2. buffer is read-only:
-            //
-            // adapt buffer to file size
-            // map only the contents of the file
-            if ((int)pf.pageNo == pager.lastPageNo)
-            {
-                pageSizeOnDisk = size;
-                size = pager.fileSize - (TSize)pager.lastPageNo * (TSize)pager.pageSize;
-            }
-            else
-            {
-                pageSizeOnDisk = 0;
-                // don't try to read pages behind the end the file
-                resize(pf, 0);
-                pf.status = READY;
-                return true;
-            }
+            // adapt page size to file size and map only the contents of the file
+			pageSize = dataSize;
         }
     }
 
-    bool res = false;
-    if (!IsSameType<TDirection, Input>::VALUE)
-        res = mapWritePage(pf, pager.file, size);
-    else
-        res = mapReadPage(pf, pager.file, size);
-
-// TODO:move out
-//    pager.setg(pf.begin, pf.begin, pf.begin + pageSizeOnDisk);
-
-    return res;
+	pf.filePos = offset;
+    pf.begin = mapFileSegment(pager.file, offset, pageSize);
+	resize(pf, dataSize);
+	pf.status = READY;
 }
 #endif
 
 
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
+inline void
 _preprocessBuffer(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &pf, bool)
 {
     // not used yet, could be usefull for external sorters/mappers
     pf.status = READY;
-    return true;
 }
 
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
+inline void
 _postprocessBuffer(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &pf, bool)
 {
     // not used yet, could be usefull for external sorters/mappers
     pf.status = POSTPROCESSED;
-    return true;
 }
 
 
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
-inline bool
+inline void
 _writeBuffer(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf)
 {
     // only write in write-mode
     if (IsSameType<TDirection, Input>::VALUE)
     {
         pf.status = UNUSED;
-        return true;
+        return;
     }
 
-    // shrink buffer size if it was not fully written (like the last buffer)
-//TODO: move to streambuf
-//    if (buffer.pptr() != buffer.epptr())
-//        resize(pf, buffer.pptr() - pf.begin);
+    // start asynchronous writing
+    pf.status = WRITING;
+    bool success = asyncWriteAt(pager.file, pf.begin, length(pf), pf.offset, pf.request);
 
-    return writePage(pf, pager.file);
+    // if an error occurred, throw an I/O exception
+    if (!success)
+        throw IOException((std::string)_pageFrameStatusString(pf) + " operation could not be initiated: \"" + strerror(errno) + '"');
 }
 
 #ifndef PLATFORM_WINDOWS
@@ -362,18 +345,16 @@ _writeBuffer(FilePageTable<TValue, TDirection, MMap<TConfig> > &pager, TPageFram
     typedef typename TFilePageTable::TFile                      TFile;
     typedef typename Size<TFile>::Type                          TSize;
 
-    TSize pageLen = length(pf);
     pf.status = UNUSED;
-    unmapPage(pf, pager.file);
+    unmapFileSegment(pager.file, pf.begin, capacity(pf));
 
-    if (!IsSameType<TDirection, Input>::VALUE && (pageLen < pager.pageSize))
+    if (!IsSameType<TDirection, Input>::VALUE)
     {
-        // shrink the file again, it was enlarged earlier (in _readBuffer)
-        pager.lastPageNo = pf.pageNo;
-        pager.fileSize = (TSize)pf.pageNo * (TSize)pager.pageSize + pageLen;
-        resize(pager.file, pager.fileSize);
+        pager.fileSize = std::max(pager.fileSize, (TSize)pf.filePos + (TSize)length(pf));
+
+        // TODO: shrink file before closing
+        //resize(pager.file, pager.fileSize);
     }
-    return true;
 }
 #endif
 
@@ -390,8 +371,7 @@ tryFetchBuffer(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, 
     {
         // buffer is idle, now read asynchronously
         pf.pageNo = pager._getNextFetchPageNo();
-        if (!_readBuffer(pager, pf))
-            return false;
+        _readBuffer(pager, pf);
     }
 
     if (pf.status == READING)
@@ -414,8 +394,7 @@ tryFetchBuffer(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, 
 
         // was reading, now preprocessing
         pf.status = PREPROCESSING;
-        if (!_preprocessBuffer(pager, pf, doWait))
-            return false;
+        _preprocessBuffer(pager, pf, doWait);
     }
 
     if (pf.status == PREPROCESSING)
@@ -423,22 +402,17 @@ tryFetchBuffer(FilePageTable<TValue, TDirection, TSpec> &pager, TPageFrame &pf, 
         // we get here only if doWait==false and the
         // asynchronous postprocessing is in progress
         SEQAN_ASSERT_NOT(doWait);
-        return true;
+        return;
     }
 
     if (pf.status == READY)
     {
-        // if in write mode, extend half-read buffer to page size
-        if (!IsSameType<TDirection, Input>::VALUE)
-            resize(pf, capacity(pf));
-
         // all done
         inProgress = false;
-        return true;
+        return;
     }
 
     SEQAN_FAIL("PageFrame has inconsistent state.");
-    return false;
 }
 
 // ----------------------------------------------------------------------------
