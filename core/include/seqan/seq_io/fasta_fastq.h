@@ -147,17 +147,17 @@ inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize li
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
-    EqualsChar<'>'> fastaBegin;
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertAlphabet("Invalid character in Fasta sequence!");
+    typedef EqualsChar<'>'> TFastaBegin;
+    typedef OrFunctor<IsWhitespace, AssertFunctor<IsInAlphabet<typename Value<TSeqString>::Type>, ParseError> > TIgnoreOrAssert;
 
     clear(meta);
     clear(seq);
 
-    skipUntil(iter, fastaBegin);    // forward to the next '>'
-    ++iter;                         // skip '>'
-    readLine(meta, iter);           // read Fasta id
-    readUntil(seq, iter, fastaBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fasta sequence
+    skipUntil(iter, TFastaBegin());     // forward to the next '>'
+    skipOne(iter);                      // assert and skip '>'
+
+    readLine(meta, iter);               // read Fasta id
+    readUntil(seq, iter, TFastaBegin(), TIgnoreOrAssert()); // read Fasta sequence
 }
 
 // ----------------------------------------------------------------------------
@@ -167,29 +167,27 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
 inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fastq)
 {
-    EqualsChar<'@'> fastqBegin;
-    EqualsChar<'+'> qualsBegin;
+    typedef EqualsChar<'@'> TFastqBegin;
+    typedef EqualsChar<'+'> TQualsBegin;
 
-    IgnoreOrAssertFunctor<IsWhitespace, IsInAlphabet<typename Value<TSeqString>::Type>, std::runtime_error>
-        ignoreWhiteSpaceAndAssertAlphabet("Invalid sequence character in Fastq sequence!");
-
-    IgnoreOrAssertFunctor<IsBlank, IsInAlphabet<typename Value<TQualString>::Type>, std::runtime_error>
-        ignoreBlankAssertQuality("Invalid quality character in Fastq sequence!");
+    typedef OrFunctor<IsWhitespace, AssertFunctor<IsInAlphabet<typename Value<TSeqString>::Type>, ParseError> > TIgnoreOrAssertSeq;
+    typedef OrFunctor<IsBlank, AssertFunctor<IsInAlphabet<typename Value<TQualString>::Type>, ParseError> > TIgnoreOrAssertQual;
 
     clear(meta);
     clear(seq);
     clear(qual);
 
-    skipUntil(iter, fastqBegin);    // forward to the next '@'
-    ++iter;                         // skip '@'
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
+    skipOne(iter);                      // skip '@'
 
-    readLine(meta, iter);           // read Fastq id
+    readLine(meta, iter);               // read Fastq id
 
-    readUntil(seq, iter, qualsBegin, ignoreWhiteSpaceAndAssertAlphabet);    // read Fastq sequence
-    skipLine(iter);                 // skip '+' and 2nd Fastq id
+    readUntil(seq, iter, TQualsBegin(), TIgnoreOrAssertSeq());  // read Fastq sequence
+    skipOne(iter, TQualsBegin());       // assert and skip '+'
+    skipLine(iter);                     // skip optional 2nd Fastq id
 
-    readUntil(qual, iter, IsNewline(), ignoreBlankAssertQuality);           // read Fastq qualities
-    skipUntil(iter, fastqBegin);    // forward to the next '@'
+    readUntil(qual, iter, IsNewline(), TIgnoreOrAssertQual());  // read Fastq qualities
+    skipUntil(iter, TFastqBegin());     // forward to the next '@'
 }
 
 // ----------------------------------------------------------------------------
