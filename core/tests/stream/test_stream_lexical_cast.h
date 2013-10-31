@@ -92,9 +92,9 @@ typedef
 // Aggregated Numerical Types
 // --------------------------------------------------------------------------
 
-typedef typename Sum<SignedIntegerTypes, UnsignedIntegerTypes>::Type    IntegerTypes;
-typedef typename Sum<SignedIntegerTypes, FloatingPointTypes>::Type      SignedTypes;
-typedef typename Sum<IntegerTypes, FloatingPointTypes>::Type            NumericalTypes;
+typedef Sum<SignedIntegerTypes, UnsignedIntegerTypes>::Type    IntegerTypes;
+typedef Sum<SignedIntegerTypes, FloatingPointTypes>::Type      SignedTypes;
+typedef Sum<IntegerTypes, FloatingPointTypes>::Type            NumericalTypes;
 
 // ==========================================================================
 // Classes
@@ -122,7 +122,7 @@ public:
 template <typename TTargetSourcePair>
 class LexicalCastTest : public LexicalTest<TTargetSourcePair> {};
 
-typedef typename Product<NumericalTypes, StringTypes>::Type LexicalCastTypes;
+typedef Product<NumericalTypes, StringTypes>::Type LexicalCastTypes;
 
 SEQAN_TYPED_TEST_CASE(LexicalCastTest, LexicalCastTypes);
 
@@ -133,7 +133,7 @@ SEQAN_TYPED_TEST_CASE(LexicalCastTest, LexicalCastTypes);
 template <typename TTargetSourcePair>
 class AppendUnsignedTest : public LexicalTest<TTargetSourcePair> {};
 
-typedef typename Product<CharString, NumericalTypes>::Type AppendNumericalTypes;
+typedef Product<CharString, NumericalTypes>::Type AppendNumericalTypes;
 
 SEQAN_TYPED_TEST_CASE(AppendUnsignedTest, AppendNumericalTypes);
 
@@ -144,7 +144,7 @@ SEQAN_TYPED_TEST_CASE(AppendUnsignedTest, AppendNumericalTypes);
 template <typename TTargetSourcePair>
 class AppendSignedTest : public LexicalTest<TTargetSourcePair> {};
 
-typedef typename Product<CharString, SignedTypes>::Type AppendSignedTypes;
+typedef Product<CharString, SignedTypes>::Type AppendSignedTypes;
 
 SEQAN_TYPED_TEST_CASE(AppendSignedTest, AppendSignedTypes);
 
@@ -155,7 +155,7 @@ SEQAN_TYPED_TEST_CASE(AppendSignedTest, AppendSignedTypes);
 template <typename TTargetSourcePair>
 class AppendFloatingPointTest : public LexicalTest<TTargetSourcePair> {};
 
-typedef typename Product<CharString, FloatingPointTypes>::Type AppendFloatingPointTypes;
+typedef Product<CharString, FloatingPointTypes>::Type AppendFloatingPointTypes;
 
 SEQAN_TYPED_TEST_CASE(AppendFloatingPointTest, AppendFloatingPointTypes);
 
