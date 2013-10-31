@@ -69,6 +69,9 @@ struct FunctorErrorMessage
     static const std::string VALUE;
 };
 
+template <typename TFunctor, typename TContext>
+const std::string FunctorErrorMessage<TFunctor, TContext>::VALUE;
+
 // ----------------------------------------------------------------------------
 // Functor OrFunctor
 // ----------------------------------------------------------------------------
@@ -210,10 +213,12 @@ const std::string FunctorErrorMessage<EqualsChar<CHAR>, TContext>::VALUE = std::
 // Functor AssertFunctor
 // ----------------------------------------------------------------------------
 
-template <typename TFunctor, typename TException, bool RETURN_VALUE = false>
+template <typename TFunctor, typename TException, typename TContext = void, bool RETURN_VALUE = false>
 struct AssertFunctor
 {
     TFunctor func;
+
+    AssertFunctor() {}
 
     AssertFunctor(TFunctor &func):
         func(func)
@@ -223,7 +228,7 @@ struct AssertFunctor
     bool operator() (TValue const & val) const
     {
         if (SEQAN_UNLIKELY(!func(val)))
-            throw TException(std::string("Character '") + val + "' causes an error. " + FunctorErrorMessage<TFunctor>::VALUE);
+            throw TException(std::string("Character '") + val + "' causes an error. " + FunctorErrorMessage<TFunctor, TContext>::VALUE);
         return RETURN_VALUE;
     }
 };
@@ -309,10 +314,10 @@ inline void skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
 // Function skipOne()
 // ----------------------------------------------------------------------------
 
-template <typename TException, typename TFwdIterator, typename TFunctor>
+template <typename TFwdIterator, typename TFunctor>
 inline void skipOne(TFwdIterator &iter, TFunctor &functor)
 {
-    AssertFunctor<TFunctor, TException> assertFunctor(functor);
+    AssertFunctor<TFunctor, ParseError> assertFunctor(functor);
 
     if (atEnd(iter))
         throw UnexpectedEnd();
@@ -321,7 +326,14 @@ inline void skipOne(TFwdIterator &iter, TFunctor &functor)
     ++iter;
 }
 
-template <typename TException, typename TFwdIterator>
+template <typename TFwdIterator, typename TFunctor>
+inline void skipOne(TFwdIterator &iter, TFunctor const &functor)
+{
+    TFunctor func(functor);
+    skipOne(iter, func);
+}
+
+template <typename TFwdIterator>
 inline void skipOne(TFwdIterator &iter)
 {
     True func;
