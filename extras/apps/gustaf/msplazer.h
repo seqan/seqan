@@ -651,6 +651,8 @@ inline bool setSVType(TBreakpoint & bp)
     }
     if (bp.startSeqStrand != bp.endSeqStrand)
     {
+        if (bp.startSeqPos > bp.endSeqPos)
+            std::swap(bp.startSeqPos, bp.endSeqPos);
         setSVType(bp, TBreakpoint::INVERSION);
         return false;
     }

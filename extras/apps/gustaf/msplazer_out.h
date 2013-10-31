@@ -888,9 +888,9 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
         TBreakpoint bp = globalBreakpoints[i];
         if (bp.svtype != 0 && bp.support >= msplazerOptions.support) // 0=invalid
         {
+            id = _getrID(databaseIDs, bp.startSeqId);
             if (bp.svtype != 6 && bp.svtype != 7) // 6=intra-chr-translocation; 7=translocation
             {
-                id = _getrID(databaseIDs, bp.startSeqId);
                 // Fill and write record
                 if (_fillVcfRecord(vcf_record, bp, databases[id], id))
                     if (writeRecord(vcfOut, vcf_record) != 0)
