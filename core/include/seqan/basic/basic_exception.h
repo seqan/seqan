@@ -209,7 +209,13 @@ typedef std::bad_alloc          BadAlloc;
  * @signature RuntimeError("Message");
  */
 
-typedef std::runtime_error      RuntimeError;
+struct RuntimeError : public std::runtime_error
+{
+    template <typename TString>
+    RuntimeError(TString const &message):
+        std::runtime_error(message)
+    {}
+};
 
 // ----------------------------------------------------------------------------
 // Class LogicError
