@@ -21,7 +21,7 @@ int main(int argc, char ** argv)
     SequenceFile<Input> file(toCString(path));
 
     CharString id;
-    CharString seq;
+    DnaString seq;
     CharString qual;
 
     typename Size<CharString>::Type records = 0;
@@ -37,7 +37,11 @@ int main(int argc, char ** argv)
         {
             read(file, id, seq, qual);
         }
-        catch (std::runtime_error & e)
+        catch (UnexpectedEnd &)
+        {
+            break;
+        }
+        catch (ParseError & e)
         {
             std::cerr << "Record #" << records + 1 << ": " << e.what() << std::endl;
             continue;
