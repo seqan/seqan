@@ -40,9 +40,34 @@
 namespace seqan {
 
 // ============================================================================
+// Exceptions
+// ============================================================================
+
+struct ParseError : RuntimeError
+{
+    template <typename TString>
+    ParseError(TString const &message):
+        RuntimeError(message)
+    {}
+};
+
+struct UnexpectedEnd : ParseError
+{
+    UnexpectedEnd():
+        ParseError("Unexpected end of file.")
+    {}
+};
+
+// ============================================================================
 // Functors
 // ============================================================================
 // TODO(esiragusa): move these functors into basic
+
+template <typename TFunctor, typename TContext = void>
+struct FunctorErrorMessage
+{
+    static const std::string VALUE;
+};
 
 // ----------------------------------------------------------------------------
 // Functor OrFunctor
@@ -149,6 +174,15 @@ struct IsInRange
     }
 };
 
+template <char FIRST_CHAR, char LAST_CHAR, typename TContext>
+struct FunctorErrorMessage<IsInRange<FIRST_CHAR, LAST_CHAR>, TContext>
+{
+    static const std::string VALUE;
+};
+
+template <char FIRST_CHAR, char LAST_CHAR, typename TContext>
+const std::string FunctorErrorMessage<IsInRange<FIRST_CHAR, LAST_CHAR>, TContext>::VALUE = std::string("Character in range'") + FIRST_CHAR + "' to '" + LAST_CHAR + "' expected.";
+
 // ----------------------------------------------------------------------------
 // Functor EqualsChar
 // ----------------------------------------------------------------------------
@@ -163,29 +197,34 @@ struct EqualsChar
     }
 };
 
-// ----------------------------------------------------------------------------
-// Functor IgnoreOrAssertFunctor
-// ----------------------------------------------------------------------------
-
-template <typename TIgnoreFunctor, typename TAssertFunctor, typename TException>
-struct IgnoreOrAssertFunctor
+template <char CHAR, typename TContext>
+struct FunctorErrorMessage<EqualsChar<CHAR>, TContext>
 {
-    TIgnoreFunctor ignoreFunc;
-    TAssertFunctor assertFunc;
-    const char *message;
+    static const std::string VALUE;
+};
 
-    IgnoreOrAssertFunctor(const char *message):
-        message(message)
+template <char CHAR, typename TContext>
+const std::string FunctorErrorMessage<EqualsChar<CHAR>, TContext>::VALUE = std::string("Character '") + CHAR + "' expected.";
+
+// ----------------------------------------------------------------------------
+// Functor AssertFunctor
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor, typename TException, bool RETURN_VALUE = false>
+struct AssertFunctor
+{
+    TFunctor func;
+
+    AssertFunctor(TFunctor &func):
+        func(func)
     {}
 
     template <typename TValue>
     bool operator() (TValue const & val) const
     {
-        if (SEQAN_UNLIKELY(ignoreFunc(val)))
-            return true;
-        if (SEQAN_UNLIKELY(!assertFunc(val)))
-            throw TException(message);
-        return false;
+        if (SEQAN_UNLIKELY(!func(val)))
+            throw TException(std::string("Character '") + val + "' causes an error. " + FunctorErrorMessage<TFunctor>::VALUE);
+        return RETURN_VALUE;
     }
 };
 
@@ -264,6 +303,29 @@ inline void skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
 
     TStopFunctor stopFunctor_ = stopFunctor;
     _skipUntil(iter, stopFunctor_, TIChunk());
+}
+
+// ----------------------------------------------------------------------------
+// Function skipOne()
+// ----------------------------------------------------------------------------
+
+template <typename TException, typename TFwdIterator, typename TFunctor>
+inline void skipOne(TFwdIterator &iter, TFunctor &functor)
+{
+    AssertFunctor<TFunctor, TException> assertFunctor(functor);
+
+    if (atEnd(iter))
+        throw UnexpectedEnd();
+
+    assertFunctor(*iter);
+    ++iter;
+}
+
+template <typename TException, typename TFwdIterator>
+inline void skipOne(TFwdIterator &iter)
+{
+    True func;
+    skipOne(iter, func);
 }
 
 // ----------------------------------------------------------------------------
