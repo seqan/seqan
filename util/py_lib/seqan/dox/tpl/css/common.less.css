@@ -60,6 +60,7 @@ h3.signature {
 h3.signature[data-lang-entity] > a:first-child {
   font-weight: 500;
   margin: 0 0 -1px 0;
+  display: none;
 }
 h3.signature[data-lang-entity] > pre {
   border-top-left-radius: 0;
@@ -785,19 +786,6 @@ form .multiselect-container label .multiselect-group {
 [data-lang-entity] > :nth-child(2),
 .data-lang-entity-example > :nth-child(2) {
   white-space: normal;
-}
-.summary_signature [data-lang-entity],
-.summary_signature .data-lang-entity-example,
-h3[data-lang-entity],
-h3.data-lang-entity-example {
-  display: table;
-}
-.summary_signature [data-lang-entity] > :nth-child(2),
-.summary_signature .data-lang-entity-example > :nth-child(2),
-h3[data-lang-entity] > :nth-child(2),
-h3.data-lang-entity-example > :nth-child(2) {
-  display: table-cell;
-  padding-left: 0.3em;
 }
 h1[data-lang-entity],
 h1.data-lang-entity-example {

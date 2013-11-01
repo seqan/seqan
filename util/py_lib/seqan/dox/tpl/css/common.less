@@ -97,7 +97,7 @@ h3 {
         text-decoration: none;
         
         &[data-lang-entity] {
-            > a:first-child { font-weight: 500; margin: 0 0 -1px 0; }
+            > a:first-child { font-weight: 500; margin: 0 0 -1px 0; display: none; }
             > pre { border-top-left-radius: 0; margin-top: -1px; }
         }
     }
@@ -849,12 +849,6 @@ form .multiselect-container {
     
     > :nth-child(2) {
         white-space: normal;
-    }
-    
-    .summary_signature &,
-    h3& {
-        display: table;
-        > :nth-child(2) { display: table-cell; padding-left: 0.3em; }
     }
     
     // Typed headings
