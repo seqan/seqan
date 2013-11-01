@@ -60,8 +60,6 @@ h3.signature {
 h3.signature[data-lang-entity] > a:first-child {
   font-weight: 500;
   margin: 0 0 -1px 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
 }
 h3.signature[data-lang-entity] > pre {
   border-top-left-radius: 0;
@@ -422,10 +420,6 @@ ul.summary {
 ul.summary li .summary_signature,
 ul.summary li .summary_signature * {
   padding: 1px 0;
-  white-space: normal;
-  -ms-word-break: break-all;
-  word-break: break-all;
-  word-break: break-word;
 }
 ul.summary li .summary_desc {
   margin-left: 32px;
@@ -780,8 +774,6 @@ form .multiselect-container label .multiselect-group {
   color: #ffffff;
   text-align: center;
   white-space: nowrap;
-  -ms-word-break: keep-all;
-  word-break: keep-all;
   vertical-align: baseline;
   border-radius: .25em;
   border: 1px solid #f00;
@@ -789,6 +781,23 @@ form .multiselect-container label .multiselect-group {
   cursor: help;
   -webkit-transition: color 0.2s, background-color 0.2s;
   transition: color 0.2s, background-color 0.2s;
+}
+[data-lang-entity] > :nth-child(2),
+.data-lang-entity-example > :nth-child(2) {
+  white-space: normal;
+}
+.summary_signature [data-lang-entity],
+.summary_signature .data-lang-entity-example,
+h3[data-lang-entity],
+h3.data-lang-entity-example {
+  display: table;
+}
+.summary_signature [data-lang-entity] > :nth-child(2),
+.summary_signature .data-lang-entity-example > :nth-child(2),
+h3[data-lang-entity] > :nth-child(2),
+h3.data-lang-entity-example > :nth-child(2) {
+  display: table-cell;
+  padding-left: 0.3em;
 }
 h1[data-lang-entity],
 h1.data-lang-entity-example {
@@ -2222,6 +2231,11 @@ html.page_languageentities [data-lang-entity-container=generic] [data-lang-entit
 .input-group-btn.btn-group > .btn-group:nth-child(2) > .multiselect.btn {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
+}
+pre {
+  -ms-word-break: keep-all;
+  word-break: keep-all;
+  word-break: normal;
 }
 @-webkit-keyframes animation1 {
   0% {

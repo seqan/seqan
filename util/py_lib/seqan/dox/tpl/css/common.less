@@ -97,7 +97,7 @@ h3 {
         text-decoration: none;
         
         &[data-lang-entity] {
-            > a:first-child { font-weight: 500; margin: 0 0 -1px 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+            > a:first-child { font-weight: 500; margin: 0 0 -1px 0; }
             > pre { border-top-left-radius: 0; margin-top: -1px; }
         }
     }
@@ -443,10 +443,6 @@ ul.summary {
         .summary_signature,
         .summary_signature * {
             padding: 1px 0;
-            white-space: normal;
-			-ms-word-break: break-all;
-			word-break: break-all;
-			word-break: break-word;
         }
         
         .summary_desc {
@@ -837,8 +833,6 @@ form .multiselect-container {
     	color: #ffffff;
     	text-align: center;
     	white-space: nowrap;
-		-ms-word-break: keep-all;
-		word-break: keep-all;
     	vertical-align: baseline;
     	border-radius: .25em;
     	border: 1px solid #f00;
@@ -851,6 +845,16 @@ form .multiselect-container {
     	&:hover {
     		//.animation(animation1 1.5s linear 0s infinite alternate);
     	}
+    }
+    
+    > :nth-child(2) {
+        white-space: normal;
+    }
+    
+    .summary_signature &,
+    h3& {
+        display: table;
+        > :nth-child(2) { display: table-cell; padding-left: 0.3em; }
     }
     
     // Typed headings
@@ -1072,6 +1076,12 @@ html.page_languageentities [data-lang-entity-container=generic] [data-lang-entit
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
   }
+}
+
+pre {
+    -ms-word-break: keep-all;
+    word-break: keep-all;
+    word-break: normal;
 }
 
 
