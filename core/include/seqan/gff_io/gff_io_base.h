@@ -795,42 +795,33 @@ _writeAttributes(TStream & stream, GffRecord const & record, TTag)
     return 0;
 }
 
+//TODO(singer): No check whether the record is complete!
 template <typename TTarget, typename TSeqId, typename TTag>
-inline int
-_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref, TTag tag)
+inline void
+_writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref, TTag tag)
 {
     // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
     if (empty(ref))
-        return 0;
+        return;
 
     // write column 1: seqid
-    if (streamWriteBlock(stream, begin(ref, Standard()), length(ref)) != length(ref))
-        return 1;
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    write3(target, ref);
+    writeValue(target, '\t');
 
     // write column 2: source
     if (empty(record.source))
     {
-        if (streamWriteChar(stream, '.'))
-            return 1;
+        writeValue(target, '.');
     }
     else
     {
-        if (streamWriteBlock(stream, begin(record.source, Standard()), length(record.source)) != length(record.source))
-            return 1;
+        write3(target, record.source);
     }
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, '\t');
 
     // write column 3: type
-    if (streamWriteBlock(stream, begin(record.type, Standard()), length(record.type)) != length(record.type))
-        return 1;
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    write3(target, record.type);
+    writeValue(target, '\t');
 
     // write column 4: begin position
     if (record.beginPos != (unsigned)-1)
@@ -844,8 +835,7 @@ _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref,
             return 1;
     }
 
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, '\t');
 
 
     // write column 5: end position
@@ -860,8 +850,7 @@ _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref,
             return 1;
     }
 
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, '\t');
 
     // write column 6: score
     if (record.score != record.score)
@@ -875,22 +864,19 @@ _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref,
             return 1;
     }
 
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, '\t');
 
     // write column 7: strand
     if (streamWriteChar(stream, record.strand))
         return 1;
 
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, '\t');
 
     // write column 8: phase
     if (streamWriteChar(stream, record.phase))
         return 1;
 
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, '\t');
 
     // write column 9: attributes
     // only until length - 1, because there is no semicolon at the end of the line
