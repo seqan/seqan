@@ -232,7 +232,7 @@ SEQAN_TYPED_TEST(LexicalCastTest, Exception)
     {
         this->target = lexicalCast<typename TestFixture::TTarget>(this->source);
     }
-    catch (std::bad_cast)
+    catch (BadLexicalCast)
     {
         return;
     }
