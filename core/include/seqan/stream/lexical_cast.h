@@ -329,10 +329,10 @@ d = lexicalCast<double>("-3.99");  // => d is -3.99.
 template <typename TTarget, typename TSource>
 inline TTarget lexicalCast(TSource const & source)
 {
-    TTarget dest;
-    if (!lexicalCast(dest, source))
-        throw std::bad_cast();
-    return dest;
+    TTarget target;
+    if (!lexicalCast(target, source))
+        throw BadLexicalCast(target, source);
+    return target;
 }
 
 // ----------------------------------------------------------------------------

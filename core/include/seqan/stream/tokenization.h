@@ -43,6 +43,10 @@ namespace seqan {
 // Exceptions
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Exception ParseError
+// ----------------------------------------------------------------------------
+
 struct ParseError : RuntimeError
 {
     template <typename TString>
@@ -51,10 +55,26 @@ struct ParseError : RuntimeError
     {}
 };
 
+// ----------------------------------------------------------------------------
+// Exception UnexpectedEnd
+// ----------------------------------------------------------------------------
+
 struct UnexpectedEnd : ParseError
 {
     UnexpectedEnd():
-        ParseError("Unexpected end of file.")
+        ParseError("Unexpected end of input.")
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Exception BadLexicalCast
+// ----------------------------------------------------------------------------
+
+struct BadLexicalCast : ParseError
+{
+    template <typename TTarget, typename TSource>
+    BadLexicalCast(TTarget const & target, TSource const & source) :
+        ParseError(std::string("Unable to convert '") + toCString(source) + "' into " + toCTypeName(target) + ".")
     {}
 };
 
