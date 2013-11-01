@@ -982,6 +982,8 @@ class EntryConverter(object):
                     x = TextNode(type='code', attrs={'type': type})
                     x.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(x)
+                elif p.getType() == 'htmlonly':
+                    res.addChild(TextNode(text=p.text.text, verbatim=True))
             except inc_mgr.IncludeException, e:
                 e2 = dox_parser.ParserError(msg=str(e), token=p.text.tokens[0])
                 self.doc_proc.msg_printer.printParserError(e2)

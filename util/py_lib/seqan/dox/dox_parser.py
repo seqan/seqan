@@ -177,6 +177,22 @@ class CodeState(GenericSimpleClauseState):
             self.tokens.append(token)
 
 
+class HtmlOnlyState(GenericSimpleClauseState):
+    """Handler used in *DocState for handling tokens of a paragraph."""
+    
+    def __init__(self, parser, parent):
+        GenericSimpleClauseState.__init__(self, parser, parent)
+        self.entry_class = raw_doc.RawHtmlOnly
+        self.normalize_tokens = False
+
+    def handle(self, token):
+        # HTML-only section is only ended by @endhtmlonly.
+        if token.type == 'COMMAND_ENDHTMLONLY':
+            self.parent.endClause()
+        else:
+            self.tokens.append(token)
+
+
 class DeprecatedState(GenericSimpleClauseState):
     """Handler for the @deprecated clause."""
 
@@ -503,6 +519,7 @@ class GenericDocState(object):
             if token.type in dox_tokens.CLAUSE_STARTING:
                 state_map = {'COMMAND_SIGNATURE' : SignatureState(self.parser, self),
                              'COMMAND_CODE' : CodeState(self.parser, self),
+                             'COMMAND_HTMLONLY' : HtmlOnlyState(self.parser, self),
                              'COMMAND_BRIEF' : BriefState(self.parser, self),
                              'COMMAND_EXTENDS' : ExtendsState(self.parser, self),
                              'COMMAND_HEADERFILE' : HeaderfileState(self.parser, self),
@@ -528,7 +545,7 @@ class GenericDocState(object):
                 #print '>>> SWITCHING TO CLAUSE STATE %s' % self.clause_state
                 return
             # Some commands are explicitely marked as non-paragraph, such as
-            # the @endcode token.  These are invalid tokens.
+            # the @endcode and @endhtmlonly token.  These are invalid tokens.
             if token.type in dox_tokens.NON_PARAGRAPH:
                 raise ParserError(token, 'Invalid command!')
             # Any other token is an inline-token and part of a paragraph that
@@ -543,7 +560,7 @@ class GenericDocState(object):
         #print '>>> END CLAUSE(%s)' % token
         if self.clause_state.getEntry():
             entry = self.clause_state.getEntry()
-            if entry.getType() in ['paragraph', 'section', 'include', 'code', 'snippet']:
+            if entry.getType() in ['paragraph', 'section', 'include', 'code', 'htmlonly', 'snippet']:
                 self.entry.addParagraph(entry)
             elif entry.getType() == 'signature':
                 self.entry.addSignature(entry)
@@ -585,7 +602,7 @@ class ClassDocState(GenericDocState):
     
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawClass, 'class')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_EXTENDS',
@@ -598,7 +615,7 @@ class FunctionDocState(GenericDocState):
     
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawFunction, 'function')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
@@ -612,7 +629,7 @@ class MacroDocState(GenericDocState):
     
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawMacro, 'macro')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
@@ -625,7 +642,7 @@ class MetafunctionDocState(GenericDocState):
     
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawMetafunction, 'metafunction')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
@@ -638,7 +655,7 @@ class ConceptDocState(GenericDocState):
     
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawConcept, 'concept')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_EXTENDS',
@@ -651,7 +668,7 @@ class PageState(GenericDocState):
         
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawPage, 'page')
-        self.allowed_commands = set(['COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
@@ -662,7 +679,7 @@ class MainPageState(GenericDocState):
         
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawMainPage, 'mainpage')
-        self.allowed_commands = set(['COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET'])
@@ -676,7 +693,7 @@ class MainPageState(GenericDocState):
 class GroupState(GenericDocState):
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawGroup, 'group')
-        self.allowed_commands = set(['COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_AKA'])
@@ -687,7 +704,7 @@ class VariableState(GenericDocState):
         
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawVariable, 'var')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
@@ -735,7 +752,7 @@ class VariableState(GenericDocState):
 class TagState(GenericDocState):
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawTag, 'tag')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF', 'COMMAND_TPARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
@@ -748,7 +765,7 @@ class EnumState(GenericDocState):
         
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawEnum, 'enum')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
@@ -761,7 +778,7 @@ class AdaptionState(GenericDocState):
         
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawAdaption, 'adaption')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
@@ -774,7 +791,7 @@ class TypedefState(GenericDocState):
         
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawTypedef, 'typedef')
-        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE',
+        self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
                                      'COMMAND_SEE', 'COMMAND_BRIEF',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET',
