@@ -123,7 +123,7 @@ struct True
     typedef True Type;
     static const bool VALUE = true;
 
-    bool operator() () const
+    operator bool () const
     {
         return true;
     }
@@ -140,7 +140,7 @@ struct False
     typedef False Type;
     static const bool VALUE = false;
 
-    bool operator() () const
+    operator bool () const
     {
         return false;
     }
