@@ -151,21 +151,13 @@ public:
                 testName += (*it)->typeName;
             }
             ::seqan::ClassTest::beginTest(testName.c_str());
-            try
-            {
+            try {
                 (*it)->instance->setUp();
                 (*it)->instance->runTest();
                 (*it)->instance->tearDown();
-            }
-            catch (seqan::ClassTest::AssertionFailedException & /* e */)
-            {
-                /* Swallow exception, go on with next test. */
-            }
-            catch (std::exception const & e)
-            {
-                std::cerr << e.what() << std::endl;
-                seqan::ClassTest::StaticData::thisTestOk() = false;
-                seqan::ClassTest::StaticData::errorCount() += 1;
+            } catch(::seqan::ClassTest::AssertionFailedException e) {
+                /* Swallow exception, go on with next test. */       
+                (void) e;  /* Get rid of unused variable warning. */
             }
             ::seqan::ClassTest::endTest();
         }
@@ -216,7 +208,7 @@ template <template <typename> class TTestCase, typename TType, typename TSubList
 class TypedTestFactory_<TTestCase, TagList<TType, TSubList> >
 {
 public:
-    // TODO(esiragusa): use Demangler.
+    // TODO(esiragusa): use Demangler / toCTypeName.
     template <typename T>
     static std::string getTypeName()
     {
