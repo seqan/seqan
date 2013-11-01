@@ -386,12 +386,12 @@ html:not(.list) #content {
 .signature {
   font-size: 1.2em;
   font-weight: normal;
-  font-family: Monaco, Consolas, Courier, monospace;
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
   padding: 0;
   margin: 1em 0;
 }
 .signature tt {
-  font-family: Monaco, Consolas, Courier, monospace;
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
 .signature .overload {
   display: block;
@@ -419,8 +419,13 @@ html:not(.list) #content {
 ul.summary {
   list-style: none;
 }
-ul.summary li .summary_signature {
+ul.summary li .summary_signature,
+ul.summary li .summary_signature * {
   padding: 1px 0;
+  white-space: normal;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
 }
 ul.summary li .summary_desc {
   margin-left: 32px;
@@ -766,7 +771,7 @@ form .multiselect-container label .multiselect-group {
   display: inline-block;
   position: relative;
   bottom: 0.15em;
-  padding: .1em .5em .2em;
+  padding: .1em .5em .2em !important;
   margin: 0 0.3em 0 0.2em;
   font-family: "Open Sans", "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
   font-size: .75em;
@@ -775,6 +780,8 @@ form .multiselect-container label .multiselect-group {
   color: #ffffff;
   text-align: center;
   white-space: nowrap;
+  -ms-word-break: keep-all;
+  word-break: keep-all;
   vertical-align: baseline;
   border-radius: .25em;
   border: 1px solid #f00;

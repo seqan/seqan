@@ -420,16 +420,16 @@ html:not(.list) {
     margin-bottom: 1em;
     font-size: 1.1em;
 }
-
+					
 .signature {
     font-size: 1.2em;
     font-weight: normal;
-    font-family: Monaco, Consolas, Courier, monospace;
+    font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
   
     padding: 0;
     margin: 1em 0;
   
-    tt { font-family: Monaco, Consolas, Courier, monospace; }
+    tt { font-family: Monaco,Menlo,Consolas,"Courier New",monospace; }
     .overload { display: block; }
     .extras { font-weight: normal; font-family: sans-serif; color: #444; font-size: 1em; }
     .aliases { display: block; font-weight: normal; font-size: 0.9em; font-family: sans-serif; margin-top: 0px; color: #555; }
@@ -440,8 +440,13 @@ ul.summary {
     list-style: none;
         
     li {        
-        .summary_signature {
+        .summary_signature,
+        .summary_signature * {
             padding: 1px 0;
+            white-space: normal;
+			-ms-word-break: break-all;
+			word-break: break-all;
+			word-break: break-word;
         }
         
         .summary_desc {
@@ -823,7 +828,7 @@ form .multiselect-container {
 		position: relative;
 		bottom: 0.15em;
 		
-        padding: .1em .5em .2em;
+        padding: .1em .5em .2em !important;
     	margin: 0 0.3em 0 0.2em;
     	font-family: "Open Sans", "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
     	font-size: .75em;
@@ -832,6 +837,8 @@ form .multiselect-container {
     	color: #ffffff;
     	text-align: center;
     	white-space: nowrap;
+		-ms-word-break: keep-all;
+		word-break: keep-all;
     	vertical-align: baseline;
     	border-radius: .25em;
     	border: 1px solid #f00;
