@@ -158,48 +158,60 @@
 namespace seqan {
 
 // ============================================================================
-// Classes
+// Exceptions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class Exception
+// Basic Exception
 // ----------------------------------------------------------------------------
 
 /*!
  * @class Exception
  * @headerfile <seqan/basic.h>
  * @brief Generic SeqAn exception.
- * @signature Exception;
+ * @signature Exception();
  */
 
 typedef std::exception          Exception;
 
 // ----------------------------------------------------------------------------
-// Class BadAlloc
+// Exception BadAlloc
 // ----------------------------------------------------------------------------
 
 /*!
  * @class BadAlloc
  * @headerfile <seqan/basic.h>
  * @brief Bad memory allocation exception.
- * @signature BadAlloc;
+ * @signature BadAlloc();
  */
 
 typedef std::bad_alloc          BadAlloc;
 
 // ----------------------------------------------------------------------------
-// Classes Bad*
+// Exception BadCast
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BadCast
+ * @headerfile <seqan/basic.h>
+ * @brief Bad cast exception.
+ * @signature BadCast();
+ */
+
+typedef std::bad_cast           BadCast;
+
+// ----------------------------------------------------------------------------
+// Exceptions Bad*
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): These exceptions can be introduced as long as we need them.
 
 //typedef std::bad_exception      BadException;
-//typedef std::bad_cast           BadCast;
 //typedef std::bad_typeid         BadTypeId;
 //typedef std::bad_function_call  BadFunctionCall;
 //typedef std::bad_weak_ptr       BadWeakPtr;
 
 // ----------------------------------------------------------------------------
-// Class RuntimeError
+// Exception RuntimeError
 // ----------------------------------------------------------------------------
 
 /*!
@@ -209,16 +221,10 @@ typedef std::bad_alloc          BadAlloc;
  * @signature RuntimeError("Message");
  */
 
-struct RuntimeError : public std::runtime_error
-{
-    template <typename TString>
-    RuntimeError(TString const &message):
-        std::runtime_error(message)
-    {}
-};
+typedef std::runtime_error      RuntimeError;
 
 // ----------------------------------------------------------------------------
-// Class LogicError
+// Exception LogicError
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Always prefer SEQAN_ASSERT to logic error exceptions.
 
