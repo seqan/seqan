@@ -297,81 +297,82 @@ struct GffRecord
 // Function _parseReadGffKeyValue
 // ----------------------------------------------------------------------------
 
-template <typename TReader, typename TKeyString, typename TValueString>
-inline int
-_parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reader)
+template <typename TForwardIter, typename TKeyString, typename TValueString>
+inline void
+_parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & iter)
 {
-    char c = value(reader);
-    if (c == ' ' || c == '\t' || c == '\n' || c == '=')
-        return 1;  // Key cannot be empty.
+    IsWhitespace isWhitespace;
 
-    for (; !atEnd(reader); goNext(reader))
+    char c = value(iter);
+    if (c == ' ' || c == '\t' || c == '\n' || c == '=')
     {
-        c = value(reader);
-        if (c == ' ' || c == '\t' || c == '\n' || c == '=' || c == ';')
+        throw std::runtime_error("The key field of an attribute is empty!");
+        return;  // Key cannot be empty.
+    }
+
+    for (; !atEnd(iter); goNext(iter))
+    {
+        c = value(iter);
+        //if (IsWhitespace(c) || c == '=' || c == ';')
+        if (c == '\n' || c == '\r' || c == ' ' || c == '=' || c == ';')
             break;
         appendValue(key, c);
     }
-    if (!atEnd(reader) && value(reader) == ';')
+    if (!atEnd(iter) && value(iter) == ';')
     {
-        goNext(reader);
-        return 0;
+        goNext(iter);
+        return;
     }
-    if (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
-        return 0;
+    if (!atEnd(iter) && (value(iter) == '\r' || value(iter) == '\n'))
+        return;
 
-    if (skipWhitespaces(reader) != 0)
-        return 1;
+    skipUntil(iter, NotFunctor<IsWhitespace>());
 
-    if (value(reader) == '=')
+    if (value(iter) == '=')
     {
-        goNext(reader);
-        if (skipWhitespaces(reader) != 0)
-            return 1;
-
-        if (atEnd(reader))
-            return 1;
+        goNext(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
     }
 
-    if (value(reader) == '"')
+    if (value(iter) == '"')
     {
         // Handle the case of a string literal.
 
-        goNext(reader);
+        goNext(iter);
         // Append all characters in the literal to outValue until the first i
         // line break or the closing '"'.
-        for (; !atEnd(reader); goNext(reader))
+        for (; !atEnd(iter); goNext(iter))
         {
-            if (value(reader) == '\n')
-                return 1;
+            if (value(iter) == '\n')
+                return;
 
-            if (value(reader) == '"')
+            if (value(iter) == '"')
             {
-                goNext(reader);
+                goNext(iter);
                 break;
             }
-            appendValue(outValue, value(reader));
+            appendValue(outValue, value(iter));
         }
         // Go over the trailing semicolon and any trailing space.
-        while (!atEnd(reader) && (value(reader) == ';' || value(reader) == ' '))
-            goNext(reader);
+        while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
+            goNext(iter);
     }
     else
     {
         // Handle the non literal case.
 
         // Read until the first semicolon, return at whitespace.
-        for (; !atEnd(reader); goNext(reader))
+        for (; !atEnd(iter); goNext(iter))
         {
-            if (value(reader) == ';' || value(reader) == '\n' || value(reader) == '\r')
+            if (value(iter) == ';' || value(iter) == '\n' || value(iter) == '\r')
                 break;
-            appendValue(outValue, value(reader));
+            appendValue(outValue, value(iter));
         }
         // Skip semicolon and spaces if any.
-        while (!atEnd(reader) && (value(reader) == ';' || value(reader) == ' '))
-            goNext(reader);
+        while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
+            goNext(iter);
     }
-    return 0;
+    return;
 }
 
 // ----------------------------------------------------------------------------
@@ -440,162 +441,139 @@ inline void clear(GffRecord & record)
 ..include:seqan/gff_io.h
 */
 
-template <typename TStream, typename TRecordReaderSpec>
-inline int
-_readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & reader)
+//TODO(singer): no checking if record is complete
+//TODO(singer): no checking whether lexicalCast is working
+template <typename TFwdIterator>
+inline void
+_readGffRecord(GffRecord & record, TFwdIterator & iter)
 {
-    clear(record);
+    IsNewline isNewline;
 
-    // read column 1: seqid
-    // The letters until the first whitespace will be read.
-    // Then, we skip until we hit the first tab character.
-    if (readUntilTabOrLineBreak(record.ref, reader))
-        return 1;
+    clear(record);
     record.rID = GffRecord::INVALID_IDX;
 
-    if (!empty(record.ref) && record.ref[0] == '#')
-    {
-        if (skipLine(reader))
-            return 1;
+    skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<'#'>, IsWhitespace> >());  //skip commments and empty lines
 
-        return 1;
-    }
-    if (skipWhitespaces(reader))
-        return 1;
+    // read column 1: seqid
+    readUntil(record.ref, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
+
+    ++iter;  //skip tab
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only one column!");
 
     // read column 2: source
-    if (readUntilTabOrLineBreak(record.source, reader))
-        return 1;
+    readUntil(record.source, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
 
     if (record.source == ".")
         clear(record.source);
 
-    if (skipWhitespaces(reader))
-        return 1;
+    ++iter;  //skip tab
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only two columns!");
+
 
     // read column 3: type
-    if (readUntilTabOrLineBreak(record.type, reader))
-        return 1;
+    readUntil(record.type, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
 
-    if (skipWhitespaces(reader))
-        return 1;
+    ++iter;  //skip tab
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only three columns!");
+
 
     // read column 4: begin position
     String<char> temp;
-    if (readDigits(temp, reader))
-        return 1;
+    readUntil(temp, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
 
     if (length(temp) > 0u)
     {
-        if (!lexicalCast2(record.beginPos, temp))
-            return 1;
-
+        lexicalCast(record.beginPos, temp);
         --record.beginPos;  // Translate from 1-based to 0-based.
     }
     else
     {
         record.beginPos = GffRecord::INVALID_POS;
-        if (skipUntilWhitespace(reader))
-            return 1;
     }
-    if (skipBlanks(reader))
-        return 1;
+
+    ++iter;  //skip tab
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only four columns!");
+
 
     // read column 5: end position
     clear(temp);
-    if (readDigits(temp, reader))
-        return 1;
-
+    readUntil(temp, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
     if (length(temp) > 0u)
     {
-        if (!lexicalCast2(record.endPos, temp))
-            return 1;
+        lexicalCast(record.endPos, temp);
     }
     else
     {
         record.endPos = GffRecord::INVALID_POS;
-        if (skipUntilWhitespace(reader))
-            return 1;
     }
-    if (skipBlanks(reader))
-        return 1;
+
+    ++iter;  //skip tab
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only five columns!");
 
 
     // read column 6: score
     clear(temp);
-    readFloat(temp, reader);
+    readUntil(temp, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
 
-    if (length(temp) > 0u)
+    //TODO(singer): No check if there is a score
+    if (temp != ".")
     {
-        if (temp != ".")
-        {
-            if (!lexicalCast2(record.score, temp))
-                return 1;
-        }
-        else
-        {
-            record.score = GffRecord::INVALID_SCORE();
-            if (skipUntilWhitespace(reader))
-                return 1;
-        }
+        lexicalCast(record.score, temp);
     }
     else
     {
-        return 1;
+        record.score = GffRecord::INVALID_SCORE();
     }
 
-    if (skipBlanks(reader))
-        return 1;
+    ++iter;  //skip tab
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only six columns!");
+
 
     // read column 7: strand
-    clear(temp);
-    if (readUntilTabOrLineBreak(temp, reader))
-        return 1;
-
-    if (temp[0] != '-' && temp[0] != '+')
+    //TODO(singer): readUntil taking a char would be good!
+    record.strand = value(iter);
+    if (record.strand != '-' &&record.strand != '+')
     {
         record.strand = '.';
     }
-    else
-    {
-        record.strand = temp[0];
-    }
+    ++iter; 
 
-    if (skipBlanks(reader))
-        return 1;
+    skipUntil(iter, NotFunctor<IsWhitespace>());  // skip tab
+
+    if(isNewline(value(iter)))
+        throw std::runtime_error("The record contains only seven columns!");
 
     // read column 8: phase
-    clear(temp);
-    if (readUntilTabOrLineBreak(temp, reader))
-        return 1;
-
-    if (temp != "0" && temp != "1" && temp != "2")
+    record.phase = value(iter);
+    if (record.phase != '0' && record.phase != '1' && record.phase != '2')
     {
         record.phase = '.';
     }
-    else
-    {
-        record.phase = temp[0];
-    }
+    ++iter;
 
-    if (skipBlanks(reader))
-        return 1;
+    skipUntil(iter, NotFunctor<IsWhitespace>());  // skip tab
 
     // It's fine if there are no attributes and the line ends here.
-    if (atEnd(reader))
-        return 0;
-    if (value(reader) == '\n' || value(reader) == '\r')
-        return skipLine(reader);
+    if (atEnd(iter) || isNewline(value(iter)))
+    {
+        ++iter;
+        return;
+    }
 
     // read column 9: attributes
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
 
         String<char> _key;
         String<char> _value;
         // Read next key/value pair.
-        if (_parseReadGffKeyValue(_value, _key, reader) != 0)
-            return 1;
+        _parseReadGffKeyValue(_value, _key, iter);
 
         appendValue(record.tagName, _key);
         appendValue(record.tagValue, _value);
@@ -604,29 +582,31 @@ _readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & re
         clear(_value);
 
         // At end of line:  Skip EOL and break.
-        if (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
+        if (!atEnd(iter) && (value(iter) == '\r' || value(iter) == '\n'))
         {
-            if (skipLine(reader) != 0)
-                return 1;
+            //if (skipLine(iter) != 0)
+            //    return 1;
 
             break;
         }
     }
-    return 0;
+    return;
 }
 
 template <typename TRecordReader>
-inline int
+inline void 
 readRecord(GffRecord & record, TRecordReader & reader, Gff /*tag*/)
 {
-    return _readGffRecord(record, reader);
+    _readGffRecord(record, reader);
+    return;
 }
 
 template <typename TRecordReader>
-inline int
+inline void
 readRecord(GffRecord & record, TRecordReader & reader, Gtf /*tag*/)
 {
-    return _readGffRecord(record, reader);
+    _readGffRecord(record, reader);
+    return;
 }
 
 // TODO(singer): Needs proper documentation!!! Check the length of the stores!!!
@@ -815,7 +795,7 @@ _writeAttributes(TStream & stream, GffRecord const & record, TTag)
     return 0;
 }
 
-template <typename TStream, typename TSeqId, typename TTag>
+template <typename TTarget, typename TSeqId, typename TTag>
 inline int
 _writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref, TTag tag)
 {
@@ -945,3 +925,4 @@ writeRecord(TStream & stream, GffRecord const & record, GffIOContext<TContextSpe
 }  // namespace seqan
 
 #endif  // CORE_INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
+
