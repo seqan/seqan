@@ -31,6 +31,9 @@
                 }
             }
         });
+        
+        // headings horizontal line
+        $('h2').wrapInner('<span/>');
 
     });
 
@@ -50,30 +53,66 @@
 			return $('<a href="page_LanguageEntities.html#' + langEntity + '">' + entry.ideogram + '</a>');
 		},
 		
+		pimpLangEntityLabel: function(langEntity) {
+		    $this = $(this);
+		    
+    		// if dealing with list items
+			// wrap the inner nodes to not destroy some tags
+			if(jQuery.inArray($this.prop('tagName'), ['LI', 'DT']) != -1) {
+				$this.wrapInner('<span data-lang-entity="' + langEntity + '"/>')
+					.removeAttr('data-lang-entity');
+				$this = $this.children();
+			}
+			
+			if($this.hasClass("signature")) {
+				$this.prepend($().createLangEntityLabel(langEntity));
+			} else {
+			   console.log(jQuery.inArray($this.prop('tagName'), ['LI', 'DT']), $this); 
+				$this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
+					.removeAttr('data-lang-entity')
+					.before($().createLangEntityLabel(langEntity));
+            }
+		},
+		
+		/**
+		 * Annotates all tags with a data-lang-entity(-container) attribute the following way:
+		 * 1) if the tag has the data-lang-entity attribute,
+		 *      it will be prefixed with a colored lang entity label
+		 * 2) if the tag has the data-lang-entity-container attribute,
+         *      the highest headline level will be prefixed,
+         *      whereas all other headlines won't be prefixed (by removing their eventually set data-lang-entity attribute)
+		 */
 		pimpLangEntityLabels: function() {
 			return this.each(function() {
 				$(this).find('[data-lang-entity]').each(function () {
 					var $this = $(this);
 					if($this.attr('data-pimped')) return true;
+					//if($this.parents('[data-lang-entity-container]').length > 0) return true;
             
 					var langEntity = $this.attr('data-lang-entity');
-					
-					// if dealing with list items
-					// wrap the inner nodes to not destroy some tags
-					if(jQuery.inArray($this.prop('tagName'), ['LI', 'DT'])) {
-						$this.wrapInner('<span data-lang-entity="' + langEntity + '"/>')
-							.removeAttr('data-lang-entity');
-						$this = $this.children();
-					}
-					
-					if($this.hasClass("signature")) {
-    					$this.prepend($().createLangEntityLabel(langEntity));
-					} else {					    
-    					$this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
-    						.removeAttr('data-lang-entity')
-    						.before($().createLangEntityLabel(langEntity));
-                    }
+					$this.pimpLangEntityLabel(langEntity);				
 				});
+			}).each(function() {
+			    $(this).find('[data-lang-entity-container]').each(function () {
+    			    // only use one headline level
+    			    var headlineHandled = false;
+    			    for(var i=1; i<=6; i++) {
+        			    $el = $(this).find('h' + i);
+        			    if(!headlineHandled) {
+            			    if($el.length > 0) {
+            					if($el.attr('data-pimped')) return true;
+            					
+            					var langEntity = $el.parents('[data-lang-entity-container]').attr('data-lang-entity-container');
+            					//$el.pimpLangEntityLabel(langEntity);
+            					
+                			    headlineHandled = true;
+            			    }
+        			    } else {
+        			        console.log($el);
+            			    //$el.removeAttr('data-lang-entity');
+        			    }
+    			    }
+    			 });
 			});
 		}
 	});
@@ -105,7 +144,7 @@
 				},
 				container: 'body',
 				placement: function(tip, element) {
-                    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
+                    var $thisement, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
                     isWithinBounds = function(elementPosition) {
                     return boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight);
                     };
