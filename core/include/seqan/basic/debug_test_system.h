@@ -481,6 +481,7 @@ void printStackTrace(TSize /*maxFrames*/)
 #else
 
 // print a demangled stack backtrace of the caller function
+// TODO(esiragusa): use Demangler.
 template <typename TSize>
 void printStackTrace(TSize maxFrames)
 {

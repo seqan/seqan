@@ -45,6 +45,10 @@
 #include <exception>
 #include <stdexcept>
 
+#ifdef PLATFORM_GCC
+#include <cxxabi.h>
+#endif
+
 // ============================================================================
 // Macros
 // ============================================================================
@@ -229,8 +233,67 @@ typedef std::runtime_error      RuntimeError;
 //typedef std::logic_error        LogicError;
 
 // ============================================================================
+// Classes
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class Demangler
+// ----------------------------------------------------------------------------
+// Holds the name of a given C++ type T.
+// NOTE(esiragusa): this class could become a subclass of CStyle String...
+
+template <typename T>
+struct Demangler
+{
+    char *data_begin;
+
+    Demangler()
+    {
+        T t;
+        _demangle(*this, t);
+    }
+
+    Demangler(T const & t)
+    {
+        _demangle(*this, t);
+    }
+
+    ~Demangler()
+    {
+#ifdef PLATFORM_GCC
+        free(data_begin);
+#endif
+    }
+};
+
+// ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _demangle(Demangler)
+// ----------------------------------------------------------------------------
+
+template <typename T>
+inline void _demangle(Demangler<T> & me, T const & t)
+{
+#ifdef PLATFORM_GCC
+    int status;
+    me.data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
+#else
+    me.data_begin = typeid(t).name();
+#endif
+}
+
+// ----------------------------------------------------------------------------
+// Function toCString(Demangler)
+// ----------------------------------------------------------------------------
+
+template <typename T>
+inline char * toCString(Demangler<T> const & me)
+{
+    return me.data_begin;
+}
 
 // ----------------------------------------------------------------------------
 // Function globalExceptionHandler()
@@ -245,7 +308,7 @@ static void globalExceptionHandler()
     }
     SEQAN_CATCH(Exception & e)
     {
-        SEQAN_FAIL("Uncaught exception of type %s: %s", typeid(e).name(), e.what());
+        SEQAN_FAIL("Uncaught exception of type %s: %s", toCString(Demangler<Exception>(e)), e.what());
     }
 }
 
