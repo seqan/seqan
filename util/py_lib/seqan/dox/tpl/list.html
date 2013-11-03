@@ -88,15 +88,25 @@
         </form>
 
         <div id="results">
-          <ol>
+          <ol class="results">
+            {# TODO: Sort by entry.kind and put all entries the inner ol.nav #}
             {% for name, entry in doc.top_level_entries|dictsort %}
             {% if entry.kind != 'page' %}
-            <li class="result" data-lang-entity-container="{{ entry.kind }}">
-              <h2 data-lang-entity="{{ entry.kind }}" data-pimped="true"><a href="page_LanguageEntities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a> <a href="{{entry.name|name_to_path}}" target="main">{{name}}</a></h2>
-              <div>
-                <div class="text"></div>
-                <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>
-              </div>
+            <li data-lang-entity-container="{{ entry.kind }}" data-pimped="true">
+              <span data-lang-entity="{{ entry.kind }}"><a href="page_LanguageEntities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a><span>{{ config.lang_entities[entry.kind].ideogram }}</span></span>
+              <ol class="nav">
+                <li class="result">
+                  <h2 data-lang-entity="{{ entry.kind }}" data-pimped="true">
+                    <a href="page_LanguageEntities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a>
+                    <a href="{{entry.name|name_to_path}}" target="main">{{name}}</a>
+                  </h2>
+                  <div>
+                    <div class="text"></div>
+                    <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>
+                  </div>
+                </li>
+                {# put other entries of same kind here #}
+              </ol>
             </li>
             {% endif %}
             {% endfor %}

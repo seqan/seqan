@@ -80,7 +80,7 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  var _toc = $('<ol class="nav"><li class="active top"><a href="#top">Top</a><li></ol>');
+  var _toc = $('<ol class="nav"><li class="active top"><a href="#top">Top</a></li></ol>');
   
   var show = false;
   var toc = _toc;
@@ -90,6 +90,8 @@ function generateTOC() {
   if ($('h1').length > 1) tags.unshift('h1');
   for (i = 0; i < tags.length; i++) { tags[i] = tags[i]; }
   var lastTag = parseInt(tags[0][1], 10);
+  
+  // iterates through all relevant Hx tags
   $(tags.join(', ')).each(function() {
     if ($(this).parents('.method_details .docstring').length != 0) return;
     if (this.id == "filecontents") return;
@@ -114,11 +116,12 @@ function generateTOC() {
     }
     var title = $(this).attr('toc-title');
     if (typeof(title) == "undefined") title = $(this).text();
+    console.log(this.id);
     toc.append('<li><a href="#' + this.id + '">' + title + '</a></li>');
     lastTag = thisTag;
   });
   if (!show) return;
-  html = '<div id="toc"><p class="title"><strong>Table of Contents</strong></p></div>';
+  var html = '<div id="toc"><p class="title"><strong>Table of Contents</strong></p></div>';
   $('#content').prepend(html);
   $('#toc').append(_toc);
 }

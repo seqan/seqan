@@ -6,7 +6,7 @@
 	$(document).ready(function () {
 	
 	    // only keep top-level nav items
-	    $('#toc ol ol').filter(function() { return $(this).find('a[href=#Examples]').length == 0; }).remove();
+	    $('#toc ol ol')/*.filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; })*/.remove();
 
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
@@ -31,9 +31,6 @@
                 }
             }
         });
-        
-        // headings horizontal line
-        $('h2').wrapInner('<span/>');
 
     });
 
@@ -49,29 +46,20 @@
             if(!window.langEntities) return;
             var entry = window.langEntities[langEntity];
 			if (!entry) entry = window.langEntities['unknown'];
-					
+			
 			return $('<a href="page_LanguageEntities.html#' + langEntity + '">' + entry.ideogram + '</a>');
 		},
 		
 		pimpLangEntityLabel: function(langEntity) {
-		    $this = $(this);
-		    
-    		// if dealing with list items
-			// wrap the inner nodes to not destroy some tags
-			if(jQuery.inArray($this.prop('tagName'), ['LI', 'DT']) != -1) {
-				$this.wrapInner('<span data-lang-entity="' + langEntity + '"/>')
-					.removeAttr('data-lang-entity');
-				$this = $this.children();
-			}
-			
-			if($this.hasClass("signature")) {
-				$this.prepend($().createLangEntityLabel(langEntity));
-			} else {
-			   console.log(jQuery.inArray($this.prop('tagName'), ['LI', 'DT']), $this); 
-				$this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
+    		$this = $(this);
+    		if(jQuery.inArray($this.prop('tagName'), ['A']) != -1) {
+    		    // a tags may and should not be nested
+			    $this.wrap('<span data-lang-entity="' + langEntity + '" data-pimped="true"/>')
 					.removeAttr('data-lang-entity')
 					.before($().createLangEntityLabel(langEntity));
-            }
+			} else {
+    			$this.wrapInner('<span/>').prepend($().createLangEntityLabel(langEntity));
+			}
 		},
 		
 		/**
@@ -108,7 +96,6 @@
                 			    headlineHandled = true;
             			    }
         			    } else {
-        			        console.log($el);
             			    //$el.removeAttr('data-lang-entity');
         			    }
     			    }
@@ -272,7 +259,7 @@
             descriptiveWords: 25,
             highlightTerms: true,
             highlightEveryTerm: true,
-            output: $("#results").css('display', 'none'),
+            output: $("#results"),
             searchOnKeyPress: true,
             data: window.searchData,
             stopWords: ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"], // filtered out of query
@@ -297,10 +284,10 @@
             ],
             callback: function($form, $results) {
             	if($form.find('input[type=search]').val().length == 0) {
-            	    $("#results").slideUp();
+            	    $("#results").fadeOut();
             	    $el.find('.pre-action').slideDown();
                 } else {
-                    $("#results").show();
+                    $("#results").fadeIn();
                     $el.find('.pre-action').slideUp();
                 }
             }

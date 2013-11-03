@@ -139,13 +139,10 @@ and based on the Tipue Search, http://www.tipue.com
             $('#results').on('click', 'li.more:not(.result) a', function() {
                 var i=0;
                 var $more = $(this).parents('[data-lang-entity-container]').find('.more');
-                var step = 1500/$more.length;
-                if(step < 10) step = 10;
-            	$more.each(function() {
+                $more.each(function() {
             		$this = $(this);
-            		if($this.hasClass('result')) $this.slideDown(200+i);
+            		if($this.hasClass('result')) $this.slideDown();
             		else $this.slideUp();
-            		i+=step;
             	});
             	return false;
             });
@@ -158,8 +155,8 @@ and based on the Tipue Search, http://www.tipue.com
 			 *
 			 * @return void; the output is directly written to the output element(s)
 			 */
+            var lastQuery = false 
             function search(start, replace) {
-                settings.output.hide();
                 var out = '';
                 var results = '';
                 
@@ -208,6 +205,11 @@ and based on the Tipue Search, http://www.tipue.com
                      *   - langEntity (e.g. class or variable)
                      */
                     var cleanedWords = stemmedWords;
+                    var query = cleanedWords;
+                    if(query.join(' ') == lastQuery) { return; }
+                    lastQuery = query.join(' ');
+                    settings.output.hide();
+                    
                     var found = [];
                     $.each(data, function(i) {
                     	this.langEntity = getReplacedWords([this.langEntity], settings.langEntityGroups)[0];
@@ -215,8 +217,8 @@ and based on the Tipue Search, http://www.tipue.com
 
                         var score = 1000000000;
                          
-                        for (var j = 0; j < cleanedWords.length; j++) {
-                            var pattern = new RegExp(cleanedWords[j], 'i');
+                        for (var j = 0; j < query.length; j++) {
+                            var pattern = new RegExp(query[j], 'i');
                             if (this.title.search(pattern) != -1) {
                                 score -= (200000 - i);
                             }
@@ -225,8 +227,8 @@ and based on the Tipue Search, http://www.tipue.com
                             }
 
                             if (settings.highlightTerms) {
-                            	var hightlightPattern = new RegExp('(' + cleanedWords[j] + ')', 'i');
-                                if (settings.highlightEveryTerm) hightlightPattern = new RegExp('(' + cleanedWords[j] + ')', 'gi');
+                            	var hightlightPattern = new RegExp('(' + query[j] + ')', 'i');
+                                if (settings.highlightEveryTerm) hightlightPattern = new RegExp('(' + query[j] + ')', 'gi');
                                 text = this.text.replace(hightlightPattern, "<b>$1</b>");
                             }
                             
@@ -242,8 +244,9 @@ and based on the Tipue Search, http://www.tipue.com
                         
                     });
 
-                    if (found.length == 0 && !settings.raw) {
-                    	out += '<div class="warning_head">Nothing found</div>';
+                    if (found.length == 0) {
+                    	if(settings.raw) out += '<ol class="results empty"><li>Nothing found.</li></ol>';
+                    	else out += '<div class="warning_head">Nothing found</div>';
                     } else {
                     	if(!settings.raw) {
                         	if ($.grep(replacedWords,function(x) {return $.inArray(x, words) < 0}).length > 0) {

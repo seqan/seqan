@@ -1,4 +1,5 @@
 @import '../lib/3L/3L';
+@import 'rules.less';
 
 @primary: #3276b1;
 
@@ -12,26 +13,7 @@
 @pink: #de5bbd;
 
 @anthrazit: #222222;
-
-.bg-gradient(@color-start, @color-end, @color-default) {
-    .diagonal-gradient (@color-start, @color-end, @color-default);
-}
-
-.bg-gradient(@color, @lightenBy) {
-    .diagonal-gradient (lighten(@color, @lightenBy + 3%), lighten(@color, @lightenBy - 3%), lighten(@color, @lightenBy));
-}
-
-.bg-gradient() {
-    .bg-gradient(@primary, 49%);
-}
-
-.inset-box() {
-    .bg-gradient();
-	.border-radius(4px);
-	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .1))
-}
-
-
+@grey-gradient: #dad9dc;
 
 /*
  * General
@@ -53,30 +35,34 @@ h3#Examples {  // DIRTY! Just make it h2!
 	   
     margin-top: 2.1em;
     font-size: 1.4em;
+    
+    @left-bar-width: 2em;
+    
     html:not(.list) & {
         text-transform: uppercase;
         padding-bottom: 0.3em;
         position: relative;
+        overflow: hidden;
         text-align: left;
+        padding-left: @left-bar-width + 1em;
         
-        &:before {  
-            content: "";  
-            display: block;
-            width: 100%;  
-            height: .4em;
-            border-top: 2px solid @anthrazit;
-            //border-bottom: 2px solid @anthrazit;
-            background-color: transparent;
-            position: absolute;  
-            top: .5em;  
-            z-index: 1;  
-        }  
-          
-        span {
-            background: #fff;  
-            padding: 0 1em 0 0;  
-            position: relative;  
-            z-index: 5;  
+        &:before, &:after {
+            position: absolute;
+            bottom: .44em;
+            overflow: hidden;
+            width: 100%;
+            height: .75em;
+            content: '\a0';
+        	margin-left: 1em;
+        	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAEElEQVQIHWNgQAX/kblEcgCBwgP9UmTMJwAAAABJRU5ErkJggg==); // generated on http://www.patternify.com
+        }
+        &:before {
+            margin-left: -(@left-bar-width+1em);
+            width: @left-bar-width;
+            text-align: right;
+        }
+        &:after {
+            
         }
     }
 	
@@ -133,36 +119,26 @@ a:active {
     }
 }
 
-/*
+acronym {
+    display: inline-block;
+    border-bottom: 1px dotted #000;
+    font-style: italic;
+}
+
 ol,
 ul {
 	list-style: none;
 	padding: 0;
-	margin-left: 1em;
+	margin-left: 2em;
 	
 	li {
-		position: relative;
+		.bullet-icon();
 		
-		&:before,
-		&:after {
-			position: absolute;
-			top: -.5em;
-			font-family: 'Glyphicons Halflings';
-			-webkit-font-smoothing: antialiased;
-			font-style: normal;
-			font-weight: normal;
-			display: block;
-			margin: 5px auto 5px -5px;
-			font-size: .8em;
-		}
-		
-		&:before {
-			left: -1em;
-			content: "\e080";
+		+ li {
+    		margin-top: .5em;
 		}
 	}
 }
-*/
 
 dl {
 	margin: 0;
@@ -173,10 +149,12 @@ dl {
 			font-size: 1.1em;
 			font-weight: bold;
 			margin: .5em 0 0 0;
-			padding: 0;
-			.bg-gradient(lighten(@primary, 45%), lighten(@primary, 43%), 47%);
 			padding: 3px 5px;
 			border-radius: 4px;
+			
+			&:after {
+				content: ':';
+			}
 		}
 
 		dd {
@@ -232,11 +210,15 @@ dl {
 	}
 }
 
-pre {
+html pre,
+html code {
     .bg-gradient(#f5f5f5, 0%);
     .border-radius(4px);
-    border-color: rgba(0,0,0,.2);
     .box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
+    border: 1px solid rgba(0,0,0,.2);
+}
+
+pre {   
     font-size: .92em;
     line-height: 1.5em;
     
@@ -263,6 +245,18 @@ pre {
 		border-radius: 0;
 		box-shadow: none;
     }
+    
+    .overview > dl &,
+    .summary_signature &,
+    & code {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+}
+
+html code {
+    color: #333;
 }
 
 .path_label {
@@ -285,7 +279,11 @@ html.list {
 		background-color: transparent;
 	}
 	background-attachment: fixed;
-	.bg-gradient(@anthrazit, 85%);
+	background-image: url(../img/list.png);
+	background-position: right bottom;
+	background-repeat: no-repeat;
+	background-size: 362px;
+	background-color: @grey-gradient;
 }
 
 .nav {
@@ -294,15 +292,31 @@ html.list {
 	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
 	border: 1px solid rgba(0,0,0,.2);
 	
+	ul&, ul,
+	ol&, ol {
+    	margin-left: 0;
+	}
+	
+	ul&,
 	ol& {
-		list-style: none;
-		padding: 0;
-		
+		ul, ol {
+		    li a {
+			    padding-left: 3.2em;
+			    &:before {
+    			    left: 2.5em;
+			    }
+            }
+		}
+			
 		li {
-			position: relative;
+			&:before {
+    			// we want the arrows to appear in the link itself
+    			display: none;
+			}
+			
+			+ li { margin-top: 0 }
 			
 			a {
-				margin: 0;
 				padding: .7em 2.2em;
 				display: block;
 				font-size: 0.9em;
@@ -315,26 +329,7 @@ html.list {
 				}
 				
 				color: lighten(@primary, 5%);
-				//text-shadow: 0 -1px 1px rgba(102, 102, 102, 0.5), 0 1px 1px rgba(255,255,255,0.5);
-			}
-			
-			a:before,
-			a:after {
-				position: absolute;
-				top: .65em;
-				font-family: 'Glyphicons Halflings';
-				-webkit-font-smoothing: antialiased;
-				font-style: normal;
-				font-weight: normal;
-				line-height: 1;
-				display: block;
-				margin: 5px auto 5px -5px;
-				font-size: .8em;
-			}
-			
-			a:before {
-				left: 1.5em;
-				content: "\e080";
+				.bullet-icon("\e080", before, 1em, auto, auto, 1em);
 			}
 		}
 		
@@ -346,16 +341,18 @@ html.list {
 		
 		li.top a {
 			text-align: center;
-			&:before, &:after { content: "\e113"; }
-			&:before { margin-left: 5em; }
-			&:after { margin-right: 5em; right: 1.5em; }
+			.bullet-icon("\e079", after, 1em, 1em, auto, auto);
+			&:before { margin-left: 3em; }
+			&:after { margin-right: 3em; }
 			border-bottom: 1px solid lighten(@primary, 45%);
 		}
 		
-		li.top.active a {
-			&:before { content: "\e080"; }
-			&:after { content: "\e079"; }
-			border-bottom: 1px solid lighten(@primary, 45%);
+		li:last-child a {
+    		border-bottom: none; // if only top link
+		}
+		
+		li.top:not(.active) a {
+			&:before, &:after { content: "\e113"; }
 		}
 	}
 }
@@ -437,7 +434,7 @@ html:not(.list) {
 }
 
 ul.summary {
-    list-style: none;
+    margin-left: 0;
         
     li {        
         .summary_signature,
@@ -451,6 +448,8 @@ ul.summary {
             
             tt { font-size: 0.9em; }
         } 
+        
+        &:before { display: none }
     }
     
     &.compact li {
@@ -588,16 +587,26 @@ ul.params {
 		margin-top: -10px;
 		margin-bottom: 5px;
 		
-		padding: 23px 0px 30px 100px;
-		background-image: url(../img/seqan_logo.png);
-		background-size: 90px 60px;
-		background-repeat: no-repeat;
-		background-position: 0 3px;
+		padding: 36px 0px 30px 100px;
 		
 		h1 {
+			position: relative;
 			padding: 0;
 			margin: 0;
 			font-size: 23px;
+			
+			&:before {
+				position: absolute;
+				display: block;
+				content: "";
+				left: -100px;
+				top: -20px;
+				width: 90px;
+				height: 60px;
+				background-image: url(../img/seqan_logo.png);
+				background-size: 90px 60px;
+				background-repeat: no-repeat;
+			}
 		}
 	}
 	
@@ -671,32 +680,31 @@ ul.params {
 
 #results {
 	ol {
-		padding: 0;
-		list-style: none;
 		margin-left: 10px;
 		margin-right: 10px;
 		
-		ol {
-			margin: 0 0 1em 0;
-		}		
+		ol { margin: 0 0 1em 0 }
+		
+		li:before { display: none; }
 		
 		// more link
 		li.more:not(.result) {
-			text-align: center;
 			padding-left: 0;
 			a {
-			    font-size: 2em;
+			    font-size: 1.7em;
 			    line-height: .6em;
-			    padding: 0 0 0.7em 0;
+			    padding: 0 0 0.8em 0;
+			    
+			    text-align: center;
+                .bullet-icon("\e114", after, 1em, 1em, auto, auto);
+                &:before { margin-left: 5em; content: "\e114"; }
+                &:after { margin-right: 5em; }
 			    &:before, &:after {
-			        opacity: 0;
-			        content: "\e114";
+			        margin-top: .8em;
+			        opacity: 0;			        
 			        font-size: 0.3em;
-			        margin-top: 1em; 
 			        .transition(opacity .5s);
                 }
-                &:before { margin-left: 5em; }
-                &:after { margin-right: 5em; right: 1.5em; }
                 
                 &:hover {
                     &:before, &:after { opacity: 1; .animation(animation2 .3s linear 0s infinite alternate); }
@@ -709,7 +717,7 @@ ul.params {
 			list-style: none;
 						
 			h2 {
-				font-size: 1.1em;
+				font-size: 1em;
 				margin: 0;
 				padding: 0;
 				
@@ -718,6 +726,8 @@ ul.params {
 					-ms-word-break: break-all;
 					word-break: break-all;
 					word-break: break-word;
+					
+					&:before { top: .9em }
 				}
 			}
 			
@@ -829,6 +839,7 @@ form .multiselect-container {
     	font-family: "Open Sans", "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
     	font-size: .75em;
     	font-weight: bold;
+    	text-transform: none; 
     	line-height: 1;
     	color: #ffffff;
     	text-align: center;
@@ -838,8 +849,10 @@ form .multiselect-container {
     	border: 1px solid #f00;
     	
     	background-color: #f00000;
-    	cursor: help;
-    	
+    }
+    
+    > a:first-child {
+        cursor: help;
     	.transition(color .2s, background-color .2s);
     	
     	&:hover {
@@ -888,9 +901,6 @@ form .multiselect-container {
 .data-lang-entity-example > :first-child { background: @rblue; border-color: darken(@rblue, 20%); }
 
 
-
-
-div.language_entities,
 html.page_languageentities {
 	div[data-lang-entity-container] + div[data-lang-entity-container] {
 		margin-top: 2em;
@@ -914,7 +924,6 @@ html.page_languageentities {
 	@border-darken: 5%;
 	
 	// Language Entities page
-	div.language_entities  [data-lang-entity-container=@{langEntity}],
 	html.page_languageentities [data-lang-entity-container=@{langEntity}] {
 		dt {
 		    padding: 0;
@@ -925,8 +934,7 @@ html.page_languageentities {
 	}
 	
 	[data-lang-entity=@{langEntity}] {   
-        > *:first-child {
-           	//background-color: @color;
+        > :first-child {
            	background-color: transparent;
            	color: @color;
            	border-color: darken(@color, @border-darken);
@@ -935,6 +943,48 @@ html.page_languageentities {
            	    color: #fff;
                	background-color: @color;
            	}
+        }
+	}
+	
+	// headings and definitions on the language entity types page are an exception
+   	html.page_languageentities h2,
+   	html.page_languageentities dt {
+        &[data-lang-entity=@{langEntity}] {
+            padding-left: 0;
+            
+            &:before { display: none }
+            
+            > :first-child {
+           		background-color: @color;
+        		color: #fff;
+        		&:hover { background-color: color; }
+            }
+        }
+	}
+	
+   	html.page_languageentities h2 {
+        &[data-lang-entity=@{langEntity}] {
+            padding-left: 0;
+            
+            &:after {
+                background-color: @color;
+                background-image: none;
+            }
+            
+            > :first-child {
+           		margin-left: 0;
+        		margin-right: 1.5em;
+        		top: -.35em;
+        		font-size: .54em;
+            }
+        }
+	}
+	
+	html.page_languageentities dt {
+        &[data-lang-entity=@{langEntity}] {
+            padding-left: 0;
+            
+            &:after { content: "" }
         }
 	}
 	
@@ -1013,7 +1063,6 @@ html.page_languageentities {
 // .. Generic
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
-div.language_entities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before,
 html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
 /* RAINBOW
 	background: -moz-linear-gradient(-45deg, rgba(217,63,63,1) 0%, rgba(217,178,63,1) 14%, rgba(140,217,63,1) 29%, rgba(63,217,102,1) 43%, rgba(63,217,217,1) 57%, rgba(63,102,217,1) 71%, rgba(140,63,217,1) 86%, rgba(217,63,178,1) 100%);
@@ -1035,20 +1084,26 @@ html.page_languageentities [data-lang-entity-container=generic] [data-lang-entit
 }
 
 // TOC on language entity types page
-// TODO limit to language_entities.html (class needed in html tag)
-/*
-:not(.list) #toc ol {
-	 li:nth-child(3) a::before { color: @lgreen; }
-	 li:nth-child(4) a::before { color: lighten(@red, -20%); }
-	 li:nth-child(5) a::before { color: lighten(@red, 0%); }
-	 li:nth-child(6) a::before { color: lighten(@red, +20%); }
-	 li:nth-child(7) a::before { color: @rblue; }
-	 li:nth-child(8) a::before { color: @lblue; }
-	 li:nth-child(9) a::before { color: @purple; }
-	 li:nth-child(10) a::before { color: @lgreen }
-	 li:nth-child(11) a::before { color: lighten(@orange, -10%); }
-	 li:nth-child(12) a::before { color: lighten(@orange, 10%); }
-	 li:nth-child(13) a::before { color: #
+html.page_languageentities #toc ol {
+     .bg-gradient(#000, 10%);
+     li { font-weight: 700; }
+     li.top a { color: #fff; }
+     a:hover { background-color: rgba(255,255,255,0.15); }
+     li.active a {
+         font-size: 1.4em;
+         margin-left: -0.4em;
+     }
+	 li:nth-child(2) { a, a:before { color: @lgreen; } }
+	 li:nth-child(3) { a, a:before { color: lighten(@red, -20%); } }
+	 li:nth-child(4) { a, a:before { color: lighten(@red, 0%); } }
+	 li:nth-child(5) { a, a:before { color: lighten(@red, +20%); } }
+	 li:nth-child(6) { a, a:before { color: @rblue; } }
+	 li:nth-child(7) { a, a:before { color: @lblue; } }
+	 li:nth-child(8) { a, a:before { color: @purple; } }
+	 li:nth-child(9) { a, a:before { color: @lgreen } }
+	 li:nth-child(10) { a, a:before { color: lighten(@orange, -10%); } }
+	 li:nth-child(11) { a, a:before { color: lighten(@orange, 10%); } }
+	 li:nth-child(12) { a, a:before { color: #999; } }
 }
 /**/
 
@@ -1094,10 +1149,10 @@ pre {
 
 .animation2() {
 	0% {
-    	margin-top:1em;
+    	top:1em;
     }
 	100% {
-		margin-top:1.5em;
+		top:1.5em;
 	}
 }
 
