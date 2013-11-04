@@ -36,10 +36,10 @@
 // formats, e.g. Fastq, Fasta, QSeq, Raw, and auto detection (via the
 // TagSelector AutoSeqFormat) based on content or file extension.
 // ==========================================================================
+// TODO(esiragusa): remove this file
 
 #ifndef SEQAN_HEADER_FILE_FORMAT_MMAP_H
 #define SEQAN_HEADER_FILE_FORMAT_MMAP_H
-
 
 
 /* IOREV
@@ -59,7 +59,7 @@
  */
 
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
 /**
@@ -1395,6 +1395,6 @@ If $formatTag$ is a @Class.AutoSeqFormat@ object, the file format is set to the 
 		}
 	}
 	
-}
+}   // namespace seqan
 
-#endif
+#endif  // SEQAN_HEADER_FILE_FORMAT_MMAP_H
