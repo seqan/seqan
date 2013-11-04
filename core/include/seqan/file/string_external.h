@@ -1440,7 +1440,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 			inline bool operator() (TPageFrame &pf)
             {
-                PageFrameStatus oldStatus = pf.status;
+                PageFrameState oldStatus = pf.status;
                 bool inProgress;
                 bool waitResult = waitFor(pf, 0, inProgress);
 
@@ -1471,7 +1471,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                     pf, 
                     _max(pf.priority, newLevel));    		// update lru order
 
-                PageFrameStatus oldStatus = pf.status;
+                PageFrameState oldStatus = pf.status;
 				bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
 
                 // TODO(weese): Throw an I/O exception
