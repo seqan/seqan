@@ -66,31 +66,10 @@ struct UnexpectedEnd : ParseError
     {}
 };
 
-// ----------------------------------------------------------------------------
-// Exception BadLexicalCast
-// ----------------------------------------------------------------------------
-
-struct BadLexicalCast : ParseError
-{
-    template <typename TTarget, typename TSource>
-    BadLexicalCast(TTarget const & target, TSource const & source) :
-        ParseError(std::string("Unable to convert '") + toCString(source) + "' into " + toCTypeName(target) + ".")
-    {}
-};
-
 // ============================================================================
 // Functors
 // ============================================================================
 // TODO(esiragusa): move these functors into basic
-
-template <typename TFunctor, typename TContext = void>
-struct FunctorErrorMessage
-{
-    static const std::string VALUE;
-};
-
-template <typename TFunctor, typename TContext>
-const std::string FunctorErrorMessage<TFunctor, TContext>::VALUE;
 
 // ----------------------------------------------------------------------------
 // Functor OrFunctor
