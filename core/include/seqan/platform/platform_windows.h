@@ -134,3 +134,6 @@ inline T round(T const & x)
 #ifndef ftello
 #define ftello(fp) ftell(fp)
 #endif  // #ifndef ftello
+
+#define SEQAN_RESTRICT  __restrict
+//#define SEQAN_RESTRICT  __declspec(restrict)
