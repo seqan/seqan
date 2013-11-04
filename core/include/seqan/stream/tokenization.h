@@ -661,6 +661,8 @@ _writeN(
     Range<TIValue*> *,
     Range<TOValue*> *)
 {
+    typedef typename Size<TTarget>::Type TTSize;
+
     Range<TIValue*> ichunk;
     Range<TOValue*> ochunk;
 
@@ -674,12 +676,12 @@ _writeN(
         reserveChunk(target, minChunkSize);
         ochunk = getChunk(end(target, Rooted()), Output());
 
-        typename Size<TTarget>::Type olen = ochunk.end - ochunk.begin;
+        TTSize olen = ochunk.end - ochunk.begin;
 
         if (minChunkSize > olen)
             minChunkSize = olen;
 
-        if (minChunkSize > n)
+        if (minChunkSize > (TTSize)n)
             minChunkSize = n;
 
         ichunk.end = ichunk.begin + minChunkSize;
