@@ -320,15 +320,18 @@ struct MMap;
 
 	//////////////////////////////////////////////////////////////////////////////
 
-    enum PageFrameStatus
+    enum PageFrameState
     {
         UNUSED,
         READING,
+        READING_DONE,
         PREPROCESSING,
+        PREPROCESSING_DONE,
         READY,
         POSTPROCESSING,
-        POSTPROCESSED,
-        WRITING
+        POSTPROCESSING_DONE,
+        WRITING,
+        WRITING_DONE
     };
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -350,7 +353,7 @@ struct MMap;
 		bool			dirty;		// data needs to be written to disk before freeing
 		unsigned		pageNo;		// maps frames to pages (reverse vector mapper)
         AsyncRequest    request;    // request structure of the async io process
-		PageFrameStatus status;
+		PageFrameState  status;
         Buffer          *next;      // next buffer in a chained list
 
         Buffer():
@@ -386,7 +389,7 @@ struct MMap;
         TIterator       begin;
         TIterator       end;
         AsyncRequest    request;    // request structure of the async io process
-		PageFrameStatus status;
+		PageFrameState  status;
 		DataStatus		dataStatus;
 		PageLRUEntry	lruEntry;   // priority based lru
         Priority        priority;
@@ -466,20 +469,26 @@ struct MMap;
     {
         switch (pf.status)
         {
-			case READY:
-                return "READY";
-			case READING:
-                return "READING";
-			case WRITING:
-                return "WRITING";
             case UNUSED:
                 return "UNUSED";
+			case READING:
+                return "READING";
+			case READING_DONE:
+                return "READING_DONE";
             case PREPROCESSING:
                 return "PREPROCESSING";
+            case PREPROCESSING_DONE:
+                return "PREPROCESSING_DONE";
+			case READY:
+                return "READY";
             case POSTPROCESSING:
                 return "POSTPROCESSING";
-            case POSTPROCESSED:
-                return "POSTPROCESSED";
+            case POSTPROCESSING_DONE:
+                return "POSTPROCESSING_DONE";
+			case WRITING:
+                return "WRITING";
+			case WRITING_DONE:
+                return "WRITING_DONE";
             default:
                 return "UNKNOWN";
         }
