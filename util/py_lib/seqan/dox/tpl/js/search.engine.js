@@ -215,8 +215,69 @@ and based on the Tipue Search, http://www.tipue.com
                     	this.langEntity = getReplacedWords([this.langEntity], settings.langEntityGroups)[0];
                     	if($.inArray(this.langEntity, langEntities) < 0) return;
 
-                        var score = 1000000000;
-                         
+                        var BASE_SCORE = 1000000000;
+
+                        var RANK_FACTOR = 10000;
+                        var DAMPENING_TEXT = 0.99;  // dampening per text sequence
+                        var DAMPENING_QUERY = 0.99;  // dampening per query sequence
+
+                        // function findAndScore(query, text).
+                        //
+                        // Return -1 if nothing was found.
+                        function findAndScore(query, text) {
+                            var resultScore = -1;
+
+                            for (var j = 0; j < query.length; j++) {
+                                var pattern = new RegExp(query[j], 'i');
+                                for (var k = 0; k < text.length; k++) {
+                                    var result = text[k].match(pattern);
+                                    if (result === null || result.length == 0)
+                                        continue;  // No match.
+                                    for (var x = 0; x < result.length && x < 1; x++) {  // x < 1 reduces repeat effect
+                                        // Compute begin/end position by searching for the result.
+                                        var beginPos = text[k].search(result[x]);
+                                        var endPos = beginPos + result[x].length;
+
+                                        // Rank points: (4) full match, (3) prefix match, (2) suffix match, (1) infix
+                                        // match.
+                                        var rankPoints = 1;
+                                        rankPoints += 2 * (beginPos == 0);
+                                        rankPoints += (endPos == text[k].length);
+
+                                        // Ratio of matched text.
+                                        var ratio = 1.0 * (endPos - beginPos) / text[k].length;
+
+                                        // Compute final score.
+                                        var scoreDelta = rankPoints * RANK_FACTOR * ratio;
+                                        for (var y = 0; y < j; ++y)
+                                            scoreDelta *= DAMPENING_QUERY;
+                                        for (var y = 0; y < k; ++y)
+                                            scoreDelta *= DAMPENING_TEXT;
+                                        var newScore = BASE_SCORE - scoreDelta;
+                                        if (resultScore == -1 || newScore < resultScore)
+                                            resultScore = newScore;
+
+                                        // Highlighting.
+                                        if (settings.highlightTerms) {
+                            	            var hightlightPattern = new RegExp('(' + query[j] + ')', 'i');
+                                            if (settings.highlightEveryTerm) hightlightPattern = new RegExp('(' + query[j] + ')', 'gi');
+                                            text[k] = text[k].replace(hightlightPattern, "<b>$1</b>");
+                                        }
+                                    }
+                                    break;  // Found a match, done.
+                                }
+
+                                if (score != -1)
+                                    break;  // Found a match, done.
+                            }
+                            
+                            return resultScore;
+                        }
+
+                        var score = findAndScore(query, [this.title, this.text, this.tags]);
+                        //console.log([this.title, this.text, this.tags]);
+
+                        /*
                         for (var j = 0; j < query.length; j++) {
                             var pattern = new RegExp(query[j], 'i');
                             if (this.title.search(pattern) != -1) {
@@ -226,19 +287,14 @@ and based on the Tipue Search, http://www.tipue.com
                                 score -= (150000 - i);
                             }
 
-                            if (settings.highlightTerms) {
-                            	var hightlightPattern = new RegExp('(' + query[j] + ')', 'i');
-                                if (settings.highlightEveryTerm) hightlightPattern = new RegExp('(' + query[j] + ')', 'gi');
-                                text = this.text.replace(hightlightPattern, "<b>$1</b>");
-                            }
                             
                             if (this.tags.search(pattern) != -1) {
                                 score -= (100000 - i);
                             }
 
-                        }
+                        }*/
                         
-                        if (score < 1000000000) {
+                        if (score != -1 && score < 1000000000) {
                             found.push({ score: score, title: this.title, text: this.text, location: this.loc, langEntity: this.langEntity });
                         }
                         
