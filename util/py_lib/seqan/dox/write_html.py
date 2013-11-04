@@ -483,11 +483,16 @@ class HtmlWriter(object):
         """Generate the search index."""
         js = ['window.searchData = [']
         for entry in doc.top_level_entries.itervalues():
-            tags = ''
+            akas, subentries = '', ''
             if hasattr(entry, 'akas'):
-                tags = ','.join(entry.akas)
-            js.append('  {title:%s,text:%s,tags:%s,loc:%s,langEntity:%s},' %
-                      (repr(entry.name), repr(""), repr(tags),
+                akas = ','.join(entry.akas)
+            if hasattr(entry, 'subentries'):
+                xs = []
+                for lst in entry.subentries.values():
+                    xs += lst
+                subentries = ','.join(['%s %s' % (s.kind, proc_doc.splitSecondLevelEntry(s.title)[1]) for s in xs])
+            js.append('  {title:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
+                      (repr(entry.name), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),
                        repr(entry.kind)))
         js.append('];')

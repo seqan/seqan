@@ -256,13 +256,6 @@ and based on the Tipue Search, http://www.tipue.com
                                         var newScore = BASE_SCORE - scoreDelta;
                                         if (resultScore == -1 || newScore < resultScore)
                                             resultScore = newScore;
-
-                                        // Highlighting.
-                                        if (settings.highlightTerms) {
-                            	            var hightlightPattern = new RegExp('(' + query[j] + ')', 'i');
-                                            if (settings.highlightEveryTerm) hightlightPattern = new RegExp('(' + query[j] + ')', 'gi');
-                                            text[k] = text[k].replace(hightlightPattern, "<b>$1</b>");
-                                        }
                                     }
                                     break;  // Found a match, done.
                                 }
@@ -274,30 +267,62 @@ and based on the Tipue Search, http://www.tipue.com
                             return resultScore;
                         }
 
-                        var score = findAndScore(query, [this.title, this.text, this.tags]);
-                        //console.log([this.title, this.text, this.tags]);
+                        var score = findAndScore(query, [this.title, this.text, this.akas, this.subentries]);
 
-                        /*
-                        for (var j = 0; j < query.length; j++) {
-                            var pattern = new RegExp(query[j], 'i');
-                            if (this.title.search(pattern) != -1) {
-                                score -= (200000 - i);
-                            }
-                            if (this.text.search(pattern) != -1) {
-                                score -= (150000 - i);
-                            }
+                        // Create match with highlighting.
+                        function highlightedMatch(score, obj, query) {
+                            var result = {score: score, title:obj.title, text:obj.text, location:obj.loc,
+                                          subentries:[], akas:null, langEntity:obj.langEntity,
+                                          hiTitle: false, hiAka: false, hiSubentry: false};
 
-                            
-                            if (this.tags.search(pattern) != -1) {
-                                score -= (100000 - i);
+                            function highlightString(str, pattern) {
+                                if (str.match(pattern))
+                                    return str.replace(pattern, "<b>$1</b>");
+                                else
+                                    return str;
                             }
 
-                        }*/
-                        
-                        if (score != -1 && score < 1000000000) {
-                            found.push({ score: score, title: this.title, text: this.text, location: this.loc, langEntity: this.langEntity });
+                            var akas = obj.akas.split(',');
+                            var subentries = obj.subentries.split(',');
+
+                            for (var j = 0; j < query.length; j++) {
+                                var pattern = new RegExp('(' + query[j] + ')', 'i');
+
+                                if (!result.hiTitle && result.title.search(pattern) != -1)
+                                {
+                                    result.title = highlightString(result.title, pattern);
+                                    result.hiTitle = true;
+                                }
+
+                                if (!result.hiTitle && !result.hiAka)
+                                    for (var i = 0; i < akas.length; i++)
+                                        if (akas[i].search(pattern) != -1)
+                                        {
+                                            result.hiAka = true;
+                                            result.aka = highlightString(akas[i], pattern);
+                                            break;
+                                        }
+
+                                if (result.subentries.length < 4)
+                                    for (var i = 0; i < subentries.length; ++i)
+                                    {
+                                        var xs = subentries[i].split(' ', 2);
+                                        var kind = xs[0];
+                                        var title = xs[1];
+                                        if (subentries[i].search(pattern) != -1)
+                                        {
+                                            result.hiSubentry = true;
+                                            result.subentries.push([kind, highlightString(title, pattern)]);
+                                        }
+                                    }
+                            }
+
+                            return result;
                         }
-                        
+
+                        if (score != -1 && score < 1000000000) {
+                            found.push(highlightedMatch(score, this, query));
+                        }
                     });
 
                     if (found.length == 0) {
@@ -352,15 +377,29 @@ and based on the Tipue Search, http://www.tipue.com
 
                             	if(entriesInGroup != settings.maxResultsPerGroup
                             	   || (entriesInGroup == settings.maxResultsPerGroup && found.length > i+1 && found[i+1].langEntity != langEntity)) {
-									out += '<li class="result' + (entriesInGroup >= settings.maxResultsPerGroup ? ' more' : '') + '">' +
-										   '<h2>' +
-											 '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
-												'<a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
-												'<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
-											 '</span>' +
-										   '</h2>' +
-										   '<div>';
-										   
+                                    out += '<li class="result' + (entriesInGroup >= settings.maxResultsPerGroup ? ' more' : '') + '">' +
+                                           '<h2>' +
+                                             '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
+                                               '<a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
+                                               '<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
+                                             '</span>';
+                                    if (found[i].aka || found[i].subentries)
+                                        out += '<div style="display:block;">';
+                                    if (found[i].aka)
+                                        out += '<span class="aka">' + found[i].aka + '</span>';
+                                    if (found[i].aka && found[i].subentries)
+                                        out += ' ';
+                                    if (found[i].subentries)
+                                        for (var j = 0; j < found[i].subentries.length; j++)
+                                        {
+                                            if (j > 0)
+                                                out += ' ';
+                                            out += '<span class="subentry" data-lang-entity="' + found[i].subentries[j][0] + '" data-pimped="true">' + found[i].subentries[j][1] + '</span>';
+                                        }
+                                    if (found[i].aka || found[i].subentries)
+                                        out += '</div">';
+                                    out += '</h2>' +
+                                           '<div>';
 									var t = found[i].text;
 									var t_d = '';
 									var t_w = t.split(' ');
