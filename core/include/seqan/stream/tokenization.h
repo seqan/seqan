@@ -177,13 +177,14 @@ struct IsInRange
 };
 
 template <char FIRST_CHAR, char LAST_CHAR, typename TContext>
-struct FunctorErrorMessage<IsInRange<FIRST_CHAR, LAST_CHAR>, TContext>
+struct ExceptionMessage<IsInRange<FIRST_CHAR, LAST_CHAR>, TContext>
 {
     static const std::string VALUE;
 };
 
 template <char FIRST_CHAR, char LAST_CHAR, typename TContext>
-const std::string FunctorErrorMessage<IsInRange<FIRST_CHAR, LAST_CHAR>, TContext>::VALUE = std::string("Character in range'") + FIRST_CHAR + "' to '" + LAST_CHAR + "' expected.";
+const std::string ExceptionMessage<IsInRange<FIRST_CHAR, LAST_CHAR>, TContext>::VALUE =
+    std::string("Character in range'") + FIRST_CHAR + "' to '" + LAST_CHAR + "' expected.";
 
 // ----------------------------------------------------------------------------
 // Functor EqualsChar
@@ -200,41 +201,17 @@ struct EqualsChar
 };
 
 template <char CHAR, typename TContext>
-struct FunctorErrorMessage<EqualsChar<CHAR>, TContext>
+struct ExceptionMessage<EqualsChar<CHAR>, TContext>
 {
     static const std::string VALUE;
 };
 
 template <char CHAR, typename TContext>
-const std::string FunctorErrorMessage<EqualsChar<CHAR>, TContext>::VALUE = std::string("Character '") + CHAR + "' expected.";
+const std::string ExceptionMessage<EqualsChar<CHAR>, TContext>::VALUE = std::string("Character '") + CHAR + "' expected.";
 
 // ----------------------------------------------------------------------------
-// Functor AssertFunctor
+// Composite Functors
 // ----------------------------------------------------------------------------
-
-template <typename TFunctor, typename TException, typename TContext = void, bool RETURN_VALUE = false>
-struct AssertFunctor
-{
-    TFunctor func;
-
-    AssertFunctor() {}
-
-    AssertFunctor(TFunctor &func):
-        func(func)
-    {}
-
-    template <typename TValue>
-    bool operator() (TValue const & val) const
-    {
-        if (SEQAN_UNLIKELY(!func(val)))
-            throw TException(std::string("Character '") + val + "' causes an error. " + FunctorErrorMessage<TFunctor, TContext>::VALUE);
-        return RETURN_VALUE;
-    }
-};
-
-// ============================================================================
-// Functors
-// ============================================================================
 // Don't use isblank() or isspace() as it they seem to be slower than our functors (due to inlining)
 
 typedef OrFunctor<EqualsChar<' '>, EqualsChar<'\t'> >           IsBlank;
@@ -316,12 +293,12 @@ inline void skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
 template <typename TFwdIterator, typename TFunctor>
 inline void skipOne(TFwdIterator &iter, TFunctor &functor)
 {
-    AssertFunctor<TFunctor, ParseError> assertFunctor(functor);
+    Asserter<TFunctor, ParseError> asserter(functor);
 
     if (atEnd(iter))
         throw UnexpectedEnd();
 
-    assertFunctor(*iter);
+    asserter(*iter);
     ++iter;
 }
 

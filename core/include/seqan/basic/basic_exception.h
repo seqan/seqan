@@ -235,6 +235,52 @@ typedef std::runtime_error      RuntimeError;
 //typedef std::logic_error        LogicError;
 
 // ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction ExceptionMessage
+// ----------------------------------------------------------------------------
+
+template <typename T, typename TSpec = void>
+struct ExceptionMessage
+{
+    static const std::string VALUE;
+};
+
+template <typename T, typename TSpec>
+const std::string ExceptionMessage<T, TSpec>::VALUE;
+
+// ============================================================================
+// Functors
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Functor Asserter
+// ----------------------------------------------------------------------------
+
+template <typename TFunctor, typename TException, typename TContext = void, bool RETURN_VALUE = false>
+struct Asserter
+{
+    TFunctor func;
+
+    Asserter() {}
+
+    Asserter(TFunctor & func) :
+        func(func)
+    {}
+
+    template <typename TValue>
+    bool operator() (TValue const & val) const
+    {
+        if (SEQAN_UNLIKELY(!func(val)))
+            throw TException(std::string("Value '") + val + "' produced an error. " +
+                             ExceptionMessage<TFunctor, TContext>::VALUE);
+        return RETURN_VALUE;
+    }
+};
+
+// ============================================================================
 // Classes
 // ============================================================================
 
