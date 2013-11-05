@@ -1,0 +1,44 @@
+.bg-gradient(@color-start, @color-end, @color-default) {
+    .diagonal-gradient (@color-start, @color-end, @color-default);
+}
+
+.bg-gradient(@color, @lightenBy) {
+    .diagonal-gradient (lighten(@color, @lightenBy + 3%), lighten(@color, @lightenBy - 3%), lighten(@color, @lightenBy));
+}
+
+.bg-gradient() {
+    .bg-gradient(@primary, 49%);
+}
+
+.bullet-icon() {
+    .bullet-icon("\e080");
+}
+.bullet-icon(@content) {
+    .bullet-icon(@content, before, auto, auto, auto, -1.5em);
+}
+.bullet-icon(@content, before, @topPos, @rightPos, @bottomPos, @leftPos) {
+    position: relative;
+    &:before {
+        .bullet-icon-content(@content, @topPos, @rightPos, @bottomPos, @leftPos);
+    }
+}
+.bullet-icon(@content, after, @topPos, @rightPos, @bottomPos, @leftPos) {
+    position: relative;
+    &:after {
+        .bullet-icon-content(@content, @topPos, @rightPos, @bottomPos, @leftPos);
+    }
+}
+.bullet-icon-content(@content, @topPos, @rightPos, @bottomPos, @leftPos) {
+    position: absolute;
+    top: @topPos;
+    left: @leftPos;
+    right: @rightPos;
+    bottom: @bottomPos;
+    font-family: 'Glyphicons Halflings';
+    content: @content;
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-weight: normal;
+    display: block;
+    font-size: .8em;
+}
