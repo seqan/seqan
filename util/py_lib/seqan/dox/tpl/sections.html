@@ -205,7 +205,7 @@ Macro body(entry, start_heading=2)
 Render the body for the given entry.
 -->
 
-{% macro body(entry, start_heading=2) -%}
+{% macro body(entry, start_heading=3) -%}
 {% if entry.body %}
 {{ entry.body|transtext(class="body", start_heading=start_heading) }}
 {% endif %}

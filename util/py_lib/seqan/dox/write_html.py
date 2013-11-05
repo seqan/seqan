@@ -69,7 +69,7 @@ class TextNodeToHtml(object):
         self.heading_table = {}
         self.path_mgr = path_mgr
         for i in range(0, 10):
-            self.heading_table['h%d' % i] = 'h%d' % (i + start_heading)
+            self.heading_table['h%d' % i] = 'h%d' % (i + start_heading - 1)
 
     def openTag(self, text_node, **kwargs):
         if text_node.raw_html:
