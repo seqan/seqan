@@ -1119,6 +1119,12 @@ html.page_languageentities #toc ol {
 /*
  * Task Overview
  */
+html.page_mainpage {
+    h3 small {
+        white-space: nowrap;
+    }
+}
+
 ul.overview {
     position: relative;
     .clearfix();
@@ -1156,8 +1162,13 @@ ul.overview {
         }
         
         ul {
-           margin-left: 1em;
+           margin-left: 0;
 
+           > li {
+               &:before {display: none;}
+               
+               small { display: block; font-size: .9em; }
+           }
         }
         
         [data-lang-entity] > :nth-child(2) {

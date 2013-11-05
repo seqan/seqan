@@ -27,13 +27,13 @@ This section addresses the problem:
         <h3>Read Mapping</h3>
         <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <ul>
-            <li>The @link Index @endlink class and subclasses can be used for index-based search.</li>
-            <li>Online string search can be implemented using the @link Finder @endlink and @link Pattern @endlink classes.</li>
-            <li>You can also use alignments for the verification, have a look at the @link Align @endlink class and the @link globalAlignment @endlink function.</li>
-            <li>For reading files sequentially, you can use the @link SequenceStream @endlink class while the @link FaiIndex @endlink class allows fast random access for FASTA files.</li>
-            <li>You can read and write SAM and BAM files using the @link BamStream @endlink class.</li>
-            <li>The @link FragmentStore @endlink class allows for managing read alignments and reading/writing from/to SAM.</li>
-            <li>Last but not least, we have a Tutorial on <a href="https://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top">Read Mapping</a> waiting for you in our Wiki.</li>
+            <li>@link Index @endlink<small>class and subclasses can be used for index-based search</small></li>
+            <li>@link Finder @endlink @link Pattern @endlink<small>can be used to implement online string search</small></li>
+            <li>@link Align @endlink @link globalAlignment @endlink<small>alignments can be used for the verification</small></li>
+            <li>@link SequenceStream @endlink @link FaiIndex @endlink<small>reads files sequentially whereas the latter class allows fast random access for FASTA files</small></li>
+            <li>@link BamStream @endlink<small>used to read and write SAM and BAM files</small></li>
+            <li>@link FragmentStore @endlink<small>allows for managing read alignments and reading/writing from/to SAM</small></li>
+            <li><a href="https://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top">Read Mapping Tutorial</a></li>
         </ul>
     </li>
     <li>

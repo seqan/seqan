@@ -3180,6 +3180,9 @@ html.page_languageentities #toc ol li:nth-child(12) a:before {
 /*
  * Task Overview
  */
+html.page_mainpage h3 small {
+  white-space: nowrap;
+}
 ul.overview {
   position: relative;
   *zoom: 1;
@@ -3223,7 +3226,14 @@ ul.overview > li > h3 {
   margin: 0 0 .5em 0;
 }
 ul.overview > li ul {
-  margin-left: 1em;
+  margin-left: 0;
+}
+ul.overview > li ul > li:before {
+  display: none;
+}
+ul.overview > li ul > li small {
+  display: block;
+  font-size: .9em;
 }
 ul.overview > li [data-lang-entity] > :nth-child(2) {
   white-space: normal;
