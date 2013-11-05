@@ -14,126 +14,62 @@ Follow the <a href="http://trac.seqan.de/wiki/Tutorial/GettingStarted" target="_
 A good starting point for learning more about SeqAn is to read the <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">SeqAn Tutorial</a> in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki" target="_top">SeqAn Wiki</a>.
 This will introduce you into the basic concepts of the library and demonstrate how to use the data structures and functions offered by SeqAn.
 
-The library uses template programming which leads to approaches possibly unusal to you. Therefore we strongly recommend reading our <a href="page_languageEntities.html">language entity types</a> overview to become familiar with SeqAn's special design. 
+SeqAn uses advanced C++ template programming techniques.
+We recommend our glossary of <a href="page_languageEntities.html">language entity types</a> for a quick introduction.
 
 @section Typical Tasks
 
-@htmlonly
+This section addresses the problem:
+"I want to do X. How can SeqAn help me with this?"
+
 <ul class="overview">
     <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <h3>Read Mapping</h3>
+        <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>The @link Index @endlink class and subclasses can be used for index-based search.</li>
+            <li>Online string search can be implemented using the @link Finder @endlink and @link Pattern @endlink classes.</li>
+            <li>You can also use alignments for the verification, have a look at the @link Align @endlink class and the @link globalAlignment @endlink function.</li>
+            <li>For reading files sequentially, you can use the @link SequenceStream @endlink class while the @link FaiIndex @endlink class allows fast random access for FASTA files.</li>
+            <li>You can read and write SAM and BAM files using the @link BamStream @endlink class.</li>
+            <li>The @link FragmentStore @endlink class allows for managing read alignments and reading/writing from/to SAM.</li>
+            <li>Last but not least, we have a Tutorial on <a href="https://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top">Read Mapping</a> waiting for you in our Wiki.</li>
         </ul>
     </li>
     <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <h3>File I/O</h3>
+        <p>SeqAn has support for most common file formats in Bioinformatics.  The following lists the most convenient access methods.</p>
         <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>VCF: @link VcfStream @endlink and @link VcfRecord @endlink</li>
+            <li>GFF, GTF: @link GffStream @endlink and @link GffRecord @endlink</li>
+            <li>SAM, BAM: @link BamStream @endlink and @link BamAlignmentRecord @endlink</li>
+            <li>FASTA, FASTQ: @link SequenceStream @endlink and @link FaiIndex @endlink</li>
+            <li>BED: @link BedStream @endlink and @link BedRecord @endlink</li>
+            <li>Have a look at the <a href="http://trac.seqan.de/wiki/Tutorial" target="_top">Tutorial</a> for tutorials for file I/O.</li>
         </ul>
     </li>
     <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <h3>Sequence Alignment <small>and Multiple Sequence Alignment</small></h3>
+        <p>Sequence alignment and multiple sequence alignment are classic problems in Bioinformatics.</p>
         <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>The dynamic programming algorithms for global sequence alignment with various parameters are available through the global function @link globalAlignment @endlink.</li>
+            <li>If you need local alignments then have a look at @link localAlignment @endlink.</li>
+            <li>The Waterman-Eggert algorithm for enumerating suboptimal local alignments is provided by the class @link LocalAlignmentEnumerator @endlink.</li>
+            <li>The @link Align @endlink class provides a data structure for tabular alignment of sequences with the same type.</li>
+            <li>The @link Gaps @endlink class allows to store gaps independent of the underlying sequence.</li>
         </ul>
     </li>
     <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <h3>Graph <small>Data Structures and Algorithms</small></h3>
+        <p>Often, graphs come in handy to model subproblems in sequence analysis.  SeqAn provides basic support for graphs and graph algorithms.</li>
         <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-        </ul>
-    </li>
-    <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
-        <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-        </ul>
-    </li>
-    <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
-        <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-        </ul>
-    </li>
-    <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
-        <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-        </ul>
-    </li>
-    <li>
-        <h3>Task A <small>Sub Headline</small></h3>
-        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
-        <ul>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
-            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>The central class is the @link Graph @endlink class and its subclasses.</li>
+            <li>Simple directed and undirected graphs structures are available as @link DirectedGraph @endlink and @link UndirectedGraph @endlink.</li>
+            <li>For sequence analysis, the special subclasses @link Automaton @endlink, @link WordGraph @endlink, and @link HmmGraph @endlink are available.</li>
+            <li>Standard graph algorithms such as @link dijkstra Dijkstra's algorithm @endlink, @link bellmanFordAlgorithm the Bellman-Ford algorithm @endlink, @link topologicalSort topological sorting @endlink, and @link dagShortestPath shortest paths in DAGs @endlink are also available.</li>
+            <li>Also, you have a look at the <a href="http://trac.seqan.de/wiki/Tutorial/Graphs" target="_top">Graphs</a> Tutorial in our Wiki.</li>
+            <li>For more advanced usage and algorithms, we recommend using the <a href="http://lemon.cs.elte.hu/trac/lemon" target="_top">LEMON Graph Library</a>.</li>
         </ul>
     </li>
 </ul>
-
-@endhtmlonly
-
  */
