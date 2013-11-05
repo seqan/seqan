@@ -1093,25 +1093,25 @@ html.page_languageentities [data-lang-entity-container=generic] [data-lang-entit
 
 // TOC on language entity types page
 html.page_languageentities #toc ol {
-     .bg-gradient(#000, 10%);
+     /*.bg-gradient(#000, 10%);
      li { font-weight: 700; }
      li.top a { color: #fff; }
      a:hover { background-color: rgba(255,255,255,0.15); }
      li.active a {
          font-size: 1.4em;
          margin-left: -0.4em;
-     }
-	 li:nth-child(2) { a, a:before { color: @lgreen; } }
-	 li:nth-child(3) { a, a:before { color: lighten(@red, -20%); } }
-	 li:nth-child(4) { a, a:before { color: lighten(@red, 0%); } }
-	 li:nth-child(5) { a, a:before { color: lighten(@red, +20%); } }
-	 li:nth-child(6) { a, a:before { color: @rblue; } }
-	 li:nth-child(7) { a, a:before { color: @lblue; } }
-	 li:nth-child(8) { a, a:before { color: @purple; } }
-	 li:nth-child(9) { a, a:before { color: @lgreen } }
-	 li:nth-child(10) { a, a:before { color: lighten(@orange, -10%); } }
-	 li:nth-child(11) { a, a:before { color: lighten(@orange, 10%); } }
-	 li:nth-child(12) { a, a:before { color: #999; } }
+     }*/
+	 li:nth-child(2) { a:before { color: @lgreen; } }
+	 li:nth-child(3) { a:before { color: lighten(@red, -20%); } }
+	 li:nth-child(4) { a:before { color: lighten(@red, 0%); } }
+	 li:nth-child(5) { a:before { color: lighten(@red, +20%); } }
+	 li:nth-child(6) { a:before { color: @rblue; } }
+	 li:nth-child(7) { a:before { color: @lblue; } }
+	 li:nth-child(8) { a:before { color: @purple; } }
+	 li:nth-child(9) { a:before { color: @lgreen } }
+	 li:nth-child(10) { a:before { color: lighten(@orange, -10%); } }
+	 li:nth-child(11) { a:before { color: lighten(@orange, 10%); } }
+	 li:nth-child(12) { a:before { color: #999; } }
 }
 /**/
 
@@ -1124,16 +1124,32 @@ ul.overview {
     .clearfix();
     margin-left: 0;
     
+    -moz-column-count: 2;
+    -moz-column-gap: 2em;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 2em;
+    column-count: 2;
+    column-gap: 2em;
+    
     > li {
         &:before { display: none; }
-        width: 48%;
-        float: left;
+        
         display: block;
         margin: 0 0 2em 0;
+        
+        /*width: 48%;
+        float: left;
         
         &:nth-child(even) {
             margin-left: 4%;
         }
+        */
+        
+        -moz-column-break-inside: avoid;
+        -moz-break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+        column-break-inside: avoid;
+        break-inside: avoid;
         
         > h3 {
             margin: 0 0 .5em 0;
@@ -1141,6 +1157,7 @@ ul.overview {
         
         ul {
            margin-left: 1em;
+
         }
         
         [data-lang-entity] > :nth-child(2) {
@@ -1154,11 +1171,17 @@ ul.overview {
 
 @media all and (max-width: 799px) {
     html:not(.list) {
-        ul.overview > li {
-            float: none;
-            width: 100%;
-            
-            margin-left: 0;
+        ul.overview {
+            -moz-column-count: 1;
+            -webkit-column-count: 1;
+            column-count: 1;
+        
+            > li {
+                float: none;
+                width: 100%;
+                
+                margin-left: 0;
+            }
         }
     }
 }
