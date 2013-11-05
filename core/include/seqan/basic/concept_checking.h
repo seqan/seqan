@@ -212,7 +212,8 @@ template <class ModelFn> struct concept_check_;
 template <class Model>
 void concept_check_failed()
 {
-    ((Model*)0)->~Model();
+    Model *p = static_cast<Model*>(NULL);
+    p->~Model();
 }
 
 template <class Model>
@@ -304,7 +305,11 @@ SEQAN_CONCEPT_ASSERT((UnsignedIntegerConcept<TSize>));
 template <class Model>
 struct usage_requirements
 {
-    ~usage_requirements() { ((Model*)0)->~Model(); }
+    ~usage_requirements()
+    {
+        Model *p = static_cast<Model*>(NULL);
+        p->~Model();
+    }
 };
 
 /*!
@@ -420,7 +425,11 @@ namespace detail
 template <class Model>
 struct requirement
 {
-    static void failed() { ((Model*)0)->~Model(); }
+    static void failed()
+    {
+        Model *p = static_cast<Model*>(NULL);
+        p->~Model();
+    }
 };
 
 struct failed {};
@@ -428,13 +437,21 @@ struct failed {};
 template <class Model>
 struct requirement<failed ************ Model::************>
 {
-    static void failed() { ((Model*)0)->~Model(); }
+    static void failed()
+    {
+        Model *p = static_cast<Model*>(NULL);
+        p->~Model();
+    }
 };
 
 template <class Model>
 struct constraint
 {
-    static void failed() { ((Model*)0)->constraints(); }
+    static void failed()
+    {
+        Model *p = static_cast<Model*>(NULL);
+        p->constraints();
+    }
 };
   
 template <class Model>
