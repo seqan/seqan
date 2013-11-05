@@ -1,4 +1,3 @@
 140	.	inter	5141	8522	.	-	.	gene_id "gene1"; transcript_id "trans2"; position 43;
 240	.	CDS	66996	66999	.	-	.	gene_id "140.000"; transcript_id "140.000.1";
 340	.	intron_CNS	70103	70151	.	-	.	gene_id "140.000"; transcript_id "140.000.2";
-
