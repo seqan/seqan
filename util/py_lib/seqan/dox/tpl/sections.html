@@ -672,7 +672,7 @@ Render the grouped macros details
     <div class="docstring">
       <div class="discussion">
         {{ subentry.brief|transtext }}
-        {{ body(subentry) }}
+        {{ body(subentry, start_heading=4) }}
       </div>
     </div>
 
@@ -777,7 +777,7 @@ Render the grouped macros details
 {% endif %}
 </dl>
 
-{{ body(subentry) }}
+{{ body(subentry, start_heading=4) }}
 
 {% endfor %}
 
@@ -818,7 +818,7 @@ Render the interface functions details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry) }}
+      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
@@ -911,7 +911,7 @@ Render the member typedef details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry) }}
+      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
@@ -964,7 +964,7 @@ Render the interface metafunctions details
   <div class="docstring">
     <div class="discussion">
       {{ subentry.brief|transtext }}
-      {{ body(subentry) }}
+      {{ body(subentry, start_heading=4) }}
     </div>
   </div>
 
@@ -1024,7 +1024,7 @@ Render the member variables details
     <div class="docstring">
       <div class="discussion">
         {{ subentry.brief|transtext }}
-        {{ body(subentry) }}
+        {{ body(subentry, start_heading=4) }}
       </div>
     </div>
   </div>
@@ -1052,7 +1052,7 @@ Render the member enum details
     <div class="docstring">
       <div class="discussion">
         {{ subentry.brief|transtext }}
-        {{ body(subentry) }}
+        {{ body(subentry, start_heading=4) }}
       </div>
     </div>
   </div>
