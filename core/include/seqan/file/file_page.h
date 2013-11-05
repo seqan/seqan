@@ -288,19 +288,15 @@ struct MMap;
 
 	template <typename TValue>
     struct Value< PageBucket<TValue> >		{ typedef TValue Type; };
-//IOREV
 
     template <typename TValue>
     struct Size< PageBucket<TValue> >		{ typedef size_t Type; };
-//IOREV
 
     template <typename TValue>
     struct Iterator< PageBucket<TValue>, Standard >			{ typedef TValue *Type; };
-//IOREV
 
     template <typename TValue>
     struct Iterator< PageBucket<TValue> const, Standard >	{ typedef TValue const *Type; };
-//IOREV
 
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -368,7 +364,6 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// page frame of static size
 
-//IOREV
 
     typedef ::std::list<Position<String<void*> >::Type> PageLRUList;    // least recently usage list
 	typedef PageLRUList::iterator PageLRUEntry;
@@ -876,263 +871,242 @@ struct MMap;
 	}
 
 
-	//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-    template <typename TPageFrame>
-    struct PageChain 
-	{
+template <typename TPageFrame>
+struct PageChain 
+{
 //IOREV _nodoc_
-        TPageFrame          *first, *last;
-        unsigned            frames, maxFrames;
-        
-        PageChain(unsigned _maxFrames = 0):
-            first(NULL),
-            last(NULL),
-            frames(0),
-            maxFrames(_maxFrames)
+    TPageFrame          *first, *last;
+    unsigned            frames, maxFrames;
+    
+    PageChain(unsigned _maxFrames = 0):
+        first(NULL),
+        last(NULL),
+        frames(0),
+        maxFrames(_maxFrames)
+    {
+        for(unsigned i = 0; i < _maxFrames; ++i)
+            pushBack(*this, *(new TPageFrame()));
+    }
+    
+    ~PageChain()
+    {
+        while (!empty(*this))
+            delete &popFront(*this);
+    }
+    
+    inline TPageFrame & operator[](int k) 
+    {
+        TPageFrame *p = first;
+        for (; k > 0; --k)
+            p = p->next;
+        return *p;
+    }
+    
+    inline TPageFrame const & operator[](int k) const 
+    {
+        TPageFrame *p = first;
+        for (; k > 0; --k)
+            p = p->next;
+        return *p;
+    }
+
+    inline TPageFrame * getReadyPage() 
+    {
+        if (empty(*this))
+            return &pushBack(*this, *(new TPageFrame()));
+
+        if (frames < maxFrames)
         {
-            for(unsigned i = 0; i < _maxFrames; ++i)
-                pushBack();
-        }
-        
-        ~PageChain()
-        {
-            while (!empty())
-                delete &popFront();
-        }
-        
-        inline TPageFrame & operator[](int k) 
-		{
-            TPageFrame *p = first;
-            for (; k > 0; --k)
-                p = p->next;
-            return *p;
-        }
-        
-        inline TPageFrame const & operator[](int k) const 
-		{
-            TPageFrame *p = first;
-            for (; k > 0; --k)
-                p = p->next;
-            return *p;
-        }
-
-        inline TPageFrame * getReadyPage() 
-		{
-            if (empty())
-                return &pushBack();
-
-            if (frames < maxFrames)
-            {
-                bool inProgress;
-                bool waitResult = waitFor(*first, 0, inProgress);
-                
-                // TODO(weese): Throw an I/O exception
-                if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
-
-                if (!inProgress)
-                    return &pushBack();
-            }
-
-            bool waitResult = waitFor(*first);
-
+            bool inProgress;
+            bool waitResult = waitFor(*first, 0, inProgress);
+            
             // TODO(weese): Throw an I/O exception
             if (!waitResult)
                 SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
 
-            return &firstToEnd();
+            if (!inProgress)
+                return &pushBack(*this, *(new TPageFrame()));
         }
 
-        template <typename TFile>
-        inline void cancelAll(TFile &file) 
-		{
-            TPageFrame *p = first;
-            for (; p != NULL; p = p->next)
-                cancel(*p, file);
-        }
+        bool waitResult = waitFor(*first);
 
-        inline void waitForAll() 
-		{
-            for (TPageFrame *p = first; p != NULL; p = p->next)
-            {
-                bool waitResult = waitFor(*p);
+        // TODO(weese): Throw an I/O exception
+        if (!waitResult)
+            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
 
-                // TODO(weese): Throw an I/O exception
-                if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
-            }
-        }
+        return &firstToEnd(*this);
+    }
 
-    public:
+    template <typename TFile>
+    inline void cancelAll(TFile &file) 
+    {
+        TPageFrame *p = first;
+        for (; p != NULL; p = p->next)
+            cancel(*p, file);
+    }
 
-        inline bool
-        empty()
+    inline void waitForAll() 
+    {
+        for (TPageFrame *p = first; p != NULL; p = p->next)
         {
-            return first == NULL;
-        }
+            bool waitResult = waitFor(*p);
 
-        inline unsigned
-        size()
+            // TODO(weese): Throw an I/O exception
+            if (!waitResult)
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
+        }
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////
+// meta-function interface
+
+template <typename TPageFrame>    
+struct Value< PageChain<TPageFrame> > 
+{
+    typedef TPageFrame Type;
+};
+
+template <typename TPageFrame>    
+struct Size< PageChain<TPageFrame> > 
+{
+    typedef unsigned Type;
+};
+
+template <typename TPageFrame>    
+struct Iterator< PageChain<TPageFrame> > 
+{
+    typedef TPageFrame *Type;
+};
+
+template <typename TPageFrame>    
+struct Iterator< PageChain<TPageFrame> const > 
+{
+    typedef TPageFrame const *Type;
+};
+
+
+template <typename TPageFrame>
+inline bool
+empty(PageChain<TPageFrame> &pageChain)
+{
+    return pageChain.first == NULL;
+}
+
+template <typename TPageFrame>
+inline unsigned
+length(PageChain<TPageFrame> &pageChain)
+{
+    return pageChain.frames;
+}
+
+template <typename TPageFrame>
+inline TPageFrame &
+front(PageChain<TPageFrame> &pageChain)
+{
+    return *pageChain.first;
+}
+
+template <typename TPageFrame>
+inline TPageFrame &
+back(PageChain<TPageFrame> &pageChain)
+{
+    return *pageChain.last;
+}
+
+//
+// append a PageFrame at the end of this chain
+//
+template <typename TPageFrame>
+inline TPageFrame &
+pushBack(PageChain<TPageFrame> &pageChain, TPageFrame &pageFrame)
+{
+    if (pageChain.last != NULL)
+        pageChain.last->next = &pageFrame;
+    else
+        pageChain.first = &pageFrame;
+    
+    pageChain.last = &pageFrame;
+    pageFrame.next = NULL;
+    ++pageChain.frames;
+
+    return pageFrame;
+}
+
+//
+// remove a PageFrame from this chain
+//
+template <typename TPageFrame>
+inline TPageFrame &
+erase(PageChain<TPageFrame> &pageChain, TPageFrame & pageFrame)
+{
+    TPageFrame *prev = NULL;
+    TPageFrame *p;
+
+    for (p = pageChain.first; p != NULL; p = p->next)
+    {
+        if (p == &pageFrame)
         {
-            return frames;
-        }
-
-        inline TPageFrame &
-        front()
-        {
-            return *first;
-        }
-
-        inline TPageFrame &
-        back()
-        {
-            return *last;
-        }
-
-        //
-        // append a PageFrame at the end of this chain
-        //
-        inline TPageFrame &
-        pushBack(TPageFrame &pageFrame)
-		{
-            if (last != NULL)
-                last->next = &pageFrame;
+            // found it, now detach from neighbors
+            if (prev == NULL)
+                pageChain.first = p->next;
             else
-                first = &pageFrame;
-            
-            last = &pageFrame;
-            pageFrame.next = NULL;
-            ++frames;
+                prev->next = p->next;
 
-            return pageFrame;
+            p->next = NULL;
+
+            // were we the last?
+            if (pageChain.last == p)
+                pageChain.last = prev;
+
+            --pageChain.frames;
+            break;
         }
+        prev = p;
+    }
+    // we assert that the page has been found
+    SEQAN_ASSERT(p != NULL);
+    return pageFrame;
+}
 
-        //
-        // append a *new* PageFrame at the end of this chain
-        //
-        inline TPageFrame &
-        pushBack()
-		{
-            TPageFrame *pageFrame = new TPageFrame();
-            return pushBack(*pageFrame);
-        }
+template <typename TPageFrame>
+inline TPageFrame &
+popFront(PageChain<TPageFrame> &pageChain)
+{
+    // equivalent to erase(front())
+    TPageFrame *p = pageChain.first;
+    if (p != NULL)
+    {
+        pageChain.first = p->next;
+        p->next = NULL;
+        if (pageChain.first == NULL)
+            pageChain.last = NULL;
+        --pageChain.frames;
+    }
+    else
+        SEQAN_FAIL("pop() was called on an empty PageChain.");
+    return *p;
+}
 
-        //
-        // remove a PageFrame from this chain
-        //
-        inline TPageFrame &
-        erase(TPageFrame & pageFrame)
-        {
-            TPageFrame *prev = NULL;
-            TPageFrame *p;
-
-            for (p = first; p != NULL; p = p->next)
-            {
-                if (p == &pageFrame)
-                {
-                    // found it, now detach from neighbors
-                    if (prev == NULL)
-                        first = p->next;
-                    else
-                        prev->next = p->next;
-
-                    p->next = NULL;
-
-                    // were we the last?
-                    if (last == p)
-                        last = prev;
-
-                    --frames;
-                    break;
-                }
-                prev = p;
-            }
-            // we assert that the page has been found
-            SEQAN_ASSERT(p != NULL);
-            return pageFrame;
-        }
-
-        inline TPageFrame &
-        popFront()
-        {
-            // equivalent to erase(front())
-            TPageFrame *p = first;
-            if (p != NULL)
-            {
-                first = p->next;
-                p->next = NULL;
-                if (first == NULL)
-                    last = NULL;
-                --frames;
-            }
-            else
-                SEQAN_FAIL("pop() was called on an empty PageChain.");
-            return *p;
-        }
-
-        //
-        // move first page to the end of this chain
-        // return the moved page
-        //
-        inline TPageFrame &
-        firstToEnd()
-		{
-            // equivalent to pushBack(popFront())
-            last->next = first;
-            last = first;
-            first = first->next;
-            last->next = NULL;
-            return *last;
-        }
+//
+// move first page to the end of this chain
+// return the moved page
+//
+template <typename TPageFrame>
+inline TPageFrame &
+firstToEnd(PageChain<TPageFrame> &pageChain)
+{
+    // equivalent to pushBack(popFront())
+    pageChain.last->next = pageChain.first;
+    pageChain.last = pageChain.first;
+    pageChain.first = pageChain.first->next;
+    pageChain.last->next = NULL;
+    return *pageChain.last;
+}
 
 
-// call pop(chain.front())
-
-//        inline TPageFrame &
-//        popFront()
-//		{
-//            TPageFrame *p = first;
-//            if (p) {
-//                first = first->next;
-//                if (!first) last = NULL;
-//                --frames;
-//                delete p;
-//            }
-//            return p;
-//        }
-    };
-
-	//////////////////////////////////////////////////////////////////////////////
-	// meta-function interface
-
-    template <typename TPageFrame>    
-	struct Value< PageChain<TPageFrame> > 
-	{
-//IOREV
-		typedef TPageFrame Type;
-	};
-
-    template <typename TPageFrame>    
-	struct Size< PageChain<TPageFrame> > 
-	{
-//IOREV
-		typedef unsigned Type;
-	};
-
-    template <typename TPageFrame>    
-	struct Iterator< PageChain<TPageFrame> > 
-	{
-//IOREV
-		typedef TPageFrame *Type;
-	};
-
-    template <typename TPageFrame>    
-	struct Iterator< PageChain<TPageFrame> const > 
-	{
-//IOREV
-		typedef TPageFrame const *Type;
-	};
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -1293,43 +1267,36 @@ struct MMap;
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> > 
 	{
-//IOREV
 		typedef String<TPageFrame> Type;
 	};
 
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const > 
 	{
-//IOREV
 		typedef String<TPageFrame> const Type;
 	};
 
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Value< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> > 
 	{
-//IOREV
 		typedef TPageFrame Type;
 	};
 
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Size< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >:
 		public Size< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type> {};
-//IOREV
 
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Position< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >:
 		public Position< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type> {};
-//IOREV
 
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >:
 		public Iterator< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type> {};
-//IOREV
 
 	template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
 	struct Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const >:
 		public Iterator< typename Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const>::Type> {};
-//IOREV
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -1341,7 +1308,6 @@ struct MMap;
 		unsigned Count_,
 		Tag<TExpand> expand)
 	{
-//IOREV
 		reserve(pageCont.pages, Count_, expand);
 	}
 
@@ -1350,7 +1316,6 @@ struct MMap;
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont, 
 		unsigned Count_) 
 	{
-//IOREV
 		unsigned Size_ = length(pageCont.pages);
 		if (Size_ < Count_) {
 			reserve(pageCont.pages, Count_);
@@ -1366,7 +1331,6 @@ struct MMap;
 	inline typename Size< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type
 	length(PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont) 
 	{
-//IOREV
 		return length(pageCont.pages);
 	}
 
@@ -1376,7 +1340,6 @@ struct MMap;
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
 		Standard const) 
 	{
-//IOREV
 		return begin(pageCont.pages, Standard());
 	}
 
@@ -1386,7 +1349,6 @@ struct MMap;
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont,
 		Standard const) 
 	{
-//IOREV
 		return begin(pageCont.pages, Standard());
 	}
 
@@ -1396,7 +1358,6 @@ struct MMap;
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
 		Standard const) 
 	{
-//IOREV
 		return end(pageCont.pages, Standard());
 	}
 
@@ -1406,7 +1367,6 @@ struct MMap;
 		PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont,
 		Standard const) 
 	{
-//IOREV
 		return end(pageCont.pages, Standard());
 	}
 

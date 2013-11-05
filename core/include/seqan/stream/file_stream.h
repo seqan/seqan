@@ -111,17 +111,17 @@ enum PageCompletionState
 template <typename TValue, typename TSpec>
 struct FilePage
 {
-    typedef File<TSpec>                         TFile;
-    typedef typename AsyncRequest<TFile>::Type  TAsyncFileRequest;
-    typedef typename Position<TFile>::Type      TFilePos;
-    typedef typename Size<TFile>::Type          TFileSize;
+    typedef File<Async<> >                          TFile;
+    typedef typename AsyncRequest<FilePage>::Type   TAsyncRequest;
+    typedef typename Position<TFile>::Type          TFilePos;
+    typedef typename Size<TFile>::Type              TFileSize;
 
     FilePage                * next;
     unsigned                lockCount;
 
     Buffer<TValue>          raw;
     Buffer<TValue>          data;
-    TAsyncFileRequest       request;
+    TAsyncRequest           request;
 
     TFilePos                filePos;
     TFileSize               size;
@@ -130,24 +130,14 @@ struct FilePage
     PageCompletionState     completionState;
 };
 
+template <typename TValue, typename TSpec>
+struct AsyncRequest<FilePage<TValue, TSpec> >:
+    AsyncRequest<File<TSpec> > {};
+
 template <typename TValue, typename TConfig>
-struct FilePage<TValue, MMap<TConfig> >
+struct AsyncRequest<FilePage<TValue, MMap<TConfig> > >
 {
-    typedef File<Async<> >                      TFile;
-    typedef typename Position<TFile>::Type      TFilePos;
-    typedef typename Size<TFile>::Type          TFileSize;
-
-    FilePage                * next;
-    unsigned                lockCount;
-
-    Buffer<TValue>          raw;
-    Buffer<TValue>          data;
-    AsyncDummyRequest       request;
-
-    TFilePos                filePos;
-    TFileSize               size;
-    PageFrameState          state;
-    PageCompletionState     completionState;
+    typedef AsyncDummyRequest Type;
 };
 
 // ============================================================================
@@ -284,6 +274,10 @@ _getPageOffsetAndLength(FilePageTable<TValue, TDirection, TSpec, FixedPagingSche
     return Pair<__int64, unsigned>((__int64)pos & (__int64)(pager.table.pageSize - 1), pager.table.pageSize);
 }
 
+// ----------------------------------------------------------------------------
+// Function _readFilePage()
+// ----------------------------------------------------------------------------
+
 // Variant for POSIX file access
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
@@ -354,6 +348,9 @@ _readFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > & pager, TPageFr
 
 #endif
 
+// ----------------------------------------------------------------------------
+// Function _preprocessFilePage()
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TBool>
 inline bool
@@ -363,6 +360,10 @@ _preprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &, TB
     return true;
 }
 
+// ----------------------------------------------------------------------------
+// Function _postprocessFilePage()
+// ----------------------------------------------------------------------------
+
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TBool>
 inline bool
 _postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &, TBool const &)
@@ -370,6 +371,10 @@ _postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &, T
     // not used yet, could be usefull for external sorters/mappers
     return true;
 }
+
+// ----------------------------------------------------------------------------
+// Function _writeFilePage()
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
 inline bool
@@ -417,7 +422,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > & pager, TPageF
 #endif
 
 // ----------------------------------------------------------------------------
-// Function _tryFetchFilePage()
+// Function _processFilePage()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame, typename TBool>
@@ -475,7 +480,7 @@ _processFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & 
             pf.state = PREPROCESSING_DONE;
             break;
 
-        case PREPROCESSING_DONE:
+        case POSTPROCESSING_DONE:
             // page was postprocessed, now write asynchronously
             pf.state = (_writeFilePage(pager, pf)) ? WRITING_DONE : WRITING;
             break;
@@ -503,15 +508,9 @@ _processFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & 
     return true;
 }
 
-template <typename TFilePageTable, typename TPageFrame>
-inline bool
-_injectUnusedFilePage(TFilePageTable & pager, TPageFrame & frame)
-{
-    frame.state = UNUSED;
-    pager.incomingNeedsHousekeeping |= !_tryFetchFilePage(pager, frame, False());
-    pager.incoming.pushBack(frame);
-    return true;
-}
+// ----------------------------------------------------------------------------
+// Function _houseKeeping()
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec>
 inline bool
@@ -520,7 +519,7 @@ _houseKeeping(FilePageTable<TValue, TDirection, TSpec> & pager)
     typedef FilePageTable<TValue, TDirection, TSpec>    TFilePageTable;
     typedef typename TFilePageTable::TPageFrame         TPageFrame;
 
-    if (pager.inProcess.size() != 0)
+    if (!empty(pager.inProcess))
     {
         for (TPageFrame * p = pager.inProcess.first; p != NULL; )
         {
@@ -531,18 +530,52 @@ _houseKeeping(FilePageTable<TValue, TDirection, TSpec> & pager)
             {
                 if (page.state == READY)
                 {
-                    pager.inProcess.erase(page);
-                    pager.ready.pushBack(page);
+                    erase(pager.inProcess, page);
+                    pushBack(pager.ready, page);
                 }
                 else if (page.state == UNUSED)
                 {
-                    pager.inProcess.erase(page);
-                    pager.unused.pushBack(page);
+                    erase(pager.inProcess, page);
+                    pushBack(pager.unused, page);
                 }
             }
         }
     }
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _swapOutFilePage()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline FilePage<TValue, TSpec> *
+_swapOutFilePage(FilePageTable<TValue, TDirection, TSpec> & pager)
+{
+    SEQAN_ASSERT_NOT(empty(pager.ready) && empty(pager.inProcess));
+
+    typedef FilePage<TValue, TSpec> TPage;
+
+    if (!empty(pager.ready))
+        for (TPage * p = pager.ready.first; p != NULL; p = p->next)
+            if (p->lockCount == 0)
+            {
+                p->targetState = UNUSED;
+                _processFilePage(pager, *p, True());
+                erase(pager.ready, *p);
+                return p;
+            }
+
+    if (!empty(pager.inProcess))
+        for (TPage * p = pager.inProcess.first; p != NULL; p = p->next)
+            if (p->lockCount == 0)
+            {
+                p->targetState = UNUSED;
+                _processFilePage(pager, *p, True());
+                erase(pager.inProcess, *p);
+                return p;
+            }
+    return NULL;
 }
 
 // ----------------------------------------------------------------------------
@@ -554,9 +587,15 @@ inline FilePage<TValue, TSpec> *
 _newFilePage(FilePageTable<TValue, TDirection, TSpec> & pager)
 {
     typedef FilePage<TValue, TSpec> TPage;
-    if (unused.size())
+
+    if (empty(pager.unused))
+        _houseKeeping(pager);
+
+    if (!empty(pager.unused))
+        return &popFront(pager.unused);
+
     // fetch new page
-    if (unused.size() < pager.numPages)
+    if (length(pager.ready) + length(pager.inProcess) < pager.numPages)
     {
         // we can afford to create new buffers
         return new TPage();
@@ -565,9 +604,23 @@ _newFilePage(FilePageTable<TValue, TDirection, TSpec> & pager)
     {
         // all out-chain buffers are in progress (otherwise in-chain would not be empty)
         // so we take and wait for the first out-chain buffer
-        TPage & anyOutChainFilePage = pager.outgoing.popFront();
-        _tryReleaseFilePage(pager, anyOutChainFilePage, True());
-        return &anyOutChainFilePage;
+        if (!empty(pager.inProcess))
+        {
+            for (TPage *p = pager.inProcess.first; p != NULL; p = p->next)
+            {
+                if (p->targetState == UNUSED)
+                {
+                    _processFilePage(pager, *p, True());
+                    erase(pager.inProcess, *p);
+                    return p;
+                }
+            }
+        }
+        TPage *p = _swapOutFilePage(pager);
+        if (p != NULL)
+            return p;
+        else
+            return new TPage(); // we can't swap out anything, so we have to allocate more pages
     }
 }
 
@@ -595,9 +648,9 @@ _lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos
             p = _newFilePage(pager);
             p->filePos = filePos;
             p->size = size;
-            pager.table[pageNo] = p;
+            pager.table.frameStart[pageNo] = p;
         }
-        ++p->count;
+        ++(p->lockCount);
     }
     return *p;
 }
@@ -608,49 +661,34 @@ _lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos
 
 template <typename TValue, typename TDirection, typename TSpec, typename TFilePos, typename TSize>
 inline FilePage<TValue, TSpec> &
-fetchFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos, TSize size, bool readOnly = false)
+fetchFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos, TSize size, bool /*readOnly = false*/)
 {
     typedef FilePage<TValue, TSpec> TPage;
 
     TPage & page = _lockFilePage(pager, filePos, size);
-    _tryFetchFilePage(pager, page, True());
+    page.targetState = READY;
+    _processFilePage(pager, page, True());
 }
+
+// ----------------------------------------------------------------------------
+// Function releaseFilePage()
+// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec, typename TFilePage>
 inline void
-swapOutFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePage & pf)
+releaseFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, TFilePage & page)
 {
-    SEQAN_OMP_PRAGMA(critical(swapOutFilePage))
+    // we automatically flush the page to disk here,
+    // to speed up the swap-out process
+    if (atomicDec(page.lockCount) == 0)
     {
-        if (pf.lockCount == 0)
-        {
-            // start to release the current buffer
-            if (_tryReleaseFilePage(pager, pf, False()))
-            {
-                // writing finished immediately
-                // -> we reinject the now unused buffer into the in-chain
-                _injectUnusedFilePage(pager, pf);
-            }
-            else
-            {
-                // writing is in progress
-                // -> we put the frame into the out-chain
-                #ifdef SEQAN_DEBUG_FILESTREAM
-                std::cout << "ADDED INTO OUT-CHAIN (" << pager.outgoing.frames << "):" << std::endl;
-                std::cout << oldFrame << std::endl;
-                #endif
-                pager.outgoing.pushBack(pf);
-                pager.outgoingNeedsHousekeeping = true;
-            }
-        }
+        page.targetState = UNUSED;
+        erase(pager.ready, page);
+        if (_processFilePage(pager, page, False()))
+            pushBack(pager.unused, page);
+        else
+            pushBack(pager.inProcess, page);
     }
-}
-
-template <typename TValue, typename TDirection, typename TSpec, typename TFilePage>
-inline void
-releaseFilePage(FilePageTable<TValue, TDirection, TSpec> &, TFilePage & pf)
-{
-    atomicDec(pf.lockCount);
 }
 
 // ----------------------------------------------------------------------------
