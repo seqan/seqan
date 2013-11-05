@@ -92,6 +92,11 @@ typedef Tag<TagGff_> Gff;
 struct TagGtf_;
 typedef Tag<TagGtf_> Gtf;
 
+struct GffContext
+{
+    String<char> buffer;
+};
+
 // ----------------------------------------------------------------------------
 // Class GffRecord
 // ----------------------------------------------------------------------------
@@ -303,6 +308,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 {
     IsWhitespace isWhitespace;
 
+    //TODO(singer): AssertList functor would be need
     char c = value(iter);
     if (c == ' ' || c == '\t' || c == '\n' || c == '=')
     {
@@ -320,54 +326,36 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     }
     if (!atEnd(iter) && value(iter) == ';')
     {
-        goNext(iter);
+        skipOne(iter);
         return;
     }
-    if (!atEnd(iter) && (value(iter) == '\r' || value(iter) == '\n'))
+
+    if(value(iter) == '\r' || value(iter) == '\n')
         return;
 
     skipUntil(iter, NotFunctor<IsWhitespace>());
 
     if (value(iter) == '=')
     {
-        goNext(iter);
-        skipUntil(iter, NotFunctor<IsWhitespace>());
+        skipOne(iter);
     }
 
     if (value(iter) == '"')
     {
         // Handle the case of a string literal.
+        skipOne(iter);
+        readUntil(outValue, iter, OrFunctor<EqualsChar<'"'>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+        skipOne(iter);
 
-        goNext(iter);
-        // Append all characters in the literal to outValue until the first i
-        // line break or the closing '"'.
-        for (; !atEnd(iter); goNext(iter))
-        {
-            if (value(iter) == '\n')
-                return;
-
-            if (value(iter) == '"')
-            {
-                goNext(iter);
-                break;
-            }
-            appendValue(outValue, value(iter));
-        }
         // Go over the trailing semicolon and any trailing space.
         while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
             goNext(iter);
     }
     else
     {
-        // Handle the non literal case.
-
         // Read until the first semicolon, return at whitespace.
-        for (; !atEnd(iter); goNext(iter))
-        {
-            if (value(iter) == ';' || value(iter) == '\n' || value(iter) == '\r')
-                break;
-            appendValue(outValue, value(iter));
-        }
+        readUntil(outValue, iter, OrFunctor<EqualsChar<';'>, IsNewline>());
+
         // Skip semicolon and spaces if any.
         while (!atEnd(iter) && (value(iter) == ';' || value(iter) == ' '))
             goNext(iter);
@@ -399,6 +387,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
 ..include:seqan/gff_io.h
 */
 
+//TODO(singer): dont we need to reset beginPos, score ...
 inline void clear(GffRecord & record)
 {
     clear(record.ref);
@@ -445,7 +434,7 @@ inline void clear(GffRecord & record)
 //TODO(singer): no checking whether lexicalCast is working
 template <typename TFwdIterator>
 inline void
-_readGffRecord(GffRecord & record, TFwdIterator & iter)
+_readGffRecord(GffRecord & record, TFwdIterator & iter, GffContext & context)
 {
     IsNewline isNewline;
 
@@ -455,99 +444,54 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter)
     skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<'#'>, IsWhitespace> >());  //skip commments and empty lines
 
     // read column 1: seqid
-    readUntil(record.ref, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
-
-    ++iter;  //skip tab
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only one column!");
+    readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    skipOne(iter);
 
     // read column 2: source
-    readUntil(record.source, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
+    readUntil(record.source, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
 
     if (record.source == ".")
         clear(record.source);
 
-    ++iter;  //skip tab
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only two columns!");
-
+    skipOne(iter);
 
     // read column 3: type
-    readUntil(record.type, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
-
-    ++iter;  //skip tab
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only three columns!");
-
+    readUntil(record.type, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    skipOne(iter);
 
     // read column 4: begin position
-    String<char> temp;
-    readUntil(temp, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
-
-    if (length(temp) > 0u)
-    {
-        lexicalCast(record.beginPos, temp);
-        --record.beginPos;  // Translate from 1-based to 0-based.
-    }
-    else
-    {
-        record.beginPos = GffRecord::INVALID_POS;
-    }
-
-    ++iter;  //skip tab
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only four columns!");
-
+    readUntil(context.buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    record.beginPos = lexicalCast<__uint32>(context.buffer);
+    --record.beginPos;  // Translate from 1-based to 0-based.
+    skipOne(iter);
 
     // read column 5: end position
-    clear(temp);
-    readUntil(temp, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
-    if (length(temp) > 0u)
-    {
-        lexicalCast(record.endPos, temp);
-    }
-    else
-    {
-        record.endPos = GffRecord::INVALID_POS;
-    }
+    clear(context.buffer);
+    readUntil(context.buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    record.endPos = lexicalCast<__uint32>(context.buffer);
+    skipOne(iter);
 
-    ++iter;  //skip tab
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only five columns!");
-
+    //check if end < begin
+    if (record.endPos < record.beginPos)
+        throw std::runtime_error("The begin position of the record is larger than the end position!");
 
     // read column 6: score
-    clear(temp);
-    readUntil(temp, iter, OrFunctor<EqualsChar<'\t'>, IsNewline>());
-
-    //TODO(singer): No check if there is a score
-    if (temp != ".")
-    {
-        lexicalCast(record.score, temp);
-    }
-    else
-    {
-        record.score = GffRecord::INVALID_SCORE();
-    }
-
-    ++iter;  //skip tab
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only six columns!");
-
+    clear(context.buffer);
+    readUntil(context.buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    if (context.buffer != ".")
+        record.score = lexicalCast<float>(context.buffer);
+    skipOne(iter, IsTab());
 
     // read column 7: strand
     //TODO(singer): readUntil taking a char would be good!
+    //TODO(singer): readOne
     record.strand = value(iter);
     if (record.strand != '-' &&record.strand != '+')
     {
         record.strand = '.';
     }
-    ++iter; 
-
-    skipUntil(iter, NotFunctor<IsWhitespace>());  // skip tab
-
-    if(isNewline(value(iter)))
-        throw std::runtime_error("The record contains only seven columns!");
+    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // read column 8: phase
     record.phase = value(iter);
@@ -555,14 +499,13 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter)
     {
         record.phase = '.';
     }
-    ++iter;
-
-    skipUntil(iter, NotFunctor<IsWhitespace>());  // skip tab
+    skipOne(iter);
+    skipOne(iter, IsTab());
 
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
     {
-        ++iter;
+        skipLine(iter);
         return;
     }
 
@@ -582,67 +525,62 @@ _readGffRecord(GffRecord & record, TFwdIterator & iter)
         clear(_value);
 
         // At end of line:  Skip EOL and break.
-        if (!atEnd(iter) && (value(iter) == '\r' || value(iter) == '\n'))
+        if (!atEnd(iter) && isNewline(value(iter)))
         {
-            //if (skipLine(iter) != 0)
-            //    return 1;
-
+            skipOne(iter);
             break;
         }
     }
     return;
 }
 
-template <typename TRecordReader>
+template <typename TFwdIterator, typename TTag>
 inline void 
-readRecord(GffRecord & record, TRecordReader & reader, Gff /*tag*/)
+readRecord(GffRecord & record, TFwdIterator & iter, Tag<TTag> const & /*tag*/, GffContext & context)
 {
-    _readGffRecord(record, reader);
-    return;
+    _readGffRecord(record, iter, context);
 }
 
-template <typename TRecordReader>
-inline void
-readRecord(GffRecord & record, TRecordReader & reader, Gtf /*tag*/)
+template <typename TFwdIterator, typename TTag>
+inline void 
+readRecord(GffRecord & record, TFwdIterator & iter, Tag<TTag> const & tag)
 {
-    _readGffRecord(record, reader);
-    return;
+    GffContext context;
+    readRecord(record, iter, tag, context);
 }
 
 // TODO(singer): Needs proper documentation!!! Check the length of the stores!!!
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
-inline int
-_readGffRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context)
+template <typename TFwdIterator, typename TContextSpec, typename TContextSpec2>
+inline void
+_readGffRecord(GffRecord & record, TFwdIterator & iter, GffIOContext<TContextSpec, TContextSpec2> & ioContext, GffContext & gffContext)
 {
     // Read record with string ref from GFF file.
-    int res = _readGffRecord(record, reader);
-    if (res != 0)
-        return res;
+    _readGffRecord(record, iter, gffContext);
 
     // Translate ref to rID using the context.  If there is no such sequence name in the context yet then we add it.
     unsigned idx = 0;
-    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
+    if (!getIdByName(nameStore(ioContext), record.ref, idx, nameStoreCache(ioContext)))
     {
-        idx = length(nameStore(context));
-        appendName(nameStore(context), record.ref, nameStoreCache(context));
+        idx = length(nameStore(ioContext));
+        appendName(nameStore(ioContext), record.ref, nameStoreCache(ioContext));
     }
     record.rID = idx;
-
-    return 0;
 }
 
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
-inline int
-readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context, Gff /*tag*/)
+template <typename TFwdIterator, typename TContextSpec, typename TContextSpec2>
+inline void
+_readGffRecord(GffRecord & record, TFwdIterator & iter, GffIOContext<TContextSpec, TContextSpec2> & ioCcontext)
 {
-    return _readGffRecord(record, reader, context);
+    GffContext gffContext;
+    _readGffRecord(record, iter, ioCcontext, gffContext);
 }
 
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
-inline int
-readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context, Gtf /*tag*/)
+
+template <typename TRecordReader, typename TContextSpec, typename TContextSpec2, typename TTag>
+inline void
+readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context, Tag<TTag> const & /*tag*/)
 {
-    return _readGffRecord(record, reader, context);
+    _readGffRecord(record, reader, context);
 }
 
 // ----------------------------------------------------------------------------
@@ -654,35 +592,35 @@ readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec
 // Returns false on success.
 
 template <typename TTargetStream, typename TString>
-inline bool
+inline void
 _writeInQuotes(TTargetStream & target, TString & temp)
 {
     // TODO(jsinger): What about escaping quote chars '"'?
-    if (streamWriteChar(target, '"') || streamWriteBlock(target, begin(temp, Standard()), length(temp)) < length(temp) ||
-        streamWriteChar(target, '"'))
-        return true;
-
-    return false;
+    writeValue(target, '"');
+    write(target, temp);
+    writeValue(target, '"');
 }
 
-template <typename TTargetStream, typename TString, typename TMustBeQuotedFunctor>
-inline bool
-_writePossiblyInQuotes(TTargetStream & target, TString & source, TMustBeQuotedFunctor const &func)
+template <typename TTarget, typename TString, typename TMustBeQuotedFunctor>
+inline void
+_writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor const &func)
 {
     // TODO(jsinger): What about escaping quote chars '"'?
-    typedef typename Iterator<TString, Standard>::Type TIter;
-
+    typedef typename Iterator<TString>::Type TIter;
     TIter itEnd = end(source, Standard());
     for (TIter it = begin(source, Standard()); it != itEnd; ++it)
     {
         // we have a problem if the string contains a '"' or a line break
         if (*it == '\n' || *it == '"')
-            return 1;
+            throw std::runtime_error("Attribute contains illegal character!");
 
         if (func(*it))
-            return _writeInQuotes(target, source);
+        {
+            _writeInQuotes(target, source);
+            return;
+        }
     }
-    return (streamWriteBlock(target, begin(source, Standard()), length(source)) < length(source));
+    write(target, source);
 }
 
 // ----------------------------------------------------------------------------
@@ -756,43 +694,51 @@ struct GffRecordValueMustBeQuoted_<Gtf>
     }
 };
 
+template <typename TTarget>
+inline void
+_writeAdditionalSeperator(TTarget const & /*target*/, Gff)
+{
+    return;
+}
+
+template <typename TTarget>
+inline void
+_writeAdditionalSeperator(TTarget & target, Gtf)
+{
+    writeValue(target, ' ');
+    return;
+}
 
 
-template <typename TStream, typename TTag>
-inline int
-_writeAttributes(TStream & stream, GffRecord const & record, TTag)
+template <typename TTarget, typename TTag>
+inline void
+_writeAttributes(TTarget & target, GffRecord const & record, TTag const & tag)
 {
     const char separatorBetweenTagAndValue = (IsSameType<TTag, Gff>::VALUE)? '=' : ' ';
     for (unsigned i = 0; i < length(record.tagName); ++i)
     {
         if (i != 0)
         {
-            if (streamWriteChar(stream, ';'))
-                return 1;
+            writeValue(target, ';');
 
             // In GTF files a space follows the semicolon
-            if (IsSameType<TTag, Gtf>::VALUE && streamWriteChar(stream, ' '))
-                return 1;
-        }
+            _writeAdditionalSeperator(target, tag);
+       }
 
-        if (_writePossiblyInQuotes(stream, record.tagName[i], GffRecordKeyMustBeQuoted_<TTag>()))
-            return 1;
+        _writePossiblyInQuotes(target, record.tagName[i], GffRecordKeyMustBeQuoted_<TTag>());
 
         if (!empty(record.tagValue[i]))
         {
-            if (streamWriteChar(stream, separatorBetweenTagAndValue))
-                return 1;
-
-            if (_writePossiblyInQuotes(stream, record.tagValue[i], GffRecordValueMustBeQuoted_<TTag>()))
-                return 1;
+            writeValue(target, separatorBetweenTagAndValue);
+            _writePossiblyInQuotes(target, record.tagValue[i], GffRecordValueMustBeQuoted_<TTag>());
         }
     }
-    
-    // In GTF files each (especially the last) attribute must end with a semi-colon
-    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagName) && streamWriteChar(stream, ';'))
-        return 1;
 
-    return 0;
+    // In GTF files each (especially the last) attribute must end with a semi-colon
+    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagName))
+        writeValue(target, ';');
+
+    return;
 }
 
 //TODO(singer): No check whether the record is complete!
@@ -805,7 +751,8 @@ _writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref,
         return;
 
     // write column 1: seqid
-    write3(target, ref);
+    //typename Iterator<TSeqId const, Rooted>::Type itRef = begin(ref);
+    write(target, ref);
     writeValue(target, '\t');
 
     // write column 2: source
@@ -815,97 +762,69 @@ _writeRecordImpl(TTarget & target, GffRecord const & record, TSeqId const & ref,
     }
     else
     {
-        write3(target, record.source);
+        write(target, record.source);
     }
     writeValue(target, '\t');
 
     // write column 3: type
-    write3(target, record.type);
+    write(target, record.type);
     writeValue(target, '\t');
 
     // write column 4: begin position
     if (record.beginPos != (unsigned)-1)
-    {
-        if (streamPut(stream, record.beginPos + 1))
-            return 1;
-    }
+        appendNumber(target, record.beginPos + 1);
     else
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
-
+        throw std::runtime_error("No start position!");
     writeValue(target, '\t');
 
-
     // write column 5: end position
-    if (record.endPos != (unsigned)-1)
-    {
-        if (streamPut(stream, record.endPos))
-            return 1;
-    }
+    if (record.endPos != (unsigned)-1 && record.beginPos <= record.endPos)
+        appendNumber(target, record.endPos);
     else
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
-
+        throw std::runtime_error("No end position!");
     writeValue(target, '\t');
 
     // write column 6: score
     if (record.score != record.score)
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
+        writeValue(target, '.');
     else
-    {
-        if (streamPut(stream, record.score))
-            return 1;
-    }
-
+        writeValue(target, record.score);
     writeValue(target, '\t');
 
     // write column 7: strand
-    if (streamWriteChar(stream, record.strand))
-        return 1;
-
+    writeValue(target, record.strand);
     writeValue(target, '\t');
 
     // write column 8: phase
-    if (streamWriteChar(stream, record.phase))
-        return 1;
-
+    writeValue(target, record.phase);
     writeValue(target, '\t');
 
     // write column 9: attributes
     // only until length - 1, because there is no semicolon at the end of the line
 
-    _writeAttributes(stream, record, tag);
+    _writeAttributes(target, record, tag);
 
-    if (streamWriteChar(stream, '\n'))
-        return 1;
-
-    return 0;
+    writeValue(target, '\n');
+    return;
 }
 
-template <typename TStream, typename TTag>
-inline int
-writeRecord(TStream & stream, GffRecord const & record, TTag const tag)
+template <typename TTarget, typename TTag>
+inline void
+writeRecord(TTarget & target, GffRecord const & record, TTag const tag)
 {
-    return _writeRecordImpl(stream, record, record.ref, tag);
+    _writeRecordImpl(target, record, record.ref, tag);
 }
 
-template <typename TStream, typename TContextSpec, typename TContextSpec2, typename TTag>
-inline int
-writeRecord(TStream & stream, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
+template <typename TTarget, typename TContextSpec, typename TContextSpec2, typename TTag>
+inline void
+writeRecord(TTarget & target, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
 {
     if (record.rID != GffRecord::INVALID_IDX)
     {
         String<char> tempSeqId = nameStore(context)[record.rID];
-        return _writeRecordImpl(stream, record, tempSeqId, tag);
+        return _writeRecordImpl(target, record, tempSeqId, tag);
     }
-    return _writeRecordImpl(stream, record, record.ref, tag);
+    return _writeRecordImpl(target, record, record.ref, tag);
 }
 
 }  // namespace seqan
