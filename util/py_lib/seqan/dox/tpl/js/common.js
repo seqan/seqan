@@ -208,16 +208,26 @@
         // make filter box look fancy
         $el.find('select').multiselect({
             buttonClass: 'btn btn-primary',
-            includeSelectAllOption: false,
-            selectAllText: "Select all",
+            includeSelectAllOption: true,
+            selectAllText: "(Un)check all",
             selectAllValue: 'all',
             dropRight: false,
             buttonText: function (checkedOptions) {
                 var options = $(arguments[1][0]).find('option').map(function () {
                     return $(this).val();
                 });
-
-                //return '<span class="glyphicon glyphicon-filter"></span><small>' + options.length + '</small><small>' + checkedOptions.length + '</small>';
+                $.each(options, function(i){
+                    if(options[i] === 'all') {
+                        options.splice(i,1);
+                        return false;
+                    }
+                });
+                $.each(checkedOptions, function(i){
+                    if(checkedOptions[i] === 'all') {
+                        checkedOptions.splice(i,1);
+                        return false;
+                    }
+                });
 
 				var $btn = $el.find('button.multiselect');
 				if(checkedOptions.length == options.length) {
@@ -233,14 +243,19 @@
                 else if (checkedOptions.length == 0) return '<span class="glyphicon glyphicon-filter"></span><small>all excluded</small>';
                 else return '<span class="glyphicon glyphicon-filter"></span><small>' + (options.length - checkedOptions.length) + ' excluded</small>';
             },
-            onChange: function (element, checked) {}
+            onChange: function ($element, checked) {
+                //$allLabel = $('.multiselect-container').find('li:first-child label');
+                //$allLabel.contents().last()[0].textContent = $allLabel.text()[0] == 'U' ? 'Check all' : 'Uncheck all';
+            }
         });
+        $el.find('.multiselect-container [value=all]').prop('checked', true);
         
         $el.find('button.multiselect').attr('title', '');
 
         // copies the options value to <li>'s data-lang-entity-container attribute classes of the parent li element (for easier styling)
         $el.find('.multiselect-container input[value]').each(function () {
             $this = $(this);
+            if($this.val() == 'all') return;
             $this.parents('li').attr('data-lang-entity-container', $this.val());
             $this.parents('a').click(function (e) {
                 if (e.target == this) {

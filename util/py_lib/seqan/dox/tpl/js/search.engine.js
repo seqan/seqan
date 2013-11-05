@@ -17,7 +17,7 @@ and based on the Tipue Search, http://www.tipue.com
 
             numElementsPerPage: 7,
             target: '_self',
-            showURL: true,
+            showURL: false,
             raw: false,
             minimumLength: 3,
             descriptiveWords: 25,
@@ -101,6 +101,109 @@ and based on the Tipue Search, http://www.tipue.com
                 });
 			});
 			return stemmedWords;
+        }
+        
+        // function findAndScore(query, entry).
+        //
+        // Return -1 if nothing was found.
+        function findAndScore(query, entry) {
+            var BASE_SCORE = 1000000000;
+            
+            var RANK_FACTOR = 10000;
+            var DAMPENING_TEXT = 0.99;  // dampening per text sequence
+            var DAMPENING_QUERY = 0.99;  // dampening per query sequence
+        
+            var resultScore = -1;
+        
+            for (var j = 0; j < query.length; j++) {
+                var pattern = new RegExp(query[j], 'i');
+                for (var k = 0; k < entry.length; k++) {
+                    var result = entry[k].match(pattern);
+                    if (result === null || result.length == 0)
+                        continue;  // No match.
+                    for (var x = 0; x < result.length && x < 1; x++) {  // x < 1 reduces repeat effect
+                        // Compute begin/end position by searching for the result.
+                        var beginPos = entry[k].search(result[x]);
+                        var endPos = beginPos + result[x].length;
+        
+                        // Rank points: (4) full match, (3) prefix match, (2) suffix match, (1) infix
+                        // match.
+                        var rankPoints = 1;
+                        rankPoints += 2 * (beginPos == 0);
+                        rankPoints += (endPos == entry[k].length);
+        
+                        // Ratio of matched text.
+                        var ratio = 1.0 * (endPos - beginPos) / entry[k].length;
+        
+                        // Compute final score.
+                        var scoreDelta = rankPoints * RANK_FACTOR * ratio;
+                        for (var y = 0; y < j; ++y)
+                            scoreDelta *= DAMPENING_QUERY;
+                        for (var y = 0; y < k; ++y)
+                            scoreDelta *= DAMPENING_TEXT;
+                        var newScore = BASE_SCORE - scoreDelta;
+                        if (resultScore == -1 || newScore < resultScore)
+                            resultScore = newScore;
+                    }
+                    break;  // Found a match, done.
+                }
+        
+                if (resultScore != -1)
+                    break;  // Found a match, done.
+            }
+            
+            return resultScore;
+        }
+        
+        // Create match with highlighting.
+        function highlightedMatch(score, obj, query) {
+            var result = {score: score, title:obj.title, text:obj.text, location:obj.loc,
+                          subentries:[], akas:null, langEntity:obj.langEntity,
+                          hiTitle: false, hiAka: false, hiSubentry: false};
+        
+            function highlightString(str, pattern) {
+                if (str.match(pattern))
+                    return str.replace(pattern, "<b>$1</b>");
+                else
+                    return str;
+            }
+        
+            var akas = obj.akas.split(',');
+            var subentries = obj.subentries.split(',');
+        
+            for (var j = 0; j < query.length; j++) {
+                var pattern = new RegExp('(' + query[j] + ')', 'i');
+        
+                if (!result.hiTitle && result.title.search(pattern) != -1)
+                {
+                    result.title = highlightString(result.title, pattern);
+                    result.hiTitle = true;
+                }
+        
+                if (!result.hiTitle && !result.hiAka)
+                    for (var i = 0; i < akas.length; i++)
+                        if (akas[i].search(pattern) != -1)
+                        {
+                            result.hiAka = true;
+                            result.aka = highlightString(akas[i], pattern);
+                            break;
+                        }
+        
+                if (result.subentries.length < 4)
+                    for (var i = 0; i < subentries.length; ++i)
+                    {
+                        var xs = subentries[i].split(' ', 2);
+                        var kind = xs[0];
+                        var title = xs[1];
+                        if (subentries[i].search(pattern) != -1)
+                        {
+                            result.hiSubentry = true;
+                            result.subentries.push([kind, highlightString(title, pattern)]);
+                        }
+                    }
+            }
+        
+            return result;
         }
 
         return this.each(function () {
@@ -214,114 +317,12 @@ and based on the Tipue Search, http://www.tipue.com
                     $.each(data, function(i) {
                     	this.langEntity = getReplacedWords([this.langEntity], settings.langEntityGroups)[0];
                     	if($.inArray(this.langEntity, langEntities) < 0) return;
-
-                        var BASE_SCORE = 1000000000;
-
-                        var RANK_FACTOR = 10000;
-                        var DAMPENING_TEXT = 0.99;  // dampening per text sequence
-                        var DAMPENING_QUERY = 0.99;  // dampening per query sequence
-
-                        // function findAndScore(query, text).
-                        //
-                        // Return -1 if nothing was found.
-                        function findAndScore(query, text) {
-                            var resultScore = -1;
-
-                            for (var j = 0; j < query.length; j++) {
-                                var pattern = new RegExp(query[j], 'i');
-                                for (var k = 0; k < text.length; k++) {
-                                    var result = text[k].match(pattern);
-                                    if (result === null || result.length == 0)
-                                        continue;  // No match.
-                                    for (var x = 0; x < result.length && x < 1; x++) {  // x < 1 reduces repeat effect
-                                        // Compute begin/end position by searching for the result.
-                                        var beginPos = text[k].search(result[x]);
-                                        var endPos = beginPos + result[x].length;
-
-                                        // Rank points: (4) full match, (3) prefix match, (2) suffix match, (1) infix
-                                        // match.
-                                        var rankPoints = 1;
-                                        rankPoints += 2 * (beginPos == 0);
-                                        rankPoints += (endPos == text[k].length);
-
-                                        // Ratio of matched text.
-                                        var ratio = 1.0 * (endPos - beginPos) / text[k].length;
-
-                                        // Compute final score.
-                                        var scoreDelta = rankPoints * RANK_FACTOR * ratio;
-                                        for (var y = 0; y < j; ++y)
-                                            scoreDelta *= DAMPENING_QUERY;
-                                        for (var y = 0; y < k; ++y)
-                                            scoreDelta *= DAMPENING_TEXT;
-                                        var newScore = BASE_SCORE - scoreDelta;
-                                        if (resultScore == -1 || newScore < resultScore)
-                                            resultScore = newScore;
-                                    }
-                                    break;  // Found a match, done.
-                                }
-
-                                if (score != -1)
-                                    break;  // Found a match, done.
-                            }
-                            
-                            return resultScore;
-                        }
-
+                    	
                         var score = findAndScore(query, [this.title, this.text, this.akas, this.subentries]);
-
-                        // Create match with highlighting.
-                        function highlightedMatch(score, obj, query) {
-                            var result = {score: score, title:obj.title, text:obj.text, location:obj.loc,
-                                          subentries:[], akas:null, langEntity:obj.langEntity,
-                                          hiTitle: false, hiAka: false, hiSubentry: false};
-
-                            function highlightString(str, pattern) {
-                                if (str.match(pattern))
-                                    return str.replace(pattern, "<b>$1</b>");
-                                else
-                                    return str;
-                            }
-
-                            var akas = obj.akas.split(',');
-                            var subentries = obj.subentries.split(',');
-
-                            for (var j = 0; j < query.length; j++) {
-                                var pattern = new RegExp('(' + query[j] + ')', 'i');
-
-                                if (!result.hiTitle && result.title.search(pattern) != -1)
-                                {
-                                    result.title = highlightString(result.title, pattern);
-                                    result.hiTitle = true;
-                                }
-
-                                if (!result.hiTitle && !result.hiAka)
-                                    for (var i = 0; i < akas.length; i++)
-                                        if (akas[i].search(pattern) != -1)
-                                        {
-                                            result.hiAka = true;
-                                            result.aka = highlightString(akas[i], pattern);
-                                            break;
-                                        }
-
-                                if (result.subentries.length < 4)
-                                    for (var i = 0; i < subentries.length; ++i)
-                                    {
-                                        var xs = subentries[i].split(' ', 2);
-                                        var kind = xs[0];
-                                        var title = xs[1];
-                                        if (subentries[i].search(pattern) != -1)
-                                        {
-                                            result.hiSubentry = true;
-                                            result.subentries.push([kind, highlightString(title, pattern)]);
-                                        }
-                                    }
-                            }
-
-                            return result;
-                        }
+                        var result = highlightedMatch(score, this, query);
 
                         if (score != -1 && score < 1000000000) {
-                            found.push(highlightedMatch(score, this, query));
+                            found.push(result);
                         }
                     });
 
@@ -366,68 +367,71 @@ and based on the Tipue Search, http://www.tipue.com
                             	var langEntityEntry = window.langEntities[langEntity];
                             	if(!langEntityEntry) langEntityEntry = { name: 'UNKNOWN', ideogram: 'UNKNOWN', color: '#FF0000', description: 'Unknown language entity' };
                             	
+                            	// groups entries by their lang entity
                             	if(lastLangEntity != langEntity) {
                             		if(lastLangEntity) out += '</ol></li>';
-                            		entriesInGroup = 0;
+                            		entriesInGroup = 1;
                             		out += '<li data-lang-entity-container="' + langEntity + '" data-pimped="true"><span data-lang-entity="' + langEntity + '"><a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a><span>' + langEntityEntry.name + '</span></span><ol class="nav">';
                             		lastLangEntity = langEntity;
                             	} else {
                             		entriesInGroup++;
                             	}
+                            	
+                            	var isLastEntryInGroup = found.length > i+1 && found[i+1].langEntity != langEntity;
+                            	var entryIsOneTooMuch = entriesInGroup == settings.maxResultsPerGroup+1;
 
-                            	if(entriesInGroup != settings.maxResultsPerGroup
-                            	   || (entriesInGroup == settings.maxResultsPerGroup && found.length > i+1 && found[i+1].langEntity != langEntity)) {
-                                    out += '<li class="result' + (entriesInGroup >= settings.maxResultsPerGroup ? ' more' : '') + '">' +
-                                           '<h2>' +
-                                             '<span data-lang-entity="' + langEntity + '" data-pimped="true">' +
-                                               '<a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>' +
-                                               '<a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '</a>' +
-                                             '</span>';
-                                    if (found[i].aka || found[i].subentries)
-                                        out += '<div style="display:block;">';
-                                    if (found[i].aka)
-                                        out += '<span class="aka">' + found[i].aka + '</span>';
-                                    if (found[i].aka && found[i].subentries)
-                                        out += ' ';
-                                    if (found[i].subentries)
-                                        for (var j = 0; j < found[i].subentries.length; j++)
-                                        {
-                                            if (j > 0)
-                                                out += ' ';
-                                            out += '<span class="subentry" data-lang-entity="' + found[i].subentries[j][0] + '" data-pimped="true">' + found[i].subentries[j][1] + '</span>';
-                                        }
-                                    if (found[i].aka || found[i].subentries)
-                                        out += '</div">';
-                                    out += '</h2>' +
-                                           '<div>';
-									var t = found[i].text;
-									var t_d = '';
-									var t_w = t.split(' ');
-									if (t_w.length < settings.descriptiveWords) {
-										t_d = t;
-									} else {
-										for (var f = 0; f < settings.descriptiveWords; f++) {
-											t_d += t_w[f] + ' ';
-										}
-									}
-									t_d = $.trim(t_d);
-									if (t_d.charAt(t_d.length - 1) != '.') {
-										t_d += ' ...';
-									}
-									out += '<div class="text">' + t_d + '</div>';
-
-									if (settings.showURL) {
-										t_url = found[i].location;
-										if (t_url.length > 45) {
-											t_url = found[i].location.substr(0, 45) + ' ...';
-										}
-										out += '<div class="location"><a href="' + found[i].location + '"' + ankerTarget + '>' + t_url + '</a></div>';
-									}
-									out += '</div>';
-									out += '</li>';
-                                } else {
+                                // adds more link if there is more than one item to be displayed of the same group
+                                if(entryIsOneTooMuch && !isLastEntryInGroup){
 									out += '<li class="more"><a href="#">...</a></li>';
                                 }
+                                
+                                out += '<li class="result' + (entriesInGroup > settings.maxResultsPerGroup && !(entryIsOneTooMuch && isLastEntryInGroup) ? ' more' : '') + '">\
+                                        <h2>\
+                                            <span data-lang-entity="' + langEntity + '" data-pimped="true">\
+                                                <a href="page_LanguageEntities.html#' + langEntity + '">' + langEntityEntry.ideogram + '</a>\
+                                                <a href="' + found[i].location + '"' + ankerTarget + '>' + found[i].title + '<div>';
+                                        
+                                if (found[i].aka) {
+                                    out += '<div class="aka">' + found[i].aka + '</div>';
+                                }
+                                
+                                if (found[i].subentries.length > 0) {
+                                    out += '<ul class="subentries">';
+                                    for (var j = 0; j < found[i].subentries.length; j++) {
+                                        out += '<li>' + found[i].subentries[j][1] + '</li>';
+                                    }
+                                    out += '</ul>';
+                                }
+                                        
+								var t = found[i].text;
+								var t_d = '';
+								var t_w = t.split(' ');
+								if (t_w.length < settings.descriptiveWords) {
+									t_d = t;
+								} else {
+									for (var f = 0; f < settings.descriptiveWords; f++) {
+										t_d += t_w[f] + ' ';
+									}
+								}
+								t_d = $.trim(t_d);
+								if (t_d.charAt(t_d.length - 1) != '.') {
+									t_d += ' ...';
+								}
+								out += '<div class="text">' + t_d + '</div>';
+
+								if (settings.showURL) {
+									t_url = found[i].location;
+									if (t_url.length > 45) {
+										t_url = found[i].location.substr(0, 45) + ' ...';
+									}
+									out += '<div class="location">' + t_url + '</div>';
+								}
+								
+								out += '        </div></a>\
+                                            </span>\
+                                        </h2>\
+                                        <div>';
+								out += '</li>';
                             }
                             l_o++;
                         }

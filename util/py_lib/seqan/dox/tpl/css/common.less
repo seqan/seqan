@@ -54,7 +54,8 @@ h3#Examples {  // DIRTY! Just make it h2!
             height: .75em;
             content: '\a0';
         	margin-left: 1em;
-        	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAEElEQVQIHWNgQAX/kblEcgCBwgP9UmTMJwAAAABJRU5ErkJggg==); // generated on http://www.patternify.com
+        	// diagonal stripes background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAEElEQVQIHWNgQAX/kblEcgCBwgP9UmTMJwAAAABJRU5ErkJggg==); // generated on http://www.patternify.com
+        	background-color: #999;
         }
         &:before {
             margin-left: -(@left-bar-width+1em);
@@ -728,11 +729,30 @@ ul.params {
 					word-break: break-word;
 					
 					&:before { top: .9em }
+					
+					div { // meta information
+					    color: #000;
+					    font-weight: 300;
+					    
+					    .aka {
+    					    &:before {
+        					    content: "a.k.a. ";
+        					    font-style: italic;
+    					    }
+					    }
+					    
+					    ul.subentries {
+					        &:before {
+    					        content: 'members';
+    					        font-style: italic;
+					        }
+					        
+                            li { margin-left: .5em }
+					    }
+					    
+    					.text { display: none; }
+					}
 				}
-			}
-			
-			div {
-				display: none;
 			}
 		}
 		
@@ -763,27 +783,11 @@ ul.params {
  * Language Entities
  */
 form .multiselect-container {
-	li[class=all] {
-	  label {
-	    color: #000;
-	  }
-	  
-	  a {
-	    @deg: -55deg;
-	    @lighter: 30%;
-	    @gradient: lighten(@red, @lighter), lighten(@orange, @lighter), lighten(@lgreen, @lighter), lighten(@rgreen, @lighter), lighten(@lblue, @lighter), lighten(@rblue, @lighter), lighten(@purple, @lighter), lighten(@pink, @lighter);
-	    background: -webkit-linear-gradient(@deg, @gradient);
-        background: -moz-linear-gradient(@deg, @gradient);
-        background: linear-gradient(@deg, @gradient);
-      
-        &:hover {
-          @lighter: 10%;
-	      @gradient: lighten(@red, @lighter), lighten(@orange, @lighter), lighten(@lgreen, @lighter), lighten(@rgreen, @lighter), lighten(@lblue, @lighter), lighten(@rblue, @lighter), lighten(@purple, @lighter), lighten(@pink, @lighter);
-  	      background: -webkit-linear-gradient(@deg, @gradient);
-          background: -moz-linear-gradient(@deg, @gradient);
-          background: linear-gradient(@deg, @gradient);
-        }
-	  }
+	li:first-child { // all
+	  background-color: #fff !important;
+      label { color: #000 !important; }
+      font-size: 1em !important;
+      text-transform: none !important;
 	}
 	
 	li:not([class]) {
@@ -801,6 +805,10 @@ form .multiselect-container {
 	    background-color: #000;
 		color: #fff;
 	  }
+	}
+	
+	li {
+    	margin-top: 0;
 	}
 	
 	li.active a {
@@ -1108,7 +1116,52 @@ html.page_languageentities #toc ol {
 /**/
 
 
+/*
+ * Task Overview
+ */
+ul.overview {
+    position: relative;
+    .clearfix();
+    margin-left: 0;
+    
+    > li {
+        &:before { display: none; }
+        width: 48%;
+        float: left;
+        display: block;
+        margin: 0 0 2em 0;
+        
+        &:nth-child(even) {
+            margin-left: 4%;
+        }
+        
+        > h3 {
+            margin: 0 0 .5em 0;
+        }
+        
+        ul {
+           margin-left: 1em;
+        }
+        
+        [data-lang-entity] > :nth-child(2) {
+            white-space: normal;
+            -ms-word-break: break-all;
+            word-break: break-all;
+            word-break: break-word;
+        }
+    }
+}
 
+@media all and (max-width: 799px) {
+    html:not(.list) {
+        ul.overview > li {
+            float: none;
+            width: 100%;
+            
+            margin-left: 0;
+        }
+    }
+}
 
 
 /*

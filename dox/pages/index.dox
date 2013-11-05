@@ -12,9 +12,128 @@ SeqAn is easy to use and simplifies the development of new software tools with a
 Follow the <a href="http://trac.seqan.de/wiki/Tutorial/GettingStarted" target="_top">getting started instructions</a> to install SeqAn on your system.
 
 A good starting point for learning more about SeqAn is to read the <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">SeqAn Tutorial</a> in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki" target="_top">SeqAn Wiki</a>.
-This will introduce you into the basic concepts of the library and give you an overview about the content of the library.
+This will introduce you into the basic concepts of the library and demonstrate how to use the data structures and functions offered by SeqAn.
 
-Refer to the glossary if you encounter questionable terminology.
+The library uses template programming which leads to approaches possibly unusal to you. Therefore we strongly recommend reading our <a href="page_languageEntities.html">language entity types</a> overview to become familiar with SeqAn's special design. 
 
-The collection of example programs in this documentation and the assignments in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">Tutorial</a> demonstrate how to use the data structures and functions offered by SeqAn.
+@section Typical Tasks
+
+@htmlonly
+<ul class="overview">
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+    <li>
+        <h3>Task A <small>Sub Headline</small></h3>
+        <p>Description ... lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+            <li>@endhtmlonly @link SegmentableConcept#prefix @endlink @htmlonly </li>
+        </ul>
+    </li>
+</ul>
+
+@endhtmlonly
+
  */

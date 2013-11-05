@@ -35,7 +35,7 @@ html:not(.list) h3#Examples:after {
   height: .75em;
   content: '\a0';
   margin-left: 1em;
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAEElEQVQIHWNgQAX/kblEcgCBwgP9UmTMJwAAAABJRU5ErkJggg==);
+  background-color: #999;
 }
 html:not(.list) h2:before,
 html:not(.list) h3#Examples:before {
@@ -769,7 +769,22 @@ ul.params {
 #results ol li.result h2 a:before {
   top: 0.9em;
 }
-#results ol li.result div {
+#results ol li.result h2 a div {
+  color: #000;
+  font-weight: 300;
+}
+#results ol li.result h2 a div .aka:before {
+  content: "a.k.a. ";
+  font-style: italic;
+}
+#results ol li.result h2 a div ul.subentries:before {
+  content: 'members';
+  font-style: italic;
+}
+#results ol li.result h2 a div ul.subentries li {
+  margin-left: 0.5em;
+}
+#results ol li.result h2 a div .text {
   display: none;
 }
 #results ol li.result.more {
@@ -795,18 +810,13 @@ ul.params {
 /*
  * Language Entities
  */
-form .multiselect-container li[class=all] label {
-  color: #000;
+form .multiselect-container li:first-child {
+  background-color: #fff !important;
+  font-size: 1em !important;
+  text-transform: none !important;
 }
-form .multiselect-container li[class=all] a {
-  background: -webkit-linear-gradient(-55deg, #f8dada, #f8f0da, #e9f8da, #daf8e2, #daf8f8, #dae2f8, #e9daf8, #f8daf0);
-  background: -moz-linear-gradient(-55deg, #f8dada, #f8f0da, #e9f8da, #daf8e2, #daf8f8, #dae2f8, #e9daf8, #f8daf0);
-  background: linear-gradient(-55deg, #f8dada, #f8f0da, #e9f8da, #daf8e2, #daf8f8, #dae2f8, #e9daf8, #f8daf0);
-}
-form .multiselect-container li[class=all] a:hover {
-  background: -webkit-linear-gradient(-55deg, #e78585, #e7ce85, #b6e785, #85e79e, #85e7e7, #859ee7, #b685e7, #e785ce);
-  background: -moz-linear-gradient(-55deg, #e78585, #e7ce85, #b6e785, #85e79e, #85e7e7, #859ee7, #b685e7, #e785ce);
-  background: linear-gradient(-55deg, #e78585, #e7ce85, #b6e785, #85e79e, #85e7e7, #859ee7, #b685e7, #e785ce);
+form .multiselect-container li:first-child label {
+  color: #000 !important;
 }
 form .multiselect-container li:not([class]) {
   margin: 0;
@@ -821,6 +831,9 @@ form .multiselect-container li:not([class]) label {
 form .multiselect-container li:not([class]):hover {
   background-color: #000;
   color: #fff;
+}
+form .multiselect-container li {
+  margin-top: 0;
 }
 form .multiselect-container li.active a {
   background-color: #fff;
@@ -3184,6 +3197,53 @@ html.page_languageentities #toc ol li:nth-child(12) a:before {
   color: #999;
 }
 /**/
+/*
+ * Task Overview
+ */
+ul.overview {
+  position: relative;
+  *zoom: 1;
+  margin-left: 0;
+}
+ul.overview:before,
+ul.overview:after {
+  content: " ";
+  display: table;
+}
+ul.overview:after {
+  clear: both;
+}
+ul.overview > li {
+  width: 48%;
+  float: left;
+  display: block;
+  margin: 0 0 2em 0;
+}
+ul.overview > li:before {
+  display: none;
+}
+ul.overview > li:nth-child(even) {
+  margin-left: 4%;
+}
+ul.overview > li > h3 {
+  margin: 0 0 .5em 0;
+}
+ul.overview > li ul {
+  margin-left: 1em;
+}
+ul.overview > li [data-lang-entity] > :nth-child(2) {
+  white-space: normal;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+}
+@media all and (max-width: 799px) {
+  html:not(.list) ul.overview > li {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+  }
+}
 /*
  * Fixes
  */
