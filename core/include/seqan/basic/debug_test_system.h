@@ -67,6 +67,8 @@
 #include <signal.h>
 #endif  // #ifdef PLATFORM_WINDOWS
 
+#include <assert.h>
+
 /*!
  * @defgroup AssertMacros Assertion and Check Macros
  * @brief The assertion and check macros provided by SeqAn.
