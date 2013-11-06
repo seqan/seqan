@@ -492,38 +492,20 @@ macro (seqan_build_demos_develop PREFIX)
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
 
-    # Search for CUDA.
-    find_package (CUDA QUIET)
-
-    # Remember original CMAKE_CXX_FLAGS flags.
-    set (CMAKE_CXX_FLAGS_ORIG "${CMAKE_CXX_FLAGS}")
-
-    # Supress unused parameter warnings for demos.
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter" PARENT_SCOPE)
-    endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-
-    # Add flags for SeqAn.
-    set (CMAKE_CXX_FLAGS_SEQAN "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-    string (REGEX REPLACE "\\-pedantic" "" CMAKE_CXX_FLAGS_SEQAN_CUDA "${CMAKE_CXX_FLAGS_SEQAN}")
-
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
-    # Add flags for CUDA.
-    list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
-    list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
-    list (APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "-O3 -g -lineinfo")
-    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -G -lineinfo")
+    # Supress unused parameter warnings for demos.
+    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
+    endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
-    # Turn CUDA cross-execution-space call warnings into errors.
-#    list (APPEND CUDA_NVCC_FLAGS --Werror=cross-execution-space-call)
+    # Supress all warnings for CUDA demos.
+    set (SEQAN_NVCC_FLAGS "${SEQAN_NVCC_FLAGS} --disable-warnings")
 
-    # Supress all warnings for CUDA.
-    list (APPEND CUDA_NVCC_FLAGS --disable-warnings)
-
-    # Build CUDA demos from Tesla architecture upwards.
-    list (APPEND CUDA_NVCC_FLAGS -arch sm_20)
+    # Add SeqAn flags to CXX and NVCC flags.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
+    list (APPEND CUDA_NVCC_FLAGS "${SEQAN_NVCC_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -532,20 +514,15 @@ macro (seqan_build_demos_develop PREFIX)
         get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
 
         get_filename_component (FILE_NAME "${ENTRY}" NAME)
-        if (CUDA_FOUND AND "${FILE_NAME}" MATCHES "\\.cu$")
-            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_SEQAN_CUDA}" PARENT_SCOPE)
+        if (SEQAN_HAS_CUDA AND "${FILE_NAME}" MATCHES "\\.cu$")
             cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
-        else (CUDA_FOUND AND "${FILE_NAME}" MATCHES "\\.cu$")
-            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_SEQAN}" PARENT_SCOPE)
+        else (SEQAN_HAS_CUDA AND "${FILE_NAME}" MATCHES "\\.cu$")
             add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
         endif ()
         target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
 
         _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
     endforeach (ENTRY ${ENTRIES})
-
-    # Reset original flags.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_ORIG}" PARENT_SCOPE)
 endmacro (seqan_build_demos_develop)
 
 function (seqan_register_demos)
