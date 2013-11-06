@@ -1,3 +1,7 @@
+@import '../lib/font-awesome/less/font-awesome';
+
+@dotted: 1px dotted @anthrazit;
+
 .bg-gradient(@color-start, @color-end, @color-default) {
     .diagonal-gradient (@color-start, @color-end, @color-default);
 }
@@ -41,4 +45,39 @@
     font-weight: normal;
     display: block;
     font-size: .8em;
+}
+
+.box {
+	border: 1px solid rgba(0,0,0,.2);
+	.bg-gradient(@anthrazit, 85%);
+	.border-radius(4px);
+	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
+}
+
+.glyphicon() {
+	.glyphicon("\e107");
+}
+
+.glyphicon(@content) {
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+    -webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	content: @content;
+}
+
+.fontAwesome() {
+    .fontAwesome("\f071");
+}
+
+.fontAwesome(@content) {
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: @content;
 }

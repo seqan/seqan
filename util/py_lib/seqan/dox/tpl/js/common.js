@@ -47,6 +47,7 @@
             var entry = window.langEntities[langEntity];
 			if (!entry) entry = window.langEntities['unknown'];
 			
+			if(langEntity == 'tutorial') return $('<span>' + entry.ideogram + '</span>');
 			return $('<a href="page_LanguageEntities.html#' + langEntity + '">' + entry.ideogram + '</a>');
 		},
 		
@@ -105,7 +106,7 @@
 	});
 
     $(document).ready(function () {
-        $('body').on('mouseover', '[data-lang-entity] > a:first-child', function() {
+        $('body').on('mouseover', '[data-lang-entity] > :first-child', function() {
             var langEntity = $(this).attr('data-lang-entity') || $(this).parent().attr('data-lang-entity');
             showPopOver(this, langEntity, true);
         });
@@ -127,7 +128,7 @@
 				template: '<div class="popover" data-lang-entity-container="' + langEntity + '"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
 				title: langEntityData.name,
 				content: function() {
-					return '<div class="description">' + langEntityData.description + '</div>' + (showMore ? '<p class="more">Click now for more information</p>' : '');
+					return '<div class="description">' + langEntityData.description + '</div>' + (showMore && langEntity != 'tutorial' ? '<p class="more">Click now for more information...</p>' : '');
 				},
 				container: 'body',
 				placement: function(tip, element) {

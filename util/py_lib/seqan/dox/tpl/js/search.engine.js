@@ -189,7 +189,7 @@ and based on the Tipue Search, http://www.tipue.com
                             break;
                         }
         
-                if (result.subentries.length < 4)
+                if (!result.hiTitle && !result.hiAka && result.subentries.length < 4)
                     for (var i = 0; i < subentries.length; ++i)
                     {
                         var xs = subentries[i].split(' ', 2);
