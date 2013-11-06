@@ -118,10 +118,21 @@ if (NOT CMAKE_COMPILER_IS_GNUCXX OR (450 LESS _GCC_VERSION))
     target_link_libraries (test_index_stree_iterators ${SEQAN_LIBRARIES})
 endif ()
 
+add_executable (test_index_view
+                test_index_view.cpp
+                test_index_view.h)
+target_link_libraries (test_index_view ${SEQAN_LIBRARIES})
+
 add_executable (test_index_finder
                 test_index_finder.cpp
                 test_index_helpers.h)
 target_link_libraries (test_index_finder ${SEQAN_LIBRARIES})
+
+add_executable (test_find_backtracking
+                test_find_backtracking.cpp
+                test_find_backtracking.h
+                test_find_base.h)
+target_link_libraries (test_find_backtracking ${SEQAN_LIBRARIES})
 
 add_executable (test_index_repeats
                test_index_repeats.cpp
@@ -154,6 +165,8 @@ add_test (NAME test_test_index_vstree COMMAND $<TARGET_FILE:test_index_vstree>)
 if (NOT CMAKE_COMPILER_IS_GNUCXX OR (450 LESS _GCC_VERSION))
     add_test (NAME test_test_index_stree_iterators COMMAND $<TARGET_FILE:test_index_stree_iterators>)
 endif ()
+add_test (NAME test_test_index_view COMMAND $<TARGET_FILE:test_index_view>)
 add_test (NAME test_test_index_finder COMMAND $<TARGET_FILE:test_index_finder>)
+add_test (NAME test_test_find_backtracking COMMAND $<TARGET_FILE:test_find_backtracking>)
 add_test (NAME test_test_index_repeats COMMAND $<TARGET_FILE:test_index_repeats>)
 

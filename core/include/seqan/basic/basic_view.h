@@ -47,7 +47,7 @@ namespace seqan {
 
 /*!
  * @mfn View
- * @headerfile <seqan/basic_extras.h>
+ * @headerfile <seqan/basic.h>
  * @brief Converts a given type into its view type.
  *
  * @signature View<TObject>::Type;
@@ -86,7 +86,7 @@ struct View<TObject const>
 
 /*!
  * @mfn RemoveView
- * @headerfile <seqan/basic_extras.h>
+ * @headerfile <seqan/basic.h>
  * @brief Converts a given view type into its original type.
  *
  * @signature RemoveView<TObject>::Type;
@@ -118,7 +118,7 @@ struct RemoveView<TObject const>
 
 /*!
  * @mfn IsView
- * @headerfile <seqan/basic_extras.h>
+ * @headerfile <seqan/basic.h>
  * @brief Tests if a given type is a view type.
  *
  * @signature IsView<TObject>::Type;
@@ -155,7 +155,7 @@ struct IfView
 
 /*!
  * @fn view
- * @headerfile <seqan/basic_extras.h>
+ * @headerfile <seqan/basic.h>
  * @brief Returns the view of a given object.
  * 
  * @signature view(object)

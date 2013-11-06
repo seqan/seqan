@@ -45,6 +45,11 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+template <typename TString, typename TSpec>
+class SearchTreeIterator;
+
+struct SortedList;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -67,7 +72,7 @@ struct IndexSa {};
 ..param.TText:The text type.
 ...type:Class.String
 ...type:Class.StringSet
-..include:seqan/index_extras.h
+..include:seqan/index.h
 */
 
 /*!

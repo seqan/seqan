@@ -35,7 +35,7 @@
 #ifndef EXTRAS_TESTS_FIND_BACKTRACKING_EXP_H_
 #define EXTRAS_TESTS_FIND_BACKTRACKING_EXP_H_
 
-#include <seqan/index_extras.h>
+#include <seqan/index.h>
 
 using namespace seqan;
 

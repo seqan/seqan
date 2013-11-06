@@ -144,12 +144,6 @@ struct PatternIterator_
 template <typename TSpec>
 struct Score_;
 
-template <>
-struct Score_<FinderSTree>
-{
-    typedef Nothing Type;
-};
-
 // ============================================================================
 // Classes
 // ============================================================================

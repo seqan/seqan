@@ -61,7 +61,7 @@ typedef Tag<ExecDevice_> ExecDevice;
 
 /*!
  * @mfn Device
- * @headerfile <seqan/basic_extras.h>
+ * @headerfile <seqan/basic.h>
  * @brief Converts a given type into one that lives on a device.
  *
  * @signature Device<TObject>::Type;
@@ -93,7 +93,7 @@ struct Device<TObject const>
 
 /*!
  * @mfn IsDevice
- * @headerfile <seqan/basic_extras.h>
+ * @headerfile <seqan/basic.h>
  * @brief Tests if a given type is a device type.
  *
  * @signature IsDevice<TObject>::Type;

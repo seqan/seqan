@@ -86,6 +86,16 @@ struct TextIterator_<Index<TText, TIndexSpec>, TPattern, Backtracking<TDistance,
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction Score_                                           [STree Finder]
+// ----------------------------------------------------------------------------
+
+template <>
+struct Score_<FinderSTree>
+{
+    typedef Nothing Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Score_                                    [Backtracking Finder]
 // ----------------------------------------------------------------------------
 

@@ -35,9 +35,9 @@
 #ifndef EXTRAS_TESTS_INDEX_VIEW_H_
 #define EXTRAS_TESTS_INDEX_VIEW_H_
 
-#include <seqan/basic_extras.h>
-#include <seqan/sequence_extras.h>
-#include <seqan/index_extras.h>
+#include <seqan/basic.h>
+#include <seqan/sequence.h>
+#include <seqan/index.h>
 
 using namespace seqan;
 

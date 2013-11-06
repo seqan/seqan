@@ -39,7 +39,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/index_extras.h>
+#include <seqan/index.h>
 #include <seqan/parallel.h>
 
 #include "verifier.h"

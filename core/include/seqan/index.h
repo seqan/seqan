@@ -132,6 +132,37 @@
 #include <seqan/index/index_esa_stree.h>
 #include <seqan/index/index_wotd.h>
 #include <seqan/index/index_dfi.h>
+#include <seqan/index/index_sa_stree.h>
+#include <seqan/index/index_sa_truncated.h>
+#include <seqan/index/index_qgram_stree.h>
+#include <seqan/index/index_qgram_bucketrefinement.h>
+
+// ----------------------------------------------------------------------------
+// Rank dictionaries.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_fm_rank_dictionary_base.h>
+#include <seqan/index/index_fm_rank_dictionary_naive.h>
+#include <seqan/index/index_fm_rank_dictionary_levels.h>
+#include <seqan/index/index_fm_right_array_binary_tree.h>
+#include <seqan/index/index_fm_right_array_binary_tree_iterator.h>
+#include <seqan/index/index_fm_rank_dictionary_wt.h>
+
+// ----------------------------------------------------------------------------
+// Sparse strings.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_fm_sparse_string.h>
+
+// ----------------------------------------------------------------------------
+// FM index.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_fm_lf_table.h>
+#include <seqan/index/index_fm_compressed_sa.h>
+#include <seqan/index/index_fm_compressed_sa_iterator.h>
+#include <seqan/index/index_fm.h>
+#include <seqan/index/index_fm_stree.h>
 
 // ----------------------------------------------------------------------------
 // Suffix tree algorithms.
@@ -155,6 +186,15 @@
 
 #include <seqan/index/index_shawarma.h>
 
+// ----------------------------------------------------------------------------
+// View and device indices.
+// ----------------------------------------------------------------------------
+
+#include <seqan/index/index_view.h>
+#ifdef PLATFORM_CUDA
+#include <seqan/index/index_device.h>
+#endif
+
 // ==========================================================================
 // Finder interface.
 // ==========================================================================
@@ -169,51 +209,19 @@
 #include <seqan/index/find_index.h>
 #include <seqan/index/find_quasar.h>
 #include <seqan/index/find_swift.h>
-
-// ==========================================================================
-// FM Index.
-// ==========================================================================
+#include <seqan/index/find_backtracking.h>
 
 // ----------------------------------------------------------------------------
-// Rank dictionaries.
+// New finders.
 // ----------------------------------------------------------------------------
 
-#include <seqan/index/index_fm_rank_dictionary_base.h>
-#include <seqan/index/index_fm_rank_dictionary_naive.h>
-#include <seqan/index/index_fm_rank_dictionary_levels.h>
-#include <seqan/index/index_fm_right_array_binary_tree.h>
-#include <seqan/index/index_fm_right_array_binary_tree_iterator.h>
-#include <seqan/index/index_fm_rank_dictionary_wt.h>
+#include <seqan/index/iter_vstree_factory.h>
 
-// ----------------------------------------------------------------------------
-// Sparse strings.
-// ----------------------------------------------------------------------------
-
-#include <seqan/index/index_fm_sparse_string.h>
-
-// ----------------------------------------------------------------------------
-// Last to Front table.
-// ----------------------------------------------------------------------------
-
-#include <seqan/index/index_fm_lf_table.h>
-
-// ----------------------------------------------------------------------------
-// Compressed suffix array.
-// ----------------------------------------------------------------------------
-
-#include <seqan/index/index_fm_compressed_sa.h>
-#include <seqan/index/index_fm_compressed_sa_iterator.h>
-
-// ----------------------------------------------------------------------------
-// Main FM index.
-// ----------------------------------------------------------------------------
-
-#include <seqan/index/index_fm.h>
-
-// ----------------------------------------------------------------------------
-// Virtual string trees.
-// ----------------------------------------------------------------------------
-
-#include <seqan/index/index_fm_stree.h>
+#include <seqan/index/find2_index.h>
+#include <seqan/index/find_backtracking_exp.h>
+//#include <seqan/index/find_suffixfilter.h>
+#include <seqan/index/find2_index.h>
+#include <seqan/index/find_index_multiple.h>
+#include <seqan/index/find2_functors.h>
 
 #endif //#ifndef SEQAN_HEADER_...
