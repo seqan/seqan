@@ -344,9 +344,26 @@ endif ()
 
 # CUDA
 
-set (SEQAN_HAS_CUDA       FALSE)
+set (SEQAN_HAS_CUDA FALSE)
 
-# TODO(holtgrew): Implement search for CUDA.
+if (NOT _SEQAN_FIND_CUDA EQUAL -1)
+  find_package(CUDA QUIET)
+  if (CUDA_FOUND)
+    set (SEQAN_HAS_CUDA TRUE)
+    # Build CUDA targets from architecture 2.0 upwards.
+    set (SEQAN_NVCC_FLAGS "-arch sm_20")
+    # Turn CUDA cross-execution-space call warnings into errors.
+#    list (APPEND SEQAN_NVCC_FLAGS --Werror=cross-execution-space-call)
+    # Add flags for the CUDA compiler.
+    list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "-O3 -g -lineinfo")
+    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -lineinfo")
+    # Enable debug symbols in device code.
+#    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -G -lineinfo")
+  endif ()
+endif ()
+
 
 # ----------------------------------------------------------------------------
 # Determine and set SEQAN_VERSION_* variables.
