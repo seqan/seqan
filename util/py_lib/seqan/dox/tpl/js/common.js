@@ -314,11 +314,15 @@
         createFilterableSearch($('#search'));
         $('#search').fadeIn();
         
-        // search immediately if query was passed within the url
-		var q = decodeURI((RegExp('q=' + '(.+?)(&|$)').exec(parent.location.search)||[,null])[1]);
-		if(q && q != 'null') {
-			$('#search [type=search]').val(q).change().focus();
-		}
+        try {
+            // search immediately if query was passed within the url
+    		var q = decodeURI((RegExp('q=' + '(.+?)(&|$)').exec(parent.location.search)||[,null])[1]);
+    		if(q && q != 'null') {
+    			$('#search [type=search]').val(q).change().focus();
+    		}
+        } catch(e) {
+            // some browsers like Chrome don't allow this cross-frame access if using file://
+        }
     });
     
     // hide form and results until they are pimped
