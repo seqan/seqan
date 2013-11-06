@@ -66,7 +66,11 @@ function framesInit() {
   if (hasFrames) {
     document.body.className += ' frames';
     $('#menu .noframes a').attr('href', document.location);
-    window.top.document.title = $('html head title').text();
+    try {
+        window.top.document.title = $('html head title').text();
+    } catch(e) {
+        // some browsers like Chrome don't allow this cross-frame access if using file://
+    }
   }
   else {
     $('#menu .noframes a').text('frames').attr('href', framesUrl);
