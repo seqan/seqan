@@ -458,11 +458,10 @@ struct MMap;
 	//////////////////////////////////////////////////////////////////////////////
 	// various page frame methods
 
-	template <typename TValue, typename TFile, typename TSpec>
     inline const char *
-    _pageFrameStatusString(Buffer<TValue, PageFrame<TFile, TSpec> > const &pf)
+    _pageFrameStatusString(PageFrameState state)
     {
-        switch (pf.status)
+        switch (state)
         {
             case UNUSED:
                 return "UNUSED";
@@ -499,7 +498,7 @@ struct MMap;
         else
             out << " CLEAN ";
 
-        out << _pageFrameStatusString(pf);
+        out << _pageFrameStatusString(pf.status);
 
 //        if (pf.dataStatus == pf.ON_DISK)
 //            out << " ON_DISK";
@@ -556,7 +555,7 @@ struct MMap;
 
         // TODO(weese): Throw an I/O exception
         if (!readResult)
-            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf.status), strerror(errno));
 
         return readResult;
 	}
@@ -679,7 +678,7 @@ struct MMap;
 
         // TODO(weese): Throw an I/O exception
         if (!writeResult)
-            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf.status), strerror(errno));
 
         return writeResult;
 	}
@@ -701,7 +700,7 @@ struct MMap;
 
         // TODO(weese): Throw an I/O exception
         if (!readResult)
-            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf.status), strerror(errno));
 
         return readResult;
 	}
@@ -723,7 +722,7 @@ struct MMap;
 
         // TODO(weese): Throw an I/O exception
         if (!writeResult)
-            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+            SEQAN_FAIL("%s operation could not be initiated: \"%s\"", _pageFrameStatusString(pf.status), strerror(errno));
 
         return writeResult;
 	}
@@ -741,7 +740,7 @@ struct MMap;
         if (!waitResult)
         {
             //printRequest(pf.request);
-            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf.status), strerror(errno));
         }
 
         pf.status = READY;
@@ -765,7 +764,7 @@ struct MMap;
         if (!waitResult)
         {
             //printRequest(pf.request);
-            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf.status), strerror(errno));
         }
 
         if (!inProgress)
@@ -924,7 +923,7 @@ struct PageChain
             
             // TODO(weese): Throw an I/O exception
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(first->status), strerror(errno));
 
             if (!inProgress)
                 return &pushBack(*this, *(new TPageFrame()));
@@ -934,7 +933,7 @@ struct PageChain
 
         // TODO(weese): Throw an I/O exception
         if (!waitResult)
-            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*first), strerror(errno));
+            SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(first->status), strerror(errno));
 
         return &firstToEnd(*this);
     }
@@ -955,7 +954,7 @@ struct PageChain
 
             // TODO(weese): Throw an I/O exception
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*p), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(p->status), strerror(errno));
         }
     }
 };
