@@ -2126,8 +2126,15 @@ ul.params {
   background: transparent;
   list-style: none;
 }
+#results ol li.result b {
+  font-weight: bold;
+}
+#results ol li.result h2,
+#results ol li.result div {
+  font-weight: 300;
+}
 #results ol li.result h2 {
-  font-size: 1em;
+  font-size: 1.1em;
   margin: 0;
   padding: 0;
 }
@@ -2142,7 +2149,6 @@ ul.params {
 }
 #results ol li.result h2 a div {
   color: #000;
-  font-weight: 300;
 }
 #results ol li.result h2 a div .aka:before {
   content: "a.k.a. ";
