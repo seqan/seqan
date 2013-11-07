@@ -838,7 +838,7 @@ struct LessPairI1_ :
  *
  * @include demos/graph_algorithms/kruskals_algorithm.cpp
  *
- * @include demos/graph_algorithms/kruskals_algorithm.cpp
+ * @include demos/graph_algorithms/kruskals_algorithm.cpp.stdout
  *
  * @see primsAlgorithm
  */
