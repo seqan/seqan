@@ -723,9 +723,18 @@ fetchFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos
     typedef FilePage<TValue, TSpec> TPage;
 
     TPage & page = _lockFilePage(pager, filePos, size, readOnly);
-    page.targetState = READY;
-    _processFilePage(pager, page, True());
-    pushBack(pager.ready, page);
+    if (page.state == UNUSED)
+        erase(pager.unused, page);
+    else if (page.state != READY)
+        erase(pager.inProcess, page);
+
+    // TODO(weese:) multithreading: the first should process, the others should suspend until page is READY
+    if (page.state != READY)
+    {
+        page.targetState = READY;
+        _processFilePage(pager, page, True());
+        pushBack(pager.ready, page);
+    }
     return page;
 }
 
