@@ -825,14 +825,13 @@ struct LessPairI1_ :
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Computes a minimum spanning tree on a graph.
  *
- * @signature void kruskalsAlgorithm(g, source, weight, predecessor);
+ * @signature void kruskalsAlgorithm(g, source, weight, edges);
  *
  * @param[in] g      An undirected graph. Types: Undirected Graph
  * @param[in] source A source vertex. Types: VertexDescriptor
  * @param[in] weight Edge weights.
- * @param[out] predecessor
- *                   A property map.  A property map that represents predecessor relationships among vertices.  It
- *                   determines a minimum spanning tree.
+ * @param[out] edges A String of vertex descriptors that represent edges.  Each consecutive pair is an edge with the
+ *                   two end points.
  *
  * @section Example
  *
