@@ -6,7 +6,10 @@
 	$(document).ready(function () {
 	
 	    // only keep top-level nav items
-	    $('#toc ol ol')/*.filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; })*/.remove();
+	    // exceptions: examples and mainpage
+	    $('html:not(.page_mainpage) #toc ol ol').filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; }).remove();
+		$('html.page_languageentities #toc ol ol').remove();
+
 
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
@@ -300,9 +303,11 @@
             ],
             callback: function($form, $results) {
             	if($form.find('input[type=search]').val().length == 0) {
+            		$("html").removeClass('shows-results');
             	    $("#results").fadeOut();
             	    $el.find('.pre-action').slideDown();
                 } else {
+                	$("html").addClass('shows-results');
                     $("#results").fadeIn();
                     $el.find('.pre-action').slideUp();
                 }

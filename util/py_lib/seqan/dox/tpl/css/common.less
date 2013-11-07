@@ -15,11 +15,15 @@
 @anthrazit: #222222;
 @grey-gradient: #dad9dc;
 
+@list-width: 320px; // must reflect the width of the left frame
+@toc-width: 200px; // defines the TOC's width
+
+
+
 /*
  * General
  */
 body {
-	padding: 0 20px 20px 20px;
 	font-family: "Open Sans", "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
 	font-size: 13px;
 }
@@ -192,8 +196,6 @@ dl {
 	}
 	
 	.overview > & {
-		.clearfix();
-		display: inline-block;
 		max-width: 100%;
 		
 		dt, dd {
@@ -290,12 +292,92 @@ html.list {
 		padding: 5px 15px;
 		background-color: transparent;
 	}
-	background-attachment: fixed;
-	background-image: url(../img/list.png);
-	background-position: right bottom;
-	background-repeat: no-repeat;
-	background-size: 362px;
-	background-color: @grey-gradient;
+	
+	&:after {
+		content: "";
+		background-image: url(../img/list.png);
+		background-position: right bottom;
+		background-repeat: no-repeat;
+		background-size: 362px;
+		background-color: @grey-gradient;
+		opacity: 1;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		position: fixed;
+		z-index: -1;
+		.transition(all .4s);
+	}
+	
+	
+	@media @tablet, @small-list {
+		&.shows-results {
+			&:after {
+				opacity: .2;
+			}
+		}
+			
+		body {
+			padding: 0;
+		}
+		
+		form#search {
+			.pre-action {			
+				margin: 10px;
+				padding: 0;
+				
+				h1 {
+					&:before {
+						position: relative;
+						top: 0;
+						left: 0;
+						margin-left: auto;
+						margin-right: auto;
+					}
+					font-size: 1.2em;
+					text-align: center;
+				}
+			}
+			
+			margin: 0;
+			button, input {
+				border-radius: 0;
+				box-shadow: none;
+			}
+			button {
+				border-right: none;
+			}
+			input {
+				border: none;
+			}
+		}
+	
+    	#results > ol { 
+    		margin: 0;
+    		
+    		li[data-lang-entity-container] > span[data-lang-entity] {
+    			float: none;
+    			right: 0;
+    			
+    			> :first-child {
+    				border-radius: 0;
+    				width: 100%;
+    				margin: 0 !important;
+    			}
+    		}
+    		
+    		> li {
+    			margin-top: 0em !important;
+    		}
+    		
+    		ol {
+    			background-color: transparent;
+    			border: 0;
+    			margin: 0;
+    		}
+    	}
+	}
 }
 
 .nav {
@@ -304,15 +386,16 @@ html.list {
 	ul&, ul,
 	ol&, ol {
     	margin-left: 0;
+    	list-style-type: none;
 	}
 	
 	ul&,
 	ol& {
 		ul, ol {
 		    li a {
-			    padding-left: 3.2em;
+			    padding-left: 2.9em;
 			    &:before {
-    			    left: 2.5em;
+    			    left: 2.0em;
 			    }
             }
 		}
@@ -326,7 +409,7 @@ html.list {
 			+ li { margin-top: 0 }
 			
 			a {
-				padding: .7em 2.2em;
+				padding: .4em 1.7em;
 				display: block;
 				font-size: 0.9em;
 				
@@ -338,7 +421,7 @@ html.list {
 				}
 				
 				color: lighten(@primary, 5%);
-				.bullet-icon("\e080", before, 1em, auto, auto, 1em);
+				.bullet-icon("\e080", before, .7em, auto, auto, .7em);
 			}
 		}
 		
@@ -367,19 +450,21 @@ html.list {
 }
 
 html:not(.list) {
+	.box();
+	border: none;
+	
 	body {
-		padding: 0;
 		background-color: transparent;
 	}
-	//.bg-gradient(lighten(@primary, 53%), lighten(@primary, 51%), lighten(@primary, 51%));
 	
 	#content {
 	    h1 {margin-top: -5px;}
+    	padding: 20px 15px 20px 20px;
+    	margin-right: @toc-width+30px;
     	background-color: #fff;
-    	padding: 20px;
+    	border-right: 1px solid @grey-gradient;
+    	border-bottom: 1px solid @grey-gradient;
 	}
-
-	@toc-width: 200px;
 
 	#toc {
 		position: fixed;
@@ -389,6 +474,11 @@ html:not(.list) {
 		width: @toc-width;
 		margin-right: -(@toc-width+20px);
 		overflow-y: auto;
+		
+		.nav {
+			background-color: #fff;
+			background-image: none;
+		}
 	
 		.title {
 			display: none;
@@ -407,9 +497,28 @@ html:not(.list) {
 			text-transform: uppercase;
 		}
 	}
-
-	#content {
-		margin-right: @toc-width+30px;
+	
+	@media @tablet, @small-window {
+		body {
+			background-color: #ff0;
+		}
+	
+    	#content {
+			margin-right: 0;
+		}
+			
+		#toc {
+			position: relative;
+			top: auto;
+			right: auto;
+			float: right;
+			padding: 15px; // swapping padding and margin makes the headline bars respect the space to the TOC
+			margin: -20px -15px 0 0;
+			
+			.nav {
+				.box();
+			}
+		}
 	}
 }
 
@@ -704,9 +813,9 @@ ul.params {
 		li.more:not(.result) {
 			padding-left: 0;
 			a {
-			    font-size: 1.7em;
-			    line-height: .6em;
-			    padding: 0 0 0.8em 0;
+			    font-size: 1.5em;
+			    line-height: .65em;
+			    padding: 0 0 0.75em 0;
 			    
 			    text-align: center;
                 .bullet-icon("\e114", after, 1em, 1em, auto, auto);
@@ -746,7 +855,7 @@ ul.params {
 					word-break: break-all;
 					word-break: break-word;
 					
-					&:before { top: .9em }
+					&:before { top: .5em }
 					
 					div { // meta information
 					    color: #000;

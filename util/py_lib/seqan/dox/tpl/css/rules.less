@@ -1,6 +1,16 @@
 @import '../lib/font-awesome/less/font-awesome';
 
+
+
+@tablet: ~"only screen and (min-device-width : 768px) and (max-device-width : 1024px)";
+@small-window: ~"only screen and (max-width: 1024px)";
+@small-list: ~"only screen and (max-width: 341px)";
+
+
+
 @dotted: 1px dotted @anthrazit;
+
+
 
 .bg-gradient(@color-start, @color-end, @color-default) {
     .diagonal-gradient (@color-start, @color-end, @color-default);
@@ -13,6 +23,8 @@
 .bg-gradient() {
     .bg-gradient(@primary, 49%);
 }
+
+
 
 .bullet-icon() {
     .bullet-icon("\e080");
@@ -47,12 +59,16 @@
     font-size: .8em;
 }
 
+
+
 .box {
 	border: 1px solid rgba(0,0,0,.2);
 	.bg-gradient(@anthrazit, 85%);
 	.border-radius(4px);
 	.box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
 }
+
+
 
 .glyphicon() {
 	.glyphicon("\e107");
@@ -67,6 +83,8 @@
 	-moz-osx-font-smoothing: grayscale;
 	content: @content;
 }
+
+
 
 .fontAwesome() {
     .fontAwesome("\f071");

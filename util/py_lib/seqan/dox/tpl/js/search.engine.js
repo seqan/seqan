@@ -258,7 +258,8 @@ and based on the Tipue Search, http://www.tipue.com
 			 *
 			 * @return void; the output is directly written to the output element(s)
 			 */
-            var lastQuery = false 
+            var lastQuery = false;
+            var lastLangEntities = false;
             function search(start, replace) {
                 var out = '';
                 var results = '';
@@ -272,6 +273,8 @@ and based on the Tipue Search, http://www.tipue.com
                 var stemmedWords;
 
                 if (nonStopWords.join(" ").length < settings.minimumLength) {
+                    lastQuery = false;
+                    lastLangEntities = false;
                     if(!settings.raw) {
                     	if (words.length != nonStopWords.length) {
                             out += '<div class="warning_head">Nothing found</div><div class="warning">Common words are largely ignored</div>';
@@ -309,8 +312,9 @@ and based on the Tipue Search, http://www.tipue.com
                      */
                     var cleanedWords = stemmedWords;
                     var query = cleanedWords;
-                    if(query.join(' ') == lastQuery) { return; }
+                    if(query.join(' ') == lastQuery && langEntities.join(' ') == lastLangEntities) { return; }
                     lastQuery = query.join(' ');
+                    lastLangEntities = langEntities.join(' ');
                     settings.output.hide();
                     
                     var found = [];
