@@ -318,24 +318,6 @@ struct HasStreamFeature<Stream<Bgzf>, Tell>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function size()
-// ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Do we want a trait for this? Only possible for random access streams and those that have an underlying file.
-///.Function.size.param.file.type:Spec.BGZF Stream
-///.Function.size.class:Spec.BGZF Stream
-
-// Just forward to underlying Class.File's size().
-
-/*
-inline typename Size<Stream<Bgzf> >::Type
-size(Stream<Bgzf> const & stream)
-{
-    return size(stream._file);
-}
-*/
-
-// ----------------------------------------------------------------------------
 // Helper Function _bgzfUnpackInt16()
 // ----------------------------------------------------------------------------
 

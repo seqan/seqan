@@ -302,7 +302,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 	template <typename TSpec>
-    inline typename Size<File<Async<TSpec> > >::Type size(File<Async<TSpec> > &me) {
+    inline typename Size<File<Async<TSpec> > >::Type length(File<Async<TSpec> > &me) {
         return me.size();
     }
 

@@ -351,7 +351,7 @@ open(FileMapping<TSpec> &mapping, const char *filename, int openMode)
     mapping.openMode = openMode;
     mapping.ownFile = true;
     mapping.temporary = false;
-    mapping.fileSize = (result)? size(mapping.file) : 0ul;
+    mapping.fileSize = (result)? length(mapping.file) : 0ul;
     result &= _mapFile(mapping, mapping.fileSize);
     return result;
 }
@@ -367,7 +367,7 @@ open(FileMapping<TSpec> &mapping, TFile const &file)
     mapping.temporary = false;
     if (mapping.file)
     {
-        mapping.fileSize = size(mapping.file);
+        mapping.fileSize = length(mapping.file);
         return _mapFile(mapping, mapping.fileSize);
     }
     return false;
@@ -797,7 +797,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, TFileMappi
 #endif
     if (addr == NULL)
     {
-        SEQAN_FAIL("mapFileSegment(%i,%i,%i) failed (filesize=%i): \"%s\"", fileOfs, size, mode, seqan::size(mapping.file), strerror(errno));
+        SEQAN_FAIL("mapFileSegment(%i,%i,%i) failed (filesize=%i): \"%s\"", fileOfs, size, mode, length(mapping.file), strerror(errno));
     }
     return addr;
 }
