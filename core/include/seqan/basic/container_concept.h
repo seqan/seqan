@@ -242,7 +242,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @fn ContainerConcept#length
  * @brief Returns the size of the container.
  *
- * @signature TSize size(c);
+ * @signature TSize length(c);
  *
  * @param c The container to query for its size.
  *

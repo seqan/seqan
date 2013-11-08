@@ -1906,7 +1906,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 		me._temporary = false;
 		if ((me._ownFile = open(me.file, fileName, openMode)))
-            me.data_size = size(me.file) / sizeof(TValue);
+            me.data_size = length(me.file) / sizeof(TValue);
         else
             me.data_size = 0;
 
@@ -1943,7 +1943,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
         me._temporary = false;
         me._ownFile = false;
         if (me.file)
-            me.data_size = size(me.file) / sizeof(TValue);
+            me.data_size = length(me.file) / sizeof(TValue);
         else
             me.data_size = 0;
 

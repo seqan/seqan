@@ -178,7 +178,7 @@ clear(FilePage<TValue, MMap<TConfig> > & me)
 // Class FilePager
 // ----------------------------------------------------------------------------
 
-template <unsigned PAGE_SIZE = 4 * 1024 * 1024>
+template <unsigned PAGE_SIZE = 4 * 1024>
 struct FixedPagingScheme
 {
     enum { pageSize = PAGE_SIZE };
@@ -282,7 +282,8 @@ template <typename TValue, typename TDirection, typename TSpec, unsigned PAGE_SI
 inline Pair<__int64, unsigned>
 _getPageOffsetAndLength(FilePageTable<TValue, TDirection, TSpec, FixedPagingScheme<PAGE_SIZE> > & pager, TPos pos)
 {
-    return Pair<__int64, unsigned>((__int64)pos & (__int64)(pager.table.pageSize - 1), pager.table.pageSize);
+    SEQAN_ASSERT_EQ(pager.table.pageSize & (pager.table.pageSize - 1), 0);  // pageSize must be a power of 2
+    return Pair<__int64, unsigned>((__int64)pos & ~(__int64)(pager.table.pageSize - 1), pager.table.pageSize);
 }
 
 // ----------------------------------------------------------------------------
@@ -381,6 +382,7 @@ inline bool
 _postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
 {
     // not used yet, could be usefull for external sorters/mappers
+    resize(page.raw, length(page.data));
     clear(page.data);
     return true;
 }
@@ -393,6 +395,10 @@ template <typename TValue, typename TDirection, typename TSpec, typename TPageFr
 inline bool
 _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & page)
 {
+    typedef FilePageTable<TValue, TDirection, TSpec>            TFilePageTable;
+    typedef typename TFilePageTable::TFile                      TFile;
+    typedef typename Size<TFile>::Type                          TSize;
+
     // only write in write-mode
     if (IsSameType<TDirection, Input>::VALUE)
     {
@@ -403,6 +409,9 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & pa
     // start asynchronous writing
     page.state = WRITING;
     bool success = asyncWriteAt(pager.file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
+
+    if (!IsSameType<TDirection, Input>::VALUE)
+        pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
 
     // if an error occurred, throw an I/O exception
     if (!success)
@@ -423,12 +432,8 @@ _writeFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > & pager, TPageF
     unmapFileSegment(pager.file, begin(page.raw, Standard()), page.size);
 
     if (!IsSameType<TDirection, Input>::VALUE)
-    {
         pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
 
-        // TODO: shrink file before closing
-        //resize(pager.file, pager.fileSize);
-    }
     return true;    // true = writing completed
 }
 
@@ -687,7 +692,7 @@ _newFilePage(FilePageTable<TValue, TDirection, TSpec> & pager)
 
 template <typename TValue, typename TDirection, typename TSpec, typename TFilePos, typename TSize>
 inline FilePage<TValue, TSpec> &
-_lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos, TSize size, bool /*readOnly*/)
+_lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos, TSize size, bool &newPage, bool /*readOnly*/)
 {
     typedef FilePage<TValue, TSpec> TPage;
     TPage * p;
@@ -705,9 +710,15 @@ _lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos
             p = _newFilePage(pager);
             p->filePos = filePos;
             p->size = size;
+            p->lockCount = 1;
             pager.table.frameStart[pageNo] = p;
+            newPage = true;
         }
-        ++(p->lockCount);
+        else
+        {
+            atomicInc(p->lockCount);
+            newPage = false;
+        }
     }
     return *p;
 }
@@ -722,18 +733,24 @@ fetchFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos
 {
     typedef FilePage<TValue, TSpec> TPage;
 
-    TPage & page = _lockFilePage(pager, filePos, size, readOnly);
-    if (page.state == UNUSED)
-        erase(pager.unused, page);
-    else if (page.state != READY)
-        erase(pager.inProcess, page);
+    bool notInList;
+    TPage & page = _lockFilePage(pager, filePos, size, notInList, readOnly);
 
     // TODO(weese:) multithreading: the first should process, the others should suspend until page is READY
     if (page.state != READY)
     {
+        if (!notInList)
+        {
+            if (page.state == UNUSED)
+                erase(pager.unused, page);
+            else if (page.state != UNUSED)
+                erase(pager.inProcess, page);
+            notInList = true;
+        }
         page.targetState = READY;
         _processFilePage(pager, page, True());
-        pushBack(pager.ready, page);
+        if (notInList)
+            pushBack(pager.ready, page);
     }
     return page;
 }
@@ -803,9 +820,6 @@ struct FileStreamBuffer :
 
     inline void _stop()
     {
-        this->setg(NULL, NULL, NULL);
-        this->setp(NULL, NULL);
-
         if (readPage != NULL)
         {
             releaseFilePage(pager, *readPage);
@@ -813,9 +827,12 @@ struct FileStreamBuffer :
         }
         if (writePage != NULL)
         {
+            resize(writePage->data, std::max((TSize)length(writePage->data), (TSize)(this->pptr() - this->pbase())));
             releaseFilePage(pager, *writePage);
             writePage = NULL;
         }
+        this->setg(NULL, NULL, NULL);
+        this->setp(NULL, NULL);
     }
 
     bool _nextReadPage()
@@ -824,6 +841,7 @@ struct FileStreamBuffer :
         {
             readPagePos += readPage->size;
             releaseFilePage(pager, *readPage);
+            readPage = NULL;
         }
 
         if (pager.fileSize <= readPagePos)
@@ -839,13 +857,15 @@ struct FileStreamBuffer :
     {
         if (writePage != NULL)
         {
+            resize(writePage->data, std::max((TSize)length(writePage->data), (TSize)(this->pptr() - this->pbase())));
             writePagePos += writePage->size;
             releaseFilePage(pager, *writePage);
+            writePage = NULL;
         }
 
         Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager, writePagePos);
         writePage = &fetchFilePage(pager, ol.i1, ol.i2);
-        this->setp(writePage->data.begin, writePage->data.begin + capacity(*writePage));
+        this->setp(writePage->data.begin, writePage->data.begin + capacity(writePage->data));
         return true;
     }
 
@@ -982,7 +1002,7 @@ struct FileStreamBuffer :
         writePagePos = writePage->filePos;
 
         // Seek to correct position in page.
-        this->setp(writePage->data.begin, writePage->data.begin + capacity(*writePage));
+        this->setp(writePage->data.begin, writePage->data.begin + capacity(writePage->data));
         this->pbump(pos - writePage->filePos);
 
         return pos;
@@ -1022,7 +1042,13 @@ struct FileStreamBuffer :
         else if (dir == std::ios::cur)
             pos = _tell(which) + off;
         else
-            pos = pager.fileSize + off;
+        {
+            if (IsSameType<TDirection, Input>::VALUE || writePage == NULL)
+                pos = pager.fileSize;
+            else
+                pos = std::max(pager.fileSize, writePage->filePos + (TSize)(pptr() - pbase()));
+            pos += off;
+        }
 
         if (which == std::ios::in)
             return _seek(pos, Input());
@@ -1196,22 +1222,41 @@ open(FileStream<TValue, TDirection, TSpec> & stream, const char * fileName, int 
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec>
-inline int
-close(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
+inline void
+close(FilePageTable<TValue, TDirection, TSpec> & pager)
 {
-    if (buffer.pager.file)
+    if (pager.file)
     {
-        buffer._stop();
-        return close(buffer.pager.file);
+        flushAndFree(pager);
+        close(pager.file);
     }
-    return true;
+}
+
+template <typename TValue, typename TConfig>
+inline void
+close(FilePageTable<TValue, Output, MMap<TConfig> > & pager)
+{
+    if (pager.file)
+    {
+        flushAndFree(pager);
+        resize(pager.file, pager.fileSize);
+        close(pager.file);
+    }
 }
 
 template <typename TValue, typename TDirection, typename TSpec>
-inline bool
+inline void
+close(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
+{
+    buffer._stop();
+    close(buffer.pager);
+}
+
+template <typename TValue, typename TDirection, typename TSpec>
+inline void
 close(FileStream<TValue, TDirection, TSpec> & stream)
 {
-    return close(stream.buffer);
+    close(stream.buffer);
 }
 
 } // namespace seqan
