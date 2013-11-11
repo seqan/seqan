@@ -81,9 +81,6 @@ typedef
 // Metafunction MagicHeader
 // --------------------------------------------------------------------------
 
-template <typename TTag, typename T = void>
-struct MagicHeader;
-
 
 template <typename T>
 struct MagicHeader<GZFile, T>

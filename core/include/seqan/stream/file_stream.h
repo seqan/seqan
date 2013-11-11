@@ -195,32 +195,25 @@ void * FixedPagingScheme<PAGE_SIZE>::EMPTY = NULL;
 template <unsigned PAGE_SIZE>
 void * FixedPagingScheme<PAGE_SIZE>::ON_DISK = (void *)-1;
 
-struct RandomPagingScheme
-{
-    static void * EMPTY;
-    static void * ON_DISK;
 
-    std::map<__uint64, void *> frameStart;
+template <typename TFilePageTable>
+struct PagingScheme
+{
+    typedef FixedPagingScheme<> Type;
 };
 
-void * RandomPagingScheme::EMPTY = NULL;
-void * RandomPagingScheme::ON_DISK = (void *)-1;
-
-
-
-template <typename TValue, typename TDirection, typename TSpec = Async<>, typename TPagingScheme = FixedPagingScheme<> >
+template <typename TValue, typename TDirection, typename TSpec = Async<> >
 struct FilePageTable;
 
 
-
-template <typename TValue, typename TDirection, typename TSpec, typename TPagingScheme>
-struct Host<FilePageTable<TValue, TDirection, TSpec, TPagingScheme> >
+template <typename TValue, typename TDirection, typename TSpec>
+struct Host<FilePageTable<TValue, TDirection, TSpec> >
 {
     typedef File<TSpec> Type;
 };
 
-template <typename TValue, typename TDirection, typename TSpec, typename TPagingScheme>
-struct Host<FilePageTable<TValue, TDirection, MMap<TSpec>, TPagingScheme> >
+template <typename TValue, typename TDirection, typename TSpec>
+struct Host<FilePageTable<TValue, TDirection, MMap<TSpec> > >
 {
     typedef FileMapping<TSpec> Type;
 };
@@ -230,7 +223,7 @@ struct Host<FilePageTable<TValue, TDirection, MMap<TSpec>, TPagingScheme> >
 // cached chain
 // outgoing chain
 
-template <typename TValue, typename TDirection, typename TSpec, typename TPagingScheme>
+template <typename TValue, typename TDirection, typename TSpec>
 struct FilePageTable
 {
     typedef typename Host<FilePageTable>::Type          TFile;
@@ -238,6 +231,7 @@ struct FilePageTable
 
     typedef FilePage<TValue, TSpec>                     TPageFrame;
     typedef PageChain<TPageFrame>                       TPageChain;
+    typedef typename PagingScheme<FilePageTable>::Type  TPagingScheme;
     typedef Buffer<TValue>                              TBuffer;
     typedef typename Iterator<TBuffer, Standard>::Type  TIterator;
 
@@ -278,12 +272,12 @@ clear(FilePageTable<TValue, TDirection, TSpec> & pager)
     pager.fileSize = 0;
 }
 
-template <typename TValue, typename TDirection, typename TSpec, unsigned PAGE_SIZE, typename TPos>
+template <unsigned PAGE_SIZE, typename TPos>
 inline Pair<__int64, unsigned>
-_getPageOffsetAndLength(FilePageTable<TValue, TDirection, TSpec, FixedPagingScheme<PAGE_SIZE> > & pager, TPos pos)
+_getPageOffsetAndLength(FixedPagingScheme<PAGE_SIZE> & scheme, TPos pos)
 {
-    SEQAN_ASSERT_EQ(pager.table.pageSize & (pager.table.pageSize - 1), 0);  // pageSize must be a power of 2
-    return Pair<__int64, unsigned>((__int64)pos & ~(__int64)(pager.table.pageSize - 1), pager.table.pageSize);
+    SEQAN_ASSERT_EQ(scheme.pageSize & (scheme.pageSize - 1), 0);  // pageSize must be a power of 2
+    return Pair<__int64, unsigned>((__int64)pos & ~(__int64)(scheme.pageSize - 1), scheme.pageSize);
 }
 
 // ----------------------------------------------------------------------------
@@ -847,7 +841,7 @@ struct FileStreamBuffer :
         if (pager.fileSize <= readPagePos)
             return false;
 
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager, readPagePos);
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, readPagePos);
         readPage = &fetchFilePage(pager, ol.i1, ol.i2);
         this->setg(readPage->data.begin, readPage->data.begin, readPage->data.end);
         return true;
@@ -863,7 +857,7 @@ struct FileStreamBuffer :
             writePage = NULL;
         }
 
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager, writePagePos);
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, writePagePos);
         writePage = &fetchFilePage(pager, ol.i1, ol.i2);
         this->setp(writePage->data.begin, writePage->data.begin + capacity(writePage->data));
         return true;
@@ -967,7 +961,7 @@ struct FileStreamBuffer :
 
 
         // Fetch new page.
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager, pos);
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
         readPage = &fetchFilePage(pager, ol.i1, ol.i2);
         readPagePos = readPage->filePos;
 
@@ -997,7 +991,7 @@ struct FileStreamBuffer :
 
 
         // Fetch new page.
-        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager, pos);
+        Pair<__int64, unsigned> ol = _getPageOffsetAndLength(pager.table, pos);
         writePage = &fetchFilePage(pager, ol.i1, ol.i2);
         writePagePos = writePage->filePos;
 

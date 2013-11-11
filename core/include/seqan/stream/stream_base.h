@@ -107,6 +107,13 @@ template <typename TDummy>
 const int IosOpenMode<Bidirectional, TDummy>::VALUE = std::ios::in | std::ios::out;
 
 // --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
+
+template <typename TTag, typename T = void>
+struct MagicHeader;
+
+// --------------------------------------------------------------------------
 // Compression Type Tags
 // --------------------------------------------------------------------------
 
