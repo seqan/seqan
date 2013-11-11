@@ -1361,6 +1361,9 @@ h1 {
   margin-bottom: .8em;
   font-size: 2.3em;
 }
+h1 a {
+  color: #000000;
+}
 h2,
 h3#Examples {
   margin-top: 2.1em;
@@ -2488,13 +2491,10 @@ html.page_languageentities dt[data-lang-entity=typedef]:after {
 [data-lang-entity-container=typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2611,13 +2611,10 @@ html.page_languageentities dt[data-lang-entity=grouped_typedef]:after {
 [data-lang-entity-container=grouped_typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2734,13 +2731,10 @@ html.page_languageentities dt[data-lang-entity=global_typedef]:after {
 [data-lang-entity-container=global_typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2857,13 +2851,10 @@ html.page_languageentities dt[data-lang-entity=member_typedef]:after {
 [data-lang-entity-container=member_typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2980,13 +2971,10 @@ html.page_languageentities dt[data-lang-entity=concept]:after {
 [data-lang-entity-container=concept] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #b02323;
   border: 1px solid #9a1f1f;
 }
@@ -3103,13 +3091,10 @@ html.page_languageentities dt[data-lang-entity=class]:after {
 [data-lang-entity-container=class] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #de5b5b;
   border: 1px solid #da4646;
 }
@@ -3226,13 +3211,10 @@ html.page_languageentities dt[data-lang-entity=enum]:after {
 [data-lang-entity-container=enum] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #efb0b0;
   border: 1px solid #eb9b9b;
 }
@@ -3349,13 +3331,10 @@ html.page_languageentities dt[data-lang-entity=metafunction]:after {
 [data-lang-entity-container=metafunction] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5b7cde;
   border: 1px solid #466bda;
 }
@@ -3472,13 +3451,10 @@ html.page_languageentities dt[data-lang-entity=global_metafunction]:after {
 [data-lang-entity-container=global_metafunction] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5b7cde;
   border: 1px solid #466bda;
 }
@@ -3595,13 +3571,10 @@ html.page_languageentities dt[data-lang-entity=interface_metafunction]:after {
 [data-lang-entity-container=interface_metafunction] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5b7cde;
   border: 1px solid #466bda;
 }
@@ -3718,13 +3691,10 @@ html.page_languageentities dt[data-lang-entity=function]:after {
 [data-lang-entity-container=function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5bdede;
   border: 1px solid #46dada;
 }
@@ -3841,13 +3811,10 @@ html.page_languageentities dt[data-lang-entity=global_function]:after {
 [data-lang-entity-container=global_function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #85e7e7;
   border: 1px solid #70e2e2;
 }
@@ -3964,13 +3931,10 @@ html.page_languageentities dt[data-lang-entity=interface_function]:after {
 [data-lang-entity-container=interface_function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #23b0b0;
   border: 1px solid #1f9a9a;
 }
@@ -4087,13 +4051,10 @@ html.page_languageentities dt[data-lang-entity=member_function]:after {
 [data-lang-entity-container=member_function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #5bdede;
   border: 1px solid #46dada;
 }
@@ -4210,13 +4171,10 @@ html.page_languageentities dt[data-lang-entity=tag]:after {
 [data-lang-entity-container=tag] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #9d5bde;
   border: 1px solid #9046da;
 }
@@ -4333,13 +4291,10 @@ html.page_languageentities dt[data-lang-entity=variable]:after {
 [data-lang-entity-container=variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -4456,13 +4411,10 @@ html.page_languageentities dt[data-lang-entity=global_variable]:after {
 [data-lang-entity-container=global_variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -4579,13 +4531,10 @@ html.page_languageentities dt[data-lang-entity=local_variable]:after {
 [data-lang-entity-container=local_variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -4702,13 +4651,10 @@ html.page_languageentities dt[data-lang-entity=member_variable]:after {
 [data-lang-entity-container=member_variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -4825,13 +4771,10 @@ html.page_languageentities dt[data-lang-entity=adaption]:after {
 [data-lang-entity-container=adaption] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #d5ac31;
   border: 1px solid #c59d28;
 }
@@ -4948,13 +4891,10 @@ html.page_languageentities dt[data-lang-entity=macro]:after {
 [data-lang-entity-container=macro] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #e7ce85;
   border: 1px solid #e2c670;
 }
@@ -5071,13 +5011,10 @@ html.page_languageentities dt[data-lang-entity=generic]:after {
 [data-lang-entity-container=generic] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #999999;
   border: 1px solid #8c8c8c;
 }
@@ -5194,13 +5131,10 @@ html.page_languageentities dt[data-lang-entity=page]:after {
 [data-lang-entity-container=page] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #d531ac;
   border: 1px solid #c5289d;
 }
@@ -5320,13 +5254,10 @@ html.page_languageentities dt[data-lang-entity=group]:after {
 [data-lang-entity-container=group] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #e785ce;
   border: 1px solid #e270c6;
 }
@@ -5446,13 +5377,10 @@ html.page_languageentities dt[data-lang-entity=tutorial]:after {
 [data-lang-entity-container=tutorial] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
-
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
-
   box-sizing: border-box;
   /* Opera/IE 8+ */
-
   background-color: #000000;
   border: 1px solid #000000;
 }
@@ -5500,10 +5428,8 @@ html.page_languageentities [data-lang-entity-container=generic] [data-lang-entit
 	background: -ms-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
 	background: linear-gradient(135deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
 */
-
   /* RED & BLACK
 //	background: mix(@red, @anthrazit); /* Old browsers */
-
 }
 html.page_languageentities #toc ol {
   /*.bg-gradient(#000, 10%);
@@ -5514,7 +5440,6 @@ html.page_languageentities #toc ol {
          font-size: 1.4em;
          margin-left: -0.4em;
      }*/
-
 }
 html.page_languageentities #toc ol li:nth-child(2) a:before {
   color: #9dde5b;
@@ -5577,7 +5502,6 @@ ul.overview {
     -webkit-column-gap: 2em;
     column-count: 2;
     column-gap: 2em;*/
-
 }
 ul.overview > li {
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -5601,7 +5525,6 @@ ul.overview > li {
         column-break-inside: avoid;
         break-inside: avoid;
         */
-
 }
 ul.overview > li:before {
   display: none;
