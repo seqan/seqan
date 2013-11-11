@@ -124,8 +124,8 @@ a:active {
     }
 }
 
-a[target=_top],
-a[target=_parent] {
+a[target=_top][href],
+a[target=_parent][href] {
     &:after {
         display: inline-block;
         margin-left: 0.4em;
@@ -314,7 +314,8 @@ html.list {
 	@media @tablet, @small-list {
 		&.shows-results {
 			&:after {
-				opacity: .2;
+				background-image: url(../img/list-small.png);
+				background-color: #fff;
 			}
 		}
 			
@@ -499,10 +500,6 @@ html:not(.list) {
 	}
 	
 	@media @tablet, @small-window {
-		body {
-			background-color: #ff0;
-		}
-	
     	#content {
 			margin-right: 0;
 		}
@@ -769,7 +766,7 @@ ul.params {
 		.transition(all .3s ease-out);
 		min-width: 40px;
 		
-		.glyphicon {
+		i {
 			top: 0;
 			line-height: inherit;
 		}
@@ -788,9 +785,6 @@ ul.params {
 	button.multiselect:hover,
 	.open > button.multiselect {
 		min-width: 6.5em;
-		
-		.glyphicon {
-		}
 		
 		small {
 			right: 8px;
@@ -1155,7 +1149,14 @@ html.page_languageentities {
         	.box-shadow(inset 0 1px 2px rgba(0,0,0,.1));
         	
         	[data-lang-entity] > :first-child { display: none; }
-        	li.more:not(.result) { border-top: @dotted; border-color: @color; }
+        	li.more:not(.result) {
+        	    border-top: @dotted;
+        	    border-color: @color;
+        	    
+        	    @media @tablet, @small-list {
+        	        border-top: none;
+                }
+            }
         }
     }
 }

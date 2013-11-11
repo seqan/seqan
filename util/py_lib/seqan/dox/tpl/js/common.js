@@ -242,10 +242,10 @@
 					$btn.addClass('btn-primary');
 				}
 
-                if (options.length == checkedOptions.length) return '<span class="glyphicon glyphicon-filter"></span><small>all visible</small>';
-                else if (options.length - checkedOptions.length == 1) return '<span class="glyphicon glyphicon-filter"></span><small>1 excluded</small>';
-                else if (checkedOptions.length == 0) return '<span class="glyphicon glyphicon-filter"></span><small>all excluded</small>';
-                else return '<span class="glyphicon glyphicon-filter"></span><small>' + (options.length - checkedOptions.length) + ' excluded</small>';
+                if (options.length == checkedOptions.length) return '<i class="fa fa-filter"></i><small>all visible</small>';
+                else if (options.length - checkedOptions.length == 1) return '<i class="fa fa-filter"></i><small>1 excluded</small>';
+                else if (checkedOptions.length == 0) return '<i class="fa fa-filter"></i><small>all excluded</small>';
+                else return '<i class="fa fa-filter"></i><small>' + (options.length - checkedOptions.length) + ' excluded</small>';
             },
             onChange: function ($element, checked) {
                 //$allLabel = $('.multiselect-container').find('li:first-child label');
@@ -279,7 +279,6 @@
             highlightTerms: true,
             highlightEveryTerm: true,
             output: $("#results"),
-            searchOnKeyPress: true,
             data: window.searchData,
             stopWords: ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"], // filtered out of query
             replaceWords: [ // words replaced in the query

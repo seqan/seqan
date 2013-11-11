@@ -1443,8 +1443,8 @@ a:not([href])[title] {
 #results a:active {
   text-decoration: none;
 }
-a[target=_top]:after,
-a[target=_parent]:after {
+a[target=_top][href]:after,
+a[target=_parent][href]:after {
   display: inline-block;
   margin-left: 0.4em;
   font-size: .9em;
@@ -1639,7 +1639,8 @@ html.list:after {
 }
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
   html.list.shows-results:after {
-    opacity: .2;
+    background-image: url(../img/list-small.png);
+    background-color: #fff;
   }
   html.list body {
     padding: 0;
@@ -1867,9 +1868,6 @@ html:not(.list) #toc a {
   text-transform: uppercase;
 }
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 1024px) {
-  html:not(.list) body {
-    background-color: #ff0;
-  }
   html:not(.list) #content {
     margin-right: 0;
   }
@@ -2148,7 +2146,7 @@ ul.params {
   transition: all 0.3s ease-out;
   min-width: 40px;
 }
-#search button.multiselect .glyphicon {
+#search button.multiselect i {
   top: 0;
   line-height: inherit;
 }
@@ -2461,10 +2459,13 @@ html.page_languageentities dt[data-lang-entity=typedef]:after {
 [data-lang-entity-container=typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2495,6 +2496,11 @@ html.page_languageentities dt[data-lang-entity=typedef]:after {
 #results li[data-lang-entity-container=typedef] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5bde7c;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=typedef] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=grouped_typedef] dt {
   padding: 0;
@@ -2550,10 +2556,13 @@ html.page_languageentities dt[data-lang-entity=grouped_typedef]:after {
 [data-lang-entity-container=grouped_typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2584,6 +2593,11 @@ html.page_languageentities dt[data-lang-entity=grouped_typedef]:after {
 #results li[data-lang-entity-container=grouped_typedef] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5bde7c;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=grouped_typedef] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=global_typedef] dt {
   padding: 0;
@@ -2639,10 +2653,13 @@ html.page_languageentities dt[data-lang-entity=global_typedef]:after {
 [data-lang-entity-container=global_typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2673,6 +2690,11 @@ html.page_languageentities dt[data-lang-entity=global_typedef]:after {
 #results li[data-lang-entity-container=global_typedef] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5bde7c;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=global_typedef] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=member_typedef] dt {
   padding: 0;
@@ -2728,10 +2750,13 @@ html.page_languageentities dt[data-lang-entity=member_typedef]:after {
 [data-lang-entity-container=member_typedef] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5bde7c;
   border: 1px solid #46da6b;
 }
@@ -2762,6 +2787,11 @@ html.page_languageentities dt[data-lang-entity=member_typedef]:after {
 #results li[data-lang-entity-container=member_typedef] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5bde7c;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=member_typedef] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=concept] dt {
   padding: 0;
@@ -2817,10 +2847,13 @@ html.page_languageentities dt[data-lang-entity=concept]:after {
 [data-lang-entity-container=concept] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #b02323;
   border: 1px solid #9a1f1f;
 }
@@ -2851,6 +2884,11 @@ html.page_languageentities dt[data-lang-entity=concept]:after {
 #results li[data-lang-entity-container=concept] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #b02323;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=concept] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=class] dt {
   padding: 0;
@@ -2906,10 +2944,13 @@ html.page_languageentities dt[data-lang-entity=class]:after {
 [data-lang-entity-container=class] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #de5b5b;
   border: 1px solid #da4646;
 }
@@ -2940,6 +2981,11 @@ html.page_languageentities dt[data-lang-entity=class]:after {
 #results li[data-lang-entity-container=class] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #de5b5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=class] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=enum] dt {
   padding: 0;
@@ -2995,10 +3041,13 @@ html.page_languageentities dt[data-lang-entity=enum]:after {
 [data-lang-entity-container=enum] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #efb0b0;
   border: 1px solid #eb9b9b;
 }
@@ -3029,6 +3078,11 @@ html.page_languageentities dt[data-lang-entity=enum]:after {
 #results li[data-lang-entity-container=enum] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #efb0b0;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=enum] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=metafunction] dt {
   padding: 0;
@@ -3084,10 +3138,13 @@ html.page_languageentities dt[data-lang-entity=metafunction]:after {
 [data-lang-entity-container=metafunction] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5b7cde;
   border: 1px solid #466bda;
 }
@@ -3118,6 +3175,11 @@ html.page_languageentities dt[data-lang-entity=metafunction]:after {
 #results li[data-lang-entity-container=metafunction] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5b7cde;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=metafunction] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=global_metafunction] dt {
   padding: 0;
@@ -3173,10 +3235,13 @@ html.page_languageentities dt[data-lang-entity=global_metafunction]:after {
 [data-lang-entity-container=global_metafunction] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5b7cde;
   border: 1px solid #466bda;
 }
@@ -3207,6 +3272,11 @@ html.page_languageentities dt[data-lang-entity=global_metafunction]:after {
 #results li[data-lang-entity-container=global_metafunction] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5b7cde;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=global_metafunction] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=interface_metafunction] dt {
   padding: 0;
@@ -3262,10 +3332,13 @@ html.page_languageentities dt[data-lang-entity=interface_metafunction]:after {
 [data-lang-entity-container=interface_metafunction] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5b7cde;
   border: 1px solid #466bda;
 }
@@ -3296,6 +3369,11 @@ html.page_languageentities dt[data-lang-entity=interface_metafunction]:after {
 #results li[data-lang-entity-container=interface_metafunction] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5b7cde;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=interface_metafunction] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=function] dt {
   padding: 0;
@@ -3351,10 +3429,13 @@ html.page_languageentities dt[data-lang-entity=function]:after {
 [data-lang-entity-container=function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5bdede;
   border: 1px solid #46dada;
 }
@@ -3385,6 +3466,11 @@ html.page_languageentities dt[data-lang-entity=function]:after {
 #results li[data-lang-entity-container=function] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5bdede;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=function] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=global_function] dt {
   padding: 0;
@@ -3440,10 +3526,13 @@ html.page_languageentities dt[data-lang-entity=global_function]:after {
 [data-lang-entity-container=global_function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #85e7e7;
   border: 1px solid #70e2e2;
 }
@@ -3474,6 +3563,11 @@ html.page_languageentities dt[data-lang-entity=global_function]:after {
 #results li[data-lang-entity-container=global_function] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #85e7e7;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=global_function] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=interface_function] dt {
   padding: 0;
@@ -3529,10 +3623,13 @@ html.page_languageentities dt[data-lang-entity=interface_function]:after {
 [data-lang-entity-container=interface_function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #23b0b0;
   border: 1px solid #1f9a9a;
 }
@@ -3563,6 +3660,11 @@ html.page_languageentities dt[data-lang-entity=interface_function]:after {
 #results li[data-lang-entity-container=interface_function] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #23b0b0;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=interface_function] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=member_function] dt {
   padding: 0;
@@ -3618,10 +3720,13 @@ html.page_languageentities dt[data-lang-entity=member_function]:after {
 [data-lang-entity-container=member_function] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #5bdede;
   border: 1px solid #46dada;
 }
@@ -3652,6 +3757,11 @@ html.page_languageentities dt[data-lang-entity=member_function]:after {
 #results li[data-lang-entity-container=member_function] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #5bdede;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=member_function] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=tag] dt {
   padding: 0;
@@ -3707,10 +3817,13 @@ html.page_languageentities dt[data-lang-entity=tag]:after {
 [data-lang-entity-container=tag] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #9d5bde;
   border: 1px solid #9046da;
 }
@@ -3741,6 +3854,11 @@ html.page_languageentities dt[data-lang-entity=tag]:after {
 #results li[data-lang-entity-container=tag] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #9d5bde;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=tag] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=variable] dt {
   padding: 0;
@@ -3796,10 +3914,13 @@ html.page_languageentities dt[data-lang-entity=variable]:after {
 [data-lang-entity-container=variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -3830,6 +3951,11 @@ html.page_languageentities dt[data-lang-entity=variable]:after {
 #results li[data-lang-entity-container=variable] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #9dde5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=variable] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=global_variable] dt {
   padding: 0;
@@ -3885,10 +4011,13 @@ html.page_languageentities dt[data-lang-entity=global_variable]:after {
 [data-lang-entity-container=global_variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -3919,6 +4048,11 @@ html.page_languageentities dt[data-lang-entity=global_variable]:after {
 #results li[data-lang-entity-container=global_variable] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #9dde5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=global_variable] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=local_variable] dt {
   padding: 0;
@@ -3974,10 +4108,13 @@ html.page_languageentities dt[data-lang-entity=local_variable]:after {
 [data-lang-entity-container=local_variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -4008,6 +4145,11 @@ html.page_languageentities dt[data-lang-entity=local_variable]:after {
 #results li[data-lang-entity-container=local_variable] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #9dde5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=local_variable] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=member_variable] dt {
   padding: 0;
@@ -4063,10 +4205,13 @@ html.page_languageentities dt[data-lang-entity=member_variable]:after {
 [data-lang-entity-container=member_variable] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #9dde5b;
   border: 1px solid #90da46;
 }
@@ -4097,6 +4242,11 @@ html.page_languageentities dt[data-lang-entity=member_variable]:after {
 #results li[data-lang-entity-container=member_variable] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #9dde5b;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=member_variable] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=adaption] dt {
   padding: 0;
@@ -4152,10 +4302,13 @@ html.page_languageentities dt[data-lang-entity=adaption]:after {
 [data-lang-entity-container=adaption] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #d5ac31;
   border: 1px solid #c59d28;
 }
@@ -4186,6 +4339,11 @@ html.page_languageentities dt[data-lang-entity=adaption]:after {
 #results li[data-lang-entity-container=adaption] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #d5ac31;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=adaption] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=macro] dt {
   padding: 0;
@@ -4241,10 +4399,13 @@ html.page_languageentities dt[data-lang-entity=macro]:after {
 [data-lang-entity-container=macro] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #e7ce85;
   border: 1px solid #e2c670;
 }
@@ -4275,6 +4436,11 @@ html.page_languageentities dt[data-lang-entity=macro]:after {
 #results li[data-lang-entity-container=macro] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #e7ce85;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=macro] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=generic] dt {
   padding: 0;
@@ -4330,10 +4496,13 @@ html.page_languageentities dt[data-lang-entity=generic]:after {
 [data-lang-entity-container=generic] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #999999;
   border: 1px solid #8c8c8c;
 }
@@ -4364,6 +4533,11 @@ html.page_languageentities dt[data-lang-entity=generic]:after {
 #results li[data-lang-entity-container=generic] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #999999;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=generic] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html.page_languageentities [data-lang-entity-container=page] dt {
   padding: 0;
@@ -4419,10 +4593,13 @@ html.page_languageentities dt[data-lang-entity=page]:after {
 [data-lang-entity-container=page] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #d531ac;
   border: 1px solid #c5289d;
 }
@@ -4453,6 +4630,11 @@ html.page_languageentities dt[data-lang-entity=page]:after {
 #results li[data-lang-entity-container=page] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #d531ac;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=page] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html:not(.list) [data-lang-entity=page] > *:first-child {
   display: none;
@@ -4511,10 +4693,13 @@ html.page_languageentities dt[data-lang-entity=group]:after {
 [data-lang-entity-container=group] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #e785ce;
   border: 1px solid #e270c6;
 }
@@ -4545,6 +4730,11 @@ html.page_languageentities dt[data-lang-entity=group]:after {
 #results li[data-lang-entity-container=group] > ol li.more:not(.result) {
   border-top: 1px dotted #222222;
   border-color: #e785ce;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=group] > ol li.more:not(.result) {
+    border-top: none;
+  }
 }
 html:not(.list) [data-lang-entity=group] > *:first-child {
   display: none;
@@ -4603,10 +4793,13 @@ html.page_languageentities dt[data-lang-entity=tutorial]:after {
 [data-lang-entity-container=tutorial] label {
   -webkit-box-sizing: border-box;
   /* Safari/Chrome, other WebKit */
+
   -moz-box-sizing: border-box;
   /* Firefox, other Gecko */
+
   box-sizing: border-box;
   /* Opera/IE 8+ */
+
   background-color: #000000;
   border: 1px solid #000000;
 }
@@ -4638,6 +4831,11 @@ html.page_languageentities dt[data-lang-entity=tutorial]:after {
   border-top: 1px dotted #222222;
   border-color: #000000;
 }
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=tutorial] > ol li.more:not(.result) {
+    border-top: none;
+  }
+}
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
 html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
@@ -4649,8 +4847,10 @@ html.page_languageentities [data-lang-entity-container=generic] [data-lang-entit
 	background: -ms-linear-gradient(-45deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
 	background: linear-gradient(135deg, rgba(217,63,63,1) 0%,rgba(217,178,63,1) 14%,rgba(140,217,63,1) 29%,rgba(63,217,102,1) 43%,rgba(63,217,217,1) 57%,rgba(63,102,217,1) 71%,rgba(140,63,217,1) 86%,rgba(217,63,178,1) 100%);
 */
+
   /* RED & BLACK
 //	background: mix(@red, @anthrazit); /* Old browsers */
+
 }
 html.page_languageentities #toc ol {
   /*.bg-gradient(#000, 10%);
@@ -4661,6 +4861,7 @@ html.page_languageentities #toc ol {
          font-size: 1.4em;
          margin-left: -0.4em;
      }*/
+
 }
 html.page_languageentities #toc ol li:nth-child(2) a:before {
   color: #9dde5b;
@@ -4723,6 +4924,7 @@ ul.overview {
     -webkit-column-gap: 2em;
     column-count: 2;
     column-gap: 2em;*/
+
 }
 ul.overview > li {
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -4746,6 +4948,7 @@ ul.overview > li {
         column-break-inside: avoid;
         break-inside: avoid;
         */
+
 }
 ul.overview > li:before {
   display: none;

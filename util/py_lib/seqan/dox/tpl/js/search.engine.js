@@ -28,7 +28,6 @@ and based on the Tipue Search, http://www.tipue.com
             replaceWords: [],
             stemWords: [],
             langEntityGroups: [],
-            searchOnKeyPress: false,
             queryInput: $form.find('input[type=text],input[type=search]'),
             queryLangEntityInput: $form.find('select'),
             langEntityDefaultOrder: [
@@ -232,7 +231,16 @@ and based on the Tipue Search, http://www.tipue.com
                 search(0, true);
             });
             settings.queryInput.keyup(function(event) {
-                if (event.keyCode == '13' || settings.searchOnKeyPress) {
+                if (event.keyCode == '13') {
+                    try {
+                        $firstResult = settings.output.find('.result a:nth-child(2)').first();
+                        var target = $firstResult.attr('target') || 'main';
+                        var targetFrame = window.parent.frames[target] || parent;
+                        targetFrame.location.href = $firstResult.attr('href');
+                    } catch(e) {
+                        // security exceptions if using file://
+                    }
+                } else {
                     search(0, true);
                 }
             });
