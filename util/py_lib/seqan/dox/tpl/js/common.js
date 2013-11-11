@@ -95,7 +95,8 @@
             					if($el.attr('data-pimped')) return true;
             					
             					var langEntity = $el.parents('[data-lang-entity-container]').attr('data-lang-entity-container');
-            					//$el.pimpLangEntityLabel(langEntity);
+            					$el.attr('data-lang-entity', langEntity);
+            					$el.pimpLangEntityLabel(langEntity);
             					
                 			    headlineHandled = true;
             			    }

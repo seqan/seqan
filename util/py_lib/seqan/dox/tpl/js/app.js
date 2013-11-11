@@ -120,7 +120,6 @@ function generateTOC() {
     }
     var title = $(this).attr('toc-title');
     if (typeof(title) == "undefined") title = $(this).text();
-    console.log(this.id);
     toc.append('<li><a href="#' + this.id + '">' + title + '</a></li>');
     lastTag = thisTag;
   });
