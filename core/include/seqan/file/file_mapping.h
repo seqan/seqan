@@ -222,10 +222,47 @@ struct FileMapping
 //____________________________________________________________________________
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Size
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 struct Size<FileMapping<TSpec> >:
     public Size<typename FileMapping<TSpec>::TFile> {};
 
+// ----------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// ----------------------------------------------------------------------------
+
+template <typename TDirection>
+struct DefaultMMapOpenMode_
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE | OPEN_APPEND };
+};
+
+template <>
+struct DefaultMMapOpenMode_<Input>
+{
+    enum { VALUE = OPEN_RDWR | OPEN_APPEND };
+};
+
+template <>
+struct DefaultMMapOpenMode_<Output>
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
+};
+
+template <typename TSpec, typename TDirection>
+struct DefaultOpenMode<FileMapping<TSpec>, TDirection>:
+    DefaultMMapOpenMode_<TDirection> {};
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function _initialize()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
@@ -240,6 +277,9 @@ _initialize(FileMapping<TSpec> &mapping)
     mapping.temporary = true;
 }
 
+// ----------------------------------------------------------------------------
+// Function _mapFile()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TSize>
 inline bool
@@ -288,6 +328,10 @@ _mapFile(FileMapping<TSpec> &mapping, TSize mappingSize)
 #endif
     return result;
 }
+
+// ----------------------------------------------------------------------------
+// Function _unmapFile()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline bool
@@ -341,6 +385,10 @@ If you omit the $OPEN_APPEND$ flag in write mode, the file will be cleared when 
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/file.h
 */
+
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline bool
@@ -396,6 +444,10 @@ open(FileMapping<TSpec> &mapping, TFile const &file)
 ..include:seqan/file.h
 */
 
+// ----------------------------------------------------------------------------
+// Function openTemp()
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline bool
 openTemp(FileMapping<TSpec> &mapping)
@@ -430,6 +482,10 @@ openTemp(FileMapping<TSpec> &mapping)
 ..returns:A $bool$ which is $true$ on success.
 ..include:seqan/file.h
 */
+
+// ----------------------------------------------------------------------------
+// Function close()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline bool
@@ -467,6 +523,10 @@ close(FileMapping<TSpec> &mapping)
 ..include:seqan/file.h
 */
 
+// ----------------------------------------------------------------------------
+// Function closeAndResize()
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TSize>
 inline bool
 closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
@@ -502,6 +562,10 @@ closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
 ..returns:The size of the underlying file.
 ..include:seqan/file.h
 */
+
+// ----------------------------------------------------------------------------
+// Function length()
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline typename Size<FileMapping<TSpec> >::Type

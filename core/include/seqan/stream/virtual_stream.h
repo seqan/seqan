@@ -382,8 +382,8 @@ struct Iterator<VirtualStream<TValue, TDirection>, Rooted> :
 // Metafunction DefaultOpenMode<Input>
 // --------------------------------------------------------------------------
 
-template <typename TValue>
-struct DefaultOpenMode<VirtualStream<TValue, Input> >
+template <typename TValue, typename TDummy>
+struct DefaultOpenMode<VirtualStream<TValue, Input>, TDummy>
 {
     enum { VALUE = OPEN_RDONLY };
 };
@@ -392,8 +392,8 @@ struct DefaultOpenMode<VirtualStream<TValue, Input> >
 // Metafunction DefaultOpenMode<Output>
 // --------------------------------------------------------------------------
 
-template <typename TValue>
-struct DefaultOpenMode<VirtualStream<TValue, Output> >
+template <typename TValue, typename TDummy>
+struct DefaultOpenMode<VirtualStream<TValue, Output>, TDummy>
 {
     enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
 };

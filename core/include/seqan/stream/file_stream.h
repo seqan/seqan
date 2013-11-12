@@ -161,15 +161,6 @@ clear(FilePage<TValue, TSpec> & me)
     clear(me.data);
 }
 
-template <typename TValue, typename TConfig>
-inline void
-clear(FilePage<TValue, MMap<TConfig> > & me)
-{
-    free(me.data);
-    clear(me.raw);
-    clear(me.data);
-}
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -272,12 +263,45 @@ clear(FilePageTable<TValue, TDirection, TSpec> & pager)
     pager.fileSize = 0;
 }
 
+// ----------------------------------------------------------------------------
+// Function _getPageOffsetAndLength()
+// ----------------------------------------------------------------------------
+
 template <unsigned PAGE_SIZE, typename TPos>
 inline Pair<__int64, unsigned>
-_getPageOffsetAndLength(FixedPagingScheme<PAGE_SIZE> & scheme, TPos pos)
+_getPageOffsetAndLength(FixedPagingScheme<PAGE_SIZE> const & scheme, TPos pos)
 {
     SEQAN_ASSERT_EQ(scheme.pageSize & (scheme.pageSize - 1), 0);  // pageSize must be a power of 2
     return Pair<__int64, unsigned>((__int64)pos & ~(__int64)(scheme.pageSize - 1), scheme.pageSize);
+}
+
+// ----------------------------------------------------------------------------
+// Function _getFrameStart()
+// ----------------------------------------------------------------------------
+
+template <unsigned PAGE_SIZE, typename TFilePos, typename TSize>
+inline void *
+_getFrameStart(FixedPagingScheme<PAGE_SIZE> &table, TFilePos filePos, TSize)
+{
+    register unsigned pageNo = filePos / table.pageSize;
+    if (SEQAN_LIKELY(pageNo < length(table.frameStart)))
+        return table.frameStart[pageNo];
+    else
+        return table.EMPTY;
+}
+
+// ----------------------------------------------------------------------------
+// Function _setFrameStart()
+// ----------------------------------------------------------------------------
+
+template <unsigned PAGE_SIZE, typename TFilePos, typename TSize>
+inline void
+_setFrameStart(FixedPagingScheme<PAGE_SIZE> &table, TFilePos filePos, TSize, void * frameStart)
+{
+    register unsigned pageNo = filePos / table.pageSize;
+    if (length(table.frameStart) <= pageNo)
+        resize(table.frameStart, pageNo + 1, table.EMPTY);
+    table.frameStart[pageNo] = frameStart;
 }
 
 // ----------------------------------------------------------------------------
@@ -285,9 +309,9 @@ _getPageOffsetAndLength(FixedPagingScheme<PAGE_SIZE> & scheme, TPos pos)
 // ----------------------------------------------------------------------------
 
 // Variant for POSIX file access
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
 inline bool
-_readFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & page)
+_readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, File<TFileSpec> & file, TPageFrame & page)
 {
     // allocate required memory
     reserve(page.raw, page.size);
@@ -304,7 +328,7 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & pag
     resize(page.raw, std::min(page.size, pager.fileSize - page.filePos));
 
     // start asynchronous reading
-    bool success = asyncReadAt(pager.file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
+    bool success = asyncReadAt(file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
 
     // if an error occurred, throw an I/O exception
     if (!success)
@@ -314,30 +338,28 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & pag
 }
 
 #ifndef PLATFORM_WINDOWS
-template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
 inline bool
-_readFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > & pager, TPageFrame & page)
+_readFilePage(FilePageTable<TValue, TDirection, TSpec> &, FileMapping<TFileSpec> & file, TPageFrame & page)
 {
-    typedef FilePageTable<TValue, TDirection, MMap<TConfig> >   TFilePageTable;
-    typedef typename TFilePageTable::TFile                      TFile;
-    typedef typename Size<TFile>::Type                          TSize;
+    typedef typename Size<FileMapping<TFileSpec> >::Type TSize;
 
     TSize endOfs = page.filePos + page.size;
     TSize dataSize;
 
     // compute valid readable data
-    if (page.filePos >= length(pager.file))
+    if (page.filePos >= length(file))
         dataSize = 0;   // no valid data to read from behind the end of file
     else
-        dataSize = std::min(page.size, length(pager.file) - page.filePos);
+        dataSize = std::min(page.size, length(file) - page.filePos);
 
     // how to handle pages crossing/beyond the end of file
-    if (endOfs > length(pager.file))
+    if (endOfs > length(file))
     {
         if (!IsSameType<TDirection, Input>::VALUE)
         {
             // increase file size to next page boundary and map the whole page
-            resize(pager.file, endOfs);
+            resize(file, endOfs);
         }
         else
         {
@@ -346,7 +368,7 @@ _readFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > & pager, TPageFr
         }
     }
 
-    page.raw.begin = (TValue *) mapFileSegment(pager.file, page.filePos, page.size);
+    page.raw.begin = (TValue *) mapFileSegment(file, page.filePos, page.size);
     _setCapacity(page.raw, page.size);
     resize(page.raw, dataSize);
     return true;    // true = reading completed
@@ -385,13 +407,11 @@ _postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &pag
 // Function _writeFilePage()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TSpec, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
 inline bool
-_writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & page)
+_writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, File<TFileSpec> & file, TPageFrame & page)
 {
-    typedef FilePageTable<TValue, TDirection, TSpec>            TFilePageTable;
-    typedef typename TFilePageTable::TFile                      TFile;
-    typedef typename Size<TFile>::Type                          TSize;
+    typedef typename Size<File<TFileSpec> >::Type TSize;
 
     // only write in write-mode
     if (IsSameType<TDirection, Input>::VALUE)
@@ -402,7 +422,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & pa
 
     // start asynchronous writing
     page.state = WRITING;
-    bool success = asyncWriteAt(pager.file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
+    bool success = asyncWriteAt(file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
 
     if (!IsSameType<TDirection, Input>::VALUE)
         pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
@@ -414,20 +434,19 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & pa
 }
 
 #ifndef PLATFORM_WINDOWS
-template <typename TValue, typename TDirection, typename TConfig, typename TPageFrame>
+template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
 inline bool
-_writeFilePage(FilePageTable<TValue, TDirection, MMap<TConfig> > & pager, TPageFrame & page)
+_writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, FileMapping<TFileSpec> & file, TPageFrame & page)
 {
-    typedef FilePageTable<TValue, TDirection, MMap<TConfig> >   TFilePageTable;
-    typedef typename TFilePageTable::TFile                      TFile;
-    typedef typename Size<TFile>::Type                          TSize;
+    typedef typename Size<FileMapping<TFileSpec> >::Type TSize;
 
     page.state = UNUSED;
-    unmapFileSegment(pager.file, begin(page.raw, Standard()), page.size);
+    unmapFileSegment(file, begin(page.raw, Standard()), capacity(page.raw));
 
     if (!IsSameType<TDirection, Input>::VALUE)
         pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
 
+    clear(page.raw);
     return true;    // true = writing completed
 }
 
@@ -448,7 +467,7 @@ _processFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & 
         {
         case UNUSED:
             // page is ready, start reading
-            page.state = (_readFilePage(pager, page)) ? READING_DONE : READING;
+            page.state = (_readFilePage(pager, pager.file, page)) ? READING_DONE : READING;
             break;
 
         case READING:
@@ -494,7 +513,7 @@ _processFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & 
 
         case POSTPROCESSING_DONE:
             // page was postprocessed, now write asynchronously
-            page.state = (_writeFilePage(pager, page)) ? WRITING_DONE : WRITING;
+            page.state = (_writeFilePage(pager, pager.file, page)) ? WRITING_DONE : WRITING;
             break;
 
         case WRITING:
@@ -621,7 +640,7 @@ template <typename TValue, typename TDirection, typename TSpec, typename TFilePa
 inline void
 _freeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePage & page)
 {
-    pager.table.frameStart[page.filePos / pager.table.pageSize] = pager.table.ON_DISK;
+    _setFrameStart(pager.table, page.filePos, page.size, pager.table.ON_DISK);
     clear(page);
 }
 
@@ -693,19 +712,14 @@ _lockFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TFilePos filePos
 
     SEQAN_OMP_PRAGMA(critical(lockPageTable))
     {
-        unsigned pageNo = filePos / pager.table.pageSize;
-        if (length(pager.table.frameStart) <= pageNo)
-            resize(pager.table.frameStart, pageNo + 1, pager.table.EMPTY);
-
-        p = static_cast<TPage *>(pager.table.frameStart[pageNo]);
-
+        p = static_cast<TPage *>(_getFrameStart(pager.table, filePos, size));
         if (p == pager.table.EMPTY || p == pager.table.ON_DISK)
         {
             p = _newFilePage(pager);
             p->filePos = filePos;
             p->size = size;
             p->lockCount = 1;
-            pager.table.frameStart[pageNo] = p;
+            _setFrameStart(pager.table, filePos, size, p);
             newPage = true;
         }
         else
@@ -852,8 +866,22 @@ struct FileStreamBuffer :
         if (writePage != NULL)
         {
             resize(writePage->data, std::max((TSize)length(writePage->data), (TSize)(this->pptr() - this->pbase())));
-            writePagePos += writePage->size;
-            releaseFilePage(pager, *writePage);
+            if (writePage->size >= 0)
+            {
+                writePagePos += writePage->size;
+                releaseFilePage(pager, *writePage);
+            }
+            else
+            {
+                // for BGZF files we know the block size on disk only after writing the page
+                int count = atomicDec(writePage->lockCount);
+                SEQAN_ASSERT_EQ(count, 0);
+                writePage->targetState = UNUSED;
+                erase(pager.ready, *writePage);
+                _processFilePage(pager, *writePage, True());
+                writePagePos += writePage->size;
+                pushBack(pager.unused, *writePage);
+            }
             writePage = NULL;
         }
 
@@ -1068,34 +1096,21 @@ clear(FileStreamBuffer<TValue, TDirection, TSpec> & buffer)
 template <typename TValue, typename TDirection, typename TSpec>
 class FileStream;
 
+// --------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// --------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Input, TSpec> >
-{
-    enum { VALUE = OPEN_RDONLY };
-};
+template <typename TValue, typename TDirection, typename TSpec, typename TDummy>
+struct DefaultOpenMode<FilePageTable<TValue, TDirection, TSpec>, TDummy>:
+    DefaultOpenMode<typename Host<FilePageTable<TValue, TDirection, TSpec> >::Type, TDirection> {};
 
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Output, TSpec> >
-{
-    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
-};
+template <typename TValue, typename TDirection, typename TSpec, typename TDummy>
+struct DefaultOpenMode<FileStream<TValue, TDirection, TSpec>, TDummy>:
+    DefaultOpenMode<FilePageTable<TValue, TDirection, TSpec>, TDummy> {};
 
-
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Input, MMap<TSpec> > >
-{
-    enum { VALUE = OPEN_RDWR | OPEN_APPEND };
-};
-
-template <typename TValue, typename TSpec>
-struct DefaultOpenMode<FileStream<TValue, Output, MMap<TSpec> > >
-{
-    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
-};
-
-
-
+// --------------------------------------------------------------------------
+// Class FileStream
+// --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TSpec>
 class FileStream :
@@ -1119,9 +1134,13 @@ public:
 
     ~FileStream()
     {
-        close(*this);
+        ::close(*this);
     }
 
+    void close()
+    {
+        ::close(*this);
+    }
 };
 
 // ============================================================================
@@ -1215,6 +1234,19 @@ open(FileStream<TValue, TDirection, TSpec> & stream, const char * fileName, int 
 // Function close()
 // ----------------------------------------------------------------------------
 
+template <typename TFile, typename TSize>
+inline void
+_updateFileSize(TFile &, TSize)
+{
+}
+
+template <typename TFileSpec, typename TSize>
+inline void
+_updateFileSize(FileMapping<TFileSpec> & file, TSize size)
+{
+    resize(file, size);
+}
+
 template <typename TValue, typename TDirection, typename TSpec>
 inline void
 close(FilePageTable<TValue, TDirection, TSpec> & pager)
@@ -1222,18 +1254,7 @@ close(FilePageTable<TValue, TDirection, TSpec> & pager)
     if (pager.file)
     {
         flushAndFree(pager);
-        close(pager.file);
-    }
-}
-
-template <typename TValue, typename TConfig>
-inline void
-close(FilePageTable<TValue, Output, MMap<TConfig> > & pager)
-{
-    if (pager.file)
-    {
-        flushAndFree(pager);
-        resize(pager.file, pager.fileSize);
+        _updateFileSize(pager.file, pager.fileSize);
         close(pager.file);
     }
 }
