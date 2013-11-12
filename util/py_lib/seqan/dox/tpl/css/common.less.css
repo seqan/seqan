@@ -2299,6 +2299,9 @@ form .multiselect-container li:first-child {
 form .multiselect-container li:first-child label {
   color: #000 !important;
 }
+form .multiselect-container li:before {
+  display: none;
+}
 form .multiselect-container li:not([class]) {
   margin: 0;
   background-color: #000;
