@@ -65,9 +65,8 @@ namespace seqan {
 ..include:seqan/file.h
 */
 
-	template <typename TSpec = void>
-    struct Sync;
-//IOREV
+template <typename TSpec = void>
+struct Sync;
 
 /*!
  * @class AsyncFile
@@ -89,9 +88,8 @@ namespace seqan {
 ..include:seqan/file.h
 */
 
-	template <typename TSpec = void>
-    struct Async;
-//IOREV
+template <typename TSpec = void>
+struct Async;
 
 /*!
  * @class File
@@ -114,9 +112,8 @@ namespace seqan {
 ..include:seqan/file.h
 */
 
-	template <typename TSpec = Async<> >
-    class File;
-//IOREV
+template <typename TSpec = Async<> >
+class File;
 
 /*!
  * @enum FileOpenMode
@@ -190,43 +187,85 @@ if (openMode & OPEN_MASK == OPEN_READ)
 ..remarks:If you omit the $OPEN_APPEND$ flag in write mode, the file will be cleared when opened.
 ..include:seqan/seq_io.h
 */
-    enum FileOpenMode {
-        OPEN_RDONLY     = 1,
-        OPEN_WRONLY     = 2,
-        OPEN_RDWR       = 3,
-        OPEN_MASK       = 3,
-        OPEN_CREATE     = 4,
-        OPEN_APPEND     = 8,
-        OPEN_ASYNC      = 16,
-		OPEN_TEMPORARY	= 32,
-		OPEN_QUIET		= 128
-    }; //IOREV is it intended that two labels share the same value? What is OPEN_MASK anyway?
 
-	template <typename T>
-	struct DefaultOpenMode {
-//IOREV
-		enum { VALUE = OPEN_RDWR | OPEN_CREATE | OPEN_APPEND };
-	};
+// --------------------------------------------------------------------------
+// Enum FileOpenMode
+// --------------------------------------------------------------------------
 
-	template <typename T>
-	struct DefaultOpenTempMode {
-//IOREV
-		enum { VALUE = OPEN_RDWR | OPEN_CREATE };
-	};
+enum FileOpenMode {
+    OPEN_RDONLY     = 1,
+    OPEN_WRONLY     = 2,
+    OPEN_RDWR       = 3,
+    OPEN_MASK       = 3,
+    OPEN_CREATE     = 4,
+    OPEN_APPEND     = 8,
+    OPEN_ASYNC      = 16,
+    OPEN_TEMPORARY	= 32,
+    OPEN_QUIET		= 128
+}; //IOREV is it intended that two labels share the same value? What is OPEN_MASK anyway?
 
-    enum FileSeekMode {
-        SEEK_BEGIN   = 0,
-        SEEK_CURRENT = 1
+// --------------------------------------------------------------------------
+// Direction Tags
+// --------------------------------------------------------------------------
+
+struct Input_;
+typedef Tag<Input_> Input;
+
+struct Output_;
+typedef Tag<Output_> Output;
+
+struct Bidirectional_;
+typedef Tag<Bidirectional_> Bidirectional;
+
+// --------------------------------------------------------------------------
+// Metafunction DefaultOpenMode
+// --------------------------------------------------------------------------
+
+// helper metafunction to avoid ambigous partial specializations of the 1st/2nd argument
+template <typename TDirection>
+struct DefaultFileOpenMode_
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE | OPEN_APPEND };
+};
+
+template <>
+struct DefaultFileOpenMode_<Input>
+{
+    enum { VALUE = OPEN_RDONLY };
+};
+
+template <>
+struct DefaultFileOpenMode_<Output>
+{
+    enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
+};
+
+template <typename T, typename TDirection = Bidirectional>
+struct DefaultOpenMode:
+    DefaultFileOpenMode_<TDirection> {};
+
+// --------------------------------------------------------------------------
+// Metafunction DefaultOpenTempMode
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct DefaultOpenTempMode
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE };
+};
+
+enum FileSeekMode {
+    SEEK_BEGIN   = 0,
+    SEEK_CURRENT = 1
 #ifndef SEEK_END
-      , SEEK_END     = 2
+  , SEEK_END     = 2
 #endif
-    }; //IOREV why not use constants SEEK_SET, SEEK_CUR, SEEK_END from cstdio?
+}; //IOREV why not use constants SEEK_SET, SEEK_CUR, SEEK_END from cstdio?
 
-    //////////////////////////////////////////////////////////////////////////////
-    // result type of asynch. functions
-    // you have to call release(AsyncRequest<T>) after a finished *event based* transfer
-	struct AsyncDummyRequest {};
-//IOREV
+//////////////////////////////////////////////////////////////////////////////
+// result type of asynch. functions
+// you have to call release(AsyncRequest<T>) after a finished *event based* transfer
+struct AsyncDummyRequest {};
 
 /*!
  * @class AsyncRequest

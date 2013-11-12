@@ -62,15 +62,25 @@ template <typename T>
 unsigned char const MagicHeader<BgzfFile, T>::VALUE[3] = { 0x1f, 0x8b, 0x08 };  // gzip's magic number
 
 
-template <typename TSpec>
-struct Bgzf;
+template <typename TSpec = MMap<> >
+struct Bgzf {};
+
+
+template <typename TValue, typename TDirection, typename TSpec>
+struct Host<FilePageTable<TValue, TDirection, Bgzf<TSpec> > >:
+    public Host<FilePageTable<TValue, TDirection, TSpec> > {};
+
 
 struct RandomPagingScheme
 {
+    typedef std::map<__uint64, void *> TMap;
+
+    enum { pageSize = 64 * 1024 };
+
     static void * EMPTY;
     static void * ON_DISK;
 
-    std::map<__uint64, void *> frameStart;
+    TMap frameStart;
 };
 
 void * RandomPagingScheme::EMPTY = NULL;
@@ -87,13 +97,54 @@ struct PagingScheme<FilePageTable<TValue, TDirection, Bgzf<TSpec> > >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function _getPageOffsetAndLength()
+// ----------------------------------------------------------------------------
+
+template <typename TPos>
+inline Pair<__int64, unsigned>
+_getPageOffsetAndLength(RandomPagingScheme & table, TPos pos)
+{
+    // as we don't know the actual compressed size of a BGZF page here,
+    // we have to read the whole 64K page
+    return Pair<__int64, unsigned>(pos, table.pageSize);
+}
+
+// ----------------------------------------------------------------------------
+// Function _getFrameStart()
+// ----------------------------------------------------------------------------
+
+template <typename TFilePos, typename TSize>
+inline void *
+_getFrameStart(RandomPagingScheme const &table, TFilePos filePos, TSize)
+{
+    typedef RandomPagingScheme::TMap TMap;
+    TMap::const_iterator iter = table.frameStart.find(filePos);
+
+    if (SEQAN_LIKELY(iter != table.frameStart.cend()))
+        return iter->second;
+    else
+        return table.EMPTY;
+}
+
+// ----------------------------------------------------------------------------
+// Function _setFrameStart()
+// ----------------------------------------------------------------------------
+
+template <typename TFilePos, typename TSize>
+inline void
+_setFrameStart(RandomPagingScheme &table, TFilePos filePos, TSize, void * frameStart)
+{
+    table.frameStart[filePos] = frameStart;
+}
+
+// ----------------------------------------------------------------------------
 // Helper Function _bgzfUnpackInt16()
 // ----------------------------------------------------------------------------
 
-inline int
+inline unsigned short
 _bgzfUnpackInt16(unsigned char const * buffer)
 {
-    return (buffer[0] | (buffer[1] << 8));
+    return (unsigned short)buffer[0] | ((unsigned short)buffer[1] << 8);
 }
 
 // ----------------------------------------------------------------------------
@@ -152,16 +203,16 @@ template <typename TValue, typename TDirection, typename TSpec, typename TPageFr
 inline bool
 _preprocessFilePage(FilePageTable<TValue, TDirection, Bgzf<TSpec> > &, TPageFrame &page, TBool const &)
 {
-    const int GZIP_WINDOW_BITS = -15;  // no zlib header
-    const unsigned BLOCK_HEADER_LENGTH = 18;
     const unsigned MAX_BLOCK_SIZE = 64 * 1024;
+    const unsigned BLOCK_HEADER_LENGTH = 18;
+    const int GZIP_WINDOW_BITS = -15;  // no zlib header
 
-    const unsigned char *header = static_cast<unsigned char const *>(begin(page.raw, Standard()));
+    Bytef *header = static_cast<Bytef *>(static_cast<void *>(begin(page.raw, Standard())));
 
     if (length(page.raw) < BLOCK_HEADER_LENGTH)
         throw IOException("BGZF block header too short.");
 
-    if (!_bgzfCheckHeader(static_cast<unsigned char *>(begin(page.raw, Standard()))))
+    if (!_bgzfCheckHeader(header))
         throw IOException("Invalid BGZF block header.");
 
     // Make sure there is enough space in the buffer for decompressed data.
@@ -172,9 +223,9 @@ _preprocessFilePage(FilePageTable<TValue, TDirection, Bgzf<TSpec> > &, TPageFram
 	int status;
     zs.zalloc = NULL;
     zs.zfree = NULL;
-    zs.next_in = static_cast<Bytef *>(begin(page.raw, Standard())) + 18;
-    zs.avail_in = length(page.raw) - 16;
-    zs.next_out = static_cast<Bytef *>(begin(page.data, Standard()));
+    zs.next_in = header + BLOCK_HEADER_LENGTH;
+    zs.avail_in = length(page.raw) - (BLOCK_HEADER_LENGTH - 2);
+    zs.next_out = static_cast<Bytef *>(static_cast<void *>(begin(page.data, Standard())));
     zs.avail_out = capacity(page.data);
 
     status = inflateInit2(&zs, GZIP_WINDOW_BITS);
@@ -220,43 +271,37 @@ _postprocessFilePage(FilePageTable<TValue, TDirection, Bgzf<TSpec> > &, TPageFra
 {
     static int compressionLevels[] = { Z_DEFAULT_COMPRESSION, Z_BEST_COMPRESSION, Z_BEST_SPEED, Z_NO_COMPRESSION };
 
+    const unsigned MAX_BLOCK_SIZE = 64 * 1024;
     const unsigned BLOCK_HEADER_LENGTH = 18;
     const unsigned BLOCK_FOOTER_LENGTH = 8;
 
-    const char FLG_FEXTRA = 4;
-    const char OS_UNKNOWN = -1;
-    const char BGZF_LEN = 2;
-    const char BGZF_XLEN = 6;  // BGZF_LEN+4
-
     const int GZIP_WINDOW_BITS = -15; // no zlib header
     const int Z_DEFAULT_MEM_LEVEL = 8;
-
-    const unsigned MAX_BLOCK_SIZE = 64 * 1024;
 
     // Make sure there is enough space in the buffer for compressed data.
     reserve(page.raw, MAX_BLOCK_SIZE);
     resize(page.raw, 0);
 
-    unsigned char *header = static_cast<unsigned char *>(begin(page.raw, Standard()));
+    Bytef *header = static_cast<Bytef *>(static_cast<void *>(begin(page.raw, Standard())));
 
     // Init gzip header
     header[0] = MagicHeader<BgzfFile>::VALUE[0];
     header[1] = MagicHeader<BgzfFile>::VALUE[1];
     header[2] = MagicHeader<BgzfFile>::VALUE[2];
-    header[3] = FLG_FEXTRA;
-    header[4] = 0;  // mtime
+    header[3] = 4;      // FLG_FEXTRA;
+    header[4] = 0;      // mtime
     header[5] = 0;
     header[6] = 0;
     header[7] = 0;
     header[8] = 0;
-    header[9] = OS_UNKNOWN;
-    header[10] = BGZF_XLEN;
+    header[9] = -1;     // OS_UNKNOWN;
+    header[10] = 6;     // BGZF_LEN+4
     header[11] = 0;
     header[12] = 'B';
     header[13] = 'C';
-    header[14] = BGZF_LEN;
+    header[14] = 2;     // BGZF_LEN
     header[15] = 0;
-    header[16] = 0;  // Placeholder for block length.
+    header[16] = 0;     // Placeholder for block length.
     header[17] = 0;
 
     // Loop to retry for blocks that do not compress enough.
@@ -265,9 +310,9 @@ _postprocessFilePage(FilePageTable<TValue, TDirection, Bgzf<TSpec> > &, TPageFra
         z_stream zs;
         zs.zalloc = NULL;
         zs.zfree = NULL;
-        zs.next_in = static_cast<Bytef *>(begin(page.data, Standard()));
+        zs.next_in = static_cast<Bytef *>(static_cast<void *>(begin(page.data, Standard())));
         zs.avail_in = length(page.data);
-        zs.next_out = static_cast<Bytef *>(header + BLOCK_HEADER_LENGTH);
+        zs.next_out = header + BLOCK_HEADER_LENGTH;
         zs.avail_out = capacity(page.raw) - BLOCK_HEADER_LENGTH - BLOCK_FOOTER_LENGTH;
 
         int status = deflateInit2(&zs, compressionLevels[clIdx], Z_DEFLATED,
@@ -289,15 +334,15 @@ _postprocessFilePage(FilePageTable<TValue, TDirection, Bgzf<TSpec> > &, TPageFra
         }
         // If we are here, compression was too low. Try another compression level.
     }
-    if (resize(page.raw) == 0)
+    if (empty(page.raw))
     {
         // Should never happen.
         throw IOException("Deflation failed. Compressed BGZF data is bigger than uncompressed data.");
     }
 
     // Set compressed length into buffer, compute CRC and write CRC into buffer.
-    unsigned crc = crc32(0L, NULL, 0L);
-    crc = crc32(crc, static_cast<Bytef *>(begin(page.data, Standard())), length(page.data));
+    uLong crc = crc32(0L, NULL, 0L);
+    crc = crc32(crc, static_cast<Bytef const *>(static_cast<void *>(begin(page.data, Standard()))), length(page.data));
 
     _bgzfPackInt16(header + 16, length(page.raw) - 1);
     _bgzfPackInt32(header + length(page.raw) - 8, crc);

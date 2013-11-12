@@ -171,14 +171,14 @@ SEQAN_CONCEPT_IMPL((std::basic_stringstream<TValue, TTraits>), (BidirectionalStr
 // Metafunction DefaultOpenMode<std::>
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
-struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits> >
+template <typename TValue, typename TTraits, typename TDummy>
+struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_RDONLY };
 };
 
-template <typename TValue, typename TTraits>
-struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits> >
+template <typename TValue, typename TTraits, typename TDummy>
+struct DefaultOpenMode<std::basic_ofstream<TValue, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_WRONLY | OPEN_CREATE };
 };
