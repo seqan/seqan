@@ -738,6 +738,22 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 */
 
 // ----------------------------------------------------------------------------
+// Function countCharacters()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#countCharacters
+ * @brief The number of characters following a position.
+ *
+ * @signature TSize countCharacters(gaps, viewPos);
+ *
+ * @param gaps    The Gaps object to query.
+ * @param viewPos View position (including clipping and gaps) to query at.
+ *
+ * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt>.
+ */
+
+// ----------------------------------------------------------------------------
 // Function setClippedBeginPosition()
 // ----------------------------------------------------------------------------
 
