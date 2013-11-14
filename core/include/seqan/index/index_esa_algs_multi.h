@@ -263,7 +263,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename TMultiCompound::TSet			TSet;
 		typedef typename Iterator<TSet>::Type			TSetIterator;
 
-		typedef typename TBase::TStackEntry				TStackEntry;
+        typedef typename HistoryStackEntry_<TBase>::Type TStackEntry;
 
 //____________________________________________________________________________
 

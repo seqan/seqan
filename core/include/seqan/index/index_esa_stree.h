@@ -693,6 +693,10 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 		Iter<TIndex, VSTree< BottomUp<TSpec> > > &it, 
 		VSTreeIteratorTraits<Postorder_, THideEmptyEdges> const) 
 	{
+        typedef Iter<TIndex, VSTree< BottomUp<TSpec> > >    TIter;
+        typedef typename Size<TIndex>::Type                 TSize;
+        typedef typename HistoryStackEntry_<TIter>::Type    TStackEntry;
+
 		TIndex const &index = container(it);
 		do {
 			// postorder dfs via lcp-table
@@ -703,8 +707,6 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 			
 			if (_dfsRange(it).i2)
 			{
-				typedef typename Size<TIndex>::Type TSize;
-				typedef typename Iter<TIndex, VSTree< BottomUp<TSpec> > >::TStackEntry TStackEntry;
 				TStackEntry	_top_ = back(it.history);
 				TSize		lcp_i = lcpAt(_dfsRange(it).i2 - 1, index);
 
