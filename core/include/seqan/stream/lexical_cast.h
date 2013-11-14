@@ -52,7 +52,7 @@ struct BadLexicalCast : ParseError
 {
     template <typename TTarget, typename TSource>
     BadLexicalCast(TTarget const & target, TSource const & source) :
-        ParseError(std::string("Unable to convert '") + toCString(source) + "' into " + toCTypeName(target) + ".")
+        ParseError(std::string("Unable to convert '") + toCString(source) + "' into " + toCString(Demangler<TTarget>(target)) + ".")
     {}
 };
 
