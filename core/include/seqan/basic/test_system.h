@@ -208,7 +208,7 @@ template <template <typename> class TTestCase, typename TType, typename TSubList
 class TypedTestFactory_<TTestCase, TagList<TType, TSubList> >
 {
 public:
-    // TODO(esiragusa): use Demangler / toCTypeName.
+    // TODO(esiragusa): use Demangler.
     template <typename T>
     static std::string getTypeName()
     {
