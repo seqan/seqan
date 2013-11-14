@@ -43,6 +43,7 @@
 
 #include "../../../core/apps/stellar/stellar.h"
 #include "msplazer.h"
+#include "gustaf_matepairs.h"
 
 using namespace seqan;
 
@@ -135,7 +136,10 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
             out << queryMatches[i].end2;
             out << "\\n";
             out << i;
-            out << "\"];\n";
+            if (_isLeftMate(queryMatches[i], msplazerchain.mateJoinPosition))
+                out << "\", fontcolor= green];\n";
+            else
+                out << "\", fontcolor= blue];\n";
         }
         else if (!atEndV)
         {
@@ -310,7 +314,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     GffStream gffOut(fn_gff.c_str(), GffStream::WRITE);
     if (length(globalBreakpoints) == 0)
     {
-        std::cerr << "Empty output list, skipping writing gff" << std::endl;
+        std::cerr << "Empty output list, skip writing gff" << std::endl;
         return 1;
     }
 
@@ -809,7 +813,8 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
     appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("fileformat", "VCFv4.1"));
     appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("source", "GUSTAF"));
     appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reference", msplOpt.databaseFile));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile));
+    for (unsigned i = 0; i < length(msplOpt.queryFile); ++i)
+        appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile[i]));
     appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
             "INFO", "<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record\">"));
     appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
@@ -873,7 +878,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     VcfStream vcfOut(fn_vcf.c_str(), VcfStream::WRITE);
     if (length(globalBreakpoints) == 0)
     {
-        std::cerr << "Empty output list, skipping writing vcf" << std::endl;
+        std::cerr << "Empty output list, skip writing vcf" << std::endl;
         return 1;
     }
 

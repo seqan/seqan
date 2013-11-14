@@ -49,7 +49,12 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
 // IOREV _notio_
     // i/o options
     getArgumentValue(msplazerOptions.databaseFile, parser, 0);
-    getArgumentValue(msplazerOptions.queryFile, parser, 1);
+    // getArgumentValue(msplazerOptions.queryFile, parser, 1);
+    resize(msplazerOptions.queryFile, getArgumentValueCount(parser, 1), Exact());
+    for (unsigned i = 0; i < length(msplazerOptions.queryFile); ++i)
+        getArgumentValue(msplazerOptions.queryFile[i], parser, 1, i);
+    for (unsigned i = 0; i < length(msplazerOptions.queryFile); ++i)
+        std::cout << msplazerOptions.queryFile[i] << std::endl;
     // getOptionValue(msplazerOptions.queryFile2, parser, "q2");
     // getOptionValue(msplazerOptions.outDir, parser, "i");
     getOptionValue(msplazerOptions.vcfOutFile, parser, "vcf");
@@ -66,11 +71,16 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.gapThresh, parser, "gth");
     getOptionValue(msplazerOptions.initGapThresh, parser, "ith");
     getOptionValue(msplazerOptions.support, parser, "st");
-    // getOptionValue(msplazerOptions.librSize, parser, "lib");
+    getOptionValue(msplazerOptions.libSize, parser, "ll");
+    getOptionValue(msplazerOptions.libError, parser, "le");
+
+    if (length(msplazerOptions.queryFile) > 1)
+        msplazerOptions.pairedEndMode = true;
 
     // Parsing Stellar options
     getArgumentValue(options.databaseFile, parser, 0);
-    getArgumentValue(options.queryFile, parser, 1);
+    //getArgumentValue(options.queryFile, parser, 1);
+    options.queryFile = msplazerOptions.queryFile[0];
 
     getOptionValue(options.qGram, parser, "kmer");
     getOptionValue(options.minLength, parser, "minLength");
@@ -119,6 +129,8 @@ void _setupArgumentParser(ArgumentParser & parser)
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FASTA FILE\\fP> <\\fIREAD FASTA FILE\\fP> \n "
                  );
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FASTA FILE\\fP> <\\fIREAD FASTA FILE\\fP> <\\fIREAD FASTA FILE 2\\fP> \n "
+                 );
     // addUsageLine(parser, "-d <FASTA sequence file> -q <FASTA sequence file> [\\fIOPTIONS\\fP]");
     addDescription(parser,
                    "GUSTAF uses SeqAns STELLAR to find splits as local matches on different strands or "
@@ -132,9 +144,12 @@ void _setupArgumentParser(ArgumentParser & parser)
     addSection(parser, "GUSTAF Options");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 1"));
-    setValidValues(parser, 0, "fa fasta");  // allow only fasta files as input
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2"));
-    setValidValues(parser, 1, "fa fasta");  // allow only fasta files as input
+    setValidValues(parser, 0, "fa fasta fq fastq");  // allow only fasta files as input
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2", true));
+    setValidValues(parser, 1, "fa fasta fq fastq");  // allow only fasta files as input
+    setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
+    // addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 3"));
+    // setValidValues(parser, 2, "fa fasta");  // allow only fasta files as input
 
     /*
     addOption(parser, ArgParseOption("q2", "query2", "Second Fasta file containing query sequences (mate pairs)",
@@ -142,7 +157,9 @@ void _setupArgumentParser(ArgumentParser & parser)
     setValidValues(parser, "q2", "fa FASTA");
     */
 
-    addSection(parser, "Main Options");
+    addSection(parser, "Main Options");  // addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 3"));
+    // setValidValues(parser, 2, "fa fasta");  // allow only fasta files as input
+
     addOption(parser,
               ArgParseOption("tp", "transPen", "Interchromosomal translocation penalty", ArgParseArgument::INTEGER,
                              "INT"));
@@ -166,11 +183,17 @@ void _setupArgumentParser(ArgumentParser & parser)
     setDefaultValue(parser, "ith", "15");
     addOption(parser, ArgParseOption("st", "support", "Number of supporting reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "st", "2");
-    // addOption(parser, ArgParseOption("lib", "librarySize", "Library size of mate pairs", ArgParseArgument::INTEGER, "INT"));
+    addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "ll", "220");
+    addOption(parser, ArgParseOption("le", "library-error", "Library error (sd) of paired-end reads", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "le", "50");
+    // set min values?
 
     addSection(parser, "Input Options");
     addOption(parser, ArgParseOption("m", "matchfile", "File of (stellar) matches", ArgParseArgument::INPUTFILE, "FILE"));
     setValidValues(parser, "m", "gff GFF");
+    // addOption(parser, ArgParseOption("rm", "readmates", "Second file of reads for paired-end", ArgParseArgument::INPUTFILE, "FILE"));
+    // setValidValues(parser, "rm", "fa fasta");
 
     addSection(parser, "Output Options");
     addOption(parser,
