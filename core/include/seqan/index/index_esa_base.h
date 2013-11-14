@@ -43,9 +43,9 @@ namespace SEQAN_NAMESPACE_MAIN
 	struct Preorder_;
 	struct Postorder_;
 
-	template <typename TDFSOrder = Postorder_, typename THideEmptyEdges = True>
+	template <typename TDfsOrder = Postorder_, typename THideEmptyEdges = True>
 	struct VSTreeIteratorTraits {
-		typedef TDFSOrder DFSOrder;
+		typedef TDfsOrder DfsOrder;
 		typedef THideEmptyEdges HideEmptyEdges;
 	};
 
@@ -63,7 +63,7 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
 ..include:seqan/index.h
 */
 /*!
- * @defgroup DFSOrder DFS Order
+ * @defgroup DfsOrder DFS Order
  * 
  * @brief Pre/postorder selection for depth-first search.
  * 
@@ -71,19 +71,19 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
  * order traversal of a suffix tree. In case of <tt>PreorderEmptyEdges</tt> and
  * <tt>PostorderEmptyEdges</tt>, the empty edges are also traversed.
  * 
- * @tag DFSOrder#Preorder
+ * @tag DfsOrder#Preorder
  * 
  * @brief Visit the node before its children.
  * 
- * @tag DFSOrder#PostorderEmptyEdges
+ * @tag DfsOrder#PostorderEmptyEdges
  * 
  * @brief Visit the node after its children, visit empty edges.
  * 
- * @tag DFSOrder#PreorderEmptyEdges
+ * @tag DfsOrder#PreorderEmptyEdges
  * 
  * @brief Visit the node before its children, visit empty edges.
  * 
- * @tag DFSOrder#Postorder
+ * @tag DfsOrder#Postorder
  * 
  * @brief Visit the node after its children.
  */
@@ -258,7 +258,7 @@ TA
  * 
  * @tparam TIterator A @link VSTreeIterator @endlink.
  * 
- * @return TReturn @link DFSOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
+ * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrde#Preorder @endlink
  *                 if <tt>TIterator</tt> is <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;&gt; &gt; &gt;</tt>
  *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
  */
