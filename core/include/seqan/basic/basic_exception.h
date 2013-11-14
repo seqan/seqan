@@ -344,16 +344,6 @@ inline char * toCString(Demangler<T> const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function toCTypeName()
-// ----------------------------------------------------------------------------
-
-template <typename T>
-inline char * toCTypeName(T const & t)
-{
-    return toCString(Demangler<T>(t));
-}
-
-// ----------------------------------------------------------------------------
 // Function globalExceptionHandler()
 // ----------------------------------------------------------------------------
 
@@ -365,7 +355,7 @@ static void globalExceptionHandler()
     }
     SEQAN_CATCH(Exception & e)
     {
-        SEQAN_FAIL("Uncaught exception of type %s: %s", toCTypeName(e), e.what());
+        SEQAN_FAIL("Uncaught exception of type %s: %s", toCString(Demangler<Exception>(e)), e.what());
     }
 }
 
