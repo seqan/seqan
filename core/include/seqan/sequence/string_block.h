@@ -511,28 +511,8 @@ push_back(
 }
 
 // ----------------------------------------------------------------------------
-// Function top()
+// Function back()
 // ----------------------------------------------------------------------------
-
-template<typename TValue, unsigned int SPACE>
-inline TValue &
-top(String<TValue, Block<SPACE> > & me)
-{
-    SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT_MSG(empty(me), "top() called on an empty string.");
-
-    return *me.lastValue;
-}
-
-template<typename TValue, unsigned int SPACE>
-inline TValue const &
-top(String<TValue, Block<SPACE> > const & me)
-{
-    SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT_MSG(empty(me), "top() called on an empty string.");
-
-    return *me.lastValue;
-}
 
 template<typename TValue, unsigned int SPACE>
 inline TValue &
@@ -555,15 +535,15 @@ back(String<TValue, Block<SPACE> > const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function topPrev()
+// Function backPrev()
 // ----------------------------------------------------------------------------
 
 template<typename TValue, unsigned int SPACE>
 inline TValue &
-topPrev(String<TValue, Block<SPACE> > & me)
+backPrev(String<TValue, Block<SPACE> > & me)
 {
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "topPrev() called on a string with less than 2 elements.");
+    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "backPrev() called on a string with less than 2 elements.");
 
     if (me.lastValue != me.blockFirst)
         return *(me.lastValue - 1);
@@ -573,10 +553,10 @@ topPrev(String<TValue, Block<SPACE> > & me)
 
 template<typename TValue, unsigned int SPACE>
 inline TValue const &
-topPrev(String<TValue, Block<SPACE> > const& me)
+backPrev(String<TValue, Block<SPACE> > const& me)
 {
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "topPrev() called on a string with less than 2 elements.");
+    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "backPrev() called on a string with less than 2 elements.");
 
    if (me.lastValue != me.blockFirst)
         return *(me.lastValue - 1);
