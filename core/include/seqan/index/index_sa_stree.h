@@ -605,7 +605,7 @@ nodeUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec
         desc.lastChar = back(it.history).lastChar;
         desc.repLen = value(it).repLen - 1;
         if (length(it.history) >= 2)
-            desc.parentRight = topPrev(it.history).range.i2;
+            desc.parentRight = backPrev(it.history).range.i2;
         else
             desc.parentRight = value(it).parentRight;
         return desc;
