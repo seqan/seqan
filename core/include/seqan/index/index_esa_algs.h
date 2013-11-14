@@ -491,7 +491,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Iterator<TSet>::Type			TSetIterator;
 		typedef typename Iterator<TSet const>::Type		TConstSetIterator;
 
-		typedef typename TBase::TStackEntry				TStackEntry;
+        typedef typename HistoryStackEntry_<TBase>::Type TStackEntry;
 
 //____________________________________________________________________________
 
