@@ -396,23 +396,6 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
   message (STATUS "  Determined version is ${SEQAN_VERSION_STRING}")
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
-
-macro(GIT_WC_INFO dir prefix)
-
-  execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --verify -q --short=7 HEAD
-    WORKING_DIRECTORY ${dir}
-    ERROR_QUIET
-    OUTPUT_VARIABLE ${prefix}_WC_REVISION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-  execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --simplify-by-decoration --pretty=%ai
-    WORKING_DIRECTORY ${dir}
-    ERROR_QUIET
-    OUTPUT_VARIABLE ${prefix}_WC_LAST_CHANGED_DATE
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-endmacro(GIT_WC_INFO)
-
 # ----------------------------------------------------------------------------
 # Determine and set SEQAN_DATE and SEQAN_REVISION variables.
 # ----------------------------------------------------------------------------
