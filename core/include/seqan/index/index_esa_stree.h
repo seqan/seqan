@@ -1943,7 +1943,7 @@ TA
 
         typename Iterator<Index<TText, TIndexSpec>, TSpec>::Type it(index);
 
-        if (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
+        if (IsSameType<typename TTraits::DFSOrder, Postorder_>::VALUE) {
             while (goDown(it)) ;
         }
 
@@ -2004,7 +2004,7 @@ TA
 
 		goRoot(it);
 
-		if (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
+		if (IsSameType<typename TTraits::DFSOrder, Postorder_>::VALUE) {
 			while (goDown(it)) ;
 			return;
 		}
