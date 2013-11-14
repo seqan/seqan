@@ -363,7 +363,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
  * @signature template <typename TIndex, typename TSpec> 
  *            Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > >
  * 
- * @tparam TSpec Specifies the depth-first search mode.  Types: @link DFSOrder @endlink
+ * @tparam TSpec Specifies the depth-first search mode.  Types: @link DfsOrder @endlink
  * @tparam TIndex Type of the container that can be iterated. Types: @link IndexDfi @endlink, @link IndexEsa @endlink,
  *                @link IndexWotd @endlink, @link FMIndex @endlink, @link IndexSa @endlink
  *
