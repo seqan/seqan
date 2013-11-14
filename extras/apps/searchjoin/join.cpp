@@ -99,15 +99,18 @@ struct Options
 
 void setupArgumentParser(ArgumentParser & parser)
 {
-    std::string rev  = "$Revision: 13234 $";
-    std::string date = "$Date: 2013-02-04 18:08:44 +0100 (Mon, 04 Feb 2013) $";
-
     setAppName(parser, "join");
     setShortDescription(parser, "Masai Join");
     setCategory(parser, "Databases");
 
-    setVersion(parser, "0.2 [" + rev.substr(11, rev.size() - 13) + "]");
-    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+#ifdef SEQAN_REVISION
+    setVersion(parser, "0.2 [" + std::string(SEQAN_REVISION) + "]");
+#else
+    setVersion(parser, "0.2");
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIERRORS\\fP>");
 
