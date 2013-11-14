@@ -2586,7 +2586,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
         {
 			typename Size<TIndex>::Type parentRight = 0;
 			if (length(it.history) >= 2)
-				parentRight = topPrev(it.history).range.i2;
+				parentRight = backPrev(it.history).range.i2;
 			return typename VertexDescriptor<TIndex>::Type(back(it.history).range, parentRight);
 		} else
 			return value(it);
