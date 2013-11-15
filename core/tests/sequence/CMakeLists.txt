@@ -50,6 +50,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_sequence COMMAND $<TARGET_FILE:test_sequence>)
-if (SEQAN_COMPILE_SEQUENCE_TESTS_V2)
 add_test (NAME test_test_sequence_v2 COMMAND $<TARGET_FILE:test_sequence_v2>)
-endif ()
