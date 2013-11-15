@@ -43,7 +43,7 @@ using namespace seqan;
 
 // /////////////////////////////////////////////////////////////////////////////
 // Parses options from command line parser and writes them into options object
-ArgumentParser::ParseResult
+bool
 _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions & msplazerOptions)
 {
 // IOREV _notio_
@@ -55,6 +55,11 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
         getArgumentValue(msplazerOptions.queryFile[i], parser, 1, i);
     for (unsigned i = 0; i < length(msplazerOptions.queryFile); ++i)
         std::cout << msplazerOptions.queryFile[i] << std::endl;
+    if (length(msplazerOptions.queryFile) > 1 && !isSet(parser, "m"))
+    {
+        std::cerr << "Please provide an input (Stellar) match file when using paired-end mode!" << std::endl;
+        return false;
+    }
     // getOptionValue(msplazerOptions.queryFile2, parser, "q2");
     // getOptionValue(msplazerOptions.outDir, parser, "i");
     getOptionValue(msplazerOptions.vcfOutFile, parser, "vcf");
@@ -106,15 +111,15 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     if (isSet(parser, "kmer") && options.qGram >= 1 / options.epsilon)
     {
         std::cerr << "Invalid parameter value: Please choose q-gram length lower than 1/epsilon." << std::endl;
-        return ArgumentParser::PARSE_ERROR;
+        return false;
     }
 
     if (options.numMatches > options.compactThresh)
     {
         std::cerr << "Invalid parameter values: Please choose numMatches <= sortThresh." << std::endl;
-        return ArgumentParser::PARSE_ERROR;
+        return false;
     }
-    return ArgumentParser::PARSE_OK;
+    return true;
 }
 
 // /////////////////////////////////////////////////////////////////////////////

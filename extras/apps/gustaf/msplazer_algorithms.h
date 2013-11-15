@@ -373,7 +373,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     }
                 }
 
-                std::cout << "Breakpoint " << bp << std::endl;
+                //std::cout << "Breakpoint " << bp << std::endl;
                 // Insert breakpoint
                 TEdgeDescriptor edge = addEdge(graph, m1, m2, cargo);
                 resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
