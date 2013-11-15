@@ -401,6 +401,49 @@ macro (seqan_get_version)
 endmacro (seqan_get_version)
 
 # ---------------------------------------------------------------------------
+# Function seqan_get_repository_info()
+#
+# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from the git or
+# svn repository.
+# ---------------------------------------------------------------------------
+
+macro (seqan_get_repository_info)
+  set (_SEQAN_SVN_DIR "${CMAKE_SOURCE_DIR}/.svn")
+  set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
+
+  # Get SVN or Git information.
+  if (EXISTS ${_SEQAN_SVN_DIR})
+    find_package (Subversion QUIET)
+    if (Subversion_FOUND)
+      Subversion_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
+    endif ()
+  elseif (EXISTS ${_SEQAN_GIT_DIR})
+    find_package (GitInfo QUIET)
+    if (GIT_FOUND)
+      GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
+    endif ()
+  else ()
+    message(STATUS "No revision system found.")
+  endif ()
+
+  # Set SeqAn date of last commit.
+  if (_SEQAN_WC_LAST_CHANGED_DATE)
+    set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}")
+    message (STATUS "  Determined repository date is ${SEQAN_DATE}")
+  else ()
+    message (STATUS "  Repository date not determined.")
+  endif ()
+
+  # Set SeqAn repository revision.
+  if (_SEQAN_WC_REVISION)
+    set (SEQAN_REVISION "${_SEQAN_WC_REVISION}" CACHE INTERNAL "SeqAn repository revision.")
+    message (STATUS "  Determined repository revision is ${SEQAN_REVISION}")
+   else ()
+    message (STATUS "  Repository revision not determined.")
+  endif ()
+endmacro (seqan_get_repository_info)
+
+# ---------------------------------------------------------------------------
 # Macro _seqan_setup_demo_test(cpp_file executable)
 #
 # When called with the file PATH.cpp, it will check whether PATH.cpp.stdout
