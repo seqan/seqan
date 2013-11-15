@@ -365,6 +365,56 @@ if (NOT _SEQAN_FIND_CUDA EQUAL -1)
   endif ()
 endif ()
 
+
+# ----------------------------------------------------------------------------
+# Determine and set SEQAN_VERSION_* variables.
+# ----------------------------------------------------------------------------
+
+if (NOT DEFINED SEQAN_VERSION_STRING)
+  if (NOT CMAKE_CURRENT_LIST_DIR)  # CMAKE_CURRENT_LIST_DIR only from cmake 2.8.3.
+    get_filename_component (CMAKE_CURRENT_LIST_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+  endif (NOT CMAKE_CURRENT_LIST_DIR)
+
+  try_run (_SEQAN_RUN_RESULT
+           _SEQAN_COMPILE_RESULT
+           ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
+           ${CMAKE_CURRENT_LIST_DIR}/SeqAnVersion.cpp
+           CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${SEQAN_INCLUDE_DIRS}"
+           COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
+           RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
+  if (NOT _RUN_OUTPUT)
+    message ("")
+    message ("ERROR: Could not determine SeqAn version.")
+    message ("COMPILE OUTPUT:")
+    message (${_COMPILE_OUTPUT})
+  endif (NOT _RUN_OUTPUT)
+
+  string (REGEX REPLACE ".*SEQAN_VERSION_MAJOR:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_MAJOR ${_RUN_OUTPUT})
+  string (REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
+  string (REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
+  string (REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" _SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
+
+  if (SEQAN_VERSION_PRE_RELEASE EQUAL 1)
+    set (_SEQAN_VERSION_DEVELOPMENT "TRUE")
+  else ()
+    set (_SEQAN_VERSION_DEVELOPMENT "FALSE")
+  endif ()
+
+  set (_SEQAN_VERSION_STRING "${_SEQAN_VERSION_MAJOR}.${_SEQAN_VERSION_MINOR}.${_SEQAN_VERSION_PATCH}")
+  if (_SEQAN_VERSION_DEVELOPMENT)
+    set (_SEQAN_VERSION_STRING "${_SEQAN_VERSION_STRING}_dev")
+  endif ()
+
+  # Cache results.
+  set (SEQAN_VERSION_MAJOR "${_SEQAN_VERSION_MAJOR}" CACHE INTERNAL "SeqAn major version.")
+  set (SEQAN_VERSION_MINOR "${_SEQAN_VERSION_MINOR}" CACHE INTERNAL "SeqAn minor version.")
+  set (SEQAN_VERSION_PATCH "${_SEQAN_VERSION_PATCH}" CACHE INTERNAL "SeqAn patch version.")
+  set (SEQAN_VERSION_PRE_RELEASE "${_SEQAN_VERSION_PRE_RELEASE}" CACHE INTERNAL "Whether version is a pre-release version version.")
+  set (SEQAN_VERSION_STRING "${_SEQAN_VERSION_STRING}" CACHE INTERNAL "SeqAn version string.")
+
+  message (STATUS "  Determined version is ${SEQAN_VERSION_STRING}")
+endif (NOT DEFINED SEQAN_VERSION_STRING)
+
 # ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
