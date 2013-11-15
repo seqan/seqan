@@ -339,6 +339,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 	template < typename TText_, typename TShapeSpec, typename TSpec >
 	class Index<TText_, IndexQGram<TShapeSpec, TSpec> > {
 	public:
+        typedef typename Member<Index, QGramText>::Type         TTextMember;
 		typedef typename Fibre<Index, QGramText>::Type			TText;
 		typedef typename Fibre<Index, QGramSA>::Type			TSA;
 		typedef typename Fibre<Index, QGramDir>::Type			TDir;
@@ -349,7 +350,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 		typedef typename Cargo<Index>::Type						TCargo;
 		typedef typename Size<Index>::Type						TSize;
 
-		Holder<TText>	text;		// underlying text
+		TTextMember     text;		// underlying text
 		TSA				sa;			// suffix array sorted by the first q chars
 		TDir			dir;		// bucket directory
 		TCounts			counts;		// counts each q-gram per sequence
