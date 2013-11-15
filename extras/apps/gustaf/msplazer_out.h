@@ -361,7 +361,10 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
 
     // Compute ALT columns and a map to the ALT.
     appendValue(record.alt, record.ref[0]);
-    append(record.alt, bp.insertionSeq);
+    if (length(bp.insertionSeq) < 20)
+        append(record.alt, bp.insertionSeq);
+    else
+        append(record.alt, "<INS>");
 
     // Create genotype infos.
     appendValue(record.genotypeInfos, "1");
@@ -390,7 +393,10 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     appendValue(record.ref, record.alt[0]); // std::max(0,
-    append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+    if ((bp.endSeqPos - bp.startSeqPos) < 20)
+        append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+    else
+        append(record.ref, "<DEL>");
 
     // Create genotype infos.
     appendValue(record.genotypeInfos, "1");
@@ -605,7 +611,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 1 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -643,7 +649,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 2 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -684,7 +690,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         // Write record and clear REF and ALT values
         if (writeRecord(vcfOut, record) != 0)
         {
-            std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+            std::cerr << "Error while writing breakpoint translocation entry 3 vcf record!" << std::endl;
             return 1;
         }
         clear(record.ref);
@@ -713,7 +719,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         // Write record and clear REF and ALT values
         if (writeRecord(vcfOut, record) != 0)
         {
-            std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+            std::cerr << "Error while writing breakpoint translocation entry 4 vcf record!" << std::endl;
             return 1;
         }
         clear(record.ref);
@@ -754,7 +760,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 5 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -797,7 +803,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 6 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -907,7 +913,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
                 __int32 id2 = maxValue<int>();
                 id2 = _getrID(databaseIDs, bp.endSeqId);
                 if (_writeVcfTranslocation(vcfOut, bp, databases[id], databases[id2], id, id2, i))
-                        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+                        std::cerr << "Error while writing breakpoint translocation vcf record!" << std::endl;
 
             }
         }
