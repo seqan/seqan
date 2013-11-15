@@ -51,8 +51,8 @@ template <typename TText>
 class Index<TText, IndexSa<InfixSegment> >
 {
 public:
-    Holder<typename Fibre<Index, EsaText>::Type>    text;
-    Holder<typename Fibre<Index, EsaSA>::Type>      sa;
+    typedef typename Member<Index, EsaText>::Type text;
+    Holder<typename Fibre<Index, EsaSA>::Type>    sa;
 
     Index() {}
 

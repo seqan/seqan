@@ -828,11 +828,13 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 
 
 	template <typename TText, typename TSpec>
-	inline Reference<Member<Index<TText, TSpec>, FibreText> > _dataHost(Index<TText, TSpec> & index) {
+	inline typename Member<Index<TText, TSpec>, FibreText>::Type &
+    _dataHost(Index<TText, TSpec> & index) {
 		return index.text;
 	}
 	template <typename TText, typename TSpec>
-	inline Reference<Member<Index<TText, TSpec>, FibreText> const> & _dataHost(Index<TText, TSpec> const &index) {
+	inline typename Member<Index<TText, TSpec> const, FibreText>::Type &
+    _dataHost(Index<TText, TSpec> const &index) {
 		return index.text;
 	}
 
