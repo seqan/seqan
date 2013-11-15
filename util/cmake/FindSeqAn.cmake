@@ -347,14 +347,12 @@ list(FIND SEQAN_FIND_DEPENDENCIES "CUDA" _SEQAN_FIND_CUDA)
 mark_as_advanced(_SEQAN_FIND_CUDA)
 
 set (SEQAN_HAS_CUDA FALSE)
-if (NOT _SEQAN_FIND_CUDA EQUAL -1)
+if (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
   find_package(CUDA QUIET)
   if (CUDA_FOUND)
     set (SEQAN_HAS_CUDA TRUE)
     # Build CUDA targets from architecture 2.0 upwards.
     set (SEQAN_NVCC_FLAGS "-arch sm_20")
-    # Turn CUDA cross-execution-space call warnings into errors.
-#    list (APPEND SEQAN_NVCC_FLAGS --Werror=cross-execution-space-call)
     # Add flags for the CUDA compiler.
     list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
     list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
@@ -362,8 +360,10 @@ if (NOT _SEQAN_FIND_CUDA EQUAL -1)
     list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -lineinfo")
     # Enable debug symbols in device code.
 #    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -G -lineinfo")
+    # Turn CUDA cross-execution-space call warnings into errors.
+#    list (APPEND SEQAN_NVCC_FLAGS --Werror=cross-execution-space-call)
   endif ()
-endif ()
+endif (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
 
 
 # ----------------------------------------------------------------------------
