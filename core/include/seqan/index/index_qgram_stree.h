@@ -366,7 +366,7 @@ _goUp(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<Par
         value(it).hash = back(it.history).hash;
         value(it).lastChar = back(it.history).lastChar;
         value(it).repLen--;
-        pop(it.history);
+        eraseBack(it.history);
         return true;
     }
     return false;

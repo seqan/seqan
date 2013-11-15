@@ -671,7 +671,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 	inline void _dfsOnPop(Iter<TIndex, VSTree< BottomUp<TSpec> > > &it, TSize const) {
         _dfsRange(it).i1 = back(it.history).range.i1;
 		_dfsLcp(it) = back(it.history).range.i2;
-		pop(it.history);
+		eraseBack(it.history);
 	}
 
 	template < typename TIndex, typename TSpec, typename TElement >
@@ -1005,8 +1005,8 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 		_lca.history = prefix(a.history, i0);
 
 		// pop current intervals
-		pop(a.history);
-		pop(b.history);
+		eraseBack(a.history);
+		eraseBack(b.history);
 		goUp(_lca);
 
 		return i0;
@@ -1078,8 +1078,8 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 		TSize _lcp = (i0 > 0)? repLength(container(a), TDesc(a.history[i0 - 1], 0)): 0;
 
 		// pop current intervals
-		pop(a.history);
-		pop(b.history);
+		eraseBack(a.history);
+		eraseBack(b.history);
 
 		return _lcp;
 	}
@@ -2531,7 +2531,7 @@ ttobe
 	{
 		if (!empty(it.history)) {
 			value(it).range = back(it.history).range;
-			pop(it.history);
+			eraseBack(it.history);
 			if (!empty(it.history))
 				value(it).parentRight = back(it.history).range.i2;	// copy right boundary of parent's range
 			return true;
