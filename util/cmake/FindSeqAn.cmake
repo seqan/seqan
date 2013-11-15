@@ -95,11 +95,10 @@
 #  SEQAN_VERSION_MINOR
 #  SEQAN_VERSION_PATCH
 #
-# The following flag defines whether this is a trunk version and the
-# version given by the variables above is meant to be used as the previously
-# released version.
+# The following variables give the date and revision of the SeqAn library.
 #
-#  SEQAN_VERSION_DEVELOPMENT
+#  SEQAN_DATE
+#  SEQAN_REVISION
 #
 # When you want to use the SeqAn build system and the core/extras/sandbox
 # layout then you can switch this on by setting the following variable to ON.
@@ -443,5 +442,4 @@ if (SEQAN_FIND_DEBUG)
   message("  SEQAN_VERSION_MAJOR        ${SEQAN_VERSION_MAJOR}")
   message("  SEQAN_VERSION_MINORG       ${SEQAN_VERSION_MINOR}")
   message("  SEQAN_VERSION_PATCH        ${SEQAN_VERSION_PATCH}")
-  message("  SEQAN_VERSION_DEVELOPMENT  ${SEQAN_VERSION_DEVELOPMENT}")
 endif ()
