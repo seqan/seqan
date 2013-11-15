@@ -95,11 +95,6 @@
 #  SEQAN_VERSION_MINOR
 #  SEQAN_VERSION_PATCH
 #
-# The following variables give the date and revision of the SeqAn library.
-#
-#  SEQAN_DATE
-#  SEQAN_REVISION
-#
 # When you want to use the SeqAn build system and the core/extras/sandbox
 # layout then you can switch this on by setting the following variable to ON.
 #
@@ -397,49 +392,6 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
-# Determine and set SEQAN_DATE and SEQAN_REVISION variables.
-# ----------------------------------------------------------------------------
-
-if (NOT DEFINED SEQAN_DATE OR NOT DEFINED SEQAN_REVISION)
-
-  set (_SEQAN_SVN_DIR "${CMAKE_SOURCE_DIR}/.svn")
-  set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
-
-  if (EXISTS ${_SEQAN_SVN_DIR})
-    find_package (Subversion QUIET)
-    if (Subversion_FOUND)
-      Subversion_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
-    endif ()
-  elseif (EXISTS ${_SEQAN_GIT_DIR})
-    find_package (GitInfo QUIET)
-    if (GIT_FOUND)
-      GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
-    endif ()
-  else ()
-    message(STATUS "No revision system found.")
-  endif ()
-
-  # Cache results.
-  if (NOT DEFINED SEQAN_DATE)
-    if (_SEQAN_WC_LAST_CHANGED_DATE)
-      set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}" CACHE INTERNAL "SeqAn date of last commit.")
-      message (STATUS "  Determined date is ${SEQAN_DATE}")
-    else ()
-      message (STATUS "  Date not determined.")
-    endif ()
-  endif (NOT DEFINED SEQAN_DATE)
-  if (NOT DEFINED SEQAN_REVISION)
-    if (_SEQAN_WC_REVISION)
-      set (SEQAN_REVISION "${_SEQAN_WC_REVISION}" CACHE INTERNAL "SeqAn repository revision.")
-      message (STATUS "  Determined revision is ${SEQAN_REVISION}")
-    else ()
-      message (STATUS "  Revision not determined.")
-    endif ()
-  endif (NOT DEFINED SEQAN_REVISION)
-
-endif (NOT DEFINED SEQAN_DATE OR NOT DEFINED SEQAN_REVISION)
-
-# ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
 
@@ -466,7 +418,4 @@ if (SEQAN_FIND_DEBUG)
   message("  SEQAN_VERSION_MAJOR        ${SEQAN_VERSION_MAJOR}")
   message("  SEQAN_VERSION_MINORG       ${SEQAN_VERSION_MINOR}")
   message("  SEQAN_VERSION_PATCH        ${SEQAN_VERSION_PATCH}")
-  message("")
-  message("  SEQAN_DATE                 ${SEQAN_DATE}")
-  message("  SEQAN_REVISION             ${SEQAN_REVISION}")
 endif ()
