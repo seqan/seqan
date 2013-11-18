@@ -446,7 +446,7 @@ getValue(ContainerView<TContainer, TSpec> const & view, TPos pos)
 
 template <typename TContainer, typename TSpec>
 SEQAN_HOST_DEVICE inline
-typename Difference<ContainerView<TContainer, TSpec> >::Type
+typename Size<ContainerView<TContainer, TSpec> >::Type
 length(ContainerView<TContainer, TSpec> const & view)
 {
     return view._end - view._begin;
