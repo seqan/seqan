@@ -116,7 +116,7 @@ getRank(RankDictionary<bool, Naive<TSpec> > const & dict, TPos pos, bool c = tru
     TFibreRanksIterator ranksEnd   = end(dict.ranks, Standard());
     TFibreRanksIterator ranksIt    = ranksBegin;
 
-    for (; ranksIt != ranksEnd && value(ranksIt) <= pos; ++ranksIt);
+    for (; ranksIt != ranksEnd && value(ranksIt) <= pos; ++ranksIt) ;
 
     return c ? ranksIt - ranksBegin : pos + 1 - (ranksIt - ranksBegin);
 }
@@ -137,7 +137,7 @@ getValue(RankDictionary<bool, Naive<TSpec> > & dict, TPos pos)
     TFibreRanksIterator ranksEnd   = end(dict.ranks, Standard());
     TFibreRanksIterator ranksIt    = ranksBegin;
 
-    for (; ranksIt != ranksEnd && value(ranksIt) < pos; ++ranksIt);
+    for (; ranksIt != ranksEnd && value(ranksIt) < pos; ++ranksIt) ;
 
     return ranksIt != ranksEnd && value(ranksIt) == pos;
 }
@@ -154,7 +154,7 @@ getValue(RankDictionary<bool, Naive<TSpec> > const & dict, TPos pos)
     TFibreRanksIterator ranksEnd   = end(dict.ranks, Standard());
     TFibreRanksIterator ranksIt    = ranksBegin;
 
-    for (; ranksIt != ranksEnd && value(ranksIt) < pos; ++ranksIt);
+    for (; ranksIt != ranksEnd && value(ranksIt) < pos; ++ranksIt) ;
 
     return ranksIt != ranksEnd && value(ranksIt) == pos;
 }
