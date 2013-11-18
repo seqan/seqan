@@ -19,6 +19,11 @@
             id = setTimeout(function() { $('body').scrollspy('refresh'); }, 500);
         });
         
+        // shows 'open in frameset' link if opened separately
+		if(window == window.parent && window.name != 'list') {
+        	$('#content').prepend('<div class="open-in-frame alert alert-info"><a href="index.html#' + window.location.href.replace(/^.*\/|\.[^.]*$/g, '') + '"><strong>Looking for a different entry?</strong> Unhide the navigation bar and start your search.</a></div>'); 
+        }
+        
         // if loaded in a frame, checks the addresses hash and uses it to load the
         // specified page in the right frame (e.g. docs.seqan.de/index.html#abc will open abc.html in the main frame) 
         if(window != window.parent && window.name == 'list') {
