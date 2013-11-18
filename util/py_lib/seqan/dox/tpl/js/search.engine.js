@@ -271,6 +271,12 @@ and based on the Tipue Search, http://www.tipue.com
                 
                 var langEntities = settings.queryLangEntityInput.val();
                 if(!langEntities) langEntities = [];
+                
+                if(settings.queryInput.val() != '') {
+                	settings.queryInput.addClass('not-empty');
+                } else {
+                	settings.queryInput.removeClass('not-empty');
+                }
 
                 var words = $.trim(settings.queryInput.val().toLowerCase()).split(' ');
                 var nonStopWords = getNonStopWords(words, settings.stopWords);
