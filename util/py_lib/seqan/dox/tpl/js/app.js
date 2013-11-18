@@ -145,8 +145,12 @@ function generateTOC() {
     lastTag = thisTag;
   });
   if (!show) return;
-  html = '<div id="toc"><p class="title"><strong>Table of Contents</strong></p></div>';
-  $('#content').prepend(html);
+  var html = '<div id="toc"><p class="title"><strong>Table of Contents</strong></p></div>';
+  if($('h1').length > 0) {
+  	$('h1').first().after(html);
+  } else {
+  	$('#content').prepend(html);
+  }
   $('#toc').append(_toc);
 }
 
