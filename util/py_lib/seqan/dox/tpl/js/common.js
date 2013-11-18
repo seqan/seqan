@@ -19,8 +19,28 @@
             id = setTimeout(function() { $('body').scrollspy('refresh'); }, 500);
         });
         
-        alert("ok");
-              
+        // if loaded in a frame, checks the addresses hash and uses it to load the
+        // specified page in the right frame (e.g. docs.seqan.de/index.html#abc will open abc.html in the main frame) 
+        if(window != window.parent && window.name == 'list') {
+        	try {
+        		var redirectTo = null;
+        		if($.urlParam('p', window.parent.location)) {
+        			redirectTo = $.urlParam('p', window.parent.location) + '.html';
+        		} else {
+        			var hash = window.parent.location.hash;
+        			if(typeof hash === 'string' && hash.length > 1) {
+        				redirectTo = hash.substr(1) + '.html';
+        			}
+        		}
+        		
+        		if(redirectTo) {
+        			window.parent['main'].location = redirectTo;
+        		}
+    		} catch(e) {
+    		    // some browsers like Chrome don't allow this cross-frame access if using file://
+    		}
+        }
+ 
         // tooltips
         $('[title]:not([href])').tooltip({ container: 'body' });
 
@@ -36,7 +56,8 @@
  */
 (function ($) {
 	$.extend({
-		urlParam: function(name) {
+		urlParam: function(name, location) {
+			if(!location) location = window.location;
             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
 		}
 	});
