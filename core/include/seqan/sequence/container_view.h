@@ -409,6 +409,7 @@ SEQAN_HOST_DEVICE inline
 typename Reference<ContainerView<TContainer, TSpec> >::Type
 value(ContainerView<TContainer, TSpec> & view, TPos pos)
 {
+    SEQAN_ASSERT_LT_MSG(pos, static_cast<TPos>(length(view)), "Trying to acces an element behind the last one!");
     return *(view._begin + pos);
 }
 
@@ -417,6 +418,7 @@ SEQAN_HOST_DEVICE inline
 typename Reference<ContainerView<TContainer, TSpec> const>::Type
 value(ContainerView<TContainer, TSpec> const & view, TPos pos)
 {
+    SEQAN_ASSERT_LT_MSG(pos, static_cast<TPos>(length(view)), "Trying to acces an element behind the last one!");
     return *(view._begin + pos);
 }
 
@@ -429,6 +431,7 @@ SEQAN_HOST_DEVICE inline
 typename GetValue<ContainerView<TContainer, TSpec> >::Type
 getValue(ContainerView<TContainer, TSpec> & view, TPos pos)
 {
+    SEQAN_ASSERT_LT_MSG(pos, static_cast<TPos>(length(view)), "Trying to acces an element behind the last one!");
     return getValue(view._begin + pos);
 }
 
@@ -437,6 +440,7 @@ SEQAN_HOST_DEVICE inline
 typename GetValue<ContainerView<TContainer, TSpec> const>::Type
 getValue(ContainerView<TContainer, TSpec> const & view, TPos pos)
 {
+    SEQAN_ASSERT_LT_MSG(pos, static_cast<TPos>(length(view)), "Trying to acces an element behind the last one!");
     return getValue(view._begin + pos);
 }
 
