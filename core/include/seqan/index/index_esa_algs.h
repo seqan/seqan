@@ -491,7 +491,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Iterator<TSet>::Type			TSetIterator;
 		typedef typename Iterator<TSet const>::Type		TConstSetIterator;
 
-		typedef typename TBase::TStackEntry				TStackEntry;
+        typedef typename HistoryStackEntry_<TBase>::Type TStackEntry;
 
 //____________________________________________________________________________
 
@@ -570,7 +570,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			if (length(setStack) < 2) return 0;
 
 			TFractionCompound const &child  = back(setStack);
-			TFractionCompound const &parent = topPrev(setStack);
+			TFractionCompound const &parent = backPrev(setStack);
 
 			TConstSetIterator childFraction	= begin(child.set);
 			TConstSetIterator childEnd		= end(child.set);

@@ -499,7 +499,7 @@ _historyPop(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec > >, VSTree<TopDown<P
     value(it).range = back(it.history).range;
     value(it).repLen = back(it.history).repLen;
     value(it).lastChar = back(it.history).lastChar;
-    pop(it.history);
+    eraseBack(it.history);
 }
 
 // ----------------------------------------------------------------------------

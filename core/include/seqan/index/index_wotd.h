@@ -894,7 +894,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			value(it).node = entry.node;
 			value(it).parentRepLen -= entry.edgeLen;
 			value(it).edgeLen = entry.edgeLen;
-			pop(it.history);
+			eraseBack(it.history);
 			return true;
 		}
 		return false;
@@ -913,7 +913,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			value(it).parentRepLen -= entry.edgeLen;
 			value(it).edgeLen = entry.edgeLen;
 			value(it).range = entry.range;
-			pop(it.history);
+			eraseBack(it.history);
 			if (!empty(it.history))
 				value(it).parentRight = back(it.history).range.i2;	// copy right boundary of parent's range
 			return true;
