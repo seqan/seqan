@@ -333,16 +333,22 @@ html.list {
 		form#search {
 			.pre-action {			
 				margin: 10px;
-				padding: 0;
 				
 				h1 {
 					&:before {
-						position: relative;
+						position: absolute;
 						top: 0;
 						left: 0;
+						right: 0;
 						margin-left: auto;
 						margin-right: auto;
 					}
+					
+					a {
+						padding: 65px 0 0 0;
+						background-position: center top;
+					}
+					
 					font-size: 1.2em;
 					text-align: center;
 				}
@@ -433,26 +439,49 @@ html.list {
 			}
 		}
 		
-		li.active a {
+		li.active a:not(.home) {
 			color: #000;
 			font-weight: 700 !important;
 			text-shadow: none;
 		}
 		
-		li.top a {
-			text-align: center;
-			.bullet-icon("\e079", after, 1em, 1em, auto, auto);
-			&:before { margin-left: 3em; }
-			&:after { margin-right: 3em; }
+		li.active a.top i.glyphicon-arrow-up {
+			&:before { content: "\e092"; }
+		}
+		
+		li.meta {
+			a {
+				width: 50%;
+				display: inline-block;
+				text-align: center;
+				padding-left: 0;
+				padding-right: 0;
+				&:before { display: none }
+				
+				border-left: 1px solid lighten(@primary, 45%);
+			}
+			
+			a:first-child {
+				border-left: none;
+			}
+			
 			border-bottom: 1px solid lighten(@primary, 45%);
+		}
+		
+		li.home {
+			color: #000;background-color: #d9edf7;
+			//&:hover { background-color: #3a87ad; color: #fff; }
+		
+			a {
+				text-align: center;
+				padding-left: .5em;
+				&:before { display: none }
+				border-bottom: 1px solid lighten(@primary, 45%);
+			}
 		}
 		
 		li:last-child a {
     		border-bottom: none; // if only top link
-		}
-		
-		li.top:not(.active) a {
-			&:before, &:after { content: "\e113"; }
 		}
 	}
 }
@@ -706,7 +735,6 @@ ul.params {
 		margin-top: -10px;
 		margin-bottom: 5px;
 		
-		padding: 36px 0px 30px 100px;
 		
 		h1 {
 			position: relative;
@@ -714,32 +742,27 @@ ul.params {
 			margin: 0;
 			font-size: 23px;
 			
-			&:before {
-				position: absolute;
+			a {
 				display: block;
-				content: "";
-				left: -100px;
-				top: -20px;
-				width: 90px;
-				height: 60px;
+				padding: 37px 0px 29px 100px;
 				background-image: url(../img/seqan_logo.png);
 				background-size: 90px 60px;
 				background-repeat: no-repeat;
+				background-position: center left;
 			}
 		}
 	}
 	
 	[type=search] {
 		width: 100%;
+		
 		background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGJhc2VQcm9maWxlPSJmdWxsIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpldj0iaHR0cDovL3d3dy53My5vcmcvMjAwMS94bWwtZXZlbnRzIj4KPGc%2BCgk8cG9seWdvbiBmaWxsPSIjNjY2IiBwb2ludHM9IjkuMjA3LDYuMTI2IDcuNzkzLDcuNTQxIDExLjc5MywxMS41NDEgMTMuMjA3LDEwLjEyNiIgLz4KCTxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik01LjkxNywyYzEuNjA4LDAsMi45MTcsMS4zMDgsMi45MTcsMi45MTdTNy41MjUsNy44MzMsNS45MTcsNy44MzNTMyw2LjUyNSwzLDQuOTE3UzQuMzA4LDIsNS45MTcsMgoJCSBNNS45MTcsMEMzLjIwMSwwLDEsMi4yMDEsMSw0LjkxN3MyLjIwMSw0LjkxNyw0LjkxNyw0LjkxN3M0LjkxNy0yLjIwMSw0LjkxNy00LjkxN0MxMC44MzMsMi4yMDEsOC42MzIsMCw1LjkxNywwTDUuOTE3LDB6IiAvPgo8L2c%2BCjwvc3ZnPgo%3D');
 		background-position: -24px 10px;
 		
-		&:before {
-			display: block;
-			content: "dddd";
-			position: absolute;
-			top: 1px;
-			left: 1px;
+		&.not-empty {
+			//background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAlUlEQVR42o2RSQrDMAxFc5KCD5MTBgw5ioejeFMoybYhyaLdqPpFKp9AaAwPeXgSQu5E5EvO%2BaZE5a6IxRH37rjYKyukI6WUDe%2FwvOKTBSalhIQFHuTBH7Baa9gj4siJA%2BSHwgJHbmeC%2FKLso8i8%2F1ZGz1w5Xuw5Qg42Hjmj1rrD%2B835LEHvd58z%2F2CwH5tNnO0c3PkAGud706ytt0YAAAAASUVORK5CYII%3D');
+			//background-position: center right;
+			//background-repeat: no-repeat;
 		}
 	}
 	
