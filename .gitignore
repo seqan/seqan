@@ -1,1 +1,3 @@
 build/
+dox/html
+*.pyc
