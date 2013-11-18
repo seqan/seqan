@@ -300,8 +300,17 @@ inline char * toCString(Demangler<T> const & me)
 // ----------------------------------------------------------------------------
 
 #ifdef SEQAN_EXCEPTIONS
+// Declare global exception handler.
+static void globalExceptionHandler();
+
+// Install global exception handler.
+static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
+
 static void globalExceptionHandler()
 {
+    // Suppress unused variable warning.
+    (void)_globalExceptionHandler;
+
     SEQAN_TRY
     {
         SEQAN_RETHROW;
@@ -311,9 +320,6 @@ static void globalExceptionHandler()
         SEQAN_FAIL("Uncaught exception of type %s: %s", toCString(Demangler<Exception>(e)), e.what());
     }
 }
-
-// Install global exception handler.
-static const std::terminate_handler _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
 #endif
 
 }  // namespace seqan
