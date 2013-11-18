@@ -281,7 +281,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			while (lcp_i < back(stack).i2)
 			{
 				lastIndex = back(stack);
-				pop(stack);
+				eraseBack(stack);
 
 				top = back(stack);
 				if (lcp_i < top.i2 && top.i2 != lastIndex.i2 /*&& top.i1 != lastIndex_nextl*/) {
