@@ -120,13 +120,6 @@ typedef Tag<FibreTempSA_> const         FibreTempSA;
 typedef Tag<FibreLF_> const             FibreLF;
 typedef Tag<FibreSALF_> const           FibreSALF;
 
-// ----------------------------------------------------------------------------
-// Tag FinderFMIndex
-// ----------------------------------------------------------------------------
-
-struct FinderFMIndex_;
-typedef Tag<FinderFMIndex_> FinderFMIndex;
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
