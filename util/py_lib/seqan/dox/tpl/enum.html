@@ -3,15 +3,13 @@
 {% block title %}{{ enum.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="enum" data-pimped="true"><a href="language_entities.html#enum">Enum</a> {{ enum.title|e }}</h1>
+<h1 data-lang-entity="enum" data-pimped="true"><a href="page_LanguageEntities.html#enum">Enum</a> <span>{{ enum.title|e }}<div>{{ sections.brief(enum) }}</div></span></h1>
 
-{{ sections.top_box(enum) }}
+<div class="overview">
+	{{ sections.top_box(enum) }}
 
-<!-- @brief -->
-{{ sections.brief(enum) }}
-
-<!-- signatures -->
-{{ sections.signatures(enum) }}
+	{{ sections.signatures(enum) }}
+</div>
 
 <!--
  =============================================================================

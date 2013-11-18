@@ -5,7 +5,7 @@
 import re
 
 # Regular expressions used in LEXER_TOKENS.
-IDENTIFIER = r'[_a-zA-Z][_a-zA-Z0-9]*'
+IDENTIFIER = r'[\-_a-zA-Z][\-_a-zA-Z0-9]*'
 HTML_ATTRIBUTE = IDENTIFIER + r'="[^"]*"'
 HTML_TAG = r'<(?:/)?\s*' + IDENTIFIER + '(?:\s+' + HTML_ATTRIBUTE + ')*\s*(?:/)?>'
 
@@ -25,8 +25,8 @@ CLAUSE_STARTING = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_SEE', 'COMM
                        'COMMAND_SECTION', 'COMMAND_SUBSECTION', 'COMMAND_INCLUDE',
                        'COMMAND_EXTENDS', 'COMMAND_IMPLEMENTS', 'COMMAND_SNIPPET',
                        'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
-                       'COMMAND_INTERNAL', 'COMMAND_AKA'])
-NON_PARAGRAPH = set(['COMMAND_ENDCODE'])
+                       'COMMAND_INTERNAL', 'COMMAND_AKA', 'COMMAND_HTMLONLY'])
+NON_PARAGRAPH = set(['COMMAND_ENDCODE', 'COMMAND_ENDHTMONLY'])
 LINE_BREAKS = set(['BREAK', 'EMPTYLINE'])
 
 # The lexer tokens.
@@ -73,6 +73,10 @@ LEXER_TOKENS = (
     # Lexer tokens for commands for inline use.
     ('COMMAND_LINK',         r'@link'),
     ('COMMAND_ENDLINK',      r'@endlink'),
+
+    # Lexer tokens for HTML-only blocks.
+    ('COMMAND_HTMLONLY',     r'@htmlonly'),
+    ('COMMAND_ENDHTMLONLY',  r'@endhtmlonly'),
     
     # Space.
     ('SPACE',                r'[ \t]+'),

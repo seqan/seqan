@@ -69,10 +69,13 @@ class TextNodeToHtml(object):
         self.heading_table = {}
         self.path_mgr = path_mgr
         for i in range(0, 10):
-            self.heading_table['h%d' % i] = 'h%d' % (i + start_heading)
+            self.heading_table['h%d' % i] = 'h%d' % (i + start_heading - 1)
 
     def openTag(self, text_node, **kwargs):
-        res = ['<', self.heading_table.get(text_node.type, text_node.type)]
+        if text_node.raw_html:
+            res = ['<', text_node.type]
+        else:
+            res = ['<', self.heading_table.get(text_node.type, text_node.type)]
         for key, value in text_node.attrs.iteritems():
             res += [' ', key, '=', '"', repr(value)[1:-1], '"']
         for key, value in kwargs.iteritems():
@@ -81,7 +84,10 @@ class TextNodeToHtml(object):
         return res
 
     def closeTag(self, text_node):
-        return ['</', self.heading_table.get(text_node.type, text_node.type), '>']
+        if text_node.raw_html:
+            return ['</', text_node.type, '>']
+        else:
+            return ['</', self.heading_table.get(text_node.type, text_node.type), '>']
 
     def convertCode(self, source_code):
         # TODO(holtgrew): Interpret source type.
@@ -99,7 +105,6 @@ class TextNodeToHtml(object):
             self.res.append(text_node.text)
         elif text_node.type == 'code':
             if text_node.attrs.get('type') in ['.cpp', '.h']:
-                self.res.append('<div>')
                 self.res.append(self.convertCode(text_node.children[0].text))
                 target_path = text_node.attrs.get('path')
                 if self.path_mgr:
@@ -114,7 +119,6 @@ class TextNodeToHtml(object):
                         '<div class="path_label"><span class="label">Demo:'
                         '</span> <a href="%s" target="_top">%s</a></div>' %
                         (target_path, text_node.attrs.get('path')))
-                self.res.append('</div>')
             elif text_node.attrs.get('type') in ['.console', '.stdout', '.stderr']:
                 self.res.append('<pre class="console">' + escapeForXml(text_node.children[0].text) + '</pre>')
             else:
@@ -168,6 +172,7 @@ def createTransLink(doc, path_mgr):
         return transTextNode(text_node, path_mgr)
     return transLink
 
+
 def createNameToPath(doc):
     path_converter = PathConverter(doc)
     def convertPath(entry_name):
@@ -215,14 +220,15 @@ class PathConverter(object):
             title = None
             if entry.kind == 'page':
                 title = entry.title
-            return path, title
+            return path, title, entry
         elif self.doc.entries.get(name):
             first, second = proc_doc.splitSecondLevelEntry(name)
-            entry = self.doc.top_level_entries.get(first)
-            path = '%s_%s.html#%s' % (entry.kind, escapeName(entry.name), escapeName(name))
-            return path, name
+            father = self.doc.top_level_entries.get(first)
+            entry = self.doc.second_level_entries.get(name)
+            path = '%s_%s.html#%s' % (father.kind, escapeName(father.name), escapeName(name))
+            return path, name, entry
         else:
-            return None, None
+            return None, None, None
 
 
 # TODO(holtgrew): Should be doable in a simpler way than recursing ourselves here.  Visitor pattern for TextNode?
@@ -249,13 +255,15 @@ class LinkConverter(proc_doc.TextNodeVisitor):
         if not a_node.attrs.get('href', '').startswith('seqan:'):
             return
         target = a_node.attrs['href'][6:]
-        target_path, target_title = self.path_converter.convert(target)
+        target_path, target_title, target_obj = self.path_converter.convert(target)
         if target_title:
             target_title = proc_doc.TextNode(text=target_title)
         else:
             target_title = proc_doc.TextNode(text=target)
         # TODO(holtgrew): Catch target_title being None, target_path not found!
         if target_path is not None:
+            if target_obj:
+                a_node.attrs['data-lang-entity'] = target_obj.kind
             a_node.attrs['href'] = target_path
             if not a_node.children:
                 a_node.addChild(target_title)
@@ -268,7 +276,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             if a_node.attrs.get('href'):
                 del a_node.attrs['href']
             #a_node.addChild(target_title)
-            
+    
     def _replaceNode(self, text_node):
         if text_node.type == '<text>':
             return text_node
@@ -341,7 +349,7 @@ class HtmlWriter(object):
         self.generateLists(self.doc)
         self.translateLinks(self.doc)
         self.updateImagePaths(self.doc)
-        self.generatePages(self.doc)
+        self.generatePages(self.doc, self.config)
         self.generateDemoPages(self.doc)
         self.generateSearchIndex(self.doc)
         self.generateLanguageEntities()
@@ -382,7 +390,7 @@ class HtmlWriter(object):
     def generateLists(self, doc):
         """Generate top level/second level/page index."""
         with open(self.path_manager.getListPath(), 'w') as f:
-            f.write(self.tpl_manager.render('list.html', doc=doc,
+            f.write(self.tpl_manager.render('list.html', doc=doc, config=self.config,
                                             development=self.args.development))
 
     def translateLinks(self, doc):
@@ -398,7 +406,7 @@ class HtmlWriter(object):
             #self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(updater)
 
-    def generatePages(self, doc):
+    def generatePages(self, doc, config):
         """Generate pages for proc_doc.Documentation entries."""
         try:
             import pygments, pygments.lexers, pygments.formatters
@@ -409,12 +417,13 @@ class HtmlWriter(object):
         for entry in doc.top_level_entries.values():
             path = self.path_manager.getEntryPath(entry)
             #self.log('Creating %s', path)
-            self.generatePage(entry, path, doc, pygments_style)
+            self.generatePage(entry, path, doc, config, pygments_style)
 
-    def generatePage(self, entry, path, doc, pygments_style):
+    def generatePage(self, entry, path, doc, config, pygments_style):
         """Generate page for entry to file at path."""
 
         common_kwargs = {'doc': doc,
+                         'config': config,
                          'development': self.args.development,
                          'pygments_style': pygments_style,
                          'entry_kind': entry.kind,
@@ -474,11 +483,16 @@ class HtmlWriter(object):
         """Generate the search index."""
         js = ['window.searchData = [']
         for entry in doc.top_level_entries.itervalues():
-            tags = ''
+            akas, subentries = '', ''
             if hasattr(entry, 'akas'):
-                tags = ','.join(entry.akas)
-            js.append('  {title:%s,text:%s,tags:%s,loc:%s,langEntity:%s},' %
-                      (repr(entry.name), repr(""), repr(tags),
+                akas = ','.join(entry.akas)
+            if hasattr(entry, 'subentries'):
+                xs = []
+                for lst in entry.subentries.values():
+                    xs += lst
+                subentries = ','.join(['%s %s' % (s.kind, proc_doc.splitSecondLevelEntry(s.title)[1]) for s in xs])
+            js.append('  {title:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
+                      (repr(entry.name), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),
                        repr(entry.kind)))
         js.append('];')
@@ -491,7 +505,7 @@ class HtmlWriter(object):
                                      development=self.args.development)
         with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
             f.write(js)
-
+            
     def log(self, s, *args):
         print >>sys.stderr, s % args
 
