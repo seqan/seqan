@@ -34,6 +34,9 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <thrust/count.h>
+
+#include "test_cuda_common.h"
 
 using namespace seqan;
 
@@ -42,11 +45,20 @@ using namespace seqan;
 // ============================================================================
 
 typedef TagList<String<char, Alloc<> >,
-        TagList<String<Dna, Alloc<> >,
-        TagList<String<Dna5, Alloc<> >,
-        TagList<String<Dna, Packed<> >
-        > > > >
+        TagList<String<Dna, Alloc<> >
+//        TagList<String<Dna5, Alloc<> >,
+//        TagList<String<Dna, Packed<> >
+        > > //> >
         StringTypes;
+
+// TODO(esiragusa): test StringSets.
+//typedef TagList<StringSet<CharString, Owner<ConcatDirect<> > >,
+//        TagList<StringSet<DnaString, Owner<ConcatDirect<> > >
+//        > >
+//    TStringSetTypes;
+
+// TODO(esiragusa): use metaprogramming algebra.
+//typedef Product<StringTypes, Owner<ConcatDirect<> > >::Type TStringSetTypes;
 
 // ============================================================================
 // Classes
@@ -56,17 +68,18 @@ typedef TagList<String<char, Alloc<> >,
 // Class CudaSequenceTest
 // ----------------------------------------------------------------------------
 
-template <typename TString>
+template <typename TType>
 class CudaSequenceTest : public Test
 {
 public:
-    typedef TString                           Type;
-    typedef typename Device<TString>::Type    TDeviceType;
+    typedef TType                             TString;
+    typedef typename Device<TString>::Type    TCudaString;
+    typedef typename Value<TString>::Type     TAlphabet;
 
     TString str;
 
     CudaSequenceTest() :
-        str("ACGT")
+        str("ACGTACGTACGTACGTACGTACGTACGTACGTACGTACGT")
     {}
 };
 
@@ -83,18 +96,48 @@ SEQAN_TYPED_TEST_CASE(CudaSequenceTest, StringTypes);
 
 SEQAN_TYPED_TEST(CudaSequenceTest, Assign)
 {
-    typedef typename TestFixture::Type          TString;
-    typedef typename TestFixture::TDeviceType   TDeviceString;
+    typedef typename TestFixture::TString       TString;
+    typedef typename TestFixture::TCudaString   TCudaString;
+    typedef typename TestFixture::TAlphabet     TAlphabet;
 
-    TString       str;
-    TDeviceString deviceStr;
+    cudaDeviceReset();
 
-    assign(deviceStr, this->str);
+    TCudaString cudaStr;
+    assign(cudaStr, this->str);
+    SEQAN_ASSERT_EQ(length(cudaStr), length(this->str));
+    SEQAN_ASSERT_EQ(thrust::count(begin(cudaStr, Standard()), end(cudaStr, Standard()), TAlphabet('A')), 10u);
+    SEQAN_ASSERT_EQ(thrust::count(begin(cudaStr, Standard()), end(cudaStr, Standard()), TAlphabet('C')), 10u);
+    SEQAN_ASSERT_EQ(thrust::count(begin(cudaStr, Standard()), end(cudaStr, Standard()), TAlphabet('G')), 10u);
+    SEQAN_ASSERT_EQ(thrust::count(begin(cudaStr, Standard()), end(cudaStr, Standard()), TAlphabet('T')), 10u);
 
-    SEQAN_ASSERT_EQ(length(deviceStr), length(this->str));
+//    TString str;
+//    assign(cudaStr, str);
+//    SEQAN_ASSERT_EQ(str, this->str);
+}
 
-//    assign(str, deviceStr);
-//    SEQAN_ASSERT(str == this->str);
+// ----------------------------------------------------------------------------
+// Test getValue()
+// ----------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(CudaSequenceTest, GetValue)
+{
+    typedef typename TestFixture::TString       TString;
+    typedef typename TestFixture::TCudaString   TCudaString;
+    typedef typename View<TCudaString>::Type    TCudaStringView;
+    typedef typename Size<TString>::Type        TSize;
+
+    cudaDeviceReset();
+
+    TCudaString cudaStr;
+    assign(cudaStr, this->str);
+    TCudaStringView cudaStrView = view(cudaStr);
+
+    for (TSize pos = 0; pos < length(this->str); pos++)
+    {
+        testGetValue<<<1,1>>>(cudaStrView, pos, getValue(this->str, pos));
+        cudaDeviceSynchronize();
+        SEQAN_ASSERT_EQ(cudaGetLastError(), cudaSuccess);
+    }
 }
 
 // ============================================================================

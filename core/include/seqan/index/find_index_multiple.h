@@ -197,11 +197,12 @@ struct Host<Pattern<TNeedles, Multiple<TSpec> > >
 template <typename TPattern>
 struct PatternShape_
 {
-    typedef typename Host<TPattern>::Type               TNeedles_;
-    typedef typename Value<TNeedles_>::Type             TNeedle_;
-    typedef typename Value<TNeedle_>::Type              TAlphabet_;
+    typedef typename Host<TPattern>::Type                               TNeedles_;
+    typedef typename Value<TNeedles_>::Type                             TNeedle_;
+    typedef typename Value<TNeedle_>::Type                              TAlphabet_;
+    typedef UngappedShape<Max<MinLength<TNeedles_>::VALUE, 1>::VALUE>   TShapeSpec_;
 
-    typedef Shape<TAlphabet_, UngappedShape<10> >       Type;
+    typedef Shape<TAlphabet_, TShapeSpec_>                              Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -359,6 +360,7 @@ _preprocessKernel(Pattern<TNeedles, Multiple<TSpec> > pattern)
 
     // Compute the hash of a needle.
     TShape shape;
+    SEQAN_ASSERT_LEQ(weight(shape), length(pattern.data_host[threadId]));
     pattern._hashes[threadId] = hash(shape, begin(pattern.data_host[threadId], Standard()));
 
     // Fill with the identity permutation.
@@ -389,7 +391,7 @@ _findKernel(Finder2<TText, TPattern, Multiple<TSpec> > finder, TPattern pattern,
     ctx._patternIt = pattern._permutation[threadId];
 
     // Find a single needle.
-    find(ctx.baseFinder, pattern.data_host[pattern._permutation[threadId]], ctx);
+    find(ctx.baseFinder, pattern.data_host[ctx._patternIt], ctx);
 }
 #endif
 
@@ -428,6 +430,7 @@ _preprocess(Pattern<TNeedles, Multiple<TSpec> > & pattern, ExecDevice const & /*
 
     // Launch the preprocessing kernel.
     _preprocessKernel<<<activeBlocks, ctaSize>>>(view(pattern));
+    SEQAN_ASSERT_EQ(cudaGetLastError(), cudaSuccess);
 
     // Sort the pattern.
     thrust::sort_by_key(pattern._hashes.begin(), pattern._hashes.end(), pattern._permutation.begin());
@@ -547,6 +550,7 @@ _find(Finder2<TText, TPattern, Multiple<TSpec> > & finder,
 
     // Launch the find kernel.
     _findKernel<<<activeBlocks, ctaSize>>>(view(finder), view(pattern), view(delegate));
+    SEQAN_ASSERT_EQ(cudaGetLastError(), cudaSuccess);
 }
 #endif
 
