@@ -3,15 +3,13 @@
 {% block title %}{{ typedef.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="typedef" data-pimped="true"><a href="language_entities.html#typedef">Typedef</a> {{ typedef.title|e }}</h1>
+<h1 data-lang-entity="typedef" data-pimped="true"><a href="page_LanguageEntities.html#typedef">Typedef</a> <span>{{ typedef.title|e }}<div>{{ sections.brief(typedef) }}</div></span></h1>
 
-{{ sections.top_box(typedef) }}
+<div class="overview">
+	{{ sections.top_box(typedef) }}
 
-<!-- @brief -->
-{{ sections.brief(typedef) }}
-
-<!-- signatures -->
-{{ sections.signatures(typedef) }}
+	{{ sections.signatures(typedef) }}
+</div>
 
 <h2>Overview</h2>
 <div class="docstring">

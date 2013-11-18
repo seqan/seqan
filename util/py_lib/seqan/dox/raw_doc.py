@@ -977,6 +977,22 @@ class RawCode(RawParagraph):
         return '@code%s@endcode' % self.text.text
 
 
+class RawHtmlOnly(RawParagraph):
+    """A special paragraph that is directly put into HTML."""
+    
+    def __init__(self, text=RawText()):
+        RawParagraph.__init__(self, text)
+
+    def getType(self):
+        return 'htmlonly'
+
+    def __str__(self):
+        return 'RawHtmlOnly(%s)' % repr(self.text)
+
+    def getFormatted(self, formatter):
+        return '@endhtmlonly%s@endhtmlonly' % self.text.text
+
+
 class RawBrief(object):
     """A representation of a @brief entry.
     

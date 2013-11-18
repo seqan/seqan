@@ -7,21 +7,35 @@
     <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII" />    
     <title>{% block title %}{% endblock %} - SeqAn API Documentation</title>
     
-    <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
-    
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
-    <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
-    
-    <link rel="stylesheet/less" href="lib/bootstrap-multiselect/less/bootstrap-multiselect.less" type="text/css" media="screen" charset="utf-8" />
-    <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      {% if development %}
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.js"></script>
       
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
-    <link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />
-    <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
-
-    {% if development %}<!-- development mode active -->{% endif %}
-    
-    <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/js/bootstrap.min.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/css/style.css" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet/less" href="../../util/py_lib/seqan/dox/tpl/css/common.less" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/less.min.js"></script>
+      {% endif %}
+      
+      {% if not development %}
+      <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+      
+      <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
+      
+      <link rel="stylesheet" href="lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      
+      <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet" href="css/common.less.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
+      {% endif %}
+      
+      <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
 
     <script type="text/javascript" charset="utf-8">
       hasFrames = window.top.frames.main ? true : false;
@@ -31,10 +45,6 @@
       searchPrefix = 'search/docs/yard';
       framesUrl = '/docs/yard/frames/file/README.md';
     </script>
-
-    <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
 
     <style type="text/css">
     {{ pygments_style }}
@@ -47,177 +57,34 @@
       }
     </style>
     
-    <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
-    
+      {% if development %}
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/jquery-bbq/jquery.ba-bbq.min.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.smooth-scroll.js"></script>
+      
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/app.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/autocomplete.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/rubydoc_custom.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/common.js"></script>
+      {% endif %}
+      {% if not development %}
+      <script type="text/javascript" charset="utf-8" src="lib/jquery-bbq/jquery.ba-bbq.min.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/jquery.smooth-scroll.js"></script>
+      
+      <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/autocomplete.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/rubydoc_custom.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
+      
+      <script type="text/javascript" src="//dalak.imp.fu-berlin.de/SUAsrv/static/js/SUAclt.js"></script>
+      {% endif %}  
 
   </head>
   <body>
-  	{#
-    <div id="header">
-
-      <form class="search" method="get" action="/search/docs/yard">
-        Search: <input name="q" type="search" placeholder="Search" id="search_box" size="30" value="" />
-      </form>
-      <script type="text/javascript" charset="utf-8">
-        $(function() {
-            $('#search_box').autocomplete($('#search_box').parent().attr('action'), {
-                width: document.body.className == 'frames' ? 250 : 340,
-                formatItem: function(item) {
-                    var values = item[0].split(",");
-                    return values[0] + (values[1] == '' ? "" : " <small>(" + values[1] + ")</small>");
-                }
-            }).result(function(event, item) {
-                var values = item[0].split(",")
-                $('#search_box').val(values[1]);
-                location.href = values[3];
-                return false;
-            });
-        });
-      </script>
-      <style>
-        .frames form.search { position: absolute; right: 14px; top: -6px; padding-top: 10px; }
-        .frames #menu .noframes { float: none; }
-        .frames #menu { float: left; }
-        .frames #content h1 { margin-top: 15px; }
-      </style>
-
-      <div id="menu">       
-        <a href="/docs" target="_top">Libraries</a> &raquo;
-        <span class="title">yard <small>(0.8.4)</small></span>
-        
-        &raquo; 
-        <a href="/docs/yard/index">Index</a> &raquo; 
-        <span class='title'>File: README</span>
-        
-        <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
-      </div>
-
-
-      <div id="search">
-        
-        <a class="full_list_link" id="class_list_link"
-           href="/list/docs/yard/class">
-          Class List
-        </a>
-        
-        <a class="full_list_link" id="method_list_link"
-           href="/list/docs/yard/method">
-          Method List
-        </a>
-        
-        <a class="full_list_link" id="file_list_link"
-           href="/list/docs/yard/file">
-          File List
-        </a>
-        
-        <a class="full_list_link" id="tag_list_link"
-           href="/list/docs/yard/tag">
-          Tag List
-        </a>
-        
-      </div>
-      <div class="clear"></div>
-    </div>
-    #}
-    
-    <iframe id="search_frame"></iframe>
+  	<a id="top" name="top"></a>
 
     <div id="content">
       {% block content %}{% endblock %}
     </div>
-    
-    <p>
-    <p>
-    <span data-lang-entity="concept">Concept</span>
-    <span data-lang-entity="metafunction">Metafunction</span>
-    <span data-lang-entity="tag">Tag</span>
-    <span data-lang-entity="class">Class</span>
-    <span data-lang-entity="typedef">typedef</span>
-    <span data-lang-entity="function">Function</span>
-    <span data-lang-entity="variable">Variable</span>
-    <span data-lang-entity="enum">Enum</span>
-    <span data-lang-entity="macro">Macro</span>
-    
-    <ul>
-        <li data-lang-entity="grouped_typedef">Grouped Typedef</li>
-        <li data-lang-entity="global_typedef">Global Typedef</li>
-        <li data-lang-entity="member_typedef">Member Typedef</li>
-        
-        <li data-lang-entity="concept">Concept</li>
-        <li data-lang-entity="class">Class</li>
-        <li data-lang-entity="enum">Enum</li>
-        
-        <li data-lang-entity="metafunction">Metafunction</li>
-        <li data-lang-entity="interface_metafunction">Interface Metafunction</li>
-        
-        <li data-lang-entity="global_function">Global Function</li>
-        <li data-lang-entity="interface_function">Interface Function</li>
-        <li data-lang-entity="member_function">Member Function</li>
-        
-        <li data-lang-entity="grouped_tag">Grouped Tag</li>
-        <li data-lang-entity="tag">Tag</li>
-        
-        <li data-lang-entity="global_variable">Global Variable</li>
-        <li data-lang-entity="member_variable">Member Variable</li>
-        <li data-lang-entity="local_variable">Local Variable</li>
-        
-        <li data-lang-entity="adaption">Adaption</li>
-        <li data-lang-entity="macro">Macro</li>
-        
-        <li data-lang-entity="group">Group</li>
-        <li data-lang-entity="page">Page</li>
-    </ul>
-    
-    <ul>
-        <li data-lang-entity="typedef">Typedef</li>
-        
-        <li data-lang-entity="concept">Concept</li>
-        <li data-lang-entity="class">Class</li>
-        <li data-lang-entity="enum">Enum</li>
-        
-        <li data-lang-entity="metafunction">Metafunction</li>
-        
-        <li data-lang-entity="function">Function</li>
-        
-        <li data-lang-entity="tag">Tag</li>
-        
-        <li data-lang-entity="variable">Variable</li>
-        
-        <li data-lang-entity="adaption">Adaption</li>
-        <li data-lang-entity="macro">Macro</li>
-        
-        <li data-lang-entity="group">Group</li>
-        <li data-lang-entity="page">Page</li>
-    </ul>
-    
-    <ul>
-        <li><a href="#" data-lang-entity="typedef">DnaString</a></li>
-        
-        <li><a href="#" data-lang-entity="concept">Container</a></li>
-        <li><a href="#" data-lang-entity="class">String</a></li>
-        <li><a href="#" data-lang-entity="enum">my_enum</a></li>
-        
-        <li><a href="#" data-lang-entity="metafunction">VALUE</a></li>
-        
-        <li><a href="#" data-lang-entity="function">globalAlignment</a></li>
-        
-        <li><a href="#" data-lang-entity="tag">ALLOC_STRING</a></li>
-        
-        <li><a href="#" data-lang-entity="variable">my_var</a></li>
-        
-        <li><a href="#" data-lang-entity="adaption">std::string</a></li>
-        <li><a href="#" data-lang-entity="macro">SEQAN_ASSERT</a></li>
-        
-        <li><a href="#" data-lang-entity="group">whatever grouped functions</a></li>
-        <li><a href="#" data-lang-entity="page">Language Entities</a></li>
-    </ul>
-    
-    
-    member_function { background: url(../img/icon_function.png) no-repeat; padding-left: 18px; }
-    member_variable { background: url(../img/icon_variable.png) no-repeat; padding-left: 18px; }
-
-    interface_function { background: url(../img/icon_function.png) no-repeat; padding-left: 18px; }
-    interface_metafunction { background: url(../img/icon_metafunction.png) no-repeat; padding-left: 18px; }
     
   </body>
 </html>

@@ -3,18 +3,17 @@
 {% block title %}{{ klass.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="class" data-pimped="true"><a href="language_entities.html#class">Class</a> {{ klass.title|e }}</h1>
+<h1 data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a> <span>{{ klass.title|e }}<div>{{ sections.brief(klass) }}</div></span></h1>
 
-{{ sections.top_box(klass) }}
+<div class="overview">
+	{{ sections.top_box(klass) }}
 
-<!-- @brief -->
-{{ sections.brief(klass) }}
-
-<!-- @signature -->
-{{ sections.signatures(klass) }}
+	{{ sections.signatures(klass) }}
+</div>
 
 <!-- Template Parameters -->
 {{ sections.tparams_ov(klass) }}
+
 
 <!--
  =============================================================================

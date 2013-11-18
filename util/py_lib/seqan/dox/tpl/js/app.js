@@ -42,12 +42,6 @@ function createFullTreeLinks() {
     });
 }
 
-function fixBoxInfoHeights() {
-    $('dl.box dd.r1, dl.box dd.r2').each(function() {
-       $(this).prev().height($(this).height());
-    });
-}
-
 function searchFrameLinks() {
   $('.full_list_link').click(function() {
     toggleSearchFrame(this, $(this).attr('href'));
@@ -68,37 +62,19 @@ function toggleSearchFrame(id, link) {
   }
 }
 
-function linkSummaries() {
-  $('.summary_signature').click(function() {
-    document.location = $(this).find('a').attr('href');
-  });
-}
-
 function framesInit() {
   if (hasFrames) {
     document.body.className += ' frames';
     $('#menu .noframes a').attr('href', document.location);
-    window.top.document.title = $('html head title').text();
+    try {
+        window.top.document.title = $('html head title').text();
+    } catch(e) {
+        // some browsers like Chrome don't allow this cross-frame access if using file://
+    }
   }
   else {
     $('#menu .noframes a').text('frames').attr('href', framesUrl);
   }
-}
-
-function keyboardShortcuts() {
-  if (window.top.frames.main) return;
-  $(document).keypress(function(evt) {
-    if (evt.altKey || evt.ctrlKey || evt.metaKey || evt.shiftKey) return;
-    if (typeof evt.target !== "undefined" &&
-        (evt.target.nodeName == "INPUT" ||
-        evt.target.nodeName == "TEXTAREA")) return;
-    switch (evt.charCode) {
-      case 67: case 99:  $('#class_list_link').click(); break;  // 'c'
-      case 77: case 109: $('#method_list_link').click(); break; // 'm'
-      case 70: case 102: $('#file_list_link').click(); break;   // 'f'
-      default: break;
-    }
-  });
 }
 
 function fixOutsideWorldLinks() {
@@ -108,7 +84,8 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  var _toc = $('<ol class="top nav"></ol>');
+  var _toc = $('<ol class="nav"><li class="active top"><a href="#top">Top</a></li></ol>');
+  
   var show = false;
   var toc = _toc;
   var counter = 0;
@@ -117,6 +94,8 @@ function generateTOC() {
   if ($('h1').length > 1) tags.unshift('h1');
   for (i = 0; i < tags.length; i++) { tags[i] = tags[i]; }
   var lastTag = parseInt(tags[0][1], 10);
+  
+  // iterates through all relevant Hx tags
   $(tags.join(', ')).each(function() {
     if ($(this).parents('.method_details .docstring').length != 0) return;
     if (this.id == "filecontents") return;
@@ -158,9 +137,6 @@ $(framesInit);
 $(createSourceLinks);
 $(createDefineLinks);
 $(createFullTreeLinks);
-$(fixBoxInfoHeights);
 $(searchFrameLinks);
-$(linkSummaries);
-$(keyboardShortcuts);
 $(fixOutsideWorldLinks);
 $(generateTOC);
