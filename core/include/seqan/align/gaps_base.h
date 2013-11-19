@@ -1393,7 +1393,7 @@ void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSp
     TRhsIter rhsIt = begin(source, Standard());
     TRhsIter rhsItEnd = end(source, Standard());
 
-    for (unsigned num = 0; lhsIt != lhsItEnd && rhsIt != rhsItEnd; lhsIt += num, rhsIt += num)
+    for (unsigned num = 0; rhsIt != rhsItEnd; lhsIt += num, rhsIt += num)
     {
         if (isGap(rhsIt))
         {
@@ -1404,6 +1404,8 @@ void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSp
         {
             num = countCharacters(rhsIt);
         }
+
+        SEQAN_ASSERT_NOT((lhsIt == end(dest, Standard())) && num > 0);
     }
 }
 
