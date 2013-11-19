@@ -113,6 +113,15 @@ a:not([href]) {
     	display: inline-block;
     	border-bottom: @dotted;
 	}
+	
+	&.error {
+		background-color: #f00 !important;
+		color: #fff !important;
+		
+		&:before {
+			content: "invalid link: ";
+		}
+	}
 }
 
 a:link,
@@ -290,7 +299,7 @@ html code {
 	.label { font-size: 1em; color: #000; }
 	
 	.highlight + & {
-		margin-bottom: 2em;
+		margin-bottom: 0em;
 	}
 }
 
@@ -445,8 +454,8 @@ html.list {
 			text-shadow: none;
 		}
 		
-		li.active a.top i.glyphicon-arrow-up {
-			&:before { content: "\e092"; }
+		li.active a.top i.fa-chevron-circle-up {
+			&:before { content: "\f192"; }
 		}
 		
 		li.meta {
