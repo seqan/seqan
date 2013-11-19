@@ -240,30 +240,46 @@ typedef std::runtime_error      RuntimeError;
 // Class Demangler
 // ----------------------------------------------------------------------------
 // Holds the name of a given C++ type T.
-// NOTE(esiragusa): this class could become a subclass of CStyle String...
 
 template <typename T>
 struct Demangler
 {
-    char *data_begin;
+#ifdef PLATFORM_GCC
+    char * data_begin;
+#else
+    char const * data_begin;
+#endif //PLATFORM_GCC
 
     Demangler()
     {
         T t;
-        _demangle(*this, t);
+        _demangle(t);
     }
 
-    Demangler(T const & t)
+    Demangler(T & t)
     {
-        _demangle(*this, t);
+        _demangle(t);
     }
 
+#ifdef PLATFORM_GCC
     ~Demangler()
     {
-#ifdef PLATFORM_GCC
         free(data_begin);
-#endif
     }
+
+    void _demangle(T & t)
+    {
+        int status;
+        data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
+        if (status != 0)
+            SEQAN_FAIL("Demangling of %s failed with error code %d\n", typeid(t).name(), status);
+    }
+#else
+    void _demangle(T & t)
+    {
+        data_begin = typeid(t).name();
+    }
+#endif //PLATFORM_GCC
 };
 
 // ============================================================================
@@ -271,26 +287,11 @@ struct Demangler
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _demangle(Demangler)
-// ----------------------------------------------------------------------------
-
-template <typename T>
-inline void _demangle(Demangler<T> & me, T const & t)
-{
-#ifdef PLATFORM_GCC
-    int status;
-    me.data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
-#else
-    me.data_begin = typeid(t).name();
-#endif
-}
-
-// ----------------------------------------------------------------------------
 // Function toCString(Demangler)
 // ----------------------------------------------------------------------------
 
 template <typename T>
-inline char * toCString(Demangler<T> const & me)
+inline char const * toCString(Demangler<T> const & me)
 {
     return me.data_begin;
 }
