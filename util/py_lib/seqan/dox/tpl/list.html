@@ -4,22 +4,54 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+      {% if development %}
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap/js/bootstrap.min.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
+      
+      <link rel="stylesheet" href="../../util/py_lib/seqan/dox/tpl/css/full_list.css" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet/less" href="../../util/py_lib/seqan/dox/tpl/css/common.less" type="text/css" media="screen" charset="utf-8" />
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/less.min.js"></script>
+      {% endif %}
+      
+      {% if not development %}
       <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
       
       <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="lib/bootstrap/js/bootstrap.min.js"></script>
       
-      <link rel="stylesheet/less" href="lib/bootstrap-multiselect/less/bootstrap-multiselect.less" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet" href="lib/bootstrap-multiselect/css/bootstrap-multiselect.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="lib/bootstrap-multiselect/js/bootstrap-multiselect.js"></script>
       
       <link rel="stylesheet" href="css/full_list.css" type="text/css" media="screen" charset="utf-8" />
-      <link rel="stylesheet/less" href="css/common.less" type="text/css" media="screen" charset="utf-8" />
+      <link rel="stylesheet" href="css/common.less.css" type="text/css" media="screen" charset="utf-8" />
       <script type="text/javascript" charset="utf-8" src="js/less.min.js"></script>
+      {% endif %}
       
       <script type="text/javascript" charset="utf-8" src="js/lang_entities.js"></script>
+      
+      {% if development %}
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/lib/jquery-bbq/jquery.ba-bbq.min.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/jquery.smooth-scroll.js"></script>
+      
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/search.data.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/search.engine.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../util/py_lib/seqan/dox/tpl/js/common.js"></script>
+      {% endif %}
+      {% if not development %}
+      <script type="text/javascript" charset="utf-8" src="lib/jquery-bbq/jquery.ba-bbq.min.js"></script>
+      <script type="text/javascript" charset="utf-8" src="js/jquery.smooth-scroll.js"></script>
+      
       <script type="text/javascript" charset="utf-8" src="js/search.data.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/search.engine.js"></script>
       <script type="text/javascript" charset="utf-8" src="js/common.js"></script>
+      
+      <script type="text/javascript" src="//dalak.imp.fu-berlin.de/SUAsrv/static/js/SUAclt.js"></script>
+      {% endif %}
 
       <base id="base_target" target="_parent" />
   </head>
@@ -32,47 +64,57 @@
     </script>
     <div id="content"><form role="form" id="search">
     	<div class="pre-action">
-    		<h1><span class="replace">SeqAn</span> API Documentation</h1>
+    		<h1><a href="page_mainpage.html" target="main"><span class="replace">SeqAn</span> API Documentation</a></h1>
     	</div>
         <div class="input-group">
           <!--span class="input-group-addon"><b class="glyphicon glyphicon-search"></b></span-->
           <span class="input-group-btn btn-group">
             <select multiple="multiple">
               <optgroup label="Concept related">
-		        <option value="typedef" selected>typedef</option>
-		        <option value="concept" selected>concept</option>
-		        <option value="class" selected>class</option>
-		        <option value="enum" selected>enum</option>
+		        <option value="typedef" selected>Typedefs</option>
+		        <option value="concept" selected>Concepts</option>
+		        <option value="class" selected>Classes</option>
+		        <option value="enum" selected>Enums</option>
 		      </optgroup>
 		      <optgroup label="Function related">
-		        <option value="metafunction" selected><b>meta</b>_function</option>
-		        <option value="function" selected>function</option>
-		        <option value="tag" selected>tag</option>
-		        <option value="variable" selected>variable</option>
+		        <option value="metafunction" selected>Metafunctions</option>
+		        <option value="function" selected>Functions</option>
+		        <option value="tag" selected>Tags</option>
+		        <option value="variable" selected>Variables</option>
 		      </optgroup>
 		      <optgroup label="Miscellaneous">
-		        <option value="adaption" selected>adaption</option>
-		        <option value="macro" selected>macro</option>
-		        <option value="group" selected>group</option>
-		        <option value="page" selected>page</option>
+		        <option value="adaption" selected>Adaptions</option>
+		        <option value="macro" selected>Macros</option>
+		        <option value="group" selected>Groups</option>
+		        <option value="page" selected>Pages</option>
 		      </optgroup>
             </select>
 	        <!--button class="btn btn-primary">Select All</button-->
           </span>
-          <input type="search" class="form-control">
+          <input type="search" class="form-control" placeholder="Search the API ...">
           </div>
         </form>
 
         <div id="results">
-          <ol>
+          <ol class="results">
+            {# TODO: Sort by entry.kind and put all entries the inner ol.nav #}
             {% for name, entry in doc.top_level_entries|dictsort %}
             {% if entry.kind != 'page' %}
-            <li class="result" data-lang-entity-container="{{ entry.kind }}">
-              <h2><a href="{{entry.name|name_to_path}}" target="main" data-lang-entity="{{ entry.kind }}">{{name}}</a></h2>
-              <div>
-                <div class="text"></div>
-                <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>
-              </div>
+            <li data-lang-entity-container="{{ entry.kind }}" data-pimped="true">
+              <span data-lang-entity="{{ entry.kind }}"><a href="page_LanguageEntities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a><span>{{ config.lang_entities[entry.kind].ideogram }}</span></span>
+              <ol class="nav">
+                <li class="result">
+                  <h2 data-lang-entity="{{ entry.kind }}" data-pimped="true">
+                    <a href="page_LanguageEntities.html#{{ entry.kind }}">{{ config.lang_entities[entry.kind].ideogram }}</a>
+                    <a href="{{entry.name|name_to_path}}" target="main">{{name}}</a>
+                  </h2>
+                  <div>
+                    <div class="text"></div>
+                    <div class="location"><a href="{{entry.name|name_to_path}}" target="main">{{entry.name|name_to_path}}</a></div>
+                  </div>
+                </li>
+                {# put other entries of same kind here #}
+              </ol>
             </li>
             {% endif %}
             {% endfor %}

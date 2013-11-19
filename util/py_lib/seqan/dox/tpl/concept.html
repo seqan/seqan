@@ -3,15 +3,13 @@
 {% block title %}{{ concept.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="concept" data-pimped="true"><a href="language_entities.html#concept">Concept</a> {{ concept.title|e }}</h1>
+<h1 data-lang-entity="concept" data-pimped="true"><a href="page_LanguageEntities.html#concept">Concept</a> <span>{{ concept.title|e }}<div>{{ sections.brief(concept) }}</div></span></h1>
 
-{{ sections.top_box(concept) }}
+<div class="overview">
+	{{ sections.top_box(concept) }}
 
-<!-- @brief -->
-{{ sections.brief(concept) }}
-
-<!-- signatures -->
-{{ sections.signatures(concept) }}
+	{{ sections.signatures(concept) }}
+</div>
 
 <h2>Detailed Description</h2>
 <div class="docstring">
