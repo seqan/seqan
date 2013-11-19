@@ -5,8 +5,12 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>Documentation SeqAn</title>
+    {% if not development %}
+    <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+    <script type="text/javascript" src="//dalak.imp.fu-berlin.de/SUAsrv/static/js/SUAclt.js"></script>
+    {% endif %}
 </head>
-<frameset cols="35%,*" bordercolor="#67A2D5" border="2">
+<frameset cols="25%,*" bordercolor="#67A2D5" border="2">
   <frame name="list" src="list.html" />
   <frame name="main" src="page_mainpage.html" />
 </frameset>

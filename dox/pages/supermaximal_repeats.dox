@@ -1,6 +1,6 @@
 /*!
  * @page DemoSupermaximalRepeats Supermaximal Repeats
- * @brief Example for using the @link SuperMaxRepeatsIterator @endlink.
+ * @brief Example for using the @link SuperMaxRepeats Iterator @endlink.
  *
  * Given a sequences, a repeat is a substring that occurs at at least 2
  * different positions. A supermaximal repeat is a repeat that is not part

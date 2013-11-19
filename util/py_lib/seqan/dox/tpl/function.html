@@ -3,15 +3,13 @@
 {% block title %}{{ function.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="function" data-pimped="true"><a href="language_entities.html#function">fn()</a> {{ function.title|e }}</h1>
+<h1 data-lang-entity="function" data-pimped="true"><a href="page_LanguageEntities.html#function">fn()</a> <span>{{ function.title|e }}<div>{{ sections.brief(function) }}</div></span></h1>
 
-{{ sections.top_box(function) }}
+<div class="overview">
+	{{ sections.top_box(function) }}
 
-<!-- @brief -->
-{{ sections.brief(function) }}
-
-<!-- @signature -->
-{{ sections.signatures(function) }}
+	{{ sections.signatures(function) }}
+</div>
 
 <!-- @param -->
 {{ sections.params(function) }}
