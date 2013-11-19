@@ -1,7 +1,7 @@
 /*!
 @page LanguageEntities Language Entity Types
 
-SeqAn is a C++ based library. In order to provide you with an outstanding performance, SeqAn heavily relies on template programming.
+SeqAn is a C++ based library. In order to provide you with an outstanding performance, SeqAn heavily relies on template-based metaprogramming.
 
 @htmlonly
 <p>
@@ -12,8 +12,8 @@ Our way of using template programming leads to approaches possibly unfamiliar to
 
 <ul>
   <li>What is each language entity type originally <b>meant to do</b>?</li>
-  <li>How is each lanuage entity type <b>used in SeqAn</b>?</li>
-  <li>What <b>variants</b> of each lanuage entity type exist?</li>
+  <li>How is each language entity type <b>used in SeqAn</b>?</li>
+  <li>What <b>variants</b> of each language entity type exist?</li>
 </ul>
 </p>
 @endhtmlonly
@@ -23,11 +23,18 @@ Our way of using template programming leads to approaches possibly unfamiliar to
 
 @htmlonly <h2 data-lang-entity="typedef"><a name="typedef">Typedef</a></h2> @endhtmlonly
 
-Typedefs are a C++ language feature that allows to give custom names to arbitrary types.
+<strong>Typedefs are a common, standardized C++ language feature that allows to give custom names to arbitrary types.</strong>
 
 When programming SeqAn, they are often used for giving short names to complicated, nested template instantiations or to the result of a <a href="#metafunction">metafunction</a>.
 
 @htmlonly <h3>Example</h3> @endhtmlonly
+
+@link Iterator @endlink is a <a href="#metafunction">metafunction</a> that returns the type that can actually hold the iterator.
+
+@htmlonly
+<p>In SeqAn you will often encounter such verbose types.
+The following example shows you how the lengthy type <code>Iterator&lt;String&lt;char, Alloc&lt;&gt; &gt;::Type</code> is shortened to <code>TIt</code>.</p>
+@endhtmlonly
 
 @code{.cpp}
 using namespace seqan;
@@ -42,9 +49,13 @@ for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
 
 
 
+
+
+
+
 @htmlonly <h2 data-lang-entity="concept"><a name="concept">Concept</a></h2> @endhtmlonly 
 
-Concepts are <b>informal interfaces</b> that define a set of requirements for a type.
+<strong>Concepts are a rarely used, not yet standardized C++ language feature. They are <u>informal interfaces</u> that define a set of requirements for a type.</strong>
 
 In contrast to Java interfaces, C++ concepts can be added to custom types and built-in types without having access to the source of the type. You might know the typical (Java) interface limitation if you ever tried to make a built-in type implement a custom interface.
 
@@ -52,9 +63,7 @@ Concepts are currently still a proposal for a future C++ language release and th
 
 @htmlonly <h3>Example</h3> @endhtmlonly
 
-You may expect the globally implemented functions @link appendValue @endlink, @link append @endlink, @link assignValue @endlink and many others to work with @link String @endlink because they are part of @link SequenceConcept @endlink which is implemented by @link String @endlink.
-
-Again, the mentioned functions are considered interface function (TODO: They are not, why not?!) although they are globally implemented due to the use of template programming.
+You can expect the globally implemented interface functions @link appendValue @endlink, @link append @endlink, @link assignValue @endlink and many others to work with @link String @endlink because they are part of @link SequenceConcept @endlink which is implemented by @link String @endlink.
 
 @htmlonly <h3>External Resources</h3> @endhtmlonly
 
@@ -66,7 +75,7 @@ See the <a href="http://en.cppreference.com/w/cpp/concept">concepts chapter at c
 
 @htmlonly <h2 data-lang-entity="class"><a name="class">Class</a></h2> @endhtmlonly 
 
-C++ allows the definition of custom types using classes that basically encapsulate variables and functions.
+<strong>Classes are a common, standardized C++ language feature. It allows the definition of custom types using classes that basically encapsulate variables and functions.</strong>
 
 In SeqAn, classes usually have few to no technical member function. Instead their <a href="#member_function">member functions</a> are implemented globally and typically expect the class instance as the first argument.
 
@@ -89,81 +98,15 @@ class Pair {
 @endcode
 
 @htmlonly
-<code>Pair</code> can now be instantiated using <code>Pair&lt;int&gt myPair1 (42, 115);</code> or <code>Pair&lt;float&gt (3.141, 2.72);</code>.
+<p><code>Pair</code> can now be instantiated using <code>Pair&lt;int&gt myPair1 (42, 115);</code> or <code>Pair&lt;float&gt (3.141, 2.72);</code>.</p>
 @endhtmlonly
-
-
-
-
-@htmlonly <h2 data-lang-entity="enum"><a name="enum">Enum</a></h2> @endhtmlonly 
-
-Enums are a C/C++ feature that allow the definition of enumeration types.
-Such types have a fixed number of values and each number has a name.
-
-In SeqAn they are mainly used to define the integral value of @link metafunction::VALUE @endlink.
-
-@htmlonly <h3>Example</h3> @endhtmlonly
-
-@code{.cpp}
-enum MyEnum {
-     ENUM_VALUE1,
-     ENUM_VALUE2
-};
-@endcode
-
-@code{.cpp}
-template <> struct
-QualityValueSize<Dna5Q>
-{
-    enum { VALUE = 63 };
-};
-@endcode
-
-
-
-
-
-@htmlonly <h2 data-lang-entity="metafunction"><a name="metafunction">Metafunction</a></h2> @endhtmlonly 
-
-Metafunctions are compile-time evaluated functions. They can be used to compute integral values at compile time or to
-select certain types as functions of other types. See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms Wikibook</a> for more information.
-
-
-@htmlonly <h3>Example</h3> @endhtmlonly
-
-@code{.cpp}
-using namespace seqan;
-
-typedef typename Iterator<String<char, Alloc<> >::Type TIt;
-
-for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
-    std::cout << *it;
-std::cout << "\n";
-@endcode
 
 @htmlonly <h3>Variants</h3> @endhtmlonly
 
 @htmlonly
 <dl>
-    <dt data-lang-entity="global_metafunction"><a name="global_metafunction">Global Metafunction</a></dt>
+    <dt data-lang-entity="struct"><a name="struct">struct</a></dt>
 	<dd><p>Global typedefs ...</p>
-		<p>Lorem ipsum ...</p>
-	</dd>
-	<dd><p>In SeqAn ...</p></dd>
-	<dd><p>The following code examples shows how to ...</p>
-@endhtmlonly
-@code{.cpp}
-using namespace seqan;
-
-typedef typename Iterator<String<char, Alloc<> >::Type TIt;
-
-for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
-    std::cout << *it;
-std::cout << "\n";
-@endcode
-@htmlonly</dd>
-	<dt data-lang-entity="interface_metafunction"><a name="interface_metafunction">Interface Metafunction</a></dt>
-	<dd><p>Grouped typedefs ...</p>
 		<p>Lorem ipsum ...</p>
 	</dd>
 	<dd><p>In SeqAn ...</p></dd>
@@ -183,6 +126,104 @@ std::cout << "\n";
 @endhtmlonly
 
 
+
+
+@htmlonly <h2 data-lang-entity="enum"><a name="enum">Enum</a></h2> @endhtmlonly 
+
+<strong>Enums are a common, standardized C++ feature that allow the definition of a set of named, <u>enum</u>erable integral constants.</strong>
+
+In SeqAn, they are mainly used to define the integral value of @link metafunction::VALUE @endlink.
+
+@htmlonly <h3>Example</h3> @endhtmlonly
+
+@htmlonly
+<p>In the following example, the enum <code>MyEnum</code> with the constants <code>ENUM_VALUE1</code> and <code>ENUM_VALUE2</code> is defined.</p>
+@endhtmlonly
+
+@code{.cpp}
+enum MyEnum {
+     ENUM_VALUE1,
+     ENUM_VALUE2
+};
+@endcode
+
+@htmlonly
+<p>You may later write <code>MyEnum x = ENUM_VALUE2</code>.</p>
+<p>The following example defines the <a href="#metafunction">metafunction</a> <code>QualityValueSize</code> using a template struct.
+The struct contains an unnamed enum with a single integral constant named <code>VALUE</code> that has the value <code>63</code>.</p>
+@endhtmlonly
+
+@code{.cpp}
+template <>
+struct QualityValueSize<Dna5Q>
+{
+    enum { VALUE = 63 };
+};
+@endcode
+
+@htmlonly
+<p>Later you may write <code>int x = QualityValueSize&lt;Dna5Q&gt::VALUE</code> whichs results in <code>63</code> and is calculated at compile-time.</p>
+<p>If the enum was named (e.g. <code>MyEnum</code>) you would have to write <code>int x = QualityValueSize&lt;Dna5Q&gt::MyEnum::VALUE (TODO: How is the correct syntax?!?!?!)</code>.</p>
+@endhtmlonly
+
+
+
+
+
+@htmlonly <h2 data-lang-entity="metafunction"><a name="metafunction">Metafunction</a></h2> @endhtmlonly 
+
+<strong>Metafunctions are a rarely used, not yet standardized C++ language feature that allows for compile-time evaluated functions.</strong>
+
+In contrast to standard <a href="#function">functions</a> that use objects as arguments and optionally return an object,
+metafunctions use types as arguments and return a type or an integral value.
+ 
+In SeqAn, they are mainly used to retrieve the appropriate type for a specific task, such as the iteration over a @link ContainerConcept @endlink.
+
+See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms Wikibook</a> for more information.
+
+
+@htmlonly <h3>Example</h3> @endhtmlonly
+
+@htmlonly
+<p>The following two examples iterate over each character of <code>str</code> and print it.
+The first example is not recommended but purely demonstrates the use of a metafunction.
+The second example shows the recommended use of metafunctions in combination with a <a href="#typedef">typedef</a>.</p>
+@endhtmlonly
+
+@code{.cpp}
+using namespace seqan;
+
+for (typename Iterator<String<char, Alloc<> >::Type it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+
+@code{.cpp}
+using namespace seqan;
+
+typedef typename Iterator<String<char, Alloc<> >::Type TIt;
+
+for (TIt it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    std::cout << *it;
+std::cout << "\n";
+@endcode
+
+@htmlonly <h3>Variants</h3> @endhtmlonly
+
+@htmlonly
+<dl>
+    <!--dt data-lang-entity="global_metafunction"><a name="global_metafunction">Global Metafunction</a></dt>
+	<dd><p>Global metafunctions are technically and semantically implemented globally.</p></dd>
+	<dd><p>Typical global metafunctions are TODO</p></dd-->
+	<dt data-lang-entity="interface_metafunction"><a name="interface_metafunction">Interface Metafunction</a></dt>
+	<dd><p>Interface metafunctions semantically belong to one or more <a href="#concept">concepts</a>.
+		   Types that implement a specific concept are guaranteed to work with all interface functions belonging to this specific concept.</p>
+		<p>Example: <span data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a><a href="class_String.html">String</a></span> implement <span data-lang-entity="concept" data-pimped="true"><a href="page_LanguageEntities.html#concept">Concept</a><a href="concept_SequenceConcept.html">SequenceConcept</a></span>. Since the metafunction <span data-lang-entity="global_function" data-pimped="true"><a href="page_LanguageEntities.html#global_function">fn()</a><a href="global_function_append.html">append</a></span> is part of <span data-lang-entity="concept" data-pimped="true"><a href="page_LanguageEntities.html#concept">Concept</a><a href="concept_SequenceConcept.html">SequenceConcept</a></span>, <span data-lang-entity="global_function" data-pimped="true"><a href="page_LanguageEntities.html#global_function">fn()</a><a href="global_function_append.html">append</a></span> accepts <span data-lang-entity="class" data-pimped="true"><a href="page_LanguageEntities.html#class">Class</a><a href="class_String.html">String</a></span> as an argument.</p></dd>
+	<dd><p>Although <a href="#concept">concepts</a> are formally specified they are not yet part of the C++ language and thus ignored by compilers. As a consequence your IDE will pretty certainly not stop you from using a metafunction with a type that does not implements one of the metafunction's concepts.</p></dd>
+</dl>
+@endhtmlonly
+
+@link String @endlink implements @link SequenceConcept @endlink. Since the metafunction @link append @endlink is part of @link SequenceConcept @endlink, @link append @endlink accepts @link String @endlink as an argument.
 
 
 
