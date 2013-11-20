@@ -95,11 +95,6 @@
 #  SEQAN_VERSION_MINOR
 #  SEQAN_VERSION_PATCH
 #
-# The following variables give the date and revision of the SeqAn library.
-#
-#  SEQAN_DATE
-#  SEQAN_REVISION
-#
 # When you want to use the SeqAn build system and the core/extras/sandbox
 # layout then you can switch this on by setting the following variable to ON.
 #
