@@ -1692,7 +1692,7 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*
+/*!
  * @fn AlignmentGraph#convertAlignment
  * @brief Converts an alignment graph into an alignment matrix.
  * 
