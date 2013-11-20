@@ -83,9 +83,11 @@ struct MSplazerOptions
     unsigned breakpointPosRange;    // Allowed range of breakpoint positions
     unsigned support;
     unsigned mateSupport;
-    unsigned libSize;              // Library size (mate pairs)
+    unsigned libSize;               // Library size (mate pairs)
     unsigned libError;              // Library size (mate pairs)
-    bool pairedEndMode;
+    bool pairedEndMode;             // Whether or not to run Gustaf in paired-end mode
+    bool revCompl;                  // Whether or not to rev-compl the second input file
+
 
     MSplazerOptions() :
         databaseFile("reference.fa"),
@@ -106,7 +108,8 @@ struct MSplazerOptions
         mateSupport(1),
         libSize(0),
         libError(0),
-        pairedEndMode(false){}
+        pairedEndMode(false),
+        revCompl(true){}
 };
 
 // ----------------------------------------------------------------------------
