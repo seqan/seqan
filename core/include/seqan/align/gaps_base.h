@@ -738,6 +738,22 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 */
 
 // ----------------------------------------------------------------------------
+// Function countCharacters()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Gaps#countCharacters
+ * @brief The number of characters following a position.
+ *
+ * @signature TSize countCharacters(gaps, viewPos);
+ *
+ * @param gaps    The Gaps object to query.
+ * @param viewPos View position (including clipping and gaps) to query at.
+ *
+ * @return TSize The number of non-gaps characters characters at <tt>viewPos</tt>.
+ */
+
+// ----------------------------------------------------------------------------
 // Function setClippedBeginPosition()
 // ----------------------------------------------------------------------------
 
@@ -1377,7 +1393,7 @@ void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSp
     TRhsIter rhsIt = begin(source, Standard());
     TRhsIter rhsItEnd = end(source, Standard());
 
-    for (unsigned num = 0; lhsIt != lhsItEnd && rhsIt != rhsItEnd; lhsIt += num, rhsIt += num)
+    for (unsigned num = 0; rhsIt != rhsItEnd; lhsIt += num, rhsIt += num)
     {
         if (isGap(rhsIt))
         {
@@ -1388,6 +1404,8 @@ void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSp
         {
             num = countCharacters(rhsIt);
         }
+
+        SEQAN_ASSERT_NOT((lhsIt == end(dest, Standard())) && num > 0);
     }
 }
 

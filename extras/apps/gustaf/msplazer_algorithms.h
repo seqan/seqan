@@ -39,6 +39,7 @@
 // #include <seqan/PathEnumeration.h>
 // #include "../../../andreotti/include/seqan/PathEnumeration.h"
 #include <seqan/align_split.h>
+#include "gustaf_matepairs.h"
 
 using namespace seqan;
 
@@ -140,6 +141,7 @@ inline bool _checkMatchComp(TPos const & m1Begin, TPos const & m1End, TPos const
 }
 
 // Intitialisation of graph structure for combinable StellarMatches of a read
+/*
 template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TVertexDescriptor,
           typename TBreakpointMap>
 void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
@@ -149,8 +151,14 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
                       TVertexDescriptor & endVertex,
                       TBreakpointMap & queryBreakpoints,
                       MSplazerOptions const & msplazerOptions)
+*/
+template <typename TSequence, typename TId, typename TMSplazerChain>
+void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
+                      TMSplazerChain & chain,
+                      MSplazerOptions const & options)
 {
     // std::cerr << " Initialising graph structure " << std::endl;
+    typedef typename TMSplazerChain::TGraph TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Iterator<String<StellarMatch<TSequence, TId> > >::Type TIterator;
 
@@ -160,45 +168,46 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
     // the same as the position of the corresponding vertex within the QueryMatches --> since we can easily iterate
     // through the QueryMatches and use the iterator we wont keep track of the vertex descriptors
     for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
-        addVertex(graph);
+        addVertex(chain.graph);
 
     // std::cerr << " Created graph " << std::endl;
     // Add start and end to graph and property map
-    startVertex = addVertex(graph);
-    endVertex = addVertex(graph);
+    chain.startVertex = addVertex(chain.graph);
+    chain.endVertex = addVertex(chain.graph);
 
     int cargo = 0;
-    resize(queryBreakpoints.slotLookupTable, 2 * length(queryMatches.matches));
+    resize(chain.breakpoints.slotLookupTable, 2 * length(queryMatches.matches));
     // Adding edges to start and end vertices
     for (unsigned i = 0; i < length(queryMatches.matches); ++i)
     {
         cargo = static_cast<int>(queryMatches.matches[i].begin2);
-        if (cargo < (msplazerOptions.initGapThresh + 1))
+        if (cargo < (options.initGapThresh + 1))
         {
-            cargo += matchDistanceScores[i];
-            TEdgeDescriptor edge = addEdge(graph, startVertex, i, cargo);
-            resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
-            assignProperty(queryBreakpoints, edge);
+            cargo += chain.matchDistanceScores[i];
+            TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
+            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            assignProperty(chain.breakpoints, edge);
         }
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
                 static_cast<int>(queryMatches.matches[i].end2);
-        if (cargo < (msplazerOptions.initGapThresh + 1))
+        if (cargo < (options.initGapThresh + 1))
         {
-            TEdgeDescriptor edge = addEdge(graph, i, endVertex, cargo);
-            resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
-            assignProperty(queryBreakpoints, edge);
+            TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
+            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            assignProperty(chain.breakpoints, edge);
         }
     }
 }
 
 // Match Chaining for one query: Inserts edges between compatible matches and determines their breakpoint
-template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TBreakpointMap>
+template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TBreakpointMap, typename TMSplazerChain>
 void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                    TId const & queryId,
                    TSequence & query,
                    TGraph & graph,
                    TScoreAlloc & matchDistanceScores,
                    TBreakpointMap & queryBreakpoints,
+                   TMSplazerChain & chain,
                    MSplazerOptions const & msplazerOptions)
 {
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -211,7 +220,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
     // found gap --> stop iterating if gap is too big (overlap in read)
     bool doBP, insertEdge = false;
     // Penalties
-    int diffDBPen, diffStrandPen, diffOrderPen = 0;
+    int diffDBPen, diffStrandPen, diffOrderPen, noMateMatchesPen = 0;
     // Terminating condition for taking the next snd match for comparison:
     // takeNextMatch == false meaning this and all the next matches are too far away
     bool takeNextMatch = true;
@@ -257,11 +266,15 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 diffOrderPen =
                     (diffDBPen > 0 || diffStrandPen > 0 ||
                      _checkMatchOrderInDB(stMatch1, stMatch2)) ? 0 : msplazerOptions.diffOrderPen;
+                // Penalty if there are no confirming mate matches
+                noMateMatchesPen =
+                    _checkMateMatches(stMatch2, queryMatches.matches, chain, msplazerOptions) ? 0 : msplazerOptions.noMateMatchesPen;
                 // Compute edge cargo (edge weight)
                 cargo = static_cast<int>(matchDistanceScores[m2])
                         + diffDBPen
                         + diffStrandPen
-                        + diffOrderPen;
+                        + diffOrderPen
+                        + noMateMatchesPen;
 
                 // /////////////////////////////////////////////////////////////////////////////////////////////////////
                 // Breakpoint computation, Graph input
@@ -360,6 +373,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     }
                 }
 
+                //std::cout << "Breakpoint " << bp << std::endl;
                 // Insert breakpoint
                 TEdgeDescriptor edge = addEdge(graph, m1, m2, cargo);
                 resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
@@ -372,13 +386,14 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
 }
 
 // Match Chaining for one query: Inserts edges between compatible matches and determines their breakpoint
-template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TBreakpointMap>
+template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TBreakpointMap, typename TMSplazerChain>
 void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                             TId const & queryId,
                             TSequence & query,
                             TGraph & graph,
                             TScoreAlloc & matchDistanceScores,
                             TBreakpointMap & queryBreakpoints,
+                            TMSplazerChain & chain,
                             MSplazerOptions const & msplazerOptions)
 {
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
@@ -389,7 +404,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
     typedef typename Infix<TSequence>::Type TInfix;
 
     // Penalties
-    int diffStrandPen, diffOrderPen;
+    int diffStrandPen, diffOrderPen, noMateMatchesPen = 0;
     // Output values for compatibility check: do breakpoint evaluation, insert edge into graph,
     // found gap --> stop iterating if gap is too big (overlap in read)
     bool doBP, insertEdge, swap;
@@ -448,6 +463,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         diffOrderPen =
                             (diffStrandPen > 0 ||
                              _checkMatchOrderInDB(*stMatch1, *stMatch2)) ? 0 : msplazerOptions.diffOrderPen;
+                    // Penalty if there are no confirming mate matches
+                    noMateMatchesPen =
+                        _checkMateMatches(*stMatch2, queryMatches.matches, chain, msplazerOptions) ? 0 : msplazerOptions.noMateMatchesPen;
 
                     // /////////////////////////////////////////////////////////////////////////////////////////////////
                     // Breakpoint computation, Graph input
@@ -487,7 +505,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         // Compute cargo, reduce distance by score
                         // cargo = static_cast<int>(matchDistanceScores[m2]) - score + diffStrandPen + diffOrderPen;
                         cargo = static_cast<int>(matchDistanceScores[m1]) + static_cast<int>(matchDistanceScores[m2]) +
-                                score + diffStrandPen + diffOrderPen;
+                                score + diffStrandPen + diffOrderPen + noMateMatchesPen;
 
                         // If matches have been swapped, i.e. their order has been switched, bp positions have to be computed from the other match and vice versa
                         if (!swap)
@@ -517,7 +535,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     {
                         // Compute score, add gap length to distance
                         cargo = static_cast<int>(matchDistanceScores[m2]) +
-                                static_cast<int>(m2Begin - m1End) + diffStrandPen + diffOrderPen;
+                                static_cast<int>(m2Begin - m1End) + diffStrandPen + diffOrderPen + noMateMatchesPen;
                         if (!swap)
                         {
                             startSeqPos = (*stMatch1).end1;         // m1End
@@ -570,6 +588,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         {
                             assignCargo(edge, cargo);
                             TBreakpoint & oldBp = property(queryBreakpoints, edge);
+                            std::cout << "Taking insertion breakpoint instead of old one " << bp << oldBp << std::endl;
                             oldBp = bp;
                         }
                     }
@@ -596,9 +615,11 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
 template <typename TSequence, typename TId, typename TScoreAlloc, typename TMSplazerChain>
 void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
                         String<TScoreAlloc> & distanceScores,
+                        // String<unsigned> & readJoinPosition,
                         String<TMSplazerChain> & queryChains,
                         StringSet<TId> const & queryIds,
                         StringSet<TSequence> & queries,
+                        String<unsigned> & readJoinPositions,
                         MSplazerOptions const & msplazerOptions)
 {
 
@@ -606,6 +627,9 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
     {
         TScoreAlloc matchDistanceScores = distanceScores[i];
         TMSplazerChain chain(matchDistanceScores);
+        if (msplazerOptions.pairedEndMode)
+            chain.mateJoinPosition = readJoinPositions[i];
+        // TMSplazerChain chain(matchDistanceScores, readJoinPositions[i]);
 
         if (length(stellarMatches[i].matches) == 0)
         {
@@ -615,6 +639,12 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
         else
         {
             // Graph init
+            // std::cout << "read " << i+1 << std::endl;
+            if (msplazerOptions.pairedEndMode)
+                _initialiseGraphMatePairs(stellarMatches[i], chain, msplazerOptions);
+            else
+                _initialiseGraph(stellarMatches[i], chain, msplazerOptions);
+            /*
             _initialiseGraph(stellarMatches[i],
                              chain.graph,
                              chain.matchDistanceScores,
@@ -622,6 +652,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
                              chain.endVertex,
                              chain.breakpoints,
                              msplazerOptions);
+                             */
 
 
             // Chain compatible matches
@@ -631,6 +662,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
                           chain.graph,
                           chain.matchDistanceScores,
                           chain.breakpoints,
+                          chain,
                           msplazerOptions);
             // Chain matches comptable according to reference
             _chainMatchesReference(stellarMatches[i],
@@ -639,6 +671,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
                                    chain.graph,
                                    chain.matchDistanceScores,
                                    chain.breakpoints,
+                                   chain,
                                    msplazerOptions);
 
         }
@@ -783,7 +816,6 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
     typedef typename TMSplazerChain::TGraph TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename TBreakpoint::TPos TPos;
-    typedef typename TBreakpoint::TId TId;
     bool foundBP = false;
     TVertexDescriptor spVertex1, spVertex2;
     TEdgeDescriptor edge;

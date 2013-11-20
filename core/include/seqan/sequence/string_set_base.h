@@ -392,27 +392,6 @@ struct DefaultOverflowImplicit<StringSet< TString, TSpec> const>
 
 
 // --------------------------------------------------------------------------
-// Function swap()
-// --------------------------------------------------------------------------
-
-///.Function.swap.param.left.type:Class.StringSet
-///.Function.swap.param.right.type:Class.StringSet
-///.Function.swap.class:Class.StringSet
-
-template <typename TString, typename TSpec>
-inline void
-swap(StringSet<TString, TSpec> & left,
-     StringSet<TString, TSpec> & right)
-{
-    SEQAN_CHECKPOINT;
-    typedef StringSet<TString, TSpec> TStringSet;
-
-    TStringSet tmp(left, Move());
-    move(left, right);
-    move(right, tmp);
-}
-
-// --------------------------------------------------------------------------
 // Function stringSetLimits()
 // --------------------------------------------------------------------------
 

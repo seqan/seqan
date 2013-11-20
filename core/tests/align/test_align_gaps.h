@@ -1133,6 +1133,7 @@ void testAlignGapsCopyGaps(TGapsSpec const & /*spec*/)
         }
     }
 }
+
 // Test copying of clipping information.
 
 template <typename TGapsSpec>
@@ -1176,6 +1177,47 @@ void testAlignGapsCopyClipping(TGapsSpec const & /*spec*/)
 
         SEQAN_ASSERT_EQ((unsigned)clippedBeginPosition(gaps2), 1u);
         SEQAN_ASSERT_EQ((unsigned)clippedEndPosition(gaps2), 9u);
+    }
+}
+
+// Test gaps object with Nothing source.
+
+template <typename TGapsSpec>
+void testAlignGapsSourceIsNothing(TGapsSpec const & /*spec*/)
+{
+    using namespace seqan;
+
+    typedef Gaps<Nothing, TGapsSpec> TGaps;
+
+    // Test insertion of gaps.
+    {
+        TGaps gaps;
+        _setLength(gaps, 10);
+
+        SEQAN_ASSERT_EQ(unclippedLength(gaps), 10u);
+        SEQAN_ASSERT_EQ(length(gaps), 10u);
+
+        insertGap(gaps, 3);
+
+        SEQAN_ASSERT_EQ(unclippedLength(gaps), 11u);
+        SEQAN_ASSERT_EQ(length(gaps), 11u);
+        SEQAN_ASSERT(isGap(gaps, 3));
+    }
+    // Test insertion of gaps and clipping.
+    {
+        TGaps gaps;
+        _setLength(gaps, 10);
+
+        SEQAN_ASSERT_EQ(unclippedLength(gaps), 10u);
+        SEQAN_ASSERT_EQ(length(gaps), 10u);
+
+        insertGap(gaps, 3);
+        setClippedEndPosition(gaps, 9);
+        setClippedBeginPosition(gaps, 2);
+
+        SEQAN_ASSERT_EQ(unclippedLength(gaps), 11u);
+        SEQAN_ASSERT_EQ(length(gaps), 7u);
+        SEQAN_ASSERT(isGap(gaps, 1));
     }
 }
 
@@ -1358,6 +1400,13 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_copy_clipping)
     testAlignGapsCopyClipping(TTag());
 }
 
+SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_is_nothing)
+{
+    using namespace seqan;
+    typedef ArrayGaps TTag;
+    testAlignGapsSourceIsNothing(TTag());
+}
+
 // ==========================================================================
 // Tests for Anchor Gaps
 // ==========================================================================
@@ -1536,5 +1585,14 @@ SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_clipping)
     typedef AnchorGaps<> TTag;
     testAlignGapsCopyClipping(TTag());
 }
+
+// TODO(holtgrew): Extend anchor gaps such that this works.
+
+// SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_source_is_nothing)
+// {
+//     using namespace seqan;
+//     typedef AnchorGaps<> TTag;
+//     testAlignGapsSourceIsNothing(TTag());
+// }
 
 #endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_

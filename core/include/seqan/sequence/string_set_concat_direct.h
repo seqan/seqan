@@ -543,6 +543,18 @@ concat(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me)
     return me.concat;
 }
 
+// --------------------------------------------------------------------------
+// Function swap()
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+void swap(StringSet<TString, Owner<ConcatDirect<TSpec> > > & lhs,
+          StringSet<TString, Owner<ConcatDirect<TSpec> > > & rhs)
+{
+    swap(lhs.limits, rhs.limits);
+    swap(lhs.concat, rhs.concat);
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_CONCAT_DIRECT_H_

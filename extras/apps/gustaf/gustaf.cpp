@@ -47,10 +47,10 @@ int main(int argc, char const ** argv)
     _setupArgumentParser(parser);
     // _setParser(parser);
     ArgumentParser::ParseResult res = parse(parser, argc, argv);
-    if (res == ArgumentParser::PARSE_OK)
-        res = _parseOptions(parser, stellarOptions, msplazerOptions);
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
+    if (!_parseOptions(parser, stellarOptions, msplazerOptions))
+            return 1;
 
     _writeFileNames(stellarOptions);
     _writeParams(msplazerOptions);
