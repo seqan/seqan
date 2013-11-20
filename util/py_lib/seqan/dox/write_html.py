@@ -98,12 +98,12 @@ class TextNodeToHtml(object):
                 pygments.formatters.HtmlFormatter(style='friendly'))
         except ImportError:
             return '<pre class="code">' + escapeForXml(source_code) + '</pre>'
-        return 
-        
+        return
+
     def handleTag(self, text_node):
         if text_node.type == '<text>':
             self.res.append(text_node.text)
-        elif text_node.type == 'code':
+        elif text_node.type == 'dox:code':
             if text_node.attrs.get('type') in ['.cpp', '.h']:
                 self.res.append(self.convertCode(text_node.children[0].text))
                 target_path = text_node.attrs.get('path')
