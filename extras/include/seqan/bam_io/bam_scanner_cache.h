@@ -35,10 +35,21 @@
 #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 #define CORE_INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 
+#ifdef SEQAN_CXX11_STANDARD
+#include <functional>
+#include <unordered_map>
+#else
 #include <tr1/functional>
 #include <tr1/unordered_map>
+#endif
 
 namespace seqan {
+
+#ifdef SEQAN_CXX11_STANDARD
+using namespace std;
+#else
+using namespace std::tr1;
+#endif
 
 // ============================================================================
 // Forwards
@@ -71,7 +82,7 @@ struct BamScannerCacheHash_ :
 {    
     size_t operator()(BamScannerCacheKey_ const &v) const
     {
-        return std::tr1::hash<__int32>()(v.rID) ^ std::tr1::hash<__int32>()(v.beginPos);
+        return hash<__int32>()(v.rID) ^ hash<__int32>()(v.beginPos);
     }
 };
 
@@ -84,7 +95,7 @@ public:
     typedef BamScannerCacheKey_ TKey;
 
     // A mapping from the key type to the BamAlignmentRecord at this position.
-    typedef std::tr1::unordered_multimap<TKey, TRecordId, BamScannerCacheHash_> TMap;
+    typedef unordered_multimap<TKey, TRecordId, BamScannerCacheHash_> TMap;
     typedef TMap::const_iterator TMapIter;
 
     TRecords            records;

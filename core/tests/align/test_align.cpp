@@ -108,6 +108,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_clear_clipping);
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_copy_gaps);
     SEQAN_CALL_TEST(test_align_gaps_array_gaps_copy_clipping);
+    SEQAN_CALL_TEST(test_align_gaps_array_gaps_source_is_nothing);
 
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_metafunctions);
     SEQAN_CALL_TEST(test_align_gaps_anchor_constructor_and_source);
@@ -134,6 +135,8 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clear_clipping);
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_copy_gaps);
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_copy_clipping);
+    // TODO(holtgrew): Extend anchor gaps such that this works.
+    // SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_source_is_nothing);
 
     // -----------------------------------------------------------------------
     // Test Gaps Iterators.

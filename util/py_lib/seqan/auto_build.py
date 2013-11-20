@@ -373,9 +373,69 @@ def workTrunk(options):
     return 0
 
 
+def workSrcTar(options):
+    """Build the source tarball."""
+    # Get the revisions and tag names.
+    svn = MinisculeSvnWrapper()
+    revs_tags = [(rev, tag) for (rev, tag) in svn.ls(options.tags_url)
+                 if rev >= options.start_revision and
+                    '-' in tag]
+    # Enumerate all package names that we could enumerate.
+    for rev, tag in revs_tags:
+        # Build URL.
+        svn_url = os.path.join(options.tags_url, tag)
+        name, version = tag.rsplit('-', 1)
+        if name != 'seqan':
+          continue  # only build source tarballs for seqan
+        # Destination file name
+        file_name = '%s-src-%s.tar.gz' % (name, version)
+        # Create destination file name.
+        dest = os.path.join(options.package_db, '%s-src' % name, file_name)
+        # Check whether we need to rebuild.
+        if os.path.exists(dest):
+          print >>sys.stderr, 'Skipping %s; already exists.' % dest
+          continue
+        # Create temporary directory.
+        if options.tmp_dir:
+          if not os.path.exists(options.tmp_dir):
+            os.makedirs(options.tmp_dir)
+          tmp_dir = options.tmp_dir
+        else:
+          tmp_dir = tempfile.mkdtemp()
+        print >>sys.stderr, 'Temporary directory is %s' % (tmp_dir,)
+        # Create SVN checkout in temporary directory.
+        checkout_dir = os.path.join(tmp_dir, os.path.basename(svn_url))
+        print >>sys.stderr, 'Creating checkout in %s' % checkout_dir
+        from_ = os.path.join(tmp_dir, file_name)
+        args = ['tar', '--exclude=.svn', '-z', '-c', '-f', from_, os.path.basename(svn_url)]
+        print ' '.join(args)
+        svn = MinisculeSvnWrapper()
+        svn.co(svn_url, checkout_dir)
+        # Create tarball.
+        popen = subprocess.Popen(args, stdout=subprocess.PIPE, cwd=tmp_dir)
+        out_data, err_data = popen.communicate()
+        if popen.returncode != 0:
+            print >>sys.stderr, 'ERROR during SVN call.'
+            return 1
+        # Create target directory if it does not exist yet.
+        if not os.path.exists(os.path.dirname(dest)):  # Create directory if necessary.
+            os.makedirs(os.path.dirname(dest))
+        # Create tarball in target directory.
+        print  >>sys.stderr, 'Copying %s => %s' % (from_, dest)
+        shutil.copyfile(from_, dest)
+        # Remove temporary directory again.
+        if tmp_dir and not options.keep_tmp_dir:
+            # Only remove if not explicitely given and not forced to keep.
+            print >>sys.stderr, 'Removing temporary directory %s' % (tmp_dir,)
+            shutil.rmtree(tmp_dir)
+    return 0
+
+
 def work(options):
     """Run the steps."""
-    if not options.build_trunk_as:
+    if options.src_tar:
+        return workSrcTar(options)
+    elif not options.build_trunk_as:
         return workTags(options)
     else:
         return workTrunk(options)
@@ -394,6 +454,8 @@ def main():
     parser.add_option('--package-db', dest='package_db', type='string',
                       default=DEFAULT_PACKAGE_DB,
                       help='Path the directory with the packages.')
+    parser.add_option('--src-tar', dest='src_tar', action='store_true',
+                      help='If specified then only the src tarball will be created')
     parser.add_option('-s', '--start-revision', dest='start_revision',
                       default=DEFAULT_START_REVISION,
                       type='int', help='Ignore all tags with smaller revision.')

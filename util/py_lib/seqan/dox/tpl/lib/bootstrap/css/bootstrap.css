@@ -604,7 +604,7 @@ address {
 }
 code,
 pre {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Consolas, Menlo, "Courier New", Monaco, monospace;
 }
 code {
   padding: 2px 4px;
@@ -632,7 +632,7 @@ pre.prettyprint {
 }
 pre code {
   padding: 0;
-  font-size: inherit;
+  font-size: 110%;
   color: inherit;
   white-space: pre-wrap;
   background-color: transparent;

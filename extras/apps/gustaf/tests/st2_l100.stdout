@@ -1,3 +1,4 @@
+adeno_modified_reads.fa
 Database file   : adeno.fa
 Query file      : adeno_modified_reads.fa
 
@@ -42,9 +43,9 @@ Calculated parameters:
 
 Constructing index...
 
-TIME stellar 0.0326893s
+TIME stellar 0.0322532s
 done
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
-TIME all 0.0342653s
+TIME all 0.0338873s
