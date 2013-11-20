@@ -239,12 +239,14 @@ void getOptionValue(TOption & option,
 
 void setDateAndVersion(ArgumentParser & parser)
 {
-    std::string rev  = "$Revision$";
-    std::string date = "$Date$";
-
-    setCategory(parser, "Read Mapping");
-    setVersion(parser, "0.7.1 [" + rev.substr(11, rev.size() - 13) + "]");
-    setDate(parser, date.substr(7, std::min((int)date.size() - 8, 10)));
+#ifdef SEQAN_REVISION
+    setVersion(parser, "0.7.2 [" + std::string(SEQAN_REVISION) + "]");
+#else
+    setVersion(parser, "0.7.2");
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
 }
 
 // ----------------------------------------------------------------------------
