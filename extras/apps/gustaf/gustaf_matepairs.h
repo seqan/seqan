@@ -37,9 +37,79 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
+#include <seqan/seq_io.h>
 #include "stellar_routines.h"
 
 using namespace seqan;
+
+// Imports mate pairs from two files, joins them, stores the joining position in
+// String readJoinPositions, and stores the sequences in the StringSet seqs and
+// their identifiers in the StringSet ids
+template <typename TSequence, typename TId>
+inline bool
+_importSequences(CharString const & fileNameL,
+                 CharString const & fileNameR,
+                 bool revCompl,
+                 StringSet<TSequence> & seqs,
+                 StringSet<TId> & ids,
+                 StringSet<TId> & sIds,
+                 StringSet<CharString> & quals,
+                 String<unsigned> & readJoinPositions
+                 )
+{
+    SequenceStream l(toCString(fileNameL));
+    SequenceStream r(toCString(fileNameR));
+    if (!isGood(l) || !isGood(r))
+    {
+        std::cerr << "Failed to open file." << std::endl;
+        return false;
+    }
+
+    TSequence seq;
+    TSequence seqL;
+    TSequence seqR;
+    TId id;
+    TId sId;
+    CharString qual;
+    CharString qualL;
+    CharString qualR;
+    unsigned counter = 0;
+    while (!atEnd(l) || !atEnd(r))
+    {
+        if (readRecord(id, seqL, qualL, l) != 0)
+        {
+            std::cerr << "Problem reading from first input file." << std::endl;
+            return false;
+        }
+        if (readRecord(id, seqR, qualR, r) != 0)
+        {
+            std::cerr << "Problem reading from first input file." << std::endl;
+            return false;
+        }
+
+        appendValue(readJoinPositions, length(seqL));
+        if (revCompl)
+        {
+            reverseComplement(seqR);
+            reverse(qualR);
+        }
+        append(seq, seqL);
+        append(seq, seqR);
+        append(qual, qualL);
+        append(qual, qualR);
+        appendValue(seqs, seq, Generous());
+        appendValue(quals, qual, Generous());
+        appendValue(ids, id, Generous());
+
+        _getShortId(sId, id);
+        if (!_checkUniqueId(sId, id, ids, sIds))
+            ++counter;
+        appendValue(sIds, sId);
+        clear(seq);
+        clear(qual);
+    }
+    return true;
+}
 
 // /////////////////////////////////////////////////////////////////////////////
 // Imports mate pairs from two files, joins them, stores the joining position in
@@ -49,6 +119,7 @@ template <typename TSequence, typename TId>
 inline bool
 _importSequences(CharString const & fileNameL,
                  CharString const & fileNameR,
+                 bool revCompl,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids,
                  StringSet<TId> & sIds,
@@ -77,6 +148,12 @@ _importSequences(CharString const & fileNameL,
     split(rightMates, formatR);
 
     unsigned seqCount = length(leftMates);
+    SEQAN_ASSERT_EQ_MSG(seqCount, length(rightMates), "Unequal number of left and right mates!");
+    if (seqCount != length(leftMates))
+    {
+        std::cerr << "Unequal number of left and right mates!" << std::endl;
+        return false;
+    }
 
     resize(readJoinPositions, seqCount);
     reserve(seqs, seqCount, Exact());
@@ -93,14 +170,15 @@ _importSequences(CharString const & fileNameL,
     {
         assignSeq(seqL, leftMates[i], formatL);
         assignSeq(seqR, rightMates[i], formatR);
-        reverseComplement(seqR);
+        if (revCompl)
+            reverseComplement(seqR);
         readJoinPositions[i] = length(seqL);
-        std::cout << "Read " << i+1 << " has joining position " << readJoinPositions[i] << std::endl;
+        // std::cout << "Read " << i+1 << " has joining position " << readJoinPositions[i] << std::endl;
         append(seq, seqL);
         append(seq, seqR);
         assignSeqId(id, leftMates[i], formatL);
-        appendValue(seqs, seq, seqan::Generous());
-        appendValue(ids, id, seqan::Generous());
+        appendValue(seqs, seq, Generous());
+        appendValue(ids, id, Generous());
 
         _getShortId(sId, id);
         if (!_checkUniqueId(sId, id, ids, sIds))
