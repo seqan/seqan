@@ -223,7 +223,7 @@ std::cout << "\n";
 </dl>
 @endhtmlonly
 
-@link String @endlink implements @link SequenceConcept @endlink. Since the metafunction @link append @endlink is part of @link SequenceConcept @endlink, @link append @endlink accepts @link String @endlink as an argument.
+
 
 
 
