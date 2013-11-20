@@ -42,6 +42,7 @@
 #include "msplazer.h"
 #include "msplazer_out.h"
 #include "msplazer_algorithms.h"
+#include "gustaf_matepairs.h"
 #include "stellar_routines.h"
 #include "create_stellarmatches_from_file.h"
 using namespace seqan;
@@ -55,14 +56,27 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     //  typedef FragmentStore<void>::TReadSeqStore TSequence;
 
     // Database and query ID
+
     typedef CharString TId;
 
     // import query sequences using _importSequences from Stellar
     StringSet<TSequence> queries;
     StringSet<TId> queryIDs;
-    std::cout << "Loading query sequences... ";
-    if (!_importSequences(stellarOptions.queryFile, "query", queries, queryIDs))
-        return 1;
+    StringSet<TId> shortQueryIDs;
+    String<unsigned> readJoinPositions;
+    // TODO (ktrappe) distinguish between paired and single and, call appropriate
+    // importSeq function (and preprocess query files)
+    if (msplazerOptions.pairedEndMode)
+    {
+        std::cout << "Loading paired-end read sequences... ";
+        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], queries, queryIDs, shortQueryIDs, readJoinPositions))
+            return 1;
+    }else
+    {
+        std::cout << "Loading query sequences... ";
+        if (!_importSequences(stellarOptions.queryFile, "query", queries, queryIDs))
+            return 1;
+    }
 
     /*
     unsigned readLength = 0;
@@ -87,6 +101,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     }
 
     std::cout << "done" << std::endl;
+
 
     // /////////////////////////////////////////////////////////////////////////
     // Compute Stellar Matches and their score
@@ -134,6 +149,8 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     {
         std::cout << "Importing STELLAR matches from file " << msplazerOptions.stellarInputFile << std::endl;
         double startST = sysTime();
+        // TODO (ktrappe) distinguish call with queryIDs and shortQueryIDs in case of mate pairs? stellar writes out short
+        // query IDs anyway...
         if (!_getStellarMatchesFromFile(queries, queryIDs, databases, databaseIDs, msplazerOptions.stellarInputFile,
                                         stellarMatches))
             return 1;
@@ -203,7 +220,8 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     String<TMSplazerChain> queryChains;
 
     std::cout << "Constructing graphs... ";
-    _chainQueryMatches(stellarMatches, distanceScores, queryChains, queryIDs, queries, msplazerOptions);
+    // TODO distinguish call with queryIDs and shortQueryIDs for mate pairs?
+    _chainQueryMatches(stellarMatches, distanceScores, queryChains, queryIDs, queries, readJoinPositions, msplazerOptions);
     std::cout << "done" << std::endl;
 
     // ///////////////////////////////////////////////////////////////////////

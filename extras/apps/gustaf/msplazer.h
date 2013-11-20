@@ -62,7 +62,7 @@ struct MSplazerOptions
 {
     // I/O options
     CharString databaseFile;        // name of database (db) file
-    CharString queryFile;           // name of query file
+    StringSet<CharString> queryFile;           // name of query file(s) (two in case of paired-end)
     // CharString queryFile2;        // name of 2nd query file (mate pairs)
     CharString emptyReadsOutFile;   // file with reads that have broken or empty chains
     CharString disabledQueriesFile; // name of result file containing disabled queries
@@ -76,16 +76,19 @@ struct MSplazerOptions
     unsigned diffDBPen;             // Penalty for matches on different databases
     unsigned diffStrandPen;         // Pen. for matches on diff. strand of the same database
     unsigned diffOrderPen;          // Pen. for matches with diff. order wrt the order within the query
+    unsigned noMateMatchesPen;      // Pen. for matches with no confirming mate matches
     double simThresh;               // Allowed similarity between overlapping sequences, i.e. percentage of overlap
     int gapThresh;                  // Allowed gap or distance between matches
     int initGapThresh;              // Maximal allowed start or end gap length
     unsigned breakpointPosRange;    // Allowed range of breakpoint positions
     unsigned support;
-    unsigned librSize;              // Library size (mate pairs)
+    unsigned mateSupport;
+    unsigned libSize;              // Library size (mate pairs)
+    unsigned libError;              // Library size (mate pairs)
+    bool pairedEndMode;
 
     MSplazerOptions() :
         databaseFile("reference.fa"),
-        queryFile("reads.fa"),
         emptyReadsOutFile("emptyReads.fa"),
         disabledQueriesFile("msplazer.disabled.fasta"),
         vcfOutFile("breakpoints.vcf"),
@@ -94,12 +97,16 @@ struct MSplazerOptions
         diffDBPen(5),
         diffStrandPen(5),
         diffOrderPen(0),
+        noMateMatchesPen(5),
         simThresh(0.5),
         gapThresh(10),
         initGapThresh(15),
         breakpointPosRange(6),
         support(2),
-        librSize(0){}
+        mateSupport(1),
+        libSize(0),
+        libError(0),
+        pairedEndMode(false){}
 };
 
 // ----------------------------------------------------------------------------
@@ -357,6 +364,8 @@ struct MSplazerChain
     typedef TSparsePropertyMap_     TSparsePropertyMap;
     typedef typename Size<TGraph>::Type TGraphSize;
     typedef TMatchAlloc_        TMatchAlloc;
+    typedef IntervalAndCargo<unsigned, unsigned> TInterval;
+    typedef IntervalTree<unsigned, unsigned> TIntervalTree;
 
     TGraph graph;                       // Contains (Stellar)matches as vertices and edges between compatible matches
     TVertexDescriptor startVertex;      // Artificial start and end vertex (represents start/end of the read sequence)
@@ -366,12 +375,15 @@ struct MSplazerChain
     TScoreAlloc matchDistanceScores;    // Distance scores of matches (edit distance of reference mapping)
     TSparsePropertyMap breakpoints;
     String<TMatchAlloc> bestChains;
+    TIntervalTree rightMateTree;
+    TIntervalTree leftMateTree;
+    unsigned mateJoinPosition;
     bool isEmpty;
     bool isPartial;
     // bool transl/dupl;
 
     MSplazerChain(TScoreAlloc & _scores) :
-        matchDistanceScores(_scores), isEmpty(false), isPartial(false)
+        matchDistanceScores(_scores), mateJoinPosition(0), isEmpty(false), isPartial(false)
     {}
 };
 
@@ -643,27 +655,22 @@ inline void setSVType(TBreakpoint & bp, TSVType type)
 template <typename TBreakpoint>
 inline bool setSVType(TBreakpoint & bp)
 {
-    typedef typename TBreakpoint::TId TId;
     // if insertion return 1; else return 0;
     if (bp.startSeqId != bp.endSeqId)
     {
         bp.svtype = TBreakpoint::INTRATRANSLOCATION;
-        // bp.svtype = static_cast<TId>("translocation");
-        // setSVType(bp, TBreakpoint::TRANSLOCATION);
         return false;
     }
     if (bp.startSeqStrand != bp.endSeqStrand)
     {
-        // bp.svtype = static_cast<TId>("inversion");
+        if (bp.startSeqPos > bp.endSeqPos)
+            std::swap(bp.startSeqPos, bp.endSeqPos);
         setSVType(bp, TBreakpoint::INVERSION);
-        // setSVType(bp, static_cast<TId>("inversion"));
         return false;
     }
     if (bp.startSeqPos < bp.endSeqPos)
     {
         setSVType(bp, TBreakpoint::DELETION);
-        // bp.svtype = static_cast<TId>("deletion");
-        // setSVType(bp, static_cast<TId>("deletion"));
         return false;
     }
     if (bp.startSeqPos > bp.endSeqPos)
@@ -672,17 +679,13 @@ inline bool setSVType(TBreakpoint & bp)
         if (bp.startSeqStrand)
         {
             setSVType(bp, TBreakpoint::TRANSLOCATION);
-            // bp.svtype = static_cast<TId>("translocation");
             return false;
         }
         setSVType(bp, TBreakpoint::DELETION);
-        // setSVType(bp, static_cast<TId>("deletion"));
         bp.revStrandDel = true;
         return false;
     }
     setSVType(bp, TBreakpoint::INSERTION);
-    // bp.svtype = static_cast<TId>("insertion");
-    // setSVType(bp, static_cast<TId>("insertion"));
     return true;
 }
 

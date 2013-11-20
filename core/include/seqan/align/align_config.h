@@ -64,6 +64,27 @@ namespace seqan {
  * @tparam TSpec  Tag for specializing the AlignConfig object (default: <tt>Default</tt>).
  *
  * Used in the DP alignment algorithms to configure the begin/end gap free-nes.
+ *
+ * @section Specialization List
+ *
+ * The following gives an (incomplete) list of useful AlignConfig specializations.
+ *
+ * <dl>
+ *   <dt><tt>AlignConfig&lt;false, false, false, false&gt;</tt></dt>
+ *   <dd>ordinary global alignment</dd>
+ *   <dt><tt>AlignConfig&lt;true, false, false, true&gt;</tt></dt>
+ *   <dd>semiglobal alignment, free begin and end gaps in second/vertical sequence</dd>
+ *   <dt><tt>AlignConfig&lt;false, true, true, false&gt;</tt></dt>
+ *   <dd>semiglobal alignment, free begin and end gaps in first/horizontal sequence</dd>
+ *   <dt><tt>AlignConfig&lt;false, true, false, true&gt;</tt></dt>
+ *   <dd>overlap alignment with second/vertical sequence overhanging to the left of first/horizontal</dd>
+ *   <dt><tt>AlignConfig&lt;true, false, true, false&gt;</tt></dt>
+ *   <dd>overlap alignment with first/horizontal sequence overhanging to the left of second/vertical</dd>
+ *   <dt><tt>AlignConfig&lt;false, true, false, false&gt;</tt></dt>
+ *   <dd>free begin gaps in second/vertical sequence only</dd>
+ *   <dt><tt>AlignConfig&lt;false, false, true, false&gt;</tt></dt>
+ *   <dd>free end gaps in second/vertical sequence only</dd>
+ * </dl>
  */
 
 /**

@@ -49,7 +49,7 @@ using namespace seqan;
 
 // Creates a short Id out of a long one (i.e. it takes the prefix til the first white space)
 template <typename TId>
-void _getShortId(TId & shortId, TId const & longId)
+inline void _getShortId(TId & shortId, TId const & longId)
 {
     clear(shortId);
     for (typename Position<TId>::Type i = 0; i < length(longId) && isgraph(value(longId, i)); ++i)

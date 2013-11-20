@@ -489,31 +489,6 @@ stronglyConnectedComponents(Graph<TSpec> const& g_source,
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-template<typename TSpec, typename TVertexDescriptor, typename TTokenMap, typename TComponents, typename TVal>
-void
-_connectedComponentVisit(Graph<TSpec> const& g,
-		  TVertexDescriptor const u,
-		  TTokenMap& tokenMap,
-		  TComponents& components,
-		  TVal& label)
-{
-	SEQAN_CHECKPOINT
-
-	typedef typename Iterator<Graph<TSpec>, AdjacencyIterator>::Type TAdjacencyIterator;
-
-	assignProperty(tokenMap, u, true);
-	assignProperty(components, u, label);
-	TAdjacencyIterator itad(g,u);
-	for(;!atEnd(itad);goNext(itad)) {
-		TVertexDescriptor v = getValue(itad);
-		if (getProperty(tokenMap, v) == false) {
-			_connectedComponentVisit(g, v, tokenMap, components, label);
-		}
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////////
 /*!
  * @fn connectedComponents
  * 
@@ -613,33 +588,36 @@ Vertex -> Component
 
 template<typename TSpec, typename TComponents>
 typename Size<Graph<TSpec> >::Type
-connectedComponents(Graph<TSpec> const& g_source,
-					 TComponents& components)
+connectedComponents(Graph<TSpec> const & g,
+                    TComponents & components)
 {
-	typedef typename Size<Graph<TSpec> >::Type TSize;
-	typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
-	typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
-	clear(components);
-	resizeVertexMap(g_source,components);
-	
-	// Initialization
-	String<bool> tokenMap;
-	resize(tokenMap, getIdUpperBound(_getVertexIdManager(g_source)), false);
+    typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
 
-	// Connected components
-	TSize label = 0;
-	TVertexIterator it(g_source);
-	for(;!atEnd(it);goNext(it)) {
-		TVertexDescriptor u = getValue(it);
-		if (getProperty(tokenMap, u) == false) {
-			_connectedComponentVisit(g_source, u, tokenMap, components, label);
-			++label;
-		}
-	}
-	return label;
+    // Initialize Union-Find data structure.
+    UnionFind<TVertexDescriptor> uf;
+    resizeVertexMap(g, uf);
+
+    // Use Union-Find data structure to compute connected components.
+    for (typename Iterator<Graph<TSpec>, EdgeIterator>::Type it(g); !atEnd(it); goNext(it))
+        joinSets(uf, findSet(uf, sourceVertex(it)), findSet(uf, targetVertex(it)));
+
+    // Build final component map.
+    resizeVertexMap(g, components);
+    unsigned c = 0;
+    std::map<TVertexDescriptor, unsigned> reprToComponent;
+    for (typename Iterator<Graph<TSpec>, VertexIterator>::Type it(g); !atEnd(it); goNext(it))
+    {
+        TVertexDescriptor v = findSet(uf, *it);
+
+        // Build mapping from representant to component id on the fly.
+        if (!reprToComponent.count(v))
+            reprToComponent[v] = c++;
+
+        assignProperty(components, *it, reprToComponent[v]);
+    }
+
+    return c;
 }
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -825,20 +803,19 @@ struct LessPairI1_ :
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Computes a minimum spanning tree on a graph.
  *
- * @signature void kruskalsAlgorithm(g, source, weight, predecessor);
+ * @signature void kruskalsAlgorithm(g, source, weight, edges);
  *
  * @param[in] g      An undirected graph. Types: Undirected Graph
  * @param[in] source A source vertex. Types: VertexDescriptor
  * @param[in] weight Edge weights.
- * @param[out] predecessor
- *                   A property map.  A property map that represents predecessor relationships among vertices.  It
- *                   determines a minimum spanning tree.
+ * @param[out] edges A String of vertex descriptors that represent edges.  Each consecutive pair is an edge with the
+ *                   two end points.
  *
  * @section Example
  *
  * @include demos/graph_algorithms/kruskals_algorithm.cpp
  *
- * @include demos/graph_algorithms/kruskals_algorithm.cpp
+ * @include demos/graph_algorithms/kruskals_algorithm.cpp.stdout
  *
  * @see primsAlgorithm
  */
