@@ -492,7 +492,7 @@ class HtmlWriter(object):
                     xs += lst
                 subentries = ','.join(['%s %s' % (s.kind, proc_doc.splitSecondLevelEntry(s.title)[1]) for s in xs])
             js.append('  {title:%s,text:%s,akas:%s,subentries:%s,loc:%s,langEntity:%s},' %
-                      (repr(entry.name), repr(""), repr(akas), repr(subentries),
+                      (repr(entry.title), repr(""), repr(akas), repr(subentries),
                        repr(self.path_converter.convert(entry.name)[0]),
                        repr(entry.kind)))
         js.append('];')
