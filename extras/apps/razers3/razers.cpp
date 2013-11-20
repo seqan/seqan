@@ -65,11 +65,12 @@
 #include <seqan/parallel.h>
 
 #ifdef PLATFORM_WINDOWS
-// TR1 for Windows
-#include <memory>
 #include <process.h>
+#endif
+
+#ifdef SEQAN_CXX11_STANDARD
+#include <memory>
 #else
-// TR1 for GCC
 #include <tr1/memory>
 #endif
 
@@ -301,15 +302,17 @@ inline void whichMacros()
 
 void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, ParamChooserOptions const & pm_options)
 {
-    string rev  = "$Revision$";
-    string date = "$Date$";
-
     setAppName(parser, "razers3");
     setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
-    options.version = "3.2 [" + rev.substr(11, rev.size() - 13) + "]";
-    setVersion(parser, options.version);
-    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+    options.version = "3.2";
+#ifdef SEQAN_REVISION
+    options.version += std::string("[") + std::string(SEQAN_REVISION) + "]";
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
+	setVersion(parser, options.version);
 
     // Need genome and reads (hg18.fa reads.fq)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));

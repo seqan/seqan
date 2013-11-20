@@ -673,14 +673,17 @@ int runDFI(
 
 void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
 {
-	string rev = "$Revision$";
-    string date = "$Date$";
-
     setAppName(parser, "dfi");
     setShortDescription(parser, "Fast String Mining of Multiple Databases under Frequency Constraints");
     setCategory(parser, "Data Mining");
-    setVersion(parser, "2.1 [" + rev.substr(11, rev.size() - 13) + "]");
-    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+#ifdef SEQAN_REVISION
+    setVersion(parser, "2.1 [" + std::string(SEQAN_REVISION) + "]");
+#else
+    setVersion(parser, "2.1");
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
     setValidValues(parser, 0, "fa fasta fq fastq txt");
