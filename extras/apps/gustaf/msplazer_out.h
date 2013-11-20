@@ -360,10 +360,11 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
         appendValue(record.ref, ref[bp.endSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
 
     // Compute ALT columns and a map to the ALT.
-    appendValue(record.alt, record.ref[0]);
     if (length(bp.insertionSeq) < 20)
+    {
+        appendValue(record.alt, record.ref[0]);
         append(record.alt, bp.insertionSeq);
-    else
+    } else
         append(record.alt, "<INS>");
 
     // Create genotype infos.
@@ -383,20 +384,22 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     ss << ";DP=" << bp.support;
     record.info = ss.str();
 
-    // Compute ALT columns and a map to the ALT.
-    if (bp.startSeqPos != 0)
-        appendValue(record.alt, ref[bp.startSeqPos-1]);// position/base before SV except for position 1, then it is the base AFTER the event!
-    else
-        appendValue(record.alt, ref[bp.endSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
-
-
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
-    appendValue(record.ref, record.alt[0]); // std::max(0,
-    if ((bp.endSeqPos - bp.startSeqPos) < 20)
-        append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+    if (bp.startSeqPos != 0)
+        appendValue(record.ref, ref[bp.startSeqPos-1]);// position/base before SV except for position 1, then it is the base AFTER the event!
     else
-        append(record.ref, "<DEL>");
+        appendValue(record.ref, ref[bp.endSeqPos]); // position/base before SV except for position 1, then it is the base AFTER the event!
+
+
+    // Compute ALT columns and a map to the ALT.
+    if ((bp.endSeqPos - bp.startSeqPos) < 20)
+    {
+        appendValue(record.alt, record.ref[0]); // std::max(0,
+        append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+    } else
+        append(record.alt, "<DEL>");
+
 
     // Create genotype infos.
     appendValue(record.genotypeInfos, "1");
