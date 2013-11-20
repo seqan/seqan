@@ -151,7 +151,7 @@ class TextNode(object):
     We represent plain links, i.e. where the label is the same as the target
     using the representation for "<a href="seqan:$target">$target</a>".
 
-    We represent included code snippets as "<code type='.cpp'>$code</code>."
+    We represent included code snippets as "<dox:code type='.cpp'>$code</dox:code>."
 
     @ivar type: The type of the node, as a string.  Reserved values are
                 '<text>' for plain text nodes.
@@ -179,7 +179,7 @@ class TextNode(object):
 
     def __repr__(self):
         return str(self)
-        
+
     def setAttr(self, key, value):
         self.attrs[escapeForXml(key)] = escapeForXml(value)
 
@@ -961,14 +961,14 @@ class EntryConverter(object):
                     # Including a whole file.
                     ftype = os.path.splitext(p.path.text)[1]
                     code_text = self.doc_proc.include_mgr.loadFile(p.path.text)
-                    proc_include = TextNode(type='code', attrs={'type': ftype, 'source': 'include', 'path': p.path.text})
+                    proc_include = TextNode(type='dox:code', attrs={'type': ftype, 'source': 'include', 'path': p.path.text})
                     proc_include.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(proc_include)
                 elif p.getType() == 'snippet':
                     # Including a snippet file.
                     ftype = os.path.splitext(p.path.text)[1]
                     code_text = self.doc_proc.include_mgr.loadSnippet(p.path.text, p.name.text)
-                    proc_snippet = TextNode(type='code', attrs={'type': ftype, 'source': 'snippet', 'path': p.path.text})
+                    proc_snippet = TextNode(type='dox:code', attrs={'type': ftype, 'source': 'snippet', 'path': p.path.text})
                     proc_snippet.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(proc_snippet)
                 elif p.getType() == 'code':
@@ -979,7 +979,7 @@ class EntryConverter(object):
                         type = m.group(0)[1:-1]
                     code_text = code_text[len(type) + 2:].strip()
                     #print [repr(t.val) for t in p.text.tokens]
-                    x = TextNode(type='code', attrs={'type': type})
+                    x = TextNode(type='dox:code', attrs={'type': type})
                     x.addChild(TextNode(text=code_text, verbatim=True))
                     res.addChild(x)
                 elif p.getType() == 'htmlonly':
