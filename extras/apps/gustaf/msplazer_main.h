@@ -69,7 +69,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     if (msplazerOptions.pairedEndMode)
     {
         std::cout << "Loading paired-end read sequences... ";
-        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], queries, queryIDs, shortQueryIDs, readJoinPositions))
+        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], msplazerOptions.revCompl, queries, queryIDs, shortQueryIDs, readJoinPositions))
             return 1;
     }else
     {
