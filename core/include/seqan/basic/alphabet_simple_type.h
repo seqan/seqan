@@ -739,13 +739,14 @@ operator!=(Proxy<TSpec> const & left_,
     typedef typename CompareType<TLeft, TRight>::Type TCompareType;
     return convert<TCompareType>(left_) != convert<TCompareType>(right_);
 }
-template <typename TSpec, typename TValue, typename TSpec2>
+
+template <typename TValue, typename TSpec, typename TProxySpec>
 SEQAN_HOST_DEVICE inline bool
-operator!=(SimpleType<TValue, TSpec2> const & left_,
-           Proxy<TSpec> const & right_)
+operator!=(SimpleType<TValue, TSpec> const & left_,
+           Proxy<TProxySpec> const & right_)
 {
     typedef SimpleType<TValue, TSpec> TLeft;
-    typedef Proxy<TSpec> TRight;
+    typedef Proxy<TProxySpec> TRight;
     typedef typename CompareType<TRight, TLeft>::Type TCompareType;
     return convert<TCompareType>(left_) != convert<TCompareType>(right_);
 }

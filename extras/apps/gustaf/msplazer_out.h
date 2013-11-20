@@ -43,6 +43,7 @@
 
 #include "../../../core/apps/stellar/stellar.h"
 #include "msplazer.h"
+#include "gustaf_matepairs.h"
 
 using namespace seqan;
 
@@ -135,7 +136,10 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
             out << queryMatches[i].end2;
             out << "\\n";
             out << i;
-            out << "\"];\n";
+            if (_isLeftMate(queryMatches[i], msplazerchain.mateJoinPosition))
+                out << "\", fontcolor= green];\n";
+            else
+                out << "\", fontcolor= blue];\n";
         }
         else if (!atEndV)
         {
@@ -310,7 +314,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     GffStream gffOut(fn_gff.c_str(), GffStream::WRITE);
     if (length(globalBreakpoints) == 0)
     {
-        std::cerr << "Empty output list, skipping writing gff" << std::endl;
+        std::cerr << "Empty output list, skip writing gff" << std::endl;
         return 1;
     }
 
@@ -357,7 +361,10 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
 
     // Compute ALT columns and a map to the ALT.
     appendValue(record.alt, record.ref[0]);
-    append(record.alt, bp.insertionSeq);
+    if (length(bp.insertionSeq) < 20)
+        append(record.alt, bp.insertionSeq);
+    else
+        append(record.alt, "<INS>");
 
     // Create genotype infos.
     appendValue(record.genotypeInfos, "1");
@@ -386,7 +393,10 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
     // deletion of length k.
     appendValue(record.ref, record.alt[0]); // std::max(0,
-    append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+    if ((bp.endSeqPos - bp.startSeqPos) < 20)
+        append(record.ref, infix(ref, bp.startSeqPos, bp.endSeqPos)); // Deletions on reverse strand??? correct positions??
+    else
+        append(record.ref, "<DEL>");
 
     // Create genotype infos.
     appendValue(record.genotypeInfos, "1");
@@ -601,7 +611,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 1 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -639,7 +649,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 2 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -680,7 +690,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         // Write record and clear REF and ALT values
         if (writeRecord(vcfOut, record) != 0)
         {
-            std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+            std::cerr << "Error while writing breakpoint translocation entry 3 vcf record!" << std::endl;
             return 1;
         }
         clear(record.ref);
@@ -709,7 +719,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
         // Write record and clear REF and ALT values
         if (writeRecord(vcfOut, record) != 0)
         {
-            std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+            std::cerr << "Error while writing breakpoint translocation entry 4 vcf record!" << std::endl;
             return 1;
         }
         clear(record.ref);
@@ -750,7 +760,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 5 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -793,7 +803,7 @@ inline bool _writeVcfTranslocation(VcfStream & vcfOut, TBreakpoint & bp, TSequen
     // Write record and clear REF and ALT values
     if (writeRecord(vcfOut, record) != 0)
     {
-        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+        std::cerr << "Error while writing breakpoint translocation entry 6 vcf record!" << std::endl;
         return 1;
     }
     clear(record.ref);
@@ -809,7 +819,8 @@ void _fillVcfHeader(VcfStream & vcfStream, StringSet<TSequence> & databases, Str
     appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("fileformat", "VCFv4.1"));
     appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("source", "GUSTAF"));
     appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reference", msplOpt.databaseFile));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile));
+    for (unsigned i = 0; i < length(msplOpt.queryFile); ++i)
+        appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reads", msplOpt.queryFile[i]));
     appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
             "INFO", "<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record\">"));
     appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
@@ -873,7 +884,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
     VcfStream vcfOut(fn_vcf.c_str(), VcfStream::WRITE);
     if (length(globalBreakpoints) == 0)
     {
-        std::cerr << "Empty output list, skipping writing vcf" << std::endl;
+        std::cerr << "Empty output list, skip writing vcf" << std::endl;
         return 1;
     }
 
@@ -888,9 +899,9 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
         TBreakpoint bp = globalBreakpoints[i];
         if (bp.svtype != 0 && bp.support >= msplazerOptions.support) // 0=invalid
         {
+            id = _getrID(databaseIDs, bp.startSeqId);
             if (bp.svtype != 6 && bp.svtype != 7) // 6=intra-chr-translocation; 7=translocation
             {
-                id = _getrID(databaseIDs, bp.startSeqId);
                 // Fill and write record
                 if (_fillVcfRecord(vcf_record, bp, databases[id], id))
                     if (writeRecord(vcfOut, vcf_record) != 0)
@@ -902,7 +913,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> const & globalBreakpoints,
                 __int32 id2 = maxValue<int>();
                 id2 = _getrID(databaseIDs, bp.endSeqId);
                 if (_writeVcfTranslocation(vcfOut, bp, databases[id], databases[id2], id, id2, i))
-                        std::cerr << "Error while writing breakpoint vcf record!" << std::endl;
+                        std::cerr << "Error while writing breakpoint translocation vcf record!" << std::endl;
 
             }
         }

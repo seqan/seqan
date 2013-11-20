@@ -1127,6 +1127,14 @@ setHaystack(Finder<THaystack, TSpec> &obj, THaystack const &hstk) {
 	setHost(obj, hstk);
 }
 
+template < typename THaystack, typename TSpec >
+inline void
+setHaystack(Finder<THaystack, TSpec> &obj, THaystack &hstk)
+{
+    setHost(obj, hstk);
+}
+
+
 /*!
  * @fn Finder#haystack
  * @brief Returns the haystack of a Finder.
