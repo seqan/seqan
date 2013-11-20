@@ -114,7 +114,7 @@ class TextNodeToHtml(object):
                         '<div class="path_label"><span class="label">Snippet from:'
                         '</span> <a href="%s" target="_top">%s</a></div>' %
                         (target_path, text_node.attrs.get('path')))
-                else:
+                elif text_node.attrs.get('source') == 'include':
                     self.res.append(
                         '<div class="path_label"><span class="label">Demo:'
                         '</span> <a href="%s" target="_top">%s</a></div>' %
