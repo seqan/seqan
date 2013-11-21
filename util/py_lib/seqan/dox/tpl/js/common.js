@@ -51,6 +51,13 @@
 
         // smooth scrolling
         $('a[href*=#]:not([href=#])').smoothScroll({ offset: -20 });
+        
+        // autofocus search field
+        if($('html').hasClass('list')) {
+        	window.setTimeout(function() {
+        		$('input[type=search]').focus();
+        	}, 50);
+        }
 
     });
 
