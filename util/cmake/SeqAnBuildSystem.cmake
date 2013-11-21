@@ -508,10 +508,11 @@ macro (seqan_install_demos_release)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
-    # Get a list of all .cpp files in the current directory.
+    # Get a list of all .cpp and .cu files in the current directory.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp)
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Get path to current source directory, relative from root.  Will be used to install demos in.
     file (RELATIVE_PATH INSTALL_DIR "${SEQAN_ROOT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -524,24 +525,30 @@ macro (seqan_install_demos_release)
 endmacro (seqan_install_demos_release)
 
 macro (seqan_build_demos_develop PREFIX)
-    # Get a list of all .cpp files in the current directory.
+    # Get a list of all .cpp and .cu files in the current directory.
     file (GLOB_RECURSE ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/**.cpp)
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Find SeqAn with all dependencies.
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
 
-    # Add flags for SeqAn.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
     # Supress unused parameter warnings for demos.
     if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter" PARENT_SCOPE)
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+
+    # Supress all warnings for CUDA demos.
+    set (SEQAN_NVCC_FLAGS "${SEQAN_NVCC_FLAGS} --disable-warnings")
+
+    # Add SeqAn flags to CXX and NVCC flags.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
+    list (APPEND CUDA_NVCC_FLAGS "${SEQAN_NVCC_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -550,12 +557,17 @@ macro (seqan_build_demos_develop PREFIX)
         get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
 
         get_filename_component (FILE_NAME "${ENTRY}" NAME)
-        if (NOT "${FILE_NAME}" MATCHES "^\\.")
+        if ("${FILE_NAME}" MATCHES "\\.cu$")
+            if (SEQAN_HAS_CUDA)
+                cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
+                target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+                _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
+            endif ()
+        else ()
             add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
             target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+            _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
         endif ()
-
-        _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
     endforeach (ENTRY ${ENTRIES})
 endmacro (seqan_build_demos_develop)
 

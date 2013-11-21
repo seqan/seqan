@@ -64,10 +64,10 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another Mums iterator. (copy constructor)
 ...type:Spec.Mums Iterator
 */
-/*H
+/*!
  * @class MumsIterator Mums Iterator
  * 
- * @extends vIterator
+ * @extends BottomUpIterator
  * 
  * @headerfile seqan/index.h
  * 
@@ -85,10 +85,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * Demo: Demo.Maximal Unique Matches
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, Mums>::Type (which is Iter<TContainer, VSTree< BottomUp<Mums> > >).
+ *               Iterator&lt;TContainer, Mums>::Type (which is Iter&lt;TContainer, VSTree&lt; BottomUp&lt;Mums> > >).
  */
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<Mums> > >::Iter<TContainer, VSTree< BottomUp<Mums> > >
+/*!
+ * @fn MumsIterator::Iter<TContainer, VSTree< BottomUp<Mums> > >
  *
  * brief The constructor
  *
@@ -198,7 +198,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ..param.iterator:Another MultiMems iterator. (copy constructor)
 ...type:Spec.MultiMems Iterator
 */
-/*H
+/*!
  * @class MultiMemsIterator Multi Mems Iterator
  * 
  * @extends BottomUpIterator
@@ -215,10 +215,10 @@ namespace SEQAN_NAMESPACE_MAIN
  *                    iterator. Types: IndexEsa
  *
  * @section Note Instead of using the class Iter directly we recommend to use the result of the metafunction 
- *               Iterator<TContainer, MultiMems>::Type (which is Iter<TContainer, VSTree< BottomUp<MultiMems> > >).
+ *               Iterator&lt;TContainer, MultiMems&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MultiMems&gt; &gt; &gt;).
  */
-/*H
- * @fn Iter<TContainer, VSTree< BottomUp<MultiMems> > >::Iter<TContainer, VSTree< BottomUp<MultiMems> > >
+/*!
+ * @fn MultiMemsIterator::Iter<TContainer, VSTree< BottomUp<MultiMems> > >
  *
  * brief The constructor
  *
@@ -263,7 +263,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename TMultiCompound::TSet			TSet;
 		typedef typename Iterator<TSet>::Type			TSetIterator;
 
-		typedef typename TBase::TStackEntry				TStackEntry;
+        typedef typename HistoryStackEntry_<TBase>::Type TStackEntry;
 
 //____________________________________________________________________________
 
@@ -344,8 +344,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
 			if (length(setStack) < 2) return false;
 
-			TMultiCompound &child  = top(setStack);
-			TMultiCompound &parent = topPrev(setStack);
+			TMultiCompound &child  = back(setStack);
+			TMultiCompound &parent = backPrev(setStack);
 
 			TValue prevKey = TValue();
 			TValue equalKey = TValue();
@@ -382,8 +382,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
 			if (length(setStack) < 2) return 0;
 
-			TFractionCompound &child  = top(setStack);
-			TFractionCompound &parent = topPrev(setStack);
+			TFractionCompound &child  = back(setStack);
+			TFractionCompound &parent = backPrev(setStack);
 
 			TSetIterator childFraction	= begin(child.set);
 			TSetIterator childEnd		= end(child.set);
@@ -482,7 +482,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSAValue	lPos;
 		posLocalize(lPos, _dfsRange(it).i1, stringSetLimits(index));
 
-		TCompound &compound = top(it.setStack).set[getValueI1(lPos)];
+		TCompound &compound = back(it.setStack).set[getValueI1(lPos)];
 		if (!posAtFirstLocal(lPos))
 			insert(
 				TFraction(
@@ -728,8 +728,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 				state.prevState = prev;
 				state.posList = &(mmemIt->posList);
-				state.parent = &(topPrev(mmemIt->setStack).set[seq]);
-				state.child = &(top(mmemIt->setStack).set[seq]);
+				state.parent = &(backPrev(mmemIt->setStack).set[seq]);
+				state.child = &(back(mmemIt->setStack).set[seq]);
 
 				state._firstChildFraction();
 				state._firstParentFraction();

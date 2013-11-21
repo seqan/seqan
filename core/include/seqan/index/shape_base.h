@@ -317,7 +317,9 @@ Hit at position: 17
 		THashValue	XValue;		// Sum_{i=0..q-1} (x_i + 1)
 		TValue		leftChar;	// leftmost character
 //____________________________________________________________________________
-		Shape():
+
+        SEQAN_HOST_DEVICE
+        Shape():
 			hValue(0),
 			XValue(0),
             leftChar(0) {}
@@ -544,13 +546,13 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 
 	// loop unrolling ...
 	template <typename THValue, typename TValue, typename TIter>
-	inline THValue
+	SEQAN_HOST_DEVICE inline THValue
 	_hashFixedShape(THValue hash, TIter &, TValue const, UngappedShape<1> const) {
 		return hash;
 	}
 
 	template <typename THValue, typename TValue, typename TIter, unsigned q>
-	inline THValue
+	SEQAN_HOST_DEVICE inline THValue
 	_hashFixedShape(THValue hash, TIter &it, TValue const, UngappedShape<q> const) {
 		++it;
 		return _hashFixedShape(
@@ -560,7 +562,7 @@ If $charsLeft$ is smaller than the shape's span, the hash value corresponds to t
 
 	// ... for fixed ungapped shapes
 	template <typename TValue, unsigned q, typename TIter>
-	inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
+	SEQAN_HOST_DEVICE inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
 	hash(Shape<TValue, UngappedShape<q> > &me, TIter it)
 	{
 		//typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;

@@ -10,7 +10,6 @@
 	    $('html:not(.page_mainpage) #toc ol ol').filter(function() { return $(this).find('a[href=#Examples], a[href=#Example]').length == 0; }).remove();
 		$('html.page_languageentities #toc ol ol').remove();
 
-
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
 	    
@@ -20,6 +19,33 @@
             id = setTimeout(function() { $('body').scrollspy('refresh'); }, 500);
         });
         
+        // shows 'open in frameset' link if opened separately
+		if(window == window.parent && window.name != 'list') {
+        	$('#content').prepend('<div class="open-in-frame alert alert-info"><a href="index.html#' + window.location.href.replace(/^.*\/|\.[^.]*$/g, '') + '"><strong>Looking for a different entry?</strong> Unhide the navigation bar and start your search.</a></div>'); 
+        }
+        
+        // if loaded in a frame, checks the addresses hash and uses it to load the
+        // specified page in the right frame (e.g. docs.seqan.de/index.html#abc will open abc.html in the main frame) 
+        if(window != window.parent && window.name == 'list') {
+        	try {
+        		var redirectTo = null;
+        		if($.urlParam('p', window.parent.location)) {
+        			redirectTo = $.urlParam('p', window.parent.location) + '.html';
+        		} else {
+        			var hash = window.parent.location.hash;
+        			if(typeof hash === 'string' && hash.length > 1) {
+        				redirectTo = hash.substr(1) + '.html';
+        			}
+        		}
+        		
+        		if(redirectTo) {
+        			window.parent['main'].location = redirectTo;
+        		}
+    		} catch(e) {
+    		    // some browsers like Chrome don't allow this cross-frame access if using file://
+    		}
+        }
+ 
         // tooltips
         $('[title]:not([href])').tooltip({ container: 'body' });
 
@@ -28,6 +54,18 @@
 
     });
 
+})(jQuery);
+
+/**
+ * Get URL parameter functionality
+ */
+(function ($) {
+	$.extend({
+		urlParam: function(name, location) {
+			if(!location) location = window.location;
+            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+		}
+	});
 })(jQuery);
 
 /**
@@ -279,7 +317,7 @@
             stemWords: [ // silently adds the stem if the corresponding word was found in the query
                 ["javascript", "script"]
             ],
-            langEntityGroups: [
+            langEntityGroups: [ // TODO create from window[langEntities] (try console.log(window[langEntities])
                 ["grouped_typedef", "typedef"],
                 ["global_typedef", "typedef"],
                 ["member_typedef", "typedef"],

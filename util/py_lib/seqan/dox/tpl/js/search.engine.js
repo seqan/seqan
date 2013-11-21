@@ -210,11 +210,8 @@ and based on the Tipue Search, http://www.tipue.com
             var data = $.extend({}, settings.data);
             var ankerTarget = settings.target ? ' target="' + settings.target + '"' : '';
 
-            function getURLP(name) {
-                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
-            }
-            if (getURLP('q')) {
-                settings.queryInput.val(getURLP('q'));
+            if ($.urlParam('q')) {
+                settings.queryInput.val($.urlParam('q'));
                 search(0, true);
             }
 
@@ -274,6 +271,12 @@ and based on the Tipue Search, http://www.tipue.com
                 
                 var langEntities = settings.queryLangEntityInput.val();
                 if(!langEntities) langEntities = [];
+                
+                if(settings.queryInput.val() != '') {
+                	settings.queryInput.addClass('not-empty');
+                } else {
+                	settings.queryInput.removeClass('not-empty');
+                }
 
                 var words = $.trim(settings.queryInput.val().toLowerCase()).split(' ');
                 var nonStopWords = getNonStopWords(words, settings.stopWords);

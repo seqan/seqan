@@ -105,7 +105,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        IndexQGram @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see IndexQGram
  * 
@@ -120,15 +120,15 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * array (<tt>QGramSA</tt>, see above). Each suffix in this interval begins with
  * the same q-gram. The end index is the start index of the next bucket.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag QGramIndexFibres#QGramBucketMap
  * 
  * @brief Maps q-gram hashes to buckets. This fibre is used by the @link
- *        OpenAddressing @endlink index and stores all parameters of the open
+ *        OpenAddressingQGramIndex @endlink index and stores all parameters of the open
  *        addressing hash function and hash value occupancy in the QGramDir
- *        fibre. In contrast to @link OpenAddressing @endlink, @link IndexQGram
+ *        fibre. In contrast to @link OpenAddressingQGramIndex @endlink, @link IndexQGram
  *        @endlink uses a trivial 1-to-1 mapping from q-gram hash values to
  *        buckets. For that index the fibre is of type @link Nothing @endlink.
  * 
@@ -143,7 +143,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * interval in the counts array (<tt>QGramCounts</tt>, see above). The end index
  * is the start index of the next bucket.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag QGramIndexFibres#QGramText
@@ -196,7 +196,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * beginning of each count bucket can be determined by the q-gram counts
  * directory (<tt>QGramCountsDir</tt>, see below).
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag QGramIndexFibres#QGramSA
@@ -212,7 +212,7 @@ To efficiently create them at once use this tag for @Function.indexRequire@ or @
  * 
  * It corresponds to a suffix array which is sorted by the first q-gram.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  */
 
@@ -270,6 +270,13 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 ...output:1
 4
 */
+
+/*!
+ * @defgroup OpenAdressingTags Open Adressing Tags
+ *
+ * @tag OpenAdressingTags#OpenAdressing
+ */
+
 /*!
  * @class IndexQGram
  * 
@@ -281,17 +288,17 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * 
  * @signature Index<TText, IndexQGram<TShapeSpec[, TSpec]> >
  * 
- * @tparam TSpec The specializing type. Types: @link OpenAddressing @endlink, Default: Default
+ * @tparam TSpec The specializing type. Types: @link OpenAdressingTags#OpenAdressing @endlink, Default: void
  * @tparam TText The text type. Types: @link String @endlink
  * @tparam TShapeSpec The @link Shape @endlink specialization type.
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index
  * are a suffix array sorted by the first q characters (see @link QGramIndexFibres#QGramSA @endlink) and a q-gram directory (see @link QGramIndexFibres#QGramDir @endlink). The size of the q-gram directory is |\Sigma|^q. On
  * a 32bit system the q-gram length is limited to 3 for <tt>char</tt> alphabets
  * or 13-14 for @link Dna @endlink alphabets. Consider to use the @link
- * OpenAddressing @endlink q-gram index for longer q-grams if you don't need
+ * OpenAddressingQGramIndex @endlink for longer q-grams if you don't need
  * q-grams to be sorted.
  * 
  * @see QGramIndexFibres
@@ -332,6 +339,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 	template < typename TText_, typename TShapeSpec, typename TSpec >
 	class Index<TText_, IndexQGram<TShapeSpec, TSpec> > {
 	public:
+        typedef typename Member<Index, QGramText>::Type         TTextMember;
 		typedef typename Fibre<Index, QGramText>::Type			TText;
 		typedef typename Fibre<Index, QGramSA>::Type			TSA;
 		typedef typename Fibre<Index, QGramDir>::Type			TDir;
@@ -342,7 +350,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 		typedef typename Cargo<Index>::Type						TCargo;
 		typedef typename Size<Index>::Type						TSize;
 
-		Holder<TText>	text;		// underlying text
+		TTextMember     text;		// underlying text
 		TSA				sa;			// suffix array sorted by the first q chars
 		TDir			dir;		// bucket directory
 		TCounts			counts;		// counts each q-gram per sequence
@@ -3007,7 +3015,7 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
  * @return TReturn All
  *                 positions where the q-gram stored in <tt>shape</tt> occurs in
  *                 the text (see @link QGramIndexFibres#QGramText @endlink).
- *                 Tupes: @link SequenceConcept#Infix @endlink<@link Index#Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
+ *                 Tupes: @link SequenceConcept#Infix @endlink<@link Fibre @endlink<TIndex, QGramSA>::Type>::Type>.
  * 
  * @section Remarks
  * 
