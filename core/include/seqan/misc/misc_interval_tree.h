@@ -1966,12 +1966,12 @@ SEQAN_CHECKPOINT
     TProperty act_prop = property(pm,act_knot);
 	TProperty next_prop;
 		
-	while(true)
+	while (true)
 	{
 		TOutEdgeIterator it(g, act_knot);
 		act_prop = property(pm,act_knot);
 		//
-		if(act_prop.center < query_begin) // query interval is to the right of node center
+		if (act_prop.center <= query_begin) // query interval is to the right of node center
 		{
 			unsigned int i = 0;
 			while(i < length(act_prop.list2) && rightBoundary(value(act_prop.list2,i)) > query_begin)
