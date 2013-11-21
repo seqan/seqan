@@ -29,7 +29,8 @@ and based on the Tipue Search, http://www.tipue.com
             stemWords: [],
             langEntityGroups: [],
             queryInput: $form.find('input[type=text],input[type=search]'),
-            queryLangEntityInput: $form.find('select'),
+            langEntitiesInput: $form.find('select'),
+            langEntities: window.langEntities,
             langEntityDefaultOrder: [
             	'concept', 'class', 'enum',
 				'typedef', 'grouped_typedef', 'global_typedef', 'member_typedef',
@@ -241,7 +242,7 @@ and based on the Tipue Search, http://www.tipue.com
                     search(0, true);
                 }
             });
-            settings.queryLangEntityInput.change(function (event) {
+            settings.langEntitiesInput.change(function (event) {
                 search(0, true);
             });
             $('#results').on('click', 'li.more:not(.result) a', function() {
@@ -269,15 +270,12 @@ and based on the Tipue Search, http://www.tipue.com
                 var out = '';
                 var results = '';
                 
-                var langEntities = settings.queryLangEntityInput.val();
-                if(!langEntities) langEntities = [];
-                
                 if(settings.queryInput.val() != '') {
                 	settings.queryInput.addClass('not-empty');
                 } else {
                 	settings.queryInput.removeClass('not-empty');
                 }
-
+                
                 var words = $.trim(settings.queryInput.val().toLowerCase()).split(' ');
                 var nonStopWords = getNonStopWords(words, settings.stopWords);
                 var replacedWords;
@@ -323,15 +321,35 @@ and based on the Tipue Search, http://www.tipue.com
                      */
                     var cleanedWords = stemmedWords;
                     var query = cleanedWords;
-                    if(query.join(' ') == lastQuery && langEntities.join(' ') == lastLangEntities) { return; }
+                    
+                    var langEntitiesKeys = Object.keys(settings.langEntities);
+                    var langEntitiesToKeep = [];
+                    $(settings.langEntitiesInput.val()).each(function() {
+                    	var langEntityCategory = this + '';
+                    	langEntitiesToKeep.push(langEntityCategory);
+                    	$(langEntitiesKeys).each(function() {
+                    		var langEntity = this + '';
+                    		if(settings.langEntities[langEntity].belongsTo == langEntityCategory) {
+                    			console.log(langEntity);
+                    			langEntitiesToKeep.push(langEntity);
+                    		}
+                    	});
+                    });
+
+                    if(query.join(' ') == lastQuery && langEntitiesToKeep.join(' ') == lastLangEntities) { return; }
                     lastQuery = query.join(' ');
-                    lastLangEntities = langEntities.join(' ');
+                    lastLangEntities = langEntitiesToKeep.join(' ');
                     settings.output.hide();
                     
                     var found = [];
                     $.each(data, function(i) {
+                    	// eventually group language entities
                     	this.langEntity = getReplacedWords([this.langEntity], settings.langEntityGroups)[0];
-                    	if($.inArray(this.langEntity, langEntities) < 0) return;
+                    	
+                    	// remove results of unwanted language entity
+                    	if($.inArray(this.langEntity, langEntitiesToKeep) < 0) return;
+                    	
+                    	if($.inArray(this.langEntity, langEntitiesKeys) < 0) this.langEntity = 'unknown';
                     	
                         var score = findAndScore(query, [this.title, this.text, this.akas, this.subentries]);
                         var result = highlightedMatch(score, this, query);
@@ -379,7 +397,7 @@ and based on the Tipue Search, http://www.tipue.com
                         for (var i = 0; i < found.length; i++) {
                             if (settings.numElementsPerPage < 0 || (l_o >= start && l_o < settings.numElementsPerPage + start)) {
                             	var langEntity = found[i].langEntity;
-                            	var langEntityEntry = window.langEntities[langEntity];
+                            	var langEntityEntry = settings.langEntities[langEntity];
                             	if(!langEntityEntry) langEntityEntry = { name: 'UNKNOWN', ideogram: 'UNKNOWN', color: '#FF0000', description: 'Unknown language entity' };
                             	
                             	// groups entries by their lang entity

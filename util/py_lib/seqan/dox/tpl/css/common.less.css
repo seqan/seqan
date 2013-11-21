@@ -5421,6 +5421,126 @@ html.page_languageentities dt[data-lang-entity=tutorial]:after {
     border-top: none;
   }
 }
+[data-lang-entity=unknown] > :first-child {
+  background-color: transparent;
+  color: #ff0000;
+  border-color: #e60000;
+}
+[data-lang-entity=unknown] > :first-child:hover {
+  color: #fff;
+  background-color: #ff0000;
+}
+h3[data-lang-entity=unknown] {
+  display: table;
+  font-size: 1.1em;
+  padding-bottom: .3em;
+  width: 100%;
+  font-weight: 700;
+}
+h3[data-lang-entity=unknown] > * {
+  display: table-cell !important;
+}
+h3[data-lang-entity=unknown] > :first-child {
+  font-size: 1rem;
+  font-weight: 700 !important;
+  width: 3.6rem;
+  vertical-align: middle;
+  text-align: center;
+  background-color: #ff0000;
+  border-color: #cc0000;
+  color: #fff;
+}
+h3[data-lang-entity=unknown] > :first-child:hover {
+  background-color: #cc0000;
+}
+h3[data-lang-entity=unknown] > :nth-child(2) {
+  padding-left: 1.9rem;
+}
+html.page_languageentities [data-lang-entity-container=unknown] dt {
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+  font-size: 1.0em;
+}
+html.page_languageentities h2[data-lang-entity=unknown],
+html.page_languageentities dt[data-lang-entity=unknown] {
+  padding-left: 0;
+}
+html.page_languageentities h2[data-lang-entity=unknown]:before,
+html.page_languageentities dt[data-lang-entity=unknown]:before {
+  display: none;
+}
+html.page_languageentities h2[data-lang-entity=unknown] > :first-child,
+html.page_languageentities dt[data-lang-entity=unknown] > :first-child {
+  background-color: #ff0000;
+  color: #fff;
+}
+html.page_languageentities h2[data-lang-entity=unknown] > :first-child:hover,
+html.page_languageentities dt[data-lang-entity=unknown] > :first-child:hover {
+  background-color: color;
+}
+html.page_languageentities h2[data-lang-entity=unknown] {
+  padding-left: 0;
+}
+html.page_languageentities h2[data-lang-entity=unknown]:after {
+  background-color: #ff0000;
+  background-image: none;
+}
+html.page_languageentities h2[data-lang-entity=unknown] > :first-child {
+  margin-left: 0;
+  margin-right: 1.5em;
+  top: -0.35em;
+  font-size: .54em;
+}
+html.page_languageentities dt[data-lang-entity=unknown] {
+  padding-left: 0;
+}
+html.page_languageentities dt[data-lang-entity=unknown]:after {
+  content: "";
+}
+[data-lang-entity-container=unknown] label {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+  background-color: #ff0000;
+  border: 1px solid #e60000;
+}
+.popover[data-lang-entity-container=unknown] .popover-title {
+  background-color: #ff0000;
+}
+#results li[data-lang-entity-container=unknown] > span[data-lang-entity=unknown] > :first-child {
+  background-color: #ff0000;
+  color: #fff;
+}
+#results li[data-lang-entity-container=unknown] > span[data-lang-entity=unknown] > :first-child:hover {
+  background-color: #cc0000;
+}
+#results li[data-lang-entity-container=unknown] > ol {
+  background-color: #fff;
+  background-image: none;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid #ff0000;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+#results li[data-lang-entity-container=unknown] > ol [data-lang-entity] > :first-child {
+  display: none;
+}
+#results li[data-lang-entity-container=unknown] > ol li.more:not(.result) {
+  border-top: 1px dotted #222222;
+  border-color: #ff0000;
+}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px), only screen and (max-width: 341px) {
+  #results li[data-lang-entity-container=unknown] > ol li.more:not(.result) {
+    border-top: none;
+  }
+}
 html [data-lang-entity=generic] > *:first-child,
 html .popover[data-lang-entity-container=generic] .popover-title,
 html.page_languageentities [data-lang-entity-container=generic] [data-lang-entity-ideogram]:before {
