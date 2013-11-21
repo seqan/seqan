@@ -1680,9 +1680,20 @@ I	ISSISSIPPI
  */
 
 	template <typename TText, typename TSpec>
-	inline typename Fibre<Index<TText, TSpec>, FibreRawText>::Type & indexRawText(Index<TText, TSpec> &index) { return getFibre(index, FibreRawText()); }
+	inline SEQAN_HOST_DEVICE
+	typename Fibre<Index<TText, TSpec>, FibreRawText>::Type &
+	indexRawText(Index<TText, TSpec> &index)
+	{
+	    return getFibre(index, FibreRawText());
+	}
+
 	template <typename TText, typename TSpec>
-	inline typename Fibre<Index<TText, TSpec> const, FibreRawText>::Type & indexRawText(Index<TText, TSpec> const &index) { return getFibre(index, FibreRawText()); }
+	inline SEQAN_HOST_DEVICE
+	typename Fibre<Index<TText, TSpec> const, FibreRawText>::Type &
+	indexRawText(Index<TText, TSpec> const &index)
+	{
+	    return getFibre(index, FibreRawText());
+	}
 
 //////////////////////////////////////////////////////////////////////////////
 /**
