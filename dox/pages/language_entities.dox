@@ -177,6 +177,7 @@ std::cout << "\n";
 	<dd><p>Although <a href="#concept">concepts</a> are formally specified they are not yet part of the C++ language and thus ignored by compilers. As a consequence your IDE will pretty certainly not stop you from using a metafunction with a type that does not implements one of the metafunction's concepts.</p></dd>
 </dl>
 
+
 @htmlonly <h2 data-lang-entity="function"><a name="function">Function</a></h2> @endhtmlonly
 
 <strong>Functions are a common, fundamental C++ feature and the basic building block for programs.</strong>
