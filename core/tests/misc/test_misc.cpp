@@ -106,6 +106,7 @@ SEQAN_BEGIN_TESTSUITE(test_misc) {
     SEQAN_CALL_TEST(test_misc_bit_twiddling_pop_count_uint64);
 
     // Test IntervalTree class
+    SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_QueryAtBoundary);
     SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_IntervalTree__int);
     SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_IntervalTreeFromIterator__int);
     SEQAN_CALL_TEST(Interval_Tree__IntervalTreeTest_NonFullLength__int);
