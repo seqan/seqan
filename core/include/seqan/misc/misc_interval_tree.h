@@ -1968,7 +1968,7 @@ SEQAN_CHECKPOINT
 			act_knot = targetVertex(it);
 		}
 		else{
-			if(query_end < act_prop.center) // query interval is to the left of node center
+			if(query_end <= act_prop.center) // query interval is to the left of node center
 			{
 				unsigned int i = 0;
 				while(i < length(act_prop.list1) && leftBoundary(value(act_prop.list1,i)) < query_end)

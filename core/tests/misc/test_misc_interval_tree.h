@@ -646,7 +646,21 @@ void IntervalTreeTest_AddInterval() {
 }
 
 
-
+SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_QueryAtBoundary)
+{
+    typedef IntervalAndCargo<int, double> TInterval;
+    typedef String<TInterval, Alloc<Exact> > TIntervalList;
+    
+    TIntervalList tmpL;
+    appendValue(tmpL, TInterval(0,30,1.4));
+    appendValue(tmpL, TInterval(30,40,2.2));
+    appendValue(tmpL, TInterval(40,60,3.3));
+    IntervalTree<int, double> tmpT(tmpL);
+    String<double> resultstmp;
+    findIntervals(tmpT, 20, 30, resultstmp);
+    SEQAN_ASSERT_EQ(length(resultstmp), 1u);
+    SEQAN_ASSERT_EQ(resultstmp[0], 1.4);
+}
 
 
 // Call testIntervalTree_IntervalTree with <int> parametrization.
