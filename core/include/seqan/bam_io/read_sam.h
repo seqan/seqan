@@ -287,6 +287,10 @@ readRecord(BamAlignmentRecord & record,
            TForwardIter & iter,
            Sam const & /*tag*/)
 {
+    // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
+    if (nextIs(iter, SamHeader()))
+        SEQAN_THROW(ParseError("Unexpected SAM header encountered."));
+
     OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Sam> > nextEntry;
 
     clear(record);
