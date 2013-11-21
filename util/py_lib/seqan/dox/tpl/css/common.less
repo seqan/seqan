@@ -78,7 +78,7 @@ h3#Examples {  // DIRTY! Just make it h2!
 	}
 }
 
-h3 {
+h3:not(#Examples) {
 	font-size: 1.1em;
 	line-height: 1.2em;
 	font-weight: 700;
@@ -92,6 +92,11 @@ h3 {
         &[data-lang-entity] {
             > a:first-child { font-weight: 500; margin: 0 0 -1px 0; display: none; }
             > pre { border-top-left-radius: 0; margin-top: -1px; }
+        }
+        
+        code {
+        	box-shadow: none;
+        	white-space: pre;
         }
     }
 }
@@ -236,11 +241,15 @@ dl {
 			[data-lang-entity] > :first-child {
 				display: none;
 			}
-		}		
+		}
+		
+		code {
+			line-height: 1.7em;
+		}	
 	}
 }
 
-html pre {
+pre {
     .bg-gradient(#f5f5f5, 0%);
     .border-radius(4px);
     .box-shadow(inset 0 1px 2px rgba(0, 0, 0, .05));
@@ -286,6 +295,13 @@ html code {
     border: none;
     .border-radius(3px);
     box-shadow: inset 0 -1px 0px 0px  rgba(0, 0, 0, 0.25);
+    padding: 0;
+}
+
+html .summary_signature code,
+html .overview code {
+	box-shadow: none;
+	font-size: 1em;
 }
 
 .path_label {
