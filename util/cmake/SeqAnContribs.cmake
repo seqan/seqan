@@ -35,10 +35,10 @@
 # ============================================================================
 
 if (WIN32)
-    # For all contrib versions...
-	foreach (_SEQAN_CONTRIB_VERSION D20111031 D20130710)
-	  set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
-	  
+  # For all contrib versions...
+  foreach (_SEQAN_CONTRIB_VERSION D20111031 D20130710 D20131121)
+    set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
+
 	  # Determine architecture for the precompiled contribs.
 	  if (CMAKE_GENERATOR MATCHES ".*Win64")
 		set (CONTRIB_ARCH "x64")
