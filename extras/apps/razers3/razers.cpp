@@ -68,7 +68,7 @@
 #include <process.h>
 #endif
 
-#ifdef SEQAN_CXX11_STANDARD
+#if defined(PLATFORM_WINDOWS) ||  defined(SEQAN_CXX11_STANDARD)
 #include <memory>
 #else
 #include <tr1/memory>
