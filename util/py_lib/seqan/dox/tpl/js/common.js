@@ -51,6 +51,13 @@
 
         // smooth scrolling
         $('a[href*=#]:not([href=#])').smoothScroll({ offset: -20 });
+        
+        // autofocus search field
+        if($('html').hasClass('list')) {
+        	window.setTimeout(function() {
+        		$('input[type=search]').focus();
+        	}, 50);
+        }
 
     });
 
@@ -321,10 +328,6 @@
                 ["grouped_typedef", "typedef"],
                 ["global_typedef", "typedef"],
                 ["member_typedef", "typedef"],
-                ["interface_meta_function", "meta_function"],
-                ["global_function", "function"],
-                ["interface_function", "function"],
-                ["member_function", "function"],
                 ["grouped_tag", "tag"],
                 ["global_variable", "variable"],
                 ["local_variable", "variable"],
