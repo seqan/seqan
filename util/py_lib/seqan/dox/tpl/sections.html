@@ -554,7 +554,7 @@ Macro member_variables_ov(entry, doc)
 Render the member variables overview
 -->
 {% macro member_variables_ov(entry, doc, qualifier='Member') %}
-{% if entry.hasSubEntry('member_variables', doc) %}
+{% if entry.hasSubEntry('member_variable', doc) %}
 
 <div data-lang-entity-container="member_variables">
 <h2>{{ qualifier }} Variable Overview</h2>
@@ -658,6 +658,19 @@ Render the grouped macros details
   {% for subentry in entry.subentries['grouped_tag'] %}
   <div class="method_details{% if loop.first %} first{% endif %}">
     <h3 id="{{ subentry.name|escape_name }}" class="signature{% if loop.first %} first{% endif %}" data-lang-entity="grouped_tag">
+      {% if subentry.headerfiles %}
+      <dl>
+        <dt>Defined in</dt>
+        <dd>
+          {% for h in subentry.headerfiles|sort -%}
+          {{ h|e }}{% if not loop.last %}, {% endif %}
+          {% endfor %}
+          {% else %}
+          &nbsp;
+        </dd>
+      </dl>
+      {% endif %}
+
       <pre class="highlight"><code>
           {%- if subentry.signatures -%}
           {%- for s in subentry.signatures: -%}
@@ -719,6 +732,19 @@ Render the grouped macros details
 
 {% for subentry in entry.subentries['grouped_macro'] %}
 <h3 id="{{ subentry.name|escape_name }}">{{ subentry.name|e }}</h3>
+
+{% if subentry.headerfiles %}
+<dl>
+  <dt>Defined in</dt>
+  <dd>
+    {% for h in subentry.headerfiles|sort -%}
+    {{ h|e }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+    {% else %}
+    &nbsp;
+  </dd>
+</dl>
+{% endif %}
 
 {% if subentry.signatures -%}
 <pre class="signature highlight"><pre><code>
@@ -806,6 +832,21 @@ Render the interface functions details
       </code></pre>
     </h3>
   </div>
+
+  {% if subentry.headerfiles and qualifier == 'Grouped' %}
+  <dl>
+    <dt>Defined in</dt>
+    <dd>
+      {% if subentry.headerfiles %}
+      {% for h in subentry.headerfiles|sort -%}
+      {{ h|e }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+      {% else %}
+      &nbsp;
+      {% endif %}
+    </dd>
+  </dl>
+  {% endif %}
 
   {% if subentry.deprecation_msgs %}
   <div class="note deprecated">Deprecated. <div class='inline'>
@@ -952,6 +993,21 @@ Render the interface metafunctions details
 {% endif -%}{%- endfor -%}
     </code></pre>
   </h3>
+
+  {% if subentry.headerfiles and qualifier == 'Grouped' %}
+  <dl>
+    <dt>Defined in</dt>
+    <dd>
+      {% if subentry.headerfiles %}
+      {% for h in subentry.headerfiles|sort -%}
+      {{ h|e }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+      {% else %}
+      &nbsp;
+      {% endif %}
+    </dd>
+  </dl>
+  {% endif %}
 
   {% if subentry.deprecation_msgs %}
   <div class="note deprecated">Deprecated. <div class='inline'>
