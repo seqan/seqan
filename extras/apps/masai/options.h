@@ -255,6 +255,8 @@ void setDateAndVersion(ArgumentParser & parser)
 
 void setDescription(ArgumentParser & parser)
 {
+    setCategory(parser, "Read Mapping");
+
     addDescription(parser, "Masai is a fast and accurate read mapper based on approximate seeds and multiple backtracking.");
     addDescription(parser, "See \\fIhttp://www.seqan.de/projects/masai\\fP for more information.");
     addDescription(parser, "(c) Copyright 2011-2012 by Enrico Siragusa.");
