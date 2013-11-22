@@ -1621,7 +1621,7 @@ void testSequenceResize(TString & /*Tag*/)
     resize(string, 0);
     SEQAN_ASSERT_EQ(length(string), 0u);
     
-    resize(string, 5);
+    resize(string, 5, TValue());
     SEQAN_ASSERT_EQ(length(string), 5u);
 
     resize(string, 10, TValue('C'));
