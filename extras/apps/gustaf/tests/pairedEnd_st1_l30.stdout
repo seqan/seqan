@@ -1,6 +1,7 @@
-adeno_modified_reads.fa
+adeno_modified_reads_mates1.fa
+adeno_modified_reads_mates2.fa
 Database file   : adeno.fa
-Query file      : adeno_modified_reads.fa
+Query file      : adeno_modified_reads_mates1.fa
 
 Thresholds:
   overlap threshold (oth)          : 0.5
@@ -11,19 +12,19 @@ Penalties:
   inversion penalty (ip)           : 5
   order penalty (op)               : 0
   required read support (st)       : 1
-Loading query sequences... Loaded 6 query sequences.
+Loading paired-end read sequences... Loaded 2 mate pair sequences.
 done
 Loading reference sequences... Loaded 1 database sequence.
 Loaded db seq with length: 4718
 Loaded db ID: gi|9632547|ref|NC_002077.1| Adeno-associated virus - 1, complete genome
 done
  Getting STELLAR matches from file, not calling STELLAR
-Importing STELLAR matches from file stellar.gff
+Importing STELLAR matches from file stellar_joinedMates_l30.gff
 done
-TIME importing stellar matches 0.000500171s
+TIME importing stellar matches 0.000292537s
 Getting match distance...
 Constructing graphs... done
 Analyzing graphs... done
- completed gff writing st1_l30_m.gff
- completed vcf writing st1_l30_m.vcf
-TIME all 0.071632s
+ completed gff writing pairedEnd_st1_l30.gff
+ completed vcf writing pairedEnd_st1_l30.vcf
+TIME all 0.0519077s

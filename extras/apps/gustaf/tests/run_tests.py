@@ -190,6 +190,37 @@ def main(source_base, binary_base):
     #${GUSTAF} adeno.fa adeno_modified_reads.fa -st 1 -l 30 -gth 3 -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
 
     # ============================================================
+    # paired-end
+    # -st 1 -m stellar_joinedMates_l30.gff
+    # ============================================================
+
+    conf = app_tests.TestConf(
+        program=path_to_program,
+        redir_stdout=ph.outFile('pairedEnd_st1_l30.stdout'),
+        redir_stderr=ph.outFile('pairedEnd_st1_l30.stderr'),
+        args=[ph.inFile('adeno.fa'),
+              ph.inFile('adeno_modified_reads_mates1.fa'),
+              ph.inFile('adeno_modified_reads_mates2.fa'),
+              '-m', ph.inFile('stellar_joinedMates_l30.gff'),
+              '-gff', ph.outFile('pairedEnd_st1_l30.gff'),
+              '-vcf', ph.outFile('pairedEnd_st1_l30.vcf'),
+              '-st', str(1),
+              '-ll', str(1000),
+              '-le', str(30),
+              '-rc',
+              ],
+        to_diff=[(ph.inFile('pairedEnd_st1_l30.vcf'),
+                  ph.outFile('pairedEnd_st1_l30.vcf'),
+                  transforms),
+                 (ph.inFile('pairedEnd_st1_l30.gff'),
+                  ph.outFile('pairedEnd_st1_l30.gff'))])
+    conf_list.append(conf)
+
+    #out="pairedEnd_st1_l30"
+    #${GUSTAF} adeno.fa adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa -m stellar_joinedMates_l30.gff -st 1
+    #-ll 1000 -le 30 -rc -gff ${out}.gff -vcf ${out}.vcf > ${out}.stdout 2> ${out}.stderr
+
+    # ============================================================
     # Execute the tests.
     # ============================================================
     failures = 0
