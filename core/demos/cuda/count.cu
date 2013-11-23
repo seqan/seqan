@@ -63,37 +63,6 @@ struct CUDAFMIndexConfig
 // ==========================================================================
 
 // --------------------------------------------------------------------------
-// Function count()
-// --------------------------------------------------------------------------
-// Count the occurrences of a set of needles in a indexed haystack.
-
-template <typename TIndex, typename TNeedles>
-typename Size<TIndex>::Type
-count(TIndex & index, TNeedles & needles)
-{
-    // Select the algorithm type.
-    typedef Multiple<FinderSTree>                       TAlgorithmSpec;
-    typedef Pattern<TNeedles, TAlgorithmSpec>           TPattern;
-    typedef Finder2<TIndex, TPattern, TAlgorithmSpec>   TFinder;
-    typedef OccurrencesCounter<TIndex>                  TCounter;
-
-    // Instantiate a finder object holding the context of the search algorithm.
-    TFinder finder(index);
-
-    // Instantiate a pattern object holding the needles.
-    TPattern pattern(needles);
-
-    // Instantiate a functor object counting the number of occurrences.
-    TCounter counter(pattern);
-
-    // Find all needles in haystack and call counter() on match.
-    find(finder, pattern, counter);
-
-    // Return the number of occurrences.
-    return getCount(counter);
-}
-
-// --------------------------------------------------------------------------
 // Function main()
 // --------------------------------------------------------------------------
 
