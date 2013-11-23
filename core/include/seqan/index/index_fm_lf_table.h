@@ -224,17 +224,15 @@ struct LF
     typename Fibre<LF, FibreSentinels>::Type    sentinels;
     typename Value<LF>::Type                    sentinelSubstitute;
 
-    // NOTE(esiragusa): NVCC cyclic SEQAN_HOST_DEVICE problem.
-    LF() {}
+    LF() :
+        sentinelSubstitute(0)
+    {}
 
-//    LF() :
-//        sentinelSubstitute(0)
-//    {}
-
-//    LF(TText const & text)
-//    {
-//        createLF(text);
-//    }
+    LF(TText const & text) :
+        sentinelSubstitute(0)
+    {
+        createLF(text);
+    }
 
     template <typename TPos>
     SEQAN_HOST_DEVICE typename Size<LF const>::Type
