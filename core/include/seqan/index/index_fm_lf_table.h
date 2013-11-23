@@ -666,6 +666,9 @@ inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TS
     typedef typename Value<TLF>::Type                          TValue;
     typedef typename Size<TLF>::Type                           TSize;
 
+    // Clear assuming undefined state.
+    clear(lf);
+
     // Compute prefix sum.
     prefixSums<TValue>(lf.sums, text);
 
