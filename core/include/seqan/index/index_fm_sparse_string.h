@@ -228,10 +228,9 @@ struct SparseString
     TFibreIndicators_       indicators;
     TSize                   _length;
 
-    // NOTE(esiragusa): NVCC cyclic SEQAN_HOST_DEVICE inline problem.
-//    SparseString() :
-//        _length(0)
-//    {};
+    SparseString() :
+        _length(0)
+    {}
 };
 
 // ==========================================================================

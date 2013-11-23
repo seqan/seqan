@@ -87,7 +87,7 @@ struct RankDictionary<TValue, Naive<TSpec> >
     // Constructors
     // ------------------------------------------------------------------------
 
-    RankDictionary() {};
+    RankDictionary() {}
 
     template <typename TText>
     RankDictionary(TText const & text)

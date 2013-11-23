@@ -77,8 +77,7 @@ template <typename TObject>
 inline void
 nvccShowType(TObject object)
 {
-    static_cast<Nothing>(object);
-    ignoreUnusedVariableWarning(object);
+    ignoreUnusedVariableWarning(static_cast<Nothing>(object));
 }
 
 // --------------------------------------------------------------------------
