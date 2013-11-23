@@ -1342,7 +1342,7 @@ _arrayConstructPointer(TIterator begin_,
     _arrayConstructDefault(begin_, end_);
 }
 
-template<typename TValue>
+template <typename TValue>
 inline void 
 arrayConstruct(TValue * begin_, 
                TValue * end_)
@@ -1351,23 +1351,23 @@ arrayConstruct(TValue * begin_,
     _arrayConstructPointer(begin_, end_, typename IsSimple<TValue>::Type() );
 }
 
-template<typename TIterator, typename TParam>
+template <typename TValue, typename TParam>
 inline void 
-_arrayConstructPointer(TIterator begin_, 
-                        TIterator end_, 
-                        TParam const & param_,
-                        True)
+_arrayConstructPointer(TValue * begin_,
+                       TValue * end_,
+                       TParam const & param_,
+                       True)
 {
     SEQAN_CHECKPOINT;
-    arrayFill(begin_, end_, param_);
+    arrayFill(begin_, end_, static_cast<TValue>(param_));
 }
 
-template<typename TIterator, typename TParam>
+template <typename TValue, typename TParam>
 inline void 
-_arrayConstructPointer(TIterator begin_, 
-                        TIterator end_, 
-                        TParam const & param_,
-                        False)
+_arrayConstructPointer(TValue * begin_,
+                       TValue * end_,
+                       TParam const & param_,
+                       False)
 {
     SEQAN_CHECKPOINT;
     _arrayConstructDefault(begin_, end_, param_);

@@ -511,13 +511,17 @@ resize(
 {
     typedef String<TValue, Packed<THostspec> > TString;
     typedef PackedTraits_<TString> TTraits;
+    typedef typename Size<TString>::Type TStringSize;
 
     if (new_length == 0)
     {
         clear(host(me));
         return 0;
     }
-    return (resize(host(me), TTraits::toHostLength(new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
+    TStringSize max_length = (resize(host(me), TTraits::toHostLength(new_length) + 1, tag) - 1) * TTraits::VALUES_PER_HOST_VALUE;
+    if ((TStringSize)new_length > max_length)
+        new_length = max_length;
+    return front(host(me)).i = new_length;
 }
 
 // --------------------------------------------------------------------------
