@@ -187,6 +187,38 @@ getCount(OccurrencesCounter<TIndex, Device<TSpec> > & counter)
 }
 #endif
 
+// --------------------------------------------------------------------------
+// Function count()
+// --------------------------------------------------------------------------
+// Count the occurrences of a set of needles in a indexed haystack.
+
+template <typename TText, typename TSpec, typename TNeedle, typename TSSetSpec>
+typename Size<Index<TText, TSpec> >::Type
+count(Index<TText, TSpec> & index, StringSet<TNeedle, TSSetSpec> & needles)
+{
+    typedef Index<TText, TSpec>                         TIndex;
+    typedef StringSet<TNeedle, TSSetSpec>               TNeedles;
+    typedef Multiple<FinderSTree>                       TAlgorithmSpec;
+    typedef Pattern<TNeedles, TAlgorithmSpec>           TPattern;
+    typedef Finder2<TIndex, TPattern, TAlgorithmSpec>   TFinder;
+    typedef OccurrencesCounter<TIndex>                  TCounter;
+
+    // Instantiate a finder object holding the context of the search algorithm.
+    TFinder finder(index);
+
+    // Instantiate a pattern object holding the needles.
+    TPattern pattern(needles);
+
+    // Instantiate a functor object counting the number of occurrences.
+    TCounter counter(pattern);
+
+    // Find all needles in haystack and call counter() on match.
+    find(finder, pattern, counter);
+
+    // Return the number of occurrences.
+    return getCount(counter);
+}
+
 }
 
 #endif  // #ifndef SEQAN_EXTRAS_INDEX_FIND_FUNCTORS_H_

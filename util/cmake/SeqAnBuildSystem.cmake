@@ -369,6 +369,64 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   include (CPack)
 endmacro (seqan_configure_cpack_app)
 
+
+# ---------------------------------------------------------------------------
+# Macro seqan_setup_cuda_vars ([DISABLE_WARNINGS] [DEBUG_DEVICE]
+#                              [ARCH sm_xx] [FLAGS flags ...])
+#
+# Setup CUDA variables.
+# ---------------------------------------------------------------------------
+
+macro (seqan_setup_cuda_vars)
+  cmake_parse_arguments(_SEQAN_CUDA
+                        "DISABLE_WARNINGS;DEBUG_DEVICE"
+                        "ARCH"
+                        "FLAGS"
+                        ${ARGN})
+  if (SEQAN_HAS_CUDA)
+    # Wrap nvcc to make cudafe output gcc-like.
+    find_program (COLOR_NVCC colornvcc PATHS ${CMAKE_SOURCE_DIR}/misc NO_DEFAULT_PATH)
+    set (CUDA_NVCC_EXECUTABLE ${COLOR_NVCC})
+
+    # Build CUDA targets from the given architecture upwards.
+    set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch ${_SEQAN_CUDA_ARCH} ${_SEQAN_CUDA_FLAGS}")
+
+    # Add debug symbols to device code.
+    if (_SEQAN_CUDA_DISABLE_WARNINGS)
+      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -G")
+    endif ()
+
+    # Add flags for the CUDA compiler.
+    list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "-O3 -g -lineinfo")
+    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -lineinfo")
+
+    if (_SEQAN_CUDA_DISABLE_WARNINGS)
+      # Disable all CUDA warnings.
+      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --disable-warnings")
+    else ()
+      # Disable only Thrust warnings.
+      string (REGEX REPLACE "-Wall" ""
+              SEQAN_CXX_FLAGS ${SEQAN_CXX_FLAGS})
+      string (REGEX REPLACE "-pedantic" ""
+              SEQAN_CXX_FLAGS ${SEQAN_CXX_FLAGS})
+      if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
+      endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+    endif ()
+
+    # Fix CUDA on OSX.
+    if (APPLE AND COMPILER_IS_CLANG)
+      # NVCC mistakes /usr/bin/cc as gcc.
+      list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
+      # NVCC does not support libc++.
+      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
+    endif ()
+  endif ()
+endmacro (seqan_setup_cuda_vars)
+
+
 # ---------------------------------------------------------------------------
 # Function seqan_get_version()
 #
@@ -543,12 +601,11 @@ macro (seqan_build_demos_develop PREFIX)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 
-    # Supress all warnings for CUDA demos.
-    set (SEQAN_NVCC_FLAGS "${SEQAN_NVCC_FLAGS} --disable-warnings")
+    # Setup flags for CUDA demos.
+    seqan_setup_cuda_vars(ARCH sm_20 DISABLE_WARNINGS)
 
     # Add SeqAn flags to CXX and NVCC flags.
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
-    list (APPEND CUDA_NVCC_FLAGS "${SEQAN_NVCC_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})

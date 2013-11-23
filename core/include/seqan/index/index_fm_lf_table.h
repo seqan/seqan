@@ -238,6 +238,13 @@ struct LF
 
     template <typename TPos>
     SEQAN_HOST_DEVICE typename Size<LF const>::Type
+    operator[] (TPos pos) const
+    {
+        return _getBwtRank(*this, pos);
+    }
+
+    template <typename TPos>
+    SEQAN_HOST_DEVICE typename Size<LF const>::Type
     operator() (TPos pos) const
     {
         return _getBwtRank(*this, pos);
