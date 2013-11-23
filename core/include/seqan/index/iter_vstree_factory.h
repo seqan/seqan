@@ -143,11 +143,10 @@ struct Factory<Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > > :
     typename Size<TIndex>::Type                 _maxHistoryLength;
     typename Size<Factory>::Type                _maxObjects;
 
-    // NOTE(esiragusa): NVCC cyclic SEQAN_HOST_DEVICE inline problem.
-    Factory()
-//        TBase(),
-//        _maxHistoryLength(0),
-//        _maxObjects(0)
+    Factory() :
+        TBase(),
+        _maxHistoryLength(0),
+        _maxObjects(0)
     {}
 
     Factory(TIndex & index) :

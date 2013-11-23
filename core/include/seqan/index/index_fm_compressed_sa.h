@@ -195,12 +195,12 @@ struct CompressedSA
     typename Fibre<CompressedSA, FibreSparseString>::Type   sparseString;
     typename Member<CompressedSA, FibreLF>::Type            lf;
 
-    // NOTE(esiragusa): NVCC cyclic SEQAN_HOST_DEVICE problem.
-//    CompressedSA() {};
-//
-//    CompressedSA(TLF const & lf) :
-//        lf(lf)
-//    {}
+    CompressedSA() {}
+
+    template <typename TLF>
+    CompressedSA(TLF const & lf) :
+        lf(lf)
+    {}
 
     template <typename TPos>
     SEQAN_HOST_DEVICE inline typename Value<CompressedSA>::Type const
