@@ -362,7 +362,8 @@ Hit at position: 17
 ///.Function.length.param.object.type:Class.Shape
 ///.Function.length.class:Class.Shape
 	template <typename TValue, typename TSpec>
-	inline typename Size< Shape<TValue, TSpec> >::Type
+	inline SEQAN_HOST_DEVICE
+	typename Size< Shape<TValue, TSpec> >::Type
 	length(Shape<TValue, TSpec> const &me)
 	{
 	SEQAN_CHECKPOINT
@@ -399,7 +400,8 @@ For gapped shapes this is the number of '1's.
  * @endlink function. For gapped shapes this is the number of '1's.
  */
 	template <typename TValue, typename TSpec>
-	inline typename Size< Shape<TValue, TSpec> >::Type
+	inline SEQAN_HOST_DEVICE
+    typename Size< Shape<TValue, TSpec> >::Type
 	weight(Shape<TValue, TSpec> const &me)
 	{
 	SEQAN_CHECKPOINT
