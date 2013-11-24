@@ -1,12 +1,6 @@
 #ifndef RAZERS_PAIRED_MATCH_FILTER_H_
 #define RAZERS_PAIRED_MATCH_FILTER_H_
 
-#ifdef PLATFORM_WINDOWS
-#include <unordered_map>
-#else
-#include <tr1/unordered_map>
-#endif
-
 #include <seqan/graph_types/graph_idmanager.h>
 
 #include "razers.h"
@@ -39,7 +33,7 @@ public:
     // Count matches for each read
     String<unsigned> hitCount;
     // Map from read number to histogram id.
-    std::tr1::unordered_map<unsigned, unsigned> pairIdToHistogramId;
+    tr1::unordered_map<unsigned, unsigned> pairIdToHistogramId;
     // Id manager for histogram.
     IdManager<unsigned> idManager;
     // Histograms.
@@ -108,7 +102,7 @@ registerRead(PairedMatchFilter<TOptionsSpec, TReadSeqSet, TCallback> & filter, u
     else
     {
         // std::cerr << "updating histogram for read " << pairId << std::endl;
-        typedef typename std::tr1::unordered_map<unsigned, unsigned>::iterator TIterator;
+        typedef typename tr1::unordered_map<unsigned, unsigned>::iterator TIterator;
         TIterator it = filter.pairIdToHistogramId.find(pairId);
         SEQAN_ASSERT(it != filter.pairIdToHistogramId.end());
         histogramId = it->second;
@@ -122,7 +116,7 @@ template <typename TOptionsSpec, typename TReadSeqSet, typename TCallback>
 inline bool
 processRead(PairedMatchFilter<TOptionsSpec, TReadSeqSet, TCallback> & filter, unsigned pairId)
 {
-    typedef typename std::tr1::unordered_map<unsigned, unsigned>::iterator TIterator;
+    typedef typename tr1::unordered_map<unsigned, unsigned>::iterator TIterator;
 
     if (filter.hitCount[pairId - filter.readOffset] < filter.matchThreshold)
         return false;
