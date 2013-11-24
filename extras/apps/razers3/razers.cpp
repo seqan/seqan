@@ -70,8 +70,12 @@
 
 #if defined(PLATFORM_WINDOWS) ||  defined(SEQAN_CXX11_STANDARD)
 #include <memory>
+#include <unordered_map>
+namespace tr1 = std;
 #else
 #include <tr1/memory>
+#include <tr1/unordered_map>
+namespace tr1 = std::tr1;
 #endif
 
 #include "razers.h"
