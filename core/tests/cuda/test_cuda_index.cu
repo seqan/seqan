@@ -135,7 +135,7 @@ public:
         appendValue(needles, "CGT");
         appendValue(needles, "GTA");
 
-        occurrences = count(this->index, needles);
+        occurrences = countOccurrences(this->index, needles);
     }
 };
 
@@ -203,7 +203,7 @@ SEQAN_TYPED_TEST(CudaIndexFibreTest, Values)
 }
 
 // ----------------------------------------------------------------------------
-// Test count()
+// Test countOccurrences()
 // ----------------------------------------------------------------------------
 
 SEQAN_TYPED_TEST(CudaIndexCountTest, Count)
@@ -219,7 +219,7 @@ SEQAN_TYPED_TEST(CudaIndexCountTest, Count)
     assign(cudaIndex, this->index);
     assign(cudaNeedles, this->needles);
 
-    SEQAN_ASSERT_EQ(count(cudaIndex, cudaNeedles), this->occurrences);
+    SEQAN_ASSERT_EQ(countOccurrences(cudaIndex, cudaNeedles), this->occurrences);
 }
 
 // ============================================================================

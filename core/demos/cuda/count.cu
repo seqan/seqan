@@ -108,7 +108,7 @@ int main(int argc, char const ** argv)
     // ----------------------------------------------------------------------
 
     omp_set_num_threads(8);
-    std::cout << "CPU Occurrences: " << count(index, needles) << std::endl;
+    std::cout << "CPU Occurrences: " << countOccurrences(index, needles) << std::endl;
 
     // ----------------------------------------------------------------------
     // Copy data to the GPU.
@@ -130,7 +130,7 @@ int main(int argc, char const ** argv)
     // Count on the GPU.
     // ----------------------------------------------------------------------
 
-    std::cout << "GPU Occurrences: " << count(deviceIndex, deviceNeedles) << std::endl;
+    std::cout << "GPU Occurrences: " << countOccurrences(deviceIndex, deviceNeedles) << std::endl;
 
     return 0;
 }
