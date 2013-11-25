@@ -188,13 +188,13 @@ getCount(OccurrencesCounter<TIndex, Device<TSpec> > & counter)
 #endif
 
 // --------------------------------------------------------------------------
-// Function count()
+// Function countOccurrences()
 // --------------------------------------------------------------------------
 // Count the occurrences of a set of needles in a indexed haystack.
 
 template <typename TText, typename TSpec, typename TNeedle, typename TSSetSpec>
 typename Size<Index<TText, TSpec> >::Type
-count(Index<TText, TSpec> & index, StringSet<TNeedle, TSSetSpec> & needles)
+countOccurrences(Index<TText, TSpec> & index, StringSet<TNeedle, TSSetSpec> & needles)
 {
     typedef Index<TText, TSpec>                         TIndex;
     typedef StringSet<TNeedle, TSSetSpec>               TNeedles;
