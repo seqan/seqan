@@ -1115,6 +1115,20 @@ back(T & me)
     return value(me, length(me) - 1);
 }
 
+template <typename T>
+SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
+backPrev(T const & me)
+{
+    return value(me, length(me) - 2);
+}
+
+template <typename T>
+SEQAN_HOST_DEVICE inline typename Reference<T>::Type
+backPrev(T & me)
+{
+    return value(me, length(me) - 2);
+}
+
 // --------------------------------------------------------------------------
 // Function iter()
 // --------------------------------------------------------------------------

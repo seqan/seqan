@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -273,33 +274,38 @@ TA
 		Pair<TSize> range;			// current SA interval of hits (unique node identifier)
 		TSize		parentRight;	// right boundary of parent node's range (allows to go right)
 
+        SEQAN_HOST_DEVICE
 		VertexEsa() : range(0, 0), parentRight(0) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(MinimalCtor):
 			range(0,0),
 			parentRight(0) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(TSize otherRangeLeft, TSize otherRangeRight, TSize otherParentRight):
 			range(Pair<TSize>(otherRangeLeft, otherRangeRight)),
 			parentRight(otherParentRight) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(Pair<TSize> const &otherRange, TSize otherParentRight):
 			range(otherRange),
 			parentRight(otherParentRight) {}
 
+        SEQAN_HOST_DEVICE
 		VertexEsa(VertexEsa const &other):
 			range(other.range),
 			parentRight(other.parentRight) {}
 	};
 	
 	template <typename TSize>
-	inline bool operator==(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
+    SEQAN_HOST_DEVICE inline bool operator==(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
 	{
 		return a.range == b.range;
 	}
 
 	template <typename TSize>
-	inline bool operator!=(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
+	SEQAN_HOST_DEVICE inline bool operator!=(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
 	{
 		return a.range != b.range;
 	}
@@ -371,10 +377,10 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * 
  * @section Remarks
  * 
- * These tags can be used to get @link Index#Fibre Fibres @endlink of an Enhanced
+ * These tags can be used to get @link Fibre Fibres @endlink of an Enhanced
  * Suffix Array based @link IndexEsa @endlink.
  * 
- * @see Index#Fibre
+ * @see Fibre
  * @see Index#getFibre
  * @see IndexEsa
  * 
@@ -389,7 +395,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The suffix array contains the indices of all suffices of <tt>EsaRawText</tt>
  * in lexicographical order.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of the
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
  * 
  * @tag IndexEsaFibres#EsaChildtab
@@ -403,7 +409,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The child table contains structural information of the suffix tree (see
  * Abhouelda et al.).
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  * 
  * @tag IndexEsaFibres#EsaRawText
@@ -436,7 +442,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * <tt>EsaRawText</tt>. The entries are the characters left of the corresponding
  * suffix in the suffix array <tt>EsaSA</tt>.
  * 
- * @link Index#Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
+ * @link Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
  * <tt>EsaBwt</tt>.
  * 
  * @tag IndexEsaFibres#EsaLcp
@@ -450,7 +456,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
  * The lcp table contains the lcp-value of two adjacent suffices in the suffix
  * array <tt>EsaSA</tt>.
  * 
- * @link Index#Fibre @endlink returns a @link String @endlink over the alphabet of a
+ * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  *
  * @tag IndexEsaFibres#EsaLcpe
@@ -508,7 +514,7 @@ information of the suffix tree) are provided.
  * 
  * @section Remarks
  * 
- * The fibres (see @link Index @endlink and @link Index#Fibre @endlink) of this index are a suffix array (see @link
+ * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
  * 
  * This index can be accessed as a Suffix Tree using the @link VSTreeIterator @endlink classes.
@@ -526,13 +532,13 @@ information of the suffix tree) are provided.
 	template < typename TText, typename TSpec >
 	class Index<TText, IndexEsa<TSpec> > {
 	public:
-		Holder<typename Fibre<Index, EsaText>::Type>	text;
-		typename Fibre<Index, EsaSA>::Type				sa;			// suffix array 
-		typename Fibre<Index, EsaLcp>::Type			lcp;		// longest-common-prefix table
-		typename Fibre<Index, EsaLcpe>::Type			lcpe;		// extended lcp table
-		typename Fibre<Index, EsaChildtab>::Type		childtab;	// child table (tree topology)
-		typename Fibre<Index, EsaBwt>::Type			bwt;		// burrows-wheeler table
-		typename Cargo<Index>::Type						cargo;		// user-defined cargo
+        typename Member<Index, EsaText>::Type       text;
+		typename Fibre<Index, EsaSA>::Type          sa;			// suffix array
+		typename Fibre<Index, EsaLcp>::Type         lcp;		// longest-common-prefix table
+		typename Fibre<Index, EsaLcpe>::Type        lcpe;		// extended lcp table
+		typename Fibre<Index, EsaChildtab>::Type    childtab;	// child table (tree topology)
+		typename Fibre<Index, EsaBwt>::Type         bwt;		// burrows-wheeler table
+		typename Cargo<Index>::Type                 cargo;		// user-defined cargo
 
 		Index() {}
 
@@ -566,7 +572,7 @@ information of the suffix tree) are provided.
 //////////////////////////////////////////////////////////////////////////////
 
 	template < typename TText, typename TSpec >
-	void _indexRequireTopDownIteration(Index<TText, IndexEsa<TSpec> > &index) 
+	SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, IndexEsa<TSpec> > &index) 
 	{
 		indexRequire(index, EsaSA());
 		indexRequire(index, EsaLcp());
@@ -582,6 +588,14 @@ information of the suffix tree) are provided.
 
 //////////////////////////////////////////////////////////////////////////////
 ///.Function.clear.param.object.type:Class.Index
+
+/*!
+ * @fn Index#clear
+ * @brief Resets all fibres of an index.
+ * @signature clear(index)
+ * @param index The index to be cleared.
+ * @return void
+*/
 
 	template <typename TText, typename TSpec>
 	inline void clear(Index<TText, IndexEsa<TSpec> > &index) {

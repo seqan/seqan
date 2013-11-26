@@ -176,14 +176,15 @@ However, it might also be of interest to easily retrieve the coordinates of
 breakpoints on the haplotypes with variants.
 
 For this, you can give the parameter --out-breakpoints with a path to a TSV
-file to write.  This file contains two columns, one for the contig/reference
-name and one for the (1-based) position on the contig.
+file to write.  This file contains three columns, one for the contig/reference
+name, one for the variant name ("." if missing) , and one for the (1-based)
+position on the contig.
 
 The following shows an example with 4 breakpoints, two on each haplotype,
 spread over three chromosomes.
 
-  #ref     pos
-  chrI/1   2051
-  chrII/0  2451
-  chrII/0  3573
-  chrIII/1 9297
+  #ref     id         pos
+  chrI/1   sim_var_0  2051
+  chrII/0  sim_var_1  2451
+  chrII/0  .          3573
+  chrIII/1 .          9297

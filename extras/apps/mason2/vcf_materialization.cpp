@@ -306,7 +306,7 @@ bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq, MethylationLevel
             _loadLevels(currRID);
     }
 
-    std::vector<int> breakpoints;  // unused
+    std::vector<std::pair<int, int> > breakpoints;  // unused
 
     // Materialize variants for the current haplotype.
     VariantMaterializer varMat(rng, contigVariants, *methOptions);

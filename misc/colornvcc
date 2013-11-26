@@ -1,0 +1,259 @@
+#! /usr/bin/perl -w
+
+#
+# colornvcc
+#
+# Version: 1.0.0
+#
+# A wrapper to colorize the output from Nvidia's cuda
+# compiler "nvcc".  This wrapper also outputs messages
+# in gcc format instead of nvcc's format so that tools
+# which parse gcc errors can find filenames and line 
+# numbers (e.g. eclipse).
+#
+# This colornvcc wrapper is based on the colorgcc wrapper:
+# colorgcc Version: 1.3.2 by Jamie Moyers
+#
+# Requires the ANSIColor module from CPAN.
+#
+# Usage:
+#
+# In a directory that occurs in your PATH _before_ the directory
+# where the compiler lives, create a softlink to colornvcc for
+# each compiler you want to colorize:
+#
+#    nvcc -> colornvcc
+#
+# That's it. When "nvcc" is invoked, colornvcc is run instead.
+# colornvcc looks at the program name to figure out which compiler to run.
+#
+# The default settings can be overridden with ~/.colornvccrc.
+# See the comments in the sample .colornvccrc for more information.
+#
+# Note:
+#
+# colornvcc will only emit color codes if:
+# 
+#    (1) Its STDOUT is a tty and
+#    (2) the value of $TERM is not listed in the "nocolor" option.
+#
+# If colornvcc colorizes the output, the compiler's STDERR will be
+# combined with STDOUT. Otherwise, colornvcc just passes the output from
+# the compiler through without modification.
+# 
+# Author: Kristi Tsukida <kristi.tsukida@gmail.com>
+# Started: April 23, 2009
+# Licence: GNU Public License
+#
+# Credits:
+#
+#    I got the idea for this from "colorgcc" by Jamie Moyers
+#       who was inspired by a script called "color_cvs":
+#       color_cvs .03   Adrian Likins <adrian@gimp.org> <adrian@redhat.com>
+#
+# Changes:
+#
+# 1.0.0 Initial Version
+
+use Term::ANSIColor;
+use IPC::Open3;
+
+sub initDefaults
+{
+   $compilerPaths{"nvcc"} = "/usr/local/cuda/bin/nvcc";
+
+   $nocolor{"dumb"} = "true";
+
+   $colors{"srcColor"} = color("cyan");
+   $colors{"introColor"} = color("blue");
+
+   $colors{"warningFileNameColor"} = color("yellow");
+   $colors{"warningNumberColor"}   = color("yellow");
+   $colors{"warningMessageColor"}  = color("yellow");
+
+   $colors{"errorFileNameColor"} = color("bold red");
+   $colors{"errorNumberColor"}   = color("bold red");
+   $colors{"errorMessageColor"}  = color("bold red");
+}
+
+sub loadPreferences
+{
+# Usage: loadPreferences("filename");
+
+   my($filename) = @_;
+
+   open(PREFS, "<$filename") || return;
+
+   my $nvccVersion;
+   my $overrideCompilerPaths = 0;
+
+   while(<PREFS>)
+   {
+      next if (m/^\#.*/);          # It's a comment.
+      next if (!m/(.*):\s*(.*)/);  # It's not of the form "foo: bar".
+
+      $option = $1;
+      $value = $2;
+
+      if ($option =~ m/\A(nvcc)\Z/)
+      {
+                  $compilerPaths{$option} = $value;
+                  $overrideCompilerPaths  = 1;
+      }
+          elsif ($option eq "nvccVersion")
+          {
+                  $nvccVersion = $value;
+          }
+      elsif ($option eq "nocolor")
+      {
+         # The nocolor option lists terminal types, separated by
+         # spaces, not to do color on.
+         foreach $termtype (split(/\s+/, $value))
+         {
+            $nocolor{$termtype} = "true";
+         }
+      }
+      else
+      {
+         $colors{$option} = color($value);
+      }
+   }
+   close(PREFS);
+
+   # Append "-<nvccVersion>" to user-defined compilerPaths
+   if ($overrideCompilerPaths && $nvccVersion) {
+           $compilerPaths{$_} .= "-$nvccVersion" foreach (keys %compilerPaths);
+   }
+}
+
+sub srcscan
+{
+# Usage: srcscan($text, $normalColor)
+#    $text -- the text to colorize
+#    $normalColor -- The escape sequence to use for non-source text.
+
+# Looks for text between ` and ', and colors it srcColor.
+
+   my($line, $normalColor) = @_;
+
+   my($srcon) = color("reset") . $colors{"srcColor"};
+   my($srcoff) = color("reset") . $normalColor;
+
+   $line = $normalColor . $line;
+
+   # This substitute replaces `foo' with `AfooB' where A is the escape
+   # sequence that turns on the the desired source color, and B is the
+   # escape sequence that returns to $normalColor.
+   $line =~ s/\`(.*?)\'/\`$srcon$1$srcoff\'/g;
+
+   print($line, color("reset"));
+}
+
+#
+# Main program
+#
+
+# Set up default values for colors and compilers.
+initDefaults();
+
+# Read the configuration file, if there is one.
+$configFile = $ENV{"HOME"} . "/.colornvccrc";
+$default_configFile = "/etc/colornvccrc";
+if (-f $configFile)
+{
+   loadPreferences($configFile);
+} elsif (-f $default_configFile ) {
+        loadPreferences($default_configFile)
+        }
+
+# Figure out which compiler to invoke based on our program name.
+$0 =~ m%.*/(.*)$%;
+$progName = $1 || $0;
+
+$compiler = $compilerPaths{$progName} || $compilerPaths{"nvcc"};
+
+# Check that we don't reference self
+die "$compiler is self-referencing"
+        if ( -l $compiler and (stat $compiler)[1] == (stat $0)[1] );
+
+# Get the terminal type. 
+$terminal = $ENV{"TERM"} || "dumb";
+
+# If it's in the list of terminal types not to color, or if
+# we're writing to something that's not a tty, don't do color.
+$noColor = "false";
+if (! -t STDOUT || $nocolor{$terminal})
+{
+   $noColor = "true"; 
+   #exec $compiler, @ARGV
+   #   or die("Couldn't exec");
+}
+
+# Keep the pid of the compiler process so we can get its return
+# code and use that as our return code.
+$compiler_pid = open3('<&STDIN', \*NVCCOUT, \*NVCCOUT, $compiler, @ARGV);
+
+$line = "";
+
+# Colorize the output from the compiler.
+while(<NVCCOUT>)
+{
+   if (m/^(.*?)\(([0-9]+)\):(.*)$/) # filename(lineno):message
+   {
+      $field1 = $1 || "";
+      $field2 = $2 || "";
+      $field3 = $3 || "";
+	  if ($field3 =~ m/\s+(H|h)ere.*/)
+	  {
+         #print("$lineInstantiated from $1")
+	     print("$field1:$field2   instantiated from $line");
+	  }
+      elsif ($noColor eq "true")
+      {
+         print("$field1:$field2:$field3");
+      }
+      elsif ($field3 =~ m/\s+(W|w)arn(u|i)ng:.*/)
+      {
+         # Warning
+         print($colors{"warningFileNameColor"}, "$field1:", color("reset"));
+         print($colors{"warningNumberColor"}, "$field2:", color("reset"));
+         srcscan($field3, $colors{"warningMessageColor"});
+      }
+      else 
+      {
+         # Error
+         print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
+         print($colors{"errorNumberColor"}, "$field2:", color("reset"));
+         srcscan($field3, $colors{"errorMessageColor"});
+      }
+      print("\n");
+   }
+   elsif (m/^$/) # empty line
+   {
+   }
+   elsif ($noColor eq "true")
+   {
+      print($_);
+   }
+   elsif (m/^(.*?):(.+):$/) # filename:message:
+   {
+      # No line number, treat as an "introductory" line of text.
+      srcscan($_, $colors{"introColor"});
+   }
+   elsif (m/^\s+detected during:$/)
+   {
+   }
+   elsif (m/^\s+(detected during )?instantiation of (.*)$/)
+   {
+      $line = $2 || "";
+   }
+   else # Anything else.        
+   {
+      # Doesn't seem to be a warning or an error. Print normally.
+      print(color("reset"), $_);
+   }
+}
+
+# Get the return code of the compiler and exit with that.
+waitpid($compiler_pid, 0);
+exit ($? >> 8);

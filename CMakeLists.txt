@@ -82,6 +82,17 @@ endif (NOT CMAKE_BUILD_TYPE)
 set (SEQAN_CTD_EXECUTABLES CACHE INTERNAL "Global list of executables for workflow integration.")
 
 # ===========================================================================
+# Build System Configuration Variables
+# ===========================================================================
+
+# Setting SEQAN_ENABLE_CUDA to OFF through the command line or CMakeCache.txt
+# allows to disable CUDA although the CUDA toolkit is found (e.g. if NVCC
+# is installed but there is no card in the box).
+option (SEQAN_ENABLE_CUDA
+        "Enable CUDA if available, allow force-disabling of CUDA"
+        ON)
+
+# ===========================================================================
 # Setup Modules and Find Packages.
 # ===========================================================================
 

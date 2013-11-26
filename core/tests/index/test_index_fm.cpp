@@ -1,5 +1,5 @@
 // ==========================================================================
-//                               fm_index_beta
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,122 +29,145 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jochen Singer <jochen.singer@fu-berlin.de>
+// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/index.h>
 
-#include "test_index_fm.h"
-#include "test_index_fm_rank_support_bit_string.h"
-#include "test_index_fm_rank_support_bit_string_iterator.h"
-#include "test_index_fm_prefix_sum_table.h"
-#include "test_index_fm_right_array_binary_tree.h"
-#include "test_index_fm_right_array_binary_tree_iterator.h"
-#include "test_index_fm_sparse_string.h"
-#include "test_index_fm_compressed_sa.h"
-#include "test_index_fm_compressed_sa_iterator.h"
-#include "test_index_fm_stree.h"
+#include "test_index_helpers.h"
 
+using namespace seqan;
 
-SEQAN_BEGIN_TESTSUITE(test_fm_index_beta)
+// ==========================================================================
+// Types
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// FMIndex Types
+// --------------------------------------------------------------------------
+
+typedef
+    TagList<Index<DnaString, FMIndex<> >,
+    TagList<Index<CharString, FMIndex<> >,
+    TagList<Index<StringSet<DnaString>, FMIndex<> >,
+    TagList<Index<StringSet<CharString>, FMIndex<> >
+    > > > >
+    FMIndexTypes;
+
+// ========================================================================== 
+// Test Classes
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Class LFTest
+// --------------------------------------------------------------------------
+
+template <typename TFMIndex>
+class LFTest : public FibreTest<TFMIndex, FibreLF> {};
+
+SEQAN_TYPED_TEST_CASE(LFTest, FMIndexTypes);
+
+// --------------------------------------------------------------------------
+// Class CSATest
+// --------------------------------------------------------------------------
+
+template <typename TFMIndex>
+class CSATest : public FibreTest<TFMIndex, FibreSA> {};
+
+SEQAN_TYPED_TEST_CASE(CSATest, FMIndexTypes);
+
+// ==========================================================================
+// LFTable Tests
+// ========================================================================== 
+
+// --------------------------------------------------------------------------
+// Test LF(pos)
+// --------------------------------------------------------------------------
+
+//SEQAN_TYPED_TEST(LFTest, LFPos)
+//{
+//    typedef typename Iterator<typename TestFixture::TText>::Type    TIter;
+//
+//    unsigned pos = 0;
+//    TIter textBegin = begin(this->text, Standard());
+//    for (TIter textIt = end(this->text, Standard()) - 1; textIt >= textBegin; goPrevious(textIt))
+//    {
+//        pos = this->fibre(pos);
+//    }
+//}
+
+// --------------------------------------------------------------------------
+// Test LF(pos, val)
+// --------------------------------------------------------------------------
+
+//SEQAN_TYPED_TEST(LFTest, LFPosVal)
+//}
+
+// --------------------------------------------------------------------------
+// Test isSentinel()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(LFTest, IsSentinel)
 {
-    SEQAN_CALL_TEST(test_rsbs_defaultConstructor);
-    SEQAN_CALL_TEST(test_rsbs_resize);
-    SEQAN_CALL_TEST(test_rsbs_getBuPos);
-    SEQAN_CALL_TEST(test_rsbs_getSBuPos);
-    SEQAN_CALL_TEST(test_rsbs_getPosInBu);
-    SEQAN_CALL_TEST(test_rsbs_isBitSet);
-    SEQAN_CALL_TEST(test_rsbs_append_value);
-    SEQAN_CALL_TEST(test_rsbs_rank);
-    SEQAN_CALL_TEST(test_rsbs_update_ranks_);
-    SEQAN_CALL_TEST(test_rsbs_constructor);
-    SEQAN_CALL_TEST(test_rsbs_equalOperator);
-    SEQAN_CALL_TEST(test_rsbs_assignOperator);
-    SEQAN_CALL_TEST(test_rsbs_open_save);
-    
-    SEQAN_CALL_TEST(test_rsbs_iterator_get_value);
+    typedef typename Size<typename TestFixture::TFibre>::Type   TSize;
 
-    SEQAN_CALL_TEST(prefix_sum_table_constructor);
-    SEQAN_CALL_TEST(prefix_sum_table_get_alphabet_size);
-    SEQAN_CALL_TEST(prefix_sum_table_get_character_position);
-    SEQAN_CALL_TEST(prefix_sum_table_get_character);
-    SEQAN_CALL_TEST(prefix_sum_table_determine_sentinel_substitute);
-    SEQAN_CALL_TEST(prefix_sum_table_get_pivot_position);
-    SEQAN_CALL_TEST(prefix_sum_table_prefix_sum);
-    SEQAN_CALL_TEST(prefix_sum_table_get_value);
-    SEQAN_CALL_TEST(prefix_sum_table_length);
-    SEQAN_CALL_TEST(prefix_sum_table_insert_sentinel_);
-    SEQAN_CALL_TEST(prefix_sum_table_resize);
-    SEQAN_CALL_TEST(prefix_sum_table_set_prefix_sum);
-    SEQAN_CALL_TEST(prefix_sum_table_value);
-    SEQAN_CALL_TEST(prefix_sum_table_open_save);
+    TSize sentinels = 0;
+    for (TSize pos = 0; pos < bwtLength(this->text); ++pos)
+        sentinels += isSentinel(this->fibre, pos);
 
-    SEQAN_CALL_TEST(wavelet_tree_structure_constructor);
-    SEQAN_CALL_TEST(wavelet_tree_structure_clear);
-    SEQAN_CALL_TEST(wavelet_tree_structure_empty);
-    SEQAN_CALL_TEST(wavelet_tree_structure_get_fibre);
-    SEQAN_CALL_TEST(wavelet_tree_structure_length);
-    SEQAN_CALL_TEST(wavelet_tree_structure_resize);
-    SEQAN_CALL_TEST(wavelet_tree_structure_open_save);
-
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_begin);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_container);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_end);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_character);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_child_pos);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_num_child_vertices);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_get_position);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_child);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_down);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_right);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_to_position);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_go_up);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_is_leaf);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_is_root);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_and_go_right);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_character);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_child_vertices_);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_left_child_pos_);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_position_);
-    SEQAN_CALL_TEST(wavelet_tree_structure_iterator_set_right_child_pos_);
-
-    SEQAN_CALL_TEST(sparse_string_get_value);
-    SEQAN_CALL_TEST(sparse_string_clear_length_resize);
-    SEQAN_CALL_TEST(sparse_string_empty);
-    SEQAN_CALL_TEST(sparse_string_get_fibre);
-    
-    SEQAN_CALL_TEST(compressed_sa_clear_length_resize);
-    SEQAN_CALL_TEST(compressed_sa_empty);
-    SEQAN_CALL_TEST(compressed_sa_create_compressed_sa);
-    SEQAN_CALL_TEST(compressed_sa_get_fibre);
-    SEQAN_CALL_TEST(compressed_sa_get_next_pos_);
-    SEQAN_CALL_TEST(compressed_sa_set_lf_table);
-    SEQAN_CALL_TEST(compressed_sa_value_access);
-    SEQAN_CALL_TEST(compressed_sa_open_save);
-    
-    SEQAN_CALL_TEST(compressed_sa_iterator_begin);
-    SEQAN_CALL_TEST(compressed_sa_iterator_end);
-    
-    SEQAN_CALL_TEST(test_lf_table_lf_mapping);
-
-    SEQAN_CALL_TEST(test_fm_index_constructor);
-    SEQAN_CALL_TEST(test_fm_index_clear);
-    SEQAN_CALL_TEST(test_fm_index_determine_sentinel_substitute_);
-    SEQAN_CALL_TEST(test_fm_index_empty);
-    SEQAN_CALL_TEST(test_fm_index_find_first_index_);
-    SEQAN_CALL_TEST(test_fm_index_get_fibre);
-    SEQAN_CALL_TEST(test_fm_index_search);
-    SEQAN_CALL_TEST(test_fm_index_open_save);
-
-    SEQAN_CALL_TEST(fm_index_iterator_constuctor);
-    SEQAN_CALL_TEST(fm_index_iterator_go_down);
-    SEQAN_CALL_TEST(fm_index_iterator_is_leaf);
-    SEQAN_CALL_TEST(fm_index_iterator_go_right);
-    SEQAN_CALL_TEST(fm_index_iterator_go_up);
-    SEQAN_CALL_TEST(fm_index_iterator_representative);
-    SEQAN_CALL_TEST(fm_index_iterator_is_root);
-    SEQAN_CALL_TEST(fm_index_iterator_count_occurrences);
-    SEQAN_CALL_TEST(fm_index_iterator_range);
+    // Assert that there is exactly one sentinel per text in the collection.
+    SEQAN_ASSERT_EQ(sentinels, countSequences(this->text));
 }
-SEQAN_END_TESTSUITE
+
+// ==========================================================================
+// CompressedSA Tests
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Test indexSA()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(CSATest, IndexSA)
+{
+// NOTE(esiragusa): Actual behavior is:
+    SEQAN_ASSERT_EQ(length(this->fibre), bwtLength(this->text));
+// NOTE(esiragusa): Correct behavior should be:
+//    SEQAN_ASSERT_EQ(length(this->fibre), lengthSum(this->text));
+
+// NOTE(esiragusa): this must work.
+//    SEQAN_ASSERT(isSuffixArray(this->fibre, this->text));
+}
+
+// --------------------------------------------------------------------------
+// Test getValue()
+// --------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------
+// Test begin() and end()
+// --------------------------------------------------------------------------
+
+SEQAN_TYPED_TEST(CSATest, BeginEnd)
+{
+    typedef typename TestFixture::TFibre            TSA;
+    typedef typename Iterator<TSA, Standard>::Type  TIter;
+    typedef typename Position<TIter>::Type          TPos;
+    typedef typename Difference<TIter>::Type        TDiff;
+
+    TIter itBeg = begin(this->fibre, Standard());
+    TIter itEnd = end(this->fibre, Standard());
+
+    SEQAN_ASSERT_EQ(itEnd - itBeg, static_cast<TDiff>(length(this->fibre)));
+    SEQAN_ASSERT_EQ(position(itBeg), static_cast<TPos>(0));
+    SEQAN_ASSERT_EQ(position(itEnd), static_cast<TPos>(length(this->fibre)));
+}
+
+// ========================================================================== 
+// Functions
+// ========================================================================== 
+
+int main(int argc, char const ** argv)
+{
+    TestSystem::init(argc, argv);
+    return TestSystem::runAll();
+}

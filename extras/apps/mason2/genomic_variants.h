@@ -243,11 +243,83 @@ struct Variants
     // Structural variation record.
     seqan::String<StructuralVariantRecord> svRecords;
 
+    // Names of the snps, smallIndels, SVs, as in the VCF file.
+    seqan::StringSet<seqan::CharString> snpIDs;
+    seqan::StringSet<seqan::CharString> smallIndelIDs;
+    seqan::StringSet<seqan::CharString> svIDs;
+
     void clear()
     {
         seqan::clear(snps);
         seqan::clear(smallIndels);
         seqan::clear(svRecords);
+
+        seqan::clear(snpIDs);
+        seqan::clear(smallIndelIDs);
+        seqan::clear(svIDs);
+    }
+
+    enum IndexKind
+    {
+        SNP,
+        SMALL_INDEL,
+        SV
+    };
+
+    // Return the name of a variant from its index.
+    seqan::CharString getVariantName(int idx) const
+    {
+        std::pair<IndexKind, int> res = resolveIdx(idx);
+        if (res.first == SNP)
+        {
+            if (res.second >= (int)length(snpIDs))
+                return ".";
+            return snpIDs[res.second];
+        }
+        else if (res.first == SMALL_INDEL)
+        {
+            if (res.second >= (int)length(smallIndelIDs))
+                return ".";
+            return smallIndelIDs[res.second];
+        }
+        else
+        {
+            if (res.second >= (int)length(svIDs))
+                return ".";
+            return svIDs[res.second];
+        }
+    }
+
+    // Translate number of variant with type to ids.
+    int posToIdx(IndexKind kind, int pos) const
+    {
+        switch (kind)
+        {
+            case SNP:
+                return pos;
+            case SMALL_INDEL:
+                return pos + length(snps);
+            case SV:
+                return pos + length(snps) + length(smallIndels);
+            default:
+                SEQAN_FAIL("Cannot reach here.");
+        }
+        return -1;
+    }
+
+    // Each variant has a numeric index.  Indices go up to (length(snps) + length(smallIndels) + length(svRecords)) - 1
+    // and are "stacked".
+    std::pair<IndexKind, int> resolveIdx(int idx) const
+    {
+        if (idx < (int)length(snps))
+            return std::make_pair(SNP, idx);
+        else if (idx < (int)(length(snps) + length(smallIndels)))
+            return std::make_pair(SMALL_INDEL, idx - length(snps));
+        else if (idx < (int)(length(snps) + length(smallIndels) + length(svRecords)))
+            return std::make_pair(SV, idx - length(snps) - length(smallIndels));
+        else
+            SEQAN_FAIL("Invalid idx!");
+        return std::make_pair(SNP, -1);
     }
 };
 
@@ -338,8 +410,8 @@ public:
     TIntervalTree svIntervalTree;
     // The mapping from the genome with small variants to the one with large variants.
     TIntervalTree svIntervalTreeSTL;  // small-to-large
-    // The breakpoints on the sequence with variants.
-    std::set<int> svBreakpoints;
+    // The breakpoints (as [(point, idx)] on the sequence with variants.
+    std::set<std::pair<int, int> > svBreakpoints;
 
     // Returns true if the interval on the sequence with structural variants overlaps with a breakpoint.
     bool overlapsWithBreakpoint(int svBeginPos, int svEndPos) const;
@@ -361,7 +433,7 @@ public:
     //
     // Returns (a, b), a > b if on the reverse strand
     //
-    // The interval must not overlap with a breakpoitn.
+    // The interval must not overlap with a breakpoint.
     std::pair<int, int> toSmallVarInterval(int svBeginPos, int svEndPos) const;
 
     // Translate the interval on the original sequence into coordinates with small variants.
@@ -387,7 +459,7 @@ public:
 class VariantMaterializer
 {
 public:
-    // The random number generator to use.
+    // The random number generator to use for methylation levels.
     TRng * rng;
     // The Variants to materialize for.
     Variants const * variants;
@@ -410,10 +482,11 @@ public:
 
     // Materialize the variants from the haplotype with the given id in *variants to result given the reference sequence refSeq.
     //
-    // Breakpoints is a vector of points on the contig.
+    // Breakpoints is a vector of (point, id) where point is a point on the materialized contig with variants and id is
+    // an integer index into variants.  See Variants::resolveIdx() for more information.
     int run(seqan::Dna5String & resultSeq,
             PositionMap & posMap,
-            std::vector<int> & breakpoints,
+            std::vector<std::pair<int, int> > & breakpoints,
             seqan::Dna5String const & refSeq,
             int haplotypeId)
     {
@@ -424,7 +497,7 @@ public:
     int run(seqan::Dna5String & resultSeq,
             PositionMap & posMap,
             MethylationLevels & resultLvls,
-            std::vector<int> & breakpoints,
+            std::vector<std::pair<int, int> > & breakpoints,
             seqan::Dna5String const & refSeq,
             MethylationLevels const & refLvls,
             int haplotypeId)
@@ -437,7 +510,7 @@ public:
     int _runImpl(seqan::Dna5String * resultSeq,
                  PositionMap * posMap,
                  MethylationLevels * resultLvls,
-                 std::vector<int> & breakpoints,
+                 std::vector<std::pair<int, int> > & breakpoints,
                  seqan::Dna5String const * ref,
                  MethylationLevels const * refLvls,
                  int haplotypeId);
@@ -458,7 +531,7 @@ public:
     // Levels passed as NULL if not given.
     int _materializeLargeVariants(seqan::Dna5String & seq,
                                   MethylationLevels * levelsLargeVariants,
-                                  std::vector<int> & breakpoints,
+                                  std::vector<std::pair<int, int> > & breakpoints,
                                   PositionMap & positionMap,
                                   TJournalEntries const & journal,
                                   seqan::Dna5String const & contig,

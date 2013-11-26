@@ -259,6 +259,25 @@ if (openMode & OPEN_MASK == OPEN_READ)
 //IOREV _stub_ this seems not to be implemented at all, most functions are commented
         typedef AsyncDummyRequest Type;
     };
+
+
+// ============================================================================
+// Exceptions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Exception IOError
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class IOError
+ * @headerfile <seqan/basic.h>
+ * @brief Input/Output error exception.
+ * @signature IOError("Message", errorCode);
+ */
+
+typedef std::ios_base::failure  IOError;
+
 }  // namespace seqan;
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
