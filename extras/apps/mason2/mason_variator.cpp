@@ -99,6 +99,9 @@ struct MasonVariatorOptions
     // Path to TSV file to write the resulting breakpoints in variant genomes to.
     seqan::CharString outputBreakpointFile;
 
+    // Whether or not to generate ids of the variants.
+    bool genVarIds;
+
     // ----------------------------------------------------------------------
     // Haplotype / Allele Configuration
     // ----------------------------------------------------------------------
@@ -140,7 +143,7 @@ struct MasonVariatorOptions
     MethylationLevelSimulatorOptions methSimOptions;
 
     MasonVariatorOptions() :
-            verbosity(1), seed(0),
+            verbosity(1), seed(0), genVarIds(true),
             snpRate(0), smallIndelRate(0), minSmallIndelSize(0), maxSmallIndelSize(0), svIndelRate(0),
             svInversionRate(0), svTranslocationRate(0), svDuplicationRate(0), minSVSize(0), maxSVSize(0)
     {}
@@ -157,7 +160,8 @@ void print(std::ostream & out, MasonVariatorOptions const & options)
         << "FASTA OUT            \t" << options.fastaOutFile << "\n"
         << "BREAKPOINT TSV OUT   \t" << options.outputBreakpointFile << "\n"
         << "METHYLATION IN FILE  \t" << options.methFastaInFile << "\n"
-        << "METHYLATION OUT FILE \t" << options.methFastaOutFile << "\n"
+        << "\n"
+        << "GENERATE VAR IDS     \t" << options.genVarIds << "\n"
         << "\n"
         << "NUM HAPLOTYPES       \t" << options.numHaplotypes << "\n"
         << "HAPLOTYPE SEP        \t\"" << options.haplotypeSep << "\"\n"
@@ -622,9 +626,12 @@ public:
     // File to write breakpoints to.
     std::fstream breakpointsOut;
 
+    // Numeric id of the variation that is written out next.
+    int nextVarNo;
+
     MasonVariatorApp(TRng & rng, TRng & methRng, seqan::FaiIndex const & faiIndex,
                      MasonVariatorOptions const & options) :
-            rng(rng), methRng(methRng), options(options), faiIndex(faiIndex)
+            rng(rng), methRng(methRng), options(options), faiIndex(faiIndex), nextVarNo(0)
     {
         _init();
     }
@@ -979,6 +986,8 @@ public:
     // Write out variants for the given contig to the VCF file.
     int _writeVcf(seqan::Dna5String const & contig, Variants const & variants, int /*rId*/)
     {
+        // Reset the id of the next variant.
+        nextVarNo = 0;
         // Current index in snp/small indel and SV array.
         unsigned snpsIdx = 0;
         unsigned smallIndelIdx = 0;
@@ -1102,7 +1111,11 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = rId;
         vcfRecord.beginPos = pos.second;
-        // TODO(holtgrew): Generate an id?
+        {
+            std::stringstream ss;
+            ss << "sim_var_" << nextVarNo++;
+            vcfRecord.id = ss.str();
+        }
         appendValue(vcfRecord.ref, from);
         for (unsigned i = 0; i < 4; ++i)
         {
@@ -1178,7 +1191,11 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = front(records).rId;
         vcfRecord.beginPos = front(records).pos;
-        // TODO(holtgrew): Generate an id?
+        {
+            std::stringstream ss;
+            ss << "sim_var_" << nextVarNo++;
+            vcfRecord.id = ss.str();
+        }
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
         // Build genotype infos.
@@ -1248,7 +1265,11 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos;
-        // TODO(holtgrew): Generate an id?
+        {
+            std::stringstream ss;
+            ss << "sim_var_" << nextVarNo++;
+            vcfRecord.id = ss.str();
+        }
         vcfRecord.filter = "PASS";
         std::stringstream ss;
         if (svRecord.size > 0)
@@ -1305,6 +1326,17 @@ public:
     {
         // In this function, we will create VCF records left and right of both cut positions and of the paste position.
         seqan::VcfRecord leftOfCutL, rightOfCutL, leftOfCutR, rightOfCutR, leftOfPaste, rightOfPaste;
+        {
+            // Variant ID.
+            std::stringstream ss;
+            ss << "sim_var_" << nextVarNo++;
+            leftOfCutL.id = ss.str();
+            rightOfCutL.id = ss.str();
+            leftOfCutR.id = ss.str();
+            rightOfCutR.id = ss.str();
+            leftOfPaste.id = ss.str();
+            rightOfPaste.id = ss.str();
+        }
         // CHROM ID
         leftOfCutL.rID = svRecord.rId;
         rightOfCutL.rID = svRecord.rId;
@@ -1424,7 +1456,11 @@ public:
 
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos;
-        // TODO(holtgrew): Generate an id?
+        {
+            std::stringstream ss;
+            ss << "sim_var_" << nextVarNo++;
+            vcfRecord.id = ss.str();
+        }
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<INV>";
         vcfRecord.filter = "PASS";
@@ -1464,7 +1500,11 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos;
-        // TODO(holtgrew): Generate an id?
+        {
+            std::stringstream ss;
+            ss << "sim_var_" << nextVarNo++;
+            vcfRecord.id = ss.str();
+        }
         vcfRecord.filter = "PASS";
         std::stringstream ss;
         ss << "SVTYPE=DUP;SVLEN=" << svRecord.size << ";END=" << svRecord.pos + svRecord.size
@@ -1579,6 +1619,8 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep", "Haplotype name separator in output FASTA.",
                                             seqan::ArgParseOption::STRING, "SEP"));
     setDefaultValue(parser, "haplotype-name-sep", "/");
+
+    addOption(parser, seqan::ArgParseOption("", "no-gen-var-ids", "Do not generate variant ids."));
 
     // ----------------------------------------------------------------------
     // Haplotype / Allele Configuration
@@ -1765,6 +1807,9 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     getOptionValue(options.fastaOutFile, parser, "out-fasta");
     getOptionValue(options.outputBreakpointFile, parser, "out-breakpoints");
     getOptionValue(options.inputSVSizeFile, parser, "in-variant-tsv");
+    bool noGenVarIds = false;
+    getOptionValue(noGenVarIds, parser, "no-gen-var-ids");
+    options.genVarIds = !noGenVarIds;
 
     getOptionValue(options.numHaplotypes, parser, "num-haplotypes");
     getOptionValue(options.haplotypeSep, parser, "haplotype-sep");
