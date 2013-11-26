@@ -181,8 +181,7 @@ parseCommandLine(MasonMaterializerOptions & options, int argc, char const ** arg
     seqan::ArgumentParser parser("mason_materializer");
     // Set short description, version, and date.
     setShortDescription(parser, "VCF Materialization");
-    setVersion(parser, "2.0");
-    setDate(parser, "July 2012");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.

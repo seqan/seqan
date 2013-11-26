@@ -895,4 +895,23 @@ char const * getSourceStrandsStr(SequencingOptions::SourceStrands strands);
 char const * getSequencingTechnologyStr(SequencingOptions::SequencingTechnology technology);
 char const * getFragmentSizeModelStr(Roche454SequencingOptions::ReadLengthModel model);
 
+// ----------------------------------------------------------------------------
+// Function setDateAndVersion()
+// ----------------------------------------------------------------------------
+
+inline
+void setDateAndVersion(seqan::ArgumentParser & parser)
+{
+#ifdef SEQAN_REVISION
+    setVersion(parser, "2.0alpha1 [" + std::string(SEQAN_REVISION) + "]");
+#else
+    setVersion(parser, "2.0alpha1");
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#else
+    setDate(parser, "November 2013");
+#endif
+}
+
 #endif  // #ifndef EXTRAS_APPS_MASON2_MASON_OPTIONS_H_
