@@ -301,7 +301,10 @@ struct Variants
                 return pos + length(snps);
             case SV:
                 return pos + length(snps) + length(smallIndels);
+            default:
+                SEQAN_FAIL("Cannot reach here.");
         }
+        return -1;
     }
 
     // Each variant has a numeric index.  Indices go up to (length(snps) + length(smallIndels) + length(svRecords)) - 1
