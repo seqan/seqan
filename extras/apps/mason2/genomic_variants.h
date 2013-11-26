@@ -304,6 +304,8 @@ struct Variants
             default:
                 SEQAN_FAIL("Cannot reach here.");
         }
+
+        SEQAN_FAIL("Invalid kind!");
         return -1;
     }
 

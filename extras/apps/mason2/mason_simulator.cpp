@@ -335,7 +335,7 @@ public:
         // Complete flags and tLen.
         // -------------------------------------------------------------------
         //
-        // This is surprising complex.
+        // This is surprisingly complex.
         recordL.flag |= seqan::BAM_FLAG_FIRST | seqan::BAM_FLAG_MULTIPLE;
         recordR.flag |= seqan::BAM_FLAG_LAST  | seqan::BAM_FLAG_MULTIPLE;
 
