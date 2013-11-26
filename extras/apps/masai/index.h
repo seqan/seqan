@@ -155,7 +155,21 @@ struct Fibre<TGenomeBaseQGram, FibreDir>
 // Contigs FM Index Fibres
 // ----------------------------------------------------------------------------
 
-typedef FMIndex<>                           TGenomeFMSpec;
+namespace seqan {
+// TODO(esiragusa): Overload Size<CSA> instead of Size<SparseString>
+template <typename TValueString>
+struct Size<SparseString<TValueString, void> >
+{
+    typedef __uint32    Type;
+};
+}
+
+struct TGenomeFMConfig : FMIndexConfig<void>
+{
+    typedef Naive<void>             TSentinelsSpec;
+};
+
+typedef FMIndex<void, TGenomeFMConfig>      TGenomeFMSpec;
 typedef Index<TContigs, TGenomeFMSpec>      TGenomeFM;
 
 // ============================================================================
