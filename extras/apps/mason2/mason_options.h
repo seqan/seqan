@@ -657,7 +657,7 @@ struct MasonSimulatorOptions
 
     // Whether to force single-end simulation although !empty(outFileNameRight).
     bool forceSingleEnd;
-    
+
     // Path to input methylation FASTA file.
     seqan::CharString methFastaInFile;
     // Path to output sequence files for left (and single end) and right reads.
