@@ -474,6 +474,24 @@ _blockAt(RankDictionary<TValue, TwoLevels<TSpec> > const & dict, TPos pos)
 }
 
 // ----------------------------------------------------------------------------
+// Function _padValues()
+// ----------------------------------------------------------------------------
+// Set values beyond length(dict) but still within the end of the ranks fibre.
+
+template <typename TValue, typename TSpec>
+inline void _padValues(RankDictionary<TValue, TwoLevels<TSpec> > & dict)
+{
+    typedef RankDictionary<TValue, TwoLevels<TSpec> >               TRankDictionary;
+    typedef typename Size<TRankDictionary>::Type                    TSize;
+
+    TSize beginPos = length(dict);
+    TSize endPos   = length(dict.ranks) * TRankDictionary::_VALUES_PER_BLOCK;
+
+    for (TSize pos = beginPos; pos < endPos; ++pos)
+        setValue(dict, pos, TValue());
+}
+
+// ----------------------------------------------------------------------------
 // Function _clearBlockAt()
 // ----------------------------------------------------------------------------
 
@@ -799,6 +817,9 @@ inline void updateRanks(RankDictionary<TValue, TwoLevels<TSpec> > & dict)
 
     // Insures the first block ranks start from zero.
     _clearBlockAt(dict, 0u);
+
+    // Clear the uninitialized values.
+    _padValues(dict);
 
     // Iterate through the blocks.
     for (TFibreRanksIter ranksIt = ranksBegin; ranksIt != ranksEnd - 1; ++ranksIt)
