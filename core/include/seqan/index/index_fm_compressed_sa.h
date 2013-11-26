@@ -337,6 +337,9 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
     TSAIter saIt = begin(sa, Standard());
     TSAIter saItEnd = end(sa, Standard());
 
+    for (TSASize pos = 0; pos < offset; ++pos)
+        setValue(indicators, pos, false);
+
     for (TSASize pos = offset; saIt != saItEnd; ++saIt, ++pos)
     {
         if (getSeqOffset(getValue(saIt)) % TConfig::SAMPLING == 0)
