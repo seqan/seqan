@@ -15,7 +15,7 @@ message (STATUS "Configuring extras/apps/mason2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+set (SEQAN_FIND_DEPENDENCIES ZLIB OpenMP)
 find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)

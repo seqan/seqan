@@ -302,6 +302,9 @@ struct Variants
             case SV:
                 return pos + length(snps) + length(smallIndels);
         }
+
+        SEQAN_FAIL("Invalid kind!");
+        return -1;
     }
 
     // Each variant has a numeric index.  Indices go up to (length(snps) + length(smallIndels) + length(svRecords)) - 1
