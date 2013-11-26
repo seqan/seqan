@@ -361,7 +361,7 @@ public:
     //
     // Returns (a, b), a > b if on the reverse strand
     //
-    // The interval must not overlap with a breakpoitn.
+    // The interval must not overlap with a breakpoint.
     std::pair<int, int> toSmallVarInterval(int svBeginPos, int svEndPos) const;
 
     // Translate the interval on the original sequence into coordinates with small variants.
@@ -387,7 +387,7 @@ public:
 class VariantMaterializer
 {
 public:
-    // The random number generator to use.
+    // The random number generator to use for methylation levels.
     TRng * rng;
     // The Variants to materialize for.
     Variants const * variants;
