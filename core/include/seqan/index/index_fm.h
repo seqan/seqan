@@ -417,6 +417,35 @@ toSuffixPosition(Index<TText, FMIndex<TSpec, TConfig> > const & index, TPos i, T
     return i;
 }
 
+template <typename TText, typename TSpec, typename TConfig, typename TSpecFinder, typename TPattern>
+inline void 
+_findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & finder,
+                TPattern const & pattern,
+                FinderSTree const)
+{
+    typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex;
+    typedef typename Fibre<TIndex, FibreSA>::Type           TSA;
+    typedef typename Iterator<TSA const, Standard>::Type    TIterator;
+
+    TIndex & index = haystack(finder);
+    TIterator saIt = begin(indexSA(index), Standard());
+    typename Iterator<TIndex, TopDown<EmptyEdges> >::Type it(index);
+
+    ModifiedString<TPattern const, ModReverse> revPattern(pattern);
+
+    if (goDown(it, revPattern))
+    {
+        Pair<typename Size<TIndex>::Type> rng = range(it);
+        finder.range.i1 = saIt + rng.i1;
+        finder.range.i2 = saIt + rng.i2;
+    }
+    else
+    {
+        finder.range.i1 = saIt;
+        finder.range.i2 = saIt;
+    }
+}
+
 // ----------------------------------------------------------------------------
 // Function indexCreate()
 // ----------------------------------------------------------------------------
