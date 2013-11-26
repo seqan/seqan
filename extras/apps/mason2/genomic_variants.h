@@ -301,6 +301,8 @@ struct Variants
                 return pos + length(snps);
             case SV:
                 return pos + length(snps) + length(smallIndels);
+            default:
+                SEQAN_FAIL("Cannot reach here.");
         }
 
         SEQAN_FAIL("Invalid kind!");

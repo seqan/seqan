@@ -41,6 +41,10 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
 # We define a library for the reusable parts of Mason.
 add_library (mason_sim
              external_split_merge.h
