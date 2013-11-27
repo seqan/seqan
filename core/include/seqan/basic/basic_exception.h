@@ -128,11 +128,11 @@
  *
  * @section Remarks
  *
- * When exceptions are disabled, i.e. SEQAN_EXCEPTIONS is set to false, the macro turns into SEQAN_FAIL".
+ * When exceptions are disabled, i.e. AssertMacros#SEQAN_EXCEPTIONS is set to false, the macro turns into SEQAN_FAIL".
  *
  * @see SEQAN_TRY
  * @see SEQAN_CATCH
- * @see SEQAN_FAIL
+ * @see AssertMacros#SEQAN_FAIL
  * @see Exception
  *
  * @section Examples
