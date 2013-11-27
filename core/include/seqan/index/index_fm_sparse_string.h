@@ -258,11 +258,9 @@ inline void _assignValueInValueString(SparseString<TFibreValues, TSpec> & string
  * 
  * @brief Resets the @link SparseString @endlink.
  * 
- * @signature clear(sparseString)
+ * @signature void clear(sparseString);
  * 
- * @param sparseString The  @link SparseString @endlink to be cleared.
- *
- * @return void
+ * @param sparseString The @link SparseString @endlink to be cleared.
  */
 
 ///.Function.clear.param.object.type:Class.SparseString

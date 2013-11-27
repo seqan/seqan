@@ -410,11 +410,9 @@ SEQAN_HOST_DEVICE inline bool empty(LF<StringSet<TText, TSSetSpec>, TSpec, TConf
  * 
  * @brief Resets the LF table.
  * 
- * @signature clear(lfTable)
+ * @signature void clear(lfTable);
  * 
  * @param lfTable The LF table to be cleared.
- *
- * @return void
  */
 
 template <typename TText, typename TSpec, typename TConfig>

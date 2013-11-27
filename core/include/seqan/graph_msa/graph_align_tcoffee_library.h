@@ -57,7 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/graph_msa.h>
  * @brief Segment matches from pairwise global alignment.
  *
- * @typedef Tag<GlobalPairwiseLibrary_> const GlobalPairwiseLibrary;
+ * @signature typedef Tag<GlobalPairwiseLibrary_> const GlobalPairwiseLibrary;
  *
  *
  * @tag SegmentMatchGenerationTags#LocalPairwiseLibrary
@@ -69,14 +69,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/graph_msa.h>
  * @brief Segment matches from pairwise k-mer library.
  *
- * @typedef Tag<KmerLibrary_> const KmerLibrary;
+ * @signature typedef Tag<KmerLibrary_> const KmerLibrary;
  *
  *
  * @tag SegmentMatchGenerationTags#LcsLibrary
  * @headerfile <seqan/graph_msa.h>
  * @brief Segment matches from pairwise longest common subsequence comparison.
  *
- * @typedef Tag<LcsLibrary_> const LcsLibrary;
+ * @signature typedef Tag<LcsLibrary_> const LcsLibrary;
  */
 
 /**
