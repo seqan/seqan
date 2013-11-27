@@ -71,7 +71,22 @@ class ReturnVoidValidator(ProcDocValidator):
                 msg = '@return superflous for "void" type -- simply show "void" in signature.'
                 self.msg_printer.printTokenError(r.raw.first_token, msg, 'warning')
 
+
+class EmptyBriefValidator(ProcDocValidator):
+    """Warns if there is no non-empty @brief section for an entry."""
+
+    def validate(self, proc_entry):
+        IGNORED = ['mainpage', 'page']
+        if proc_entry.kind in IGNORED:
+            return  # Skip.
+        if not hasattr(proc_entry, 'brief'):
+            return  # Skip if type has no returns member.
+        if not proc_entry.brief or proc_entry.brief.empty:
+            msg = 'Missing non-empty @brief clause.'
+            self.msg_printer.printTokenError(proc_entry.raw.first_token, msg, 'warning')
+
 # Array with the validator classes to use.
 VALIDATORS = [MissingSignatureValidator,
               MissingParameterDescriptionValidator,
-              ReturnVoidValidator]
+              ReturnVoidValidator,
+              EmptyBriefValidator]

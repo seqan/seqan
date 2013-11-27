@@ -273,8 +273,10 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 
 /*!
  * @defgroup OpenAdressingTags Open Adressing Tags
+ * @brief Tags for selecting open adressing.
  *
  * @tag OpenAdressingTags#OpenAdressing
+ * @brief Tag for enabling open adressing.
  */
 
 /*!

@@ -812,7 +812,7 @@ createRoot(Graph<Tree<TCargo, TSpec> >& g)
 
 /*!
  * @fn Tree#root
- * @signature Gets reference to the root of the tree.
+ * @brief Gets reference to the root of the tree.
  *
  * @signature TVertexDescriptor root(t);
  *
@@ -833,7 +833,7 @@ root(Graph<Tree<TCargo, TSpec> >& g)
 
 /*!
  * @fn Tree#getRoot
- * @signature Gets the root of the tree.
+ * @brief Gets the root of the tree.
  *
  * @signature TVertexDescriptor getRoot(t);
  *
@@ -854,7 +854,7 @@ getRoot(Graph<Tree<TCargo, TSpec> > const& g)
 
 /*!
  * @fn Tree#isRoot
- * @signature Tests whether a given vertex is the root or not.
+ * @brief Tests whether a given vertex is the root or not.
  *
  * @signature bool isRoot(t, v);
  *

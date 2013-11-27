@@ -62,6 +62,7 @@ typedef Tag<OverlapLibrary_> const OverlapLibrary;
 
 /*!
  * @defgroup ConsensusCallingTags Consensus Calling Tags
+ * @brief Tags for consensus calling.
  *
  * @tag ConsensusCallingTags#MajorityVote
  * @headerfile <seqan/consensus.h>

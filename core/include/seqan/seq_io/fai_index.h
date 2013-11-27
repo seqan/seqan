@@ -359,7 +359,8 @@ inline __uint64 numSeqs(FaiIndex const & index)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn FaiIndex#readRegion.
+ * @fn FaiIndex#readRegion
+ * @brief Read a region through an FaiIndex.
  *
  * @signature int readRegion(str, faiIndex, refId, beginPos, endPos);
  * @signature int readRegion(str, faiIndex, region);
@@ -511,7 +512,7 @@ inline int readSequence(String<TValue, TSpec> & str, FaiIndex const & index, uns
 
 /*!
  * @fn FaiIndex#read
- * @summary Read a FAI index from file.
+ * @brief Read a FAI index from file.
  *
  * @signature int read(faiIndex, fastaFileName[, faiFileName]);
  *

@@ -1959,7 +1959,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 /*!
  * @fn ExternalString#openTemp
- * @signature Open an ExternalString using an temporary file.
+ * @brief Open an ExternalString using an temporary file.
  *
  * @signature bool openTemp(str);
  *
