@@ -374,12 +374,11 @@
 
 /*!
  * @class SequenceBitMaskFibres SequenceBitMask Fibres
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Tag to select a specific fibre of a SequenceBitMask.
  *
- * @tag SequenceBitMaskFibres#FibreBitStrings The string set containing a bit string for each character.
+ * @tag SequenceBitMaskFibres#FibreBitStrings
+ * @brief The string set containing a bit string for each character.
  * 
  * @see Fibre
  * @see Index#getFibre

@@ -631,7 +631,7 @@ SEQAN_CHECKPOINT
 
 /*!
  * @fn MMapString#openTemp
- * @signature Open an MMapString using an temporary file.
+ * @brief Open an MMapString using an temporary file.
  *
  * @signature bool openTemp(str);
  *
