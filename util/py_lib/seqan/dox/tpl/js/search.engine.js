@@ -330,7 +330,6 @@ and based on the Tipue Search, http://www.tipue.com
                     	$(langEntitiesKeys).each(function() {
                     		var langEntity = this + '';
                     		if(settings.langEntities[langEntity].belongsTo == langEntityCategory) {
-                    			console.log(langEntity);
                     			langEntitiesToKeep.push(langEntity);
                     		}
                     	});
@@ -351,7 +350,18 @@ and based on the Tipue Search, http://www.tipue.com
                     	
                     	if($.inArray(this.langEntity, langEntitiesKeys) < 0) this.langEntity = 'unknown';
                     	
-                        var score = findAndScore(query, [this.title, this.text, this.akas, this.subentries]);
+                        var akas = this.akas.split("");
+                        var subentriesTmp = this.subentries.split(",");
+                        var subentries = [];
+                        for (var i = 0; i < subentriesTmp.length; ++i)
+                        {
+                            var idx = subentriesTmp[i].indexOf(" ");
+                            if (idx < 0)
+                                idx = 0;
+                            subentries.push(subentriesTmp[i].substr(idx));
+                        }
+                        //var score = findAndScore(query, [this.title, this.text].concat(this.akas, this.subentries));
+                        var score = findAndScore(query, [this.title, this.text].concat(akas, subentries));
                         var result = highlightedMatch(score, this, query);
 
                         if (score != -1 && score < 1000000000) {
