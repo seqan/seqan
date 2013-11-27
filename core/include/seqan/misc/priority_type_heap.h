@@ -205,6 +205,7 @@ SEQAN_CHECKPOINT
 /*!
  * @fn PriorityType#adjustTop
  * @brief Adjusts the priority of the first item.
+ * @signature void adjustTop(pQueue);
  */
 
 /**
