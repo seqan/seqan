@@ -92,7 +92,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn SuperMaxRepeatsIterator::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
  *
- * brief The constructor
+ * @brief The constructor
  *
  * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >(index [, minLength]) 
  * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >(iterator) 
@@ -214,7 +214,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn SuperMaxRepeatsFastIterator::Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
  *
- * brief The constructor
+ * @brief The constructor
  *
  * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >(index[, minLength])
  * @signature Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >(iterator)
@@ -382,7 +382,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn MaxRepeatsIterator::Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
  *
- * brief The constructor
+ * @brief The constructor
  *
  * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(index[, minLength])
  * @signature Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >(iterator)

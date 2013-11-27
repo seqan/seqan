@@ -90,7 +90,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn MumsIterator::Iter<TContainer, VSTree< BottomUp<Mums> > >
  *
- * brief The constructor
+ * @brief The constructor
  *
  * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(index[, minLength])
  * @signature Iter<TContainer, VSTree< BottomUp<Mums> > >(iterator)
@@ -220,7 +220,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn MultiMemsIterator::Iter<TContainer, VSTree< BottomUp<MultiMems> > >
  *
- * brief The constructor
+ * @brief The constructor
  *
  * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(index[, minLength])
  * @signature Iter<TContainer, VSTree< BottomUp<MultiMems> > >(iterator)

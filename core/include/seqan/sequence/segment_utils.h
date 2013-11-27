@@ -61,6 +61,7 @@ namespace seqan {
 
 /*!
  * @fn endsWith
+ * @brief Check whether a string is a suffix of another string.
  * @headerfile <seqan/sequence.h>
  *
  * @signature bool endsWith(str, suffix);
@@ -100,6 +101,7 @@ inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
 
 /*!
  * @fn startsWith
+ * @brief Check whether a string is a prefix of another string.
  * @headerfile <seqan/sequence.h>
  *
  * @signature bool startsWith(str, prefix);
