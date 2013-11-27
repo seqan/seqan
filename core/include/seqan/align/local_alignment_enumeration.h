@@ -55,6 +55,7 @@ class LocalAlignmentEnumerator;
 /*!
  * @class LocalAlignmentEnumerator
  * @headerfile <seqan/align.h>
+ * @brief Enumeration of local alignments.
  *
  * @signature template <typename TScore, typename TSpec>
  *            class LocalAlignmentEnumerator;

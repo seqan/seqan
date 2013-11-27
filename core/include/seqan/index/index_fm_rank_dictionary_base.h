@@ -47,12 +47,11 @@ namespace seqan {
 
 /*!
  * @class RankDictionaryFibres RankDictionary Fibres
- * 
  * @headerfile seqan/index.h
- * 
  * @brief Tag to select a specific fibre of a SequenceBitMask.
  *
- * @tag RankDictionaryFibres#FibreRanks The string set containing a bit string for each character.
+ * @tag RankDictionaryFibres#FibreRanks
+ * @brief The string set containing a bit string for each character.
  * 
  * @see RankDictionary#Fibre
  * @see RankDictionary#getFibre
