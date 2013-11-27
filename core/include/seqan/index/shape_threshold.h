@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -227,7 +228,7 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 #endif
 	;
 
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS) | defined(PLATFORM_CUDA)
 
 	template<typename TValue>
 	inline bool isNan(TValue value)

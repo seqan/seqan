@@ -84,7 +84,7 @@ function fixOutsideWorldLinks() {
 }
 
 function generateTOC() {
-  var _toc = $('<ol class="nav"><li class="active top"><a href="#top">Top</a></li></ol>');
+  var _toc = $('<ol class="nav"><li class="meta"><a href="#top" class="top"><i class="fa fa-chevron-circle-up"></i> Top</a><a href="page_mainpage.html" class="home"><i class="fa fa-home"></i> Home</a></li></ol>');
   
   var show = false;
   var toc = _toc;
@@ -125,7 +125,11 @@ function generateTOC() {
   });
   if (!show) return;
   var html = '<div id="toc"><p class="title"><strong>Table of Contents</strong></p></div>';
-  $('#content').prepend(html);
+  if($('h1').length > 0) {
+  	$('h1').first().after(html);
+  } else {
+  	$('#content').prepend(html);
+  }
   $('#toc').append(_toc);
 }
 

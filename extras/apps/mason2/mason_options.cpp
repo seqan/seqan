@@ -1195,7 +1195,11 @@ void MasonSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser
     getOptionValue(seed, parser, "seed");
     getOptionValue(methSeed, parser, "meth-seed");
     getOptionValue(seedSpacing, parser, "seed-spacing");
+#if SEQAN_HAS_OPENMP
     getOptionValue(numThreads, parser, "num-threads");
+#else  // #if SEQAN_HAS_OPENMP
+    numThreads = 1;
+#endif  // #if SEQAN_HAS_OPENMP
     getOptionValue(chunkSize, parser, "chunk-size");
     getOptionValue(numFragments, parser, "num-fragments");
     getOptionValue(forceSingleEnd, parser, "force-single-end");

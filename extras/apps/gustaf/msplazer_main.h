@@ -290,4 +290,4 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     return 0;
 }
 
-#endif  // #ifndef SANDBOX_MY_SANDBOX_APPS_MSPLAZER_MSPLAZER_MAIN_H_
+#endif  // #ifndef SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_MAIN_H_

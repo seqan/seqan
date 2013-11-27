@@ -99,6 +99,9 @@ struct MasonVariatorOptions
     // Path to TSV file to write the resulting breakpoints in variant genomes to.
     seqan::CharString outputBreakpointFile;
 
+    // Whether or not to generate ids of the variants.
+    bool genVarIDs;
+
     // ----------------------------------------------------------------------
     // Haplotype / Allele Configuration
     // ----------------------------------------------------------------------
@@ -140,7 +143,7 @@ struct MasonVariatorOptions
     MethylationLevelSimulatorOptions methSimOptions;
 
     MasonVariatorOptions() :
-            verbosity(1), seed(0),
+            verbosity(1), seed(0), genVarIDs(true),
             snpRate(0), smallIndelRate(0), minSmallIndelSize(0), maxSmallIndelSize(0), svIndelRate(0),
             svInversionRate(0), svTranslocationRate(0), svDuplicationRate(0), minSVSize(0), maxSVSize(0)
     {}
@@ -157,7 +160,8 @@ void print(std::ostream & out, MasonVariatorOptions const & options)
         << "FASTA OUT            \t" << options.fastaOutFile << "\n"
         << "BREAKPOINT TSV OUT   \t" << options.outputBreakpointFile << "\n"
         << "METHYLATION IN FILE  \t" << options.methFastaInFile << "\n"
-        << "METHYLATION OUT FILE \t" << options.methFastaOutFile << "\n"
+        << "\n"
+        << "GENERATE VAR IDS     \t" << getYesNoStr(options.genVarIDs) << "\n"
         << "\n"
         << "NUM HAPLOTYPES       \t" << options.numHaplotypes << "\n"
         << "HAPLOTYPE SEP        \t\"" << options.haplotypeSep << "\"\n"
@@ -209,10 +213,14 @@ public:
     seqan::String<VariationSizeRecord> const & variationSizeRecords;
     seqan::String<int> variationToContig;
 
+    // Numeric idx of next simulated variant for variants.
+    int nextIndelNo, nextInvNo, nextTransNo, nextDupNo;
+
     StructuralVariantSimulator(TRng & rng, seqan::FaiIndex const & faiIndex,
                                seqan::String<VariationSizeRecord> const & variationSizeRecords,
                                MasonVariatorOptions const & options) :
-            rng(rng), faiIndex(faiIndex), options(options), variationSizeRecords(variationSizeRecords)
+            rng(rng), faiIndex(faiIndex), options(options), variationSizeRecords(variationSizeRecords),
+            nextIndelNo(0), nextInvNo(0), nextTransNo(0), nextDupNo(0)
     {
         _distributeVariations();
     }
@@ -408,6 +416,14 @@ public:
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::INDEL, hId, rId, pos, size));
         back(variants.svRecords).seq = indelSeq;
+        if (options.genVarIDs)
+        {
+            // Add name.
+            std::stringstream ss;
+            ss << "sim_sv_indel_" << nextIndelNo++;
+            appendValue(variants.svIDs, ss.str());
+            SEQAN_ASSERT_EQ(length(variants.svIDs), length(variants.svRecords));
+        }
         return true;
     }
 
@@ -418,6 +434,14 @@ public:
         int hId = pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, haploCount - 1));
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::INVERSION, hId, rId, pos, size));
+        if (options.genVarIDs)
+        {
+            // Add name.
+            std::stringstream ss;
+            ss << "sim_inv_" << nextInvNo++;
+            appendValue(variants.svIDs, ss.str());
+            SEQAN_ASSERT_EQ(length(variants.svIDs), length(variants.svRecords));
+        }
         return true;
     }
 
@@ -430,6 +454,14 @@ public:
             return false;
         appendValue(variants.svRecords, StructuralVariantRecord(
                 StructuralVariantRecord::TRANSLOCATION, hId, rId, pos, size, rId, tPos));
+        if (options.genVarIDs)
+        {
+            // Add name.
+            std::stringstream ss;
+            ss << "sim_trans_" << nextTransNo++;
+            appendValue(variants.svIDs, ss.str());
+            SEQAN_ASSERT_EQ(length(variants.svIDs), length(variants.svRecords));
+        }
         return true;
     }
 
@@ -438,6 +470,15 @@ public:
         if (!simulateTranslocation(variants, haploCount, rId, pos, size))
             return false;
         back(variants.svRecords).kind = StructuralVariantRecord::DUPLICATION;
+        if (options.genVarIDs)
+        {
+            // Add name.
+            nextTransNo -= 1;
+            std::stringstream ss;
+            ss << "sim_dup_" << nextDupNo++;
+            back(variants.svIDs) = ss.str();
+            SEQAN_ASSERT_EQ(length(variants.svIDs), length(variants.svRecords));
+        }
         return true;
     }
 };
@@ -460,8 +501,11 @@ public:
     // The variator options.
     MasonVariatorOptions options;
 
+    // The index of the next SNP/small indel.
+    int nextSnpNo, nextIndelNo;
+
     SmallVariantSimulator(TRng & rng, seqan::FaiIndex const & faiIndex, MasonVariatorOptions const & options) :
-            rng(rng), faiIndex(faiIndex), options(options)
+            rng(rng), faiIndex(faiIndex), options(options), nextSnpNo(0), nextIndelNo(0)
     {}
 
     // Perform simulation for one contig.
@@ -538,7 +582,17 @@ public:
             {
                 if (options.verbosity >= 3)
                     std::cerr << "Simulating SNP at (" << rId << ", " << pos << ")\n";
-                simulateSnp(variants, seq, haploCount, rId, pos);
+                if (!simulateSnp(variants, seq, haploCount, rId, pos))
+                    continue;
+                if (options.genVarIDs)
+                {
+                    // Add name.
+                    std::stringstream ss;
+                    ss << "sim_snp_" << nextSnpNo++;
+                    for (int i = 0; i < haploCount; ++i)
+                        appendValue(variants.snpIDs, ss.str());
+                    SEQAN_ASSERT_EQ(length(variants.snpIDs), length(variants.snps));
+                }
             }
             else if (isIndel)
             {
@@ -546,6 +600,14 @@ public:
                     continue;
                 if (back(variants.smallIndels).size < 0)
                     pos += -back(variants.smallIndels).size + 1;
+                if (options.genVarIDs)
+                {
+                    // Add name.
+                    std::stringstream ss;
+                    ss << "sim_small_indel_" << nextIndelNo++;
+                    appendValue(variants.smallIndelIDs, ss.str());
+                    SEQAN_ASSERT_EQ(length(variants.smallIndelIDs), length(variants.smallIndels));
+                }
             }
         }
     }
@@ -622,9 +684,12 @@ public:
     // File to write breakpoints to.
     std::fstream breakpointsOut;
 
+    // Numeric id of the variation that is written out next.
+    int nextVarNo;
+
     MasonVariatorApp(TRng & rng, TRng & methRng, seqan::FaiIndex const & faiIndex,
                      MasonVariatorOptions const & options) :
-            rng(rng), methRng(methRng), options(options), faiIndex(faiIndex)
+            rng(rng), methRng(methRng), options(options), faiIndex(faiIndex), nextVarNo(0)
     {
         _init();
     }
@@ -657,7 +722,7 @@ public:
                 std::cerr << "ERROR: Could not open " << options.outputBreakpointFile << " for writing.\n";
                 return 1;
             }
-            breakpointsOut << "#ref\tpos\n";
+            breakpointsOut << "#ref\tid\tpos\n";
         }
 
         // Open VCF stream to write to.
@@ -943,7 +1008,7 @@ public:
         // Create contig with the small and large variants.
         VariantMaterializer varMat(methRng, variants, options.methSimOptions);
         seqan::Dna5String seqVariants;
-        std::vector<int> breakpoints;
+        std::vector<std::pair<int, int> > breakpoints;
         if (options.methSimOptions.simulateMethylationLevels)
         {
             MethylationLevels levelsVariants;
@@ -969,8 +1034,8 @@ public:
 
         // Write out breakpoints.
         if (!empty(options.outputBreakpointFile))
-            for (std::vector<int>::const_iterator it = breakpoints.begin(); it != breakpoints.end(); ++it)
-                breakpointsOut << id << "\t" << (*it + 1) << "\n";
+            for (std::vector<std::pair<int, int> >::const_iterator it = breakpoints.begin(); it != breakpoints.end(); ++it)
+                breakpointsOut << id << "\t" << variants.getVariantName(it->second) << "\t" << (it->first + 1) << "\n";
 
         // Write out sequence with variants.
         return writeRecord(outSeqStream, id, seqVariants);
@@ -979,6 +1044,8 @@ public:
     // Write out variants for the given contig to the VCF file.
     int _writeVcf(seqan::Dna5String const & contig, Variants const & variants, int /*rId*/)
     {
+        // Reset the id of the next variant.
+        nextVarNo = 0;
         // Current index in snp/small indel and SV array.
         unsigned snpsIdx = 0;
         unsigned smallIndelIdx = 0;
@@ -1035,22 +1102,22 @@ public:
 
                 if (svRecord.kind == StructuralVariantRecord::INDEL)
                 {
-                    if (_writeVcfIndel(contig, svRecord) != 0)
+                    if (_writeVcfIndel(contig, svRecord, variants, svIdx - 1) != 0)
                         return 1;
                 }
                 else if (svRecord.kind == StructuralVariantRecord::INVERSION)
                 {
-                    if (_writeVcfInversion(contig, svRecord) != 0)
+                    if (_writeVcfInversion(contig, svRecord, variants, svIdx - 1) != 0)
                         return 1;
                 }
                 else if (svRecord.kind == StructuralVariantRecord::TRANSLOCATION)
                 {
-                    if (_writeVcfTranslocation(contig, svRecord) != 0)
+                    if (_writeVcfTranslocation(contig, svRecord, variants, svIdx - 1) != 0)
                         return 1;
                 }
                 else if (svRecord.kind == StructuralVariantRecord::DUPLICATION)
                 {
-                    if (_writeVcfDuplication(contig, svRecord) != 0)
+                    if (_writeVcfDuplication(contig, svRecord, variants, svIdx - 1) != 0)
                         return 1;
                 }
 
@@ -1083,6 +1150,7 @@ public:
         resize(inTos, 4, false);
         seqan::Dna5String tos;
         resize(tos, options.numHaplotypes, from);
+        unsigned idx = snpsIdx;
         do
         {
             SEQAN_ASSERT(snpRecord.to != from);
@@ -1102,7 +1170,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = rId;
         vcfRecord.beginPos = pos.second;
-        // TODO(holtgrew): Generate an id?
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SNP, idx));
         appendValue(vcfRecord.ref, from);
         for (unsigned i = 0; i < 4; ++i)
         {
@@ -1178,7 +1246,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = front(records).rId;
         vcfRecord.beginPos = front(records).pos;
-        // TODO(holtgrew): Generate an id?
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, smallIndelIdx));
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
         // Build genotype infos.
@@ -1238,7 +1306,9 @@ public:
     }
 
     int _writeVcfIndel(seqan::Dna5String const & contig,
-                       StructuralVariantRecord const & svRecord)
+                       StructuralVariantRecord const & svRecord,
+                       Variants const & variants,
+                       unsigned svIdx)
     {
         // TODO(holtgrew): Large indels can be represented by <INS> and <DEL> and should be.
         if (options.verbosity >= 2)
@@ -1248,7 +1318,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos;
-        // TODO(holtgrew): Generate an id?
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         vcfRecord.filter = "PASS";
         std::stringstream ss;
         if (svRecord.size > 0)
@@ -1301,10 +1371,18 @@ public:
     }
 
     int _writeVcfTranslocation(seqan::Dna5String const & contig,
-                               StructuralVariantRecord const & svRecord)
+                               StructuralVariantRecord const & svRecord,
+                               Variants const & variants,
+                               unsigned svIdx)
     {
         // In this function, we will create VCF records left and right of both cut positions and of the paste position.
         seqan::VcfRecord leftOfCutL, rightOfCutL, leftOfCutR, rightOfCutR, leftOfPaste, rightOfPaste;
+        leftOfCutL.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
+        rightOfCutL.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
+        leftOfCutR.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
+        rightOfCutR.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
+        leftOfPaste.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
+        rightOfPaste.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         // CHROM ID
         leftOfCutL.rID = svRecord.rId;
         rightOfCutL.rID = svRecord.rId;
@@ -1416,7 +1494,9 @@ public:
     }
 
     int _writeVcfInversion(seqan::Dna5String const & contig,
-                           StructuralVariantRecord const & svRecord)
+                           StructuralVariantRecord const & svRecord,
+                           Variants const & variants,
+                           unsigned svIdx)
     {
         if (options.verbosity >= 2)
             std::cerr << "inversion\t" << svRecord << "\n";
@@ -1424,7 +1504,7 @@ public:
 
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos;
-        // TODO(holtgrew): Generate an id?
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<INV>";
         vcfRecord.filter = "PASS";
@@ -1454,7 +1534,9 @@ public:
     }
 
     int _writeVcfDuplication(seqan::Dna5String const & contig,
-                             StructuralVariantRecord const & svRecord)
+                             StructuralVariantRecord const & svRecord,
+                             Variants const & variants,
+                             unsigned svIdx)
     {
         // TODO(holtgrew): Large indels can be represented by <INS> and <DEL> and should be.
         if (options.verbosity >= 2)
@@ -1464,7 +1546,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos;
-        // TODO(holtgrew): Generate an id?
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
         vcfRecord.filter = "PASS";
         std::stringstream ss;
         ss << "SVTYPE=DUP;SVLEN=" << svRecord.size << ";END=" << svRecord.pos + svRecord.size
@@ -1515,8 +1597,7 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("mason_variator");
     // Set short description, version, and date.
     setShortDescription(parser, "Variation Simulation");
-    setVersion(parser, "2.0alpha1");
-    setDate(parser, "March 2013");
+    setDateAndVersion(parser);
     setCategory(parser, "Simulators");
 
     // Define usage line and long description.
@@ -1579,6 +1660,8 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep", "Haplotype name separator in output FASTA.",
                                             seqan::ArgParseOption::STRING, "SEP"));
     setDefaultValue(parser, "haplotype-name-sep", "/");
+
+    addOption(parser, seqan::ArgParseOption("", "no-gen-var-ids", "Do not generate variant ids."));
 
     // ----------------------------------------------------------------------
     // Haplotype / Allele Configuration
@@ -1765,6 +1848,9 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     getOptionValue(options.fastaOutFile, parser, "out-fasta");
     getOptionValue(options.outputBreakpointFile, parser, "out-breakpoints");
     getOptionValue(options.inputSVSizeFile, parser, "in-variant-tsv");
+    bool noGenVarIDs = false;
+    getOptionValue(noGenVarIDs, parser, "no-gen-var-ids");
+    options.genVarIDs = !noGenVarIDs;
 
     getOptionValue(options.numHaplotypes, parser, "num-haplotypes");
     getOptionValue(options.haplotypeSep, parser, "haplotype-sep");

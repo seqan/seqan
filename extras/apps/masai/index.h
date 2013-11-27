@@ -40,7 +40,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/index.h>
-#include <seqan/index_extras.h>
 
 #include "index/index_qgram_stretched.h"
 #include "index/find_backtracking_stretched.h"
@@ -156,25 +155,22 @@ struct Fibre<TGenomeBaseQGram, FibreDir>
 // Contigs FM Index Fibres
 // ----------------------------------------------------------------------------
 
-typedef Index<TContigs, FMIndex<WT<>, CompressText> >    TGenomeFM;
-//typedef Index<TContigs, FMIndex<BMS<>, CompressText> >    TGenomeFM;
+namespace seqan {
+// TODO(esiragusa): Overload Size<CSA> instead of Size<SparseString>
+template <typename TValueString>
+struct Size<SparseString<TValueString, void> >
+{
+    typedef __uint32    Type;
+};
+}
 
-// ----------------------------------------------------------------------------
-// Contigs Uncompressed FM Index Fibres
-// ----------------------------------------------------------------------------
+struct TGenomeFMConfig : FMIndexConfig<void>
+{
+    typedef Naive<void>             TSentinelsSpec;
+};
 
-//#if defined(SEQAN_EXTRAS_MASAI_INDEXER_H_)
-//typedef DefaultIndexStringSpec<TGenomeFM>::Type         TGenomeFMStringSpec;
-//#else
-//typedef External<ExternalConfigLarge<File<>,8192,2> >   TGenomeFMStringSpec;
-//#endif
-//
-//namespace seqan {
-//template <>
-//struct Fibre<TGenomeFM, FibreSA> {
-//    typedef String<SAValue<TGenomeFM>::Type, TGenomeFMStringSpec> Type;
-//};
-//}
+typedef FMIndex<void, TGenomeFMConfig>      TGenomeFMSpec;
+typedef Index<TContigs, TGenomeFMSpec>      TGenomeFM;
 
 // ============================================================================
 // Reads Index Fibres
@@ -290,120 +286,37 @@ struct ReadsIndex
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _indexCreate()                              [Uncompressed FM Index]
-// ----------------------------------------------------------------------------
-
-//namespace seqan {
-//template <>
-//inline bool _indexCreate(TGenomeFM & index, TGenome & text)
-//{
-//    if (empty(text)) return false;
-//
-//    // Create the suffix array table.
-//    indexCreate(index, FibreSA());
-//
-//    // Create the lf table.
-//    _indexCreateLfTables(index, text, indexSA(index));
-//
-//    return true;
-//}
-//}
-
-// ----------------------------------------------------------------------------
-// Function open()                                      [Uncompressed FM Index]
-// ----------------------------------------------------------------------------
-
-//namespace seqan {
-//template <>
-//inline bool open(TGenomeFM & index, const char * fileName, int openMode)
-//{
-//    String<char> name;
-//
-//    String<Pair<unsigned, Size<TGenomeFM>::Type> > infoString;
-//
-//    name = fileName;    append(name, ".txt");
-//    if (!open(getFibre(index, FibreText()), toCString(name), openMode)) return false;
-//
-//    name = fileName;    append(name, ".sa");
-//    if (!open(getFibre(index, FibreSA()), toCString(name), openMode)) return false;
-//
-//    name = fileName;    append(name, ".lf");
-//    if (!open(getFibre(index, FibreLfTable()), toCString(name), openMode)) return false;
-//
-//    name = fileName;    append(name, ".fma");
-//    if (!open(infoString, toCString(name), openMode)) return false;
-//
-//    index.compressionFactor = infoString[0].i1;
-//    index.n = infoString[0].i2;
-//    //getFibre(index, FibreSA()).lfTable = & getFibre(index, FibreLfTable());
-//
-//    return true;
-//}
-//}
-
-// ----------------------------------------------------------------------------
 // Function _getNodeByChar() for Dna5Q                  [Iter<FMIndex, VSTree>]
 // ----------------------------------------------------------------------------
 
 namespace seqan {
-    template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
-    inline bool _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
-                               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
-                               Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
-                               Dna5Q c)
-    {
-        typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
-        typedef typename Value<TIndex>::Type                        TAlphabet;
-        typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
-        typedef typename Size<TIndex>::Type                         TSize;
 
-        typedef typename Fibre<TIndex, FibreLfTable>::Type          TLfTable;
-        typedef typename Fibre<TLfTable, FibrePrefixSumTable>::Type TPrefixSumTable;
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
+SEQAN_HOST_DEVICE inline bool
+_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, TIndexSpec> > >::Type> & _range,
+               Dna5Q c)
+{
+    typedef Index<TText, FMIndex<TOccSpec, TIndexSpec> >        TIndex;
+    typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
+    typedef typename Value<TIndex>::Type                        TAlphabet;
+    typedef typename ValueSize<TAlphabet>::Type                 TAlphabetSize;
 
-        if (__MASK_DNA5Q_LT[ordValue(c)] >= ValueSize<TAlphabet>::VALUE) return false;
+    TIndex const & index = container(it);
+    TLF const & lf = indexLF(index);
 
-        TIndex const & _index = container(it);
-        TPrefixSumTable const & pst = getFibre(getFibre(_index, FibreLfTable()), FibrePrefixSumTable());
+    if (__MASK_DNA5Q_LT[ordValue(c)] >= ValueSize<TAlphabet>::VALUE) return false;
 
-        TAlphabetSize cPosition = getCharacterPosition(pst, c);
+    _range = range(index, vDesc);
 
-        if (_isRoot(vDesc))
-        {
-            _range.i1 = getPrefixSum(pst, cPosition);
-            _range.i2 = getPrefixSum(pst, cPosition + 1);
-        }
-        else
-        {
-            TSize prefixSum = getPrefixSum(pst, cPosition);
-            _range.i1 = prefixSum + countOccurrences(_index.lfTable.occTable, c, vDesc.range.i1 - 1);
-            _range.i2 = prefixSum + countOccurrences(_index.lfTable.occTable, c, vDesc.range.i2 - 1);
-        }
+    _range.i1 = lf(_range.i1, c);
+    _range.i2 = lf(_range.i2, c);
 
-        return _range.i1 + 1 <= _range.i2;
-    }
+    return _range.i1 < _range.i2;
 }
 
-// ----------------------------------------------------------------------------
-// Function countOccurrences() for Dna5Q                          [WaveletTree]
-// ----------------------------------------------------------------------------
-
-//namespace seqan {
-//template <typename TText, typename TSpec, typename TPos>
-//inline unsigned countOccurrences(WaveletTree<TText, FmiDollarSubstituted<MultiDollar<TSpec> > > const & tree,
-//                                 Dna5Q const character,
-//                                 TPos const pos)
-//{
-//    typedef typename Value<TText>::Type             TAlphabet;
-//
-//    if (__MASK_DNA5Q_LT[ordValue(character)] >= ValueSize<TAlphabet>::VALUE) return 0;
-//
-//    unsigned occ = _countOccurrences(tree, character, pos);
-//    if (ordEqual(getDollarSubstitute(tree), character))
-//        occ -= getRank(getFibre(tree, FibreDollarPosition()), pos);
-//
-//    return occ;
-//}
-//}
+}
 
 // ----------------------------------------------------------------------------
 // Function load()                                                [GenomeIndex]
@@ -412,7 +325,7 @@ namespace seqan {
 template <typename TGenome, typename TIndex, typename TSpec, typename TString>
 bool load(GenomeIndex<TGenome, TIndex, TSpec> & genomeIndex, TString const & genomeIndexFile)
 {
-    genomeIndex.index = TIndex(genomeIndex.genome.contigs);
+    setValue(genomeIndex.index.text, genomeIndex.genome.contigs);
 
     return open(genomeIndex.index, toCString(genomeIndexFile));
 }
@@ -424,7 +337,7 @@ bool load(GenomeIndex<TGenome, TIndex, TSpec> & genomeIndex, TString const & gen
 template <typename TGenome, typename TIndex, typename TSpec>
 void build(GenomeIndex<TGenome, TIndex, TSpec> & genomeIndex)
 {
-    genomeIndex.index = TIndex(genomeIndex.genome.contigs);
+    setValue(genomeIndex.index.text, genomeIndex.genome.contigs);
 
     // Iterator instantiation calls automatic index construction.
     typename Iterator<TIndex, TopDown<> >::Type it(genomeIndex.index);
@@ -436,7 +349,7 @@ void build(GenomeIndex<TGenome, TGenomeFM, TSpec> & genomeIndex)
     // IndexFM is built on the reversed genome.
     reverse(genomeIndex.genome);
 
-    genomeIndex.index = TGenomeFM(genomeIndex.genome.contigs);
+    setValue(genomeIndex.index.text, genomeIndex.genome.contigs);
 
     // Iterator instantiation calls automatic index construction.
     typename Iterator<TGenomeFM, TopDown<> >::Type it(genomeIndex.index);

@@ -338,9 +338,17 @@ endif ()
 
 # CUDA
 
-set (SEQAN_HAS_CUDA       FALSE)
+list(FIND SEQAN_FIND_DEPENDENCIES "CUDA" _SEQAN_FIND_CUDA)
+mark_as_advanced(_SEQAN_FIND_CUDA)
 
-# TODO(holtgrew): Implement search for CUDA.
+set (SEQAN_HAS_CUDA FALSE)
+if (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
+  find_package(CUDA QUIET)
+  if (CUDA_FOUND)
+    set (SEQAN_HAS_CUDA TRUE)
+  endif ()
+endif (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
+
 
 # ----------------------------------------------------------------------------
 # Determine and set SEQAN_VERSION_* variables.

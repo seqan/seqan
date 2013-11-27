@@ -186,10 +186,10 @@ SEQAN_DEFINE_TEST(mason_tests_position_map_inversion)
     createIntervalTree(positionMap.svIntervalTree, intervals);
 
     // Add breakpoints.
-    positionMap.svBreakpoints.insert(0);
-    positionMap.svBreakpoints.insert(gi1.svEndPos);
-    positionMap.svBreakpoints.insert(gi2.svEndPos);
-    positionMap.svBreakpoints.insert(gi3.svEndPos);
+    positionMap.svBreakpoints.insert(std::make_pair(0, 0));
+    positionMap.svBreakpoints.insert(std::make_pair(gi1.svEndPos, 1));
+    positionMap.svBreakpoints.insert(std::make_pair(gi2.svEndPos, 2));
+    positionMap.svBreakpoints.insert(std::make_pair(gi3.svEndPos, 3));
 
     // Tests for overlapsWithBreakpoint()
     SEQAN_ASSERT_NOT(positionMap.overlapsWithBreakpoint(   0, 1000));
@@ -254,9 +254,9 @@ SEQAN_DEFINE_TEST(mason_tests_position_map_translocation)
     createIntervalTree(positionMap.svIntervalTree, intervals);
 
     // Add breakpoints.
-    positionMap.svBreakpoints.insert(0);
-    positionMap.svBreakpoints.insert(gi1.svEndPos);
-    positionMap.svBreakpoints.insert(gi2.svEndPos);
+    positionMap.svBreakpoints.insert(std::make_pair(0, 0));
+    positionMap.svBreakpoints.insert(std::make_pair(gi1.svEndPos, 1));
+    positionMap.svBreakpoints.insert(std::make_pair(gi2.svEndPos, 2));
 
     // Tests for overlapsWithBreakpoint()
     SEQAN_ASSERT_NOT(positionMap.overlapsWithBreakpoint(   0, 1000));

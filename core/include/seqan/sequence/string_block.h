@@ -53,7 +53,7 @@ namespace seqan {
  * @class BlockString Block String
  * @extends String
  * @headerfile <seqan/sequence.h>
- * @brief String optimized for push_back, top, and pop (Stack behaviour).
+ * @brief String optimized for appendValue, back, and eraseBack (Stack behaviour).
  * 
  * @signature template <typename TValue, unsigned SPACE = 4096>
  *            class String<TValue, Block<SIZE> >;
@@ -72,7 +72,7 @@ struct Block;
 .Spec.Block String:
 ..cat:Strings
 ..general:Class.String
-..summary:String optimized for push_back, top, and pop (Stack behaviour).
+..summary:String optimized for appendValue, back, and eraseBack (Stack behaviour).
 ..signature:String<TValue, Block<size> >
 ..param.TValue:The value type, that is the type of the items/characters stored in the string.
 ...remarks:Use @Metafunction.Value@ to get the value type for a given class.
@@ -93,7 +93,7 @@ public:
 
     TBlockTable     blocks;
     TBlockIter      blockFirst, blockLast;  // current block boundaries
-    TBlockIter      lastValue;              // pointer to top value
+    TBlockIter      lastValue;              // pointer to back value
     TAllocator      alloc;
 
     String():
@@ -147,7 +147,7 @@ public:
 
     template<typename TPos>
     inline typename Reference<String>::Type
-        operator[] (TPos pos)
+    operator[] (TPos pos)
     {
     SEQAN_CHECKPOINT
         return value(*this, pos);
@@ -155,7 +155,7 @@ public:
 
     template<typename TPos>
     inline typename Reference<String const>::Type
-        operator[] (TPos pos) const
+    operator[] (TPos pos) const
     {
     SEQAN_CHECKPOINT
         return value(*this, pos);
@@ -257,15 +257,13 @@ end(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const)
 
 template<typename TValue, unsigned int SPACE, typename TSource>
 inline void
-assign(
-    String<TValue, Block<SPACE> >& target,
-    TSource const& source)
+assign(String<TValue, Block<SPACE> >& target, TSource const& source)
 {
     SEQAN_CHECKPOINT;
     clear(target);
     typedef typename Iterator<TSource const, Standard>::Type TIter;
     for(TIter it = begin(source, Standard()); !atEnd(it, source); goNext(it))
-        push(target, *it);
+        appendValue(target, *it);
 }
 
 // ----------------------------------------------------------------------------
@@ -274,9 +272,7 @@ assign(
 
 template<typename TValue, unsigned int SPACE, typename TPos>
 inline typename Reference<String<TValue, Block<SPACE> > >::Type
-value(
-    String<TValue, Block<SPACE> >& stack,
-    TPos const pos)
+value(String<TValue, Block<SPACE> >& stack, TPos const pos)
 {
     SEQAN_CHECKPOINT;
     return value(*(stack.blocks[pos / SPACE]), pos % SPACE);
@@ -284,9 +280,7 @@ value(
 
 template<typename TValue, unsigned int SPACE, typename TPos>
 inline typename Reference<String<TValue, Block<SPACE> > >::Type
-value(
-    String<TValue, Block<SPACE> > const& stack,
-    TPos const pos)
+value(String<TValue, Block<SPACE> > const& stack, TPos const pos)
 {
     SEQAN_CHECKPOINT;
     return value(*(stack.blocks[pos / SPACE]), pos % SPACE);
@@ -299,9 +293,7 @@ value(
 // TODO(holtgrew): Probably wrong place?
 template<typename TValue, unsigned int SPACE, typename TIteratorSpec>
 inline bool
-atEnd(
-    Iter<String<TValue, Block<SPACE> >, TIteratorSpec>& it,
-    String<TValue, Block<SPACE> >& container)
+atEnd(Iter<String<TValue, Block<SPACE> >, TIteratorSpec>& it, String<TValue, Block<SPACE> >& container)
 {
     SEQAN_CHECKPOINT;
     typedef typename Iterator<String<TValue, Block<SPACE> >, Standard>::Type TIter;
@@ -338,9 +330,7 @@ clear(String<TValue, Block<SPACE> >& me)
 
 template<typename TValue, unsigned int SPACE, typename TSize2, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
-resize(String<TValue, Block<SPACE> > & me,
-    TSize2 new_length,
-    Tag<TExpand>)
+resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     typedef String<TValue, Block<SPACE> >           TBlockString;
@@ -349,20 +339,18 @@ resize(String<TValue, Block<SPACE> > & me,
 
     if ((TSize)new_length > len)
     {
-        for (; len < (TSize)new_length; ++len) push(me);
+        for (; len < (TSize)new_length; ++len) appendValue(me, TValue());
     }
     else if ((TSize)new_length < len)
     {
-        for (; len > (TSize)new_length; --len) pop(me);
+        for (; len > (TSize)new_length; --len) eraseBack(me);
     }
     return new_length;
 }
 
 template<typename TValue, unsigned int SPACE, typename TSize2>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
-resize(String<TValue, Block<SPACE> > & me,
-    TSize2 new_length,
-    Limit)
+resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Limit)
 {
     SEQAN_CHECKPOINT;
     typedef String<TValue, Block<SPACE> >           TBlockString;
@@ -378,7 +366,7 @@ resize(String<TValue, Block<SPACE> > & me,
     }
     else if (new_length < len)
     {
-        for (; len > new_length; --len) pop(me);
+        for (; len > new_length; --len) eraseBack(me);
     }
     return new_length;
 }
@@ -407,9 +395,7 @@ SEQAN_CHECKPOINT
 // dummy implementation
 template<typename TValue, unsigned int SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
-reserve(String<TValue, Block<SPACE> > & /*me*/,
-    TSize new_capacity,
-    Tag<TExpand>)
+reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>)
 {
     SEQAN_CHECKPOINT;
     return new_capacity;
@@ -421,10 +407,7 @@ reserve(String<TValue, Block<SPACE> > & /*me*/,
 
 template<typename TValue, unsigned int SPACE, typename TSource, typename TExpand>
 inline void
-append(
-    String<TValue, Block<SPACE> >& me,
-    TSource const& source,
-    Tag<TExpand> /*tag*/)
+append(String<TValue, Block<SPACE> >& me, TSource const& source, Tag<TExpand> /*tag*/)
 {
     SEQAN_CHECKPOINT;
     typedef typename Iterator<TSource const, Standard>::Type TIter;
@@ -440,10 +423,7 @@ append(
 
 template<typename TValue, unsigned int SPACE, typename TVal, typename TExpand>
 inline void
-appendValue(
-    String<TValue, Block<SPACE> >& me,
-    TVal const& source,
-    Tag<TExpand> tag)
+appendValue(String<TValue, Block<SPACE> >& me, TVal const& source, Tag<TExpand> tag)
 {
     // TODO(holtgrew): Why does this operate on raw memory instead of using appendValue(me.blocks[last], X)?
     SEQAN_CHECKPOINT;
@@ -464,75 +444,8 @@ appendValue(
 }
 
 // ----------------------------------------------------------------------------
-// Function push()
+// Function back()
 // ----------------------------------------------------------------------------
-
-template<typename TValue, unsigned int SPACE, typename TVal>
-inline void
-push(
-    String<TValue, Block<SPACE> >& me,
-    TVal const& source)
-{
-    appendValue(me, source);
-}
-
-template<typename TValue, unsigned int SPACE>
-inline void
-push(String<TValue, Block<SPACE> >& me)
-{
-    SEQAN_CHECKPOINT;
-    if (me.lastValue == me.blockLast) {
-        typename Size< String<TValue, Block<SPACE> > >::Type last = length(me.blocks);
-
-        resize(me.blocks, last + 1, typename DefaultOverflowImplicit<String<TValue, Block<SPACE> > >::Type());
-        allocate(me.alloc, me.blocks[last], 1);
-        me.lastValue = me.blockFirst = begin(*me.blocks[last]);
-        me.blockLast = (me.blockFirst + (SPACE - 1));
-        back(me.blocks)->data_length += 1;
-    } else {
-        ++me.lastValue;
-        back(me.blocks)->data_length += 1;
-    }
-    valueConstruct(me.lastValue);
-}
-
-// ----------------------------------------------------------------------------
-// Function push_back()
-// ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Breaks naming-conventions.
-template<typename TValue, unsigned int SPACE, typename TVal>
-inline void
-push_back(
-    String<TValue, Block<SPACE> >& me,
-    TVal const& source)
-{
-    appendValue(me, source);
-}
-
-// ----------------------------------------------------------------------------
-// Function top()
-// ----------------------------------------------------------------------------
-
-template<typename TValue, unsigned int SPACE>
-inline TValue &
-top(String<TValue, Block<SPACE> > & me)
-{
-    SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT_MSG(empty(me), "top() called on an empty string.");
-
-    return *me.lastValue;
-}
-
-template<typename TValue, unsigned int SPACE>
-inline TValue const &
-top(String<TValue, Block<SPACE> > const & me)
-{
-    SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT_MSG(empty(me), "top() called on an empty string.");
-
-    return *me.lastValue;
-}
 
 template<typename TValue, unsigned int SPACE>
 inline TValue &
@@ -555,15 +468,15 @@ back(String<TValue, Block<SPACE> > const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function topPrev()
+// Function backPrev()
 // ----------------------------------------------------------------------------
 
 template<typename TValue, unsigned int SPACE>
 inline TValue &
-topPrev(String<TValue, Block<SPACE> > & me)
+backPrev(String<TValue, Block<SPACE> > & me)
 {
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "topPrev() called on a string with less than 2 elements.");
+    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "backPrev() called on a string with less than 2 elements.");
 
     if (me.lastValue != me.blockFirst)
         return *(me.lastValue - 1);
@@ -573,10 +486,10 @@ topPrev(String<TValue, Block<SPACE> > & me)
 
 template<typename TValue, unsigned int SPACE>
 inline TValue const &
-topPrev(String<TValue, Block<SPACE> > const& me)
+backPrev(String<TValue, Block<SPACE> > const& me)
 {
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "topPrev() called on a string with less than 2 elements.");
+    SEQAN_ASSERT_GEQ_MSG(length(me), 2u, "backPrev() called on a string with less than 2 elements.");
 
    if (me.lastValue != me.blockFirst)
         return *(me.lastValue - 1);
@@ -585,27 +498,17 @@ topPrev(String<TValue, Block<SPACE> > const& me)
 }
 
 // ----------------------------------------------------------------------------
-// Function pop()
+// Function eraseBack()
 // ----------------------------------------------------------------------------
-
-template <typename T>
-SEQAN_HOST_DEVICE inline void
-pop(T & me)
-{
-    SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT_MSG(empty(me), "pop() called on an empty string.");
-
-    resize(me, length(me) - 1);
-}
 
 template<typename TValue, unsigned int SPACE>
 inline void
-pop(String<TValue, Block<SPACE> >& me)
+eraseBack(String<TValue, Block<SPACE> >& me)
 {
     typedef typename String<TValue, Block<SPACE> >::TBlockIter TBlockIter;
     
     SEQAN_CHECKPOINT;
-    SEQAN_ASSERT_NOT_MSG(empty(me), "pop() called on an empty string.");
+    SEQAN_ASSERT_NOT_MSG(empty(me), "eraseBack() called on an empty string.");
     
     if (me.lastValue == me.blockFirst) {
         typename Size< String<TValue, Block<SPACE> > >::Type last = length(me.blocks);
@@ -629,19 +532,6 @@ pop(String<TValue, Block<SPACE> >& me)
         valueDestruct(me.lastValue);
         --me.lastValue;
     }
-}
-
-// ----------------------------------------------------------------------------
-// Function pop_back()
-// ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Breaks naming-conventions.
-template<typename TValue, unsigned int SPACE>
-inline void
-pop_back(String<TValue, Block<SPACE> >& me)
-{
-    SEQAN_CHECKPOINT;
-    pop(me);
 }
 
 // ----------------------------------------------------------------------------

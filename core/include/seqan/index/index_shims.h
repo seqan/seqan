@@ -2,6 +2,7 @@
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -133,12 +134,14 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
  * 
  * @brief Creates a suffix array from a given text.
  * 
- * @signature createSuffixArray(suffixArray, text[, algo_tag])
+ * @signature void createSuffixArray(suffixArray, text[, algo_tag])
  * 
  * @param text A given text. Types: @link SequenceConcept @endlink
  * @param algo_tag A tag that identifies the algorithm which is used for
  *                 creation.
  * @param suffixArray The resulting suffix array.
+ *
+ * @return void
  * 
  * @section Remarks
  * 
@@ -317,7 +320,7 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a lcp table from a given text and suffix array.
  * 
- * @signature createLcpTable(lcp, text, suffixArray[, algo_tag])
+ * @signature void createLcpTable(lcp, text, suffixArray[, algo_tag])
  * 
  * @param text A given text. Types: @link SequenceConcept @endlink
  * @param algo_tag A tag that identifies the algorithm which is used for
@@ -325,6 +328,8 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * @param suffixArray The suffix array of <tt>text</tt>.
  * @param lcp The resulting lcp table.
  * 
+ * @return void
+ *
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
@@ -536,13 +541,15 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a Burrows-Wheeler table from a given text and suffix array.
  * 
- * @signature createBWTable(bwt, text, suffixArray[, algo_tag])
+ * @signature void createBWTable(bwt, text, suffixArray[, algo_tag])
  * 
  * @param bwt The resulting Burrows-Wheeler table.
  * @param algo_tag A tag that identifies the algorithm which is used for
  *                 creation.
  * @param suffixArray The suffix array of <tt>text</tt>.
  * @param text A given text. Types: @link SequenceConcept @endlink
+ *
+ * @return void
  * 
  * @section Remarks
  * 
@@ -610,16 +617,18 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Sorts a string of occurrences.
  * 
- * @signature orderOccurrences(occString)
+ * @signature void orderOccurrences(occString)
  * 
  * @param occString String of occurrences.
  * 
+ * @return void
+ *
  * @section Remarks
  * 
  * The occurrences are sorted by increasing positions.
  * 
  * @link DemoMummy @endlink
- * @link DemoSuperMaximalRepeats @endlink
+ * @link DemoSupermaximalRepeats @endlink
  * @link DemoMaximalUniqueMatches @endlink
  * 
  * @see VSTreeIterator#getOccurrences
@@ -661,17 +670,16 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Creates a specific @link Index#Fibre @endlink.
+ * @brief Creates a specific @link Fibre @endlink.
  * 
- * @signature indexCreate(index, fibreTag[, algoTag])
+ * @signature bool indexCreate(index, fibreTag[, algoTag])
  * 
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink
+ * @param fibreTag A tag that identifies the @link Fibre @endlink
  * @param algoTag A tag that identifies the algorithm which is used to create
  *                 the fibre. Default: The result of @link Index#DefaultIndexCreator
  *                 @endlink.
  * @param index The @link Index @endlink object holding the fibre.
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
- *                 creation.
+ * @return bool <tt>true</tt> on a success and false <tt>otherwise</tt>
  * 
  * @section Remarks
  * 
@@ -748,19 +756,18 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @headerfile seqan/index.h
  * 
- * @brief Returns whether a specific @link Index#Fibre @endlink is present.
+ * @brief Returns whether a specific @link Fibre @endlink is present.
  * 
- * @signature indexSupplied(index, fibreTag)
+ * @signature bool indexSupplied(index, fibreTag)
  * 
  * @param index The @link Index @endlink object holding the fibre.
- * @param fibreTag A tag that identifies the @link Index#Fibre @endlink. 
+ * @param fibreTag A tag that identifies the @link Fibre @endlink. 
  *                 Index Fibres
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt>, iff the fibre is
- *                 present.
+ * @return bool <tt>true</tt>, iff the fibre is present.
  */
 	template <typename TText, typename TSpec, typename TFibre>
-	inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
+	SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, TSpec> &index, Tag<TFibre> const fibre) {
 	SEQAN_CHECKPOINT
 		return !empty(getFibre(index, fibre));
 	}
@@ -805,15 +812,14 @@ I	ISSISSIPPI
  * 
  * @headerfile seqan/index.h
  * 
- * @brief On-demand creation of a specific @link Index#Fibre @endlink.
+ * @brief On-demand creation of a specific @link Fibre @endlink.
  * 
- * @signature indexRequire(index, fibre_tag)
+ * @signature bool indexRequire(index, fibre_tag)
  * 
  * @param index The @link Index @endlink object holding the fibre.
- * @param fibre_tag A tag that identifies the @link Index#Fibre @endlink
+ * @param fibre_tag A tag that identifies the @link Fibre @endlink
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on a successful
- *                 creation.
+ * @return bool <tt>true</tt> on a successful creation.
  * 
  * @section Remarks
  * 
@@ -891,6 +897,23 @@ I	ISSISSIPPI
 
 //////////////////////////////////////////////////////////////////////////////
 // open
+
+    // TODO(esiragusa): Move open() / save() to respective String/StringSet classes.
+
+	template <typename TValue>
+	inline bool open(TValue & value, const char *fileName, int openMode)
+    {
+		String<TValue, External< ExternalConfigLarge<> > > extString;
+		if (!open(extString, fileName, openMode & ~OPEN_CREATE)) return false;
+		assign(value, back(extString));
+		return true;
+	}
+    
+	template <typename TValue>
+	inline bool open(TValue & value, const char *fileName)
+    {
+		return open(value, fileName, OPEN_RDONLY);
+	}
 
 	template < typename TValue, typename TSpec >
 	inline bool open(String<TValue, TSpec> &string, const char *fileName, int openMode) {
@@ -984,6 +1007,21 @@ I	ISSISSIPPI
 
 //////////////////////////////////////////////////////////////////////////////
 // save
+
+	template <typename TValue>
+	inline bool save(TValue val, const char *fileName, int openMode)
+    {
+        String<TValue, External< ExternalConfigLarge<> > > extString;
+        if (!open(extString, fileName, openMode)) return false;
+        appendValue(extString, val);
+        return true;
+    }
+
+	template <typename TValue>
+	inline bool save(TValue val, const char *fileName)
+    {
+        return save(val, fileName, OPEN_WRONLY | OPEN_CREATE);
+    }
 
 	template < typename TValue, typename TSpec >
 	inline bool save(String<TValue, TSpec> const &string, const char *fileName, int openMode) {

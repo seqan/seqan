@@ -15,7 +15,7 @@ message (STATUS "Configuring extras/apps/mason2")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES ZLIB)
+set (SEQAN_FIND_DEPENDENCIES ZLIB OpenMP)
 find_package (SeqAn REQUIRED)
 
 if (NOT ZLIB_FOUND)
@@ -40,6 +40,10 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
 # We define a library for the reusable parts of Mason.
 add_library (mason_sim

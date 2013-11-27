@@ -78,6 +78,8 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.support, parser, "st");
     getOptionValue(msplazerOptions.libSize, parser, "ll");
     getOptionValue(msplazerOptions.libError, parser, "le");
+    if (isSet(parser, "rc"))
+        msplazerOptions.revCompl = false;
 
     if (length(msplazerOptions.queryFile) > 1)
         msplazerOptions.pairedEndMode = true;
@@ -192,6 +194,7 @@ void _setupArgumentParser(ArgumentParser & parser)
     setDefaultValue(parser, "ll", "220");
     addOption(parser, ArgParseOption("le", "library-error", "Library error (sd) of paired-end reads", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "le", "50");
+    addOption(parser, ArgParseOption("rc", "revcompl", "Disable reverse complementing second mate pair input file."));
     // set min values?
 
     addSection(parser, "Input Options");

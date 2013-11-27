@@ -62,13 +62,20 @@ gustaf --help.
 
 Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
        gustaf <GENOME FASTA FILE> <READ FASTA FILE> -m <GFF MATCH FILE> [Options]
+       gustaf <GENOME FASTA FILE> <MATES1 FASTA FILE> <MATES2 FASTA FILE> -m <GFF MATCH FILE> [Options]
 
-  Using the first line, Gustaf will first run Stellar internally on the given
-  input files. Please have a look at the Stellar options and default values for
-  match length, error rate, etc.
+  Using the first line, Gustaf will first run Stellar internally on the
+  given input files. Please have a look at the Stellar options and default
+  values for match length, error rate, etc.
   Using the --matchfile (-m) option, Gustaf skips running Stellar and
   directly uses the matches, preferable precalculated using Stellar, from
   the given GFF file.
+  Given two read pair input files, Gustaf is run in paired-end mode.
+  Note that option -m is mandatory in this case.
+  Remarks: There are different version paired-end (or mate pair) data can
+  come. Gustaf always expect two files, and in default expects the second
+  mates (MATES2) to be reverse complemented in relation to the first mates
+  (MATES1), see option -rc to turn this behaviour off.
 
 ---------------------------------------------------------------------------
 3.1. Non-optional arguments
@@ -112,8 +119,8 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   Set the name of a file containing matches in GFF format.
 
   When setting option --matchfile (-m), Gustaf uses the matches from the
-  given input file instead of calling Stellar (practical for running multiple
-  tests on the same data). See also sample file stellar.gff.
+  given input file instead of calling Stellar (practical for large datasets
+  or running multiple tests on the same data). See also sample file stellar.gff.
 
   [ -oth REAL ],  [ --overlapThresh REAL ]
 
@@ -153,6 +160,14 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   map to a database sequence in a different order than they are in the read
   sequence. Note: Penalty is  only added if there is no transPen  or invPen 
   already on the edge.
+
+  [ -ll NUM], [ --libLength NUM ]
+
+  Insert size of mate pairs when running paired-end mode.
+
+  [ -le NUM], [ --libError NUM ]
+
+  Maximal deviation in bp from the insert size.
 
 ---------------------------------------------------------------------------
 3.2.2. Stellar-Inherited Options
@@ -271,14 +286,23 @@ related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
 See http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-
 variant-call-format-version-41
 for information about the VCF file format specifications.
+
 ---------------------------------------------------------------------------
 5. Example
 ---------------------------------------------------------------------------
 
 See the 'example' folder for example runs of Gustaf.  There is a genome file
 'adeno.fa' and a modified genome file 'adeno_modified.fa', from the latter
-we created the read file 'adeno_modified_reads.fa'.  There is a pre-calculated
-Stellar output file 'stellar.gff' computed by calling
+we created the read file 'adeno_modified_reads.fa' for single-end mode and
+the files 'adeno_modified_reads_mates1' and 'adeno_modified_reads_mates2'
+for paired-end mode. 
+
+---------------------------------------------------------------------------
+5.1. Single-end mode
+---------------------------------------------------------------------------
+
+There is a pre-calculated Stellar output file 'stellar.gff' for the
+single-end read file computed by calling
 
     ./stellar adeno.fa adeno_modified_reads.fa -l 30 -o stellar.gff
 
@@ -295,6 +319,33 @@ In the first run, Gustaf internally calls Stellar with parameter -l 30.
 In the second run, Gustaf used the pre-calculated file with Stellar matches
 (use this option for larger datasets where you want to run Stellar separately
 and reuse the Stellar output for multiple Gustaf runs).
+
+---------------------------------------------------------------------------
+5.2. Paired-end mode
+---------------------------------------------------------------------------
+
+In paired-end mode, we join both read pair files before calling Stellar.
+This can be done using the app 'join_mates' by calling
+
+    ./join_mates adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+        -rc -o adeno_modified_reads_joinedMates.fa
+
+There is a pre-calculated Stellar output file 'stellar_joinedMates.gff' for
+the paired-end read file 'adeno_modified_reads_joinedMates.fa computed by calling
+
+    ./stellar adeno.fa adeno.fa adeno_modified_reads_joinedMates.fa -l 30 \
+        -o stellar_joinedMates_l30.gff
+
+The Gustaf call would then look like this
+
+    ./gustaf adeno.fa adeno_modified_reads_mates1.fa adeno_modified_reads_mates2.fa \
+        -m stellar_joinedMates_l30.gff -st 1 -ll 1000 -le 30 -rc \
+        -gff gustaf_adeno_pairedend_ll1000le30.gff \
+        -vcf gustaf_adeno_pairedend_ll1000le30.vcf
+
+Note the -rc parameter. In this simulated data, mate1 and mate2 have the
+same orientation, so we prevent the second file from beeing reverse
+complemented.
 
 ---------------------------------------------------------------------------
 6. Contact
