@@ -62,7 +62,7 @@ struct DoublePass {};
  * @signature template <typename TStream, typename TSpec>
  *            class RecordReader;
  *
- * @tparam TStream The @link ConceptStream @endlink to read from.
+ * @tparam TStream The @link StreamConcept @endlink to read from.
  * @tparam TSpec   The record reader specialization type.
  *
  * @section Examples
