@@ -122,9 +122,9 @@ struct QualityValueSize<Dna5Q>
 };
 @endcode
 
-Later you may write <code>int x = QualityValueSize&lt;Dna5Q&gt::VALUE</code> whichs results in <code>63</code> and is calculated at compile-time.
+Later you may write <code>int x = QualityValueSize&lt;Dna5Q&gt;::VALUE</code> whichs results in <code>63</code> and is calculated at compile-time.
 
-If the enum was named (e.g. <code>MyEnum</code>) you would have to write <code>int x = QualityValueSize&lt;Dna5Q&gt::MyEnum::VALUE (TODO: How is the correct syntax?!?!?!)</code>.<
+If the enum was named (e.g. <code>MyEnum</code>) you would have to write <code>int x = QualityValueSize&lt;Dna5Q&gt;::MyEnum::VALUE (TODO: How is the correct syntax?!?!?!)</code>.<
 
 
 @htmlonly <h2 data-lang-entity="metafunction"><a name="metafunction">Metafunction</a></h2> @endhtmlonly
