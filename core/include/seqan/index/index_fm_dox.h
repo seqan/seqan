@@ -296,13 +296,13 @@
  */
 
 /*!
-  * @fn PrefixSumTable#open
+ * @fn PrefixSumTable#open
  * 
  * @headerfile seqan/index.h
  * 
  * @brief This functions loads a prefix-sum table from disk.
  * 
- * @signature open(prefixSumTable, fileName [, openMode])
+ * @signature bool open(prefixSumTable, fileName [, openMode]);
  * 
  * @param openMode The combination of flags defining how the file should be
  *                 opened.To open a file read-only, write-only or to read and
@@ -315,7 +315,7 @@
  * @param prefixSumTable The prefix-sum table.
  * @param fileName C-style character string containing the file name.
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool <tt>true</tt> on success.
  */
 
 /*!
@@ -325,7 +325,7 @@
  * 
  * @brief This functions saves a prefix-sum table to disk.
  * 
- * @signature save(prefixSumTable, fileName [, openMode])
+ * @signature bool save(prefixSumTable, fileName [, openMode]);
  * 
  * @param openMode The combination of flags defining how the file should be
  *                 opened.To open a file read-only, write-only or to read and
@@ -338,7 +338,7 @@
  * @param prefixSumTable The prefix-sum table.
  * @param fileName C-style character string containing the file name.
  * 
- * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
+ * @return bool <tt>true</tt> on success.
  */
 
 

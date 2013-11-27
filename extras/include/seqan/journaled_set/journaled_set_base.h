@@ -54,6 +54,9 @@ namespace seqan {
  * @extends StringSet
  * @headerfile <seqan/journaled_set.h>
  *
+ * @signature template <typename TString>
+ *            class StringSet<TString, Owner<JournaledSet> >;
+ *
  * @brief A StringSet storing the strings as members.  It can store a global reference sequence to which all members can
  * be journaled if they are of type @link JournaledString @endlink.
  *

@@ -55,6 +55,7 @@ namespace seqan {
  * @class AlignmentStats
  * @headerfile <seqan/align.h>
  * @brief Statistics about a tabular alignment.
+ * @signature struct AlignmentStats;
  *
  * The default constructor initializes all members to 0.
  *

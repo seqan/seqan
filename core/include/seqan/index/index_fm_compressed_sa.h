@@ -235,11 +235,9 @@ struct CompressedSA
  * 
  * @brief Resets the compressed suffix array.
  * 
- * @signature clear(compressedSA)
+ * @signature void clear(compressedSA);
  * 
  * @param compressesSA The compressed suffix array to be cleared.
- *
- * @return void
  */
 
 template <typename TText, typename TSpec, typename TConfig>
@@ -301,7 +299,7 @@ SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compre
  * 
  * @brief This functions creates a compressed suffix array with a specified compression factor.
  * 
- * @signature createCompressedSa(compressedSA, completeSA, compressionFactor [,offset])
+ * @signature void createCompressedSa(compressedSA, completeSA, compressionFactor[, offset]);
  * 
  * @param compressedSA The compressed suffix array.
  *
@@ -313,8 +311,6 @@ SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compre
  *
  * @param offset The offset determines how many empty values should be inserted into the compressed suffix array at the
  *               beginning. This possibility accounts for the sentinel positions of the @link FMIndex @endlink.
- *
- * @return void
  */
 
 template <typename TText, typename TSpec, typename TConfig, typename TSA, typename TSize>

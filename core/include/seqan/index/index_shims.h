@@ -134,15 +134,13 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
  * 
  * @brief Creates a suffix array from a given text.
  * 
- * @signature void createSuffixArray(suffixArray, text[, algo_tag])
+ * @signature void createSuffixArray(suffixArray, text[, algo_tag]);
  * 
  * @param text A given text. Types: @link SequenceConcept @endlink
  * @param algo_tag A tag that identifies the algorithm which is used for
  *                 creation.
  * @param suffixArray The resulting suffix array.
  *
- * @return void
- * 
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
@@ -320,7 +318,7 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a lcp table from a given text and suffix array.
  * 
- * @signature void createLcpTable(lcp, text, suffixArray[, algo_tag])
+ * @signature void createLcpTable(lcp, text, suffixArray[, algo_tag]);
  * 
  * @param text A given text. Types: @link SequenceConcept @endlink
  * @param algo_tag A tag that identifies the algorithm which is used for
@@ -328,8 +326,6 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
  * @param suffixArray The suffix array of <tt>text</tt>.
  * @param lcp The resulting lcp table.
  * 
- * @return void
- *
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
@@ -541,7 +537,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Creates a Burrows-Wheeler table from a given text and suffix array.
  * 
- * @signature void createBWTable(bwt, text, suffixArray[, algo_tag])
+ * @signature void createBWTable(bwt, text, suffixArray[, algo_tag]);
  * 
  * @param bwt The resulting Burrows-Wheeler table.
  * @param algo_tag A tag that identifies the algorithm which is used for
@@ -549,8 +545,6 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * @param suffixArray The suffix array of <tt>text</tt>.
  * @param text A given text. Types: @link SequenceConcept @endlink
  *
- * @return void
- * 
  * @section Remarks
  * 
  * This function should not be called directly. Please use @link Index#indexCreate
@@ -617,11 +611,9 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
  * 
  * @brief Sorts a string of occurrences.
  * 
- * @signature void orderOccurrences(occString)
+ * @signature void orderOccurrences(occString);
  * 
  * @param occString String of occurrences.
- * 
- * @return void
  *
  * @section Remarks
  * 

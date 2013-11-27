@@ -55,6 +55,7 @@ namespace seqan {
  * @class SequenceOutputOptions
  * @headerfile <seqan/seq_io.h>
  * @brief Configuration for writing sequence (FASTA/FASTQ) files.
+ * @signature struct SequenceOutputOptions;
  * 
  * This struct is used for the configuration of writing out FASTA and FASTQ files.
  * 

@@ -99,6 +99,9 @@ struct BgzfCacheEntry_
  * @headerfile <seqan/stream.h>
  * @brief Reading and writing of BGZF data.
  *
+ * @signature template <>
+ *            class Stream<Bgzf>;
+ *
  * @section Remarks
  *
  * Not copy constructable, not assignable.
