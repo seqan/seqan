@@ -23,7 +23,7 @@ import migration
 EXPECTED_TAGS = ['a', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'em', 'i', 'b',
                  'strong', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'tt',
                  'table', 'tbody', 'tr', 'th', 'td', 'caption', 'sup', 'img',
-                 'p', 'br', 'div', 'span']
+                 'p', 'br', 'div', 'span', 'code', 'small', 'acronym', 'u']
 
 # Default colors to use.
 DEFAULT_COLORS = {
