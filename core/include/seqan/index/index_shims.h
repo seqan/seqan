@@ -935,6 +935,23 @@ I	ISSISSIPPI
 		return open(string, fileName, OPEN_RDONLY);
 	}
 
+#ifdef PLATFORM_CUDA
+    template <typename TChar, typename TAlloc>
+    inline bool open(thrust::device_vector<TChar, TAlloc> & me, const char *fileName, int openMode)
+    {
+        String<TChar> str;
+        if (!open(str, fileName, openMode)) return false;
+        assign(me, str);
+        return true;
+    }
+
+    template <typename TChar, typename TAlloc>
+    inline bool open(thrust::device_vector<TChar, TAlloc> & me, const char *fileName)
+    {
+        return open(me, fileName, OPEN_RDONLY);
+    }
+#endif
+
 	// ATTENTION:
 	// This implementation of open doesn't work with external memory StringSets (External<>, MMap<>)
 	// If you need a persistent external StringSet you have to use a Owner<ConcatDirect<> > StringSet.
