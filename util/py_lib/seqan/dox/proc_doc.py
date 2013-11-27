@@ -473,6 +473,10 @@ class ProcClass(ProcCodeEntry):
     def addTypedef(self, t):
         self.typedefs.append(t)
 
+    @property
+    def isSubclass(self):
+        return not not self.extends
+
 
 class ProcTag(ProcCodeEntry):
     """A processed tag documentation.
