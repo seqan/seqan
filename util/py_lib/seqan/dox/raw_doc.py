@@ -112,7 +112,8 @@ class RawDoc(object):
 
 class RawEntry(object):
     """One top-level entry of the documentation.
-   
+
+    @ivar first_token The first token for this entry.
     @ivar name  The identifier of the entry.
     @ivar title The title of the entry.
     @ivar brief A string object with a brief summary of the entry.
@@ -121,7 +122,8 @@ class RawEntry(object):
     @ivar command The name of the command starting the entry type.
     """
     
-    def __init__(self, briefs=[], command='<entry>'):
+    def __init__(self, first_token, briefs=[], command='<entry>'):
+        self.first_token = first_token
         self.name = RawText()
         self.title = RawText()
         self.briefs = list(briefs)
@@ -175,8 +177,8 @@ class RawCodeEntry(RawEntry):
     @ivar signatures A list of RawSignature objects.
     """
     
-    def __init__(self, briefs=[], command='<code entry>'):
-        RawEntry.__init__(self, briefs=briefs, command=command)
+    def __init__(self, first_token, briefs=[], command='<code entry>'):
+        RawEntry.__init__(self, first_token, briefs=briefs, command=command)
         self.signatures = []
         self.headerfiles = []
         self.deprecation_msgs = []
@@ -254,8 +256,8 @@ class RawVariable(RawCodeEntry):
     @ivar type: The type of the variable as a RawText or None.
     """
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='var')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='var')
         self.type = None
 
     def getType(self):
@@ -301,8 +303,8 @@ class RawVariable(RawCodeEntry):
 class RawTag(RawCodeEntry):
     """RawDoc for one tag."""
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='tag')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='tag')
         self.tparams = []
 
     def addTParam(self, p):
@@ -355,8 +357,8 @@ class RawConcept(RawCodeEntry):
     """RawDoc for one concept.
     """
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='concept')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='concept')
         self.extends = []
 
     def addExtends(self, c):
@@ -407,8 +409,8 @@ class RawConcept(RawCodeEntry):
 class RawEnum(RawCodeEntry):
     """RawDoc for one enum."""
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='enum')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='enum')
 
     def getType(self):
         return 'enum'
@@ -417,8 +419,8 @@ class RawEnum(RawCodeEntry):
 class RawTypedef(RawCodeEntry):
     """RawDoc for one typedef."""
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='typedef')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='typedef')
 
     def getType(self):
         if '#' in self.name.text:
@@ -432,8 +434,8 @@ class RawTypedef(RawCodeEntry):
 class RawAdaption(RawCodeEntry):
     """RawDoc for one adaption."""
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='adaption')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='adaption')
 
     def getType(self):
         return 'adaption'
@@ -445,8 +447,8 @@ class RawClass(RawCodeEntry):
     @ivar tparams List of RawParameter objects.
     """
 
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='class')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='class')
         self.extends = []
         self.implements = []
         self.tparams = []
@@ -525,8 +527,8 @@ class RawFunction(RawCodeEntry):
     @ivar returns List of RawReturn objects.
     """
     
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='fn')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='fn')
         self.tparams = []
         self.params = []
         self.returns = []
@@ -606,8 +608,8 @@ class RawMacro(RawCodeEntry):
     @ivar returns List of RawReturn objects.
     """
     
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs, command='macro')
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs, command='macro')
         self.params = []
         self.returns = []
 
@@ -677,8 +679,8 @@ class RawMetafunction(RawCodeEntry):
     @ivar returns List of RawReturn objects.
     """
     
-    def __init__(self, briefs=[]):
-        RawCodeEntry.__init__(self, briefs=briefs)
+    def __init__(self, first_token, briefs=[]):
+        RawCodeEntry.__init__(self, first_token, briefs=briefs)
         self.tparams = []
         self.returns = []
         self.command = 'mfn'
@@ -737,8 +739,8 @@ class RawMetafunction(RawCodeEntry):
 class RawPage(RawEntry):
     """A page in the documentation."""
 
-    def __init__(self, briefs=[]):
-        RawEntry.__init__(self, briefs=briefs)
+    def __init__(self, first_token, briefs=[]):
+        RawEntry.__init__(self, first_token, briefs=briefs)
         self.command = 'page'
     
     def getType(self):
@@ -769,8 +771,8 @@ class RawPage(RawEntry):
 class RawMainPage(RawPage):
     """The main page in the documentation."""
     
-    def __init__(self, briefs=[]):
-        RawPage.__init__(self, briefs=briefs)
+    def __init__(self, first_token, briefs=[]):
+        RawPage.__init__(self, first_token, briefs=briefs)
         self.command = 'mainpage'
     
     def getType(self):
@@ -800,8 +802,8 @@ class RawMainPage(RawPage):
 class RawGroup(RawEntry):
     """A group in the documentation."""
 
-    def __init__(self, briefs=[]):
-        RawEntry.__init__(self, briefs=briefs)
+    def __init__(self, first_token, briefs=[]):
+        RawEntry.__init__(self, first_token, briefs=briefs)
         self.command = 'defgroup'
     
     def getType(self):
@@ -836,6 +838,7 @@ class RawBody(object):
     """
     
     def __init__(self):
+        self.first_token = None
         self.paragraphs = []
 
     def addParagraph(self, p):
@@ -865,7 +868,8 @@ class RawSection(object):
     def getType(self):
         return 'section'
 
-    def __init__(self, heading=RawText(), level=0):
+    def __init__(self, first_token, heading=RawText(), level=0):
+        self.first_token = first_token
         self.heading = heading
         self.level = level
 
@@ -894,7 +898,8 @@ class RawInclude(object):
     @ivar tokens List of tokens for the include statement.
     """
 
-    def __init__(self, tokens):
+    def __init__(self, first_token, tokens):
+        self.first_token = first_token
         self.tokens = list(tokens)
         self.path = RawText(tokens)
         self.text = self.path
@@ -920,7 +925,8 @@ class RawSnippet(object):
                 looking at text in exception handling.
     """
 
-    def __init__(self, path_tokens, name_tokens):
+    def __init__(self, first_token, path_tokens, name_tokens):
+        self.first_token = first_token
         self.tokens = path_tokens + name_tokens
         self.path = raw_doc.RawText(path_tokens)
         self.name = raw_doc.RawText(name_tokens)
@@ -944,7 +950,8 @@ class RawParagraph(object):
     @ivar text A string with the paragraph's text.
     """
 
-    def __init__(self, text=RawText()):
+    def __init__(self, first_token, text=RawText()):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -963,8 +970,8 @@ class RawCode(RawParagraph):
     @ivar extension The extension identifying the language.
     """
     
-    def __init__(self, text=RawText(), extension='.txt'):
-        RawParagraph.__init__(self, text)
+    def __init__(self, first_token, text=RawText(), extension='.txt'):
+        RawParagraph.__init__(self, first_token, text)
         self.extension = extension
 
     def getType(self):
@@ -980,8 +987,8 @@ class RawCode(RawParagraph):
 class RawHtmlOnly(RawParagraph):
     """A special paragraph that is directly put into HTML."""
     
-    def __init__(self, text=RawText()):
-        RawParagraph.__init__(self, text)
+    def __init__(self, first_token, text=RawText()):
+        RawParagraph.__init__(self, first_token, text)
 
     def getType(self):
         return 'htmlonly'
@@ -999,7 +1006,8 @@ class RawBrief(object):
     @ivar text The @brief clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1021,7 +1029,8 @@ class RawExtends(object):
     @ivar text The @extends clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1043,7 +1052,8 @@ class RawImplements(object):
     @ivar text The @implements clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1065,7 +1075,8 @@ class RawHeaderfile(object):
     @ivar text The @headerfile clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1087,7 +1098,8 @@ class RawDeprecated(object):
     @ivar text The @deprecated clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1109,7 +1121,8 @@ class RawNote(object):
     @ivar text The @note clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1131,7 +1144,8 @@ class RawWarning(object):
     @ivar text The @warning clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1153,7 +1167,8 @@ class RawAka(object):
     @ivar text The @aka clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1175,7 +1190,8 @@ class RawInternal(object):
     @ivar text The @internal clauses's text.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1197,7 +1213,8 @@ class RawSee(object):
     @ivar text The @see clauses's parameter.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
@@ -1218,7 +1235,8 @@ class RawParam(object):
     def getType(self):
         return 'param'
     
-    def __init__(self, name=RawText(), text=RawText(), inout=None):
+    def __init__(self, first_token, name=RawText(), text=RawText(), inout=None):
+        self.first_token = first_token
         self.name = name
         self.inout = inout
         self.text = text
@@ -1246,8 +1264,8 @@ class RawTParam(RawParam):
     def getType(self):
         return 'tparam'
     
-    def __init__(self, name=RawText(), text=RawText(), in_out=None):
-        RawParam.__init__(self, name, text)
+    def __init__(self, first_token, name=RawText(), text=RawText(), in_out=None):
+        RawParam.__init__(self, first_token, name, text)
 
     def __str__(self):
         return 'RawTParam(%s, %s)' % (repr(self.name.text), repr(self.text.text))
@@ -1262,10 +1280,9 @@ class RawReturn(RawParam):
     @ivar type The return type.
     @ivar text RawParagraph entry with the documentation of the parameter.
     """
-    # TODO(holtgrew): I don't see the return type here :)
     
-    def __init__(self, name=RawText(), text=RawText(), in_out=None):
-        RawParam.__init__(self, name, text)
+    def __init__(self, first_token, name=RawText(), text=RawText(), in_out=None):
+        RawParam.__init__(self, first_token, name, text)
 
     def getType(self):
         return 'return'
@@ -1280,7 +1297,8 @@ class RawSignature(object):
     @ivar value The @signature's clauses's parameter. RawText.
     """
     
-    def __init__(self, text):
+    def __init__(self, first_token, text):
+        self.first_token = first_token
         self.text = text
 
     def getType(self):
