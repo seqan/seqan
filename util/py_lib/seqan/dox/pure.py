@@ -152,9 +152,12 @@ def doMain(args):
     except dox_parser.ParserError, e:
         msg_printer.printParserError(e)
         return 1
+
+    # Validate documentation.
+        
+    # Generate resulting HTML
     html_writer = write_html.HtmlWriter(doc_proc, args, config)
     html_writer.generateFor()
-
 
     msg_printer.printStats()
     return 0
