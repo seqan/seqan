@@ -93,8 +93,8 @@ sequence.
  * @brief A rank dictionary is a data structure storing the rank of an element
  *        in a sequence at every position of the sequence.
  * 
- * @ signature template <typename TValue, typename TSpec>
- *             RankDictionary<TValue, TSpec>
+ * @signature template <typename TValue, typename TSpec>
+ *            RankDictionary<TValue, TSpec>
  * 
  * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevels @endlink
  */
@@ -151,7 +151,7 @@ struct RankDictionaryFibreSpec
  *
  * @brief Returns the type of a specified fibre of a @link RankDictionary @endlink.
  *
- * signature Fibre<RankDictionary, FibreSpec>::Type
+ * @signature Fibre<RankDictionary, FibreSpec>::Type
  *
  * @tparam FibreSpec The Fibre of interest. Types: @linkFibreRanks @endlink.
  *
@@ -198,11 +198,9 @@ getFibre(RankDictionary<TValue, TSpec> const & dict, FibreRanks)
  * 
  * @brief Resets the rank dictionary.
  * 
- * @signature clear(dictionary)
+ * @signature void clear(dictionary);
  * 
  * @param dictionary The rank dictionary to be cleared.
- *
- * @return void
  */
 template <typename TValue, typename TSpec>
 inline void clear(RankDictionary<TValue, TSpec> & dict)

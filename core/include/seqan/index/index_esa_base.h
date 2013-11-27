@@ -592,9 +592,8 @@ information of the suffix tree) are provided.
 /*!
  * @fn Index#clear
  * @brief Resets all fibres of an index.
- * @signature clear(index)
+ * @signature void clear(index);
  * @param index The index to be cleared.
- * @return void
 */
 
 	template <typename TText, typename TSpec>

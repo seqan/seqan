@@ -74,7 +74,7 @@ namespace seqan {
  * 
  * @tparam T A class.
  * 
- * @return TReturn 
+ * @return VALUE The number of bits needed to store a value.
  */
 
 /**
