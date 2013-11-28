@@ -131,28 +131,41 @@ public:
     unsigned        objNo;
     obj_iterator    _begin, _cur, _end;
 
-    inline Iter() {}
+    Iter() {}
 
-    inline Iter(TStringSet &_host)
-        : host(&_host)
+    Iter(TStringSet &_host):
+        host(&_host),
+        objNo(0)
     {
-        objNo = 0;
+        if (empty(_host))
+        {
+            _begin = _cur = _end = NULL;
+            return;
+        }
         _begin = _cur = begin(_host[objNo]);
         _end = end(_host[objNo]);
         _testEnd();
     }
 
-    inline Iter(TStringSet &_host, unsigned _objNo, difference_type _offset)
-        : host(&_host)
+    Iter(TStringSet &_host, unsigned objNo, difference_type _offset):
+        host(&_host),
+        objNo(objNo)
     {
-        if (_objNo <length(_host)) {
-            objNo = _objNo;
+        if (objNo < length(_host))
+        {
             _begin = _cur = begin(_host[objNo]);
             _end = end(_host[objNo]);
             goFurther(_cur, _offset);
             _testEnd();
-        } else {
-            objNo = length(_host) - 1;
+        }
+        else
+        {
+            if (objNo == 0)
+            {
+                _begin = _cur = _end = NULL;
+                return;
+            }
+            --objNo;
             _begin = begin(_host[objNo]);
             _cur = _end = end(_host[objNo]);
         }
@@ -180,7 +193,8 @@ public:
     // non-public function is allowed.
     inline void _testEnd()
     {
-        while (_cur == _end && objNo < (length(*host) - 1)) {
+        while (_cur == _end && objNo + 1 < length(*host))
+        {
             ++objNo;
             _begin = _cur = begin((*host)[objNo]);
             _end = end((*host)[objNo]);
@@ -484,14 +498,14 @@ template <typename TSSet, typename TSpec>
 inline bool
 atEnd(Iter<TSSet, ConcatVirtual<TSpec> > & me)
 {
-    return me._cur == me._end && me.objNo == (length(*me.host) - 1);
+    return me._cur == me._end && me.objNo + 1 >= length(*me.host);
 }
 
 template <typename TSSet, typename TSpec>
 inline bool
 atEnd(Iter<TSSet, ConcatVirtual<TSpec> > const & me)
 {
-    return me._cur == me._end && me.objNo == (length(*me.host) - 1);
+    return me._cur == me._end && me.objNo + 1 >= length(*me.host);
 }
 
 // --------------------------------------------------------------------------

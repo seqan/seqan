@@ -141,8 +141,9 @@ inline void appendValue(
     TString2 const & obj,
     Tag<TExpand> tag)
 {
-    if (_validStringSetLimits(me))
-        appendValue(me.limits, lengthSum(me) + length(obj), tag);
+//    if (_validStringSetLimits(me))
+//        appendValue(me.limits, lengthSum(me) + length(obj), tag);
+    me.limitsValid = false;
     appendValue(me.strings, obj, tag);
 }
 

@@ -326,9 +326,11 @@ inline void comparePipeStream(TPipe &pipe, TStrings const &strings)
     for (unsigned i = 0; i < numStrings; ++i)
     {
         SEQAN_ASSERT_NOT(eof(pipe));
-        std::stringstream sstr;
-        sstr << *pipe;
-        SEQAN_ASSERT_EQ_MSG(CharString(sstr.str()), strings[i], "Pipe output differs at position %d", i);
+        std::stringstream pipeRes;
+        std::stringstream expRes;
+        pipeRes << *pipe;
+        expRes << strings[i];   // here we have to use the stringstreams as well for the same tokenization (of \0)
+        SEQAN_ASSERT_EQ_MSG(CharString(pipeRes.str()), CharString(expRes.str()), "Pipe output differs at position %d", i);
         ++pipe;
     }
     SEQAN_ASSERT(eof(pipe));
@@ -478,8 +480,188 @@ void testPipeSampler()
 
 SEQAN_DEFINE_TEST(test_pipe_sampler)
 {
-//    testPipeSampler<Pack>();
+    testPipeSampler<Pack>();
     testPipeSampler<BitPacked<> >();
+}
+
+template <bool omitLast>
+void testPipeTupler()
+{
+    String<Peptide> testTexts;
+
+    Peptide str;
+    appendValue(testTexts, str);
+    for (int i = 0; i <= 9; ++i)
+    {
+        appendValue(str, AminoAcid(i));
+        appendValue(testTexts, str);
+    }
+
+    typedef Tupler<4, omitLast, Pack>           TTuplerSpec1;
+    typedef Tupler<4, omitLast, BitPacked<> >   TTuplerSpec2;
+
+    typedef Pipe<Peptide, Source<> >            TSource;
+    typedef Pipe<TSource, TTuplerSpec1>         TTupler1;
+    typedef Pipe<TSource, TTuplerSpec2>         TTupler2;
+
+    TSource src(back(testTexts));
+    TTupler1 tupler(src);
+
+    StringSet<CharString> expectedOutput;
+    if (omitLast)
+    {
+        appendValues(expectedOutput, 7,
+            "< 0 , [A R N D] >",
+            "< 1 , [R N D C] >",
+            "< 2 , [N D C Q] >",
+            "< 3 , [D C Q E] >",
+            "< 4 , [C Q E G] >",
+            "< 5 , [Q E G H] >",
+            "< 6 , [E G H I] >");
+    }
+    else
+    {
+        appendValues(expectedOutput, 10,
+            "< 0 , [A R N D] >",
+            "< 1 , [R N D C] >",
+            "< 2 , [N D C Q] >",
+            "< 3 , [D C Q E] >",
+            "< 4 , [C Q E G] >",
+            "< 5 , [Q E G H] >",
+            "< 6 , [E G H I] >",
+            "< 7 , [G H I A] >",
+            "< 8 , [H I A A] >",
+            "< 9 , [I A A A] >");
+    }
+    comparePipeStream(tupler, expectedOutput);
+
+    for (unsigned i = 0; i < length(testTexts); ++i)
+    {
+        TSource src1(testTexts[i]);
+        TTupler1 tupler1(src1);
+
+        TSource src2(testTexts[i]);
+        TTupler2 tupler2(src2);
+
+        SEQAN_ASSERT_EQ((int)length(tupler1), std::max(0, (int)length(testTexts[i]) - (omitLast? 3 : 0)));
+        comparePipes(tupler1, tupler2);
+    }
+}
+
+template <bool omitLast>
+void testPipeMultiTupler()
+{
+    typedef StringSet<Peptide> TStringSet;
+    String<TStringSet> testTexts;
+
+    TStringSet set;
+    appendValue(testTexts, set);
+    appendValue(set, "");
+    for (int i = 0; i <= 9; ++i)
+    {
+        appendValue(back(set), AminoAcid(i));
+        appendValue(testTexts, set);
+    }
+    appendValue(set, "ARN");
+    appendValue(testTexts, set);
+    appendValue(set, "D");
+    appendValue(testTexts, set);
+    appendValue(set, "");
+    appendValue(testTexts, set);
+    appendValue(set, "IHGEQCDNRA");
+    appendValue(testTexts, set);
+
+    typedef typename Concatenator<TStringSet>::Type         TConcat;
+    typedef typename StringSetLimits<TStringSet>::Type      TLimits;
+
+    typedef Multi<
+        Tupler<4, omitLast, Pack>,
+        Pair<unsigned short, unsigned short, Pack>,
+        TLimits>                                            TTuplerSpec1;
+
+    typedef Multi<
+        Tupler<4, omitLast, BitPacked<> >,
+        Pair<unsigned>,
+        TLimits>                                            TTuplerSpec2;
+
+    typedef Pipe<TConcat, Source<> >                        TSource;
+    typedef Pipe<TSource, TTuplerSpec1>                     TTupler1;
+    typedef Pipe<TSource, TTuplerSpec2>                     TTupler2;
+
+    TSource src(concat(back(testTexts)));
+    TTupler1 tupler(src, stringSetLimits(back(testTexts)));
+
+    StringSet<CharString> expectedOutput;
+    if (omitLast)
+    {
+        appendValues(expectedOutput, 14,
+            "< < 0 , 0 > , [A R N D] >",
+            "< < 0 , 1 > , [R N D C] >",
+            "< < 0 , 2 > , [N D C Q] >",
+            "< < 0 , 3 > , [D C Q E] >",
+            "< < 0 , 4 > , [C Q E G] >",
+            "< < 0 , 5 > , [Q E G H] >",
+            "< < 0 , 6 > , [E G H I] >",
+            "< < 4 , 0 > , [I H G E] >",
+            "< < 4 , 1 > , [H G E Q] >",
+            "< < 4 , 2 > , [G E Q C] >",
+            "< < 4 , 3 > , [E Q C D] >",
+            "< < 4 , 4 > , [Q C D N] >",
+            "< < 4 , 5 > , [C D N R] >",
+            "< < 4 , 6 > , [D N R A] >");
+    }
+    else
+    {
+        appendValues(expectedOutput, 24,
+            "< < 0 , 0 > , [A R N D] >",
+            "< < 0 , 1 > , [R N D C] >",
+            "< < 0 , 2 > , [N D C Q] >",
+            "< < 0 , 3 > , [D C Q E] >",
+            "< < 0 , 4 > , [C Q E G] >",
+            "< < 0 , 5 > , [Q E G H] >",
+            "< < 0 , 6 > , [E G H I] >",
+            "< < 0 , 7 > , [G H I A] >",
+            "< < 0 , 8 > , [H I A A] >",
+            "< < 0 , 9 > , [I A A A] >",
+            "< < 1 , 0 > , [A R N A] >",
+            "< < 1 , 1 > , [R N A A] >",
+            "< < 1 , 2 > , [N A A A] >",
+            "< < 2 , 0 > , [D A A A] >",
+            "< < 4 , 0 > , [I H G E] >",
+            "< < 4 , 1 > , [H G E Q] >",
+            "< < 4 , 2 > , [G E Q C] >",
+            "< < 4 , 3 > , [E Q C D] >",
+            "< < 4 , 4 > , [Q C D N] >",
+            "< < 4 , 5 > , [C D N R] >",
+            "< < 4 , 6 > , [D N R A] >",
+            "< < 4 , 7 > , [N R A A] >",
+            "< < 4 , 8 > , [R A A A] >",
+            "< < 4 , 9 > , [A A A A] >");
+    }
+    comparePipeStream(tupler, expectedOutput);
+
+    for (unsigned i = 0; i < length(testTexts); ++i)
+    {
+        TSource src1(concat(testTexts[i]));
+        TTupler1 tupler1(src1, stringSetLimits(testTexts[i]));
+
+        TSource src2(concat(testTexts[i]));
+        TTupler2 tupler2(src2, stringSetLimits(testTexts[i]));
+
+        comparePipes(tupler1, tupler2);
+    }
+}
+
+SEQAN_DEFINE_TEST(test_pipe_tupler)
+{
+    testPipeTupler<false>();
+    testPipeTupler<true>();
+}
+
+SEQAN_DEFINE_TEST(test_pipe_tupler_multi)
+{
+    testPipeMultiTupler<false>();
+    testPipeMultiTupler<true>();
 }
 
 SEQAN_BEGIN_TESTSUITE(test_pipe) {
@@ -490,6 +672,8 @@ SEQAN_BEGIN_TESTSUITE(test_pipe) {
     SEQAN_CALL_TEST(test_pipe_test_mapper_partially_filled);
     SEQAN_CALL_TEST(test_pipe_test_sorter);
     SEQAN_CALL_TEST(test_pipe_sampler);
+    SEQAN_CALL_TEST(test_pipe_tupler);
+    SEQAN_CALL_TEST(test_pipe_tupler_multi);
 }
 SEQAN_END_TESTSUITE
 
