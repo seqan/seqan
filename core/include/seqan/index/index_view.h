@@ -697,19 +697,19 @@ getFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSp
 }
 
 // ----------------------------------------------------------------------------
-// Function setLF()                                         [CompressedSA View]
+// Function setFibre()                                      [CompressedSA View]
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig, typename TLF>
-void setLF(CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> & sa, TLF const & lf)
+void setFibre(CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> & /* sa */, TLF const & /* lf */, FibreLF)
 {
-    assign(sa.lf, lf);
+//    assign(sa.lf, lf);
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig, typename TLF>
-void setLF(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> & sa, TLF const & lf)
+void setFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> & /* sa */, TLF const & /* lf */, FibreLF)
 {
-    assign(sa.lf, lf);
+//    assign(sa.lf, lf);
 }
 
 // ----------------------------------------------------------------------------

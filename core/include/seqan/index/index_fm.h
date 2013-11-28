@@ -462,7 +462,7 @@ inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSAL
     createLF(indexLF(index), text, tempSA);
 
     // Set the FMIndex LF as the CompressedSA LF.
-    setLfTable(indexSA(index), indexLF(index));
+    setFibre(indexSA(index), indexLF(index), FibreLF());
 
     // Create the compressed SA.
     TSize numSentinel = countSequences(text);
@@ -542,7 +542,7 @@ inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fi
     name = fileName;    append(name, ".lf");
     if (!open(getFibre(index, FibreLF()), toCString(name), openMode)) return false;
 
-    setLfTable(getFibre(index, FibreSA()), getFibre(index, FibreLF()));
+    setFibre(getFibre(index, FibreSA()), getFibre(index, FibreLF()), FibreLF());
 
     return true;
 }
