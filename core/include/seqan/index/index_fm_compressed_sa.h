@@ -202,7 +202,7 @@ struct CompressedSA
     template <typename TLF>
     CompressedSA(TLF & lf)
     {
-        setLfTable(*this, lf);
+        setFibre(*this, lf, FibreLF());
     }
 
     template <typename TPos>
@@ -433,14 +433,13 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 }
 
 // ----------------------------------------------------------------------------
-// Function setLfTable()
+// Function setFibre()
 // ----------------------------------------------------------------------------
-// NOTE(esiragusa): setLfTable() could be renamed as setFibre(csa, fibre, FibreLF()) or setHost(csa, fibre)
 
 /**
-.Function.setLfTable
+.Function.setFibre
 ..summary:Set the LF of the compressed suffix array.
-..signature:setLfTable(CompressedSA<TText, TSpec, TConfig> compressedSa, TLF & lf)
+..signature:setFibre(CompressedSA<TText, TSpec, TConfig> compressedSa, TLF & lf, FibreLF)
 ..param.CompressedSA<TText, TSpec, TConfig>:The compressed suffix array.
 ...type:Class.CompressedSA
 ..param.lf
@@ -448,7 +447,7 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 ..include:seqan/index.h
 */
 template <typename TText, typename TSpec, typename TConfig, typename TLF>
-void setLfTable(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf)
+void setFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf, FibreLF)
 {
     setValue(compressedSA.lf, lf);
 }
