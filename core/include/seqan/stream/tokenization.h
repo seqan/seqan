@@ -142,7 +142,9 @@ const std::string ExceptionMessage<EqualsChar<CHAR>, TContext>::VALUE = std::str
 // ----------------------------------------------------------------------------
 // Don't use isblank() or isspace() as it they seem to be slower than our functors (due to inlining)
 
-typedef OrFunctor<EqualsChar<' '>, EqualsChar<'\t'> >           IsBlank;
+typedef EqualsChar<'\t'>                                        IsTab;
+typedef EqualsChar<' '>                                         IsSpace;
+typedef OrFunctor<IsSpace, IsTab>                               IsBlank;
 typedef OrFunctor<EqualsChar<'\n'>, EqualsChar<'\r'> >          IsNewline;
 typedef OrFunctor<IsBlank, IsNewline>                           IsWhitespace;
 typedef IsInRange<'!', '~'>                                     IsGraph;
@@ -221,7 +223,7 @@ inline void skipUntil(TFwdIterator &iter, TStopFunctor const &stopFunctor)
 template <typename TFwdIterator, typename TFunctor>
 inline void skipOne(TFwdIterator &iter, TFunctor &functor)
 {
-    Asserter<TFunctor, ParseError> asserter(functor);
+    AssertFunctor<TFunctor, ParseError> asserter(functor);
 
     if (atEnd(iter))
         throw UnexpectedEnd();
