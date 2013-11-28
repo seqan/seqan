@@ -180,6 +180,13 @@ view(TObject const & object)
     return typename View<TObject const>::Type(object);
 }
 
+template <typename TObject>
+inline typename View<TObject>::Type
+view(TObject * object)
+{
+    return typename View<TObject>::Type(value(object));
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_EXTRAS_BASIC_VIEW_H
