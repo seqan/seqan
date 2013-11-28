@@ -671,7 +671,6 @@ template <typename TText, typename TSpec, typename TConfig>
 inline bool save(CompressedSA<TText, TSpec, TConfig> const & compressedSA, const char * fileName, int openMode)
 {
     return save(getFibre(compressedSA, FibreSparseString()), fileName, openMode);
-//  save(getFibre(compressedSA, FibreLF()), fileName, openMode);
 }
 
 template <typename TText, typename TSpec, typename TConfig>
