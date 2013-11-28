@@ -256,17 +256,17 @@ const std::string ExceptionMessage<T, TSpec>::VALUE;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Functor Asserter
+// Functor AssertFunctor
 // ----------------------------------------------------------------------------
 
 template <typename TFunctor, typename TException, typename TContext = void, bool RETURN_VALUE = false>
-struct Asserter
+struct AssertFunctor
 {
     TFunctor func;
 
-    Asserter() {}
+    AssertFunctor() {}
 
-    Asserter(TFunctor & func) :
+    AssertFunctor(TFunctor & func) :
         func(func)
     {}
 
