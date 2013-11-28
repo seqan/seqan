@@ -116,7 +116,7 @@ struct Fibre<CompressedSA<TText, TSpec, TConfig>, FibreLF>
 template <typename TText, typename TSpec, typename TConfig>
 struct Member<CompressedSA<TText, TSpec, TConfig>, FibreLF>
 {
-    typedef Holder<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreLF>::Type>   Type;
+    typedef typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreLF>::Type *    Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -195,12 +195,15 @@ struct CompressedSA
     typename Fibre<CompressedSA, FibreSparseString>::Type   sparseString;
     typename Member<CompressedSA, FibreLF>::Type            lf;
 
-    CompressedSA() {}
+    CompressedSA() :
+        lf()
+    {}
 
     template <typename TLF>
-    CompressedSA(TLF const & lf) :
-        lf(lf)
-    {}
+    CompressedSA(TLF & lf)
+    {
+        setLfTable(*this, lf);
+    }
 
     template <typename TPos>
     SEQAN_HOST_DEVICE inline typename Value<CompressedSA>::Type const
@@ -445,7 +448,7 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 ..include:seqan/index.h
 */
 template <typename TText, typename TSpec, typename TConfig, typename TLF>
-void setLfTable(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF const & lf)
+void setLfTable(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf)
 {
     setValue(compressedSA.lf, lf);
 }
