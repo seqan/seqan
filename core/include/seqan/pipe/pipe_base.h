@@ -708,7 +708,8 @@ SEQAN_CHECKPOINT
 */
 
     template < typename TInput, typename TSpec >
-	inline bool beginRead(Pipe<TInput, TSpec> &me) {
+	inline bool beginRead(Pipe<TInput, TSpec> &me)
+    {
         return control(me, ControlBeginRead());
     }
 
