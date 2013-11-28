@@ -1389,7 +1389,7 @@ void copyGaps(Gaps<TDestSource, TDestSpec> & dest, Gaps<TSourceSource, TSourceSp
     typedef typename Iterator<TRhs, Standard>::Type TRhsIter;
 
     TLhsIter lhsIt = begin(dest, Standard());
-    TLhsIter lhsItEnd = end(dest, Standard());
+    //TLhsIter lhsItEnd = end(dest, Standard());
     TRhsIter rhsIt = begin(source, Standard());
     TRhsIter rhsItEnd = end(source, Standard());
 
