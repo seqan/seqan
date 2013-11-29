@@ -80,6 +80,7 @@ struct MSplazerOptions
     double simThresh;               // Allowed similarity between overlapping sequences, i.e. percentage of overlap
     int gapThresh;                  // Allowed gap or distance between matches
     int initGapThresh;              // Maximal allowed start or end gap length
+    int breakendThresh;             // Maximal allowed length for a breakend
     unsigned breakpointPosRange;    // Allowed range of breakpoint positions
     unsigned support;
     unsigned mateSupport;
@@ -150,7 +151,7 @@ struct Breakpoint
     TPos startSeqPos;
     TPos endSeqPos;
     TPos dupTargetPos;
-    TPos dupMiddlePos;
+    TPos dupMiddlePos; // TPos dupMidPos;
     TPos readStartPos;
     TPos readEndPos;
     // Counter of occurrences (read support)
@@ -725,7 +726,7 @@ inline void setInsertionSeq(TBreakpoint & bp, TSequence & inSeq)
 template <typename TPos, typename TPosR>
 inline bool posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & range)
 {
-    return abs(pos2 - pos1) < range;
+    return (__int64)abs(pos2 - pos1) < (__int64)range;
 }
 
 /**
@@ -740,12 +741,20 @@ inline bool posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & r
  */
 
 template <typename TId, typename TPos>
-inline bool similarBreakpoints(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> const & bp2)
+inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPos> & bp2)
 {
+    typedef Breakpoint<TId, TPos> TBP;
+    unsigned const range = 5;
     bool sameSeqs = (bp1.startSeqId == bp2.startSeqId) && (bp1.endSeqId == bp2.endSeqId);
-    bool samePosRange = posInSameRange(bp1.startSeqPos, bp2.startSeqPos) && posInSameRange(bp1.endSeqPos,
-                                                                                           bp2.endSeqPos);
-    return sameSeqs && samePosRange;
+    bool sameOrient = (bp1.startSeqStrand == bp2.startSeqStrand) && (bp1.endSeqStrand == bp2.endSeqStrand);
+    bool samePosRange = 0;
+    if (bp1.svtype == TBP::BREAKEND || bp2.svtype == TBP::BREAKEND)
+        samePosRange = posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
+            || posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range);
+    else
+        samePosRange = posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
+            && posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range);
+    return sameSeqs && sameOrient && samePosRange;
 }
 
 /**
