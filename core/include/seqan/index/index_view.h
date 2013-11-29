@@ -697,20 +697,17 @@ getFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSp
 }
 
 // ----------------------------------------------------------------------------
-// Function setLF()                                         [CompressedSA View]
+// Function setFibre()                                      [CompressedSA View]
 // ----------------------------------------------------------------------------
+// NOTE(esiragusa): setFibre() sets the same pointer of view().
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig, typename TLF>
-void setLF(CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> & sa, TLF const & lf)
-{
-    assign(sa.lf, lf);
-}
+void setFibre(CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> & /* sa */, TLF & /* lf */, FibreLF)
+{}
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig, typename TLF>
-void setLF(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> & sa, TLF const & lf)
-{
-    assign(sa.lf, lf);
-}
+void setFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> & /* sa */, TLF & /* lf */, FibreLF)
+{}
 
 // ----------------------------------------------------------------------------
 // Function view()                                                      [Index]
@@ -783,7 +780,6 @@ view(Index<TText, FMIndex<TSpec, TConfig> > & index)
 // ----------------------------------------------------------------------------
 // Function view()                                                         [LF]
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): Make view() return the object itself for simple types.
 
 template <typename TText, typename TSpec, typename TConfig>
 typename View<LF<TText, TSpec, TConfig> >::Type
@@ -793,22 +789,8 @@ view(LF<TText, TSpec, TConfig> & lf)
 
     getFibre(lfView, FibrePrefixSums()) = view(getFibre(lf, FibrePrefixSums()));
     getFibre(lfView, FibreBwt()) = view(getFibre(lf, FibreBwt()));
-    getFibre(lfView, FibreSentinels()) = getFibre(lf, FibreSentinels());
-    lfView.sentinelSubstitute = lf.sentinelSubstitute;
-
-    return lfView;
-}
-
-template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
-typename View<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> >::Type
-view(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf)
-{
-    typename View<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> >::Type lfView;
-
-    getFibre(lfView, FibrePrefixSums()) = view(getFibre(lf, FibrePrefixSums()));
-    getFibre(lfView, FibreBwt()) = view(getFibre(lf, FibreBwt()));
     getFibre(lfView, FibreSentinels()) = view(getFibre(lf, FibreSentinels()));
-    lfView.sentinelSubstitute = lf.sentinelSubstitute;
+    lfView.sentinelSubstitute = view(lf.sentinelSubstitute);
 
     return lfView;
 }

@@ -116,7 +116,7 @@ struct Fibre<CompressedSA<TText, TSpec, TConfig>, FibreLF>
 template <typename TText, typename TSpec, typename TConfig>
 struct Member<CompressedSA<TText, TSpec, TConfig>, FibreLF>
 {
-    typedef Holder<typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreLF>::Type>   Type;
+    typedef typename Fibre<CompressedSA<TText, TSpec, TConfig>, FibreLF>::Type *    Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -195,12 +195,15 @@ struct CompressedSA
     typename Fibre<CompressedSA, FibreSparseString>::Type   sparseString;
     typename Member<CompressedSA, FibreLF>::Type            lf;
 
-    CompressedSA() {}
+    CompressedSA() :
+        lf()
+    {}
 
     template <typename TLF>
-    CompressedSA(TLF const & lf) :
-        lf(lf)
-    {}
+    CompressedSA(TLF & lf)
+    {
+        setFibre(*this, lf, FibreLF());
+    }
 
     template <typename TPos>
     SEQAN_HOST_DEVICE inline typename Value<CompressedSA>::Type const
@@ -430,14 +433,13 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 }
 
 // ----------------------------------------------------------------------------
-// Function setLfTable()
+// Function setFibre()
 // ----------------------------------------------------------------------------
-// NOTE(esiragusa): setLfTable() could be renamed as setFibre(csa, fibre, FibreLF()) or setHost(csa, fibre)
 
 /**
-.Function.setLfTable
+.Function.setFibre
 ..summary:Set the LF of the compressed suffix array.
-..signature:setLfTable(CompressedSA<TText, TSpec, TConfig> compressedSa, TLF & lf)
+..signature:setFibre(CompressedSA<TText, TSpec, TConfig> compressedSa, TLF & lf, FibreLF)
 ..param.CompressedSA<TText, TSpec, TConfig>:The compressed suffix array.
 ...type:Class.CompressedSA
 ..param.lf
@@ -445,7 +447,7 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 ..include:seqan/index.h
 */
 template <typename TText, typename TSpec, typename TConfig, typename TLF>
-void setLfTable(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF const & lf)
+void setFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf, FibreLF)
 {
     setValue(compressedSA.lf, lf);
 }
@@ -671,7 +673,6 @@ template <typename TText, typename TSpec, typename TConfig>
 inline bool save(CompressedSA<TText, TSpec, TConfig> const & compressedSA, const char * fileName, int openMode)
 {
     return save(getFibre(compressedSA, FibreSparseString()), fileName, openMode);
-//  save(getFibre(compressedSA, FibreLF()), fileName, openMode);
 }
 
 template <typename TText, typename TSpec, typename TConfig>
