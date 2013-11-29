@@ -647,7 +647,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 #else
-
     
 	template <typename TSpec>
     class File<Async<TSpec> > : public File<Sync<TSpec> >
