@@ -80,7 +80,7 @@ typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazerBestchain;
 ..include:seqan/msplazer.h
  */
 template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile, 
-          typename TBreakpoint, typename TPos, typename TMatchAlloc>
+          typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
 void
 write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstream f; f.open(..); if (!f.good()) ... ; write(f, ...);  // write(std::cerr/std::cout, ...
@@ -89,6 +89,7 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
                     TMatchAlloc> const & msplazerchain,
       TMatch const & queryMatches,
       unsigned const & queryLength,
+      TID const & queryID,
       DotDrawingMSplazer const &)
 {
     // IOREV _doc_ _batchreading_
@@ -181,6 +182,7 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
         out << "\"];\n";
     }
         out << '\n'
+        << "overlap=false\n label = \"readID: " << queryID << "\"fontsize=10;\n"
         << "}\n";
 }
 
@@ -188,6 +190,7 @@ write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstr
 template <typename TSequence, typename TId, typename TMSplazerChain>
 void _writeDotfiles(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
                     StringSet<TSequence> const & queries,
+                    StringSet<TId> const & queryIDs,
                     String<TMSplazerChain> & queryChains,
                     MSplazerOptions const & msplazerOptions)
 {
@@ -199,7 +202,7 @@ void _writeDotfiles(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & st
             std::ofstream f( toCString("read" + toString(i + 1) + '_' + toString(msplazerOptions.jobName) + ".dot"));
             if (!f.good())
                 std::cerr << "Error while writing dot files!" << std::endl;
-            write(f, queryChains[i], stellarMatches[i].matches, length(queries[i]), DotDrawingMSplazer());
+            write(f, queryChains[i], stellarMatches[i].matches, length(queries[i]), queryIDs[i], DotDrawingMSplazer());
             f.close();
         }
     }

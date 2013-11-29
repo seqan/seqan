@@ -140,20 +140,28 @@ inline bool _checkMatchComp(TPos const & m1Begin, TPos const & m1End, TPos const
     return true;
 }
 
+// Check for a valid overlap of m1 and m2 given their begin and end positions. Valid are
+// m1begin <= m2begin < m2end <= m1end
+// m1begin <= m2begin < m1end <= m2end
+// with minimal length constraint of 50bp for the tandem repeat length
+// TODO (ktrappe): make length variable and user definable
+template <typename TPos>
+inline bool _isTandemOverlap(TPos const & m1Begin, TPos const & m1End, TPos const & m2Begin)
+{
+    if (m2Begin < m1Begin)
+        return false;
+    if (m1End < m2Begin)
+        return false;
+    if (m1End-m2Begin < 50) // length/size of tandem repeat
+        return false;
+
+    return true;
+}
+
 // Intitialisation of graph structure for combinable StellarMatches of a read
-/*
-template <typename TSequence, typename TId, typename TGraph, typename TScoreAlloc, typename TVertexDescriptor,
-          typename TBreakpointMap>
-void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
-                      TGraph & graph,
-                      TScoreAlloc & matchDistanceScores,
-                      TVertexDescriptor & startVertex,
-                      TVertexDescriptor & endVertex,
-                      TBreakpointMap & queryBreakpoints,
-                      MSplazerOptions const & msplazerOptions)
-*/
 template <typename TSequence, typename TId, typename TMSplazerChain>
 void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
+                      TId & queryId,
                       TMSplazerChain & chain,
                       MSplazerOptions const & options)
 {
@@ -161,6 +169,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
     typedef typename TMSplazerChain::TGraph TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Iterator<String<StellarMatch<TSequence, TId> > >::Type TIterator;
+    typedef Breakpoint<TSequence, TId> TBreakpoint;
 
     TIterator itStellarMatches = begin(queryMatches.matches);
     TIterator itEndStellarMatches = end(queryMatches.matches);
@@ -180,21 +189,57 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
     // Adding edges to start and end vertices
     for (unsigned i = 0; i < length(queryMatches.matches); ++i)
     {
+        // start vertex
         cargo = static_cast<int>(queryMatches.matches[i].begin2);
-        if (cargo < (options.initGapThresh + 1))
+        if (cargo < options.breakendThresh)
         {
             cargo += chain.matchDistanceScores[i];
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
             resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
-            assignProperty(chain.breakpoints, edge);
+            if (cargo < (options.initGapThresh + 1))
+                assignProperty(chain.breakpoints, edge);
+            else
+            {
+                TBreakpoint bp(queryMatches.matches[i].id,
+                               queryMatches.matches[i].id,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].begin1,
+                               queryMatches.matches[i].begin1,
+                               queryMatches.matches[i].begin2,
+                               queryMatches.matches[i].begin2,
+                               queryId);
+                bp.svtype = TBreakpoint::BREAKEND;
+                // bp.imprecise = true;
+                // bp.breakend = 0;
+                assignProperty(chain.breakpoints, edge, bp);
+            }
         }
+        // end vertex
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
                 static_cast<int>(queryMatches.matches[i].end2);
-        if (cargo < (options.initGapThresh + 1))
+        if (cargo < options.breakendThresh)
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
             resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
-            assignProperty(chain.breakpoints, edge);
+            if (cargo < (options.initGapThresh + 1))
+                assignProperty(chain.breakpoints, edge);
+            else
+            {
+                TBreakpoint bp(queryMatches.matches[i].id,
+                               queryMatches.matches[i].id,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].orientation,
+                               queryMatches.matches[i].end1,
+                               queryMatches.matches[i].end1,
+                               queryMatches.matches[i].end2,
+                               queryMatches.matches[i].end2,
+                               queryId);
+                bp.svtype = TBreakpoint::BREAKEND;
+                // bp.imprecise = true;
+                // bp.breakend = 1;
+                assignProperty(chain.breakpoints, edge, bp);
+            }
         }
     }
 }
@@ -227,12 +272,17 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
     // Breakpoint parameters
     // edit distance
     Score<int> scoreType(0, -1, -1, -1);
+    // edit distance (affine)
+    // Score<int> scoreType(0, -1, -4, -1);
     int splitPos = 0;
 
     // Cargo on edges
     int cargo = 0;
     // Breakpoint score
     int score = 0;
+
+    std::cout << "Query Id: " << queryId << std::endl;
+
     // loop over all query matches
     // std::cerr << "In chainQueryMatches length(queryMatches.matches): " << length(queryMatches.matches) << std::endl;
     for (unsigned m1 = 0; m1 < (length(queryMatches.matches) - 1); ++m1)
@@ -252,6 +302,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
             // Returns false, if next match is def. not compatible anymore
             takeNextMatch = _checkMatchComp(m1Begin, m1End, m2Begin, m2End, doBP, insertEdge, msplazerOptions);
 
+            std::cout << "insertEdge: " << insertEdge << " doBP: " << doBP << std::endl;
             // match is compatible
             if (insertEdge)
             {
@@ -282,6 +333,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
 
                 // Compute breakpoint
                 TPos startSeqPos, endSeqPos, readStartPos, readEndPos;
+                TPos startSeqPos_test, endSeqPos_test, readStartPos_test, readEndPos_test;
                 if (doBP)
                 {
                     // Create alignments from Stellar rows as input for breakpoint function
@@ -300,12 +352,28 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     if (!stMatch2.orientation)
                         reverseComplement(source(row(match2, 1)));
 
+                    std::cout << "match1 end position row 1 (ref): " << endPosition(row(match1, 1)) << std::endl;
+                    std::cout << "match1 end position row 0 (read): " << endPosition(row(match1, 0)) << std::endl;
+                    std::cout << "match2 begin position row 1 (ref): " << beginPosition(row(match2, 1)) << std::endl;
+                    std::cout << "match2 begin position row 0 (read): " << beginPosition(row(match2, 0)) << std::endl;
+                    std::cout << infix(source(stMatch2.row2), m1Begin, m2End) << std::endl;
+                    std::cout << match1 << std::endl;
+                    std::cout << match2 << std::endl;
+
                     // Compute breakpoint score
                     // The resulting score is the sum of the scores of both alignments. --> substract old match scores
                     // Note: old match scores are already distances, new score is a negative score bc. we use scoring sceme (0, -1, -1, -1)
                     score = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
                                                 minValue<int>(), maxValue<int>(),
                                                 scoreType);
+
+                    std::cout << "Split alignment" << std::endl;
+                    std::cout << "match1 end position row 1 (ref): " << endPosition(row(match1, 1)) << std::endl;
+                    std::cout << "match1 end position row 0 (read): " << endPosition(row(match1, 0)) << std::endl;
+                    std::cout << "match2 begin position row 1 (ref): " << beginPosition(row(match2, 1)) << std::endl;
+                    std::cout << "match2 begin position row 0 (read): " << beginPosition(row(match2, 0)) << std::endl;
+                    std::cout << match1 << std::endl;
+                    std::cout << match2 << std::endl;
 
                     SEQAN_ASSERT_NEQ(score, maxValue<int>());
                     score += (static_cast<int>(matchDistanceScores[m1]) + static_cast<int>(matchDistanceScores[m2]));
@@ -318,6 +386,18 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     startSeqPos = toSourcePosition(stMatch1.row1, toViewPosition(stMatch1.row2, splitPos));
                     endSeqPos = toSourcePosition(stMatch2.row1, toViewPosition(stMatch2.row2, splitPos));
 
+                    startSeqPos_test = endPosition(row(match1, 1)) + stMatch1.begin1;
+                    endSeqPos_test = beginPosition(row(match2, 1)) + stMatch2.begin1;
+                    readStartPos_test = endPosition(row(match1, 0)) + stMatch1.begin2;
+                    readEndPos_test = beginPosition(row(match2, 0)) + stMatch1.begin2;
+
+                    std::cout << "BP positions:" << std::endl;
+                    std::cout << splitPos << " " << startSeqPos << " " << endSeqPos << std::endl;
+                    std::cout << "alternative BP positions:" << std::endl;
+                    std::cout << readStartPos_test << " " << readEndPos_test << " " << startSeqPos_test << " " << endSeqPos_test << std::endl;
+                    std::cout << stMatch1 << std::endl;
+                    std::cout << stMatch2 << std::endl;
+
                     // Reverse complement matches back again
                     if (!stMatch1.orientation)
                         reverseComplement(source(row(match1, 1)));
@@ -325,7 +405,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                         reverseComplement(source(row(match2, 1)));
 
                 }
-                else
+                else // No overlap but a valid gap, bp corresponds to start and end positions of the matches
                 {
                     // Refine score by adding gap length to distance
                     cargo += static_cast<int>(m2Begin - m1End);
@@ -334,24 +414,49 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     readStartPos = stMatch1.end2;
                     readEndPos = stMatch2.begin2;
 
+                    startSeqPos_test = stMatch1.end1;
+                    endSeqPos_test = stMatch2.begin1;
+                    readStartPos_test = stMatch1.end2;
+                    readEndPos_test = stMatch2.begin2;
+                    std::cout << stMatch1 << std::endl;
+                    std::cout << stMatch2 << std::endl;
+
                 }
 
                 // Adjust bp position if they arise from matches on the reverse strand
-                if (!stMatch1.orientation)
+                if (!stMatch1.orientation) {
                     startSeqPos = stMatch1.end1 - startSeqPos + stMatch1.begin1;
-                if (!stMatch2.orientation)
+                    startSeqPos_test = stMatch1.end1 - startSeqPos_test + stMatch1.begin1;
+                }
+                if (!stMatch2.orientation) {
                     endSeqPos = stMatch2.end1 - endSeqPos + stMatch2.begin1;
+                    endSeqPos_test = stMatch2.end1 - endSeqPos_test + stMatch2.begin1;
+                }
+
+                    std::cout << "BP positions after orientation adjustment:" << std::endl;
+                    std::cout << splitPos << " " << startSeqPos << " " << endSeqPos << std::endl;
+                    std::cout << "alternative BP positions after orientation adjustment:" << std::endl;
+                    std::cout << readStartPos_test << " " << readEndPos_test << " " << startSeqPos_test << " " << endSeqPos_test << std::endl;
 
                 // Create breakpoint with calculated positions and match information
                 TBreakpoint bp(stMatch1.id,
                                stMatch2.id,
                                stMatch1.orientation,
                                stMatch2.orientation,
+                               /*
                                startSeqPos,
                                endSeqPos,
                                readStartPos,
                                readEndPos,
+                               */
+                               startSeqPos_test,
+                               endSeqPos_test,
+                               readStartPos_test,
+                               readEndPos_test,
                                queryId);
+
+                // Imprecise breakpoint?
+                // if (!doBP) bp.imprecise = true;
 
                 // Returns true for insertion type, get insertion infix then
                 if (setSVType(bp))
@@ -364,13 +469,16 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                         inSeq = infix(query, stMatch1.end2, stMatch2.begin2);
                         setInsertionSeq(bp, inSeq);
                     }
-                    else
-                    {
-                        // Double overlap check (not handled jet)
-                        // std::cerr << "double overlap in reference and read called from read overlap" << std::endl;
-                        // clear(bp.svtype);
-                        bp.svtype = TBreakpoint::INVALID;
-                    }
+                }
+                //if (bp.svtype == "translocation" && _isTandemOverlap(stMatch1.begin1, stMatch1.end1, stMatch2.begin1))
+                // TODO(ktrappe): adjust to DUPLICATION type once that is ready
+                // TODO(ktrappe): needs adjustment of positions?
+                if (bp.svtype == TBreakpoint::TRANSLOCATION && _isTandemOverlap(stMatch1.begin1, startSeqPos_test, endSeqPos_test))
+                {
+                    // Double overlap check (not handled jet)
+                    // std::cerr << "double overlap in reference and read called from read overlap" << std::endl;
+                    std::cout << "Translocation double overlap" << std::endl;
+                    bp.svtype = TBreakpoint::TANDEM;
                 }
 
                 //std::cout << "Breakpoint " << bp << std::endl;
@@ -410,6 +518,8 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
     bool doBP, insertEdge, swap;
     // Breakpoint parameters
     // edit distance
+    // edit distance with affine gap cost (can improve alignment around split points in present of gaps)
+    // Score<int> scoreType(0, -1, -2, -1);
     Score<int> scoreType(0, -1, -1, -1);
     int splitPos = 0;
     // Cargo on edges
@@ -417,6 +527,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
 
     // Breakpoint score (gain of edit distance)
     int score = 0;
+
+    std::cout << "Query Id: " << queryId << std::endl;
+
     // loop over all query matches
     for (unsigned m1 = 0; m1 < (length(queryMatches.matches) - 1); ++m1)
     {
@@ -473,6 +586,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
 
                     // Compute breakpoint
                     TPos startSeqPos, endSeqPos, readStartPos, readEndPos;
+                    TPos startSeqPos_test, endSeqPos_test, readStartPos_test, readEndPos_test;
                     if (doBP)
                     {
                         // Create alignments from Stellar rows as input for breakpoint function
@@ -493,6 +607,14 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         if (!(*stMatch2).orientation)
                             reverseComplement(source(row(match2, 1)));
 
+                    std::cout << "match1 end position row 1 (read) (insertion): " << endPosition(row(match1, 1)) << std::endl;
+                    std::cout << "match1 end position row 0 (ref) (insertion): " << endPosition(row(match1, 0)) << std::endl;
+                    std::cout << "match2 begin position row 1 (read) (insertion): " << beginPosition(row(match2, 1)) << std::endl;
+                    std::cout << "match2 begin position row 0 (ref) (insertion): " << beginPosition(row(match2, 0)) << std::endl;
+                    std::cout << infix(source((*stMatch1).row1), m1Begin, m2End) << std::endl;
+                    std::cout << match1 << std::endl;
+                    std::cout << match2 << std::endl;
+
                         // Compute breakpoint and score
                         // int lDiag = -10, uDiag = 10;
                         // score = splitAlignment(match1, match2, scoreType, lDiag, uDiag);
@@ -501,6 +623,15 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                                                     minValue<int>(), maxValue<int>(),
                                                     scoreType);
                         SEQAN_ASSERT_EQ(endPosition(row(match1, 0)), beginPosition(row(match2, 0)));
+
+                    std::cout << "Split alignment" << std::endl;
+                    std::cout << "match1 end position row 1 (read) (insertion): " << endPosition(row(match1, 1)) << std::endl;
+                    std::cout << "match1 end position row 0 (ref) (insertion): " << endPosition(row(match1, 0)) << std::endl;
+                    std::cout << "match2 begin position row 1 (read) (insertion): " << beginPosition(row(match2, 1)) << std::endl;
+                    std::cout << "match2 begin position row 0 (ref) (insertion): " << beginPosition(row(match2, 0)) << std::endl;
+                    std::cout << match1 << std::endl;
+                    std::cout << match2 << std::endl;
+
 
                         // Compute cargo, reduce distance by score
                         // cargo = static_cast<int>(matchDistanceScores[m2]) - score + diffStrandPen + diffOrderPen;
@@ -514,6 +645,11 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             splitPos = endPosition(row(match1, 0)) + (*stMatch1).begin1;
                             readStartPos = toSourcePosition((*stMatch1).row2, toViewPosition((*stMatch1).row1, splitPos)); // endPosition(row(match1, 1));
                             readEndPos = toSourcePosition((*stMatch2).row2, toViewPosition((*stMatch2).row1, splitPos)); // beginPosition(row(match2, 1));
+
+                            startSeqPos_test = endPosition(row(match1, 0)) + (*stMatch1).begin1;
+                            endSeqPos_test = beginPosition(row(match2, 0)) + (*stMatch1).begin1;
+                            readStartPos_test = endPosition(row(match1, 1)) + (*stMatch1).begin2;
+                            readEndPos_test = beginPosition(row(match2, 1)) + (*stMatch2).begin2;
                         }
                         else
                         {
@@ -521,6 +657,11 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             splitPos = endPosition(row(match2, 0)) + (*stMatch2).begin1;
                             readStartPos = toSourcePosition((*stMatch2).row2, toViewPosition((*stMatch2).row1, splitPos)); // beginPosition(row(match2, 1));
                             readEndPos = toSourcePosition((*stMatch1).row2, toViewPosition((*stMatch1).row1, splitPos)); // endPosition(row(match1, 1));
+
+                            startSeqPos_test = endPosition(row(match2, 0)) + (*stMatch1).begin1;
+                            endSeqPos_test = beginPosition(row(match1, 0)) + (*stMatch1).begin1;
+                            readStartPos_test = endPosition(row(match2, 1)) + (*stMatch2).begin2;
+                            readEndPos_test = beginPosition(row(match1, 1)) + (*stMatch1).begin2;
                         }
                         startSeqPos = splitPos;
                         endSeqPos = splitPos;
@@ -542,6 +683,11 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             endSeqPos = (*stMatch2).begin1;
                             readStartPos = (*stMatch1).end2;
                             readEndPos = (*stMatch2).begin2;
+
+                            startSeqPos_test = (*stMatch1).end1;         // m1End
+                            endSeqPos_test = (*stMatch2).begin1;
+                            readStartPos_test = (*stMatch1).end2;
+                            readEndPos_test = (*stMatch2).begin2;
                         }
                         else
                         {
@@ -549,18 +695,40 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                             endSeqPos = (*stMatch1).begin1;
                             readStartPos = (*stMatch2).end2;
                             readEndPos = (*stMatch1).begin2;
+
+                            startSeqPos_test = (*stMatch2).end1;         // m1End
+                            endSeqPos_test = (*stMatch1).begin1;
+                            readStartPos_test = (*stMatch2).end2;
+                            readEndPos_test = (*stMatch1).begin2;
                         }
 
                     }
+                    std::cout << "BP positions (insertion):" << std::endl;
+                    std::cout << splitPos << " " << readStartPos << " " << readEndPos << std::endl;
+                    std::cout << "alternative BP positions (insertion) (swap: " << swap << " )" << std::endl;
+                    std::cout << readStartPos_test << " " << readEndPos_test << " " << startSeqPos_test << " " << endSeqPos_test << std::endl;
+                    std::cout << (*stMatch1) << std::endl;
+                    std::cout << (*stMatch2) << std::endl;
+
+                    // Create breakpoint with calculated positions and match information
                     TBreakpoint bp((*stMatch1).id,
                                    (*stMatch2).id,
                                    (*stMatch1).orientation,
                                    (*stMatch2).orientation,
+                                   /*
                                    startSeqPos,
                                    endSeqPos,
                                    readStartPos,
                                    readEndPos,
+                                   */
+                                   startSeqPos_test,
+                                   endSeqPos_test,
+                                   readStartPos_test,
+                                   readEndPos_test,
                                    queryId);
+
+                    // Imprecise breakpoint?
+                    // if (!doBP) bp.imprecise = true;
 
                     // Set SV type of breakpoint, returns true is SV type is "insertion", if so, compute inserted sequence and assign to bp
                     if (setSVType(bp))
@@ -606,6 +774,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     m1Begin = (*stMatch1).begin1;
                     m1End = (*stMatch1).end1;
                 }
+                // TODO(ktrappe): Why was this missing before?
+                doBP = false;
+                insertEdge = false;
             }
         }
     }
@@ -615,9 +786,8 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
 template <typename TSequence, typename TId, typename TScoreAlloc, typename TMSplazerChain>
 void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
                         String<TScoreAlloc> & distanceScores,
-                        // String<unsigned> & readJoinPosition,
                         String<TMSplazerChain> & queryChains,
-                        StringSet<TId> const & queryIds,
+                        StringSet<TId> & queryIds,
                         StringSet<TSequence> & queries,
                         String<unsigned> & readJoinPositions,
                         MSplazerOptions const & msplazerOptions)
@@ -643,17 +813,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
             if (msplazerOptions.pairedEndMode)
                 _initialiseGraphMatePairs(stellarMatches[i], chain, msplazerOptions);
             else
-                _initialiseGraph(stellarMatches[i], chain, msplazerOptions);
-            /*
-            _initialiseGraph(stellarMatches[i],
-                             chain.graph,
-                             chain.matchDistanceScores,
-                             chain.startVertex,
-                             chain.endVertex,
-                             chain.breakpoints,
-                             msplazerOptions);
-                             */
-
+                _initialiseGraph(stellarMatches[i], queryIds[i], chain, msplazerOptions);
 
             // Chain compatible matches
             _chainMatches(stellarMatches[i],
@@ -704,22 +864,54 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
     }
 }
 
+// Function deletionSupport
+template <typename TBreakpoint>
+bool _deletionSupport(TBreakpoint & bp, TBreakpoint & tempBP)
+{
+    // tempBP is a translocation, check now if bp is a deletion supporting tempBP
+    if (_similarBreakpoints(tempBP, bp))
+        std::cout << "Similar translocation and deletion?" << std::endl;
+    return true;
+}
+
 // Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
 // has been inserted or false if breakpoint was already in the set (and just has been counted).
 // For insertions, also the insertion length has to be the same
 template <typename TBreakpoint>
-bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint const & bp)
+bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp)
 {
+    typedef typename TBreakpoint::TId TId;
     // Breakpoint bp is compared to each breakpoint in the list (tempBP)
     for (unsigned i = 0; i < length(countedBP); ++i)
     {
         TBreakpoint & tempBP = countedBP[i];
         // Breakpoint comparison
-        if (bp == tempBP)
+        if (_similarBreakpoints(bp, tempBP))
         {
-            // add new supporting Ids, automatically sets new support value
+            if (bp == tempBP)
+            {
+                // add new supporting Ids, automatically sets new support value
+                appendSupportId(tempBP, bp.supportIds);
+                return false;
+            }
             appendSupportId(tempBP, bp.supportIds);
+            appendSupportId(bp, tempBP.supportIds);
+            appendValue(countedBP, bp);
             return false;
+        }
+        else if (bp.svtype == TBreakpoint::DELETION)
+        {
+            // tempBP is also deletion, are both part of a transl? extract and save as transl
+            // if (del1.endSeqPos == del2.startSeqPos) // add position variance of at least 3bp
+            //      transl(del1.startSeqPos, del2.endSeqPos); transl.dupMidPos = del1.endSeqPos;
+            // if (del2.endSeqPos == del1.startSeqPos) // add position variance of at least 3bp
+            //      transl(del2.startSeqPos, del1.endSeqPos); transl.dupMidPos = del2.endSeqPos;
+            // tempBP is insertion, are both part of a transl/dup? (Only possible when regarding more than 1 chain per
+            // read
+            // tempBP is translocation
+            if (_deletionSupport(bp, tempBP))
+            {
+            }
         }
     }
     // Append breakpoint if new
@@ -728,7 +920,7 @@ bool _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint const & bp)
 }
 
 template <typename TBreakpoint>
-void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> const & newBP)
+void _insertBreakpoints(String<TBreakpoint> & countedBP, String<TBreakpoint> & newBP)
 {
     for (unsigned i = 0; i < length(newBP); ++i)
         _insertBreakpoint(countedBP, newBP[i]);
@@ -867,8 +1059,9 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
             resize(splitPos, 4);
 
             // Store breakpoint pos., mind matches of different order for translocations and reverse strand deletions
-            // if ((getSVType(bp) == 6 && bp.startSeqId == bp.endSeqId) || bp.revStrandDel) // 6=translocation
-            if ((bp.svtype == 6 && bp.startSeqId == bp.endSeqId) || bp.revStrandDel) // 6=translocation
+            // if ((bp.svtype == 6 && bp.startSeqId == bp.endSeqId) || bp.revStrandDel) // 6=translocation
+            // TODO(ktrappe): Adjust SVType
+            if ((bp.svtype == TBreakpoint::TRANSLOCATION && bp.startSeqId == bp.endSeqId) || bp.revStrandDel)
             {
                 splitPos[0] = bp.endSeqPos;
                 splitPos[1] = bp.startSeqPos;
@@ -891,6 +1084,7 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
     // trim matches with split pos
     // if (msplazerOptions.simThresh > 0)
     // _trimMatches(tmpBestChain, tmpSplitPos);
+    // Adjust bp positions after match trimming for
 
     // insert bestChain into queryChain object
     insertBestChain(queryChain, tmpBestChain);

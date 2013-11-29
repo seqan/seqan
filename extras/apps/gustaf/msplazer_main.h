@@ -286,7 +286,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     //
     // if(length(queries) < 200)
     if (msplazerOptions.dotOut)
-        _writeDotfiles(stellarMatches, queries, queryChains, msplazerOptions);
+        _writeDotfiles(stellarMatches, queries, queryIDs, queryChains, msplazerOptions);
     return 0;
 }
 
