@@ -523,7 +523,7 @@ SEQAN_HOST_DEVICE inline
 typename Size<LF<TText, TSpec, TConfig> const>::Type
 _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
 {
-    return _getBwtRank(lf, pos, getValue(lf.bwt, pos)) - 1;
+    return _getBwtRank(lf, pos, getValue(lf.bwt, pos));
 }
 
 // ----------------------------------------------------------------------------
