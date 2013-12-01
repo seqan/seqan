@@ -136,7 +136,11 @@ public:
     inline Iter(TStringSet &_host)
         : host(&_host)
     {
-        objNo = 0;
+        if (empty(_host))
+        {
+            _begin = _cur = _end = obj_iterator();
+            return;
+        }
         _begin = _cur = begin(_host[objNo]);
         _end = end(_host[objNo]);
         _testEnd();
@@ -151,8 +155,15 @@ public:
             _end = end(_host[objNo]);
             goFurther(_cur, _offset);
             _testEnd();
-        } else {
-            objNo = length(_host) - 1;
+        }
+        else
+        {
+            if (objNo == 0)
+            {
+                _begin = _cur = _end = obj_iterator();
+                return;
+            }
+            --objNo;
             _begin = begin(_host[objNo]);
             _cur = _end = end(_host[objNo]);
         }
