@@ -139,7 +139,7 @@ public:
     {
         if (empty(_host))
         {
-            _begin = _cur = _end = NULL;
+            _begin = _cur = _end = obj_iterator();
             return;
         }
         _begin = _cur = begin(_host[objNo]);
@@ -162,7 +162,7 @@ public:
         {
             if (objNo == 0)
             {
-                _begin = _cur = _end = NULL;
+                _begin = _cur = _end = obj_iterator();
                 return;
             }
             --objNo;
