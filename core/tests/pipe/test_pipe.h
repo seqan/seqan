@@ -33,100 +33,86 @@
 // ==========================================================================
 
 #ifndef SEQAN_HEADER_TEST_PIPE_H
-
 #define SEQAN_HEADER_TEST_PIPE_H
 
-
-
-namespace SEQAN_NAMESPACE_MAIN
-
+namespace seqan
 {
 
+template < typename TBuffer >
+void permute(TBuffer buf)
+{
+    typename Size<TBuffer>::Type i, j, s = length(buf);
+//  srand( (unsigned)time( NULL ) );
 
+    for(i = 0; i < s; i++)
+        buf[i] = s - i - 1;
 
-	template < typename TBuffer >
-
-	void permute(TBuffer buf) {
-
-		typename Size<TBuffer>::Type i, j, s = length(buf);
-
-//        srand( (unsigned)time( NULL ) );
-
-		for(i = 0; i < s; i++)
-
-			buf[i] = s-i-1;
-
-		for(i = 0; i < s; i++) {
-
-            if (i > 0) {
-
-			    j = i - (rand() % i) - 1;
-
-                assert(/*0 <= j && */j < s);
-
-            } else
-
-                j = 0;
-
-			unsigned tmp = buf[i];
-
-			buf[i] = buf[j];
-
-			buf[j] = tmp;
-
-		}
-
-	}
-
-
-
-	template < typename TBuffer >
-
-	void randomize(TBuffer buf) {
-
-		typename Size<TBuffer>::Type i, s = length(buf);
-
-		for(i = 0; i < s; i++)
-
-            buf[i] = rand() % s;
-
-	}
-
-
-
-	template < typename TValue >
-
-	struct IdentityMap : public ::std::unary_function< TValue, TValue > {
-
-		inline TValue operator() (TValue const i) { return i; }
-
-	};
-
-
-
-	template < typename TValue >
-
-	struct SimpleCompare : public ::std::binary_function< TValue const, TValue const, int > {
-
-		inline int operator() (TValue const a, TValue const b) const {
-
-            if (a < b) return -1;
-
-            if (a > b) return 1;
-
-            return 0;
-
+    for (i = 0; i < s; i++)
+    {
+        if (i > 0)
+        {
+            j = i - (rand() % i) - 1;
+            SEQAN_ASSERT_LT(j, s);
         }
+        else
+        {
+            j = 0;
+        }
+        std::swap(buf[i], buf[j]);
+    }
+}
 
-	};
+template < typename TBuffer >
+void randomize(TBuffer buf)
+{
+    typename Size<TBuffer>::Type i, s = length(buf);
+    for(i = 0; i < s; i++)
+        buf[i] = rand() % s;
+}
 
-	
+template < typename TValue >
+struct IdentityMap : public ::std::unary_function< TValue, TValue >
+{
+    inline TValue operator() (TValue const i)
+    {
+        return i;
+    }
+};
+
+template < typename TValue >
+struct SimpleCompare : public ::std::binary_function< TValue const, TValue const, int >
+{
+    inline int operator() (TValue const a, TValue const b) const
+    {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }
+};
+
+template <typename TPipe1, typename TPipe2>
+void comparePipes(TPipe1 &pipe1, TPipe2 &pipe2)
+{
+    typedef typename Size<TPipe1>::Type TSize;
+
+    SEQAN_ASSERT_EQ(length(pipe1), length(pipe2));
+    beginRead(pipe1);
+    beginRead(pipe2);
+    TSize actualLen;
+    for (actualLen = 0; !eof(pipe1) && !eof(pipe2); ++actualLen)
+    {
+        SEQAN_ASSERT_EQ(eos(pipe1), eos(pipe2));
+        SEQAN_ASSERT_EQ(*pipe1, *pipe2);
+        ++pipe1;
+        ++pipe2;
+    }
+    SEQAN_ASSERT_EQ(eos(pipe1), eos(pipe2));
+    SEQAN_ASSERT_EQ(eof(pipe1), eof(pipe2));
+    SEQAN_ASSERT_EQ(actualLen, length(pipe1));
+    endRead(pipe1);
+    endRead(pipe2);
+}
 
 }
 
-
-
 #endif
-
-
-
