@@ -149,7 +149,7 @@ namespace seqan {
 	struct RepeatLess_ : public ::std::binary_function<TPos, TPos, bool>
 	{
 		// key less
-		inline bool operator() (TPos const &a, TPos const &b) {
+		inline bool operator() (TPos const &a, TPos const &b) const {
 			return posLess(a, b);
 		}
 	};
